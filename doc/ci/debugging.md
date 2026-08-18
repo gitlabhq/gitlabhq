@@ -33,8 +33,8 @@ for that feature:
 - [ID tokens](secrets/id_token_authentication.md#troubleshooting)
 - [Jobs](jobs/job_troubleshooting.md)
 - [Job artifacts](jobs/job_artifacts_troubleshooting.md)
-- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md)
-  [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting)
+- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
+  [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
   and [merge trains](pipelines/merge_trains.md#troubleshooting)
 - [Pipeline editor](pipeline_editor/_index.md#troubleshooting)
 - [Variables](variables/variables_troubleshooting.md)

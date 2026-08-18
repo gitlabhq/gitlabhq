@@ -151,6 +151,82 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
         render_component
         expect(page).to have_text("−1 KiB (1 KiB)")
       end
+
+      it 'resolves each blob size once', :aggregate_failures do
+        new_blob = double
+        old_blob = double
+
+        allow(diff_file).to receive(:new_blob).and_return(new_blob)
+        allow(diff_file).to receive(:old_blob).and_return(old_blob)
+        expect(new_blob).to receive(:size).once.and_return(1024)
+        expect(old_blob).to receive(:size).once.and_return(100)
+
+        render_component
+
+        expect(page).to have_text("+924 B (1 KiB)")
+      end
+    end
+
+    context 'when a blob is missing' do
+      context 'with changed blob' do
+        before do
+          allow(diff_file).to receive(:new_file?).and_return(false)
+          allow(diff_file).to receive(:deleted_file?).and_return(false)
+        end
+
+        it 'does not render a total size when the new blob is missing', :aggregate_failures do
+          allow(diff_file).to receive(:new_blob).and_return(nil)
+
+          render_component
+
+          stats = find_by_testid('rd-diff-file-stats')
+          expect(stats).to have_no_text('(')
+          expect(stats).to have_no_text('+')
+          expect(stats).to have_no_text('−')
+        end
+
+        it 'does not render binary size stats when the old blob is missing', :aggregate_failures do
+          allow(diff_file).to receive(:old_blob).and_return(nil)
+
+          render_component
+
+          stats = find_by_testid('rd-diff-file-stats')
+          expect(stats).to have_no_text('+')
+          expect(stats).to have_no_text('−')
+          expect(stats).to have_no_text('(')
+        end
+
+        it 'does not render binary size stats when both blobs are missing', :aggregate_failures do
+          allow(diff_file).to receive(:new_blob).and_return(nil)
+          allow(diff_file).to receive(:old_blob).and_return(nil)
+
+          render_component
+
+          stats = find_by_testid('rd-diff-file-stats')
+          expect(stats).to have_no_text('+')
+          expect(stats).to have_no_text('−')
+          expect(stats).to have_no_text('(')
+        end
+      end
+
+      it 'does not render an added size when the new file blob is missing', :aggregate_failures do
+        allow(diff_file).to receive(:new_file?).and_return(true)
+        allow(diff_file).to receive(:new_blob).and_return(nil)
+
+        render_component
+
+        expect(find_by_testid('rd-diff-file-stats')).to have_no_text('+')
+      end
+
+      it 'does not render a removed size when the deleted file blob is missing', :aggregate_failures do
+        allow(diff_file).to receive(:new_file?).and_return(false)
+        allow(diff_file).to receive(:deleted_file?).and_return(true)
+        allow(diff_file).to receive(:old_blob).and_return(nil)
+
+        render_component
+
+        expect(find_by_testid('rd-diff-file-stats')).to have_no_text('−')
+      end
     end
   end
 

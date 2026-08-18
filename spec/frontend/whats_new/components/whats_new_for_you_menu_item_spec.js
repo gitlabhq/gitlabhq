@@ -11,7 +11,6 @@ const baseSidebarData = {
   display_whats_new: true,
   whats_new_version_digest: 'v1',
   whats_new_read_articles: [1],
-  whats_new_mark_as_read_path: '/mark_as_read',
   whats_new_most_recent_release_items_count: 5,
 };
 
@@ -100,14 +99,14 @@ describe('WhatsNewForYouMenuItem', () => {
     it('lazy-loads the drawer module and calls it with the sidebar payload + placement', async () => {
       createWrapper({ placement: 'profile_menu' });
 
-      wrapper.findByTestId('whats-new-for-you-profile-menu-item').vm.$emit('action');
+      wrapper.findComponentByTestId('whats-new-for-you-profile-menu-item').vm.$emit('action');
       await waitForPromises();
 
       expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(
         {
           versionDigest: 'v1',
           initialReadArticles: [1],
-          markAsReadPath: '/mark_as_read',
+          markAsReadPath: '/-/whats_new/mark_as_read',
           mostRecentReleaseItemsCount: 5,
           placement: 'profile_menu',
         },
@@ -117,7 +116,7 @@ describe('WhatsNewForYouMenuItem', () => {
 
     it('reuses the cached toggle on subsequent clicks (passes no arguments)', async () => {
       createWrapper();
-      const item = wrapper.findByTestId('whats-new-for-you-help-menu-item');
+      const item = wrapper.findComponentByTestId('whats-new-for-you-help-menu-item');
 
       item.vm.$emit('action');
       await waitForPromises();
@@ -130,7 +129,7 @@ describe('WhatsNewForYouMenuItem', () => {
 
     it('updates the unread count when the drawer reports articles read', async () => {
       createWrapper();
-      wrapper.findByTestId('whats-new-for-you-help-menu-item').vm.$emit('action');
+      wrapper.findComponentByTestId('whats-new-for-you-help-menu-item').vm.$emit('action');
       await waitForPromises();
 
       const [, updateBadge] = toggleWhatsNewDrawer.mock.calls[0];

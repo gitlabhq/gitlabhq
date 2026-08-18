@@ -13,7 +13,10 @@ gem "redis-client"
 # gem "bumbler"
 # gem "debug"
 
-gem "sqlite3", "~> 1.4", platforms: :ruby
+# csv is a former default gem required by the Rails test dependencies but no
+# longer shipped with Ruby 3.4.
+gem "csv"
+gem "sqlite3", "~> 2.0", platforms: :ruby
 gem "activerecord-jdbcsqlite3-adapter", platforms: :jruby
 gem "after_commit_everywhere", require: false
 gem "yard"

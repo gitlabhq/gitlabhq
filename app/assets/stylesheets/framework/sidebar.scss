@@ -301,7 +301,7 @@
     }
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       text-decoration: none;
     }
   }
@@ -647,7 +647,7 @@
     li a {
       &:hover,
       &:active,
-      &:focus,
+      &:focus-visible,
       &.is-focused {
         @include dropdown-item-hover;
         background-color: transparent;

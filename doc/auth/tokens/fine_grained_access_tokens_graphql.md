@@ -45,6 +45,16 @@ Grants the ability to read dependencies.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `DependencyLocation` |
+| Read | Project | Type | `DependencyTrackedRef` |
+
+#### Finding Token Status
+
+Grants the ability to update finding token statuses.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `RefreshFindingTokenStatus` |
+| Update | Project | Mutation | `RefreshVulnerabilityFindingTokenStatus` |
 
 #### Pipeline Execution Project Schedule
 
@@ -65,24 +75,108 @@ Grants the ability to read secrets managers.
 | Read | Group | Type | `SecretsManagerEntitlement` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
 
-#### Vulnerability
+#### Security Attribute
 
-Grants the ability to create, read, and update vulnerabilities.
+Grants the ability to create, delete, and update security attributes.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `SecurityAttributeCreate` |
+| Create | Group | Mutation | `SecurityCategoryCreate` |
+| Delete | Group | Mutation | `SecurityAttributeDestroy` |
+| Delete | Group | Mutation | `SecurityCategoryDestroy` |
+| Update | Project | Mutation | `SecurityAttributeProjectUpdate` |
+| Update | Group | Mutation | `SecurityAttributeUpdate` |
+| Update | Group | Mutation | `SecurityCategoryUpdate` |
+
+#### Security Dashboard
+
+Grants the ability to update security dashboards.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `AddProjectToSecurityDashboard` |
+| Update | Project | Mutation | `RemoveProjectFromSecurityDashboard` |
+
+#### Security Scan Profiles
+
+Grants the ability to create, delete, and update security scan profiles.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `SecurityScanProfileCreate` |
+| Delete | Group | Mutation | `SecurityScanProfileDelete` |
+| Update | Group | Mutation | `SecurityScanProfileUpdate` |
+
+#### Vulnerability
+
+Grants the ability to archive, create, read, and update vulnerabilities.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Archive | Project | Mutation | `VulnerabilitiesArchive` |
 | Create | Project | Mutation | `VulnerabilityCreate` |
 | Read | Project | Type | `CountableVulnerability` |
 | Read | Project | Type | `Vulnerability` |
 | Read | Project | Type | `VulnerabilityScanner` |
 | Read | Project | Field | `MergeRequest.findingReportsComparer` |
+| Read | Project | Field | `Project.vulnerabilityWorkflowExecution` |
+| Update | Project | Mutation | `BulkSetVulnerabilityFindingsDueDates` |
 | Update | Project | Mutation | `VulnerabilityAutoRemediation` |
 | Update | Project | Mutation | `VulnerabilityConfirm` |
 | Update | Project | Mutation | `VulnerabilityDismiss` |
 | Update | Project | Mutation | `VulnerabilityResolve` |
 | Update | Project | Mutation | `VulnerabilityRevertToDetected` |
 
+#### Vulnerability Duo Workflow
+
+Grants the ability to execute vulnerability duo workflows.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Execute | Project | Mutation | `CancelVulnerabilityWorkflow` |
+| Execute | Project | Mutation | `StartVulnerabilityWorkflow` |
+
+#### Vulnerability Flag
+
+Grants the ability to update vulnerability flags.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `VulnerabilityDismissFalsePositiveFlag` |
+
+#### Vulnerability Issue Link
+
+Grants the ability to create, delete, and read vulnerability issue links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `SecurityFindingCreateIssue` |
+| Create | Project | Mutation | `SecurityFindingExternalIssueLinkCreate` |
+| Create | Project | Mutation | `SecurityFindingJiraIssueFormUrlCreate` |
+| Create | Project | Mutation | `VulnerabilitiesCreateIssue` |
+| Create | Project | Mutation | `VulnerabilityExternalIssueLinkCreate` |
+| Create | Project | Mutation | `VulnerabilityIssueLinkCreate` |
+| Delete | Project | Mutation | `VulnerabilityExternalIssueLinkDestroy` |
+
+#### Vulnerability Merge Request Link
+
+Grants the ability to create and delete vulnerability merge request links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `VulnerabilityLinkMergeRequest` |
+| Delete | Project | Mutation | `VulnerabilityUnlinkMergeRequest` |
+
 ### CI/CD resources
+
+#### Catalog Bundled Resource
+
+Grants the ability to read bundled CI catalog resources.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `CiCatalogBundledResource` |
 
 #### Catalog Resource
 
@@ -114,12 +208,14 @@ Grants the ability to create and read continuous deployment application flow def
 
 #### CD Application Link
 
-Grants the ability to create and read continuous deployment application links.
+Grants the ability to create, delete, read, and update continuous deployment application links.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `CdApplicationLinkCreate` |
+| Delete | Instance | Mutation | `CdApplicationLinkDelete` |
 | Read | Instance | Type | `CdApplicationLink` |
+| Update | Instance | Mutation | `CdApplicationLinkUpdate` |
 
 #### CD Artifact Source
 
@@ -139,7 +235,9 @@ Grants the ability to create, read, and update continuous deployment environment
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `CdEnvironmentCreate` |
 | Read | Instance | Type | `CdEnvironment` |
+| Read | Instance | Type | `CdEnvironmentApplication` |
 | Read | Instance | Type | `CdEnvironmentDriverBinding` |
+| Update | Instance | Mutation | `CdEnvironmentDriverBindingCreate` |
 | Update | Instance | Mutation | `CdEnvironmentUpdate` |
 
 #### CD Rollout
@@ -153,6 +251,7 @@ Grants the ability to create and read CD rollouts.
 | Read | Instance | Type | `CdDeploymentTransition` |
 | Read | Instance | Type | `CdRollout` |
 | Read | Instance | Type | `CdRolloutEnvironment` |
+| Read | Instance | Type | `CdRolloutStep` |
 | Read | Instance | Type | `CdRolloutTransition` |
 
 #### CD Rollout Gate
@@ -191,6 +290,14 @@ Grants the ability to read and validate CI/CD configuration.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Validate | Project | Mutation | `CiLint` |
+
+#### CI Namespace Settings
+
+Grants the ability to update CI namespace settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `NamespaceSettingsUpdate` |
 
 #### CI/CD Setting
 
@@ -279,6 +386,14 @@ Grants the ability to delete, read, and update job artifacts.
 | Delete | Project | Mutation | `JobArtifactsDestroy` |
 | Read | Project | Type | `CiJobArtifact` |
 
+#### Merge Train Car
+
+Grants the ability to delete merge train cars.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Project | Mutation | `MergeTrainsDeleteCar` |
+
 #### Pipeline
 
 Grants the ability to create, delete, read, and update pipelines.
@@ -329,7 +444,7 @@ Grants the ability to assign, create, delete, read, and update runners.
 
 #### Terraform State
 
-Grants the ability to create, delete, lock, read, and update Terraform state.
+Grants the ability to create, delete, lock, and read Terraform state.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -339,7 +454,6 @@ Grants the ability to create, delete, lock, read, and update Terraform state.
 | Read | Project | Type | `TerraformState` |
 | Read | Project | Type | `TerraformStateProtectionRule` |
 | Read | Project | Type | `TerraformStateVersion` |
-| Update | Project | Mutation | `UpdateTerraformStateProtectionRule` |
 
 #### Terraform State Protection Rule
 
@@ -349,6 +463,7 @@ Grants the ability to create, delete, and update Terraform state protection rule
 | ------ | ------ | ---- | ---- |
 | Create | Project | Mutation | `CreateTerraformStateProtectionRule` |
 | Delete | Project | Mutation | `DeleteTerraformStateProtectionRule` |
+| Update | Project | Mutation | `UpdateTerraformStateProtectionRule` |
 
 #### Trigger
 
@@ -361,6 +476,116 @@ Grants the ability to create, delete, read, and update triggers.
 | Read | Project | Type | `PipelineTrigger` |
 | Update | Project | Mutation | `PipelineTriggerUpdate` |
 
+#### Verified Namespace
+
+Grants the ability to create verified namespaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `VerifiedNamespaceCreate` |
+
+### Compliance resources
+
+#### Audit Event Streaming Destination
+
+Grants the ability to create, delete, and update audit event streaming destinations.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `AuditEventsAmazonS3ConfigurationCreate` |
+| Create | Group | Mutation | `ExternalAuditEventDestinationCreate` |
+| Create | Group | Mutation | `GoogleCloudLoggingConfigurationCreate` |
+| Create | Group | Mutation | `GroupAuditEventStreamingDestinationsCreate` |
+| Create | Instance | Mutation | `AuditEventsInstanceAmazonS3ConfigurationCreate` |
+| Create | Instance | Mutation | `InstanceAuditEventStreamingDestinationsCreate` |
+| Create | Instance | Mutation | `InstanceExternalAuditEventDestinationCreate` |
+| Create | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationCreate` |
+| Delete | Group | Mutation | `AuditEventsAmazonS3ConfigurationDelete` |
+| Delete | Group | Mutation | `ExternalAuditEventDestinationDestroy` |
+| Delete | Group | Mutation | `GoogleCloudLoggingConfigurationDestroy` |
+| Delete | Group | Mutation | `GroupAuditEventStreamingDestinationsDelete` |
+| Delete | Instance | Mutation | `AuditEventsInstanceAmazonS3ConfigurationDelete` |
+| Delete | Instance | Mutation | `InstanceAuditEventStreamingDestinationsDelete` |
+| Delete | Instance | Mutation | `InstanceExternalAuditEventDestinationDestroy` |
+| Delete | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationDestroy` |
+| Update | Group | Mutation | `AuditEventsAmazonS3ConfigurationUpdate` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationDenylistEventsAdd` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationDenylistEventsDelete` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationEventsAdd` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationEventsDelete` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationNamespaceFilterCreate` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationNamespaceFilterDelete` |
+| Update | Group | Mutation | `AuditEventsStreamingDestinationEventsAdd` |
+| Update | Group | Mutation | `AuditEventsStreamingDestinationEventsRemove` |
+| Update | Group | Mutation | `AuditEventsStreamingHTTPNamespaceFiltersAdd` |
+| Update | Group | Mutation | `AuditEventsStreamingHTTPNamespaceFiltersDelete` |
+| Update | Group | Mutation | `AuditEventsStreamingHeadersCreate` |
+| Update | Group | Mutation | `AuditEventsStreamingHeadersDestroy` |
+| Update | Group | Mutation | `AuditEventsStreamingHeadersUpdate` |
+| Update | Group | Mutation | `ExternalAuditEventDestinationUpdate` |
+| Update | Group | Mutation | `GoogleCloudLoggingConfigurationUpdate` |
+| Update | Group | Mutation | `GroupAuditEventStreamingDestinationsUpdate` |
+| Update | Instance | Mutation | `AuditEventsInstanceAmazonS3ConfigurationUpdate` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationEventsAdd` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationEventsDelete` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationNamespaceFilterCreate` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationNamespaceFilterDelete` |
+| Update | Instance | Mutation | `AuditEventsStreamingDestinationInstanceEventsAdd` |
+| Update | Instance | Mutation | `AuditEventsStreamingDestinationInstanceEventsRemove` |
+| Update | Instance | Mutation | `AuditEventsStreamingInstanceHeadersCreate` |
+| Update | Instance | Mutation | `AuditEventsStreamingInstanceHeadersDestroy` |
+| Update | Instance | Mutation | `AuditEventsStreamingInstanceHeadersUpdate` |
+| Update | Instance | Mutation | `InstanceAuditEventStreamingDestinationsUpdate` |
+| Update | Instance | Mutation | `InstanceExternalAuditEventDestinationUpdate` |
+| Update | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationUpdate` |
+
+#### Compliance Dashboard
+
+Grants the ability to read compliance dashboards.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Group | Mutation | `RefreshStandardsAdherenceChecks` |
+
+#### Compliance Framework
+
+Grants the ability to create, delete, and update compliance frameworks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `CreateComplianceFramework` |
+| Create | Group | Mutation | `CreateComplianceFrameworkFromTemplate` |
+| Create | Group | Mutation | `CreateComplianceRequirement` |
+| Create | Group | Mutation | `CreateComplianceRequirementsControl` |
+| Delete | Group | Mutation | `DestroyComplianceFramework` |
+| Delete | Group | Mutation | `DestroyComplianceRequirement` |
+| Delete | Group | Mutation | `DestroyComplianceRequirementsControl` |
+| Update | Project | Mutation | `ProjectSetComplianceFramework` |
+| Update | Project | Mutation | `ProjectUpdateComplianceFrameworks` |
+| Update | Group | Mutation | `UpdateComplianceFramework` |
+| Update | Group | Mutation | `UpdateComplianceRequirement` |
+| Update | Group | Mutation | `UpdateComplianceRequirementsControl` |
+
+#### Compliance Violations Report
+
+Grants the ability to update compliance violations reports.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `LinkProjectComplianceViolationIssue` |
+| Update | Project | Mutation | `UnlinkProjectComplianceViolationIssue` |
+| Update | Project | Mutation | `UpdateProjectComplianceViolation` |
+
+#### External Status Check
+
+Grants the ability to create, delete, read, retry, and update external status checks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `BranchRuleExternalStatusCheckCreate` |
+| Delete | Project | Mutation | `BranchRuleExternalStatusCheckDestroy` |
+| Update | Project | Mutation | `BranchRuleExternalStatusCheckUpdate` |
+
 ### Duo resources
 
 #### AI catalog item
@@ -370,6 +595,15 @@ Grants the ability to restore AI catalog items.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Restore | Project | Mutation | `AiCatalogItemVersionRestore` |
+
+#### AI catalog MCP server
+
+Grants the ability to block AI catalog MCP servers.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Block | Project | Mutation | `AiCatalogMcpServerSetBlock` |
+| Block | Group | Mutation | `AiCatalogMcpServerSetBlock` |
 
 #### AI tool rule
 
@@ -381,14 +615,27 @@ Grants the ability to read and update AI tool rules, which control per-tool appr
 | Update | Group | Mutation | `BulkUpdateAiToolRules` |
 | Update | Group | Mutation | `UpdateAiToolRule` |
 
+#### AI usage metric
+
+Grants the ability to read per-user GitLab Duo usage metrics.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Field | `Project.aiUserMetrics` |
+| Read | Group | Field | `Group.aiUserMetrics` |
+
 #### Duo Workflow
 
 Grants the ability to create, read, resume, and update duo workflows.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Read | User | Type | `DuoWorkflowMergeRequestLink` |
+| Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowWorkItemLink` |
+| Read | User | Field | `Note.duoTriggeredSession` |
 | Update | User | Mutation | `UpdateDuoWorkflowAgentPrivileges` |
+| Update | User | Mutation | `UpdateDuoWorkflowWebSearch` |
 
 #### Flows Metadata
 
@@ -413,6 +660,27 @@ Grants the ability to read and update model selection allowlists.
 | Update | Group | Mutation | `AiModelSelectionNamespaceModelAllowlistUpdate` |
 | Update | Instance | Mutation | `AiFeatureSettingModelAllowlistUpdate` |
 
+### Geo resources
+
+#### Geo Registry
+
+Grants the ability to update Geo registries.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Instance | Mutation | `GeoRegistriesBulkUpdate` |
+| Update | Instance | Mutation | `GeoRegistriesUpdate` |
+
+### GitLab Orbit resources
+
+#### Knowledge Graph Setting
+
+Grants the ability to update knowledge graph settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `OrbitUpdate` |
+
 ### Groups resources
 
 #### Admin Member Role
@@ -433,6 +701,7 @@ Grants the ability to archive, create, delete, read, share, transfer, and update
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Group | Type | `Group` |
+| Transfer | Group | Mutation | `GroupTransfer` |
 | Update | Group | Mutation | `GroupUpdate` |
 
 #### LDAP Admin Role Link
@@ -448,12 +717,33 @@ Grants the ability to create, delete, and read LDAP admin role links
 
 #### Member Role
 
-Grants the ability to create, delete, and read member roles.
+Grants the ability to assign, create, delete, read, and update member roles.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Assign | Instance | Mutation | `MemberRoleToUserAssign` |
 | Create | Group | Mutation | `MemberRoleCreate` |
 | Create | Instance | Mutation | `MemberRoleCreate` |
+| Delete | Group | Mutation | `MemberRoleDelete` |
+| Delete | Instance | Mutation | `MemberRoleDelete` |
+| Update | Group | Mutation | `MemberRoleUpdate` |
+| Update | Instance | Mutation | `MemberRoleUpdate` |
+
+#### Namespace
+
+Grants the ability to read and update namespaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Mutation | `NamespacesRegenerateNewWorkItemEmailAddress` |
+
+#### Namespace Ban
+
+Grants the ability to delete namespace bans.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Group | Mutation | `NamespaceBanDestroy` |
 
 #### Preference
 
@@ -472,15 +762,103 @@ Grants the ability to create, delete, merge, read, and update topics.
 | ------ | ------ | ---- | ---- |
 | Read | Instance | Type | `Topic` |
 
-### Monitoring resources
+### Integrations resources
 
-#### Escalation Policy
+#### Integration Exclusion
 
-Grants the ability to read escalation policies.
+Grants the ability to create and delete integration exclusions.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `IntegrationExclusionCreate` |
+| Delete | Instance | Mutation | `IntegrationExclusionDelete` |
+
+#### Jira Import
+
+Grants the ability to create Jira imports.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `JiraImportStart` |
+| Create | Project | Mutation | `JiraImportUsers` |
+
+### Monitoring resources
+
+#### Alert
+
+Grants the ability to update alerts.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `AlertSetAssignees` |
+| Update | Project | Mutation | `UpdateAlertStatus` |
+
+#### Escalation Policy
+
+Grants the ability to create, delete, read, and update escalation policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `EscalationPolicyCreate` |
+| Delete | Project | Mutation | `EscalationPolicyDestroy` |
 | Read | Project | Type | `EscalationPolicyType` |
+| Update | Project | Mutation | `EscalationPolicyUpdate` |
+
+#### HTTP Integration
+
+Grants the ability to create, delete, and update HTTP integrations.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `HttpIntegrationCreate` |
+| Create | Project | Mutation | `PrometheusIntegrationCreate` |
+| Delete | Project | Mutation | `HttpIntegrationDestroy` |
+| Update | Project | Mutation | `HttpIntegrationResetToken` |
+| Update | Project | Mutation | `HttpIntegrationUpdate` |
+| Update | Project | Mutation | `PrometheusIntegrationResetToken` |
+| Update | Project | Mutation | `PrometheusIntegrationUpdate` |
+
+#### Issuable Resource Link
+
+Grants the ability to create and delete issuable resource links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `IssuableResourceLinkCreate` |
+| Delete | Project | Mutation | `IssuableResourceLinkDestroy` |
+
+#### On-call Schedule
+
+Grants the ability to create, delete, and update on-call schedules.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `OncallRotationCreate` |
+| Create | Project | Mutation | `OncallScheduleCreate` |
+| Delete | Project | Mutation | `OncallRotationDestroy` |
+| Delete | Project | Mutation | `OncallScheduleDestroy` |
+| Update | Project | Mutation | `OncallRotationUpdate` |
+| Update | Project | Mutation | `OncallScheduleUpdate` |
+
+#### Sidekiq Job
+
+Grants the ability to drop Sidekiq jobs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Drop | Instance | Mutation | `AdminSidekiqQueuesDeleteJobs` |
+
+#### Timeline Event
+
+Grants the ability to create, delete, and update timeline events.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `TimelineEventCreate` |
+| Create | Project | Mutation | `TimelineEventPromoteFromNote` |
+| Create | Project | Mutation | `TimelineEventTagCreate` |
+| Delete | Project | Mutation | `TimelineEventDestroy` |
+| Update | Project | Mutation | `TimelineEventUpdate` |
 
 ### Notifications resources
 
@@ -490,6 +868,7 @@ Grants the ability to create, delete, read, and update todos.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AlertTodoCreate` |
 | Create | Project | Mutation | `TodoCreate` |
 | Create | Group | Mutation | `TodoCreate` |
 | Delete | User | Mutation | `TodoDeleteAllDone` |
@@ -509,7 +888,7 @@ Grants the ability to create, delete, read, and update todos.
 
 #### Organization
 
-Grants the ability to create, delete, read, and update organizations.
+Grants the ability to create, delete, read, restore, and update organizations.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -517,11 +896,28 @@ Grants the ability to create, delete, read, and update organizations.
 | Delete | Instance | Mutation | `OrganizationDelete` |
 | Read | Instance | Type | `Organization` |
 | Read | Instance | Type | `OrganizationUser` |
+| Restore | Instance | Mutation | `OrganizationRestore` |
 | Update | Instance | Mutation | `OrganizationConfirm` |
 | Update | Instance | Mutation | `OrganizationUpdate` |
 | Update | Instance | Mutation | `OrganizationUserUpdate` |
 
+#### Organization User
+
+Grants the ability to delete organization users.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Instance | Mutation | `OrganizationUserDelete` |
+
 ### Packages and Registry resources
+
+#### Container Expiration Policy
+
+Grants the ability to update container expiration policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `UpdateContainerExpirationPolicy` |
 
 #### Container Registry Protection Tag Rule
 
@@ -561,6 +957,14 @@ Grants the ability to read and update dependency proxies.
 | Update | Group | Mutation | `UpdateDependencyProxyImageTtlGroupPolicy` |
 | Update | Group | Mutation | `UpdateDependencyProxySettings` |
 
+#### Dependency Proxy Packages Setting
+
+Grants the ability to update dependency proxy packages settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `UpdateDependencyProxyPackagesSettings` |
+
 #### Package
 
 Grants the ability to create, delete, read, and update packages.
@@ -574,6 +978,74 @@ Grants the ability to create, delete, read, and update packages.
 | Delete | Project | Mutation | `DestroyPackageFiles` |
 | Update | Project | Mutation | `UpdatePackagesCleanupPolicy` |
 | Update | Project | Mutation | `UpdatePackagesProtectionRule` |
+
+#### Package Setting
+
+Grants the ability to update package settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `UpdateNamespacePackageSettings` |
+| Update | Group | Mutation | `UpdateNamespacePackageSettings` |
+| Update | User | Mutation | `UpdateNamespacePackageSettings` |
+
+#### Virtual Registry
+
+Grants the ability to create, delete, read, and update virtual registries.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `ContainerUpstreamCreate` |
+| Create | Group | Mutation | `ContainerVirtualRegistryCreate` |
+| Create | Group | Mutation | `ContainerVirtualRegistryUpstreamCreate` |
+| Create | Group | Mutation | `MavenUpstreamCreate` |
+| Create | Group | Mutation | `MavenVirtualRegistryCreate` |
+| Delete | Group | Mutation | `ContainerUpstreamCacheDelete` |
+| Delete | Group | Mutation | `ContainerUpstreamDelete` |
+| Delete | Group | Mutation | `ContainerVirtualRegistryCacheDelete` |
+| Delete | Group | Mutation | `ContainerVirtualRegistryDelete` |
+| Delete | Group | Mutation | `ContainerVirtualRegistryUpstreamDelete` |
+| Delete | Group | Mutation | `MavenUpstreamCacheDelete` |
+| Delete | Group | Mutation | `MavenUpstreamDelete` |
+| Delete | Group | Mutation | `MavenVirtualRegistryCacheDelete` |
+| Delete | Group | Mutation | `MavenVirtualRegistryDelete` |
+| Delete | Group | Mutation | `MavenVirtualRegistryUpstreamDelete` |
+| Update | Group | Mutation | `ContainerUpstreamTest` |
+| Update | Group | Mutation | `ContainerUpstreamUpdate` |
+| Update | Group | Mutation | `ContainerVirtualRegistryUpdate` |
+| Update | Group | Mutation | `ContainerVirtualRegistryUpstreamUpdate` |
+| Update | Group | Mutation | `MavenUpstreamUpdate` |
+| Update | Group | Mutation | `MavenVirtualRegistryUpdate` |
+| Update | Group | Mutation | `MavenVirtualRegistryUpstreamUpdate` |
+| Update | Group | Mutation | `UpdateVirtualRegistriesSetting` |
+
+#### Virtual Registry Cleanup Policy
+
+Grants the ability to create, delete, read, and update virtual registry cleanup policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `VirtualRegistriesCleanupPolicyUpsert` |
+
+### Product Analytics resources
+
+#### Custom Dashboard
+
+Grants the ability to create, delete, and update custom dashboards.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CreateCustomDashboard` |
+| Delete | Instance | Mutation | `DeleteCustomDashboard` |
+| Update | Instance | Mutation | `UpdateCustomDashboard` |
+
+#### DevOps Adoption
+
+Grants the ability to enable DevOps adoption for namespaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Enable | Group | Mutation | `EnableDevopsAdoptionNamespace` |
 
 ### Project Features resources
 
@@ -605,6 +1077,15 @@ Grants the ability to create, delete, read, and update releases.
 | Delete | Project | Mutation | `ReleaseDelete` |
 | Update | Project | Mutation | `ReleaseUpdate` |
 
+#### Release Link
+
+Grants the ability to create, delete, read, and update release links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Project | Mutation | `ReleaseAssetLinkDelete` |
+| Update | Project | Mutation | `ReleaseAssetLinkUpdate` |
+
 #### Snippet
 
 Grants the ability to create, delete, read, and update snippets.
@@ -619,6 +1100,17 @@ Grants the ability to create, delete, read, and update snippets.
 | Update | User | Mutation | `UpdateSnippet` |
 
 ### Project Model Registry and Experiments resources
+
+#### ML Model
+
+Grants the ability to create, delete, read, and update ML models.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `MlModelCreate` |
+| Delete | Project | Mutation | `MlModelDelete` |
+| Delete | Project | Mutation | `MlModelDestroy` |
+| Update | Project | Mutation | `MlModelEdit` |
 
 #### Model Version
 
@@ -643,6 +1135,17 @@ Grants the ability to delete, read, and update custom attributes.
 | Update | Project | Mutation | `ProjectCustomAttributeSet` |
 | Update | Group | Mutation | `SetGroupCustomAttribute` |
 
+#### Design
+
+Grants the ability to create, delete, and update designs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `DesignManagementUpload` |
+| Delete | Project | Mutation | `DesignManagementDelete` |
+| Update | Project | Mutation | `DesignManagementMove` |
+| Update | Project | Mutation | `DesignManagementUpdate` |
+
 #### Label
 
 Grants the ability to create, delete, promote, read, subscribe, and update labels.
@@ -662,6 +1165,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create <sup>1</sup> | Project | Mutation | `CreateAlertIssue` |
 | Create | Project | Mutation | `CreateDiffNote` |
 | Create | Project | Mutation | `CreateDiscussion` |
 | Create | Project | Mutation | `CreateImageDiffNote` |
@@ -699,6 +1203,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | Type | `Milestone` |
 | Read | Group | Type | `Note` |
 | Read | Group | Type | `WorkItemMoveTarget` |
+| Update | Project | Mutation | `DiscussionToggleResolve` |
 | Update | Project | Mutation | `IssueLinkAlerts` |
 | Update | Project | Mutation | `IssueMove` |
 | Update | Project | Mutation | `IssueSetAssignees` |
@@ -713,12 +1218,15 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `IssueSetSeverity` |
 | Update | Project | Mutation | `IssueSetWeight` |
 | Update | Project | Mutation | `IssueUnlinkAlert` |
+| Update | Project | Mutation | `NoteConvertToThread` |
+| Update | Project | Mutation | `RepositionImageDiffNote` |
 | Update | Project | Mutation | `UpdateImageDiffNote` |
 | Update | Project | Mutation | `UpdateIssue` |
 | Update | Project | Mutation | `UpdateNote` |
 | Update | Project | Mutation | `WorkItemAddClosingMergeRequest` |
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
+| Update | Project | Mutation | `WorkItemEnableAiPlanning` |
 | Update | Project | Mutation | `WorkItemUpdate` |
 | Update | Project | Mutation | `workItemsReorder` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
@@ -727,8 +1235,11 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Group | Mutation | `UpdateNote` |
 | Update | Group | Mutation | `WorkItemAddClosingMergeRequest` |
 | Update | Group | Mutation | `WorkItemConvert` |
+| Update | Group | Mutation | `WorkItemEnableAiPlanning` |
 | Update | Group | Mutation | `WorkItemUpdate` |
 | Update | Group | Mutation | `workItemsReorder` |
+
+<sup>1</sup> Also requires the `Update Alert` permission.
 
 ### Projects resources
 
@@ -764,6 +1275,7 @@ Grants the ability to archive, create, delete, fork, read, share, transfer, and 
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `Project` |
 | Read | Project | Type | `RepositoryLanguage` |
+| Transfer | Project | Mutation | `ProjectTransfer` |
 | Update | Project | Mutation | `ProjectSettingsUpdate` |
 | Update | Project | Mutation | `StarProject` |
 
@@ -794,11 +1306,14 @@ Grants the ability to create, delete, protect, and read branches.
 
 #### Branch Rule
 
-Grants the ability to create and update branch rules.
+Grants the ability to create, delete, and update branch rules.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Project | Mutation | `BranchRuleCreate` |
+| Delete | Project | Mutation | `BranchRuleDelete` |
+| Delete | Project | Mutation | `BranchRuleSquashOptionDelete` |
+| Update | Project | Mutation | `BranchRuleSquashOptionUpdate` |
 | Update | Project | Mutation | `BranchRuleUpdate` |
 
 #### Code
@@ -823,12 +1338,15 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Read | Project | Type | `MergeRequest` |
 | Read | Project | Type | `MergeRequestApprovalState` |
 | Read | Project | Type | `MergeRequestWorkItemRelation` |
+| Subscribe | Project | Mutation | `MergeRequestSetSubscription` |
 | Update | Project | Mutation | `DismissPolicyViolations` |
 | Update | Project | Mutation | `MergeRequestBypassSecurityPolicy` |
 | Update | Project | Mutation | `MergeRequestCreateWorkItemRelations` |
 | Update | Project | Mutation | `MergeRequestDestroyRequestedChanges` |
 | Update | Project | Mutation | `MergeRequestDestroyWorkItemRelations` |
 | Update | Project | Mutation | `MergeRequestRequestChanges` |
+| Update | Project | Mutation | `MergeRequestResyncSecurityPolicies` |
+| Update | Project | Mutation | `MergeRequestReviewerRereview` |
 | Update | Project | Mutation | `MergeRequestSetAssignees` |
 | Update | Project | Mutation | `MergeRequestSetBlockingMergeRequests` |
 | Update | Project | Mutation | `MergeRequestSetDraft` |
@@ -837,6 +1355,14 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Update | Project | Mutation | `MergeRequestSetMilestone` |
 | Update | Project | Mutation | `MergeRequestSetReviewers` |
 | Update | Project | Mutation | `MergeRequestUpdate` |
+
+#### Path Lock
+
+Grants the ability to create path locks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectSetLocked` |
 
 #### Push Rule
 
@@ -856,6 +1382,15 @@ Grants the ability to create, delete, read, and update repositories.
 | Read | Project | Type | `RepositoryBlob` |
 | Read | Project | Type | `Tree` |
 
+#### Repository History
+
+Grants the ability to rewrite repository histories.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Rewrite | Project | Mutation | `projectBlobsRemove` |
+| Rewrite | Project | Mutation | `projectTextReplace` |
+
 #### Repository Tag
 
 Grants the ability to create, delete, and read repository tags.
@@ -865,6 +1400,69 @@ Grants the ability to create, delete, and read repository tags.
 | Create | Project | Mutation | `TagCreate` |
 | Delete | Project | Mutation | `TagDelete` |
 | Read | Project | Type | `Tag` |
+
+#### Target Branch Rule
+
+Grants the ability to create and delete target branch rules.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectTargetBranchRuleCreate` |
+| Delete | Project | Mutation | `ProjectTargetBranchRuleDestroy` |
+
+### Secrets Management resources
+
+#### Secrets Manager Enrollment
+
+Grants the ability to read secrets manager enrollments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `SecretsManagerInstanceEnrollment` |
+
+### Subscription and Licensing resources
+
+#### Add On Assignment
+
+Grants the ability to create and delete add on assignments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `UserAddOnAssignmentBulkCreate` |
+| Create | Group | Mutation | `UserAddOnAssignmentCreate` |
+| Create | Instance | Mutation | `UserAddOnAssignmentBulkCreate` |
+| Create | Instance | Mutation | `UserAddOnAssignmentCreate` |
+| Delete | Group | Mutation | `UserAddOnAssignmentBulkRemove` |
+| Delete | Group | Mutation | `UserAddOnAssignmentRemove` |
+| Delete | Instance | Mutation | `UserAddOnAssignmentBulkRemove` |
+| Delete | Instance | Mutation | `UserAddOnAssignmentRemove` |
+
+#### GitLab Subscription
+
+Grants the ability to create, read, and update GitLab subscriptions.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Instance | Mutation | `GitlabSubscriptionActivate` |
+
+#### Member Approval
+
+Grants the ability to update member approvals.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Instance | Mutation | `ProcessUserBillablePromotionRequest` |
+
+#### Subscription Usage Cap
+
+Grants the ability to update subscription usage caps.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `UpsertFlatUserCap` |
+| Update | Group | Mutation | `UpsertUserBudgetCapOverrides` |
+| Update | Instance | Mutation | `UpsertFlatUserCap` |
+| Update | Instance | Mutation | `UpsertUserBudgetCapOverrides` |
 
 ### System Access resources
 
@@ -903,6 +1501,7 @@ Grants the ability to create, delete, read, and update members.
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `ProjectMember` |
 | Read | Group | Type | `GroupMember` |
+| Read | Group | Mutation | `GroupMembersExport` |
 | Update | Project | Mutation | `ProjectMemberBulkUpdate` |
 | Update | Group | Mutation | `GroupMemberBulkUpdate` |
 
@@ -940,3 +1539,50 @@ Grants the ability to activate, approve, ban, block, create, deactivate, delete,
 | Read | User | Type | `MergeRequestParticipant` |
 | Read | User | Type | `MergeRequestReviewer` |
 | Read | User | Type | `UserCore` |
+
+### Value Stream resources
+
+#### Value Stream
+
+Grants the ability to create, delete, and update value streams.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ValueStreamCreate` |
+| Create | Group | Mutation | `ValueStreamCreate` |
+| Delete | Project | Mutation | `ValueStreamDestroy` |
+| Delete | Group | Mutation | `ValueStreamDestroy` |
+| Update | Project | Mutation | `ValueStreamUpdate` |
+| Update | Group | Mutation | `ValueStreamUpdate` |
+
+### Wiki resources
+
+#### Wiki
+
+Grants the ability to create, delete, read, subscribe, and update wikis.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Subscribe | Project | Mutation | `WikiPageSubscribe` |
+
+### Workspace resources
+
+#### Cluster Agent Mapping
+
+Grants the ability to create and delete cluster agent mappings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `NamespaceCreateRemoteDevelopmentClusterAgentMapping` |
+| Create | Instance | Mutation | `OrganizationCreateClusterAgentMapping` |
+| Delete | Group | Mutation | `NamespaceDeleteRemoteDevelopmentClusterAgentMapping` |
+| Delete | Instance | Mutation | `OrganizationDeleteClusterAgentMapping` |
+
+#### Workspace
+
+Grants the ability to create and update workspaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `WorkspaceCreate` |
+| Update | Project | Mutation | `WorkspaceUpdate` |

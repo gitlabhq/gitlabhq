@@ -116,7 +116,7 @@ label {
 
 .form-control,
 [contenteditable=true] {
-  &:focus {
+  &:focus-visible {
     background: var(--gl-control-background-color-default);
     border-color: var(--gl-control-border-color-default);
     @apply gl-text-default;
@@ -176,7 +176,7 @@ label {
   .gl-field-success-outline {
     border: 1px solid $green-600;
 
-    &:focus {
+    &:focus-visible {
       box-shadow: 0 0 0 1px $green-600 inset, 0 1px 1px $gl-field-focus-shadow inset,
         0 0 4px 0 $green-600;
       border: 0 none;
@@ -186,7 +186,7 @@ label {
   .gl-field-error-outline {
     border: 1px solid $red-500;
 
-    &:focus {
+    &:focus-visible {
       box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset,
         0 0 4px 0 $gl-field-focus-shadow-error;
       border: 0 none;
@@ -210,7 +210,7 @@ label {
   .password-complexity-error-outline {
     border: 1px solid $red-500;
 
-    &:focus {
+    &:focus-visible {
       box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset,
         0 0 4px 0 $gl-field-focus-shadow-error;
       border: 0 none;
@@ -242,6 +242,6 @@ label {
 }
 
 .add-issuable-form-input-wrapper.focus,
-.issue-token-remove-button:focus {
+.issue-token-remove-button:focus-visible {
   @apply gl-focus;
 }

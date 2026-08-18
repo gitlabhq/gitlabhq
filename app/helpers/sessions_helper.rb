@@ -73,6 +73,10 @@ module SessionsHelper
     data
   end
 
+  def show_passkey_immediately?
+    true
+  end
+
   def sign_in_form_app_data
     {
       sign_in_path: user_session_path,
@@ -82,7 +86,10 @@ module SessionsHelper
       new_user_confirmation_path: new_user_confirmation_path,
       new_password_path: new_user_password_path,
       show_captcha: captcha_enabled? || captcha_on_login_required?,
-      is_remember_me_enabled: remember_me_enabled?
+      is_remember_me_enabled: remember_me_enabled?,
+      show_passkey_immediately: show_passkey_immediately?
     }.to_json
   end
 end
+
+SessionsHelper.prepend_mod

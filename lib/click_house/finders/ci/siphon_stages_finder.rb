@@ -57,6 +57,12 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
           end
         end
 
+        # pipeline_id is immutable per stage row, so filtering the raw pre-dedup
+        # rows is safe.
+        def for_pipeline_ids(ids)
+          with_inner(inner_query.where(pipeline_id: ids))
+        end
+
         def select(*fields)
           with_outer(outer_query.select(*fields))
         end

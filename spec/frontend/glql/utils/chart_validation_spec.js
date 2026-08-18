@@ -27,15 +27,26 @@ describe('dimensionMetricValidationError', () => {
     ).toBe('columnChart supports a maximum of 2 dimensions');
   });
 
-  it('caps dimensions at a custom maximum', () => {
+  it('uses a singular message when capping dimensions at a maximum of 1', () => {
     expect(
       dimensionMetricValidationError({
-        displayType: 'someChart',
+        displayType: 'lineChart',
         dimensions: [DIM_A, DIM_B],
         metrics: [METRIC_X],
         maxDimensions: 1,
       }),
-    ).toBe('someChart supports a maximum of 1 dimensions');
+    ).toBe('lineChart supports exactly one dimension');
+  });
+
+  it('caps dimensions at a custom maximum', () => {
+    expect(
+      dimensionMetricValidationError({
+        displayType: 'someChart',
+        dimensions: [DIM_A, DIM_B, DIM_C],
+        metrics: [METRIC_X],
+        maxDimensions: 2,
+      }),
+    ).toBe('someChart supports a maximum of 2 dimensions');
   });
 
   it('requires at least one metric', () => {

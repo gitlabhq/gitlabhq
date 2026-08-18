@@ -135,7 +135,7 @@ If successful, it returns [`200`](../rest/troubleshooting.md#status-codes) and a
 
 | Attribute | Type   | Description                                       |
 |-----------|--------|---------------------------------------------------|
-| `message` | string | A information message about the success or error. |
+| `message` | string | An information message about the success or error. |
 | `status`  | string | Can be "success" or "error".                      |
 
 ```shell

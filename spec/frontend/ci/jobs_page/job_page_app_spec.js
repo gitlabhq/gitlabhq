@@ -91,7 +91,7 @@ describe('Job table app', () => {
     it('when switching tabs only the skeleton loader should show', () => {
       createComponent();
 
-      findTabs().vm.$emit('fetchJobsByStatus', null);
+      findTabs().vm.$emit('fetch-jobs-by-status', null);
 
       expect(findSkeletonLoader().exists()).toBe(true);
     });
@@ -109,10 +109,10 @@ describe('Job table app', () => {
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
-    it('should refetch jobs query on fetchJobsByStatus event', async () => {
+    it('should refetch jobs query on fetch-jobs-by-status event', async () => {
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      await findTabs().vm.$emit('fetchJobsByStatus');
+      await findTabs().vm.$emit('fetch-jobs-by-status');
 
       expect(successHandler).toHaveBeenCalledTimes(2);
     });
@@ -120,7 +120,7 @@ describe('Job table app', () => {
     it('avoids refetch jobs query when scope has not changed', async () => {
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      await findTabs().vm.$emit('fetchJobsByStatus', null);
+      await findTabs().vm.$emit('fetch-jobs-by-status', null);
 
       expect(successHandler).toHaveBeenCalledTimes(1);
     });
@@ -129,15 +129,15 @@ describe('Job table app', () => {
       expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
       // after applying filter a new count is fetched
-      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(countSuccessHandler).toHaveBeenCalledTimes(2);
 
       // tab is switched to `finished`, no count
-      await findTabs().vm.$emit('fetchJobsByStatus', ['FAILED', 'SUCCESS', 'CANCELED']);
+      await findTabs().vm.$emit('fetch-jobs-by-status', ['FAILED', 'SUCCESS', 'CANCELED']);
 
       // tab is switched back to `all`, the old filter count has to be overwritten with new count
-      await findTabs().vm.$emit('fetchJobsByStatus', null);
+      await findTabs().vm.$emit('fetch-jobs-by-status', null);
 
       expect(countSuccessHandler).toHaveBeenCalledTimes(3);
     });
@@ -220,7 +220,7 @@ describe('Job table app', () => {
 
         await waitForPromises();
 
-        await findTabs().vm.$emit('fetchJobsByStatus', scope);
+        await findTabs().vm.$emit('fetch-jobs-by-status', scope);
 
         expect(findFilteredSearch().exists()).toBe(shouldDisplay);
       },
@@ -229,7 +229,7 @@ describe('Job table app', () => {
     it('filters jobs by status', async () => {
       createComponent();
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
@@ -253,7 +253,7 @@ describe('Job table app', () => {
 
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(successHandler).toHaveBeenCalledTimes(2);
     });
@@ -263,7 +263,7 @@ describe('Job table app', () => {
 
       expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(countSuccessHandler).toHaveBeenCalledTimes(2);
     });
@@ -271,7 +271,7 @@ describe('Job table app', () => {
     it('filters jobs by name when user inputs raw text', async () => {
       createComponent();
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', ['rspec-job']);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', ['rspec-job']);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
@@ -288,7 +288,7 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/?statuses=FAILED&kind=BUILD`,
@@ -300,7 +300,7 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      findFilteredSearch().vm.$emit('filterJobsBySearch', [
+      findFilteredSearch().vm.$emit('filter-jobs-by-search', [
         mockFailedSearchToken,
         mockPushSourceToken,
       ]);
@@ -324,7 +324,7 @@ describe('Job table app', () => {
         url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}&kind=BUILD`,
       });
 
-      findFilteredSearch().vm.$emit('filterJobsBySearch', []);
+      findFilteredSearch().vm.$emit('filter-jobs-by-search', []);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/?kind=BUILD`,
@@ -350,7 +350,7 @@ describe('Job table app', () => {
     it('filters jobs by source', async () => {
       createComponent();
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockPushSourceToken]);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
@@ -372,7 +372,7 @@ describe('Job table app', () => {
     it('filters only by source after removing status filter', async () => {
       createComponent();
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [
         mockFailedSearchToken,
         mockPushSourceToken,
       ]);
@@ -393,7 +393,7 @@ describe('Job table app', () => {
         kind: 'BUILD',
       });
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockPushSourceToken]);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
@@ -417,7 +417,7 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockPushSourceToken]);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/?sources=${mockJobSource}&kind=BUILD`,
@@ -429,7 +429,7 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [
         mockFailedSearchToken,
         mockPushSourceToken,
       ]);
@@ -445,7 +445,7 @@ describe('Job table app', () => {
       });
 
       it('filters jobs by name', async () => {
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockJobName]);
 
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
@@ -465,7 +465,7 @@ describe('Job table app', () => {
       });
 
       it('filters only by name after removing status filter', async () => {
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [
           mockFailedSearchToken,
           mockJobName,
         ]);
@@ -486,7 +486,7 @@ describe('Job table app', () => {
           kind: 'BUILD',
         });
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockJobName]);
 
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
@@ -508,7 +508,7 @@ describe('Job table app', () => {
       it('updates URL query string when filtering jobs by name', async () => {
         jest.spyOn(urlUtils, 'updateHistory');
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockJobName]);
 
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
           url: `${TEST_HOST}/?name=${mockJobName}&kind=BUILD`,
@@ -518,7 +518,7 @@ describe('Job table app', () => {
       it('updates URL query string when filtering jobs by name and status', async () => {
         jest.spyOn(urlUtils, 'updateHistory');
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [
           mockFailedSearchToken,
           mockJobName,
         ]);
@@ -531,7 +531,10 @@ describe('Job table app', () => {
       it('resets query param after clearing tokens', () => {
         jest.spyOn(urlUtils, 'updateHistory');
 
-        findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken, mockJobName]);
+        findFilteredSearch().vm.$emit('filter-jobs-by-search', [
+          mockFailedSearchToken,
+          mockJobName,
+        ]);
 
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
@@ -552,7 +555,7 @@ describe('Job table app', () => {
           url: `${TEST_HOST}/?statuses=FAILED&name=${mockJobName}&kind=BUILD`,
         });
 
-        findFilteredSearch().vm.$emit('filterJobsBySearch', []);
+        findFilteredSearch().vm.$emit('filter-jobs-by-search', []);
 
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
           url: `${TEST_HOST}/?kind=BUILD`,
@@ -589,7 +592,7 @@ describe('Job table app', () => {
       it('filters trigger jobs', async () => {
         jest.spyOn(urlUtils, 'updateHistory');
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockBridgeKindToken]);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockBridgeKindToken]);
 
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
@@ -614,7 +617,7 @@ describe('Job table app', () => {
       it('filters build jobs', async () => {
         jest.spyOn(urlUtils, 'updateHistory');
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockBuildKindToken]);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockBuildKindToken]);
 
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
@@ -731,7 +734,7 @@ describe('Job table app', () => {
 
       await waitForPromises();
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
@@ -752,7 +755,7 @@ describe('Job table app', () => {
 
       await waitForPromises();
 
-      await findTabs().vm.$emit('fetchJobsByStatus', ['FAILED', 'SUCCESS', 'CANCELED']);
+      await findTabs().vm.$emit('fetch-jobs-by-status', ['FAILED', 'SUCCESS', 'CANCELED']);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',

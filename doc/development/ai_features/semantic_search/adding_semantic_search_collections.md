@@ -27,7 +27,6 @@ Each Semantic Search Collection must have a corresponding Embeddings AI Feature.
 **On AI Gateway**
 
 1. Pick a key for the new Collection. For example, Semantic Code Search's corresponding AI Feature key is `embeddings_code`.
-
 1. Add a new prompt template under `ai_gateway/prompts/definitions/<feature_key>/base/1.0.0.yml`.
    - Embeddings generation only requires a passthrough prompt, which means you do not need to add a prompt text to the YAML file.
    - See `ai_gateway/prompts/definitions/embeddings_code/base/1.0.0.yml` for reference.
@@ -47,7 +46,6 @@ Each Semantic Search Collection must have a corresponding Embeddings AI Feature.
    See `ai_gateway/api/v1/embeddings/code_embeddings.py` for reference.
 
 1. Follow the guide for [Adding a new embedding model to the GitLab offering](_index.md#adding-a-new-embedding-model-to-the-gitlab-offering).
-
 1. In the Model Selection [`unit_primitives.yml`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/model_selection/unit_primitives.yml), add a new feature setting entry under the key you selected. Set a new unit primitive for the feature.
 
 **On Rails**

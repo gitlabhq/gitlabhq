@@ -1,4 +1,4 @@
-import { sanitize, defaultConfig } from '~/lib/dompurify';
+import { sanitize, defaultConfig, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 
 // GDK
 const rootGon = {
@@ -251,6 +251,23 @@ describe('~/lib/dompurify', () => {
     it('sanitizes title containing --> on non-gfm elements', () => {
       const el = getEl(`<span title="value --> here">text</span>`);
       expect(el.getAttribute('title')).toBe(null);
+    });
+  });
+
+  describe('titleInLinkSafeHtmlConfig', () => {
+    it('forbids anchor tags while keeping their contents', () => {
+      expect(sanitize('<a href="/foo">bar</a>', titleInLinkSafeHtmlConfig)).toBe('bar');
+    });
+
+    it('still forbids the default tags', () => {
+      expect(sanitize('<form></form>', titleInLinkSafeHtmlConfig)).toBe('');
+      expect(sanitize('<style>p {width:50%;}</style>', titleInLinkSafeHtmlConfig)).toBe('');
+    });
+
+    it('still allows gl-emoji', () => {
+      expect(sanitize('<gl-emoji>💯</gl-emoji>', titleInLinkSafeHtmlConfig)).toBe(
+        '<gl-emoji>💯</gl-emoji>',
+      );
     });
   });
 

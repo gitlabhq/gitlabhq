@@ -78,6 +78,8 @@ RSpec.describe Achievements::UserAchievementPolicy, feature_category: :user_prof
 
   context 'when current_user and achievement owner are different' do
     it { is_expected.to be_disallowed(:update_owned_user_achievement) }
+    it { is_expected.to be_disallowed(:update_user_achievement_show_on_profile) }
+    it { is_expected.to be_disallowed(:update_user_achievement_award_message) }
     it { is_expected.to be_disallowed(:update_user_achievement) }
   end
 
@@ -85,17 +87,17 @@ RSpec.describe Achievements::UserAchievementPolicy, feature_category: :user_prof
     let(:current_user) { achievement_owner }
 
     it { is_expected.to be_allowed(:update_owned_user_achievement) }
+    it { is_expected.to be_allowed(:update_user_achievement_show_on_profile) }
+    it { is_expected.to be_disallowed(:update_user_achievement_award_message) }
     it { is_expected.to be_allowed(:update_user_achievement) }
   end
 
-  context 'when the achievements feature flag is disabled' do
-    let(:current_user) { achievement_owner }
+  context 'when current_user is a maintainer' do
+    let(:current_user) { maintainer }
 
-    before do
-      stub_feature_flags(achievements: false)
-    end
-
-    it { is_expected.to be_disallowed(:read_user_achievement) }
-    it { is_expected.to be_disallowed(:update_user_achievement) }
+    it { is_expected.to be_disallowed(:update_owned_user_achievement) }
+    it { is_expected.to be_disallowed(:update_user_achievement_show_on_profile) }
+    it { is_expected.to be_allowed(:update_user_achievement_award_message) }
+    it { is_expected.to be_allowed(:update_user_achievement) }
   end
 end

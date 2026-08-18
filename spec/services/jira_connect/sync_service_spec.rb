@@ -6,7 +6,7 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
   include AfterNextHelpers
 
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
     let_it_be(:merge_request_reviewer) { create(:merge_request_reviewer, merge_request: merge_request) }
 
@@ -79,7 +79,7 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
   end
 
   describe '#execute when the installation registered a Forge system token' do
-    let_it_be(:direct_project) { create(:project, :repository) }
+    let_it_be(:direct_project) { create(:project) }
     let_it_be(:forge_installation) do
       create(:jira_connect_installation,
         jira_api_base_url: 'https://api.atlassian.com/ex/jira/cloud-xyz',

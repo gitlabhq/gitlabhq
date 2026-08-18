@@ -19,8 +19,8 @@
       %table.table.gl-table
         %thead
           %tr
-            %th= s_('Observability|Group ID')
-            %th= s_('Observability|Group name')
+            %th= s_('Observability|Namespace ID')
+            %th= s_('Observability|Namespace name')
             %th= s_('Observability|Service name')
             %th= s_('Observability|User email')
             %th= s_('Observability|Created at')
@@ -29,7 +29,7 @@
           - @o11y_service_settings.each do |setting|
             %tr
               %td{ class: '!gl-align-middle' }= setting.group_id
-              %td{ class: '!gl-align-middle' }= setting.group.name
+              %td{ class: '!gl-align-middle' }= setting.namespace.name
               %td{ class: '!gl-align-middle' }= setting.o11y_service_name
               %td{ class: '!gl-align-middle' }= setting.o11y_service_user_email
               %td{ class: '!gl-align-middle' }= setting.created_at.strftime('%Y-%m-%d %H:%M')

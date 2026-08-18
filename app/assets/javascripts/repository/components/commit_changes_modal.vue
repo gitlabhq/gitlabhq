@@ -211,12 +211,10 @@ export default {
     },
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- called via $refs by parent components
     show() {
       this.$refs[this.modalId].show();
       this.lfsWarningDismissed = false;
-    },
-    cancel() {
-      this.$refs[this.modalId].hide();
     },
     async handleContinueLfsWarning() {
       this.lfsWarningDismissed = true;

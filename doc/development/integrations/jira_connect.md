@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: GitLab for Jira Cloud app development
 ---
 
-Developers have several options for how set up a development environment for the GitLab for Jira Cloud app:
+Developers have several options for how to set up a development environment for the GitLab for Jira Cloud app:
 
 1. A full environment [with Jira](#set-up-with-jira). Use this when you need to test interactions with Jira.
 1. A full environment [with a Jira Connect proxy](#setting-up-a-jira-connect-proxy). Use this when you need to test multiple GitLab instances connecting to Jira through a Jira Connect proxy, or when testing changes to the Jira Connect proxy itself.
@@ -70,7 +70,7 @@ To install the app in Jira:
    You can also select **Getting Started** to open the configuration page rendered from your GitLab instance.
 
    > [!note]
-   > any changes to the app descriptor requires you to uninstall then reinstall the app.
+   > Any changes to the app descriptor require you to uninstall then reinstall the app.
 
 1. If the **Installed and ready to go!** dialog opens asking you to **Get started**, do not get started yet
    and instead select **Close**.
@@ -209,7 +209,7 @@ If the _Installed and ready to go!_ dialog opens, select **Close** (don't select
 If you do not require Jira to test with, you can use the [Jira connect test tool](https://gitlab.com/gitlab-org/foundations/import-and-integrate/jira-connect-test-tool) and your local GDK.
 
 1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/foundations/import-and-integrate/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
-1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.).
+1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.)
 1. Open `config/gitlab.yml` and uncomment the `jira_connect` config.
 1. If running GDK on a domain other than `localhost`, you must add the domain to `additional_iframe_ancestors`. For example:
 

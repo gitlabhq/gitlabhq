@@ -1,7 +1,6 @@
 - breadcrumb_title s_('AccessTokens|Access tokens')
 - page_title _('Group access tokens')
 - type = _('group access token')
-- type_plural = _('group access tokens')
 
 = render ::Layouts::SettingsSectionComponent.new(page_title, options: { class: 'js-search-settings-section' }) do |c|
   - c.with_description do
@@ -48,7 +47,7 @@
             help_path: help_page_path('security/tokens/access_token_scopes.md')
 
       - c.with_body do
-        #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }
+        #js-access-token-table-app{ data: { access_token_type: type, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }
 
     .gl-mt-5
       = render ::Layouts::CrudComponent.new(_('Inactive group access tokens'),

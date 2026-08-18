@@ -49,7 +49,11 @@ variables:
 This indicates to all GitLab analyzers that they are to output all messages. For more details,
 see [logging level](#logging-level).
 
-<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, ensure to update the corresponding URL in the mentioned repository.
+<!--
+The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred
+in the [`/gitlab-org/security-products/analyzers/command`](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19)
+repository. If this section/subsection changes, ensure to update the corresponding URL in the mentioned
+repository.
 -->
 
 ## Secure job failing with exit code 1
@@ -207,8 +211,7 @@ success or failure of the analyzer itself. Analyzer results are displayed in the
 
 ## Error: job `is used for configuration only, and its script should not be executed`
 
-[Changes made in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41260)
-to the `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci.yml`
+The `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci.yml`
 templates mean that if you enable the `sast` or `dependency_scanning` jobs by setting the `rules` attribute,
 they fail with the error `(job) is used for configuration only, and its script should not be executed`.
 

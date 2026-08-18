@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { adminProjectsPath } from '~/lib/utils/path_helpers/instance_admin';
 import AdminProjectsApp from '~/admin/projects/index/components/app.vue';
 import routes from './routes';
 
@@ -27,21 +29,18 @@ export const initAdminProjects = () => {
     dataset: { appData },
   } = el;
 
-  const { programmingLanguages, basePath } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { programmingLanguages } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
-    router: createRouter(basePath),
+    router: createRouter(adminProjectsPath()),
     apolloProvider,
     name: 'AdminProjectsRoot',
-    render(createElement) {
-      return createElement(AdminProjectsApp, {
-        props: { programmingLanguages },
-      });
-    },
+    component: AdminProjectsApp,
+    props: { programmingLanguages },
   });
 };

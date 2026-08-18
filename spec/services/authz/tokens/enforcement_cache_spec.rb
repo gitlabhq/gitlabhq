@@ -52,7 +52,9 @@ RSpec.describe Authz::Tokens::EnforcementCache, :request_store, feature_category
 
       groups = create_list(:group, 3)
 
-      expect { cache.any_enforced?(groups.map(&:id)) }.to issue_same_number_of_queries_as(control)
+      expect do
+        cache.any_enforced?(groups.map(&:id))
+      end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
     end
   end
 end

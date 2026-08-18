@@ -47,5 +47,5 @@ cert-manager:
   contact you about expiring certificates and issues related to your account.
 - Can be customized in `applications/cert-manager/helmfile.yaml` by passing custom
   `values` to the `certmanager` release. Refer to the
-  [chart](https://github.com/jetstack/cert-manager) for the available
+  [chart](https://github.com/cert-manager/cert-manager) for the available
   configuration options.

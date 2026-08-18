@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Setting reviewers of a merge request', :assume_throttled, feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:reviewer) { create(:user) }
   let_it_be(:reviewer2) { create(:user) }

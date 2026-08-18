@@ -4,6 +4,7 @@ description: Grants the ability to update GitLab subscriptions
 boundaries:
   - group
   - user
+  - instance
 available_for:
   - granular_access_token
 permissions:

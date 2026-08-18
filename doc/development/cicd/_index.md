@@ -73,10 +73,10 @@ This section describes the dashboards and metrics that can be used by engineers 
   You can search for the team that owns the feature category you are interested in.
 - The [Pipeline Execution error budget dashboard](https://dashboards.gitlab.net/d/stage-groups-pipeline_execution) contains other useful metrics about pipeline
   creation and job execution.
-- [Production logs](https://log.gprd.gitlab.net/app/discover) also offer many useful information that can be searched and aggregated in Kibana.
+- [Production logs](https://log.gprd.gitlab.net/app/discover) also offer a lot of useful information that can be searched and aggregated in Kibana.
 - The [Pipeline creation dashboard](https://log.gprd.gitlab.net/app/r/s/r5Owf) provides useful breakdowns
   of the steps involved in the pipeline creation.
-  Note that this dashboard only contains data of "slow pipelines", those that take longer to be created or have many jobs in it.
+  Note that this dashboard only contains data of "slow pipelines", those that take longer to be created or have many jobs in them.
   It's similar to a SQL "slow query log".
 - The [CI partitioning dashboard](https://dashboards.gitlab.net/d/ci-partitioning-main/ci-partitioning3a-ci-data-partitions-tracking) contains information about the current partition number, partition sizes, vacuuming, and other database metrics.
 
@@ -104,7 +104,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt).
 - When [Auto DevOps](../../topics/autodevops/_index.md) is enabled.
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests).
-- When an upstream pipeline contains a [bridge job](../../ci/yaml/_index.md#trigger) which triggers a downstream pipeline.
+- When an upstream pipeline contains a [trigger job](#trigger-jobs) which triggers a downstream pipeline.
 
 Triggering any of these events invokes the [`CreatePipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/create_pipeline_service.rb)
 which takes as input event data and the user triggering it, then attempts to create a pipeline.
@@ -152,7 +152,7 @@ specific failed jobs or the entire pipeline. Anything that
 causes a job to change status triggers `ProcessPipelineService`, as it's responsible for
 tracking the status of the entire pipeline.
 
-A special type of job is the [bridge job](../../ci/yaml/_index.md#trigger) which is executed server-side
+A special type of job is the [trigger job](#trigger-jobs) which is executed server-side
 when transitioning to the `pending` state. This job is responsible for creating a downstream pipeline, such as
 a multi-project or child pipeline. The workflow loop starts again
 from the `CreatePipelineService` every time a downstream pipeline is triggered.
@@ -170,7 +170,7 @@ This service is responsible for moving all the pipeline's jobs to a completed st
 - `pending` status if their requirements are met and they're ready to run and can be picked [up by a runner](#job-scheduling)
 - `created` status if they need to wait, with `processed` marked as `true`
 
-After a job has been executed it can complete successfully or fail. Each status transition for a job within a pipeline triggers this service again, which looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService` updates the status of jobs, stages and the overall pipeline. If any jobs require further processing, the service will reschedule itself.
+After a job has been executed it can complete successfully or fail. Each status transition for a job within a pipeline triggers this service again, which looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService` updates the status of jobs, stages, and the overall pipeline. If any jobs require further processing, the service will reschedule itself.
 
 The `processed` flag acts as a "needs processing" indicator that gets [reset to `false` before each status transition](https://gitlab.com/gitlab-org/gitlab/-/blob/12da0553647706202c2113e84d92dff0ef12d668/app/models/commit_status.rb#L131). This ensures that whenever a job's status changes, those changes are propagated to the stage and pipeline levels, and later builds and next builds in the DAG can be marked as `pending`. The job won't be marked as `processed` until the state is also propagated to the pipeline and stage.
 
@@ -263,7 +263,7 @@ There are two ways of marking builds as "stuck" and drop them.
 
 Compute minutes quota mechanism is handled early when the job is created because it is a constant decision for most of the time.
 Once a project exceeds the limit, every next job matching it will be applicable for it until next month starts.
-Of course, the project owner can buy additional minutes, but that is a manual action that the project need to take.
+Of course, the project owner can buy additional minutes, but that is a manual action that the project needs to take.
 
 The same mechanism will be used for `allowed_plans` [soon](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761).
 If the project is not on the required plan and a job is targeting such runner,
@@ -280,7 +280,7 @@ Depending on the runner's configuration and capacity and the size of the queue i
 There are other possible reasons:
 
 - You are handling runner maintenance, which is temporarily not available.
-- You are updating configuration and, by mistake, you've use the wrong tagging or protected flag.
+- You are updating configuration and, by mistake, you've used the wrong tagging or protected flag.
 - For GitLab.com instance runners, you've assigned a wrong cost factor or `allowed_plans` configuration.
 
 These issues are typically temporary and should be detected and fixed quickly.
@@ -362,26 +362,36 @@ sequenceDiagram
 
 ## The definition of "Job" in GitLab CI/CD
 
-"Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery and Deployment.
+"Job" in GitLab CI context refers to a task to drive Continuous Integration, Delivery, and Deployment.
 Typically, a pipeline contains multiple stages, and a stage contains multiple jobs.
 
 In Active Record modeling, Job is defined as `CommitStatus` class.
 On top of that, we have the following types of jobs:
 
 - `Ci::Build` ... The job to be executed by runners.
-- `Ci::Bridge` ... The job to trigger a downstream pipeline.
+- `Ci::Bridge` ... The job to trigger a downstream pipeline. (See [trigger jobs](#trigger-jobs))
 - `GenericCommitStatus` ... The job to be executed in an external CI/CD system, for example Jenkins.
 
-When you use the "Job" terminology in codebase, readers would
-assume that the class/object is any type of above.
-If you specifically refer `Ci::Build` class, you should not name the object/class
-as "job" as this could cause some confusions. In documentation,
+When you use the "Job" terminology in the codebase, readers would
+assume that the class/object is any of the above types.
+If you specifically refer to the `Ci::Build` class, you should not name the object/class
+as "job" as this could cause some confusion. In documentation,
 we should use "Job" in general, instead of "Build".
 
 We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
 
+### Trigger jobs
+
+[Trigger jobs](../../ci/yaml/_index.md#trigger), known internally as bridge jobs, differ from regular jobs. Trigger jobs:
+
+- Do not run on a runner and do not execute a `script`.
+- Cause GitLab to create and orchestrate a downstream pipeline.
+- Start in the `pending` state, then transition to `passed` or `failed` based on
+  whether GitLab creates the downstream pipeline (or, with [`trigger:strategy`](../../ci/yaml/_index.md#triggerstrategy),
+  based on the downstream pipeline's status).
+
 ## Compute Minutes and Quota
 
-See [compute minutes development documentation](compute_minutes.md)
+See [compute minutes development documentation](compute_minutes.md).

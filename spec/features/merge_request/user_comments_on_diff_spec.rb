@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
   include RepoHelpers
+  include RichTextEditorHelpers
 
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
@@ -136,7 +137,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
         page.within('.notes .discussion') do
           find_by_testid('discussion-reply-tab').click
-          click_button "Switch to rich text editing"
+          switch_to_content_editor
           click_button "Insert suggestion"
         end
 

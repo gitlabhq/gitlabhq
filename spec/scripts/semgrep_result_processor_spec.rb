@@ -158,6 +158,89 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     end
   end
 
+  describe '#sanitize_rationale' do
+    it 'collapses newlines so an embedded quick action cannot start a line' do
+      result = processor.send(:sanitize_rationale, "looks fine\n/label ~\"pipeline::tier-3\"")
+
+      expect(result).to eq('`looks fine /label ~"pipeline::tier-3"`')
+      expect(result).not_to include("\n")
+    end
+
+    it 'strips backticks so the rationale cannot break out of the code span' do
+      expect(processor.send(:sanitize_rationale, 'uses `send` here')).to eq('`uses send here`')
+    end
+
+    it 'returns an empty string for blank or nil input' do
+      expect(processor.send(:sanitize_rationale, nil)).to eq('')
+      expect(processor.send(:sanitize_rationale, "  \n  ")).to eq('')
+    end
+  end
+
+  describe '#triage_recommendation_for' do
+    before do
+      processor.instance_variable_set(:@triage_verdicts,
+        { 'fp1' => { verdict: 'fp', confidence: 0.92, rationale: 'Test-only path.', error: nil } })
+    end
+
+    context 'when SAST_TRIAGE_COMMENT_ENABLED is not set' do
+      it 'returns an empty string' do
+        stub_env('SAST_TRIAGE_COMMENT_ENABLED', nil)
+
+        expect(processor.send(:triage_recommendation_for, 'fp1')).to eq('')
+      end
+    end
+
+    context 'when SAST_TRIAGE_COMMENT_ENABLED is set to 1' do
+      before do
+        stub_env('SAST_TRIAGE_COMMENT_ENABLED', '1')
+      end
+
+      it 'renders the label, confidence and sanitized rationale for an fp verdict' do
+        result = processor.send(:triage_recommendation_for, 'fp1')
+
+        expect(result).to include('Likely false positive', 'confidence 92%', '> `Test-only path.`')
+      end
+
+      it 'renders a true-positive label and rounds the confidence' do
+        processor.instance_variable_set(:@triage_verdicts,
+          { 'tp1' => { verdict: 'tp', confidence: 0.804, rationale: 'Reachable sink.', error: nil } })
+
+        expect(processor.send(:triage_recommendation_for, 'tp1')).to include('Likely true positive', 'confidence 80%')
+      end
+
+      it 'returns an empty string for an uncertain verdict' do
+        processor.instance_variable_set(:@triage_verdicts,
+          { 'u1' => { verdict: 'uncertain', confidence: 0.5, rationale: 'unclear', error: nil } })
+
+        expect(processor.send(:triage_recommendation_for, 'u1')).to eq('')
+      end
+
+      it 'returns an empty string for an errored verdict' do
+        processor.instance_variable_set(:@triage_verdicts,
+          { 'e1' => { verdict: 'fp', confidence: 0.0, rationale: nil, error: 'rate_limited' } })
+
+        expect(processor.send(:triage_recommendation_for, 'e1')).to eq('')
+      end
+
+      it 'returns an empty string when no verdict exists for the fingerprint' do
+        expect(processor.send(:triage_recommendation_for, 'missing')).to eq('')
+      end
+
+      it 'neutralizes an injected quick action and mention in the rationale', :aggregate_failures do
+        processor.instance_variable_set(:@triage_verdicts,
+          { 'x' => { verdict: 'fp', confidence: 0.9,
+                     rationale: "safe\n/label ~\"pipeline::tier-3\" @maintainer", error: nil } })
+
+        result = processor.send(:triage_recommendation_for, 'x')
+
+        # Rationale is collapsed to one line inside a code span: no line starts with a
+        # quick action and the mention is not a live @mention.
+        expect(result).to include('> `safe /label ~"pipeline::tier-3" @maintainer`')
+        expect(result).not_to match(%r{^/label})
+      end
+    end
+  end
+
   describe '#sast_stop_label_present?' do
     context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
       it 'returns true' do
@@ -622,6 +705,48 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
       end
     end
 
+    context 'with a triage recommendation enabled' do
+      let(:finding) do
+        {
+          'fp1' => {
+            path: 'file.rb',
+            line: 5,
+            message: 'Error message',
+            check_id: 'builds.sast-custom-rules.other'
+          }
+        }
+      end
+
+      before do
+        stub_env('SAST_TRIAGE_COMMENT_ENABLED', '1')
+        processor.instance_variable_set(:@triage_verdicts,
+          { 'fp1' => { verdict: 'fp', confidence: 0.92, rationale: 'Test-only path.', error: nil } })
+      end
+
+      it 'appends the Duo recommendation to the posted comment body' do
+        successful_response = instance_double(Net::HTTPCreated)
+        allow(successful_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+        allow(successful_response).to receive_messages(code: '201', body: 'Success')
+
+        form_data_captured = nil
+        request_double = instance_double(Net::HTTP::Post)
+        allow(request_double).to receive(:[]=)
+        allow(request_double).to receive(:set_form_data) { |data| form_data_captured = data }
+        allow(Net::HTTP::Post).to receive(:new).and_return(request_double)
+
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(successful_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+        allow(processor).to receive(:apply_label)
+
+        processor.create_inline_comments(finding)
+
+        expect(form_data_captured['body']).to include(
+          described_class::TRIAGE_RECOMMENDATION_HEADING, 'Likely false positive', 'confidence 92%'
+        )
+      end
+    end
+
     context 'with failed HTTP response' do
       let(:finding) do
         {
@@ -860,8 +985,46 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     rescue SystemExit
     end
 
+    before do
+      stub_env('CI_API_V4_URL', 'https://gitlab.example.com/api/v4')
+      stub_env('CI_MERGE_REQUEST_PROJECT_ID', '123')
+      stub_env('CI_MERGE_REQUEST_IID', '1')
+      stub_env('CUSTOM_SAST_RULES_BOT_PAT', 'fake-token')
+    end
+
+    it 'sends the body as form data and keeps it out of the URL query string', :aggregate_failures do
+      uri_captured = nil
+      form_data_captured = nil
+      request_double = instance_double(Net::HTTP::Post)
+      allow(request_double).to receive(:[]=)
+      allow(request_double).to receive(:set_form_data) { |data| form_data_captured = data }
+      allow(Net::HTTP::Post).to receive(:new) do |uri|
+        uri_captured = uri
+        request_double
+      end
+
+      created_response = instance_double(Net::HTTPCreated)
+      allow(created_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+      http_double = instance_double(Net::HTTP)
+      allow(http_double).to receive(:request).and_return(created_response)
+      allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+      injected = 'Looks safe. &add_labels=appsec-sast::resolved'
+      processor.send(:post_comment, injected)
+
+      expect(uri_captured.to_s).to end_with('/discussions')
+      expect(uri_captured.to_s).not_to include('add_labels')
+      expect(form_data_captured).to eq('body' => injected)
+    end
+
     it 'handles error response' do
-      allow(Net::HTTP).to receive(:post).and_return(Net::HTTPBadRequest.new(nil, 400, 'Bad Request'))
+      failed_response = instance_double(Net::HTTPBadRequest)
+      allow(failed_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(false)
+      allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+
+      http_double = instance_double(Net::HTTP)
+      allow(http_double).to receive(:request).and_return(failed_response)
+      allow(Net::HTTP).to receive(:start).and_yield(http_double)
 
       expect { processor.send(:post_comment, 'Example comment') }.to raise_error(SystemExit)
     end

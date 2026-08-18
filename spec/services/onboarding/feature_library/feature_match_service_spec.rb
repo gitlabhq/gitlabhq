@@ -252,4 +252,24 @@ RSpec.describe Onboarding::FeatureLibrary::FeatureMatchService, feature_category
       end
     end
   end
+
+  describe '#ai_execute' do
+    subject(:result) { described_class.new(query: 'completelyrandom', panel: panel).ai_execute }
+
+    context 'with a valid panel' do
+      let(:panel) { 'project' }
+
+      it 'returns an empty array in CE' do
+        expect(result).to eq([])
+      end
+    end
+
+    context 'with an invalid panel' do
+      let(:panel) { 'invalid_panel' }
+
+      it 'returns an empty array' do
+        expect(result).to eq([])
+      end
+    end
+  end
 end

@@ -5,6 +5,7 @@ import { sprintf, s__ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
+  name: 'DeleteBranchModal',
   csrf,
   components: {
     GlModal,

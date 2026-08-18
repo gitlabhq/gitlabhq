@@ -125,7 +125,7 @@ using the same process as for
 picking a duration that is higher than the SLO for the service.
 
 We shouldn't set the longest durations on endpoints in the merge
-requests that introduces them, because we don't yet have data to support
+requests that introduce them, because we don't yet have data to support
 the decision.
 
 ## Increasing urgency (setting a lower target duration)
@@ -254,7 +254,7 @@ This SLI is used for service level monitoring. It feeds into the
 [error budget for stage groups](../stage_group_observability/_index.md#error-budget).
 
 For more information, read the epic for
-[defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525)).
+[defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/525)).
 The endpoints for the SLI feed into a group's error budget based on the
 [feature category declared on it](../feature_categorization/_index.md).
 

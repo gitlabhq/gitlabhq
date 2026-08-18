@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import csrf from '~/lib/utils/csrf';
 import { pinia } from '~/pinia/instance';
 import FeatureFlagsComponent from './components/feature_flags.vue';
@@ -32,7 +32,7 @@ export default () => {
     rotateInstanceIdPath,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'FeatureFlagsComponentRoot',
     pinia,
@@ -50,8 +50,6 @@ export default () => {
       featureFlagsLimit,
       userListPath,
     },
-    render(createElement) {
-      return createElement(FeatureFlagsComponent);
-    },
+    component: FeatureFlagsComponent,
   });
 };

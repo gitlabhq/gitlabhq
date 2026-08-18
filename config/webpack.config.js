@@ -52,6 +52,7 @@ const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
+const Vue3MigrationManifestPlugin = require('./plugins/vue3_migration_manifest_plugin');
 const WebpackVue3InfectionPlugin = require('./plugins/webpack_vue3_infection_plugin');
 const { supportedBrowsersHash } = require('./helpers/supported_browsers');
 const { aliases } = require('./helpers/aliases');
@@ -123,6 +124,12 @@ Object.assign(alias, {
   chevrotain: path.join(ROOT_PATH, 'node_modules/chevrotain/lib/src/api.js'),
   'chevrotain-allstar': path.join(ROOT_PATH, 'node_modules/chevrotain-allstar/lib/index.js'),
   langium: path.join(ROOT_PATH, 'node_modules/langium/lib/index.js'),
+  // @json-render/vue imports `@json-render/core/store-utils`, an "exports"-only
+  // subpath of @json-render/core.
+  '@json-render/core/store-utils': path.join(
+    ROOT_PATH,
+    'node_modules/@json-render/core/dist/store-utils.mjs',
+  ),
 });
 
 let dll;
@@ -338,6 +345,14 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        // @json-render/core and @json-render/vue (peer dependencies of
+        // @gitlab/duo-ui's gen-UI adapter) ship untranspiled ES2020 (optional
+        // chaining, nullish coalescing) that webpack 4 can't parse.
+        test: /@json-render\/.*\.m?js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
         test: /@graphiql\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
@@ -387,6 +402,14 @@ module.exports = {
           plugins: ['@babel/plugin-transform-class-properties'],
           ...defaultJsOptions,
         },
+      },
+      {
+        // zod (a @gitlab/duo-ui dependency) ships ES2020 syntax (`export * as`, `??`)
+        // in both its ESM and CJS builds, which webpack 4's parser can't read.
+        test: /\.[mc]?js$/,
+        include: /node_modules\/zod\//,
+        loader: 'babel-loader',
+        options: defaultJsOptions,
       },
       {
         test: /\.(js|cjs)$/,
@@ -628,6 +651,8 @@ module.exports = {
     }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
+
+    new Vue3MigrationManifestPlugin({ filename: 'vue3_migration.json' }),
 
     // fix legacy jQuery plugins which depend on globals
     new webpack.ProvidePlugin({

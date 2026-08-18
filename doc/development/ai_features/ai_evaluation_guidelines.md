@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: AI Evaluation Guidelines
 ---
 
-Unlike traditional software systems that behave more-or-less predictably, minor input changes can cause AI-powered systems to produce significantly different outputs. This unpredictability stems from the non-deterministic nature of AI-generated responses. Traditional software testing methods are not designed to handle such variability, which is why AI evaluation has become essential. AI evaluation is a data-driven, quantitative process that analyzes AI outputs to assess system performance, quality, and reliability.
+Unlike traditional software systems that behave more-or-less predictably, AI-powered systems can produce significantly different outputs from minor input changes. This unpredictability stems from the non-deterministic nature of AI-generated responses. Traditional software testing methods are not designed to handle such variability, which is why AI evaluation has become essential. AI evaluation is a data-driven, quantitative process that analyzes AI outputs to assess system performance, quality, and reliability.
 
 The [Centralized Evaluation Framework (CEF)](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) provides a streamlined, unified approach to evaluating AI features at GitLab.
 It is essential to our strategy for ensuring the quality of our AI-powered features.
@@ -121,5 +121,5 @@ Similar to the [AI feature development process](ai_feature_development_playbook.
   walkthroughs.
 - [GitLab Duo Chat Documentation](duo_chat.md):
   Comprehensive guide on setting up and using LangSmith for chat evaluations.
-- [Prompt and AI Feature Evaluation Setup and Workflow](https://gitlab.com/groups/gitlab-org/-/epics/13952):
+- [Prompt and AI Feature Evaluation Setup and Workflow](https://gitlab.com/groups/gitlab-org/-/work_items/13952):
   Details on the overall workflow and setup for evaluations.

@@ -16,8 +16,7 @@ module QA
         project.visit!
       end
 
-      it 'creates project badge',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/350065' do
+      it 'creates project badge' do
         Resource::ProjectBadge.fabricate! do |badge|
           badge.name = badge_name
         end

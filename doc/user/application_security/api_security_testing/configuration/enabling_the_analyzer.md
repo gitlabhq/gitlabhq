@@ -148,16 +148,10 @@ This example is a minimal configuration for API security testing. From here you 
 
 ## GraphQL Schema
 
-{{< history >}}
-
-- Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
-
-{{< /history >}}
-
 GraphQL is a query language for your API and an alternative to REST APIs.
 API security testing supports testing GraphQL endpoints multiple ways:
 
-- Test using the GraphQL Schema. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+- Test using the GraphQL Schema.
 - Test using a recording (HAR) of GraphQL queries.
 - Test using a Postman Collection containing GraphQL queries.
 
@@ -320,14 +314,6 @@ This is a minimal configuration for API security testing. From here you can:
 
 ### Postman variables
 
-{{< history >}}
-
-- Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-- Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-- Support for Postman variable scopes: Global and Environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-
-{{< /history >}}
-
 #### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
@@ -418,7 +404,7 @@ This example defines two variables `base_url` and `token` in the API security te
 
 #### Using scopes with API security testing
 
-The scopes: _global_, _environment_, _collection_, and _GitLab API security testing_ are supported in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only the _collection_, and _GitLab API security testing_ scopes.
+The scopes: _global_, _environment_, _collection_, and _GitLab API security testing_ are supported.
 
 The following table provides a quick reference for mapping scope files/URLs to API security testing configuration variables:
 
@@ -433,7 +419,7 @@ The following table provides a quick reference for mapping scope files/URLs to A
 
 The Postman Collection document automatically includes any _collection_ scoped variables. The Postman Collection is provided with the configuration variable `APISEC_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections).
 
-Variables from other scopes are provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only one single file. The order of the files provided is not important as the files provide the needed scope information.
+Variables from other scopes are provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list. The order of the files provided is not important as the files provide the needed scope information.
 
 The configuration variable `APISEC_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
@@ -799,7 +785,7 @@ Follow these steps to view details of a vulnerability:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the vulnerability.                                         |
-   | Unmodified Response | Response from an unmodified request. A typical working response looks like an Unmodified Response.|
+   | Unmodified Response | Response from an unmodified request. A typical working response looks like an Unmodified Response. |
    | Actual Response     | Response received from test request.                                                    |
    | Evidence            | How GitLab determined a vulnerability occurred.                                         |
    | Identifiers         | The API security testing check used to find this vulnerability.                         |
@@ -808,7 +794,7 @@ Follow these steps to view details of a vulnerability:
 
 ### Security Dashboard
 
-The Security Dashboard is a good place to get an overview of all the security vulnerabilities in your groups, projects and
+The Security Dashboard is a good place to get an overview of all the security vulnerabilities in your groups, projects, and
 pipelines. For more information, see the [Security Dashboard documentation](../../security_dashboard/_index.md).
 
 ### Interacting with the vulnerabilities

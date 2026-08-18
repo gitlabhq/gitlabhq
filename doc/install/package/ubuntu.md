@@ -20,7 +20,6 @@ title: Install the Linux package on Ubuntu
 ## Prerequisites
 
 - OS requirements:
-  - Ubuntu 20.04
   - Ubuntu 22.04
   - Ubuntu 24.04
 - See the [installation requirements](../requirements.md) to learn about the
@@ -190,7 +189,7 @@ to let us know when to communicate with you. We have an explicit email opt-in
 policy so you have complete control over what and how often we send you emails.
 
 Twice a month, we send out the GitLab news you need to know, including new
-features, integrations, documentation, and behind the scenes stories from our development teams.
+features, integrations, documentation, and behind-the-scenes stories from our development teams.
 For critical security updates related to bugs and system performance, sign up
 for our dedicated security newsletter.
 

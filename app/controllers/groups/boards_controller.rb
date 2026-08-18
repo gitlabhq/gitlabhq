@@ -8,10 +8,9 @@ class Groups::BoardsController < Groups::ApplicationController
   before_action do
     push_force_frontend_feature_flag(:work_item_tasks_on_boards,
       !!group&.work_item_tasks_on_boards_feature_flag_enabled?)
-    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 
-  feature_category :team_planning
+  feature_category :planning_views
   urgency :low
 
   private

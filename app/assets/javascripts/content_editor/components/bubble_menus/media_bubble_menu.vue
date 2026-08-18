@@ -190,7 +190,7 @@ export default {
 <template>
   <editor-state-observer
     :debounce="0"
-    @selectionUpdate="updateMediaInfoToState"
+    @selection-update="updateMediaInfoToState"
     @transaction="onTransaction"
   >
     <bubble-menu

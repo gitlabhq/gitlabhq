@@ -15,7 +15,7 @@ How to set up the local development environment to run [GitLab Duo Agent Platfor
 
 ## Prerequisites
 
-- [GitLab Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
+- [GitLab Ultimate license](https://handbook.gitlab.com/handbook/engineering/workflow/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
 - [Vertex access](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai#set-up-google-cloud-platform): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
   - If you do not have Vertex access for any reason, you should unset `DUO_WORKFLOW__VERTEX_PROJECT_ID` in the GitLab Duo Agent Platform Service and set `ANTHROPIC_API_KEY` to a regular Anthropic API key
 - Various settings and feature flags, which are enabled for you by the [GDK setup script](#development-setup-for-backend-components)
@@ -139,4 +139,4 @@ To evaluate your local setup, please refer to [GitLab Duo Agent Platform Tests](
 
 ### Comparing results
 
-Once you finish a evaluation and have a experiment ID from LangSmith, compare results using [this notebook](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks/-/blob/main/notebooks/compare-swe-bench-evals.ipynb?ref_type=heads) from the [GitLab Duo Agent Platform Notebooks](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks) repo.
+Once you finish an evaluation and have an experiment ID from LangSmith, compare results using [this notebook](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks/-/blob/main/notebooks/compare-swe-bench-evals.ipynb?ref_type=heads) from the [GitLab Duo Agent Platform Notebooks](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks) repo.

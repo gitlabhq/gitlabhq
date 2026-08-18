@@ -29,6 +29,19 @@ RSpec.describe RapidDiffs::DiffsStatsEntity, feature_category: :code_review_work
         })
     end
 
+    context 'with collapsed files when stats are disabled' do
+      let_it_be(:project) { create(:project, :repository) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- real diffs needed
+      let(:diffs_resource) { project.commit('913c66a37b4a45b9769037c55c2d238bd0942d2e').diffs(include_stats: false) }
+
+      it 'reports line counts for collapsed files from the CommitDiff stats' do
+        collapsed = diffs_resource.raw_diff_files.select { |file| file.collapsed? || file.too_large? }
+
+        expect(collapsed).to be_present
+        expect(collapsed.map(&:added_lines)).to all(be_positive)
+        expect(diffs_stats[:diffs_stats]).to include(added_lines: 3898, removed_lines: 0)
+      end
+    end
+
     context 'when the diff collection overflows hard limits' do
       before do
         allow(diffs_resource).to receive(:real_size).and_return('20+')

@@ -28,6 +28,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
       expect(data).to include(
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         new_runner_path: '/admin/runners/new',
+        runner_settings_path: '/admin/application_settings/ci_cd#js-runner-settings',
         allow_registration_token: 'true',
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: 7200,

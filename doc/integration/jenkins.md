@@ -19,7 +19,7 @@ title: Jenkins
 {{< /history >}}
 
 [Jenkins](https://www.jenkins.io/) is an open source automation server that supports
-building, deploying and automating projects.
+building, deploying, and automating projects.
 
 You should use a Jenkins integration with GitLab when:
 
@@ -107,24 +107,24 @@ Set up the Jenkins project you intend to run your build on.
 
      Example Jenkins Pipeline script:
 
-      ```groovy
-      pipeline {
-         agent any
+     ```groovy
+     pipeline {
+        agent any
 
-         stages {
-            stage('gitlab') {
-               steps {
-                  echo 'Notify GitLab'
-                  updateGitlabCommitStatus name: 'build', state: 'pending'
-                  updateGitlabCommitStatus name: 'build', state: 'success'
-               }
-            }
-         }
-      }
-      ```
+        stages {
+           stage('gitlab') {
+              steps {
+                 echo 'Notify GitLab'
+                 updateGitlabCommitStatus name: 'build', state: 'pending'
+                 updateGitlabCommitStatus name: 'build', state: 'success'
+              }
+           }
+        }
+     }
+     ```
 
-      For more Jenkins Pipeline script examples, see the
-      [Jenkins GitLab plugin repository on GitHub](https://github.com/jenkinsci/gitlab-plugin#scripted-pipeline-jobs).
+     For more Jenkins Pipeline script examples, see the
+     [Jenkins GitLab plugin repository on GitHub](https://github.com/jenkinsci/gitlab-plugin#scripted-pipeline-jobs).
 
 ## Configure the GitLab project
 

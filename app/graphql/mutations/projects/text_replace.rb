@@ -7,6 +7,9 @@ module Mutations
 
       include FindsProject
 
+      authorize_granular_token permissions: :rewrite_repository_history,
+        boundary_argument: :project_path, boundary_type: :project
+
       UNSUPPORTED_REPLACEMENT_PREFIX = %r{(?:regex|glob):}
       SUPPORTED_REPLACEMENT_PREFIX = %r{literal:}
       EMPTY_REPLACEMENTS_ARG_ERROR = <<~ERROR

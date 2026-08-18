@@ -81,7 +81,8 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
    end
    ```
 
-   For more information, see the [Fortanix user's Guide: Plugin Library](https://support.fortanix.com/hc/en-us/articles/360041950371-User-s-Guide-Plugin-Library).
+   For more information, see [Plugin Library](https://support.fortanix.com/docs/dsm-plugin-library)
+   in the Fortanix documentation.
 
    - Set the import option to `yes` if you want to store the secret in Fortanix DSM:
 

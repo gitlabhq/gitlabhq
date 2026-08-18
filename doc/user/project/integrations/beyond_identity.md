@@ -13,12 +13,6 @@ title: Beyond Identity
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431433) in GitLab 16.9.
-
-{{< /history >}}
-
 In GitLab, users can sign their commits after [adding a GPG key to their profile](../repository/signed_commits/gpg.md).
 The GitLab integration with [Beyond Identity](https://www.beyondidentity.com/) extends this feature.
 
@@ -64,12 +58,6 @@ If the signature cannot be verified, the push is rejected.
 Web commits are accepted without a signature.
 
 ## Skip push check for service accounts
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454369) in GitLab 16.11.
-
-{{< /history >}}
 
 Prerequisites:
 

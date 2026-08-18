@@ -8,6 +8,7 @@ import {
   GlFormInput,
   GlTooltipDirective,
   GlDisclosureDropdownItem,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { DELETE_AGENT_BUTTON, DELETE_AGENT_MODAL_ID } from '../constants';
@@ -30,6 +31,7 @@ export default {
     GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['fullPath', 'canAdminCluster', 'isGroup'],
   props: {
     agent: {
@@ -163,7 +165,7 @@ export default {
         :aria-disabled="deleteButtonDisabled"
         category="tertiary"
         variant="danger"
-        class="!gl-justify-start !gl-px-3 focus:!gl-shadow-inner-2-blue-400"
+        class="!gl-justify-start !gl-px-3 focus-visible:!gl-shadow-inner-2-blue-400"
         block
       >
         {{ $options.i18n.deleteButton }}

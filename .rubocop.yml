@@ -51,6 +51,7 @@ AllCops:
     - 'builds/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
+    - 'cells-mailroom/**/*'
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     # projects_controller.rb is used for testing LLM response and is very sensitive to whitespaces.
@@ -763,6 +764,7 @@ RSpec/DuplicateSpecLocation:
 Gitlab/BoundedContexts:
   Enabled: true
   Exclude:
+    - 'lib/api.rb'
     - '**/lib/api/**/*'
     - 'ee/lib/ee/api/**/*'
     - '**/app/assets/**/*'
@@ -1751,6 +1753,9 @@ Database/AvoidScopeTo:
     - 'lib/gitlab/background_migration/**/*.rb'
 
 Database/NoOnDemandCellLocalBackgroundOperation:
+  Enabled: true
+
+Database/AvoidIntRangePartitioning:
   Enabled: true
 
 RSpec/RedundantMetatagType:

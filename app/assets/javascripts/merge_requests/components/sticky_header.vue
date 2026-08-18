@@ -11,7 +11,7 @@ import { mapState } from 'pinia';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { sanitize } from '~/lib/dompurify';
+import { sanitize, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -166,9 +166,7 @@ export default {
       window.mrTabs?.clickTab(e);
     },
   },
-  safeHtmlConfig: {
-    ADD_TAGS: ['gl-emoji'],
-  },
+  titleInLinkSafeHtmlConfig,
 };
 </script>
 
@@ -196,7 +194,7 @@ export default {
           />
           <imported-badge v-if="isImported" />
           <a
-            v-safe-html:[$options.safeHtmlConfig]="titleHtml"
+            v-safe-html:[$options.titleInLinkSafeHtmlConfig]="titleHtml"
             href="#top"
             class="gl-my-0 gl-ml-1 gl-mr-2 gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default"
           ></a>

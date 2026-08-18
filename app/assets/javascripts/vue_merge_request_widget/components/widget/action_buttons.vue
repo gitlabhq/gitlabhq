@@ -6,6 +6,7 @@ import {
   GlLoadingIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { BV_HIDE_TOOLTIP, BV_SHOW_TOOLTIP } from '~/lib/utils/constants';
 
 export default {
   name: 'ActionButtons',
@@ -24,7 +25,7 @@ export default {
       required: true,
     },
   },
-  emits: ['clickedAction'],
+  emits: ['clicked-action'],
   data() {
     return {
       timeout: null,
@@ -52,7 +53,7 @@ export default {
   },
   methods: {
     onClickAction(action, e = null) {
-      this.$emit('clickedAction', action);
+      this.$emit('clicked-action', action);
 
       if (action.onClick) {
         action.onClick(action, e);
@@ -60,13 +61,13 @@ export default {
 
       if (action.tooltipOnClick) {
         this.updatingTooltip = true;
-        this.$root.$emit('bv::show::tooltip', action.id);
+        this.$root.$emit(BV_SHOW_TOOLTIP, action.id);
 
         clearTimeout(this.timeout);
 
         this.timeout = setTimeout(() => {
           this.updatingTooltip = false;
-          this.$root.$emit('bv::hide::tooltip', action.id);
+          this.$root.$emit(BV_HIDE_TOOLTIP, action.id);
         }, 1000);
       }
     },

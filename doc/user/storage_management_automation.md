@@ -214,7 +214,7 @@ Here's an example of an algorithm to analyze multiple subgroups and projects:
 The shell approach with `glab` might be more suitable for smaller analyses. For larger analyses, you should use a script that
 uses the API client libraries. This type of script can improve readability, data storage, flow control, testing, and reusability.
 
-To ensure the script doesn't reach [API rate limits](../security/rate_limits.md), the following
+To ensure the script doesn't reach [API rate limits](../rate_limits/_index.md), the following
 example code is not optimized for parallel API requests.
 
 To implement this algorithm:
@@ -823,7 +823,7 @@ The following process describes how the script searches for the artifact expiry 
             project_name = project_obj.name
             project_web_url = project_obj.web_url
             try:
-                lint_result = project.ci_lint.get()
+                lint_result = project_obj.ci_lint.get()
                 if lint_result.merged_yaml is None:
                     continue
 

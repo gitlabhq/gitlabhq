@@ -17,7 +17,7 @@ A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline
 Downstream pipelines run independently and concurrently to the upstream pipeline
 that triggered them.
 
-- A [parent-child pipeline](downstream_pipelines.md#parent-child-pipelines) is a downstream pipeline
+- A [parent-child pipeline](#parent-child-pipelines) is a downstream pipeline
   triggered in the same project as the first pipeline.
 - A [multi-project pipeline](#multi-project-pipelines) is a downstream pipeline triggered
   in a different project than the first pipeline.
@@ -53,12 +53,12 @@ A parent pipeline can trigger many child pipelines, and these child pipelines ca
 their own child pipelines. You cannot trigger another level of child pipelines.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
+For an overview, see [Nested Dynamic Pipelines](https://www.youtube.com/watch?v=C5j3ju9je2M).
 
 ## Multi-project pipelines
 
 A pipeline in one project can trigger downstream pipelines in another project,
-called multi-project pipelines. The user triggering the upstream pipeline must be able to
+called multi-project pipelines. The user triggering the upstream pipeline must have permission to
 start pipelines in the downstream project, otherwise [the downstream pipeline fails to start](downstream_pipelines_troubleshooting.md#trigger-job-fails-and-does-not-create-multi-project-pipeline).
 
 Multi-project pipelines:
@@ -119,6 +119,10 @@ attempts to create the downstream pipeline. The trigger job shows `passed` if th
 downstream pipeline is created successfully, otherwise it shows `failed`. Alternatively,
 you can [set the trigger job to show the downstream pipeline's status](#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job)
 instead.
+
+Trigger jobs do not use runners, so a long-running `pending` trigger job
+usually means GitLab could not create the downstream pipeline. For troubleshooting steps, see
+[Downstream pipelines troubleshooting](downstream_pipelines_troubleshooting.md).
 
 ### Use `rules` to control downstream pipeline jobs
 
@@ -192,7 +196,7 @@ targeting content that changed or to build a matrix of targets and architectures
 The artifact containing the generated YAML file must be within [instance limits](../../administration/cicd/limits.md#maximum-size-of-the-ci-artifacts-archive).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
+For an overview, see [Create child pipelines using dynamically generated configurations](https://www.youtube.com/watch?v=nMdfus2JWHM).
 
 For an example project that generates a dynamic child pipeline, see
 [Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet).
@@ -556,10 +560,16 @@ upstream pipeline:
 
 {{< tab title="Multi-project pipeline" >}}
 
+Prerequisites:
+
+- The downstream project added to the [job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
+- At least the [Reporter role](../../user/permissions.md#project-cicd) in the upstream project for
+  the user who triggers the downstream pipeline.
+  Adding a project to the allowlist does not grant this access.
+
 Use [`needs:project`](../yaml/_index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
 
-1. [Add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
 1. In the upstream pipeline, save the artifacts in a job with the [`artifacts`](../yaml/_index.md#artifacts)
    keyword, then trigger the downstream pipeline with a trigger job:
 
@@ -617,10 +627,15 @@ where `id` is the merge request ID. You can retrieve this ref with the [`CI_MERG
 CI/CD variable. Do not use a branch name as the `ref` with merge request pipelines,
 because the downstream pipeline attempts to fetch artifacts from the latest branch pipeline.
 
+Prerequisites:
+
+- The downstream project added to the [job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
+- At least the Reporter role in the upstream project for the user who triggers the downstream pipeline.
+  Adding a project to the allowlist does not grant this access.
+
 To fetch the artifacts from the upstream `merge request` pipeline instead of the `branch` pipeline,
 pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inheritance](#pass-yaml-defined-cicd-variables):
 
-1. [Add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of the upstream project.
 1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/_index.md#artifacts) keyword.
 1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable:
 

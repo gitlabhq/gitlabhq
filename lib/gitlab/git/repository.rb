@@ -1169,6 +1169,7 @@ module Gitlab
         end
       end
 
+      # rubocop:disable Metrics/ParameterLists -- all arguments needed
       def list_commits(
         ref:,
         query: nil,
@@ -1177,8 +1178,11 @@ module Gitlab
         committed_before: nil,
         committed_after: nil,
         pagination_params: { page_token: nil, limit: 1000 },
-        literal_pathspec: false
+        literal_pathspec: false,
+        first_parent: false,
+        order: nil
       )
+        # rubocop:enable Metrics/ParameterLists
         pagination_params[:limit] ||= 1000
 
         wrapped_gitaly_errors do
@@ -1192,7 +1196,9 @@ module Gitlab
             after: committed_after,
             reverse: false,
             pagination_params: pagination_params,
-            literal_pathspec: literal_pathspec
+            literal_pathspec: literal_pathspec,
+            first_parent: first_parent,
+            order: order
           )
         end
       end

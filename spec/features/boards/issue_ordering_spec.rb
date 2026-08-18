@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
+RSpec.describe 'Issue Boards', :js, feature_category: :planning_views do
   let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }

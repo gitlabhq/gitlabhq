@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 

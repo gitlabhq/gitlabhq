@@ -36,9 +36,9 @@ describe('logs_top_bar.vue', () => {
     });
 
     it.each([
-      ['scrollToBottom', 'scroll_down', 0],
-      ['scrollToTop', 'scroll_up', 1],
-      ['toggleFullScreen', 'maximize', 2],
+      ['scroll-to-bottom', 'scroll_down', 0],
+      ['scroll-to-top', 'scroll_up', 1],
+      ['toggle-full-screen', 'maximize', 2],
     ])('emits %s event when user clicks on %s button', (event, button, index) => {
       expect(wrapper.emitted(event)).toBeUndefined();
       findButton(index).vm.$emit('click');

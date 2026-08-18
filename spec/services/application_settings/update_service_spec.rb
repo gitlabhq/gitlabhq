@@ -19,6 +19,65 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     application_settings
   end
 
+  describe 'managed settings' do
+    before do
+      Gitlab::ManagedSettings.reset!
+      stub_const('Gitlab::ManagedSettings::PATH',
+        Rails.root.join('spec/fixtures/managed_settings/valid.yml'))
+    end
+
+    after do
+      Gitlab::ManagedSettings.reset!
+    end
+
+    context 'when a managed setting is changed' do
+      let(:params) { { sidekiq_timezone_override: 'UTC' } }
+
+      it 'rejects the update and adds an error' do
+        expect(subject.execute).to be(false)
+        expect(application_settings.errors[:base])
+          .to include('The sidekiq_timezone_override is a managed setting and cannot be changed.')
+        expect(application_settings.reload.sidekiq_timezone_override).not_to eq('UTC')
+      end
+    end
+
+    context 'when only unmanaged settings are changed' do
+      let(:params) { { home_page_url: 'http://foo.bar' } }
+
+      it 'updates successfully' do
+        expect(subject.execute).to be(true)
+        expect(application_settings.reload.home_page_url).to eq('http://foo.bar')
+      end
+    end
+
+    context 'when a managed setting is resubmitted with the enforced value' do
+      let(:params) { { sidekiq_timezone_override: 'Europe/London', home_page_url: 'http://foo.bar' } }
+
+      before do
+        application_settings.update!(sidekiq_timezone_override: 'Europe/London')
+      end
+
+      it 'allows the update and applies the unmanaged changes' do
+        expect(subject.execute).to be(true)
+        expect(application_settings.reload.home_page_url).to eq('http://foo.bar')
+      end
+    end
+
+    context 'when no managed settings file is present' do
+      let(:params) { { sidekiq_timezone_override: 'UTC' } }
+
+      before do
+        stub_const('Gitlab::ManagedSettings::PATH',
+          Rails.root.join('spec/fixtures/managed_settings/does_not_exist.yml'))
+      end
+
+      it 'allows the update' do
+        expect(subject.execute).to be(true)
+        expect(application_settings.reload.sidekiq_timezone_override).to eq('UTC')
+      end
+    end
+  end
+
   describe 'updating terms' do
     context 'when the passed terms are blank' do
       let(:params) { { terms: '' } }
@@ -549,6 +608,56 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
         application_settings.update!(require_admin_approval_after_user_signup: false)
 
         expect(ApproveBlockedPendingApprovalUsersWorker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+  end
+
+  context 'when dynamic_client_registration_enabled changes', feature_category: :system_access do
+    let(:worker) { Authn::OauthApplications::CleanupDynamicApplicationsWorker }
+
+    context 'when it goes from enabled to disabled' do
+      let(:params) { { dynamic_client_registration_enabled: false } }
+
+      it 'enqueues CleanupDynamicApplicationsWorker' do
+        expect(worker).to receive(:perform_async)
+
+        subject.execute
+      end
+
+      context 'when the update fails' do
+        before do
+          allow(application_settings).to receive(:save).and_return(false)
+        end
+
+        it 'does not enqueue CleanupDynamicApplicationsWorker' do
+          expect(worker).not_to receive(:perform_async)
+
+          subject.execute
+        end
+      end
+    end
+
+    context 'when it goes from disabled to enabled' do
+      let(:params) { { dynamic_client_registration_enabled: true } }
+
+      before do
+        application_settings.update!(dynamic_client_registration_enabled: false)
+      end
+
+      it 'does not enqueue CleanupDynamicApplicationsWorker' do
+        expect(worker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+
+    context 'when it is unchanged' do
+      let(:params) { { dynamic_client_registration_enabled: true } }
+
+      it 'does not enqueue CleanupDynamicApplicationsWorker' do
+        expect(worker).not_to receive(:perform_async)
 
         subject.execute
       end

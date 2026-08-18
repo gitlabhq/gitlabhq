@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::CachedContentFetcher, feature_category: :pipeline_composition do
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:cache_enabled) { true }
   let(:fetcher) { described_class.new(project: project, cache_enabled: cache_enabled) }
   let(:file1_content) { 'test: { script: echo hello }' }

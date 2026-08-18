@@ -36,6 +36,79 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     stub_const(worker_class_name, worker_class)
   end
 
+  describe '.drop_matching_jobs!' do
+    let(:other_worker_class) do
+      Class.new do
+        def self.name
+          'OtherDummyWorker'
+        end
+
+        include ApplicationWorker
+      end
+    end
+
+    let(:target_user) { 'target_user' }
+    let(:other_user) { 'other_user' }
+
+    let(:matching_context) { { 'meta.user' => target_user } }
+    let(:non_matching_context) { { 'meta.user' => other_user } }
+
+    let(:worker_names) { [worker_class_name, 'OtherDummyWorker'] }
+
+    before do
+      stub_const('OtherDummyWorker', other_worker_class)
+      service.add_to_queue!(job, matching_context)
+      service.add_to_queue!(job.merge('jid' => 'other_jid'), non_matching_context)
+      described_class.new('OtherDummyWorker').add_to_queue!(job, matching_context)
+    end
+
+    it 'removes matching jobs from the given workers, leaving non-matching jobs intact',
+      :aggregate_failures do
+      expect(described_class.drop_matching_jobs!(worker_names, matching_context))
+        .to eq(completed: true, deleted_jobs: 2)
+      expect(described_class.queue_size(worker_class_name)).to eq(1)
+      expect(described_class.queue_size('OtherDummyWorker')).to eq(0)
+    end
+
+    it 'only touches the given workers' do
+      described_class.drop_matching_jobs!([worker_class_name], matching_context)
+
+      expect(described_class.queue_size(worker_class_name)).to eq(1)
+      expect(described_class.queue_size('OtherDummyWorker')).to eq(1)
+    end
+
+    it 'reports completed: false when a worker queue times out' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:drop_jobs!).and_return({ completed: false, deleted_jobs: 0 })
+      end
+
+      expect(described_class.drop_matching_jobs!([worker_class_name], matching_context))
+        .to eq(completed: false, deleted_jobs: 0)
+    end
+
+    it 'shares a single timeout budget across workers and skips the rest once exhausted' do
+      first = instance_double(described_class, drop_jobs!: { completed: true, deleted_jobs: 1 })
+      # start_time=0, first worker sees remaining=5 (runs), then elapsed jumps past the budget
+      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(0, 5, 100)
+
+      # only the first worker is instantiated; the second is skipped once the budget is spent
+      expect(described_class).to receive(:new).with(worker_class_name).once.and_return(first)
+
+      expect(described_class.drop_matching_jobs!(worker_names, matching_context, timeout: 10))
+        .to eq(completed: false, deleted_jobs: 1)
+    end
+
+    it 'returns zero deletions when context_metadata is empty' do
+      expect(described_class.drop_matching_jobs!(worker_names, {}))
+        .to eq(completed: true, deleted_jobs: 0)
+    end
+
+    it 'returns zero deletions when worker_names is empty' do
+      expect(described_class.drop_matching_jobs!([], matching_context))
+        .to eq(completed: true, deleted_jobs: 0)
+    end
+  end
+
   describe '.add_to_queue!' do
     subject(:add_to_queue!) { described_class.add_to_queue!(job, worker_context) }
 
@@ -124,6 +197,42 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
       end
 
       concurrent_worker_count
+    end
+  end
+
+  describe '.track_pending_resumed_jobs' do
+    subject(:track_pending_resumed_jobs) { described_class.track_pending_resumed_jobs(worker_class_name, 2) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:track_pending_resumed_jobs).with(2)
+      end
+
+      track_pending_resumed_jobs
+    end
+  end
+
+  describe '.untrack_pending_resumed_job' do
+    subject(:untrack_pending_resumed_job) { described_class.untrack_pending_resumed_job(worker_class_name) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:untrack_pending_resumed_job)
+      end
+
+      untrack_pending_resumed_job
+    end
+  end
+
+  describe '.pending_resumed_jobs_count' do
+    subject(:pending_resumed_jobs_count) { described_class.pending_resumed_jobs_count(worker_class_name) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:pending_resumed_jobs_count)
+      end
+
+      pending_resumed_jobs_count
     end
   end
 

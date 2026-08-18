@@ -45,7 +45,7 @@ export const mockPipelinePermissions = {
   },
 };
 
-export const downstream = {
+const downstream = {
   nodes: [
     {
       id: 175,
@@ -108,7 +108,7 @@ export const downstream = {
   ],
 };
 
-export const upstream = {
+const upstream = {
   id: 161,
   iid: '24',
   path: '/root/abcd-dag/-/pipelines/161',

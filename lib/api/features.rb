@@ -55,6 +55,7 @@ module API
         tags features_tags
       end
       params do
+        requires :name, type: String, desc: 'The name of the feature flag'
         requires :value,
           types: [String, Integer],
           desc: '`true` or `false` to enable/disable, or an integer for percentage of time'
@@ -117,6 +118,9 @@ module API
         detail 'Deletes a feature gate. Returns the same response if the feature gate does not exist.'
         success code: 204, message: 'Resource deleted'
         tags features_tags
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the feature flag'
       end
       route_setting :authorization, permissions: :delete_feature, boundary_type: :instance
       delete ':name' do

@@ -15,7 +15,7 @@ title: Geo with Object storage
 
 {{< history >}}
 
-- Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
+- Object storage verification [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
 
 {{< /history >}}
 
@@ -46,6 +46,11 @@ To have:
 
 Geo verifies files stored in object storage to ensure data integrity between primary and secondary sites.
 
+The `geo_object_storage_verification`
+[feature flag](../../feature_flags/_index.md) controls object storage verification and is enabled by default.
+As an operational control, you can disable the feature flag if verification of files in object storage
+causes excessive database load or memory usage on your instance.
+
 > [!warning]
 > Disabling object storage verification is not recommended.
 > When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
@@ -56,12 +61,6 @@ When the `geo_object_storage_verification` feature flag is disabled:
 - During cleanup of verification records, workers may be enqueued to process remaining records.
 
 ## Enabling GitLab-managed object storage replication
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
-
-{{< /history >}}
 
 > [!warning]
 > In case of issues, avoid manually deleting individual files as that can lead to [data inconsistencies](#inconsistencies-after-the-migration).
@@ -116,7 +115,7 @@ which is further described in the [object storage troubleshooting section](../..
 ## Third-party replication services
 
 When using Amazon S3, you can use
-[Cross-Region Replication (CRR)](https://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html) to
+[Cross-Region Replication (CRR)](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html) to
 have automatic replication between the bucket used by the primary site and
 the bucket used by secondary sites.
 

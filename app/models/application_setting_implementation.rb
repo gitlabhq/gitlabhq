@@ -79,9 +79,6 @@ module ApplicationSettingImplementation
         default_dark_syntax_highlighting_theme: 2,
         deletion_adjourned_period: DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL,
         deny_all_requests_except_allowed: false,
-        diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
-        diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
-        diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
         disable_admin_oauth_scopes: false,
         disable_feed_token: false,
         disabled_direct_code_suggestions: false,
@@ -214,6 +211,7 @@ module ApplicationSettingImplementation
         sidekiq_job_limiter_mode: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE,
         sidekiq_job_limiter_compression_threshold_bytes: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_COMPRESSION_THRESHOLD_BYTES,
         sidekiq_job_limiter_limit_bytes: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_SIZE_LIMIT,
+        sidekiq_timezone_override: nil,
         signup_enabled: Settings.gitlab['signup_enabled'],
         snippet_size_limit: 50.megabytes,
         snowplow_app_id: nil,
@@ -227,7 +225,6 @@ module ApplicationSettingImplementation
         spam_check_endpoint_enabled: false,
         spam_check_endpoint_url: nil,
         spam_check_api_key: nil,
-        suggest_pipeline_enabled: true,
         terminal_max_session_time: 0,
         terraform_state_encryption_enabled: true,
         throttle_authenticated_api_enabled: false,
@@ -354,6 +351,8 @@ module ApplicationSettingImplementation
         users_api_limit_ssh_key: 120,
         users_api_limit_gpg_keys: 120,
         users_api_limit_gpg_key: 120,
+        web_hook_event_resend_limit: 5,
+        web_hook_test_limit: 5,
         nuget_skip_metadata_url_validation: false,
         helm_max_packages_count: 1000,
         ai_action_api_rate_limit: 160,
@@ -693,12 +692,13 @@ module ApplicationSettingImplementation
 
   delegate :terms, to: :latest_terms, allow_nil: true
   def latest_terms
-    @latest_terms ||= ApplicationSetting::Term.latest
+    strong_memoize(:latest_terms) do
+      ApplicationSetting::Term.latest
+    end
   end
 
   def reset_memoized_terms
-    @latest_terms = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    latest_terms
+    clear_memoization(:latest_terms)
   end
 
   def archive_builds_older_than

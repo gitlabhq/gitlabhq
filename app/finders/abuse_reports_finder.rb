@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+# Finds abuse reports belonging to a single organization.
+#
+# Arguments:
+#   organization - the Organizations::Organization to scope results to.
+#   params:
+#     page     - integer
+#     status   - 'open' or 'closed'
+#     category - one of AbuseReport.categories.keys
+#     user     - username of the reported user
+#     reporter - username of the reporter
+#     sort     - one of ALLOWED_SORT or SORT_BY_COUNT
 class AbuseReportsFinder
   attr_reader :params, :reports
 
@@ -11,9 +22,9 @@ class AbuseReportsFinder
   DEFAULT_SORT_STATUS_OPEN = 'number_of_reports_desc'
   SORT_BY_COUNT = [DEFAULT_SORT_STATUS_OPEN].freeze
 
-  def initialize(params = {})
+  def initialize(params = {}, organization:)
     @params = params
-    @reports = AbuseReport.all
+    @reports = AbuseReport.in_organization(organization)
   end
 
   def execute

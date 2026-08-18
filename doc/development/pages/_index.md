@@ -274,8 +274,7 @@ and deep understanding of our coding standards.
 ### Expectations
 
 The process to [become a maintainer at GitLab is defined in the handbook](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer),
-and it is the baseline for this process. One thing that is expected is a high number of reviews, however;
-the rate of change of the GitLab Pages compared to the GitLab Rails project is too little.
+and it is the baseline for this process. One thing that is expected is a high number of reviews. However, the rate of change of the GitLab Pages compared to the GitLab Rails project is too little.
 
 To work around that problem, one must be comfortable in the following areas of the codebase:
 

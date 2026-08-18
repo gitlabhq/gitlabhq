@@ -16,7 +16,6 @@ title: Environments API
 {{< history >}}
 
 - Parameter `auto_stop_setting` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/428625) in GitLab 17.8.
-- Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
 
 {{< /history >}}
 
@@ -84,7 +83,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
-Example of response
+Example response:
 
 ```json
 {
@@ -223,7 +222,7 @@ POST /projects/:id/environments
 | `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`. |
 | `auto_stop_setting`    | string         | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
-If successful, returns `201`, returns `400` for wrong parameters.
+If successful, returns `201`. Returns `400` for wrong parameters.
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
@@ -251,12 +250,6 @@ Example response:
 ```
 
 ## Update an existing environment
-
-{{< history >}}
-
-- Parameter `name` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
-
-{{< /history >}}
 
 Updates an existing environment for a project.
 

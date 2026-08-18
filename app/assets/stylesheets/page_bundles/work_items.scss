@@ -23,10 +23,9 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-detail-panel {
-  // a slight padding is added to the panel itself so that scrollbar does not get covered by the rounded edge of the panel
-  // we're using padding instead of margin so that fixed elements connect with the bottom edge of the panel
+  // Bottom clearance from the panel's rounded edge is provided by .panel-content;
+  // duplicating it here made the drawer's scroll area shorter than other panels.
   @apply gl-pt-0;
-  @apply gl-pb-3;
   @apply gl-h-full;
   @apply gl-bg-default;
   display: flex;
@@ -54,10 +53,19 @@ $work-item-overview-gap-width: 2rem;
 
 .work-item-detail-panel-content {
   @apply gl-flex-1;
-  @apply gl-px-[--container-padding-x];
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-gutter: stable;
+  // these allow space for focus rings that are up against the edges of the content div to show
+  margin-inline: -4px;
+  padding-inline: 4px;
+}
+
+// In the work item detail panel the dynamic panel's .panel-content-inner is the
+// scroll container, so the work item detail must not become one itself: its
+// overflow would trap the sticky sidebar and stop it from sticking.
+.work-item-detail-panel .work-item-detail-panel-content {
+  overflow: visible;
 }
 
 @include gl-container-width-down(md, panel) {
@@ -141,12 +149,6 @@ $work-item-overview-gap-width: 2rem;
     grid-column-start: 2;
     grid-row-end: 50;
     @apply gl-pb-10;
-
-    &.is-modal {
-      .work-item-attributes-wrapper {
-        top: 0;
-      }
-    }
   }
 }
 
@@ -266,8 +268,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     }
 
     &:active,
-    &:focus,
-    &:focus:active {
+    &:focus-visible,
+    &:focus-visible:active {
       // Custom focus
       box-shadow: 1px 1px 0 1px var(--gl-focus-ring-outer-color), 2px -1px 0 1px var(--gl-focus-ring-outer-color), -1px 1px 0 1px var(--gl-focus-ring-outer-color), -1px -1px 0 1px var(--gl-focus-ring-outer-color) !important;
     }
@@ -301,8 +303,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   &:active,
-  &:focus,
-  &:focus:active {
+  &:focus-visible,
+  &:focus-visible:active {
     // Custom focus
     box-shadow: 1px 1px 0 1px var(--gl-focus-ring-outer-color), 2px -1px 0 1px var(--gl-focus-ring-outer-color) !important;
     outline: none;
@@ -322,16 +324,6 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 .work-item-sidebar-dropdown .gl-new-dropdown-panel {
     width: 100% !important;
     max-width: 17rem !important;
-}
-
-.container-limited {
-  .work-item-sticky-header-text {
-    max-width: $fixed-layout-width;
-  }
-}
-
-.work-item-sticky-header-text {
-  @apply gl-px-[--container-padding-x];
 }
 
 .work-item-description .truncated {
@@ -531,7 +523,7 @@ ul.content-list {
 
 // stylelint-disable-next-line gitlab/no-has -- scoped to a specific work-item-detail element
 [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
-  top: calc(#{$calc-application-header-height} + var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
+  top: calc(#{$calc-application-header-height} + var(--layout-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }
 
 .work-item-detail-panel .flash-container.sticky {
@@ -540,7 +532,7 @@ ul.content-list {
 
 // stylelint-disable-next-line gitlab/no-has -- scoped to a specific work-item-detail element
 .work-item-detail-panel [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
-  top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
+  top: calc(var(--layout-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }
 
 /* stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to specific dropdown items */
@@ -564,3 +556,12 @@ ul.content-list {
 .work-item-display-settings-drawer.gl-drawer {
   max-height: calc(100% - var(--drawer-top-offset, 0px)) !important;
 }
+
+// The workplan flow appends a machine-readable copy of its clarifying question
+// to the comment body, fenced as `json:duo-question`. Banzai renders it as a
+// normal code block, so we hide it and instead render a transformed question UI.
+// See https://gitlab.com/groups/gitlab-org/-/work_items/22772
+pre[data-lang-params='duo-question'] {
+  display: none;
+}
+

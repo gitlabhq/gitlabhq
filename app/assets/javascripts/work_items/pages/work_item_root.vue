@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlToastMixin } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import ZenMode from '~/zen_mode';
@@ -13,6 +13,7 @@ export default {
     GlAlert,
     WorkItemDetail,
   },
+  mixins: [GlToastMixin],
   inject: { issuesListPath: 'issuesListPath', epicsListPath: { default: '' } },
   props: {
     iid: {

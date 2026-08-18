@@ -41,6 +41,43 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
         expect(assigns(:remote_mirrors).current_page).to eq(2)
       end
     end
+
+    context 'with protected branches' do
+      let_it_be(:project, freeze: false) { create(:project, :repository) }
+
+      let_it_be(:branch_a) { create(:protected_branch, project: project, name: 'alpha') }
+      let_it_be(:branch_z) { create(:protected_branch, project: project, name: 'zeta') }
+
+      # Stays let!: the "default branch is not protected" context redefines it, and a
+      # shadowed let_it_be would still create the outer default-named row in before_all.
+      let!(:branch_default) { create(:protected_branch, project: project, name: project.default_branch) }
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+      end
+
+      it 'lists the default branch first' do
+        get :show, params: base_params
+
+        expect(assigns(:protected_branches)).to eq([branch_default, branch_a])
+      end
+
+      it 'sorts the following pages by name' do
+        get :show, params: base_params.merge(page: 2)
+
+        expect(assigns(:protected_branches)).to eq([branch_z])
+      end
+
+      context 'when the default branch is not protected' do
+        let!(:branch_default) { create(:protected_branch, project: project, name: 'x-not-the-default') }
+
+        it 'sorts protected branches by name' do
+          get :show, params: base_params
+
+          expect(assigns(:protected_branches)).to eq([branch_a, branch_default])
+        end
+      end
+    end
   end
 
   describe 'PUT cleanup' do
@@ -204,7 +241,7 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
 
           expect(response).to redirect_to project_settings_repository_path(project)
           expect(controller).to set_flash[:alert].to("Project setting issue branch template is too long (maximum is 255 characters)")
-          expect(project.reload.issue_branch_template).to eq(nil)
+          expect(project.reload.issue_branch_template).to be_nil
         end
       end
     end

@@ -1,11 +1,13 @@
 <script>
 import ImageDiffViewer from '~/vue_shared/components/diff_viewer/viewers/image_diff_viewer.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ImageViewer',
   components: {
     ImageDiffViewer,
   },
+  mixins: [glSlotsMixin],
   props: {
     imageData: {
       type: Object,
@@ -24,7 +26,7 @@ export default {
     :diff-mode="imageData.diff_mode"
     :encode-path="false"
   >
-    <template #image-overlay="scope">
+    <template v-if="glSlots()['image-overlay']" #image-overlay="scope">
       <slot name="image-overlay" v-bind="scope"></slot>
     </template>
   </image-diff-viewer>

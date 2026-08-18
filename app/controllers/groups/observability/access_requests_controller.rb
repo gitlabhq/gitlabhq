@@ -31,6 +31,10 @@ module Groups
       def build_access_request_service(namespace)
         ::Observability::AccessRequestService.new(namespace, current_user)
       end
+
+      def observability_context_label
+        'group'
+      end
     end
   end
 end

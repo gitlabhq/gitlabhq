@@ -21,7 +21,7 @@ The Diffblue Cover Pipeline for GitLab integration allows you to automatically:
 - Update existing unit tests in your code.
 - Remove existing unit tests in your code when they're no longer required.
 
-![Cover Pipeline for GitLab Basic MR Process](img/diffblue_cover_workflow_after_v16_8.png)
+![The Cover pipeline for a basic GitLab merge request process.](img/diffblue_cover_workflow_after_v16_8.png)
 
 ## Configure the integration
 

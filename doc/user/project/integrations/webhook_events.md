@@ -27,8 +27,8 @@ For a list of events triggered for system webhooks, see [system webhooks](../../
 
 | Event type                                                                    | Trigger |
 |-------------------------------------------------------------------------------|---------|
-| [Comment event](#comment-events)                                              | A new comment is made or edited on commits, merge requests, issues, and code snippets. <sup>1</sup> |
-| [Deployment event](#deployment-events)                                        | A deployment starts, succeeds, fails, or is canceled. |
+| [Comment event](#comment-events)                                              | A new comment is made or edited on commits, merge requests, issues, and code snippets. |
+| [Deployment event](#deployment-events)                                        | A deployment starts, finishes, fails, is canceled, is awaiting approval, or is awaiting manual action. On Premium and Ultimate, also when a deployment is approved or rejected. |
 | [Emoji event](#emoji-events)                                                  | An emoji reaction is added or removed. |
 | [Feature flag event](#feature-flag-events)                                    | A feature flag is turned on or off. |
 | [Job event](#job-events)                                                      | A job status changes. |
@@ -42,10 +42,6 @@ For a list of events triggered for system webhooks, see [system webhooks](../../
 | [Vulnerability event](#vulnerability-events)                                  | A vulnerability is created or updated. |
 | [Wiki page event](#wiki-page-events)                                          | A wiki page is created, edited, or deleted. |
 | [Work item event](#work-item-events)                                          | A new work item is created or an existing one is edited, closed, or reopened. |
-
-Footnotes:
-
-1. Comment events triggered when the comment is edited [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127169) in GitLab 16.11.
 
 ## Events triggered for group webhooks only
 
@@ -241,7 +237,7 @@ Payload example:
 {{< history >}}
 
 - `type` attribute in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467415) in GitLab 17.2.
-- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. [The new look for epics](../../group/epics/_index.md#epics-as-work-items) must be enabled.
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13056) in GitLab 17.3. [The new look for epics](../../group/epics/_index.md#epics-as-work-items) must be enabled.
 - Support for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
 - `start_date` field in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238048) in GitLab 19.1.
 
@@ -436,12 +432,6 @@ Payload example:
 ```
 
 ## Comment events
-
-{{< history >}}
-
-- `object_attributes.action` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147856) in GitLab 16.11.
-
-{{< /history >}}
 
 Comment events are triggered when a new comment is made or edited on commits,
 merge requests, issues, and code snippets.
@@ -1213,6 +1203,59 @@ The following example shows re-request review changes (partial payload):
 }
 ```
 
+### Submit review events
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592358) in GitLab 19.3.
+
+{{< /history >}}
+
+When a reviewer submits a review, GitLab triggers a webhook with `action: "update"` that reflects the reviewer's new state.
+This applies whether the reviewer requests changes, marks the review as reviewed, approves, or unapproves.
+The `changes` object contains the reviewer's previous state in the first array and the updated state in the second array.
+For example, a reviewer who requests changes transitions from `review_started` to `requested_changes`.
+
+The `re_requested` field is `false` in both arrays because a submitted review is not a re-request.
+
+The following example shows submit review changes (partial payload):
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update"
+  },
+  "changes": {
+    "reviewers": [
+      [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "state": "review_started",
+          "re_requested": false,
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+          "email": "user1@example.com"
+        }
+      ],
+      [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "state": "requested_changes",
+          "re_requested": false,
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+          "email": "user1@example.com"
+        }
+      ]
+    ]
+  }
+}
+```
+
 ### Complete payload example
 
 Request header:
@@ -1498,13 +1541,17 @@ Payload example:
 
 ## Pipeline events
 
+{{< history >}}
+
+- `object_attributes.default_branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606357) in GitLab 19.3.
+
+{{< /history >}}
+
 Pipeline events are triggered when the status of a pipeline changes.
 
-In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
-and later, pipeline webhooks triggered by blocked users are not processed.
+Pipeline webhooks triggered by blocked users are not processed.
 
-In [GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123639)
-and later, pipeline webhooks started to expose `object_attributes.name`.
+Pipeline webhooks expose `object_attributes.name`.
 
 Request header:
 
@@ -1537,6 +1584,8 @@ Payload example:
     "finished_at": "2016-08-12 15:26:29 UTC",
     "duration": 63,
     "queued_duration": 10,
+    "protected_ref": false,
+    "default_branch": true,
     "variables": [
       {
         "key": "NESTOR_PROD_ENVIRONMENT",
@@ -1789,8 +1838,7 @@ Job events are triggered when the status of a job changes. Trigger jobs are excl
 
 The `commit.id` in the payload is the ID of the pipeline, not the ID of the commit.
 
-In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
-and later, job events triggered by blocked users are not processed.
+Job events triggered by blocked users are not processed.
 
 Request header:
 
@@ -1896,26 +1944,22 @@ Payload example:
 
 ### Number of retries
 
-{{< history >}}
-
-- `retries_count` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 15.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `job_webhook_retries_count`. Disabled by default.
-- `retries_count` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 16.2.
-
-{{< /history >}}
-
 `retries_count` is an integer that indicates if the job is a retry. `0` means that the job
 has not been retried. `1` means that it's the first retry.
 
 ### Pipeline name
 
-{{< history >}}
-
-- `commit.name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107963) in GitLab 15.8.
-
-{{< /history >}}
-
 You can set custom names for pipelines with [`workflow:name`](../../../ci/yaml/_index.md#workflowname).
 If the pipeline has a name, that name is the value of `commit.name`.
+
+### Failure reason
+
+`build_failure_reason` uses the same failure-reason values as
+[`retry:when`](../../../ci/yaml/_index.md#retrywhen), excluding `always`.
+
+If the job has not failed, GitLab returns `unknown_failure` in this field, because no failure
+reason applies. To check whether a job succeeded, use `build_status` instead of
+`build_failure_reason`.
 
 ## Deployment events
 
@@ -1925,6 +1969,14 @@ Deployment events are triggered when a deployment:
 - Succeeds
 - Fails
 - Is canceled
+- Is blocked, is awaiting approval, or is awaiting manual action
+- Is approved (Premium and Ultimate only)
+- Is rejected (Premium and Ultimate only)
+
+The `status` field reflects the new state of whichever entity drove the event:
+
+- For deployment lifecycle changes (`running`, `success`, `failed`, `canceled`, `blocked`), the field matches the deployment's current state.
+- For approval actions, the field matches the approval record's terminal state (`approved` or `rejected`).
 
 The `deployable_id` and `deployable_url` in the payload represent a CI/CD job that executed the deployment.
 When the deployment event occurs by [API](../../../ci/environments/external_deployment_tools.md) or [`trigger` jobs](../../../ci/pipelines/downstream_pipelines.md), `deployable_url` is `null`.
@@ -1980,6 +2032,125 @@ Payload example:
   "commit_title": "Add new file"
 }
 ```
+
+### Deployment approval and rejection events
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/441402) in GitLab 19.3.
+
+{{< /history >}}
+
+A deployment to a [protected environment](../../../ci/environments/deployment_approvals.md)
+that requires approvals fires a Deployment webhook each time an approver
+approves or rejects the deployment. The payload keeps the same
+`object_kind` as other deployment events and adds approval-specific fields:
+
+- `status` is `approved` or `rejected` and reflects the approval action.
+- `status_changed_at` is the time the approval was recorded, in ISO 8601 format.
+- `approver` is the user who recorded the approval or rejection. The `approver.email`
+  field is `[REDACTED]` if the approver has not made their email public.
+- `approval` describes the approval, including the protected environment rule that authorized it. The
+  `approval.approval_rule.access_level_description` field is the human-readable label for the rule.
+  - For role-based rules, the field is a locale-independent label such as `"Maintainers"`.
+  - For user-scoped or group-scoped rules, it is the user's or group's display name (a user-controlled
+    string). Receivers should treat this field as untrusted display text and use `user_id`, `group_id`,
+    and `access_level` for machine-readable routing.
+
+The `approver` and `approval` fields are specific to approval and rejection events
+and are not present in other deployment lifecycle events. Receivers can identify
+approval events by the value of `status` or by the presence of these fields.
+
+Payload example:
+
+```json
+{
+  "object_kind": "deployment",
+  "status": "approved",
+  "status_changed_at": "2026-05-08T10:30:00.000Z",
+  "deployment_id": 15,
+  "deployable_id": 796,
+  "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
+  "environment": "production",
+  "environment_tier": "production",
+  "environment_slug": "production",
+  "environment_external_url": "https://production.example.com",
+  "project": {
+    "id": 30,
+    "name": "test-deployment-webhooks",
+    "web_url": "http://10.126.0.2:3000/root/test-deployment-webhooks",
+    "path_with_namespace": "root/test-deployment-webhooks"
+  },
+  "short_sha": "279484c0",
+  "user": {
+    "id": 1,
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "email": "admin@example.com"
+  },
+  "user_url": "http://10.126.0.2:3000/root",
+  "commit_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/commit/279484c09fbe69ededfced8c1bb6e6d24616b468",
+  "commit_title": "Add new file",
+  "approver": {
+    "id": 5,
+    "name": "Ops Lead",
+    "username": "ops_lead",
+    "avatar_url": "https://www.gravatar.com/avatar/abcdef1234567890?s=80&d=identicon",
+    "email": "ops@example.com"
+  },
+  "approval": {
+    "id": 42,
+    "status": "approved",
+    "comment": "LGTM",
+    "created_at": "2026-05-08T10:30:00.000Z",
+    "approval_rule": {
+      "id": 7,
+      "user_id": null,
+      "group_id": null,
+      "access_level": 40,
+      "access_level_description": "Maintainers",
+      "required_approvals": 2,
+      "group_inheritance_type": 0
+    }
+  }
+}
+```
+
+For a rejection, `status` and `approval.status` are both `rejected`.
+The `approval.approval_rule` value is `null` when the protected environment
+does not use approval rules.
+
+#### Event sequence around rejection and full approval
+
+The approval and lifecycle webhooks are independent. A deployment that goes
+through the approval workflow produces multiple webhooks with the same
+`deployment_id`. When a deployment enters the awaiting-approval state, a
+`status: "blocked"` event fires first. Subsequent approval or rejection
+actions then produce their own events.
+
+The events fire in the following order:
+
+1. When the deployment first enters the awaiting-approval state, a
+   `status: "blocked"` event fires. This is the deployment lifecycle event
+   and does not include approval fields.
+1. A rejection then produces `status: "rejected"` (with `approver` and
+   `approval`), followed by `status: "failed"` for the same deployment when
+   the deployment job is dropped. The `failed` event is the existing legacy
+   lifecycle event and does not include approval fields.
+1. A final approval produces `status: "approved"`, followed later by
+   `status: "running"` when the deployment job starts, and then a terminal
+   event such as `status: "success"` or `status: "failed"`.
+
+For guidance on handling duplicate failure alerts caused by a rejection, see
+[Troubleshooting webhooks](webhooks_troubleshooting.md#duplicate-deployment-failure-alerts-after-a-rejection).
 
 ## Group member events
 
@@ -2362,12 +2533,6 @@ Payload example:
 
 ## Release events
 
-{{< history >}}
-
-- Delete release event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418113) in GitLab 16.5.
-
-{{< /history >}}
-
 Release events are triggered when a release is created, updated, or deleted.
 
 The available values for `object_attributes.action` in the payload are:
@@ -2670,9 +2835,6 @@ Payload example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `access_token_webhooks`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
 - `full_path` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/465421) in GitLab 17.4.
 - 60 and 30 day notifications [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7.
 

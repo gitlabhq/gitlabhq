@@ -1,9 +1,10 @@
 - commits = @commits
 - hidden = @hidden_commit_count || 0
 - commits = Commit.decorate(commits, @project)
+- display_count = @commits_count_label || @total_commit_count
 
 = render ::Layouts::CrudComponent.new(s_('CompareRevisions|Commits on Source'),
-  count: @total_commit_count,
+  count: display_count,
   is_collapsible: true,
   options: { class: 'gl-mb-5' },
   footer_options: { class: 'gl-bg-orange-50' }) do |c|
@@ -14,6 +15,9 @@
           = render "projects/commits/inline_commit", commit: commit, project: @project
     - else
       %ul.content-list= render commits, project: @project, ref: @ref
-  - if hidden > 0
+  - if @commits_overflow
+    - c.with_footer do
+      = s_('CompareRevisions|Additional commits have been omitted to prevent performance issues.')
+  - elsif hidden > 0
     - c.with_footer do
       #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.

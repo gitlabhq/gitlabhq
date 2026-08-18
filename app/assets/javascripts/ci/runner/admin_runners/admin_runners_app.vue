@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlLink } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
+import { GlButton, GlLink, GlToastMixin, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
@@ -46,6 +47,9 @@ import {
 
 export default {
   name: 'AdminRunnersApp',
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
     GlButton,
     GlLink,
@@ -59,12 +63,17 @@ export default {
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
-    RunnerDashboardLink: () =>
-      import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
+    RunnerDashboardLink: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
+    ),
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   props: {
     newRunnerPath: {
+      type: String,
+      required: true,
+    },
+    runnerSettingsPath: {
       type: String,
       required: true,
     },
@@ -203,7 +212,7 @@ export default {
       this.refetchCounts();
 
       if (event?.message) {
-        this.$root.$toast?.show(event.message);
+        this.$toast.show(event.message);
       }
     },
     refetchCounts() {
@@ -246,6 +255,16 @@ export default {
       <template #title>{{ s__('Runners|Runners') }}</template>
       <template #actions>
         <runner-dashboard-link />
+        <gl-button
+          v-if="canAdminRunners"
+          v-gl-tooltip
+          :href="runnerSettingsPath"
+          :title="s__('Runners|Manage access and security settings')"
+          :aria-label="s__('Runners|Manage access and security settings')"
+          icon="settings"
+          data-event-tracking="click_runner_settings_button_in_admin_runners"
+          data-testid="runner-settings-button"
+        />
         <gl-button v-if="canAdminRunners" :href="newRunnerPath" variant="confirm">
           {{ s__('Runners|Create instance runner') }}
         </gl-button>
@@ -287,7 +306,7 @@ export default {
         :runners="runners.items"
         :loading="runnersLoading"
         :checkable="canAdminRunners"
-        @toggledPaused="onUpdated"
+        @toggled-paused="onUpdated"
         @deleted="onUpdated"
       >
         <template #runner-name="{ runner }">
@@ -299,7 +318,7 @@ export default {
           <runner-actions-cell
             :runner="runner"
             :edit-url="runner.editAdminUrl"
-            @toggledPaused="onUpdated"
+            @toggled-paused="onUpdated"
             @deleted="onUpdated"
           />
         </template>

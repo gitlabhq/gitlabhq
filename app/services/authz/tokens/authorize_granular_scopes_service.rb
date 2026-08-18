@@ -95,7 +95,7 @@ module Authz
       end
 
       def token_supports_granular_permissions?
-        token.respond_to?(:granular?) && token.respond_to?(:can?)
+        token.class.include?(::Authz::GranularTokenInterface)
       end
 
       def missing_inputs

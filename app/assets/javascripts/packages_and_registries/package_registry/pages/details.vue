@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlAlert,
   GlBadge,
@@ -75,13 +76,15 @@ export default {
     PackageHistory,
     AdditionalMetadata,
     InstallationCommands,
-    PackageFiles: () =>
-      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
+    PackageFiles: defineAsyncComponent(
+      () =>
+        import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
+    ),
     DeletePackages,
-    PackageVersionsList: () =>
-      import(
-        '~/packages_and_registries/package_registry/components/details/package_versions_list.vue'
-      ),
+    PackageVersionsList: defineAsyncComponent(
+      () =>
+        import('~/packages_and_registries/package_registry/components/details/package_versions_list.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

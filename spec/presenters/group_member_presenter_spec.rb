@@ -19,7 +19,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :admin_group_member, group).and_return(true)
         end
 
-        it { expect(presenter.can_resend_invite?).to eq(true) }
+        it { expect(presenter.can_resend_invite?).to be(true) }
       end
 
       context 'and user cannot admin_group_member' do
@@ -27,7 +27,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :admin_group_member, group).and_return(false)
         end
 
-        it { expect(presenter.can_resend_invite?).to eq(false) }
+        it { expect(presenter.can_resend_invite?).to be(false) }
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :admin_group_member, group).and_return(true)
         end
 
-        it { expect(presenter.can_resend_invite?).to eq(false) }
+        it { expect(presenter.can_resend_invite?).to be(false) }
       end
 
       context 'and user cannot admin_group_member' do
@@ -49,7 +49,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :admin_group_member, group).and_return(false)
         end
 
-        it { expect(presenter.can_resend_invite?).to eq(false) }
+        it { expect(presenter.can_resend_invite?).to be(false) }
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe GroupMemberPresenter do
         allow(group_member).to receive(:last_owner_of_the_group?).and_return(true)
       end
 
-      it { expect(presenter.last_owner?).to eq(true) }
+      it { expect(presenter.last_owner?).to be(true) }
     end
 
     context 'when member is not the last owner of the group' do
@@ -68,7 +68,7 @@ RSpec.describe GroupMemberPresenter do
         allow(group_member).to receive(:last_owner_of_the_group?).and_return(false)
       end
 
-      it { expect(presenter.last_owner?).to eq(false) }
+      it { expect(presenter.last_owner?).to be(false) }
     end
   end
 
@@ -78,7 +78,7 @@ RSpec.describe GroupMemberPresenter do
         allow(presenter).to receive(:can?).with(user, :update_group_member, presenter).and_return(true)
       end
 
-      it { expect(presenter.can_update?).to eq(true) }
+      it { expect(presenter.can_update?).to be(true) }
     end
 
     context 'when user cannot update_group_member' do
@@ -87,7 +87,7 @@ RSpec.describe GroupMemberPresenter do
         allow(presenter).to receive(:can?).with(user, :override_group_member, presenter).and_return(false)
       end
 
-      it { expect(presenter.can_update?).to eq(false) }
+      it { expect(presenter.can_update?).to be(false) }
     end
   end
 
@@ -97,7 +97,7 @@ RSpec.describe GroupMemberPresenter do
         allow(presenter).to receive(:can?).with(user, :destroy_group_member, presenter).and_return(true)
       end
 
-      it { expect(presenter.can_remove?).to eq(true) }
+      it { expect(presenter.can_remove?).to be(true) }
     end
 
     context 'when user cannot destroy_group_member' do
@@ -105,7 +105,7 @@ RSpec.describe GroupMemberPresenter do
         allow(presenter).to receive(:can?).with(user, :destroy_group_member, presenter).and_return(false)
       end
 
-      it { expect(presenter.can_remove?).to eq(false) }
+      it { expect(presenter.can_remove?).to be(false) }
     end
   end
 
@@ -120,7 +120,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :update_group_member, presenter).and_return(true)
         end
 
-        it { expect(presenter.can_approve?).to eq(true) }
+        it { expect(presenter.can_approve?).to be(true) }
       end
 
       context 'when user cannot update_group_member' do
@@ -129,7 +129,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :override_group_member, presenter).and_return(false)
         end
 
-        it { expect(presenter.can_approve?).to eq(false) }
+        it { expect(presenter.can_approve?).to be(false) }
       end
     end
 
@@ -143,7 +143,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :update_group_member, presenter).and_return(true)
         end
 
-        it { expect(presenter.can_approve?).to eq(false) }
+        it { expect(presenter.can_approve?).to be(false) }
       end
 
       context 'when user cannot update_group_member' do
@@ -151,7 +151,7 @@ RSpec.describe GroupMemberPresenter do
           allow(presenter).to receive(:can?).with(user, :update_group_member, presenter).and_return(false)
         end
 
-        it { expect(presenter.can_approve?).to eq(false) }
+        it { expect(presenter.can_approve?).to be(false) }
       end
     end
   end

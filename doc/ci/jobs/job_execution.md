@@ -73,7 +73,7 @@ steps, with each step running in a separate shell context. The runner:
 
    - Exports variables to the shell context
    - Executes commands to delete file-based variables from the working directory
-   - Failure of these commands doesn't influence the overall job
+   - Failure of these commands doesn't influence the overall job status
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

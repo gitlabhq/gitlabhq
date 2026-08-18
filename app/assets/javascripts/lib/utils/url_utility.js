@@ -861,6 +861,21 @@ export function refreshCurrentPage() {
   window.location.reload();
 }
 
+/**
+ * Reloads the current page and displays alerts once it has loaded.
+ *
+ * Use this instead of visitUrlWithAlerts when the destination is the page you are
+ * already on. Assigning the current URL, or one that differs from it only by its
+ * fragment, is a same-document navigation, which skips the reload that renders
+ * the alerts.
+ *
+ * @param {{id: String, title?: String, message: String, variant: String, dismissible?: Boolean, persistOnPages?: String[]}[]} alerts - Alerts to display
+ */
+export function refreshCurrentPageWithAlerts(alerts) {
+  setGlobalAlerts([...getGlobalAlerts(), ...alerts]);
+  refreshCurrentPage();
+}
+
 // Adds a ref_type param to the path if refType is available
 export function buildURLwithRefType({ base = window.location.origin, path, refType = null }) {
   const url = new URL('', base);

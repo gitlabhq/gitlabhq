@@ -28,7 +28,7 @@ Prerequisites:
 - Access to the corresponding Microsoft Entra ID tenant with at least the `Application Developer` access level.
 - A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
   Alternatively, you can use all the following steps with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
-- Your GitLab instance must be publicly accessible over the internet as Azure must to connect to the GitLab OIDC endpoint.
+- Your GitLab instance must be publicly accessible over the internet as Azure must connect to the GitLab OIDC endpoint.
 - A GitLab project.
 
 To complete this tutorial:
@@ -85,7 +85,7 @@ EOF
 az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$objectId/federatedIdentityCredentials" --body @body.json
 ```
 
-For issues related to the values of `issuer`, `subject` or `audiences`, see the
+For issues related to the values of `issuer`, `subject`, or `audiences`, see the
 [troubleshooting](#troubleshooting) details.
 
 Optionally, you can now verify the Entra ID application and the Entra ID federated
@@ -214,8 +214,8 @@ you should verify:
 - The `Audience` defined in the Entra ID federated identity credentials, for example `https://gitlab.com`
   or your own GitLab URL.
 
-You can review these settings, as well as your `AZURE_CLIENT_ID` and `AZURE_TENANT_ID`
-CI/CD variables, from the Azure Portal:
+You can review these settings and your `AZURE_CLIENT_ID` and `AZURE_TENANT_ID`
+CI/CD variables from the Azure Portal:
 
 1. Open the [Microsoft Entra ID App Registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
    view and select the appropriate app registration by searching for the display name `gitlab-oidc`.
@@ -231,7 +231,7 @@ Review [Connect to cloud services](../_index.md) for further details.
 If you receive the error `ERROR: AADSTS501661: Request to External OIDC endpoint failed.`
 you should verify that your GitLab instance is publicly accessible from the internet.
 
-Azure must be able to access the following GitLab endpoints to authenticate with OIDC:
+Azure must have access to the following GitLab endpoints to authenticate with OIDC:
 
 - `GET /.well-known/openid-configuration`
 - `GET /oauth/discovery/keys`

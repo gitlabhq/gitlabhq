@@ -200,6 +200,16 @@ RSpec.describe 'User page', feature_category: :user_profile do
 
         expect(page).to have_button(text: 'Unfollow', class: 'gl-button')
       end
+
+      it 'does not show button to follow a blocked user', :aggregate_failures do
+        blocked_user = create(:user, :blocked)
+        sign_in(user)
+
+        visit user_path(blocked_user)
+
+        expect(page).to have_content('This user is blocked')
+        expect(page).to have_no_button(text: 'Follow', class: 'gl-button')
+      end
     end
   end
 

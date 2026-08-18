@@ -30,9 +30,9 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
         context 'with many deletion schedules' do
           it 'prunes schedules in batches' do
             stub_const "Members::PruneDeletionsWorker::SCHEDULE_BATCH_SIZE", 5
-            create_list(:members_deletion_schedules, 10)
+            create_list(:members_deletion_schedules, 5)
 
-            expect { perform_work }.to change { Members::DeletionSchedule.count }.from(11).to(6)
+            expect { perform_work }.to change { Members::DeletionSchedule.count }.from(6).to(1)
           end
         end
 

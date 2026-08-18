@@ -76,8 +76,11 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
 
       context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
         before_all do
-          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
           project.add_reporter(user)
+        end
+
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
         end
 
         it_behaves_like 'searches for packages'

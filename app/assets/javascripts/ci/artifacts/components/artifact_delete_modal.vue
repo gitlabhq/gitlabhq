@@ -1,6 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   I18N_MODAL_TITLE,
   I18N_MODAL_BODY,
@@ -13,6 +14,7 @@ export default {
   components: {
     GlModal,
   },
+  mixins: [glListenersMixin],
   props: {
     artifactName: {
       type: String,
@@ -48,7 +50,7 @@ export default {
     :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     {{ $options.i18n.body }}
   </gl-modal>

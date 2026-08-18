@@ -14,11 +14,11 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       allow(Labkit::RateLimit::Rule).to receive(:new).and_call_original
     end
 
-    it 'builds each throttle rule with action :block by default' do
+    it 'builds each throttle rule with action :limit by default' do
       described_class.all
 
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web', action: :block))
+        .with(hash_including(name: 'unauthenticated_web', action: :limit))
     end
 
     it 'builds every rule regardless of cohort (universal presence)', :aggregate_failures do
@@ -39,17 +39,58 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         .with(hash_including(name: entry.rule_name, match: entry.match))
     end
 
-    it 'builds the web-path rule and its frontend companion as sibling :block rules' do
-      # The companion is its own registry entry (its own counter/rule name) backing the
-      # same throttle; both build as :block by default.
-      web = registry.all.fetch('throttle_unauthenticated_web')
-      frontend = registry.all.fetch('throttle_unauthenticated_web_frontend')
+    # enforced_response and annotate_rate_limit_headers resolve a counted rule
+    # back to its throttle via ThrottleRegistry.by_rule_name; a counting rule not
+    # named after a registry entry would silently lose its 429s and headers.
+    it 'names every counting rule after a registry entry, so a matched rule always resolves to its throttle' do
+      built_rules = []
+      allow(Labkit::RateLimit::Rule).to receive(:new).and_wrap_original do |original, **kwargs|
+        built_rules << kwargs
+        original.call(**kwargs)
+      end
+
+      described_class.all
+
+      counting_rule_names = built_rules.reject { |kwargs| kwargs[:action] == :skip }.map { |kwargs| kwargs[:name] }
+
+      expect(counting_rule_names).not_to be_empty
+      expect(registry.by_rule_name.keys).to include(*counting_rule_names)
+    end
+
+    it 'follows each claiming throttle rule with a terminating claim of the same match' do
+      # labkit evaluates every matching rule, so the claim is what stops a
+      # specialized request also being counted by the general rules below it.
+      # The registry declares the claim (claims: true); the match is derived
+      # from the entry's own, never written out.
+      entry = registry.all.fetch('throttle_unauthenticated_web')
       described_class.all
 
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web', match: web.match, action: :block))
+        .with(hash_including(name: 'unauthenticated_web_claim', match: entry.match, action: :skip))
+    end
+
+    it 'builds only the counting rule for an entry that does not declare a claim' do
+      entries = registry.all
+      entries.fetch('throttle_unauthenticated_web').claims = false
+      allow(registry).to receive(:all).and_return(entries)
+      described_class.all
+
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web_frontend', match: frontend.match, action: :block))
+        .with(hash_including(name: 'unauthenticated_web', action: :limit))
+      expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web_claim'))
+    end
+
+    it 'builds each web throttle as one rule, keeping the throttle on a single counter' do
+      # The rule name keys the Redis counter; web_or_frontend carries the
+      # disjunction that would otherwise need two rules (and so two counters).
+      web = registry.all.fetch('throttle_unauthenticated_web')
+      described_class.all
+
+      expect(Labkit::RateLimit::Rule).to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web', match: web.match, action: :limit)).once
+      expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web_frontend'))
     end
 
     describe 'synthetic terminating rules' do
@@ -75,7 +116,7 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
 
         expect(Labkit::RateLimit::Rule).to have_received(:new)
           .with(hash_including(name: 'runner_jobs',
-            match: { path: Gitlab::RackAttack::Request::RUNNER_JOBS_PATH_REGEX, requester_id: /./ }, action: :skip))
+            match: { runner_jobs: true, requester_id: /./ }, action: :skip))
       end
     end
 
@@ -99,18 +140,18 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
           .with(hash_including(name: 'unauthenticated_web_dry_run_bypass', match: entry.match, action: :skip))
       end
 
-      it 'shapes the frontend companion as its own dry-run log rule and bypass' do
-        # The companion is the same Rack::Attack throttle, so it follows the same
-        # dry-run state: a :log rule and its own terminating :skip, keyed by the
-        # companion name so it does not collide with the web-path rule's counter.
-        frontend_match = registry.all.fetch('throttle_unauthenticated_web_frontend').match
+      it 'omits the dry-run bypass for an entry that does not declare a claim' do
+        # One declaration governs both shapes: the bypass is the claim in its
+        # dry-run form.
+        entries = registry.all
+        entries.fetch('throttle_unauthenticated_web').claims = false
+        allow(registry).to receive(:all).and_return(entries)
         described_class.all
 
         expect(Labkit::RateLimit::Rule).to have_received(:new)
-          .with(hash_including(name: 'unauthenticated_web_frontend', match: frontend_match, action: :log))
-        expect(Labkit::RateLimit::Rule).to have_received(:new)
-          .with(hash_including(name: 'unauthenticated_web_frontend_dry_run_bypass', match: frontend_match,
-            action: :skip))
+          .with(hash_including(name: 'unauthenticated_web', action: :log))
+        expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+          .with(hash_including(name: 'unauthenticated_web_dry_run_bypass'))
       end
     end
   end
@@ -149,14 +190,19 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         )
     end
 
+    # The rule that terminated evaluation. An enforced throttle terminates on its
+    # claim skip (the counting rule itself never terminates under labkit's
+    # evaluate-all semantics), so the claim suffix is stripped: the selection
+    # under test is the throttle, not the mechanism. Synthetic skips (bypass,
+    # skip_*, runner_jobs) and dry-run bypasses keep their own names.
     def selected_in(limiter, **overrides)
       result = limiter.check(facts(**overrides))
-      result.rule.name if result.matched?
+      result.rule.name.delete_suffix('_claim') if result.matched?
     end
 
-    # The git rows carry a git path, which also matches WEB_PATH_REGEX (a git path is
-    # a web request), so they also assert the git rules are ordered before (and so
-    # exclude) the web-path rule.
+    # The git rows carry web_or_frontend: true (a git path is a web request) with the
+    # matching web throttle setting on, so they also assert the git rules are ordered
+    # before - and so exclude - the web rules.
     # Unauthenticated rows carry no requester_id/runner_id override, so the facts
     # helper's nil defaults are the unauthenticated? decomposition the rules gate on.
     general_cases = {
@@ -183,19 +229,10 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_web' => {
-        path: '/dashboard', setting_unauthenticated_web: true
+        path: '/dashboard', web_or_frontend: true, setting_unauthenticated_web: true
       },
       'authenticated_web' => {
-        path: '/dashboard', setting_authenticated_web: true,
-        requester_type: 'user', requester_id: '1'
-      },
-      # The frontend companion: a CSRF request on an API path (not a web path), which
-      # the web-path rule misses but the frontend rule claims before the API rule.
-      'unauthenticated_web_frontend' => {
-        path: paths[:api], frontend: true, setting_unauthenticated_web: true
-      },
-      'authenticated_web_frontend' => {
-        path: paths[:api], frontend: true, setting_authenticated_web: true,
+        path: '/dashboard', web_or_frontend: true, setting_authenticated_web: true,
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_api' => { path: paths[:api], setting_unauthenticated_api: true },
@@ -204,14 +241,15 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_git_http' => {
-        path: paths[:git], setting_unauthenticated_git_http: true
+        path: paths[:git], web_or_frontend: true, setting_unauthenticated_git_http: true,
+        setting_unauthenticated_web: true
       },
       'authenticated_git_http' => {
-        path: paths[:git], setting_authenticated_git_http: true,
+        path: paths[:git], web_or_frontend: true, setting_authenticated_git_http: true,
         setting_authenticated_web: true, requester_type: 'user', requester_id: '1'
       },
       'authenticated_git_lfs' => {
-        path: paths[:git_lfs], setting_authenticated_git_lfs: true,
+        path: paths[:git_lfs], web_or_frontend: true, setting_authenticated_git_lfs: true,
         setting_authenticated_web: true, requester_type: 'user', requester_id: '1'
       }
     }
@@ -220,6 +258,42 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       it "selects #{throttle} for its representative request" do
         expect(selected_in(general, **request_facts)).to eq(throttle)
       end
+    end
+
+    it 'counts a frontend request on an API path under the web throttle, not the API throttle' do
+      # The API rules' frontend: false gate keeps Rack::Attack's !frontend_request?
+      # exclusion even with the web throttle setting off.
+      frontend_api = {
+        path: paths[:api], frontend: true, web_or_frontend: true,
+        setting_unauthenticated_api: true
+      }
+
+      expect(selected_in(general, **frontend_api, setting_unauthenticated_web: true)).to eq('unauthenticated_web')
+      expect(selected_in(general, **frontend_api, setting_unauthenticated_web: false)).to be_nil
+    end
+
+    it 'accumulates web-page and frontend-API requests from one IP on a single counter' do
+      # The regression this MR fixes: two rules would split the counter and the IP
+      # would reach the limit later than under Rack::Attack.
+      web_page = general.check(
+        facts(path: '/dashboard', web_or_frontend: true, setting_unauthenticated_web: true))
+      frontend_api = general.check(
+        facts(path: paths[:api], frontend: true, web_or_frontend: true, setting_unauthenticated_web: true))
+
+      # An under-limit check terminates on the claim skip, so the counted throttle
+      # evaluation is read off #evaluations.
+      expect(web_page.evaluations.first.rule.name).to eq('unauthenticated_web')
+      expect(frontend_api.evaluations.first.rule.name).to eq('unauthenticated_web')
+      expect(web_page.evaluations.first.info.count).to eq(1)
+      expect(frontend_api.evaluations.first.info.count).to eq(2)
+    end
+
+    it 'lets the collector rule claim a collector request, leaving it out of the web counter' do
+      # Rack::Attack counts a collector request under both throttles (a collector
+      # path is also a web path); the claim is a known, accepted divergence.
+      expect(selected_in(general,
+        path: paths[:collector], aid: 'app-1', web_or_frontend: true,
+        setting_unauthenticated_web: true)).to eq('product_analytics_collector')
     end
 
     protected_cases = {
@@ -247,10 +321,19 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         path: '/-/health', setting_unauthenticated_api: true)).to eq('skip_health_checks')
     end
 
-    it 'skips an authenticated request on the runner-jobs path before the authenticated API throttle' do
+    it 'skips a job-token request on the runner-jobs path before the authenticated API throttle' do
+      expect(selected_in(general,
+        path: '/api/v4/jobs/1', runner_jobs: true, setting_authenticated_api: true,
+        requester_type: 'user', requester_id: '1')).to eq('runner_jobs')
+    end
+
+    it 'counts a PAT-authenticated request on the runner-jobs path under the authenticated API throttle' do
+      # Only runner- or job-token-authenticated requests are exempt from the
+      # authenticated API throttle on the jobs path (runner_jobs fact); a bot
+      # polling job status with a PAT is ordinary API usage and stays counted.
       expect(selected_in(general,
         path: '/api/v4/jobs/1', setting_authenticated_api: true,
-        requester_type: 'user', requester_id: '1')).to eq('runner_jobs')
+        requester_type: 'user', requester_id: '1')).to eq('authenticated_api')
     end
 
     it 'lets a runner-token request escape every throttle (no requester, runner_id present)' do
@@ -258,6 +341,14 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       # and runner_id present fails the unauthenticated rules' runner_id: nil gate.
       expect(selected_in(general,
         path: paths[:api], runner_id: '5',
+        setting_unauthenticated_api: true, setting_authenticated_api: true)).to be_nil
+    end
+
+    it 'lets a runner-token request on the runner-jobs path escape every rule including the skip' do
+      # The runner_jobs skip carries a requester presence gate, so a runner-token
+      # request is not claimed by it and escapes unmatched, as on every other path.
+      expect(selected_in(general,
+        path: '/api/v4/jobs/request', runner_jobs: true, runner_id: '5',
         setting_unauthenticated_api: true, setting_authenticated_api: true)).to be_nil
     end
 
@@ -285,7 +376,7 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
 
     it 'lets authenticated web claim a git-lfs request when the lfs throttle is disabled (fallthrough)' do
       expect(selected_in(general,
-        path: paths[:git_lfs], requester_type: 'user', requester_id: '1',
+        path: paths[:git_lfs], web_or_frontend: true, requester_type: 'user', requester_id: '1',
         setting_authenticated_web: true, setting_authenticated_git_lfs: false)).to eq('authenticated_web')
     end
 
@@ -322,12 +413,18 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         ))
       end
 
+      # An under-limit check terminates on the claim skip, which carries no
+      # counter, so the counted throttle evaluation is read off #evaluations.
+      def counted(result)
+        result.evaluations.first
+      end
+
       it 'collides two requests with the same (type, id) on one counter' do
         first = check_api(type: 'user', id: '42')
         second = check_api(type: 'user', id: '42')
 
-        expect(first.rule.name).to eq('authenticated_api')
-        expect(second.info.count).to eq(2)
+        expect(counted(first).rule.name).to eq('authenticated_api')
+        expect(counted(second).info.count).to eq(2)
       end
 
       it 'keeps a DeployToken and a User with the same numeric id on separate counters' do
@@ -336,16 +433,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
 
         # Distinct counters: each first hit on its own key reads count 1, so the type
         # segment is part of the redis key (a DeployToken does not bump the User key).
-        expect(user.info.count).to eq(1)
-        expect(deploy_token.info.count).to eq(1)
+        expect(counted(user).info.count).to eq(1)
+        expect(counted(deploy_token).info.count).to eq(1)
       end
 
       it 'keeps two different ids of the same type on separate counters' do
         first = check_api(type: 'user', id: '1')
         second = check_api(type: 'user', id: '2')
 
-        expect(first.info.count).to eq(1)
-        expect(second.info.count).to eq(1)
+        expect(counted(first).info.count).to eq(1)
+        expect(counted(second).info.count).to eq(1)
       end
     end
   end

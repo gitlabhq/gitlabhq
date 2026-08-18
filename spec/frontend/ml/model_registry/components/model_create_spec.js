@@ -51,11 +51,11 @@ describe('ModelCreate', () => {
     });
   };
 
-  const findPrimaryButton = () => wrapper.findByTestId('primary-button');
-  const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
-  const findNameInput = () => wrapper.findByTestId('nameId');
+  const findPrimaryButton = () => wrapper.findComponentByTestId('primary-button');
+  const findSecondaryButton = () => wrapper.findComponentByTestId('secondary-button');
+  const findNameInput = () => wrapper.findComponentByTestId('nameId');
   const findDescriptionGroup = () => wrapper.findByTestId('descriptionGroupId');
-  const findDescriptionInput = () => wrapper.findByTestId('descriptionId');
+  const findDescriptionInput = () => wrapper.findComponentByTestId('descriptionId');
   const findGlAlert = () => wrapper.findByTestId('create-alert');
   const submitForm = async () => {
     findPrimaryButton().vm.$emit('click');

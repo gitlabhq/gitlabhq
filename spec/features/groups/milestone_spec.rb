@@ -51,7 +51,8 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
 
       click_button 'Create milestone'
 
-      wait_for_all_requests
+      # Clicking the submit button does not wait for the resulting navigation.
+      expect(page).to have_current_path(%r{/-/milestones/\d+\z})
 
       expand_right_sidebar
 
@@ -235,11 +236,19 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
   private
 
   def expand_right_sidebar
-    return unless page.has_css?('.right-sidebar.right-sidebar-collapsed', wait: 1) # rubocop: disable RSpec/AvoidConditionalStatements -- We need this to support both FOSS and EE runs of this spec
+    expect(page).to have_css('body[data-right-sidebar-initialized]')
 
-    page.within('.right-sidebar.right-sidebar-collapsed') do
-      find('.js-sidebar-expand').click
-    end
-    expect(page).to have_selector('.right-sidebar .js-sidebar-collapse')
+    execute_script(<<~JS)
+      const sidebar = document.querySelector('aside.right-sidebar');
+      const layoutPage = document.querySelector('.layout-page');
+      if (sidebar) {
+        sidebar.classList.remove('right-sidebar-collapsed');
+        sidebar.classList.add('right-sidebar-expanded');
+      }
+      if (layoutPage) {
+        layoutPage.classList.remove('right-sidebar-collapsed');
+        layoutPage.classList.add('right-sidebar-expanded');
+      }
+    JS
   end
 end

@@ -7,6 +7,7 @@ end
 
 require 'active_context'
 require 'active_support/all'
+require 'active_support/testing/time_helpers'
 require 'aws-sdk-core'
 require 'byebug'
 require 'faraday/typhoeus'
@@ -28,4 +29,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.include ActiveSupport::Testing::TimeHelpers
 end

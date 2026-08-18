@@ -4,6 +4,8 @@ module QA
   module Page
     module SubMenus
       module Common
+        SIDEBAR_RENDER_WAIT = 30
+
         def self.included(base)
           super
 
@@ -14,6 +16,10 @@ module QA
 
             view 'app/assets/javascripts/super_sidebar/components/create_menu.vue' do
               element 'new-menu-toggle'
+            end
+
+            view 'app/assets/javascripts/super_sidebar/components/icon_only_toggle.vue' do
+              element 'super-sidebar-collapse-button'
             end
 
             view 'app/assets/javascripts/super_sidebar/components/menu_section.vue' do
@@ -44,6 +50,8 @@ module QA
         # @param [String] sub_menu
         # @return [void]
         def open_submenu(parent_menu_name, sub_menu)
+          wait_for_sidebar_render
+
           expand_sidebar_if_collapsed
 
           # prevent closing sub-menu if it was already open
@@ -56,10 +64,24 @@ module QA
           end
         end
 
+        # Waits for the sidebar's Vue app to mount
+        #
+        # The server-rendered placeholder already carries the `super-sidebar` class but not its
+        # test id, so the test id appearing is what tells us the section buttons exist. Failing
+        # here names the render race directly, rather than letting it resurface further down as
+        # a missing section button.
+        # @return [void]
+        def wait_for_sidebar_render
+          return if has_element?('super-sidebar', wait: SIDEBAR_RENDER_WAIT)
+
+          raise Base::ElementNotFound,
+            %(Super sidebar not found on #{current_url})
+        end
+
         # Expands the sidebar if it's in icon-only (collapsed) mode
         # @return [void]
         def expand_sidebar_if_collapsed
-          click_element('sidebar-icon') if has_css?('.super-sidebar-is-icon-only', wait: 0)
+          click_element('super-sidebar-collapse-button') if has_css?('.super-sidebar-is-icon-only', wait: 0)
         end
       end
     end

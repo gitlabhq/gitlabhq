@@ -115,7 +115,7 @@ export default {
       default: false,
     },
   },
-  emits: ['dismissError', 'error', 'upload'],
+  emits: ['dismiss-error', 'error', 'upload'],
   apollo: {
     designCollection: {
       query: getWorkItemDesignListQuery,
@@ -175,6 +175,10 @@ export default {
     },
     hasDesignsAndVersions() {
       return this.hasDesigns || this.allVersions.length > 0;
+    },
+    isCollapsedByDefault() {
+      // "All designs archived": versions exist but none are active.
+      return this.allVersions.length > 0 && !this.hasDesigns;
     },
     hasSelectedDesigns() {
       return this.selectedDesigns.length > 0;
@@ -257,15 +261,14 @@ export default {
     },
   },
   watch: {
-    enablePasteOnNoDesign: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal) {
-          this.toggleOnPasteListener();
-        } else {
-          this.toggleOffPasteListener();
-        }
-      },
+    // Deliberately not `immediate`: attaching on mount makes an invisible, empty
+    // widget claim every paste on the page. Hover is the intent signal instead.
+    enablePasteOnNoDesign(newVal) {
+      if (newVal) {
+        this.toggleOnPasteListener();
+      } else {
+        this.toggleOffPasteListener();
+      }
     },
   },
   unmounted() {
@@ -277,7 +280,7 @@ export default {
   methods: {
     dismissError() {
       this.error = undefined;
-      this.$emit('dismissError');
+      this.$emit('dismiss-error');
     },
     isDesignSelected(filename) {
       return this.selectedDesigns.includes(filename);
@@ -427,8 +430,18 @@ export default {
         this.$options.VALID_DESIGN_FILE_MIMETYPE.mimetype.includes(item.type),
       );
     },
+    isEditableTarget(target) {
+      return (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target instanceof HTMLElement && target.isContentEditable)
+      );
+    },
     onDesignPaste(event) {
       if (!this.canPasteDesign) return;
+      // The listener is on `document`, so a paste meant for any editor on the
+      // page (comment box, new-item modal, drawer, Duo chat) reaches us too.
+      if (this.isEditableTarget(event.target)) return;
 
       const { clipboardData } = event;
       if (!clipboardData || !clipboardData.files.length) return;
@@ -501,7 +514,7 @@ export default {
 
 <template>
   <div
-    class="work-item-design-widget-container gl-rounded-base focus:gl-focus"
+    class="work-item-design-widget-container gl-rounded-base focus-visible:gl-focus"
     :class="{ 'gl-mt-3': hasDesignsAndVersions }"
     :tabindex="0"
     @mouseenter="toggleOnPasteListener"
@@ -518,6 +531,7 @@ export default {
       :body-class="crudBodyClass"
       is-collapsible
       persist-collapsed-state
+      :collapsed="isCollapsedByDefault"
       @click-collapsed="handleCrudCollapsed(true)"
       @click-expanded="handleCrudCollapsed(false)"
     >

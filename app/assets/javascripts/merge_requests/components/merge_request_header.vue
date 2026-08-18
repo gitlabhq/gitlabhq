@@ -1,5 +1,6 @@
 <script>
 import { mapState } from 'pinia';
+import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
@@ -16,6 +17,7 @@ export default {
   TYPE_MERGE_REQUEST,
   NAMESPACE_PROJECT,
   components: {
+    ArchivedBadge,
     ConfidentialityBadge,
     LockedBadge,
     HiddenBadge,
@@ -52,6 +54,9 @@ export default {
         return this.initialState;
       }
       return badgeState.state;
+    },
+    isArchived() {
+      return this.getNoteableData.archived;
     },
     isLocked() {
       return this.getNoteableData.discussion_locked;
@@ -92,7 +97,13 @@ export default {
 
 <template>
   <span class="gl-contents">
+    <archived-badge
+      v-if="isArchived"
+      class="gl-mr-2 gl-self-center"
+      :issuable-type="$options.TYPE_MERGE_REQUEST"
+    />
     <status-badge
+      v-else
       class="gl-mr-2 gl-self-center"
       :issuable-type="$options.TYPE_MERGE_REQUEST"
       :state="state"

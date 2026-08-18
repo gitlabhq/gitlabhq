@@ -214,7 +214,7 @@ Configure a GitLab CI/CD job to use functions with the `run` keyword. You cannot
 The `run` keyword accepts a list of steps to run. Steps are run one at a time in the order they are defined in the list.
 Each step has a `name`, either `func` or `script`, and optionally, `inputs` and `env`.
 
-Name must consist only of alphanumeric characters and underscores, and cannot start with a number.
+The name must consist only of alphanumeric characters and underscores, and cannot start with a number.
 
 #### Invoke a function
 
@@ -244,7 +244,7 @@ using `env` are set in the shell. Script steps use the `bash` shell, falling bac
 [Expressions](#expressions) can be used in the `script` value, and the keys and values of `env`.
 Script steps run in the `CI_PROJECT_DIR` directory.
 
-Use the script step when you need something custom and simple alongside functions. Internally,
+Use the script step when you need something custom alongside functions. Internally,
 functions converts the script to a function invocation and passes the script as an input.
 
 For example, the following script step prints the message `Hi Sally!` to the job log:
@@ -300,7 +300,7 @@ my-job:
 ```
 
 To authenticate to private OCI repositories, set the `DOCKER_AUTH_CONFIG` environment variable with a value
-in Docker config file format. For a working example of authentication as a function, see the
+in Docker configuration file format. For a working example of authentication as a function, see the
 [Docker Auth](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth) function.
 
 #### Load from the file system

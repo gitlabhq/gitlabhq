@@ -2,6 +2,7 @@
 query getCommitList(
   $projectPath: ID!
   $ref: String!
+  $pipelineRef: String
   $first: Int
   $after: String
   $author: String
@@ -63,7 +64,7 @@ query getCommitList(
               verificationStatus
             }
           }
-          pipelines(first: 1) {
+          pipelines(first: 1, ref: $pipelineRef) {
             edges {
               node {
                 id

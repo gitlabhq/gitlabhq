@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'graphql queries', feature_category: :api do
+  include GraphqlQueryComplexityHelper
+
   RSpec::Matchers.define :be_a_valid_graphql_query do
     match do |definition|
       @errors = definition.validate(GitlabSchema).second
@@ -111,6 +113,41 @@ RSpec.describe 'graphql queries', feature_category: :api do
         definition = Gitlab::Graphql::Queries::Definition.new(file, fragments)
 
         expect(definition).not_to be_a_valid_graphql_query
+      end
+    end
+  end
+
+  # These are CE query files, so this guards their CE-resolved complexity in the FOSS
+  # pipeline. The EE-resolved complexity (which is higher because EE adds fields to the
+  # shared fragments) is guarded by the equivalent block in ee/spec/graphql/all_queries_spec.rb.
+  # `__typename` is injected because Apollo Client adds it at runtime and it counts
+  # towards complexity; we assert `<=` since the server only rejects queries that exceed
+  # the limit. See https://gitlab.com/gitlab-org/gitlab/-/issues/587970
+  describe 'work item detail/mutation query complexity with workItem.features field enabled', unless: Gitlab.ee? do
+    %w[
+      app/assets/javascripts/work_items/graphql/work_item_by_iid.query.graphql
+      app/assets/javascripts/work_items/graphql/work_item_by_id.query.graphql
+      app/assets/javascripts/work_items/graphql/create_work_item.mutation.graphql
+      app/assets/javascripts/work_items/graphql/update_work_item.mutation.graphql
+      app/assets/javascripts/work_items/graphql/work_item_convert.mutation.graphql
+      app/assets/javascripts/work_items/graphql/move_work_item.mutation.graphql
+      app/assets/javascripts/work_items/graphql/add_linked_items.mutation.graphql
+      app/assets/javascripts/work_items/graphql/work_item_updated.subscription.graphql
+    ].each do |query_path|
+      describe query_path do
+        let(:definition) { Gitlab::Graphql::Queries.find(Rails.root.join(query_path)).first }
+
+        it 'does not exceed authenticated max complexity with features enabled' do
+          complexity = query_complexity_with_typename(definition.text, { "useWorkItemFeatures" => true })
+
+          expect(complexity).to be <= GitlabSchema::AUTHENTICATED_MAX_COMPLEXITY
+        end
+
+        it 'does not exceed admin max complexity with features enabled' do
+          complexity = query_complexity_with_typename(definition.text, { "useWorkItemFeatures" => true })
+
+          expect(complexity).to be <= GitlabSchema::ADMIN_MAX_COMPLEXITY
+        end
       end
     end
   end

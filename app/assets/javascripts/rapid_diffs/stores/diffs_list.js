@@ -3,6 +3,7 @@ import { debounce } from 'lodash-es';
 import { renderHtmlStreams } from '~/rapid_diffs/streaming/render_html_streams';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
+import { settledScrollIntoView } from '~/rapid_diffs/utils/settled_scroll_into_view';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
@@ -18,6 +19,14 @@ export const statuses = {
   error: 'error',
   streaming: 'streaming',
 };
+
+function scrollToFileStart(file) {
+  const stickyTop = parseInt(getComputedStyle(file).scrollMarginTop, 10) || 0;
+  const { top } = file.getBoundingClientRect();
+  const startVisible = top >= stickyTop && top <= window.innerHeight;
+  if (startVisible) return;
+  settledScrollIntoView(file, file.closest('[data-rapid-diffs]'));
+}
 
 export const useDiffsList = defineStore('diffsList', {
   state() {
@@ -122,10 +131,21 @@ export const useDiffsList = defineStore('diffsList', {
         url.searchParams.set('ignore_whitespace_changes', !showWhitespace);
 
         const container = document.querySelector('[data-diffs-list]');
+        const overlay = document.querySelector('[data-diffs-overlay]');
+        const request = fetch(url.toString(), { signal });
 
-        container.innerHTML = '';
+        this.status = statuses.fetching;
+        overlay.dataset.loading = 'true';
+        try {
+          await request;
+          container.innerHTML = '';
+          await this.renderDiffsStream(request, container, signal);
+        } finally {
+          delete overlay.dataset.loading;
+        }
 
-        await this.renderDiffsStream(fetch(url.toString(), { signal }), container, signal);
+        const [file] = DiffFile.getAll();
+        if (file) scrollToFileStart(file);
       });
     },
     reloadDiffs(url, initial = false) {

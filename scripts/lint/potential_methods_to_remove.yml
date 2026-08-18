@@ -11,7 +11,6 @@ ee/app/models/concerns/security/scan_result_policy.rb:
   - applicable_scan_result_policies_with_real_index
 ee/app/models/ee/ci/build.rb:
   - has_artifact?
-  - collect_license_scanning_reports!
 ee/app/models/ee/ci/pipeline.rb:
   - latest_merged_result_pipeline?
   - license_scan_completed?
@@ -38,8 +37,6 @@ ee/app/models/ee/project.rb:
   - search_by_visibility
   - group_ldap_synced?
   - upstream_projects_count
-ee/app/models/ee/user.rb:
-  - ci_namespace_mirrors_permitted_to
 ee/app/models/ee/user_preference.rb:
   - distinct_eligible_duo_add_on_assignments
   - no_eligible_duo_add_on_assignments?
@@ -63,20 +60,9 @@ ee/app/models/project_security_setting.rb:
 ee/app/models/search/zoekt.rb:
   - index_in
   - delete_in
-ee/app/models/security/attribute.rb:
-  - really_destroy!
-ee/app/models/security/category.rb:
-  - really_destroy!
 ee/app/models/security/orchestration_policy_configuration.rb:
   - compliance_framework_ids_with_policy_index
   - experiment_configuration
-app/helpers/integrations_helper.rb:
-  - integration_todo_target_type
-app/helpers/routing/groups/members_helper.rb:
-  - approve_access_request_group_member_path
-  - resend_invite_group_member_path
-app/helpers/routing/pipeline_schedules_helper.rb:
-  - play_pipeline_schedule_path
 app/helpers/routing/projects/members_helper.rb:
   - request_access_project_members_path
   - leave_project_members_path
@@ -84,15 +70,10 @@ app/helpers/routing/projects/members_helper.rb:
   - resend_invite_project_member_path
 app/models/application_setting_implementation.rb:
   - ensure_key_restrictions!
-app/models/ci/build.rb:
-  - has_live_trace?
-  - has_archived_trace?
 app/models/ci/job_token/allowlist.rb:
   - project_link_traversal_ids
   - group_link_traversal_ids
   - bulk_add_groups!
-app/models/ci/pipeline.rb:
-  - has_erasable_artifacts?
 app/models/ci/runner.rb:
   - belongs_to_one_project?
   - fallback_owner_project
@@ -107,10 +88,6 @@ app/models/clusters/concerns/application_version.rb:
   - update_available?
 app/models/concerns/ci/metadatable.rb:
   - degenerate!
-app/models/concerns/counter_attribute.rb:
-  - update_counters_with_lease
-app/models/concerns/forced_email_confirmation.rb:
-  - confirmation_period_expired?
 app/models/concerns/has_check_constraints.rb:
   - clear_constraints_cache!
 app/models/concerns/integrations/base/harbor.rb:
@@ -119,9 +96,6 @@ app/models/concerns/integrations/base/integration.rb:
   - instance_exists_for?
 app/models/concerns/mentionable.rb:
   - referenced_group_users
-app/models/concerns/milestoneish.rb:
-  - total_merge_requests_count
-  - elapsed_days
 app/models/concerns/namespaces/stateful/state_querying.rb:
   - effective_state
 app/models/concerns/partitioned_table.rb:
@@ -149,13 +123,9 @@ app/models/concerns/user_mention_behaviour.rb:
 app/models/group.rb:
   - get_ids_by_ids_or_paths
   - blocked_owners
-  - has_maintainer?
   - hierarchy_members_with_inactive
 app/models/import/source_user_placeholder_reference.rb:
   - aliased_composite_key
-app/models/issue.rb:
-  - previous_updated_at
-  - email_participants_emails
 app/models/namespace.rb:
   - any_project_with_pages_deployed?
   - saved_change_to_parent?
@@ -166,8 +136,6 @@ app/models/project.rb:
   - issue_exists?
   - enable_ci
   - valid_runners_token?
-ee/app/models/ai/duo_code_review.rb:
-  - classic?
 ee/app/models/concerns/ai/user_authorizable.rb:
   - any_group_with_ai_available?
 

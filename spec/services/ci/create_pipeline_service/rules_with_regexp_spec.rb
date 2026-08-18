@@ -22,7 +22,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
   end
 
   describe 'rules:changes:regexp' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
     let(:config) do
       <<-YAML
@@ -190,7 +190,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when a file matches' do
-      let_it_be(:project, freeze: false) { create(:project, :custom_repo, files: { 'spec/app_spec.rb' => '' }) }
+      let_it_be_with_reload(:project) { create(:project, :custom_repo, files: { 'spec/app_spec.rb' => '' }) }
       let(:regexp) { '_spec\.rb\z' }
 
       it 'includes the job' do
@@ -200,7 +200,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when no file matches' do
-      let_it_be(:project, freeze: false) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
+      let_it_be_with_reload(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
       let(:regexp) { '\.go\z' }
 
       it 'excludes the job' do
@@ -210,7 +210,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when the expanded pattern exceeds the length limit' do
-      let_it_be(:project, freeze: false) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
+      let_it_be_with_reload(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
       let(:config) do
         <<-YAML
           variables:

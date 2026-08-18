@@ -62,9 +62,9 @@ the following sections and tables provide an alternative.
 | `pipeline_config_strategy` | `string` | false | Can be `inject_policy`, `inject_ci` (deprecated), or `override_project_ci`. See [pipeline strategies](#pipeline-configuration-strategies) for more information.                                                                                                                                                                 |
 | `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify.                                                                                                                                                                                                                                        |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
-| `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped.                                                                                                                                             |
-| `no_pipeline` | `object` of [`no_pipeline`](pipeline_execution_policies.md#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be not created.                                                                                                                                 |
-| `variables_override` | `object` of [`variables_override`](pipeline_execution_policies.md#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them.                                                                                                               |
+| `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped.                                                                                                                                             |
+| `no_pipeline` | `object` of [`no_pipeline`](#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be not created.                                                                                                                                 |
+| `variables_override` | `object` of [`variables_override`](#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them.                                                                                                               |
 
 Note the following:
 
@@ -410,10 +410,12 @@ To link the project:
 
 The project becomes a security policy project, and the setting becomes available.
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 > [!note]
 > To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
 > In the security policy project, go to **Settings** > **CI/CD** > **Job token permissions** and add the authorized groups and projects to the allowlist.
 > If you don't see the **CI/CD** settings, go to **Settings** > **General** > **Visibility, project features, permissions** and enable **CI/CD**.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 #### Configuration
 
@@ -884,7 +886,7 @@ In this case, the job variable value `Project job variable value` takes preceden
 >
 > For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
 
-You can use the `description`, `value` and `options` keywords to define CI/CD variables
+You can use the `description`, `value`, and `options` keywords to define CI/CD variables
 that are [prefilled when a user runs a pipeline manually](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines).
 Use the description to provide relevant information, such as what the variable is used for and what the acceptable values are.
 
@@ -892,8 +894,44 @@ You cannot prefill job-specific variables.
 
 In manually-triggered pipelines, the **New pipeline** page displays all pipeline variables that have a `description` defined in the CI/CD configuration, from all applicable policies.
 
-You must configure the prefilled variables as allowed using [`variables_override`](pipeline_execution_policies.md#variables_override-type),
+You must configure the prefilled variables as allowed using [`variables_override`](#variables_override-type),
 otherwise the values used when manually triggering the pipelines are ignored.
+
+#### Missing prefilled variables with `override_project_ci`
+
+When a project is assigned a pipeline execution policy that uses the
+[`override_project_ci`](#override_project_ci) strategy, the **New pipeline** page might not show
+the policy's prefilled variables. This issue occurs when the project's `.gitlab-ci.yml` file is not
+a valid CI/CD configuration on its own. For example, a file that contains only a `variables:` block
+and no jobs returns the error `jobs config should contain at least one visible job` when GitLab
+tries to list the prefilled variables.
+
+The pipeline itself still runs correctly, because the policy supplies the missing jobs when the
+pipeline is created. The issue affects only the **New pipeline** page's display of prefilled
+variables.
+
+As a workaround, add a visible job to the project's `.gitlab-ci.yml` file, so the file is valid on
+its own. Give the job a `rules:` clause with `when: never`, so it is never actually added to a
+pipeline:
+
+```yaml
+variables:
+  SOME_VAR: "value"
+
+placeholder-job:
+  script:
+    - echo "Placeholder job that keeps this configuration valid on its own."
+  rules:
+    - when: never
+```
+
+A hidden job (one whose name starts with a period) does not work as a substitute, because the
+configuration must contain at least one visible job.
+
+Use this workaround only if your project relies on the policy to provide its jobs. If the policy
+does not apply to a branch, a configuration whose only job never runs does not create a pipeline.
+
+For more information, see [issue 600124](https://gitlab.com/gitlab-org/gitlab/-/issues/600124).
 
 #### Recreate pipeline execution policies
 

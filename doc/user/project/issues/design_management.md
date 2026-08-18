@@ -37,12 +37,6 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 
 ## Prerequisites
 
-{{< history >}}
-
-- **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
-
-{{< /history >}}
-
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
   - On GitLab Self-Managed instances, a GitLab administrator must
@@ -118,12 +112,65 @@ You can explore a design in more detail by zooming in and out of the image:
 
 To move around the image while zoomed in, drag the image.
 
+## Download a design image with an access token
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246866) in GitLab 19.3.
+
+{{< /history >}}
+
+Use an access token to download design images from API clients such as mobile apps,
+integrations, and exporters, where no browser session is available.
+
+Prerequisites:
+
+- You must have one of the following tokens:
+  - A [personal access token](../../profile/personal_access_tokens.md) or
+    [OAuth 2.0 token](../../../api/oauth2.md) with the `api` or `read_api` scope.
+  - A [fine-grained personal access token](../../../auth/tokens/fine_grained_access_tokens.md)
+    with the **Work Item: Read** permission for the project.
+- You must have permission to [view the design](#view-a-design).
+
+You cannot use project access tokens, group access tokens, or service account tokens
+to download design images.
+
+To download a design image:
+
+1. Get the image URL from the GraphQL API. For a preview no larger than 432x230 pixels,
+   use the `imageV432x230` field instead of `image`:
+
+   ```graphql
+   query {
+     project(fullPath: "my-group/my-project") {
+       issue(iid: "1") {
+         designCollection {
+           designs {
+             nodes {
+               filename
+               image
+             }
+           }
+         }
+       }
+     }
+   }
+   ```
+
+1. Request the image URL and pass the token in the `PRIVATE-TOKEN` header:
+
+   ```shell
+   curl --output design.png --header "PRIVATE-TOKEN: <your_access_token>" "<image_url>"
+   ```
+
+   For OAuth 2.0 tokens, use the `Authorization: Bearer <oauth_token>` header instead.
+   You must send the token in a request header. Tokens in query string parameters,
+   such as `private_token`, are not accepted.
+
 ## Add a design to an issue
 
 {{< history >}}
 
-- Edit descriptions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
-- Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
 - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -163,7 +210,6 @@ To add a design to an issue:
 
 {{< history >}}
 
-- Minimum role to add a new version of a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
 - Minimum role to add a new version of a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -189,7 +235,6 @@ When designs are skipped, a warning message is displayed.
 
 {{< history >}}
 
-- Minimum role to archive a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
 - Minimum role to archive a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -227,18 +272,11 @@ To archive multiple designs at once:
 
 ### Replicate design management data
 
-Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#replicated-data-types)
-and in GitLab 16.1 and later it can be [verified by Geo as well](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
+Design management data can be [replicated](../../../administration/geo/replication/datatypes.md#replicated-data-types)
+and verified by Geo.
+For more information, see [issue 355660](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
 
 ## Markdown and rich text editors for descriptions
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `content_editor_on_issues`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
-- Feature flag `content_editor_on_issues` removed in GitLab 16.5.
-
-{{< /history >}}
 
 You can use the Markdown and rich text editor in design descriptions.
 It's the same editor you use for comments across GitLab.
@@ -315,8 +353,7 @@ See https://gitlab.com/gitlab-org/gitlab/-/issues/13195/designs/Group_view.png.
 ```
 
 GitLab automatically renders raw URLs as an abbreviated [reference](../../markdown.md#gitlab-specific-references):
-
-> See [#13195[Group_view.png]](https://gitlab.com/gitlab-org/gitlab/-/issues/13195/designs/Group_view.png).
+`See #13195[Group_view.png].`
 
 Linking to an image differs from [embedding the image](../../markdown.md#images) in a comment or description.
 It's not possible to embed a design this way.

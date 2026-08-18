@@ -23,8 +23,8 @@ RSpec.describe ProjectImportEntity, feature_category: :importers do
       expect(subject[:import_status]).to eq(project.import_status)
       expect(subject[:human_import_status_name]).to eq(project.human_import_status_name)
       expect(subject[:provider_link]).to eq(provider_project_link_url(provider_url, project[:import_source]))
-      expect(subject[:import_error]).to eq(nil)
-      expect(subject[:relation_type]).to eq(nil)
+      expect(subject[:import_error]).to be_nil
+      expect(subject[:relation_type]).to be_nil
     end
 
     context 'when client option present', :clean_gitlab_redis_cache do

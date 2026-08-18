@@ -1,5 +1,11 @@
 <script>
-import { GlCollapsibleListbox, GlTooltipDirective, GlButtonGroup, GlButton } from '@gitlab/ui';
+import {
+  GlCollapsibleListbox,
+  GlTooltipDirective,
+  GlButtonGroup,
+  GlButton,
+  GlToastMixin,
+} from '@gitlab/ui';
 import Api from '~/api';
 import { sprintf } from '~/locale';
 import { CUSTOM_LEVEL, i18n } from '../constants';
@@ -16,6 +22,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     containerClass: {
       default: '',

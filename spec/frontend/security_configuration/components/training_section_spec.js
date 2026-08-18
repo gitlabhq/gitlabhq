@@ -21,7 +21,7 @@ describe('TrainingSection component', () => {
   };
 
   const findFeatureCard = () => wrapper.findComponent(FeatureCard);
-  const findSectionLayout = () => wrapper.findByTestId('security-training-section');
+  const findSectionLayout = () => wrapper.findComponentByTestId('security-training-section');
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findLink = () => wrapper.findComponent(GlLink);
 

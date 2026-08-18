@@ -2,11 +2,10 @@
 - breadcrumb_title domain_presenter.domain
 - page_title domain_presenter.domain
 
-= render ::Layouts::PageHeadingComponent.new(_('Pages Domain')) do |c|
+= render ::Layouts::DetailLayout.new(heading: _('Pages Domain')) do |c|
   - c.with_description do
     = render 'projects/pages_domains/helper_text'
 
-%div
   = gitlab_ui_form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
     .gl-flex.gl-gap-3

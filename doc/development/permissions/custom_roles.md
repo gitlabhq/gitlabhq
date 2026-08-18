@@ -16,14 +16,14 @@ In this context, the terms "permission" and "ability" are often used interchange
 
 ## Custom roles vs default roles
 
-In GitLab 15.9 and earlier, GitLab only had [default roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These default roles are not customizable by customers.
+Before custom roles, GitLab only had [default roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These default roles are not customizable by customers.
 
 With custom roles, the customers can decide which abilities they want to assign to certain user groups. For example:
 
 - In the default role system, reading of vulnerabilities is limited to a Developer role.
 - In the custom role system, a customer can assign this ability to a new custom role based on any default role.
 
-Like default roles, custom roles are [inherited](../../user/project/members/_index.md#membership-types) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
+Like default roles, custom roles are [inherited](../../user/project/members/_index.md#membership-types) within a group hierarchy. If a user has a custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
 
 ## Technical overview
 
@@ -141,31 +141,31 @@ policy.debug(:read_group)
 Every feature added to custom roles should have minimal abilities. For most features, having `read_*` and `admin_*` should be enough. You should consolidate all:
 
 - View-related abilities under `read_*`. For example, viewing a list or detail.
-- Object updates under `admin_*`. For example, updating an object, adding assignees or closing it that object. Usually, a role that enables `admin_` has to have also `read_` abilities enabled. This is defined in `requirement` option in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash on `MemberRole` model.
+- Object updates under `admin_*`. For example, updating an object, adding assignees, or closing that object. Usually, a role that enables `admin_` also has to have `read_` abilities enabled. This is defined in the `requirement` option in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash on the `MemberRole` model.
 
 There might be features that require additional abilities but try to minimize those. You can always ask members of the Authentication and Authorization group for their opinion or help.
 
 This is also where your work should begin. Take all the abilities for the feature you work on, and consolidate those abilities into `read_`, `admin_`, or additional abilities if necessary.
 
 Many abilities in the `GroupPolicy` and `ProjectPolicy` classes have many
-redundant policies. There is an [epic for consolidating these Policy classes](https://gitlab.com/groups/gitlab-org/-/epics/6689).
+redundant policies. There is an [epic for consolidating these Policy classes](https://gitlab.com/groups/gitlab-org/-/work_items/6689).
 If you encounter similar permissions in these classes, consider refactoring so
 that they have the same name.
 
 For example, you see in `GroupPolicy` that there is an ability called
-`read_group_security_dashboard` and in `ProjectPolicy` has an ability called
+`read_group_security_dashboard` and that in `ProjectPolicy` there is an ability called
 `read_project_security_dashboard`. You'd like to make both customizable. Rather
 than adding a row to the `member_roles` table for each ability, consider
 renaming them to `read_security_dashboard` and adding `read_security_dashboard`
 to the `member_roles` table. Enabling `read_security_dashboard` on
 the parent group will allow the custom role to access the group security dashboard and the project security dashboard
-for each project in that group. Enabling the same permission on a specific project will allow access to that projects'
+for each project in that group. Enabling the same permission on a specific project will allow access to that project's
 security dashboard.
 
 ## How to add support for an ability to custom roles
 
 If adding an existing ability, consider [refactoring & consolidating abilities for the feature](#refactoring-abilities)
-before in a separate merge request, before completing the below.
+in a separate merge request before completing the below.
 
 ### Step 1. Generate a configuration file
 
@@ -184,7 +184,7 @@ before in a separate merge request, before completing the below.
 | `admin_ability` | no | Boolean value to indicate whether this ability is checked at the admin level. |
 | `group_ability` | yes | Boolean value to indicate whether this ability is checked on group level. |
 | `enabled_for_group_access_levels` | if `group_ability = true` | The array of access levels that already have access to this custom ability in a group. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
-| `project_ability` | yes | Boolean value to whether this ability is checked on project level. |
+| `project_ability` | yes | Boolean value to indicate whether this ability is checked on project level. |
 | `enabled_for_project_access_levels` | if `project_ability = true` | The array of access levels that already have access to this custom ability in a project. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
 | `project_permissions` | if `project_ability = true` | List of permissions to enable when this custom ability is granted at the project level. These permissions are automatically applied in `ProjectPolicy` without needing to manually add policy rules. |
@@ -229,7 +229,7 @@ Remove the `wip:` key when the ability is ready to ship.
 
 ### Step 4: Define permissions in the YAML configuration file
 
-Permissions are defined declaratively in the YAML configuration file using the `project_permissions` and `group_permissions` fields. The system automatically generates policy rules from these definitions — you do not need to manually update `ProjectPolicy` or `GroupPolicy`.
+Permissions are defined declaratively in the YAML configuration file using the `project_permissions` and `group_permissions` fields. The system automatically generates policy rules from these definitions - you do not need to manually update `ProjectPolicy` or `GroupPolicy`.
 
 For example, if you are adding a `read_dependency` custom ability, your YAML file should include:
 
@@ -289,7 +289,7 @@ Custom roles may impact [advanced search functionality](../../user/search/advanc
 ### Step 7: Add specs
 
 - Add the ability as a trait in the `MemberRoles` factory, `ee/spec/factories/member_roles.rb`.
-- Add tests to `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb` to ensure that once the user has been assigned the custom ability, they can successfully access the controllers, REST API endpoints and GraphQL API endpoints.
+- Add tests to `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb` to ensure that once the user has been assigned the custom ability, they can successfully access the controllers, REST API endpoints, and GraphQL API endpoints.
 - Below is an example of the typical setup that is required to test a Rails Controller endpoint.
 
 ```ruby

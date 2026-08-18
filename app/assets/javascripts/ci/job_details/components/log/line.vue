@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';

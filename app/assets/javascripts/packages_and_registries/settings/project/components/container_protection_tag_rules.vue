@@ -11,6 +11,7 @@ import {
   GlTable,
   GlTooltipDirective,
   GlSkeletonLoader,
+  GlToastMixin,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ContainerProtectionTagRuleForm from 'ee_else_ce/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
@@ -22,6 +23,7 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 const MAX_LIMIT = 5;
 const I18N_MINIMUM_ACCESS_LEVEL_TO_PUSH = s__('ContainerRegistry|Minimum access level to push');
@@ -46,6 +48,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin, glSlotsMixin],
   inject: ['projectPath'],
   apollo: {
     protectionRulesQueryPayload: {
@@ -257,9 +260,9 @@ export default {
     :description="description"
     :toggle-text="toggleText"
     data-testid="project-container-protection-tag-rules-settings"
-    @showForm="openNewFormDrawer"
+    @show-form="openNewFormDrawer"
   >
-    <template #description>
+    <template v-if="glSlots().description" #description>
       <slot name="description"></slot>
     </template>
 

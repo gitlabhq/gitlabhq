@@ -12,7 +12,7 @@ module Gitlab
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config, :parallel_requests,
             :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
-            :pipeline_policy_context, :component_data, :parent_file
+            :pipeline_policy_context, :component_data, :parent_file, :allowed_include_types
 
           attr_accessor :total_file_size_in_bytes
 
@@ -24,7 +24,8 @@ module Gitlab
           # rubocop:disable Metrics/ParameterLists -- all arguments needed
           def initialize(
             project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
-            pipeline_config: nil, logger: nil, pipeline_policy_context: nil, component_data: nil, parent_file: nil
+            pipeline_config: nil, logger: nil, pipeline_policy_context: nil, component_data: nil, parent_file: nil,
+            allowed_include_types: nil
           )
             @project = project
             @pipeline = pipeline
@@ -36,8 +37,12 @@ module Gitlab
             @pipeline_policy_context = pipeline_policy_context
             @component_data = component_data || {}
             @parent_file = parent_file
+            @allowed_include_types = allowed_include_types
             @expandset = []
             @parallel_requests = []
+            # Shared mutable holder so state set while processing a nested include
+            # (e.g. include:rules: filtering) is visible on the top-level context.
+            @filter_state = { any_includes_fully_filtered_by_rules: false }
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
             @max_includes = Gitlab::CurrentSettings.current_application_settings.ci_max_includes
@@ -87,6 +92,8 @@ module Gitlab
               ctx.max_includes = max_includes
               ctx.max_total_yaml_size_bytes = max_total_yaml_size_bytes
               ctx.parallel_requests = parallel_requests
+              ctx.allowed_include_types = allowed_include_types
+              ctx.filter_state = filter_state
             end
           end
 
@@ -132,6 +139,14 @@ module Gitlab
             expandset.map(&:metadata)
           end
 
+          def mark_all_includes_filtered_by_rules!
+            filter_state[:any_includes_fully_filtered_by_rules] = true
+          end
+
+          def any_includes_fully_filtered_by_rules?
+            filter_state[:any_includes_fully_filtered_by_rules]
+          end
+
           # Some Ci::ProjectConfig sources prepend the config content with an "internal" `include`, which becomes
           # the first included file. When running a pipeline, we pass pipeline_config into the context of the first
           # included file, which we use in this method to determine if the file is an "internal" one.
@@ -141,8 +156,10 @@ module Gitlab
 
           protected
 
+          attr_accessor :filter_state
+
           attr_writer :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
-            :parallel_requests, :component_data
+            :parallel_requests, :component_data, :allowed_include_types
 
           private
 

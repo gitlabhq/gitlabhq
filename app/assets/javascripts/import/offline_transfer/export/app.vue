@@ -1,11 +1,19 @@
 <script>
-import { GlAlert, GlFormCheckbox } from '@gitlab/ui';
 import { DEFAULT_PER_PAGE } from '~/api';
+import axios from '~/lib/utils/axios_utils';
+import { buildApiUrl } from '~/api/api_utils';
+import {
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+} from '~/lib/utils/http_status';
+import { s__ } from '~/locale';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.vue';
 import ExportConfigTab from '~/import/offline_transfer/export/export_config_tab.vue';
-import { OFFLINE_EXPORT_TAB_HEADINGS, OFFLINE_EXPORT_TAB_FIELDS } from '../constants';
+import { OFFLINE_EXPORT_TAB_HEADINGS } from '../constants';
+import ReviewExportTab from './review_export_tab.vue';
 import { isStorageConfigValid } from './storage_config_validation';
 
 export default {
@@ -14,12 +22,9 @@ export default {
     FormStepper,
     SelectGroupsTab,
     ExportConfigTab,
-    GlAlert,
-    GlFormCheckbox,
+    ReviewExportTab,
   },
   data() {
-    const tabFields = OFFLINE_EXPORT_TAB_FIELDS.map((field) => [field, false]);
-
     return {
       offlineTransferSourceOwnedGroups: null,
       selectedGroups: [],
@@ -30,8 +35,10 @@ export default {
       showFetchError: false,
       showSelectError: false,
       showStorageConfigError: false,
-      // TODO: on form submit (final step) trim strings
-      // POST { bucketName, aws_s3_configuration, entities}
+      hasSubmitSucceeded: false,
+      submissionError: '',
+      isSubmitting: false,
+      isRetryBlocked: false,
       storageConfig: {
         accessKeyId: '',
         secretAccessKey: '',
@@ -39,10 +46,6 @@ export default {
         bucketName: '',
         pathStyle: false,
       },
-
-      isStepComplete: Object.fromEntries(tabFields),
-      showValidationErrorTemp: false,
-      isFormComplete: false,
     };
   },
 
@@ -60,14 +63,15 @@ export default {
           ...this.pagination,
         };
       },
-      error() {
+      error(error) {
         this.showFetchError = true;
+        captureException(error);
       },
     },
   },
 
   computed: {
-    pageGroups() {
+    currentPageGroups() {
       return this.offlineTransferSourceOwnedGroups?.nodes ?? [];
     },
     pageInfo() {
@@ -97,6 +101,27 @@ export default {
     selectedGroupsCount() {
       return this.selectedGroups.length;
     },
+    isEmptyGroupsList() {
+      return !this.isLoading && !this.search && !this.currentPageGroups.length;
+    },
+    canStart() {
+      if (this.selectedGroupsCount > 0) return true;
+      // Block starting the wizard when there is nothing to select
+      if (this.showFetchError) return false;
+      return !this.isEmptyGroupsList;
+    },
+    exportPayload() {
+      return {
+        bucket: this.storageConfig.bucketName.trim(),
+        aws_s3_configuration: {
+          aws_access_key_id: this.storageConfig.accessKeyId.trim(),
+          aws_secret_access_key: this.storageConfig.secretAccessKey.trim(),
+          region: this.storageConfig.region.trim(),
+          path_style: this.storageConfig.pathStyle,
+        },
+        entities: this.selectedGroups.map((group) => ({ full_path: group.fullPath })),
+      };
+    },
   },
   watch: {
     selectedGroupsCount() {
@@ -105,13 +130,49 @@ export default {
   },
 
   methods: {
-    onComplete() {
-      this.isFormComplete = true;
+    async submitForm() {
+      this.isSubmitting = true;
+      this.submissionError = '';
+
+      try {
+        await axios.post(buildApiUrl('/api/:version/offline_exports'), this.exportPayload);
+        this.hasSubmitSucceeded = true;
+      } catch (error) {
+        const status = error.response?.status;
+        const serverMessage = this.extractErrorMessage(error);
+        const isKnownRejection =
+          (status === HTTP_STATUS_UNPROCESSABLE_ENTITY ||
+            status === HTTP_STATUS_TOO_MANY_REQUESTS) &&
+          Boolean(serverMessage);
+
+        if (isKnownRejection) {
+          this.submissionError = serverMessage;
+          this.isRetryBlocked = true;
+        } else {
+          this.submissionError = s__(
+            'OfflineTransferExport|Something went wrong. Try again later.',
+          );
+          captureException(error);
+        }
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+    extractErrorMessage(error) {
+      const message = error.response?.data?.message;
+
+      if (typeof message === 'string' && message) return message;
+      if (typeof message?.error === 'string' && message.error) return message.error;
+      return null;
     },
     onSearch(searchTerm) {
       this.search = searchTerm;
       this.startCursor = null;
       this.endCursor = null;
+    },
+    onRetry() {
+      this.showFetchError = false;
+      this.$apollo.queries.offlineTransferSourceOwnedGroups.refetch().catch(() => {});
     },
     isGroupSelected(group) {
       return this.selectedGroups.some((selected) => selected.id === group.id);
@@ -129,18 +190,12 @@ export default {
         this.addGroup(group);
       }
     },
-    onSteppedForward({ previousTabIndex }) {
-      // Clear just completed step's validation error
+    onStepChanged({ previousTabIndex }) {
+      // clear the validation error of the step being left
       this.resetStepError(previousTabIndex);
     },
-    onSteppedBack({ previousTabIndex }) {
-      // Stepping back resets previous step's 'completed' status
-      this.isStepComplete[OFFLINE_EXPORT_TAB_FIELDS[previousTabIndex]] = false;
-      this.resetStepError(previousTabIndex);
-    },
-
     onSelectAllCurrentPage() {
-      const newSelections = this.pageGroups.filter((group) => !this.isGroupSelected(group));
+      const newSelections = this.currentPageGroups.filter((group) => !this.isGroupSelected(group));
       this.selectedGroups = [...this.selectedGroups, ...newSelections];
     },
     onDeselectAll() {
@@ -159,8 +214,6 @@ export default {
         this.showSelectError = true;
       } else if (stepIndex === 1) {
         this.showStorageConfigError = true;
-      } else {
-        this.showValidationErrorTemp = true;
       }
     },
 
@@ -169,8 +222,9 @@ export default {
         this.showSelectError = false;
       } else if (stepIndex === 1) {
         this.showStorageConfigError = false;
-      } else {
-        this.showValidationErrorTemp = false;
+      } else if (stepIndex === 2) {
+        this.submissionError = '';
+        this.isRetryBlocked = false;
       }
     },
     validateStep(stepIndex) {
@@ -182,7 +236,7 @@ export default {
         case 1:
           return isStorageConfigValid(this.storageConfig);
         case 2:
-          return this.isStepComplete.export;
+          return true;
         default:
           return false;
       }
@@ -205,62 +259,33 @@ export default {
           )
         }}
       </p>
-      <!-- // temporary alerts, to be replaced-->
-      <gl-alert
-        v-if="showFetchError"
-        :title="__('Error')"
-        :dismiss-label="__('Dismiss')"
-        dismissible
-        variant="danger"
-        data-testid="fetch-error-alert"
-        @dismiss="showFetchError = false"
-      >
-        {{ s__('OfflineTransferExport|Could not load groups. Please try again.') }}
-      </gl-alert>
-
-      <gl-alert
-        v-if="isFormComplete"
-        :title="__('Complete')"
-        :dismiss-label="__('Dismiss')"
-        dismissible
-        variant="info"
-        data-testid="completion-alert"
-        @dismiss="isFormComplete = false"
-      />
-      <!-- TODO: When the review/export step gets real
-        validation, move form error inline at the top of each step's content (as
-        step 0 does) and remove this alert -->
-      <gl-alert
-        v-if="showValidationErrorTemp"
-        :title="__('Error')"
-        :dismiss-label="__('Dismiss')"
-        dismissible
-        variant="danger"
-        data-testid="validation-alert"
-        @dismiss="showValidationErrorTemp = false"
-      />
     </header>
 
     <form-stepper
       :steps="$options.STEPS"
       :validate-step="validateStep"
+      :can-start="canStart"
       :completion-button-text="s__('OfflineTransferExport|Start export')"
-      @stepped-back="onSteppedBack"
-      @stepped-forward="onSteppedForward"
+      :is-form-complete="hasSubmitSucceeded"
+      :is-submitting="isSubmitting"
+      :is-completion-disabled="isRetryBlocked"
+      @stepped-back="onStepChanged"
+      @stepped-forward="onStepChanged"
       @validation-failed="onValidationFailed"
-      @complete="onComplete"
+      @complete="submitForm"
     >
       <template #step-0>
         <h2 class="gl-heading-3">
           {{ s__('OfflineTransferExport|Select groups to export') }}
         </h2>
         <select-groups-tab
-          :page-groups="pageGroups"
+          :current-page-groups="currentPageGroups"
           :selected-ids="selectedGroupIds"
           :loading="isLoading"
           :initial-loading="isInitialLoading"
           :page-info="pageInfo"
           :show-select-error="showSelectError"
+          :has-fetch-error="showFetchError"
           :search-term="search"
           @toggle="onToggleGroup"
           @select-current-page="onSelectAllCurrentPage"
@@ -268,6 +293,7 @@ export default {
           @next="onNext"
           @prev="onPrev"
           @search="onSearch"
+          @retry-fetch="onRetry"
         />
       </template>
 
@@ -277,8 +303,15 @@ export default {
       </template>
 
       <template #step-2>
-        <h2 class="gl-heading-3">{{ s__('OfflineTransferExport|Review and export') }}</h2>
-        <gl-form-checkbox v-model="isStepComplete.export" />
+        <h2 v-if="!hasSubmitSucceeded" class="gl-heading-3">
+          {{ s__('OfflineTransferExport|Review and export') }}
+        </h2>
+        <review-export-tab
+          :selected-groups="selectedGroups"
+          :bucket-name="storageConfig.bucketName"
+          :has-submit-succeeded="hasSubmitSucceeded"
+          :submission-error="submissionError"
+        />
       </template>
     </form-stepper>
   </div>

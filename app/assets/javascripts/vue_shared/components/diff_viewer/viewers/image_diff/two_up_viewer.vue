@@ -1,4 +1,5 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
 
 export default {
@@ -6,6 +7,7 @@ export default {
   components: {
     ImageViewer,
   },
+  mixins: [glSlotsMixin],
   props: {
     newPath: {
       type: String,
@@ -52,7 +54,10 @@ export default {
       :encode-path="encodePath"
       class="wrap !gl-w-1/2"
     >
-      <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
+      <template
+        v-if="glSlots()['image-overlay']"
+        #image-overlay="{ width, height, renderedWidth, renderedHeight }"
+      >
         <slot
           :width="width"
           :height="height"

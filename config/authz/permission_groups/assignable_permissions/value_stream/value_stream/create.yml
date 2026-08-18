@@ -1,0 +1,10 @@
+---
+name: create_value_stream
+description: Grants the ability to create a value stream.
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_value_stream

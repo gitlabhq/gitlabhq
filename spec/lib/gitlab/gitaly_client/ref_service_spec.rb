@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
-  let_it_be(:project) { create(:project, :repository, create_tag: 'test') }
+  let_it_be(:project) { create(:project, :small_repo, create_tag: 'test') }
 
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }

@@ -201,9 +201,9 @@ RSpec.shared_examples 'group and project packages query' do
   end
 
   context 'when reading pipelines' do
-    let(:npm_pipelines) { create_list(:ci_pipeline, 6, project: project1) }
+    let(:npm_pipelines) { create_list(:ci_pipeline, 4, project: project1) }
     let(:npm_pipeline_gids) { npm_pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }
-    let(:composer_pipelines) { create_list(:ci_pipeline, 6, project: project2) }
+    let(:composer_pipelines) { create_list(:ci_pipeline, 4, project: project2) }
     let(:composer_pipeline_gids) { composer_pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }
     let(:npm_end_cursor) { graphql_data_npm_package.dig('pipelines', 'pageInfo', 'endCursor') }
     let(:npm_start_cursor) { graphql_data_npm_package.dig('pipelines', 'pageInfo', 'startCursor') }
@@ -243,12 +243,12 @@ RSpec.shared_examples 'group and project packages query' do
 
     it 'loads the second page with pagination last correctly' do
       run_query(last: 2)
-      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[4..5])
-      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[4..5])
+      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[2..3])
+      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[2..3])
 
       run_query(last: 2, before: npm_start_cursor)
-      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[2..3])
-      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[4..5])
+      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[0..1])
+      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[2..3])
     end
 
     def run_query(args)

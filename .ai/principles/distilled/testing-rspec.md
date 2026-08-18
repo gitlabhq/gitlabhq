@@ -1,6 +1,6 @@
 ---
-source_checksum: fab567b0daaf77a4
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: 262735e36a66c191
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -31,6 +31,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - DO NOT supply the `:each` argument to hooks — it's the default.
 - Prefer `before`/`after` hooks scoped to `:context` over `:all`.
 - Use a Capybara matcher such as `find('.js-foo')` before calling `evaluate_script` or `execute_script` on an element, to ensure the element exists.
+- Treat `evaluate_script` and `execute_script` as point-in-time reads that do not wait: assert a visible outcome or use `wait_for` before reading state with a script, and retrieve related values in a single `evaluate_script` call so they describe the same browser state.
 - Use `focus: true` to isolate parts of the specs you want to run.
 - Use `:aggregate_failures` when there is more than one expectation in a test.
 - Use `specify` rather than `it do` for empty test description blocks that are self-explanatory.
@@ -47,7 +48,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - DO NOT define a `let` variable that's only used by the definition of another — use a helper method instead.
 - Use `let!` only when strict evaluation with defined order is required.
 - DO NOT reference `subject` directly in examples — use a named subject `subject(:name)` or a `let` variable instead.
-- Treat objects inside `let_it_be` as immutable; use `freeze: true` to enforce immutability and detect state leakage.
+- Treat objects inside `let_it_be` as immutable; `freeze: true` is the project default. When an example must modify one, use `let_it_be_with_reload` or `let_it_be_with_refind` so it is restored between examples.
 - DO NOT use `let_it_be` when the factory uses stubs (`allow`); use `let` instead, or change the factory to avoid stubs.
 - Ensure `let_it_be` blocks do not depend on a `before` block — `let_it_be` executes in `before(:all)` before per-example `before` hooks run.
 
@@ -55,6 +56,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 
 - Use `let_it_be` and `before_all` (from `test-prof`) instead of `before(:all)` / `before(:context)` to share objects across examples without manual cleanup.
 - DO NOT use `let_it_be` or `before_all` in migration specs, Rake task specs, or specs tagged `:delete` — they do not work with DatabaseCleaner's deletion strategy; use `let` / `let!` and `before` instead.
+- Use `before_all` (not `before`) to assign roles to `let_it_be` objects shared across examples in a context (enforced by the `RSpec/BeforeAllRoleAssignment` RuboCop rule); alternatively, pass membership directly to the factory via transient attributes such as `developers:`, `maintainers:`, or `owner_of:`.
 
 ### Table-Based / Parameterized Tests
 
@@ -77,7 +79,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 ### Fixtures and Repositories
 
 - Place all fixtures under `spec/fixtures/`.
-- Use the `:repository` trait on project factories to get a copy of the `gitlab-test` repository; prefer `:custom_repo` when you need to specify exact file contents.
+- Pick the repository trait that matches what the test actually needs: omit any repository trait when the test does not touch Git; use `:small_repo` when the test only needs a non-empty repository (one commit, valid default branch); use `:custom_repo` when the test needs specific file paths or contents; use `:repository` only when the test depends on the full `gitlab-test` history (branches, tags, merge conflicts); use `:empty_repo` only when the test must distinguish a repository that exists but has no commits.
 
 ### Test Performance
 
@@ -101,7 +103,9 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - Test a happy path and one less-happy path — test all other paths with unit or integration tests.
 - Test what is displayed on the page, not the internals of ActiveRecord models (for example, assert attributes appear on the page rather than checking `Model.count`).
 - When a test must assert backend or model state after a UI action, first wait for a visible success indicator (`have_content`, `have_current_path`, `have_css`) and only then call `model.reload` — reading model state immediately after a Capybara action races the request.
-- Confirm the page has reached the expected state with a positive matcher before the next interaction, assertion, database read, or navigation — DO NOT rely solely on `wait_for_requests` (it does not account for Vue re-render, redirect completion, async follow-up writes, or browser-initiated downloads).
+- Confirm the page has reached the expected state with a positive matcher before the next interaction, assertion, database read, or navigation.
+- NEVER use `wait_for_requests` or `wait_for_all_requests` in feature specs — the `RSpec/AvoidWaitForRequests` cop prohibits both; they wait only until no tracked request is in flight (a request can trigger another and the poll can run between the two) and they do not wait for Vue re-renders, redirects, async follow-up writes, or browser-initiated downloads.
+- DO NOT add exclusions to `.rubocop_todo/rspec/avoid_wait_for_requests.yml` or disable the `RSpec/AvoidWaitForRequests` cop inline; replace the helper with a page-specific waiting matcher, or a narrowly targeted `wait_for` condition when no visible outcome exists.
 - Use `have_no_link` / `have_no_*` (negative Capybara matchers) for absence checks — they return immediately when the element is absent; DO NOT use `expect(page.has_link?(...)).to be(false)` which waits the full timeout.
 - Use `have_no_testid('<id>')` (not `not_to have_testid`) to assert a `data-testid` element is absent.
 - Always confirm the page is loaded with a positive matcher before checking for absence.
@@ -112,13 +116,18 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - DO NOT use `all()` with `.first` or block iteration to filter elements — use `find()` or a CSS child selector with `.ancestor()` instead.
 - Use specific Capybara matchers (`have_button`, `have_link`, `have_field`, `have_select`, `have_text`, `have_current_path`, `have_title`) rather than generic `have_css` where possible.
 - Use `within_modal` helper to interact with GitLab UI modals; use `accept_gl_confirm` for confirmation modals that only need to be accepted.
+- Wait for a modal or other animated container to finish its open transition (for example `expect(page).to have_css('.modal.show')`) before interacting with controls inside it — components can disable their controls while transitioning.
 - Use `be_axe_clean` matcher to run automated accessibility testing in feature tests.
 - Call the same externalizing method (for example, `_('...')`) in RSpec expectations against externalized content
 - Assert on a stable end-state (such as a status text or alert message) after an asynchronous mutation — DO NOT assert on a button's label or `disabled` state to synchronize, as controls pass through transient loading states before settling.
-- Use the `wait_for` helper (from `spec/support/helpers/wait_helpers.rb`) only as a last resort when there is no visible UI outcome to assert on (for example, browser-initiated downloads or interactions that must be retried); DO NOT use the deprecated `wait_for_requests` in new specs.
-- Assert with a waiting Capybara matcher (`have_field`, `have_selector`, `have_content`) rather than reading a value directly from an element (`find(...).value`, `find(...).text`, `all(...).count`) — direct reads capture state at that exact moment and race asynchronous updates.
+- Use the `wait_for` helper (from `spec/support/helpers/wait_helpers.rb`) only as a last resort when there is no visible UI outcome to assert on (for example, browser-initiated downloads or interactions that must be retried).
+- Pass a longer `polling_interval` to `wait_for` for database-backed conditions (it polls every 0.01 seconds by default) and raise `max_wait_time` only when the operation genuinely needs more time.
+- Assert with a waiting Capybara matcher (`have_field`, `have_selector`, `have_content`) rather than reading a value directly from an element (`find(...).value`, `find(...).text`, `all(...).count`) or from the session (`page.current_url`) — direct reads capture state at that exact moment and race asynchronous updates; assert a page-specific element before reading `page.current_url`.
+- DO NOT assert `expect(find(selector).visible?).to be(true)` — `find` already waits for a visible element, so the assertion cannot verify a later update; use a waiting matcher such as `have_selector(..., exact_text: ...)` for the state you need.
 - Use the `:enable_admin_mode` RSpec metadata tag to activate admin mode in specs; DO NOT use `enable_admin_mode!(admin, use_ui: true)` — it is slow and race-prone.
 - Wrap both the triggering UI action and the assertion on its visible outcome inside `perform_enqueued_jobs` when testing delayed mail delivery — wrapping only the click can end the block before the AJAX request enqueues the job.
+- Put a page or component readiness assertion in the shared example rather than repeating it in every caller, so it becomes the synchronization contract for all consumers.
+- In nested `:js` feature spec contexts that need different setup before a page visit, keep a single `sign_in` and a single `visit` in the outermost `before` block and override only the relevant `let` in nested contexts — DO NOT call `sign_in` after a page has already been visited (the `Warden.on_next_request` injection can be consumed by a background request) and DO NOT call `visit` a second time on the same URL (it reloads the page and slows the spec).
 
 ### View Specs
 
@@ -154,6 +163,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - Use `stub_file_read` / `expect_file_read` helpers to stub `File.read`; DO NOT stub `File.read` globally without also calling the original for other paths.
 - DO NOT specify a `path` override on `:legacy_storage` projects — the default path includes the project ID and avoids repository conflicts between specs.
 - Use `:disable_rate_limit` when a single test triggers rate limiting; use `:clean_gitlab_redis_rate_limiting` when rate limiting is triggered across multiple examples in a feature spec using `:js`.
+- Tag an example or context with `:verify_workhorse_jwt` only when the test asserts the Workhorse JWT enforcement boundary itself (for example, a `403 Forbidden` response when the header is absent); DO NOT apply it to ordinary tests — auto-injection covers them.
 
 ### Matchers and Assertions
 
@@ -200,7 +210,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 ### Feature Flags in Tests
 
 - All feature flags are enabled by default in the test environment (regardless of the `default_enabled:` value in the YAML definition), so DO NOT stub a flag to `true` to reach its enabled path — the only exception is a flag explicitly disabled in `spec/spec_helper.rb`, where stubbing to `true` is warranted
-- Only use `stub_feature_flags(flag: false)` to test the disabled code path.
+- Use `stub_feature_flags(flag: false)` to test the disabled code path
 
 ### Spec File Paths
 
@@ -228,4 +238,5 @@ For the full picture, see:
 - doc/development/testing_guide/best_practices.md
 - doc/development/testing_guide/testing_levels.md
 - doc/development/testing_guide/testing_rake_tasks.md
+- doc/development/testing_guide/unhealthy_tests.md
 

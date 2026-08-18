@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import OAuthDomainMismatchError from './components/oauth_domain_mismatch_error.vue';
 import { parseCallbackUrls, getOAuthCallbackUrl } from './lib/gitlab_web_ide/oauth_callback_urls';
 
@@ -41,16 +41,13 @@ export class OAuthCallbackDomainMismatchErrorApp {
 
     if (!el) return null;
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'OAuthDomainMismatchErrorRoot',
-      render(createElement) {
-        return createElement(OAuthDomainMismatchError, {
-          props: {
-            expectedCallbackUrl,
-            callbackUrls,
-          },
-        });
+      component: OAuthDomainMismatchError,
+      props: {
+        expectedCallbackUrl,
+        callbackUrls,
       },
     });
   }

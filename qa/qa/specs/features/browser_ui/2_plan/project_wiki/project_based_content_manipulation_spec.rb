@@ -16,12 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'by manipulating content on the page',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41032',
-          type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347810' do
+      it 'by manipulating content on the page' do
         wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)
@@ -29,10 +24,10 @@ module QA
         Page::Project::Wiki::Edit.perform do |edit|
           edit.set_title new_wiki_title
           edit.set_content new_wiki_content
+          edit.click_submit
           edit.set_message commit_message
+          edit.confirm_message
         end
-
-        Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_title new_wiki_title
@@ -40,12 +35,7 @@ module QA
         end
       end
 
-      it 'by manipulating content on the page with spaces',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41031',
-          type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442390' do
+      it 'by manipulating content on the page with spaces' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
           push.file_content = new_wiki_page_with_spaces_in_the_path_content
@@ -58,10 +48,10 @@ module QA
 
         Page::Project::Wiki::Edit.perform do |edit|
           edit.set_content new_wiki_content
+          edit.click_submit
           edit.set_message commit_message
+          edit.confirm_message
         end
-
-        Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(page).to have_current_path(/#{new_wiki_page_with_dashes_in_the_path}$/)
@@ -70,8 +60,7 @@ module QA
         end
       end
 
-      it 'by manipulating content on the page using git push',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347811' do
+      it 'by manipulating content on the page using git push' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_content = new_wiki_content
           push.commit_message = commit_message

@@ -14,6 +14,7 @@ import workItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.q
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import TaskList from '~/task_list';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { taskListSortableOptions } from '~/issues/show/utils';
 import {
   createWorkItemMutationErrorResponse,
   createWorkItemMutationResponse,
@@ -238,6 +239,37 @@ describe('Description component', () => {
         handle: '.drag-icon',
       });
     });
+
+    it('passes the shared task list drag callbacks to Sortable', () => {
+      const options = Sortable.create.mock.calls[0][1];
+
+      expect(options).toMatchObject(taskListSortableOptions);
+    });
+
+    it('creates Sortable with revertOnEscape enabled', () => {
+      const options = Sortable.create.mock.calls[0][1];
+
+      expect(options).toMatchObject({ revertOnEscape: true });
+    });
+
+    it('destroys the sortable instance when the component is destroyed', () => {
+      const sortableInstance = Sortable.create.mock.results[0].value;
+      const destroySpy = jest.spyOn(sortableInstance, 'destroy');
+
+      wrapper.destroy();
+
+      expect(destroySpy).toHaveBeenCalled();
+    });
+
+    it('destroys the previous sortable instance before re-rendering the list', async () => {
+      const firstSortableInstance = Sortable.create.mock.results[0].value;
+      const destroySpy = jest.spyOn(firstSortableInstance, 'destroy');
+
+      wrapper.setProps({ descriptionHtml: '<p>Updated description</p>' });
+      await waitForPromises();
+
+      expect(destroySpy).toHaveBeenCalled();
+    });
   });
 
   describe('empty description', () => {
@@ -290,7 +322,7 @@ describe('Description component', () => {
    1. [ ] item 3
    1. [ ] item 4;`;
 
-          expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
+          expect(wrapper.emitted('save-description')).toEqual([[newDescriptionText]]);
         });
 
         it('calls a mutation to create a task', () => {
@@ -368,7 +400,7 @@ describe('Description component', () => {
 
         eventHub.$emit('delete-task-list-item', { id: '1', sourcepos: '4:4-5:19' });
 
-        expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
+        expect(wrapper.emitted('save-description')).toEqual([[newDescriptionText]]);
       });
     });
   });

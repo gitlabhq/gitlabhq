@@ -35,7 +35,10 @@ RSpec.describe 'Group Step-up Authentication Settings', :js, feature_category: :
     expect(page).to have_select('group_step_up_auth_required_oauth_provider')
 
     select 'OpenID Connect', from: 'group_step_up_auth_required_oauth_provider'
-    click_button 'Save changes'
+
+    within_testid("permissions-settings") do
+      click_button 'Save changes'
+    end
 
     expect(page).to have_content("Group '#{group.name}' was successfully updated.")
 

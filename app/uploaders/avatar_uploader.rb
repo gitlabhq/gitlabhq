@@ -6,7 +6,7 @@ class AvatarUploader < GitlabUploader
   include ObjectStorage::Concern
   prepend ObjectStorage::Extension::RecordsUploads
 
-  MIME_ALLOWLIST = %w[image/png image/jpeg image/gif image/bmp image/tiff image/vnd.microsoft.icon].freeze
+  MIME_ALLOWLIST = %w[image/png image/jpeg image/gif image/bmp image/tiff image/vnd.microsoft.icon image/webp].freeze
 
   after :store, :clear_avatar_caches
   after :remove, :clear_avatar_caches

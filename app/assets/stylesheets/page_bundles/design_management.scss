@@ -149,7 +149,7 @@ $design-pin-diameter-sm: 24px;
     &,
     &:hover,
     &:active,
-    &:focus {
+    &:focus-visible {
       color: inherit;
     }
   }
@@ -162,7 +162,7 @@ $design-pin-diameter-sm: 24px;
       border-bottom-right-radius: 0;
     }
 
-    .toggle-comments-button:focus {
+    .toggle-comments-button:focus-visible {
       text-decoration: none;
       color: var(--blue-600, $blue-600);
     }

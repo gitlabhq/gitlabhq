@@ -38,9 +38,7 @@ export default function setupVueRepositoryList() {
     escapedRef,
     fullName,
     resourceId,
-    userId,
     explainCodeAvailable,
-    targetBranch,
     refType,
     hasRevsFile,
   } = dataset;
@@ -223,8 +221,6 @@ export default function setupVueRepositoryList() {
     apolloProvider,
     provide: {
       resourceId,
-      userId,
-      targetBranch,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       highlightWorker: new HighlightWorker(),
       hasRevsFile: parseBoolean(hasRevsFile),

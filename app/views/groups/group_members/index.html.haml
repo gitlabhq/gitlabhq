@@ -5,8 +5,6 @@
 - can_admin = can_admin_group_member?(@group)
 
 = render_if_exists 'groups/group_members/minimal_access_provisioning_alert'
-- if Gitlab::Security::SecurityManagerConfig.enabled? && can_admin
-  #js-security-manager-role-banner
 - if can_admin
   = render_if_exists 'groups/group_members/link_to_pending_members'
 

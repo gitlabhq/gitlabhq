@@ -14,21 +14,23 @@ title: Pipeline analytics
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
+- [Changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/416) to cover pipelines in all states, including in-progress pipelines, in GitLab 19.2.
+- Configurable `granularity` and `quantile` parameters [introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
 
 {{< /history >}}
 
-Analytics mode returns aggregated metrics for finished pipelines, with data
-typically available within ten minutes.
+Analytics mode returns aggregated metrics for pipelines in all states, including
+in-progress pipelines, with data typically available within ten minutes.
 
 To query individual pipeline records, use [Pipelines](pipelines.md).
 
 ## Allowed scopes
 
-| Scope     | Description                                                                   |
-| --------- | ----------------------------------------------------------------------------- |
-| `project` | Query finished pipelines in a specific project.                               |
-| `group`   | Query finished pipelines across all projects in a group, including subgroups. |
+| Scope     | Description                                                          |
+| --------- | -------------------------------------------------------------------- |
+| `project` | Query pipelines in a specific project.                               |
+| `group`   | Query pipelines across all projects in a group, including subgroups. |
 
 ## Query fields
 
@@ -53,7 +55,6 @@ To query individual pipeline records, use [Pipelines](pipelines.md).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Ref {#ref}
 
@@ -86,7 +87,6 @@ To query individual pipeline records, use [Pipelines](pipelines.md).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Status {#status}
 
@@ -94,35 +94,34 @@ To query individual pipeline records, use [Pipelines](pipelines.md).
 
 **Allowed value types**:
 
-- `Enum`, one of `canceled`, `failed`, `skipped`, or `success`
+- `Enum`, one of `canceled`, `canceling`, `created`, `failed`, `manual`, `pending`,
+  `preparing`, `running`, `scheduled`, `skipped`, `success`, `waiting_for_callback`,
+  or `waiting_for_resource`
 - `List` (use `in` operator for multiple values)
 
 ## Dimensions
 
 | Dimension   | Name       | Description                              |
 | ----------- | ---------- | ---------------------------------------- |
-| Finished at | `finished` | Group by finish date, in weekly buckets. |
+| Finished at | `finished` | Group by finish date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `finished(daily)`. |
 | Project     | `project`  | Group by project.                        |
 | Ref         | `ref`      | Group by Git ref (branch or tag).        |
 | Source      | `source`   | Group by what triggered the pipeline.    |
-| Started at  | `started`  | Group by start date, in weekly buckets.  |
+| Started at  | `started`  | Group by start date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `started(daily)`. |
 | Status      | `status`   | Group by pipeline status.                |
 
 ## Metrics
 
-| Metric            | Name               | Description                                       |
-| ----------------- | ------------------ | ------------------------------------------------- |
-| Canceled rate     | `canceledRate`     | Ratio of canceled pipelines to total pipelines.   |
-| Duration quantile | `durationQuantile` | 95th percentile of pipeline duration, in seconds. |
-| Failure rate      | `failureRate`      | Ratio of failed pipelines to total pipelines.     |
-| Skipped rate      | `skippedRate`      | Ratio of skipped pipelines to total pipelines.    |
-| Success rate      | `successRate`      | Ratio of successful pipelines to total pipelines. |
-| Total count       | `totalCount`       | Total number of finished pipelines.               |
+A pipeline is considered finished when it has completed processing and reached a final state: successful, failed, canceled, or skipped.
 
-> [!note]
-> Date dimensions use a fixed `weekly` granularity, and `durationQuantile` uses a fixed
-> 0.95 quantile. Support for configurable granularity and quantile is being proposed in
-> [GLQL issue 130](https://gitlab.com/gitlab-org/glql/-/work_items/130).
+| Metric            | Name               | Description                                            |
+| ----------------- | ------------------ | ------------------------------------------------------ |
+| Canceled rate     | `canceledRate`     | Ratio of canceled pipelines to finished pipelines.    |
+| Duration quantile | `durationQuantile` | Pipeline duration quantile, in seconds. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.95`). For example, `durationQuantile(0.5)`. |
+| Failure rate      | `failureRate`      | Ratio of failed pipelines to finished pipelines.      |
+| Skipped rate      | `skippedRate`      | Ratio of skipped pipelines to finished pipelines.     |
+| Success rate      | `successRate`      | Ratio of successful pipelines to finished pipelines.  |
+| Total count       | `totalCount`       | Total number of pipelines, including in-progress ones. |
 
 ## Sort fields
 
@@ -156,6 +155,20 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: finished as "Week"
   metrics: totalCount as "Total", durationQuantile as "p95 duration (s)"
   sort: finished desc
+  ```
+  ````
+
+- Median and p95 pipeline duration by week:
+
+  ````yaml
+  ```glql
+  title: "Median and p95 pipeline duration by week"
+  display: table
+  mode: analytics
+  query: type = Pipeline and project = "gitlab-org/gitlab" and finished >= -90d
+  dimensions: finished(weekly) as "Week", status as "Status"
+  metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95", totalCount as "Total"
+  sort: Median desc
   ```
   ````
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work items list filters', :js, feature_category: :portfolio_management do
+RSpec.describe 'Work items list filters', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
 
   let_it_be(:user1, freeze: false) { create(:user) }
@@ -50,11 +50,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :portfolio_mana
   end
 
   let_it_be(:award_emoji) { create(:award_emoji, :upvote, user: user1, awardable: issue) }
-
-  before_all do
-    create(:callout, user: user1, feature_name: :work_items_onboarding_modal)
-    create(:callout, user: user2, feature_name: :work_items_onboarding_modal)
-  end
 
   context 'for signed in user' do
     before do
@@ -138,46 +133,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :portfolio_mana
         click_button 'Clear'
 
         select_tokens 'Confidential', 'No', submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-      end
-    end
-
-    describe 'label' do
-      it 'filters', :aggregate_failures do
-        select_tokens 'Label', '=', label1.title, submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Label', '!=', label1.title, submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Label', '=', 'None', submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Label', '=', 'Any', submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-      end
-
-      it 'supports multi-select filtering with "is one of" operator', :aggregate_failures do
-        select_tokens 'Label', '||', label1.title, label2.title, submit: true
 
         expect(page).to have_css('.issue', count: 2)
         expect(page).to have_link(incident.title)

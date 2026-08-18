@@ -21,8 +21,8 @@ repository = ${packageEntity.pypiSetupUrl}
 username = gitlab-ci-token
 password = <your personal access token>`;
 
-  const pipCommand = () => wrapper.findByTestId('pip-command');
-  const setupInstruction = () => wrapper.findByTestId('pypi-setup-content');
+  const pipCommand = () => wrapper.findComponentByTestId('pip-command');
+  const setupInstruction = () => wrapper.findComponentByTestId('pypi-setup-content');
 
   const findAccessTokenLink = () => wrapper.findByTestId('access-token-link');
   const findInstallationMethod = () => wrapper.findComponent(InstallationMethod);

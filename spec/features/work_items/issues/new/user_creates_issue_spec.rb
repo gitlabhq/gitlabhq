@@ -28,7 +28,6 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
   context "when signed in as guest" do
     before do
       project.add_guest(user)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
     end
 

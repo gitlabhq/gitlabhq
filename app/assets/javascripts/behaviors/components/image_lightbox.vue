@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 
 export default {
@@ -252,7 +253,7 @@ export default {
         this.imageLoaded = false;
         this.imageError = false;
       }
-      this.$root.$emit('bv::hide::tooltip', 'next-image-btn');
+      this.$root.$emit(BV_HIDE_TOOLTIP, 'next-image-btn');
     },
     prevImage() {
       if (this.currentImage > 0) {
@@ -260,7 +261,7 @@ export default {
         this.imageLoaded = false;
         this.imageError = false;
       }
-      this.$root.$emit('bv::hide::tooltip', 'prev-image-btn');
+      this.$root.$emit(BV_HIDE_TOOLTIP, 'prev-image-btn');
     },
   },
 };

@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Developing support for a new package format
 ---
 
-This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/_index.md).
+This document guides you through adding support to GitLab for a new [package management system](../../administration/packages/_index.md).
 
 See the already supported formats in the [Packages and registries documentation](../../user/packages/_index.md)
 
@@ -39,7 +39,7 @@ endpoints like:
 - GET package file content.
 - PUT upload package.
 
-Because the packages belong to a project, it's expected to have project-level endpoint (remote)
+Because the packages belong to a project, it's expected to have a project-level endpoint (remote)
 for uploading and downloading them. For example:
 
 ```plaintext
@@ -70,7 +70,7 @@ Using instance-level endpoints requires [stricter naming conventions](#naming-co
 
 ### Naming conventions
 
-To avoid name conflict for instance-level endpoints you must define a package naming convention
+To avoid a name conflict for instance-level endpoints you must define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
 ID or full project path in the package name. For more information with an example, see
 [Package recipe naming convention for instance remotes](../../user/packages/conan_1_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
@@ -127,7 +127,7 @@ necessary endpoints and services necessary to support basic usage. Instead:
 
 ### Analysis
 
-During this phase, the idea is to collect as much information as possible about the API used by the package system. Here some aspects that can be useful to include:
+During this phase, the idea is to collect as much information as possible about the API used by the package system. Here are some aspects that can be useful to include:
 
 - Authentication: What authentication mechanisms are available (OAuth, Basic
   Authorization, other). Keep in mind that GitLab users often want to use their
@@ -189,7 +189,7 @@ against the project or group before continuing.
 
 The current database model allows you to store a name and a version for each package.
 Every time you upload a new package, you can either create a new record of `Package`
-or add files to existing record. `PackageFile` should be able to store all file-related
+or add files to an existing record. `PackageFile` should be able to store all file-related
 information like the file `name`, `side`, `sha1`, and so on.
 
 If there is specific data necessary to be stored for only one package system support,
@@ -206,8 +206,8 @@ tables. If the data stored in the metadata tables must be displayed, a `~fronten
 #### File uploads
 
 File uploads should be handled by GitLab Workhorse using object accelerated uploads. What this means is that
-the workhorse proxy that checks all incoming requests to GitLab intercept the upload request,
-upload the file, and forward a request to the main GitLab codebase only containing the metadata
+the workhorse proxy that checks all incoming requests to GitLab intercepts the upload request,
+uploads the file, and forwards a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
 [development documentation](../uploads/_index.md#direct-upload).
 
@@ -289,7 +289,7 @@ Here are some examples
 1. Front end updates to display additional package information and metadata
 1. Limits on file sizes
 1. Tracking for metrics
-1. Read more metadata fields from the package to make it available to the front end. For example, it's usual to be able to tag a package. Those tags can be read and saved by backend and then displayed on the packages UI.
+1. Read more metadata fields from the package to make it available to the front end. For example, it's usual to be able to tag a package. Those tags can be read and saved by the backend and then displayed on the packages UI.
 1. Endpoints for the upper levels of the [remote hierarchy](#remote-hierarchy). This step might require you to create a [naming convention](#naming-conventions)
 
 ## Exceptions

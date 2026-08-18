@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Use exact code search to find code in a specific project or across all of GitLab."
@@ -20,14 +20,14 @@ title: Exact code search
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
 - Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/17918) from beta to limited availability in GitLab 18.6.
 - Feature flag `zoekt_cross_namespace_search` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213413) in GitLab 18.7.
 
 {{< /history >}}
 
 > [!warning]
 > This feature is in [limited availability](../../policy/development_stages_support.md#limited-availability).
-> For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+> For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/work_items/9404).
 > Provide feedback in [issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 With exact code search, you can use exact match and regular expression modes

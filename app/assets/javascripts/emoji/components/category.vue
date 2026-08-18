@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { humanize } from '~/lib/utils/text_utility';

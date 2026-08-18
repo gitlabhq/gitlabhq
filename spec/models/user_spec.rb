@@ -4333,10 +4333,14 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe '.instance_access_request_approvers_to_be_notified' do
-    let_it_be(:admin_issue_board_list) { create_list(:user, 12, :admin, :with_sign_ins) }
+    let_it_be(:admin_issue_board_list) { create_list(:user, 3, :admin, :with_sign_ins) }
 
-    it 'returns up to the ten most recently active instance admins' do
-      active_admins_in_recent_sign_in_desc_order = described_class.admins.active.order_recent_sign_in.limit(10)
+    before do
+      stub_const('User::INSTANCE_ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
+    end
+
+    it 'returns up to the most recently active instance admins, limited by INSTANCE_ACCESS_REQUEST_APPROVERS_LIMIT' do
+      active_admins_in_recent_sign_in_desc_order = described_class.admins.active.order_recent_sign_in.limit(2)
 
       expect(described_class.instance_access_request_approvers_to_be_notified).to eq(active_admins_in_recent_sign_in_desc_order)
     end
@@ -7735,6 +7739,22 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be(:user) { create(:omniauth_user, provider: 'ldapmain') }
 
       it { is_expected.to be_falsey }
+
+      context 'when prevent_ldap_sign_in is enabled' do
+        before do
+          stub_ldap_setting(prevent_ldap_sign_in: true)
+        end
+
+        it { is_expected.to be_truthy }
+
+        context 'when password authentication is disabled for the web interface' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
     end
 
     it_behaves_like 'OmniAuth user password authentication'

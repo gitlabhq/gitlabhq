@@ -25,8 +25,7 @@ module QA
         end
       end
 
-      it 'generates a todo item for the group owner',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370132' do
+      it 'generates a todo item for the group owner' do
         Page::Dashboard::Todos.perform do |todos|
           expect(todos).to have_latest_todo_with_author(
             author: user.name,
@@ -50,7 +49,6 @@ module QA
           end
 
           it 'adds user to the group',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792',
             quarantine: {
               type: :flaky,
               issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1693'
@@ -70,8 +68,7 @@ module QA
             end
           end
 
-          it 'does not add user to the group',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386793' do
+          it 'does not add user to the group' do
             found_member = group.reload!.find_member(user.username)
 
             expect(found_member).to be_nil

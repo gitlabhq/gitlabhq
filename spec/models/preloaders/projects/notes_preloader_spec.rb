@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Preloaders::Projects::NotesPreloader, :request_store, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :small_repo, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
 
   it 'preloads author access level and contributor status' do

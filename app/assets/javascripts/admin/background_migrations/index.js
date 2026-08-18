@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Translate from '~/vue_shared/translate';
 import BackgroundMigrationsDatabaseListbox from './components/database_listbox.vue';
@@ -24,16 +25,13 @@ export const initBackgroundMigrationsApp = () => {
     Sentry.captureException(e);
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'BackgroundMigrationsDatabaseListboxRoot',
-    render(createElement) {
-      return createElement(BackgroundMigrationsDatabaseListbox, {
-        props: {
-          databases,
-          selectedDatabase,
-        },
-      });
+    component: BackgroundMigrationsDatabaseListbox,
+    props: {
+      databases,
+      selectedDatabase,
     },
   });
 };

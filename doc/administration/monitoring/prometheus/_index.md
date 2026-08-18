@@ -459,7 +459,7 @@ The GitLab exporter allows you to measure various GitLab metrics, pulled from Re
 
 If you are not using Prometheus monitoring:
 
-1. [Disable Prometheus](_index.md#configuring-prometheus).
+1. [Disable Prometheus](#configuring-prometheus).
 1. Delete the data under `/var/opt/gitlab/prometheus`.
 
 If you are using Prometheus monitoring:
@@ -483,7 +483,7 @@ If you are using Prometheus monitoring:
    gitlab-ctl status prometheus
    ```
 
-1. Optional. [Configure the storage retention size](_index.md#configure-the-storage-retention-size).
+1. Optional. [Configure the storage retention size](#configure-the-storage-retention-size).
 
 ### Monitoring node not receiving data
 

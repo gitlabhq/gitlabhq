@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
@@ -18,8 +17,7 @@ import { addInteractionClass } from '~/code_navigation/utils';
  * If content is hidden entirely, native find text (⌘ + F) won't work.
  */
 export default {
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  name: 'Chunk',
+  name: 'SourceViewerChunk',
   components: {
     GlIntersectionObserver,
   },

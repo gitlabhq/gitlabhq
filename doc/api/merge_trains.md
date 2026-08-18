@@ -21,6 +21,21 @@ Prerequisites:
 
 All merge train endpoints support [offset-based pagination](rest/_index.md#offset-based-pagination) using the `page` and `per_page` parameters.
 
+A merge train can include multiple merge requests. Each object in the API response represents
+one merge request in a train, not the entire train.
+
+If you call `GET /projects/:id/merge_trains` without a target branch, the response can include
+entries from more than one merge train in the project.
+
+The REST API response does not include an explicit queue position for each merge request, and
+returns merge requests as a flat list rather than grouped by train:
+
+- For an exact queue position, sort by `id` in ascending order, or use the GraphQL API
+  [`MergeTrainCar.index`](graphql/reference/_index.md#mergetraincar-index) field.
+- To group merge requests by train, use the `target_branch` attribute, or query the GraphQL API
+  [`Project.mergeTrains`](graphql/reference/_index.md#projectmergetrains) and
+  [`MergeTrain.cars`](graphql/reference/_index.md#mergetraincars) fields.
+
 ## List all merge trains for a project
 
 Lists all merge trains for a specified project.
@@ -35,7 +50,7 @@ Supported attributes:
 | --------- | ----------------- | -------- | ----------- |
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `scope`   | string            | No       | Return merge trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
-| `sort`    | string            | No       | Return merge trains sorted in `asc` or `desc` order. Default: `desc`. |
+| `sort`    | string            | No       | Return merge requests sorted by `id` in `asc` or `desc` order. Default: `desc`. A lower `id` means the merge request was added to the train earlier. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
@@ -80,7 +95,8 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/merge_trains"
 ```
 
@@ -132,6 +148,10 @@ Example response:
 
 Lists all merge requests in a merge train for a target branch.
 
+Each object in the response represents one merge request in the train for `target_branch`.
+The response uses the same object type as the
+[list all merge trains](#list-all-merge-trains-for-a-project) endpoint.
+
 ```plaintext
 GET /projects/:id/merge_trains/:target_branch
 ```
@@ -143,7 +163,7 @@ Supported attributes:
 | `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `target_branch` | string            | Yes      | The target branch of the merge train. |
 | `scope`         | string            | No       | Return merge trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
-| `sort`          | string            | No       | Return merge trains sorted in `asc` or `desc` order. Default: `desc`. |
+| `sort`          | string            | No       | Return merge requests sorted by `id` in `asc` or `desc` order. Default: `desc`. A lower `id` means the merge request was added to the train earlier. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
@@ -188,7 +208,8 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/main"
 ```
 
@@ -297,7 +318,8 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
 
@@ -464,3 +486,9 @@ Example response:
   }
 ]
 ```
+
+## Remove a merge request from a merge train
+
+To remove a merge request from a merge train, use the
+[Cancel merge when pipeline succeeds](merge_requests.md#cancel-merge-when-pipeline-succeeds)
+endpoint in the merge requests API.

@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_create_wiki_page_reply_note
 description: Count of wiki page notes created that are part of a discussion
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

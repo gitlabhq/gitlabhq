@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WebHooks::WebHookLogsFinder, :freeze_time, feature_category: :webhooks do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, :repository, namespace: group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:web_hook) { create(:project_hook, project: project) }
 
   let_it_be(:log_200) { create(:web_hook_log, web_hook: web_hook, created_at: 10.minutes.ago) }
@@ -20,8 +20,6 @@ RSpec.describe WebHooks::WebHookLogsFinder, :freeze_time, feature_category: :web
       created_at: 6.days.ago
     )
   end
-
-  let_it_be(:old_log) { create(:web_hook_log, web_hook: web_hook, created_at: 8.days.ago) }
 
   describe "#execute" do
     context 'when unauthorized user' do
@@ -106,10 +104,6 @@ RSpec.describe WebHooks::WebHookLogsFinder, :freeze_time, feature_category: :web
           expect(described_class.new(web_hook, user, { id: log_200.id }).execute).to contain_exactly(log_200)
         end
 
-        it 'does not return logs older than 7 days' do
-          expect(described_class.new(web_hook, user, { id: old_log.id }).execute).to be_empty
-        end
-
         it 'does not return logs outside timestamp filter' do
           expect(
             described_class.new(
@@ -120,7 +114,7 @@ RSpec.describe WebHooks::WebHookLogsFinder, :freeze_time, feature_category: :web
 
         it 'does not return logs not matching status filter' do
           expect(
-            described_class.new(web_hook, user, { id: old_log.id, status: ['server_failure'] }).execute
+            described_class.new(web_hook, user, { id: log_200.id, status: ['server_failure'] }).execute
           ).to be_empty
         end
       end

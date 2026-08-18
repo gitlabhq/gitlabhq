@@ -1,5 +1,9 @@
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { generateEntries } from '../webpack.helpers';
+
+const require = createRequire(import.meta.url);
+const { appendVue3Query } = require('./vue3_migration_loader');
 
 const entrypointsDir = '/javascripts/entrypoints/';
 const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
@@ -18,18 +22,32 @@ const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
  * if the JH/EE files exist, they take precendence over the CE file.
  *
  * If the file doesn't exist, it loads an empty JS file.
+ *
+ * Entries whose name ends with `.vue3` are sibling variants emitted by
+ * `generateEntries` for pages with `status: rollout` in their
+ * `vue3_migration.yml`. The leaf import gets `?vue3` appended so the
+ * Vue 3 infection plugin's resolveId hook picks it up at the entry
+ * boundary and propagates infection through the dependency graph.
+ * Pages with `status: migrated` keep their original entry name but their
+ * paths arrive from `generateEntries` already carrying the `?vue3`
+ * marker (`appendVue3Query` is a no-op on them).
  */
 export function PageEntrypointsPlugin() {
   const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
-  const entrypoints = Object.entries(generateEntries().entries).reduce((acc, [entryName, imports]) => {
-    const modulePath = imports[imports.length - 1];
-    const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
-    acc[`${entryName}.js`] = {
-      virtual: `${comment}/* ${modulePath} */ import '${importPath}';\n`,
-      actual: `${importPath.replace('~/', `${actualDirRoot}/`)}`,
-    };
-    return acc;
-  }, {});
+  const entrypoints = Object.entries(generateEntries().entries).reduce(
+    (acc, [entryName, imports]) => {
+      const modulePath = imports[imports.length - 1];
+      const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
+      const isVue3Variant = entryName.endsWith('.vue3');
+      const entryImport = isVue3Variant ? appendVue3Query(importPath) : importPath;
+      acc[`${entryName}.js`] = {
+        virtual: `${comment}/* ${modulePath} */ import '${entryImport}';\n`,
+        actual: `${entryImport.replace('~/', `${actualDirRoot}/`)}`,
+      };
+      return acc;
+    },
+    {},
+  );
 
   const inputOptions = Object.keys(entrypoints).reduce((acc, key) => {
     acc[key.replace('.js', '')] = entrypoints[key].actual;
@@ -53,7 +71,22 @@ export function PageEntrypointsPlugin() {
       if (!id.startsWith('pages.')) {
         return undefined;
       }
-      return entrypoints[id]?.virtual ?? `/* doesn't exist */`;
+
+      if (entrypoints[id]) {
+        return entrypoints[id].virtual;
+      }
+
+      // Rails asks for every ancestor route segment, so most misses are
+      // expected. A `.vue3` miss is not: Rails only asks for one when the
+      // page's feature flag is on, and an empty module would leave the page
+      // with no Vue app and nothing in the console to say why.
+      if (id.endsWith('.vue3.js')) {
+        return `${comment}throw new Error(${JSON.stringify(
+          `No Vue 3 entrypoint was built for ${id}. Restart the Vite dev server to pick up vue3_migration.yml changes.`,
+        )});\n`;
+      }
+
+      return `/* doesn't exist */`;
     },
     resolveId(source) {
       if (!source.startsWith(`${entrypointsDir}pages.`)) {

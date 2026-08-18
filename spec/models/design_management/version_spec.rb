@@ -287,7 +287,7 @@ RSpec.describe DesignManagement::Version do
     it 'returns nil if author_id is nil and version is not persisted' do
       version = build(:design_version, author: nil)
 
-      expect(version.author).to eq(nil)
+      expect(version.author).to be_nil
     end
 
     it 'retrieves author from the Commit if author_id is nil and version has been persisted' do
@@ -298,7 +298,7 @@ RSpec.describe DesignManagement::Version do
       commit = version.issue.project.design_repository.commit(version.sha)
       commit_user = create(:user, email: commit.author_email, name: commit.author_name)
 
-      expect(version.author_id).to eq(nil)
+      expect(version.author_id).to be_nil
       expect(version.author).to eq(commit_user)
     end
   end

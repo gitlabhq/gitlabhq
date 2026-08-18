@@ -2,13 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineBreakAfterFinalMixin:
   Exclude:
-    - 'app/workers/ci/pipeline_artifacts/expire_artifacts_worker.rb'
-    - 'app/workers/ci/schedule_delete_objects_cron_worker.rb'
-    - 'app/workers/ci/schedule_unlock_pipelines_in_queue_cron_worker.rb'
-    - 'app/workers/ci/stuck_builds/drop_canceling_worker.rb'
-    - 'app/workers/ci/stuck_builds/drop_running_worker.rb'
-    - 'app/workers/ci/stuck_builds/drop_scheduled_worker.rb'
-    - 'app/workers/ci/update_locked_unknown_artifacts_worker.rb'
     - 'app/workers/concurrency_limit/resume_worker.rb'
     - 'app/workers/members/expiring_worker.rb'
     - 'app/workers/metrics/global_metrics_update_worker.rb'

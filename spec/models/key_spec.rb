@@ -66,7 +66,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
         key.valid?
 
-        expect(key.errors.of_kind?(:key, :invalid)).to eq(true)
+        expect(key.errors.of_kind?(:key, :invalid)).to be(true)
       end
 
       Gitlab::SSHPublicKey.supported_algorithms.each do |supported_algorithm|
@@ -75,7 +75,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
           key.valid?
 
-          expect(key.errors.of_kind?(:key, :invalid)).to eq(false)
+          expect(key.errors.of_kind?(:key, :invalid)).to be(false)
         end
       end
     end
@@ -209,13 +209,13 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
       context 'when key belongs to user' do
         let(:key) { build(:key, user: user) }
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
       end
 
       context 'when key does not belong to user' do
         let(:key) { build(:key, user_id: non_existing_record_id) }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
     end
 

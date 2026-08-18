@@ -14,8 +14,6 @@ table {
 
   .md &:not(.code),
   &.table:not(.gl-table) {
-    margin-bottom: $gl-padding;
-
     .dropdown-menu a {
       text-decoration: none;
     }

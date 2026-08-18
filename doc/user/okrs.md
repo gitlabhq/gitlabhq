@@ -34,7 +34,7 @@ OKRs are a type of work item, a step towards [default issue types](https://gitla
 in GitLab.
 For the roadmap of migrating [issues](project/issues/_index.md) and [epics](group/epics/_index.md)
 to work items and adding custom work item types, see
-[epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or the
+[epic 6033](https://gitlab.com/groups/gitlab-org/-/work_items/6033) or the
 [Plan direction page](https://about.gitlab.com/direction/plan/).
 
 ## Designing effective OKRs
@@ -110,7 +110,7 @@ Prerequisites:
 
 To edit an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
 1. Optional. To edit the title, select it, make your changes, and select any area outside the title
    text box.
 1. Optional. To edit the description, select the edit icon ({{< icon name="pencil" >}}), make your changes, and
@@ -164,9 +164,6 @@ To show the sidebar again:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) to feature flag named `work_items_mvc` in GitLab 15.8. Disabled by default.
 - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144141) from `work_items_mvc` to `work_items_beta` in GitLab 16.10.
-- Changing activity sort order [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.8.
-- Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 - Feature flag `work_items_beta` [removed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17549) in GitLab 18.6.
 
@@ -199,7 +196,7 @@ Prerequisites:
 
 To change the assignee on an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
 1. Next to **Assignees**, select **Add assignees**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -220,7 +217,7 @@ Use [labels](project/labels.md) to organize OKRs among teams.
 
 To add labels to an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
 1. Next to **Labels**, select **Add labels**.
 1. From the dropdown list, select the labels to add.
 1. Select any area outside the dropdown list.
@@ -229,7 +226,6 @@ To add labels to an OKR:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -243,7 +239,7 @@ Prerequisites:
 
 To add an objective to a milestone:
 
-1. [Open the objective](okrs.md#view-an-objective) that you want to edit.
+1. [Open the objective](#view-an-objective) that you want to edit.
 1. Next to **Milestone**, select **Add to milestone**.
    If an objective already belongs to a milestone, the dropdown list shows the current milestone.
 1. From the dropdown list, select the milestone to be associated with the objective.
@@ -252,7 +248,6 @@ To add an objective to a milestone:
 
 {{< history >}}
 
-- Setting progress for key results [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382433) in GitLab 15.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -283,7 +278,6 @@ To set progress of an objective or key result:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381899) in GitLab 15.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -299,15 +293,13 @@ Prerequisites:
 
 To set health status of an OKR:
 
-1. [Open the key result](okrs.md#view-a-key-result) that you want to edit.
+1. [Open the key result](#view-a-key-result) that you want to edit.
 1. Next to **Health status**, select the dropdown list and select the desired health status.
 
 ## Promote a key result to an objective
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386877) in GitLab 16.0.
-- Quick action `/promote_to` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -358,15 +350,9 @@ To convert an OKR into another item type:
 1. If all conditions are met, select **Change type**.
 
 Alternatively, you can use the [`/type` quick action](project/quick_actions.md#type), followed
-by `issue`, `task`, `objective` or `key result` in a comment.
+by `issue`, `task`, `objective`, or `key result` in a comment.
 
 ## Copy objective or key result reference
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
-
-{{< /history >}}
 
 To refer to an objective or key result elsewhere in GitLab, you can use its full URL or a short reference, which looks like
 `namespace/project-name#123`, where `namespace` is either a group or a username.
@@ -382,12 +368,6 @@ You can now paste the reference into another description or comment.
 Read more about objective or key result references in [GitLab-Flavored Markdown](markdown.md#gitlab-specific-references).
 
 ## Copy objective or key result email address
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
-
-{{< /history >}}
 
 You can create a comment in an objective or key result by sending an email.
 Sending an email to this address creates a comment that contains the email body.
@@ -418,7 +398,7 @@ Prerequisites:
 
 To close an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) that you want to edit.
+1. [Open the objective](#view-an-objective) that you want to edit.
 1. Next to **Status**, select **Closed**.
 
 You can reopen a closed OKR the same way.
@@ -498,7 +478,6 @@ To add an existing key result to an objective:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -546,7 +525,6 @@ To schedule a recurring reminder for an objective, in a new comment use the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.6.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -566,12 +544,6 @@ To remove the parent of the objective or key result,
 next to **Parent**, select the dropdown list and then select **Unassign**.
 
 ## Confidential OKRs
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
-
-{{< /history >}}
 
 Confidential OKRs are OKRs visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-okrs).
@@ -661,13 +633,9 @@ system note in the OKR's comments, for example:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398649) in GitLab 16.9 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+- Feature flag `work_items_beta` [removed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17549) in GitLab 18.6.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 You can prevent public comments in an OKR.
 When you do, only project members can add and edit comments.
@@ -691,9 +659,8 @@ If an OKR is closed with a locked discussion, then you cannot reopen it until th
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a feature flag](../administration/feature_flags/_index.md) named `linked_work_items`. Enabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
-- Adding related items by entering their URLs and IDs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427594) in GitLab 16.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150148) in GitLab 17.0. Feature flag `linked_work_items` removed.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
 
 {{< /history >}}
 

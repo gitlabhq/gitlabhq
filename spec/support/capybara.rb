@@ -114,8 +114,35 @@ Capybara.javascript_driver = ENV.fetch('WEBDRIVER', :chrome).to_sym
 Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
 Capybara.default_normalize_ws = true
-Capybara.enable_aria_label = true
 Capybara.default_set_options = { clear: :backspace }
+
+## Accessibility considerations
+
+Capybara.enable_aria_label = true
+
+# Pajamas buttons stay focusable while unavailable: GlButton renders
+# `aria-disabled="true"` and ignores its click listener rather than using the
+# native `disabled` attribute. That is true of `loading` today, and of
+# `disabled` once `accessible_disabled_button` is on.
+#
+# Capybara's `disabled` filter reads the native property, so it matches an
+# unavailable button, clicks it, and the click is discarded. The spec then
+# carries on as though the action had run, and fails later somewhere else.
+#
+# Teach that filter about `aria-disabled` so `click_button` and
+# `click_link_or_button` wait for a button to become available, as they
+# already do for natively disabled ones.
+%i[button link_or_button].each do |selector|
+  Capybara.modify_selector(selector) do
+    node_filter(:disabled, :boolean, default: false, skip_if: :all) do |node, value|
+      (node.disabled? || node[:'aria-disabled'] == 'true') == value
+    end
+  end
+end
+
+# Screenshot paths are inlined into each failure's own message instead (see
+# `config.append_after` below)
+Capybara::Screenshot::RSpec.add_link_to_screenshot_for_failed_examples = false
 
 Capybara::Screenshot.append_timestamp = false
 
@@ -217,10 +244,19 @@ RSpec.configure do |config|
   end
 
   config.append_after do |example|
-    if example.metadata[:screenshot]
-      screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
-      screenshot&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
-      example.metadata[:stdout] = %([[ATTACHMENT|#{screenshot}]])
+    screenshot = example.metadata[:screenshot]
+
+    if screenshot
+      screenshot[:image]&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
+      screenshot[:html]&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
+      example.metadata[:stdout] = %([[ATTACHMENT|#{screenshot[:image] || screenshot[:html]}]])
+
+      if example.exception
+        extra_failure_lines = []
+        extra_failure_lines << "  Screenshot: #{screenshot[:image]}" if screenshot[:image]
+        extra_failure_lines << "  HTML: #{screenshot[:html]}" if screenshot[:html]
+        example.metadata[:extra_failure_lines] = extra_failure_lines
+      end
     end
   end
 

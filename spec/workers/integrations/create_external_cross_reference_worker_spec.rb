@@ -6,7 +6,7 @@ RSpec.describe Integrations::CreateExternalCrossReferenceWorker, feature_categor
   include AfterNextHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project, :with_jira_integration, :repository) }
+  let_it_be(:project) { create(:project, :with_jira_integration, :small_repo) }
   let_it_be(:author) { create(:user) }
   let_it_be(:commit) { project.commit }
   let_it_be(:issue) { create(:issue, project: project) }

@@ -1,0 +1,9 @@
+---
+name: delete_mobile_push_subscription
+description: Grants the ability to unregister a mobile device from push notifications
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - delete_mobile_push_subscription

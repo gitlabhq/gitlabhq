@@ -13,7 +13,7 @@ import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.g
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -94,7 +94,7 @@ describe('CreateBranchMergeRequestModal', () => {
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findRefSelectorListBox = () =>
     wrapper.findComponent(RefSelector).findComponent(GlCollapsibleListbox);
-  const findTargetBranch = () => wrapper.find('[data-testid="target-name"]');
+  const findTargetBranch = () => wrapper.findComponent('[data-testid="target-name"]');
   const findCopyToClipboardButton = () => wrapper.findComponent(SimpleCopyButton);
 
   describe('when hosted at the root', () => {
@@ -132,6 +132,13 @@ describe('CreateBranchMergeRequestModal', () => {
 
       it('shows the form', () => {
         expect(findForm().exists()).toBe(true);
+      });
+
+      it('emits fetched-permissions with the can_create_branch response', async () => {
+        createWrapper();
+        await waitForPromises();
+
+        expect(wrapper.emitted('fetched-permissions')).toEqual([[true]]);
       });
 
       it('ref selector dropdown only shows branches for create merge request flow', async () => {

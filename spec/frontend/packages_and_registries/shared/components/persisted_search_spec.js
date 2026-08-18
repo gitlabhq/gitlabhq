@@ -119,14 +119,14 @@ describe('Persisted Search', () => {
     ]);
   });
 
-  it('on sorting:changed emits update event and update internal sort', async () => {
+  it('on sorting-changed emits update event and update internal sort', async () => {
     const payload = { sort: 'desc', orderBy: 'test' };
 
     mountComponent();
 
     await nextTick();
 
-    findRegistrySearch().vm.$emit('sorting:changed', payload);
+    findRegistrySearch().vm.$emit('sorting-changed', payload);
 
     await nextTick();
 
@@ -143,26 +143,26 @@ describe('Persisted Search', () => {
     ]);
   });
 
-  it('on filter:changed updates the filters', async () => {
+  it('on filter-changed updates the filters', async () => {
     const payload = ['foo'];
 
     mountComponent();
 
     await nextTick();
 
-    findRegistrySearch().vm.$emit('filter:changed', payload);
+    findRegistrySearch().vm.$emit('filter-changed', payload);
 
     await nextTick();
 
     expect(findRegistrySearch().props('filters')).toEqual(['foo']);
   });
 
-  it('on filter:submit emits update event', async () => {
+  it('on filter-submit emits update event', async () => {
     mountComponent();
 
     await nextTick();
 
-    findRegistrySearch().vm.$emit('filter:submit');
+    findRegistrySearch().vm.$emit('filter-submit');
 
     expect(wrapper.emitted('update')[1]).toEqual([
       {
@@ -177,14 +177,14 @@ describe('Persisted Search', () => {
     ]);
   });
 
-  it('on query:changed calls updateQuery from UrlSync', async () => {
+  it('on query-changed calls updateQuery from UrlSync', async () => {
     jest.spyOn(UrlSync.methods, 'updateQuery').mockImplementation(() => {});
 
     mountComponent();
 
     await nextTick();
 
-    findRegistrySearch().vm.$emit('query:changed');
+    findRegistrySearch().vm.$emit('query-changed');
 
     expect(UrlSync.methods.updateQuery).toHaveBeenCalled();
   });

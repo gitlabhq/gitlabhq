@@ -35,7 +35,7 @@ See the table below for the list of ports that the Linux package assigns by defa
 | PgBouncer exporter        | No            | Port             |               | `9188`          |
 | GitLab Exporter           | Yes           | Port             |               | `9168`          |
 | Sidekiq exporter          | Yes           | Port             |               | `8082`          |
-| Sidekiq health check      | Yes           | Port             |               | `8092` <sup>1</sup> |
+| Sidekiq health check      | Yes           | Port             |               | `8092`          |
 | Web exporter              | No            | Port             |               | `8083`          |
 | Geo PostgreSQL            | No            | Socket           | Port (`5431`) |                 |
 | Redis Sentinel            | No            | Port             |               | `26379`         |
@@ -52,7 +52,7 @@ See the table below for the list of ports that the Linux package assigns by defa
 | Mattermost                | No            | Port             |               | `8065`          |
 | Mattermost                | No            | Port             |               | `80` or `443`   |
 | PgBouncer                 | No            | Port             |               | `6432`          |
-| Consul                    | No            | Port             |               | `8300`, `8301`(TCP and UDP), `8500`, `8600` <sup>2</sup> |
+| Consul                    | No            | Port             |               | `8300`, `8301`(TCP and UDP), `8500`, `8600` <sup>1</sup> |
 | Patroni                   | No            | Port             |               | `8008`          |
 | GitLab KAS                | Yes           | Port             |               | `8150`          |
 | Gitaly                    | Yes           | Socket           | Port (`8075`) | `8075` or `9999` (TLS) |
@@ -63,8 +63,6 @@ See the table below for the list of ports that the Linux package assigns by defa
 
 **Footnotes**:
 
-1. If Sidekiq health check settings are not set, they default to the Sidekiq metrics exporter settings.
-   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
 1. If using additional Consul functionality, more ports may need to be opened. See the
    [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 
@@ -73,7 +71,7 @@ Legend:
 - `Component` - Name of the component.
 - `On by default` - Is the component running by default.
 - `Communicates via` - How the component talks with the other components.
-- `Alternative` - If it is possible to configure the component to use different type of communication. The type is listed with default port used in that case.
+- `Alternative` - If it is possible to configure the component to use a different type of communication. The type is listed with the default port used in that case.
 - `Connection port` - Port on which the component communicates.
 
 GitLab also expects a file system to be ready for the storage of Git repositories

@@ -17,7 +17,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :name, type: String, desc: 'The name of a Terraform state'
           requires :serial, type: Integer, desc: 'The version number of the state'
@@ -46,8 +46,8 @@ module API
             end
           end
 
-          desc 'Get a Terraform state version' do
-            detail 'Get a Terraform state version'
+          desc 'Retrieve a Terraform state version' do
+            detail 'Retrieves a specified Terraform state version.'
             success File
             failure [
               { code: 403, message: 'Forbidden' },
@@ -67,7 +67,7 @@ module API
           end
 
           desc 'Delete a Terraform state version' do
-            detail 'Delete a Terraform state version'
+            detail 'Deletes a specified Terraform state version.'
             success code: 204
             failure [
               { code: 403, message: 'Forbidden' },

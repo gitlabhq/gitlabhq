@@ -1,59 +1,69 @@
 export const mockDisclosureHierarchyItems = [
   {
     title: 'First',
+    titleHtml: 'First',
     icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Second',
+    titleHtml: 'Second',
     icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Third',
+    titleHtml: 'Third',
     icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Fourth',
+    titleHtml: 'Fourth',
     icon: 'work-item-epic',
     href: '#',
   },
   {
     title: 'Fifth',
+    titleHtml: 'Fifth',
     icon: 'work-item-issue',
     href: '#',
   },
   {
     title: 'Sixth',
+    titleHtml: 'Sixth',
     icon: 'work-item-issue',
     href: '#',
   },
   {
     title: 'Seventh',
+    titleHtml: 'Seventh',
     icon: 'work-item-issue',
     href: '#',
   },
   {
     title: 'Eighth',
+    titleHtml: 'Eighth',
     icon: 'work-item-task',
     href: '#',
     disabled: true,
   },
   {
     title: 'Ninth',
+    titleHtml: 'Ninth',
     icon: 'work-item-task',
     href: '#',
   },
   {
     title: 'Tenth',
+    titleHtml: 'Tenth',
     icon: 'work-item-task',
     href: '#',
   },
 ];
 
 export const mockDisclosureHierarchyItemsWithNoPermission = {
-  title: 'Ancestors not available',
+  message: 'Ancestors not available',
   icon: 'eye-slash',
   href: '#',
   ancestorNotAvailable: true,
@@ -65,6 +75,7 @@ export const workItemAncestorsQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       title: 'Test',
+      titleHtml: 'Test',
       widgets: [
         {
           __typename: 'WorkItemWidgetHierarchy',
@@ -74,6 +85,7 @@ export const workItemAncestorsQueryResponse = {
             id: 'gid://gitlab/WorkItem/5',
             iid: '5',
             title: 'Test parent',
+            titleHtml: 'Test parent',
             confidential: false,
             namespace: {
               id: 'gid://gitlab/Group/1',
@@ -97,6 +109,7 @@ export const workItemAncestorsQueryResponse = {
                 closedAt: null,
                 confidential: false,
                 title: '123',
+                titleHtml: '123',
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                 workItemType: {
@@ -159,6 +172,7 @@ export const workItemInaccessibleAncestorsQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       title: 'Test',
+      titleHtml: 'Test',
       widgets: [
         {
           __typename: 'WorkItemWidgetHierarchy',
@@ -180,6 +194,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       title: 'Test',
+      titleHtml: 'Test',
       widgets: [
         {
           __typename: 'WorkItemWidgetHierarchy',
@@ -189,6 +204,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
             id: 'gid://gitlab/WorkItem/5',
             iid: '5',
             title: 'Test parent',
+            titleHtml: 'Test parent',
             confidential: false,
             namespace: {
               id: 'gid://gitlab/Group/1',
@@ -212,6 +228,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
                 closedAt: null,
                 confidential: false,
                 title: '123',
+                titleHtml: '123',
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                 workItemType: {
@@ -238,6 +255,7 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
                 closedAt: null,
                 confidential: false,
                 title: '1234',
+                titleHtml: '1234',
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
                 workItemType: {
@@ -268,6 +286,7 @@ export const workItemThreeAncestorsQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       title: 'Test',
+      titleHtml: 'Test',
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -283,6 +302,7 @@ export const workItemThreeAncestorsQueryResponse = {
             id: 'gid://gitlab/WorkItem/5',
             iid: '5',
             title: 'Test parent',
+            titleHtml: 'Test parent',
             confidential: false,
             namespace: {
               id: 'gid://gitlab/Group/1',
@@ -306,6 +326,7 @@ export const workItemThreeAncestorsQueryResponse = {
                 closedAt: null,
                 confidential: false,
                 title: '123',
+                titleHtml: '123',
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                 workItemType: {
@@ -330,6 +351,7 @@ export const workItemThreeAncestorsQueryResponse = {
                 closedAt: null,
                 confidential: false,
                 title: '1234',
+                titleHtml: '1234',
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
                 workItemType: {
@@ -354,6 +376,7 @@ export const workItemThreeAncestorsQueryResponse = {
                 closedAt: null,
                 confidential: false,
                 title: '12345',
+                titleHtml: '12345',
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/6',
                 workItemType: {
@@ -384,6 +407,7 @@ export const workItemEmptyAncestorsQueryResponse = {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
       title: 'Test',
+      titleHtml: 'Test',
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',

@@ -172,6 +172,20 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
         it_behaves_like 'reuse existing package'
       end
 
+      context 'when the existing file with the same name is pending destruction' do
+        before do
+          jar_file.pending_destruction!
+        end
+
+        it_behaves_like 'reuse existing package'
+
+        context 'for a SNAPSHOT version' do
+          let(:version) { '1.0.0-SNAPSHOT' }
+
+          it_behaves_like 'reuse existing package'
+        end
+      end
+
       context 'when the package name matches the exception regex' do
         before do
           package_settings.update!(maven_duplicate_exception_regex: existing_package.name)

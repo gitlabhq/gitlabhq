@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlFormGroup, GlFormRadio, GlFormRadioGroup } from '@gitlab/ui';
 import { SNIPPET_LEVELS_RESTRICTED, SNIPPET_LEVELS_DISABLED } from '~/snippets/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { defaultSnippetVisibilityLevels } from '../utils/blob';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     GlFormRadio,
     GlFormRadioGroup,
   },
+  mixins: [glListenersMixin],
   inject: ['visibilityLevels', 'multipleLevelsRestricted'],
   props: {
     isProjectSnippet: {
@@ -38,7 +40,7 @@ export default {
       {{ __('Visibility level') }}
     </label>
     <gl-form-group id="visibility-level-setting" class="gl-mb-0">
-      <gl-form-radio-group :checked="value" stacked v-bind="$attrs" v-on="$listeners">
+      <gl-form-radio-group :checked="value" stacked v-bind="$attrs" v-on="glListeners()">
         <gl-form-radio
           v-for="option in defaultVisibilityLevels"
           :key="option.value"

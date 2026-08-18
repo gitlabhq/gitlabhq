@@ -47,7 +47,10 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         context 'and the file is valid' do
           let(:path) { 'README.md' }
 
-          it { is_expected.to respond_with(:success) }
+          it 'renders the blob with a signature container', :aggregate_failures do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to have_css('.js-signature-container')
+          end
 
           context 'and the ref_type is valid' do
             let(:ref_type) { 'heads' }
@@ -116,6 +119,26 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:id) { 'binary-encoding/encoding/binary-1.bin' }
 
         it { is_expected.to respond_with(:success) }
+      end
+    end
+
+    context 'when the last commit for the file path is unavailable' do
+      let(:id) { 'master/README.md' }
+      let(:repository) { project.repository }
+
+      before do
+        allow_next_found_instance_of(Project) do |found_project|
+          allow(found_project).to receive(:repository).and_return(repository)
+        end
+      end
+
+      it 'renders the blob without a signature container', :aggregate_failures do
+        expect(repository).to receive(:last_commit_for_path).and_return(nil)
+
+        request
+
+        expect(response).to be_ok
+        expect(response.body).not_to have_css('.js-signature-container')
       end
     end
 

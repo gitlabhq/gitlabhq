@@ -23,11 +23,20 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
 
   shared_examples 'last entry clickable' do
     specify do
-      sidebar_scroller.execute_script('this.scrollBy(0,99999)')
-      button = find_all('[data-testid="file-tree-container"] nav button').last
+      # The file browser height is recalculated asynchronously (and debounced
+      # twice) as the tree scrolls, so the last row can briefly sit below the
+      # fold. Keep scrolling to the bottom until the layout settles and the last
+      # entry is actually clickable, rather than sampling `obscured?` once.
+      button = nil
+      wait_for('last file tree entry to be clickable') do
+        sidebar_scroller.execute_script('this.scrollBy(0,99999)')
+        button = find_all('[data-testid="file-tree-container"] nav button').last
+        button && !button.obscured?
+      end
+
       title = button.find('[data-testid=file-row-name-container]')[:title]
-      expect(button.obscured?).to be_falsy
       button.click
+
       expect(page).to have_selector(".file-title-name[title*=\"#{title}\"]")
     end
   end
@@ -47,10 +56,6 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
       before do
         find_by_testid('nextButton').click
         wait_for_requests
-        # when we click the Next button the viewport will be scrolled a bit into the diffs view
-        # this will cause for the file tree sidebar height to be recalculated
-        # because this logic is async and debounced twice we have to wait for the layout to stabilize
-        sleep(1)
       end
 
       it_behaves_like 'last entry clickable'

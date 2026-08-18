@@ -46,6 +46,10 @@ module Users
         messages = @user.errors.full_messages + Array(@user.status&.errors&.full_messages)
         error(messages.uniq.join('. '))
       end
+    rescue ServiceDesk::RefreshProjectKeyAddressSlugsService::AddressSlugConflictError => e
+      error(service_desk_address_conflict_message(e.message))
+    rescue ActiveRecord::RecordInvalid => e
+      error(e.message)
     end
 
     def execute!(*args, **kargs, &block)
@@ -57,6 +61,14 @@ module Users
     end
 
     private
+
+    def service_desk_address_conflict_message(project_full_path)
+      format(
+        s_('Profiles|Service Desk address for project %{project_path} is already in use. ' \
+          'Change the Service Desk project key before changing the username.'),
+        project_path: project_full_path
+      )
+    end
 
     def organization_users_attributes
       params[:organization_users_attributes] || []

@@ -151,7 +151,8 @@ describe('Pipeline editor app component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
-  const findEmptyStateButton = () => findEmptyState().find('[data-testid="create-new-ci-button"]');
+  const findEmptyStateButton = () =>
+    findEmptyState().findComponent('[data-testid="create-new-ci-button"]');
   const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
   const findConfirmUnsavedChangesDialog = () => wrapper.findComponent(ConfirmUnsavedChangesDialog);
 
@@ -408,7 +409,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
-          findEditorHome().vm.$emit('updateCommitSha');
+          findEditorHome().vm.$emit('update-commit-sha');
           await waitForPromises();
 
           expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
@@ -418,14 +419,14 @@ describe('Pipeline editor app component', () => {
           mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
           await waitForPromises();
 
-          await findEditorHome().vm.$emit('updateCommitSha');
+          await findEditorHome().vm.$emit('update-commit-sha');
 
           expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
         });
 
         it('stops polling for commit sha when pipeline data is available for current branch', async () => {
           mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
-          findEditorHome().vm.$emit('updateCommitSha');
+          findEditorHome().vm.$emit('update-commit-sha');
           await waitForPromises();
 
           expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
@@ -480,7 +481,7 @@ describe('Pipeline editor app component', () => {
         beforeEach(async () => {
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
-          findEditorHome().vm.$emit('showError', {
+          findEditorHome().vm.$emit('show-error', {
             type: COMMIT_FAILURE,
             reasons: commitFailedReasons,
           });
@@ -503,7 +504,7 @@ describe('Pipeline editor app component', () => {
         beforeEach(async () => {
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
-          findEditorHome().vm.$emit('showError', {
+          findEditorHome().vm.$emit('show-error', {
             type: COMMIT_FAILURE,
             reasons: unknownReasons,
           });
@@ -519,39 +520,6 @@ describe('Pipeline editor app component', () => {
           expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' }, wrapper.element);
         });
       });
-    });
-  });
-
-  describe('when refetching content', () => {
-    beforeEach(() => {
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      mockCiLintData.mockResolvedValue(mockCiLintMutationResponse);
-      mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
-    });
-
-    it('refetches blob content', async () => {
-      await createComponentWithApollo();
-
-      expect(mockBlobContentData).toHaveBeenCalledTimes(1);
-
-      findEditorHome().vm.$emit('refetchContent');
-
-      expect(mockBlobContentData).toHaveBeenCalledTimes(2);
-    });
-
-    it('hides start screen when refetch fetches CI file', async () => {
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
-      await createComponentWithApollo();
-
-      expect(findEmptyState().exists()).toBe(true);
-      expect(findEditorHome().exists()).toBe(false);
-
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      findEmptyState().vm.$emit('refetchContent');
-      await waitForPromises();
-
-      expect(findEmptyState().exists()).toBe(false);
-      expect(findEditorHome().exists()).toBe(true);
     });
   });
 

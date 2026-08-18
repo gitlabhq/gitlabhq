@@ -133,7 +133,6 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
       accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
-      wait_for_all_requests
 
       expect(page).to have_content("Your new impersonation token has been created.")
       expect(active_access_tokens).to have_text(impersonation_token.name)
@@ -148,7 +147,6 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
           impersonation_token.revoke!
           click_on s_('AccessTokens|Rotate')
         end
-        wait_for_all_requests
 
         expect(page).to have_content(s_('AccessTokens|Token already revoked'))
       end

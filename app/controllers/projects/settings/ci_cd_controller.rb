@@ -15,6 +15,8 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
+        push_frontend_feature_flag(:vue3_migrate_admin_runners, current_user)
+        push_frontend_feature_flag(:vue3_migrate_pipelines, current_user)
         push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
         push_frontend_ability(ability: :admin_protected_environments, resource: @project, user: current_user)
       end
@@ -110,6 +112,7 @@ module Projects
           additional_details: {
             project_path: project.full_path,
             project_id: project.id,
+            organization_id: project.organization_id,
             ip_address: request.remote_ip,
             timestamp: Time.current.iso8601,
             action: 'project_ci_cd_settings_page_viewed',

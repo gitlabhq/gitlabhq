@@ -142,3 +142,65 @@ module PostgreSQLDatabaseTasksPatch
 end
 
 ActiveRecord::Tasks::PostgreSQLDatabaseTasks.prepend(PostgreSQLDatabaseTasksPatch)
+
+# Batches per-table DELETEs into a single execute() to cut round-trips during
+# suite/migration cleanup. GitLab only calls the :deletion strategy without
+# :reset_ids, so we deliberately omit the base gem's sequence-reset path.
+#
+# The batched statement spans tables from multiple gitlab_schemas, which trips
+# both GitlabSchemasValidateConnection and the PreventCrossJoins spec guard.
+# We suppress both for the cleanup query only.
+# Upstream: https://github.com/DatabaseCleaner/database_cleaner-active_record/pull/113
+module DatabaseCleanerDeletionBatchPatch
+  private
+
+  def delete_tables(connection, table_names)
+    return if table_names.empty?
+
+    statements = table_names.map do |table_name|
+      "DELETE FROM #{connection.quote_table_name(table_name)};"
+    end
+
+    Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+      Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/589022') do
+        connection.execute(statements.join)
+      end
+    end
+  end
+end
+
+DatabaseCleaner::ActiveRecord::Deletion.prepend(DatabaseCleanerDeletionBatchPatch)
+
+# disable_referential_integrity (called by the cleaner) ends with ENABLE TRIGGER
+# ALL, which resets tgenabled to 'O' and silently drops ALWAYS. A pg_dump against
+# a cleaned database then omits the ENABLE ALWAYS TRIGGER line, so a regenerated
+# db/structure.sql loses it. Re-assert ALWAYS after cleaning.
+# https://gitlab.com/gitlab-org/gitlab/-/work_items/613826
+#
+# Parents only (tgparentid = 0): ALTER on a partitioned parent recurses to its
+# partitions, so the cloned child triggers need no statement of their own.
+module DatabaseCleanerPreserveAlwaysTriggersPatch
+  ALWAYS_TRIGGERS_SQL = <<~SQL
+    SELECT n.nspname, c.relname, t.tgname FROM pg_trigger t
+    JOIN pg_class c ON c.oid = t.tgrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE t.tgenabled = 'A' AND NOT t.tgisinternal AND t.tgparentid = 0
+  SQL
+
+  def clean
+    always_triggers = connection.select_rows(ALWAYS_TRIGGERS_SQL)
+
+    super
+
+    always_triggers.each do |schema, table, trigger|
+      connection.execute(
+        "ALTER TABLE #{connection.quote_table_name("#{schema}.#{table}")} " \
+          "ENABLE ALWAYS TRIGGER #{connection.quote_column_name(trigger)}"
+      )
+    end
+  end
+end
+
+# GitLab only uses the :deletion strategy, and Deletion defines its own #clean
+# (it does not inherit Truncation's), so the patch must go on Deletion.
+DatabaseCleaner::ActiveRecord::Deletion.prepend(DatabaseCleanerPreserveAlwaysTriggersPatch)

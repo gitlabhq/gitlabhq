@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting Issue counts by status', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:issue_opened) { create(:issue, project: project) }
   let_it_be(:issue_closed) { create(:issue, :closed, project: project) }

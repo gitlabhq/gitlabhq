@@ -25,6 +25,7 @@ The documentation source files are in the same repositories as the product code.
 | [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
 | [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator) | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
 | [GitLab CLI (glab)](https://gitlab.com/gitlab-org/cli/) | [`/docs/source`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source) |
+| [Artifact Registry](https://gitlab.com/gitlab-org/ops/artifact-registry/) | [`/docs`](https://gitlab.com/gitlab-org/ops/artifact-registry/-/tree/main/docs) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 
@@ -97,7 +98,7 @@ This automation is configured in the [`Dangerfile`](https://gitlab.com/gitlab-or
 
 ## Request a documentation survey banner
 
-To reach to a wider audience, you can request
+To reach a wider audience, you can request
 [a survey banner](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/maintenance.md#survey-banner).
 
 Only one banner can exist at any given time. Priority is given based on who

@@ -1,0 +1,9 @@
+---
+name: create_issuable_resource_link
+description: Grants the ability to create issuable resource links
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_issuable_resource_link

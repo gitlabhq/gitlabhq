@@ -6,7 +6,10 @@ module Import
       module Adapters
         # Adapter for Google Cloud Storage, backed by fog-google.
         #
-        # Authenticates with a service account key (provider :gcs).
+        # Handles the fog-google credential styles: a service account key
+        # (provider :gcs) and Application Default Credentials (provider
+        # :gcs_application_default), which fog-google resolves from the instance
+        # environment.
         class Gcs < Base
           # fog-google resolves the storage API host from this bare domain (falling
           # back to the GOOGLE_CLOUD_UNIVERSE_DOMAIN env var if unset); pinning it
@@ -30,17 +33,31 @@ module Import
 
           private
 
-          # The configuration flattens the uploaded service account key into
-          # individual fields (see Import::Offline::Configuration#flatten_gcs_json_key),
+          # For the `gcs` provider, the configuration flattens the submitted service account
+          # JSON string key into individual fields (see Import::Offline::Configuration#flatten_gcs_json_key),
           # but fog-google wants the key back as a JSON string, so we rebuild it
           # from those fields.
+          # For the `gcs_application_default` provider, credentials contain only
+          # `google_project`; fog-google resolves the actual credentials from the
+          # instance environment via Application Default Credentials.
           def fog_credentials
             creds = credentials.with_indifferent_access
-            {
-              google_project: creds[:google_project],
-              google_json_key_string: Gitlab::Json.dump(creds.except(:google_project)),
-              universe_domain: GOOGLE_DEFAULT_UNIVERSE_DOMAIN
-            }
+
+            if provider.to_s == 'gcs'
+              {
+                google_project: creds[:google_project],
+                google_json_key_string: Gitlab::Json.dump(creds.except(:google_project)),
+                universe_domain: GOOGLE_DEFAULT_UNIVERSE_DOMAIN
+              }
+            elsif provider.to_s == 'gcs_application_default'
+              {
+                google_project: creds[:google_project],
+                google_application_default: true,
+                universe_domain: GOOGLE_DEFAULT_UNIVERSE_DOMAIN
+              }
+            else
+              raise ConnectionError, "Unsupported provider: #{provider}"
+            end
           end
 
           # fog-google's JSON backend has no head_bucket; get_bucket returns the

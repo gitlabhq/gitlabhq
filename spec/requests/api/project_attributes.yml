@@ -53,6 +53,7 @@ itself: # project
   computed_attributes:
     - _links
     - can_create_merge_request_in
+    - cicd_catalog_enabled
     - compliance_frameworks
     - container_expiration_policy
     - container_registry_enabled
@@ -223,6 +224,8 @@ project_setting:
     - ai_audit_events_storage_enabled
     - dap_session_tracking_enabled
     - tool_approval_for_session_enabled
+    - feature_flags_minimum_role
+    - duo_vulnerability_context_analysis_enabled
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id

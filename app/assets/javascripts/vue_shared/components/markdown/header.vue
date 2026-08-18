@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
 import $ from 'jquery';
 import { escapeRegExp } from 'lodash-es';
@@ -47,10 +48,13 @@ export default {
     GlFormInput,
     DrawioToolbarButton,
     CommentTemplatesModal,
-    AiActionsDropdown: () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
+    AiActionsDropdown: defineAsyncComponent(
+      () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
+    ),
     HeaderDivider,
-    SummarizeCodeChanges: () =>
-      import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    SummarizeCodeChanges: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    ),
     ToolbarMoreDropdown,
   },
   directives: {
@@ -64,7 +68,6 @@ export default {
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
     summarizeDisabledReason: { default: null },
-    canUseComposer: { default: false },
     legacyEditorAiActions: { default: () => [] },
   },
   props: {
@@ -138,7 +141,7 @@ export default {
       default: false,
     },
   },
-  emits: ['handleSuggestDismissed', 'hidePreview', 'showPreview'],
+  emits: ['handle-suggest-dismissed', 'hide-preview', 'show-preview'],
   data() {
     const modifierKey = getModifierKey();
 
@@ -315,15 +318,15 @@ export default {
     showMarkdownPreview(e) {
       if (!this.isValid(e?.detail?.form)) return;
 
-      this.$emit('showPreview');
+      this.$emit('show-preview');
     },
     hideMarkdownPreview(e) {
       if (!this.isValid(e?.detail?.form)) return;
 
-      this.$emit('hidePreview');
+      this.$emit('hide-preview');
     },
     handleSuggestDismissed() {
-      this.$emit('handleSuggestDismissed');
+      this.$emit('handle-suggest-dismissed');
     },
     handleQuote() {
       const documentFragment = getSelectedFragment();
@@ -723,7 +726,7 @@ export default {
       size="small"
       category="primary"
       variant="confirm"
-      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only"
+      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only focus-visible:gl-not-sr-only"
       @click="skipToInput"
       >{{ __('Skip to input') }}</gl-button
     >
@@ -954,7 +957,7 @@ export default {
             />
             <toolbar-more-dropdown />
           </div>
-          <template v-if="!previewMarkdown && canSummarizeChanges && !canUseComposer">
+          <template v-if="!previewMarkdown && canSummarizeChanges">
             <header-divider />
             <summarize-code-changes :disabled-reason="summarizeDisabledReason" />
           </template>

@@ -6,7 +6,7 @@ description: Connect Claude Desktop to the GitLab MCP server and create an issue
 title: "Tutorial: Connect Claude Desktop to the GitLab MCP server"
 ---
 
-With the [GitLab Model Context Protocol (MCP) server](../../user/gitlab_duo/model_context_protocol/mcp_server.md),
+With the [GitLab Model Context Protocol (MCP) server](../../user/model_context_protocol/mcp_server.md),
 you can connect external AI tools and applications to your GitLab instance. In this tutorial,
 you will configure the GitLab MCP server to connect to Claude Desktop. After you have
 successfully integrated Claude Desktop with the MCP server, you will
@@ -14,7 +14,9 @@ instruct Claude to create an issue in your GitLab instance.
 
 ## Before you begin
 
-- Turn on [GitLab Duo](../../user/duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off) and [beta and experimental features](../../user/duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features).
+- Allow access to the MCP server:
+  - On GitLab.com, [for the top-level group](../../user/group/access_and_permissions.md#allow-access-to-the-mcp-server).
+  - On GitLab Self-Managed and GitLab Dedicated, [for the instance](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server).
 - Install [Claude Desktop](https://support.claude.com/en/articles/10065433-installing-claude-desktop) for your operating system.
 - Install Node.js version 20 or later.
   Have Node.js available globally in the `PATH` environment variable (`which -a node`).

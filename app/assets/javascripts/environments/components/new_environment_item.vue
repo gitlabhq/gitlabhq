@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlBadge,
   GlButtonGroup,
@@ -39,7 +40,9 @@ export default {
     Terminal,
     TimeAgoTooltip,
     Delete,
-    EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
+    EnvironmentAlert: defineAsyncComponent(
+      () => import('ee_component/environments/components/environment_alert.vue'),
+    ),
   },
   directives: {
     GlTooltip,
@@ -129,9 +132,9 @@ export default {
     hasExtraActions() {
       return Boolean(
         this.retryPath ||
-          this.canShowAutoStopDate ||
-          this.terminalPath ||
-          this.canDeleteEnvironment,
+        this.canShowAutoStopDate ||
+        this.terminalPath ||
+        this.canDeleteEnvironment,
       );
     },
     canShowAutoStopDate() {

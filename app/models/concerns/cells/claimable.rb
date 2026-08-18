@@ -5,9 +5,17 @@ module Cells
     extend ActiveSupport::Concern
     include Gitlab::Utils::StrongMemoize
 
-    CLAIMS_BUCKET_TYPE = Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type
+    CLAIMS_CLAIM = Gitlab::Cells::TopologyService::Types::V1::Claim
+    CLAIMS_CLAIM_TYPE = Gitlab::Cells::TopologyService::Types::V1::ClaimType
     CLAIMS_SUBJECT_TYPE = Gitlab::Cells::TopologyService::Claims::V1::Subject::Type
     CLAIMS_SOURCE_TYPE = Gitlab::Cells::TopologyService::Claims::V1::Source::Type
+
+    # Derived from the Claim descriptor so it stays in sync as new claim types are added
+    # upstream. Keyed by field number, which intentionally equals the ClaimType integer value.
+    # field number (== ClaimType value) => { name:, integer: }
+    CLAIM_FIELD_BY_TYPE = CLAIMS_CLAIM.descriptor.to_h do |field|
+      [field.number, { name: field.name.to_sym, integer: field.type == :int64 }]
+    end.freeze
 
     MissingPrimaryKeyError = Class.new(RuntimeError)
 
@@ -75,6 +83,18 @@ module Cells
         Feature.enabled?(attribute_config[:feature_flag], :current_request)
       end
       # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+
+      # Builds the Claim oneof hash for a given ClaimType and value. Shared by the metadata
+      # builder and the bulk claims worker so both construct claims identically.
+      def cells_claims_claim_hash(type, value)
+        field = CLAIM_FIELD_BY_TYPE.fetch(type)
+        # Guard against value.to_i silently turning blank/non-numeric input into a valid-looking
+        # 0 claim, which would occupy a Topology Service slot for a record that doesn't exist.
+        raise ArgumentError, "blank claim value for #{field[:name]}" if value.blank?
+
+        typed = field[:integer] ? value.to_i : value.to_s
+        { field[:name] => typed }
+      end
     end
 
     mattr_reader :models_with_claims, default: Set.new
@@ -85,6 +105,8 @@ module Cells
       return unless config
       return unless cells_claims_attribute_claimable?(attribute_name, config)
 
+      # 'bucket_type'/'bucket_value' keys are kept for wire compatibility with in-flight
+      # Sidekiq jobs; they now feed Claim construction. config[:type] is a ClaimType int.
       {
         'bucket_type' => config[:type],
         'bucket_value' => self[attribute_name].to_s,
@@ -131,6 +153,15 @@ module Cells
     end
 
     private
+
+    # Attributes used to build the user-facing error message when a claim
+    # already exists in the Topology Service. Defaults to the claimed
+    # attributes. Override in the model when the message should reference
+    # different attributes, for example when the claimed attribute is an
+    # internal id or when associated models claim attributes on its behalf.
+    def unique_attributes
+      self.class.cells_claims_attributes.keys
+    end
 
     class_methods do
       def register_as_model_with_claims
@@ -191,12 +222,7 @@ module Cells
     end
 
     def cells_claims_metadata_for(type, value)
-      cells_claims_default_metadata.merge({
-        bucket: {
-          type: type,
-          value: value.to_s
-        }
-      })
+      cells_claims_default_metadata.merge(claim: self.class.cells_claims_claim_hash(type, value))
     end
 
     def cells_claims_default_metadata

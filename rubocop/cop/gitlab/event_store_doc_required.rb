@@ -2,6 +2,7 @@
 
 require 'digest/sha2'
 require 'yaml'
+require_relative '../../../tooling/docs/event_nodoc'
 
 module RuboCop
   module Cop
@@ -46,7 +47,7 @@ module RuboCop
 
         def on_class(node)
           return unless in_events_dir?
-          return unless inherits_from_event_store_event?(node)
+          return if Docs::EventNodoc.excluded?(source_path, gitlab_root)
 
           doc_path = corresponding_doc_path
 
@@ -72,6 +73,8 @@ module RuboCop
             Dir.glob(File.join(root, 'data/events/**/*.yml')).each do |path|
               digest.update(path).file(path)
             end
+            nodoc = File.join(root, Docs::EventNodoc::NODOC_FILENAME)
+            digest.file(nodoc) if File.exist?(nodoc)
             digest.hexdigest
           end
         end
@@ -106,13 +109,6 @@ module RuboCop
 
         def source_in_ee?
           source_path.include?('/ee/app/events/')
-        end
-
-        def inherits_from_event_store_event?(node)
-          superclass = node.parent_class
-          return false unless superclass
-
-          superclass.source.end_with?('Gitlab::EventStore::Event')
         end
 
         def corresponding_doc_path

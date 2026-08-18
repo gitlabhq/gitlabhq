@@ -8,6 +8,8 @@ RSpec.describe Atlassian::Forge::SystemTokenClient, feature_category: :integrati
 
   subject(:client) { described_class.new(api_base_url, system_token) }
 
+  it_behaves_like 'a Jira dev-info client', auth_error_message: 'Authentication failed'
+
   describe '#build_uri' do
     it 'appends the bulk path, preserving the apiBaseUrl prefix' do
       expect(client.send(:build_uri, '/rest/devinfo/0.10/bulk').to_s)
@@ -21,6 +23,15 @@ RSpec.describe Atlassian::Forge::SystemTokenClient, feature_category: :integrati
         'Authorization' => "Bearer #{system_token}",
         'Content-Type' => 'application/json'
       )
+    end
+  end
+
+  describe 'a 401 response' do
+    it 'reports a neutral auth failure, not the Connect JWT message' do
+      response = instance_double(HTTParty::Response, code: 401, parsed_response: {})
+
+      expect(client.send(:handle_response, response, 'dev_info'))
+        .to eq('errorMessages' => ['Authentication failed'], 'responseCode' => 401)
     end
   end
 

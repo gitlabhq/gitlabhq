@@ -200,8 +200,8 @@ Use the `EditorStateObserver` renderless component to react to changes in the
 editor's state, such as when the document or the selection changes. You can listen to
 the following events:
 
-- `docUpdate`
-- `selectionUpdate`
+- `doc-update`
+- `selection-update`
 - `transaction`
 - `focus`
 - `blur`

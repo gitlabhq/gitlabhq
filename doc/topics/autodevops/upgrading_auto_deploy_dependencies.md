@@ -39,7 +39,7 @@ are using. First verify which template is in use:
   - Your Auto DevOps project has a `.gitlab-ci.yml` and [includes](../../ci/yaml/_index.md#includetemplate)
     the `Auto-DevOps.gitlab-ci.yml` template.
 - [The latest Auto Deploy template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml)
-  is being used if both of the following is true:
+  is being used if both of the following are true:
   - Your Auto DevOps project has a `.gitlab-ci.yml` file and [includes](../../ci/yaml/_index.md#includetemplate)
     the `Auto-DevOps.gitlab-ci.yml` template.
   - It also includes [the latest Auto Deploy template](#early-adopters)
@@ -89,17 +89,6 @@ In the v2 `auto-deploy-image`, it uses Helm v3 that doesn't require Tiller anymo
 
 If your Auto DevOps project has an active environment that was deployed with the v1
 `auto-deploy-image`, use the following steps to upgrade to v2, which uses Helm v3:
-
-1. Include the [Helm 2to3 migration CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Jobs/Helm-2to3.gitlab-ci.yml):
-
-   - If you are on GitLab.com, or GitLab 14.0.1 or later, this template is already included in Auto DevOps.
-   - On other versions of GitLab, you can modify your `.gitlab-ci.yml` to include the templates:
-
-     ```yaml
-     include:
-       - template: Auto-DevOps.gitlab-ci.yml
-       - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Jobs/Helm-2to3.gitlab-ci.yml
-     ```
 
 1. Set the following CI/CD variables:
 
@@ -159,12 +148,12 @@ steps to upgrade to v2:
 To use a specific version of Auto Deploy dependencies, specify the previous Auto Deploy
 stable template that contains the [desired version of `auto-deploy-image` and `auto-deploy-app`](#verify-dependency-versions).
 
-For example, if the template is bundled in GitLab 16.10, change your `.gitlab-ci.yml` to:
+For example, if the template is bundled in GitLab 19.2, change your `.gitlab-ci.yml` to:
 
 ```yaml
 include:
   - template: Auto-DevOps.gitlab-ci.yml
-  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v16.10.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v19.2.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
 ```
 
 ### Ignore warnings and continue deploying

@@ -26,7 +26,7 @@ The following settings are required for externally managed PostgreSQL instances.
 |:-----------------------|:---------------|:-----------------|
 | `work_mem`             | minimum `8 MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
 | `maintenance_work_mem` | minimum `64 MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
-| `max_connections`      | minimum `400`   | Calculate based on your GitLab components. See [Plan your database connections](#plan-your-database-connections) for detailed guidance. |
+| `max_connections`      | minimum `400`   | Set based on what the database host can serve. See [Determine your database host capacity](#determine-your-database-host-capacity-max_connections). The connection-demand formula gives frontend demand, not this value. |
 | `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
 | `statement_timeout`    | 15000 to 60000 | A statement timeout prevents runaway issues with locks and the database rejecting new clients. You should use values between 15 and 60 seconds (15000 to 60000 milliseconds), where one minute matches the Puma rack timeout setting. |
 | `hot_standby_feedback` | `on` | For configurations with multiple nodes and [database load balancing](database_load_balancing.md#configure-database-load-balancing) configured, ensure that all replica nodes have `hot_standby_feedback` enabled to prevent lag buildup. |
@@ -39,6 +39,11 @@ You can configure some PostgreSQL settings for the specific database, rather tha
   For example: `ALTER DATABASE gitlab SET statement_timeout = '60s';`
 
 ## Plan your database connections
+
+This formula computes the application's frontend connection demand - the number of connections
+Rails opens to the database (or to PgBouncer). This is not the value to use for PostgreSQL
+`max_connections`. See [Determine your database host capacity](#determine-your-database-host-capacity-max_connections)
+for how to size `max_connections`.
 
 > [!note]
 > GitLab versions 16.0 and later use
@@ -114,7 +119,7 @@ Total connections = 2 × ((Puma × Rails nodes) + (Sidekiq × Sidekiq nodes) + (
 ```
 
 Multiplying by 2 accounts for the
-[dual database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections) in GitLab 16.0 and later.
+[dual database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
 
 For Geo installations:
 
@@ -172,3 +177,66 @@ This example is based on the GitLab reference architecture for
 | Sidekiq                               | 1     | 4 processes, 20 concurrency each   | 31 per process            | 248                            |
 | Geo Log Cursor (secondary sites only) | 2     | 1 process per Rails node           | 11 per process            | 44                             |
 | Total                                 |       |                                    |                           | 740                            |
+
+## Determine your database host capacity (`max_connections`)
+
+`max_connections` is bounded by what the database host can actually serve - a function of CPU, memory,
+and IO capacity. It is not derived from the application connection-demand formula.
+
+- As a general rule, set `max_connections` to a multiple of the number of vCPUs, typically in the 2-10x range. This is only a starting
+  point: the value the host can sustain also depends on available memory, IO capacity, and workload.
+- For finer tuning, use [PGTune](https://pgtune.leopard.in.ua/), which accounts for memory, storage
+  type, and workload.
+- If you use a managed PostgreSQL database (RDS, Cloud SQL, Azure Database for PostgreSQL), refer to the
+  vendor's documentation.
+- Changing the `max_connections` value requires restarting all PostgreSQL nodes.
+
+For Geo installations, set `max_connections` to the same value on the primary PostgreSQL database and
+all replica databases. See [Total connection requirements](#total-connection-requirements) for the
+Geo-specific guidance.
+
+## Size connections for your topology
+
+Use the following guidance based on whether PgBouncer sits between the application and the database.
+
+### Without PgBouncer
+
+The application connects directly to PostgreSQL, so every connection in the demand calculation must
+be served by a backend.
+
+1. Calculate total frontend connection demand using the
+   [Plan your database connections](#plan-your-database-connections) formula.
+1. Set PostgreSQL `max_connections` to at least that value, provided the host can serve it.
+   See [Determine your database host capacity](#determine-your-database-host-capacity-max_connections).
+1. If total connection demand exceeds what the host can serve - as a rough guide, when it pushes past
+   the 2-10x vCPU range, or drives CPU, memory, or IO past a healthy level - do not raise
+   `max_connections` to match. This is a clear sign the installation needs connection pooling.
+   Add PgBouncer and size it as described in [With PgBouncer](#with-pgbouncer).
+
+### With PgBouncer
+
+PgBouncer pools connections, so the application's frontend demand and the database's backend
+connections are sized separately.
+
+In PgBouncer terminology:
+
+- `pgbouncer['max_client_conn']` is the frontend pool: connections from Rails to PgBouncer.
+- `pgbouncer['default_pool_size']` is the backend pool: connections from PgBouncer to the database.
+  This value is sized per pool (per database/user pair). Because GitLab opens
+  separate pools for `main` and `ci`, the backend pool budget must account for both pools per
+  PgBouncer node.
+
+To size connections when using PgBouncer:
+
+1. Calculate your worst-case frontend connection demand using the
+   [Plan your database connections](#plan-your-database-connections) formula.
+1. Divide that total by the number of PgBouncer nodes, and use the result multiplied by 2 for each
+   node's `pgbouncer['max_client_conn']`.
+1. Determine PostgreSQL `max_connections` from
+   [what the database host can serve](#determine-your-database-host-capacity-max_connections),
+   not from the frontend demand formula.
+1. Divide that `max_connections` value by the number of PgBouncer nodes, and use the result for
+   each node's `pgbouncer['default_pool_size']`.
+
+For detailed reference on these parameters, see [Fine tuning](pgbouncer.md#fine-tuning) in the
+PgBouncer documentation.

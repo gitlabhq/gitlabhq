@@ -7,7 +7,7 @@ RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :activat
 
   let_it_be(:swift) { create(:programming_language, name: 'Swift') }
   let_it_be(:objective_c) { create(:programming_language, name: 'Objective-C') }
-  let_it_be(:project) { create(:project, :repository, detected_repository_languages: true) }
+  let_it_be(:project) { create(:project, detected_repository_languages: true) }
 
   let(:worker) { described_class.new }
   let(:service_result) { %w[ios osx watchos] }

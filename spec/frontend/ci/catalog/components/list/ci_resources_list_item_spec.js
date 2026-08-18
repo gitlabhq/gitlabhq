@@ -62,7 +62,7 @@ describe('CiResourcesListItem', () => {
 
   const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
-  const findResourceName = () => wrapper.findByTestId('ci-resource-link');
+  const findResourceName = () => wrapper.findComponentByTestId('ci-resource-link');
   const findUsage = () => wrapper.findByTestId('stats-usage');
   const findUserLink = () => wrapper.findByTestId('user-link');
 
@@ -412,6 +412,31 @@ describe('CiResourcesListItem', () => {
           expect(findUsage().text()).toBe('4');
         });
       });
+    });
+  });
+
+  describe('when showStats is false', () => {
+    beforeEach(() => {
+      createComponent({ props: { showStats: false } });
+    });
+
+    it('does not render the usage and favorites stats', () => {
+      expect(findUsage().exists()).toBe(false);
+      expect(findFavorites().exists()).toBe(false);
+    });
+  });
+
+  describe('when showAuthor is false', () => {
+    beforeEach(() => {
+      createComponent({ props: { showAuthor: false } });
+    });
+
+    it('does not render the author link', () => {
+      expect(findUserLink().exists()).toBe(false);
+    });
+
+    it('renders the published message without the author', () => {
+      expect(findPublishedInfo().text()).toMatchInterpolatedText('Published Jan 27, 2024');
     });
   });
 

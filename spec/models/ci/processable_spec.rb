@@ -258,31 +258,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
-  describe '.populate_scheduling_type!' do
-    let_it_be_with_reload(:build_without_needs) { create(:ci_build, project: project, pipeline: pipeline) }
-    let_it_be_with_reload(:build_with_needs) { create(:ci_build, project: project, pipeline: pipeline) }
-    let_it_be(:needs_relation) { create(:ci_build_need, build: build_with_needs) }
-    let_it_be(:another_build) { create(:ci_build, project: project) }
-
-    before do
-      described_class.update_all(scheduling_type: nil)
-    end
-
-    it 'populates scheduling_type of processables' do
-      expect do
-        pipeline.processables.populate_scheduling_type!
-      end.to change { pipeline.processables.where(scheduling_type: nil).count }.from(2).to(0)
-
-      expect(build_without_needs.reload.scheduling_type).to eq('stage')
-      expect(build_with_needs.reload.scheduling_type).to eq('dag')
-    end
-
-    it 'does not affect processables from other pipelines' do
-      pipeline.processables.populate_scheduling_type!
-      expect(another_build.reload.scheduling_type).to be_nil
-    end
-  end
-
   describe '#needs_attributes' do
     let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
 

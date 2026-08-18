@@ -7,6 +7,8 @@ export const buildStatus = (id, name = `Status ${id}`, category = 'to_do') => ({
   iconName: 'status-waiting',
   color: '#737278',
   category,
+  description: null,
+  position: 0,
 });
 
 export const mockStatus = buildStatus(1, 'To do');

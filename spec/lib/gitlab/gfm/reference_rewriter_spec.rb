@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter, feature_category: :markdown do
     end
 
     context 'with a commit' do
-      let(:old_project) { create(:project, :repository, name: 'old-project', group: group) }
+      let_it_be(:old_project) { create(:project, :small_repo, name: 'old-project', group: group) }
       let(:commit) { old_project.commit }
 
       context 'reference to an absolute URL to a commit' do

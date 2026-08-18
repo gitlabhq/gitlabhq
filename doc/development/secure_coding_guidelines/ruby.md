@@ -172,7 +172,7 @@ have been reported to GitLab include:
     that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51327).
 - Reading internal services, including cloud service metadata.
   - The latter can be a serious problem, because an attacker can obtain keys that allow control of the victim's cloud infrastructure. (This is also a good reason
-    to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
+    to give only necessary privileges to the token). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
 - When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293).
 
 ### When to Consider
@@ -277,7 +277,7 @@ XSS issues are commonly classified in three categories, by their delivery method
 
 ### Impact
 
-The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform any same action the victim would typically be able to do through a browser. The attacker would also have the ability to:
+The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform the same actions the victim would typically be able to do through a browser. The attacker would also have the ability to:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
 - launch a network scan from the victim's browser
@@ -450,7 +450,7 @@ When working with XML parsing, particularly with user-controlled inputs.
 
 ### Description
 
-Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This data can include data, code or credentials.
+Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This can include data, code, or credentials.
 
 Traversal can occur when a path includes directories. A typical malicious example includes one or more `../`, which tells the file system to look in the parent directory. Supplying many of them in a path, for example `../../../../../../../etc/passwd`, usually resolves to `/etc/passwd`. If the file system is instructed to look back to the root directory and can't go back any further, then extra `../` are ignored. The file system then looks from the root, resulting in `/etc/passwd` - a file you definitely do not want exposed to a malicious attacker!
 
@@ -568,7 +568,7 @@ It contains various examples on how to securely call OS commands.
 
 ## Working with archive files
 
-Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar` and `7z` presents an area where potentially critical security vulnerabilities can sneak into an application.
+Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar`, and `7z` presents an area where potentially critical security vulnerabilities can sneak into an application.
 
 ### Utilities for safely working with archive files
 
@@ -685,7 +685,7 @@ end
 
 ### Symlink attacks
 
-Symlink attacks makes it possible for an attacker to read the contents of arbitrary files on the server of a vulnerable application. While it is a high-severity vulnerability that can often lead to remote code execution and other critical vulnerabilities, it is only exploitable in scenarios where a vulnerable application accepts archive files from the attacker and somehow displays the extracted contents back to the attacker without any validation or sanitization of symbolic links inside the archive.
+Symlink attacks make it possible for an attacker to read the contents of arbitrary files on the server of a vulnerable application. While it is a high-severity vulnerability that can often lead to remote code execution and other critical vulnerabilities, it is only exploitable in scenarios where a vulnerable application accepts archive files from the attacker and somehow displays the extracted contents back to the attacker without any validation or sanitization of symbolic links inside the archive.
 
 ### Insecure archive symlink extraction examples
 

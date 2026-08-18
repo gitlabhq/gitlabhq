@@ -25,7 +25,7 @@ If verification succeeds on the primary site but fails on the secondary site,
 this indicates that the object was corrupted during the replication process.
 Geo actively try to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset the verification for
-these failures, so you should follow [these instructions](background_verification.md#reset-verification-for-projects-where-verification-has-failed).
+these failures, so you should follow [these instructions](#reset-verification-for-projects-where-verification-has-failed).
 
 If verification is lagging significantly behind replication, consider giving
 the site more time before scheduling a planned failover.
@@ -89,12 +89,6 @@ Geo actively tries to correct verification failures marking the repository to
 be resynced with a back-off period. You can also manually [resync and reverify individual components through the UI or the Rails console](../replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
 
 ## Reconcile differences with checksum mismatches
-
-{{< history >}}
-
-- **Storage name** and **Relative path** fields [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Gitaly relative path** in GitLab 16.3.
-
-{{< /history >}}
 
 If the primary and secondary sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 

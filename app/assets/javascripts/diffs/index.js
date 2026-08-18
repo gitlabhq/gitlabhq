@@ -1,8 +1,7 @@
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState } from 'pinia';
 import { GlToast } from '@gitlab/ui';
-import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
@@ -79,7 +78,7 @@ export default function initDiffsApp() {
     render(createElement) {
       return createElement('diffs-app', {
         props: {
-          projectPath: cleanLeadingSeparator(this.projectPath),
+          projectPath: this.projectPath,
           iid: this.iid,
           endpointCoverage: this.endpointCoverage,
           codequalityReportAvailable: this.codequalityReportAvailable,
@@ -103,7 +102,9 @@ export default function initDiffsApp() {
       name: 'FindFileRoot',
       pinia,
       components: {
-        FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),
+        FindFile: defineAsyncComponent(
+          () => import('~/vue_shared/components/file_finder/index.vue'),
+        ),
       },
       computed: {
         ...mapState(useLegacyDiffs, ['fileFinderVisible', 'isLoading']),

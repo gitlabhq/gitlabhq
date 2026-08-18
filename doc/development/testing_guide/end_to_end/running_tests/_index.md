@@ -30,7 +30,7 @@ By default, URL of GitLab instance is set based on `config/gitlab.yml` configura
 
 For [VSCode](https://code.visualstudio.com/) user, [.devcontainer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/.devcontainer/devcontainer.json) defines configuration to develop E2E tests inside a Docker container which by default is attached to the same network as environments started by [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) gem. For more information on how to use `dev containers`, see [tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial).
 
-This is useful when developing E2E tests that require GitLab instance with specific omnibus configuration. Typical workflow example:
+This is useful when developing E2E tests that require a GitLab instance with specific omnibus configuration. Typical workflow example:
 
 - Start `GitLab` omnibus instance with specific configuration without running tests, for example: `gitlab-qa Test::Integration::Import EE --no-tests`. For available configurations, see [docs](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md)
 - Start dev container from `VSCode` environment
@@ -197,9 +197,9 @@ QA_GITLAB_URL=https://gdk.test:3000 bundle exec rspec
 
 ### Overriding the authenticated user
 
-By default `root` user seeded by the GDK is used by all tests to create new unique test user for each test.
+By default `root` user seeded by the GDK is used by all tests to create a new unique test user for each test.
 
-Tests will also use seeded administrator user's personal access token.
+Tests will also use the seeded administrator user's personal access token.
 
 If you need to authenticate with different admin credentials, you can provide the `GITLAB_ADMIN_USERNAME`, `GITLAB_ADMIN_PASSWORD` environment variables and if administrator user has a token created, additionally `GITLAB_QA_ADMIN_ACCESS_TOKEN` can be set as well:
 

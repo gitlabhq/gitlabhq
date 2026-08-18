@@ -17,34 +17,12 @@ module QA
           element 'catalog-sorting-option-button', required: true
         end
 
-        def sort_in_ascending_order
-          # Switching from descending to ascending
-          click_element('sort-highest-icon')
-          wait_for_requests
-        end
-
-        def get_top_project_names(count)
-          all_elements('ci-resource-link', minimum: 1).first(count).map(&:text)
-        end
-
-        def get_bottom_project_names(count)
-          all_elements('ci-resource-link', minimum: 1).last(count).map(&:text)
-        end
-
         def click_resource_link(resource_name)
           retry_until(reload: true, sleep_interval: 2, max_attempts: 2, message: "Retry for the catalog resource") do
             has_element?('ci-resource-link', text: resource_name)
           end
 
           find_element('ci-resource-link', text: resource_name).click
-        end
-
-        private
-
-        # Current acceptable options: 'RELEASED'
-        def switch_catalog_sorting_option(option)
-          click_element('catalog-sorting-option-button')
-          find("[data-testid='listbox-item-#{option}']").click
         end
       end
     end

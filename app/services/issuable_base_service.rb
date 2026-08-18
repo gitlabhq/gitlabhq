@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class IssuableBaseService < ::BaseContainerService
+  TOGGLE_TASK_ITEM_ACTION = :toggle_task_item
+
   private
 
   def available_callbacks
@@ -405,7 +407,7 @@ class IssuableBaseService < ::BaseContainerService
     filter_params(issuable)
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params.merge(
+      issuable.assign_attributes(allowed_update_params(params).merge(
         updated_by: current_user,
         last_edited_at: Time.current,
         last_edited_by: current_user
@@ -452,7 +454,7 @@ class IssuableBaseService < ::BaseContainerService
 
     unless tasklist_toggler.execute
       # if we make it here, the data is much newer than we thought it was - fail fast
-      raise ActiveRecord::StaleObjectError
+      raise ActiveRecord::StaleObjectError.new(issuable, TOGGLE_TASK_ITEM_ACTION)
     end
 
     # by updating the description_html field at the same time,

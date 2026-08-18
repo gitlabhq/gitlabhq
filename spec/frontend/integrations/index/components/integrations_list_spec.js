@@ -6,8 +6,10 @@ import { mockActiveIntegrations, mockInactiveIntegrations } from '../mock_data';
 describe('IntegrationsList', () => {
   let wrapper;
 
-  const findActiveIntegrationsTable = () => wrapper.findByTestId('active-integrations-table');
-  const findInactiveIntegrationsTable = () => wrapper.findByTestId('inactive-integrations-table');
+  const findActiveIntegrationsTable = () =>
+    wrapper.findComponentByTestId('active-integrations-table');
+  const findInactiveIntegrationsTable = () =>
+    wrapper.findComponentByTestId('inactive-integrations-table');
 
   const createComponent = (propsData = {}) => {
     wrapper = shallowMountExtended(IntegrationsList, { propsData });

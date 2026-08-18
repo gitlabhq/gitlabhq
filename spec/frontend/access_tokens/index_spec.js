@@ -13,7 +13,6 @@ import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.v
 import TokensApp from '~/access_tokens/components/tokens_app.vue';
 import { FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '~/access_tokens/constants';
-import { sprintf } from '~/locale';
 
 describe('access tokens', () => {
   let wrapper;
@@ -24,14 +23,14 @@ describe('access tokens', () => {
 
   describe('initAccessTokenTableApp', () => {
     const accessTokenType = 'personal access token';
-    const accessTokenTypePlural = 'personal access tokens';
+    const noActiveTokensMessage = 'This user has no active access tokens.';
     const initialActiveAccessTokens = [{ createdAt: '2023-09-08', revoked_path: '1' }];
 
     it('mounts the component and provides required values', () => {
       setHTMLFixture(
         `<div id="js-access-token-table-app"
         data-access-token-type="${accessTokenType}"
-        data-access-token-type-plural="${accessTokenTypePlural}"
+        data-no-active-tokens-message="${noActiveTokensMessage}"
         data-initial-active-access-tokens=${JSON.stringify(initialActiveAccessTokens)}
         >
         </div>`,
@@ -46,21 +45,15 @@ describe('access tokens', () => {
         // Required value
         accessTokenType,
         initialActiveAccessTokens,
-
-        // Default values
-        noActiveTokensMessage: sprintf('This user has no active %{accessTokenTypePlural}.', {
-          accessTokenTypePlural,
-        }),
+        noActiveTokensMessage,
         showRole: false,
       });
     });
 
     it('mounts the component and provides all values', () => {
-      const noActiveTokensMessage = 'This group has no active access tokens.';
       setHTMLFixture(
         `<div id="js-access-token-table-app"
           data-access-token-type="${accessTokenType}"
-          data-access-token-type-plural="${accessTokenTypePlural}"
           data-initial-active-access-tokens=${JSON.stringify(initialActiveAccessTokens)}
           data-no-active-tokens-message="${noActiveTokensMessage}"
           data-show-role

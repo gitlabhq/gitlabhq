@@ -6,11 +6,41 @@ title: GitLab advisory database
 description: Security advisories, vulnerabilities, dependencies, database, and updates.
 ---
 
-The [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) serves as a repository for security advisories related to software dependencies. It is updated on an hourly basis with the latest security advisories.
+The [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) (GLAD) serves as a repository for security advisories related to software dependencies. It is updated on an hourly basis with the latest security advisories.
 
 The database is an essential component of both [dependency scanning](../dependency_scanning/_index.md) and [container scanning](../container_scanning/_index.md).
 
 A free and open-source version of the GitLab advisory database is also available as [GitLab advisory database (open source edition)](https://gitlab.com/gitlab-org/advisories-community). The open source edition receives the same updates but with a 30-day delay.
+
+## GitLab malware advisories
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.3 [with flags](../../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249740) in GitLab 19.3.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+GitLab maintains a private database of advisories for known malicious packages found in package registries.
+GitLab malware advisories (GLAM) are separate from the GLAD advisories described elsewhere on this page.
+GitLab automatically synchronizes these advisories to your GitLab instance in the background.
+
+> [!note]
+> This synchronization is not available in [offline environments](../offline_deployments/_index.md).
+> Support is proposed in [issue 594758](https://gitlab.com/gitlab-org/gitlab/-/work_items/594758).
+
+These advisories are used by the dependency firewall rules to block malicious packages during CI/CD runs.
 
 ## Standardization
 
@@ -96,7 +126,7 @@ Will return something like:
     "packageMetadataAdvisory": {
       "id": "gid://gitlab/PackageMetadata::Advisory/8295281",
       "title": "YesWiki has Persistent Blind XSS at \"/?BazaR&vue=consulter\"",
-      "description": "A stored and blind XSS vulnerability exists in the form title field. A malicious attacker can inject JavaScript without any authentication via a form title that is saved in the backend database. When any user visits that injected page, the JavaScript payload gets executed.\n\nType: Stored and Blind Cross-Site Scripting (XSS)\nAffected Component: form title input field\nAuthentication Required: No (Unauthenticated attack possible)\nImpact: Arbitrary JavaScript execution in victim’s browser",
+      "description": "A stored and blind XSS vulnerability exists in the form title field. A malicious attacker can inject JavaScript without any authentication via a form title that is saved in the backend database. When any user visits that injected page, the JavaScript payload gets executed.\n\nType: Stored and Blind Cross-Site Scripting (XSS)\nAffected Component: form title input field\nAuthentication Required: No (Unauthenticated attack possible)\nImpact: Arbitrary JavaScript execution in victim's browser",
       "publishedDate": "2026-04-01",
       "identifiers": [
         {
@@ -161,7 +191,7 @@ Will return something like:
         {
           "id": "gid://gitlab/PackageMetadata::Advisory/8295281",
           "title": "YesWiki has Persistent Blind XSS at \"/?BazaR&vue=consulter\"",
-          "description": "A stored and blind XSS vulnerability exists in the form title field. A malicious attacker can inject JavaScript without any authentication via a form title that is saved in the backend database. When any user visits that injected page, the JavaScript payload gets executed.\n\nType: Stored and Blind Cross-Site Scripting (XSS)\nAffected Component: form title input field\nAuthentication Required: No (Unauthenticated attack possible)\nImpact: Arbitrary JavaScript execution in victim’s browser",
+          "description": "A stored and blind XSS vulnerability exists in the form title field. A malicious attacker can inject JavaScript without any authentication via a form title that is saved in the backend database. When any user visits that injected page, the JavaScript payload gets executed.\n\nType: Stored and Blind Cross-Site Scripting (XSS)\nAffected Component: form title input field\nAuthentication Required: No (Unauthenticated attack possible)\nImpact: Arbitrary JavaScript execution in victim's browser",
           "publishedDate": "2026-04-01",
           "identifiers": [
             {

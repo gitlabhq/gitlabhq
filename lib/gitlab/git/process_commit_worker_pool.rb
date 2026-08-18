@@ -8,10 +8,32 @@ module Gitlab
 
       def initialize(jobs_enqueued: 0)
         @jobs_enqueued = jobs_enqueued
+        @scheduled_shas = {}
       end
 
       def get_and_increment_delay
         delay.tap { @jobs_enqueued += 1 }
+      end
+
+      def try_schedule_commit(sha, default:)
+        # Only default-branch jobs run issue-closing, so a default-branch scheduling must never be dropped
+        # even if the SHA was already scheduled from another branch.
+        #
+        # @scheduled_shas tracks a SHA's scheduling state:
+        #   (no key) -> not yet scheduled
+        #   false    -> scheduled from a non-default branch
+        #   true     -> scheduled from a default branch (terminal state, always skip)
+        previous_default = @scheduled_shas[sha]
+
+        if previous_default.nil?
+          @scheduled_shas[sha] = default
+          return true
+        end
+
+        return false if previous_default || !default
+
+        @scheduled_shas[sha] = true
+        true
       end
 
       private

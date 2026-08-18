@@ -6,6 +6,7 @@ import {
   GlModalDirective,
   GlSprintf,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
@@ -62,6 +63,7 @@ export default {
     GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     admin: {
       default: false,

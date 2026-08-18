@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class UserCustomAttribute < ApplicationRecord
+  include Gitlab::CustomAttributes::KeyLookup
+
   belongs_to :user
 
   validates :user_id, :key, :value, presence: true
   validates :key, uniqueness: { scope: [:user_id] }
-
-  scope :by_key, ->(key) { where(key: key) }
   scope :by_user_id, ->(user_id) { where(user_id: user_id) }
   scope :by_updated_at, ->(updated_at) { where(updated_at: updated_at) }
   scope :arkose_sessions, -> { by_key(ARKOSE_SESSION) }

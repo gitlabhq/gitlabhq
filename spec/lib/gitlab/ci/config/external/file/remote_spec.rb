@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pipeline_composition do
   include StubRequests
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.owner }
 
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'secret_file', masked: true }]) }
@@ -28,10 +28,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
       allow(instance).to receive(:check_execution_time!)
     end
-
-    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-      .with(:ci_interpolation_split_function)
-      .and_return(false)
   end
 
   describe '#matching?' do

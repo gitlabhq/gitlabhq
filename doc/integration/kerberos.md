@@ -108,12 +108,6 @@ set up GitLab to create a new account when a Kerberos user tries to sign in.
 
 ### Link a Kerberos account to an existing GitLab account
 
-{{< history >}}
-
-- Kerberos SPNEGO [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335) to Kerberos in GitLab 15.4.
-
-{{< /history >}}
-
 If you're an administrator, you can link a Kerberos account to an
 existing GitLab account. To do so:
 
@@ -257,7 +251,7 @@ offers only `basic` authentication.
 
 > [!note]
 > [Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.adoc?plain=1#L225-L228) supports falling back to `basic` authentication if the
-> username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
+> username and password are passed interactively or through a credentials manager. It fails to fall back when the username and password are passed as part of the URL instead. For example,
 > this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
 {{< tabs >}}
@@ -312,13 +306,6 @@ offers only `basic` authentication.
 After this change, Git remote URLs have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` to use
 Kerberos ticket-based authentication.
-
-## Upgrading from password-based to ticket-based Kerberos sign-ins
-
-In previous versions of GitLab users had to submit their
-Kerberos username and password to GitLab when signing in.
-
-We [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/2908) password-based Kerberos sign-ins in GitLab 15.0.
 
 ## Support for Active Directory Kerberos environments
 

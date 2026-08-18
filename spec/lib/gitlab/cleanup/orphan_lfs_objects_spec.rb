@@ -218,7 +218,7 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsObjects, feature_category: :source_code
 
       expect do
         described_class.new(dry_run: true, logger: null_logger).run!
-      end.to issue_same_number_of_queries_as(control).with_threshold(1)
+      end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency.with_threshold(1)
     end
   end
 

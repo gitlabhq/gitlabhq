@@ -12,7 +12,7 @@ title: Pipeline architecture
 
 {{< /details >}}
 
-Pipelines are the fundamental building blocks for CI/CD in GitLab. This page documents
+Pipelines are the fundamental building blocks for CI/CD in GitLab. The following are
 some of the important concepts related to them.
 
 You can structure your pipelines with different methods, each with their
@@ -23,7 +23,7 @@ own advantages. These methods can be mixed and matched if needed:
 - [Parent-child pipelines](#parent-child-pipelines): Good for monorepos and projects with lots of independently defined components.
 
   <i class="fa-youtube-play" aria-hidden="true"></i>
-  For an overview, see the [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
+  For an overview, see the [Parent-Child Pipelines feature demo](https://www.youtube.com/watch?v=n8KpBSqZNbk).
 
 - [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines): Good for larger products that require cross-project interdependencies,
   like those with a [microservices architecture](https://about.gitlab.com/blog/trends-in-version-control-land-microservices/).
@@ -38,9 +38,9 @@ own advantages. These methods can be mixed and matched if needed:
 
 ## Basic pipelines
 
-Basic pipelines are the simplest pipelines in GitLab. It runs everything in the build stage concurrently,
-and once all of those finish, it runs everything in the test and subsequent stages the same way.
-It's not the most efficient, and if you have lots of steps it can grow quite complex, but it's
+Basic pipelines are the simplest pipelines in GitLab. They run everything in the build stage concurrently,
+and once all of those finish, they run everything in the test and subsequent stages the same way.
+It's not the most efficient, and if you have lots of steps it can become complex, but it's
 easier to maintain:
 
 ```mermaid
@@ -196,21 +196,21 @@ deploy_b:
 As pipelines grow more complex, a few related problems start to emerge:
 
 - The staged structure, where all steps in a stage must complete before the first
-  job in next stage begins, causes waits that slow things down.
+  job in the next stage begins, causes waits that slow things down.
 - Configuration for the single global pipeline becomes
   hard to manage.
 - Imports with [`include`](../yaml/_index.md#include) increase the complexity of the configuration, and can cause
   namespace collisions where jobs are unintentionally duplicated.
 - Pipeline UX has too many jobs and stages to work with.
 
-Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The ability
-to choose to start sub-pipelines (or not) is a powerful ability, especially if the
+Additionally, sometimes the behavior of a pipeline needs to be more dynamic. You can choose
+whether to start sub-pipelines, which is especially useful if the
 YAML is dynamically generated.
 
 In the previous [basic pipeline](#basic-pipelines) and [`needs` pipeline](#pipelines-with-the-needs-keyword)
 examples, there are two packages that could be built independently.
 These cases are ideal for using [parent-child pipelines](downstream_pipelines.md#parent-child-pipelines).
-It separates out the configuration into multiple files, keeping things simpler.
+They separate out the configuration into multiple files, keeping things simpler.
 You can combine parent-child pipelines with:
 
 - The [`rules` keyword](../yaml/_index.md#rules): For example, have the child pipelines triggered only

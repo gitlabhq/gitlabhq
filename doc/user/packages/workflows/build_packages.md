@@ -118,7 +118,7 @@ For more details about creating and managing Conan packages, see the
 
 Prerequisites:
 
-- You must install Conan version 2.x. Base Conan version 2 is available and future improvements can be tracked in [epic 8258](https://gitlab.com/groups/gitlab-org/-/epics/8258).
+- You must install Conan version 2.x. Base Conan version 2 is available and future improvements can be tracked in [epic 8258](https://gitlab.com/groups/gitlab-org/-/work_items/8258).
 
 Install the Conan package manager to your local development environment by
 following the instructions at [conan.io](https://docs.conan.io/2/installation.html).
@@ -186,7 +186,7 @@ Prerequisites:
 
 - To test the package registry, you must have a C++ project.
 
-Go to your local project folder and use the `conan new` command to create a `“Hello World”` C++ library example project with the `cmake_lib` template:
+Go to your local project folder and use the `conan new` command to create a `"Hello World"` C++ library example project with the `cmake_lib` template:
 
 ```shell
 mkdir hello && cd hello

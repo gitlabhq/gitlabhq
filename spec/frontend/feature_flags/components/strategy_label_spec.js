@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import StrategyLabel from '~/feature_flags/components/strategy_label.vue';
 
 const DEFAULT_PROPS = {
@@ -16,9 +17,10 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
         components: {
           StrategyLabel,
         },
-        render(h) {
-          return h(StrategyLabel, { props: this.$attrs, on: this.$listeners }, this.$slots.default);
-        },
+        mixins: [glListenersMixin],
+        inheritAttrs: false,
+        template:
+          '<strategy-label v-bind="$attrs" v-on="glListeners()"><slot></slot></strategy-label>',
       },
       {
         propsData: {

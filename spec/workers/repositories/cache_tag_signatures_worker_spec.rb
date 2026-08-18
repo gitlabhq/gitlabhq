@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Repositories::CacheTagSignaturesWorker, feature_category: :source_code_management do
   describe '#perform' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let(:gpg_tag_context) do
       {
         has_signature: true,

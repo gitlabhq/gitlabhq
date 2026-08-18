@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import UnarchiveSettings from '~/groups_projects/unarchive/components/unarchive_settings.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -8,19 +8,16 @@ export default function initUnarchiveSettings() {
 
   const { resourceType, resourceId, resourcePath, ancestorsArchived, helpPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'UnarchiveSettingsRoot',
-    render(createElement) {
-      return createElement(UnarchiveSettings, {
-        props: {
-          ancestorsArchived: parseBoolean(ancestorsArchived),
-          resourceType,
-          resourceId,
-          resourcePath,
-          helpPath,
-        },
-      });
+    component: UnarchiveSettings,
+    props: {
+      ancestorsArchived: parseBoolean(ancestorsArchived),
+      resourceType,
+      resourceId,
+      resourcePath,
+      helpPath,
     },
   });
 }

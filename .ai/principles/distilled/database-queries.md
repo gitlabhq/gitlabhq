@@ -1,6 +1,6 @@
 ---
-source_checksum: 11a9a25fd9781290
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 7fdf31cc21fbfbf9
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -126,4 +126,3 @@ For the full picture, see:
 - doc/development/database/iterating_tables_in_batches.md
 - doc/development/database/insert_into_tables_in_batches.md
 - doc/development/database/pagination_performance_guidelines.md
-

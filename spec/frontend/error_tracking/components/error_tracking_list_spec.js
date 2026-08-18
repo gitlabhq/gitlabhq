@@ -36,7 +36,8 @@ describe('ErrorTrackingList', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findErrorActions = () => wrapper.findComponent(ErrorTrackingActions);
-  const findIntegratedDisabledAlert = () => wrapper.findByTestId('integrated-disabled-alert');
+  const findIntegratedDisabledAlert = () =>
+    wrapper.findComponentByTestId('integrated-disabled-alert');
 
   function mountComponent({
     errorTrackingEnabled = true,
@@ -227,7 +228,7 @@ describe('ErrorTrackingList', () => {
   });
 
   describe('no results', () => {
-    const findRefreshLink = () => wrapper.find('.js-try-again');
+    const findRefreshLink = () => wrapper.findComponent('.js-try-again');
 
     beforeEach(() => {
       store.state.list.loading = false;

@@ -59,6 +59,11 @@ domains:
     feature_categories:
       - settings
 
+  ArtifactRegistry:
+    description: Organization-level multi-format artifact management
+    feature_categories:
+      - artifact_registry
+
   AuditEvents:
     description:
     feature_categories:
@@ -184,6 +189,11 @@ domains:
       - plan_provisioning
       - subscription_management
       - add-on_provisioning
+
+  Govern:
+    description: SDLC governance policies and the Policy Store (Policies v2)
+    feature_categories:
+      - security_policy_management # Also in Security
 
   Import:
     description:

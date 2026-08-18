@@ -8,6 +8,8 @@ module Mutations
       include FindsProject
 
       authorize :admin_project
+      authorize_granular_token permissions: :create_jira_import,
+        boundary_argument: :project_path, boundary_type: :project
 
       field :jira_users,
         [Types::JiraUserType],

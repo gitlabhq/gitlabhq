@@ -44,7 +44,7 @@ variables:
 
 #### Raw password
 
-If you do not want to Base64-encode the password (or if you are using GitLab 15.3 or earlier) you can provide the raw password `APISEC_HTTP_PASSWORD`, instead of using `APISEC_HTTP_PASSWORD_BASE64`.
+If you do not want to Base64-encode the password, you can provide the raw password `APISEC_HTTP_PASSWORD`, instead of using `APISEC_HTTP_PASSWORD_BASE64`.
 
 ### Bearer tokens
 

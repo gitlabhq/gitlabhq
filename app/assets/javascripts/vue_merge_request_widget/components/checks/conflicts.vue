@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { __ } from '~/locale';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import conflictsStateQuery from '../../queries/states/conflicts.query.graphql';
@@ -10,8 +11,9 @@ export default {
   components: {
     MergeChecksMessage,
     ActionButtons,
-    ResolveWithDuoButton: () =>
-      import('ee_component/merge_conflicts/components/resolve_with_duo_button.vue'),
+    ResolveWithDuoButton: defineAsyncComponent(
+      () => import('ee_component/merge_conflicts/components/resolve_with_duo_button.vue'),
+    ),
   },
   mixins: [mergeRequestQueryVariablesMixin],
   apollo: {

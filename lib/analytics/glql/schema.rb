@@ -1,0 +1,85 @@
+# frozen_string_literal: true
+
+require 'gitlab_query_language'
+
+module Analytics
+  module Glql
+    # The GLQL schema document, as served by `GET /api/v4/glql/schema`.
+    #
+    # Everything but `display_types` comes from the gitlab_query_language gem.
+    class Schema
+      # Frozen at every level: the document is memoized and handed out by
+      # reference, so a caller reaching into a selection must not be able to
+      # change it for everyone else.
+      DEEP_FREEZE = ->(type) do
+        type['selections']&.each do |selection|
+          selection['metrics'].freeze
+          selection.freeze
+        end
+        type['selections']&.freeze
+        type.freeze
+      end
+      private_constant :DEEP_FREEZE
+
+      # `display:` is a frontend concern - the compiler never parses it, and
+      # what renders depends on the presenters this version ships. Keeping the
+      # list here means a new display type is one MR rather than a gem release.
+      #
+      # The frontend renders from its own DISPLAY_TYPES in
+      # app/assets/javascripts/glql/constants.js; a spec asserts the two agree.
+      # A type listed here but not there reaches users as an error in the block.
+      #
+      # `selections` is every combination of dimensions and metrics the type
+      # accepts, so a consumer can tell whether one fits the query it is about
+      # to build. Listed rather than given as ranges because the two are not
+      # independent: at the dimension maximum a second dimension folds into
+      # stacked segments, leaving room for a single metric.
+      #
+      # Having `selections` at all means the type needs analytics mode, since
+      # that is the only mode with dimensions and metrics. The types without it
+      # are not restricted to standard mode - nothing in the frontend checks the
+      # mode - so no type declares one.
+      DISPLAY_TYPES = [
+        { 'name' => 'list', 'description' => 'A bulleted list of items.' },
+        { 'name' => 'orderedList', 'description' => 'A numbered list of items.' },
+        { 'name' => 'table', 'description' => 'One row per item, one column per display field.' },
+        { 'name' => 'stat', 'description' => 'A single aggregate value.',
+          'selections' => [
+            { 'dimensions' => 0, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
+        { 'name' => 'columnChart', 'description' => 'Vertical bars, one per dimension value.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
+        { 'name' => 'barChart', 'description' => 'Horizontal bars, one per dimension value.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] },
+        { 'name' => 'lineChart',
+          'description' => 'A line over an ordered dimension, typically a date.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1 } }
+          ] },
+        { 'name' => 'areaChart',
+          'description' => 'A filled line over an ordered dimension, typically a date.',
+          'selections' => [
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1 } },
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
+          ] }
+      ].map(&DEEP_FREEZE).freeze
+
+      class << self
+        # Frozen because it is memoized and handed out by reference. The gem
+        # freezes its half; `merge` returns a fresh hash and `DISPLAY_TYPES` is
+        # already frozen.
+        #
+        # `::Glql` is the gem: a bare `Glql` here resolves to this module.
+        def document
+          @document ||= ::Glql.schema.merge('display_types' => DISPLAY_TYPES).freeze
+        end
+      end
+    end
+  end
+end

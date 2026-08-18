@@ -69,7 +69,7 @@ export default {
       default: false,
     },
   },
-  emits: ['clusterAgentCreated'],
+  emits: ['cluster-agent-created'],
   data() {
     return {
       registering: false,
@@ -168,7 +168,7 @@ export default {
         }
 
         this.clusterAgent = clusterAgent;
-        this.$emit('clusterAgentCreated', this.clusterAgent.name);
+        this.$emit('cluster-agent-created', this.clusterAgent.name);
 
         const { errors: tokenErrors, secret } = await this.createAgentTokenMutation(
           clusterAgent.id,

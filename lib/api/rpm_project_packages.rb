@@ -24,7 +24,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/rpm' do
         desc 'Download repository metadata files' do
           detail 'This feature was introduced in GitLab 15.7'
@@ -40,7 +40,7 @@ module API
           requires :file_name, type: String, desc: 'Repository metadata file name'
         end
         route_setting :authorization, permissions: :read_rpm_package, boundary_type: :project
-        get 'repodata/*file_name', requirements: { file_name: API::NO_SLASH_URL_PART_REGEX } do
+        get 'repodata/*file_name', requirements: { file_name: ::API::NO_SLASH_URL_PART_REGEX } do
           authorize_read_package!(authorized_user_project)
 
           repository_file = Packages::Rpm::RepositoryFile.find_by_project_id_and_file_name!(
@@ -65,7 +65,7 @@ module API
           requires :file_name, type: String, desc: 'RPM package file name'
         end
         route_setting :authorization, permissions: :download_rpm_package, boundary_type: :project
-        get '*package_file_id/*file_name', requirements: { file_name: API::NO_SLASH_URL_PART_REGEX } do
+        get '*package_file_id/*file_name', requirements: { file_name: ::API::NO_SLASH_URL_PART_REGEX } do
           track_package_event(
             'pull_package',
             :rpm,

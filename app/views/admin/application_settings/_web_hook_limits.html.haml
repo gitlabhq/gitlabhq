@@ -1,0 +1,23 @@
+= render ::Layouts::SettingsBlockComponent.new(_('Webhook rate limits'),
+  id: 'js-web-hook-limits-settings',
+  testid: 'web-hook-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set the per-user rate limits for webhook test and event resend requests.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate-limit-on-webhook-operations.md'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-web-hook-limits-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        = _('Set to 0 to disable rate limits.')
+
+      %fieldset
+        .form-group
+          = f.label :web_hook_test_limit, _('Maximum webhook test requests allowed per minute on a group or project for each user'), class: 'label-bold'
+          = f.number_field :web_hook_test_limit, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :web_hook_event_resend_limit, _('Maximum webhook event resend requests allowed per minute on a group or project for each user'), class: 'label-bold'
+          = f.number_field :web_hook_event_resend_limit, min: 0, class: 'form-control gl-form-input'
+
+      = f.submit _('Save changes'), pajamas_button: true

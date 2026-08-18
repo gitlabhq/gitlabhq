@@ -8,6 +8,9 @@ module Mutations
 
         include NotesHelper
 
+        authorize_granular_token permissions: :create_timeline_event,
+          boundary_argument: :note_id, boundary: :project, boundary_type: :project
+
         argument :note_id, Types::GlobalIDType[::Note],
           required: true,
           description: 'Note ID from which the timeline event promoted.'

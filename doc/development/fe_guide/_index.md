@@ -10,7 +10,7 @@ across the GitLab frontend team.
 
 ## Introduction
 
-GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, read [this explanation](vue.md#when-to-add-vue-application).
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, read [this explanation](vue.md#when-to-add-a-vue-application).
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -65,17 +65,20 @@ We achieve this by importing a JavaScript file like [`app/assets/javascripts/ci/
 
 Often, a feature will have multiple routes, such as `index`, `show`, `edit`, or `new`. For these cases, we typically inject different Vue applications based on the specific route. The folder structure within `app/assets/javascripts/pages` reflects this setup. For example, a subfolder like `app/assets/javascripts/pages/<feature-name>/show` corresponds to the Rails controller `app/controllers/<controller-name>` and its action `def show; end`. Alternatively, we can mount the Vue application on the `index` route and handle routing on the client with [Vue Router](https://router.vuejs.org/).
 
+Each top-level folder is a package, and which packages may import which is enforced in CI. For the
+layering and how to work with it, see [Frontend package boundaries](package_boundaries.md).
+
 ## Vision
 
 As Frontend engineers, we strive to give users **delightful experiences**. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship **their own projects faster and with more confidence** when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.
 
 ### Values
 
-We define three core values, Stability, Speed and Maintainability (SSM)
+We define three core values, Stability, Speed, and Maintainability (SSM)
 
 #### Stability
 
-Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be **stable, tested and with a good architecture**. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion or generally lower our users expectations.
+Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be **stable, tested, and with a good architecture**. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion, or generally lower our users expectations.
 
 This is an extension of the core value that want our users to have confidence in their own software and to do so, they need to have **confidence in GitLab first**. This means that our own confidence in our software should be at the absolute maximum.
 
@@ -83,7 +86,7 @@ This is an extension of the core value that want our users to have confidence in
 
 Users should be able to navigate through the GitLab application with ease. This implies fast load times, easy to find pages, clear UX and an overall sense that they can accomplish their goal without friction.
 
-Additionally, we want our speed to be felt and appreciated by our developers. This means that we should put a lot of effort and thoughts into processes, tools and documentation that help us achieve success faster across our department. This benefits us as engineers, but also our users that end up receiving quality features at a faster rate.
+Additionally, we want our speed to be felt and appreciated by our developers. This means that we should put a lot of effort and thoughts into processes, tools, and documentation that help us achieve success faster across our department. This benefits us as engineers, but also our users that end up receiving quality features at a faster rate.
 
 #### Maintainability
 
@@ -100,7 +103,7 @@ By focusing on these aspects, we aim to allow engineers to contain complexity in
 
 Now that our values have been defined, we can base our goals on these values and determine what we would like to achieve at GitLab with this in mind.
 
-- Lowest possible FID, LCP and cross-page navigation times
+- Lowest possible FID, LCP, and cross-page navigation times
 - Minimal page reloads when interacting with the UI
 - [Have as little Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
 - Leverage [Ruby ViewComponents](view_component.md) for simple pages and avoid Vue overhead when possible

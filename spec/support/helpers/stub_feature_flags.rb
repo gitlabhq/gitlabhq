@@ -46,6 +46,20 @@ module StubFeatureFlags
   # - `stub_feature_flags(ci_live_trace: [project1, project2])` ...
   #   Enable `ci_live_trace` feature flag only on the specified projects.
   def stub_feature_flags(features)
+    if RSpec.current_example.nil?
+      raise <<~MESSAGE
+        `stub_feature_flags` was called outside of a per-example context (for example
+        in `before_all`, `before(:all)`, `before(:context)`, or `let_it_be`).
+
+        Feature flag stubs are reset after every example by `stub_all_feature_flags`
+        (see the `config.after` hook in spec/spec_helper.rb), so a stub set in such a
+        context is silently wiped after the first example runs.
+
+        Move the `stub_feature_flags` call into a per-example `before` hook or an `it`
+        block instead.
+      MESSAGE
+    end
+
     features.each do |feature_name, actors|
       warn("Invalid Feature Flag #{feature_name} stubbed") unless Feature::Definition.get(feature_name)
 

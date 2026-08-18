@@ -3,6 +3,12 @@
 module Gitlab
   module Git
     module WrapsGitalyErrors
+      # Phrase present in gRPC's message when a response exceeds the 4 MiB
+      # max-message-size cap (gitlab-org/gitlab#362327). This is a permanent
+      # configuration limit, not a transient load condition, so it must not be
+      # reported with "Try again later".
+      MESSAGE_SIZE_LIMIT_PHRASE = 'message larger than max'
+
       def wrapped_gitaly_errors(&block)
         yield block
       rescue GRPC::BadStatus => e
@@ -47,10 +53,21 @@ module Gitlab
         when GRPC::Core::StatusCodes::DEADLINE_EXCEEDED
           raise Gitlab::Git::CommandTimedOut, exception
         when GRPC::Core::StatusCodes::RESOURCE_EXHAUSTED
-          raise ResourceExhaustedError, _("Upstream Gitaly has been exhausted. Try again later")
+          raise_resource_exhausted_error(exception)
         else
           raise Gitlab::Git::CommandError, exception
         end
+      end
+
+      def raise_resource_exhausted_error(exception)
+        unless exception.message.to_s.downcase.include?(MESSAGE_SIZE_LIMIT_PHRASE)
+          raise ResourceExhaustedError, _("Upstream Gitaly has been exhausted. Try again later")
+        end
+
+        raise ResourceExhaustedError,
+          _("The response from Gitaly is too large to load. " \
+            "Maybe, the repository or merge request contains too many commits. " \
+            "This is a size limit, not a temporary error.")
       end
     end
   end

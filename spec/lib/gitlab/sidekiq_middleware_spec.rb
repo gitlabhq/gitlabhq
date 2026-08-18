@@ -185,6 +185,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
         ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
         ::Gitlab::SidekiqMiddleware::BatchLoader,
         ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
+        ::Gitlab::SidekiqMiddleware::QueryLogs,
         ::Gitlab::SidekiqMiddleware::SetIpAddress,
         ::Gitlab::SidekiqMiddleware::AdminMode::Server,
         ::Gitlab::SidekiqMiddleware::QueryAnalyzer,
@@ -281,6 +282,17 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
       it 'comes before ClientMetrics' do
         expect(::Gitlab::SidekiqMiddleware::SizeLimiter::Client)
           .to come_before(::Gitlab::SidekiqMiddleware::ClientMetrics)
+          .in(middlewares)
+      end
+    end
+
+    context 'ConcurrencyLimit::Client' do
+      # Because it buffers before the payload is compressed - but Sidekiq's scheduler
+      # re-pushes already-compressed scheduled and retried jobs through this chain, so a
+      # buffered payload can be compressed and QueueManager has to preserve the markers.
+      it 'comes before SizeLimiter::Client' do
+        expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client)
+          .to come_before(::Gitlab::SidekiqMiddleware::SizeLimiter::Client)
           .in(middlewares)
       end
     end

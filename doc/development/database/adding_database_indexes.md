@@ -28,7 +28,7 @@ on the amount of data indexed and the index type. For example, PostgreSQL offers
 indexed by regular B-tree indexes. These indexes, however, generally take up more
 data and are slower to update compared to B-tree indexes.
 
-Because of all this, it's important make the following considerations
+Because of all this, it's important to make the following considerations
 when adding a new index:
 
 1. Do the new queries re-use as many existing indexes as possible?
@@ -168,7 +168,7 @@ GitLab enforces a limit of **15 indexes** per table. This limitation:
 
 We have RuboCop checks (`PreventIndexCreation`) against further new indexes on selected tables
 that are frequently accessed.
-This is due to [LockManager LWLock contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
+This is due to [LockManager LWLock contention](https://gitlab.com/groups/gitlab-org/-/work_items/11543).
 
 For the same reason, there are also RuboCop checks (`AddColumnsToWideTables`) against adding
 new columns to these tables.
@@ -195,7 +195,7 @@ Here are some common scenarios with a recommended choice as a quick reference.
 
 Use a post-deployment migration.
 Existing queries already work without the added indexes, and
-would not critical to operating the application.
+would not be critical to operating the application.
 
 If indexing takes a long time to finish
 (concurrent operations in a post-deployment migration should take less than
@@ -293,7 +293,7 @@ for new and updated records while the removal and fix are in progress.
 The details of the work might vary and require different approaches.
 Consult the Database team, reviewers, or maintainers to plan the work.
 
-### All unique indexes needs to be scoped
+### All unique indexes need to be scoped
 
 For more information, see [Unique constraints in Cells](../cells/_index.md#unique-constraints).
 
@@ -335,6 +335,34 @@ on both on GitLab.com and GitLab Self-Managed instances prior to removal.
 - For large tables, consider [dropping the index asynchronously](#drop-indexes-asynchronously).
 - For partitioned tables, only the parent index can be dropped. PostgreSQL does not permit child indexes
   (i.e. the corresponding indexes on its partitions) to be independently removed.
+
+### Automated detection and removal
+
+The [`CleanupUnusedIndexes` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes.rb)
+runs on a schedule through [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper)
+and automates the first steps of this process.
+The keep does the following:
+
+- Finds non-unique indexes with no recorded scans on GitLab.com, based on the
+  `pg_stat_user_indexes_idx_scan` metric.
+- Skips indexes that support a foreign key and indexes on the
+  [keep list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes/index_keep_list.yml).
+- Opens a merge request, labeled `automation:cleanup-unused-indexes`, with a post-deployment
+  migration that removes the index.
+- Requests review from an engineer on the team that owns the affected table, based on the table's
+  `db/docs` dictionary entry, and falls back to a database team member when it cannot find one.
+
+A merge request from this automation is a removal proposal, not a final verdict.
+The zero-scan signal covers a short window on GitLab.com only, so you must still complete the
+checks in [Verifying that an index is unused](#verifying-that-an-index-is-unused).
+In particular, confirm that the index is not needed by GitLab Self-Managed or GitLab Dedicated
+instances and is not used by infrequent processes such as periodic cron jobs.
+Each merge request includes this checklist along with a Grafana link to inspect usage over the
+past six months.
+
+If your team receives one of these merge requests and the index must stay, add the index to the
+[keep list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes/index_keep_list.yml) and close the merge request.
+The keep does not propose to remove an index on that list again.
 
 ### Finding possible unused indexes
 
@@ -613,7 +641,7 @@ A temporary migration would look like:
 INDEX_NAME = 'tmp_index_projects_on_owner_where_emails_disabled'
 
 def up
-  # Temporary index to be removed in 13.9 https://gitlab.com/gitlab-org/gitlab/-/issues/1234
+  # Temporary index to be removed in 19.3 https://gitlab.com/gitlab-org/gitlab/-/issues/1234
   add_concurrent_index :projects, :creator_id, where: 'emails_disabled = false', name: INDEX_NAME
 end
 
@@ -731,7 +759,7 @@ An example of creating an index using
 the asynchronous index helpers can be seen in the block below. This migration
 enters the index name and definition into the `postgres_async_indexes`
 table. The process that runs on weekends pulls indexes from this
-table and attempt to create them.
+table and attempts to create them.
 
 ```ruby
 # in db/post_migrate/
@@ -903,7 +931,7 @@ end
 ```
 
 This migration enters the index name and definition into the `postgres_async_indexes`
-table. The process that runs on weekends pulls indexes from this table and attempt
+table. The process that runs on weekends pulls indexes from this table and attempts
 to remove them.
 
 You must [test the database index changes locally](#verify-indexes-removed-asynchronously) before creating a merge request.
@@ -957,6 +985,6 @@ To test changes for removing an index, use the asynchronous index helpers on you
 
 1. Enable the feature flags by running `Feature.enable(:database_reindexing)` in the Rails console.
 1. Run `bundle exec rails db:migrate` which should create an entry in the `postgres_async_indexes` table.
-1. Run `bundle exec rails gitlab:db:reindex` destroy the index asynchronously.
+1. Run `bundle exec rails gitlab:db:reindex` to destroy the index asynchronously.
 1. To verify the index, open the PostgreSQL console by using the [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/postgresql/)
    command `gdk psql` and run `\d <index_name>` to check that the destroyed index no longer exists.

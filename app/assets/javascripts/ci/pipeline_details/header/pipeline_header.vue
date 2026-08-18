@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
@@ -50,10 +51,17 @@ export default {
     HeaderBadges,
     TimeAgoTooltip,
     DuoWorkflowAction,
-    PipelineAccountVerificationAlert: () =>
-      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
-    HeaderMergeTrainsLink: () =>
-      import('ee_component/ci/pipeline_details/header/components/header_merge_trains_link.vue'),
+    PipelineAgentSessions: defineAsyncComponent(
+      () =>
+        import('ee_component/ci/pipeline_details/header/components/pipeline_agent_sessions.vue'),
+    ),
+    PipelineAccountVerificationAlert: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    ),
+    HeaderMergeTrainsLink: defineAsyncComponent(
+      () =>
+        import('ee_component/ci/pipeline_details/header/components/header_merge_trains_link.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -402,6 +410,7 @@ export default {
     },
   },
   FIX_PIPELINE_AGENT_PRIVILEGES,
+  SOURCE: 'fix_pipeline',
 };
 </script>
 
@@ -530,6 +539,7 @@ export default {
           :source-branch="sourceBranch"
           :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
           :additional-context="getAdditionalContext"
+          :source="$options.SOURCE"
         >
           {{ __('Fix pipeline with Duo') }}
         </duo-workflow-action>
@@ -540,13 +550,14 @@ export default {
           :is-retrying="isRetrying"
           :is-canceling="isCanceling"
           :is-deleting="isDeleting"
-          @retryPipeline="retryPipeline($event)"
-          @cancelPipeline="cancelPipeline($event)"
-          @deletePipeline="deletePipeline($event)"
+          @retry-pipeline="retryPipeline($event)"
+          @cancel-pipeline="cancelPipeline($event)"
+          @delete-pipeline="deletePipeline($event)"
         />
       </template>
     </page-heading>
 
+    <pipeline-agent-sessions v-if="pipeline" class="gl-mt-4" />
     <pipeline-account-verification-alert class="gl-mt-4" />
   </div>
 </template>

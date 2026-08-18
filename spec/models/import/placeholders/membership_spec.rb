@@ -130,7 +130,7 @@ RSpec.describe Import::Placeholders::Membership, feature_category: :importers do
         recorder = ActiveRecord::QueryRecorder.new { placeholder_membership.project }
 
         expect(recorder.count).to be_zero
-        expect(placeholder_membership.association(:project).loaded?).to eq(true)
+        expect(placeholder_membership.association(:project).loaded?).to be(true)
       end
     end
 
@@ -141,7 +141,7 @@ RSpec.describe Import::Placeholders::Membership, feature_category: :importers do
         recorder = ActiveRecord::QueryRecorder.new { placeholder_membership.group }
 
         expect(recorder.count).to be_zero
-        expect(placeholder_membership.association(:group).loaded?).to eq(true)
+        expect(placeholder_membership.association(:group).loaded?).to be(true)
       end
     end
   end

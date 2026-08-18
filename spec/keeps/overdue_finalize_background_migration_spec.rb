@@ -192,13 +192,16 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
   describe '#last_migration_for_job' do
     let(:job_name) { 'TestBackgroundMigration' }
+    let(:grep_args) do
+      ['git', 'grep', '--name-only', "MIGRATION = .#{job_name}.", '--', 'db/migrate/*.rb', 'db/post_migrate/*.rb']
+    end
 
     subject(:result) { keep.send(:last_migration_for_job, job_name) }
 
     context 'when matching files exist with queue_batched_background_migration' do
       before do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'grep', '--name-only', "MIGRATION = .#{job_name}.")
+          .with(*grep_args)
           .and_return("db/post_migrate/20230101_queue_test.rb\ndb/post_migrate/20230201_queue_test2.rb\n")
 
         allow(File).to receive(:read).and_call_original
@@ -216,7 +219,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     context 'when no files contain queue_batched_background_migration' do
       before do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'grep', '--name-only', "MIGRATION = .#{job_name}.")
+          .with(*grep_args)
           .and_return("db/post_migrate/20230101_some_file.rb\n")
 
         allow(File).to receive(:read).and_call_original
@@ -232,12 +235,39 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     context 'when git grep finds no results' do
       before do
         allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'grep', '--name-only', "MIGRATION = .#{job_name}.")
+          .with(*grep_args)
           .and_raise(::Gitlab::Housekeeper::Shell::Error)
       end
 
       it 'returns nil' do
         expect(result).to be_nil
+      end
+    end
+
+    context 'when a documentation file also mentions the job' do
+      let(:tmp_dir) { Pathname(Dir.mktmpdir) }
+
+      subject(:result) { Dir.chdir(tmp_dir) { keep.send(:last_migration_for_job, job_name) } }
+
+      before do
+        FileUtils.mkdir_p(tmp_dir.join('db', 'post_migrate'))
+        FileUtils.mkdir_p(tmp_dir.join('doc'))
+
+        contents = "MIGRATION = '#{job_name}'\nqueue_batched_background_migration\n"
+        File.write(tmp_dir.join('db', 'post_migrate', '20230101_queue_test.rb'), contents)
+        # Sorts after the migration file, so it wins `max` unless it is excluded from the search
+        File.write(tmp_dir.join('doc', 'documentation.md'), contents)
+
+        Dir.chdir(tmp_dir) { ::Gitlab::Housekeeper::Shell.execute('git', 'init', '--quiet', '.') }
+        Dir.chdir(tmp_dir) { ::Gitlab::Housekeeper::Shell.execute('git', 'add', '--all') }
+      end
+
+      after do
+        FileUtils.rm_rf(tmp_dir)
+      end
+
+      it 'returns the migration file' do
+        expect(result).to eq('db/post_migrate/20230101_queue_test.rb')
       end
     end
   end

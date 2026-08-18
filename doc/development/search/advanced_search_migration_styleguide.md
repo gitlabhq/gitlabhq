@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Advanced search migration style guide
@@ -12,12 +12,6 @@ title: Advanced search migration style guide
 
 ### With a script
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
-
-{{< /history >}}
-
 Execute `scripts/elastic-migration` and follow the prompts to create:
 
 - A migration file to define the migration: `ee/elastic/migrate/YYYYMMDDHHMMSS_migration_name.rb`
@@ -25,12 +19,6 @@ Execute `scripts/elastic-migration` and follow the prompts to create:
 - A dictionary file to identify the migration: `ee/elastic/docs/YYYYMMDDHHMMSS_migration_name.yml`
 
 ### Manually
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
-
-{{< /history >}}
 
 In the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder, create a new file with the filename format `YYYYMMDDHHMMSS_migration_name.rb`. This format is the same for Rails database migrations.
 
@@ -98,7 +86,7 @@ To apply setting changes, for example adding an analyzer, either:
 To apply mapping changes, either:
 
 - Use a [zero-downtime reindexing migration](#zero-downtime-reindex-migration).
-- Use an [update mapping migration](#searchelasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#searchelasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
+- Use an [update mapping migration](#searchelasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#searchelasticmigrationbackfillhelper) to ensure all documents in the index have this field populated.
 
 #### Zero-downtime reindex migration
 
@@ -197,7 +185,7 @@ Use the following table to decide which helper to use when backfilling a field:
 | **Mechanism** | Search for documents missing the field, build references, track them through the bookkeeping pipeline for re-indexing. | Search for projects with documents missing the field, issue async `update_by_query` tasks with a Painless script. Uses dual-mode strategy: safe mode for large projects (one at a time), speed mode for small projects (can batch multiple together). |
 | **Best for** | Indices backed by an ActiveRecord model (`DOCUMENT_TYPE`) where the indexer populates the field on re-index. | Project-scoped indices (commits, blobs, wikis) where the field value is derived from the project/namespace and the index is populated by the Go-based indexer. |
 | **Batch limit** | 10,000 documents per search (Elasticsearch default). | Configurable `batch_size` per task (safe mode) and `speed_mode_batch_size` for batched updates (speed mode). Both tunable at runtime via migration state. |
-| **Concurrency** | Sequential. | Concurrent — up to `max_concurrent_tasks` (default: 50) projects processed simultaneously. Tunable at runtime via migration state. |
+| **Concurrency** | Sequential. | Concurrent - up to `max_concurrent_tasks` (default: 50) projects processed simultaneously. Tunable at runtime via migration state. |
 | **Optimization** | None - always sequential. | Automatically optimizes based on project size: careful processing for large projects (≥10k docs), batched processing for small projects. |
 
 ### Migration helpers
@@ -213,7 +201,7 @@ Requirements:
 - The mapping for the field should already be added
 - The field must always have a value. If the field can be null, use `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
 - For single fields, define `field_name` method and `DOCUMENT_TYPE` constant
-- For multiple fields, define`field_names` method and `DOCUMENT_TYPE` constant
+- For multiple fields, define `field_names` method and `DOCUMENT_TYPE` constant
 
 > [!note]
 > This helper has a batch size limit of 10,000 items per query, which is Elasticsearch's default search
@@ -800,8 +788,8 @@ You can test this migration with the
 `'migration backfills a field using project-scoped update_by_query'` shared examples.
 The consuming spec must define two methods inside the `it_behaves_like` block:
 
-- `index_documents_for_projects(projects)` — indexes documents for the given projects.
-- `remove_field_from_indexed_documents(project_ids)` — removes the target field
+- `index_documents_for_projects(projects)` - indexes documents for the given projects.
+- `remove_field_from_indexed_documents(project_ids)` - removes the target field
   from indexed documents (project IDs are strings because `rid` is a keyword field).
 
 ```ruby
@@ -1075,7 +1063,7 @@ The MR assignee must:
 
 1. Ensure the dictionary file has the correct `marked_obsolete_by_url` and `marked_obsolete_in_milestone`.
 1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
-1. Remove any logic-handling backwards compatibility for this migration by
+1. Remove any logic handling backwards compatibility for this migration by
    looking for `Elastic::DataMigrationService.migration_has_finished?(:migration_name_in_lowercase)`.
 1. Push any required changes to the merge request.
 
@@ -1098,7 +1086,7 @@ The MR assignee must:
 
 ## ChatOps commands for monitoring migrations
 
-You can check migration status from Slack (or any ChatOps‑enabled channel) at any time:
+You can check migration status from Slack (or any ChatOps-enabled channel) at any time:
 
 ```plaintext
 /chatops gitlab run search_migrations --help

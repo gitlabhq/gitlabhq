@@ -77,7 +77,7 @@ describe('Board Card Move to position', () => {
         ${0}          | ${dropdownOptions[0]} | ${'move_to_start'} | ${0}
         ${1}          | ${dropdownOptions[1]} | ${'move_to_end'}   | ${-1}
       `(
-        'on click of dropdown index $dropdownIndex with label $dropdownLabel emits moveToPosition event with tracking label $trackLabel',
+        'on click of dropdown index $dropdownIndex with label $dropdownLabel emits move-to-position event with tracking label $trackLabel',
         async ({ dropdownIndex, dropdownItem, trackLabel, positionInList }) => {
           await findMoveToPositionDropdown().vm.$emit('shown');
 
@@ -91,7 +91,7 @@ describe('Board Card Move to position', () => {
             property: 'type_card',
           });
 
-          expect(wrapper.emitted('moveToPosition')).toEqual([[positionInList]]);
+          expect(wrapper.emitted('move-to-position')).toEqual([[positionInList]]);
         },
       );
     });

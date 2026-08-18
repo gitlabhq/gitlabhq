@@ -70,12 +70,12 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.docs,
-      href: customSidebarData.docs_path,
+      href: '/help/docs',
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
       text: HelpCenter.i18n.university,
-      href: customSidebarData.university_path,
+      href: 'https://university.gitlab.com',
       extraAttrs: trackingAttrs('gitlab_university'),
     },
     {
@@ -177,7 +177,7 @@ describe('HelpCenter component', () => {
       it('shows link to Terms of Service and Data Privacy', () => {
         const customSidebarData = {
           ...sidebarData,
-          terms: '/-/users/terms',
+          has_terms: true,
         };
 
         createWrapper(customSidebarData);
@@ -197,7 +197,7 @@ describe('HelpCenter component', () => {
       it('does not show link to Terms of Service and Data Privacy on SaaS even if it is set', () => {
         const customSidebarData = {
           ...sidebarData,
-          terms: '/-/users/terms',
+          has_terms: true,
         };
 
         createWrapper(customSidebarData, { isSaas: true });
@@ -209,11 +209,11 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('when Terms of Service and Data Privacy is undefined', () => {
+    describe('when Terms of Service and Data Privacy is not set', () => {
       beforeEach(() => {
         createWrapper({
           ...sidebarData,
-          terms: undefined,
+          has_terms: false,
         });
       });
 

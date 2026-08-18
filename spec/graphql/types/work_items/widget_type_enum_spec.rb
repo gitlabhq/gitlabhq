@@ -6,7 +6,7 @@ RSpec.describe GitlabSchema.types['WorkItemWidgetType'] do
   specify { expect(described_class.graphql_name).to eq('WorkItemWidgetType') }
 
   it 'exposes all the existing widget type values' do
-    expect(described_class.values.transform_values { |v| v.value }).to include(
+    expect(described_class.values.transform_values(&:value)).to include(
       'DESCRIPTION' => :description
     )
   end

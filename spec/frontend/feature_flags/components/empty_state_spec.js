@@ -1,6 +1,7 @@
 import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import EmptyState from '~/feature_flags/components/empty_state.vue';
 
 const DEFAULT_PROPS = {
@@ -28,9 +29,9 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
         components: {
           EmptyState,
         },
-        render(h) {
-          return h(EmptyState, { props: this.$attrs, on: this.$listeners }, this.$slots.default);
-        },
+        mixins: [glListenersMixin],
+        inheritAttrs: false,
+        template: '<empty-state v-bind="$attrs" v-on="glListeners()"><slot></slot></empty-state>',
       },
       {
         propsData: {

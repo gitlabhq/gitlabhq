@@ -1,6 +1,6 @@
 ---
-source_checksum: a26b2155e11ee01a
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 604755dfbe2cc540
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -60,9 +60,8 @@ registration pattern, GraphQL request counting), see
 
 ### Feature Tests (Frontend)
 
-- Use feature tests only when the use case requires a real backend and cannot be covered with fixtures, or when behavior is defined globally rather than in a page bundle.
+- Use an MSW integration test (`spec/frontend/msw_integration/`) when the test covers multi-component interaction on a single page, backend responses can be represented with fixtures, and you do not need to verify database state, authorization, server-side validations, or real-time updates; use a Capybara feature test (`spec/features/`) only when the test requires a real backend, cross-page navigation, backend state not representable with fixtures, or multiple Vue applications on the same page — Capybara tests are significantly slower.
 - Add `:js` metadata to RSpec feature specs that require JavaScript; DO NOT omit it when the test depends on JavaScript execution.
-- Prefer MSW integration tests over Capybara feature tests whenever the backend is not strictly required — Capybara tests are significantly slower.
 - Before asserting on backend attributes in a Capybara spec, assert on a visible page element first to confirm the operation completed; DO NOT use `wait_for_requests` as a substitute (race conditions can occur).
 
 ### Test File Placement

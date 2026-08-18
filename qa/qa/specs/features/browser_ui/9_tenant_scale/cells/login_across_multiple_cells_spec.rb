@@ -34,7 +34,6 @@ module QA
 
       it(
         'user logged into one Cell is logged into all',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/433542',
         only: :local
       ) do
         Flow::Login.sign_in(as: create(:user))

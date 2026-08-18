@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Agent Foundations
+stage: Agent Foundations
+group: Agent Developer
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Software Development Flow
 ---
@@ -145,7 +145,7 @@ AI tools based on large language models can be unpredictable. Review potential r
 The Software Development Flow in VS Code, JetBrains IDEs, and Visual Studio runs workflows on your
 local workstation. Consider all documented risks before enabling this product. Key risks include:
 
-- The Software Development Flow can access files in the project’s local file system, including
+- The Software Development Flow can access files in the project's local file system, including
   files not tracked by Git or excluded in `.gitignore`. This may include sensitive information such
   as credentials in `.env` files.
 - The Software Development Flow is granted a time-limited GitLab OAuth token with the `ai_workflows`

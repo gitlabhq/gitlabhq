@@ -51,6 +51,7 @@ export default {
       default: '',
     },
   },
+  emits: ['delete-pod', 'flux-reconcile', 'flux-resume', 'flux-suspend'],
   data() {
     return { eventsError: null, eventsLoading: false, k8sEvents: [] };
   },

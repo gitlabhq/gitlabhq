@@ -6,16 +6,17 @@ const EXPORT = __('Export');
 
 export const OFFLINE_EXPORT_TAB_HEADINGS = [SELECT_ENTITIES, CONFIGURE, EXPORT];
 
-export const OFFLINE_EXPORT_TAB_FIELDS = ['select', 'configure', 'export'];
+export const FORM_STEPPER_TAB_STATE = {
+  ACTIVE: 'active',
+  PENDING: 'pending',
+  COMPLETED: 'completed',
+};
 
 export const FORM_STEPPER_TAB_COLOR = {
-  active: 'gl-text-link gl-font-bold',
-  pending: 'gl-text-subtle',
-  completed: 'gl-text-blue-500',
+  [FORM_STEPPER_TAB_STATE.ACTIVE]: 'gl-text-link gl-font-bold',
+  [FORM_STEPPER_TAB_STATE.PENDING]: 'gl-text-subtle',
+  [FORM_STEPPER_TAB_STATE.COMPLETED]: 'gl-text-default',
 };
 
-export const FORM_STEPPER_TAB_BORDER_COLOR = {
-  active: 'gl-border-b-link',
-  pending: 'gl-border-b-neutral-300',
-  completed: 'gl-border-b-blue-300',
-};
+export const FORM_STEPPER_ACTIVE_TAB_BORDER =
+  'gl-border-b-2 gl-border-b-[color:var(--gl-tab-selected-indicator-color-default)]';

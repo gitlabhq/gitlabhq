@@ -30,7 +30,7 @@ Prerequisites:
 
 - In a private project, you must have the Reporter, Developer, Maintainer, or Owner role. See [Environment permissions](#environment-permissions).
 
-There are a few ways to view a list of environments for a given project:
+You can view a list of environments for a given project in a few ways:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
 
@@ -202,7 +202,7 @@ You can also combine a static prefix with the variable, for example
 result is `https://example.com`.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
+For an overview, see [set dynamic URLs after a job finished](https://www.youtube.com/watch?v=70jDXtOf4Ig).
 
 In the following example a review app creates a new environment for each merge request:
 
@@ -532,7 +532,7 @@ that an environment is scheduled to stop. For more information, see
 
 #### View an environment's scheduled stop date and time
 
-When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
+When an environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
 you can view its expiration date and time.
 
 To view an environment's expiration date and time:
@@ -545,7 +545,7 @@ The expiration date and time is displayed in the upper-left corner, next to the 
 
 #### Override an environment's scheduled stop date and time
 
-When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
+When an environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
 you can override its expiration.
 
 To override an environment's expiration in the UI:
@@ -553,7 +553,7 @@ To override an environment's expiration in the UI:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment name.
-1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
+1. In the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
 
 To override an environment's expiration in the `.gitlab-ci.yml`:
 
@@ -743,10 +743,10 @@ This gives you access to environment-scoped variables, and can be used to protec
 it's effective to avoid the [prevent outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) feature.
 
 If an environment is configured to stop after a certain time period, jobs with the `access` or `prepare`
-action will reset the scheduled stop time. The [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
+action resets the scheduled stop time. The [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 from the most recent successful deployment job to the environment is used when resetting the scheduled time.
 For example, if the most recent deployment used `auto_stop_in: 1 week` and is later accessed by a job with
-`action: access`, the environment will be rescheduled to stop one week from the completion of the accessing job.
+`action: access`, the environment is rescheduled to stop one week from the completion of the accessing job.
 
 To access an environment without changing the scheduled stop time, use the `verify` action.
 
@@ -856,7 +856,7 @@ See [Deployment-only access to protected environments](protected_environments.md
 ## Web terminals (deprecated)
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 
 If you deploy to your environments with the help of a deployment service (for example,
 the [Kubernetes integration](../../user/infrastructure/clusters/_index.md)), GitLab can open
@@ -908,7 +908,7 @@ with the `action: stop` is not in a runnable state due to its `stages:` or `need
 For example:
 
 - The environment might start in a stage that also has a job that failed.
-  Then the jobs in later stages job don't start. If the job with the `action: stop`
+  Then the jobs in later stages don't start. If the job with the `action: stop`
   for the environment is also in a later stage, it can't start and the environment isn't deleted.
 - The job with the `action: stop` might have a dependency on a job that has not yet completed.
 

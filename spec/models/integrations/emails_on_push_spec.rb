@@ -6,7 +6,7 @@ RSpec.describe Integrations::EmailsOnPush, feature_category: :source_code_manage
   it_behaves_like Integrations::Base::EmailsOnPush
 
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
 
     let(:push_data) { { object_kind: 'push' } }
     let(:recipients) { 'test@gitlab.com' }

@@ -45,7 +45,7 @@ describe('Markdown field header component', () => {
     });
   };
 
-  const findPreviewToggle = () => wrapper.findByTestId('preview-toggle');
+  const findPreviewToggle = () => wrapper.findComponentByTestId('preview-toggle');
   const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
   const findToolbarButtons = () => wrapper.findAllComponents(ToolbarButton);
   const findDividers = () => wrapper.findAllComponents(HeaderDividerComponent);
@@ -156,12 +156,21 @@ describe('Markdown field header component', () => {
     findPreviewToggle().vm.$emit('click', true);
 
     await nextTick();
-    expect(wrapper.emitted('showPreview')).toHaveLength(1);
+    expect(wrapper.emitted('show-preview')).toHaveLength(1);
 
     findPreviewToggle().vm.$emit('click', false);
 
     await nextTick();
-    expect(wrapper.emitted('showPreview')).toHaveLength(2);
+    expect(wrapper.emitted('show-preview')).toHaveLength(2);
+  });
+
+  it('emits `hide-preview` when clicking preview toggle in preview mode', async () => {
+    createWrapper({ props: { previewMarkdown: true } });
+
+    findPreviewToggle().vm.$emit('click');
+
+    await nextTick();
+    expect(wrapper.emitted('hide-preview')).toHaveLength(1);
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
@@ -171,8 +180,8 @@ describe('Markdown field header component', () => {
 
     document.dispatchEvent(new CustomEvent(MARKDOWN_EVENT_SHOW, { detail: { form } }));
 
-    expect(wrapper.emitted('showPreview')).toBeUndefined();
-    expect(wrapper.emitted('hidePreview')).toBeUndefined();
+    expect(wrapper.emitted('show-preview')).toBeUndefined();
+    expect(wrapper.emitted('hide-preview')).toBeUndefined();
   });
 
   describe('markdown table button', () => {
@@ -438,16 +447,16 @@ describe('Markdown field header component', () => {
       return root;
     };
 
-    const findFindInput = () => wrapper.findByTestId('find-input');
-    const findReplaceInput = () => wrapper.findByTestId('replace-input');
+    const findFindInput = () => wrapper.findComponentByTestId('find-input');
+    const findReplaceInput = () => wrapper.findComponentByTestId('replace-input');
     const findReplaceButton = () => wrapper.findByTestId('replace-button');
     const findReplaceAllButton = () => wrapper.findByTestId('replace-all-button');
     const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
     const findAndReplaceMatchCount = () => wrapper.findByTestId('find-and-replace-matches').text();
-    const findNextButton = () => wrapper.findByTestId('find-next');
-    const findPrevButton = () => wrapper.findByTestId('find-prev');
-    const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
+    const findNextButton = () => wrapper.findComponentByTestId('find-next');
+    const findPrevButton = () => wrapper.findComponentByTestId('find-prev');
+    const findCloseButton = () => wrapper.findComponentByTestId('find-and-replace-close');
     const findTextarea = () => document.querySelector('textarea');
     const findToggleReplaceSectionButton = () =>
       wrapper.findByTestId('replace-section-toggle').findComponent(GlButton);

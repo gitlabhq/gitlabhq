@@ -83,7 +83,7 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
 
         expect(mutation_response['errors']).to contain_exactly(
           "Item with ID: #{related2.id} cannot be added. " \
-          "You don't have permission to perform this action."
+            "You don't have permission to perform this action."
         )
       end
 

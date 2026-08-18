@@ -163,4 +163,4 @@ factors help improve the overall execution time:
 
 - [Metrics that would help us detect the potential N+1 Cached SQL calls](https://gitlab.com/gitlab-org/gitlab/-/issues/259007)
 - [Merge request performance guidelines for cached queries](merge_request_concepts/performance.md#cached-queries)
-- [Improvements for biggest offenders](https://gitlab.com/groups/gitlab-org/-/epics/4508)
+- [Improvements for biggest offenders](https://gitlab.com/groups/gitlab-org/-/work_items/4508)

@@ -2,23 +2,28 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Agentic breaking change resolution flow
+title: Agentic Breaking Change Resolution Flow
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17884) in GitLab 19.2 as an [beta](../../../../policy/development_stages_support.md#beta) feature with a [feature flag](../../../../administration/feature_flags/_index.md) named `enable_dependency_bump_breaking_changes` and `dependency_bump_web_search`.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17884) as a [beta](../../../../policy/development_stages_support.md#beta) in GitLab 19.2 [with feature flags](../../../../administration/feature_flags/_index.md) named `enable_dependency_bump_breaking_changes` and `dependency_bump_web_search`. Enabled by default.
 
 {{< /history >}}
 
-The agentic breaking change resolution flow automatically analyzes pipeline failures on
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
+
+The Agentic Breaking Change Resolution Flow automatically analyzes pipeline failures on
 dependency bump merge requests and generates code fixes to resolve breaking changes
 introduced by the dependency update.
 
@@ -40,12 +45,12 @@ Results are based on AI analysis and should be reviewed before merging.
 - Turn on **Allow foundational flows** and **Resolve Dependency Bump Breaking Changes**
   [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md) or turn on
+- [Configure your own runners](../execution/_index.md) or turn on
   [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 - Turn on the feature for the project. See
   [Enable agentic breaking change resolution](../../../application_security/dependency_scanning/agentic-breaking-change-resolution.md#enable-agentic-breaking-change-resolution).
 
-## Run agentic breaking change resolution
+## Run the Agentic Breaking Change Resolution Flow
 
 The flow runs automatically when a pipeline fails on a dependency bump merge request created
 by the auto-remediation agent, and the feature is enabled for the project.

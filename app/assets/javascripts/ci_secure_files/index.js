@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import SecureFilesList from './components/secure_files_list.vue';
 
@@ -13,7 +13,7 @@ export const initCiSecureFiles = (selector = '#js-ci-secure-files') => {
   const { admin } = containerEl.dataset;
   const { fileSizeLimit } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'SecureFilesListRoot',
     provide: {
@@ -21,8 +21,6 @@ export const initCiSecureFiles = (selector = '#js-ci-secure-files') => {
       admin: parseBoolean(admin),
       fileSizeLimit,
     },
-    render(createElement) {
-      return createElement(SecureFilesList);
-    },
+    component: SecureFilesList,
   });
 };

@@ -8,7 +8,7 @@ RSpec.shared_examples 'rich text editor - selection' do
   let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
   let(:modifier_key) { is_mac ? :command : :control }
 
-  describe 'selecting text' do
+  describe 'selecting text', feature_category: :markdown do
     before do
       switch_to_content_editor
 

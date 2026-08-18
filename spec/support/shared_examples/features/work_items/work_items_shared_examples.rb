@@ -336,7 +336,6 @@ RSpec.shared_examples 'work items description' do
 
     before do
       project.add_developer(other_user)
-      stub_feature_flags(notifications_todos_buttons: false)
     end
 
     it 'shows conflict message when description changes', :aggregate_failures do
@@ -399,16 +398,16 @@ RSpec.shared_examples 'work items milestone' do
   it 'adds and removes milestone', :aggregate_failures do
     within_testid 'work-item-milestone' do
       click_button 'Edit'
-      send_keys "\"#{milestones[8].title}\""
-      select_listbox_item(milestones[8].title)
+      send_keys "\"#{milestones[2].title}\""
+      select_listbox_item(milestones[2].title)
 
-      expect(page).to have_link(milestones[8].title)
+      expect(page).to have_link(milestones[2].title)
 
       click_button 'Edit'
       click_button 'Clear'
 
       expect(page).to have_text('None')
-      expect(page).not_to have_link(milestones[8].title)
+      expect(page).not_to have_link(milestones[2].title)
     end
   end
 end
@@ -420,7 +419,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
     within_testid 'work-item-actions-dropdown' do
       click_button _('More actions')
 
-      expect(page).to have_button 'Close Key Result'
+      expect(page).to have_button 'Close key result'
       expect(page).to have_button 'New related item'
       expect(page).not_to have_button 'Promote to objective'
       expect(page).not_to have_button 'Change type'
@@ -467,17 +466,14 @@ end
 
 RSpec.shared_examples 'work items notifications' do
   it 'displays toast when notification is toggled', :aggregate_failures do
-    click_button _('More actions'), match: :first
+    wait_for_requests
 
-    within_testid 'notifications-toggle-form' do
-      expect(page).not_to have_css('.gl-toggle.is-checked')
+    notifications_button = find('[data-testid="subscribe-button"][data-subscribed="false"]')
 
-      click_button(class: 'gl-toggle')
-
-      expect(page).to have_css('.gl-toggle.is-checked')
-    end
+    notifications_button.click
 
     expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))
+    expect(page).to have_css('[data-testid="subscribe-button"][data-subscribed="true"]')
   end
 end
 
@@ -1113,18 +1109,18 @@ RSpec.shared_examples 'work items color' do
 end
 
 RSpec.shared_examples 'work items hierarchy' do |testid, type|
-  it 'shows no child items by default and toggles card', :aggregate_failures do
+  it 'collapses card by default when empty and toggles card', :aggregate_failures do
     within_testid testid do
       expect(page).to have_css('h2', text: 'Child items')
-      expect(page).to have_text('No child items are currently assigned.')
-
-      click_button 'Collapse'
-
       expect(page).not_to have_text('No child items are currently assigned.')
 
       click_button 'Expand'
 
       expect(page).to have_text('No child items are currently assigned.')
+
+      click_button 'Collapse'
+
+      expect(page).not_to have_text('No child items are currently assigned.')
     end
   end
 
@@ -1217,6 +1213,10 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
 
   it 'toggles widget body and form', :aggregate_failures do
     within_testid('work-item-relationships') do
+      expect(page).not_to have_selector('[data-testid="crud-empty"]')
+
+      click_button 'Expand'
+
       expect(page).to have_selector('[data-testid="crud-empty"]')
 
       click_button 'Collapse'
@@ -1280,7 +1280,9 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     end
   end
 
-  it 'passes axe automated accessibility testing for linked items', :aggregate_failures do
+  it 'passes axe automated accessibility testing for linked items',
+    :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/554457' do
     selector = '[data-testid="work-item-relationships"]'
 
     within_testid('work-item-relationships') do
@@ -1301,6 +1303,43 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     end
   end
 
+  it 'toggles metadata field display', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        fill_in 'Search existing items', with: linked_item.title
+        click_button linked_item.title
+        click_button 'Add'
+      end
+
+      click_button 'Display options'
+
+      labels_toggle = find_by_testid('work-item-metadata-toggle-labels')
+      expect(labels_toggle).to have_css('button.gl-toggle.is-checked')
+
+      labels_toggle.find('button.gl-toggle').click
+
+      expect(labels_toggle).not_to have_css('button.gl-toggle.is-checked')
+
+      labels_toggle.find('button.gl-toggle').click
+
+      expect(labels_toggle).to have_css('button.gl-toggle.is-checked')
+    end
+  end
+
+  it 'prevents linking a work item to itself', :aggregate_failures do
+    within_testid('work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        fill_in 'Search existing items', with: work_item.title
+
+        expect(page).not_to have_button(work_item.title)
+      end
+    end
+  end
+
   def expect_linked_item_added(input)
     within_testid('work-item-relationships') do
       click_button 'Add'
@@ -1313,7 +1352,9 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
         click_button 'Add'
       end
 
+      expect(page).to have_css('h3', text: 'Related to')
       expect(page).to have_link linked_item.title
+      expect(page).to have_css('[data-testid="linked-items-count-badge"]', text: '1')
     end
   end
 end

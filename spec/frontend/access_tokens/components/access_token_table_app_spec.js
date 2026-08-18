@@ -19,7 +19,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   let mockAxios;
 
   const accessTokenType = 'personal access token';
-  const accessTokenTypePlural = 'personal access tokens';
   const noActiveTokensMessage = 'This user has no active personal access tokens.';
   const showRole = false;
   const tokenNameWithHtmlEntities = "John's & ¥200<>";
@@ -61,7 +60,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     wrapper = mountExtended(AccessTokenTableApp, {
       provide: {
         accessTokenType,
-        accessTokenTypePlural,
         initialActiveAccessTokens: defaultActiveAccessTokens,
         noActiveTokensMessage,
         showRole,
@@ -83,6 +81,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     await axios.waitForAll();
   };
 
+  const findModal = () => wrapper.findComponent(GlModal);
   const findTable = () => wrapper.findComponent(GlTable);
   const findHeaders = () => findTable().findAll('thead th > div > span');
   const findCells = () => findTable().findAll('tbody td, tbody th');
@@ -118,9 +117,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       const cells = findCells();
       expect(cells).toHaveLength(1);
-      expect(cells.at(0).text()).toBe(
-        sprintf('This user has no active %{accessTokenTypePlural}.', { accessTokenTypePlural }),
-      );
+      expect(cells.at(0).text()).toBe('This user has no active personal access tokens.');
     });
 
     it('should render an empty table with a custom message', async () => {
@@ -291,6 +288,12 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
       expect(cells.at(8).text()).toBe('b');
       expect(createAlert).not.toHaveBeenCalled();
+    });
+
+    it('gives the rotation confirmation modal an accessible name', () => {
+      createComponent({ backendPagination });
+
+      expect(findModal().props('ariaLabel')).toBe('Rotate access token');
     });
 
     it('shows error if token fails to be rotated', async () => {

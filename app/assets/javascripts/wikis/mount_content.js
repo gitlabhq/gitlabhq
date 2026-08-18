@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
@@ -16,12 +17,7 @@ export const mountSidebarResizer = () => {
   const resizer = document.querySelector('.js-wiki-sidebar-resizer');
 
   if (resizer) {
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: resizer,
-      name: 'SidebarResizerRoot',
-      render: (createElement) => createElement(SidebarResizer),
-    });
+    initVueApp({ el: resizer, name: 'SidebarResizerRoot', component: SidebarResizer });
   }
 };
 
@@ -39,11 +35,9 @@ export const mountWikiApp = () => {
     isPageTemplate,
     isPageHistorical,
     createFromTemplateUrl,
-    editButtonUrl,
     lastVersion,
     pageVersion,
     authorUrl,
-    wikiPath,
     cloneSshUrl,
     cloneHttpUrl,
     newUrl,
@@ -61,10 +55,10 @@ export const mountWikiApp = () => {
     markdownPreviewPath,
     noteableType,
     isContainerArchived,
-    notesFilters,
     reportAbusePath,
     containerName,
     pageAuthorEmail,
+    error,
   } = el.dataset;
 
   Vue.use(VueApollo);
@@ -85,12 +79,11 @@ export const mountWikiApp = () => {
     queryVariables.namespaceId = convertToGraphQLId(TYPENAME_GROUP, containerId);
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WikiContentAppRoot',
     apolloProvider,
     provide: {
-      isEditingPath: false,
       pageHeading,
       contentApi,
       canCreateNewPage: parseBoolean(canCreateNewPage),
@@ -101,11 +94,9 @@ export const mountWikiApp = () => {
       isPageTemplate: parseBoolean(isPageTemplate),
       isPageHistorical: parseBoolean(isPageHistorical),
       createFromTemplateUrl,
-      editButtonUrl,
       lastVersion,
-      pageVersion: JSON.parse(pageVersion),
+      pageVersion: JSON.parse(pageVersion || 'null'),
       authorUrl,
-      wikiPath,
       cloneSshUrl,
       cloneHttpUrl,
       newUrl,
@@ -117,23 +108,20 @@ export const mountWikiApp = () => {
       templates: JSON.parse(templates),
       drawioUrl: gon.diagramsnet_url,
       pagePersisted: parseBoolean(pagePersisted),
-      containerId,
       containerType,
       markdownPreviewPath,
-      currentUserData: JSON.parse(currentUserData || {}),
+      currentUserData: JSON.parse(currentUserData || '{}'),
       reportAbusePath,
       registerPath,
       signInPath,
       noteableType,
       noteCount: 5,
       markdownDocsPath: helpPagePath('user/markdown.md'),
-      notesFilters: JSON.parse(notesFilters || {}),
       isContainerArchived: parseBoolean(isContainerArchived),
       containerName,
       pageAuthorEmail,
+      error,
     },
-    render(createElement) {
-      return createElement(WikiContentApp);
-    },
+    component: WikiContentApp,
   });
 };

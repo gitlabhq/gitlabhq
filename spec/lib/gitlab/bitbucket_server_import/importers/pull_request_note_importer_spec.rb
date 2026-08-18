@@ -6,7 +6,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNoteImporter
   include AfterNextHelpers
 
   let_it_be_with_reload(:project) do
-    create(:project, :repository, :import_started,
+    create(:project, :small_repo, :import_started,
       import_data_attributes: {
         data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
         credentials: { 'token' => 'token' }

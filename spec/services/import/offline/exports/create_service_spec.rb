@@ -45,6 +45,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
             have_attributes(user: current_user, source_hostname: source_hostname)
           )
         )
+        expect(result.payload.configuration).to have_attributes(source_hostname: source_hostname)
       end
     end
 
@@ -91,7 +92,7 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       it_behaves_like 'a success response'
 
       it 'persists the sanitized source hostname' do
-        expect(result.payload.reload.source_hostname).to eq(source_hostname)
+        expect(result.payload.configuration.reload.source_hostname).to eq(source_hostname)
       end
     end
 
@@ -99,6 +100,17 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       expect(Import::Offline::ExportWorker).to receive(:perform_async).with(Integer)
 
       result
+    end
+
+    it 'tracks the start offline transfer export event', :clean_gitlab_redis_shared_state do
+      expect { result }
+        .to trigger_internal_events('start_offline_transfer_export')
+        .with(user: current_user, additional_properties: { label: 'aws' })
+        .and increment_usage_metrics(
+          'redis_hll_counters.count_distinct_user_id_from_start_offline_transfer_export_monthly',
+          'counts.count_total_start_offline_transfer_export',
+          'counts.count_total_start_offline_transfer_export_monthly'
+        )
     end
 
     context 'when only groups are exported' do
@@ -313,12 +325,49 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       end
     end
 
-    context 'when offline_transfer_exports is disabled' do
-      before do
-        stub_feature_flags(offline_transfer_exports: false)
+    context 'when using Application Default Credentials' do
+      let(:portable_params) { [{ full_path: groups[0].full_path }] }
+      let(:storage_config) do
+        {
+          provider: :gcs_application_default,
+          bucket: 'gitlab-offline-transfer-exports',
+          credentials: { google_project: 'my-project' }
+        }
       end
 
-      it_behaves_like 'an error response', error: 'offline_transfer_exports feature flag must be enabled.'
+      before do
+        stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+      end
+
+      context 'when the user is not an administrator' do
+        it_behaves_like 'an error response',
+          error: 'Only administrators can use Application Default Credentials for offline transfer.'
+
+        it 'does not connect to object storage' do
+          expect(Import::Clients::ObjectStorage).not_to receive(:new)
+
+          result
+        end
+      end
+
+      context 'when the user is an administrator' do
+        before do
+          allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
+
+          client_double = instance_double(Import::Clients::ObjectStorage, test_connection!: true)
+          allow(Import::Clients::ObjectStorage).to receive(:new).and_return(client_double)
+        end
+
+        it_behaves_like 'a success response'
+
+        context 'when Application Default Credentials are not enabled for offline transfer' do
+          before do
+            stub_application_setting(allow_application_default_credentials_for_offline_transfer: false)
+          end
+
+          it_behaves_like 'an error response', error: 'Provider is not included in the list'
+        end
+      end
     end
   end
 end

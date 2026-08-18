@@ -1,5 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink, GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { GlLink, GlAvatar, GlAvatarLink, GlIcon, GlSprintf } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
+import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
 
@@ -24,8 +29,12 @@ import {
   TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
+  TODO_ACTION_TYPE_TRANSFER_FAILED,
 } from '~/todos/constants';
 import { SAML_HIDDEN_TODO } from '../mock_data';
+
+jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility');
 
 describe('TodoItemBody', () => {
   let wrapper;
@@ -51,6 +60,9 @@ describe('TodoItemBody', () => {
       },
       provide: {
         currentUserId: '1',
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -105,6 +117,77 @@ describe('TodoItemBody', () => {
       expect(wrapper.text().includes('John Doe')).toBe(showsAuthor);
     });
 
+    it('renders transfer-failed text with a retry action button', () => {
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        body: 'gitlab-org/my-source-group',
+        targetUrl: '/groups/gitlab-org-source',
+        transferFailedRetryUrl: '/groups/gitlab-org-source/transfer?new_parent_group_id=123',
+        group: {
+          fullName: 'GitLab Org Source',
+        },
+        targetEntity: {
+          name: 'gitlab-org-source',
+        },
+      });
+
+      expect(wrapper.text()).toContain('Failed to transfer');
+      expect(wrapper.text()).toContain('gitlab-org-source');
+      expect(wrapper.text()).toContain('gitlab-org / my-source-group');
+      expect(wrapper.text()).not.toContain('GitLab Org Source');
+      expect(wrapper.text()).toContain('Try again.');
+      expect(wrapper.text()).not.toContain('John Doe');
+
+      const retryButton = wrapper.find('[data-testid="todo-transfer-failed-retry"]');
+      expect(retryButton.exists()).toBe(true);
+    });
+
+    it('calls axios.put with the retry URL when clicking transfer-failed retry action', async () => {
+      const retryUrl = '/groups/gitlab-org-source/transfer?new_parent_group_id=123';
+      const sourceUrl = '/groups/gitlab-org-source';
+      const axiosMock = new MockAdapter(axios);
+      axiosMock.onPut(retryUrl).reply(200);
+
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        transferFailedRetryUrl: retryUrl,
+        targetUrl: sourceUrl,
+      });
+
+      const retryButton = wrapper.findComponent('[data-testid="todo-transfer-failed-retry"]');
+      expect(retryButton.exists()).toBe(true);
+      retryButton.vm.$emit('click', new MouseEvent('click'));
+      await waitForPromises();
+
+      expect(axiosMock.history.put).toHaveLength(1);
+      expect(axiosMock.history.put[0].url).toBe(retryUrl);
+      expect(visitUrl).toHaveBeenCalledWith(sourceUrl);
+
+      axiosMock.restore();
+    });
+
+    it('shows an alert when the retry PUT request fails', async () => {
+      const retryUrl = '/groups/gitlab-org-source/transfer?new_parent_group_id=123';
+      const axiosMock = new MockAdapter(axios);
+      axiosMock.onPut(retryUrl).reply(500);
+
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        transferFailedRetryUrl: retryUrl,
+      });
+
+      const retryButton = wrapper.findComponent('[data-testid="todo-transfer-failed-retry"]');
+      expect(retryButton.exists()).toBe(true);
+      retryButton.vm.$emit('click', new MouseEvent('click'));
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Failed to retry transfer. Please try again.',
+      });
+
+      axiosMock.restore();
+    });
+
     it('renders workflow definition and project name for duo_workflow_input_required action', () => {
       createComponent({
         action: TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
@@ -153,6 +236,13 @@ describe('TodoItemBody', () => {
   ])('when todo action is `%s` and user is not author, avatar is shown', (action) => {
     createComponent({ action });
     expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(true);
+  });
+
+  it('when todo action is transfer_failed, warning icon is shown in avatar slot', () => {
+    createComponent({ action: TODO_ACTION_TYPE_TRANSFER_FAILED });
+
+    expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(false);
+    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
 
   describe('when todo has a note', () => {

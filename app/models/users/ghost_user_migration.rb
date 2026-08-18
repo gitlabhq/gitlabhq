@@ -14,8 +14,6 @@ module Users
     before_create :set_user_type
 
     scope :consume_order, -> { order(:consume_after, :id) }
-    scope :for_humans, -> { where(user_type: :human) }
-    scope :for_non_humans, -> { where.not(user_type: :human) }
 
     private
 

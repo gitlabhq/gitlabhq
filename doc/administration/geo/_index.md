@@ -21,7 +21,7 @@ a warm-standby as part of a disaster recovery strategy. Geo is not an out of the
 > supported and [documented](#upgrading-geo), but you should ensure that you're
 > using the right version of the documentation for your installation.
 
-To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/_index.md).
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v19.2.0-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v19.2.0-ee/doc/administration/geo/_index.md).
 
 Fetching large repositories can take a long time for teams and runners located far from a single GitLab instance.
 
@@ -149,7 +149,7 @@ Keep in mind that:
 
 The following diagram illustrates the underlying architecture of Geo.
 
-![Geo architecture](img/geo_architecture_v13_8.png)
+![Architecture diagram of Geo showing database replication through PostgreSQL streaming and file replication through Git HTTP and private APIs between the primary and secondary sites.](img/geo_architecture_v13_8.png)
 
 In this diagram:
 
@@ -290,7 +290,7 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
   GitLab instances based on our [Reference Architectures](../reference_architectures/_index.md), including automation of common daily tasks.
-  [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
+  [Epic 1465](https://gitlab.com/groups/gitlab-org/-/work_items/1465) proposes to improve Geo installation even more.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on secondary sites where [http proxying is disabled](secondary_proxy/_index.md#disable-secondary-site-http-proxying).
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. For more information, see [issue 9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.

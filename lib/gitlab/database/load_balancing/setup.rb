@@ -46,7 +46,7 @@ module Gitlab
           # We just use a simple `class_attribute` here so we don't need to
           # inject any modules and/or expose unnecessary methods.
           setup_class_attribute(:load_balancer, load_balancer)
-          setup_class_attribute(:connection, ConnectionProxy.new(load_balancer))
+          setup_class_attribute(:connection_proxy, ConnectionProxy.new(load_balancer))
           setup_class_attribute(:sticking, Sticking.new(load_balancer))
 
           # By default all base models use LB,
@@ -56,10 +56,16 @@ module Gitlab
           # By default gets LoadBalancing::ConnectionProxy instance from the above defined class attribute,
           # then overwrites if a particular class (eg: Feature::FlipperRecord) extends SkipLoadBalancer.
           # 'retrieve_connection' connection is used since the default 'connection' got deprecated.
-          connection_proxy = @model.connection
+          # The proxy must be read through `connection_proxy` rather than captured in this closure: since
+          # Rails 8, assigning a `class_attribute` no longer redefines the public reader, so a captured
+          # value would never pick up a reassignment.
           @model.singleton_class.define_method(:connection) do
             uses_load_balancer ? connection_proxy : retrieve_connection
           end
+
+          # The `connection` class_attribute this replaces also gave records an instance-level
+          # reader, and callers such as BatchedMigration#health_context still rely on it.
+          @model.define_method(:connection) { self.class.connection }
 
           @model.singleton_class.define_method(:lease_connection) do
             uses_load_balancer ? connection : super()
@@ -74,6 +80,15 @@ module Gitlab
             else
               super(*args, **kwargs, &block)
             end
+          end
+
+          # Since Rails 7.2, models load schema information through the class-level
+          # `schema_cache` method, which delegates to `connection_pool.schema_cache` and
+          # checks out connections directly from the pool, bypassing the ConnectionProxy.
+          # Route it through the proxy so that schema queries are sent to replicas
+          # (see ConnectionProxy#schema_cache).
+          @model.singleton_class.define_method(:schema_cache) do
+            uses_load_balancer ? connection.schema_cache : super()
           end
         end
 

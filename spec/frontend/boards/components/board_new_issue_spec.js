@@ -73,7 +73,7 @@ describe('Issue boards new issue form', () => {
     ${NAMESPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess} | ${groupBoardQuery}
     ${NAMESPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQuery}
   `(
-    'fetches $boardType board and emits addNewIssue event',
+    'fetches $boardType board and emits add-new-issue event',
     async ({ boardType, queryHandler, notCalledHandler, query }) => {
       projectBoardQueryHandlerSuccess.mockClear();
       groupBoardQueryHandlerSuccess.mockClear();
@@ -94,7 +94,7 @@ describe('Issue boards new issue form', () => {
 
       expect(queryHandler).toHaveBeenCalled();
       expect(notCalledHandler).not.toHaveBeenCalled();
-      expect(wrapper.emitted('addNewIssue')[0][0]).toMatchObject({ title: 'Foo' });
+      expect(wrapper.emitted('add-new-issue')[0][0]).toMatchObject({ title: 'Foo' });
     },
   );
 
@@ -108,11 +108,11 @@ describe('Issue boards new issue form', () => {
     });
   });
 
-  it('emits event `toggleNewForm` when `board-new-item` emits form-cancel event', async () => {
+  it('emits event `toggle-new-form` when `board-new-item` emits form-cancel event', async () => {
     findBoardNewItem().vm.$emit('form-cancel');
 
     await nextTick();
-    expect(wrapper.emitted('toggleNewForm')).toHaveLength(1);
+    expect(wrapper.emitted('toggle-new-form')).toHaveLength(1);
   });
 
   describe('when in group issue board', () => {

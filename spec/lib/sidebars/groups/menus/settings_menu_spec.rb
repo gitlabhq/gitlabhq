@@ -100,4 +100,12 @@ RSpec.describe Sidebars::Groups::Menus::SettingsMenu, :with_license, feature_cat
       end
     end
   end
+
+  describe 'Feature Library metadata' do
+    it 'gives every renderable item the settings library_icon' do
+      serialized = menu.renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(library_icon: 'settings'))
+    end
+  end
 end

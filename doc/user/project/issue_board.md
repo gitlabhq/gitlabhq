@@ -15,7 +15,6 @@ description: Visualization, workflow, Kanban, and prioritization.
 
 {{< history >}}
 
-- Milestones and iterations shown on issue cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25758) in GitLab 16.11.
 - Ability to delete the last board in a group or project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499579) in GitLab 17.6.
 - Minimum role to manage issue boards [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
@@ -675,12 +674,6 @@ You can't move the **Open** and **Closed** lists, but you can hide them when edi
 
 #### Move an issue to the start of the list
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
-
-{{< /history >}}
-
 You can move issues to the top of the list with a menu shortcut.
 
 Your issue is moved to the top of the list even if other issues are hidden by a filter.
@@ -695,12 +688,6 @@ To move an issue to the start of the list:
 1. Select **Card options** ({{< icon name="ellipsis_v" >}}), then **Move to start of list**.
 
 #### Move an issue to the end of the list
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
-
-{{< /history >}}
 
 You can move issues to the bottom of the list with a menu shortcut.
 

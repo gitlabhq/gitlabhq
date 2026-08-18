@@ -175,7 +175,7 @@ Here are some examples to get you started:
 ### Image tag
 
 As documented in the [Docker Official Images](https://github.com/docker-library/official-images#tags-and-aliases) project,
-it is strongly encouraged that version number tags be given aliases which allows the user to refer to the "most recent" release of a particular series.
+it is strongly encouraged that version number tags be given aliases which allow the user to refer to the "most recent" release of a particular series.
 See also [Docker Tagging: Best practices for tagging and versioning Docker images](https://learn.microsoft.com/en-us/archive/blogs/stevelasker/docker-tagging-best-practices-for-tagging-and-versioning-docker-images).
 
 ### Permissions
@@ -397,7 +397,7 @@ The `scan` field is an object that embeds meta information about the scan itself
 and `scanner` that performed the scan, the `start_time` and `end_time` the scan executed,
 and `status` of the scan (either "success" or "failure").
 
-Both the `analyzer` and `scanner` fields are objects that embeds a human-readable `name` and a technical `id`.
+Both the `analyzer` and `scanner` fields are objects that embed a human-readable `name` and a technical `id`.
 The `id` should not collide with any other analyzers or scanners another integrator would provide.
 
 ##### Scan primary identifiers
@@ -493,7 +493,7 @@ We recommend that you use the identifiers the GitLab scanners already [define](h
 
 The generic identifiers listed above are defined in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common),
 which is shared by some of the analyzers that GitLab maintains. You can [contribute](https://gitlab.com/gitlab-org/security-products/analyzers/common/blob/master/issue/identifier.go)
-new generic identifiers to if needed. Analyzers may also produce vendor-specific or product-specific
+new generic identifiers to it if needed. Analyzers may also produce vendor-specific or product-specific
 identifiers, which don't belong in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common).
 
 Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. As a result, a CVE
@@ -634,7 +634,7 @@ The severity is used to sort the vulnerabilities in the security dashboard.
 The severity ranges from `Info` to `Critical`, but it can also be `Unknown`.
 Valid values are: `Unknown`, `Info`, `Low`, `Medium`, `High`, or `Critical`
 
-`Unknown` values means that data is unavailable to determine it's actual value. Therefore, it may be `high`, `medium`, or `low`,
+`Unknown` values mean that data is unavailable to determine its actual value. Therefore, it may be `high`, `medium`, or `low`,
 and needs to be investigated.
 
 #### Remediations

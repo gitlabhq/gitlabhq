@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Group hierarchy query optimization
 ---
 
-This document describes the hierarchy cache optimization strategy that helps with loading all descendants (subgroups or projects) from large group hierarchies with minimal overhead. The optimization was implemented within this GitLab [epic](https://gitlab.com/groups/gitlab-org/-/epics/11469).
+This document describes the hierarchy cache optimization strategy that helps with loading all descendants (subgroups or projects) from large group hierarchies with minimal overhead. The optimization was implemented within this GitLab [epic](https://gitlab.com/groups/gitlab-org/-/work_items/11469).
 
 The optimization is enabled automatically via the [`Namespaces::EnableDescendantsCacheCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/namespaces/enable_descendants_cache_cron_worker.rb?ref_type=heads) worker for group hierarchies with descendant counts above 700 (projects and groups). Enabling the optimization manually for smaller groups will likely not have noticeable effects.
 
@@ -120,7 +120,7 @@ MergeRequest.where(target_project_id: group.all_project_ids)
 
 When the group hierarchy changes, for example when a new project or subgroup is added, the cache is invalidated within the same transaction. A periodic worker called [`Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/namespaces/process_outdated_namespace_descendants_cron_worker.rb?ref_type=heads) will update the cache with a slight delay. The invalidation is implemented using ActiveRecord callbacks.
 
-While the cache is invalidated, the hierarchical database queries will continue returning consistent values using the uncached (unoptimized) `traversal_ids` based query query.
+While the cache is invalidated, the hierarchical database queries will continue returning consistent values using the uncached (unoptimized) `traversal_ids` based query.
 
 ## Consistent queries
 

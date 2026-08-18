@@ -1,15 +1,25 @@
-.gl-mx-auto{ class: '@sm/panel:gl-w-1/2' }
-  .gl-justify-start.gl-items-center
-    .gl-heading-1
+= javascript_tag nonce: content_security_policy_nonce do
+  :plain
+    const enablePointerEvents = () =>{
+      setTimeout(()=>{
+        document.getElementById('container').classList.remove('gl-pointer-events-none');
+      },500)
+    }
+
+    window.addEventListener('focus', enablePointerEvents, {once: true});
+    window.addEventListener('mousemove', enablePointerEvents, {once: true});
+
+#container.gl-ml-auto.gl-mr-auto.gl-pointer-events-none{ class: '@sm/panel:gl-w-1/2' }
+  .gl-items-center
+    .gl-text-size-h1
       = s_('DeviceAuth|Authorize device to access to your GitLab account.')
-    .div
-      = form_with url: confirm_oauth_device_path, method: :post, class: 'gl-inline-block gl-pr-3' do |f|
-        .form-group.row
-          .gl-col-lg-8.gl-col-sm-10
-            = f.label :user_code
-            = text_field_tag :user_code, params[:user_code], id: nil
-        .div
-          = render Pajamas::ButtonComponent.new(type: :submit,
-            variant: :confirm,
-            button_options: { data: { testid: 'authorization-button' }}) do
-            = s_('DeviceAuth|Authorize')
+    .gl-text-subtle.gl-mt-3
+      = s_('DeviceAuth|Enter the code shown on your device to grant it access to your GitLab account.')
+    = form_with url: confirm_oauth_device_path, method: :post, class: 'gl-mt-5' do |f|
+      .gl-mb-3
+        = f.label :user_code, s_('DeviceAuth|Device code'), class: 'gl-mb-2 gl-block'
+        = f.text_field :user_code, value: params[:user_code], name: :user_code, class: 'gl-form-input form-control', autofocus: true
+      = render Pajamas::ButtonComponent.new(type: :submit,
+        variant: :confirm,
+        button_options: { data: { testid: 'authorization-button' }}) do
+        = s_('DeviceAuth|Authorize')

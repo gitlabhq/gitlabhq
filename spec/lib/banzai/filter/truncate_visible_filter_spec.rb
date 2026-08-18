@@ -10,7 +10,7 @@ RSpec.describe Banzai::Filter::TruncateVisibleFilter, feature_category: :markdow
   # subject, or an in-memory mutation that survives reload/refind). Do not
   # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
   # (see gitlab-org/gitlab#602925).
-  let_it_be(:project, freeze: false) { build(:project, :repository) }
+  let_it_be(:project, freeze: false) { build(:project) }
   let_it_be(:max_chars) { 100 }
   let_it_be(:user, freeze: false) do
     user = create(:user, username: 'gfm')

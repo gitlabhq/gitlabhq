@@ -6,7 +6,7 @@ RSpec.describe CsvBuilder do
     { 'Q & A' => :question, 'Reversed' => ->(o) { o.question.to_s.reverse } }
   end
 
-  let(:subject) do
+  subject do
     described_class.new(enumerable, header_to_value_hash)
   end
 
@@ -14,7 +14,7 @@ RSpec.describe CsvBuilder do
     let(:items) { [object] }
 
     it 'has a version number' do
-      expect(CsvBuilder::Version::VERSION).not_to be nil
+      expect(CsvBuilder::Version::VERSION).not_to be_nil
     end
 
     it 'generates a csv' do
@@ -123,7 +123,7 @@ RSpec.describe CsvBuilder do
     end
 
     context 'when replace_newlines is set to true' do
-      let(:subject) { described_class.new(enumerable, header_to_value_hash, replace_newlines: true) }
+      subject { described_class.new(enumerable, header_to_value_hash, replace_newlines: true) }
 
       it 'replaces newlines with a literal "\n"' do
         expect(csv_data).to eq("Title,Description\ntitle,Line 1\\n\\nLine 2\n")

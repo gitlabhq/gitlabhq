@@ -136,12 +136,7 @@ module LooseForeignKeys
           Gitlab::Database::PostgresPartitionedTable.find_by_name_in_current_schema(loose_foreign_key_definition.from_table).present?
         end
 
-        klass =
-          if table_partitioned
-            PartitionCleanerService
-          else
-            CleanerService
-          end
+        klass = cleaner_class_for(loose_foreign_key_definition, table_partitioned)
 
         cleaner = klass.new(
           loose_foreign_key_definition: loose_foreign_key_definition,
@@ -164,6 +159,16 @@ module LooseForeignKeys
       Gitlab::Database::SharedModel.using_connection(connection) do
         record_store.connection.pool.db_config.name
       end
+    end
+
+    # File-backed tables (e.g. p_ci_job_artifacts) declare a `cleaner_class` so
+    # their files are cleaned up instead of being orphaned by a bulk `DELETE`.
+    def cleaner_class_for(loose_foreign_key_definition, table_partitioned)
+      custom_cleaner = loose_foreign_key_definition.options[:cleaner_class]
+
+      return custom_cleaner if custom_cleaner
+
+      table_partitioned ? PartitionCleanerService : CleanerService
     end
   end
 end

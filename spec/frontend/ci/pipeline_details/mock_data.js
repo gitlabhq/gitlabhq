@@ -71,7 +71,7 @@ export const mockPipelineHeader = {
   },
 };
 
-export const mockRunningPipelineHeader = {
+const mockRunningPipelineHeader = {
   ...mockPipelineHeader,
   status: PIPELINE_RUNNING,
   retryable: false,

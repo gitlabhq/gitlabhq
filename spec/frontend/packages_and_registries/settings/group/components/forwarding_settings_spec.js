@@ -27,8 +27,9 @@ describe('Forwarding Settings', () => {
   };
 
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
-  const findForwardingCheckbox = () => wrapper.findByTestId('forwarding-checkbox');
-  const findLockForwardingCheckbox = () => wrapper.findByTestId('lock-forwarding-checkbox');
+  const findForwardingCheckbox = () => wrapper.findComponentByTestId('forwarding-checkbox');
+  const findLockForwardingCheckbox = () =>
+    wrapper.findComponentByTestId('lock-forwarding-checkbox');
 
   it('has a form group', () => {
     mountComponent();

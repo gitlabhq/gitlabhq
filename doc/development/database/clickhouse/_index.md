@@ -28,7 +28,7 @@ ClickHouse has some good blog posts covering [details of aggregations](https://a
 
 ## Primary indexes, sorting index and dictionaries
 
-It is highly recommended to read ["A practical introduction to primary indexes in ClickHouse""](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-intro) to get an understanding of indexes in ClickHouse.
+It is highly recommended to read ["A practical introduction to primary indexes in ClickHouse"](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-intro) to get an understanding of indexes in ClickHouse.
 
 Particularly how database index design in ClickHouse [differs](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-design#an-index-design-for-massive-data-scales) from those in transactional databases like PostgreSQL.
 

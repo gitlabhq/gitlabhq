@@ -169,27 +169,12 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
   end
 
   describe '#uses_external_config?' do
-    using RSpec::Parameterized::TableSyntax
+    # External-config detection is covered by Project#uses_external_ci_config? in
+    # spec/models/project_spec.rb; here we only verify the helper delegates to it.
+    it 'delegates to Project#uses_external_ci_config?' do
+      expect(project).to receive(:uses_external_ci_config?).and_return(true)
 
-    subject(:uses_external_config) { helper.uses_external_config?(project) }
-
-    let(:project_config) { instance_double(Gitlab::Ci::ProjectConfig, external?: is_external) }
-
-    before do
-      allow(Gitlab::Ci::ProjectConfig).to receive(:new)
-                                            .with(project: project, sha: nil)
-                                            .and_return(project_config)
-    end
-
-    where(:is_external, :expected_result) do
-      true | true
-      false | false
-    end
-
-    with_them do
-      it 'returns the expected result' do
-        expect(uses_external_config).to be expected_result
-      end
+      expect(helper.uses_external_config?(project)).to be(true)
     end
   end
 end

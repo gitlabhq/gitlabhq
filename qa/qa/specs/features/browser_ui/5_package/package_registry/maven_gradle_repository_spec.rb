@@ -38,8 +38,7 @@ module QA
             project: project)
         end
 
-        it 'pushes and pulls a maven package via gradle, using a pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562424' do
+        it 'pushes and pulls a maven package via gradle, using a pipeline' do
           gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle',
             'gradle_upload_install_package.yaml.erb')).result(binding)
           build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)
@@ -194,8 +193,8 @@ module QA
           end
         end
 
-        shared_examples 'using a docker container' do |testcase|
-          it 'pushes and pulls a maven package via gradle', testcase: testcase do
+        shared_examples 'using a docker container' do
+          it 'pushes and pulls a maven package via gradle' do
             project.visit!
 
             Page::Project::Menu.perform(&:go_to_package_registry)
@@ -226,14 +225,14 @@ module QA
 
           let(:token) { project_deploy_token.token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562429'
+          it_behaves_like 'using a docker container'
         end
 
         context 'with a personal access token' do
           let(:maven_header_name) { 'Private-Token' }
           let(:token) { Runtime::User::Store.default_api_client.personal_access_token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562423'
+          it_behaves_like 'using a docker container'
         end
       end
     end

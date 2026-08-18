@@ -28,7 +28,7 @@ describe('RunnerHeaderActions', () => {
   const findExpandedDropdownTooltip = () =>
     getBinding(findExpandedDropdown().element, 'gl-tooltip').value || '';
 
-  const findCompactDropdown = () => wrapper.findByTestId('compact-runner-actions');
+  const findCompactDropdown = () => wrapper.findComponentByTestId('compact-runner-actions');
   const findCompactDropdownTooltip = () =>
     getBinding(findCompactDropdown().element, 'gl-tooltip').value || '';
   const findEditItem = () => findCompactDropdown().findComponent(RunnerEditDisclosureDropdownItem);

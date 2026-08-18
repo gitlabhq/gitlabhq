@@ -45,14 +45,20 @@ module Ci
       url_helpers.cached_widget_project_json_merge_request_path(merge_request.project, merge_request, format: :json)
     end
 
+    def ci_environments_status_path(merge_request)
+      url_helpers.ci_environments_status_project_merge_request_path(merge_request.project, merge_request)
+    end
+
     def each_pipelines_merge_request_path(pipeline)
       pipeline.all_merge_requests.each do |merge_request|
         yield(pipelines_project_merge_request_path(merge_request))
         yield(merge_request_widget_path(merge_request))
+        yield(ci_environments_status_path(merge_request))
       end
 
       pipeline.project.merge_requests.by_merged_or_merge_or_squash_commit_sha(pipeline.sha).each do |merge_request|
         yield(merge_request_widget_path(merge_request))
+        yield(ci_environments_status_path(merge_request))
       end
     end
 
@@ -98,7 +104,7 @@ module Ci
       end
 
       Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
-        pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
+        load_relative_pipelines(pipeline).each do |relative_pipeline|
           etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
           etag_paths << graphql_pipeline_path(relative_pipeline)
           etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha) if relative_pipeline.sha
@@ -106,6 +112,23 @@ module Ci
       end
 
       store.touch(*etag_paths)
+    end
+
+    def load_relative_pipelines(pipeline)
+      project = pipeline.project
+      relative_pipelines = pipeline.upstream_and_all_downstreams.to_a
+
+      # `available_records` lets relatives in the caller's project point at the project
+      # instance we already hold, instead of re-querying the project, namespace and both
+      # routes. Relatives in other projects are loaded normally. The shared instance is
+      # only read from here, never mutated.
+      ActiveRecord::Associations::Preloader.new(
+        records: relative_pipelines,
+        associations: { project: [:route, { namespace: :route }] },
+        available_records: [project]
+      ).call
+
+      relative_pipelines
     end
 
     def url_helpers

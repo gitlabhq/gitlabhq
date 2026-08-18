@@ -16,12 +16,9 @@ title: Achievements
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a feature flag](../../administration/feature_flags/_index.md) named `achievements`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200774) in GitLab 19.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246977) in GitLab 19.3. Feature flag `achievements` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Achievements are a way to reward users for their activity on GitLab.
 As a namespace maintainer or owner, you can create custom achievements for specific contributions. You can award these

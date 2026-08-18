@@ -81,7 +81,7 @@ Security is an important part of the onboarding process. Securing your instance 
 While this isn't an exhaustive list, following these steps gives you a solid start for securing your instance.
 
 - Use a long root password, stored in a vault.
-- Install trusted SSL certificate and establish a process for renewal and revocation.
+- Install a trusted SSL certificate and establish a process for renewal and revocation.
 - [Configure SSH key restrictions](../security/ssh_keys_restrictions.md) according to your organization's guidelines.
 - [Turn off new user account creation](settings/sign_up_restrictions.md#disable-new-user-account-creation).
 - Require email confirmation.
@@ -106,7 +106,7 @@ Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus
 - Learn more about GitLab [bundled software metrics](monitoring/prometheus/_index.md#bundled-software-metrics).
 - Prometheus and its exporters are on by default. However, you must [configure the service](monitoring/prometheus/_index.md#configuring-prometheus).
 - Find out why [application performance metrics](https://about.gitlab.com/blog/working-with-performance-metrics/) matter.
-- Integrate Grafana to [build visual dashboards](https://youtu.be/f4R7s0An1qE) based on performance metrics.
+- Integrate Grafana to [build visual dashboards](https://www.youtube.com/watch?v=f4R7s0An1qE) based on performance metrics.
 
 ### Components of monitoring
 
@@ -206,7 +206,7 @@ Rate limits also improve the security of your application.
 
 ### Configure rate limits
 
-You can make changes to your default rate limits from the **Admin** area. For more information about configuration, see the [**Admin** area page](../security/rate_limits.md#configurable-limits).
+You can make changes to your default rate limits from the **Admin** area. For more information about configuration, see the [**Admin** area page](../rate_limits/_index.md#configuration-options).
 
 - Define [issues rate limits](settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
 - Enforce [user and IP rate limits](settings/user_and_ip_rate_limits.md) for unauthenticated web requests.

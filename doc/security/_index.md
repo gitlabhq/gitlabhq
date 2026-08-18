@@ -30,7 +30,7 @@ For more information about improving the security posture of your GitLab environ
 
 Generally, running an antivirus software on the GitLab host is not recommended.
 
-However, if you must use one, all of the location of GitLab on the system should be excluded from scanning as it could be quarantined as a false positive.
+However, if you must use one, all of the locations of GitLab on the system should be excluded from scanning as it could be quarantined as a false positive.
 
 Specifically, you should exclude the following GitLab directories from scanning:
 
@@ -46,7 +46,7 @@ You can find all those directories listed in the [Linux package configuration do
 - [Review authentication options](../administration/auth/_index.md).
 - [Modify password complexity requirements](../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements).
 - [Restrict SSH key technologies and require minimum key lengths](ssh_keys_restrictions.md).
-- [Restrict account creation with sign up restrictions](../administration/settings/sign_up_restrictions.md).
+- [Restrict new user accounts](../administration/settings/sign_up_restrictions.md).
 - [Send email confirmation on new account creation](user_email_confirmation.md)
 - [Enforce two-factor authentication](two_factor_authentication.md) to require users to [enable two-factor authentication](../user/profile/account/two_factor_authentication.md).
 - [Restrict logins from multiple IPs](../administration/reporting/ip_addr_restrictions.md).
@@ -62,7 +62,7 @@ You can find all those directories listed in the [Linux package configuration do
 ### Platform usage and settings
 
 - [Review GitLab token type and usages](tokens/_index.md).
-- [How to configure rate limits improve security and availability](rate_limits.md).
+- [How to configure rate limits to improve security and availability](../rate_limits/_index.md).
 - [How to filter outbound webhook requests](webhooks.md).
 - [How to configure import and export limits and timeouts](../administration/settings/import_and_export_settings.md).
 - [Review Runner security considerations and recommendations](https://docs.gitlab.com/runner/security/).
@@ -90,4 +90,4 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 
 ## Rate limits
 
-For information about rate limits, see [Rate limits](rate_limits.md).
+For information about rate limits, see [Rate limits](../rate_limits/_index.md).

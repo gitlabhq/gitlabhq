@@ -46,9 +46,6 @@ export default {
     resolved() {
       return this.discussion.resolved;
     },
-    renderPlaceHolderNote() {
-      return Boolean(this.placeholderNote.body);
-    },
     canReply() {
       return this.userSignedId && this.getUserPermissions(this.firstNote).createNote;
     },
@@ -61,13 +58,6 @@ export default {
     userSignedId() {
       return Boolean(this.currentUserData?.id);
     },
-    author() {
-      const { author } = this.firstNote;
-      return {
-        ...author,
-        id: getIdFromGid(author.id),
-      };
-    },
     noteId() {
       return getIdFromGid(this.firstNote.id);
     },
@@ -76,9 +66,6 @@ export default {
     },
     autosaveKey() {
       return getAutosaveKey(this.noteableType, this.discussionId);
-    },
-    externalAuthor() {
-      return '';
     },
     canResolve() {
       return this.discussion.resolvable && this.firstNote.userPermissions?.resolveNote;
@@ -187,7 +174,7 @@ export default {
             :discussion-id="firstNote.discussion.id"
             :show-resolve-button="canResolve && discussion.resolvable"
             :is-resolved="discussion.resolved"
-            @showReplyForm="toggleReplying(true)"
+            @show-reply-form="toggleReplying(true)"
           />
           <wiki-comment-form
             v-else-if="renderCommentForm"
@@ -199,9 +186,9 @@ export default {
             :discussion-resolved="resolved"
             :can-resolve="canResolve"
             @cancel="toggleReplying(false)"
-            @creating-note:start="setPlaceHolderNote"
-            @creating-note:success="updateNote"
-            @creating-note:done="setPlaceHolderNote({})"
+            @creating-note-start="setPlaceHolderNote"
+            @creating-note-success="updateNote"
+            @creating-note-done="setPlaceHolderNote({})"
           />
         </li>
       </ul>

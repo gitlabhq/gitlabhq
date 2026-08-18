@@ -1,0 +1,10 @@
+---
+name: cells_claims_service_desk_settings_project_key_address_slugs
+description: Gates the Cells claims integration for the ServiceDeskSetting#project_key_address_slug attribute
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/604184
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246617
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606593
+milestone: '19.3'
+group: group::work items
+type: beta
+default_enabled: false

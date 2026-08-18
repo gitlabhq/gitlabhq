@@ -50,10 +50,12 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
 
       merge_request_pipelines_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/pipelines.json"
       merge_request_widget_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/cached_widget.json"
+      merge_request_ci_environments_status_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/ci_environments_status"
 
       expect_touched_etag_caching_paths(
         merge_request_pipelines_path,
-        merge_request_widget_path
+        merge_request_widget_path,
+        merge_request_ci_environments_status_path
       )
 
       subject.execute(merge_request.all_pipelines.last)
@@ -64,8 +66,12 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       project = merge_request.target_project
 
       merge_request_widget_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/cached_widget.json"
+      merge_request_ci_environments_status_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/ci_environments_status"
 
-      expect_touched_etag_caching_paths(merge_request_widget_path)
+      expect_touched_etag_caching_paths(
+        merge_request_widget_path,
+        merge_request_ci_environments_status_path
+      )
 
       subject.execute(pipeline)
     end
@@ -102,6 +108,10 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       let(:source) { create(:ci_sources_pipeline, pipeline: pipeline) }
 
       it 'updates the cache of dependent pipeline' do
+        # Sanity check: the dependent pipeline lives in another project, so its routes
+        # cannot be served by the record reuse and have to be loaded.
+        expect(source.source_project).not_to eq(project)
+
         dependent_pipeline_path = "/#{source.source_project.full_path}/-/pipelines/#{source.source_pipeline.id}.json"
 
         expect_touched_etag_caching_paths(dependent_pipeline_path)
@@ -124,6 +134,9 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
     end
 
     it 'does not do N+1 queries' do
+      create(:ci_sources_pipeline, pipeline: pipeline)
+      create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage)))
+
       subject.execute(pipeline)
 
       control = ActiveRecord::QueryRecorder.new { subject.execute(pipeline) }
@@ -132,6 +145,16 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage)))
 
       expect { subject.execute(pipeline) }.not_to exceed_query_limit(control)
+    end
+
+    it 'reuses the loaded project of the pipeline instead of reloading it', :aggregate_failures do
+      subject.execute(pipeline)
+
+      recorder = ActiveRecord::QueryRecorder.new { subject.execute(pipeline) }
+
+      expect(recorder.log).not_to include(/FROM "projects"/)
+      expect(recorder.log).not_to include(/FROM "namespaces"/)
+      expect(recorder.log).not_to include(/FROM "routes"/)
     end
   end
 

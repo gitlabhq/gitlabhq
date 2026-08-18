@@ -17,7 +17,7 @@ module Gitlab
 
           def to_outer_arel(context)
             inner_query_name = context[:inner_query_name]
-            bitmap_expr = expression ? expression.call.to_s : name.to_s
+            bitmap_expr = expression ? expression.call.to_s : source_column.to_s
             Arel::Nodes::SqlLiteral.new("groupArray(`#{inner_query_name}`.`#{bitmap_expr}`)")
           end
 

@@ -87,7 +87,7 @@ RSpec.shared_examples 'move quick action' do
         it_behaves_like 'applies the commands to issues in both projects, target and source'
       end
 
-      context 'applies multiple commands with move command in the begining' do
+      context 'applies multiple commands with move command in the beginning' do
         before do
           fill_in('Add a reply', with: "/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
           click_button 'Comment'
@@ -108,6 +108,9 @@ RSpec.shared_examples 'move quick action' do
         # misspelled quick action
         fill_in('Add a reply', with: "test note.\n/mvoe #{target_project.full_path}")
         click_button 'Comment'
+        # Wait for the comment mutation to resolve before asserting on the note.
+        # issue.reload` does not wait, so it starts searching instantly
+        expect(page).to have_field('Add a reply', with: '')
 
         expect(issue.reload).not_to be_closed
 

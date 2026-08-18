@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.create_ci_build
 description: This is a metric created to test using time_frame as an array
-product_group: project_management
+product_group: work_items
 value_type: number
 status: removed
 time_frame: [7d, all]

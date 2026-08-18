@@ -21,8 +21,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
       let(:processor) { described_class.new(base_payload.merge({ 'severity' => 'permanent' })) }
 
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:permanent_email_failure).and_return(1)
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, true)
       end
 
       context 'when threshold is not exceeded' do
@@ -102,8 +101,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
       let(:processor) { described_class.new(base_payload.merge({ 'severity' => 'temporary' })) }
 
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:temporary_email_failure).and_return(1)
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, true)
       end
 
       context 'when threshold is not exceeded' do

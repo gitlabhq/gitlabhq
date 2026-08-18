@@ -9,6 +9,7 @@ import {
   GlFormInput,
   GlFormInputGroup,
   GlLink,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { isReasonableGitUrl } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
@@ -29,6 +30,7 @@ export default {
     GlFormInputGroup,
     GlLink,
   },
+  mixins: [GlToastMixin],
   inject: {
     importByUrlValidatePath: {
       default: null,

@@ -1,0 +1,9 @@
+---
+name: read_compliance_dashboard
+description: Grants the ability to read the compliance dashboard
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_compliance_dashboard

@@ -113,7 +113,7 @@ Required steps to enable and use managed agents:
    GitLab-managed external agents display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
 
 1. [Enable the agent](#enable-the-agent).
-1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
+1. [Use the external agent](#use-an-external-agent) in issues, epics, or merge requests.
 
 ### Claude Code Agent
 
@@ -187,9 +187,33 @@ Prerequisites:
 
 To add external agents to your instance:
 
+{{< tabs >}}
+
+{{< tab title="GitLab UI" >}}
+
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Under **GitLab-managed external agents**, select **Add to AI Catalog**.
+
+{{< /tab >}}
+
+{{< tab title="Rake task" >}}
+
+For Linux package (Omnibus):
+
+```shell
+sudo gitlab-rake gitlab:ai_catalog:seed_external_agents
+```
+
+For self-compiled (source):
+
+```shell
+bundle exec rake gitlab:ai_catalog:seed_external_agents
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 You can also add external agents with the [API](../../../api/admin/ai_catalog.md).
 
@@ -372,7 +396,7 @@ To enable an external agent:
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the agent in.
 
-   To enable a public agent for multiple projects, from the **Project** dropdown list,
+   To turn on a public or restricted agent for multiple projects, from the **Project** dropdown list,
    select the relevant projects. You can select up to 100 projects.
 
 1. For **Add triggers**, select:
@@ -476,15 +500,30 @@ If you'd prefer, you can [create an external agent manually](#create-an-external
 {{< history >}}
 
 - Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
 
 {{< /history >}}
 
+> [!flag]
+> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
+> For more information, see the history.
+
 When you create a custom external agent, you select a project to manage it and choose
-whether the agent is public or private.
+whether the agent is public, private, or restricted.
 
 Public agents:
 
 - Can be viewed by anyone and can be enabled in any project that meets the prerequisites.
+
+Restricted agents:
+
+- Can be viewed and used by members of any project in the top-level group of the managing project.
+- Can be enabled in other projects in the same top-level group.
+- Cannot be viewed or turned on outside that top-level group.
+- Cannot be viewed in the AI Catalog in Explore.
+- Can be created only from a project, not from the AI Catalog in Explore.
+
+You cannot make a public agent restricted if the agent has been turned on by a project outside of that top-level group.
 
 Private agents:
 
@@ -492,7 +531,19 @@ Private agents:
   Reporter, Developer, Maintainer, or Owner role.
 - Cannot be enabled in projects other than the managing project.
 
+You cannot make a public or restricted agent private if the agent has been turned on by a project other than the managing project.
+
 ### Create the agent in the AI Catalog
+
+{{< history >}}
+
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
+> For more information, see the history.
 
 Start by creating the external agent in the AI Catalog.
 
@@ -508,7 +559,7 @@ To create an external agent:
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
-1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
+1. Under **Visibility & access**, for **Visibility**, select **Private**, **Restricted**, or **Public**.
 1. Under **Configuration**:
    1. Select **External**.
    1. Enter your external agent configuration.
@@ -516,6 +567,9 @@ To create an external agent:
 1. Select **Create agent**.
 
 The external agent appears in the AI Catalog.
+
+The YAML configuration has a maximum size. For more information, see
+[configuration size limits](../ai_catalog.md#configuration-size-limits).
 
 ### Create an external agent manually
 

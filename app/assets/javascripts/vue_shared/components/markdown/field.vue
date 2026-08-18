@@ -10,6 +10,7 @@ import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { MARKDOWN_EDITOR_READY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
@@ -25,6 +26,7 @@ export default {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     /**
      * This prop should be bound to the value of the `<textarea>` element
@@ -134,7 +136,7 @@ export default {
       default: false,
     },
   },
-  emits: ['enableContentEditor', 'handleSuggestDismissed'],
+  emits: ['enable-content-editor', 'handle-suggest-dismissed'],
   data() {
     return {
       glForm: null,
@@ -357,9 +359,9 @@ export default {
         data-testid="markdownHeader"
         :restricted-tool-bar-items="restrictedToolBarItems"
         :immersive="immersive"
-        @showPreview="showPreview"
-        @hidePreview="hidePreview"
-        @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+        @show-preview="showPreview"
+        @hide-preview="hidePreview"
+        @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
       >
         <template #header-buttons>
           <slot name="header-buttons"></slot>
@@ -370,7 +372,7 @@ export default {
               :can-attach-file="canAttachFile"
               :show-comment-tool-bar="showCommentToolBar"
               :show-content-editor-switcher="showContentEditorSwitcher"
-              @enableContentEditor="$emit('enableContentEditor')"
+              @enable-content-editor="$emit('enable-content-editor')"
             />
           </div>
         </template>
@@ -394,9 +396,9 @@ export default {
           :show-comment-tool-bar="showCommentToolBar"
           :show-content-editor-switcher="showContentEditorSwitcher"
           :class="{ 'gl-border-t': showContentEditorSwitcher }"
-          @enableContentEditor="$emit('enableContentEditor')"
+          @enable-content-editor="$emit('enable-content-editor')"
         >
-          <template #toolbar><slot name="toolbar"></slot></template>
+          <template v-if="glSlots().toolbar" #toolbar><slot name="toolbar"></slot></template>
         </markdown-toolbar>
       </div>
     </div>

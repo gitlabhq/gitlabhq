@@ -26,6 +26,175 @@ RSpec.describe ExceedQueryLimitHelpers do
     end
   end
 
+  describe '#query_recorder_count' do
+    context 'when the query recorder skip_cached does not match the matcher skip_cached' do
+      let(:recorder) { ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count } }
+
+      it 'raises an ArgumentError' do
+        test_matcher = TestMatcher.new
+
+        expect { test_matcher.query_recorder_count(recorder) }.to raise_error(
+          ArgumentError, /`skip_cached` value of the compared query recorders does not match/
+        )
+      end
+
+      context 'when allow_skip_cache_inconsistency is chained' do
+        it 'does not raise' do
+          test_matcher = TestMatcher.new.allow_skip_cache_inconsistency
+
+          expect(test_matcher.query_recorder_count(recorder)).to eq(recorder.count)
+        end
+      end
+    end
+
+    context 'when the query recorder skip_cached matches the matcher skip_cached' do
+      let(:recorder) { ActiveRecord::QueryRecorder.new { TestQueries.count } }
+
+      it 'does not raise' do
+        test_matcher = TestMatcher.new
+
+        expect(test_matcher.query_recorder_count(recorder)).to eq(recorder.count)
+      end
+    end
+  end
+
+  describe 'skip_cached consistency in matchers' do
+    let(:consistency_error) { [ArgumentError, /`skip_cached` value of the compared query recorders does not match/] }
+
+    describe 'exceed_query_limit' do
+      it 'raises when the control recorder does not skip cached queries' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.not_to exceed_query_limit(control)
+        end.to raise_error(*consistency_error)
+      end
+
+      it 'raises when the actual recorder does not skip cached queries' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+        actual = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect do
+          expect(actual).not_to exceed_query_limit(control)
+        end.to raise_error(*consistency_error)
+      end
+
+      it 'does not raise when skip_cached matches' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect { TestQueries.count }.not_to exceed_query_limit(control)
+      end
+
+      it 'does not raise when the inconsistency is allowed' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect { TestQueries.count }.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
+      end
+
+      it 'raises when the inconsistency is allowed but skip_cached values match' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
+        end.to raise_error(ArgumentError, /Remove the unnecessary\n`\.allow_skip_cache_inconsistency` call/)
+      end
+    end
+
+    describe 'exceed_all_query_limit' do
+      it 'raises when the control recorder skips cached queries' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.not_to exceed_all_query_limit(control)
+        end.to raise_error(*consistency_error)
+      end
+
+      it 'does not raise when skip_cached matches' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect { TestQueries.count }.not_to exceed_all_query_limit(control)
+      end
+
+      it 'does not raise when the inconsistency is allowed' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect { TestQueries.count }.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
+      end
+    end
+
+    describe 'issue_same_number_of_queries_as' do
+      it 'raises when the control recorder skips cached queries but the matcher does not' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.to issue_same_number_of_queries_as(control)
+        end.to raise_error(*consistency_error)
+      end
+
+      it 'raises when the matcher ignores cached queries but the control recorder does not' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.to issue_same_number_of_queries_as(control).ignoring_cached_queries
+        end.to raise_error(*consistency_error)
+      end
+
+      it 'does not raise when skip_cached matches' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect { TestQueries.count }.to issue_same_number_of_queries_as(control)
+      end
+
+      it 'does not raise when the inconsistency is allowed' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect do
+          TestQueries.count
+        end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency.with_threshold(1)
+      end
+
+      it 'raises when the inconsistency is allowed but skip_cached values match' do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
+        end.to raise_error(ArgumentError, /Remove the unnecessary\n`\.allow_skip_cache_inconsistency` call/)
+      end
+    end
+
+    describe 'match_query_count' do
+      it 'raises when the control recorder skips cached queries but the matcher does not' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect do
+          expect { TestQueries.count }.to match_query_count(control)
+        end.to raise_error(*consistency_error)
+      end
+
+      it 'does not raise when skip_cached matches' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect { TestQueries.count }.to match_query_count(control).ignoring_cached_queries
+      end
+
+      it 'does not raise when the inconsistency is allowed' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect { TestQueries.count }.to match_query_count(control).allow_skip_cache_inconsistency
+      end
+
+      it 'raises when the inconsistency is allowed but skip_cached values match' do
+        control = ActiveRecord::QueryRecorder.new { TestQueries.count }
+
+        expect do
+          expect do
+            TestQueries.count
+          end.to match_query_count(control).ignoring_cached_queries.allow_skip_cache_inconsistency
+        end.to raise_error(ArgumentError, /Remove the unnecessary\n`\.allow_skip_cache_inconsistency` call/)
+      end
+    end
+  end
+
   describe '#diff_query_group_message' do
     it 'prints a group helpfully' do
       test_matcher = TestMatcher.new
@@ -268,7 +437,7 @@ RSpec.describe ExceedQueryLimitHelpers do
     expect(test_matcher.actual_count).to eq(1)
   end
 
-  it 'does not contain marginalia annotations' do
+  it 'does not contain SQL query log annotations' do
     test_matcher = TestMatcher.new
     test_matcher.verify_count do
       2.times { TestQueries.count }

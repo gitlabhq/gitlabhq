@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::ObjectRenderer, feature_category: :markdown do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:user) { project.first_owner }
   let(:renderer) do
     described_class.new(

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Reposition and move issue within board lists', feature_category: :team_planning do
+RSpec.describe 'Reposition and move issue within board lists', feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be(:group)   { create(:group, :private) }

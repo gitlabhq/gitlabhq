@@ -9,7 +9,8 @@ RSpec.shared_examples 'search request exceeding rate limit' do
 
   it 'allows user in allow-list to search without applying rate limit', :freeze_time,
     :clean_gitlab_redis_rate_limiting do
-    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1)
+    allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits)
+      .to receive(:limit_for).with(:search_rate_limit, context: anything).and_return(1)
 
     stub_application_setting(search_rate_limit_allowlist: [current_user.username])
 

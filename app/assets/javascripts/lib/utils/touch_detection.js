@@ -6,8 +6,8 @@
 export function hasTouchCapability() {
   return Boolean(
     'ontouchstart' in window ||
-      navigator.maxTouchPoints > 0 ||
-      navigator.msMaxTouchPoints > 0 ||
-      (typeof window.DocumentTouch !== 'undefined' && document instanceof window.DocumentTouch),
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0 ||
+    (typeof window.DocumentTouch !== 'undefined' && document instanceof window.DocumentTouch),
   );
 }

@@ -68,8 +68,8 @@ For a click-through demo, see [GitLab Duo Agent Platform - MCP client](https://g
 - For JetBrains IDEs:
   - Install and set up the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md) 3.14.0 or later.
 - For your command line:
-  - Meet the [prerequisites for the GitLab Duo CLI](../../gitlab_duo_cli/_index.md#prerequisites).
-  - Install and configure the [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli)
+  - Meet the [prerequisites for the GitLab Duo CLI](../../gitlab_duo_cli/set_up.md#prerequisites).
+  - Install and configure the [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md)
     8.81.0 or later.
 
 For more information about extension support, see [version compatibility](#version-compatibility).
@@ -77,6 +77,15 @@ For more information about extension support, see [version compatibility](#versi
 ## Allow external MCP tools
 
 Allow the IDE to access external MCP tools in the top-level group where GitLab Duo is configured.
+
+> [!note]
+> Group and project Owners can also block all tools from a specific
+> MCP server using the MCP Registry. A blocked server cannot be unblocked by individual
+> users, regardless of tool approval settings.
+> For more information, see [Block MCP servers](../../duo_agent_platform/agents/tool-governance.md#block-model-context-protocol-mcp-servers).
+> On GitLab Self-Managed, an administrator must also enable the `mcp_client`
+> [feature flag](../../../administration/feature_flags/_index.md) for custom agents and flows
+> to use external MCP tools.
 
 ### On GitLab.com
 
@@ -105,7 +114,7 @@ The GitLab Language Server loads and merges the configuration files.
 
 > [!note]
 > Workspace configuration applies to your IDE workspace folder or current working directory when
-> you use the GitLab Duo CLI. This is separate from [GitLab Workspaces](../../../user/workspace/_index.md),
+> you use the GitLab Duo CLI. This is separate from [GitLab Workspaces](../../workspace/_index.md),
 > which are virtual development environments.
 
 ### Version compatibility

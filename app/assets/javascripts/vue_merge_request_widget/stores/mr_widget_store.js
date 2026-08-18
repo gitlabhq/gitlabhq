@@ -342,13 +342,9 @@ export default class MergeRequestStore {
     this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
     this.mergeImmediatelyDocsPath = data.merge_immediately_docs_path;
     this.approvalsHelpPath = data.approvals_help_path;
-    this.mergeRequestAddCiConfigPath = data.merge_request_add_ci_config_path;
-    this.pipelinesEmptySvgPath = data.pipelines_empty_svg_path;
-    this.humanAccess = data.human_access;
     this.newPipelinePath = data.new_project_pipeline_path;
     this.sourceProjectDefaultUrl = data.source_project_default_url;
     this.userCalloutsPath = data.user_callouts_path;
-    this.suggestPipelineFeatureId = data.suggest_pipeline_feature_id;
     this.migrateJenkinsFeatureId = data.migrate_jenkins_feature_id;
     this.isDismissedJenkinsMigration = data.is_dismissed_jenkins_migration;
     this.securityReportsDocsPath = data.security_reports_docs_path;

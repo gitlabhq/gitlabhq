@@ -1,8 +1,9 @@
 <script>
-import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckboxGroup, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import { intersection } from 'lodash-es';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { NAV_LINK_COUNT_DEFAULT_CLASSES, LABEL_DEFAULT_CLASSES } from '../../constants';
 import { formatSearchResultCount } from '../../../store/utils';
@@ -13,6 +14,9 @@ export default {
   components: {
     GlFormCheckboxGroup,
     GlFormCheckbox,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     filtersData: {
@@ -28,13 +32,29 @@ export default {
       required: true,
     },
   },
+  i18n: {
+    nonFilterableTooltip: s__(
+      'GlobalSearch|These results cannot be filtered by language because their language could not be detected.',
+    ),
+  },
   computed: {
     ...mapGetters(['queryLanguageFilters']),
     dataFilters() {
       return Object.values(this.filtersData?.filters || []);
     },
+    partitionedFilters() {
+      return this.dataFilters.reduce(
+        (acc, f) => {
+          (f.filterable === false ? acc.nonFilterable : acc.filterable).push(f);
+          return acc;
+        },
+        { filterable: [], nonFilterable: [] },
+      );
+    },
     flatDataFilterValues() {
-      return this.dataFilters.map(({ value }) => value);
+      // Only filterable buckets participate in the checkbox selection; non-filterable ones
+      // (e.g. "Unknown" language) render as display-only rows.
+      return this.partitionedFilters.filterable.map(({ value }) => value);
     },
     selectedFilter: {
       get() {
@@ -69,19 +89,34 @@ export default {
 </script>
 
 <template>
-  <gl-form-checkbox-group v-model="selectedFilter" class="gl-min-w-0">
-    <gl-form-checkbox
-      v-for="f in dataFilters"
-      :key="f.label"
-      :value="f.label"
-      :class="$options.LABEL_DEFAULT_CLASSES"
-    >
-      <span class="gl-flex gl-w-full gl-min-w-0 gl-items-center gl-justify-between">
-        <span class="gl-truncate" data-testid="label" :title="f.label">{{ f.label }}</span>
-        <span v-if="f.count" :class="labelCountClasses" data-testid="labelCount">
-          {{ getFormattedCount(f.count) }}
+  <div>
+    <gl-form-checkbox-group v-model="selectedFilter" class="gl-min-w-0">
+      <gl-form-checkbox
+        v-for="f in partitionedFilters.filterable"
+        :key="f.label"
+        :value="f.label"
+        :class="$options.LABEL_DEFAULT_CLASSES"
+      >
+        <span class="gl-flex gl-w-full gl-min-w-0 gl-items-center gl-justify-between">
+          <span class="gl-truncate" data-testid="label" :title="f.label">{{ f.label }}</span>
+          <span v-if="f.count" :class="labelCountClasses" data-testid="labelCount">
+            {{ getFormattedCount(f.count) }}
+          </span>
         </span>
+      </gl-form-checkbox>
+    </gl-form-checkbox-group>
+    <div
+      v-for="f in partitionedFilters.nonFilterable"
+      :key="f.label"
+      v-gl-tooltip="$options.i18n.nonFilterableTooltip"
+      :class="$options.LABEL_DEFAULT_CLASSES"
+      class="gl-flex gl-w-full gl-min-w-0 gl-items-center gl-justify-between gl-text-subtle"
+      data-testid="non-filterable-row"
+    >
+      <span class="gl-truncate" data-testid="label" :title="f.label">{{ f.label }}</span>
+      <span v-if="f.count" :class="labelCountClasses" data-testid="labelCount">
+        {{ getFormattedCount(f.count) }}
       </span>
-    </gl-form-checkbox>
-  </gl-form-checkbox-group>
+    </div>
+  </div>
 </template>

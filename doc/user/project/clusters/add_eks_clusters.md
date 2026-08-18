@@ -134,7 +134,7 @@ cluster certificates:
 #### Create an EKS IAM role for your cluster
 
 In the [IAM Management Console](https://console.aws.amazon.com/iam/home),
-create an **EKS IAM role** (**role A**) following the [Amazon EKS cluster IAM role instructions](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html).
+create an **EKS IAM role** (**role A**) following the [Amazon EKS cluster IAM role instructions](https://docs.aws.amazon.com/eks/latest/userguide/cluster-iam-role.html).
 This role is necessary so that Kubernetes clusters managed by Amazon EKS can make calls to other AWS
 services on your behalf to manage the resources that you use with the service.
 
@@ -184,7 +184,7 @@ When you create a new cluster, you have the following settings:
 | Kubernetes version      | The [Kubernetes version](../../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features) for your cluster. |
 | Key pair name           | The [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) that you can use to connect to your worker nodes. |
 | VPC                     | The [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) to use for your EKS Cluster resources. |
-| Subnets                 | The [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html) in your VPC where your worker nodes run. Two are required. |
+| Subnets                 | The [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html) in your VPC where your worker nodes run. Two are required. |
 | Security group          | The [security group](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets. |
 | Instance type           | The [instance type](https://aws.amazon.com/ec2/instance-types/) of your worker nodes. |
 | Node count              | The number of worker nodes. |
@@ -307,7 +307,7 @@ Check that:
 1. The initial set of AWS credentials [has the AssumeRole policy](#additional-requirements-for-gitlab-self-managed-instances).
 1. The Provision Role has access to create clusters in the given region.
 1. The account ID and
-   [external ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)
+   [external ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html)
    match the value defined in the **Trust relationships** tab in AWS:
 
    ![Trust relationship settings for the AWS IAM role used for EKS cluster creation.](img/aws_iam_role_trust_v13_7.png)
@@ -336,6 +336,6 @@ the role specified in **Role name** is not configured correctly.
 
 > [!note]
 > This role should be the role you created by following the
-> [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
+> [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/cluster-iam-role.html) guide.
 > In addition to the policies that guide suggests, you must also include the
 > `AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.

@@ -73,6 +73,7 @@ module Gitlab
           @last_checked_at = Time.zone.now
           @lag_time = nil
           @lag_size = nil
+          @connection_error_log_mutex = Mutex.new
 
           # Randomly somewhere in between interval and 2*interval we'll refresh the status of the host
           interval = load_balancer.configuration.replica_check_interval
@@ -250,7 +251,9 @@ module Gitlab
           SQL
 
           row['diff'].to_i if row.any?
-        rescue *CONNECTION_ERRORS
+        rescue *CONNECTION_ERRORS => e
+          log_connection_error(event: :replication_lag_size_error, message: 'Error calculating replication lag size', error: e)
+
           nil
         end
 
@@ -321,6 +324,32 @@ module Gitlab
         end
 
         private
+
+        # Logs a connection error at most once per `replica_check_interval` per host, to avoid
+        # flooding the logs when a host is down for an extended period and this is called on
+        # every request (for example via `caught_up?` during sticking).
+        def log_connection_error(event:, message:, error:)
+          throttle_interval = load_balancer.configuration.replica_check_interval
+
+          should_log = @connection_error_log_mutex.synchronize do
+            throttled = @last_connection_error_logged_at && @last_connection_error_logged_at > throttle_interval.seconds.ago
+            next false if throttled
+
+            @last_connection_error_logged_at = Time.zone.now
+            true
+          end
+
+          return unless should_log
+
+          ::Gitlab::Database::LoadBalancing::Logger.warn(
+            event: event,
+            message: message,
+            Labkit::Fields::ERROR_MESSAGE => error.message,
+            Labkit::Fields::ERROR_TYPE => error.class.name,
+            db_host: @host,
+            db_port: @port
+          )
+        end
 
         def can_track_logical_lsn?
           row = query_and_release(CAN_TRACK_LOGICAL_LSN_QUERY)

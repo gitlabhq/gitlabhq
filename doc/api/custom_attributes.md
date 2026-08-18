@@ -34,8 +34,8 @@ GET /projects/:id/custom_attributes
 
 ```shell
 curl --request GET \
-   --header "PRIVATE-TOKEN: <your_access_token>" \
-   --url "https://gitlab.example.com/api/v4/users/42/custom_attributes"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/custom_attributes"
 ```
 
 Example response:
@@ -70,8 +70,8 @@ GET /projects/:id/custom_attributes/:key
 
 ```shell
 curl --request GET \
-   --header "PRIVATE-TOKEN: <your_access_token>" \
-   --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
 Example response:
@@ -101,9 +101,9 @@ PUT /projects/:id/custom_attributes/:key
 
 ```shell
 curl --request PUT \
-   --header "PRIVATE-TOKEN: <your_access_token>" \
-   --data "value=Greenland" \
-   --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "value=Greenland" \
+  --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```
 
 Example response:
@@ -132,6 +132,6 @@ DELETE /projects/:id/custom_attributes/:key
 
 ```shell
 curl --request DELETE \
-   --header "PRIVATE-TOKEN: <your_access_token>" \
-   --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/custom_attributes/location"
 ```

@@ -8,7 +8,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   include Ci::PipelineVariableHelpers
 
   let_it_be(:namespace) { create_default(:namespace) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :small_repo) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:owner) { create(:owner) }
   let_it_be(:admin) { create(:admin) }
@@ -365,7 +365,8 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
         let(:user) { maintainer }
 
         before do
-          deployment = create(:deployment, :success, environment: environment, project: project)
+          deployment = create(:deployment, :success, sha: project.repository.commit.sha, environment: environment,
+            project: project)
           create(:deployment_cluster, cluster: cluster, deployment: deployment)
         end
 

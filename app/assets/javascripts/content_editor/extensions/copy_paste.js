@@ -1,9 +1,11 @@
 import OrderedMap from 'orderedmap';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
-import { Schema, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
+import { Schema, Slice, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
+import { handlePaste as handleTablePaste, isInTable, CellSelection } from '@tiptap/pm/tables';
 import { uniqueId } from 'lodash-es';
 import { __ } from '~/locale';
+import { sanitize } from '~/lib/dompurify';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
 import { ALERT_EVENT, EXTENSION_PRIORITY_HIGHEST } from '../constants';
@@ -24,12 +26,68 @@ const CODE_BLOCK_NODE_TYPES = [
   Frontmatter.name,
 ];
 
+// Strips the span mark and div/pre nodes so stray wrapper artifacts from
+// external HTML (e.g. Excel, Google Sheets) don't end up in the document.
+function buildPasteSchema(schema) {
+  const pasteSchemaSpec = { ...schema.spec };
+  pasteSchemaSpec.marks = OrderedMap.from(pasteSchemaSpec.marks).remove('span');
+  pasteSchemaSpec.nodes = OrderedMap.from(pasteSchemaSpec.nodes).remove('div').remove('pre');
+  return new Schema(pasteSchemaSpec);
+}
+
 function parseHTML(schema, html) {
   const parser = new DOMParser();
   const startTag = '<body>';
   const endTag = '</body>';
   const { body } = parser.parseFromString(startTag + html + endTag, 'text/html');
   return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
+}
+
+function parseHTMLSlice(schema, html) {
+  const parser = new DOMParser();
+  const { body } = parser.parseFromString(`<body>${sanitize(html)}</body>`, 'text/html');
+  return ProseMirrorDOMParser.fromSchema(schema).parseSlice(body);
+}
+
+function hasTableCells(html) {
+  return /<t[dh][\s>]/i.test(html);
+}
+
+// Extracts the first <table> as outerHTML when it contains more than one
+// cell. Tables copied from the rich text editor are wrapped in <div> elements
+// (see the Table extension's renderHTML), which prevents prosemirror-tables'
+// pastedCells() from finding the cells. Orphan <tr>/<td> markup (without a
+// <table> ancestor) is dropped entirely by the HTML parser, so it is wrapped
+// in a <table> first. Single-cell content returns null so it keeps flowing
+// through the markdown-based paste path, preserving GFM fidelity.
+function extractMultiCellTableHTML(html) {
+  const parser = new DOMParser();
+  let { body } = parser.parseFromString(`<body>${sanitize(html)}</body>`, 'text/html');
+  let table = body.querySelector('table');
+
+  // Wrap orphan rows before sanitizing: DOMPurify drops <tr>/<td> structure
+  // that has no <table> ancestor.
+  if (!table && /<tr[\s>]/i.test(html)) {
+    ({ body } = parser.parseFromString(
+      `<body>${sanitize(`<table>${html}</table>`)}</body>`,
+      'text/html',
+    ));
+    table = body.querySelector('table');
+  }
+
+  return table && table.querySelectorAll('td, th').length > 1 ? table.outerHTML : null;
+}
+
+function serializeCellsToText(fragment) {
+  const rows = [];
+  fragment.forEach((row) => {
+    const cells = [];
+    // Replace embedded tabs/newlines so the tab-separated grid stays aligned
+    // when pasted into spreadsheet applications.
+    row.forEach((cell) => cells.push(cell.textContent.replace(/[\t\r\n]+/g, ' ')));
+    rows.push(cells.join('\t'));
+  });
+  return rows.join('\n');
 }
 
 export default Extension.create({
@@ -50,12 +108,7 @@ export default Extension.create({
           const { renderMarkdown, eventHub } = options;
           const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-          const pasteSchemaSpec = { ...editor.schema.spec };
-          pasteSchemaSpec.marks = OrderedMap.from(pasteSchemaSpec.marks).remove('span');
-          pasteSchemaSpec.nodes = OrderedMap.from(pasteSchemaSpec.nodes)
-            .remove('div')
-            .remove('pre');
-          const pasteSchema = new Schema(pasteSchemaSpec);
+          const pasteSchema = buildPasteSchema(editor.schema);
 
           const promise = processMarkdown
             ? deserializer.deserialize({ schema: pasteSchema, markdown: content })
@@ -128,8 +181,34 @@ export default Extension.create({
       const div = document.createElement('div');
       div.appendChild(documentFragment);
 
-      event.clipboardData.setData(TEXT_FORMAT, div.innerText);
-      event.clipboardData.setData(HTML_FORMAT, div.innerHTML);
+      let textContent = div.innerText;
+      let htmlContent = div.innerHTML;
+
+      let selectedCellCount = 0;
+      if (view.state.selection instanceof CellSelection) {
+        view.state.selection.forEachCell(() => {
+          selectedCellCount += 1;
+        });
+      }
+
+      // A CellSelection slice contains bare tableRow nodes, which serialize to
+      // orphan <tr> elements that HTML parsers drop on paste. Wrap them in a
+      // <table> so pasting into a table distributes cells (and spreadsheets
+      // understand the clipboard content).
+      if (selectedCellCount > 1 && slice.content.firstChild?.type.name === 'tableRow') {
+        const table = document.createElement('table');
+        const tbody = document.createElement('tbody');
+        tbody.appendChild(
+          DOMSerializer.fromSchema(view.state.schema).serializeFragment(slice.content),
+        );
+        table.appendChild(tbody);
+
+        htmlContent = table.outerHTML;
+        textContent = serializeCellsToText(slice.content);
+      }
+
+      event.clipboardData.setData(TEXT_FORMAT, textContent);
+      event.clipboardData.setData(HTML_FORMAT, htmlContent);
       event.clipboardData.setData(GFM_FORMAT, gfmContent);
 
       event.preventDefault();
@@ -162,6 +241,28 @@ export default Extension.create({
             const isCodeBlockActive = CODE_BLOCK_NODE_TYPES.some((type) =>
               this.editor.isActive(type),
             );
+
+            // When pasting multiple table cells into a table, delegate to
+            // prosemirror-tables' handlePaste, which distributes cell content
+            // across rows and columns and auto-expands the table when the
+            // pasted area overflows it. Single-cell pastes keep using the
+            // markdown-based paste path below.
+            if (
+              !pasteRaw &&
+              !isCodeBlockActive &&
+              isInTable(view.state) &&
+              htmlContent &&
+              hasTableCells(htmlContent)
+            ) {
+              const tableHTML = extractMultiCellTableHTML(htmlContent);
+              if (tableHTML) {
+                // Parse with the restricted paste schema, then rehydrate in
+                // the editor schema (node types are schema-bound).
+                const pasteSlice = parseHTMLSlice(buildPasteSchema(view.state.schema), tableHTML);
+                const slice = Slice.fromJSON(view.state.schema, pasteSlice.toJSON());
+                if (handleTablePaste(view, event, slice)) return true;
+              }
+            }
 
             if (pasteRaw || isCodeBlockActive) {
               const isMarkdownCodeBlockActive = this.editor.isActive(CodeBlockHighlight.name, {

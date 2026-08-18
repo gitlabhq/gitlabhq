@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash-es';
 import produce from 'immer';
@@ -35,7 +36,9 @@ export default {
     BoardAddNewColumnTrigger,
     BoardColumn,
     BoardDrawerWrapper,
-    EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
+    EpicsSwimlanes: defineAsyncComponent(
+      () => import('ee_component/boards/components/epics_swimlanes.vue'),
+    ),
     GlAlert,
     WorkItemDetailPanel,
   },
@@ -75,9 +78,9 @@ export default {
   emits: [
     'drawer-closed',
     'drawer-opened',
-    'setActiveList',
-    'setAddColumnFormVisibility',
-    'setFilters',
+    'set-active-list',
+    'set-add-column-form-visibility',
+    'set-filters',
   ],
   data() {
     return {
@@ -322,11 +325,10 @@ export default {
           :dragged-item-id="draggedItemId"
           :focused="list.id === effectiveFocusedListId"
           @drag-start="handleDragStart"
-          @dragStop="handleDragStop"
+          @drag-stop="handleDragStop"
           @highlight-list="highlightList"
-          @setActiveList="$emit('setActiveList', $event)"
-          @setFilters="$emit('setFilters', $event)"
-          @addNewListAfter="$emit('setAddColumnFormVisibility', $event)"
+          @set-active-list="$emit('set-active-list', $event)"
+          @set-filters="$emit('set-filters', $event)"
           @cannot-find-active-item="handleCannotFindActiveItem"
           @focus-adjacent="focusAdjacentList(list.id, $event)"
         />
@@ -334,7 +336,7 @@ export default {
       <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">
         <board-add-new-column-trigger
           :is-new-list-showing="addColumnFormVisible"
-          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          @set-add-column-form-visibility="$emit('set-add-column-form-visibility', $event)"
         />
       </div>
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
@@ -344,7 +346,7 @@ export default {
           :board-id="boardId"
           :list-query-variables="listQueryVariables"
           :lists="boardListsById"
-          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          @set-add-column-form-visibility="$emit('set-add-column-form-visibility', $event)"
           @highlight-list="highlightList"
         />
       </transition>
@@ -357,16 +359,16 @@ export default {
       :can-admin-list="canAdminList"
       :filters="filterParams"
       :highlighted-lists="highlightedLists"
-      @setActiveList="$emit('setActiveList', $event)"
+      @set-active-list="$emit('set-active-list', $event)"
       @move-list="updateListPosition"
-      @setFilters="$emit('setFilters', $event)"
+      @set-filters="$emit('set-filters', $event)"
     >
       <template #create-list-button>
         <div v-if="!addColumnFormVisible" class="gl-sticky gl-top-0 gl-inline-block gl-pl-3">
           <board-add-new-column-trigger
             v-if="canAdminList"
             :is-new-list-showing="addColumnFormVisible"
-            @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+            @set-add-column-form-visibility="$emit('set-add-column-form-visibility', $event)"
           />
         </div>
       </template>
@@ -378,7 +380,7 @@ export default {
           :list-query-variables="listQueryVariables"
           :board-id="boardId"
           :lists="boardListsById"
-          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          @set-add-column-form-visibility="$emit('set-add-column-form-visibility', $event)"
           @highlight-list="highlightList"
         />
       </div>
@@ -406,9 +408,9 @@ export default {
           "
           @work-item-updated="updateBoardCard($event, activeIssuable)"
           @work-item-deleted="onIssuableDeleted(activeIssuable)"
-          @attributesUpdated="onAttributeUpdated"
-          @workItemStateUpdated="onStateUpdated"
-          @workItemTypeChanged="updateBoardCard($event, activeIssuable)"
+          @attributes-updated="onAttributeUpdated"
+          @work-item-state-updated="onStateUpdated"
+          @work-item-type-changed="updateBoardCard($event, activeIssuable)"
           @opened="$emit('drawer-opened')"
           @clicked-outside="$emit('drawer-closed')"
         />

@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import preloadMixin from '../mixins/preload';

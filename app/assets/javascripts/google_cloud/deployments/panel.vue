@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import GoogleCloudMenu from '../components/google_cloud_menu.vue';
 import ServiceTable from './service_table.vue';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :portfolio_management do
+RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_views do
   let_it_be_with_reload(:namespace) { create(:namespace) }
   let_it_be_with_reload(:saved_view) { create(:saved_view, namespace: namespace) }
   let_it_be(:user) { create(:user) }

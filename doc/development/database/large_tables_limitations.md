@@ -21,7 +21,7 @@ These limitations align with our goal to maintain [all tables under 100 GB](http
 
 ## Exceptions
 
-Exceptions to these size limitations should only granted for the following cases:
+Exceptions to these size limitations should only be granted for the following cases:
 
 - Migrate a table's columns from `int4` to `int8`
 - Add a sharding key to support cells
@@ -83,7 +83,7 @@ Before requesting an exception, consider these approaches to manage table size:
 
 Consider these alternatives when working with large tables:
 
-1. Creates a separate table for new columns, especially if the column is not present in all rows. The new table references the original table through a foreign key.
+1. Create a separate table for new columns, especially if the column is not present in all rows. The new table references the original table through a foreign key.
 1. Work with the Global Search team to add your data to Elasticsearch for enhanced filter/search functionality.
 1. Simplify filtering/sorting options (for example, use `id` instead of `created_at` for sorting).
 

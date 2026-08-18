@@ -221,9 +221,19 @@ describe('Merge request utils', () => {
             ignore_whitespace_change: false,
           }),
           type: 'DiffNote',
+          commit_id: null,
           line_code: 'abc_0_5',
         },
       });
+    });
+
+    it('passes commitId from discussion when provided', () => {
+      const result = buildDraftLineDiscussionData({
+        discussion: { ...discussion, commitId: 'abc123' },
+        noteBody: 'draft comment',
+        viewConfig,
+      });
+      expect(result.note.commit_id).toBe('abc123');
     });
 
     it('sets ignore_whitespace_change to true when whitespace is hidden', () => {

@@ -70,9 +70,9 @@ to ignore the column and subsequently remove the column ignore (which would resu
 In this example, the change to ignore the column went into release `12.5`.
 
 > [!note]
-> Ignoring and dropping columns should not occur simultaneously in the same release. Dropping a column before proper ignoring it in the model can cause problems with zero-downtime migrations,
-> where the running instances can fail trying to look up for the removed column until the Rails schema cache expires. This can be an issue for self-managed customers whom attempt to follow zero-downtime upgrades,
-> forcing them to explicit restart all running GitLab instances to re-load the updated schema. To avoid this scenario, first, ignore the column (release M), then, drop it in the next release (release M+1).
+> Ignoring and dropping columns should not occur simultaneously in the same release. Dropping a column before properly ignoring it in the model can cause problems with zero-downtime migrations,
+> where the running instances can fail trying to look up the removed column until the Rails schema cache expires. This can be an issue for self-managed customers who attempt to follow zero-downtime upgrades,
+> forcing them to explicitly restart all running GitLab instances to re-load the updated schema. To avoid this scenario, first, ignore the column (release M), then, drop it in the next release (release M+1).
 
 #### Ignoring columns referenced by database views
 
@@ -233,8 +233,8 @@ The steps:
 1. [Add a post-deployment migration](#add-a-post-deployment-migration-release-m) (release M)
 1. [Remove the ignore rule](#remove-the-ignore-rule-release-m1) (release M+1)
 
-When renaming columns that is referenced by a database view in the regular way, it requires no additional step as
-views updated to the new column name while preserving the `SELECT` portion intact.
+When renaming a column that is referenced by a database view in the regular way, it requires no additional step as
+views are updated to the new column name while preserving the `SELECT` portion intact.
 
 With no downtime there are additional considerations mentioned in the steps above.
 
@@ -597,7 +597,7 @@ This operation is safe as there's no code using the table just yet.
 Dropping tables requires a multi-release process to avoid downtime:
 
 1. **Release M**: Remove all application code that uses the table.
-1. **Release M+1**: In seperate post-deployment migrations for each, remove the foreign keys, then drop the table.
+1. **Release M+1**: In separate post-deployment migrations for each, remove the foreign keys, then drop the table.
 
 Add the table to [`db/docs/deleted_tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs/deleted_tables) using the process described in [database dictionary](database_dictionary.md#dropping-tables).
 Even though the table is deleted, it is still referenced in database migrations.
@@ -666,7 +666,7 @@ Adding foreign keys can potentially cause downtime, please refer [FK: Avoiding d
 
 ## Migrating `integer` primary keys to `bigint`
 
-To [prevent the overflow risk](https://gitlab.com/groups/gitlab-org/-/epics/4785) for some tables
+To [prevent the overflow risk](https://gitlab.com/groups/gitlab-org/-/work_items/4785) for some tables
 with `integer` primary key (PK), we have to migrate their PK to `bigint`. The process to do this
 without downtime and causing too much load on the database is described below.
 

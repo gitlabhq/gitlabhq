@@ -12,6 +12,7 @@ import {
   GlLink,
   GlFormCharacterCount,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __, s__, n__, sprintf } from '~/locale';
@@ -38,6 +39,7 @@ export default {
     GlSprintf,
     TimeAgoTooltip,
   },
+  mixins: [GlToastMixin],
   i18n: {
     validateTitle: s__('WorkItem|Title is required.'),
     privateView: s__('WorkItem|Only you can see and edit this view.'),

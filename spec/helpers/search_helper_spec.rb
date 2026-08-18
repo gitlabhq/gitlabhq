@@ -8,8 +8,8 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
 
   before do
     stub_feature_flags(work_item_legacy_url: true)
-    # create AI Setting singleton record to prevent N+1
-    Ai::Setting.instance if Gitlab.ee?
+    # create the AI settings row up front to prevent N+1
+    Ai::Setting.for_organization(current_organization) if Gitlab.ee?
   end
 
   # Override simple_sanitize for our testing purposes
@@ -300,7 +300,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
             # These queries are needed for URL determination logic (work_item_type, namespace checks)
             # introduced by the URL centralization in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213411
             # and temporary until full migration to Work Items URLs
-            expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).with_threshold(6)
+            expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency.with_threshold(6)
           end
         end
 
@@ -428,7 +428,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
           expect(recent_merge_requests).to receive(:search).with(search_term)
             .and_return(MergeRequest.id_in_ordered(merge_request_ids))
 
-          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control)
+          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
         end
       end
 
@@ -438,7 +438,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       context "with a current project" do
-        let(:project) { create(:project, :repository) }
+        let(:project) { create(:project, :small_repo) }
 
         before do
           @project = project
@@ -474,7 +474,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
         end
 
         context 'when user has project access' do
-          let(:project) { create(:project, :repository, namespace: user.namespace) }
+          let(:project) { create(:project, namespace: user.namespace) }
 
           before do
             @project = project
@@ -914,7 +914,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
   describe '#repository_ref' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let(:default_branch) { project.default_branch }
     let(:params) { { repository_ref: ref, project_id: project_id } }
 

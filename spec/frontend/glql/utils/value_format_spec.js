@@ -4,6 +4,8 @@ import {
   formatRate,
   formatDuration,
   formatDurationCompact,
+  formatDurationMs,
+  formatDurationMsCompact,
   formatterFor,
   axisFormatterFor,
   unitFor,
@@ -89,23 +91,53 @@ describe('formatDurationCompact', () => {
   });
 });
 
+describe('formatDurationMs', () => {
+  it.each`
+    milliseconds | expected
+    ${0}         | ${'0s'}
+    ${30000}     | ${'30s'}
+    ${90000}     | ${'1m 30s'}
+    ${250000}    | ${'4m 10s'}
+    ${3661000}   | ${'1h 1m 1s'}
+  `('formats $milliseconds milliseconds as $expected', ({ milliseconds, expected }) => {
+    expect(formatDurationMs(milliseconds)).toBe(expected);
+  });
+});
+
+describe('formatDurationMsCompact', () => {
+  it.each`
+    milliseconds | expected
+    ${0}         | ${'0s'}
+    ${30000}     | ${'30s'}
+    ${90000}     | ${'1.5min'}
+    ${10000000}  | ${'2.8h'}
+  `('formats $milliseconds milliseconds as $expected', ({ milliseconds, expected }) => {
+    expect(formatDurationMsCompact(milliseconds)).toBe(expected);
+  });
+});
+
 describe('formatterFor', () => {
   it.each`
-    fieldKey               | input     | expected
-    ${'totalCount'}        | ${1234}   | ${'1,234'}
-    ${'usersCount'}        | ${42}     | ${'42'}
-    ${'shownCount'}        | ${1801}   | ${'1,801'}
-    ${'acceptedCount'}     | ${1}      | ${'1'}
-    ${'rejectedCount'}     | ${567}    | ${'567'}
-    ${'suggestionSizeSum'} | ${500000} | ${'500,000'}
-    ${'acceptanceRate'}    | ${0.75}   | ${'75%'}
-    ${'successRate'}       | ${0.95}   | ${'95%'}
-    ${'failureRate'}       | ${0.04}   | ${'4%'}
-    ${'canceledRate'}      | ${0.01}   | ${'1%'}
-    ${'skippedRate'}       | ${0.001}  | ${'0.1%'}
-    ${'duration'}          | ${3600}   | ${'1h'}
-    ${'queuedDuration'}    | ${90}     | ${'1m 30s'}
-    ${'durationQuantile'}  | ${3661}   | ${'1h 1m 1s'}
+    fieldKey                      | input     | expected
+    ${'totalCount'}               | ${1234}   | ${'1,234'}
+    ${'usersCount'}               | ${42}     | ${'42'}
+    ${'shownCount'}               | ${1801}   | ${'1,801'}
+    ${'acceptedCount'}            | ${1}      | ${'1'}
+    ${'rejectedCount'}            | ${567}    | ${'567'}
+    ${'suggestionSizeSum'}        | ${500000} | ${'500,000'}
+    ${'acceptanceRate'}           | ${0.75}   | ${'75%'}
+    ${'successRate'}              | ${0.95}   | ${'95%'}
+    ${'failureRate'}              | ${0.04}   | ${'4%'}
+    ${'canceledRate'}             | ${0.01}   | ${'1%'}
+    ${'skippedRate'}              | ${0.001}  | ${'0.1%'}
+    ${'throughputCount'}          | ${25}     | ${'25'}
+    ${'featuresCount'}            | ${3}      | ${'3'}
+    ${'returningUsersCount'}      | ${1200}   | ${'1,200'}
+    ${'previousPeriodUsersCount'} | ${8}      | ${'8'}
+    ${'duration'}                 | ${3600}   | ${'1h'}
+    ${'queuedDuration'}           | ${90}     | ${'1m 30s'}
+    ${'durationQuantile'}         | ${3661}   | ${'1h 1m 1s'}
+    ${'timeToMergeQuantile'}      | ${250000} | ${'4m 10s'}
   `(
     'returns a formatter for $fieldKey that maps $input to $expected',
     ({ fieldKey, input, expected }) => {
@@ -140,11 +172,12 @@ describe('axisFormatterFor', () => {
   });
 
   it.each`
-    fieldKey              | input    | expected
-    ${'successRate'}      | ${0.819} | ${'81.9%'}
-    ${'durationQuantile'} | ${10000} | ${'2.8h'}
-    ${'duration'}         | ${3661}  | ${'1h'}
-    ${'queuedDuration'}   | ${90}    | ${'1.5min'}
+    fieldKey                 | input       | expected
+    ${'successRate'}         | ${0.819}    | ${'81.9%'}
+    ${'durationQuantile'}    | ${10000}    | ${'2.8h'}
+    ${'timeToMergeQuantile'} | ${10000000} | ${'2.8h'}
+    ${'duration'}            | ${3661}     | ${'1h'}
+    ${'queuedDuration'}      | ${90}       | ${'1.5min'}
   `('uses the unit-specific axis formatter for $fieldKey', ({ fieldKey, input, expected }) => {
     expect(axisFormatterFor(fieldKey)(input)).toBe(expected);
   });
@@ -156,14 +189,19 @@ describe('axisFormatterFor', () => {
 
 describe('unitFor', () => {
   it.each`
-    fieldKey               | expected
-    ${'totalCount'}        | ${'count'}
-    ${'usersCount'}        | ${'count'}
-    ${'suggestionSizeSum'} | ${'count'}
-    ${'acceptanceRate'}    | ${'rate'}
-    ${'failureRate'}       | ${'rate'}
-    ${'duration'}          | ${'duration'}
-    ${'durationQuantile'}  | ${'duration'}
+    fieldKey                      | expected
+    ${'totalCount'}               | ${'count'}
+    ${'usersCount'}               | ${'count'}
+    ${'suggestionSizeSum'}        | ${'count'}
+    ${'acceptanceRate'}           | ${'rate'}
+    ${'failureRate'}              | ${'rate'}
+    ${'throughputCount'}          | ${'count'}
+    ${'featuresCount'}            | ${'count'}
+    ${'returningUsersCount'}      | ${'count'}
+    ${'previousPeriodUsersCount'} | ${'count'}
+    ${'duration'}                 | ${'duration'}
+    ${'durationQuantile'}         | ${'duration'}
+    ${'timeToMergeQuantile'}      | ${'durationMs'}
   `('maps $fieldKey to unit $expected', ({ fieldKey, expected }) => {
     expect(unitFor(fieldKey)).toBe(expected);
   });
@@ -175,10 +213,11 @@ describe('unitFor', () => {
 
 describe('labelForUnit', () => {
   it.each`
-    unit          | expected
-    ${'count'}    | ${'Count'}
-    ${'rate'}     | ${'Percentage'}
-    ${'duration'} | ${'Duration'}
+    unit            | expected
+    ${'count'}      | ${'Count'}
+    ${'rate'}       | ${'Percentage'}
+    ${'duration'}   | ${'Duration'}
+    ${'durationMs'} | ${'Duration'}
   `('maps $unit to $expected', ({ unit, expected }) => {
     expect(labelForUnit(unit)).toBe(expected);
   });
@@ -201,6 +240,46 @@ describe('buildFormatterByLabel', () => {
 
     expect(map['Total count'](1234)).toBe('1,234');
     expect(map['Acceptance rate'](0.75)).toBe('75%');
+  });
+
+  it('resolves an aliased field to the canonical formatter', () => {
+    const aliased = { key: 'p50', field: 'durationQuantile', label: 'Duration P50' };
+    const map = buildFormatterByLabel([aliased]);
+
+    expect(map['Duration P50'](3661)).toBe('1h 1m 1s');
+  });
+
+  it('keys an unaliased parameterised metric by its parameterised label', () => {
+    const quantile = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.5 },
+    };
+    const map = buildFormatterByLabel([quantile]);
+
+    expect(Object.keys(map)).toEqual(['Duration quantile (0.5)']);
+    expect(map['Duration quantile (0.5)'](3661)).toBe('1h 1m 1s');
+  });
+
+  it('keeps two unaliased quantiles of the same base field on distinct keys', () => {
+    const p50 = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.5 },
+    };
+    const p95 = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.95 },
+    };
+    const map = buildFormatterByLabel([p50, p95]);
+
+    expect(Object.keys(map)).toEqual(['Duration quantile (0.5)', 'Duration quantile (0.95)']);
+    expect(map['Duration quantile (0.5)'](3661)).toBe('1h 1m 1s');
+    expect(map['Duration quantile (0.95)'](90)).toBe('1m 30s');
   });
 
   it('returns an empty object for an empty metrics list', () => {
@@ -258,6 +337,17 @@ describe('buildSharedAxisFormatter', () => {
     expect(buildSharedAxisFormatter(metrics)).toBeNull();
   });
 
+  it('returns a formatter for aliased fields that share the same unit', () => {
+    const metrics = [
+      { key: 'p50', field: 'durationQuantile', label: 'Duration P50' },
+      { key: 'p95', field: 'durationQuantile', label: 'Duration P95' },
+    ];
+    const formatter = buildSharedAxisFormatter(metrics);
+
+    expect(formatter).not.toBeNull();
+    expect(formatter(10000)).toBe('2.8h');
+  });
+
   it('returns null for an empty metrics list', () => {
     expect(buildSharedAxisFormatter([])).toBeNull();
   });
@@ -268,6 +358,32 @@ describe('yAxisTitleFor', () => {
     const metrics = [{ key: 'totalCount', label: 'Total count' }];
 
     expect(yAxisTitleFor(metrics)).toBe('Total count');
+  });
+
+  it('returns the parameterised label for a single unaliased parameterised metric', () => {
+    const metrics = [
+      {
+        key: 'durationQuantile',
+        field: 'durationQuantile',
+        label: 'Duration quantile',
+        parameters: { quantile: 0.5 },
+      },
+    ];
+
+    expect(yAxisTitleFor(metrics)).toBe('Duration quantile (0.5)');
+  });
+
+  it('returns the alias label as-is for a single aliased parameterised metric', () => {
+    const metrics = [
+      {
+        key: 'p50',
+        field: 'durationQuantile',
+        label: 'Duration P50',
+        parameters: { quantile: 0.5 },
+      },
+    ];
+
+    expect(yAxisTitleFor(metrics)).toBe('Duration P50');
   });
 
   it('returns the unit label when multiple metrics share the same unit', () => {
@@ -311,6 +427,15 @@ describe('yAxisTitleFor', () => {
     const metrics = [{ key: 'unknownField', label: 'Unknown thing' }];
 
     expect(yAxisTitleFor(metrics)).toBe('Unknown thing');
+  });
+
+  it('returns the unit label for aliased metrics that share the same unit', () => {
+    const metrics = [
+      { key: 'p50', field: 'durationQuantile', label: 'Duration P50' },
+      { key: 'p95', field: 'durationQuantile', label: 'Duration P95' },
+    ];
+
+    expect(yAxisTitleFor(metrics)).toBe('Duration');
   });
 
   it('returns an empty string for an empty metrics list', () => {

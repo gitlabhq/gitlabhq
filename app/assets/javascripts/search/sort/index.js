@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
 import GlobalSearchSort from './components/app.vue';
 
@@ -13,16 +14,13 @@ export const initSearchSort = (store) => {
 
   searchSortOptions = JSON.parse(searchSortOptions);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GlobalSearchSortRoot',
     store,
-    render(createElement) {
-      return createElement(GlobalSearchSort, {
-        props: {
-          searchSortOptions,
-        },
-      });
+    component: GlobalSearchSort,
+    props: {
+      searchSortOptions,
     },
   });
 };

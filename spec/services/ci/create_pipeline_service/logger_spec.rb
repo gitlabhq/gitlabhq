@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integration do
   describe 'pipeline logger' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:user)    { project.first_owner }
 
     let(:ref) { 'refs/heads/master' }
@@ -189,7 +189,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
       end
 
       context 'with spec:include reading inputs from project file' do
-        let_it_be(:other_project) { create(:project, :repository) }
+        let_it_be(:other_project) { create(:project, :small_repo) }
 
         let(:gitlab_ci_yaml) do
           <<~YAML

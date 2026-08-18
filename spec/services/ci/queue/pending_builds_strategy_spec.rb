@@ -35,4 +35,57 @@ RSpec.describe Ci::Queue::PendingBuildsStrategy, feature_category: :continuous_i
       )
     end
   end
+
+  describe 'build_partition_and_project_ids' do
+    it 'returns build id with partition id and project id' do
+      strategy = described_class.new(group_runner)
+      relation = strategy.builds_for_group_runner
+      expect(strategy.build_partition_and_project_ids(relation)).to match_array(
+        [
+          [pending_build_3.build_id, pending_build_3.partition_id, pending_build_3.project_id],
+          [pending_build_1.build_id, pending_build_1.partition_id, pending_build_1.project_id],
+          [pending_build_2.build_id, pending_build_2.partition_id, pending_build_2.project_id]
+        ]
+      )
+    end
+  end
+
+  describe 'builds_for_runner_manager' do
+    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: group_runner) }
+    let_it_be(:other_runner_manager) { create(:ci_runner_machine, runner: group_runner) }
+
+    let_it_be(:routed_build) { create(:ci_build, :created, pipeline: pipeline) }
+    let_it_be(:routed_pending_build) do
+      create(:ci_pending_build, build: routed_build, project: project, runner_machine_id: runner_manager.id)
+    end
+
+    it 'includes both unrouted builds and builds routed to this runner_manager' do
+      strategy = described_class.new(group_runner)
+
+      expect(strategy.builds_for_runner_manager(::Ci::PendingBuild.all, runner_manager)).to include(
+        routed_pending_build, pending_build_1, pending_build_2, pending_build_3
+      )
+    end
+
+    it 'excludes builds routed to a different runner_manager' do
+      strategy = described_class.new(group_runner)
+
+      expect(strategy.builds_for_runner_manager(::Ci::PendingBuild.all, other_runner_manager))
+        .not_to include(routed_pending_build)
+    end
+
+    it 'excludes routed builds when no runner_manager is given' do
+      strategy = described_class.new(group_runner)
+
+      expect(strategy.builds_for_runner_manager(::Ci::PendingBuild.all, nil)).not_to include(routed_pending_build)
+    end
+
+    it 'still includes unrouted builds when no runner_manager is given' do
+      strategy = described_class.new(group_runner)
+
+      expect(strategy.builds_for_runner_manager(::Ci::PendingBuild.all, nil)).to include(
+        pending_build_1, pending_build_2, pending_build_3
+      )
+    end
+  end
 end

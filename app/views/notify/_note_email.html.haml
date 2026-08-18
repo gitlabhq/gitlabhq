@@ -8,6 +8,14 @@
 - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
 - project = local_assigns.fetch(:project, @project)
 
+- if note.noteable.respond_to?(:confidential?) && note.noteable.confidential?
+  %p{ style: "color: #3a383f; background-color: #fdf1dd; border-radius: 4px; padding: 6px 10px; margin-bottom: 10px; font-size: 13px;" }
+    🔒 #{_('Confidential work item')}
+
+- if note.internal?
+  %p{ style: "color: #8c4a00; background-color: #fff8f0; border: 1px solid #e8a44a; border-radius: 4px; padding: 6px 10px; margin-bottom: 10px; font-size: 13px;" }
+    = s_('Notify|Internal note')
+
 %p{ style: "color: #777777;" }
   = succeed ':' do
     = link_to author.name, user_url(author)

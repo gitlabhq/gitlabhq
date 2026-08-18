@@ -50,7 +50,7 @@ export default {
       default: null,
     },
   },
-  emits: ['clickFile', 'toggleFolder'],
+  emits: ['click-file', 'toggle-folder'],
   data() {
     return {
       treeWidth: INITIAL_TREE_WIDTH,
@@ -106,7 +106,7 @@ export default {
       this.treeWidth = parseInt(userPreference, 10);
     },
     onFileClick(file) {
-      this.$emit('clickFile', file);
+      this.$emit('click-file', file);
     },
     onResizeStart() {
       if (!this.floatingResize) return;
@@ -176,8 +176,8 @@ export default {
         :group-blobs-list-items="groupBlobsListItems"
         :current-diff-file-id="currentDiffFileId"
         :linked-file-path="linkedFilePath"
-        @clickFile="onFileClick"
-        @toggleFolder="$emit('toggleFolder', $event)"
+        @click-file="onFileClick"
+        @toggle-folder="$emit('toggle-folder', $event)"
       />
     </div>
   </file-browser-height>

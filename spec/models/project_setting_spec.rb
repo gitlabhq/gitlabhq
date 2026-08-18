@@ -6,6 +6,12 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
   using RSpec::Parameterized::TableSyntax
   it { is_expected.to belong_to(:project) }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
+    subject_key: :project_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_PROJECT_SETTINGS,
+    claiming_attributes: [:pages_unique_domain]
+
   describe 'default values' do
     it { expect(subject.legacy_open_source_license_available).to be_truthy }
   end
@@ -14,10 +20,92 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
     let_it_be(:project_1) { create(:project) }
     let_it_be(:project_2) { create(:project) }
     let_it_be(:project_setting_1) { create(:project_setting, project: project_1) }
-    let_it_be(:project_setting_2) { create(:project_setting, project: project_2) }
+    let_it_be(:project_setting_2) do
+      create(:project_setting, project: project_2, pages_unique_domain_enabled: true,
+        pages_unique_domain: 'unique.example.com')
+    end
 
     it 'returns project setting for the given projects' do
       expect(described_class.for_projects(project_1)).to contain_exactly(project_setting_1)
+    end
+
+    it 'returns project settings using the namespace domain' do
+      expect(described_class.with_pages_namespace_domain).to contain_exactly(project_setting_1)
+    end
+  end
+
+  describe '#feature_flags_management_allowed?', feature_category: :feature_flags do
+    let(:setting) { build(:project_setting, feature_flags_minimum_role: minimum_role) }
+
+    it 'defaults to the developer minimum role' do
+      expect(build(:project_setting).feature_flags_minimum_role).to eq('developer')
+    end
+
+    where(:minimum_role, :access_level, :expected) do
+      :developer      | Gitlab::Access::REPORTER   | false
+      :developer      | Gitlab::Access::DEVELOPER  | true
+      :developer      | Gitlab::Access::MAINTAINER | true
+      :maintainer     | Gitlab::Access::DEVELOPER  | false
+      :maintainer     | Gitlab::Access::MAINTAINER | true
+      :maintainer     | Gitlab::Access::OWNER      | true
+      :owner          | Gitlab::Access::MAINTAINER | false
+      :owner          | Gitlab::Access::OWNER      | true
+      :no_one_allowed | Gitlab::Access::OWNER      | false
+    end
+
+    with_them do
+      it 'returns whether the access level meets the configured minimum role' do
+        expect(setting.feature_flags_management_allowed?(access_level, nil)).to eq(expected)
+      end
+    end
+
+    context 'when the minimum role is no_one_allowed', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin) }
+
+      let(:minimum_role) { :no_one_allowed }
+
+      it 'is disallowed even for an admin' do
+        # The no_one_allowed early return fires before the can_admin_all_resources?
+        # check, so no one - including admins - may manage feature flags.
+        expect(setting.feature_flags_management_allowed?(Gitlab::Access::OWNER, admin)).to be(false)
+      end
+    end
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin) }
+
+      let(:minimum_role) { :owner }
+
+      it 'allows the admin regardless of access level' do
+        expect(setting.feature_flags_management_allowed?(Gitlab::Access::DEVELOPER, admin)).to be(true)
+      end
+    end
+
+    context 'when the user is an admin without admin mode' do
+      let_it_be(:admin) { create(:admin) }
+
+      let(:minimum_role) { :owner }
+
+      it 'disallows the admin' do
+        expect(setting.feature_flags_management_allowed?(Gitlab::Access::DEVELOPER, admin)).to be(false)
+      end
+    end
+  end
+
+  describe '#feature_flags_minimum_role_privileged?', feature_category: :feature_flags do
+    where(:minimum_role, :expected) do
+      :developer      | false
+      :maintainer     | false
+      :owner          | true
+      :no_one_allowed | true
+    end
+
+    with_them do
+      it 'returns true for stricter (privileged) minimum roles' do
+        setting = build(:project_setting, feature_flags_minimum_role: minimum_role)
+
+        expect(setting.feature_flags_minimum_role_privileged?).to eq(expected)
+      end
     end
   end
 

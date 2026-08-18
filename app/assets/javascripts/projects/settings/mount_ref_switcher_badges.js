@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { generateRefDestinationPath } from './utils';
 
@@ -11,21 +11,18 @@ export default function initRefSwitcherBadges() {
   return Array.from(refSwitcherElements).forEach((element) => {
     const { projectId, ref } = element.dataset;
 
-    return new Vue({
+    return initVueApp({
       el: element,
       name: 'RefSelectorRoot',
-      render(createElement) {
-        return createElement(RefSelector, {
-          props: {
-            projectId,
-            value: ref,
-          },
-          on: {
-            input(selectedRef) {
-              visitUrl(generateRefDestinationPath(selectedRef));
-            },
-          },
-        });
+      component: RefSelector,
+      props: {
+        projectId,
+        value: ref,
+      },
+      events: {
+        input(selectedRef) {
+          visitUrl(generateRefDestinationPath(selectedRef));
+        },
       },
     });
   });

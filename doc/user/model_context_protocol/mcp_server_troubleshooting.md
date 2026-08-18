@@ -1,0 +1,116 @@
+---
+stage: Agent Foundations
+group: Agent Execution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Troubleshoot common issues with the GitLab MCP server.
+title: Troubleshooting the GitLab MCP server
+---
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+When working with the GitLab MCP server, you might encounter the following issues.
+
+## Error: `404 Not Found`
+
+You might get this error when you start the GitLab MCP server, or when
+`POST /api/v4/mcp` returns `404 Not Found` after the OAuth flow completes.
+
+This issue occurs when you have not met the
+[prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
+
+To find the cause, check the [`mcp.log`](../../administration/logs/_index.md#mcplog) file
+for the `denial_reason` field:
+
+- `instance_setting_disabled`: On GitLab Self-Managed, the MCP server is
+  [turned off](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server)
+  for the instance.
+- `no_enabled_namespace`: On GitLab.com, no top-level group you belong to has the MCP server
+  [turned on](../group/access_and_permissions.md#allow-access-to-the-mcp-server).
+
+> [!note]
+> `404` errors returned in a tool call, for example `404 Project Not Found`, are not logged
+> in `mcp.log`. Instead, these errors appear in the JSON-RPC response body with `isError: true`.
+
+## Error: `Server's protocol version is not supported: 2025-06-18`
+
+In GitLab 18.6 and earlier, you might get this error when the MCP client library
+does not support the GitLab MCP server protocol specification.
+
+To resolve this issue, ask the AI tool provider
+to update their client implementation.
+
+## Troubleshoot the GitLab MCP Server in Cursor
+
+1. In Cursor, to open the Output view, do one of the following:
+   - Go to **View** > **Output**.
+   - In macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>U</kbd>.
+   - In Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>U</kbd>.
+1. In the Output view, select **MCP:SERVERNAME**. The name depends on the MCP configuration value. The example with `GitLab` results in `MCP: user-GitLab`.
+1. When reporting bugs, copy the output into the issue template logs section.
+
+## Troubleshoot the GitLab MCP Server on the CLI with mcp-remote
+
+1. Install [Node.js](https://nodejs.org/en/download) version 20 or later.
+1. To test the exact same command as the IDEs and desktop clients:
+   1. Extract the MCP configuration.
+   1. Assemble the `npx` command string into one line.
+   1. Run the command string.
+
+   ```shell
+   rm -rf ~/.mcp-auth/mcp-remote*
+
+   npx -y mcp-remote@latest https://gitlab.example.com/api/v4/mcp --static-oauth-client-metadata '{"scope": "mcp"}'
+   ```
+
+1. Add the `--debug` parameter to log more verbose output:
+
+   ```shell
+   rm -rf ~/.mcp-auth/mcp-remote*
+
+   npx -y mcp-remote@latest https://gitlab.example.com/api/v4/mcp --static-oauth-client-metadata '{"scope": "mcp"}' --debug
+   ```
+
+1. Optional. Run the `mcp-remote-client` executable directly.
+
+   ```shell
+   rm -rf ~/.mcp-auth/mcp-remote*
+
+   npx -p mcp-remote@latest mcp-remote-client https://gitlab.example.com/api/v4/mcp --static-oauth-client-metadata '{"scope": "mcp"}'
+   ```
+
+1. Optional. If you encounter version-specific bugs, pin the version of the `mcp-remote` module to a specific version. For example, use `mcp-remote@0.1.26` to pin the version to `0.1.26`.
+
+   > [!note]
+   > For security reasons, you should not pin versions if possible.
+
+## Troubleshoot GitLab MCP Server with Claude Desktop
+
+Verify the installed [Node.js](https://nodejs.org/en/download) versions. Claude Desktop requires Node.js version 20 or later.
+
+```shell
+for n in $(which -a node); do echo "$n" && $n -v; done
+```
+
+## Delete MCP authentication caches
+
+The MCP authentication is heavily cached locally. While troubleshooting, you might encounter false positives. To prevent these, delete the cache directory during troubleshooting:
+
+```shell
+rm -rf ~/.mcp-auth/mcp-remote*
+```
+
+## Debugging and development tools
+
+[MCP Inspector](https://modelcontextprotocol.io/legacy/tools/inspector) is an interactive
+developer tool for testing and debugging MCP servers. To run this tool, use the command
+line and access the web interface to inspect the GitLab MCP Server.
+
+```shell
+npx -y @modelcontextprotocol/inspector npx
+```

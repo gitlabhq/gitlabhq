@@ -83,6 +83,7 @@ module Banzai
 
         return error_message(filename, 'not found') unless blob
         return error_message(filename, 'not readable') unless blob.readable_text?
+        return error_message(filename, 'too large') if blob.truncated?
 
         if wiki?
           Gitlab::WikiPages::FrontMatterParser.new(blob.data).parse.content

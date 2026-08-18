@@ -19,7 +19,7 @@ RSpec.describe 'Projects > Settings > User tags a project', :js, feature_categor
 
     find_by_testid('topics-token-selector-avatar-topic1').click
 
-    within_testid('general-settings-content') do
+    within_testid('general-settings-form') do
       click_button 'Save changes'
     end
 
@@ -32,7 +32,7 @@ RSpec.describe 'Projects > Settings > User tags a project', :js, feature_categor
 
     click_button 'Add "topic2"'
 
-    within_testid('general-settings-content') do
+    within_testid('general-settings-form') do
       click_button 'Save changes'
     end
 

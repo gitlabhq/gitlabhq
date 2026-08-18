@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 // This file is in progress and behind a feature flag, please see the following issue for more:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/323200

@@ -16,8 +16,8 @@ cache or shared state. This document describes an approach
 for adding a new Redis instance that handles existing data, based on
 prior examples:
 
-- [Dedicated Redis instance for Trace Chunk storage](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/462).
-- [Create dedicated Redis instance for Rate Limiting data](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/526).
+- [Dedicated Redis instance for Trace Chunk storage](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/462).
+- [Create dedicated Redis instance for Rate Limiting data](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/526).
 
 This document does not cover the operational side of preparing and configuring
 the new Redis instance in detail, but the example epics do contain information
@@ -111,7 +111,7 @@ while and there are no issues, we can proceed.
 
 ### Proposed solution: Migrate data by using MultiStore with the fallback strategy
 
-We need a way to migrate users to a new Redis store without causing any inconveniences from UX perspective.
+We need a way to migrate users to a new Redis store without causing any inconveniences from a UX perspective.
 We also want the ability to fall back to the "old" Redis instance if something goes wrong with the new instance.
 
 Migration Requirements:
@@ -129,7 +129,7 @@ We read from the new instance, but we need to fall back to the old instance when
 We need to log any issues or exceptions with a new instance, but still fall back to the old instance.
 
 The proposed migration strategy is to implement and use the [MultiStore](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/multi_store.rb).
-We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/579).
+We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/579).
 Also MultiStore comes with corresponding [specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/redis/multi_store_spec.rb).
 
 The MultiStore looks like a `redis-rb ::Redis` instance.
@@ -150,7 +150,7 @@ end
 ```
 
 MultiStore is initialized by providing the new Redis connection pools as a primary pool, and [old (fallback-instance) connection pool](#fallback-instance) as a secondary pool.
-The third argument is `store_name` which is used for logs, metrics and feature flag names, in case we use MultiStore implementation for different Redis stores at the same time.
+The third argument is `store_name` which is used for logs, metrics, and feature flag names, in case we use MultiStore implementation for different Redis stores at the same time.
 
 By default, the MultiStore reads and writes only from the default Redis store.
 The default Redis store is `secondary_store` (the old fallback-instance).
@@ -181,7 +181,7 @@ Upon satisfactory validation results, we are probably safe to move the traffic t
 This will allow the MultiStore to read and write only from the primary Redis store (new store), moving all the traffic to the new Redis store.
 
 Once we have moved all our traffic to the primary store, our data migration is complete.
-We can safely remove the MultiStore implementation and continue to use newly introduced Redis store instance.
+We can safely remove the MultiStore implementation and continue to use the newly introduced Redis store instance.
 
 #### Implementation details
 

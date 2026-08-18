@@ -5,7 +5,7 @@ module API
     class Base < ::API::Base
       include ::API::Helpers::HeadersHelpers
       include APIGuard
-      include ::Mcp::Tools::VersionHelper
+      include ::Mcp::Tools::Base::VersionHelper
 
       helpers ::API::Helpers::Mcp::AuthChallenge
 
@@ -133,9 +133,14 @@ module API
 
         def format_jsonrpc_response(result)
           if params[:id].nil? || result.nil?
-            # JSON-RPC server must not send JSON-RPC response for notifications
-            # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/index#notifications
-            body false
+            # MCP spec requires 202 Accepted with no body for JSON-RPC notifications
+            # See: https://modelcontextprotocol.io/specification/2025-03-26/basic/transports
+            # "If the input consists solely of JSON-RPC responses or notifications:
+            #  If the server accepts the input, the server MUST return HTTP status code 202 Accepted with no body."
+            # NOTE: `body false` forces status 204, and a plain '' body would still be JSON-dumped
+            # to the string `""`. `Gitlab::Json::Precompiled` skips that dumping so the body stays empty.
+            status :accepted
+            body Gitlab::Json::Precompiled.new('')
           else
             {
               jsonrpc: JSONRPC_VERSION,
@@ -157,8 +162,11 @@ module API
             allow_blank: false, values: [JSONRPC_VERSION]
           requires :method, type: String, desc: 'Name of the JSON-RPC method invoked on the MCP server.',
             allow_blank: false
-          optional :id, desc: 'ID of the JSON-RPC request returned in the response.',
-            allow_blank: false # NOTE: JSON-RPC server must reply with same value and type for "id" member
+          # `id` must be echoed back with the same type (INC-6166). The identity `coerce_with`
+          # preserves it; without it Grape coerces to the first matching `types` entry.
+          optional :id, types: [Integer, String], coerce_with: ->(value) { value },
+            desc: 'ID of the JSON-RPC request returned in the response.',
+            allow_blank: false
           optional :params, desc: 'Object or array that contains parameters passed to the specified JSON-RPC method',
             types: [Hash, Array]
         end

@@ -16,7 +16,7 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 **Current Status**
 
 - **As of November 2025**: The GitLab Monolith is using Vue 2.x with [frontend islands](https://gitlab.com/gitlab-org/gitlab/-/issues/577797) that use Vue 3.x
-- **Progress**: [See Epic](https://gitlab.com/groups/gitlab-org/-/epics/6252)
+- **Progress**: [See Epic](https://gitlab.com/groups/gitlab-org/-/work_items/6252)
 
 **Responsible Team**
 
@@ -25,7 +25,7 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 
 **Milestones and Timelines**
 
-See the [Epic](https://gitlab.com/groups/gitlab-org/-/epics/6252) for up to date timelines.
+See the [Epic](https://gitlab.com/groups/gitlab-org/-/work_items/6252) for up to date timelines.
 
 **Challenges and Dependencies**
 
@@ -63,7 +63,7 @@ When global state management is needed, it should happen in Apollo instead of Vu
 
 ### HAML by default
 
-We'll continue using HAML over Vue when appropriate. See [when to add Vue application](vue.md#when-to-add-vue-application) on how to decide when Vue should be chosen.
+We'll continue using HAML over Vue when appropriate. See [when to add a Vue application](vue.md#when-to-add-a-vue-application) on how to decide when Vue should be chosen.
 
 **Current Status**
 
@@ -198,7 +198,8 @@ While GitLab UI is well-documented and components are abstract enough to be reus
 
 We should perform an audit of `vue_shared`, find out what can and what cannot be moved to GitLab UI, and refactor existing components to remove duplicates and increase reusability. The ideal outcome would be having application-specific components moved to application folders, and keep reusable "smart" components in the shared folder/library, ensuring that every single piece of reusable functionality has _only one implementation_.
 
-This is currently under development. Follow the [GitLab Modular Monolith for FE](https://gitlab.com/gitlab-org/gitlab/-/issues/422903) for updates on how we will enforce encapsulation on top-level folders like `vue_shared`.
+Encapsulation of top-level folders such as `vue_shared` is enforced by the rules described in
+[Frontend package boundaries](package_boundaries.md).
 
 **Current Status**
 

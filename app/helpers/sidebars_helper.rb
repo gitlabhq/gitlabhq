@@ -3,6 +3,7 @@
 module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
+  include Users::CalloutsHelper
 
   def organization_sidebar_context(organization, user, **args)
     Sidebars::Context.new(container: organization, current_user: user, **args)
@@ -37,22 +38,20 @@ module SidebarsHelper
       compare_plans_url: compare_plans_url,
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
-      university_path: university_url,
       support_path: support_url,
-      docs_path: help_docs_path,
       display_whats_new: display_whats_new?,
       show_version_check: show_version_check?,
       search: search_data,
       panel_type: panel_type,
       shortcut_links: shortcut_links,
-      terms: terms_link
+      has_terms: Gitlab::CurrentSettings.terms.present?
     })
   end
 
   def super_sidebar_logged_out_context(panel:, panel_type:)
     super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
-      sign_in_visible: header_link?(:sign_in).to_s,
-      allow_signup: allow_signup?.to_s
+      allow_signup: allow_signup?.to_s,
+      pinned_items: super_sidebar_default_pins(panel_type)
     })
   end
 
@@ -65,17 +64,11 @@ module SidebarsHelper
       admin_mode: {
         admin_mode_feature_enabled: Gitlab::CurrentSettings.admin_mode,
         admin_mode_active: current_user_mode.admin_mode?,
-        enter_admin_mode_url: new_admin_session_path,
-        leave_admin_mode_url: destroy_admin_session_path,
         user_is_admin: user.can_access_admin_area?
       },
       avatar_url: user.avatar_url,
-      has_link_to_profile: current_user_menu?(:profile),
       logo_url: current_appearance&.header_logo_path,
       status: user_status_menu_data(user),
-      settings: {
-        has_settings: current_user_menu?(:settings)
-      },
       user_counts: {
         assigned_issues: user.assigned_open_issues_count,
         assigned_merge_requests: user.all_assigned_merge_requests_count(cached_only: true),
@@ -83,12 +76,8 @@ module SidebarsHelper
         todos: user.todos_pending_count,
         last_update: time_in_milliseconds
       },
-      can_sign_out: current_user_menu?(:sign_out),
-
       compare_plans_url: compare_plans_url(user: user, project: project, group: group),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
-      projects_path: dashboard_projects_path,
-      groups_path: dashboard_groups_path,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       current_context: super_sidebar_current_context(project: project, group: group),
       pinned_items: pinned_items(user, panel_type, group: group),
@@ -96,7 +85,9 @@ module SidebarsHelper
       shortcut_links: shortcut_links(user: user, project: project),
       work_items: work_items_modal_data(group, project),
       has_multiple_organizations: user.has_multiple_organizations?,
-      show_feature_library_feedback: show_feature_library_feedback?
+      show_feature_library_feedback: show_feature_library_feedback?,
+      show_feature_library_shimmer: show_feature_library_shimmer?,
+      ai_search_available: feature_library_ai_search_available?(project: project, group: group)
     })
   end
 
@@ -115,33 +106,21 @@ module SidebarsHelper
     {
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
       whats_new_version_digest: whats_new_version_digest,
-      whats_new_read_articles: whats_new_read_articles,
-      whats_new_mark_as_read_path: whats_new_mark_as_read_path
+      whats_new_read_articles: whats_new_read_articles
     }
   end
 
   def work_items_modal_data(group, project)
     if project&.persisted?
       return {
-        full_path: project.full_path,
-        has_issuable_health_status_feature: project.licensed_feature_available?(:issuable_health_status).to_s,
-        issues_list_path: project_issues_path(project),
-        labels_manage_path: project_labels_path(project),
-        can_admin_label: can?(current_user, :admin_label, project).to_s,
-        has_issue_weights_feature: project.licensed_feature_available?(:issue_weights).to_s,
-        has_iterations_feature: project.licensed_feature_available?(:iterations).to_s
+        full_path: project.full_path
       }
     end
 
     return unless group && group.id
 
     {
-      full_path: group.full_path,
-      has_issuable_health_status_feature: group.licensed_feature_available?(:issuable_health_status).to_s,
-      issues_list_path: issues_group_path(group),
-      labels_manage_path: group_labels_path(group),
-      can_admin_label: can?(current_user, :admin_label, group).to_s,
-      has_issue_weights_feature: group.licensed_feature_available?(:issue_weights).to_s
+      full_path: group.full_path
     }
   end
 
@@ -209,6 +188,13 @@ module SidebarsHelper
   def show_feature_library_feedback?
     true
   end
+
+  # overridden on EE with the FF/trial/resource checks
+  # rubocop:disable Lint/UnusedMethodArgument -- project and group are used on EE
+  def feature_library_ai_search_available?(project:, group:)
+    false
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   def fallback_sidebar_panel(nav, context_adds, user = nil)
     # Fallback when panels fail to render:
@@ -413,31 +399,19 @@ module SidebarsHelper
   # rubocop:disable Lint/UnusedMethodArgument -- group is used on EE
   def pinned_items(user, panel_type, group: nil)
     user.pinned_nav_items[panel_type]&.map(&:to_s) ||
-      super_sidebar_default_pins(panel_type, user)
+      super_sidebar_default_pins(panel_type)
   end
   # rubocop:enable Lint/UnusedMethodArgument
 
-  def super_sidebar_default_pins(panel_type, user)
+  def super_sidebar_default_pins(panel_type)
     case panel_type
     when 'project'
-      if Feature.enabled?(:feature_library_modal, user)
-        %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
-      else
-        %w[project_issue_list project_merge_request_list]
-      end
+      %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
     when 'group'
-      if Feature.enabled?(:feature_library_modal, user)
-        %w[group_overview members group_issue_list issue_boards group_merge_request_list]
-      else
-        %w[group_issue_list group_merge_request_list]
-      end
+      %w[group_overview members group_issue_list issue_boards group_merge_request_list]
     else
       []
     end
-  end
-
-  def terms_link
-    Gitlab::CurrentSettings.terms ? terms_path : nil
   end
 end
 

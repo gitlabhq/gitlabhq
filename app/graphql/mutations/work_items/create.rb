@@ -119,6 +119,11 @@ module Mutations
         check_feature_available!(container, type, params)
         widget_params = extract_widget_params!(type, params, container)
 
+        if widget_params.dig(:description_widget, :task_list_toggle)
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            '`taskListToggle` is not supported when creating a work item'
+        end
+
         create_result = ::WorkItems::CreateService.new(
           container: container,
           current_user: current_user,

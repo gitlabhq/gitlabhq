@@ -121,7 +121,7 @@ export default {
     />
     <infrastructure-search v-if="packagesCount > 0" @update="searchPackages" />
 
-    <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
+    <package-list @page-changed="onPageChanged" @package-delete="onPackageDeleteRequest">
       <template #empty-state>
         <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
           <template #description>

@@ -55,9 +55,8 @@ export default class EditBlob {
 
   async fetchSecurityPolicyExtension(projectPath) {
     try {
-      const { SecurityPolicySchemaExtension } = await import(
-        '~/editor/extensions/source_editor_security_policy_schema_ext'
-      );
+      const { SecurityPolicySchemaExtension } =
+        await import('~/editor/extensions/source_editor_security_policy_schema_ext');
       this.editor.use([{ definition: SecurityPolicySchemaExtension }]);
       this.editor.registerSecurityPolicySchema(projectPath);
     } catch (e) {

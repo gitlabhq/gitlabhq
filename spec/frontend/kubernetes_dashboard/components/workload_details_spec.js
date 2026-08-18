@@ -172,6 +172,18 @@ describe('Workload details component', () => {
           'aria-label': action.text,
         });
       });
+
+      it.each(['delete-pod', 'flux-reconcile', 'flux-resume', 'flux-suspend'])(
+        'emits `%s` with the item when the matching action button is clicked',
+        async (name) => {
+          const item = { ...mockPodsTableItems[0], actions: [{ name }] };
+          createWrapper({ item });
+
+          await findButton(0).vm.$emit('click');
+
+          expect(wrapper.emitted(name)).toEqual([[item]]);
+        },
+      );
     });
 
     describe('when containers are provided', () => {

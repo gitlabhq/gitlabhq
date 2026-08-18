@@ -8,11 +8,7 @@ module Gitlab
           class Sast < Base
             include Security::Concerns::FingerprintPathFromFile
 
-            attr_reader :class_name
-            attr_reader :end_line
-            attr_reader :file_path
-            attr_reader :method_name
-            attr_reader :start_line
+            attr_reader :class_name, :end_line, :file_path, :method_name, :start_line
 
             def initialize(file_path:, start_line:, end_line: nil, class_name: nil, method_name: nil)
               @class_name = class_name

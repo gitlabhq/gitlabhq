@@ -21,8 +21,8 @@ const createComponent = ({ provide = {} } = {}) => {
   });
 };
 
-const findNewSubgroupButton = () => wrapper.findByTestId('create-subgroup');
-const findNewProjectButton = () => wrapper.findByTestId('create-project');
+const findNewSubgroupButton = () => wrapper.findComponentByTestId('create-subgroup');
+const findNewProjectButton = () => wrapper.findComponentByTestId('create-project');
 const findEmptyState = () => wrapper.findComponent(ResourceListsEmptyState);
 
 describe('SubgroupsAndProjectsEmptyState', () => {

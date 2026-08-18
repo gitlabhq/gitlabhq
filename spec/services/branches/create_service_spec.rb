@@ -90,6 +90,7 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
           'failed_branch',
           project.default_branch,
           expire_cache: false,
+          skip_ci: false,
           raise_on_invalid_ref: true
         ).and_raise(Gitlab::Git::Repository::InvalidRef)
 

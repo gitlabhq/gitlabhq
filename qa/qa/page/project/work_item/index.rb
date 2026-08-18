@@ -5,11 +5,6 @@ module QA
     module Project
       module WorkItem
         class Index < Page::Base
-          view 'app/assets/javascripts/issuable/components/issue_assignees.vue' do
-            element 'assignee-link'
-            element 'avatar-counter-content'
-          end
-
           view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue' do
             element 'issuable-container'
           end
@@ -27,15 +22,6 @@ module QA
           view 'app/assets/javascripts/work_items/list/components/work_items_csv_export_modal.vue' do
             element 'export-work-items-button'
             element 'export-work-items-modal'
-          end
-
-          view 'app/assets/javascripts/work_items/components/' \
-            'work_items_onboarding_modal/work_items_onboarding_modal.vue' do
-            element 'work-items-onboarding-modal'
-          end
-
-          def avatar_counter
-            find_element('avatar-counter-content')
           end
 
           def click_issue_link(title)
@@ -84,16 +70,6 @@ module QA
             find_element('export-work-items-modal')
           end
 
-          def dismiss_onboarding_modal_if_present
-            return unless has_element?('work-items-onboarding-modal', wait: 0.5)
-
-            within_element('work-items-onboarding-modal') do
-              click_element('close-icon')
-            end
-
-            has_no_element?('work-items-onboarding-modal')
-          end
-
           def go_to_jira_import_form
             unless has_element?('import-from-jira-link', wait: 0)
               within_element('work-item-router-view') do
@@ -102,10 +78,6 @@ module QA
             end
 
             click_import_from_jira_link
-          end
-
-          def has_assignee_link_count?(count)
-            all_elements('assignee-link', count: count)
           end
 
           def has_issue?(issue)

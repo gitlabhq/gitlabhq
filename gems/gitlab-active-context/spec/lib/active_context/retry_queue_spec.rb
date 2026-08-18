@@ -13,8 +13,25 @@ RSpec.describe ActiveContext::RetryQueue do
   end
 
   describe '.preprocess_options' do
+    it 'includes skip_missing_content: true so missing content is skipped rather than sent to DeadQueue' do
+      expect(described_class.preprocess_options).to eq({
+        queue_name: 'retry_queue',
+        skip_missing_content: true
+      })
+    end
+  end
+
+  describe '.extra_preprocess_options' do
     it 'returns skip_missing_content: true so missing content is skipped rather than sent to DeadQueue' do
-      expect(described_class.preprocess_options).to eq({ skip_missing_content: true })
+      expect(described_class.extra_preprocess_options).to eq({
+        skip_missing_content: true
+      })
+    end
+  end
+
+  describe '.processing_delay' do
+    it 'returns the delay so transient errors can clear before the single retry' do
+      expect(described_class.processing_delay).to eq(5.minutes)
     end
   end
 end

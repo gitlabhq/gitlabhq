@@ -82,7 +82,7 @@ they must be manually replicated to all nodes of the secondary site.
    chmod 0600 /etc/gitlab/gitlab-secrets.json
    ```
 
-1. Reconfigure each Rails, Sidekiq and Gitaly nodes on your secondary site for the change to take effect:
+1. Reconfigure each Rails, Sidekiq, and Gitaly nodes on your secondary site for the change to take effect:
 
    ```shell
    gitlab-ctl reconfigure

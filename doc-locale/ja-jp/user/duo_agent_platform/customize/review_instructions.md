@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: マージリクエストのレビューでAIが使用する指示をカスタマイズします。
 title: Agent Platformに合わせてレビュー指示をカスタマイズする
@@ -15,36 +15,30 @@ title: Agent Platformに合わせてレビュー指示をカスタマイズす�
 
 {{< history >}}
 
-- GitLab 18.2で`duo_code_review_custom_instructions`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/545136)されました。デフォルトでは無効になっています。
+- [導入](https://gitlab.com/gitlab-org/gitlab/-/issues/545136)されたGitLab 18.2の[ベータ](../../../policy/development_stages_support.md#beta)版として、`duo_code_review_custom_instructions`という名前の[機能フラグ](../../../administration/feature_flags/_index.md)が提供されています。デフォルトでは無効になっています。
 - 機能フラグ`duo_code_review_custom_instructions`は、GitLab 18.3で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802)になっています。
 - 機能フラグ`duo_code_review_custom_instructions`は、GitLab 18.4で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262)されました。
+- GitLab 19.1で`fileFilters`の和集合パターン（例: `{rb,ts}`）が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237952)されました。
 
 {{< /history >}}
 
-カスタムマージリクエストレビュー指示を作成して、GitLab Duoがプロジェクト内で一貫性のある具体的なコードレビュー標準を適用するようにします。
+GitLab Duoがマージリクエストをレビューする際に参照する標準を提供するための、カスタムレビュー指示を作成します。
 
-たとえば、Rubyファイルに対してのみRubyスタイルの規則を適用し、Goファイルに対してはGoスタイルの規則を適用できます。
+たとえば、RubyファイルではRubyのスタイル規則を、GoファイルではGoのスタイル規則を重視するよう、GitLab Duoに指示できます。
+
+> [!note]
+> カスタムレビュー指示は、AIレビュアー向けのガイダンスであり、強制的なポリシーではありません。GitLab Duoは、レビューを形成するためのコンテキストとしてこれらを使用しますが、すべての指示がすべての場合に適用されることを保証することはできません。セキュリティ管理、コンプライアンス上の義務、または一貫した強制が必要なその他の要件のためにカスタム指示に依存しないでください。
 
 GitLab Duoは、標準のレビュー基準を置き換えるのではなく、カスタムレビュー指示を追加する形で適用します。
 
-コードレビューフローは、カスタムレビュー指示をサポートしています。
+コードレビューフローは、プロジェクト、グループ、またはインスタンスのカスタムレビュー指示をサポートします。
 
-## カスタムレビュー指示を設定する {#configure-custom-review-instructions}
+## プロジェクトのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-a-project}
 
 カスタムマージリクエストレビュー指示を設定するには:
 
 1. リポジトリのルートで、`.gitlab/duo`ディレクトリが存在しない場合は作成します。
 1. `.gitlab/duo`ディレクトリに、`mr-review-instructions.yaml`という名前のファイルを作成します。
-1. オプション。[GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)にコードベースとドキュメントを分析させ、カスタムレビュー指示を生成するよう依頼してください。
-
-   プロンプトの例:
-
-   ```plaintext
-   I need to create custom rules for GitLab Duo Code Review. When you look at the source code,
-   which languages are missing and need to be added to the mr-review-instructions.yaml
-   file?
-   ```
-
 1. 次の形式を使用して、カスタム指示を追加します:
 
    ```yaml
@@ -58,7 +52,7 @@ GitLab Duoは、標準のレビュー基準を置き換えるのではなく、�
          <your_custom_review_instructions>
    ```
 
-   `fileFilters`セクションは必須です。このセクションでglobパターンを使用して、カスタムレビュールールの対象となる特定のファイルを指定します。
+   `fileFilters`セクションはオプションです。このセクションでは、globパターンを使用して、特定のファイルを対象とする指示を定めます。`fileFilters`を省略するか、空のままにすると、GitLab Duoはマージリクエスト内のすべてのファイルに指示を適用します。
 
    例: 
 
@@ -103,12 +97,23 @@ GitLab Duoは、標準のレビュー基準を置き換えるのではなく、�
          2. Include error scenarios
          3. Use shared examples to reduce duplication
 
+     - name: Database Migrations
+       fileFilters:
+         - "db/migrate/**/*.rb"
+         - "db/post_migrate/**/*.rb"
+       instructions: |
+         1. Follow the migration safety guidelines in
+            https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/avoiding_downtime_in_migrations.md
+         2. Apply the team checklist in docs/migrations-checklist.md
+
      - name: All Files
        fileFilters:
          - "**/*"   # All files in the repository
        instructions: |
          1. Explain the "why" behind each suggestion
    ```
+
+   指示内のファイル参照の詳細については、[指示内のファイル参照](#reference-files-in-instructions)を参照してください。
 
    glob構文の例については、[ファイルパターンのリファレンス](#file-pattern-reference)を参照してください。
 
@@ -122,7 +127,7 @@ GitLab Duoは、標準のレビュー基準を置き換えるのではなく、�
 1. 変更内容をレビューしてマージするための[マージリクエストを作成](../../project/merge_requests/creating_merge_requests.md)します:
 
    - ファイルパターンが一致した場合、GitLab Duoはカスタム指示を自動的に適用します。
-   - 複数の指示グループを1つのファイルに適用できます。
+   - 複数の指示グループを1つのファイルに適用できます。ファイルが複数のグループの`fileFilters`に一致する場合、コードレビューフローは、一致するすべてのグループからの指示を適用します。
    - カスタム指示によってトリガーされたレビューコメントについて、GitLab Duoは次の形式を使用します:
 
      ```plaintext
@@ -136,15 +141,108 @@ GitLab Duoは、標準のレビュー基準を置き換えるのではなく、�
    - フィードバックをレビューし、必要に応じて指示を調整します。
    - パターンをテストして、意図したファイルと一致することを確認します。
 
+## グループのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-a-group}
+
+{{< history >}}
+
+- GitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230090)されました。
+
+{{< /history >}}
+
+グループのカスタムレビュー指示は、テンプレートとして使用するプロジェクトを指定することで定義できます。テンプレートプロジェクトには、グループとそのサブグループ内のすべてのプロジェクトに適用されるレビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルが必要です。
+
+GitLab Duoがコードレビューを実行すると、トップレベルグループの指示と、個々のプロジェクトで定義された指示が組み合わされます。
+
+前提条件: 
+
+- トップレベルグループのオーナーロール。
+- グループ内のプロジェクトに、テンプレートとして使用するカスタムレビュー指示が含まれていること。
+
+グループのカスタムレビュー指示を設定するには:
+
+1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
+1. 左側のサイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
+1. **Customize code review**の下で、グループのレビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルを持つプロジェクトを選択します。
+1. **変更を保存**を選択します。
+
+## インスタンスのカスタムレビュー指示を設定する {#configure-custom-review-instructions-for-an-instance}
+
+{{< details >}}
+
+- 提供形態: GitLab Self-Managed、GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237573)されました。
+
+{{< /history >}}
+
+GitLab Self-ManagedおよびGitLab Dedicatedでは、テンプレートとして使用するプロジェクトを指定することで、インスタンス全体のカスタムレビュー指示を定義できます。テンプレートプロジェクトには、インスタンス上のすべてのプロジェクトに適用されるレビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルが含まれている必要があります。
+
+GitLab Duoがコードレビューを実行すると、インスタンスの指示とグループおよびプロジェクトの指示が結合されます。
+
+前提条件: 
+
+- インスタンスへの管理者アクセス。
+- インスタンス上のプロジェクトには、テンプレートとして使用するカスタムレビュー指示が含まれています。
+
+インスタンスのカスタムレビュー指示を設定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左側のサイドバーで、**GitLab Duo**を選択します。
+1. **設定の変更**を選択します。
+1. **Customize code review for all groups in this instance**の下で、レビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルを持つプロジェクトを選択します。
+1. **変更を保存**を選択します。
+
+## 指示内のファイルを参照する {#reference-files-in-instructions}
+
+コンテンツを重複させる代わりに、カスタム指示で他のファイルを参照できます。コードレビューフローは、プレスキャンステップ中に参照されたファイルを読み込み、関連するガイダンスを抽出します。
+
+カスタム指示は、2つのファイル参照パターンをサポートしています:
+
+- マージリクエストと同じプロジェクト内のファイル: リポジトリ相対パス、例えば`docs/security-checklist.md`を使用します。
+- 同じGitLabインスタンス上の他のプロジェクト内のファイル: GitLabの完全なblob URL、例えば`https://gitlab.example.com/group/project/-/blob/main/docs/style-guide.md`を使用します。URLはマージリクエストと同じGitLabインスタンスを指し、`/-/blob/<ref>/<path>`の形式を使用する必要があります。
+
+例: 
+
+```yaml
+instructions:
+  - name: Database Migrations
+    fileFilters:
+      - "db/migrate/**/*.rb"
+    instructions: |
+      1. Follow the migration guidelines in
+         https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/avoiding_downtime_in_migrations.md
+      2. Reference the team checklist in docs/db-checklist.md
+```
+
+### ファイル参照の制限 {#limitations-of-file-references}
+
+ファイル参照の解決には、次の制約があります:
+
+- 同じGitLabインスタンスのみ。別のGitLabインスタンス、GitLab Self-Managedからの公開GitLab、またはConfluenceや公開ドキュメントサイトのようなGitLab以外のサイトを指すURLは、フェッチされません。
+- blob URLのみ。形式は`/-/blob/<ref>/<path>`です。Wikiページ、イシュー、raw URL、およびスニペットはフェッチされません。
+- ベアパスの場合は同じプロジェクト。`docs/security.md`のようなベアパスは、マージリクエストと同じプロジェクトに対して解決します。別のプロジェクト内のファイルを参照するには、完全なGitLabblob URLを使用します。
+- 最善を尽くしますが、保証はありません。コードレビューフローは、指示テキストに基づいてどの参照をフェッチするかを決定します。存在しないパスや解析によって拒否されたURLなど、解決に失敗した参照は、サイレントにスキップされます。
+- コードレビューフローは、元のファイルではなく、要約を使用します。プレスキャンステップ中にフェッチされたコンテンツを要約し、レビュー中にその要約を使用します。同じマージリクエストの2つのレビューは、異なる要約を生成する可能性があります。
+
+コードレビューフローにファイルの正確な内容を使用させ、要約を使用させない場合は、ファイルを参照するのではなく、`instructions:`フィールドに直接含めます。インライン指示は記述されたとおりに使用されます。
+
 ## ベストプラクティス {#best-practices}
 
 カスタムレビュー指示を作成する場合、次の点に留意してください:
 
-- 具体的かつ実行可能な指示を作成する。
+- 具体的かつ実行可能な指示を作成する。コードレビューフローは、各ルールを差分と照合して確認します。例えば、「パブリックメソッドにYARDドキュメントがあることを検証する」のような具体的なルールは有用なコメントを生成しますが、「コードを適切にドキュメントする」のような抽象的なガイダンスはそうではありません。
 - わかりやすくするために、指示に番号を付ける。
-- 最も重要な標準に焦点を当てる。
+- 最も重要な標準に焦点を当てる。すべてのルールのテキストは、レビュープロンプトの一部となるため、価値の低いルールの長いリストは、シグナルを追加することなくプロンプトを膨らませます。
 - 有用な場合は、「理由」を説明する。
 - 簡単な指示から始め、必要に応じてより複雑な指示を追加する。
+- コードレビューフローがデフォルトでは適用しない、プロジェクト固有の標準に焦点を当てます。カスタム指示は、標準レビュー基準を置き換えるのではなく、追加します。「エラー処理を追加する」や「意味のある名前を使用する」といった一般的なアドバイスは、通常すでにカバーされています。内部API、アーキテクチャ規則、ドメイン固有のパターンなど、プロジェクトだけが知っていることのためにカスタム指示を使用します。
+- 指示はガイダンスとして記述し、命令として記述しないでください。指示は、レビューの振る舞いを形作るヒントであり、GitLab Duoが従うべきポリシーではありません。「常にフラグを立てる」や「決して許可しない」といった表現は避けてください。この表現は、共同作業者をその動作が保証されていると誤解させる可能性があります。
+- ファイルパターンは、ルールの実際のスコープを反映するようにしてください。コードレビューフローは、各指示を各`fileFilters`参照と共に読み込み、それらのパターンに一致するファイルにのみルールを適用します。例えば、`**/*.rb`にスコープされた「Railsコントローラー」のルールは、gem、スクリプト、テストに適用され、コントローラーだけではありません。代わりに`app/controllers/**/*.rb`を使用してください。
+- 正確な表現が重要ではない指示に対してのみ外部ファイル参照を使用し、そうでない場合は詳細をルールとして`instructions:`フィールドに直接含めます。コードレビューフローは、参照されたファイルの要約を生成して使用しますが、`instructions`で定義された正確な表現を使用します。
 
 例: 
 
@@ -173,7 +271,7 @@ instructions: |
 | `!**/*.test.rb` | すべてのRubyテストファイルを除外する |
 | `!spec/**/*.rb` | `spec`ディレクトリとそのサブディレクトリ内のすべてのRubyファイルを除外する |
 | `!tests/**/*`   | `tests`ディレクトリとそのサブディレクトリ内のすべてのファイルを除外する |
-| `**/*.{js,jsx}` | すべてのディレクトリ内のJavaScriptファイルおよびJSXファイル |
+| `**/*.{js,jsx}` | すべてのディレクトリ内のJavaScriptファイルとJSXファイル（GitLab 19.1以降） |
 
 次の例は、`**/*.rb`と`*.rb`の違いを示しています:
 
@@ -695,6 +793,99 @@ instructions:
 - [GitLabハンドブック](https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 - [GitLab Webサイト](https://gitlab.com/gitlab-com/marketing/digital-experience/about-gitlab-com/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
 - [デベロッパーアドボカシー: Tanuki IoT Platform](https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml)
+
+## トラブルシューティング {#troubleshooting}
+
+`mr-review-instructions.yaml`を使用する際に、次のイシューが発生する可能性があります。
+
+### コードレビューフローが指示をスキップするか、一般的なレビューを返す {#code-review-flow-skips-instructions-or-returns-a-generic-review}
+
+コードレビューフローがカスタム指示をスキップしたり、一般的なレビューを返したりする場合、ファイルに構造上の問題がある可能性があります。カスタム指示のLinterを使用して、イシューを特定します。
+
+#### カスタム指示のLinterを実行する {#run-the-custom-instructions-linter}
+
+カスタム指示のLinterは、`mr-review-instructions.yaml`ファイルを検証するのに役立ちます。
+
+Linterは以下をチェックします:
+
+- 無効なYAML構文。
+- 見つからないか、予期しないトップレベルのキー。
+- 必須フィールド（`name`, `instructions`）の欠落または空白。
+- 指示エントリ内の不明なキー（`instructions`の代わりに`rules`など）。
+- `fileFilters`の値がリストではないか、非文字列または空白のエントリが含まれている。
+- `fileFilters`が見つからないか空である場合、指示がすべてのファイルに適用されます（情報）。
+- 指示エントリ間で`name`の値が重複している。
+
+> [!note]
+> Linterはファイルを読み取るだけで、変更はしません。GitLabまたはRailsの依存関係はなく、Rubyがインストールされていればどこでも実行できます。
+
+前提条件: 
+
+- Ruby 3.0以降。
+
+GitLabサーバーでLinterをRakeタスクとして実行するには、`<path>`を`mr-review-instructions.yaml`ファイルのパスに置き換えてください。例: 
+
+```shell
+sudo gitlab-rake "gitlab:duo:lint_review_instructions[<path>]"
+```
+
+Rubyがインストールされている任意のマシンでLinterをスタンドアロンスクリプトとして実行するには:
+
+1. [`review_instructions_linter.rb`](https://gitlab.com/gitlab-org/gitlab/-/raw/master/ee/lib/gitlab/duo/administration/review_instructions_linter.rb)をダウンロードします。
+1. Linterを実行します。`<path>`を`mr-review-instructions.yaml`ファイルのパスに置き換えてください。
+
+   ```shell
+   ruby -r ./review_instructions_linter.rb -e '
+     linter = Gitlab::Duo::Administration::ReviewInstructionsLinter.new(ARGV[0]).run
+     linter.issues.each { |issue| puts issue }
+     exit(linter.valid? ? 0 : 1)
+   ' <path>
+   ```
+
+パスを省略すると、Linterは作業ディレクトリ内の`.gitlab/duo/mr-review-instructions.yaml`をデフォルトとして使用します。エラーが見つからない場合、Linterはステータス`0`で終了し、それ以外の場合は`1`で終了します。警告および情報メッセージは、ゼロ以外の終了を引き起こしません。
+
+例えば、この無効なファイルは`instructions`の代わりに`rules`を使用し、`fileFilters`を省略しています:
+
+```yaml
+instructions:
+  - name: "General"
+    rules: "Do something"
+```
+
+Linterは次のようにレポートします:
+
+```plaintext
+[ERROR E009] Field 'instructions' must be a non-empty string at instructions[0]
+[WARNING W003] Unknown keys: "rules"; expected name, instructions, fileFilters at instructions[0]
+[INFO I001] Missing 'fileFilters'; the instruction applies to every file at instructions[0]
+```
+
+報告されたエラーを修正し、エラーがレポートされなくなるまでLinterを再実行します。
+
+#### Linterメッセージコード {#linter-message-codes}
+
+各メッセージには、ヘルプを求めるときに参照できる安定したコードが含まれています。`E`で始まるコードはエラー、`W`で始まるコードは警告、`I`で始まるコードは有効であるが知っておくべき動作に関する情報メモです。
+
+| コード | 説明 |
+| ---- | ----------- |
+| `E001` | 指定されたパスにファイルが存在しません。 |
+| `E003` | ファイルに無効なYAML構文が含まれています。 |
+| `E004` | トップレベルのYAML値はマッピングではありません。 |
+| `E005` | トップレベルの`instructions`キーがありません。 |
+| `E006` | `instructions`の値がリストではありません。 |
+| `E007` | `instructions`の下のエントリがマッピングではありません。 |
+| `E008` | エントリの`name`フィールドが欠落しているか、空白であるか、または文字列ではありません。 |
+| `E009` | エントリの`instructions`フィールドが欠落しているか、空白であるか、または文字列ではありません。 |
+| `E011` | エントリの`fileFilters`の値がリストではありません。 |
+| `E013` | エントリの`fileFilters`に、数値などの非文字列値が含まれています。 |
+| `E014` | エントリの`fileFilters`に空白文字列が含まれています。 |
+| `W001` | ファイルに不明なトップレベルのキーが含まれています。 |
+| `W002` | `instructions`リストは空なので、指示は適用されません。 |
+| `W003` | エントリには、`name`、`instructions`、および`fileFilters`以外のキーが含まれています。 |
+| `W004` | 2つ以上のエントリが同じ`name`を共有しています。 |
+| `W007` | ファイルが空なので、指示は適用されません。 |
+| `I001` | エントリに`fileFilters`フィールドが欠落しているため、指示はすべてのファイルに適用されます。 |
+| `I002` | エントリの`fileFilters`リストが空であるため、指示はすべてのファイルに適用されます。 |
 
 ## 関連トピック {#related-topics}
 

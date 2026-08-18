@@ -11,7 +11,10 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
   # middleware reconstructs the throttle name from it for the cohort lookup and the
   # 429 headers.
   let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web') }
-  let(:result) { instance_double(Labkit::RateLimit::Result, action: :allow, error?: false, rule: rule) }
+  let(:result) do
+    instance_double(Labkit::RateLimit::Result, action: :allow, error?: false, rule: rule, evaluations: [])
+  end
+
   let(:limiter) { instance_double(Labkit::RateLimit::Limiter, check: result) }
 
   # The middleware reads the registry only for the cohort (enforce gating); it builds
@@ -19,7 +22,7 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
   let(:entry) do
     registry::Entry.new(
       name: 'throttle_unauthenticated_web', limiter: registry::GENERAL, rule_name: 'unauthenticated_web',
-      characteristics: [:ip], match: { path: registry::WEB_PATH_REGEX }, cohort: 2, definition: nil
+      characteristics: [:ip], match: { web_or_frontend: true }, cohort: 2, definition: nil
     )
   end
 
@@ -51,9 +54,11 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
     it 'compares labkit\'s block decision against the Rack::Attack data on the way back up' do
       # The request did not block (the :allow result), so there is no blocking
       # result; Divergence still receives the call and decides whether it is worth a
-      # data point.
+      # data point. The full result set and the request facts ride along for the
+      # sampled divergence log.
       expect(divergence).to receive(:record)
-        .with(labkit_result: nil, rackattack_throttle_data: throttle_data)
+        .with(labkit_result: nil, rackattack_throttle_data: throttle_data,
+          labkit_results: [result], facts: hash_including(:ip, :requester_id, :path, :method))
 
       middleware.call(env)
     end
@@ -167,7 +172,9 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
     context 'when labkit blocks but the rule\'s cohort does not enforce' do
       let(:other_entry) { entry.tap { |e| e.cohort = 1 } }
       let(:result) do
-        instance_double(Labkit::RateLimit::Result, action: :block, error?: false, rule: rule, info: info)
+        instance_double(
+          Labkit::RateLimit::Result, action: :block, error?: false, rule: rule, info: info, evaluations: []
+        )
       end
 
       before do
@@ -219,31 +226,194 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         expect(status).to eq(429)
       end
     end
+  end
 
-    context 'when the block came from a web throttle frontend companion' do
-      # The companion rule name (unauthenticated_web_frontend) is not itself a throttle
-      # name, so it must resolve to its base throttle for both the enforce cohort and
-      # the RateLimit-Name header - otherwise a cohort lookup miss would silently leave
-      # frontend-API traffic unenforced.
-      let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web_frontend') }
-      let(:entry) do
+  describe 'proactive RateLimit-* headers once labkit fully enforces' do
+    let(:info) do
+      Labkit::RateLimit::Result::Info.new(
+        resolved_limit: 100, resolved_period: 60, count: 5.0, remaining: 95.0, reset_at: Time.current
+      )
+    end
+
+    let(:evaluation) { Labkit::RateLimit::Result::Evaluation.new(rule: rule, exceeded: false, info: info) }
+
+    let(:result) do
+      instance_double(
+        Labkit::RateLimit::Result, action: :allow, error?: false, rule: rule, evaluations: [evaluation]
+      )
+    end
+
+    before do
+      stub_feature_flags(
+        rate_limiter_use_labkit_rack_cohort_2: true,
+        rate_limiter_use_labkit_rack_cohort_2_enforce: true
+      )
+    end
+
+    it 'adds the counted throttle\'s headers to the response', :aggregate_failures do
+      status, headers, body = middleware.call(env)
+
+      expect(status).to eq(200)
+      expect(body).to eq(['ok'])
+      expect(headers).to include(
+        'RateLimit-Name' => 'throttle_unauthenticated_web',
+        'RateLimit-Limit' => '100',
+        'RateLimit-Observed' => '5',
+        'RateLimit-Remaining' => '95'
+      )
+      expect(headers).to include('RateLimit-Reset')
+      expect(headers).not_to include('Retry-After', 'RateLimit-ResetTime')
+    end
+
+    it 'produces headers byte-identical to the legacy RackAttackHeaders output' do
+      freeze_time do
+        legacy_headers = Gitlab::RackAttack::RequestThrottleData.from_rack_attack(
+          'throttle_unauthenticated_web',
+          { discriminator: '1.2.3.4', count: 5, period: 60, limit: 100, epoch_time: Time.current.to_i }
+        ).common_response_headers
+
+        _status, headers, = middleware.call(env)
+
+        expect(headers).to include(legacy_headers)
+      end
+    end
+
+    it 'still adds headers to non-2xx responses, as RackAttackHeaders did' do
+      not_found = ->(_env) { [404, {}, ['not found']] }
+
+      _status, headers, = described_class.new(not_found).call(env)
+
+      expect(headers['RateLimit-Name']).to eq('throttle_unauthenticated_web')
+    end
+
+    it 'leaves an app-rendered 429 untouched', :aggregate_failures do
+      app_throttled = ->(_env) { [429, { 'Content-Type' => 'text/plain' }, ['app throttled']] }
+
+      status, headers, = described_class.new(app_throttled).call(env)
+
+      expect(status).to eq(429)
+      expect(headers).not_to include('RateLimit-Name')
+    end
+
+    context 'when several limiters counted the request' do
+      let(:protected_rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_protected_paths') }
+
+      let(:protected_entry) do
         registry::Entry.new(
-          name: 'throttle_unauthenticated_web', limiter: registry::GENERAL,
-          rule_name: 'unauthenticated_web_frontend', characteristics: [:ip],
-          match: { frontend: true }, cohort: 2, definition: nil
+          name: 'throttle_unauthenticated_protected_paths', limiter: registry::PROTECTED,
+          rule_name: 'unauthenticated_protected_paths', characteristics: [:ip],
+          match: { protected_path: true }, cohort: 2, definition: nil
         )
       end
 
-      let(:result) do
-        instance_double(Labkit::RateLimit::Result, action: :block, error?: false, rule: rule, info: info)
+      let(:protected_info) do
+        Labkit::RateLimit::Result::Info.new(
+          resolved_limit: 10, resolved_period: 60, count: 8.0, remaining: 2.0, reset_at: Time.current
+        )
       end
 
-      it 'enforces under the base throttle cohort and names the base throttle in the 429', :aggregate_failures do
+      let(:protected_evaluation) do
+        Labkit::RateLimit::Result::Evaluation.new(rule: protected_rule, exceeded: false, info: protected_info)
+      end
+
+      let(:protected_result) do
+        instance_double(
+          Labkit::RateLimit::Result, action: :allow, error?: false, rule: protected_rule,
+          evaluations: [protected_evaluation]
+        )
+      end
+
+      before do
+        allow(registry).to receive(:all).and_return(
+          'throttle_unauthenticated_web' => entry,
+          'throttle_unauthenticated_protected_paths' => protected_entry
+        )
+        allow(limiters).to receive(:all).and_return(
+          registry::GENERAL => limiter,
+          registry::PROTECTED => instance_double(Labkit::RateLimit::Limiter, check: protected_result)
+        )
+      end
+
+      it 'reports the most constraining evaluation (fewest remaining)', :aggregate_failures do
+        _status, headers, = middleware.call(env)
+
+        expect(headers['RateLimit-Name']).to eq('throttle_unauthenticated_protected_paths')
+        expect(headers['RateLimit-Remaining']).to eq('2')
+      end
+    end
+
+    context 'when a dry-run throttle counted the request over its limit' do
+      # A :log rule never blocks, but Rack::Attack's Track wrote throttle_data all
+      # the same, so a dry-run throttle kept feeding the proactive headers.
+      let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web', action: :log) }
+
+      let(:info) do
+        Labkit::RateLimit::Result::Info.new(
+          resolved_limit: 100, resolved_period: 60, count: 105.0, remaining: 0.0, reset_at: Time.current
+        )
+      end
+
+      let(:evaluation) { Labkit::RateLimit::Result::Evaluation.new(rule: rule, exceeded: true, info: info) }
+
+      it 'reports the exhausted quota without blocking, as Rack::Attack track did', :aggregate_failures do
         status, headers, = middleware.call(env)
 
-        expect(status).to eq(429)
-        expect(headers).to include('RateLimit-Name' => 'throttle_unauthenticated_web')
+        expect(status).to eq(200)
+        expect(headers).to include(
+          'RateLimit-Name' => 'throttle_unauthenticated_web',
+          'RateLimit-Observed' => '105',
+          'RateLimit-Remaining' => '0'
+        )
       end
+    end
+
+    context 'when no rule counted the request (bypassed, skipped, or unmatched)' do
+      let(:result) do
+        instance_double(Labkit::RateLimit::Result, action: :allow, error?: false, rule: nil, evaluations: [])
+      end
+
+      it 'adds no headers, matching the legacy safelisted/skipped behavior' do
+        _status, headers, = middleware.call(env)
+
+        expect(headers).not_to include('RateLimit-Name')
+      end
+    end
+
+    context 'when the counted rule resolves to no registry entry' do
+      let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unknown_rule') }
+
+      it 'adds no headers and tracks no error', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        status, headers, = middleware.call(env)
+
+        expect(status).to eq(200)
+        expect(headers).not_to include('RateLimit-Name')
+      end
+    end
+
+    context 'when a cohort does not yet enforce' do
+      before do
+        stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2_enforce: false)
+      end
+
+      it 'adds no headers - Rack::Attack still enforces and RackAttackHeaders builds them' do
+        _status, headers, = middleware.call(env)
+
+        expect(headers).not_to include('RateLimit-Name')
+      end
+    end
+
+    it 'fails open when header generation errors, leaving the response intact', :aggregate_failures do
+      allow(Gitlab::RackAttack::RequestThrottleData)
+        .to receive(:from_labkit_result).and_raise(StandardError, 'boom')
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(StandardError))
+
+      status, headers, body = middleware.call(env)
+
+      expect(status).to eq(200)
+      expect(body).to eq(['ok'])
+      expect(headers).not_to include('RateLimit-Name')
     end
   end
 

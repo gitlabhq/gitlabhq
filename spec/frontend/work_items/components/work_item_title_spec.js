@@ -11,13 +11,13 @@ describe('Work Item title', () => {
     '<h1 data-testid="work-item-title" class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"><span>Work Item <em>title</em> <gl-emoji title="grinning face with smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji></span></h1>';
   const mockTitleText = 'Work Item title 😄';
 
-  const createComponent = ({ isEditing = false, isModal = false } = {}) => {
+  const createComponent = ({ isEditing = false, isDetailPanel = false } = {}) => {
     wrapper = shallowMountExtended(WorkItemTitle, {
       propsData: {
         title: mockTitle,
         titleHtml: mockTitleHtml,
         isEditing,
-        isModal,
+        isDetailPanel,
       },
     });
   };
@@ -38,14 +38,17 @@ describe('Work Item title', () => {
     });
 
     it.each`
-      expectedTag | isModal
+      expectedTag | isDetailPanel
       ${'H1'}     | ${undefined}
       ${'H1'}     | ${false}
       ${'H2'}     | ${true}
-    `('renders the title as an $expectedTag if isModal is $isModal', ({ expectedTag, isModal }) => {
-      createComponent({ isModal });
-      expect(findTitle().element.tagName).toBe(expectedTag);
-    });
+    `(
+      'renders the title as an $expectedTag if isDetailPanel is $isDetailPanel',
+      ({ expectedTag, isDetailPanel }) => {
+        createComponent({ isDetailPanel });
+        expect(findTitle().element.tagName).toBe(expectedTag);
+      },
+    );
 
     it('does not render edit mode', () => {
       expect(findEditableTitleForm().exists()).toBe(false);
@@ -58,7 +61,7 @@ describe('Work Item title', () => {
         title: 'test #1',
         titleHtml: 'test <a href="example">#1</a>',
         isEditing: false,
-        isModal: false,
+        isDetailPanel: false,
       },
     });
 

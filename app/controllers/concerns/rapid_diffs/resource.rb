@@ -49,7 +49,7 @@ module RapidDiffs
       end
 
       if full
-        return head :payload_too_large if blob_too_large?(diff_file.blob)
+        return head :payload_too_large if blob_too_large?(diff_file)
 
         diff_file.expand_to_full!
       end
@@ -87,10 +87,16 @@ module RapidDiffs
       nil
     end
 
-    def blob_too_large?(blob)
+    def blob_too_large?(diff_file)
+      blob = diff_file.blob
       return false unless blob
 
-      blob.raw_size > Gitlab::CurrentSettings.diff_max_patch_bytes
+      # Prefer the diff file's own blob size limit (e.g. merge request diffs
+      # override it) so full file expansion uses the same limit as the diff
+      # collection, falling back to the highlight limit otherwise.
+      limit = diff_file.max_blob_size || Gitlab::Highlight.file_size_limit
+
+      blob.raw_size > limit
     end
 
     def diff_file_params

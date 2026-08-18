@@ -141,6 +141,18 @@ RSpec.describe JwksController, feature_category: :system_access do
       end
     end
 
+    context 'when dynamic client registration setting is disabled' do
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: false)
+        get '/.well-known/oauth-authorization-server/api/v4/mcp'
+      end
+
+      it 'does not include registration_endpoint', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(parsed_response).not_to have_key('registration_endpoint')
+      end
+    end
+
     context 'when relative_url_root is configured' do
       let(:relative_url_root) { '/gitlab' }
       let(:base_url_with_root) { "http://localhost#{relative_url_root}" }

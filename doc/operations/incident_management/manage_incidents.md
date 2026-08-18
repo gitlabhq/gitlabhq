@@ -110,12 +110,6 @@ whenever an alert is triggered.
 
 ### Using the PagerDuty webhook
 
-{{< history >}}
-
-- [PagerDuty V3 Webhook](https://support.pagerduty.com/docs/webhooks) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383029) in GitLab 15.7.
-
-{{< /history >}}
-
 You can set up a webhook with PagerDuty to automatically create a GitLab incident
 for each PagerDuty incident. This configuration requires you to make changes
 in both PagerDuty and GitLab.
@@ -193,14 +187,6 @@ You can also change the severity using the [`/severity` quick action](../../user
 
 ## Change status
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a feature flag](../../administration/feature_flags/_index.md) named `incident_escalations`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
-- [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the project.
@@ -228,11 +214,9 @@ Changing the status has the following effects:
 
 - To **Acknowledged**: limits on-call pages based on the project's [escalation policy](escalation_policies.md).
 - To **Resolved**: silences all on-call pages for the incident.
-- From **Resolved** to **Triggered**: restarts the incident escalating.
+- From **Resolved** to **Triggered**: restarts the incident's escalation.
 
-In GitLab 15.1 and earlier, changing the status of an [incident created from an alert](#from-an-alert)
-also changes the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
-the alert status is independent and does not change when the incident status changes.
+For an [incident created from an alert](#from-an-alert), the alert status is independent and does not change when the incident status changes.
 
 ## Change escalation policy
 
@@ -257,9 +241,7 @@ By default, new incidents do not have an escalation policy selected.
 Selecting an escalation policy [changes the incident status](#change-status) to **Triggered** and begins
 [escalating the incident to on-call responders](paging.md#escalating-an-incident).
 
-In GitLab 15.1 and earlier, the escalation policy for [incidents created from alerts](#from-an-alert)
-reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
-the incident escalation policy is independent and can be changed.
+For [incidents created from alerts](#from-an-alert), the incident escalation policy is independent and can be changed.
 
 ## Close an incident
 

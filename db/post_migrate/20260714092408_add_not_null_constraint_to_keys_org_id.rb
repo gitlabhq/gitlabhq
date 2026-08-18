@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AddNotNullConstraintToKeysOrgId < Gitlab::Database::Migration[2.3]
-  milestone '19.2'
+  milestone '19.3'
 
   disable_ddl_transaction!
 

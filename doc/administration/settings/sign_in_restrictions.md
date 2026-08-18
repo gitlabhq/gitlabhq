@@ -226,7 +226,7 @@ Git clients without additional authentication steps.
 To use the GitLab REST- or GraphQL API, administrators must [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [OAuth token](../../api/oauth2.md) with the [`admin_mode` scope](../../security/tokens/access_token_scopes.md).
 
 If an administrator with a personal access token with the `admin_mode` scope loses their administrator access, that user cannot access the API as an administrator even though they still have the token with the `admin_mode` scope.
-For more information, see [epic 2158](https://gitlab.com/groups/gitlab-org/-/epics/2158).
+For more information, see [epic 2158](https://gitlab.com/groups/gitlab-org/-/work_items/2158).
 
 Also, when GitLab Geo is enabled, you can't view the replication status of projects and designs while
 on a secondary node. A fix is proposed when projects ([issue 367926](https://gitlab.com/gitlab-org/gitlab/-/issues/367926)) and designs ([issue 355660](https://gitlab.com/gitlab-org/gitlab/-/issues/355660)) move to the new Geo framework.

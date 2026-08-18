@@ -10,7 +10,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347684',
+      it 'creates a merge request',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37617',
           type: 'flaky'

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PackagesApp from '~/packages_and_registries/infrastructure_registry/details/components/app.vue';
 import Translate from '~/vue_shared/translate';
@@ -19,7 +20,7 @@ export default () => {
   const packageEntity = JSON.parse(packageJson);
   const canDelete = parseBoolean(canDeleteStr);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PackagesAppRoot',
     provide: {
@@ -30,13 +31,10 @@ export default () => {
       projectPath,
       svgPath,
     },
-    render(createElement) {
-      return createElement(PackagesApp, {
-        props: {
-          initialPackageEntity: packageEntity,
-          initialPackageFiles: packageEntity.package_files,
-        },
-      });
+    component: PackagesApp,
+    props: {
+      initialPackageEntity: packageEntity,
+      initialPackageFiles: packageEntity.package_files,
     },
   });
 };

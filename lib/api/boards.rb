@@ -7,7 +7,7 @@ module API
 
     prepend_mod_with('API::BoardsResponses') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
-    feature_category :team_planning
+    feature_category :planning_views
     urgency :low
 
     before { authenticate! }
@@ -21,7 +21,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/boards' do
         desc 'List all project issue boards' do
           detail 'Lists all issue boards in a specified project.'
@@ -41,6 +41,9 @@ module API
           detail 'Retrieves a specified issue board in a project.'
           success Entities::Board
           tags ['boards']
+        end
+        params do
+          requires :board_id, type: Integer, desc: 'The ID of a board'
         end
         route_setting :authorization, permissions: :read_issue_board, boundary_type: :project
         get '/:board_id' do
@@ -69,6 +72,7 @@ module API
           tags ['boards']
         end
         params do
+          requires :board_id, type: Integer, desc: 'The ID of a board'
           use :update_params
         end
         route_setting :authorization, permissions: :update_issue_board, boundary_type: :project
@@ -82,6 +86,9 @@ module API
           detail 'Deletes a specified issue board in a project.'
           success Entities::Board
           tags ['boards']
+        end
+        params do
+          requires :board_id, type: Integer, desc: 'The ID of a board'
         end
         route_setting :authorization, permissions: :delete_issue_board, boundary_type: :project
         delete '/:board_id' do

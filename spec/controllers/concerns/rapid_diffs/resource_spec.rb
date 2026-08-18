@@ -123,7 +123,7 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
     let(:controller_instance) { controller.new }
     let(:blob_double) { instance_double(Blob, raw_size: 1000) }
     let(:diff_file_double) do
-      instance_double(Gitlab::Diff::File, whitespace_only?: false, blob: blob_double)
+      instance_double(Gitlab::Diff::File, whitespace_only?: false, blob: blob_double, max_blob_size: nil)
     end
 
     let(:diff_files_collection) { [diff_file_double] }
@@ -140,7 +140,6 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
       allow(controller_instance).to receive(:render)
       allow(controller_instance).to receive(:render_404)
       allow(controller_instance).to receive(:head)
-      allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(10_000)
       allow(RapidDiffs::DiffFileComponent).to receive(:new).and_return(component_double)
       allow(presenter_double).to receive(:diff_files).and_return(diff_files_collection)
     end
@@ -291,8 +290,21 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
         controller_instance.diff_file
       end
 
-      context 'when blob is too large' do
-        let(:blob_double) { instance_double(Blob, raw_size: 100_000) }
+      context 'when blob exceeds the highlight file size limit' do
+        let(:blob_double) { instance_double(Blob, raw_size: Gitlab::Highlight.file_size_limit + 1) }
+
+        it 'returns payload_too_large status' do
+          controller_instance.diff_file
+
+          expect(controller_instance).to have_received(:head).with(:payload_too_large)
+        end
+      end
+
+      context 'when the diff file has its own max blob size' do
+        let(:blob_double) { instance_double(Blob, raw_size: 2000) }
+        let(:diff_file_double) do
+          instance_double(Gitlab::Diff::File, whitespace_only?: false, blob: blob_double, max_blob_size: 1000)
+        end
 
         it 'returns payload_too_large status' do
           controller_instance.diff_file

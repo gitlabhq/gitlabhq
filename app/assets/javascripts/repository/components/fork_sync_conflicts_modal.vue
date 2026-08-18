@@ -115,8 +115,7 @@ export default {
     <div class="gl-mb-4 gl-flex">
       <pre class="gl-mb-0 gl-w-full" data-testid="resolve-conflict-instructions"
         >{{ $options.instructionsStep3 }}
-</pre
-      >
+</pre>
       <simple-copy-button
         :text="$options.instructionsStep3"
         :title="$options.i18n.copyToClipboard"

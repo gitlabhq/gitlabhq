@@ -116,7 +116,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
       end
 
       context 'multiple scopes' do
-        it 'creates an application with multiple `scopes` when each scope specified is seperated by a space' do
+        it 'creates an application with multiple `scopes` when each scope specified is separated by a space' do
           expect do
             post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api read_user' }
           end.to change { Authn::OauthApplication.count }.by 1

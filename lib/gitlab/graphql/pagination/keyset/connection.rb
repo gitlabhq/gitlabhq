@@ -67,7 +67,7 @@ module Gitlab
           end
           # rubocop: enable Naming/PredicatePrefix
 
-          # This is overriden to accommodate for how our redaction works.
+          # This is overridden to accommodate for how our redaction works.
           # The GraphQL library implementation uses the `nodes` array directly as follows:
           #
           #    def end_cursor

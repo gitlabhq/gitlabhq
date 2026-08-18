@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_project
+description: Enables Vue 3 in compatibility mode for the project activity, new, edit, and members pages
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23093
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249551
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608127
+milestone: '19.3'
+group: group::organizations
+type: beta
+default_enabled: false

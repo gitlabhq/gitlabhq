@@ -16,8 +16,7 @@ module QA
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18790',
           type: :flaky
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360489'
+        }
       ) do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -41,8 +40,7 @@ module QA
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9497',
           type: :flaky
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360490'
+        }
       ) do
         commit = create(:commit,
           project: project,

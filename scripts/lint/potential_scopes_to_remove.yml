@@ -17,8 +17,6 @@ app/models/ci/job_artifact.rb:
 app/models/ci/pipeline.rb:
   - where_not_sha
   - not_ref_protected
-app/models/ci/processable.rb:
-  - without_needs
 app/models/ci/runner.rb:
   - deprecated_shared
   - deprecated_specific
@@ -66,9 +64,6 @@ app/models/ml/experiment.rb:
   - exclude_experiments_for_models
 app/models/ml/model_version.rb:
   - order_by_model_id_id_desc
-app/models/note.rb:
-  - new_diff_notes
-  - with_note
 app/models/packages/build_info.rb:
   - pluck_pipeline_ids
 app/models/packages/composer/metadatum.rb:
@@ -97,16 +92,12 @@ app/models/project.rb:
   - pages_metadata_not_migrated
 app/models/projects/import_export/relation_export.rb:
   - by_relation
-app/models/snippet.rb:
-  - are_secret
 app/models/user.rb:
   - for_todos
   - ordered_by_id_desc
   - with_provisioning_project
 app/models/user_detail.rb:
   - project_provisioned
-app/models/zoom_meeting.rb:
-  - removed_from_issue
 ee/app/models/ai/duo_workflows/event.rb:
   - with_correlation_id
 ee/app/models/ai/tool_rule.rb:

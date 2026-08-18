@@ -468,7 +468,7 @@ After you've cycled through all the issues in the upcoming iteration, you're don
 
 Remember to incorporate your team's velocity into your sprint commitment.
 You can find the total number of story points (weight) allocated to each sprint at the top of each iteration list.
-It's also worth making sure story points that will likely roll over from the previous sprint.
+It's also worth accounting for story points that will likely roll over from the previous sprint.
 
 #### Asynchronous planning
 

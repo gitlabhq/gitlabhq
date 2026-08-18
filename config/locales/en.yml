@@ -33,6 +33,8 @@ en:
         api_url: "Sentry API URL"
       project/metrics_setting:
         external_dashboard_url: "External dashboard URL"
+      security/scan_profile_trigger/configuration:
+        configuration: "Configuration"
       service_desk_setting:
         project_key: "Project name suffix"
       system_access/group_microsoft_application:

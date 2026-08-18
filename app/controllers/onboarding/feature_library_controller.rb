@@ -7,25 +7,36 @@ module Onboarding
 
     MAX_QUERY_LENGTH = 255
 
-    before_action :check_feature_library_search_rate_limit!,
-      only: :search,
-      if: -> { Feature.enabled?(:feature_library_modal, current_user) }
+    before_action :check_feature_library_search_rate_limit!, only: :search
+
+    before_action :check_feature_library_ai_search_rate_limit!,
+      only: :ai_search,
+      if: -> { feature_match_service.ai_search_enabled? }
 
     def search
-      return not_found unless Feature.enabled?(:feature_library_modal, current_user)
       return render json: { ids: [] } unless valid_panel?
 
-      ids = Onboarding::FeatureLibrary::FeatureMatchService.new(
+      render json: { ids: feature_match_service.execute }
+    end
+
+    def ai_search
+      return not_found unless feature_match_service.ai_search_enabled?
+      return render json: { ids: [], ai_search_available: false } unless valid_panel?
+      return render json: { ids: [], ai_search_available: false } unless feature_match_service.ai_search_available?
+
+      render json: { ids: feature_match_service.ai_execute, ai_search_available: true }
+    end
+
+    private
+
+    def feature_match_service
+      @feature_match_service ||= Onboarding::FeatureLibrary::FeatureMatchService.new(
         query: truncated_query,
         panel: search_params[:panel],
         user: current_user,
         resource: resource
-      ).execute
-
-      render json: { ids: ids }
+      )
     end
-
-    private
 
     def search_params
       params.permit(:query, :panel, :resource_id)
@@ -56,6 +67,13 @@ module Onboarding
 
     def check_feature_library_search_rate_limit!
       check_rate_limit!(:feature_library_search, scope: current_user) do
+        render json: { error: _('This endpoint has been requested too many times. Try again later.') },
+          status: :too_many_requests
+      end
+    end
+
+    def check_feature_library_ai_search_rate_limit!
+      check_rate_limit!(:feature_library_ai_search, scope: current_user) do
         render json: { error: _('This endpoint has been requested too many times. Try again later.') },
           status: :too_many_requests
       end

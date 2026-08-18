@@ -162,12 +162,12 @@ RSpec.describe Packages::Debian::Package, type: :model, feature_category: :packa
 
     subject { package.incoming? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'with debian_incoming' do
       let(:package) { create(:debian_incoming) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 end

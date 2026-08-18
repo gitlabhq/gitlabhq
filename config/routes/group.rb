@@ -15,6 +15,7 @@ constraints(Namespaces::GroupUrlConstraint.new) do
       get :details, as: :details_group
       get :activity, as: :activity_group
       put :transfer, as: :transfer_group
+      post :create_organization_from_group, as: :create_organization_from_group
       post :export, as: :export_group
       get :download_export, as: :download_export_group
       get :unfoldered_environment_names, as: :unfoldered_environment_names_group
@@ -42,6 +43,8 @@ constraints(Namespaces::GroupUrlConstraint.new) do
     resources :saved_views, only: [:show], path: 'work_items/views'
 
     namespace :settings do
+      resource :merge_requests, only: [:update]
+
       resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
         put :reset_registration_token
         patch :update_auto_devops
@@ -200,6 +203,9 @@ constraints(Namespaces::GroupUrlConstraint.new) do
       resource :o11y_service_settings, only: [:update, :edit, :destroy]
       resource :setup, only: [:show], controller: 'setup'
       resource :access_requests, only: [:create]
+      # Backend-for-frontend per-user SigNoz session exchange (gated by the
+      # observability_per_user_bff_auth feature flag).
+      resource :session, only: [:create], controller: 'sessions'
     end
     resources :observability, only: [:show], constraints: { id: %r{[a-zA-Z0-9._-]+} }, format: false
     get 'observability/*sub_path', to: 'observability#show', as: :observability_sub_path, format: false,

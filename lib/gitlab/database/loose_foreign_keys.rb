@@ -9,6 +9,13 @@ module Gitlab
         'LooseForeignKeys::MergeRequestDiffCommitCleanupWorker'
       ].freeze
 
+      # Tables backed by files (e.g. CI job artifacts) cannot be cleaned up with
+      # the generic bulk `DELETE` because that would orphan the underlying files.
+      # They opt into a dedicated cleaner via the `cleaner_class` config key.
+      ALLOWED_CLEANER_CLASSES = [
+        'Ci::JobArtifacts::LooseForeignKeyCleanerService'
+      ].freeze
+
       def self.definitions_by_table
         @definitions_by_table ||= definitions.group_by(&:to_table).with_indifferent_access.freeze
       end
@@ -29,6 +36,11 @@ module Gitlab
           raise ArgumentError, "Worker class '#{worker_class_name}' is not in the allowed list"
         end
 
+        cleaner_class_name = config['cleaner_class']
+        if cleaner_class_name && ALLOWED_CLEANER_CLASSES.exclude?(cleaner_class_name)
+          raise ArgumentError, "Cleaner class '#{cleaner_class_name}' is not in the allowed list"
+        end
+
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
           child_table_name,
           parent_table_name,
@@ -40,7 +52,8 @@ module Gitlab
             target_value: config['target_value'],
             delete_limit: config['delete_limit'],
             conditions: conditions,
-            worker_class: worker_class_name.constantize
+            worker_class: worker_class_name.constantize,
+            cleaner_class: cleaner_class_name&.constantize
           }
         )
       end

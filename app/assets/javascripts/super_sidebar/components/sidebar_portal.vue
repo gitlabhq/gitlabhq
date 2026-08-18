@@ -1,5 +1,6 @@
 <script>
 import { MountingPortal } from 'portal-vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { SIDEBAR_PORTAL_ID } from '../constants';
 import { portalState } from '../state';
 
@@ -17,6 +18,7 @@ export default {
   components: {
     MountingPortal,
   },
+  mixins: [glSlotsMixin],
   data() {
     // This is shared state, by design. Do not mutate this state here.
     return portalState;
@@ -27,6 +29,6 @@ export default {
 
 <template>
   <mounting-portal v-if="ready" :mount-to="$options.mountSelector" append>
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </mounting-portal>
 </template>

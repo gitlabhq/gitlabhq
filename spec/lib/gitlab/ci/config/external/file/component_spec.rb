@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: :pipeline_composition do
-  let_it_be(:context_project) { create(:project, :repository) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:context_project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project_variables) { project.predefined_variables }
 
@@ -51,10 +51,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       ).and_return(fetch_service)
 
     allow(fetch_service).to receive(:execute).and_return(response)
-
-    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-      .with(:ci_interpolation_split_function)
-      .and_return(false)
   end
 
   describe '#matching?' do

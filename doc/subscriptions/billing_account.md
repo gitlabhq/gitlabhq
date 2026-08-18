@@ -6,9 +6,11 @@ description: Change billing account data and payment methods, pay for invoices, 
 title: Manage billing account
 ---
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 Customers Portal is your comprehensive self-service hub for [managing GitLab subscriptions](manage_subscription.md) and billing.
 You can purchase GitLab products, manage your subscriptions throughout the entire subscription lifecycle, view and pay invoices,
 and access your billing details and contact information.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [customers that purchased through a reseller](#subscription-purchased-through-a-reseller).
@@ -18,7 +20,7 @@ For more information, see [customers that purchased through a reseller](#subscri
 You can sign in to Customers Portal either with your GitLab.com account or a one-time sign-in link sent to your email (if you have not yet [linked your Customers Portal account to your GitLab.com account](#link-a-gitlabcom-account)).
 
 > [!note]
-> If you registered for Customers Portal with your GitLab.com account, sign in with this account.
+> If you created a user account for Customers Portal with your GitLab.com account, sign in with this account.
 
 To sign in to Customers Portal using your GitLab.com account:
 
@@ -109,7 +111,7 @@ To add another billing account manager for your account:
 The invited user receives an email with an invitation to Customers Portal.
 The invitation is valid for seven days.
 If the user does not accept the invitation before it expires, you can send them a new invitation.
-You can have maximum 15 pending invitations at a time.
+You can have a maximum of 15 pending invitations at a time.
 
 ### Remove a billing account manager
 
@@ -225,7 +227,7 @@ To link a GitLab.com account to your Customers Portal profile:
 ## Change the linked account
 
 If you want to link your Customers Portal account to a different GitLab.com account,
-you must use your GitLab.com account to register for a new Customers Portal profile.
+you must use your GitLab.com account to create a user account for a new Customers Portal profile.
 
 If you want to change subscription contacts, you can instead do either of the following:
 
@@ -345,7 +347,7 @@ Follow the instructions to [change your subscription contact](#change-your-subsc
 
 ### Error: `Email has already been taken`
 
-If the email address you want to register with is already in use in Customers Portal, you can either:
+If the email address you want to create a user account with is already in use in Customers Portal, you can either:
 
 - Provide an alternative email address.
 - Transfer the subscription ownership.

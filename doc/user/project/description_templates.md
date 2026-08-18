@@ -115,12 +115,6 @@ To discard any changes to the description you've made after selecting the templa
 
 ### Supported variables in merge request templates
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
-
-{{< /history >}}
-
 > [!note]
 > This feature is available only for
 > [the default template](#set-a-default-template-for-merge-requests-and-issues).
@@ -172,7 +166,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 - The project must be a direct child of the group.
 
-To re-use templates [you've created](description_templates.md#create-a-description-template):
+To re-use templates [you've created](#create-a-description-template):
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.

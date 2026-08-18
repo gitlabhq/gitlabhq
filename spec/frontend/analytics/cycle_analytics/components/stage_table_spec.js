@@ -21,7 +21,7 @@ const [firstReviewEvent] = reviewEventItems;
 const pagination = { page: 1, hasNextPage: true };
 
 const findStageEvents = () => wrapper.findAllByTestId('vsa-stage-event');
-const findPagination = () => wrapper.findByTestId('vsa-stage-pagination');
+const findPagination = () => wrapper.findComponentByTestId('vsa-stage-pagination');
 const findTable = () => wrapper.findComponent(GlTable);
 const findTableHead = () => wrapper.find('thead');
 const findTableHeadColumns = () => findTableHead().findAll('th');

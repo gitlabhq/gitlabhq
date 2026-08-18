@@ -157,7 +157,7 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category:
       render_component(diff_hunk)
       expect(page).to have_selector('td.rd-line-content[data-gfm-source]')
       expect(page).to have_selector('[data-line-coverage="5"][data-gfm-ignore]')
-      expect(page).to have_selector('[data-line-codequality="5"][data-gfm-ignore]')
+      expect(page).to have_selector('[data-line-inline-findings="5"][data-gfm-ignore]')
     end
   end
 
@@ -191,33 +191,33 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category:
     end
   end
 
-  describe 'code quality slot' do
+  describe 'inline findings slot' do
     it 'renders a slot on added lines carrying the new line number' do
       added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
       diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
       render_component(diff_hunk)
-      expect(page).to have_selector('[data-line-codequality="5"]')
+      expect(page).to have_selector('[data-line-inline-findings="5"]')
     end
 
     it 'renders a slot on context lines carrying the new line number' do
       context_line = Gitlab::Diff::Line.new(" context", nil, 1, 4, 5)
       diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [context_line])
       render_component(diff_hunk)
-      expect(page).to have_selector('[data-line-codequality="5"]')
+      expect(page).to have_selector('[data-line-inline-findings="5"]')
     end
 
     it 'does not render a slot on removed lines' do
       removed_line = Gitlab::Diff::Line.new("removed", 'old', 1, 5, nil)
       diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [removed_line])
       render_component(diff_hunk)
-      expect(page).not_to have_selector('[data-line-codequality]')
+      expect(page).not_to have_selector('[data-line-inline-findings]')
     end
 
     it 'does not render a slot on meta lines' do
       meta_line = Gitlab::Diff::Line.new("@@ -1,3 +1,3 @@", 'match', 1, 0, 0)
       diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [meta_line])
       render_component(diff_hunk)
-      expect(page).not_to have_selector('[data-line-codequality]')
+      expect(page).not_to have_selector('[data-line-inline-findings]')
     end
   end
 

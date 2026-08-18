@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_subscribe_weekly
 description: Count of WAU using the `/subscribe` quick action
-product_group: project_management
+product_group: work_items
 product_categories:
 - notifications
 value_type: number

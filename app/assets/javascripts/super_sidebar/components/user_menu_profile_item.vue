@@ -28,20 +28,15 @@ export default {
   },
   computed: {
     menuItem() {
-      const item = {
+      return {
         text: this.user.name,
-      };
-      if (this.user.has_link_to_profile) {
-        item.href = userPath(this.user.username);
-
-        item.extraAttrs = {
+        href: userPath(this.user.username),
+        extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_profile',
           'data-testid': 'user-profile-link',
-        };
-      }
-
-      return item;
+        },
+      };
     },
   },
 };

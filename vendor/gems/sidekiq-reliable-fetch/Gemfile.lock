@@ -2,12 +2,14 @@ PATH
   remote: .
   specs:
     gitlab-sidekiq-fetcher (0.12.1)
+      base64
       json (>= 2.5)
       sidekiq (~> 7.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    base64 (0.3.0)
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
@@ -61,6 +63,7 @@ DEPENDENCIES
   stub_env (~> 1.0)
 
 CHECKSUMS
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.2.2) sha256=3879119b8b75e3b62616acc256c64a134d0b0a7a9a3fcba5a233025bcde22c4f
   connection_pool (2.4.1) sha256=0f40cf997091f1f04ff66da67eabd61a9fe0d4928b9a3645228532512fab62f4
@@ -85,4 +88,4 @@ CHECKSUMS
   stub_env (1.0.4) sha256=6a63eac6463509f479352acb14c31de94b5a1bea74fd5f57230f62b70a63e517
 
 BUNDLED WITH
-   2.7.1
+  4.0.10

@@ -96,5 +96,14 @@ RSpec.shared_examples 'setting project protected branches' do
         expect(page).not_to have_content("development")
       end
     end
+
+    it "does not match branches beyond the wildcard rule", :aggregate_failures do
+      release_rule = create(:protected_branch, project: project, name: 'add-[a-z]*')
+
+      visit project_protected_branch_path(project, release_rule)
+
+      expect(page).to have_content("Couldn't find any matching branches.")
+      expect(page).not_to have_content('add-pdf-file')
+    end
   end
 end

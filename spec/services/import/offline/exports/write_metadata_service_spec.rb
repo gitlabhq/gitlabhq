@@ -45,6 +45,7 @@ RSpec.describe Import::Offline::Exports::WriteMetadataService, feature_category:
     subject(:service) { described_class.new(offline_export) }
 
     shared_examples 'a successful metadata export' do
+      let(:expected_source_hostname) { offline_export.configuration.source_hostname }
       let(:expected_entities_mapping) do
         {
           group.full_path => "group_#{group.id}",
@@ -60,7 +61,7 @@ RSpec.describe Import::Offline::Exports::WriteMetadataService, feature_category:
               'instance_version' => Gitlab::VERSION,
               'instance_enterprise' => Gitlab.ee?,
               'export_prefix' => offline_export.configuration.export_prefix,
-              'source_hostname' => Gitlab.config.gitlab.url,
+              'source_hostname' => expected_source_hostname,
               'entities_mapping' => hash_including(expected_entities_mapping)
             }
           ).and_call_original

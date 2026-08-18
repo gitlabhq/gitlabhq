@@ -56,7 +56,7 @@ export default {
     :is-run-untagged="runUntagged"
     :tag-list="tags"
     @next="onNext"
-    @onRequiredFieldsUpdate="onRequiredFieldsUpdate"
+    @on-required-fields-update="onRequiredFieldsUpdate"
   />
   <optional-fields
     v-else-if="currentStep === 2"
@@ -67,7 +67,7 @@ export default {
     :runner-type="runnerType"
     @next="onNext"
     @back="onBack"
-    @onGetNewRunnerId="onGetNewRunnerId"
+    @on-get-new-runner-id="onGetNewRunnerId"
   />
   <runner-registration
     v-else-if="currentStep === 3"

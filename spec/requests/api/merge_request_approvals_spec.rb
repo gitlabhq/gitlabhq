@@ -179,6 +179,36 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
         expect(response).to have_gitlab_http_status(:created)
       end
     end
+
+    context 'when the merge request is locked (a merge is in flight)' do
+      let_it_be(:unapprover) { create(:user) }
+      let(:merge_request) { create(:merge_request, :simple, :locked, author: user, source_project: project) }
+
+      before do
+        project.add_developer(unapprover)
+        create(:approval, user: unapprover, merge_request: merge_request)
+      end
+
+      it 'refuses to remove the approval and responds with 404' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(merge_request.reload.approved_by?(unapprover)).to be(true)
+      end
+
+      context 'when the prevent_approval_removal_during_merge flag is disabled' do
+        before do
+          stub_feature_flags(prevent_approval_removal_during_merge: false)
+        end
+
+        it 'removes the approval and responds with 201' do
+          post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(merge_request.reload.approved_by?(unapprover)).to be(false)
+        end
+      end
+    end
   end
 
   describe 'PUT :id/merge_requests/:merge_request_iid/reset_approvals' do

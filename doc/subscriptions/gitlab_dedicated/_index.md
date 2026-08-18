@@ -108,12 +108,12 @@ By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/se
 {{< /details >}}
 
 Cloudflare is implemented as a web application firewall (WAF) for distributed denial-of-service (DDoS)
-protection and related security capabilities. The WAF implementation and configuration is managed by the GitLab SRE team.
+protection and related security capabilities. The WAF implementation and configuration are managed by the GitLab SRE team.
 Direct access to WAF configuration or logs is not available.
 
 ### Compliance
 
-GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security, and reliability of your data.
+GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security and reliability of your data.
 
 #### View compliance and certification details
 
@@ -146,7 +146,7 @@ In tenant accounts, GitLab Dedicated uses:
 
 #### Audit and observability
 
-You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
+You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and meet compliance requirements.
 
 ### Custom domains
 
@@ -191,6 +191,8 @@ The object types that support direct downloads include:
 - [User uploads](../../administration/uploads.md)
 
 When you download one of the above object types, your browser or client connects directly to Amazon S3 rather than routing through GitLab infrastructure.
+
+If your network has no internet egress, your runners run in an offline environment, or your compliance requirements prohibit pre-signed URLs on the public internet, you can keep this traffic on the AWS network with S3 VPC endpoints. For more information, see [private S3 access for object storage](../../administration/dedicated/configure_instance/network_security.md#private-s3-access-for-object-storage).
 
 ### Application
 
@@ -395,19 +397,30 @@ The following are not included in service level availability calculations:
 ### Disaster recovery
 
 For more information about disaster recovery, including recovery objectives, see
-[disaster recovery for GitLab Dedicated](../../administration/dedicated/disaster_recovery.md).
+[disaster recovery](../../administration/dedicated/disaster_recovery.md).
 
 ## Migrate to GitLab Dedicated
 
-To migrate your data to GitLab Dedicated:
+How you migrate to GitLab Dedicated depends on your source system.
 
-- From another GitLab instance:
-  - Use [direct transfer](../../user/group/import/_index.md).
-  - Use the [direct transfer API](../../api/bulk_imports.md).
-- From third-party services:
-  - Use the [import sources](../../user/import/_index.md) (migration tools).
-- For complex migrations:
-  - Engage [Professional Services](../../user/import/_index.md#migrate-by-engaging-professional-services).
+To migrate a complete GitLab Self-Managed instance, use
+[Geo](../../administration/dedicated/geo_migration.md).
+Consider Geo first, because it replicates your entire instance and migrates the most complete set of data.
+
+To migrate specific groups and projects from GitLab Self-Managed or GitLab.com, use one of
+these importers:
+
+- Direct transfer: Uses a direct connection between instances to copy groups and projects.
+  Direct transfer is the recommended method. You can also automate it with the
+  [direct transfer API](../../api/bulk_imports.md).
+- File exports: Gives you a portable package of your data that works in offline environments.
+
+To migrate from third-party services, use the [import sources](../../user/import/_index.md),
+which provide a migration tool for some third-party platforms.
+
+For complex migrations, engage
+[Professional Services](../../user/import/_index.md#migrate-by-engaging-professional-services)
+to plan and run the migration.
 
 ## Expired subscriptions
 

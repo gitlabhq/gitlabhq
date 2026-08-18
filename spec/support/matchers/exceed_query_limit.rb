@@ -63,7 +63,7 @@ module ExceedQueryLimitHelpers
     end
   end
 
-  MARGINALIA_ANNOTATION_REGEX = %r{\s*/\*.*\*/}
+  SQL_ANNOTATION_REGEX = %r{\s*/\*.*\*/}
 
   DB_QUERY_RE = Regexp.union(
     [
@@ -99,6 +99,13 @@ module ExceedQueryLimitHelpers
     self
   end
 
+  # Only use this for pre-existing specs. New specs must use consistent
+  # `skip_cached` values between the compared query recorders.
+  def allow_skip_cache_inconsistency
+    @skip_cache_inconsistency_allowed = true
+    self
+  end
+
   def threshold
     @threshold.to_i
   end
@@ -116,9 +123,41 @@ module ExceedQueryLimitHelpers
   end
 
   def query_recorder_count(query_recorder)
+    verify_skip_cached_consistency!(query_recorder)
+
     return query_recorder.count unless @query || @ignoring_pattern
 
     query_log(query_recorder).size
+  end
+
+  def verify_skip_cached_consistency!(query_recorder)
+    return if query_recorder.skip_cached == skip_cached
+
+    @skip_cache_inconsistency_found = true
+    return if @skip_cache_inconsistency_allowed
+
+    raise ArgumentError, <<~MSG
+      The `skip_cached` value of the compared query recorders does not match
+      (the provided QueryRecorder was created with `skip_cached: #{query_recorder.skip_cached}`,
+      while this matcher uses `skip_cached: #{skip_cached}`), which can lead to false positives.
+
+      Create the QueryRecorder with `skip_cached: #{skip_cached}` to match this matcher, or use
+      a matcher whose `skip_cached` value matches the recorder's.
+
+      If this is a pre-existing spec that can't be fixed right away, chain
+      `.allow_skip_cache_inconsistency` on the matcher to skip this check.
+    MSG
+  end
+
+  def verify_no_unnecessary_inconsistency_allowance!
+    return unless @skip_cache_inconsistency_allowed
+    return if @skip_cache_inconsistency_found
+
+    raise ArgumentError, <<~MSG
+      `allow_skip_cache_inconsistency` is chained on this matcher, but the `skip_cached`
+      values of the compared query recorders match. Remove the unnecessary
+      `.allow_skip_cache_inconsistency` call.
+    MSG
   end
 
   def query_log(query_recorder)
@@ -157,7 +196,7 @@ module ExceedQueryLimitHelpers
   #    }
   #  }
   def count_queries(query_recorder)
-    strip_marginalia_annotations(query_log(query_recorder))
+    strip_sql_annotations(query_log(query_recorder))
       .map { |q| query_group_key(q) }
       .group_by { |k| k[:prefix] }
       .transform_values { |keys| frequencies(:suffix, keys) }
@@ -204,7 +243,12 @@ module ExceedQueryLimitHelpers
 
   def verify_count(&block)
     @subject_block = block
-    actual_count > maximum
+    result = actual_count > maximum
+    # These matchers are used with `not_to`, so the spec passes when the
+    # limit is not exceeded. Only check for an unnecessary allowance then,
+    # so the error doesn't mask a genuine failure message.
+    verify_no_unnecessary_inconsistency_allowance! unless result
+    result
   end
 
   def maximum
@@ -217,8 +261,8 @@ module ExceedQueryLimitHelpers
     "Expected a maximum of #{counts} queries, got #{actual_count}:\n\n#{log_message}"
   end
 
-  def strip_marginalia_annotations(logs)
-    logs.map { |log| log.sub(MARGINALIA_ANNOTATION_REGEX, '') }
+  def strip_sql_annotations(logs)
+    logs.map { |log| log.sub(SQL_ANNOTATION_REGEX, '') }
   end
 end
 
@@ -232,7 +276,7 @@ RSpec::Matchers.define :issue_fewer_queries_than do
   end
 
   def control_recorder
-    @control_recorder ||= ActiveRecord::QueryRecorder.new(&control)
+    @control_recorder ||= ActiveRecord::QueryRecorder.new(skip_cached: skip_cached, &control)
   end
 
   def expected_count
@@ -247,7 +291,11 @@ RSpec::Matchers.define :issue_fewer_queries_than do
     expected_count
     actual_count
 
-    actual_count < expected_count
+    result = actual_count < expected_count
+    # Only check for an unnecessary allowance when the spec passes, so the
+    # error doesn't mask a genuine failure message.
+    verify_no_unnecessary_inconsistency_allowance! if result
+    result
   end
 
   match do |block|
@@ -303,11 +351,16 @@ RSpec::Matchers.define :issue_same_number_of_queries_as do |expected|
     expected_count
     actual_count
 
-    if @or_fewer
-      actual_count <= expected_count
-    else
-      (expected_count - actual_count).abs <= threshold
-    end
+    result = if @or_fewer
+               actual_count <= expected_count
+             else
+               (expected_count - actual_count).abs <= threshold
+             end
+
+    # Only check for an unnecessary allowance when the spec passes, so the
+    # error doesn't mask a genuine failure message.
+    verify_no_unnecessary_inconsistency_allowance! if result
+    result
   end
 
   match do |block|
@@ -396,7 +449,11 @@ RSpec::Matchers.define :match_query_count do |expected|
 
   def verify_count(&block)
     @subject_block = block
-    actual_count == maximum
+    result = actual_count == maximum
+    # Only check for an unnecessary allowance when the spec passes, so the
+    # error doesn't mask a genuine failure message.
+    verify_no_unnecessary_inconsistency_allowance! if result
+    result
   end
 
   def failure_message

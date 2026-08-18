@@ -69,8 +69,8 @@ sidekiq -[#ff8dd1,norank]--> database
 
 > [!note]
 > When deploying Gitaly on Kubernetes, Gitaly only supports sharded (non-cluster) configurations. You can upgrade Gitaly without downtime through
-> [client retries](../../administration/settings/gitaly_timeouts.md). Each Gitaly pod is a single point of failure for the repositories it serves.
-> Gitaly Cluster (Praefect) is not supported on Kubernetes.
+> [client retries](../settings/gitaly_timeouts.md). Each Gitaly pod is a single point of failure for the repositories it serves.
+> Gitaly Cluster (Praefect) on Kubernetes is in beta (see [Gitaly Cluster on Kubernetes](../gitaly/praefect/_index.md#gitaly-cluster-on-kubernetes)) and is not included in this reference architecture.
 >
 > If you require Gitaly high availability with automatic failover, consider [Cloud Native Hybrid architectures](_index.md#cloud-native-hybrid), which deploy Gitaly Cluster on virtual machines while running stateless components in Kubernetes. For Gitaly on Kubernetes requirements and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#requirements).
 
@@ -84,7 +84,7 @@ For recommended managed service providers (such as GCP Cloud SQL, AWS RDS, Azure
 
 ## Available architectures
 
-These architectures are designed around target RPS ranges representing typical production workload patterns. RPS targets serve as starting points, your specific capacity needs depend on workload composition and usage patterns. For guidance on RPS composition and when adjustments are needed, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+These architectures are designed around target RPS ranges representing typical production workload patterns. RPS targets serve as starting points. Your specific capacity needs depend on workload composition and usage patterns. For guidance on RPS composition and when adjustments are needed, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
 | Size | Target RPS | Intended Workload |
 |------|------------|-------------------|
@@ -93,7 +93,7 @@ These architectures are designed around target RPS ranges representing typical p
 | L | ≤500 | Large teams with heavy development activity and significant automation |
 | XL | ≤1000 | Enterprise deployments with intensive workloads and extensive integrations |
 
-For detailed guidance on determining your expected load and selecting the appropriate size, see the [reference architecture sizing guide](sizing.md).
+For detailed guidance on determining your expected load and selecting the appropriate size, see the [reference architecture sizing guide](../../install/sizing.md).
 
 ## Key benefits
 
@@ -113,7 +113,7 @@ Before deploying a Cloud Native architecture, ensure you have:
 - Supported [Kubernetes cluster](https://docs.gitlab.com/charts/installation/cloud/) and other [Charts prerequisites](https://docs.gitlab.com/charts/installation/tools/) in place
 - External PostgreSQL instance with database(s), user(s) and extension(s) configured
 - External Redis instance(s)
-- Object storage service (S3, Google Cloud Storage, Azure Blob Storage or other)
+- Object storage service (S3, Google Cloud Storage, Azure Blob Storage, or other)
 
 For complete requirements including networking, machine types, and cloud provider services, see [reference architecture requirements](_index.md#requirements).
 
@@ -314,7 +314,7 @@ Gitaly in Kubernetes with the Cloud Native architectures uses StatefulSets with 
 
 By design, Gitaly (non-Cluster) on Kubernetes is a single point of failure service for repositories stored on each pod. Data is sourced and served from a single instance per pod. Each Gitaly pod manages its own set of repositories, providing horizontal scaling of Git storage through repository distribution.
 
-Gitaly Cluster (Praefect) is not supported in Cloud Native architectures. For context on Gitaly deployment limitations in Kubernetes, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
+Gitaly Cluster (Praefect) on Kubernetes is in beta and is not included in the Cloud Native architectures. For more information, see [Gitaly Cluster on Kubernetes](../gitaly/praefect/_index.md#gitaly-cluster-on-kubernetes) and [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 
 **Repository distribution:**
 
@@ -330,7 +330,7 @@ However, this configuration may not be optimal for all workloads. For environmen
 
 For detailed guidance on measuring, tuning, and configuring Gitaly cgroups, see [Gitaly cgroups](../gitaly/cgroups.md).
 
-For large monorepos (over 2 GB) or intensive Git workloads, additional Gitaly adjustments may be required. See [reference architecture sizing guide](sizing.md) for detailed guidance.
+For large monorepos (over 2 GB) or intensive Git workloads, additional Gitaly adjustments may be required. See [reference architecture sizing guide](../../install/sizing.md) for detailed guidance.
 
 ### External service notes
 
@@ -362,7 +362,7 @@ If you have well-understood load patterns you can adjust minimums based on your 
 Cloud Native architectures are designed to scale beyond their base specifications. You may need to adjust capacity if your environment has:
 
 - Consistently higher throughput than the listed RPS targets
-- Atypical workload composition (see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns))
+- Atypical workload composition (see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns))
 - Large monorepos (over 2 GB)
 - Significant additional workloads
 - Extensive GitLab Duo Agent Platform usage
@@ -415,7 +415,7 @@ For comprehensive scaling guidance, see [scaling an environment](_index.md#scali
 
 Prerequisites:
 
-- External PostgreSQL with required databases, users and permissions set up
+- External PostgreSQL with required databases, users, and permissions set up
 - External Redis instances configured and accessible
 - Object Storage buckets created
 - Kubernetes secrets created for authentication as required (PostgreSQL password, Redis passwords, Object Storage credentials, GitLab secrets)
@@ -452,7 +452,7 @@ After deployment, environments typically require monitoring and tuning to match 
 ### Monitor and validate
 
 1. **Monitor resource utilization** - Track CPU, memory, and queue depths across all components using [Prometheus](../monitoring/prometheus/_index.md)
-1. **Validate RPS assumptions** - Compare your actual [RPS breakdown](sizing.md#extract-peak-traffic-metrics) to the assumed 80/10/10 composition
+1. **Validate RPS assumptions** - Compare your actual [RPS breakdown](../../install/sizing.md#extract-peak-traffic-metrics) to the assumed 80/10/10 composition
 1. **Identify potential adjustments** - Look for components consistently above 70% utilization
 1. **Review Gitaly cgroups** - Consider tuning [repository cgroup counts](../gitaly/cgroups.md) based on your repository access patterns
 
@@ -460,8 +460,8 @@ After deployment, environments typically require monitoring and tuning to match 
 
 Reference architectures are starting points. Many environments benefit from adjustments based on:
 
-- **Actual workload composition** - If your API/Web/Git split differs significantly from typical patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns)
-- **Repository characteristics** - Monorepo sizes, clone frequency, and access patterns may require [component-specific adjustments](sizing.md#identify-component-adjustments)
+- **Actual workload composition** - If your API/Web/Git split differs significantly from typical patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns)
+- **Repository characteristics** - Monorepo sizes, clone frequency, and access patterns may require [component-specific adjustments](../../install/sizing.md#identify-component-adjustments)
 - **Growth patterns** - User count increases, CI/CD expansion, or automation scaling
 
 See [Advanced scaling](#advanced-scaling) for component-specific adjustment guidance.

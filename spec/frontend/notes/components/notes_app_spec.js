@@ -5,6 +5,7 @@ import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
 import { getActivePinia, PiniaVuePlugin, setActivePinia } from 'pinia';
 import VueApollo from 'vue-apollo';
+import { GlEmptyState } from '@gitlab/ui';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -102,7 +103,7 @@ describe('note_app', () => {
     );
   };
 
-  const findCommentButton = () => wrapper.find('[data-testid="comment-button"]');
+  const findCommentButton = () => wrapper.findComponent('[data-testid="comment-button"]');
 
   const getComponentOrder = () => {
     const nodes = wrapper.findAll('#notes-list,.js-comment-form');
@@ -722,6 +723,92 @@ describe('note_app', () => {
 
       expect(wrapper.findComponent(SystemNote).exists()).toBe(false);
       expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
+    });
+  });
+
+  describe('empty state', () => {
+    const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+
+    const mountEmptyState = ({ mrFilter = true, ...props } = {}) => {
+      wrapper = shallowMount(NotesApp, {
+        propsData: { ...propsData, ...props },
+        pinia,
+        provide: { mrFilter },
+        stubs: { 'ordered-layout': OrderedLayout },
+      });
+    };
+
+    it('shows empty state when mrFilter is true and there are no discussions', () => {
+      useNotes()[types.SET_NOTES_LOADING_STATE](false);
+      mountEmptyState();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props('title')).toBe('No activity to display');
+    });
+
+    it('does not show empty state when mrFilter is false', () => {
+      useNotes()[types.SET_NOTES_LOADING_STATE](false);
+      mountEmptyState({ mrFilter: false });
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('does not show empty state when there are discussions', () => {
+      useNotes()[types.SET_NOTES_LOADING_STATE](false);
+      useNotes()[types.ADD_NEW_NOTE]({ discussion: mockData.discussionMock });
+      mountEmptyState();
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('does not show empty state while loading', () => {
+      useNotes()[types.SET_NOTES_LOADING_STATE](true);
+      mountEmptyState();
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('does not show empty state before the first render (shouldShow is false)', () => {
+      useNotes()[types.SET_NOTES_LOADING_STATE](false);
+      mountEmptyState({ shouldShow: false });
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    describe('description', () => {
+      it('does not show description when the default notes filter and all MR filters are selected', () => {
+        useNotes()[types.SET_NOTES_LOADING_STATE](false);
+        mountEmptyState({ notesFilterValue: constants.DISCUSSION_FILTERS_DEFAULT_VALUE });
+
+        expect(findEmptyState().props('description')).toBeNull();
+      });
+
+      it('does not show description when the notes filter is unset and all MR filters are selected', () => {
+        useNotes()[types.SET_NOTES_LOADING_STATE](false);
+        mountEmptyState({ notesFilterValue: undefined });
+
+        expect(findEmptyState().props('description')).toBeNull();
+      });
+
+      it('shows description when a non-default notes filter is selected', () => {
+        useNotes()[types.SET_NOTES_LOADING_STATE](false);
+        mountEmptyState({ notesFilterValue: 1 });
+
+        expect(findEmptyState().props('description')).toBe(
+          'Select one or more filters to see activity.',
+        );
+      });
+
+      it('shows description when a subset of MR filters is selected', async () => {
+        useNotes()[types.SET_NOTES_LOADING_STATE](false);
+        mountEmptyState({ notesFilterValue: constants.DISCUSSION_FILTERS_DEFAULT_VALUE });
+        useNotes()[types.SET_MERGE_REQUEST_FILTERS](['bot_comments']);
+        await nextTick();
+
+        expect(findEmptyState().props('description')).toBe(
+          'Select one or more filters to see activity.',
+        );
+      });
     });
   });
 });

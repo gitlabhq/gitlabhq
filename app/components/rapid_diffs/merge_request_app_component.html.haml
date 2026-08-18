@@ -27,7 +27,7 @@
       %button.rd-new-discussion-toggle{ 'aria-label': s_('RapidDiffs|Add comment'), data: { new_discussion_toggle: true, click: 'newDiscussion', testid: 'new_discussion_toggle' }, hidden: true }
         = helpers.sprite_icon('comment', size: 12)
   - c.with_diffs_list do
-    = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diff_collection, merge_request: @presenter.resource, parallel_view: c.parallel_view?)
+    = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diff_collection, merge_request: @presenter.resource, conflict_resolution_path: @presenter.conflict_resolution_path, can_merge: @presenter.can_merge, parallel_view: c.parallel_view?)
 
 -# Load MR stylesheets after base app stylesheets for easier overrides
 - helpers.add_page_specific_style 'page_bundles/merge_request_rapid_diffs'

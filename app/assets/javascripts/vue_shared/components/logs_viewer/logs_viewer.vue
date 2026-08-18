@@ -1,6 +1,7 @@
 <script>
 import { isNumber, throttle } from 'lodash-es';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import LogLine from './log_line.vue';
 import LogsTopBar from './logs_top_bar.vue';
 
@@ -10,6 +11,7 @@ export default {
     LogLine,
     LogsTopBar,
   },
+  mixins: [glSlotsMixin],
   props: {
     logLines: {
       /* Array<{
@@ -110,10 +112,12 @@ export default {
     <logs-top-bar
       :is-full-screen="isFullScreen"
       :is-following="isFollowing"
-      @toggleFullScreen="toggleFullScreen"
-      @scrollToTop="onScrollToTop"
-      @scrollToBottom="onScrollToBottom"
-      ><slot name="header-details"></slot>
+      @toggle-full-screen="toggleFullScreen"
+      @scroll-to-top="onScrollToTop"
+      @scroll-to-bottom="onScrollToBottom"
+      ><template v-if="glSlots()['header-details']" #default
+        ><slot name="header-details"></slot
+      ></template>
     </logs-top-bar>
     <code class="gl-block gl-bg-black gl-pt-3 gl-text-base">
       <log-line

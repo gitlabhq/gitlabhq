@@ -55,7 +55,7 @@ Lists all runners available to the user.
 Prerequisites:
 
 - For group runners, you must have the Owner role in the owner namespace.
-- For project runners, you must have the Security Manager, Maintainer or Owner role in a project assigned to the runner.
+- For project runners, you must have the Security Manager, Maintainer, or Owner role in a project assigned to the runner.
 
 ```plaintext
 GET /runners
@@ -256,7 +256,7 @@ Prerequisites:
 
 - User access: You must have one of the following:
   - For group runners: The Maintainer or Owner role in the owner namespace.
-  - For project runners: The Security Manager, Maintainer or Owner role in the project that owns the runner.
+  - For project runners: The Security Manager, Maintainer, or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 - An access token with the `manage_runner` scope and the appropriate role.
 
@@ -483,7 +483,7 @@ GET /runners/:id/jobs
 |-------------|---------|----------|-------------|
 | `id`        | integer | yes      | The ID of a runner |
 | `system_id` | string  | no       | System ID of the machine where the runner manager is running |
-| `status`    | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
+| `status`    | string  | no       | Status of the job; one of: `created`, `waiting_for_resource`, `preparing`, `waiting_for_callback`, `pending`, `running`, `success`, `failed`, `canceling`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `order_by`  | string  | no       | Order jobs by `id` |
 | `sort`      | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`). If `sort` is specified, `order_by` must be specified as well |
 
@@ -797,7 +797,7 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 | Attribute        | Type         | Required | Description |
 |------------------|--------------|----------|-------------|
 | `id`             | integer      | yes      | The ID of the group |
-| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`. The `project_type` value is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) and is scheduled for removal in GitLab 15.0 |
+| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`. The `project_type` value is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) and is scheduled for removal in a future version of the REST API |
 | `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
 | `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs |
 | `tag_list`       | string array | no       | A list of runner tags |
@@ -1161,7 +1161,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19607) in GitLab 18.7 [with feature flags](../administration/feature_flags/_index.md) named `job_router` and `job_router_instance_runners`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19607) in GitLab 18.7 [with feature flags](../administration/feature_flags/_index.md) named `job_router` and `job_router_instance_runners`. Disabled by default.
 
 {{< /history >}}
 

@@ -12,12 +12,6 @@ title: Project-level CI/CD variables API
 
 {{< /details >}}
 
-{{< history >}}
-
-- Introduced [`filter`](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
-
-{{< /history >}}
-
 Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-a-project) for a project.
 
 ## List project variables
@@ -139,7 +133,7 @@ POST /projects/:id/variables
 | `id`                | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key`               | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`             | string         | Yes      | The `value` of a variable |
-| `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
+| `description`       | string         | No       | The description of the variable. Default: `null`. |
 | `environment_scope` | string         | No       | The `environment_scope` of the variable. Default: `*` |
 | `masked`            | boolean        | No       | Whether the variable is masked. Default: `false` |
 | `masked_and_hidden` | boolean        | No       | Whether the variable is masked and hidden. Default: `false` |
@@ -187,7 +181,7 @@ PUT /projects/:id/variables/:key
 | `id`                | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `key`               | string            | Yes      | Key of a variable. |
 | `value`             | string            | Yes      | Value of a variable. |
-| `description`       | string            | No       | Description of the variable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. Default: `null`. |
+| `description`       | string            | No       | Description of the variable. Default: `null`. |
 | `environment_scope` | string            | No       | Environment scope of the variable. |
 | `filter`            | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. |
 | `masked`            | boolean           | No       | If `true`, indicates the variable is masked. |

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlAlert,
@@ -67,6 +68,7 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_CRM_CONTACTS,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_DEVELOPMENT,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
   DEFAULT_EPIC_COLORS,
@@ -79,8 +81,7 @@ import {
   WORK_ITEM_CREATE_SOURCES,
   WORK_ITEM_TYPE_NAME_TICKET,
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
-  CREATION_CONTEXT_RELATED_ITEM,
-  CREATION_CONTEXT_SUPER_SIDEBAR,
+  CREATION_CONTEXT_NEW_ROUTE,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -124,14 +125,24 @@ export default {
     TitleSuggestions,
     WorkItemParent,
     WorkItemDates,
-    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
-    WorkItemHealthStatus: () =>
-      import('ee_component/work_items/components/work_item_health_status.vue'),
-    WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
-    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
-    WorkItemCustomFields: () =>
-      import('ee_component/work_items/components/work_item_custom_fields.vue'),
-    WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
+    WorkItemWeight: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_weight.vue'),
+    ),
+    WorkItemHealthStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_health_status.vue'),
+    ),
+    WorkItemColor: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_color.vue'),
+    ),
+    WorkItemIteration: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    ),
+    WorkItemCustomFields: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_custom_fields.vue'),
+    ),
+    WorkItemStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_status.vue'),
+    ),
     PageHeading,
     WorkItemMetadataProvider,
   },
@@ -221,6 +232,16 @@ export default {
       validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    mergeRequestLinkType: {
+      type: String,
+      required: false,
+      default: null,
+    },
     shouldDiscardDraft: {
       type: Boolean,
       required: false,
@@ -236,7 +257,20 @@ export default {
       required: false,
       default: '',
     },
-    fromGlobalMenu: {
+    /**
+     * Shows the group/project selector and lets the user create the item in any
+     * namespace they have access to, instead of being limited to the current one.
+     */
+    allowAnyNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    /**
+     * Restricts the namespace selector to projects. Use for callers that can
+     * only create work item types which do not exist at the group level.
+     */
+    allowProjectsOnly: {
       type: Boolean,
       required: false,
       default: false,
@@ -338,6 +372,10 @@ export default {
       variables() {
         return {
           fullPath: this.inputNamespacePath,
+          // Scoped to the selected namespace, not the page's, so it must not overwrite the
+          // page namespace's filterable flags.
+          // See issue https://gitlab.com/gitlab-org/gitlab/-/work_items/606810
+          includeFilterableFlags: false,
         };
       },
       update(data) {
@@ -680,7 +718,16 @@ export default {
         : this.groupPath;
     },
     shouldShowNamespaceSelector() {
-      return this.fromGlobalMenu || (this.isGroup && this.hasEpicsFeature);
+      // When the form asks for a project (Issues/Tasks/Incidents on a group page),
+      // keep creation project-scoped even if group Epic support would otherwise
+      // show the Group/project namespace selector.
+      return (
+        this.allowAnyNamespace ||
+        (this.isGroup && this.hasEpicsFeature && !this.showProjectSelector)
+      );
+    },
+    namespaceSelectorLabel() {
+      return this.allowProjectsOnly ? __('Project') : __('Group/project');
     },
     workItemWidgetsAutoSaveKey() {
       return getNewWorkItemWidgetsAutoSaveKey({
@@ -777,20 +824,19 @@ export default {
         return;
       }
 
-      // The follow up title and description can come from the backend for the following three use cases except for
-      // when Work Item is being created from contexts like; super-sidebar, related-item or description checklist
-      // 1. when resolving a discussion in the MR and we have the merge request id in the query param
-      // 2. when the issue and title are added in the query param . read https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
-      // 3. when following up a work item with a vulnerability, where we have the vulnerability id in the query param
+      // The follow-up title and description are server-rendered into hidden
+      // `.params-*` nodes only on the new work item full page (the `new`
+      // controller action renders the show view with an unsaved work item) for:
+      // 1. resolving a discussion in an MR (merge request id query param)
+      // 2. prefilling via URL query params, see https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
+      // 3. following up a work item with a vulnerability (vulnerability id query param)
+      // Only the new-route page carries these nodes. Other contexts (e.g. the list
+      // modal) share the SPA document with the work item detail view, whose
+      // `.params-*` nodes hold the viewed item's title and description and would
+      // otherwise leak into the new item form.
       let workItemTitle = '';
       let workItemDescription = '';
-      if (
-        ![
-          CREATION_CONTEXT_SUPER_SIDEBAR,
-          CREATION_CONTEXT_RELATED_ITEM,
-          CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
-        ].includes(this.creationContext)
-      ) {
+      if (this.creationContext === CREATION_CONTEXT_NEW_ROUTE) {
         workItemTitle = document.querySelector('.params-title')?.textContent.trim();
         workItemDescription = document.querySelector('.params-description')?.textContent.trim();
       }
@@ -814,7 +860,7 @@ export default {
       const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
 
       /**
-       * Override to use the preselected work item type when using creation context descriptiion checklist
+       * Override to use the preselected work item type when using creation context description checklist
        * https://gitlab.com/gitlab-org/gitlab/-/work_items/585444
        * We do not want the last work item type/ draft work item type overriding the valid
        * child work item item in the task list
@@ -1056,6 +1102,13 @@ export default {
         };
       }
 
+      if (this.mergeRequestId && this.isWidgetSupported(WIDGET_TYPE_DEVELOPMENT)) {
+        workItemCreateInput.developmentWidget = {
+          mergeRequestIds: [this.mergeRequestId],
+          ...(this.mergeRequestLinkType && { linkType: this.mergeRequestLinkType }),
+        };
+      }
+
       if (
         this.parentId ||
         (this.isWidgetSupported(WIDGET_TYPE_HIERARCHY) && this.workItemParent?.id)
@@ -1196,7 +1249,7 @@ export default {
 </script>
 
 <template>
-  <work-item-metadata-provider :full-path="fullPath">
+  <work-item-metadata-provider :full-path="fullPath" :include-filterable-flags="false">
     <form @submit.prevent="createWorkItem">
       <work-item-loading v-if="isLoading" class="gl-mt-5" />
       <template v-else>
@@ -1207,12 +1260,19 @@ export default {
 
         <div class="gl-flex gl-items-center gl-gap-4">
           <template v-if="shouldShowNamespaceSelector">
-            <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
+            <gl-form-group
+              class="gl-mr-4 gl-max-w-26 gl-flex-grow"
+              :label="namespaceSelectorLabel"
+              label-for="create-work-item-namespace"
+              data-testid="work-item-namespace-form-group"
+            >
               <work-item-namespace-listbox
                 v-model="selectedNamespacePath"
                 :full-path="fullPath"
                 :is-group="isGroup"
-                :limit-to-current-namespace="!fromGlobalMenu"
+                :limit-to-current-namespace="!allowAnyNamespace"
+                :projects-only="allowProjectsOnly"
+                toggle-id="create-work-item-namespace"
                 @selectNamespace="handleNamespaceSelect"
               />
             </gl-form-group>
@@ -1395,7 +1455,7 @@ export default {
                   :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
                   @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
-                  @parentMilestone="onParentMilestone"
+                  @parent-milestone="onParentMilestone"
                 />
                 <work-item-weight
                   v-if="workItemWeight"
@@ -1420,7 +1480,7 @@ export default {
                   :can-update="canUpdate"
                   @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
-                  @parentMilestone="onParentMilestone"
+                  @parent-milestone="onParentMilestone"
                 />
                 <work-item-iteration
                   v-if="workItemIteration"
@@ -1502,7 +1562,7 @@ export default {
           :class="formButtonsClasses"
           data-testid="form-buttons"
         >
-          <!-- We're duplicating information here in a differnet order, rather than reordering with CSS, to maintain correct tab ordering for accessibility -->
+          <!-- We're duplicating information here in a different order, rather than reordering with CSS, to maintain correct tab ordering for accessibility -->
           <!-- In modal, contribution guidelines come first; in standalone page, buttons come first -->
           <div v-if="isModal">
             <div v-if="contributionGuidePath" class="gl-text-sm">

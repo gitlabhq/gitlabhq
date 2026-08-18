@@ -3,11 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigation do
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:project) { create(:project, developers: user) }
 
   before do
-    stub_feature_flags(feature_library_modal: false)
     sign_in(user)
   end
 
@@ -27,33 +26,31 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
   end
 
+  describe 'default pins' do
+    let_it_be(:project_with_repo) { create(:project, :repository, developers: user) }
+
+    it 'adds sensible defaults' do
+      visit project_path(project_with_repo)
+
+      within_testid 'pinned-nav-items' do
+        expect(page).to have_link 'Members'
+        expect(page).to have_link 'Work items'
+        expect(page).to have_link 'Branches'
+        expect(page).to have_link 'Merge requests'
+        expect(page).to have_link 'Pipelines'
+      end
+    end
+  end
+
   describe 'pinnable navigation menu' do
     before do
+      user.update!(pinned_nav_items: { 'project' => %w[project_issue_list] })
       visit project_path(project)
     end
 
-    it 'adds sensible defaults' do
+    it 'shows the pinned items' do
       within_testid 'pinned-nav-items' do
         expect(page).to have_link 'Work items'
-      end
-    end
-
-    context 'when feature_library_modal is enabled' do
-      let_it_be(:project_with_repo) { create(:project, :repository, developers: user) }
-
-      before do
-        stub_feature_flags(feature_library_modal: true)
-        visit project_path(project_with_repo)
-      end
-
-      it 'adds enriched defaults' do
-        within_testid 'pinned-nav-items' do
-          expect(page).to have_link 'Members'
-          expect(page).to have_link 'Work items'
-          expect(page).to have_link 'Branches'
-          expect(page).to have_link 'Merge requests'
-          expect(page).to have_link 'Pipelines'
-        end
       end
     end
 
@@ -147,10 +144,11 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   describe 'keyboard behavior in pinnable navigation menu' do
     before do
+      user.update!(pinned_nav_items: { 'project' => %w[project_issue_list] })
       visit project_path(project)
     end
 
-    it 'adds sensible defaults' do
+    it 'shows the pinned items' do
       within_testid 'pinned-nav-items' do
         expect(page).to have_link 'Work items'
       end
@@ -219,6 +217,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   describe 'keyboard behavior with collapsed sidebar' do
     before do
+      user.update!(pinned_nav_items: { 'project' => %w[project_issue_list] })
       visit project_path(project)
       # Collapse the sidebar to icon-only mode
       find_by_testid('super-sidebar-collapse-button').click
@@ -295,6 +294,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   describe 'mouse behavior with collapsed sidebar' do
     before do
+      user.update!(pinned_nav_items: { 'project' => %w[project_issue_list] })
       visit project_path(project)
       # Collapse the sidebar to icon-only mode
       find_by_testid('super-sidebar-collapse-button').click
@@ -373,6 +373,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     let_it_be(:project_without_repo) { create(:project, :repository_disabled, developers: user) }
 
     before do
+      user.update!(pinned_nav_items: { 'project' => %w[project_issue_list project_merge_request_list] })
       visit project_path(project_with_repo)
       within '#super-sidebar' do
         click_on 'Code'
@@ -398,6 +399,30 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
           .map(&:text)
           .map { |text| text.split("\n").first } # to drop the counter badge text from "Issues\n0"
         expect(pinned_items).to eq ["Work items", "Merge requests", "Commits", "Members", "Activity"]
+      end
+    end
+  end
+
+  describe 'when hide_unpinned_sidebar_items is enabled' do
+    let_it_be(:maintainer_project) { create(:project, maintainers: user) }
+
+    before do
+      # Overrides the global stub in spec_helper.rb (hide_unpinned_sidebar_items: false)
+      # to test the enabled state.
+      stub_feature_flags(hide_unpinned_sidebar_items: true)
+      visit project_path(maintainer_project)
+    end
+
+    it 'shows pinned items and settings but hides other navigation sections' do
+      within '#super-sidebar' do
+        within_testid 'pinned-nav-items' do
+          expect(page).to have_link 'Work items'
+        end
+
+        expect(page).to have_button 'Settings'
+        expect(page).not_to have_button 'Manage'
+        expect(page).not_to have_button 'Plan'
+        expect(page).not_to have_button 'Code'
       end
     end
   end

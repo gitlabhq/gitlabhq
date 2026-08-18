@@ -1,0 +1,29 @@
+# @feature_category: portfolio_management
+mutation createMergeRequestWorkItemRelation(
+  $projectPath: ID!
+  $iid: String!
+  $workItemIds: [WorkItemID!]!
+  $linkType: MergeRequestWorkItemLinkType
+) {
+  mergeRequestCreateWorkItemRelations(
+    input: { projectPath: $projectPath, iid: $iid, workItemIds: $workItemIds, linkType: $linkType }
+  ) {
+    errors
+    workItemRelations {
+      id
+      linkType
+      fromMrDescription
+      workItem {
+        id
+        iid
+        title
+        webPath
+        webUrl
+        namespace {
+          id
+          fullPath
+        }
+      }
+    }
+  }
+}

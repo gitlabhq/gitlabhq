@@ -115,3 +115,5 @@ module Import
     end
   end
 end
+
+Import::Offline::Imports::Projects::Stage.prepend_mod_with('Import::Offline::Imports::Projects::Stage')

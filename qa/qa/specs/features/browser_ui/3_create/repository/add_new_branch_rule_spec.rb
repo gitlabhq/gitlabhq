@@ -19,8 +19,7 @@ module QA
           ])
       end
 
-      it 'adds a new branch rule',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/397587' do
+      it 'adds a new branch rule' do
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_repository_settings)

@@ -92,9 +92,9 @@ describe('ErrorDetails', () => {
   };
 
   const findUpdateIgnoreStatusButton = () =>
-    wrapper.find('[data-testid="update-ignore-status-btn"]');
+    wrapper.findComponent('[data-testid="update-ignore-status-btn"]');
   const findUpdateResolveStatusButton = () =>
-    wrapper.find('[data-testid="update-resolve-status-btn"]');
+    wrapper.findComponent('[data-testid="update-resolve-status-btn"]');
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createComponent = async ({
@@ -332,7 +332,7 @@ describe('ErrorDetails', () => {
       it('should submit the form', () => {
         window.HTMLFormElement.prototype.submit = () => {};
         const submitSpy = jest.spyOn(wrapper.vm.$refs.sentryIssueForm, 'submit');
-        wrapper.find('[data-testid="create-issue-button"]').vm.$emit('click');
+        wrapper.findComponent('[data-testid="create-issue-button"]').vm.$emit('click');
         expect(submitSpy).toHaveBeenCalled();
         submitSpy.mockRestore();
       });
@@ -539,7 +539,7 @@ describe('ErrorDetails', () => {
       it('should track create issue button click', async () => {
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-        await wrapper.find('[data-testid="create-issue-button"]').vm.$emit('click');
+        await wrapper.findComponent('[data-testid="create-issue-button"]').vm.$emit('click');
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_create_issue_from_error',
           {

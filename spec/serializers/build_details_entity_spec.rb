@@ -237,7 +237,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
         end
 
         it 'artifact locked is false' do
-          expect(subject.dig(:artifact, :locked)).to eq(false)
+          expect(subject.dig(:artifact, :locked)).to be(false)
         end
 
         it 'does not expose any artifact actions path' do
@@ -251,7 +251,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
         end
 
         it 'artifact locked is true' do
-          expect(subject.dig(:artifact, :locked)).to eq(true)
+          expect(subject.dig(:artifact, :locked)).to be(true)
         end
 
         it 'exposes download, browse and keep artifact actions path' do

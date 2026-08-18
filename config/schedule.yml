@@ -291,6 +291,10 @@ merge_requests_process_scheduled_merge:
   class: MergeRequests::ProcessScheduledMergeWorker
   cron: "*/1 * * * *"
 
+mobile_push_prune_stale_subscriptions_worker:
+  class: Notifications::MobilePush::PruneStaleSubscriptionsWorker
+  cron: "0 4 * * *"
+
 namespaces_process_outdated_namespace_descendants_cron_worker:
   class: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
   cron: "*/1 * * * *"
@@ -451,8 +455,12 @@ users_migrate_human_records_to_ghost_user_in_batches_worker:
   class: Users::MigrateHumanRecordsToGhostUserInBatchesWorker
   cron: "*/2 * * * *"
 
-users_migrate_non_human_records_to_ghost_user_in_batches_worker:
-  class: Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker
+users_migrate_service_account_records_to_ghost_user_in_batches_worker:
+  class: Users::MigrateServiceAccountRecordsToGhostUserInBatchesWorker
+  cron: "*/2 * * * *"
+
+users_migrate_project_bot_records_to_ghost_user_in_batches_worker:
+  class: Users::MigrateProjectBotRecordsToGhostUserInBatchesWorker
   cron: "*/2 * * * *"
 
 version_version_check_cron:

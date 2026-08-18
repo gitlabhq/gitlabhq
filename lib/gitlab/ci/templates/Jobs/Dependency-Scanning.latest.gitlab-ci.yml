@@ -276,7 +276,7 @@ dependency-scanning:
     INTERNAL_DS_ANALYZER_CI_INTEGRATION: "template::latest"
   stage: !reference [.ds-analyzer, stage]
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/dependency-scanning:1"
+    name: "$SECURE_ANALYZERS_PREFIX/dependency-scanning:2"
   script:
     - |
       echo "Using Dependency-Scanning.latest.gitlab-ci.yml"

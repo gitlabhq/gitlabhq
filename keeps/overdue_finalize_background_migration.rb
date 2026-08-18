@@ -161,8 +161,9 @@ module Keeps
     end
 
     def last_migration_for_job(job_name)
-      files = ::Gitlab::Housekeeper::Shell.execute('git', 'grep', '--name-only', "MIGRATION = .#{job_name}.")
-        .each_line.map(&:chomp)
+      files = ::Gitlab::Housekeeper::Shell.execute(
+        'git', 'grep', '--name-only', "MIGRATION = .#{job_name}.", '--', 'db/migrate/*.rb', 'db/post_migrate/*.rb'
+      ).each_line.map(&:chomp)
 
       result = files.select do |file|
         File.read(file).include?('queue_batched_background_migration')

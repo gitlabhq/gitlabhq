@@ -115,6 +115,31 @@ ee/lib/api/entities/work_items/features/color.rb:
   fields:
   - color
   - text_color
+ee/lib/api/entities/work_items/features/custom_fields.rb:
+  usage_radius: 18
+  fields:
+  - active
+  - created_at
+  - created_by
+  - custom_field
+  - custom_field_values
+  - field_type
+  - id
+  - name
+  - select_options
+  - selected_options
+  - updated_at
+  - updated_by
+  - value
+  - work_item_types
+ee/lib/api/entities/work_items/features/feature_flag.rb:
+  usage_radius: 18
+  fields:
+  - active
+  - id
+  - name
+  - path
+  - reference
 ee/lib/api/entities/work_items/features/health_status.rb:
   usage_radius: 18
   fields:
@@ -736,6 +761,18 @@ lib/api/entities/personal_access_token.rb:
   - revoked
   - scopes
   - user_id
+lib/api/entities/personal_access_token_granular_scope.rb:
+  usage_radius: 25
+  fields:
+  - access
+  - group_id
+  - permissions
+  - project_id
+lib/api/entities/personal_access_token_with_last_used_ips.rb:
+  usage_radius: 16
+  fields:
+  - granular_scopes
+  - last_used_ips
 lib/api/entities/platform/kubernetes.rb:
   usage_radius: 15
   fields:
@@ -769,6 +806,7 @@ lib/api/entities/project.rb:
   - ci_pipeline_variables_minimum_override_role
   - ci_push_repository_for_job_token_allowed
   - ci_separated_caches
+  - cicd_catalog_enabled
   - cluster_agents
   - container_expiration_policy
   - container_registry_access_level
@@ -974,6 +1012,12 @@ lib/api/entities/work_items/features/award_emoji.rb:
   - downvotes
   - new_custom_emoji_path
   - upvotes
+lib/api/entities/work_items/features/closing_merge_request.rb:
+  usage_radius: 18
+  fields:
+  - from_mr_description
+  - id
+  - merge_request
 lib/api/entities/work_items/features/description.rb:
   usage_radius: 18
   fields:
@@ -992,6 +1036,7 @@ lib/api/entities/work_items/features/development.rb:
   usage_radius: 18
   fields:
   - closing_merge_requests_count
+  - will_auto_close_by_merge_request
 lib/api/entities/work_items/features/error_tracking.rb:
   usage_radius: 18
   fields:
@@ -1040,6 +1085,7 @@ lib/api/entities/work_items/features/work_item_reference.rb:
   - reference
   - state
   - title
+  - title_html
   - web_path
   - web_url
   - work_item_type

@@ -20,7 +20,7 @@ encryption and storage limits.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19738) in GitLab 18.8.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19738) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -47,12 +47,6 @@ To configure Terraform state encryption:
 > Existing encrypted files remain encrypted and continue to work as expected.
 
 ## Terraform state storage limits
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352951) in GitLab 15.7.
-
-{{< /history >}}
 
 You can limit the total storage of [Terraform state files](../terraform_state.md).
 The limit applies to each individual state file version and is checked when a new version is created.

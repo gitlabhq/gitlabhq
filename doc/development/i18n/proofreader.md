@@ -53,7 +53,8 @@ are very appreciative of the work done by translators and proofreaders!
 - Filipino
   - Proofreaders needed.
 - French
-  - Xavier Delatour - [GitLab](https://gitlab.com/xdelatour), [Crowdin](https://crowdin.com/profile/xdelatour)
+  - Maud Leuenberger - [GitLab](https://gitlab.com/maud-L), [Crowdin](https://crowdin.com/profile/maud-l)
+  - Laura Python - [GitLab](https://gitlab.com/lpython-ext), [Crowdin](https://crowdin.com/profile/lpython-ext)
 - Galician
   - Proofreaders needed.
 - German

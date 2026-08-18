@@ -4,7 +4,6 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { visitUrl } from '~/lib/utils/url_utility';
 import MembersApp from '~/members/components/app.vue';
 import MembersTabs from '~/members/components/members_tabs.vue';
 import {
@@ -16,87 +15,100 @@ import {
 } from '~/members/constants';
 import { pagination } from '../mock_data';
 
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  visitUrl: jest.fn().mockName('visitUrlMock'),
-}));
-
 describe('MembersTabs', () => {
   Vue.use(Vuex);
 
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
-  const createComponent = ({ totalItems = 10, provide = {} } = {}) => {
-    const store = new Vuex.Store({
-      modules: {
-        [MEMBERS_TAB_TYPES.user]: {
-          namespaced: true,
-          state: {
-            pagination: {
-              ...pagination,
-              totalItems,
-            },
-            filteredSearchBar: {
-              searchParam: 'search',
-            },
+  let fetchMembersMock;
+
+  const createComponent = ({
+    totalItems = 10,
+    provide = {},
+    directMembersState = {},
+    includeDirectMembersModule = true,
+  } = {}) => {
+    fetchMembersMock = jest.fn();
+
+    const modules = {
+      [MEMBERS_TAB_TYPES.user]: {
+        namespaced: true,
+        state: {
+          pagination: {
+            ...pagination,
+            totalItems,
           },
-        },
-        [MEMBERS_TAB_TYPES.directMembers]: {
-          namespaced: true,
-          state: {
-            pagination: {
-              ...pagination,
-              totalItems,
-              paramName: 'direct_members_page',
-            },
-            filteredSearchBar: {
-              searchParam: 'search_direct_members',
-            },
-          },
-        },
-        [MEMBERS_TAB_TYPES.group]: {
-          namespaced: true,
-          state: {
-            pagination: {
-              ...pagination,
-              totalItems,
-              paramName: 'groups_page',
-            },
-            filteredSearchBar: {
-              searchParam: 'search_groups',
-              tokens: [FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS.type],
-            },
-          },
-        },
-        [MEMBERS_TAB_TYPES.invite]: {
-          namespaced: true,
-          state: {
-            pagination: {
-              ...pagination,
-              totalItems,
-              paramName: 'invited_page',
-            },
-            filteredSearchBar: {
-              searchParam: 'search_invited',
-            },
-          },
-        },
-        [MEMBERS_TAB_TYPES.accessRequest]: {
-          namespaced: true,
-          state: {
-            pagination: {
-              ...pagination,
-              totalItems,
-              paramName: 'access_requests_page',
-            },
-            filteredSearchBar: {
-              searchParam: 'search_access_requests',
-            },
+          filteredSearchBar: {
+            searchParam: 'search',
           },
         },
       },
-    });
+      [MEMBERS_TAB_TYPES.group]: {
+        namespaced: true,
+        state: {
+          pagination: {
+            ...pagination,
+            totalItems,
+            paramName: 'groups_page',
+          },
+          filteredSearchBar: {
+            searchParam: 'search_groups',
+            tokens: [FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS.type],
+          },
+        },
+      },
+      [MEMBERS_TAB_TYPES.invite]: {
+        namespaced: true,
+        state: {
+          pagination: {
+            ...pagination,
+            totalItems,
+            paramName: 'invited_page',
+          },
+          filteredSearchBar: {
+            searchParam: 'search_invited',
+          },
+        },
+      },
+      [MEMBERS_TAB_TYPES.accessRequest]: {
+        namespaced: true,
+        state: {
+          pagination: {
+            ...pagination,
+            totalItems,
+            paramName: 'access_requests_page',
+          },
+          filteredSearchBar: {
+            searchParam: 'search_access_requests',
+          },
+        },
+      },
+    };
+
+    // The Direct members tab is only wired up on the project members page. Omit
+    // its store module to simulate the group members page (shared `TABS` array).
+    if (includeDirectMembersModule) {
+      modules[MEMBERS_TAB_TYPES.directMembers] = {
+        namespaced: true,
+        actions: {
+          fetchMembers: fetchMembersMock,
+        },
+        state: {
+          pagination: {
+            ...pagination,
+            totalItems,
+            paramName: 'direct_members_page',
+          },
+          filteredSearchBar: {
+            searchParam: 'search_direct_members',
+          },
+          ...directMembersState,
+        },
+      };
+    }
+
+    const store = new Vuex.Store({ modules });
 
     wrapper = mountExtended(MembersTabs, {
       store,
@@ -166,38 +178,50 @@ describe('MembersTabs', () => {
   });
 
   describe('when tabs do not have a count', () => {
-    it('only renders `Members` tab', async () => {
+    it('renders `Members` and always-shown `Direct members` tabs only', async () => {
       await createComponent({ totalItems: 0 });
 
+      // `Direct members` is always shown because its members are fetched lazily
+      // on activation, so its count is 0 on initial load.
       expect(findTabByText('Members')).not.toBeUndefined();
-      expect(findTabByText('Direct members')).toBeUndefined();
+      expect(findTabByText('Direct members')).not.toBeUndefined();
       expect(findTabByText('Groups')).toBeUndefined();
       expect(findTabByText('Pending invitations')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
     });
 
-    describe('when url param matches `filteredSearchBar.searchParam`', () => {
-      beforeEach(() => {
-        setWindowLocation('?search_groups=foo+bar');
-      });
+    it('does not show the always-shown `Direct members` tab when it has no store module', async () => {
+      // Simulates the group members page, which shares the `TABS` array but does
+      // not build a `directMembers` store module, so `alwaysShow` must not surface
+      // an empty, data-less tab there.
+      await createComponent({ totalItems: 0, includeDirectMembersModule: false });
 
-      it('shows tab that corresponds to search param', async () => {
-        await createComponent({ totalItems: 0 });
+      expect(findTabByText('Members')).not.toBeUndefined();
+      expect(findTabByText('Direct members')).toBeUndefined();
+    });
+  });
 
-        expect(findTabByText('Groups')).not.toBeUndefined();
-      });
+  describe('when url param matches `filteredSearchBar.searchParam`', () => {
+    beforeEach(() => {
+      setWindowLocation('?search_groups=foo+bar');
     });
 
-    describe('when url param matches `filteredSearchBar.tokens`', () => {
-      beforeEach(() => {
-        setWindowLocation('?groups_with_inherited_permissions=exclude');
-      });
+    it('shows tab that corresponds to search param', async () => {
+      await createComponent({ totalItems: 0 });
 
-      it('shows tab that corresponds to filtered search token', async () => {
-        await createComponent({ totalItems: 0 });
+      expect(findTabByText('Groups')).not.toBeUndefined();
+    });
+  });
 
-        expect(findTabByText('Groups')).not.toBeUndefined();
-      });
+  describe('when url param matches `filteredSearchBar.tokens`', () => {
+    beforeEach(() => {
+      setWindowLocation('?groups_with_inherited_permissions=exclude');
+    });
+
+    it('shows tab that corresponds to filtered search token', async () => {
+      await createComponent({ totalItems: 0 });
+
+      expect(findTabByText('Groups')).not.toBeUndefined();
     });
   });
 
@@ -234,7 +258,7 @@ describe('MembersTabs', () => {
   it.each`
     tab                 | testId                       | href
     ${'Members'}        | ${'user-tab-title'}          | ${'https://localhost/'}
-    ${'Direct members'} | ${'directMembers-tab-title'} | ${'https://localhost/?tab=direct_members&direct_members_page=1'}
+    ${'Direct members'} | ${'directMembers-tab-title'} | ${'https://localhost/?tab=direct_members'}
     ${'Groups'}         | ${'group-tab-title'}         | ${'https://localhost/?tab=groups'}
     ${'Invite'}         | ${'invite-tab-title'}        | ${'https://localhost/?tab=invited'}
     ${'Access Request'} | ${'accessRequest-tab-title'} | ${'https://localhost/?tab=access_requests'}
@@ -254,7 +278,7 @@ describe('MembersTabs', () => {
     it.each`
       tab                 | testId                       | href
       ${'Members'}        | ${'user-tab-title'}          | ${'https://localhost/'}
-      ${'Direct members'} | ${'directMembers-tab-title'} | ${'https://localhost/?tab=direct_members&direct_members_page=1'}
+      ${'Direct members'} | ${'directMembers-tab-title'} | ${'https://localhost/?tab=direct_members'}
       ${'Groups'}         | ${'group-tab-title'}         | ${'https://localhost/?tab=groups'}
     `(
       'clears all tabs search/token params when switching to $tab tab',
@@ -293,39 +317,54 @@ describe('MembersTabs', () => {
     });
   });
 
-  describe('Direct members tab page param', () => {
-    it('reloads with `direct_members_page=1` when landing on the tab without the page param', async () => {
+  describe('lazy members fetch on tab activation', () => {
+    it('fetches members when a lazy tab (with `membersPath`) becomes active', async () => {
+      setWindowLocation('?tab=direct_members&search_direct_members=luba&direct_members_page=2');
+
+      await createComponent({
+        directMembersState: { membersPath: '/foo-bar/-/project_members.json' },
+      });
+      // GlTabs syncs the active tab from the query param after mount.
+      await nextTick();
+
+      expect(fetchMembersMock).toHaveBeenCalledTimes(1);
+      expect(fetchMembersMock.mock.calls[0][1]).toEqual({
+        search_direct_members: 'luba',
+        direct_members_page: '2',
+      });
+    });
+
+    it('does not fetch when the lazy tab has already been loaded', async () => {
+      setWindowLocation('?tab=direct_members');
+
+      await createComponent({
+        directMembersState: {
+          membersPath: '/foo-bar/-/project_members.json',
+          loadRequested: true,
+        },
+      });
+      await nextTick();
+
+      expect(fetchMembersMock).not.toHaveBeenCalled();
+    });
+
+    it('does not fetch when the active tab has no `membersPath`', async () => {
       setWindowLocation('?tab=direct_members');
 
       await createComponent();
+      await nextTick();
 
-      expect(visitUrl).toHaveBeenCalledWith(
-        'https://localhost/?tab=direct_members&direct_members_page=1',
-      );
+      expect(fetchMembersMock).not.toHaveBeenCalled();
     });
 
-    it('does not reload when the page param is already present', async () => {
-      setWindowLocation('?tab=direct_members&direct_members_page=2');
-
-      await createComponent();
-
-      expect(visitUrl).not.toHaveBeenCalled();
-    });
-
-    it('does not reload when another tab is active', async () => {
-      setWindowLocation('?tab=groups');
-
-      await createComponent();
-
-      expect(visitUrl).not.toHaveBeenCalled();
-    });
-
-    it('does not reload on the default (Members) tab', async () => {
+    it('does not fetch the lazy tab while another tab is active', async () => {
       setWindowLocation('https://localhost/');
 
-      await createComponent();
+      await createComponent({
+        directMembersState: { membersPath: '/foo-bar/-/project_members.json' },
+      });
 
-      expect(visitUrl).not.toHaveBeenCalled();
+      expect(fetchMembersMock).not.toHaveBeenCalled();
     });
   });
 });

@@ -22,7 +22,17 @@ module Types
                 resolver_method: :object,
                 description: 'Aggregation dimensions. Every selected dimension will be used for aggregation.'
 
-              engine.metrics.each { |metric| declare_parameterized_field(metric) }
+              grouped_metrics, flat_metrics = engine.metrics.partition { |m| m.identifier_parts.size == 2 }
+
+              flat_metrics.each { |metric| declare_parameterized_field(metric) }
+
+              grouped_metrics.group_by { |m| m.identifier_parts.first }.each do |group_name, metrics|
+                field group_name,
+                  Types::Analytics::Aggregation::EngineResponseMetricGroupType.build(group_name, metrics,
+                    graphql_context),
+                  resolver_method: :object,
+                  description: "Aggregated `#{group_name}` metrics."
+              end
             end
           end
         end

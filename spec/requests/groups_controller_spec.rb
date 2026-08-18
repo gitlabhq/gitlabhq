@@ -410,6 +410,266 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
       it_behaves_like 'does not enforce step-up authentication'
     end
+
+    context 'when rate limiting group creation' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:current_user) { user }
+      let_it_be(:create_params) { { group: { name: 'rate-limited-group', path: 'rate-limited-group' } } }
+
+      before do
+        sign_in(user)
+      end
+
+      def request
+        post groups_path, params: create_params
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :groups_create, use_second_scope: false
+
+      context 'when the `namespace_create_rate_limit` feature flag is disabled' do
+        before do
+          stub_feature_flags(namespace_create_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
+
+          request
+        end
+
+        it 'creates the group' do
+          request
+
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+    end
+
+    context 'when creating a group', :with_current_organization do
+      let_it_be(:group, freeze: false) { create(:group, :public, organization: current_organization) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:admin) { create(:admin) }
+      let_it_be(:owner, freeze: false) { create(:user, owner_of: group) }
+      let_it_be(:developer, freeze: false) { create(:user, developer_of: group) }
+
+      it 'allows a user to create a group', :aggregate_failures do
+        sign_in(user)
+
+        expect do
+          post groups_path, params: { group: { name: 'new_group', path: 'new_group' } }
+        end.to change { Group.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      it 'allows an admin to create a group', :aggregate_failures do
+        sign_in(admin)
+
+        expect do
+          post groups_path, params: { group: { name: 'new_group', path: 'new_group' } }
+        end.to change { Group.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      context 'when creating a chat team' do
+        before do
+          stub_mattermost_setting(enabled: true)
+          sign_in(user)
+        end
+
+        it 'triggers Mattermost::CreateTeamService' do
+          expect_next_instance_of(::Mattermost::CreateTeamService) do |service|
+            expect(service).to receive(:execute).and_return({ name: 'test-chat-team', id: 1 })
+          end
+
+          post groups_path, params: { group: { name: 'new_group', path: 'new_group', create_chat_team: 1 } }
+
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when creating a subgroup' do
+        [true, false].each do |can_create_group_status|
+          context "and can_create_group is #{can_create_group_status}" do
+            context 'and logged in as an owner' do
+              it 'creates the subgroup', :aggregate_failures do
+                owner.update_attribute(:can_create_group, can_create_group_status)
+                sign_in(owner)
+
+                post groups_path, params: { group: { parent_id: group.id, path: 'subgroup' } }
+
+                expect(response).to redirect_to("/#{group.path}/subgroup")
+                expect(Group.order(:id).last.organization).to eq(current_organization)
+              end
+            end
+
+            context 'and logged in as a developer' do
+              it 'renders the new template and does not create the subgroup', :aggregate_failures do
+                developer.update_attribute(:can_create_group, can_create_group_status)
+                sign_in(developer)
+
+                expect do
+                  post groups_path, params: { group: { parent_id: group.id, path: 'subgroup' } }
+                end.not_to change { Group.count }
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+        end
+      end
+
+      context 'when creating a top-level group' do
+        before do
+          sign_in(developer)
+        end
+
+        context 'and can_create_group is enabled' do
+          before do
+            developer.update_attribute(:can_create_group, true)
+          end
+
+          it 'creates the group', :aggregate_failures do
+            expect do
+              post groups_path, params: { group: { path: 'top-level' } }
+            end.to change { Group.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.order(:id).last.organization).to eq(current_organization)
+          end
+        end
+
+        context 'and can_create_group is disabled' do
+          before do
+            developer.update_attribute(:can_create_group, false)
+          end
+
+          it 'does not create the group', :aggregate_failures do
+            expect do
+              post groups_path, params: { group: { path: 'top-level' } }
+            end.not_to change { Group.count }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
+      context 'with a malicious group name' do
+        before do
+          sign_in(user)
+        end
+
+        subject(:create_group) do
+          post groups_path, params: { group: { name: "<script>alert('Mayday!');</script>", path: 'invalid_group_url' } }
+        end
+
+        it 'does not create the group and renders the new template', :aggregate_failures do
+          expect { create_group }.not_to change { Group.count }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with the default_branch_protection attribute' do
+        before do
+          sign_in(user)
+        end
+
+        subject(:create_group) do
+          post groups_path,
+            params: { group: { name: 'new_group', path: 'new_group', default_branch_protection: Gitlab::Access::PROTECTION_NONE } }
+        end
+
+        context 'when the user can create a group with default_branch_protection' do
+          it 'creates the group with the specified branch protection level', :aggregate_failures do
+            create_group
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.order(:id).last.default_branch_protection).to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+
+        context 'when the user cannot create a group with default_branch_protection' do
+          it 'does not apply the specified branch protection level', :aggregate_failures do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
+
+            create_group
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.order(:id).last.default_branch_protection).not_to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+      end
+
+      context 'with the default_branch_protection_defaults attribute' do
+        let(:protection_defaults) do
+          {
+            "allowed_to_push" => [{ 'access_level' => Gitlab::Access::MAINTAINER.to_s }],
+            "allowed_to_merge" => [{ 'access_level' => Gitlab::Access::DEVELOPER.to_s }],
+            "allow_force_push" => "false",
+            "developer_can_initial_push" => "false"
+          }
+        end
+
+        before do
+          sign_in(user)
+        end
+
+        context 'when the user can create a group with default_branch_protection' do
+          it 'creates the group with the specified default branch protection', :aggregate_failures do
+            post groups_path,
+              params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: 'true',
+                                 default_branch_protection_defaults: protection_defaults } },
+              as: :json
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.order(:id).last.default_branch_protection_defaults)
+              .to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+          end
+
+          it 'ignores the defaults when default_branch_protected is false', :aggregate_failures do
+            post groups_path,
+              params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: 'false',
+                                 default_branch_protection_defaults: protection_defaults } },
+              as: :json
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.order(:id).last.default_branch_protection_defaults)
+              .to eq(::Gitlab::Access::BranchProtection.protection_none.stringify_keys)
+          end
+        end
+
+        context 'when the user cannot create a group with default_branch_protection' do
+          it 'does not apply the specified default branch protection', :aggregate_failures do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
+
+            post groups_path,
+              params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: 'true',
+                                 default_branch_protection_defaults: protection_defaults } },
+              as: :json
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.order(:id).last.default_branch_protection_defaults)
+              .not_to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+          end
+        end
+      end
+
+      context 'with the jobs_to_be_done attribute' do
+        before do
+          sign_in(user)
+        end
+
+        it 'stores the jobs_to_be_done value' do
+          post groups_path, params: { group: { name: 'new_group', path: 'new_group', jobs_to_be_done: 'other' } }
+
+          expect(Group.order(:id).last.jobs_to_be_done).to eq('other')
+        end
+      end
+    end
   end
 
   describe 'GET #edit' do
@@ -1134,6 +1394,81 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'POST #create_organization_from_group', :saas, feature_category: :organization do
+    # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- Groups are only moved out of the default org
+    let_it_be(:default_organization) { create(:organization, :default) }
+    # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
+
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group, organization: default_organization, owners: owner, maintainers: maintainer) }
+
+    subject(:make_request) { post create_organization_from_group_path(group), as: :json }
+
+    before do
+      sign_in(owner)
+    end
+
+    it 'creates an organization from the group' do
+      expect { make_request }.to change { Organizations::Organization.count }.by(1)
+
+      organization = group.reload.organization
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response).to include('id' => organization.id, 'path' => organization.path)
+      expect(organization).not_to eq(default_organization)
+    end
+
+    context 'when the organization cannot be created from the group' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be_with_reload(:group) { create(:group, organization: other_organization) }
+      let_it_be(:owner) { create(:user, owner_of: group) }
+
+      it 'returns the service error' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to be_present
+      end
+    end
+
+    context 'when the release flag is disabled' do
+      before do
+        stub_feature_flags(org_stage_experimental: false)
+      end
+
+      it 'returns not found' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user cannot administer the group' do
+      before do
+        sign_in(maintainer)
+      end
+
+      it 'returns not found' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user is not signed in' do
+      before do
+        sign_out(owner)
+      end
+
+      it 'returns not found' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'PUT #transfer' do
     context 'step-up authentication enforcement' do
       let_it_be_with_reload(:group) { create(:group) }
@@ -1189,12 +1524,43 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         expect(group.state_metadata['transfer_target_parent_id']).to eq(new_parent_group.id)
       end
 
+      context 'when transferring to a root group' do
+        let_it_be(:group) { create(:group, :public, :nested, owners: user) }
+
+        it 'enqueues the worker with a nil parent group id', :aggregate_failures do
+          expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(group.id, nil, user.id)
+
+          put transfer_group_path(group), params: { new_parent_group_id: '' }
+
+          expect(response).to redirect_to(group_path(group))
+          expect(group.reload.state_metadata['transfer_target_parent_id']).to be_nil
+        end
+      end
+
       context 'when the state transition fails' do
         before do
           group.update_column(:state, Group.states[:creation_in_progress])
         end
 
         it 'does not enqueue the worker and redirects with an error' do
+          expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+          put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+          expect(response).to redirect_to(edit_group_path(group))
+          expect(flash[:alert]).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
+        end
+      end
+
+      context 'when the group already has a transfer in progress' do
+        before do
+          group.schedule_transfer!(transition_user: user)
+          Gitlab::ExclusiveLease.new(
+            Namespaces::Groups::TransferWorker.lease_key(group.id), timeout: 30.minutes
+          ).try_obtain
+        end
+
+        it 'does not enqueue the worker and redirects with an error', :aggregate_failures do
           expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
           put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
@@ -1220,14 +1586,85 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      it 'transfers the group synchronously' do
+      it 'transfers the group synchronously', :aggregate_failures do
         expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
 
         put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
 
         expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to("/#{new_parent_group.path}/#{group.path}")
         expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
         expect(group.reload.parent).to eq(new_parent_group)
+      end
+
+      it 'converts a subgroup to a root group', :aggregate_failures do
+        nested_group = create(:group, :public, :nested, owners: user)
+
+        put transfer_group_path(nested_group), params: { new_parent_group_id: '' }
+
+        expect(response).to redirect_to("/#{nested_group.path}")
+        expect(flash[:notice]).to eq("Group '#{nested_group.name}' was successfully transferred.")
+      end
+
+      it 'redirects with an alert when the transfer fails', :aggregate_failures do
+        # `proceed_to_transfer` is overridden in the prepended EE module
+        # (EE::Groups::TransferService), so `expect_next_instance_of` walks
+        # the prepended chain correctly.
+        expect_next_instance_of(::Groups::TransferService) do |service|
+          allow(service).to receive(:proceed_to_transfer)
+            .and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
+        end
+
+        put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+        expect(response).to redirect_to(edit_group_path(group))
+        expect(flash[:alert]).to eq('Transfer failed: namespace directory cannot be moved')
+      end
+
+      context 'when the group is archived' do
+        before do
+          group.update!(archived: true)
+        end
+
+        it 'returns not found and does not transfer the group', :aggregate_failures do
+          put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(group.reload.parent).to be_nil
+        end
+      end
+
+      context 'when the user is not allowed to transfer the group' do
+        let_it_be(:unauthorized_user) { create(:user, guest_of: group) }
+
+        before do
+          new_parent_group.add_guest(unauthorized_user)
+          sign_in(unauthorized_user)
+        end
+
+        it 'returns not found' do
+          put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when a project in the group has container images' do
+        let_it_be(:nested_group) { create(:group, :public, :nested, owners: user) }
+        let_it_be(:project) { create(:project, namespace: nested_group) }
+
+        before do
+          stub_container_registry_config(enabled: true)
+          stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+          create(:container_repository, project: project, name: :image)
+        end
+
+        it 'does not allow the group to be transferred', :aggregate_failures do
+          put transfer_group_path(nested_group), params: { new_parent_group_id: '' }
+
+          expect(flash[:alert]).to match(/Docker images in their container registry/)
+          expect(response).to redirect_to(edit_group_path(nested_group))
+        end
       end
     end
   end

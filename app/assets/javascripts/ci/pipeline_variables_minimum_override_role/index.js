@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import PipelinesMinimumOverrideRole from '~/ci/pipeline_variables_minimum_override_role/pipeline_variables_minimum_override_role.vue';
 import createDefaultClient from '~/lib/graphql';
 
@@ -18,15 +19,13 @@ export default (containerId = 'js-ci-variables-minimum-override-role-app') => {
 
   const { fullPath } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'PipelineVariablesMinimumOverrideRoleRoot',
     apolloProvider,
     provide: {
       fullPath,
     },
-    render(createElement) {
-      return createElement(PipelinesMinimumOverrideRole);
-    },
+    component: PipelinesMinimumOverrideRole,
   });
 };

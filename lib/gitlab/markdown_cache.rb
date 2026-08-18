@@ -73,6 +73,20 @@ module Gitlab
       CACHE_COMMONMARK_VERSION_PREVIOUS_SHIFTED | resolved_local_version(local_version)
     end
 
+    # The lowest cached_markdown_version this call still treats as current.
+    # Anything strictly below it is stale: its cached HTML gets re-rendered on
+    # the next read regardless, so it is safe to clear in bulk.
+    #
+    # During a rollout this is the previous version, so a bulk sweep only
+    # touches true stragglers and leaves the previous and current populations
+    # alone, since those are still rolling forward through the read path. In
+    # steady state there is no previous version, so this falls back to the
+    # version used for writes, i.e. the current version.
+    def self.cached_markdown_version_for_bulk_clear(local_version: nil)
+      previous_cached_markdown_version(local_version: local_version) ||
+        cached_markdown_version_for_write(local_version: local_version)
+    end
+
     def self.resolved_local_version(local_version)
       local_version || Gitlab::CurrentSettings.current_application_settings.local_markdown_version
     end

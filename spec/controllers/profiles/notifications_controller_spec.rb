@@ -86,7 +86,7 @@ RSpec.describe Profiles::NotificationsController, feature_category: :team_planni
       let(:notifications_per_page) { 5 }
 
       let_it_be(:group) { create(:group) }
-      let_it_be(:subgroups) { create_list(:group, 10, parent: group) }
+      let_it_be(:subgroups) { create_list(:group, 6, parent: group) }
 
       before do
         group.add_developer(user)
@@ -109,7 +109,7 @@ RSpec.describe Profiles::NotificationsController, feature_category: :team_planni
           get :show
 
           # Let's make sure we're grabbing all groups in one page, just in case
-          expect(assigns(:user_groups).count).to eq(11)
+          expect(assigns(:user_groups).count).to eq(7)
           expect(assigns(:user_groups)).not_to include(public_group)
         end
       end

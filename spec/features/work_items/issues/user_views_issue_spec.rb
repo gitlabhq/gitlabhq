@@ -23,7 +23,7 @@ RSpec.describe "User views issue", :js, feature_category: :team_planning do
 
       expect(page).to have_button('New related item')
       expect(page).to have_button('Create merge request')
-      expect(page).to have_button('Close Issue')
+      expect(page).to have_button('Close issue')
     end
   end
 

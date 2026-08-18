@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require_relative '../../../../tooling/docs/event_nodoc'
 
 RSpec.describe 'Event store documentation', feature_category: :tooling do
   let(:ce_events_dir) { Rails.root.join('app/events') }
@@ -14,12 +15,9 @@ RSpec.describe 'Event store documentation', feature_category: :tooling do
   let(:docs_dir) { Rails.root.join('data/events') }
   let(:feature_categories) { YAML.safe_load_file(Rails.root.join('config/feature_categories.yml')) }
 
-  # Only Gitlab::EventStore::Event subclasses participate in this doc system.
-  # CloudEvent subclasses (Gitlab::EventStore::CloudEvent) are a separate
-  # event style with their own schema mechanism and are skipped here.
   let(:all_event_files) do
     files = Dir[ce_events_dir.join('**/*.rb')] + Dir[ee_events_dir.join('**/*.rb')]
-    files.select { |f| File.read(f) =~ /^\s*class \w+ < (?:::)?Gitlab::EventStore::Event\b/ }
+    files.reject { |f| Docs::EventNodoc.excluded?(f, Rails.root) }
   end
 
   let(:all_doc_files) do

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlModal } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
@@ -58,6 +58,7 @@ describe('WorkItemsCsvImportModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findFileInput = () => wrapper.findByLabelText('Upload CSV file');
+  const findFileError = () => wrapper.find('.invalid-feedback');
 
   describe('template', () => {
     it('passes correct title props to modal', () => {
@@ -94,16 +95,46 @@ describe('WorkItemsCsvImportModal', () => {
   });
 
   describe('importWorkItems', () => {
-    it('shows error when no file is selected', async () => {
+    it('keeps the modal open and shows an inline error when no file is selected', async () => {
       wrapper = createComponent();
+      const event = { preventDefault: jest.fn() };
 
-      findModal().vm.$emit('primary');
+      findModal().vm.$emit('primary', event);
+      await nextTick();
 
-      await waitForPromises();
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(findFileError().text()).toBe('Please select a file to import.');
+      expect(findFileError().classes()).toContain('!gl-block');
+      expect(createAlert).not.toHaveBeenCalled();
+    });
 
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'Please select a file to import.',
+    it('clears the inline error when a file is selected', async () => {
+      wrapper = createComponent();
+      findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+      await nextTick();
+
+      const file = new File(['content'], 'test.csv', { type: 'text/csv' });
+      const fileInput = findFileInput();
+      Object.defineProperty(fileInput.element, 'files', {
+        value: [file],
+        configurable: true,
       });
+      await fileInput.trigger('change');
+
+      expect(findFileError().classes()).not.toContain('!gl-block');
+    });
+
+    it('clears the inline error when the modal is dismissed', async () => {
+      wrapper = createComponent();
+      findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+      await nextTick();
+
+      expect(findFileError().classes()).toContain('!gl-block');
+
+      findModal().vm.$emit('hidden');
+      await nextTick();
+
+      expect(findFileError().classes()).not.toContain('!gl-block');
     });
 
     it('imports successfully with selected file', async () => {

@@ -1,0 +1,5 @@
+---
+event: MergeRequests::ReadyEvent
+description: Published when a merge request transitions from draft to ready status,
+  indicating it is no longer a work in progress.
+feature_category: code_suggestions

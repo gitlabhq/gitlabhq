@@ -36,7 +36,7 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
 1. To set up Akismet:
    1. Review the [GitLab documentation on Akismet](../../integration/akismet.md).
    1. Get an Akismet API key. You can sign up for [a testing key from Akismet](https://akismet.com).
-      You must enter your local host (such as`gdk.test`) and email when signing up.
+      You must enter your local host (such as `gdk.test`) and email when signing up.
    1. Go to GitLab Akismet settings page, for example:
       `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
    1. Enable Akismet and enter your Akismet **API key**.

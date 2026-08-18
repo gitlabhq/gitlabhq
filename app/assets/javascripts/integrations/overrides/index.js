@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ExclusionsList from '~/integrations/beyond_identity/components/exclusions_list.vue';
 import createDefaultClient from '~/lib/graphql';
 import IntegrationOverrides from './components/integration_overrides.vue';
@@ -13,18 +13,15 @@ export const initIntegrationOverrides = () => {
 
   const { editPath, overridesPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'IntegrationOverridesRoot',
     provide: {
       editPath,
     },
-    render(createElement) {
-      return createElement(IntegrationOverrides, {
-        props: {
-          overridesPath,
-        },
-      });
+    component: IntegrationOverrides,
+    props: {
+      overridesPath,
     },
   });
 };
@@ -38,18 +35,15 @@ export const initBeyondIdentityExclusions = () => {
 
   const { editPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'IntegrationsExclusionsListRoot',
-
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     provide: {
       editPath,
     },
-    render(createElement) {
-      return createElement(ExclusionsList);
-    },
+    component: ExclusionsList,
   });
 };

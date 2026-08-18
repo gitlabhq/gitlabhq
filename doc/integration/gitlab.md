@@ -12,7 +12,7 @@ title: Integrate your server with GitLab.com
 
 {{< /details >}}
 
-Import projects from GitLab.com and login to your GitLab instance with your GitLab.com account.
+Import projects from GitLab.com and sign in to your GitLab instance with your GitLab.com account.
 
 To enable the GitLab.com OmniAuth provider you must register your application with GitLab.com.
 GitLab.com generates an application ID and secret key for you to use.
@@ -31,7 +31,7 @@ GitLab.com generates an application ID and secret key for you to use.
      https://your-gitlab.example.com/users/auth/gitlab/callback
      ```
 
-   The first link is required for the importer and second for authentication.
+   The first link is required for the importer and the second for authentication.
 
    If you:
 
@@ -110,9 +110,6 @@ GitLab.com generates an application ID and secret key for you to use.
        args: { "client_options": { "site": 'https://gitlab.example.com' } }
    ```
 
-   > [!note]
-   > In GitLab 15.1 and earlier, the `site` parameter requires an `/api/v4` suffix.
-   > You should drop this suffix after upgrading to GitLab 15.2 or later.
 1. Change `'YOUR_APP_ID'` to the Application ID from the GitLab.com application page.
 1. Change `'YOUR_APP_SECRET'` to the secret from the GitLab.com application page.
 1. Save the configuration file.
@@ -127,14 +124,6 @@ everything goes well, the user is returned to your GitLab instance and is
 signed in.
 
 ## Reduce access privileges on sign in
-
-{{< history >}}
-
-- Introduced in GitLab 14.8 [with a feature flag](../administration/feature_flags/_index.md) named `omniauth_login_minimal_scopes`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/351331) in GitLab 14.9.
-- [Feature flag `omniauth_login_minimal_scopes`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83453) removed in GitLab 15.2
-
-{{< /history >}}
 
 If you use a GitLab instance for authentication, you can reduce access rights when an OAuth application is used for sign in.
 

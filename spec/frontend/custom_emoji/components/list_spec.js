@@ -71,7 +71,7 @@ describe('Custom emoji settings list component', () => {
     `('emits $emits when $button is clicked', async ({ emits, button, pageInfo }) => {
       createComponent({ pageInfo });
 
-      await wrapper.findByTestId(button).vm.$emit('click');
+      await wrapper.findComponentByTestId(button).vm.$emit('click');
 
       expect(wrapper.emitted('input')[0]).toEqual([emits]);
     });

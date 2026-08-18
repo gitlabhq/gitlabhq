@@ -324,6 +324,16 @@ describe('issue_note', () => {
       expect(noteActionsProps.resolvedBy).toEqual({});
     });
 
+    describe('when the note is linked to a Duo Agent Platform session', () => {
+      beforeEach(() => {
+        createWrapper({ note: { ...note, duo_session_id: 42 } });
+      });
+
+      it('passes the session id to the note actions', () => {
+        expect(wrapper.findComponent(NoteActions).props('duoSessionId')).toBe(42);
+      });
+    });
+
     it('should render issue body', () => {
       expect(findNoteBody().props().note).toMatchObject(note);
       expect(findNoteBody().props().line).toBe(null);
@@ -377,16 +387,16 @@ describe('issue_note', () => {
       createWrapper();
     });
 
-    it('emits handleUpdateNote', async () => {
+    it('emits handle-update-note', async () => {
       const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
 
       findNoteBody().vm.$emit('handleFormUpdate', params);
       await nextTick();
       await waitForPromises();
 
-      expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
+      expect(wrapper.emitted('handle-update-note')).toHaveLength(1);
 
-      expect(wrapper.emitted('handleUpdateNote')[0]).toEqual([
+      expect(wrapper.emitted('handle-update-note')[0]).toEqual([
         {
           note: updatedNote,
           noteText: params.noteText,
@@ -516,6 +526,45 @@ describe('issue_note', () => {
         autosaveKey,
       });
       expect(findNoteBody().props('autosaveKey')).toBe(autosaveKey);
+    });
+  });
+
+  describe('events emitted for note actions', () => {
+    const findNoteActions = () => wrapper.findComponent(NoteActions);
+
+    it('emits `handle-edit` when note actions request editing', async () => {
+      createWrapper();
+
+      findNoteActions().vm.$emit('handle-edit');
+      await nextTick();
+
+      expect(wrapper.emitted('handle-edit')).toEqual([[]]);
+    });
+
+    it('emits `handle-delete-note` when the deletion is confirmed', async () => {
+      confirmAction.mockReset();
+      confirmAction.mockResolvedValue(true);
+      useNotes().deleteNote.mockResolvedValue();
+      createWrapper();
+
+      findNoteActions().vm.$emit('handle-delete');
+      await waitForPromises();
+
+      expect(wrapper.emitted('handle-delete-note')).toEqual([[wrapper.props('note')]]);
+    });
+
+    it('emits `update-success` once the note update succeeds', async () => {
+      createWrapper();
+
+      findNoteBody().vm.$emit('handleFormUpdate', {
+        noteText: 'updated note text',
+        parentElement: null,
+        callback: jest.fn(),
+        resolveDiscussion: false,
+      });
+      await waitForPromises();
+
+      expect(wrapper.emitted('update-success')).toHaveLength(1);
     });
   });
 });

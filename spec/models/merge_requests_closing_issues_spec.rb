@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workflow do
   let_it_be(:namespace) { create_default(:namespace).freeze }
-  let_it_be(:project) { create_default(:project, :repository).freeze }
+  let_it_be(:project) { create_default(:project).freeze }
   let_it_be(:merge_request) { create_default(:merge_request, source_project: project).freeze }
   let_it_be(:issue1) { create(:issue, project: project) }
   let_it_be(:issue2) { create(:issue, project: project) }
@@ -27,7 +27,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
   end
 
   describe 'validations' do
-    it 'requires merge_request_id to be unique per (issue_id, link_type)' do
+    it 'requires merge_request_id to be unique per (issue_id, link_type)', :aggregate_failures do
       duplicate = build(:merge_requests_closing_issues,
         issue: issue1, merge_request: merge_request, link_type: closes_issue1.link_type)
 
@@ -43,22 +43,29 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
       expect(mentioned).to be_valid
     end
 
-    describe 'from_mr_description_only_for_closes' do
-      it 'is invalid when from_mr_description is true and link_type is not closes' do
-        record = build(:merge_requests_closing_issues,
-          issue: issue2, merge_request: merge_request,
-          link_type: :mentioned, from_mr_description: true)
+    describe 'ensure_related_links_are_not_from_description' do
+      using RSpec::Parameterized::TableSyntax
 
-        expect(record).not_to be_valid
-        expect(record.errors[:from_mr_description]).to be_present
+      where(:link_type, :from_mr_description, :expected_valid) do
+        :related   | true  | false
+        :mentioned | true  | true
+        :closes    | true  | true
+        :related   | false | true
+        :mentioned | false | true
+        :closes    | false | true
       end
 
-      it 'is valid when from_mr_description is false and link_type is mentioned' do
-        record = build(:merge_requests_closing_issues,
-          issue: issue2, merge_request: merge_request,
-          link_type: :mentioned, from_mr_description: false)
+      with_them do
+        let(:record) do
+          build(:merge_requests_closing_issues,
+            issue: issue2, merge_request: merge_request,
+            link_type: link_type, from_mr_description: from_mr_description)
+        end
 
-        expect(record).to be_valid
+        it 'only allows from_mr_description for description-derived link types', :aggregate_failures do
+          expect(record.valid?).to eq(expected_valid)
+          expect(record.errors[:from_mr_description]).to be_present unless expected_valid
+        end
       end
     end
   end
@@ -182,6 +189,45 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
     it 'counts only closes rows for a collection' do
       counts = described_class.count_for_collection([issue1.id], admin).to_h
       expect(counts[issue1.id]).to eq(1)
+    end
+  end
+
+  describe '.auto_close_issue_ids' do
+    let_it_be(:closed_mr) do
+      create(:merge_request, :closed, source_project: project, target_branch: 'auto-close-closed')
+    end
+
+    let_it_be(:issue_with_closed_mr) { create(:issue, project: project) }
+    let_it_be(:issue_with_mentioned_mr) { create(:issue, project: project) }
+
+    let_it_be(:closes_closed_mr) do
+      create(:merge_requests_closing_issues, issue: issue_with_closed_mr, merge_request: closed_mr)
+    end
+
+    let_it_be(:mentioned_only_row) do
+      create(:merge_requests_closing_issues,
+        issue: issue_with_mentioned_mr, merge_request: merge_request,
+        link_type: :mentioned, from_mr_description: false)
+    end
+
+    subject(:auto_close_ids) { described_class.auto_close_issue_ids(issue_ids) }
+
+    context 'with an opened closes-type merge request' do
+      let(:issue_ids) { [issue1.id, issue_with_closed_mr.id, issue_with_mentioned_mr.id] }
+
+      it 'returns a Set with only the relevant issue ids', :aggregate_failures do
+        is_expected.to be_a(Set)
+        is_expected.to contain_exactly(issue1.id)
+      end
+    end
+
+    context 'without an opened closes-type merge request' do
+      let(:issue_ids) { [issue_with_closed_mr.id, issue_with_mentioned_mr.id] }
+
+      it 'returns an empty Set', :aggregate_failures do
+        is_expected.to be_a(Set)
+        is_expected.to be_empty
+      end
     end
   end
 end

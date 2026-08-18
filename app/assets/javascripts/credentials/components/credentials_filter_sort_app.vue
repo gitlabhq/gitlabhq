@@ -5,6 +5,7 @@ import { initializeValuesFromQuery } from '~/access_tokens/utils';
 import { goTo } from '../utils';
 
 export default {
+  name: 'CredentialsFilterSortApp',
   components: {
     GlFilteredSearch,
     GlSorting,

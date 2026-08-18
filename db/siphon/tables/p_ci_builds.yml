@@ -3,8 +3,6 @@ table: p_ci_builds
 database: ci
 ignored_columns:
   - lock_version
-  - options
-  - yaml_variables
   - description
   - coverage_regex
   - token_encrypted

@@ -27,8 +27,8 @@ describe('FileTreeBrowser', () => {
   const findFileBrowserHeight = () => wrapper.findComponent(FileBrowserHeight);
   const findPanelResizer = () => wrapper.findComponent(PanelResizer);
   const findOverlay = () => wrapper.findByTestId('overlay');
-  const findTreeList = () => wrapper.find('tree-list-stub');
-  const findTransition = () => wrapper.find('[name="file-tree-browser-slide"]');
+  const findTreeList = () => wrapper.findComponent('tree-list-stub');
+  const findTransition = () => wrapper.findComponent('[name="file-tree-browser-slide"]');
 
   afterEach(() => {
     localStorage.clear();

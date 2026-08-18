@@ -446,7 +446,7 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    kubectl -n ai-gateway create secret tls ai-gateway-tls --cert="<path_to_cert>" --key="<path_to_cert_key>"
    ```
 
-1. Get version number of the latest package in the [chart's Package Registry](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages).
+1. Get the version number of the latest package in the [chart's Package Registry](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages).
 1. For the AI Gateway to access the API, it must know where the GitLab instance
    is located. To do this, set the `gitlab.url` and `gitlab.apiUrl` together with
    the `ingress.hosts` and `ingress.tls` values as follows:
@@ -561,7 +561,7 @@ To do this for a Helm chart deployment of the AI Gateway:
    kubectl create secret generic ca-certificates -n gitlab --from-file=cacertificates.crt=ca-certificates.crt
    ```
 
-1. Use the secret in the chat `values.yml` to define a `volume` and `volumeMount`. This creates the `/tmp/ca-certificates.crt` file in the container:
+1. Use the secret in the chart `values.yml` to define a `volume` and `volumeMount`. This creates the `/tmp/ca-certificates.crt` file in the container:
 
    ```shell
    volumes:
@@ -598,7 +598,7 @@ For a Docker deployment, use the same method. The only difference is that, to mo
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6084) in GitLab 19.3.
+- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6084) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -670,7 +670,7 @@ To ensure you're running the latest security patches, follow these guidelines ba
 
 ### For Kubernetes or Helm deployments
 
-The [charts versions](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages) before 0.7.0 and Kubernetes uses `imagePullPolicy: IfNotPresent` by default, which won't pull updated images if the tag hasn't changed. This means you might miss security patches released under the same version tag.
+The [chart versions](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages) before 0.7.0 and Kubernetes use `imagePullPolicy: IfNotPresent` by default, which won't pull updated images if the tag hasn't changed. This means you might miss security patches released under the same version tag.
 
 You should use the following approach that uses image digests:
 
@@ -751,7 +751,7 @@ sudo gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 Ensure that:
 
-- The AI Gateway URL is correctly configured (through `Ai::Setting.instance.ai_gateway_url`).
+- The AI Gateway URL is correctly configured (through `ApplicationSetting.current.ai_gateway_url`).
 - GitLab Duo access has been explicitly enabled for the root user through `/admin/code_suggestions`.
 
 If access issues persist, check that authentication is correctly configured, and that the health check passes.
@@ -764,8 +764,8 @@ These tests are performed for offline environments:
 
 | Test | Description |
 |-----------------|-------------|
-| Network | Tests whether: <br>- The AI Gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/configure/_index.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
-| License | Tests whether your license has the ability to access Code Suggestions feature. |
+| Network | Tests whether: <br>- The AI Gateway URL has been properly configured in the database through the `application_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../administration/gitlab_duo/configure/_index.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
+| License | Tests whether your license has the ability to access the Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
 ## Monitor the AI Gateway
@@ -1023,14 +1023,14 @@ env | grep -E '^(HF_|TRANSFORMERS_)'
 
 If the cache directory is missing or empty, do the following:
 
-1. Check your `values.yaml` for any `volumeMounts` that targets
+1. Check your `values.yaml` for any `volumeMounts` that target
    `/home/aigateway/.hf` or the path set by `HF_HOME`.
 1. Remove or remap the mount to a directory that does not overlap
    with the image's built-in cache.
 
 ### Self-signed certificate error
 
-A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI Gateway
+An `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI Gateway
 when the AI Gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
 
 To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).

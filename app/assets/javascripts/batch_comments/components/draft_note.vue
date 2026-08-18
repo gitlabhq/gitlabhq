@@ -62,12 +62,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useBatchComments, [
-      'deleteDraft',
-      'updateDraft',
-      'scrollToDraft',
-      'toggleResolveDiscussion',
-    ]),
+    ...mapActions(useBatchComments, ['deleteDraft', 'updateDraft', 'scrollToDraft']),
     ...mapActions(useBatchComments, {
       setDraftEditing: types.SET_DRAFT_EDITING,
     }),
@@ -123,12 +118,11 @@ export default {
     :restore-from-autosave="restoreFromAutosave"
     anchor-prefix="draft"
     data-testid="draft-note"
-    @handleEdit="handleEditing"
-    @cancelForm="handleNotEditing"
-    @updateSuccess="handleNotEditing"
-    @handleDeleteNote="deleteDraft"
-    @handleUpdateNote="update"
-    @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
+    @handle-edit="handleEditing"
+    @cancel-form="handleNotEditing"
+    @update-success="handleNotEditing"
+    @handle-delete-note="deleteDraft"
+    @handle-update-note="update"
     @mouseenter.native="handleMouseEnter(draft)"
     @mouseleave.native="handleMouseLeave(draft)"
   >

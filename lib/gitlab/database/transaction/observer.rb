@@ -54,7 +54,7 @@ module Gitlab
           # /* comment */ SELECT
           #
           # We offset using a position of the end comment + 1 character to
-          # accomodate a space between Marginalia comment and a SQL statement.
+          # accommodate a space between the SQL comment and the SQL statement.
           offset = index + END_COMMENT.length + 1
 
           # Avoid duplicating the entire string. This isn't optimized to

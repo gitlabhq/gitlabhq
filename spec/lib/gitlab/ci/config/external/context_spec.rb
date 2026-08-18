@@ -169,7 +169,8 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
         pipeline: pipeline,
         user: user,
         sha: sha,
-        logger: double('logger')
+        logger: double('logger'),
+        allowed_include_types: %i[local component]
       }
     end
 
@@ -194,6 +195,13 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(mutated.logger).to eq(subject.logger) }
       it { expect(mutated.parallel_requests).to eq(subject.parallel_requests) }
       it { expect(mutated.component_data).to eq(subject.component_data) }
+      it { expect(mutated.allowed_include_types).to eq(subject.allowed_include_types) }
+
+      it 'shares filter_state so nested filtering is visible at the top level' do
+        mutated.mark_all_includes_filtered_by_rules!
+
+        expect(subject.any_includes_fully_filtered_by_rules?).to be true
+      end
     end
 
     context 'with attributes' do

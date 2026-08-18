@@ -1,0 +1,12 @@
+---
+api_type:
+attr: o11y_oauth_application_id
+clusterwide: false
+column: o11y_oauth_application_id
+db_type: bigint
+default:
+description: The ID of the shared GitLab OAuth application used to mint per-user SigNoz backend-for-frontend (BFF) sessions.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -68,12 +68,6 @@ To view all the available configuration file fields:
 
 ## View shared agents
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395498) in GitLab 16.1.
-
-{{< /history >}}
-
 In addition to the agents owned by your project, you can also view agents shared with the
 [`ci_access`](ci_cd_workflow.md) and [`user_access`](user_access.md) keywords. Once an agent
 is shared with a project, it automatically appears in the project agent tab.
@@ -108,12 +102,6 @@ View and provide feedback about the UI in [this epic](https://gitlab.com/groups/
 
 ## Debug the agent
 
-{{< history >}}
-
-- The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.
-
-{{< /history >}}
-
 To debug the cluster-side component (`agentk`) of the agent, set the log
 level according to the available options:
 
@@ -146,13 +134,6 @@ kubectl logs -f -l=app=gitlab-agent -n gitlab-agent
 For more information about debugging, see [troubleshooting documentation](troubleshooting.md).
 
 ## Reset the agent token
-
-{{< history >}}
-
-- Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags/_index.md) named `cluster_agents_limit_tokens_created`.
-- Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
-
-{{< /history >}}
 
 An agent can have only two active tokens at one time.
 

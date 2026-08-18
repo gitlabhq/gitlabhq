@@ -415,7 +415,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
 
     before do
       stub_current_organization(project.organization)
-      allow(helper).to receive_messages(selected_branch: ref, current_user: user)
+      allow(helper).to receive_messages(current_user: user)
     end
 
     context 'when there is no ignore revs file' do
@@ -458,8 +458,6 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         blob_path: blob.path,
         project_path: project.full_path,
         resource_id: project.to_global_id,
-        user_id: user.to_global_id,
-        target_branch: ref,
         original_branch: ref,
         escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
         can_download_code: 'false',

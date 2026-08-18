@@ -169,3 +169,16 @@ Instead, you should use:
 - `namespace_path` when specifying a namespace by its path.
 
 The `namespace` parameter will be removed in v5 of the GitLab REST API.
+
+## Non-numeric IDs on integer path parameters return `400`
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/605824).
+
+Several REST API endpoints previously accepted non-numeric or multi-value
+input on integer-typed path parameters without validating it up front.
+Instead of a clear error, these requests returned inconsistent responses
+(`401 Unauthorized`, `404 Not Found`, or in rare latent-bug cases `200 OK`).
+They now validate the parameter type and return `400 Bad Request`.
+
+To migrate, send a single numeric ID with each request. Legitimate clients
+already do this, so no action is required for well-formed requests.

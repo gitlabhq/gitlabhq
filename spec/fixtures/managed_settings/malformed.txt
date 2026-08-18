@@ -1,0 +1,2 @@
+sidekiq_timezone_override: "Europe/London
+  foo: [bar

@@ -29,6 +29,9 @@ module Gitlab
           .compact
 
       raise NoMetadataError if job_search_metadata.empty?
+
+      # A queue only appears in Sidekiq::Queue.all once a job has been pushed to it, so on
+      # a fresh instance this raises even when deferred jobs exist for the queue's workers.
       raise InvalidQueueError if sidekiq_queues.values.compact.empty?
 
       Gitlab::Redis::Queues.instances.map do |key, instance|
@@ -49,6 +52,18 @@ module Gitlab
           end
         end
       end
+
+      # Deferred (concurrency-limited) jobs are stored per-worker in a separate Redis
+      # (SharedState). Scope the purge to workers routed to this queue so it matches the
+      # queue-scoped contract of the endpoint.
+      context_metadata = job_search_metadata.select { |k, _| k.start_with?('meta.') || k == 'class' }
+      worker_names = worker_names_for_queue
+      worker_names &= [job_search_metadata['class']] if job_search_metadata.key?('class')
+      remaining_timeout = timeout - (monotonic_time - start_time)
+      deferred_result = Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService
+        .drop_matching_jobs!(worker_names, context_metadata, timeout: remaining_timeout)
+      deleted_jobs += deferred_result[:deleted_jobs]
+      completed &&= deferred_result[:completed]
 
       {
         completed: completed,
@@ -86,7 +101,19 @@ module Gitlab
     end
 
     def job_matches?(job, job_search_metadata)
+      return false if job_search_metadata.empty?
+
       job_search_metadata.all? { |key, value| job[key] == value }
+    end
+
+    # Worker class names routed to this queue via the global routing rules.
+    #
+    # @return [Array<String>] worker class names whose routed queue matches queue_name
+    # @see Gitlab::SidekiqConfig.worker_queue_mappings
+    def worker_names_for_queue
+      Gitlab::SidekiqConfig.worker_queue_mappings
+        .select { |_worker, queue| queue == queue_name }
+        .keys
     end
 
     def timeout_exceeded?(start_time, timeout)

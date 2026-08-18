@@ -19,15 +19,15 @@ With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/
 
 To set up the GitLab for Jira Cloud app on your GitLab Self-Managed instance, do one of the following:
 
-- [Install the GitLab for Jira Cloud app from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace) (GitLab 15.7 and later).
+- [Install the GitLab for Jira Cloud app from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
 - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see:
 
-- [Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for a GitLab Self-Managed instance](https://youtu.be/RnDw4PzmdW8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
+- [Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for a GitLab Self-Managed instance](https://www.youtube.com/watch?v=RnDw4PzmdW8&list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
   <!-- Video published on 2024-10-30 -->
-- [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance (Forge app)](https://youtu.be/hSfiowZSmZA?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
+- [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance (Forge app)](https://www.youtube.com/watch?v=hSfiowZSmZA&list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
   <!-- Video published on 2026-06-17 -->
 
 The videos above show the older [Universal Plugin Manager interface](https://community.atlassian.com/forums/Community-Announcements-articles/Cloud-admins-we-re-making-app-management-easier/ba-p/2806285) which might be unavailable on newer Jira Cloud instances.
@@ -71,12 +71,6 @@ To create an OAuth application on your GitLab Self-Managed instance:
 
 ## Jira user requirements
 
-{{< history >}}
-
-- Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
-
-{{< /history >}}
-
 In your [Atlassian organization](https://admin.atlassian.com), you must ensure that the Jira user that is used to set up the GitLab for Jira Cloud app is a member of
 either:
 
@@ -96,12 +90,6 @@ If necessary:
    [`Browse users and groups` permission](https://confluence.atlassian.com/jirakb/unable-to-browse-for-users-and-groups-120521888.html) to the Jira user.
 
 ## Install the GitLab for Jira Cloud app from the Atlassian Marketplace
-
-{{< history >}}
-
-- Introduced in GitLab 15.7.
-
-{{< /history >}}
 
 You can use the official GitLab for Jira Cloud app from the Atlassian Marketplace with your GitLab Self-Managed instance.
 
@@ -138,7 +126,7 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
 
 [Prerequisites](#prerequisites)
 
-To set up your GitLab Self-Managed instance for Atlassian Marketplace installation in GitLab 15.7 and later:
+To set up your GitLab Self-Managed instance for Atlassian Marketplace installation:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.

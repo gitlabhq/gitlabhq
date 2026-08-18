@@ -629,8 +629,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
       it 'calls appropriate create service methods' do
         expect_next_instance_of(Projects::CreateService) do |service|
-          expect(service.instance_variable_get(:@initialize_with_sast)).to eq(true)
-          expect(service.instance_variable_get(:@initialize_with_secret_detection)).to eq(true)
+          expect(service.instance_variable_get(:@initialize_with_sast)).to be(true)
+          expect(service.instance_variable_get(:@initialize_with_secret_detection)).to be(true)
         end
 
         subject
@@ -1347,7 +1347,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
 
-          expect(project.reload.deletion_in_progress?).to eq(true)
+          expect(project.reload.deletion_in_progress?).to be(true)
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(dashboard_projects_path)
         end
@@ -1359,7 +1359,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.reload.deletion_in_progress?).to eq(false)
+          expect(project.reload.deletion_in_progress?).to be(false)
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:edit)
           expect(flash[:alert]).to include('Project has already been marked for deletion')
@@ -2182,7 +2182,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     project.reload
 
     expect(response).to have_gitlab_http_status(:found)
-    expect(project.service_desk_enabled).to eq(true)
+    expect(project.service_desk_enabled).to be(true)
   end
 
   def project_moved_message(redirect_route, project)

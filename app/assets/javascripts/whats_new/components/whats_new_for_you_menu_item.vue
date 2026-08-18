@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
+import { whatsNewMarkAsReadPath } from '~/lib/utils/path_helpers/routes';
 import { __ } from '~/locale';
 
 const PLACEMENTS = ['help_menu', 'profile_menu'];
@@ -81,7 +82,7 @@ export default {
         {
           versionDigest: this.sidebarData.whats_new_version_digest,
           initialReadArticles: this.sidebarData.whats_new_read_articles,
-          markAsReadPath: this.sidebarData.whats_new_mark_as_read_path,
+          markAsReadPath: whatsNewMarkAsReadPath(),
           mostRecentReleaseItemsCount: this.sidebarData.whats_new_most_recent_release_items_count,
           placement: this.placement,
         },

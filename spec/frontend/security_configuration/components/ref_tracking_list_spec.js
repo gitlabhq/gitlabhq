@@ -5,10 +5,13 @@ import {
   GlCard,
   GlSkeletonLoader,
   GlKeysetPagination,
+  GlLink,
+  GlPopover,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import RefTrackingList from '~/security_configuration/components/ref_tracking_list.vue';
@@ -70,7 +73,13 @@ describe('RefTrackingList component', () => {
       [untrackSecurityRefsMutation, untrackMutationHandler],
     ]);
 
-  const createComponent = ({ queryHandler, trackMutationHandler, untrackMutationHandler } = {}) => {
+  const createComponent = ({
+    queryHandler,
+    trackMutationHandler,
+    untrackMutationHandler,
+    glFeatures = {},
+    maxTrackedRefs = MAX_TRACKED_REFS,
+  } = {}) => {
     wrapper = shallowMountExtended(RefTrackingList, {
       apolloProvider: createApolloProvider({
         queryHandler,
@@ -79,7 +88,8 @@ describe('RefTrackingList component', () => {
       }),
       provide: {
         projectFullPath: 'namespace/project',
-        maxTrackedRefs: MAX_TRACKED_REFS,
+        maxTrackedRefs,
+        glFeatures,
       },
       stubs: {
         GlCard,
@@ -102,6 +112,10 @@ describe('RefTrackingList component', () => {
   const findUntrackConfirmation = () => wrapper.findComponent(RefUntrackingConfirmation);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findTrackingSelection = () => wrapper.findComponent(RefTrackingSelection);
+  const findBetaBadge = () => wrapper.findByTestId('tracked-refs-beta-badge');
+  const findBetaPopover = () =>
+    wrapper.findComponentByTestId('tracked-refs-beta-popover', GlPopover);
+  const findBetaDocsLink = () => findBetaPopover().findComponent(GlLink);
 
   const triggerUntrackRefItem = async (refToUntrack) => {
     findRefListItems().at(0).vm.$emit('untrack', refToUntrack);
@@ -681,6 +695,61 @@ describe('RefTrackingList component', () => {
 
           expect(findErrorAlert().exists()).toBe(false);
         });
+      });
+    });
+  });
+
+  describe('VAC Open Beta indicators', () => {
+    const withFfOn = { vulnerabilitiesAcrossContexts: true };
+
+    describe('when the vulnerabilitiesAcrossContexts feature flag is on', () => {
+      beforeEach(async () => {
+        createComponent({ glFeatures: withFfOn });
+        await waitForPromises();
+      });
+
+      it('renders the Beta badge', () => {
+        expect(findBetaBadge().exists()).toBe(true);
+        expect(findBetaBadge().text()).toBe('Beta');
+      });
+
+      it('renders the Beta popover targeting the Beta badge', () => {
+        expect(findBetaPopover().exists()).toBe(true);
+        expect(findBetaPopover().props('target')).toBe('tracked-refs-beta-badge');
+      });
+
+      it('links to the vulnerabilities docs from the Beta popover', () => {
+        expect(findBetaDocsLink().attributes('href')).toBe(
+          helpPagePath('user/application_security/vulnerability_report/_index.md'),
+        );
+      });
+
+      it('describes the tracked-ref limit in the Beta popover', () => {
+        expect(findBetaPopover().text()).toContain(
+          `you're limited to ${MAX_TRACKED_REFS} refs per project`,
+        );
+      });
+
+      it('reflects the injected maxTrackedRefs value in the Beta popover', async () => {
+        createComponent({ glFeatures: withFfOn, maxTrackedRefs: 10 });
+        await waitForPromises();
+
+        expect(findBetaPopover().text()).toContain("you're limited to 10 refs per project");
+      });
+    });
+
+    describe('when the vulnerabilitiesAcrossContexts feature flag is off', () => {
+      beforeEach(async () => {
+        createComponent({ glFeatures: {} });
+        await waitForPromises();
+      });
+
+      it('does not render the Beta badge', () => {
+        expect(findBetaBadge().exists()).toBe(false);
+      });
+
+      it('does not render the Beta popover', () => {
+        expect(findBetaPopover().exists()).toBe(false);
       });
     });
   });

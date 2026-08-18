@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import AdminRegisterRunnerApp from './admin_register_runner_app.vue';
@@ -21,17 +22,14 @@ export const initAdminRegisterRunner = (selector = '#js-admin-register-runner') 
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminRegisterRunnerAppRoot',
     apolloProvider,
-    render(h) {
-      return h(AdminRegisterRunnerApp, {
-        props: {
-          runnerId,
-          runnersPath,
-        },
-      });
+    component: AdminRegisterRunnerApp,
+    props: {
+      runnerId,
+      runnersPath,
     },
   });
 };

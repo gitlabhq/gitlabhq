@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, feature_category: :importers do
-  let_it_be(:source) { create(:project, :repository) }
+  let_it_be(:source) { create(:project, :small_repo) }
 
   let(:portable) { create(:project) }
   let(:tmpdir) { Dir.mktmpdir }

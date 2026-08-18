@@ -20,8 +20,8 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 describe('CompareApp component', () => {
   let wrapper;
   const findForm = () => wrapper.find('form');
-  const findSourceRevisionCard = () => wrapper.findByTestId('sourceRevisionCard');
-  const findTargetRevisionCard = () => wrapper.findByTestId('targetRevisionCard');
+  const findSourceRevisionCard = () => wrapper.findComponentByTestId('sourceRevisionCard');
+  const findTargetRevisionCard = () => wrapper.findComponentByTestId('targetRevisionCard');
   const findPageTitle = () => wrapper.findByTestId('page-heading');
   const findPageDescription = () => wrapper.findByTestId('page-heading-description');
 
@@ -104,14 +104,14 @@ describe('CompareApp component', () => {
     });
   });
 
-  it('sets the selected project when the "selectProject" event is emitted', async () => {
+  it('sets the selected project when the "select-project" event is emitted', async () => {
     const project = {
       name: 'some-to-name',
       id: '1',
       refs_url: '/',
     };
 
-    findTargetRevisionCard().vm.$emit('selectProject', {
+    findTargetRevisionCard().vm.$emit('select-project', {
       direction: 'from',
       project,
     });
@@ -123,10 +123,10 @@ describe('CompareApp component', () => {
     );
   });
 
-  it('sets the selected revision when the "selectRevision" event is emitted', async () => {
+  it('sets the selected revision when the "select-revision" event is emitted', async () => {
     const revision = 'some-revision';
 
-    findTargetRevisionCard().vm.$emit('selectRevision', {
+    findTargetRevisionCard().vm.$emit('select-revision', {
       direction: 'to',
       revision,
     });
@@ -137,7 +137,7 @@ describe('CompareApp component', () => {
   });
 
   describe('swap revisions button', () => {
-    const findSwapRevisionsButton = () => wrapper.findByTestId('swapRevisionsButton');
+    const findSwapRevisionsButton = () => wrapper.findComponentByTestId('swapRevisionsButton');
 
     it('renders the swap revisions button', () => {
       expect(findSwapRevisionsButton().exists()).toBe(true);
@@ -237,9 +237,9 @@ describe('CompareApp component', () => {
 
         it.each`
           changeType          | action
-          ${'source branch'}  | ${() => findSourceRevisionCard().vm.$emit('selectRevision', { direction: 'to', revision: 'new-source-branch' })}
-          ${'target branch'}  | ${() => findTargetRevisionCard().vm.$emit('selectRevision', { direction: 'from', revision: 'new-target-branch' })}
-          ${'swap revisions'} | ${() => wrapper.findByTestId('swapRevisionsButton').vm.$emit('click')}
+          ${'source branch'}  | ${() => findSourceRevisionCard().vm.$emit('select-revision', { direction: 'to', revision: 'new-source-branch' })}
+          ${'target branch'}  | ${() => findTargetRevisionCard().vm.$emit('select-revision', { direction: 'from', revision: 'new-target-branch' })}
+          ${'swap revisions'} | ${() => wrapper.findComponentByTestId('swapRevisionsButton').vm.$emit('click')}
         `('replaces button with message when $changeType changes', async ({ action }) => {
           expect(findProjectMrButton().exists() || findCreateMrButton().exists()).toBe(true);
           expect(findMrStatusMessage().exists()).toBe(false);
@@ -256,7 +256,7 @@ describe('CompareApp component', () => {
         });
 
         it('shows button again when branches are changed back to original values', async () => {
-          findSourceRevisionCard().vm.$emit('selectRevision', {
+          findSourceRevisionCard().vm.$emit('select-revision', {
             direction: 'to',
             revision: 'different-branch',
           });
@@ -265,7 +265,7 @@ describe('CompareApp component', () => {
           expect(findCreateMrButton().exists()).toBe(false);
           expect(findMrStatusMessage().exists()).toBe(true);
 
-          findSourceRevisionCard().vm.$emit('selectRevision', {
+          findSourceRevisionCard().vm.$emit('select-revision', {
             direction: 'to',
             revision: defaultProps.paramsTo,
           });
@@ -289,7 +289,7 @@ describe('CompareApp component', () => {
           expect(findCreateMrButton().exists()).toBe(false);
           expect(findMrStatusMessage().exists()).toBe(false);
 
-          findSourceRevisionCard().vm.$emit('selectRevision', {
+          findSourceRevisionCard().vm.$emit('select-revision', {
             direction: 'to',
             revision: 'new-branch',
           });
@@ -316,7 +316,7 @@ describe('CompareApp component', () => {
         it('does not show message when swapping identical branches', async () => {
           expect(findMrStatusMessage().exists()).toBe(false);
 
-          wrapper.findByTestId('swapRevisionsButton').vm.$emit('click');
+          wrapper.findComponentByTestId('swapRevisionsButton').vm.$emit('click');
 
           await nextTick();
 
@@ -324,7 +324,7 @@ describe('CompareApp component', () => {
         });
 
         it('shows message when changing to a different branch', async () => {
-          findSourceRevisionCard().vm.$emit('selectRevision', {
+          findSourceRevisionCard().vm.$emit('select-revision', {
             direction: 'to',
             revision: 'feature-branch',
           });

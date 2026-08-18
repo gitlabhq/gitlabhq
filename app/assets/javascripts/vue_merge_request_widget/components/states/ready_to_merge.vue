@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlButtonGroup,
@@ -20,7 +21,6 @@ import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, n__, sprintf } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +28,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { rebaseProjectMergeRequestPath } from '~/lib/utils/path_helpers/merge_requests';
 import {
   AUTO_MERGE_STRATEGIES,
   MT_MERGE_STRATEGY,
@@ -155,23 +156,24 @@ export default {
     GlSkeletonLoader,
     MergeFailedPipelineConfirmationDialog,
     RebaseConfirmationDialog,
-    MergeImmediatelyConfirmationDialog: () =>
-      import(
-        'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
-      ),
-    MergeTrainFailedPipelineConfirmationDialog: () =>
-      import(
-        'ee_component/vue_merge_request_widget/components/merge_train_failed_pipeline_confirmation_dialog.vue'
-      ),
-    MergeTrainRestartTrainConfirmationDialog: () =>
-      import(
-        'ee_component/vue_merge_request_widget/components/merge_train_restart_train_confirmation_dialog.vue'
-      ),
+    MergeImmediatelyConfirmationDialog: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'),
+    ),
+    MergeTrainFailedPipelineConfirmationDialog: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_train_failed_pipeline_confirmation_dialog.vue'),
+    ),
+    MergeTrainRestartTrainConfirmationDialog: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_train_restart_train_confirmation_dialog.vue'),
+    ),
     AddedCommitMessage,
     RelatedLinks,
     HelpPopover,
-    AiCommitMessage: () =>
-      import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
+    AiCommitMessage: defineAsyncComponent(
+      () => import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -553,14 +555,11 @@ export default {
       try {
         this.isRebaseInProgress = true;
 
-        const rebasePath = joinPaths(
-          gon.relative_url_root || '/',
+        const rebasePath = rebaseProjectMergeRequestPath(
           this.mr.targetProjectFullPath,
-          '-',
-          'merge_requests',
-          `${this.mr.iid}`,
-          'rebase',
+          this.mr.iid,
         );
+
         await axios.post(rebasePath);
 
         createAlert({
@@ -919,25 +918,25 @@ export default {
         v-if="mr.mergeImmediatelyDocsPath"
         ref="confirmationDialog"
         :docs-url="mr.mergeImmediatelyDocsPath"
-        @mergeImmediately="onMergeImmediatelyConfirmation"
+        @merge-immediately="onMergeImmediatelyConfirmation"
       />
       <merge-train-failed-pipeline-confirmation-dialog
         :visible="isPipelineFailedModalVisibleMergeTrain"
-        @startMergeTrain="onStartMergeTrainConfirmation"
+        @start-merge-train="onStartMergeTrainConfirmation"
         @cancel="isPipelineFailedModalVisibleMergeTrain = false"
       />
       <merge-train-restart-train-confirmation-dialog
         v-if="isSkipMergeTrainAvailable"
         :visible="isMergeTrainBeingForceMerged"
         :merge-train-type="mergeTrainMergeType"
-        @processMergeTrainMerge="processMergeTrain"
+        @process-merge-train-merge="processMergeTrain"
         @cancel="isMergeTrainBeingForceMerged = false"
       />
       <merge-failed-pipeline-confirmation-dialog
         :visible="isPipelineFailedModalVisibleNormalMerge"
         :target-project-id="mr.targetProjectId"
         :iid="mr.iid"
-        @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
+        @merge-with-failed-pipeline="onMergeWithFailedPipelineConfirmation"
         @cancel="isPipelineFailedModalVisibleNormalMerge = false"
       />
       <rebase-confirmation-dialog

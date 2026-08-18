@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Getting Grafana Integration', feature_category: :observability do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { project.first_owner }
 
   let(:fields) do

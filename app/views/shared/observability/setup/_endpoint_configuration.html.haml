@@ -139,6 +139,30 @@
         %li.gl-mb-2
           = s_('Observability|VPN and proxy: If operating within a VPN or behind a proxy, ensure routing rules permit traffic to these external endpoints. Configure proxy settings in your OpenTelemetry SDK if required')
 
+- if Gitlab.com?
+  - mcp_endpoint = configuration_settings.o11y_mcp_url
+  .gl-border-t.gl-border-subtle.gl-pt-5.gl-mb-6
+    %h3.gl-heading-3.gl-mb-2
+      = s_('Observability|MCP server')
+    - unless configuration_settings.provisioning?
+      %p.gl-text-subtle.gl-mb-4
+        = s_('Observability|Connect an AI assistant or MCP client to query your observability data using natural language. Point your MCP client at this endpoint and authenticate with an observability API key.')
+
+      .gl-bg-subtle.gl-rounded-lg.gl-p-4.gl-mb-4
+        %p.gl-text-xs.gl-text-subtle.gl-mb-1
+          = s_('Observability|MCP endpoint')
+        .gl-flex.gl-items-center.gl-gap-2
+          %code.gl-text-sm
+            = mcp_endpoint
+          = clipboard_button(text: mcp_endpoint, title: s_('Observability|Copy MCP endpoint'))
+
+      %p.gl-text-sm.gl-text-subtle.gl-mb-0
+        - mcp_help_link = link_to('', help_page_path('operations/observability/mcp_server.md'), target: '_blank', rel: 'noopener noreferrer')
+        = safe_format(s_('Observability|See the %{mcp_help_link_start}MCP server documentation%{mcp_help_link_end} for supported clients, authentication, and available tools.'), tag_pair(mcp_help_link, :mcp_help_link_start, :mcp_help_link_end))
+    - else
+      %p.gl-text-subtle.gl-mb-0
+        = s_('Observability|Your MCP endpoint is being provisioned. Once complete, it appears here.')
+
 .gl-border-t.gl-border-subtle.gl-pt-5.gl-mb-6
   %h3.gl-heading-3.gl-mb-2
     = s_('Observability|Recommended resource attributes')

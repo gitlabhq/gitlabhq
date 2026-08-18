@@ -22,6 +22,7 @@ description: Set rate limits on Groups API endpoints.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152733) rate limit for groups and projects API in GitLab 17.1 with a [flag](../feature_flags/_index.md) named `rate_limit_groups_and_projects_api`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461316) in GitLab 18.1. Feature flag `rate_limit_groups_and_projects_api` removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) a rate limit on creating groups in GitLab 19.3 with a [flag](../feature_flags/_index.md) named `namespace_create_rate_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -35,6 +36,7 @@ Configure the rate limit for each IP address and user for requests to the follow
 | [`GET /groups/:id/invited_groups`](../../api/groups.md#list-shared-groups) | 60     | 1 minute |
 | [`GET /groups/:id/projects`](../../api/groups.md#list-projects) | 600     | 1 minute |
 | [`POST /groups/:id/archive`](../../api/groups.md#archive-a-group) | 60    | 1 minute |
+| [`POST /groups`](../../api/groups.md#create-a-group)            | 200     | 1 day |
 
 Prerequisites:
 
@@ -148,12 +150,6 @@ For more information on group archiving endpoints,
 see [Archive a group](../../api/groups.md#archive-a-group).
 
 ## Configure rate limits on deleting group members
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420321) in GitLab 16.9.
-
-{{< /history >}}
 
 Configure the rate limit for each group and user for requests to the
 [delete members endpoint](../../api/group_members.md#remove-a-group-member).

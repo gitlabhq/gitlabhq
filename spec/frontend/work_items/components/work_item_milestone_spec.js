@@ -37,7 +37,7 @@ describe('WorkItemMilestone component', () => {
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
 
-  const showDropdown = () => findSidebarDropdownWidget().vm.$emit('dropdownShown');
+  const showDropdown = () => findSidebarDropdownWidget().vm.$emit('dropdown-shown');
 
   const createComponent = ({
     mountFn = shallowMountExtended,
@@ -156,7 +156,7 @@ describe('WorkItemMilestone component', () => {
     });
 
     it('changes the milestone to null when clicked on Clear', async () => {
-      findSidebarDropdownWidget().vm.$emit('updateValue', null);
+      findSidebarDropdownWidget().vm.$emit('update-value', null);
 
       await nextTick();
 
@@ -177,11 +177,11 @@ describe('WorkItemMilestone component', () => {
     });
 
     it('clears the autofilled parent milestone when user clicks on Clear', async () => {
-      findSidebarDropdownWidget().vm.$emit('updateValue', null);
+      findSidebarDropdownWidget().vm.$emit('update-value', null);
 
       await waitForPromises();
 
-      expect(wrapper.emitted('parentMilestone')).toEqual([[null]]);
+      expect(wrapper.emitted('parent-milestone')).toEqual([[null]]);
       expect(findSidebarDropdownWidget().props('itemValue')).toBe(null);
     });
 
@@ -191,7 +191,7 @@ describe('WorkItemMilestone component', () => {
       showDropdown();
 
       await waitForPromises();
-      findSidebarDropdownWidget().vm.$emit('updateValue', milestoneAtIndex.id);
+      findSidebarDropdownWidget().vm.$emit('update-value', milestoneAtIndex.id);
 
       await nextTick();
 
@@ -213,7 +213,7 @@ describe('WorkItemMilestone component', () => {
         });
 
         showDropdown();
-        findSidebarDropdownWidget().vm.$emit('updateValue', null);
+        findSidebarDropdownWidget().vm.$emit('update-value', null);
 
         await waitForPromises();
 
@@ -228,7 +228,7 @@ describe('WorkItemMilestone component', () => {
       createComponent({ canUpdate: true });
 
       showDropdown();
-      findSidebarDropdownWidget().vm.$emit('updateValue', null);
+      findSidebarDropdownWidget().vm.$emit('update-value', null);
 
       await waitForPromises();
 
@@ -249,7 +249,7 @@ describe('WorkItemMilestone component', () => {
       });
 
       showDropdown();
-      findSidebarDropdownWidget().vm.$emit('updateValue', null);
+      findSidebarDropdownWidget().vm.$emit('update-value', null);
 
       await waitForPromises();
 

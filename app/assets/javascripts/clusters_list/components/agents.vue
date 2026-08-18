@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlLoadingIcon, GlBanner, GlTabs, GlTab } from '@gitlab/ui';
 import feedbackBannerIllustration from '@gitlab/svgs/dist/illustrations/chat-sm.svg?url';

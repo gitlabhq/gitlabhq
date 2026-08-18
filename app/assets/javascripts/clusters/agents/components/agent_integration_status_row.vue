@@ -5,6 +5,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 
 export default {
+  name: 'AgentIntegrationStatusRow',
   components: {
     GlLink,
     GlIcon,

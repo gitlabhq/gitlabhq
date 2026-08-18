@@ -13,7 +13,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
   let_it_be_with_refind(:repo_project) { create(:project, :public, :repository, group: group) }
 
   before do
-    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(0)
+    allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:limit_for).and_return(0)
   end
 
   shared_examples 'response is correct' do |schema:, size: 1|

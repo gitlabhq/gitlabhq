@@ -22,7 +22,8 @@ title: GitLab Advanced SAST
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
 - Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
-- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
+- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/work_items/14271) in GitLab 18.6.
+- Support for Swift and Objective-C [added](https://gitlab.com/groups/gitlab-org/-/work_items/16318) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 
@@ -33,7 +34,7 @@ positives than traditional SAST.
 GitLab Advanced SAST is an opt-in feature. When enabled, GitLab Advanced SAST scans all supported
 language files using its predefined ruleset, while the SAST analyzer continues to scan other
 files. Both analyzers can run in parallel. SAST and GitLab Advanced SAST do not have complete
-parity — each analyzer detects some vulnerabilities the other does not. An automated
+parity - each analyzer detects some vulnerabilities the other does not. An automated
 [transition process](#transitioning-from-semgrep-to-gitlab-advanced-sast) deduplicates findings when
 both analyzers detect the same vulnerability.
 
@@ -157,12 +158,12 @@ Code flow information is available for vulnerabilities that are detected by trac
 - Cross-site scripting (XSS)
 - Path traversal
 
-The code flow information is shown the **Code flow** tab and includes:
+The code flow information is shown in the **Data flow** tab and includes:
 
 - The steps from source to sink.
 - The relevant files, including code snippets.
 
-![A code flow of a Python application across two files](img/code_flow_view_v17_7.png)
+![The data flow of a SQL injection, from the request parameter that supplies the search term to the database query that executes it](img/code_flow_view_v19_3.png)
 
 ## Supported languages
 
@@ -179,13 +180,21 @@ GitLab Advanced SAST supports the following languages:
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
+- Objective-C (beta)
 - PHP
 - Python
 - Ruby
+- Swift (beta)
 
 GitLab Advanced SAST CPP requires additional configuration, including a compilation database. For
 details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab Advanced SAST CPP and Semgrep both
 run for C/C++ projects, each with different rule sets.
+
+Swift and Objective-C support is in [beta](../../../policy/development_stages_support.md#beta).
+Analysis runs as a separate CI/CD job, `gitlab-advanced-sast-ext`, when GitLab Advanced SAST is
+enabled and the repository contains Swift or Objective-C files. No additional variable is required.
+For more information, see
+[Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
 ### PHP known issues
 
@@ -559,7 +568,7 @@ Unverified findings are clearly distinguished from fully verified vulnerabilitie
 
 - In the pipeline **Security** tab, the vulnerability description begins with an **(Unverified)** prefix.
 - In the **Vulnerability report**, unverified findings are similarly prefixed.
-- In the **Code flow** view, unverified vulnerabilities have no source node. The first node in the
+- In the **Data flow** tab, unverified vulnerabilities have no source node. The first node in the
   flow is a **Trace Entry Point**, indicating where the partial trace begins.
 
 #### Turn on unverified vulnerability reporting
@@ -649,8 +658,9 @@ You can adjust GitLab Advanced SAST behavior using the following variables:
 
 | CI/CD variable                              | Default                | Description                                                                                                                                                                                     |
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++.                                                                                                              |
+| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Swift and Objective-C analysis runs as a separate `gitlab-advanced-sast-ext` job. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.                                                                                                                       |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Set to `false` to turn off [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzer. |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.                                                                                                                  |
 | `REPORT_UNVERIFIED_VULNS`                   | `false`                | Include unverified findings in scan results. Set to `true`, `1`, or `True` to enable.                                                                                                           |

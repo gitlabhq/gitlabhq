@@ -36,8 +36,12 @@ module Groups
         after_update if success
 
         success
-      rescue Gitlab::UpdatePathError => e
+      rescue Gitlab::UpdatePathError, ActiveRecord::RecordInvalid => e
         group.errors.add(:base, e.message)
+
+        false
+      rescue ServiceDesk::RefreshProjectKeyAddressSlugsService::AddressSlugConflictError => e
+        group.errors.add(:base, service_desk_address_conflict_message(e.message))
 
         false
       end
@@ -125,6 +129,9 @@ module Groups
         params.delete(:math_rendering_limits_enabled)
         params.delete(:lock_math_rendering_limits_enabled)
         params.delete(:allow_runner_registration_token)
+      end
+
+      unless can?(current_user, :manage_merge_request_settings, group)
         params.delete(:require_sha_for_merge)
         params.delete(:lock_require_sha_for_merge)
       end

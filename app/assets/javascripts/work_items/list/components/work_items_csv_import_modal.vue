@@ -9,6 +9,7 @@ export default {
   i18n: {
     maximumFileSizeText: __('The maximum file size allowed is %{size}.'),
     importWorkItemsText: s__('WorkItem|Import work items'),
+    selectFileError: s__('WorkItem|Please select a file to import.'),
     uploadCsvFileText: __('Upload CSV file'),
     workItemMainText: s__(
       "WorkItem|Your work items will be imported in the background. Once finished, you'll get a confirmation email.",
@@ -43,11 +44,15 @@ export default {
     return {
       isImporting: false,
       selectedFile: null,
+      fileError: false,
     };
   },
   computed: {
     maxFileSizeText() {
       return sprintf(this.$options.i18n.maximumFileSizeText, { size: this.maxAttachmentSize });
+    },
+    fileValidationState() {
+      return this.fileError ? false : null;
     },
     actionPrimary() {
       return {
@@ -66,15 +71,27 @@ export default {
     onFileChange(event) {
       const files = event.target?.files;
       this.selectedFile = files.length > 0 ? files[0] : null;
+      if (this.selectedFile) {
+        this.fileError = false;
+      }
     },
-    async importWorkItems() {
+    onPrimary(event) {
       if (!this.selectedFile) {
-        createAlert({
-          message: s__('WorkItem|Please select a file to import.'),
-        });
+        event.preventDefault();
+        this.fileError = true;
         return;
       }
 
+      this.importWorkItems();
+    },
+    resetFile() {
+      this.fileError = false;
+      this.selectedFile = null;
+      if (this.$refs.fileInput) {
+        this.$refs.fileInput.value = '';
+      }
+    },
+    async importWorkItems() {
       this.isImporting = true;
 
       try {
@@ -99,10 +116,7 @@ export default {
             variant: 'success',
           });
           this.$refs.modal?.hide();
-          this.selectedFile = null;
-          if (this.$refs.fileInput) {
-            this.$refs.fileInput.value = '';
-          }
+          this.resetFile();
         }
       } catch (error) {
         createAlert({
@@ -124,12 +138,19 @@ export default {
     :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
     data-testid="import-work-items-modal"
-    @primary="importWorkItems"
+    @primary="onPrimary"
+    @hidden="resetFile"
   >
     <p>
       {{ $options.i18n.workItemMainText }}
     </p>
-    <gl-form-group :label="$options.i18n.uploadCsvFileText" class="gl-truncate" label-for="file">
+    <gl-form-group
+      :label="$options.i18n.uploadCsvFileText"
+      :state="fileValidationState"
+      :invalid-feedback="$options.i18n.selectFileError"
+      class="gl-truncate"
+      label-for="file"
+    >
       <input
         id="file"
         ref="fileInput"

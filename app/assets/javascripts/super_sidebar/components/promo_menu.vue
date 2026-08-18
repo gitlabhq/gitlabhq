@@ -34,16 +34,8 @@ export default {
       required: false,
       default: false,
     },
-    signInVisible: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
-    showAuthButtons() {
-      return this.allowSignUp || this.signInVisible;
-    },
     exploreItem() {
       return {
         text: __('Explore'),
@@ -106,7 +98,7 @@ export default {
       class="gl-block lg:gl-hidden"
       toggle-class="!gl-rounded-full !gl-border !gl-border-strong"
     >
-      <gl-disclosure-dropdown-group v-if="showAuthButtons">
+      <gl-disclosure-dropdown-group>
         <div class="gl-flex gl-flex-col gl-gap-3 gl-px-4 gl-py-3">
           <gl-button
             v-if="allowSignUp"
@@ -121,12 +113,7 @@ export default {
           >
             {{ isSaas ? __('Get free trial') : __('Register') }}
           </gl-button>
-          <gl-button
-            v-if="signInVisible"
-            :href="signInPath()"
-            class="gl-basis-1/2"
-            data-testid="topbar-signin-button"
-          >
+          <gl-button :href="signInPath()" class="gl-basis-1/2" data-testid="topbar-signin-button">
             {{ __('Sign in') }}
           </gl-button>
         </div>

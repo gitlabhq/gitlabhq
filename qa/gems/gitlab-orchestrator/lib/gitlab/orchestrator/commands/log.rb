@@ -3,7 +3,7 @@
 module Gitlab
   module Orchestrator
     module Commands
-      # Logging related commands that retreive various deployment and cluster related information
+      # Logging related commands that retrieve various deployment and cluster related information
       #
       class Log < Command
         desc "pods [NAME]", "Log application pods"

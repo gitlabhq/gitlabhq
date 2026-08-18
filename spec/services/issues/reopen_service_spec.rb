@@ -78,6 +78,20 @@ RSpec.describe Issues::ReopenService, feature_category: :team_planning do
         subject(:execute_service) { execute }
       end
 
+      it 'broadcasts namespaceWorkItemChanges for the state change' do
+        allow(GitlabSchema.subscriptions).to receive(:trigger)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
+
+        execute
+
+        expect(GitlabSchema.subscriptions).to have_received(:trigger).with(
+          'namespaceWorkItemChanges',
+          { namespace_id: project.project_namespace.to_gid },
+          { work_item_id: issue.id, action: :updated }
+        )
+      end
+
       context 'issue is incident type' do
         let(:issue) { create(:incident, :closed, project: project) }
         let(:current_user) { user }

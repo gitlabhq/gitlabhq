@@ -23,6 +23,83 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
     it { expect_disallowed(*permissions) }
   end
 
+  context 'when the token is a non-PAT class that includes Authz::GranularTokenInterface' do
+    let(:token_class) do
+      Struct.new(:user, :granular_scopes) do
+        include ::Authz::GranularTokenInterface
+
+        def granular?
+          true
+        end
+      end
+    end
+
+    let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: Array(permissions)) }
+    let(:token) { token_class.new(user, [granular_scope]) }
+
+    it 'evaluates permissions via the membership rule' do
+      expect_allowed(*permissions)
+    end
+
+    context 'when the token is not granular' do
+      let(:token_class) do
+        Struct.new(:user, :granular_scopes) do
+          include ::Authz::GranularTokenInterface
+
+          def granular?
+            false
+          end
+        end
+      end
+
+      it { expect_disallowed(*permissions) }
+    end
+
+    context 'when the token does not have the permission' do
+      let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: [:read_work_item]) }
+
+      it { expect_disallowed(*permissions) }
+    end
+
+    context 'when the user is not a member' do
+      let_it_be(:user) { create(:user) }
+
+      it { expect_disallowed(*permissions) }
+    end
+
+    context 'when an anonymous caller would be granted the permission' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:boundary_object) { create(:project, :public) }
+
+      let(:permission) { :read_work_item }
+      let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: [permission]) }
+
+      it 'does not apply the PAT-only anonymous rule' do
+        expect(::Users::Anonymous.can?(permission, boundary_object)).to be(true)
+
+        expect_disallowed(permission)
+      end
+    end
+  end
+
+  context 'when the token responds to granular? without including Authz::GranularTokenInterface' do
+    let(:token_class) do
+      Struct.new(:user) do
+        def granular?
+          true
+        end
+
+        def permitted_for_boundary?(*)
+          true
+        end
+      end
+    end
+
+    let(:token) { token_class.new(user) }
+
+    it { expect_disallowed(*permissions) }
+  end
+
   context 'when the PAT is not granular' do
     before do
       token.granular = false

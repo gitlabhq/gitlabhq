@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_update_group_wiki_page_monthly
 description: Monthly count of wiki pages updated in group wikis
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

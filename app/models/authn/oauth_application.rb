@@ -5,9 +5,13 @@ module Authn
     include EachBatch
     include Doorkeeper::Concerns::TokenFallback
     include FeatureGate
+    include IamReplication::Outboxable
+
+    iam_replicable entity_type: 'oauth_application'
 
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
+    scope :dynamic, -> { where(dynamic: true) }
     scope :with_token_digests, ->(hashed_tokens) do
       return none if hashed_tokens.blank?
 
@@ -55,6 +59,10 @@ module Authn
 
     def iam_routing_enabled?
       Feature.enabled?(:proxy_oauth_requests_to_iam_service, self)
+    end
+
+    def iam_outbox_delete_payload
+      { uid: uid }
     end
   end
 end

@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn how to configure and manage audit event streaming in GitLab to export audit logs to external destinations for compliance monitoring.
 title: Audit event streaming for top-level groups
 ---
 
@@ -11,17 +12,6 @@ title: Audit event streaming for top-level groups
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Subgroup events recording](https://gitlab.com/gitlab-org/gitlab/-/issues/366878) fixed in GitLab 15.2.
-- Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a feature flag](../../administration/feature_flags/list.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
-- Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
-- [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
-- HTTP destination **Name** field [added](https://gitlab.com/gitlab-org/gitlab/-/issues/411357) in GitLab 16.3.
-- Functionality for the **Active** checkbox [added](https://gitlab.com/gitlab-org/gitlab/-/issues/415268) in GitLab 16.5.
-
-{{< /history >}}
 
 With audit event streaming for top-level groups, group owners can:
 
@@ -103,12 +93,6 @@ To update a streaming destination's custom HTTP headers:
 
 ### Verify event authenticity
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
-
-{{< /history >}}
-
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
 token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.
 
@@ -131,12 +115,6 @@ To list streaming destinations and see the verification tokens:
 
 ### Update event filters
 
-{{< history >}}
-
-- Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
-
-{{< /history >}}
-
 When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
@@ -153,12 +131,6 @@ To update a streaming destination's event filters:
 1. Select **Save** to update the event filters.
 
 ### Update namespace filters
-
-{{< history >}}
-
-- Namespace filtering in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390133) in GitLab 16.7.
-
-{{< /history >}}
 
 When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -186,12 +158,6 @@ To override the `content-type` header default value for a top-level group stream
 - The [GraphQL API](../../api/graphql/audit_event_streaming_groups.md#update-streaming-destinations).
 
 ## Google Cloud Logging destinations
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
-
-{{< /history >}}
 
 Manage Google Cloud Logging destinations for top-level groups.
 
@@ -224,12 +190,6 @@ To add Google Cloud Logging streaming destinations to a top-level group:
 
 ### Update a Google Cloud Logging destination
 
-{{< history >}}
-
-- Button to add private key [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419675) in GitLab 16.3.
-
-{{< /history >}}
-
 Prerequisites:
 
 - Owner role for a top-level group.
@@ -247,13 +207,6 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Save** to update the streaming destination.
 
 ## AWS S3 destinations
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132603) in GitLab 16.6 [with a feature flag](../../administration/feature_flags/list.md) named `allow_streaming_audit_events_to_amazon_s3`. Enabled by default.
-- [Feature flag `allow_streaming_audit_events_to_amazon_s3`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137391) removed in GitLab 16.7.
-
-{{< /history >}}
 
 Manage AWS S3 destinations for top-level groups.
 

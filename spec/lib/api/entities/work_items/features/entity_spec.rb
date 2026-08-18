@@ -147,7 +147,7 @@ RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :te
       let(:counts) { { work_item.id => 3 } }
 
       it 'exposes the preloaded count' do
-        expect(representation).to include(development: { closing_merge_requests_count: 3 })
+        expect(representation).to include(development: a_hash_including(closing_merge_requests_count: 3))
       end
     end
 
@@ -155,7 +155,7 @@ RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :te
       let(:counts) { {} }
 
       it 'defaults the count to zero' do
-        expect(representation).to include(development: { closing_merge_requests_count: 0 })
+        expect(representation).to include(development: a_hash_including(closing_merge_requests_count: 0))
       end
     end
 
@@ -165,7 +165,7 @@ RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :te
       end
 
       it 'defaults the count to zero' do
-        expect(representation).to include(development: { closing_merge_requests_count: 0 })
+        expect(representation).to include(development: a_hash_including(closing_merge_requests_count: 0))
       end
     end
 

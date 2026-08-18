@@ -12,8 +12,7 @@ module QA
         end
 
         it(
-          'has service ping toggle is disabled',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348340'
+          'has service ping toggle is disabled'
         ) do
           Page::Admin::Settings::MetricsAndProfiling.perform do |settings|
             settings.expand_usage_statistics do |usage_statistics|

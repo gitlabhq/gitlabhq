@@ -1,7 +1,7 @@
 ---
 description: Tracks creation of a new design
 action: create_design
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - design_management
 milestone: '13.5'

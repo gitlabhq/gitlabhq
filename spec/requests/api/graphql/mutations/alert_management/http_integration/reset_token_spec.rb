@@ -27,6 +27,11 @@ RSpec.describe 'Resetting a token on an existing HTTP Integration', feature_cate
 
   let(:mutation_response) { graphql_mutation_response(:http_integration_reset_token) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_http_integration do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'updates the integration' do
     previous_token = integration.token
 

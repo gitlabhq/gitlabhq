@@ -11,7 +11,7 @@ RSpec.describe 'Project.runners', feature_category: :runner_core do
   let_it_be(:instance_runner) { create(:ci_runner, :instance) }
   let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-  let_it_be(:other_project) { create(:project, :repository, :public) }
+  let_it_be(:other_project) { create(:project, :public) }
   let_it_be(:other_project_runner) { create(:ci_runner, :project, projects: [other_project]) }
 
   let_it_be(:query) do

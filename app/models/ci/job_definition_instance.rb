@@ -21,7 +21,11 @@ module Ci
 
     validates :project, presence: true
     validates :job, presence: true
-    validates :job_definition, presence: true
+    # Validate the foreign key rather than the association: an association
+    # presence validation loads the record, which costs a query when only the
+    # id is assigned. Row existence is enforced by the composite foreign key
+    # on (partition_id, job_definition_id).
+    validates :job_definition_id, presence: true
 
     scope :scoped_job, -> do
       where(arel_table[:job_id].eq(Ci::Processable.arel_table[:id]))

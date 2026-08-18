@@ -512,13 +512,11 @@ RSpec.shared_examples 'wiki controller actions' do
     it_behaves_like 'recovers from git errors'
 
     context 'when page content encoding is valid' do
-      render_views
-
-      it 'shows the edit page' do
+      it 'redirects to the show page with edit param' do
         request
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include('Edit · page title test')
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response.location).to include('edit=true')
       end
     end
   end
@@ -547,6 +545,17 @@ RSpec.shared_examples 'wiki controller actions' do
 
         expect(wiki_page.title).to eq new_title
         expect(wiki_page.content).to eq new_content
+      end
+    end
+
+    context 'when the update fails' do
+      let(:new_title) { '' }
+
+      it 'redirects to the show page with edit=true and sets flash[:error]' do
+        request
+
+        expect(response).to redirect_to_wiki(wiki, wiki.list_pages.first, edit: 'true')
+        expect(flash[:error]).to be_present
       end
     end
 
@@ -589,12 +598,13 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page is not valid' do
       let(:new_title) { '' }
 
-      it 'renders the edit state' do
+      it 'renders the show page with an error' do
         expect do
           request
         end.not_to change { wiki.list_pages.size }
 
-        expect(response).to render_template('shared/wikis/edit')
+        expect(response).to render_template('shared/wikis/show')
+        expect(assigns(:error)).to be_present
       end
     end
   end
@@ -635,13 +645,13 @@ RSpec.shared_examples 'wiki controller actions' do
           end
         end
 
-        it 'renders the edit state' do
+        it 'redirects with an error' do
           expect do
             request
           end.not_to change { wiki.list_pages.size }
 
-          expect(response).to render_template('shared/wikis/edit')
-          expect(assigns(:error)).to eq('Could not delete wiki page')
+          expect(response).to have_gitlab_http_status(:redirect)
+          expect(flash[:error]).to eq('Could not delete wiki page')
         end
       end
 

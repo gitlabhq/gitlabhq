@@ -15,6 +15,10 @@ description: "Project and group items included or excluded when using direct tra
 
 Many items are migrated when using the direct transfer method, and some are excluded.
 
+> [!note]
+> Emoji reactions that use custom emoji are migrated only if a custom emoji with the same name exists on the
+> destination. Reactions that reference a custom emoji missing from the destination are skipped.
+
 ## Migrated group items
 
 The group items that are migrated depend on the version of GitLab you use on the destination. To determine if a
@@ -119,6 +123,11 @@ Project items that are migrated to the destination GitLab instance include:
   > These settings might cause an unprotected branch to be imported as protected.
 
 - CI pipelines
+
+  > [!note]
+  > Pipeline and job records, such as status, stage, and timestamps, are migrated.
+  > Job logs and job artifacts are not migrated. For more information, see [excluded items](#excluded-items-1).
+
 - Commit comments
 - Designs
 - External merge requests

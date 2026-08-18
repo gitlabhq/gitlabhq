@@ -19,9 +19,9 @@ of the techniques apply to any GitLab deployment, such as GitLab.com or GitLab S
 techniques apply to the underlying OS.
 
 These techniques are a work in progress, and have not been tested at scale
-(such as a large environments with many users). They have been tested on a self-managed
+(such as large environments with many users). They have been tested on a self-managed
 single instance running a Linux package installation, and while many of the techniques can
-translated to other deployment types, they may not all work or apply.
+be translated to other deployment types, they may not all work or apply.
 
 Most of the listed recommendations provide specific recommendations or
 reference choices one can make based upon the general documentation.

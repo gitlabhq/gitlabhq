@@ -736,8 +736,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
       before do
         project.add_developer(api_user)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:ci_lint).and_return(1)
+        stub_application_setting(ci_lint_limit_per_user: 1)
       end
 
       context 'when ci_enforce_ci_lint_rate_limit is enabled' do
@@ -1135,8 +1134,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
       before do
         project.add_developer(api_user)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:ci_lint).and_return(1)
+        stub_application_setting(ci_lint_limit_per_user: 1)
       end
 
       context 'when ci_enforce_ci_lint_rate_limit is enabled' do

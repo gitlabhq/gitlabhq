@@ -34,7 +34,7 @@ gitGraph
 ## プロジェクトのマージ方法を設定する {#configure-a-projects-merge-method}
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **マージリクエスト**を選択します。
+1. 左側のサイドバーで、**設定** > **マージリクエスト**を選択します。
 1. これらのオプションから、目的の**マージ方法**を選択します。
    - マージコミット
    - 半線形履歴によるマージコミット
@@ -74,7 +74,7 @@ gitGraph
   ```mermaid
   %%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
   gitGraph
-     accTitle: Diagram of of a squash merge
+     accTitle: Diagram of a squash merge
      accDescr: A Git graph showing repository and branch structure after a squash commit is added to the main branch.
      commit id:"A"
      branch feature
@@ -109,6 +109,8 @@ gitGraph
   git merge --no-ff $SOURCE_SHA
   ```
 
+スカッシュマージ後に、長期実行中のソースブランチで作業を続けた場合、その後のマージリクエストで以前にマージされたコミットや、ソースブランチがターゲットブランチよりも遅れているという警告が表示されることがあります。詳細については、[長期実行ブランチの動作](../squash_and_merge.md#long-running-branch-behavior)を参照してください。
+
 ## 半線形履歴によるマージコミット {#merge-commit-with-semi-linear-history}
 
 マージごとにマージコミットが作成されますが、ブランチは早送りマージが可能な場合にのみマージされます。これにより、マージリクエストビルドが成功した場合、マージ後もターゲットブランチビルドが成功することが保証されます。このマージ方法を使用して生成されたコミットグラフの例:
@@ -116,20 +118,20 @@ gitGraph
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
-  accTitle: Diagram of a merge commit
-  accDescr: Shows the flow of commits when a branch merges with a merge commit.
+  accTitle: Diagram of a merge commit with semi-linear history
+  accDescr: Shows the flow of commits when a branch merges with a merge commit and semi-linear history.
   commit id: "Init"
   branch mr-branch-1
-  commit
-  commit
+  commit id: "B"
+  commit id: "C"
   checkout main
   merge mr-branch-1
   branch mr-branch-2
-  commit
-  commit
+  commit id: "D"
+  commit id: "E"
   checkout main
   merge mr-branch-2
-  commit
+  commit id: "F"
   branch squash-mr
   commit id: "Squashed commits"
   checkout main
@@ -142,11 +144,11 @@ gitGraph
 
 ## 早送りマージ {#fast-forward-merge}
 
-場合によっては、ワークフローポリシーで、マージコミットのないクリーンなコミット履歴が義務付けられることがあります。このような場合、早送りマージが適切です。早送りマージリクエストを使用すると、マージコミットを作成せずにリニアなGit履歴を保持できます。
+ワークフローのポリシーによっては、マージコミットのないクリーンなコミット履歴が求められる場合があります。そのような場合には、早送りマージが適しています。早送りマージリクエストを使用すると、マージコミットを作成せずに直線的なGit履歴を維持できます。
 
-早送りマージは、ターゲットブランチ（`main`など）が、ソースブランチのベースコミットから分岐していない場合にのみ可能です。ターゲットブランチにソースブランチにない新しいコミットがある場合は、まずソースブランチをリベースする必要があります。
+早送りマージは、ターゲットブランチ（`main`など）がソースブランチの基点コミットから分岐していない場合にのみ可能です。ターゲットブランチにソースブランチに含まれない新しいコミットがある場合は、先にソースブランチをリベースする必要があります。
 
-早送りマージ（[`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)）設定が有効な場合、ブランチが早送りマージできる場合にのみマージが許可されます。早送りマージが不可能な場合は、リベースのオプションが提供されます。詳細については、[(半線形)線形マージメソッドでのリベースを参照してください](#rebasing-in-semi-linear-merge-methods)。
+早送りマージ（[`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)）の設定が有効になっている場合、ブランチが早送り可能な場合にのみマージが許可されます。早送りマージができない場合は、リベースを行うオプションが提示されます。詳細については、[（半）線形マージ法でのリベース](#rebasing-in-semi-linear-merge-methods)を参照してください。
 
 ### スカッシュなし {#without-squashing}
 
@@ -236,11 +238,11 @@ gitGraph
 {{< history >}}
 
 - GitLab 18.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183928)され、[機能フラグ](../../../../administration/feature_flags/_index.md) `rebase_on_merge_automatic`という名前です。デフォルトでは無効になっています。
+- GitLab 18.11の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/work_items/524048)になりました。
+- 機能フラグ`rebase_on_merge_automatic`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231406)され、GitLab 19.0になりました。
+- GitLab 19.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243879)になりました。
 
 {{< /history >}}
-
-> [!flag]
-> この機能の利用は機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 **半線形の履歴を持たせたマージコミット**または**早送りマージ**メソッドを使用する場合、マージ前の自動リベースを有効にできます。この設定が有効な場合、ソースブランチがターゲットブランチより遅れている場合、GitLabはマージ時に自動的にソースブランチをターゲットブランチにリベースします。手動でリベースしたり、リベースが完了するのを待ったりすることなく、マージできます。
 
@@ -254,19 +256,19 @@ gitGraph
 - リベースがマージコンフリクトなしで完了できる必要があります。
 
 > [!note]
-> 自動リベース後にCI/CDパイプラインが再実行されないため、マージされた結果が前回のパイプライン実行と異なる場合があります。マージ前にリベースされた結果を検証するには、[マージトレイン](../../../../ci/pipelines/merge_trains.md)を使用してください。
+> 自動リベース後にCI/CDパイプラインが再度実行されないため、マージされた結果が前回のパイプライン実行とは異なる場合があります。マージ前にリベースされた結果を検証するには、[マージトレイン](../../../../ci/pipelines/merge_trains.md)を使用してください。
 
 #### マージ前の自動リベースを有効にする {#turn-on-automatic-rebase-before-merge}
 
 前提条件: 
 
-- プロジェクトのメンテナーまたはオーナーのロール。
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
 - プロジェクトの[マージ方法](#configure-a-projects-merge-method)は、**半線形の履歴を持たせたマージコミット**または**早送りマージ**に設定されている必要があります。
 
 自動リベースを有効にするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定** > **マージリクエスト**を選択します。
+1. 左側のサイドバーで、**設定** > **マージリクエスト**を選択します。
 1. **マージ方法**セクションで、**マージ前の自動リベースを有効にする**を選択します。
 1. **変更を保存**を選択します。
 

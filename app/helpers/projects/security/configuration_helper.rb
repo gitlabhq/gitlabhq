@@ -3,10 +3,6 @@
 module Projects
   module Security
     module ConfigurationHelper
-      def security_upgrade_path
-        promo_pricing_url
-      end
-
       def vulnerability_training_docs_path
         help_page_path(
           'user/application_security/vulnerabilities/_index.md',

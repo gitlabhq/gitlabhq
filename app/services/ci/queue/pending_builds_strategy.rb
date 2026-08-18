@@ -40,8 +40,16 @@ module Ci
         ::Ci::PendingBuild.all
       end
 
+      def builds_for_runner_manager(relation, runner_manager)
+        relation.where(runner_machine_id: [nil, runner_manager&.id])
+      end
+
       def build_and_partition_ids(relation)
         relation.pluck(:build_id, :partition_id)
+      end
+
+      def build_partition_and_project_ids(relation)
+        relation.pluck(:build_id, :partition_id, :project_id)
       end
 
       private

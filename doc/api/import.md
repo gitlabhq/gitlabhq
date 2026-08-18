@@ -32,16 +32,6 @@ Use this API to [import repositories from external sources](../user/import/_inde
 
 ## Import repository from GitHub
 
-{{< history >}}
-
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-- `collaborators_import` key in `optional_stages` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
-- Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but disables the `single_endpoint_issue_events_import` optional stage.
-- Feature flag `github_import_extended_events` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
-- Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
-
-{{< /history >}}
-
 Imports a repository from GitHub to GitLab.
 
 Prerequisites:
@@ -63,7 +53,7 @@ POST /import/github
 | `new_name`              | string  | No       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
 | `optional_stages`       | object  | No       | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). |
 | `pagination_limit`      | integer | No       | Number of items retrieved per API request to GitHub. The default value is 100 items per page. For project imports from large repositories, a lower number can reduce the risk of GitHub API endpoints returning `500` or `502` errors. However, a smaller page size increases migration times. |
-| `timeout_strategy`      | string  | No       | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
+| `timeout_strategy`      | string  | No       | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. |
 
 ```shell
 curl --request POST \
@@ -224,9 +214,9 @@ POST /import/bitbucket_server
 | `bitbucket_server_url`      | string | Yes      | Bitbucket Server URL. |
 | `bitbucket_server_username` | string | Yes      | Bitbucket Server username. |
 | `personal_access_token`     | string | Yes      | Bitbucket Server personal access token or password. |
-| `new_name`                  | string | No       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. In GitLab 16.9 and earlier, the project path [was copied](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88845) from Bitbucket instead. In GitLab 16.10, the behavior was [changed back](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145793) to the original behavior. |
+| `new_name`                  | string | No       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
 | `target_namespace`          | string | No       | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. |
-| `timeout_strategy`          | string | No       | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
+| `timeout_strategy`          | string | No       | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. |
 
 ```shell
 curl --request POST \

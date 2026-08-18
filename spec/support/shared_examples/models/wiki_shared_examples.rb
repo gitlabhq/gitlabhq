@@ -359,6 +359,116 @@ RSpec.shared_examples 'wiki model' do
     it_behaves_like 'wiki model #list_pages'
   end
 
+  describe '#last_commits_for_pages' do
+    def wiki_page_stub(path)
+      instance_double(WikiPage, page: instance_double(Gitlab::Git::WikiPage, path: path))
+    end
+
+    context 'with the Gitaly lookups stubbed' do
+      let(:fake_repository) { instance_double(Repository) }
+
+      before do
+        allow(wiki).to receive_messages(repository: fake_repository, default_branch: 'main')
+      end
+
+      it 'makes one Gitaly call per directory and merges the results' do
+        pages = [wiki_page_stub('home.md'), wiki_page_stub('docs/a.md'), wiki_page_stub('docs/b.md')]
+        root = instance_double(Commit)
+        doc_a = instance_double(Commit)
+        doc_b = instance_double(Commit)
+
+        allow(fake_repository).to receive(:list_last_commits_for_tree)
+          .with('main', '', offset: 0, limit: anything, literal_pathspec: true)
+          .and_return({ 'home.md' => root })
+        allow(fake_repository).to receive(:list_last_commits_for_tree)
+          .with('main', 'docs/', offset: 0, limit: anything, literal_pathspec: true)
+          .and_return({ 'docs/a.md' => doc_a, 'docs/b.md' => doc_b })
+
+        result = wiki.last_commits_for_pages(pages)
+
+        expect(result).to eq('home.md' => root, 'docs/a.md' => doc_a, 'docs/b.md' => doc_b)
+        expect(fake_repository).to have_received(:list_last_commits_for_tree).twice
+      end
+
+      it 'ignores tree entries that are not requested pages' do
+        pages = [wiki_page_stub('home.md')]
+        home = instance_double(Commit)
+
+        allow(fake_repository).to receive(:list_last_commits_for_tree).and_return(
+          'home.md' => home, 'image.png' => instance_double(Commit), 'docs' => instance_double(Commit)
+        )
+
+        expect(wiki.last_commits_for_pages(pages)).to eq('home.md' => home)
+      end
+
+      it 'omits pages whose last commit is not returned' do
+        pages = [wiki_page_stub('home.md'), wiki_page_stub('missing.md')]
+        home = instance_double(Commit)
+
+        allow(fake_repository).to receive(:list_last_commits_for_tree).and_return('home.md' => home)
+
+        expect(wiki.last_commits_for_pages(pages)).to eq('home.md' => home)
+      end
+
+      it 'returns an empty hash when Gitaly raises an error' do
+        allow(fake_repository).to receive(:list_last_commits_for_tree).and_raise(Gitlab::Git::CommandError)
+
+        expect(wiki.last_commits_for_pages([wiki_page_stub('home.md')])).to eq({})
+      end
+
+      it 'keeps results from other directories when one directory errors' do
+        pages = [wiki_page_stub('home.md'), wiki_page_stub('docs/a.md')]
+        home = instance_double(Commit)
+
+        allow(fake_repository).to receive(:list_last_commits_for_tree)
+          .with('main', '', offset: 0, limit: anything, literal_pathspec: true)
+          .and_return({ 'home.md' => home })
+        allow(fake_repository).to receive(:list_last_commits_for_tree)
+          .with('main', 'docs/', offset: 0, limit: anything, literal_pathspec: true)
+          .and_raise(Gitlab::Git::CommandError)
+
+        expect(wiki.last_commits_for_pages(pages)).to eq('home.md' => home)
+      end
+
+      context 'when a directory holds more pages than one batch' do
+        before do
+          stub_const('Wiki::LAST_COMMITS_BATCH_SIZE', 2)
+        end
+
+        it 'pages through with an increasing offset until every page is found' do
+          pages = %w[a.md b.md c.md].map { |path| wiki_page_stub(path) }
+          commits = { 'a.md' => instance_double(Commit), 'b.md' => instance_double(Commit),
+                      'c.md' => instance_double(Commit) }
+
+          allow(fake_repository).to receive(:list_last_commits_for_tree)
+            .with('main', '', offset: 0, limit: 2, literal_pathspec: true)
+            .and_return(commits.slice('a.md', 'b.md'))
+          allow(fake_repository).to receive(:list_last_commits_for_tree)
+            .with('main', '', offset: 2, limit: 2, literal_pathspec: true)
+            .and_return(commits.slice('c.md'))
+
+          expect(wiki.last_commits_for_pages(pages)).to eq(commits)
+          expect(fake_repository).to have_received(:list_last_commits_for_tree).twice
+        end
+      end
+    end
+
+    it 'resolves each page to its real last commit', :aggregate_failures do
+      wiki.create_page('home', 'home content')
+      wiki.create_page('other', 'other content')
+      pages = wiki.list_pages
+
+      result = wiki.last_commits_for_pages(pages)
+
+      expect(result.keys).to match_array(pages.map(&:path))
+      pages.each do |page|
+        # Guard the silent agreement that the hash key (page.page.path) equals the lookup key (page.path).
+        expect(page.path).to eq(page.page.path)
+        expect(result[page.path].id).to eq(page.last_version.id)
+      end
+    end
+  end
+
   describe '#find_page' do
     shared_examples 'wiki model #find_page' do
       before do

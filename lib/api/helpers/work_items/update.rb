@@ -65,11 +65,6 @@ module API
                   value[:parent] = parent
                 end
               end
-
-              if value.key?(:children_ids)
-                children_ids = value.delete(:children_ids)
-                value[:children] = ::WorkItem.id_in(children_ids)
-              end
             when :award_emoji
               value[:action] = value[:action].to_sym if value[:action]
             end

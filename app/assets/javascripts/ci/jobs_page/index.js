@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import JobsTableApp from '~/ci/jobs_page/jobs_page_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -21,7 +22,7 @@ export const initJobsPage = (containerId = 'js-jobs-table') => {
 
   const { fullPath, jobStatuses, pipelineEditorPath, admin, projectId } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'JobsTableAppRoot',
     apolloProvider,
@@ -32,8 +33,6 @@ export const initJobsPage = (containerId = 'js-jobs-table') => {
       admin: parseBoolean(admin),
       projectId,
     },
-    render(createElement) {
-      return createElement(JobsTableApp);
-    },
+    component: JobsTableApp,
   });
 };

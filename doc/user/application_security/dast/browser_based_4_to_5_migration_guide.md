@@ -43,14 +43,9 @@ Each DAST major version runs different analyzers:
 
 DAST version 5 uses a set of new CI/CD variables. Aliases have been created for the DAST version 4 variables' names.
 
-Changes to make in GitLab 16.11 and earlier:
+Changes to make:
 
-- To test DAST version 5, set the CI/CD variable `DAST_VERSION` to 5.
-- To avoid job failures, do not remove or rename `DAST_WEBSITE`. The `DAST.gitlab-ci.yml` template versions 16.11 and earlier [still use the `DAST_WEBSITE`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.11.5-ee/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml?ref_type=tags#L39) variable.
-
-Changes to make in GitLab 17.0 and later:
-
-- After you upgrade to GitLab 17.0, rename `DAST_WEBSITE` to `DAST_TARGET_URL`.
+- Rename `DAST_WEBSITE` to `DAST_TARGET_URL`.
 - When you start using new templates that set `DAST_VERSION` to 5, make sure the CI/CD variable `DAST_VERSION` is not set.
 
 ## Continuing to use version 4
@@ -77,7 +72,7 @@ Browser-based DAST version 5 does not include the proxy-based analyzer, so there
 
 There is one proxy-based active check that the browser-based analyzer does not cover. Migration of
 the remaining active check is proposed in
-[epic 13411](https://gitlab.com/groups/gitlab-org/-/epics/13411). If you prefer to remain on DAST
+[epic 13411](https://gitlab.com/groups/gitlab-org/-/work_items/13411). If you prefer to remain on DAST
 version 4 until the last check is migrated, see
 [Continuing to use version 4](#continuing-to-use-version-4).
 
@@ -85,7 +80,7 @@ Remaining check:
 
 - CWE-79: Cross-site Scripting (XSS)
 
-Follow the progress of the remaining check in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/epics/13411).
+Follow the progress of the remaining check in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/work_items/13411).
 
 ## Changes to CI/CD variables
 

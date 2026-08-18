@@ -10,6 +10,7 @@ import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_AWARD_EMOJI,
+  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
@@ -19,6 +20,8 @@ import {
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
+import { SHOW_ALL_GROUPS } from '~/work_items/board/grouping/visibility';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { workItemsRestResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
 import { preserveDetailsState } from '~/work_items/utils';
@@ -29,6 +32,101 @@ import {
   availableStatuses,
   supportedConversionTypes,
 } from './issuable_client_state';
+
+// Populates the `currentAssignees` reactive var from an assignees widget/feature object
+// (`widgets[].assignees` or `features.assignees`), which share the same `assignees.nodes` shape.
+const updateCurrentAssignees = (assigneesWidget, context) => {
+  if (!assigneesWidget || !context.variables.id) {
+    return;
+  }
+
+  const workItemAssignees = assigneesWidget.assignees?.nodes || [];
+  const users = workItemAssignees
+    .map((user) => {
+      // eslint-disable-next-line no-underscore-dangle
+      const userRef = context.cache.extract()[user.__ref];
+
+      // The ref may be absent when a user node hasn't been written to the cache yet
+      // (e.g. an optimistic response or a partial write); skip it to avoid throwing.
+      if (!userRef) return null;
+
+      // We're copying `avatarUrl` into `avatar_url` because both
+      // Quick action autocompletion setups;
+      // 1. `gfm_auto_complete.js` - Plain Text Editor
+      // 2. `content_editor/components/suggestions_dropdown.vue` - RTE
+      // expect user avatars to be present in `avatar_url` and
+      // adding `avatar_url || avatarUrl` there requires unnecessary
+      // repetition.
+      return { ...userRef, avatar_url: userRef.avatarUrl };
+    })
+    .filter(Boolean);
+
+  currentAssignees({
+    ...currentAssignees(),
+    [`${context.variables.id}`]: users,
+  });
+};
+
+// Populates the `appliedLabels` reactive var from a labels widget/feature object
+// (`widgets[].labels` or `features.labels`), which share the same `labels.nodes` shape.
+const updateAppliedLabels = (labelsWidget, context) => {
+  if (!labelsWidget || !context.variables.id) {
+    return;
+  }
+
+  const workItemLabels = labelsWidget.labels?.nodes || [];
+  const labels = workItemLabels.map(
+    // eslint-disable-next-line no-underscore-dangle
+    (label) => context.cache.extract()[label.__ref],
+  );
+
+  appliedLabels({
+    ...appliedLabels(),
+    [`${context.variables.id}`]: labels,
+  });
+};
+
+// Populates the `linkedItems` reactive var from a linked-items widget/feature object
+// (`widgets[].linkedItems` or `features.linkedItems`), which share the same `linkedItems.nodes` shape.
+const updateLinkedItems = (linkedItemsWidget, context) => {
+  if (!linkedItemsWidget?.linkedItems || !context.variables.iid) {
+    return;
+  }
+
+  // We only set up linked items when the widget is present and has `workItem` property
+  //
+  // The added null checks and .filter call is to address a situation where a work item
+  // that's still hasn't loaded remains undefined during extraction, causing the linked
+  // items widget to fail, see https://gitlab.com/gitlab-org/gitlab/-/work_items/595004
+  const items = (linkedItemsWidget.linkedItems.nodes || [])
+    .filter((node) => node.workItem)
+    // normally we would only get a `__ref` for nested properties but we need to extract the full work item
+    .map((node) => {
+      /* eslint-disable no-underscore-dangle */
+      const itemRef = context.cache.extract()[node.workItem.__ref];
+      if (!itemRef?.workItemType?.__ref) return null;
+      const { __typename, id, name, iconName } =
+        context.cache.extract()[itemRef.workItemType.__ref];
+      /* eslint-enable no-underscore-dangle */
+      if (!__typename) return null;
+
+      return {
+        ...itemRef,
+        workItemType: {
+          __typename,
+          id,
+          name,
+          iconName,
+        },
+      };
+    })
+    .filter(Boolean);
+
+  linkedItems({
+    ...linkedItems(),
+    [`${context.variables.fullPath}:${context.variables.iid}`]: items,
+  });
+};
 
 export const config = {
   typeDefs,
@@ -250,7 +348,7 @@ export const config = {
           },
           features: {
             keyArgs: false,
-            merge(existing = {}, incoming = {}) {
+            merge(existing = {}, incoming = {}, context) {
               const merged = { ...existing, ...incoming };
 
               // Deep-merge hierarchy so a partial incoming.hierarchy (e.g. from
@@ -277,6 +375,13 @@ export const config = {
               if (incoming.notes && existing.notes?.discussions && !incoming.notes.discussions) {
                 merged.notes = { ...existing.notes, ...incoming.notes };
               }
+
+              // Extract data into reactive vars, mirroring the `widgets[]` merge below,
+              // so consumers relying on these vars keep working when the
+              // `work_item_features_field` flag is enabled and data arrives via `features`.
+              updateCurrentAssignees(merged.assignees, context);
+              updateAppliedLabels(merged.labels, context);
+              updateLinkedItems(merged.linkedItems, context);
 
               return merged;
             },
@@ -343,47 +448,7 @@ export const config = {
                     return { ...existingNode, ...incomingNode };
                   });
 
-                  // We only set up linked items when the widget is present and has `workItem` property
-                  //
-                  // The added null checks and .filter call is to address a situation where a work item
-                  // that's still hasn't loaded remains undefined during extraction, causing the linked
-                  // items widget to fail, see https://gitlab.com/gitlab-org/gitlab/-/work_items/595004
-                  if (context.variables.iid) {
-                    const items = resultNodes
-                      .filter((node) => node.workItem)
-                      // normally we would only get a `__ref` for nested properties but we need to extract the full work item
-                      .map((node) => {
-                        /* eslint-disable no-underscore-dangle */
-                        const itemRef = context.cache.extract()[node.workItem.__ref];
-                        if (!itemRef?.workItemType?.__ref) return null;
-                        const { __typename, id, name, iconName } =
-                          context.cache.extract()[itemRef.workItemType.__ref];
-                        /* eslint-enable no-underscore-dangle */
-                        if (!__typename) return null;
-
-                        const workItem = {
-                          ...itemRef,
-                          workItemType: {
-                            __typename,
-                            id,
-                            name,
-                            iconName,
-                          },
-                        };
-
-                        return workItem;
-                      })
-                      .filter(Boolean);
-
-                    // Ensure that any existing linked items are retained
-                    const existingLinkedItems = linkedItems();
-                    linkedItems({
-                      ...existingLinkedItems,
-                      [`${context.variables.fullPath}:${context.variables.iid}`]: items,
-                    });
-                  }
-
-                  return {
+                  const mergedLinkedItemsWidget = {
                     ...existingWidget,
                     ...incomingWidget,
                     linkedItems: {
@@ -391,46 +456,44 @@ export const config = {
                       nodes: resultNodes,
                     },
                   };
+
+                  updateLinkedItems(mergedLinkedItemsWidget, context);
+
+                  return mergedLinkedItemsWidget;
+                }
+
+                // concat next page of hierarchy children onto the existing ones.
+                // Without this, the generic shallow merge below replaces the
+                // accumulated children with just the incoming page, making the
+                // child items widget appear to lose its items on "Load more".
+                // This is FF-agnostic: when `work_item_features_field` is on,
+                // children arrive via `features.hierarchy` (handled by the
+                // `WorkItem.features` merge) and there is no hierarchy widget in
+                // `widgets[]`, so this branch is skipped.
+                if (
+                  incomingWidget?.type === WIDGET_TYPE_HIERARCHY &&
+                  context.variables.endCursor &&
+                  existingWidget?.children?.nodes &&
+                  incomingWidget?.children?.nodes
+                ) {
+                  return {
+                    ...incomingWidget,
+                    children: {
+                      ...incomingWidget.children,
+                      nodes: [...existingWidget.children.nodes, ...incomingWidget.children.nodes],
+                    },
+                  };
                 }
 
                 const mergedWidget = { ...existingWidget, ...incomingWidget };
 
                 if (mergedWidget?.type === WIDGET_TYPE_ASSIGNEES && context.variables.id) {
-                  const workItemAssignees = mergedWidget.assignees?.nodes || [];
-                  const users = workItemAssignees.map((user) => {
-                    // eslint-disable-next-line no-underscore-dangle
-                    const userRef = context.cache.extract()[user.__ref];
-
-                    // We're copying `avatarUrl` into `avatar_url` because both
-                    // Quick action autocompletion setups;
-                    // 1. `gfm_auto_complete.js` - Plain Text Editor
-                    // 2. `content_editor/components/suggestions_dropdown.vue` - RTE
-                    // expect user avatars to be present in `avatar_url` and
-                    // adding `avatar_url || avatarUrl` there requires unnecessary
-                    // repetition.
-                    return { ...userRef, avatar_url: userRef.avatarUrl };
-                  });
-
-                  const existingAssignees = currentAssignees();
-                  currentAssignees({
-                    ...existingAssignees,
-                    [`${context.variables.id}`]: users,
-                  });
+                  updateCurrentAssignees(mergedWidget, context);
                 }
 
                 // Extract currently applied labels into `appliedLabels` reactive prop
                 if (mergedWidget?.type === WIDGET_TYPE_LABELS && context.variables.id) {
-                  const workItemLabels = mergedWidget.labels?.nodes || [];
-                  const labels = workItemLabels.map(
-                    // eslint-disable-next-line no-underscore-dangle
-                    (label) => context.cache.extract()[label.__ref],
-                  );
-
-                  const existingAppliedLabels = appliedLabels();
-                  appliedLabels({
-                    ...existingAppliedLabels,
-                    [`${context.variables.id}`]: labels,
-                  });
+                  updateAppliedLabels(mergedWidget, context);
                 }
 
                 return mergedWidget;
@@ -642,6 +705,16 @@ export const resolvers = {
       };
 
       cache.writeQuery({ query: activeDiscussionQuery, data });
+    },
+    updateWorkItemsGroupByVisibleGroups(_, { visibleGroups = SHOW_ALL_GROUPS }, { cache }) {
+      cache.writeQuery({
+        query: workItemsGroupByVisibleGroupsQuery,
+        data: {
+          workItemsGroupByVisibleGroups: visibleGroups,
+          workItemsGroupByVisibleGroupsHydrated: true,
+        },
+      });
+      return visibleGroups;
     },
   },
 };

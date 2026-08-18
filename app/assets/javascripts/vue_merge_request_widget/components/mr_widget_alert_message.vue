@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlAlert } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'MRWidgetAlertMessage',
@@ -7,6 +8,7 @@ export default {
     GlAlert,
     GlLink,
   },
+  mixins: [glSlotsMixin],
   props: {
     type: {
       type: String,
@@ -40,7 +42,9 @@ export default {
   <gl-alert v-if="!isDismissed" :variant="type" :dismissible="dismissible" @dismiss="onDismiss">
     <slot></slot>
     <gl-link v-if="helpPath" :href="helpPath" target="_blank" class="gl-label-link">
-      <slot name="link-content"></slot>
+      <template v-if="glSlots()['link-content']" #default
+        ><slot name="link-content"></slot
+      ></template>
     </gl-link>
   </gl-alert>
 </template>

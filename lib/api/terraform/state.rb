@@ -18,7 +18,7 @@ module API
         render_api_error!(e.message, 422)
       end
 
-      STATE_NAME_URI_REQUIREMENTS = { name: API::NO_SLASH_URL_PART_REGEX }.freeze
+      STATE_NAME_URI_REQUIREMENTS = { name: ::API::NO_SLASH_URL_PART_REGEX }.freeze
 
       before do
         if request.path_info.end_with?('/authorize')
@@ -47,7 +47,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :name, type: String, limit: 255, desc: 'The name of a Terraform state'
         end
@@ -78,8 +78,8 @@ module API
             end
           end
 
-          desc 'Get a Terraform state by its name' do
-            detail 'Get a Terraform state by its name'
+          desc 'Retrieve a Terraform state' do
+            detail 'Retrieves a Terraform state by name for a specified project.'
             success [
               { code: 200 },
               { code: 204, message: 'Empty state' }
@@ -115,7 +115,8 @@ module API
 
           # POST /:id/terraform/state/:name/authorize'
           desc 'Authorize Terraform state upload' do
-            detail 'This feature was introduced in GitLab 18.5'
+            detail 'Authorizes uploading a Terraform state for a specified project. This feature was introduced in ' \
+              'GitLab 18.5.'
             success code: 200
             failure [
               { code: 400, message: 'Bad Request' },
@@ -138,8 +139,8 @@ module API
             ::Terraform::StateUploader.workhorse_authorize(**params)
           end
 
-          desc 'Add a new Terraform state or update an existing one' do
-            detail 'Add a new Terraform state or update an existing one'
+          desc 'Create or update a Terraform state' do
+            detail 'Creates or updates a Terraform state for a specified project.'
             success [
               { code: 200 },
               { code: 204, message: 'No data provided' }
@@ -186,8 +187,8 @@ module API
             unprocessable_entity!('invalid JSON')
           end
 
-          desc 'Delete a Terraform state of a certain name' do
-            detail 'Delete a Terraform state of a certain name'
+          desc 'Delete a Terraform state' do
+            detail 'Deletes a Terraform state for a specified project.'
             success code: 200
             failure [
               { code: 403, message: 'Forbidden' },
@@ -210,8 +211,8 @@ module API
             status :ok
           end
 
-          desc 'Lock a Terraform state of a certain name' do
-            detail 'Lock a Terraform state of a certain name'
+          desc 'Lock a Terraform state' do
+            detail 'Locks a Terraform state for a specified project.'
             success code: 200
             failure [
               { code: 403, message: 'Forbidden' },
@@ -261,8 +262,8 @@ module API
             end
           end
 
-          desc 'Unlock a Terraform state of a certain name' do
-            detail 'Unlock a Terraform state of a certain name'
+          desc 'Unlock a Terraform state' do
+            detail 'Unlocks a Terraform state for a specified project.'
             success code: 200
             failure [
               { code: 403, message: 'Forbidden' },

@@ -6,6 +6,4 @@
 #js-deployment-details{ data: { project_path: @project.full_path,
                        environment_name: @environment.name,
                        deployment_iid: @deployment.iid,
-                       graphql_etag_key: @environment.etag_cache_key,
-                       protected_environments_available: @project.licensed_feature_available?(:protected_environments).to_s,
-                       protected_environments_settings_path: can?(current_user, :admin_pipeline, @project) && project_settings_ci_cd_path(@project, anchor: 'js-protected-environments-settings') } }
+                       graphql_etag_key: @environment.etag_cache_key } }

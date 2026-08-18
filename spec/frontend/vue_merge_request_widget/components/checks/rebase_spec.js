@@ -86,8 +86,8 @@ function createWrapper({
 }
 
 describe('Merge request merge checks rebase component', () => {
-  const findStandardRebaseButton = () => wrapper.findByTestId('standard-rebase-button');
-  const findRebaseWithoutCiButton = () => wrapper.findByTestId('rebase-without-ci-button');
+  const findStandardRebaseButton = () => wrapper.findComponentByTestId('standard-rebase-button');
+  const findRebaseWithoutCiButton = () => wrapper.findComponentByTestId('rebase-without-ci-button');
   const findModal = () => wrapper.findComponent(GlModal);
 
   describe('with permissions', () => {

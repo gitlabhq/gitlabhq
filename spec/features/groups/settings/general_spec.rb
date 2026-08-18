@@ -57,32 +57,12 @@ RSpec.describe 'Group settings > General', :with_current_organization, feature_c
       expect(find(:css, '.group-root-path').text).to eq(unscoped_root_url)
     end
 
-    context 'with scoped paths' do
-      before do
-        allow(current_organization).to receive(:scoped_paths?).and_return(true)
-      end
+    it 'has a parent group URL label for a subgroup group' do
+      subgroup = create(:group, parent: group)
 
-      it 'has a parent group URL label for a subgroup group' do
-        subgroup = create(:group, parent: group)
+      visit edit_group_path(subgroup)
 
-        visit edit_group_path(subgroup)
-
-        expect(find(:css, '.group-root-path').text).to eq("#{group_url(subgroup.parent)}/")
-      end
-    end
-
-    context 'without scoped paths' do
-      before do
-        allow(current_organization).to receive(:scoped_paths?).and_return(false)
-      end
-
-      it 'has a parent group URL label for a subgroup group' do
-        subgroup = create(:group, parent: group)
-
-        visit edit_group_path(subgroup)
-
-        expect(find(:css, '.group-root-path').text).to eq("#{group_url(subgroup.parent)}/")
-      end
+      expect(find(:css, '.group-root-path').text).to eq("#{group_url(subgroup.parent)}/")
     end
   end
 

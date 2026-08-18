@@ -766,12 +766,6 @@ class Group < Namespace
     members.blocked.where(access_level: Gitlab::Access::OWNER)
   end
 
-  def has_maintainer?(user)
-    return false unless user
-
-    members_with_parents.maintainers.exists?(user_id: user)
-  end
-
   def has_container_repository_including_subgroups?
     ::ContainerRepository.for_group_and_its_subgroups(self).exists?
   end
@@ -846,12 +840,7 @@ class Group < Namespace
     priority: UserProjectAccessChangedService::HIGH_PRIORITY,
     direct_members_only: false
   )
-
-    user_ids = if direct_members_only
-                 users_ids_of_direct_members
-               else
-                 user_ids_for_project_authorizations
-               end
+    user_ids = direct_members_only ? users_ids_of_direct_members : user_ids_for_project_authorizations
 
     UserProjectAccessChangedService
       .new(user_ids)

@@ -93,6 +93,12 @@ module Types
       null: true,
       description: 'Triggered when a work item is updated.'
 
+    field :namespace_work_item_changes,
+      subscription: Subscriptions::WorkItems::NamespaceWorkItemChanges,
+      null: true,
+      description: 'Triggered when a work item in a namespace is created, updated, or deleted.',
+      experiment: { milestone: '19.3' }
+
     field :merge_request_reviewers_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when the reviewers of a merge request are updated.'

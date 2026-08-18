@@ -66,18 +66,6 @@ module Ci
     scope :preload_job_definition_instances, -> { preload(:job_definition_instance) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
 
-    scope :with_needs, ->(names = nil) do
-      needs = Ci::BuildNeed.scoped_build.select(1)
-      needs = needs.where(name: names) if names
-      where('EXISTS (?)', needs)
-    end
-
-    scope :without_needs, ->(names = nil) do
-      needs = Ci::BuildNeed.scoped_build.select(1)
-      needs = needs.where(name: names) if names
-      where('NOT EXISTS (?)', needs)
-    end
-
     scope :with_interruptible_true, -> do
       where_exists(
         Ci::JobDefinitionInstance
@@ -180,18 +168,6 @@ module Ci
       )
     end
 
-    # Old processables may have scheduling_type as nil,
-    # so we need to ensure the data exists before using it.
-    def self.populate_scheduling_type!
-      needs = Ci::BuildNeed.scoped_build.select(1)
-      where(scheduling_type: nil).update_all(
-        "scheduling_type = CASE WHEN (EXISTS (#{needs.to_sql}))
-         THEN #{scheduling_types[:dag]}
-         ELSE #{scheduling_types[:stage]}
-         END"
-      )
-    end
-
     def assign_resource_from_resource_group(processable)
       Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
     end
@@ -290,14 +266,6 @@ module Ci
       strong_memoize(:needs_attributes) do
         needs.map { |need| need.attributes.except('id', 'build_id') }
       end
-    end
-
-    def ensure_scheduling_type!
-      # If this has a scheduling_type, it means all processables in the pipeline already have.
-      return if scheduling_type
-
-      pipeline.ensure_scheduling_type!
-      reset
     end
 
     def dependency_variables

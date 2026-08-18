@@ -86,7 +86,7 @@ describe('Job Run Form', () => {
   };
 
   const findCancelBtn = () => wrapper.findByTestId('cancel-btn');
-  const findRunBtn = () => wrapper.findByTestId('run-manual-job-btn');
+  const findRunBtn = () => wrapper.findComponentByTestId('run-manual-job-btn');
   const findVariablesForm = () => wrapper.findComponent(JobVariablesForm);
   const findInputsForm = () => wrapper.findComponent(PipelineInputsForm);
 

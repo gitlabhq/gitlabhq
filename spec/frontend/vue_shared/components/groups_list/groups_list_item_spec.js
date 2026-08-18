@@ -42,9 +42,9 @@ describe('GroupsListItem', () => {
   const findGroupListItemActions = () => wrapper.findComponent(GroupListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const findSubgroupsCount = () => wrapper.findByTestId('subgroups-count');
-  const findProjectsCount = () => wrapper.findByTestId('projects-count');
-  const findMembersCount = () => wrapper.findByTestId('members-count');
+  const findSubgroupsCount = () => wrapper.findComponentByTestId('subgroups-count');
+  const findProjectsCount = () => wrapper.findComponentByTestId('projects-count');
+  const findMembersCount = () => wrapper.findComponentByTestId('members-count');
   const findStorageSize = () => wrapper.findByTestId('storage-size');
 
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);

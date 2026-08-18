@@ -121,7 +121,7 @@ You can choose between two setup modes depending on your development needs:
    - See [running `kas` and `agentk` locally](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/developing.md#running-kas-and-agentk-locally).
    - For debugging with JetBrains GoLand IDE:
 
-      1. Set up a `kas` "Run Configuration" "Run Kind: Directory'
+      1. Set up a `kas` "Run Configuration" "Run Kind: Directory"
       1. Point to `/path/to/cmd/kas`.
       1. Check `Run after build`.
       1. Pass all the same `ENV` vars and options as you do to Bazel.
@@ -204,7 +204,7 @@ When `make test` passes, agent for Kubernetes is ready to use.
    - See [running `kas` and `agentk` locally](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/developing.md#running-kas-and-agentk-locally).
    - For debugging with JetBrains GoLand IDE:
 
-      1. Set up a `kas` "Run Configuration" "Run Kind: Directory'
+      1. Set up a `kas` "Run Configuration" "Run Kind: Directory"
       1. Point to `/path/to/cmd/kas`.
       1. Check `Run after build`.
       1. Pass all the same `ENV` vars and options as you do to Bazel.
@@ -361,7 +361,7 @@ To enable AI features in workspaces:
 
 1. Follow the instructions in [Set up GitLab Team Member License for GDK](../ai_features/ai_development_license.md#set-up-gitlab-team-member-license-for-gdk).
 
-   This page also lists other set up AI features options for local development. To provision a
+   This page also lists other options for setting up AI features for local development. To provision a
    GitLab Self-Managed Ultimate Subscription with GitLab Duo Pro add-on license yourself, follow the cloud license
    with CustomersDot approach.
 1. Configure your instance to use the staging AI Gateway (`https://cloud.staging.gitlab.com/ai`).
@@ -447,7 +447,7 @@ To run the test:
 
    - To override the defaults, use `AGENTK_GROUP=some-org GITLAB_PASSWORD=example scripts/remote_development/run-e2e-spec.sh`
 
-   The complete list of environment variables are in `scripts/remote_development/run-e2e-spec.sh`.
+   The complete list of environment variables is in `scripts/remote_development/run-e2e-spec.sh`.
 
 ### Verify behavior with example projects
 
@@ -466,7 +466,7 @@ These repositories are used to develop Workspaces:
 | Name                                                                                          | Description                                                               | Language |
 |-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|----------|
 | [GitLab](https://gitlab.com/gitlab-org/gitlab)                                                | Main logic                                                                | Ruby on Rails |
-| [GitLab Agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) | Logic for creating/report Kubernetes resources                            | Go       |
+| [GitLab Agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) | Logic for creating/reporting Kubernetes resources                         | Go       |
 | [GitLab Workspaces Proxy](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy)   | Logic for authentication and authorization of incoming workspaces traffic | Go       |
 | [GitLab Build Images](https://gitlab.com/gitlab-org/gitlab-build-images)                      | Logic for workspaces-related container image builds                       | Shell script, Docker |
 | [Devfile Gem](https://gitlab.com/gitlab-org/ruby/gems/devfile-gem)                            | Logic for converting Devfile to Kubernetes resources                      | Go, Ruby |

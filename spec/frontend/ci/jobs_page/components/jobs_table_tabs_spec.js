@@ -65,11 +65,11 @@ describe('Jobs Table Tabs', () => {
       ${0}     | ${null}
       ${1}     | ${[statuses.success, statuses.failed, statuses.canceled]}
     `(
-      'emits fetchJobsByStatus with $expectedScope on tab change',
+      'emits fetch-jobs-by-status with $expectedScope on tab change',
       ({ tabIndex, expectedScope }) => {
         triggerTabChange(tabIndex);
 
-        expect(wrapper.emitted()).toEqual({ fetchJobsByStatus: [[expectedScope]] });
+        expect(wrapper.emitted()).toEqual({ 'fetch-jobs-by-status': [[expectedScope]] });
       },
     );
 

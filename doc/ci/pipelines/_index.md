@@ -50,6 +50,8 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Pipelines that use the `needs` keyword](../yaml/needs.md) run based on dependencies
   between jobs and can run more quickly than basic pipelines.
+- [Branch pipelines](pipeline_types.md#branch-pipeline) run every time you push a commit
+  to a branch, with no configuration required.
 - [Merge request pipelines](merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
 - [Merged results pipelines](merged_results_pipelines.md)
@@ -248,7 +250,7 @@ For each `var` or `file_var`, a key and value are required.
 
 ### Add manual interaction to your pipeline
 
-[Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
+[Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually)
 allow you to require manual interaction before moving forward in the pipeline.
 
 You can do this straight from the pipeline graph. Select **Run** ({{< icon name="play" >}}) to execute that particular job.
@@ -384,11 +386,11 @@ Each job is represented as a `Period`, which consists of:
 - `Period#first` (when the job started).
 - `Period#last` (when the job finished).
 
-A simple example is:
+For example:
 
 - A (0, 2)
 - A' (2, 4)
-  - This is retrying A
+  - A' retries A
 - B (1, 3)
 - C (6, 7)
 
@@ -475,7 +477,7 @@ In this example:
   despite being in the `test` stage.
 - `test-job1` depends on `build-job1`, and `test-job2` depends on both `build-job1` and `build-job2`,
   so both test jobs display in the second column.
-- Both `deploy` jobs depend on jobs in second column (which themselves depend on other earlier jobs),
+- Both `deploy` jobs depend on jobs in the second column (which themselves depend on other earlier jobs),
   so the deploy jobs display in the third column.
 
 When you hover over a job in the **Job dependencies** view, every job that must run
@@ -489,7 +491,7 @@ Pipeline mini graphs take less space and can tell you at a quick glance if all j
 or something failed. They show all related jobs for a single commit and the net result
 of each stage of your pipeline. You can quickly see what failed and fix it.
 
-The pipeline mini graph always group jobs by stage, and display throughout GitLab
+The pipeline mini graph always groups jobs by stage, and displays throughout GitLab
 when displaying pipeline or commit details.
 
 ![Pipeline mini graph](img/pipeline_mini_graph_v16_11.png)
@@ -548,7 +550,7 @@ This table lists the refspecs injected for each pipeline type:
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
+deleted. You can use it in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
 and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
 ## Troubleshooting

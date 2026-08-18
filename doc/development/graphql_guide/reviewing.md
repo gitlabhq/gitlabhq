@@ -6,7 +6,7 @@ title: GraphQL API merge request checklist
 ---
 
 The GitLab GraphQL API has a fair degree of complexity so it's important that merge requests containing GraphQL changes be reviewed by someone familiar with GraphQL.
-You can ping one via the `@gitlab-org/graphql-experts` group in a MR or in the [`#f_graphql` channel](https://gitlab.slack.com/archives/C6MLS3XEU) in Slack (available to GitLab team members only).
+You can ping one via the `@gitlab-org/graphql-experts` group in an MR or in the [`#f_graphql` channel](https://gitlab.slack.com/archives/C6MLS3XEU) in Slack (available to GitLab team members only).
 
 GraphQL queries need to be reviewed for:
 
@@ -89,7 +89,7 @@ For details, see [max complexity](../api_graphql_styleguide.md#max-complexity), 
 
 ### Testing
 
-- Resolver (unit) specs are deprecated in favour of request (integration) specs.
+- Resolver (unit) specs are deprecated in favor of request (integration) specs.
 - Many aspects of our framework are outside the `resolve` method and a request spec is the only way to ensure they behave properly.
 - Every GraphQL change MR should ideally have changes to API specs.
 

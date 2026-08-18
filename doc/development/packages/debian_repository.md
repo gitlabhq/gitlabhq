@@ -24,7 +24,7 @@ The `.deb` file follows the naming convention `<PackageName>_<VersionNumber>-<De
 
 It includes a `control file` that contains metadata about the package. You can view the control file by using `dpkg --info <deb_file>`.
 
-The [`.changes` file](https://www.debian.org/doc/debian-policy/ch-controlfields.html#debian-changes-files-changes) is used to tell the Debian repository how to process updates to packages. It contains a variety of metadata for the package, including architecture, distribution, and version. In addition to the metadata, they contain three lists of checksums: `sha1`, `sha256`, and `md5` in the `Files` section. Refer to [sample_1.2.3~alpha2_amd64.changes](https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/spec/fixtures/packages/debian/sample_1.2.3~alpha2_amd64.changes) for an example of how these files are structured.
+The [`.changes` file](https://www.debian.org/doc/debian-policy/ch-controlfields.html#debian-changes-files-changes) is used to tell the Debian repository how to process updates to packages. It contains a variety of metadata for the package, including architecture, distribution, and version. In addition to the metadata, it contains three lists of checksums: `sha1`, `sha256`, and `md5` in the `Files` section. Refer to [sample_1.2.3~alpha2_amd64.changes](https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/spec/fixtures/packages/debian/sample_1.2.3~alpha2_amd64.changes) for an example of how these files are structured.
 
 ## How do people get Debian packages?
 
@@ -78,7 +78,7 @@ The Debian community created many package repository systems before things like 
 
 ## What are GPG keys, and what are signed releases
 
-A [GPG key](https://www.gnupg.org/) is a public/private key pair for secure data transmission. Similar to an SSH key, there is a private and public key. Whoever has the _public key can encrypt data_, and whoever has the _private key can decrypt data_ that was encrypted using the public key. You can also use GPG keys to sign data. Whoever has the private key can sign data or a file, and whoever has the public key can then check the signature and trust it came from the person with the matching private key.
+A [GPG key](https://www.gnupg.org/) is a public/private key pair for secure data transmission. Similar to an SSH key, there is a private key and a public key. Whoever has the _public key can encrypt data_, and whoever has the _private key can decrypt data_ that was encrypted using the public key. You can also use GPG keys to sign data. Whoever has the private key can sign data or a file, and whoever has the public key can then check the signature and trust it came from the person with the matching private key.
 
 We use GPG to sign the release file for the Debian packages. The release file is an index of all packages within a given distribution and their respective digests.
 
@@ -93,7 +93,7 @@ When a [file upload](../../api/packages/debian.md#upload-a-package-file) occurs:
 
 Once we know which package the file belongs to, it is associated with that package, and the "incoming" package is removed if no more files remain. The "unknown" status of the file is updated to the correct file type.
 
-Next, if the file is a `.changes` format:
+Next, if the file is in `.changes` format:
 
 1. The `.changes` file is parsed and any files listed within it are updated. All uploaded non-`.changes` files are correctly associated with various distributions and packages.
 1. The `::Packages::Debian::GenerateDistributionWorker` and thus `::Packages::Debian::GenerateDistributionService` are run.
@@ -173,4 +173,4 @@ sequenceDiagram
 
 ### Distributions
 
-You must create a distribution before publishing a package to it. When you create or update a distribution using the project or group distribution API, in addition to creating the initial backing records in the database, the `GenerateDistributionService` run as shown in the above sequence diagram.
+You must create a distribution before publishing a package to it. When you create or update a distribution using the project or group distribution API, in addition to creating the initial backing records in the database, the `GenerateDistributionService` runs as shown in the above sequence diagram.

@@ -1,0 +1,9 @@
+---
+name: delete_integration_exclusion
+description: Grants the ability to delete an integration exclusion.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_integration_exclusion

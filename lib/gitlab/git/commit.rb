@@ -142,34 +142,8 @@ module Gitlab
           end
         end
 
-        # Prefer `list_all` since it deprecates this RPC and `FindCommits`.
-        #
-        # Returns commits collection
-        #
-        # Ex.
-        #   Commit.find_all(
-        #     repo,
-        #     ref: 'master',
-        #     max_count: 10,
-        #     skip: 5,
-        #     order: :date
-        #   )
-        #
-        #   +options+ is a Hash of optional arguments to git
-        #     :ref is the ref from which to begin (SHA1 or name)
-        #     :max_count is the maximum number of commits to fetch
-        #     :skip is the number of commits to skip
-        #     :order is the commits order and allowed value is :none (default), :date,
-        #        :topo, or any combination of them (in an array). Commit ordering types
-        #        are documented here: https://git-scm.com/docs/git-log#_commit_ordering
-        def find_all(repo, options = {})
-          wrapped_gitaly_errors do
-            Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
-          end
-        end
-
         # ListCommits lists all commits reachable via a set of references by doing a graph walk.
-        # This deprecates FindAllCommits and FindCommits (except Follow is not yet supported).
+        # This deprecates FindCommits (except Follow is not yet supported).
         # Any unknown revisions will cause the RPC to fail.
         def list_all(repo, options = {})
           wrapped_gitaly_errors do

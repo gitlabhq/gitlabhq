@@ -14,7 +14,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
           documentation: { example: 18 }
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Trigger a pipeline with a token' do
           detail 'Triggers a pipeline with a token. With a CI/CD job token, the triggered pipeline is a ' \
             'multi-project pipeline. The job that authenticates the request becomes associated with the upstream ' \

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Form from './components/form.vue';
 
@@ -16,21 +16,18 @@ export default () => {
     dormantProjectsSendWarningEmailAfterMonths,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DormantProjectDeletion',
-    render(createElement) {
-      return createElement(Form, {
-        props: {
-          deleteDormantProjects: parseBoolean(deleteDormantProjects),
-          dormantProjectsDeleteAfterMonths: parseInt(dormantProjectsDeleteAfterMonths, 10),
-          dormantProjectsMinSizeMb: parseInt(dormantProjectsMinSizeMb, 10),
-          dormantProjectsSendWarningEmailAfterMonths: parseInt(
-            dormantProjectsSendWarningEmailAfterMonths,
-            10,
-          ),
-        },
-      });
+    component: Form,
+    props: {
+      deleteDormantProjects: parseBoolean(deleteDormantProjects),
+      dormantProjectsDeleteAfterMonths: parseInt(dormantProjectsDeleteAfterMonths, 10),
+      dormantProjectsMinSizeMb: parseInt(dormantProjectsMinSizeMb, 10),
+      dormantProjectsSendWarningEmailAfterMonths: parseInt(
+        dormantProjectsSendWarningEmailAfterMonths,
+        10,
+      ),
     },
   });
 };

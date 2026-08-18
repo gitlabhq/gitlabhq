@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { unionBy, uniqueId, map } from 'lodash-es';
 import {
@@ -15,21 +16,16 @@ export default {
   name: 'WorkItemDevelopmentRelationshipList',
   components: {
     WorkItemDevelopmentMrItem,
-    WorkItemDevelopmentFfItem: () =>
-      import(
-        'ee_component/work_items/components/work_item_development/work_item_development_ff_item.vue'
-      ),
+    WorkItemDevelopmentFfItem: defineAsyncComponent(
+      () =>
+        import('ee_component/work_items/components/work_item_development/work_item_development_ff_item.vue'),
+    ),
     GlButton,
   },
   props: {
     workItemDevWidget: {
       type: Object,
       required: true,
-    },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     canCreateMergeRequest: {
       type: Boolean,
@@ -136,7 +132,6 @@ export default {
         <component
           :is="itemComponent(item)"
           :item-content="item"
-          :is-modal="isModal"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="workItemIid"
           :can-create-merge-request="canCreateMergeRequest"

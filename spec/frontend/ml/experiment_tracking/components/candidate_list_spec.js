@@ -127,7 +127,7 @@ describe('CandidateList', () => {
       });
 
       it('on submit, resets the cursor and reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('filter:submit');
+        findRegistrySearch().vm.$emit('filter-submit');
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
@@ -136,7 +136,7 @@ describe('CandidateList', () => {
       });
 
       it('on sorting changed, resets cursor and reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('sorting:changed', { orderBy: 'created_at' });
+        findRegistrySearch().vm.$emit('sorting-changed', { orderBy: 'created_at' });
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
@@ -145,7 +145,7 @@ describe('CandidateList', () => {
       });
 
       it('on sorting changed and is metric, resets cursor and reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('sorting:changed', { orderBy: 'metric.auc' });
+        findRegistrySearch().vm.$emit('sorting-changed', { orderBy: 'metric.auc' });
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ describe('CandidateList', () => {
       });
 
       it('on direction changed, reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('sorting:changed', { sort: 'desc' });
+        findRegistrySearch().vm.$emit('sorting-changed', { sort: 'desc' });
 
         expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
         expect(urlHelpers.visitUrl).toHaveBeenCalledWith(

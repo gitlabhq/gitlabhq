@@ -147,7 +147,7 @@ You must register an agent before you can install the agent in your cluster. To 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12180) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -251,12 +251,6 @@ If KAS is installed with the GitLab chart, and the chart is configured to provid
 an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/charts/installation/tls/#option-4-use-auto-generated-self-signed-wildcard-certificate), you can extract the CA certificate from the `RELEASE-wildcard-tls-ca` secret.
 
 ##### Use the agent behind an HTTP proxy
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
-
-{{< /history >}}
 
 To configure an HTTP proxy when using the Helm chart, you can use the environment variables `HTTP_PROXY`, `HTTPS_PROXY`,
 and `NO_PROXY`. Upper and lowercase are both acceptable.

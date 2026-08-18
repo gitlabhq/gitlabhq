@@ -32,10 +32,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
     context 'when export file exists' do
       before do
-        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-          allow(strategy).to receive(:increment).and_return(0)
-          allow(strategy).to receive(:read).and_return(0)
-        end
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
 
         upload.export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz', "`/tar.gz")
         upload.user = user

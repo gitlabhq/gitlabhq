@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isGid, getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getPipelineNeeds from 'shared_queries/pipelines/get_pipeline_needs.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
@@ -26,7 +26,6 @@ import {
   calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeLoadErrors,
-  setupQueryPollingByVisibility,
   unwrapPipelineData,
   mergePipelineWithNeeds,
 } from './utils';
@@ -395,9 +394,9 @@ export default {
         :type="graphViewType"
         :show-links="showLinks"
         :tip-previously-dismissed="hoverTipPreviouslyDismissed"
-        @dismissHoverTip="handleTipDismissal"
-        @updateViewType="updateViewType"
-        @updateShowLinksState="updateShowLinksState"
+        @dismiss-hover-tip="handleTipDismissal"
+        @update-view-type="updateViewType"
+        @update-show-links-state="updateShowLinksState"
       />
     </local-storage-sync>
     <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />

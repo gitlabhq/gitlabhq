@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User views work items", feature_category: :team_planning do
+RSpec.describe "User views work items", feature_category: :planning_views do
   let!(:closed_issue) { create(:closed_issue, project: project) }
   let!(:open_issue1) { create(:issue, project: project) }
   let!(:open_issue2) { create(:issue, project: project) }
@@ -111,7 +111,6 @@ RSpec.describe "User views work items", feature_category: :team_planning do
   context "when signed in as developer", :js do
     before do
       project.add_developer(user)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
     end
 

@@ -338,6 +338,44 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
   end
 
+  describe 'GET /projects/:id/labels/:name' do
+    it 'returns a single label by name', :aggregate_failures do
+      get api("/projects/#{project.id}/labels/#{valid_label_title_1_esc}", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['color']).to be_color(label1.color)
+      expect(json_response['description']).to eq(label1.description)
+    end
+
+    context 'when the label is looked up by label ID' do
+      it 'returns the label', :aggregate_failures do
+        get api("/projects/#{project.id}/labels/#{label1.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(label1.id)
+        expect(json_response['name']).to eq(label1.name)
+      end
+
+      it 'resolves by ID before matching a title when both exist for the same numeric segment', :aggregate_failures do
+        label_with_numeric_title = create(:label, title: label1.id.to_s, project: project)
+
+        get api("/projects/#{project.id}/labels/#{label1.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(label1.id)
+        expect(json_response['name']).to eq(label1.name)
+        expect(json_response['id']).not_to eq(label_with_numeric_title.id)
+      end
+
+      it 'returns 404 when the label ID does not exist' do
+        get api("/projects/#{project.id}/labels/#{non_existing_record_id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/labels' do
     it 'returns created label when all params' do
       post api("/projects/#{project.id}/labels", user),

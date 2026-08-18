@@ -107,7 +107,7 @@ RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
             .and_return(context_commits_diff)
 
           expect(context_commits_diff).to receive(:has_encoded_file_paths?).and_return(true)
-          expect(subject[:has_encoded_file_paths]).to eq(true)
+          expect(subject[:has_encoded_file_paths]).to be(true)
         end
       end
 
@@ -117,7 +117,7 @@ RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
 
           it 'calls MergeRequestDiff#has_encoded_file_paths?' do
             expect(merge_request_diff).to receive(:has_encoded_file_paths?).and_return(true)
-            expect(subject[:has_encoded_file_paths]).to eq(true)
+            expect(subject[:has_encoded_file_paths]).to be(true)
           end
         end
 
@@ -127,7 +127,7 @@ RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
 
           it 'calls Commit#has_encoded_file_paths?' do
             expect(commit).to receive(:has_encoded_file_paths?).and_return(true)
-            expect(subject[:has_encoded_file_paths]).to eq(true)
+            expect(subject[:has_encoded_file_paths]).to be(true)
           end
         end
       end

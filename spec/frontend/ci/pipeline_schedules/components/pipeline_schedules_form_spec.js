@@ -10,8 +10,8 @@ import { createAlert } from '~/alert';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import PipelineSchedulesForm from '~/ci/pipeline_schedules/components/pipeline_schedules_form.vue';
 import VariablesForm from '~/ci/common/variables_form.vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
-import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 import createPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/create_pipeline_schedule.mutation.graphql';
@@ -101,11 +101,11 @@ describe('Pipeline schedules form', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findDescription = () => wrapper.findByTestId('schedule-description');
+  const findDescription = () => wrapper.findComponentByTestId('schedule-description');
   const findIntervalComponent = () => wrapper.findComponent(IntervalPatternInput);
   const findTimezoneDropdown = () => wrapper.findComponent(TimezoneDropdown);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
-  const findSubmitButton = () => wrapper.findByTestId('schedule-submit-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('schedule-submit-button');
   const findCancelButton = () => wrapper.findByTestId('schedule-cancel-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);

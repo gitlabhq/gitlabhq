@@ -19,7 +19,7 @@ just one. A quick example is account security:
 - Implement a second factor to the authentication process for added security.
 - Use a hardware token as a second factor.
 - Lock out an account (for at least a fixed amount of time) for failed authentication attempts.
-- An account that is unused for a specific time frame should be disabled, enforce this
+- An account that is unused for a specific time frame should be disabled. Enforce this
   with either automation or regular audits.
 
 Instead of using only one or two items on the list, use as many as possible. This
@@ -41,7 +41,7 @@ actually is.
 An example of this is running a service on a non-standard TCP port. For example the
 default SSH daemon port on servers is TCP port 22, but it is possible to configure the
 SSH daemon to run on another port such as TCP port 2222. The administrator who configured
-this might think it increases the security of the system, however it is quite common for
+this might think it increases the security of the system. However, it is quite common for
 an attacker to port scan a system to discover all open ports, allowing for quick discovery
 of the SSH service, and eliminating any perceived security advantage.
 

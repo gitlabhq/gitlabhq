@@ -21,8 +21,7 @@ module QA
       end
 
       it(
-        'allows 2FA code recovery via ssh',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347938'
+        'allows 2FA code recovery via ssh'
       ) do
         recovery_code = Support::SSH.perform do |ssh|
           ssh.key = ssh_key
@@ -33,19 +32,13 @@ module QA
         end
 
         Flow::Login.sign_in(as: user, skip_page_validation: true)
-        Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code(recovery_code)
-          two_fa_auth.click_verify_code_button
-        end
+        Flow::Login.submit_2fa_code(recovery_code)
 
-        expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
+        expect(Page::Main::Menu.perform(&:has_personal_area?)).to be_truthy
 
         Page::Main::Menu.perform(&:sign_out)
         Flow::Login.sign_in(as: user, skip_page_validation: true)
-        Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code(recovery_code)
-          two_fa_auth.click_verify_code_button
-        end
+        Flow::Login.submit_2fa_code(recovery_code)
 
         expect(page).to have_text('Invalid two-factor code')
       end

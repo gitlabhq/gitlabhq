@@ -15,6 +15,7 @@ import CiItemPresenter from './ci_item.vue';
 import CiStatusPresenter from './ci_status.vue';
 import CodePresenter from './code.vue';
 import DurationPresenter from './duration.vue';
+import DurationMsPresenter from './duration_ms.vue';
 import NamedTextPresenter from './named_text.vue';
 import NullPresenter from './null.vue';
 import BoolPresenter from './bool.vue';
@@ -76,7 +77,7 @@ export const presentersByFieldKey = {
   status: {
     Pipeline: CiStatusPresenter,
     CiJob: CiStatusPresenter,
-    FinishedPipelinesAggregationResponseDimensions: CiStatusPresenter,
+    PipelinesAggregationResponseDimensions: CiStatusPresenter,
   },
   description: HtmlPresenter,
   descriptionHtml: HtmlPresenter,
@@ -98,6 +99,7 @@ export const presentersByFieldKey = {
   type: TypePresenter,
   user: {
     DuoCodeSuggestionsAggregationResponseDimensions: UserAvatarPresenter,
+    DuoUsageEventsAggregationResponseDimensions: UserAvatarPresenter,
     default: UserPresenter,
     compact: UserPresenter,
   },
@@ -112,7 +114,13 @@ export const presentersByFieldKey = {
   totalCount: NumberPresenter,
   usersCount: NumberPresenter,
   suggestionSizeSum: NumberPresenter,
+  throughputCount: NumberPresenter,
+  featuresCount: NumberPresenter,
+  returningUsersCount: NumberPresenter,
+  previousPeriodUsersCount: NumberPresenter,
   durationQuantile: DurationPresenter,
+  // timeToMergeQuantile arrives in milliseconds, unlike durationQuantile (seconds)
+  timeToMergeQuantile: DurationMsPresenter,
 };
 
 // Returns the field key that holds the title for the given __typename,
@@ -157,13 +165,15 @@ const presenterByPrimitiveType = (field) => {
   return TextPresenter;
 };
 
-// Resolves a presenter for the given (item, fieldKey, variant) by walking the
-// dispatch chain: null → field-key → typename → primitive.
-export const presenterFor = (item, fieldKey, variant) => {
+// Resolves a presenter for (item, fieldKey) via: null → field-key → typename → primitive.
+// `fieldKey` is the data key for value lookup; `presenterKey` (falls back to `fieldKey`)
+// is used for `presentersByFieldKey` — needed because aliased fields store data under
+// the alias, not the base field key.
+export const presenterFor = (item, fieldKey, { variant = 'default', presenterKey = '' } = {}) => {
   const field = dataForField(item, fieldKey);
   if (field == null) return NullPresenter;
   return (
-    presenterByFieldKey(fieldKey, item, variant) ||
+    presenterByFieldKey(presenterKey || fieldKey, item, variant) ||
     presenterByObjectType(field, variant) ||
     presenterByPrimitiveType(field)
   );

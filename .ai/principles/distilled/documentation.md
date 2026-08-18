@@ -1,6 +1,6 @@
 ---
-source_checksum: fdddf765995a1dff
-distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
+source_checksum: aa7fcd5a891ab119
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -28,6 +28,9 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 - DO NOT use typographer's ("curly") quotation marks; use straight quotes.
 - Use serial (Oxford) commas before the final "and" or "or" in lists of three or more items.
 - DO NOT use Latin abbreviations like `e.g.` or `i.e.`.
+- Avoid ellipses; where unavoidable (for example, in a code block or CLI response) use three periods with no space (`...`).
+- DO NOT use the `&hellip;` HTML entity or the `&#8230;` HTML code; they break how code blocks render.
+- DO NOT include ellipses when documenting UI text (use `Search or go to`, not `Search or go to...`).
 - DO NOT use `-ing` words, ambiguous pronouns like "it", or phrases that hide the subject like "there is"/"there are".
 - Break up noun strings (e.g., use "custom settings for project integrations", not "project integration custom settings").
 
@@ -59,9 +62,8 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 - DO NOT use HTML in Markdown unless no Markdown equivalent exists, the content is reviewed by a technical writer, and the need is urgent.
 - Any `<a>` tags created with HTML must use absolute URLs as `href` attributes.
 - Use inline links, not reference-style links.
-- Split long lines at approximately 100 characters; DO NOT split links across lines.
-- Start each new sentence on a new line.
-- Use `<!-- comment -->` HTML comments for author notes; DO NOT use comments to hide documentation.
+- Start each new sentence on a new line. Split long lines at approximately 100 characters; DO NOT split links across lines. Try to avoid splitting lines between logical word groupings; keep them together on the same line.
+- Use `<!-- -->` HTML comments for author notes; DO NOT use comments to hide documentation.
 
 ### Text Formatting
 
@@ -135,6 +137,7 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 - Use `> [!note]`, `> [!warning]`, `> [!flag]`, and `> [!disclaimer]` for alert types.
 - DO NOT use blockquotes in product documentation; use code blocks, alert boxes, or plain text instead.
 - Use the guide shortcode for tutorials only; DO NOT use a guide inside a guide.
+- Build tab sets with the `{{< tabs >}}` and `{{< tab title="..." >}}` shortcodes, and put only paragraphs, lists, alert boxes, and code blocks inside a tab; DO NOT nest version history bullets, topic headings, HTML, or other tabs inside one. Keep tab titles brief, parallel, and capitalized.
 - Use collapsible panels only on GitLab Duo pages in the availability details section; DO NOT use them for other content.
 - Use cards only on top-level landing pages where cards are the only content.
 - DO NOT use Markdown emoji format (`:smile:`); use GitLab SVG icons instead.
@@ -173,6 +176,7 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 
 - Place availability details (`{{< details >}}` shortcode) at the top of the page (after front matter) when they apply to the whole page, or under the applicable section heading when they apply to a specific section.
 - Include tier (`Free, Premium, Ultimate` or subset), add-on (for GitLab Duo features only), offering (`GitLab.com`, `GitLab Self-Managed`, `GitLab Dedicated`, `GitLab Dedicated for Government`), and status (`Beta`, `Experiment`, or `Limited availability`) as applicable; DO NOT add a status entry for generally available features.
+- For GitLab Agent Platform features available on the Free tier, link to the GitLab Credits page in the tier entry (e.g., `[Free](../subscriptions/gitlab_credits.md#for-the-free-tier), Premium, Ultimate`).
 - DO NOT add availability details to tutorials, tier-comparison pages, `/development` pages, or `/solutions` pages.
 - DO NOT repeat tier, offering, or status in a subheading's badge when it matches the parent topic's badge.
 - Place history notes (`{{< history >}}` shortcode) after the details block and immediately after the heading; start each entry with `-` and link to the related issue, MR, or epic when possible.
@@ -183,7 +187,7 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 
 ### Deprecations and Removals
 
-- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, and wrap the content in `<!-- remove_date: YYYY-MM-DD -->` HTML comments (set `remove_date` to three months after the planned removal release).
+- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, and wrap the content in `<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and `<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release).
 - When removing a feature, change `(deprecated)` to `(removed)` in the title, remove all content except the deprecation/removal statement, set `remove_date` in metadata to three months after the removal release, and set `redirect_to` to a relevant replacement page.
 - After removing a page, edit `navigation.yaml` in `docs-gitlab-com` to remove the page's entry from the global navigation, update any links in the [Deprecations and Removals](https://docs.gitlab.com/update/deprecations/) YAML files, and run `bin/rake gitlab:docs:compile_deprecations`.
 - DO NOT follow the standard deprecation process for features that are not generally available; delete the content outright instead.
@@ -244,4 +248,3 @@ For the full picture, see:
 - doc/development/documentation/styleguide/availability_details.md
 - doc/development/documentation/styleguide/deprecations_and_removals.md
 - doc/development/documentation/metadata.md
-

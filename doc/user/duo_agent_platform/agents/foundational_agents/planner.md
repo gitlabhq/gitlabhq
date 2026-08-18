@@ -21,6 +21,10 @@ title: Planner Agent
 - To-do management introduced in GitLab 19.0.
 - [Orbit](https://docs.gitlab.com/orbit/) integration for graph-based queries
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/598775) in GitLab 19.1.
+- Linked item relationships (relates to, blocks, blocked by)
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/586331) in GitLab 19.2.
+- Support for saved views
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592440) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -42,12 +46,13 @@ Use the Planner Agent when you need help with:
 - Creating content: Drafting memos, requirements, and other planning artifacts, or creating
   epics, issues, and tasks directly when asked.
 - Dependency analysis: Identifying blocked work and understanding relationships between items.
-- Editing content: Updating work items, labels, milestones, and other attributes either when asked
-  or after it asks for confirmation to take action.
+- Editing content: Updating work items, labels, milestones, linked item relationships, and other
+  attributes either when asked or after it asks for confirmation to take action.
 - To-do management: Adding to-dos to work items and marking them as done.
 - Planning sessions: Organizing sprints, milestones, or quarterly planning.
 - Status reporting: Generating summaries of progress, risks, and blockers.
 - Backlog management: Identifying stale issues, duplicates, or items needing refinement.
+- Saved views: Analyzing the work items in a saved view, using the view's filters and sort order.
 - Estimation: Suggesting relative sizing or effort estimates for work items.
 - Graph-based context: Finding similar past work, cross-project dependencies, and contributors
   with related experience. Requires [Orbit](https://docs.gitlab.com/orbit/).
@@ -174,9 +179,14 @@ Then, to use the Planner Agent:
   - "Find stale work items that have not been updated in 6 months."
   - "Identify duplicate or similar work items in this project."
   - "Show work items assigned to me."
+- Saved views:
+  - "Summarize the work items in this saved view: `<URL>`"
+  - "Which work items in this saved view are unassigned? `<URL>`"
 - Content editing:
   - "Close this work item as completed and create a new retrospective work item documenting
     what went well and what needs improvement: `<URL>`"
+  - "Mark this work item as blocked by these items: `<URLs>`"
+  - "Link these work items as related: `<URLs>`"
 - To-do management:
   - "Add a to-do for this work item: `<URL>`"
   - "Mark all my to-dos as done for this work item: `<URL>`"
@@ -195,6 +205,3 @@ Then, to use the Planner Agent:
   Comment histories exceeding approximately 100 entries might be incomplete.
 - When you ask the agent to update the status of a work item to a value that does not exist,
   the agent might incorrectly report the update as successful without applying any change.
-- The agent cannot create linked item relationships between work items.
-  However, you can ask the agent to add a comment with the `/relate`,
-  `/blocks`, or `/blocked_by` quick action as a workaround.

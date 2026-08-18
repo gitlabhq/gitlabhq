@@ -66,6 +66,13 @@ export default {
       required: false,
       default: CONFIRM_DANGER_MODAL_TITLE,
     },
+    // Rendered through GlSprintf, so an override must carry a `%{phrase}` placeholder:
+    // that is where the phrase to type is interpolated.
+    phraseLabel: {
+      type: String,
+      required: false,
+      default: CONFIRM_DANGER_PHRASE_TEXT,
+    },
   },
   emits: ['change', 'confirm'],
   data() {
@@ -112,12 +119,17 @@ export default {
         this.$refs.confirmInput.focus();
       });
     },
+    // The phrase a user typed is spent once the modal closes, whether they confirmed or
+    // cancelled. Clearing it means the next open asks for the confirmation again rather
+    // than reopening with the danger button already enabled.
+    resetConfirmationPhrase() {
+      this.confirmationPhrase = '';
+    },
   },
   i18n: {
     CONFIRM_DANGER_MODAL_BUTTON,
     CONFIRM_DANGER_MODAL_TITLE,
     CONFIRM_DANGER_WARNING,
-    CONFIRM_DANGER_PHRASE_TEXT,
   },
 };
 </script>
@@ -130,10 +142,10 @@ export default {
     :title="modalTitle"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
-    size="sm"
     @primary="$emit('confirm', $event)"
     @change="$emit('change', $event)"
     @shown="focusConfirmInput()"
+    @hidden="resetConfirmationPhrase()"
   >
     <gl-alert
       v-if="confirmDangerMessage"
@@ -152,12 +164,13 @@ export default {
         {{ additionalInformation }}
       </p>
     </slot>
-    <div class="gl-flex gl-flex-wrap">
-      <label data-testid="confirm-danger-phrase" for="confirm_name_input" class="gl-mb-1 gl-w-full">
-        <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT" />
-      </label>
-      <code class="gl-max-w-fit gl-whitespace-pre-wrap">{{ phrase }}</code>
-    </div>
+    <label data-testid="confirm-danger-phrase" for="confirm_name_input" class="gl-mb-3 gl-block">
+      <gl-sprintf :message="phraseLabel">
+        <template #phrase>
+          <code class="gl-whitespace-pre-wrap">{{ phrase }}</code>
+        </template>
+      </gl-sprintf>
+    </label>
     <gl-form-group :state="isValid" class="gl-mb-0">
       <gl-form-input
         id="confirm_name_input"
@@ -166,6 +179,7 @@ export default {
         class="form-control"
         data-testid="confirm-danger-field"
         type="text"
+        autocomplete="off"
       />
     </gl-form-group>
     <slot name="modal-footer"></slot>

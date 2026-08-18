@@ -43,11 +43,6 @@ export default {
       required: false,
       default: null,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -311,7 +306,6 @@ export default {
         </gl-alert>
         <work-item-development-relationship-list
           v-if="!isRelatedDevelopmentListEmpty"
-          :is-modal="isModal"
           :work-item-dev-widget="workItemDevelopment"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="workItemIid"
@@ -328,8 +322,8 @@ export default {
       :work-item-full-path="workItemFullPath"
       :is-confidential-work-item="isConfidentialWorkItem"
       :project-id="projectId"
-      @hideModal="toggleCreateModal(false)"
-      @fetchedPermissions="updatePermissions"
+      @hide-modal="toggleCreateModal(false)"
+      @fetched-permissions="updatePermissions"
     />
   </div>
 </template>

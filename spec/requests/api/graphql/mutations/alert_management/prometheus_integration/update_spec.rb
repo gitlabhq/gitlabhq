@@ -31,6 +31,11 @@ RSpec.describe 'Updating an existing Prometheus Integration', feature_category: 
 
   let(:mutation_response) { graphql_mutation_response(:prometheus_integration_update) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_http_integration do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'updates the integration' do
     post_graphql_mutation(mutation, current_user: user)
 

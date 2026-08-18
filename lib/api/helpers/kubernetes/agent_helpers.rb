@@ -27,8 +27,20 @@ module API
         def check_agent_token
           unauthorized! unless agent_token
 
+          set_current_organization_from_agent(agent)
+
           ::Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
         end
+
+        # rubocop:disable Gitlab/AvoidCurrentOrganization -- KAS endpoints do not go
+        # through standard set_current_organization
+        def set_current_organization_from_agent(agent)
+          return if ::Current.organization_assigned
+
+          ::Current.organization =
+            ::Organizations::Organization.find_by_id_with_isolation_record(agent.project.organization_id)
+        end
+        # rubocop:enable Gitlab/AvoidCurrentOrganization
 
         def agent_has_access_to_project?(project)
           ::Users::Anonymous.can?(:download_code, project) || agent.has_access_to?(project)

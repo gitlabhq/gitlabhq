@@ -93,13 +93,15 @@ For additional information for Helm chart installations, see
     the request if the headers get too big.
   - If possible, increase the header limit on the receiving system.
   - See [issue 467253](https://gitlab.com/gitlab-org/gitlab/-/issues/467253) for more details.
-- After upgrading to GitLab 16.11 some users with large environments and databases experience
+- After upgrading to GitLab 16.11, some users with large environments and databases experience
   timeouts loading source code pages in the web UI.
-  - These timeouts are caused by slow PostgreSQL queries for pipeline data, which then
-    exceed the internal 60 second timeout.
-  - You can still clone Git repositories, and other requests for repository data works.
-  - See [issue 472420](https://gitlab.com/gitlab-org/gitlab/-/issues/472420) for more details,
-    including steps to confirm you're affected and housekeeping to run in PostgreSQL to correct it.
+  These timeouts are caused by slow PostgreSQL queries for pipeline data that exceed the
+  internal 60-second timeout.
+  - You can still clone Git repositories, and other requests for repository data work.
+  - See [issue 472420](https://gitlab.com/gitlab-org/gitlab/-/issues/472420) for steps to confirm
+    you're affected and the housekeeping to run in PostgreSQL to fix your database now.
+  - [Fixed in GitLab 17.4.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162894), which
+    no longer runs the query that causes these timeouts.
 
 ### Linux package installations
 
@@ -287,7 +289,7 @@ planned for release in 16.9.1.
   [compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -472,7 +474,7 @@ Specific information applies to Linux package installations:
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -549,7 +551,7 @@ Specific information applies to Linux package installations:
 
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -882,7 +884,7 @@ Specific information applies to installations using Geo:
 
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-     **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -1048,7 +1050,7 @@ Specific information applies to Linux package installations:
   sudo gitlab-ctl pg-upgrade -V 14
   ```
 
-  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
+  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/work_items/9065)
   for future releases.
 - In 16.2, we are upgrading Redis from 6.2.11 to 7.0.12. This upgrade is expected to be fully backwards compatible.
 
@@ -1242,8 +1244,8 @@ date set at one year from the date of upgrade.
 
 Before this automatic expiry date is applied, you should do the following to minimize disruption:
 
-1. [Identify any access tokens without an expiration date](../../security/tokens/token_troubleshooting.md#find-tokens-with-no-expiration-date).
-1. [Give those tokens an expiration date](../../security/tokens/token_troubleshooting.md#extend-token-lifetime).
+1. [Identify any access tokens without an expiration date](../../administration/raketasks/tokens/_index.md#find-tokens-the-rake-tasks-do-not-report).
+1. [Give those tokens an expiration date](../../administration/raketasks/tokens/_index.md#extend-expiration-dates).
 
 For more information, see the:
 

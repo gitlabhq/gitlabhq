@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
+import { GlModal, GlFormGroup, GlFormSelect, GlAlert, GlToastMixin } from '@gitlab/ui';
 import { differenceBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -26,7 +26,7 @@ export default {
     GlFormSelect,
     GlAlert,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: ['hasSubepicsFeature', 'getWorkItemTypeConfiguration'],
   actionCancel: {
     text: __('Cancel'),
@@ -88,7 +88,7 @@ export default {
       default: () => {},
     },
   },
-  emits: ['error', 'promoteToEpic', 'workItemTypeChanged'],
+  emits: ['error', 'promote-to-epic', 'work-item-type-changed'],
   data() {
     return {
       selectedWorkItemType: null,
@@ -330,7 +330,7 @@ export default {
   methods: {
     changeType() {
       if (this.isSelectedWorkItemTypeEpic) {
-        this.$emit('promoteToEpic');
+        this.$emit('promote-to-epic');
       } else {
         this.convertType();
       }
@@ -362,7 +362,7 @@ export default {
           return;
         }
 
-        this.$emit('workItemTypeChanged');
+        this.$emit('work-item-type-changed');
         this.hide();
       } catch (error) {
         this.throwError(error.message);

@@ -78,7 +78,9 @@ module Gitlab
 
           def interpolate_string_node!(node, blocks)
             blocks.reduce(node) do |interpolated_node, block|
-              interpolated_node.gsub(block.to_s, block.value.to_s)
+              # Use the block form of `gsub` so that backslash sequences in the
+              # interpolated value are not interpreted as backreferences.
+              interpolated_node.gsub(block.to_s) { block.value.to_s }
             end
           end
 

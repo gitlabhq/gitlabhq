@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting current users assigned or review requested merge requests', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be_with_reload(:current_user) { create(:user) }
 
   let_it_be_with_reload(:merge_request_1) do

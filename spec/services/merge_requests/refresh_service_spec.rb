@@ -867,7 +867,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           )
 
           cached_for = []
-          allow_any_instance_of(MergeRequest).to receive(:cache_merge_request_closes_issues!) do |merge_request, _user|
+          allow_any_instance_of(MergeRequest).to receive(:persist_merge_request_issues!) do |merge_request, _user|
             cached_for << merge_request.id
           end
 

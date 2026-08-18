@@ -717,7 +717,9 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it 'returns conflict when repository already exists' do
       project.import_state.update!(status: :failed)
-      project.repository.create_if_not_exists
+      allow_next_found_instance_of(Project) do |found_project|
+        allow(found_project).to receive(:repository_exists?).and_return(true)
+      end
 
       post path, params: params
 

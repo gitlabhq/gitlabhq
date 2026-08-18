@@ -79,9 +79,9 @@ describe('packages_list_app', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('calls requestPackagesList on page:changed', () => {
+  it('calls requestPackagesList on page-changed', () => {
     const list = findListComponent();
-    list.vm.$emit('page:changed', 1);
+    list.vm.$emit('page-changed', 1);
     expect(store.requestPackagesList).toHaveBeenCalledWith({
       page: 1,
       isGroupPage: false,
@@ -89,14 +89,14 @@ describe('packages_list_app', () => {
     });
   });
 
-  it('calls requestDeletePackage on package:delete', () => {
+  it('calls requestDeletePackage on package-delete', () => {
     const payload = {
       _links: {
         delete_api_path: 'foo',
       },
     };
     const list = findListComponent();
-    list.vm.$emit('package:delete', payload);
+    list.vm.$emit('package-delete', payload);
 
     expect(store.requestDeletePackage).toHaveBeenCalledWith({
       ...payload,

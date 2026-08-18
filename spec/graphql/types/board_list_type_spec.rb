@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['BoardList'], feature_category: :portfolio_management do
+RSpec.describe GitlabSchema.types['BoardList'], feature_category: :planning_views do
   include GraphqlHelpers
   include Gitlab::Graphql::Laziness
 

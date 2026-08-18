@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, sprintf } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   issuableIconMap,
   linkedIssueTypesMap,
@@ -21,6 +22,7 @@ export default {
     AddIssuableForm,
     RelatedIssuesList,
   },
+  mixins: [glSlotsMixin],
   props: {
     isFetching: {
       type: Boolean,
@@ -121,11 +123,11 @@ export default {
     'add-issuable-form-cancel',
     'add-issuable-form-input',
     'add-issuable-form-submit',
-    'hideForm',
+    'hide-form',
     'pending-issuable-remove-request',
     'related-issue-remove-request',
     'save-reorder',
-    'showForm',
+    'show-form',
   ],
   computed: {
     hasRelatedIssues() {
@@ -229,10 +231,10 @@ export default {
     :help-link-text="helpLinkText"
     anchor-id="related-issues"
     data-testid="related-issues-block"
-    @showForm="$emit('showForm')"
-    @hideForm="$emit('hideForm')"
+    @show-form="$emit('show-form')"
+    @hide-form="$emit('hide-form')"
   >
-    <template #actions>
+    <template v-if="glSlots()['header-actions']" #actions>
       <slot name="header-actions"></slot>
     </template>
 

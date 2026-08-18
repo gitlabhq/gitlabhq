@@ -39,7 +39,7 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 
 - Check the application and Sidekiq logs on `gitlab.com` and CustomersDot to monitor leads.
 - Check the `leads` table in CustomersDot.
-- Ask for access to the Marketo Sandbox and validate the leads there, [to this example request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/13162).
+- Ask for access to the Marketo Sandbox and validate the leads there, similar [to this example request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/13162).
 
 ## Embed a hand-raise lead form
 
@@ -114,7 +114,7 @@ which triggers the hand-raise lead modal when selected.
 
 ### Monitor the lead location
 
-When embedding a new hand raise form, use a unique `glmContent` or `glm_content` field that is different to any existing values.
+When embedding a new hand raise form, use a unique `glmContent` or `glm_content` field that is different from any existing values.
 
 ## PQL lead flow
 

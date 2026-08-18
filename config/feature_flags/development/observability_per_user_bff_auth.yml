@@ -1,0 +1,9 @@
+---
+name: observability_per_user_bff_auth
+feature_issue_url: https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/101
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249291
+rollout_issue_url: https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/148
+milestone: '19.3'
+group: group::embody
+type: development
+default_enabled: false

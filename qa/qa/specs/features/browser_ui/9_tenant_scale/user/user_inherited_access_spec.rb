@@ -25,10 +25,7 @@ module QA
           parent_group.add_member(parent_group_user)
         end
 
-        it(
-          'is allowed to edit the sub-group project files',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363467'
-        ) do
+        it 'is allowed to edit the sub-group project files' do
           Flow::Login.sign_in(as: parent_group_user)
           sub_group_project.visit!
 
@@ -57,10 +54,7 @@ module QA
           sub_group.add_member(sub_group_user)
         end
 
-        it(
-          'is not allowed to edit the parent group project files',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363466'
-        ) do
+        it 'is not allowed to edit the parent group project files' do
           Flow::Login.sign_in(as: sub_group_user)
           parent_group_project.visit!
 

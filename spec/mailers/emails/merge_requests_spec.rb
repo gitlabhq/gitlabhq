@@ -81,6 +81,25 @@ RSpec.describe Emails::MergeRequests do
     it "uses the correct layout template" do
       is_expected.to have_html_part_content('determine_layout returned template notify')
     end
+
+    context 'when the merge request has no assignees or reviewers' do
+      let_it_be(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          target_project: project,
+          author: current_user,
+          source_branch: 'improve/awesome'
+        )
+      end
+
+      it 'omits the assignee and reviewer fields', :aggregate_failures do
+        expect(subject.text_part.body).not_to include('Assignee')
+        expect(subject.text_part.body).not_to include('Reviewer')
+        expect(subject.html_part.body).not_to include('Assignee')
+        expect(subject.html_part.body).not_to include('Reviewer')
+      end
+    end
   end
 
   describe '#closed_merge_request_email' do

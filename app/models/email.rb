@@ -5,7 +5,7 @@ class Email < ApplicationRecord
   include Gitlab::SQL::Pattern
   include Cells::Claimable
 
-  cells_claims_attribute :email, type: CLAIMS_BUCKET_TYPE::EMAILS, feature_flag: :cells_claims_emails
+  cells_claims_attribute :email, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_EMAIL, feature_flag: :cells_claims_emails
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 
@@ -65,9 +65,5 @@ class Email < ApplicationRecord
 
   def detumble_email!
     self.detumbled_email = ::Gitlab::Utils::Email.normalize_email(email)
-  end
-
-  def unique_attributes
-    [:email]
   end
 end

@@ -1052,10 +1052,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
   describe "GET /:project/jobs/:id/download", :js do
     before do
-      create(:ci_job_artifact, :archive, file: artifacts_file, job: job)
       visit project_job_path(project, job)
-
-      click_link 'Download'
     end
 
     context "Build from other project" do
@@ -1065,7 +1062,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         create(:ci_job_artifact, :archive, file: artifacts_file, job: job2)
       end
 
-      it 'receive 404 from download request', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9341' do
+      it 'receives 404 from download request' do
         requests = inspect_requests { visit other_job_download_path }
 
         request = requests.find { |request| request.url == other_job_download_path }

@@ -33,6 +33,34 @@ RSpec.describe Integrations::SlackInteractions::BlockActionService, feature_cate
       end
     end
 
+    context 'when action_id is duo_privacy_notice_acknowledge' do
+      let(:action_id) { Integrations::SlackEvents::AppMentionedService::PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID }
+
+      it 'executes the correct handler' do
+        privacy_handler = described_class::ALLOWED_UPDATES_HANDLERS[action_id]
+
+        expect_next_instance_of(privacy_handler, params, params[:actions].first) do |handler|
+          expect(handler).to receive(:execute)
+        end
+
+        execute
+      end
+    end
+
+    context 'when action_id is duo_privacy_notice_decline' do
+      let(:action_id) { Integrations::SlackEvents::AppMentionedService::PRIVACY_NOTICE_DECLINE_ACTION_ID }
+
+      it 'executes the correct handler' do
+        decline_handler = described_class::ALLOWED_UPDATES_HANDLERS[action_id]
+
+        expect_next_instance_of(decline_handler, params, params[:actions].first) do |handler|
+          expect(handler).to receive(:execute)
+        end
+
+        execute
+      end
+    end
+
     context 'when action_id is not known' do
       let(:action_id) { 'random' }
 

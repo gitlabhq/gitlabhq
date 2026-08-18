@@ -208,7 +208,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def create
     opts = user_params.merge(reset_password: true, skip_confirmation: true)
-    opts[:organization_id] ||= Current.organization.id
+    opts[:organization_id] ||= admin_current_organization.id
 
     response = Users::CreateService.new(current_user, opts).execute
     @user = response.payload[:user]

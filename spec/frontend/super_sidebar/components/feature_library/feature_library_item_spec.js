@@ -11,18 +11,26 @@ const baseItem = {
   icon: 'code',
   category: 'code',
   tier: TIERS.FREE,
+  link: '/-/repository',
 };
 
 describe('FeatureLibraryItem', () => {
   let wrapper;
 
-  const createWrapper = ({ item = baseItem, pinned = false, solidBackground = false } = {}) => {
+  const createWrapper = ({
+    item = baseItem,
+    pinned = false,
+    solidBackground = false,
+    supportsPins = true,
+  } = {}) => {
     wrapper = mountExtended(FeatureLibraryItem, {
-      propsData: { item, pinned, solidBackground },
+      propsData: { item, pinned, solidBackground, supportsPins },
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
+      attachTo: document.body,
     });
   };
 
+  const findContent = () => wrapper.findByTestId('feature-library-item-content');
   const findTitle = () => wrapper.findByTestId('feature-library-item-title');
   const findTitleLink = () => wrapper.findComponent(GlLink);
   const findDescription = () => wrapper.findByTestId('feature-library-item-description');
@@ -51,72 +59,63 @@ describe('FeatureLibraryItem', () => {
       [{ tier: TIERS.PREMIUM }, 'Premium'],
       [{ tier: TIERS.ULTIMATE }, 'Ultimate'],
       [{ tier: TIERS.ADD_ON }, 'Add-on'],
+      [{ tier: TIERS.FREE }, 'Free'],
+      [{ tier: undefined }, 'Free'],
     ])('renders %j as "%s"', (tierProps, expected) => {
       createWrapper({ item: { ...baseItem, ...tierProps } });
       expect(findTierLabel().text()).toBe(expected);
     });
-
-    it.each([[{ tier: TIERS.FREE }], [{ tier: undefined }]])(
-      'does not render a tier badge for %j',
-      (tierProps) => {
-        createWrapper({ item: { ...baseItem, ...tierProps } });
-        expect(findTierLabel().exists()).toBe(false);
-      },
-    );
-  });
-
-  describe('layout', () => {
-    it('top-aligns the icon tile with the heading', () => {
-      createWrapper();
-      expect(wrapper.classes()).toContain('gl-items-start');
-      expect(wrapper.classes()).not.toContain('gl-items-center');
-    });
-  });
-
-  describe('solidBackground prop', () => {
-    it('uses a transparent background with a fill hover by default', () => {
-      createWrapper();
-      expect(wrapper.classes()).toContain('gl-bg-transparent');
-      expect(wrapper.classes()).toContain('hover:gl-bg-strong');
-    });
-
-    it('uses a solid background with a shadow hover when solidBackground is true', () => {
-      createWrapper({ solidBackground: true });
-      expect(wrapper.classes()).toContain('gl-bg-default');
-      expect(wrapper.classes()).not.toContain('gl-bg-transparent');
-      // On a strong-fill backdrop, a fill hover would blend into it, so the
-      // chip elevates with a shadow instead.
-      expect(wrapper.classes()).toContain('hover:gl-shadow-md');
-      expect(wrapper.classes()).not.toContain('hover:gl-bg-strong');
-    });
   });
 
   describe('title navigation', () => {
-    it('renders the title as a plain span (no link) when the item has no link', async () => {
+    it('renders the title as a link', () => {
       createWrapper();
-      expect(findTitle().element.tagName).toBe('SPAN');
-      expect(findTitleLink().exists()).toBe(false);
-
-      await findTitle().trigger('click');
-      expect(wrapper.emitted('navigate')).toBeUndefined();
-    });
-
-    it('renders the title as a link when the item has a link', () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
       expect(findTitle().element.tagName).toBe('A');
       expect(findTitleLink().attributes('href')).toBe('/-/repository');
     });
 
     it('emits navigate with the item id when the title link is clicked', async () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
+      createWrapper();
       const link = findTitleLink();
       link.element.addEventListener('click', (e) => e.preventDefault());
       await link.trigger('click');
       expect(wrapper.emitted('navigate')).toEqual([['repository']]);
     });
+
+    it('stretches the title link over the tile content area', () => {
+      createWrapper();
+      // The ::after overlay stretches against the positioned content wrapper.
+      expect(findContent().classes()).toContain('gl-relative');
+      expect(findTitleLink().classes()).toContain('gl-stretched-link');
+    });
+
+    it('keeps the pin action outside the stretched link click target', () => {
+      createWrapper();
+      expect(findContent().findComponent(GlButton).exists()).toBe(false);
+    });
+  });
+
+  describe('focus()', () => {
+    it('moves keyboard focus to the title link when the item has a link', () => {
+      createWrapper();
+
+      wrapper.vm.focus();
+
+      expect(document.activeElement).toBe(findTitleLink().element);
+    });
   });
 
   describe('pin button', () => {
+    it('is not rendered when pins are not supported', () => {
+      createWrapper({ supportsPins: false });
+      expect(findPinButton().exists()).toBe(false);
+    });
+
+    it('is rendered when pins are supported', () => {
+      createWrapper({ supportsPins: true });
+      expect(findPinButton().exists()).toBe(true);
+    });
+
     it('emits pin-toggle with nextState=true and the title when not pinned', async () => {
       createWrapper({ pinned: false });
       await findPinButton().trigger('click');

@@ -6,21 +6,17 @@ require_migration!
 RSpec.describe QueueDeleteNullProjectIdPushRules, feature_category: :source_code_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
-  it 'schedules a new batched background migration' do
-    reversible_migration do |migration|
-      migration.before -> {
-        expect(batched_migration).not_to have_scheduled_batched_migration
-      }
+  describe '#up' do
+    it 'is a no-op' do
+      reversible_migration do |migration|
+        migration.before -> {
+          expect(batched_migration).not_to have_scheduled_batched_migration
+        }
 
-      migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          table_name: :push_rules,
-          column_name: :id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE
-        )
-      }
+        migration.after -> {
+          expect(batched_migration).not_to have_scheduled_batched_migration
+        }
+      end
     end
   end
 end

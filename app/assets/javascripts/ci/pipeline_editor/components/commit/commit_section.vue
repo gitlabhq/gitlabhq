@@ -1,6 +1,7 @@
 <script>
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   COMMIT_ACTION_CREATE,
   COMMIT_ACTION_UPDATE,
@@ -29,7 +30,7 @@ export default {
   components: {
     CommitForm,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glListenersMixin],
   inject: ['projectFullPath', 'ciConfigPath'],
   props: {
     ciFileContent: {
@@ -51,7 +52,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showError', 'commit', 'updateCommitSha'],
+  emits: ['show-error', 'commit', 'update-commit-sha'],
   data() {
     return {
       isSaving: false,
@@ -104,7 +105,7 @@ export default {
         }
 
         if (errors?.length) {
-          this.$emit('showError', { type: COMMIT_FAILURE, reasons: errors });
+          this.$emit('show-error', { type: COMMIT_FAILURE, reasons: errors });
         } else {
           const params = openMergeRequest
             ? {
@@ -124,14 +125,14 @@ export default {
           this.updateCurrentBranch(sourceBranch);
 
           if (this.currentBranch === sourceBranch) {
-            this.$emit('updateCommitSha');
+            this.$emit('update-commit-sha');
           }
 
           // Reset commit message after successful commit
           this.$refs.commitForm.resetCommitMessage();
         }
       } catch (error) {
-        this.$emit('showError', { type: COMMIT_FAILURE, reasons: [error?.message] });
+        this.$emit('show-error', { type: COMMIT_FAILURE, reasons: [error?.message] });
       } finally {
         this.isSaving = false;
       }
@@ -167,7 +168,7 @@ export default {
     :has-unsaved-changes="hasUnsavedChanges"
     :is-new-ci-config-file="isNewCiConfigFile"
     :is-saving="isSaving"
-    v-on="$listeners"
+    v-on="glListeners()"
     @submit="onCommitSubmit"
   />
 </template>

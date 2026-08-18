@@ -80,7 +80,9 @@ module Tasks
           def has_authorization?(authorization)
             return false unless authorization
 
-            Array(authorization[:permissions]).any? || authorization[:skip_granular_token_authorization]
+            Array(authorization[:permissions]).any? ||
+              authorization[:skip_granular_token_authorization] ||
+              authorization[:todo].present?
           end
 
           def route_id(route)

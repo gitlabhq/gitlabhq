@@ -161,17 +161,17 @@ export default {
 </script>
 <template>
   <div class="gl-border-b gl-flex gl-gap-3 gl-bg-subtle gl-p-5">
-    <gl-filtered-search
-      :placeholder="__('Search or filter catalog…')"
-      :available-tokens="$options.tokens"
-      :value="filteredSearchValue"
-      :search-text-option-label="__('Search for this text')"
-      terms-as-tokens
-      show-friendly-text
-      data-testid="catalog-search-bar"
-      class="gl-min-w-0"
-      @submit="onSubmit"
-    />
+    <div class="gl-min-w-0 gl-grow" data-testid="catalog-search-bar">
+      <gl-filtered-search
+        :placeholder="__('Search or filter catalog…')"
+        :available-tokens="$options.tokens"
+        :value="filteredSearchValue"
+        :search-text-option-label="__('Search for this text')"
+        terms-as-tokens
+        show-friendly-text
+        @submit="onSubmit"
+      />
+    </div>
     <gl-sorting
       :is-ascending="isAscending"
       :text="currentSortText"

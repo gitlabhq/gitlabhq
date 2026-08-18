@@ -9,7 +9,6 @@ import PasswordInput from '~/authentication/password/components/password_input.v
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { setUrlFragment, visitUrl, mergeUrlParams } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
-import { showPasskeySignIn } from 'ee_else_ce/authentication/sign_in/utils';
 
 export default {
   name: 'SignInForm',
@@ -58,6 +57,10 @@ export default {
       required: true,
     },
     isRememberMeEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    showPasskeyImmediately: {
       type: Boolean,
       required: true,
     },
@@ -132,7 +135,7 @@ export default {
       return this.glFeatures.twoStepSignIn;
     },
     showPasskeySignIn() {
-      return showPasskeySignIn(this.showPasswordField);
+      return this.showPasskeyImmediately || this.showPasswordField;
     },
   },
   created() {

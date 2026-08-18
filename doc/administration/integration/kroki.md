@@ -65,7 +65,7 @@ Supported diagram types include:
 - [GraphViz](https://www.graphviz.org/)
 - [Nomnoml](https://github.com/skanaar/nomnoml)
 - [PlantUML](https://github.com/plantuml/plantuml)
-  - [C4 model](https://github.com/RicardoNiepel/C4-PlantUML) (with PlantUML)
+  - [C4 model](https://github.com/plantuml-stdlib/C4-PlantUML) (with PlantUML)
 - [Structurizr](https://structurizr.com/) (great for C4 Model diagrams)
 - [Svgbob](https://github.com/ivanceras/svgbob)
 - [UMlet](https://github.com/umlet/umlet)

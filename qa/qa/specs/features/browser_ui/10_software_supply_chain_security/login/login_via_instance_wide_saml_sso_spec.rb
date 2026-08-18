@@ -4,8 +4,7 @@ module QA
   RSpec.describe 'Software Supply Chain Security', :orchestrated, :instance_saml, feature_category: :system_access do
     describe 'Instance wide SAML SSO' do
       it(
-        'user logs in to gitlab with SAML SSO',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347895'
+        'user logs in to gitlab with SAML SSO'
       ) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 

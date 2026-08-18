@@ -225,6 +225,9 @@ RSpec.describe 'Admin updates network settings', :request_store, :enable_admin_m
       fill_field_with_new_value(
         format(_('Maximum requests to the %{api_name1} and %{api_name2} APIs per %{timeframe} per user or IP address'),
           api_name1: 'POST /groups/:id/archive', api_name2: 'POST /groups/:id/unarchive', timeframe: 'minute'), '6')
+      fill_field_with_new_value(
+        format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'),
+          api_name: 'POST /groups', timeframe: 'day'), '7')
 
       expect_save_settings
 
@@ -246,6 +249,9 @@ RSpec.describe 'Admin updates network settings', :request_store, :enable_admin_m
       expect_field_value(
         format(_('Maximum requests to the %{api_name1} and %{api_name2} APIs per %{timeframe} per user or IP address'),
           api_name1: 'POST /groups/:id/archive', api_name2: 'POST /groups/:id/unarchive', timeframe: 'minute'), '6')
+      expect_field_value(
+        format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'),
+          api_name: 'POST /groups', timeframe: 'day'), '7')
     end
   end
 
@@ -276,6 +282,9 @@ RSpec.describe 'Admin updates network settings', :request_store, :enable_admin_m
       fill_field_with_new_value(
         format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'),
           api_name: 'GET /users/:user_id/starred_projects', timeframe: 'minute'), '8')
+      fill_field_with_new_value(
+        format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'),
+          api_name: 'POST /projects', timeframe: 'day'), '9')
 
       expect_save_settings
 
@@ -304,6 +313,9 @@ RSpec.describe 'Admin updates network settings', :request_store, :enable_admin_m
       expect_field_value(
         format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'),
           api_name: 'GET /users/:user_id/starred_projects', timeframe: 'minute'), '8')
+      expect_field_value(
+        format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'),
+          api_name: 'POST /projects', timeframe: 'day'), '9')
     end
   end
 

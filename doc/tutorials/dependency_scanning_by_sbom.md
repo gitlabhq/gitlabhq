@@ -176,7 +176,7 @@ because it's reachable and has a clear remediation path.
       the dependency is imported by the application. That makes it riskier than other high severity
       vulnerabilities that aren't reachable.
 
-   1. Scroll down to the **Solution** section.
+   1. View the **Remediation** section.
 
       For this vulnerability, the solution is to upgrade this dependency's version.
 

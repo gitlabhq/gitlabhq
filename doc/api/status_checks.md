@@ -135,13 +135,6 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 
 ## Set status of an external status check
 
-{{< history >}}
-
-- Support for `failed` and `passed` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/353836) in GitLab 15.0
-- Support for `pending` in GitLab 16.5 [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
-
-{{< /history >}}
-
 Sets the status of an external status check for a single merge request, informing GitLab that a merge request has passed a check by an external service.
 To set the status of an external check, the personal access token used must belong to a user with the Developer, Maintainer, or Owner role on the target project of the merge request.
 
@@ -165,12 +158,6 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 > `sha` must be the SHA at the `HEAD` of the merge request's source branch.
 
 ## Retry failed status check for a merge request
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.7.
-
-{{< /history >}}
 
 Retries the specified failed external status check for a single merge request. Even
 though the merge request hasn't changed, this endpoint resends the current state of the merge request to the defined external service.

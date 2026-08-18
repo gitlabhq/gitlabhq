@@ -152,6 +152,19 @@ RSpec.describe StubFeatureFlags do
     end
   end
 
+  describe '#stub_feature_flags called outside a per-example context' do
+    it 'does not raise when called from a per-example `before` hook or `it` block' do
+      expect { stub_feature_flags(dummy_feature_flag => false) }.not_to raise_error
+    end
+
+    it 'raises when there is no current example' do
+      allow(RSpec).to receive(:current_example).and_return(nil)
+
+      expect { stub_feature_flags(dummy_feature_flag => false) }
+        .to raise_error(RuntimeError, /outside of a per-example context/)
+    end
+  end
+
   describe 'stub timing' do
     context 'let_it_be variable' do
       let_it_be(:let_it_be_var) { Feature.enabled?(dummy_feature_flag) }

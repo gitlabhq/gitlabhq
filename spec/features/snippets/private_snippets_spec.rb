@@ -13,7 +13,6 @@ RSpec.describe 'Private Snippets', :js, feature_category: :source_code_managemen
 
   it 'private Snippet renders for creator' do
     visit snippet_path(private_snippet)
-    wait_for_requests
 
     expect(page).to have_content(content)
     expect(page).not_to have_css('.js-embed-btn')

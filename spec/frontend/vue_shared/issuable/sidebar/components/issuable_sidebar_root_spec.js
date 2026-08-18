@@ -29,7 +29,8 @@ const createComponent = () => {
 describe('IssuableSidebarRoot', () => {
   let wrapper;
 
-  const findToggleSidebarButton = () => wrapper.findByTestId('toggle-right-sidebar-button');
+  const findToggleSidebarButton = () =>
+    wrapper.findComponentByTestId('toggle-right-sidebar-button');
 
   const assertPageLayoutClasses = ({ isExpanded }) => {
     const { classList } = document.querySelector(`.${MOCK_LAYOUT_PAGE_CLASS}`);

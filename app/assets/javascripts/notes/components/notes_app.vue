@@ -1,9 +1,12 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState, mapActions } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
+import { GlEmptyState } from '@gitlab/ui';
+import EMPTY_ACTIVITY_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg?url';
 import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
 import { createAlert } from '~/alert';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
@@ -38,6 +41,7 @@ import NotesActivityHeader from './notes_activity_header.vue';
 export default {
   name: 'NotesApp',
   components: {
+    GlEmptyState,
     NotesActivityHeader,
     NoteableNote,
     NoteableDiscussion,
@@ -51,14 +55,23 @@ export default {
     SidebarSubscription,
     DraftNote,
     TimelineEntryItem,
-    AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
+    AiSummary: defineAsyncComponent(() => import('ee_component/notes/components/ai_summary.vue')),
     DuoCodeReviewSystemNote,
   },
   mixins: [InternalEvents.mixin()],
+  inject: {
+    mrFilter: {
+      default: false,
+    },
+  },
   provide() {
     return {
       summarizeClientSubscriptionId: uuidv4(),
     };
+  },
+  i18n: {
+    emptyStateTitle: __('No activity to display'),
+    emptyStateDescription: s__('MergeRequest|Select one or more filters to see activity.'),
   },
   props: {
     noteableData: {
@@ -164,6 +177,7 @@ export default {
       'sortDirection',
       'timelineEnabled',
       'targetNoteHash',
+      'mergeRequestFilters',
     ]),
     ...mapState(useNotes, { discussions: 'filteredDiscussions' }),
     sortDirDesc() {
@@ -213,6 +227,17 @@ export default {
     },
     isAppReady() {
       return !this.isLoading && !this.renderSkeleton && this.shouldShow;
+    },
+    showEmptyState() {
+      return this.isAppReady && this.mrFilter && this.allDiscussions.length === 0;
+    },
+    emptyStateDescription() {
+      const hasNotesFilter =
+        this.notesFilterValue !== undefined &&
+        this.notesFilterValue !== constants.DISCUSSION_FILTERS_DEFAULT_VALUE;
+      const hasMrFilter = this.mergeRequestFilters.length !== constants.MR_FILTER_OPTIONS.length;
+
+      return hasNotesFilter || hasMrFilter ? this.$options.i18n.emptyStateDescription : null;
     },
   },
   watch: {
@@ -373,6 +398,7 @@ export default {
     },
   },
   systemNote: constants.SYSTEM_NOTE,
+  EMPTY_ACTIVITY_SVG_URL,
 };
 </script>
 
@@ -441,6 +467,13 @@ export default {
           </template>
           <discussion-filter-note v-if="commentsDisabled" />
         </ul>
+        <gl-empty-state
+          v-if="showEmptyState"
+          :title="$options.i18n.emptyStateTitle"
+          :description="emptyStateDescription"
+          :svg-path="$options.EMPTY_ACTIVITY_SVG_URL"
+          data-testid="notes-activity-empty-state"
+        />
       </template>
     </ordered-layout>
   </div>

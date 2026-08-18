@@ -69,7 +69,7 @@ in the application. However, it
 [requires PostgreSQL 11](https://www.enterprisedb.com/blog/postgresql-11-partitioning-evolution-postgres-96-11).
 
 For example, a natural way to partition is to
-[partition tables by dates](https://gitlab.com/groups/gitlab-org/-/epics/2023). For example,
+[partition tables by dates](https://gitlab.com/groups/gitlab-org/-/work_items/2023). For example,
 the `events` and `audit_events` table are natural candidates for this
 kind of partitioning.
 

@@ -31,7 +31,7 @@ module Gitlab
       end
 
       @extractor.analyze(closing_statements.join(" "))
-      relevant_records = (@extractor.issues + @extractor.work_items).uniq(&:id)
+      relevant_records = @extractor.issues_and_work_items
 
       relevant_records = relevant_records.first(MAX_CLOSING_ISSUES)
       relevant_records.reject do |issue|

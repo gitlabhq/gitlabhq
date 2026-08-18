@@ -18,9 +18,9 @@ const parseSourcepos = (sourcepos) => {
 };
 
 const toggleCheckboxPrecise = (line, sourcepos, checkboxChecked) => {
-  if (
-    !(sourcepos.start.line === sourcepos.end.line && sourcepos.end.column >= sourcepos.start.column)
-  )
+  if (!(
+    sourcepos.start.line === sourcepos.end.line && sourcepos.end.column >= sourcepos.start.column
+  ))
     return null;
 
   // Possibly precise sourcepos given; check that a task item does appear to be exactly there and set accordingly.

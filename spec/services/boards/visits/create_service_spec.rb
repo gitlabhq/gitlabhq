@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Visits::CreateService, feature_category: :portfolio_management do
+RSpec.describe Boards::Visits::CreateService, feature_category: :planning_views do
   describe '#execute' do
     let(:user) { create(:user) }
 

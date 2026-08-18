@@ -419,10 +419,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         expect(controller.view_context.rapid_diffs_presenter).to be_lazy
       end
 
-      context 'on rapid_diffs action' do
+      context 'on diffs action when rapid diffs is enabled' do
         def go_rapid_diffs
           stub_feature_flags(rapid_diffs_on_mr_show: true)
-          get :rapid_diffs, params: {
+          get :diffs, params: {
             namespace_id: project.namespace.to_param,
             project_id: project,
             id: merge_request.iid,
@@ -2073,7 +2073,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         environment2 = create(:environment, project: forked)
         create(:deployment, :succeed, environment: environment2, sha: sha, ref: 'master', deployable: build)
 
-        expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count)
+        expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count).allow_skip_cache_inconsistency
       end
     end
 

@@ -14,7 +14,7 @@ title: GitLab Query Language (GLQL)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/476990) in GitLab 17.10.
@@ -198,7 +198,7 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 ```
 ````
 
-This source displays a view with columns `Title`, `Workflow` and `Priority`.
+This source displays a view with columns `Title`, `Workflow`, and `Priority`.
 
 ### Display types
 
@@ -240,7 +240,7 @@ Supported actions:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -274,7 +274,42 @@ limit: <number>
 | `sort` | No | Sort fields must also appear in your selected dimensions or metrics. |
 | `limit` | No | Defaults to `100`. Maximum value is `100`. |
 
+### Field parameters
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
+
+{{< /history >}}
+
+Some dimensions and metrics accept a parameter in parentheses after the field name.
+If you omit the parameter, the field uses its default value.
+You can pass the parameter by position (`finished(weekly)`) or by name (`finished(granularity=weekly)`).
+
+For the fields that accept parameters and their default values, see the
+[data source](data_sources/_index.md) pages.
+To include the same field more than once with different parameters, see [custom aliases](#custom-aliases).
+
+For example, the following query returns the median pipeline duration in
+weekly buckets:
+
+````yaml
+```glql
+mode: analytics
+query: type = Pipeline and project = "gitlab-org/gitlab" and finished >= -90d
+dimensions: finished(weekly)
+metrics: durationQuantile(0.5)
+sort: finished desc
+```
+````
+
 ### Custom aliases
+
+{{< history >}}
+
+- Duplicate parameterized fields with unique aliases [introduced](https://gitlab.com/gitlab-org/glql/-/issues/153) in GitLab 19.3.
+
+{{< /history >}}
 
 Use the `as` keyword to rename dimension or metric columns:
 
@@ -283,10 +318,27 @@ dimensions: language as "Language", ideName as "IDE"
 metrics: totalCount as "Total", acceptanceRate as "Acceptance Rate"
 ```
 
+You can include the same [parameterized field](#field-parameters) more than
+once with different parameters:
+
+```plaintext
+metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95"
+```
+
+When you duplicate a field:
+
+- Every duplicated field must have a unique alias.
+- Aliases must be unique across all dimensions and metrics.
+- Fields that accept no parameters cannot be duplicated.
+- Duplicated fields must be sorted by their alias. For example, `sort: Median desc`.
+- Aliases used in `sort` must be a single word.
+
 ### Sorting
 
 Sort by any field that appears in your selected dimensions or metrics.
 You cannot sort by a field that is not in your selected dimensions or metrics.
+For fields with a [custom alias](#custom-aliases), you can sort by either the alias or the original field name.
+If the same field is duplicated with different parameters, you must sort by the alias.
 
 ```plaintext
 sort: acceptanceRate desc

@@ -47,7 +47,6 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
 
         # Waiting for page to load to ensure changes are saved in the backend
         expect(page).to have_content 'successfully created'
-        wait_for_requests
 
         expect(page).to have_current_path group_path(Group.find_by(name: new_name)), ignore_query: true
         expect(page).to have_content(new_name)

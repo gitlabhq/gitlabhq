@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/585265
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226028
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593078
 milestone: '18.11'
-group: group::knowledge
+group: group::planner intelligence
 type: gitlab_com_derisk
 default_enabled: false

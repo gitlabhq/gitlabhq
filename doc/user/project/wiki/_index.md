@@ -37,10 +37,7 @@ Wiki pages display a [sidebar](#sidebar), which you can customize.
 To access a project wiki:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. To display the wiki, either:
-   - In the left sidebar, select **Plan** > **Wiki**.
-   - On any page in the project, use the <kbd>g</kbd>+<kbd>w</kbd>
-     [wiki keyboard shortcut](../../shortcuts.md).
+1. In the left sidebar, select **Plan** > **Wiki**.
 
 If **Plan** > **Wiki** is not listed in the left sidebar of your project, a project administrator
 has [disabled it](#enable-or-disable-a-project-wiki).
@@ -276,9 +273,7 @@ To edit a wiki page:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select **Plan** > **Wiki**.
-1. Go to the page you want to edit, and either:
-   - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
-   - Select **Edit**.
+1. Go to the page you want to edit, and select **Edit**.
 1. Edit the content.
 1. Select **Save changes**. To add a commit message before saving, select the arrow next to
    **Save changes** and select **Save changes with message**.
@@ -344,7 +339,7 @@ Prerequisites:
 
 - Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_redirection`. Enabled by default.
 - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with feature flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
-- Feature flags `wiki_redirection`, `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+- Feature flags `wiki_redirection`, `wiki_front_matter`, and `wiki_front_matter_title` removed in GitLab 17.3.
 
 {{< /history >}}
 
@@ -368,14 +363,6 @@ Prerequisites:
 1. Select **Save changes**.
 
 ## Export a wiki page
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `print_wiki`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
-- Feature flag `print_wiki` removed in GitLab 16.6.
-
-{{< /history >}}
 
 You can export a wiki page as a PDF file:
 
@@ -402,12 +389,6 @@ To set up the integration, you must:
 After completing the integration, the diagrams.net editor opens with the URL you provided.
 
 ## Wiki page templates
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442228) in GitLab 16.10.
-
-{{< /history >}}
 
 You can create templates to use when creating new pages, or to apply
 to existing pages. Templates are wiki pages that are stored in the `templates/`
@@ -675,12 +656,6 @@ want to re-enable the wiki. To re-enable it, repeat the process
 to disable the wiki but toggle it on (in blue).
 
 ## Rich text editor
-
-{{< history >}}
-
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/398152) from content editor to rich text editor in GitLab 16.2.
-
-{{< /history >}}
 
 GitLab provides a rich text editing experience for GitLab Flavored Markdown in wikis.
 

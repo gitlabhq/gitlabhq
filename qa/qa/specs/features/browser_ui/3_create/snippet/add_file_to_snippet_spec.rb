@@ -21,8 +21,8 @@ module QA
         Flow::Login.sign_in
       end
 
-      shared_examples 'adding file to snippet' do |snippet_type, testcase|
-        it "adds second file to an existing #{snippet_type} to make it multi-file", testcase: testcase do
+      shared_examples 'adding file to snippet' do |snippet_type|
+        it "adds second file to an existing #{snippet_type} to make it multi-file" do
           send(snippet_type).visit!
 
           Page::Dashboard::Snippet::Show.perform(&:click_edit_button)
@@ -45,8 +45,8 @@ module QA
         end
       end
 
-      it_behaves_like 'adding file to snippet', :personal_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347845'
-      it_behaves_like 'adding file to snippet', :project_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347846'
+      it_behaves_like 'adding file to snippet', :personal_snippet
+      it_behaves_like 'adding file to snippet', :project_snippet
     end
   end
 end

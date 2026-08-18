@@ -43,7 +43,7 @@ describe('File finder item spec', () => {
     return nextTick();
   };
   const clearSearch = () => {
-    wrapper.findByTestId('clear-search-input').vm.$emit('click');
+    wrapper.findComponentByTestId('clear-search-input').vm.$emit('click');
     return nextTick();
   };
 

@@ -3,6 +3,8 @@ import { GlButton, GlTooltipDirective, GlAnimatedChevronLgDownUpIcon } from '@gi
 import { __ } from '~/locale';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import StatusIcon from './mr_widget_status_icon.vue';
 import Actions from './action_buttons.vue';
 
@@ -17,6 +19,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin, glListenersMixin],
   props: {
     isCollapsible: {
       type: Boolean,
@@ -67,7 +70,7 @@ export default {
       return null;
     },
     hasActionsSlot() {
-      return this.$scopedSlots.actions?.()?.length;
+      return this.glSlots().actions?.()?.length;
     },
   },
   methods: {
@@ -82,7 +85,7 @@ export default {
   <div
     class="mr-widget-body media gl-flex gl-items-center gl-py-4 gl-pl-5 gl-pr-4"
     :class="wrapperClasses"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <div v-if="isLoading" class="mr-state-loader gl-w-full">
       <slot name="loading">

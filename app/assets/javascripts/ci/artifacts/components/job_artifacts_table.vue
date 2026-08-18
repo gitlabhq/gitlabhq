@@ -12,6 +12,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
   GlAnimatedChevronRightDownIcon,
+  GlToastMixin,
 } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
@@ -73,6 +74,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['projectId', 'projectPath', 'canDestroyArtifacts', 'jobArtifactsCountLimit'],
   emits: ['artifact-count-update'],
   apollo: {
@@ -428,8 +430,8 @@ export default {
       v-if="canBulkDestroyArtifacts"
       :selected-artifacts="selectedArtifacts"
       :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
-      @clearSelectedArtifacts="clearSelectedArtifacts"
-      @showBulkDeleteModal="handleBulkDeleteModalShow"
+      @clear-selected-artifacts="clearSelectedArtifacts"
+      @show-bulk-delete-modal="handleBulkDeleteModalShow"
     />
     <bulk-delete-modal
       :visible="isBulkDeleteModalVisible"
@@ -482,7 +484,7 @@ export default {
               artifacts.nodes.filter((node) => !selectedArtifacts.includes(node.id))
             "
             :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
-            @selectArtifact="selectArtifact"
+            @select-artifact="selectArtifact"
           />
         </div>
       </template>
@@ -593,7 +595,7 @@ export default {
           :query-variables="queryVariables"
           :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
           @refetch="refetchArtifacts"
-          @selectArtifact="selectArtifact"
+          @select-artifact="selectArtifact"
         />
       </template>
     </gl-table>

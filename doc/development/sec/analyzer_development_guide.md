@@ -66,7 +66,7 @@ For example, to test secret detection run the following:
 ```shell
 wget https://gitlab.com/gitlab-org/security-products/ci-templates/-/raw/master/scripts/compare_reports.sh
 sh ./compare_reports.sh sd test/fixtures/gl-secret-detection-report.json test/expect/gl-secret-detection-report.json \
-| patch -Np1 test/expect/gl-secret-detection-report.json && Git commit -m 'Update expectation' test/expect/gl-secret-detection-report.json
+| patch -Np1 test/expect/gl-secret-detection-report.json && git commit -m 'Update expectation' test/expect/gl-secret-detection-report.json
 rm compare_reports.sh
 ```
 
@@ -125,7 +125,7 @@ The following independent criteria determine which analyzer needs to be run on a
 1. Each analyzer runs a customizable [match interface](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/blob/master/search/search.go) before it performs the actual analysis. For example: [Flawfinder checks for C/C++ files](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder/-/blob/f972ac786268fb649553056a94cda05cdc1248b2/plugin/plugin.go#L14).
 1. For some analyzers that run on generic file extensions, there is a check based on a CI/CD variable. For example: Kubernetes manifests are written in YAML, so [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) runs only when [`SCAN_KUBERNETES_MANIFESTS` is set to true](../../user/application_security/sast/_index.md#enabling-kubesec-analyzer).
 
-Step 1 helps prevent wastage of compute quota that would be spent running analyzers not suitable for the project. However, due to [technical limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/227632), it cannot be used for large projects. Therefore, step 2 acts as final check to ensure a mismatched analyzer is able to exit early.
+Step 1 helps prevent wastage of compute quota that would be spent running analyzers not suitable for the project. However, due to [technical limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/227632), it cannot be used for large projects. Therefore, step 2 acts as a final check to ensure a mismatched analyzer is able to exit early.
 
 ## How to test the analyzers
 
@@ -173,7 +173,7 @@ To use Docker with `replace` in the `go.mod` file:
 
 Users may use tools other than Docker to orchestrate their containers and run their analyzers,
 such as [containerd](https://containerd.io/), [Podman](https://podman.io/), or [skopeo](https://github.com/containers/skopeo).
-To ensure compatibility with these tools, we [periodicically test](https://gitlab.com/gitlab-org/security-products/tests/analyzer-containerization-support/-/blob/main/.gitlab-ci.yml?ref_type=heads)
+To ensure compatibility with these tools, we [periodically test](https://gitlab.com/gitlab-org/security-products/tests/analyzer-containerization-support/-/blob/main/.gitlab-ci.yml?ref_type=heads)
 all analyzers using a scheduled pipeline. A Slack alert is raised if a test fails.
 
 To avoid compatibility issues when building analyzer Docker images, use the [OCI media types](https://docs.docker.com/build/exporters/#oci-media-types) instead of the default proprietary Docker media types.
@@ -207,7 +207,7 @@ The analyzers are released as Docker images following this scheme:
 
 - each push to the default branch will override the `edge` image tag
 - each push to any `awesome-feature` branch will generate a matching `awesome-feature` image tag
-- each Git tag will generate the corresponding `Major.Minor.Patch` image tag. A manual job allows to override the corresponding `Major` and the `latest` image tags to point to this `Major.Minor.Patch`.
+- each Git tag will generate the corresponding `Major.Minor.Patch` image tag. A manual job allows overriding the corresponding `Major` and the `latest` image tags to point to this `Major.Minor.Patch`.
 
 In most circumstances it is preferred to rely on the `MAJOR` image,
 which is automatically kept up to date with the latest advisories or patches to our tools.
@@ -268,7 +268,7 @@ If the analyzer does not use the `analyzer.yml` template, you'll need to manuall
 1. Select the `Manual job` play button on the right hand side of the window and select `tag version` to tag and deploy a new version of the analyzer Docker image.
 
 Use your best judgment to decide when to create a Git tag, which will then trigger the release job. If you
-can't decide, then ask for other's input.
+can't decide, then ask for others' input.
 
 ### Automatic release process
 
@@ -286,7 +286,7 @@ After the above steps have been completed, the automatic release process execute
 1. The default pipeline is triggered, and the `upsert git tag` job is executed.
    - If the most recent version in the `CHANGELOG.md` matches one of the Git tags, the job is a no-op.
    - Else, this job automatically creates a new release and Git tag using the [releases API](../../api/releases/_index.md#create-a-release). The version and message is obtained from the most recent entry in the `CHANGELOG.md` file for the project.
-1. A pipeline is automatically triggered for the new Git tag. This pipeline releases the `latest`, `major`, `minor` and `patch` Docker images of the analyzer.
+1. A pipeline is automatically triggered for the new Git tag. This pipeline releases the `latest`, `major`, `minor`, and `patch` Docker images of the analyzer.
 
 ### Service account used in the automatic release process
 
@@ -415,11 +415,11 @@ To backport a critical fix or patch to an earlier version, follow the steps belo
 1. Create a new branch from the tag you are backporting the fix to, if it doesn't exist.
    - For example, if the latest stable tag is `v4` and you are backporting a fix to `v3`, create a new branch called `v3`.
 1. Submit a merge request targeting the branch you just created.
-1. After its approved, merge the merge request into the branch.
+1. After it's approved, merge the merge request into the branch.
 1. Create a new tag for the branch.
 1. If the analyzer has the [automatic release process](#automatic-release-process) enabled, a new version will be released.
 1. If not, you have to follow the [manual release process](#manual-release-process) to release a new version.
-1. NOTE: the release pipeline will override the latest `edge` tag so the most recent release pipeline's `tag edge` job may need to be re-ran to avoid a regression for that tag.
+1. NOTE: the release pipeline will override the latest `edge` tag so the most recent release pipeline's `tag edge` job may need to be rerun to avoid a regression for that tag.
 
 ### Preparing analyzers for a major version release
 
@@ -468,7 +468,7 @@ Assuming the current analyzer release is `v{N}`:
      - some breaking change (!123)
      ```
 
-      Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
+     Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 
 1. During the milestone of the major release, when there are no more changes to be merged into the `default` or `v{N+1}` branches:
    1. Create a `v{N}` branch from the `default` branch.
@@ -513,13 +513,13 @@ Assuming the current analyzer release is `v{N}`:
 1. Ensure three scheduled pipelines exist, creating them if necessary, and set `PUBLISH_IMAGES: true` for all of them:
    - `Republish images v{N}` (against the `v{N}` branch)
 
-      This scheduled pipeline needs to be created
+     This scheduled pipeline needs to be created
    - `Daily build` (against the `default` branch)
 
-      This scheduled pipeline should already exist
+     This scheduled pipeline should already exist
    - `Republish images v{N-1}` (against the `v{N-1}` branch)
 
-      This scheduled pipeline should already exist
+     This scheduled pipeline should already exist
 1. Delete the scheduled pipeline for the `v{N-2}` branch (if it exists), since we only support [two previous major versions](https://about.gitlab.com/support/statement-of-support/#version-support).
 
 ##### Bump major analyzer versions in the CI/CD templates and components
@@ -600,7 +600,7 @@ This can be accomplished in different ways:
    - Pro: no extra analyzer to maintain, keep analyzer code simple.
    - Con: increased risk and/or effort to mitigate the risk of not having the schema validated.
 
-If you are unsure which path to follow, reach-out to the
+If you are unsure which path to follow, reach out to the
 [`security-report-schemas` maintainers](https://gitlab.com/groups/gitlab-org/maintainers/security-report-schemas/-/group_members?with_inherited_permissions=exclude).
 
 ### Location of Container Images

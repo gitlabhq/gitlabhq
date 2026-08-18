@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import WebhookFormApp from './components/webhook_form_app.vue';
 import TestDropdown from './components/test_dropdown.vue';
@@ -25,26 +25,23 @@ export default () => {
     signingTokenDocsPath,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WebhookFormRoot',
-    render(createElement) {
-      return createElement(WebhookFormApp, {
-        props: {
-          initialName,
-          initialDescription,
-          initialSecretToken,
-          initialUrl,
-          initialUrlVariables: JSON.parse(urlVariables),
-          initialCustomHeaders: JSON.parse(customHeaders),
-          initialTriggers: convertObjectPropsToCamelCase(JSON.parse(initialTriggers)),
-          hasGroup: parseBoolean(hasGroup),
-          isSystemHook: parseBoolean(isSystemHook),
-          isNewHook: parseBoolean(isNewHook),
-          hasSigningToken: parseBoolean(hasSigningToken),
-          signingTokenDocsPath,
-        },
-      });
+    component: WebhookFormApp,
+    props: {
+      initialName,
+      initialDescription,
+      initialSecretToken,
+      initialUrl,
+      initialUrlVariables: JSON.parse(urlVariables),
+      initialCustomHeaders: JSON.parse(customHeaders),
+      initialTriggers: convertObjectPropsToCamelCase(JSON.parse(initialTriggers)),
+      hasGroup: parseBoolean(hasGroup),
+      isSystemHook: parseBoolean(isSystemHook),
+      isNewHook: parseBoolean(isNewHook),
+      hasSigningToken: parseBoolean(hasSigningToken),
+      signingTokenDocsPath,
     },
   });
 };
@@ -52,16 +49,13 @@ export default () => {
 const initHookTestDropdown = (el) => {
   const { items, size } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'TestDropdownRoot',
-    render(h) {
-      return h(TestDropdown, {
-        props: {
-          items: JSON.parse(items),
-          size,
-        },
-      });
+    component: TestDropdown,
+    props: {
+      items: JSON.parse(items),
+      size,
     },
   });
 };

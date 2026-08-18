@@ -337,6 +337,12 @@ namespace :gitlab do
       end
     end
 
+    # Rails 8 inserted db:schema:dump between db:create and db:migrate in db:migrate:reset,
+    # which dumps the empty, just-created database over db/structure.sql. We prune old
+    # migrations, so db:migrate can only rebuild the schema from an intact structure.sql.
+    Rake::Task['db:migrate:reset'].clear_prerequisites
+    Rake::Task['db:migrate:reset'].enhance(%w[db:drop db:create db:migrate])
+
     desc 'Create missing dynamic database partitions'
     task :create_dynamic_partitions, [:skip] => :environment do |_, args|
       Gitlab::Database::Partitioning.sync_partitions unless args.skip

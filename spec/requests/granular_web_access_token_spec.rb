@@ -142,6 +142,68 @@ RSpec.describe 'Granular PAT authorization on the web access token path', featur
     it_behaves_like 'granular web access authorization'
   end
 
+  # The :design format maps to read_design, which is granted through the
+  # Work Item: Read assignable permission rather than a standalone design
+  # permission.
+  describe 'design management images' do
+    include DesignManagementTestHelpers
+
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:boundary) { project }
+    let(:permission) { :read_work_item }
+
+    before do
+      enable_design_management
+    end
+
+    describe 'raw image' do
+      let_it_be(:design) { create(:design, :with_file, issue: issue) }
+
+      let(:path) { project_design_management_designs_raw_image_path(project, design) }
+
+      it_behaves_like 'granular web access authorization'
+    end
+
+    describe 'resized image' do
+      # Per-example on purpose: resized design images are served from
+      # CarrierWave disk storage, and the suite deletes CarrierWave.root after
+      # every example. A group-level (let_it_be) record outlives its stored
+      # file, so the second example that serves it fails with
+      # ActionController::MissingFile. Raw images are served from Git LFS,
+      # which is not cleaned between examples, so the raw group can share one.
+      let(:design) { create(:design, :with_smaller_image_versions, issue: issue) }
+      let(:path) { project_design_management_designs_resized_image_path(project, design, id: 'v432x230') }
+
+      it_behaves_like 'granular web access authorization'
+    end
+
+    # A granular token must not be worse than anonymous: on a public
+    # project, Authz::BoundaryPolicy grants any assignable permission that
+    # anonymous users already hold on the boundary, whatever the token's
+    # scopes. For read_design that arrives through a two-hop policy chain
+    # (ProjectPolicy grants read_design via can?(:read_issue), then the
+    # anonymous_can_read_design condition picks it up), which nothing else
+    # pins.
+    describe 'raw image on a public project' do
+      let_it_be(:public_project) { create(:project, :public) }
+      let_it_be(:public_issue) { create(:issue, project: public_project) }
+      let_it_be(:public_design) { create(:design, :with_file, issue: public_issue) }
+
+      let(:path) { project_design_management_designs_raw_image_path(public_project, public_design) }
+
+      context 'with a granular token without any scope' do
+        let(:token) { create(:granular_pat, user: user) }
+
+        it 'allows access' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+  end
+
   describe 'release downloads' do
     let_it_be_with_reload(:release_project) do
       create(:project, :repository, :private, group: group, developers: user)

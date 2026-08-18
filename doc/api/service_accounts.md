@@ -106,8 +106,6 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
-- `username` and `name` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
 - `email` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178689) in GitLab 17.9.
 
 {{< /history >}}
@@ -269,8 +267,6 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
-- `username` and `name` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
 - `email` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181456) in GitLab 17.9 [with a feature flag](../administration/feature_flags/_index.md) named `group_service_account_custom_email`.
 - `email` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186476) in GitLab 17.11. Feature flag `group_service_account_custom_email` removed.
 
@@ -459,12 +455,6 @@ Example of unsuccessful responses:
 
 ### Create a personal access token for a group service account
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
-
-{{< /history >}}
-
 Creates a personal access token for an existing service account in a specified group.
 
 ```plaintext
@@ -549,12 +539,6 @@ Other possible responses:
 - `404: Not Found` if the access token does not exist.
 
 ### Rotate a personal access token for a group service account
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
-
-{{< /history >}}
 
 Rotates a specified personal access token for an existing service account in a specified group. This revokes the existing token and creates a new token with the same name, description, and scopes.
 

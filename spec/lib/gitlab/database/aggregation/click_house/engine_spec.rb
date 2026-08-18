@@ -34,6 +34,13 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
           ->(_params) { Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))") },
           parameters: { quantile: { type: :float } }
         count :with_format, :integer, nil, formatter: ->(v) { v * -1 }
+        mean :"duration.mean", :float, ->(_params) {
+          Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+        }
+        quantile :"duration.quantile", :float,
+          ->(_params) { Arel.sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))") },
+          parameters: { quantile: { type: :float } }
+        mean :"session_year.mean", :float
       end
     end
   end
@@ -258,6 +265,103 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
         { user_id: 1, duration_quantile_14be4: 438 },
         { user_id: 2, duration_quantile_14be4: 180 }
       ])
+    end
+  end
+
+  describe "dotted metric identifiers" do
+    it 'aggregates dotted metrics and returns sanitized result keys' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        dimensions: [{ identifier: :user_id }],
+        metrics: [{ identifier: :"duration.mean" }],
+        order: [{ identifier: :"duration.mean", direction: :desc }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { user_id: 1, duration__mean: 510.0 },
+        { user_id: 2, duration__mean: 180.0 }
+      ])
+    end
+
+    context 'when no expression is given' do
+      let(:request) do
+        Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_id }],
+          metrics: [{ identifier: :"session_year.mean" }],
+          order: [{ identifier: :user_id, direction: :asc }]
+        )
+      end
+
+      it 'falls back to the first-segment column' do
+        expect(engine).to execute_aggregation(request).and_return([
+          { user_id: 1, session_year__mean: 2025.0 },
+          { user_id: 2, session_year__mean: 2025.0 }
+        ])
+      end
+    end
+
+    it 'supports parameterized dotted metrics alongside flat metrics' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        dimensions: [{ identifier: :user_id }],
+        metrics: [
+          { identifier: :total_count },
+          { identifier: :"duration.quantile", parameters: { quantile: 0.9 } }
+        ],
+        order: [{ identifier: :user_id, direction: :asc }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { user_id: 1, total_count: 4, duration__quantile_8139b: 582.0 },
+        { user_id: 2, total_count: 1, duration__quantile_8139b: 180.0 }
+      ])
+    end
+  end
+
+  describe "measurement macro" do
+    let(:engine_definition) do
+      described_class.build do
+        self.table_name = 'agent_platform_sessions'
+
+        transient(:duration) do
+          sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+        end
+
+        dimensions do
+          column :user_id, :integer
+        end
+
+        measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
+      end
+    end
+
+    it 'aggregates all measurement aggregates in one request' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        dimensions: [{ identifier: :user_id }],
+        metrics: [
+          { identifier: :"duration.min" },
+          { identifier: :"duration.max" },
+          { identifier: :"duration.mean" },
+          { identifier: :"duration.quantile", parameters: { quantile: 0.5 } }
+        ],
+        order: [{ identifier: :user_id, direction: :asc }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { user_id: 1, duration__min: 420, duration__max: 600, duration__mean: 510.0,
+          duration__quantile_d2cba: 510.0 },
+        { user_id: 2, duration__min: 180, duration__max: 180, duration__mean: 180.0,
+          duration__quantile_d2cba: 180.0 }
+      ])
+    end
+
+    it 'rejects quantile values outside the declared bounds' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :"duration.quantile", parameters: { quantile: 1.5 } }]
+      )
+
+      response = engine.execute(request)
+
+      expect(response).to be_error
+      expect(response.message).to include('Invalid value(s) for parameter `quantile`')
     end
   end
 

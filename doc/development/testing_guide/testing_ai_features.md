@@ -57,11 +57,11 @@ For instance, `ee/spec/features/epic_boards/epic_boards_spec.rb` asserts the fol
 
 ### Run DAP feature tests when making a change in AI Gateway
 
-These feature tests run when we make a change to AI Gateway repository as well, to verify that an MR does not accidentally break DAP features e.g.
+These feature tests also run when we make a change to the AI Gateway repository, to verify that an MR does not accidentally break DAP features, for example:
 
 1. A developer opens an MR in AI Gateway project.
 1. A pipeline runs for the MR, which triggers downstream pipeline in GitLab project against `aigw/test-branch` test branch.
-   This branch points the same SHA with master.
+   This branch points to the same SHA as master.
 1. If a pipeline fails, the developer should investigate if the proposed change doesn't accidentally introduce regressions.
 
 > [!note]
@@ -119,6 +119,47 @@ Use [end-to-end tests](end_to_end/_index.md) sparingly to verify AI features wor
 
 - **GitLab.com**: We run minimal E2E tests continuously against staging and production environments. For example, [Code Suggestions smoke tests](https://gitlab.com/gitlab-org/gitlab/-/blob/57d17110ef8f137ec8c1507e8d1a60ec194d6876/qa/qa/specs/features/ee/browser_ui/3_create/web_ide/code_suggestions_in_web_ide_spec.rb#L75).
 - **GitLab Self-Managed**: We use the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) orchestrator with [AI Gateway scenarios](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios) to test AI features on GitLab Self-Managed instances.
+
+### Duo Agent Platform foundational flows
+
+The Duo Agent Platform foundational-flow smoke test is an orchestrated end-to-end test that drives a flow through a real CI pipeline.
+The `gitlab-qa` orchestrator runs the test as the `duo-agent-platform` job in the `e2e:test-on-omnibus-ee` child pipeline.
+The test creates a workflow through `POST /ai/duo_workflows/workflows` with `start_workflow: true`, then asserts that the `duo_workflow` source pipeline succeeds and the workflow reaches `finished`.
+
+The test spans two repositories.
+The GitLab repository holds the spec and the flow provisioning helpers.
+The [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) orchestrator holds the infrastructure that boots the Duo Workflow Service and routes the GitLab instance to it:
+
+- `Component::DuoWorkflowService` boots the Duo Workflow Service from the same `model-gateway` image as the AI Gateway, switched to gRPC and agentic-mock mode, and captures the container logs to the job artifacts on teardown.
+- `Test::Integration::AiGatewayBase` wires the Duo Workflow Service into the scenario and passes the `GITLAB_DUO_WORKFLOW_SERVICE_URL` and `GITLAB_DUO_WORKFLOW_SECURE` values into the omnibus Rails environment.
+- `Test::Integration::DuoAgentPlatform` is a dedicated scenario, a subclass of the AI Gateway scenario, so the flow runs as its own `duo-agent-platform` omnibus job and the Duo Workflow Service container stays out of the `ai-gateway` job.
+
+The agentic-mock mode returns deterministic responses driven by directives in the flow goal instead of calling a real model, the same approach the Duo Chat and Code Suggestions tests use for the AI Gateway.
+
+The following files in the GitLab repository make up the test:
+
+| File | Description |
+| ---- | ----------- |
+| `qa/qa/specs/features/ee/api/16_ai_powered/duo_foundational_flow_in_ci_spec.rb` | The spec that provisions the flow, creates the workflow, and asserts the pipeline and workflow status. |
+| `qa/qa/ee/flow/foundational_flow.rb` | Provisioning helpers for the group, project, Duo seat, and flow consumer. |
+| `qa/qa/ee/resource/ai/duo_workflow.rb` | The `DuoWorkflow` API resource and the `FOUNDATIONAL_FLOWS` registry of supported flow references and their default goals. |
+| `qa/qa/ee/scenario/test/integration/duo_agent_platform.rb` | The scenario that selects the spec into the `duo-agent-platform` omnibus job. |
+
+A foundational flow runs after four setup steps have completed in `foundational_flow.rb`:
+
+1. `assign_duo_seat!` assigns a Duo seat to the acting user.
+1. `enable_on_group!` enables the flow on the top-level group, which cascades to create an item consumer and service account.
+1. `enable_remote_flows_on_project!` enables remote flows on the project.
+1. `wait_for_flow_consumer!` waits until the consumer, its active service account, and the service-account project membership all resolve.
+   The cascade in step 2 can lag on a cold instance, so this helper re-enables the flow until provisioning settles.
+
+To add another foundational flow, such as a future `developer/v2`:
+
+1. Register the flow reference and its default goal in the `FOUNDATIONAL_FLOWS` registry in `qa/qa/ee/resource/ai/duo_workflow.rb`.
+1. Pass the new flow reference to the helpers from the spec.
+   The helpers need no change, because `enable_on_group!` drives provisioning from the list of enabled foundational flows.
+
+Custom catalog flows do not use the foundational flows list, so you must create the catalog item and its consumer directly rather than call `enable_on_group!`.
 
 ## Exploratory testing
 

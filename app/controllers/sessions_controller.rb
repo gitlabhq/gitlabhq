@@ -27,10 +27,9 @@ class SessionsController < Devise::SessionsController
     if: -> { action_name == 'create' && two_factor_enabled? }
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
-  prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
-  prepend_before_action :store_login_challenge, only: [:new]
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
+  before_action :redirect_to_connector_provider, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :init_preferred_language, only: :new
   before_action :store_unauthenticated_sessions, only: [:new]
@@ -56,6 +55,18 @@ class SessionsController < Devise::SessionsController
   # RequestForgeryProtection#verify_authenticity_token would fail because of
   # token mismatch.
   protect_from_forgery with: :exception, prepend: true, except: :destroy
+
+  # Runs before CSRF verification (protect_from_forgery). An already-signed-in user who
+  # navigates "back" to a cached 2FA page and resubmits would otherwise hit a stale-token
+  # error; redirecting them to their destination first avoids that. Safe to run before CSRF
+  # because this guard only redirects (it never authenticates, so it does not clear the CSRF
+  # token the way authenticate_with_two_factor does).
+  prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
+
+  # On the new action, runs before require_no_authentication_without_flash so
+  # session[:login_challenge] is populated before that already-authenticated redirect guard
+  # calls after_sign_in_path_for, which reads that key to redirect through the IAM service.
+  prepend_before_action :store_login_challenge, only: [:new]
 
   feature_category :system_access
   urgency :low
@@ -311,9 +322,15 @@ class SessionsController < Devise::SessionsController
     find_user&.two_factor_enabled?
   end
 
-  def auto_sign_in_with_provider
-    return unless Gitlab::Auth.omniauth_enabled?
+  def redirect_to_connector_provider
+    provider = session.delete(::Authn::ProviderSignInRedirect::SESSION_KEY)
+    return unless provider.present?
+    return unless ::Authn::ProviderSignInRedirect.enabled?(provider)
 
+    render_provider_redirect(provider)
+  end
+
+  def auto_sign_in_with_provider
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 
@@ -321,9 +338,16 @@ class SessionsController < Devise::SessionsController
     # Otherwise, the default is to auto sign-in.
     return if Gitlab::Utils.to_boolean(params.permit(:auto_sign_in)[:auto_sign_in]) == false
 
-    # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is
-    # registered or no alert at all. In case of another alert (such as a blocked user), it is safer
-    # to do nothing to prevent redirection loops with certain Omniauth providers.
+    render_provider_redirect(provider)
+  end
+
+  # Renders the intermediate page that auto-submits a POST to the Omniauth provider.
+  #
+  # Only redirects if the standard "you need to sign-in" alert is registered or there is no alert
+  # at all. In case of another alert (such as a blocked user), it is safer to do nothing to prevent
+  # redirection loops with certain Omniauth providers.
+  def render_provider_redirect(provider)
+    return unless Gitlab::Auth.omniauth_enabled?
     return unless flash[:alert].blank? || flash[:alert] == I18n.t('devise.failure.unauthenticated')
 
     # Prevent alert from popping up on the first page shown after authentication.

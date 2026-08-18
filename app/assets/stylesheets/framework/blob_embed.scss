@@ -1,0 +1,34 @@
+// Inline code-snippet embeds rendered from blob permalinks in GitLab Flavored
+// Markdown (see Banzai::Filter::RepositoryBlobEmbedFilter).
+//
+// The code body and line-number gutter reuse the blob viewer's
+// `.file-content.code` styling (framework/highlight), so these rules only add
+// the card chrome and adjust the gutter, whose entries are plain links rather
+// than the blob viewer's fancy line anchors.
+.blob-embed {
+  margin: $gl-padding 0;
+  overflow: hidden;
+
+  .blob-embed-header {
+    display: flex;
+    align-items: baseline;
+    gap: $gl-padding-8;
+    padding: $gl-padding-8 $gl-padding;
+    background-color: $gl-background-color-subtle;
+    border-bottom: 1px solid $gl-border-color-default;
+  }
+
+  .blob-embed-title {
+    font-size: $code-font-size;
+    word-break: break-all;
+  }
+
+  .line-numbers a {
+    text-decoration: none;
+
+    // There is no line-link icon here, so drop the blob viewer's hover hit-area.
+    &::after {
+      content: none;
+    }
+  }
+}

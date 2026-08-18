@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   PROJECT_TOGGLE_TEXT,
   PROJECT_HEADER_TEXT,
@@ -21,6 +22,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [glListenersMixin],
   props: {
     block: {
       type: Boolean,
@@ -184,7 +186,7 @@ export default {
     :fetch-initial-selection="fetchInitialProject"
     :block="block"
     clearable
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template v-if="hasHtmlLabel" #label>
       <span v-safe-html="label"></span>

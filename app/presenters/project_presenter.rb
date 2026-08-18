@@ -520,13 +520,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def observability_anchor_data
-    return unless project.group.present? && can_read_observability? && observability_feature_enabled?
+    return unless can_read_observability? && observability_feature_enabled?
 
     if observability_settings.present?
-      AnchorData.new(false, statistic_icon('status-health', 'subtle') + s_('Observability|Observability configuration'), group_observability_setup_path(project.group), 'btn-default', nil, nil,
+      AnchorData.new(false, statistic_icon('status-health', 'subtle') + s_('Observability|Observability configuration'), observability_setup_path, 'btn-default', nil, nil,
         { event_tracking: 'click_observability_on_project_overview', event_label: 'view' })
     else
-      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + s_('Observability|Enable Observability')), group_observability_setup_path(project.group), nil, nil, nil,
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + s_('Observability|Enable Observability')), observability_setup_path, nil, nil, nil,
         { event_tracking: 'click_observability_on_project_overview', event_label: 'add' })
     end
   end
@@ -630,11 +630,29 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_read_observability?
-    current_user && can?(current_user, :read_observability_portal, project.group)
+    return false unless current_user
+
+    if project.group
+      can?(current_user, :read_observability_portal, project.group)
+    else
+      can?(current_user, :read_observability_portal, project)
+    end
   end
 
   def observability_feature_enabled?
-    ::Feature.enabled?(:observability_sass_features, project.group)
+    if project.group
+      ::Feature.enabled?(:observability_sass_features, project.group)
+    else
+      ::Feature.enabled?(:observability_saas_features_user_namespace, project.root_namespace)
+    end
+  end
+
+  def observability_setup_path
+    if project.group
+      group_observability_setup_path(project.group)
+    else
+      project_observability_setup_path(project)
+    end
   end
 end
 

@@ -64,9 +64,9 @@ repository to be imported manually. Administrators can manually import the repos
 
 ## Import fails due to missing prefix
 
-In GitLab 16.5 and later, you might get an error that states `Import failed due to a GitHub error: (HTTP 406)`.
+You might get an error that states `Import failed due to a GitHub error: (HTTP 406)`.
 
-This issue occurs because, in GitLab 16.5, the path prefix `api/v3` was removed from the GitHub importer. This happened because the importer stopped using the `Gitlab::LegacyGithubImport::Client`. This client automatically added the `api/v3` prefix on imports from a GitHub Enterprise URL.
+This issue occurs because the path prefix `api/v3` was removed from the GitHub importer. This happened because the importer stopped using the `Gitlab::LegacyGithubImport::Client`. This client automatically added the `api/v3` prefix on imports from a GitHub Enterprise URL.
 
 To work around this error, [add the `api/v3` prefix](https://gitlab.com/gitlab-org/gitlab/-/issues/438358#note_1978902725) when importing from a GitHub Enterprise URL.
 
@@ -86,12 +86,6 @@ In order to keep the API fast for everyone, pagination is limited for this resou
 When importing GitHub projects with a large number of comments, select the **Use alternative comments import method**
 [additional item to import](github.md#select-additional-items-to-import) checkbox. This setting makes the import process take longer because it increases the number of network requests
 required to perform the import.
-
-## GitLab instance cannot connect to GitHub
-
-GitLab Self-Managed instances that run GitLab 15.10 or earlier, and are behind proxies, cannot resolve DNS for `github.com` or `api.github.com`.
-The GitLab instance fails to connect to GitHub during the import and you must add `github.com` and `api.github.com`
-entries in the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 ## Related topics
 

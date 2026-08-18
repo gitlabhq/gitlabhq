@@ -116,7 +116,9 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { send_search_request(params_for_one) }
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
 
-        expect { send_search_request(params_for_many) }.not_to exceed_query_limit(control)
+        expect do
+          send_search_request(params_for_many)
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
       end
     end
@@ -131,7 +133,9 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { send_search_request(params_for_one) }
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
 
-        expect { send_search_request(params_for_many) }.not_to exceed_query_limit(control)
+        expect do
+          send_search_request(params_for_many)
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
       end
     end
@@ -317,6 +321,18 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
           expect(response.body).to eq '["foo","bar"]'
         end
       end
+    end
+  end
+
+  describe 'GET /search/opensearch' do
+    # Asserted through the request options rather than through a Redis or Set-Cookie side effect:
+    # an unchanged session is also left alone by write throttling, so an observable effect would
+    # not tell the two apart.
+    it 'renders the document without committing the session', :aggregate_failures do
+      get search_opensearch_path(format: :xml)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(request.session_options[:skip]).to be(true)
     end
   end
 

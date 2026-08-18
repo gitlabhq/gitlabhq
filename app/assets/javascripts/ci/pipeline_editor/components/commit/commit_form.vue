@@ -47,7 +47,7 @@ export default {
       default: false,
     },
   },
-  emits: ['submit', 'resetContent'],
+  emits: ['submit', 'reset-content'],
   data() {
     return {
       message: this.defaultMessage,
@@ -75,7 +75,7 @@ export default {
       });
     },
     onReset() {
-      this.$emit('resetContent');
+      this.$emit('reset-content');
     },
     resetCommitMessage() {
       this.message = this.defaultMessage;

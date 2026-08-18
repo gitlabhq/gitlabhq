@@ -376,7 +376,8 @@ describe('Source Viewer component', () => {
 
     it('renders codeowners validation when file is CODEOWNERS', async () => {
       await createComponent({ blob: { name: CODEOWNERS_FILE_NAME } });
-      await nextTick();
+      // CodeownersValidation is an async component.
+      await waitForPromises();
       expect(findCodeownersValidation().exists()).toBe(true);
     });
   });

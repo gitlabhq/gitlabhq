@@ -43,5 +43,36 @@ RSpec.describe Gitlab::Graphql::NegatableArguments do
 
       expect(test_resolver.arguments).to include('negative')
     end
+
+    context 'when the resolver is defined in a nested module' do
+      let(:test_resolver) do
+        Class.new(Resolvers::BaseResolver).tap do |klass|
+          klass.extend described_class
+          allow(klass).to receive(:name).and_return(resolver_name)
+        end
+      end
+
+      context 'when a matching Types module exists' do
+        let(:resolver_name) { 'Resolvers::Namespaces::TestResolver' }
+
+        it 'defines the type in that module' do
+          test_resolver.negated {}
+
+          expect(test_resolver.arguments['not'].type.name)
+            .to eq('Types::Namespaces::TestResolverNegatedParamsType')
+        end
+      end
+
+      context 'when no matching Types module exists' do
+        let(:resolver_name) { 'Resolvers::TestNamespace::TestResolver' }
+
+        it 'creates the module and defines the type in it' do
+          test_resolver.negated {}
+
+          expect(test_resolver.arguments['not'].type.name)
+            .to eq('Types::TestNamespace::TestResolverNegatedParamsType')
+        end
+      end
+    end
   end
 end

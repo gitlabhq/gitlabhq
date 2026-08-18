@@ -49,8 +49,11 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
     end
 
     context 'when the tables contain matching items' do
+      let(:batch_size) { 2 }
+      let(:max_batches) { 2 }
+
       before do
-        create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
+        create_list(:namespace, 7) # This will also create Ci::NameSpaceMirror objects
       end
 
       it 'does not process more than MAX_BATCHES' do
@@ -84,27 +87,29 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
           .with(:consistency_checks, "Consistency Check Results")
           .and_call_original
 
-        # Starting from the 5th last element
-        start_id = Namespace.all.order(id: :desc).limit(5).pluck(:id).last
+        # Starting from the 2nd last element
+        start_id = Namespace.all.order(id: :desc).limit(2).pluck(:id).last
         expected_result = {
           next_start_id: Namespace.first.id,
           batches: 1,
-          matches: 5,
+          matches: 2,
           mismatches: 0,
           mismatches_details: []
         }
         expect(consistency_checker.execute(start_id: start_id)).to eq(expected_result)
 
         expect(metrics_counter.get(source_table: "namespaces", result: "mismatch")).to eq(0)
-        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(5)
+        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(2)
       end
     end
 
     context 'when some items are missing from the first table' do
+      let(:batch_size) { 2 }
+      let(:max_batches) { 2 }
       let(:missing_namespace) { Namespace.all.order(:id).limit(2).last }
 
       before do
-        create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
+        create_list(:namespace, 6) # This will also create Ci::NameSpaceMirror objects
         missing_namespace.delete
       end
 
@@ -112,7 +117,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
         expected_result = {
           next_start_id: Namespace.first.id + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
           batches: max_batches,
-          matches: 39,
+          matches: 3,
           mismatches: 1,
           mismatches_details: [{
             id: missing_namespace.id,
@@ -123,23 +128,25 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
         expect(consistency_checker.execute(start_id: Namespace.first.id)).to eq(expected_result)
 
         expect(metrics_counter.get(source_table: "namespaces", result: "mismatch")).to eq(1)
-        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(39)
+        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(3)
       end
     end
 
     context 'when some items are missing from the second table' do
+      let(:batch_size) { 2 }
+      let(:max_batches) { 2 }
       let(:missing_ci_namespace_mirror) { Ci::NamespaceMirror.all.order(:id).limit(2).last }
 
       before do
-        create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
+        create_list(:namespace, 6) # This will also create Ci::NameSpaceMirror objects
         missing_ci_namespace_mirror.delete
       end
 
       it 'reports the missing elements' do
         expected_result = {
           next_start_id: Namespace.first.id + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
-          batches: 4,
-          matches: 39,
+          batches: 2,
+          matches: 3,
           mismatches: 1,
           mismatches_details: [{
             id: missing_ci_namespace_mirror.namespace_id,
@@ -150,15 +157,17 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
         expect(consistency_checker.execute(start_id: Namespace.first.id)).to eq(expected_result)
 
         expect(metrics_counter.get(source_table: "namespaces", result: "mismatch")).to eq(1)
-        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(39)
+        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(3)
       end
     end
 
     context 'when elements are different between the two tables' do
+      let(:batch_size) { 2 }
+      let(:max_batches) { 2 }
       let(:different_namespaces) { Namespace.order(:id).limit(max_batches * batch_size).sample(3).sort_by(&:id) }
 
       before do
-        create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
+        create_list(:namespace, 6) # This will also create Ci::NameSpaceMirror objects
 
         different_namespaces.each do |namespace|
           namespace.update_attribute(:traversal_ids, [])
@@ -168,8 +177,8 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
       it 'reports the difference between the two tables' do
         expected_result = {
           next_start_id: Namespace.first.id + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
-          batches: 4,
-          matches: 37,
+          batches: 2,
+          matches: 1,
           mismatches: 3,
           mismatches_details: different_namespaces.map do |namespace|
             {
@@ -182,7 +191,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
         expect(consistency_checker.execute(start_id: Namespace.first.id)).to eq(expected_result)
 
         expect(metrics_counter.get(source_table: "namespaces", result: "mismatch")).to eq(3)
-        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(37)
+        expect(metrics_counter.get(source_table: "namespaces", result: "match")).to eq(1)
       end
     end
   end

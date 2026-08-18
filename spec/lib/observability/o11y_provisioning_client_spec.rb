@@ -12,12 +12,12 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
       .to_return(status: 200, body: '{"status": "success"}')
   end
 
-  describe '#provision_group' do
-    subject(:provision_group) { client.provision_group(group, user) }
+  describe '#provision_namespace' do
+    subject(:provision_namespace) { client.provision_namespace(group, user) }
 
     context 'when API call is successful' do
       it 'returns success with settings params' do
-        result = provision_group
+        result = provision_namespace
 
         expect(result[:success]).to be true
         expect(result[:settings_params]).to include(
@@ -28,7 +28,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
       end
 
       it 'makes an API request to the provisioner service' do
-        provision_group
+        provision_namespace
 
         expect(WebMock).to have_requested(:post, described_class::PROVISIONER_API)
           .with(
@@ -37,7 +37,8 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
                 'group_id' => group.id,
                 'email' => user.email,
                 'user_name' => user.name,
-                'group_path' => group.full_path
+                'group_path' => group.full_path,
+                'is_user' => false
               )
             ),
             headers: {
@@ -49,6 +50,38 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
       end
     end
 
+    context 'when the namespace is a user (personal) namespace' do
+      let_it_be(:namespace) { create(:user_namespace) }
+
+      subject(:provision_namespace) { client.provision_namespace(namespace, user) }
+
+      it 'returns success with settings params' do
+        result = provision_namespace
+
+        expect(result[:success]).to be true
+        expect(result[:settings_params]).to include(
+          o11y_service_name: namespace.id.to_s,
+          o11y_service_user_email: "#{namespace.id}@gitlab-o11y.com",
+          o11y_service_password: be_present
+        )
+      end
+
+      it 'sends is_user as true' do
+        provision_namespace
+
+        expect(WebMock).to have_requested(:post, described_class::PROVISIONER_API)
+          .with(
+            body: hash_including(
+              'o11y_provision_request' => hash_including(
+                'group_id' => namespace.id,
+                'group_path' => namespace.full_path,
+                'is_user' => true
+              )
+            )
+          )
+      end
+    end
+
     context 'when API call fails' do
       before do
         stub_request(:post, described_class::PROVISIONER_API)
@@ -56,7 +89,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
       end
 
       it 'returns failure with error message' do
-        result = provision_group
+        result = provision_namespace
 
         expect(result[:success]).to be false
         expect(result[:error]).to eq('API call failed for observability group setting')
@@ -69,7 +102,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
       end
 
       it 'returns failure with error message' do
-        result = provision_group
+        result = provision_namespace
 
         expect(result[:success]).to be false
         expect(result[:error]).to eq('API call failed for observability group setting')
@@ -153,7 +186,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
       end
 
       it 'does not include sensitive field names or patterns in error messages' do
-        result = client.provision_group(group, user)
+        result = client.provision_namespace(group, user)
 
         sensitive_fields.each do |field_name, pattern|
           expect(result[:error]).not_to include(field_name)
@@ -169,7 +202,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
           )
         )
 
-        client.provision_group(group, user)
+        client.provision_namespace(group, user)
       end
     end
 
@@ -191,11 +224,11 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
           )
         )
 
-        client.provision_group(group, user)
+        client.provision_namespace(group, user)
       end
 
       it 'does not include sensitive data in the returned error message' do
-        result = client.provision_group(group, user)
+        result = client.provision_namespace(group, user)
 
         expect(result[:success]).to be false
         expect(result[:error]).to eq('API call failed for observability group setting')

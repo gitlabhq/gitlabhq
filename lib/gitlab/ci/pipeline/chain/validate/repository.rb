@@ -9,6 +9,7 @@ module Gitlab
             include Chain::Helpers
 
             REFERENCE_NOT_FOUND_MESSAGE = 'Reference not found'
+            COMMIT_NOT_FOUND_MESSAGE = 'Commit not found'
 
             def perform!
               if @command.ambiguous_ref?
@@ -20,7 +21,7 @@ module Gitlab
               end
 
               unless @command.sha
-                error('Commit not found')
+                error(COMMIT_NOT_FOUND_MESSAGE)
               end
             rescue Gitlab::Git::ResourceExhaustedError => e
               # Gitaly is overloaded (for example, concurrency/queue limits or an open circuit breaker).

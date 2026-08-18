@@ -17,7 +17,7 @@ title: Semantic code search
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16910) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 18.7.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16910) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 18.7.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/work_items/588259) to GitLab Duo Core in GitLab 18.8.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/590394) to GitLab Premium in GitLab 18.9.
 
@@ -48,7 +48,7 @@ This approach finds relevant code even when keywords do not match.
 Semantic code search is available through multiple interfaces:
 
 - REST API: Use the [`GET /api/v4/projects/:id/search/semantic` endpoint](../../api/search.md#semantic-search) to search your codebase programmatically.
-- MCP server tool: Use the [`semantic_code_search`](model_context_protocol/mcp_server_tools.md#semantic_code_search) tool in agentic workflows.
+- MCP server tool: Use the [`semantic_code_search`](../model_context_protocol/mcp_server_tools.md#semantic_code_search) tool in agentic workflows.
 - CLI: Use the [`glab search semantic`](https://docs.gitlab.com/cli/search/semantic/) command for command-line access.
 
 ## Ad-hoc initial indexing

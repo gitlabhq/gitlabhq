@@ -40,7 +40,7 @@ The key metrics shown in the merge request widget are:
 - **TTFB P90**: The 90th percentile of how long it took to start receiving responses,
   also known as [Time to First Byte](https://en.wikipedia.org/wiki/Time_to_first_byte) (TTFB).
 - **TTFB P95**: The 95th percentile for TTFB.
-- **RPS**: The average requests per second (RPS) rate the test was able to achieve.
+- **RPS**: The average requests per second (RPS) rate the test achieves.
 
 > [!note]
 > The widget doesn't display until the job has run at least once on the target branch.

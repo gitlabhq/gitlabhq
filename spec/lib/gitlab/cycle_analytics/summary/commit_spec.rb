@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::CycleAnalytics::Summary::Commit, feature_category: :devops_reports do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:from) { 1.week.ago }
   let(:to) { Time.current }

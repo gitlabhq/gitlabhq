@@ -1,6 +1,6 @@
 ---
-source_checksum: af9ed0ec46eedb9d
-distilled_at_sha: 7e6400c6673ccad101ddf620e6bf08ad99e5325a
+source_checksum: c73cbb508b1f684b
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -55,6 +55,14 @@ distilled_at_sha: 7e6400c6673ccad101ddf620e6bf08ad99e5325a
 - Compare the distilled diff against the referenced SSOT documentation changes.
 - Confirm no still-valid, SSOT-supported rule was dropped and no unsupported rule was added.
 - Confirm the front matter checksums were updated by the tool, not by hand.
+- Classify each Duo finding into exactly one of four outcomes before acting: Content defect (distilled text misstates the source — fix on the sync branch), Content gap (distillation dropped a supported rule — restore on the sync branch), Distiller defect (root cause is the tooling — fix the output and open an issue against the distiller), or Judgment call (output is correct but could be closer — record it, no required action).
+- When fixing a finding, restore a baseline-derived rule verbatim (the sync tooling mechanically rejects any alteration); make a source-derived fix faithful and traceable but DO NOT copy source prose verbatim (distilled files hold concrete checkable rules, and a verbatim copy is rephrased on the next run).
+- Batch all fixes on a sync branch into a single push; pushing a file revokes that file's code owner approval (selective code owner removals are enabled), so an unbatched sequence of pushes can repeatedly invalidate an in-progress review.
+- When a finding's root cause is the tooling, open an issue against the distiller describing the mechanism (which component, for what input), and record each instance of dropped content on [issue 604659](https://gitlab.com/gitlab-org/gitlab/-/issues/604659).
+- Prefer a targeted fix on the sync branch for localized findings; re-run distillation only when the output is broadly wrong (re-running is slow and non-deterministic and can regress unrelated rules).
+- When reviewing a fence-reconcile MR (which changes only `.gitlab/duo/mr-review-instructions.yaml`), confirm the fence directives match the front matter of the distilled files on `master`; the reconcile job runs no distillation, so the fence body must never diverge from the committed distilled content.
+- Treat a malformed or orphaned fence as always-blocking; the `ai-duo-review-instructions` guard fails on its own ref regardless of the reconcile state.
+- Treat fence staleness as blocking only on the reconcile MR and on MRs that touch the fences' owned files. DO NOT treat staleness as blocking on a team's distilled MR or on unrelated `doc/**/*.md` edits — it is expected transient state until the daily reconcile catches up.
 
 ## Authoritative sources
 

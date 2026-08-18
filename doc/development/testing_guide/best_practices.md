@@ -108,12 +108,6 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 
 ### Test order
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
-
-{{< /history >}}
-
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
 
@@ -133,7 +127,7 @@ scripts/rspec_check_order_dependence spec/models/project_spec.rb
 If the specs pass the check the script removes them from
 [`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml) automatically.
 
-If the specs fail the check they must be fixed before than can run in random order.
+If the specs fail the check they must be fixed before they can run in random order.
 
 ### Test flakiness
 
@@ -168,9 +162,15 @@ capabilities also reduces the amount of set-up needed.
 test requires JavaScript reactivity in the browser (for example, clicking a Vue.js component). Using a headless
 browser is much slower than parsing the HTML response from the app.
 
-#### Profiling: see where your test spend its time
+The same principle applies to factory traits. A trait such as `:repository`
+is a capability: it makes the factory create a Git repository, which is far more
+expensive than the database writes around it. Pass only the traits the test
+actually exercises. For repository traits specifically, see
+[Repositories](#repositories).
 
-[`rspec-stackprof`](https://github.com/dkhroad/rspec-stackprof) can be used to generate a flame graph that shows you where you test spend its time.
+#### Profiling: see where your test spends its time
+
+[`rspec-stackprof`](https://github.com/dkhroad/rspec-stackprof) can be used to generate a flame graph that shows you where your test spends its time.
 
 The gem generates a JSON report that we can upload to <https://www.speedscope.app> for an interactive visualization.
 
@@ -316,15 +316,29 @@ There are various ways to create objects and store them in variables in your tes
 - `let_it_be_with_reload` creates an object one time for all examples in the same context, but after each example, the database changes are rolled back, and `object.reload` will be called to restore the object to its original state. This means you can make changes to the object before or during an example. However, there are cases where [state leaks across other models](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection) can occur. In these cases, `let` may be an easier option, especially if only a few examples exist.
 - `let_it_be` creates an object one time for all of the examples in the same context. This is a great alternative to `let` and `let!` for objects that do not need to change from one example to another. Using `let_it_be` can dramatically speed up tests that create database models. See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#let-it-be> for more details and examples.
 
-Pro-tip: When writing tests, it is best to consider the objects inside a `let_it_be` as **immutable**, as there are some important caveats when modifying objects inside a `let_it_be` declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)). To make your `let_it_be` objects immutable, consider using `freeze: true`:
+Objects inside a `let_it_be` are immutable. In this project, `let_it_be`
+defaults to `freeze: true`, which is configured in
+[`spec/support/let_it_be.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/0c856315b96340eaeb51720e7155f4c9eb4dff43/spec/support/let_it_be.rb).
+A mutation raises a `FrozenError` at the point it happens, which surfaces the
+caveats that otherwise apply to objects changed inside a `let_it_be`
+declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)).
 
-```shell
-# Before
-let_it_be(:namespace) { create_default(:namespace) }
+When an example must modify the object, use `let_it_be_with_reload` or
+`let_it_be_with_refind`. Both set `freeze: false` and restore the object between
+examples, through the different mechanisms described above:
 
-# After
-let_it_be(:namespace, freeze: true) { create_default(:namespace) }
+```ruby
+# Raises FrozenError when an example modifies the project
+let_it_be(:project) { create(:project) }
+
+# The object can be modified, and is restored between examples
+let_it_be_with_reload(:project) { create(:project) }
 ```
+
+`freeze: false` on its own unfreezes the object but does not restore it between
+examples. Use it only when the object is never mutated in a way that later
+examples can observe, such as when the mutation happens inside a `before_all`
+hook. When in doubt, use `let_it_be_with_reload`.
 
 See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection> for more information on `let_it_be` freezing.
 
@@ -348,7 +362,7 @@ let_it_be(:user) { create(:user) }
 let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used
 
 context 'with a developer' do
-  before do
+  before_all do
     project.add_developer(user)
   end
 
@@ -358,7 +372,7 @@ context 'with a developer' do
 end
 
 context 'with a maintainer' do
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 
@@ -367,6 +381,67 @@ context 'with a maintainer' do
   end
 end
 ```
+
+Each `before_all` runs once for its context instead of once per example, and the
+membership is rolled back when the context ends. The
+`RSpec/BeforeAllRoleAssignment` RuboCop rule enforces this: a `before` hook that
+assigns a role to a `let_it_be` object is an offense.
+
+#### Assigning members through the factory
+
+When every example in a context needs the same membership, pass it to the
+factory instead of a hook. Project and group factories accept one
+transient attribute per role, such as `guests`, `reporters`, `developers`,
+`maintainers`, and `owners`. Each accepts a single user or an array:
+
+```ruby
+let_it_be(:reviewer) { create(:user) }
+let_it_be(:approver) { create(:user) }
+let_it_be(:project) { create(:project, developers: reviewer) }
+let_it_be(:group) { create(:group, maintainers: [reviewer, approver]) }
+```
+
+The user factory accepts the same relationships from the other direction, with
+attributes such as `guest_of`, `reporter_of`, `developer_of`, `maintainer_of`,
+and `owner_of`:
+
+```ruby
+let_it_be(:project) { create(:project) }
+let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+```
+
+These attributes create the membership through the same code path as
+`add_developer` and the other role methods. For a single user this does not by
+itself reduce the number of queries compared to an equivalent `before_all`. For
+an array of users, such as `maintainers: [reviewer, approver]` above, it does:
+the user, email, and existing-membership lookups run once for the whole batch
+instead of once per `before_all` call, though each membership is still
+authorized and inserted individually. Either way, factory attributes are
+preferred because the setup stays in one place, and because the membership
+exists before the object is frozen, so the spec needs neither a separate hook
+nor `let_it_be_with_reload`.
+
+#### When not to convert `let` to `let_it_be`
+
+Danger suggests that you convert `let(:project) { create(:project) }` to
+`let_it_be` whenever it sees a project factory. The suggestion is a heuristic,
+and it is reasonable to decline it in these cases:
+
+- Examples modify the object under test. Use `let_it_be_with_reload`, or keep
+  `let` when only a few examples exist.
+- The factory stubs methods with `allow`. See
+  [Stubbing methods in factories](#stubbing-methods-within-factories).
+- The spec is a migration spec, a Rake task spec, or is tagged `:delete`. See
+  [Common test setup](#common-test-setup).
+
+A context with only one example is a weak reason on its own. When the example
+uses the object, both `let` and `let_it_be` create it once, so neither is
+faster. The exception is an object that some examples never reference: `let` is
+lazy and skips it, whereas `let_it_be` is eager and always creates it. Check
+whether the object is actually used before you decline on this basis.
+
+When you decline a suggestion, say which of these applies, so the next reader
+does not have to work it out again.
 
 #### Stubbing methods within factories
 
@@ -450,7 +525,7 @@ See [Run `:js` spec in a visible browser](#run-js-spec-in-a-visible-browser) for
 
 <!-- TODO: Add the search keywords -->
 
-When using [`stackprof` flamegraphs](#profiling-see-where-your-test-spend-its-time), search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
+When using [`stackprof` flamegraphs](#profiling-see-where-your-test-spends-its-time), search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
 
 #### Identify slow tests
 
@@ -539,6 +614,23 @@ performance gains.
 When combining tests, consider using `:aggregate_failures`, so that the full
 results are available, and not just the first failure.
 
+#### Never use `wait_for_requests` or `wait_for_all_requests`
+
+Do not use `wait_for_requests` or `wait_for_all_requests` in feature specs.
+The [`RSpec/AvoidWaitForRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/rspec/avoid_wait_for_requests.rb)
+cop prohibits both helpers.
+
+These helpers wait only until there are no tracked requests in flight, not for
+the outcome the spec needs. A request can trigger another request. If the poll
+runs between the two, the helper returns before the page has reached its
+expected state. They also do not wait for Vue re-renders, redirects,
+asynchronous follow-up writes, or browser-initiated downloads.
+
+Do not add exclusions to `.rubocop_todo/rspec/avoid_wait_for_requests.yml` or
+disable the cop inline. Replace the helper with a page-specific waiting matcher
+or, when no visible outcome exists, a narrowly targeted `wait_for` condition.
+For guidance on the alternatives, see [Avoid waiting for elements you expect to be absent](#avoid-waiting-for-elements-you-expect-to-be-absent), [Assert on a stable end-state, not on a transient control](#assert-on-a-stable-end-state-not-on-a-transient-control), and [Poll for browser side-effects with `wait_for`](#poll-for-browser-side-effects-with-wait_for).
+
 #### Avoid waiting for elements you expect to be absent
 
 Capybara's query methods either return immediately when their condition is
@@ -566,12 +658,8 @@ expect(page).to have_no_link('Edit')           # then check absence
 
 Confirm the page has reached the expected state with a positive matcher before
 the next interaction or assertion - not only before absence checks, but also
-before reading database or model state and before navigating. `wait_for_requests`
-is not sufficient on its own: it waits for in-flight AJAX requests tracked by the
-test harness to settle, but not for Vue re-render, redirect completion, async
-follow-up writes, or browser-initiated downloads (which are not tracked XHR or
-fetch requests). Prefer asserting the expected visible outcome (`have_content`,
-`have_current_path`, `have_css`).
+before reading database or model state and before navigating. Prefer asserting
+the expected visible outcome (`have_content`, `have_current_path`, `have_css`).
 
 Use `wait: 0` to skip the wait in conditional logic. **Note:** Only use it
 when you can't avoid conditional logic, and only inside a region you have
@@ -619,6 +707,66 @@ click_button 'Resume'
 expect(page).not_to have_text 'Paused'
 ```
 
+Wait for a modal or another animated container to finish its open transition
+before you interact with controls inside it. Components can disable their
+controls while they transition. For example, wait for a visible modal before you
+click its close button:
+
+```ruby
+expect(page).to have_css('.modal.show')
+
+within('.modal') { click_button 'Close' }
+```
+
+See [Interacting with modals](#interacting-with-modals) for modal helpers.
+
+#### Vary setup with `let` overrides instead of visiting twice
+
+In `:js` feature specs, nested contexts often need different setup to run before the page visit, such as a different signed-in user, a different record state, or a feature flag state.
+Avoid adding this setup in a nested context's own `before` block and calling `visit` a second time on the same URL.
+
+The extra `visit` reloads the same page and makes the spec slower.
+
+Also, calling `sign_in` after a page has already been visited is racy, because the `sign_in` helper injects the session using `Warden.on_next_request`, and a background request still in flight from the first visited page can consume that injection, which leaves the intended user not signed in.
+
+Bad:
+
+```ruby
+before do
+  sign_in(maintainer)
+  visit path
+end
+
+context 'when the user is a guest' do
+  before do
+    guest = create(:user, guest_of: project)
+    gitlab_sign_out
+    sign_in(guest)
+    visit path
+  end
+end
+```
+
+Instead, keep a single `sign_in` and a single `visit` in the outermost `before` block, and make the setup dynamic by reading from `let` definitions.
+Nested contexts then override only the relevant `let`.
+
+Good:
+
+```ruby
+let(:current_user) { maintainer }
+
+before do
+  sign_in(current_user)
+  visit path
+end
+
+context 'when the user is a guest' do
+  let(:current_user) { create(:user, guest_of: project) }
+end
+```
+
+This keeps the spec faster and avoids the sign-in race.
+
 #### Poll for browser side-effects with `wait_for`
 
 Always prefer asserting on a visible UI outcome (`have_content`,
@@ -634,6 +782,17 @@ have no visible signal:
 
 (Do not reach for `wait_for_requests` here either: it is deprecated and should
 not be used in new specs.)
+
+`wait_for` polls every 0.01 seconds by default. To avoid excess load on a
+database-backed condition, use a longer `polling_interval`. Increase
+`max_wait_time` only when the operation genuinely needs more time:
+
+```ruby
+wait_for('issues sort preference to be saved',
+  max_wait_time: 2 * Capybara.default_max_wait_time, polling_interval: 0.1) do
+  user.reload.user_preference.issues_sort == 'updated_desc'
+end
+```
 
 ```ruby
 # Bad: click_link triggers a browser-initiated download and returns before the
@@ -676,11 +835,11 @@ end
 #### Prefer waiting matchers over reading element values
 
 Reading a value, text, or count directly from an element (`find(...).value`,
-`find(...).text`, `all(...).count`) captures the state at that exact moment. If
-the page is still rendering an asynchronous update, you read the old value and
-the test fails or passes for the wrong reason. The `have_*` matchers instead
-retry until the expectation holds (or the wait times out), so they synchronize
-with the UI rather than racing it.
+`find(...).text`, `all(...).count`), or from the page (`page.current_url`)
+captures the state at that exact moment. If the page is still rendering an
+asynchronous update, you read the old value and the test fails or passes for the
+wrong reason. The `have_*` matchers instead retry until the expectation holds
+(or the wait times out), so they synchronize with the UI rather than racing it.
 
 Assert with a waiting matcher rather than reading a value and comparing it:
 
@@ -709,6 +868,63 @@ within_testid("user-project-count-#{admin.id}") do
   expect(page).to have_content('1')
 end
 ```
+
+Do not assert `expect(find(selector).visible?).to be(true)`: `find` already
+waits for a visible element, so the assertion cannot verify a later update. Use
+a waiting matcher for the state you need:
+
+```ruby
+# Bad: reads text immediately after finding the element.
+expect(find('.event-title').text).to eq('joined project GitLab')
+
+# Good: waits for the expected exact text.
+expect(page).to have_selector('.event-title', exact_text: 'joined project GitLab')
+```
+
+Wait for the page state before you read `page.current_url` or other non-waiting
+session values. For example, assert a page-specific element before you read the
+URL:
+
+```ruby
+expect(page).to have_testid('board-card')
+expect(CGI.unescape(page.current_url)).to include(CGI.unescape(board_path))
+```
+
+#### Scripts do not wait
+
+`evaluate_script` and `execute_script` read or modify the browser at one point
+in time. They do not wait for an asynchronous update. Assert a visible outcome
+or use `wait_for` before you read state with a script.
+
+When related script values must describe the same browser state, retrieve them
+with one `evaluate_script` call instead of separate calls:
+
+```ruby
+wait_for('note to be scrolled into view') do
+  page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop") > 0
+end
+
+panel_scroll_top, note_position_top = page.evaluate_script(<<~JS)
+  const panel = document.querySelector('.js-static-panel-inner');
+  const note = document.querySelector('#note_1');
+  [panel.scrollTop, note.getBoundingClientRect().top + panel.scrollTop]
+JS
+```
+
+#### Gate readiness in shared examples
+
+When several specs use the same page or component, put its readiness assertion
+in the shared example instead of repeating it in every caller. The assertion
+then becomes the synchronization contract for all consumers. For example, Rapid
+Diffs uses the `diff-file-mounted` sentinel to wait until all diff files mount:
+
+```ruby
+before do
+  page.assert_selector('diff-file-mounted', count: diffs.diff_files.size, visible: :all)
+end
+```
+
+For details about the sentinel, see [Rapid Diffs](../fe_guide/rapid_diffs.md).
 
 #### Enter admin mode with metadata, not the UI
 
@@ -934,7 +1150,7 @@ find_by_testid('element')
 it does not benefit from Capybara's smart waiting. This makes it both error-prone
 and slow.
 
-Pattern 1 — `all().first` silently fails:
+Pattern 1 - `all().first` silently fails:
 
 ```ruby
 # Avoid: silent no-op if selector not found; slower than find()
@@ -957,7 +1173,7 @@ end
 expect(page).to have_link format, href: uri.to_s
 ```
 
-Pattern 2 — `all()` with block iteration to filter by child selector:
+Pattern 2 - `all()` with block iteration to filter by child selector:
 
 ```ruby
 # Avoid: iterates every card, calling has_selector? on each, very slow and not robust
@@ -1121,6 +1337,14 @@ the test.
 
 We use the `capybara-screenshot` gem to automatically take a screenshot on
 failure. In CI you can download these files as job artifacts.
+
+When you triage a failing `:js` spec, check the screenshot before chasing the
+exception message and backtrace. The page state at failure time (an unexpected
+empty state, a blocking modal, a stale page from a previous example) is often
+the actual cause, while the exception text alone can point you toward an
+unrelated detail. To help with this, the screenshot path is printed directly
+under the failure's own `Failure/Error:` message, rather than as a separate
+step you might miss.
 
 Also, you can manually take screenshots at any point in a test by adding the
 methods below. Be sure to remove them when they are no longer needed! See
@@ -1575,7 +1799,7 @@ Senddata-emitting Rails controllers and Grape API endpoints call
 `verify_workhorse_api!` to reject requests that did not transit Workhorse. The
 canonical enforcement points are the response-writing helpers themselves
 (`app/helpers/workhorse_helper.rb` for Rails controllers, `lib/api/helpers.rb`
-for Grape — `send_git_blob`, `send_git_archive`, `send_artifacts_entry`,
+for Grape - `send_git_blob`, `send_git_archive`, `send_artifacts_entry`,
 `present_carrierwave_file!`, `send_workhorse_headers!`, ...). Every emit goes
 through one of these helpers; the helpers verify the JWT before storing the
 `Gitlab-Workhorse-Send-Data` response header.
@@ -1584,8 +1808,8 @@ Two test-side mechanisms in `spec/support/workhorse_jwt_injection.rb` exercise
 this contract in CI:
 
 1. A `before` hook injects a valid Workhorse JWT into every test request. The
-   real `Gitlab::Workhorse.verify_api_request!` runs in the test process —
-   there is no stubbing — and happy-path specs do not need to construct a JWT
+   real `Gitlab::Workhorse.verify_api_request!` runs in the test process -
+   there is no stubbing - and happy-path specs do not need to construct a JWT
    header.
 1. An `after` hook fails the example if `Gitlab-Workhorse-Send-Data` was
    emitted but the request lacked a verified JWT. A future endpoint that
@@ -1626,7 +1850,7 @@ However, if a spec makes direct Redis calls, it should mark itself with the
 #### Background jobs / Sidekiq
 
 By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
-If a test queues Sidekiq jobs and need them to be processed, the
+If a test queues Sidekiq jobs and needs them to be processed, the
 `:sidekiq_inline` trait can be used.
 
 The `:sidekiq_might_not_need_inline` trait was added when
@@ -1677,7 +1901,7 @@ And if you need more specific control, the DNS blocking is implemented in
 
 #### Rate Limiting
 
-[Rate limiting](../../security/rate_limits.md) is enabled in the test suite. Rate limits
+[Rate limiting](../../rate_limits/_index.md) is enabled in the test suite. Rate limits
 may be triggered in feature specs that use the `:js` trait. In most cases, triggering rate
 limiting can be avoided by marking the spec with the `:clean_gitlab_redis_rate_limiting`
 trait. This trait clears the rate limiting data stored in Redis cache between specs. If
@@ -2009,10 +2233,10 @@ expect(violation.reload.merged_at).to be_within(0.00001.seconds).of(merge_reques
 #### `have_gitlab_http_status`
 
 Prefer `have_gitlab_http_status` over `have_http_status` and
-`expect(response.status).to` because the former
-could also show the response body whenever the status mismatched. This would
-be very useful whenever some tests start breaking and we would love to know
-why without editing the source and rerun the tests.
+`expect(response.status).to` because the former could also show the response
+body whenever the status mismatched. This would be very useful whenever some
+tests start breaking and we would love to know why without editing the source
+and rerun the tests.
 
 This is especially useful whenever it's showing 500 internal server error.
 
@@ -2025,14 +2249,21 @@ Example:
 expect(response).to have_gitlab_http_status(:ok)
 ```
 
+The matcher also accepts a `Capybara::Session` in a feature spec and checks its
+`status_code`:
+
+```ruby
+expect(page).to have_gitlab_http_status(:not_found)
+```
+
 #### `match_schema` and `match_response_schema`
 
 The `match_schema` matcher allows validating that the subject matches a
 [JSON schema](https://json-schema.org/). The item inside `expect` can be
 a JSON string or a JSON-compatible data structure.
 
-`match_response_schema` is a convenience matcher for using with a
-response object. from a [request spec](testing_levels.md#integration-tests).
+`match_response_schema` is a convenience matcher for use with a
+response object from a [request spec](testing_levels.md#integration-tests).
 
 Examples:
 
@@ -2301,21 +2532,53 @@ All fixtures should be placed under `spec/fixtures/`.
 ### Repositories
 
 Testing some functionality, such as merging a merge request, requires a Git
-repository with a certain state to be present in the test environment. GitLab
-maintains the [`gitlab-test`](https://gitlab.com/gitlab-org/gitlab-test)
-repository for certain common cases - you can ensure a copy of the repository is
-used with the `:repository` trait for project factories:
+repository with a certain state to be present in the test environment.
+
+A repository is one of the most expensive things a project factory can create,
+so pick the trait that matches what the test actually needs:
+
+| Trait               | Use it when the test needs                                                      |
+|---------------------|---------------------------------------------------------------------------------|
+| No repository trait | No Git access at all                                                            |
+| `:small_repo`       | A repository with one commit and a valid default branch                         |
+| `:custom_repo`      | Specific file paths or contents                                                 |
+| `:repository`       | The `gitlab-test` history, such as multiple branches, tags, or merge conflicts  |
+
+Before you reach for any of them, check whether the test touches Git at all. A
+spec that only exercises database records, permissions, or serialization does
+not need a repository. Remove the trait for the largest single saving
+available.
+
+The traits are roughly ordered by cost, but `:custom_repo` and `:small_repo`
+create one commit per file, so a `:custom_repo` with many files can cost more
+than `:repository`, which loads its history in a single step. Choose by what the
+test needs rather than by position in the table alone.
+
+Use `:empty_repo` when the code under test must distinguish a repository that
+exists but has no commits from a project with no repository. The trait expresses
+a behavioral requirement rather than a cheaper alternative to the traits above,
+so choose it only when the test depends on that state.
+
+#### `:small_repo`
+
+The `:small_repo` trait creates a repository with a single `test.txt` file
+and sets the default branch as `HEAD`. Use it when the test needs a repository
+that resolves a commit, but does not care what is in it:
 
 ```ruby
-let(:project) { create(:project, :repository) }
+let_it_be(:project) { create(:project, :small_repo) }
 ```
 
-Where you can, consider using the `:custom_repo` trait instead of `:repository`.
-This allows you to specify exactly what files appear in the `main` branch
-of the project's repository. For example:
+Use this trait for specs that call `project.commit`, create a pipeline against a
+`ref`, or otherwise need the repository to be non-empty.
+
+#### `:custom_repo`
+
+The `:custom_repo` trait specifies exactly which files appear in the default
+branch of the project's repository. Each file is created in its own commit:
 
 ```ruby
-let(:project) do
+let_it_be(:project) do
   create(
     :project, :custom_repo,
     files: {
@@ -2328,6 +2591,22 @@ end
 
 This creates a repository containing two files, with default permissions and
 the specified content.
+
+#### `:repository`
+
+GitLab maintains the [`gitlab-test`](https://gitlab.com/gitlab-org/gitlab-test)
+repository for cases that need realistic history. Use the `:repository` trait to
+get a copy of it:
+
+```ruby
+let_it_be(:project) { create(:project, :repository) }
+```
+
+The trait loads the repository from a bundle prepared by the test environment,
+so the project gets the whole `gitlab-test` history at once. Reserve it for
+tests that depend on that history, such as its branches, tags, submodules, or
+merge conflicts. If the test only needs some commit to exist, use `:small_repo`
+instead.
 
 ### Configuration
 

@@ -39,7 +39,7 @@ export default {
       default: 'tertiary',
     },
   },
-  emits: ['error', 'todosUpdated'],
+  emits: ['error', 'todos-updated'],
   data() {
     return {
       isLoading: false,
@@ -61,6 +61,9 @@ export default {
     },
     buttonIcon() {
       return this.pendingTodo ? TODO_DONE_ICON : TODO_ADD_ICON;
+    },
+    pendingTodoStateText() {
+      return this.pendingTodo ? 'true' : 'false';
     },
   },
   methods: {
@@ -109,7 +112,7 @@ export default {
                 id: todo.id,
               });
             }
-            this.$emit('todosUpdated', { cache, todos });
+            this.$emit('todos-updated', { cache, todos });
           },
         })
         .then(
@@ -146,7 +149,7 @@ export default {
             useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           update: (cache) => {
-            this.$emit('todosUpdated', { cache, todos: [] });
+            this.$emit('todos-updated', { cache, todos: [] });
           },
         })
         .then(
@@ -179,15 +182,13 @@ export default {
     :disabled="isLoading"
     :title="buttonLabel"
     :category="todosButtonType"
+    :selected="pendingTodo"
     class="btn-icon"
+    size="small"
     :aria-label="buttonLabel"
+    :aria-pressed="pendingTodoStateText"
     @click="onToggle"
   >
-    <gl-animated-todo-icon
-      :is-on="pendingTodo"
-      :class="{ '!gl-text-status-info': pendingTodo }"
-      class="gl-button-icon"
-      :name="buttonIcon"
-    />
+    <gl-animated-todo-icon :is-on="pendingTodo" class="gl-button-icon" :name="buttonIcon" />
   </gl-button>
 </template>

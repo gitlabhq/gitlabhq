@@ -18,9 +18,9 @@ export default {
       const { commitMessage } = this;
       return Boolean(
         !commitMessage.length ||
-          !this.shouldShowMergeControls ||
-          this.isMakingRequest ||
-          this.mr.preventMerge,
+        !this.shouldShowMergeControls ||
+        this.isMakingRequest ||
+        this.mr.preventMerge,
       );
     },
     pipelineMustSucceedConflictText() {

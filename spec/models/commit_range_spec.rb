@@ -91,11 +91,11 @@ RSpec.describe CommitRange do
 
   describe '#exclude_start?' do
     it 'is false for three-dot ranges' do
-      expect(range.exclude_start?).to eq false
+      expect(range.exclude_start?).to be false
     end
 
     it 'is true for two-dot ranges' do
-      expect(range2.exclude_start?).to eq true
+      expect(range2.exclude_start?).to be true
     end
   end
 

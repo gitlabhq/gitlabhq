@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::SavedViews::SavedViewsFinder, feature_category: :portfolio_management do
+RSpec.describe WorkItems::SavedViews::SavedViewsFinder, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:group) { create(:group) }

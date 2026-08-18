@@ -4,6 +4,7 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { stripQuotes } from '~/lib/utils/text_utility';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { OPTIONS_NONE_ANY } from '../constants';
 
 export default {
@@ -12,6 +13,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     active: {
       type: Boolean,
@@ -76,7 +78,7 @@ export default {
     :value-identifier="getEmojiName"
     v-bind="$attrs"
     @fetch-suggestions="fetchEmojis"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       <gl-emoji v-if="activeTokenValue" :data-name="getEmojiName(activeTokenValue)" />

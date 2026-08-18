@@ -42,7 +42,7 @@ namespace :gitlab do
         ENV['store'] = 'tmp/openapi.json'
         Rake::Task["oapi:fetch"].invoke(['openapi.json'])
 
-        yaml_content = Gitlab::Json.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
+        yaml_content = Gitlab::Json::SafeParser.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
 
         File.write("doc/api/openapi/openapi_v2.yaml", YAML_V2_DOC_INTRODUCTION + yaml_content)
       end
@@ -61,7 +61,7 @@ namespace :gitlab do
 
         current_doc = Digest::SHA512.hexdigest(File.read('doc/api/openapi/openapi_v2.yaml'))
         generated_doc = Digest::SHA512.hexdigest(
-          YAML_V2_DOC_INTRODUCTION + Gitlab::Json.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
+          YAML_V2_DOC_INTRODUCTION + Gitlab::Json::SafeParser.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
         )
 
         if current_doc == generated_doc
@@ -76,7 +76,7 @@ namespace :gitlab do
           puts heading
 
           if ENV['OPENAPI_CHECK_DEBUG'] == 'true'
-            yaml_content = Gitlab::Json.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
+            yaml_content = Gitlab::Json::SafeParser.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
             File.write("doc/api/openapi/openapi_v2.yaml.generated", yaml_content)
             sh 'diff -u doc/api/openapi/openapi_v2.yaml doc/api/openapi/openapi_v2.yaml.generated'
           end

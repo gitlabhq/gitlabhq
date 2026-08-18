@@ -71,7 +71,7 @@ regression.
 
 Prerequisites:
 
-- The Security Manager, Maintainer or Owner role for the project.
+- The Security Manager, Maintainer, or Owner role for the project.
 
 To change a vulnerability's status to resolved:
 
@@ -79,7 +79,7 @@ To change a vulnerability's status to resolved:
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Find the vulnerability in the vulnerability report.
 1. Select the vulnerability's description.
-1. Select **Edit vulnerability** > **Change status**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the **Status** dropdown list, select **Resolved**.
 1. Optional. In the **Comment** input box, explain why you've marked the vulnerability as resolved.
 1. Select **Change status**.
@@ -95,7 +95,7 @@ detected in subsequent scans.
 
 Prerequisites:
 
-- The Security Manager, Maintainer or Owner role for the project.
+- The Security Manager, Maintainer, or Owner role for the project.
 
 To dismiss a vulnerability:
 
@@ -103,7 +103,7 @@ To dismiss a vulnerability:
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Find the vulnerability in the vulnerability report.
 1. Select the vulnerability's description.
-1. Select **Edit vulnerability** > **Change status**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the **Status** dropdown list, select a dismissal reason.
 1. In the **Comment** input box, explain why you've dismissed the vulnerability.
 1. Select **Change status**.

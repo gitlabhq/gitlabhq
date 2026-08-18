@@ -130,7 +130,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
     subject(:audience) { installation.audience_url }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
 
     context 'when proxy installation' do
       let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
@@ -144,7 +144,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
     subject(:audience) { installation.audience_installed_event_url }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
 
     context 'when proxy installation' do
       let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
@@ -158,7 +158,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
     subject(:audience) { installation.audience_uninstalled_event_url }
 
-    it { is_expected.to eq(nil) }
+    it { is_expected.to be_nil }
 
     context 'when proxy installation' do
       let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
@@ -173,7 +173,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
       subject(:create_branch) { installation.create_branch_url }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when the jira installation is for a self-managed instance' do
@@ -190,12 +190,12 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
     subject { installation.proxy? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when instance_url is present' do
       let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -204,7 +204,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
     subject(:result) { installation.forge_direct? }
 
-    it { expect(result).to eq(false) }
+    it { expect(result).to be(false) }
 
     context 'when both the apiBaseUrl and system token are present' do
       let(:installation) do
@@ -213,7 +213,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
           forge_system_token: 'sys-token')
       end
 
-      it { expect(result).to eq(true) }
+      it { expect(result).to be(true) }
     end
 
     context 'when only the apiBaseUrl is present' do
@@ -221,13 +221,13 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
         build(:jira_connect_installation, jira_api_base_url: 'https://api.atlassian.com/ex/jira/cloud-xyz')
       end
 
-      it { expect(result).to eq(false) }
+      it { expect(result).to be(false) }
     end
 
     context 'when only the system token is present' do
       let(:installation) { build(:jira_connect_installation, forge_system_token: 'sys-token') }
 
-      it { expect(result).to eq(false) }
+      it { expect(result).to be(false) }
     end
   end
 

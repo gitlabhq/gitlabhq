@@ -96,6 +96,37 @@ RSpec.describe Gitlab::MarkdownCache, feature_category: :markdown do
     end
   end
 
+  describe '.cached_markdown_version_for_bulk_clear' do
+    # Mid-rollout the bound is the previous version, so a bulk clear only
+    # reaches rows below it; in steady state there is no previous version and
+    # it falls back to the version writes use.
+    where(:rollout_active, :local_version, :expected) do
+      false | nil | :current
+      false | 5   | :current
+      true  | nil | :previous
+      true  | 5   | :previous
+    end
+
+    with_them do
+      it 'returns the expected shifted version OR-ed with the local version' do
+        configure_rollout(rollout_active: rollout_active)
+
+        expected_base = expected == :current ? current_shifted : previous_shifted
+
+        expect(described_class.cached_markdown_version_for_bulk_clear(local_version: local_version))
+          .to eq(expected_base + (local_version || 2))
+      end
+    end
+
+    context 'when local_version is omitted' do
+      it 'falls back to the application setting' do
+        configure_rollout(rollout_active: false)
+
+        expect(described_class.cached_markdown_version_for_bulk_clear).to eq(current_shifted + 2)
+      end
+    end
+  end
+
   describe '.upgrade_kind' do
     # A row at the previous version is the rollout's target; anything older or
     # versionless is a backfill. With no rollout active, everything is backfill.

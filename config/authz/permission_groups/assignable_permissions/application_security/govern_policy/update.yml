@@ -1,0 +1,9 @@
+---
+name: update_govern_policy
+description: Grants the ability to update policies in the policy store
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_govern_policy

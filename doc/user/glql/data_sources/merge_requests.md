@@ -18,6 +18,11 @@ title: Merge requests
 
 {{< /history >}}
 
+## Allowed modes
+
+- Standard mode (default): Query merge request records.
+- Analytics mode: Query aggregated merge request metrics. For more information, see [Merge request analytics](merge_request_analytics.md).
+
 ## Allowed scopes
 
 | Scope     | Description                                           |
@@ -58,8 +63,8 @@ For more information, see [scopes](_index.md#scopes).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-- Aliases `approvedBy` and `approvers` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
-- Support for `Nullable` values [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/221) in GitLab 18.3.
+- Aliases `approvedBy` and `approvers` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/137) in GitLab 18.0.
+- Support for `Nullable` values [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/221) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -112,7 +117,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Created at {#mr-created-at}
 
@@ -127,7 +131,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Draft {#mr-draft}
 
@@ -156,7 +159,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Environment {#mr-environment}
 
@@ -212,7 +214,7 @@ For more information, see [scopes](_index.md#scopes).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-- Alias `mergedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Alias `mergedAt` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
 
 {{< /history >}}
@@ -228,14 +230,13 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Merged by user {#mr-merged-by-user}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-- Alias `mergedBy` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Alias `mergedBy` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/137) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -271,7 +272,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- Aliases `reviewers` and `reviewedBy` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Aliases `reviewers` and `reviewedBy` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/137) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -347,7 +348,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ## Display fields
 

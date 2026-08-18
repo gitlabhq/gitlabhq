@@ -8,6 +8,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BoardView from '~/work_items/board/board_view.vue';
 import ColumnGroup from '~/work_items/board/components/column_group.vue';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import { buildNamespaceStatusesResponse, buildWorkItemTypesResponse } from './mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -28,11 +29,20 @@ describe('BoardView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findColumnGroups = () => wrapper.findAllComponents(ColumnGroup);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, visibleGroups = null } = {}) => {
     const apolloProvider = createMockApollo([
       [groupByValuesQuery, groupByValuesHandler],
       ...(gateQuery ? [[gateQuery, gateDataHandler]] : []),
     ]);
+    apolloProvider.clients.defaultClient.writeQuery({
+      query: workItemsGroupByVisibleGroupsQuery,
+      // `hydrated: true` by default so the query fires immediately, matching
+      // the common case in tests below that aren't specifically about hydration.
+      data: {
+        workItemsGroupByVisibleGroups: visibleGroups,
+        workItemsGroupByVisibleGroupsHydrated: true,
+      },
+    });
 
     wrapper = shallowMountExtended(BoardView, {
       apolloProvider,
@@ -76,19 +86,55 @@ describe('BoardView', () => {
     });
   });
 
-  describe('visibleGroups prop', () => {
-    it('defaults to null (all groups visible)', () => {
-      createComponent();
+  describe('fetch scoping', () => {
+    describe('when the store has not hydrated', () => {
+      beforeEach(() => {
+        const scopedApolloProvider = createMockApollo([[groupByValuesQuery, groupByValuesHandler]]);
+        scopedApolloProvider.clients.defaultClient.writeQuery({
+          query: workItemsGroupByVisibleGroupsQuery,
+          data: {
+            workItemsGroupByVisibleGroups: null,
+            workItemsGroupByVisibleGroupsHydrated: false,
+          },
+        });
 
-      expect(wrapper.props('visibleGroups')).toBeNull();
+        wrapper = shallowMountExtended(BoardView, {
+          apolloProvider: scopedApolloProvider,
+          propsData: { rootPageFullPath: 'full/path', queryVariables },
+        });
+      });
+
+      it('does not fetch the group values', () => {
+        expect(groupByValuesHandler).not.toHaveBeenCalled();
+      });
     });
 
-    it('accepts an array without error', async () => {
-      createComponent({ props: { visibleGroups: [] } });
-      await waitForPromises();
+    describe('when visibleGroups is null', () => {
+      beforeEach(async () => {
+        createComponent({ visibleGroups: null });
+        await waitForPromises();
+      });
 
-      expect(Sentry.captureException).not.toHaveBeenCalled();
-      expect(findColumnGroups()).toHaveLength(0);
+      it('omits ids, fetching everything', () => {
+        expect(groupByValuesHandler).toHaveBeenCalledWith({
+          fullPath: 'full/path',
+          ids: undefined,
+        });
+      });
+    });
+
+    describe('when an explicit list is configured', () => {
+      beforeEach(async () => {
+        createComponent({ visibleGroups: ['status:1', 'status:2'] });
+        await waitForPromises();
+      });
+
+      it('fetches only the visible ids', () => {
+        expect(groupByValuesHandler).toHaveBeenCalledWith({
+          fullPath: 'full/path',
+          ids: ['1', '2'],
+        });
+      });
     });
   });
 });

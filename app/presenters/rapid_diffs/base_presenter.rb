@@ -14,7 +14,7 @@ module RapidDiffs
     attr_reader :environment
 
     def diffs_resource(options = {})
-      resource.diffs(@diff_options.merge(options))
+      resource.diffs(diff_options.merge(options))
     end
 
     def diff_files(options = {})
@@ -22,9 +22,9 @@ module RapidDiffs
     end
 
     def diffs_slice
-      return if offset.nil? || offset == 0
+      return unless loaded_diffs_slice
 
-      @diffs_slice ||= transform_file_collection(resource.first_diffs_slice(offset, @diff_options))
+      @diffs_slice ||= transform_file_collection(loaded_diffs_slice)
     end
 
     def diff_files_for_streaming(diff_options = {})
@@ -45,18 +45,21 @@ module RapidDiffs
     def linked_file
       return if linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?
 
-      @linked_file ||= resource.diffs(@diff_options.merge({
-        paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
-      })).diff_files.first.then do |file|
-        next unless file
+      @linked_file ||= begin
+        collection = resource.diffs(diff_options.merge({
+          paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
+        }))
+        file = collection.diff_files.first
 
-        file.linked = true
-        transform_file(file)
+        if file
+          file.linked = true
+          transform_file_collection(collection).first
+        end
       end
     end
 
     def diffs_stream_url
-      return if linked_file && diffs_count == 1
+      return if linked_file && !has_overflow?
 
       if linked_file
         return reload_stream_url(
@@ -68,10 +71,10 @@ module RapidDiffs
       end
 
       return reload_stream_url(diff_view: @diff_view) if offset == 0
-      return if offset.nil? || offset >= diffs_count
+      return if offset.nil? || !has_overflow?
 
       reload_stream_url(
-        offset: offset,
+        offset: stream_offset,
         diff_view: @diff_view
       )
     end
@@ -101,7 +104,9 @@ module RapidDiffs
     end
 
     def empty_state_type
-      :no_changes if !lazy? && diffs_count == 0
+      return unless loaded_diffs_slice
+
+      :no_changes if loaded_diffs_slice.count == 0
     end
 
     def diff_collection
@@ -115,7 +120,13 @@ module RapidDiffs
       !!@current_user&.view_diffs_file_by_file
     end
 
-    attr_accessor :offset
+    attr_accessor :baseline_offset
+
+    def offset
+      return 1 if linked_file
+
+      baseline_offset
+    end
 
     protected
 
@@ -129,10 +140,41 @@ module RapidDiffs
 
     def transform_file(diff_file)
       diff_file.prevent_syntax_highlighting! unless highlight?
+      linked_line_unfolder&.unfold!(diff_file) if diff_file.linked
       diff_file
     end
 
+    def has_overflow?
+      return false unless loaded_diffs_slice
+
+      loaded_diffs_slice.overflow?
+    end
+
+    def stream_offset
+      loaded_diffs_slice.count
+    end
+
+    def include_diff_stats?
+      false
+    end
+
     private
+
+    def linked_line_unfolder
+      return @linked_line_unfolder if defined?(@linked_line_unfolder)
+
+      @linked_line_unfolder = Gitlab::Diff::LinkedLineUnfolder.from_param(request_params && request_params[:line])
+    end
+
+    def diff_options
+      @diff_options.merge(include_stats: include_diff_stats?)
+    end
+
+    def loaded_diffs_slice
+      return if offset.nil? || offset == 0
+
+      @loaded_diffs_slice ||= resource.first_diffs_slice(offset, diff_options)
+    end
 
     def highlight?
       return @highlight if defined?(@highlight)
@@ -142,13 +184,6 @@ module RapidDiffs
 
     def transform_file_array(diff_files)
       diff_files.map { |file| transform_file(file) }
-    end
-
-    def diffs_count
-      @diffs_count ||= begin
-        count = resource.diff_stats&.count
-        count || resource.diffs_for_streaming.diff_files.count
-      end
     end
 
     def linked_file_params

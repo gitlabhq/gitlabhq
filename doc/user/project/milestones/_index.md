@@ -24,7 +24,7 @@ Milestones:
 
 Milestones can belong to a [project](../_index.md) or [group](../../group/_index.md).
 Project milestones apply to issues and merge requests in that project only.
-Group milestones apply to any issue, epic or merge request in that group's projects.
+Group milestones apply to any issue, epic, or merge request in that group's projects.
 
 For information about project and group milestones API, see:
 
@@ -138,7 +138,6 @@ The sidebar on the milestone view shows the following:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195530) milestones to Epic work items in GitLab 18.2.
 
@@ -172,7 +171,6 @@ To avoid confusion within group hierarchies, duplicate milestone titles are not 
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -219,7 +217,6 @@ To close a milestone:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -275,7 +272,7 @@ To promote a project milestone:
 
 {{< history >}}
 
-- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
+- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
 
 {{< /history >}}
 

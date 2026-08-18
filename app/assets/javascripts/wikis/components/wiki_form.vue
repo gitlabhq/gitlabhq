@@ -16,9 +16,8 @@ import {
   GlToggle,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
+import { getDraft, clearDraft, updateDraft, getLockVersion } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
-import { setUrlFragment } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -66,8 +65,18 @@ const formatAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'format');
 const contentAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'content');
 const commitAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'commit');
 
+const isDraftStale = (pageInfo) => {
+  if (!pageInfo.persisted) return false;
+
+  const storedLockVersion = getLockVersion(titleAutosaveKey(pageInfo));
+
+  return Boolean(storedLockVersion) && storedLockVersion !== pageInfo.lastCommitSha;
+};
+
+const readDraft = (pageInfo, key) => (isDraftStale(pageInfo) ? null : getDraft(key));
+
 const getTitle = (pageInfo, frontMatter) => {
-  const autosavedTitle = getDraft(titleAutosaveKey(pageInfo));
+  const autosavedTitle = readDraft(pageInfo, titleAutosaveKey(pageInfo));
   const frontMatterTitle = frontMatter?.title?.trim();
   const pageInfoTitle = pageInfo.title?.trim();
 
@@ -75,11 +84,12 @@ const getTitle = (pageInfo, frontMatter) => {
 };
 
 const getFormat = (pageInfo) =>
-  getDraft(formatAutosaveKey(pageInfo)) || pageInfo.format || 'markdown';
-const getContent = (pageInfo) => getDraft(contentAutosaveKey(pageInfo)) || pageInfo.content || '';
+  readDraft(pageInfo, formatAutosaveKey(pageInfo)) || pageInfo.format || 'markdown';
+const getContent = (pageInfo) =>
+  readDraft(pageInfo, contentAutosaveKey(pageInfo)) || pageInfo.content || '';
 const getCommitMessage = (pageInfo) =>
-  getDraft(commitAutosaveKey(pageInfo)) || pageInfo.commitMessage || '';
-const getIsFormDirty = (pageInfo) => Boolean(getDraft(titleAutosaveKey(pageInfo)));
+  readDraft(pageInfo, commitAutosaveKey(pageInfo)) || pageInfo.commitMessage || '';
+const getIsFormDirty = (pageInfo) => Boolean(readDraft(pageInfo, titleAutosaveKey(pageInfo)));
 
 export default {
   name: 'WikiForm',
@@ -159,15 +169,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
-  inject: [
-    'isEditingPath',
-    'formatOptions',
-    'pageInfo',
-    'drawioUrl',
-    'templates',
-    'pageHeading',
-    'wikiUrl',
-  ],
+  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading', 'wikiUrl'],
   emits: ['is-editing'],
   saveOptions: [
     {
@@ -187,7 +189,6 @@ export default {
       : getTitle(this.pageInfo, this.pageInfo.frontMatter);
     const path = window.location.href.includes('random_title=true') ? '' : this.pageInfo.slug;
     return {
-      editingMode: 'source',
       title,
       pageTitle: title.replace('templates/', ''),
       format: getFormat(this.pageInfo),
@@ -195,11 +196,8 @@ export default {
       frontMatter: this.pageInfo.frontMatter || {},
       content: getContent(this.pageInfo),
       commitMessage: getCommitMessage(this.pageInfo),
-      contentEditorEmpty: false,
       isContentEditorActive: false,
-      switchEditingControlDisabled: false,
       isFormDirty: getIsFormDirty(this.pageInfo),
-      isTitleValid: null,
       formFieldProps: {
         placeholder: this.$options.i18n.content.placeholder,
         'aria-label': this.$options.i18n.content.label,
@@ -218,6 +216,7 @@ export default {
       savingPreference: false,
       commitMessageModalOpen: false,
       isTemplateUrl: isTemplateUrl(),
+      isSubmitting: false,
     };
   },
   apollo: {
@@ -278,25 +277,11 @@ export default {
 
       return buttonText;
     },
-    cancelFormPath() {
-      if (this.pageInfo.persisted) return this.pageInfo.path;
-      return this.pageInfo.wikiPath;
-    },
-    contentEditorHelpPath() {
-      return setUrlFragment(this.pageInfo.helpPath, 'gitlab-flavored-markdown-support');
-    },
     isMarkdownFormat() {
       return this.format === 'markdown';
     },
     drawioEnabled() {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
-    },
-    cancelFormHref() {
-      if (this.isEditingPath) {
-        return this.cancelFormPath;
-      }
-
-      return null;
     },
     isCustomSidebar() {
       return this.wikiUrl.endsWith('_sidebar');
@@ -311,7 +296,10 @@ export default {
     },
     messageModalAction() {
       return {
-        primary: { text: this.submitButtonText },
+        primary: {
+          text: this.submitButtonText,
+          attributes: { 'data-testid': 'wiki-confirm-message' },
+        },
         cancel: { text: this.$options.i18n.cancel },
       };
     },
@@ -339,6 +327,10 @@ export default {
   mounted() {
     this.initializeTitlePlaceholder();
 
+    if (isDraftStale(this.pageInfo)) {
+      this.clearDrafts();
+    }
+
     if (!this.commitMessage) this.updateCommitMessage();
     window.addEventListener('beforeunload', this.onPageUnload);
   },
@@ -349,6 +341,8 @@ export default {
     async submitForm() {
       this.setMissingFields();
 
+      this.updateDrafts();
+      this.isSubmitting = true;
       this.isFormDirty = false;
 
       this.trackFormSubmit();
@@ -388,10 +382,11 @@ export default {
     },
 
     updateDrafts() {
-      updateDraft(titleAutosaveKey(this.pageInfo), this.title);
-      updateDraft(formatAutosaveKey(this.pageInfo), this.format);
-      updateDraft(contentAutosaveKey(this.pageInfo), this.content);
-      updateDraft(commitAutosaveKey(this.pageInfo), this.commitMessage);
+      const lockVersion = this.pageInfo.lastCommitSha;
+      updateDraft(titleAutosaveKey(this.pageInfo), this.title, lockVersion);
+      updateDraft(formatAutosaveKey(this.pageInfo), this.format, lockVersion);
+      updateDraft(contentAutosaveKey(this.pageInfo), this.content, lockVersion);
+      updateDraft(commitAutosaveKey(this.pageInfo), this.commitMessage, lockVersion);
     },
 
     clearDrafts() {
@@ -401,12 +396,9 @@ export default {
       clearDraft(commitAutosaveKey(this.pageInfo));
     },
 
-    handleContentEditorChange({ empty, markdown }) {
-      this.contentEditorEmpty = empty;
-      this.content = markdown;
-    },
-
     onPageUnload() {
+      if (this.isSubmitting) return;
+
       if (this.isFormDirty) {
         this.updateDrafts();
       } else {
@@ -467,10 +459,7 @@ export default {
     },
     cancelFormAction() {
       this.isFormDirty = false;
-
-      if (!this.isEditingPath) {
-        this.$emit('is-editing', false);
-      }
+      this.$emit('is-editing', false);
     },
 
     isPrintableKey(event) {
@@ -549,10 +538,6 @@ export default {
       if (this.placeholderActive) {
         this.positionCursorForPlaceholder();
       }
-    },
-
-    validateTitle() {
-      this.isTitleValid = Boolean(this.pageTitle.trim().length > 0);
     },
 
     setAutoGeneratedTitle() {
@@ -662,6 +647,7 @@ export default {
     <div class="row">
       <div class="gl-col-sm-12 row-sm-5">
         <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content" label-sr-only>
+          <!-- eslint-disable vue/v-on-event-hyphenation -- MarkdownEditor emits the camelCase `contentEditor` and `markdownField` events -->
           <markdown-editor
             ref="markdownEditor"
             v-model="content"
@@ -720,6 +706,7 @@ export default {
                     icon="chevron-down"
                     :toggle-text="s__('Wiki|Edit page options')"
                     text-sr-only
+                    toggle-id="wiki-page-options"
                     category="tertiary"
                     no-caret
                     fluid-width
@@ -817,11 +804,7 @@ export default {
                       </template>
                     </gl-collapsible-listbox>
                   </gl-button-group>
-                  <gl-button
-                    data-testid="wiki-cancel-button"
-                    :href="cancelFormHref"
-                    @click="cancelFormAction"
-                  >
+                  <gl-button data-testid="wiki-cancel-button" @click="cancelFormAction">
                     {{ $options.i18n.cancel }}</gl-button
                   >
                   <delete-wiki-modal v-if="isCustomSidebar || isTemplate" />
@@ -829,6 +812,7 @@ export default {
               </div>
             </template>
           </markdown-editor>
+          <!-- eslint-enable vue/v-on-event-hyphenation -->
           <input name="wiki[content]" type="hidden" :value="rawContent" />
         </gl-form-group>
       </div>

@@ -268,28 +268,52 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
     end
 
     context 'when using auth failure context' do
-      it 'sets the auth_fail_token_type value' do
-        context = described_class.new(auth_fail_token_type: 'PersonalAccessToken')
-
-        expect(result(context)).to include(auth_fail_token_type: 'PersonalAccessToken')
+      # The AuthFailure struct is pushed as the :auth_fail attribute and expanded
+      # into individual log fields, stored as static values at push time.
+      # Clearing them (e.g. after warden succeeds) requires pushing nil values via
+      # clear_auth_failure_in_application_context.
+      let(:auth_fail) do
+        Gitlab::Auth::AuthFailure.new(
+          reason: 'insufficient_scope',
+          token_id: 'PersonalAccessToken/1',
+          requested_scopes: 'api',
+          token_type: 'PersonalAccessToken',
+          auth_header_type: 'private_token_header'
+        )
       end
 
-      it 'sets the auth_fail_auth_header_type value' do
-        context = described_class.new(auth_fail_auth_header_type: 'bearer')
-
-        expect(result(context)).to include(auth_fail_auth_header_type: 'bearer')
+      let(:expanded_log_fields) do
+        {
+          auth_fail_reason: 'insufficient_scope',
+          auth_fail_token_id: 'PersonalAccessToken/1',
+          auth_fail_requested_scopes: 'api',
+          auth_fail_token_type: 'PersonalAccessToken',
+          auth_fail_auth_header_type: 'private_token_header'
+        }
       end
 
-      it 'sets both auth failure values together' do
-        context = described_class.new(
-          auth_fail_token_type: 'CiJobToken',
-          auth_fail_auth_header_type: 'private_token_header'
-        )
+      it 'expands the auth_fail struct into individual log fields', :aggregate_failures do
+        context = described_class.new(auth_fail: auth_fail)
 
-        expect(result(context)).to include(
-          auth_fail_token_type: 'CiJobToken',
-          auth_fail_auth_header_type: 'private_token_header'
-        )
+        expect(result(context)).to include(expanded_log_fields)
+      end
+
+      it 'stores the log fields as static values, not lazy lambdas' do
+        context = described_class.new(auth_fail: auth_fail)
+
+        # to_lazy_hash captures the values at push time, so mutating the struct
+        # afterwards does not change what was already stored.
+        hash = context.to_lazy_hash
+
+        expect(hash.values_at(*expanded_log_fields.keys)).to all(be_a(String))
+      end
+
+      it 'omits auth_fail fields entirely when no auth_fail struct is pushed', :aggregate_failures do
+        context = described_class.new(caller_id: 'some_caller')
+
+        Gitlab::Auth::AuthFailure::LOG_KEYS.each_key do |key|
+          expect(result(context)).not_to have_key(key)
+        end
       end
     end
 

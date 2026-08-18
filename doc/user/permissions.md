@@ -46,11 +46,17 @@ To view assigned roles, go to the **Members** page for a
 
 ### Default roles
 
+Roles are ordered from the fewest permissions to the most.
+The Guest, Reporter, Developer, Maintainer, and Owner roles are cumulative, so each role
+includes most of the permissions of the roles before it. The Planner and Security Manager roles are
+specialized for planning and security work, so they do not include all the permissions of the other roles. To
+confirm whether a role has a specific permission, check the relevant table.
+
 The following default roles are available:
 
 | Role             | Description |
 | ---------------- | ----------- |
-| Minimal Access   | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
+| Minimal Access   | View limited group information without access to projects. For more information, see [users with Minimal Access](#users-with-minimal-access). |
 | Guest            | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
 | Planner          | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking with the ability to view and collaborate on code changes. |
 | Reporter         | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
@@ -78,7 +84,10 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 Any user can remove themselves from a group, unless they are the only Owner of
 the group.
 
-The following table lists group permissions available for each role:
+The following table lists the group permissions available for each role.
+
+> [!note]
+> The Minimal Access role is not included because it has no permissions.
 
 ### Groups
 
@@ -113,9 +122,9 @@ Group permissions for [group features](group/_index.md):
 
 1. Developers and Maintainers can view events based on their individual actions only. For more
    information, see the [prerequisites](compliance/audit_events.md#prerequisites).
-1. Developers, Maintainers and Owners: Only if the project creation role is set
+1. Developers, Maintainers, and Owners: Only if the project creation role is set
    [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects)
-    or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).
+   or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).
    <br>Developers: Developers can push commits to the default branch of a new project only
    if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group)
    is set to "Partially protected" or "Not protected".
@@ -150,7 +159,24 @@ Group permissions for [Application Security](application_security/secure_your_ap
 | View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create [security policy project](application_security/policies/_index.md)        |       |         |          |           ✓       |           |            |   ✓   |
 | Assign [security policy project](application_security/policies/_index.md)        |       |         |          |          ✓        |           |            |   ✓   |
-| Manage [Secrets Manager](../ci/secrets/secrets_manager/_index.md)                |       |         |          |                  |           |            |   ✓   |
+
+### Group Secrets Manager
+
+Group permissions for [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md):
+
+| Action                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+|-------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
+| Enable GitLab Secrets Manager <sup>1</sup>      |       |         |          |                  |           |            |   ✓   |
+| Manage permissions for secrets                  |       |         |          |                  |           |            |   ✓   |
+| Read secret metadata                            |       |         |          |                  |           |            |   ✓   |
+| Create, update, and delete secrets <sup>2</sup> |       |         |          |                  |           |            |   ✓   |
+| Read secret value <sup>3</sup>                  |       |         |          |                  |           |            |       |
+
+**Footnotes**:
+
+1. On GitLab.com, only a top level group Owner can enable Secrets Manager for subgroups and projects. On self-managed, an administrator must enable it for the instance.
+1. Owners can grant this action to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
+1. No role can read a secret's value. CI/CD jobs read values through job authentication. Other workloads read values through the [Secrets Manager API](../ci/secrets/secrets_manager/non_cicd_access.md), and only if they have been granted the read value permission for that secret.
 
 ### Group CI/CD
 
@@ -321,7 +347,10 @@ can perform the action.
 For more information about how to manage project members, see
 [members of a project](project/members/_index.md).
 
-The following tables list the project permissions available for each role.
+The following table lists the project permissions available for each role.
+
+> [!note]
+> The Minimal Access role is not included because it has no permissions.
 
 ### Projects
 
@@ -434,13 +463,29 @@ Project permissions for [application security](application_security/secure_your_
 | Configure [SAST false positive detection](application_security/vulnerabilities/false_positive_detection.md) <sup>2</sup>            |       |         |          |        ✓         |           |     ✓      |   ✓   |
 | Configure [Secret detection false positive detection](application_security/vulnerabilities/secret_false_positive_detection.md) <sup>2</sup> |       |         |          |        ✓         |           |     ✓      |   ✓   |
 | Manage other [security configurations](application_security/detect/security_configuration.md) <sup>3</sup>                         |       |         |          |        ✓         |           |     ✓      |   ✓   |
-| Manage [Secrets Manager](../ci/secrets/secrets_manager/_index.md)                                                                   |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
 1. The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.
 1. Security Managers can configure these settings in **Settings > General > GitLab Duo**.
 1. Security Managers can only manage other security configurations through the UI (**Secure > Security configuration**).
+
+### Project Secrets Manager
+
+Project permissions for [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md):
+
+| Action                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+|-------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
+| View Secrets Manager user permissions           |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage permissions for secrets                  |       |         |          |                  |           |            |   ✓   |
+| Read secrets metadata                           |       |         |          |                  |           |            |   ✓   |
+| Create, update, and delete secrets <sup>1</sup> |       |         |          |                  |           |            |   ✓   |
+| Read secret value <sup>2</sup>                  |       |         |          |                  |           |            |       |
+
+**Footnotes**:
+
+1. Owners can grant this action to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
+1. No role can read a secret's value. CI/CD jobs read values through job authentication. Other workloads read values through the [Secrets Manager API](../ci/secrets/secrets_manager/non_cicd_access.md), and only if they have been granted the read value permission for that secret.
 
 ### Project CI/CD
 
@@ -830,7 +875,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
    and internal projects (not on private projects). [External users](../administration/external_users.md)
    must be given explicit access (at least the **Planner** role) even if the project is internal.
    Users with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
+   internal visibility is not available. Users with the Guest role and an
    Ultimate license can view private repository content if an administrator (on GitLab Self-Managed
    or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
    or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
@@ -842,7 +887,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
    and internal projects (not on private projects). [External users](../administration/external_users.md)
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
    with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
+   internal visibility is not available. Users with the Guest role and an
    Ultimate license can view private repository content if an administrator (on GitLab Self-Managed
    or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
    or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
@@ -888,7 +933,6 @@ For more information, see
 
 {{< history >}}
 
-- Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 - Minimal Access users [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216727) to non-billable in GitLab 18.9.
 - [Enforce](https://gitlab.com/gitlab-org/gitlab/-/work_items/534094) two-factor authentication requirements for users with Minimal Access role in GitLab 18.11.
 
@@ -900,6 +944,11 @@ Users with the Minimal Access role do not:
   Owners must explicitly add these users to the specific subgroups and
   projects.
 - Count as licensed seats, provided the user has no other role anywhere on the instance or in the GitLab.com namespace.
+
+The Minimal Access role grants none of the permissions in the group and project permission tables.
+Users with only this role cannot view project features such as wikis, issues, or the repository. To
+give these users access to a project or subgroup, an Owner must add them with the Guest role or a
+higher role.
 
 If a user with the Minimal Access role is granted a [billable role](../subscriptions/manage_seats.md#billable-users)
 in any project or subgroup, they consume a license seat based on their highest role.
@@ -915,12 +964,17 @@ Minimal Access for members automatically added to the top-level group through SS
 
 ### Minimal access users receive 404 errors
 
-Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when a user with the Minimal Access role:
+Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), a user
+with the Minimal Access role who signs in with standard web authentication receives a `404` error
+when accessing the parent group.
 
-- Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
-- Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
+A user with the Minimal Access role who signs in with Group SSO is redirected to their groups
+dashboard rather than the parent group page.
+For known issues with the groups shown on that dashboard, see [issue 506280](https://gitlab.com/gitlab-org/gitlab/-/issues/506280) and [issue 507968](https://gitlab.com/gitlab-org/gitlab/-/issues/507968).
 
-To work around the issue, give these users the Guest, Planner, Reporter, Security Manager, Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
+To work around the `404` error, give these users the Guest, Planner, Reporter, Security Manager,
+Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users
+consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

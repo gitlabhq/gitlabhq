@@ -86,6 +86,10 @@ offenses:
   callsite: app/models/ci/pipeline.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Labkit::Logging::JsonLogger
+  callsite: app/models/ci/pipeline.rb
+  deprecated_field: start_time
+  standard_field: Labkit::Fields::TIMESTAMP
 - logger_class: Gitlab::Kubernetes::Logger
   callsite: app/models/clusters/platforms/kubernetes.rb
   deprecated_field: status_code
@@ -1024,10 +1028,6 @@ offenses:
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/users/compromised_passwords/resolve_detection_for_user_service.rb
-  deprecated_field: user_id
-  standard_field: Labkit::Fields::GL_USER_ID
-- logger_class: Gitlab::AppJsonLogger
-  callsite: ee/app/services/users/signup_service.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger

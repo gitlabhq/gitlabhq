@@ -14,6 +14,7 @@ module Ci
         # https://gitlab.com/gitlab-org/gitlab-runner
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         new_runner_path: new_admin_runner_path,
+        runner_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-runner-settings'),
         allow_registration_token: Gitlab::CurrentSettings.allow_runner_registration_token.to_s,
         registration_token: nil,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,

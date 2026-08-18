@@ -41,7 +41,8 @@ RSpec.describe Oauth::DeviceAuthorizationsController, feature_category: :system_
     subject { post :confirm, params: { user_code: user_code }, format: :html }
 
     let(:user_code) { 'valid_user_code' }
-    let(:device_grant) { instance_double('Doorkeeper::DeviceAuthorizationGrant::DeviceGrant', scopes: 'read write') }
+    let(:application) { build_stubbed(:oauth_application) }
+    let(:device_grant) { instance_double('Doorkeeper::DeviceAuthorizationGrant::DeviceGrant', scopes: 'read write', application: application) }
     let(:invalid_user_code) { 'invalid_user_code' }
 
     before do
@@ -61,6 +62,11 @@ RSpec.describe Oauth::DeviceAuthorizationsController, feature_category: :system_
       it 'assigns @scopes' do
         post :confirm, params: { user_code: user_code }, format: :html
         expect(assigns(:scopes)).to eq('read write')
+      end
+
+      it 'assigns @application' do
+        post :confirm, params: { user_code: user_code }, format: :html
+        expect(assigns(:application)).to eq(application)
       end
 
       it 'renders the authorize template' do

@@ -62,10 +62,10 @@ module QA
         runner.remove_via_api!
       end
 
-      where(:case_name, :authentication_token_type, :token_name, :testcase) do
-        'using personal access token' | :personal_access_token | 'Personal access token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/479652'
-        'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/479654'
-        'using group deploy token'    | :group_deploy_token    | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/479653'
+      where(:case_name, :authentication_token_type, :token_name) do
+        'using personal access token' | :personal_access_token | 'Personal access token'
+        'using ci job token'          | :ci_job_token          | 'CI Job Token'
+        'using group deploy token'    | :group_deploy_token    | 'Deploy Token'
       end
 
       with_them do
@@ -95,8 +95,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint',
-          testcase: params[:testcase] do
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint' do
           nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget',
             'nuget_upload_package.yaml.erb')).result(binding)
 

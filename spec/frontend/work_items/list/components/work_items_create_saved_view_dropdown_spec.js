@@ -32,14 +32,14 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
     });
   };
 
-  const findDropdownToggle = () => wrapper.findByTestId('add-saved-view-toggle');
+  const findDropdownToggle = () => wrapper.findComponentByTestId('add-saved-view-toggle');
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
   const findExistingSavedViewsModal = () => wrapper.findComponent(WorkItemsExistingSavedViewsModal);
   const findWarningMessage = () => wrapper.find('.gl-bg-orange-50');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findLearnMoreLink = () => wrapper.findComponent(GlLink);
-  const findAddViewButton = () => wrapper.findByTestId('add-saved-view-fallback');
+  const findAddViewButton = () => wrapper.findComponentByTestId('add-saved-view-fallback');
 
   describe('when user is logged in and can create saved views', () => {
     beforeEach(() => {

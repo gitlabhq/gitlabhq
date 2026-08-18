@@ -19,9 +19,7 @@ module Tooling
       file_filter: ->(_) { true },
       only_new_paths: false
     )
-
-      raise ArgumentError, ':from can only be :api or :changed_files' unless
-        %i[api changed_files].include?(from)
+      raise ArgumentError, ':from can only be :api or :changed_files' unless %i[api changed_files].include?(from)
 
       @gitlab_endpoint = ENV['CI_API_V4_URL']
 

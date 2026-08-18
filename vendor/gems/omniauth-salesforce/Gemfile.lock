@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     omniauth-salesforce (1.0.5)
+      base64
+      bigdecimal
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.0)
 
@@ -10,6 +12,8 @@ GEM
   specs:
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    base64 (0.3.0)
+    bigdecimal (4.1.2)
     coderay (1.1.3)
     crack (0.4.5)
       rexml
@@ -31,8 +35,8 @@ GEM
       pry (>= 0.13.0)
       shellany (~> 0.0)
       thor (>= 0.18.1)
-    guard-bundler (3.0.0)
-      bundler (>= 2.1, < 3)
+    guard-bundler (3.1.0)
+      bundler (>= 2.1, < 5)
       guard (~> 2.2)
       guard-compat (~> 1.1)
     guard-compat (1.2.1)
@@ -127,6 +131,8 @@ DEPENDENCIES
 
 CHECKSUMS
   addressable (2.8.1) sha256=bc724a176ef02118c8a3ed6b5c04c39cf59209607ffcce77b91d0261dbadedfa
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   crack (0.4.5) sha256=798416fb29b8c9f655d139d5559169b39c4a0a3b8f8f39b7f670eec1af9b21b3
   diff-lcs (1.5.0) sha256=49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
@@ -137,7 +143,7 @@ CHECKSUMS
   formatador (1.1.0) sha256=54e23e2af4d60bb9327c7fac62b29968e4cf28cee0111f726d0bdeadc85e06d0
   growl (1.0.3) sha256=c926f6fa77800a1cfab1c0a9e4c3608c93b5619145062cf6ba545949553d1e68
   guard (2.18.0) sha256=12f2b801a0c8d41e7480ab5c2c4283e439fbe0ac7574a0da1dee82ec484a1eff
-  guard-bundler (3.0.0) sha256=c59d0bf0f65e6f800e4bbeb26b89a7b45cd4f17c170d67c50a8f3a097446ce9c
+  guard-bundler (3.1.0) sha256=d0e60e46d6c06e201e79f61623211f64961cb000188f55fb76e36dc892ff0e35
   guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
   guard-rspec (4.7.3) sha256=a47ba03cbd1e3c71e6ae8645cea97e203098a248aede507461a43e906e2f75ca
   hashdiff (1.0.1) sha256=2cd4d04f5080314ecc8403c4e2e00dbaa282dff395e2d031bc16c8d501bdd6db
@@ -177,4 +183,4 @@ CHECKSUMS
   webmock (3.18.1) sha256=54c955df4ae4bec6181dd266eeec632a1808288c633f9551d81bafb53921d2d7
 
 BUNDLED WITH
-   2.7.1
+  4.0.10

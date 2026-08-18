@@ -13,6 +13,7 @@ import { mapState } from 'vuex';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'IntegrationForm',
   i18n: {
     toggleLabel: s__(
       "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster.",

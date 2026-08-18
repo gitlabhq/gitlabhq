@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include AfterNextHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:bitbucket_user) { create(:user) }
   let_it_be_with_reload(:identity) do
     create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket)

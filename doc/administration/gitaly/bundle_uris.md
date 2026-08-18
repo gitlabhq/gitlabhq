@@ -15,7 +15,7 @@ Offering: GitLab Self-Managed
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a feature flag](../feature_flags/_index.md) named `gitaly_bundle_uri`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8939) in GitLab 17.0 [with a feature flag](../feature_flags/_index.md) named `gitaly_bundle_uri`. Disabled by default.
 
 {{< /history >}}
 
@@ -80,7 +80,7 @@ To prepare to use bundle URI in CI/CD jobs:
        helper_image = "image:tag" ## <-- put the image name and tag here
    ```
 
-    For more details, see [information on the helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration/#helper-image).
+   For more details, see [information on the helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration/#helper-image).
 
 1. Restart the runners for the new configuration to take effect.
 1. Enable the `FF_USE_GIT_NATIVE_CLONE` [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/)
@@ -247,7 +247,7 @@ go_cloud_url = "s3://<bucket>?region=us-west-1"
 
 {{< history >}}
 
-- `use_path_style` and `disable_https` parameters [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.4.
+- `use_path_style` and `disable_https` parameters [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8939) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -329,7 +329,7 @@ You can schedule this command with a tool like `cron(8)`.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16007) in GitLab 18.0 [with a feature flag](../feature_flags/_index.md) named `gitaly_bundle_generation`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16007) in GitLab 18.0 [with a feature flag](../feature_flags/_index.md) named `gitaly_bundle_generation`. Disabled by default.
 
 {{< /history >}}
 

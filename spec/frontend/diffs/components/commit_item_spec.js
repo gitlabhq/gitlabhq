@@ -69,7 +69,7 @@ describe('diffs/components/commit_item', () => {
     it('renders commit sha', () => {
       const shaElement = findShaElement();
       const labelElement = shaElement.find('[data-testid="commit-sha-short-id"]');
-      const buttonElement = shaElement.find('button.input-group-text');
+      const buttonElement = shaElement.findComponent('button.input-group-text');
 
       expect(labelElement.text()).toEqual(commit.short_id);
       expect(buttonElement.props('text')).toBe(commit.id);

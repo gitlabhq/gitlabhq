@@ -39,9 +39,12 @@ heavily influenced by the:
 - The ["critical path"](#needs-dependency-visualization), which represents
   the minimum and maximum pipeline duration.
 
-Additional points to pay attention relate to [GitLab Runners](../runners/_index.md):
+Additional points to pay attention to relate to [GitLab Runners](../runners/_index.md):
 
 - Availability of the runners and the resources they are provisioned with.
+  If you use GitLab-hosted runners, choose a
+  [machine type](../runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64)
+  sized for the job instead of over-provisioning or under-provisioning.
 - Build dependencies, their installation time, and storage space requirements.
 - [Container image size](#docker-images).
 - Network latency and slow connections.
@@ -109,11 +112,11 @@ For example, the [GitLab CI Pipelines Exporter](https://github.com/mvisonneau/gi
 for Prometheus fetches metrics from the API and pipeline events. It can check branches in projects automatically
 and get the pipeline status and duration. In combination with a Grafana dashboard,
 this helps build an actionable view for your operations team. Metric graphs can also
-be embedded into incidents making problem resolving easier. Additionally, it can also export metrics about jobs and environments.
+be embedded into incidents making problem resolution easier. Additionally, it can also export metrics about jobs and environments.
 
 If you use the GitLab CI Pipelines Exporter, you should start with the [example configuration](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/main/docs/configuration_syntax.md).
 
-![Grafana Dashboard showing CI run statuses and historical statistics including frequency and fail rate.](img/ci_efficiency_pipeline_health_grafana_dashboard_v13_7.png)
+![Grafana Dashboard showing CI run statuses and historical statistics including frequency and fail rate.](img/ci_efficiency_pipeline_health_grafana_dashboard_v19_3.png)
 
 Alternatively, you can use a monitoring tool that can execute scripts, like
 [`check_gitlab`](https://gitlab.com/6uellerBpanda/check_gitlab) for example.
@@ -138,8 +141,8 @@ with cloud providers, and define offline times to reduce costs.
 #### Dashboards and incident management
 
 Use your existing monitoring tools and dashboards to integrate CI/CD pipeline monitoring,
-or build them from scratch. Ensure that the runtime data is actionable and useful
-in teams, and operations/SREs are able to identify problems early enough.
+or build them from scratch. Ensure that the runtime data is actionable
+across teams, so operations/SREs can identify problems early enough.
 [Incident management](../../operations/incident_management/_index.md) can help here too,
 with embedded metric charts and all valuable details to analyze the problem.
 
@@ -186,16 +189,25 @@ shouldn't run, saving pipeline resources.
 ### `needs` keyword
 
 In a basic configuration, jobs always wait for all other jobs in earlier stages to complete
-before running. This is the simplest configuration, but it's also the slowest in most
+before running. This configuration is the simplest, but it's also the slowest in most
 cases. [Pipelines with the `needs` keyword](../yaml/needs.md) and
 [parent/child pipelines](downstream_pipelines.md#parent-child-pipelines) are more flexible and can
 be more efficient, but can also make pipelines harder to understand and analyze.
 
+### Reuse configuration with CI/CD components
+
+Instead of duplicating pipeline configuration with [`include`](../yaml/includes.md), use
+[CI/CD components](../components/_index.md) to reuse tested, versioned configuration
+across projects.
+You can find published components in the CI/CD Catalog.
+Components reduce the maintenance overhead of keeping duplicated configuration in sync.
+
 ### Caching
 
 Another optimization method is to [cache](../caching/_index.md) dependencies. If your
-dependencies change rarely, like [NodeJS `/node_modules`](../caching/examples.md#nodejs),
-caching can make pipeline execution much faster.
+dependencies change rarely, caching can make pipeline execution much faster.
+For configuration examples for NodeJS, PHP, Python, Ruby, and Go, see
+[cache dependencies examples](../caching/examples.md#cache-dependencies).
 
 You can use [`cache:when`](../yaml/_index.md#cachewhen) to cache downloaded dependencies
 even when a job fails.
@@ -226,6 +238,9 @@ has more information about building efficient Docker images.
 Methods to reduce Docker image size:
 
 - Use a small base image, for example `debian-slim`.
+- Use a [distroless](https://github.com/GoogleContainerTools/distroless) image, which
+  contains only your application and its runtime dependencies, with no package manager,
+  shell, or other programs found in a typical Linux distribution.
 - Do not install convenience tools such as vim or curl if they aren't strictly needed.
 - Create a dedicated development image.
 - Disable man pages and documentation installed by packages to save space.
@@ -235,11 +250,11 @@ Methods to reduce Docker image size:
 - If using `apt`, add `--no-install-recommends` to avoid unnecessary packages.
 - Clean up caches and files that are no longer needed at the end. For example
   `rm -rf /var/lib/apt/lists/*` for Debian and Ubuntu, or `yum clean all` for RHEL and CentOS.
-- Use tools like [dive](https://github.com/wagoodman/dive) or [DockerSlim](https://github.com/docker-slim/docker-slim)
+- Use tools like [dive](https://github.com/wagoodman/dive) or [Slim Toolkit](https://github.com/slimtoolkit/slim)
   to analyze and shrink images.
 
 To simplify Docker image management, you can create a dedicated group for managing
-[Docker images](../docker/_index.md) and test, build and publish them with CI/CD pipelines.
+[Docker images](../docker/_index.md), and test, build, and publish them with CI/CD pipelines.
 
 ## Test, document, and learn
 
@@ -252,11 +267,11 @@ It can help to document the pipeline design and architecture. You can do this wi
 repository.
 
 Document CI/CD pipeline problems and incidents in issues, including research done
-and solutions found. This helps onboarding new team members, and also helps
+and solutions found. This helps onboard new team members, and also helps
 identify recurring problems with CI pipeline efficiency.
 
 ### Related topics
 
 - [CI expert agent](../../user/duo_agent_platform/agents/foundational_agents/ci_expert_agent.md)
-- GitLab.com Monitoring Handbook
-- [Buildings dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)
+- [CI/CD analytics](../../user/analytics/ci_cd_analytics.md)
+- [Building dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)

@@ -125,7 +125,7 @@ You might see this error when the namespace:
 To resolve this issue:
 
 - Verify the namespace exists and that you have the [Owner role](../../user/permissions.md#roles). If you don't, ask an existing Owner to add you.
-- Ensure the namespace is a top-level group. Subscriptions can't be applied to subgroups or projects - apply the subscription to the parent group instead.
+- Ensure the namespace is a top-level group. Subscriptions can't be applied to subgroups or projects. Apply the subscription to the parent group instead.
 - [Verify the namespace has at least one billable user](../manage_seats.md#billable-users). Add members if needed.
 - Check that the purchase URL includes the correct `gl_namespace_id` parameter (for example, `?gl_namespace_id=123`).
 

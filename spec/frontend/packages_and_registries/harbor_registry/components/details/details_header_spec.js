@@ -9,7 +9,7 @@ describe('Harbor Details Header', () => {
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   const findTitle = () => findByTestId('title');
-  const findArtifactsCount = () => findByTestId('artifacts-count');
+  const findArtifactsCount = () => wrapper.findComponent('[data-testid="artifacts-count"]');
 
   const mountComponent = ({ propsData }) => {
     wrapper = shallowMount(DetailsHeader, {

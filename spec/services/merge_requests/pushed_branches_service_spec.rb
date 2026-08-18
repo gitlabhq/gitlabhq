@@ -32,18 +32,19 @@ RSpec.describe MergeRequests::PushedBranchesService, feature_category: :source_c
   describe '#open_source_branches' do
     context 'when branches pushed' do
       let(:pushed_branches) do
-        %w[branch1 branch2 closed-branch1 extra1].map do |branch|
+        %w[branch1 branch2 closed-branch1 locked-branch1 extra1].map do |branch|
           { ref: "refs/heads/#{branch}" }
         end
       end
 
-      it 'returns only source branches of open merge requests' do
+      it 'returns source branches of open and locked merge requests' do
         create(:merge_request, source_branch: 'branch1', source_project: project)
         create(:merge_request, source_branch: 'branch2', source_project: project)
         create(:merge_request, :closed, source_branch: 'closed-branch1', source_project: project)
+        create(:merge_request, :locked, source_branch: 'locked-branch1', source_project: project)
         create(:merge_request, target_branch: 'extra1', source_project: project)
 
-        expect(service.open_source_branches).to contain_exactly('branch1', 'branch2')
+        expect(service.open_source_branches).to contain_exactly('branch1', 'branch2', 'locked-branch1')
       end
     end
 

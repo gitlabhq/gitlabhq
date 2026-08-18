@@ -44,12 +44,14 @@ RSpec.describe ::Gitlab::BeyondIdentity::Client, feature_category: :source_code_
   end
 
   context 'with invalid response' do
-    let(:stubbed_response) { 'invalid' }
+    let(:stubbed_response) { '{"key": invalid_value}' }
 
-    it 'executes successfully' do
-      expect { client.execute(params) }.to raise_error(
-        ::Gitlab::BeyondIdentity::Client::ApiError
-      ).with_message('invalid response format')
+    it 'raises ApiError with invalid response format message and preserves HTTP code', :aggregate_failures do
+      expect { client.execute(params) }.to raise_error do |error|
+        expect(error).to be_a(::Gitlab::BeyondIdentity::Client::ApiError)
+        expect(error.message).to eq('invalid response format')
+        expect(error.code).to eq(status)
+      end
     end
   end
 

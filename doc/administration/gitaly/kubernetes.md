@@ -29,7 +29,7 @@ way to deploy Gitaly. The rest of this document details best practices for doing
 
 ## Timeline
 
-[Gitaly on Kubernetes](kubernetes.md) is generally available as of GitLab 18.11. GitLab does not
+Gitaly on Kubernetes is generally available as of GitLab 18.11. GitLab does not
 guarantee compatibility with specific managed Kubernetes offerings from cloud
 providers (such as Amazon EKS, Google GKE, or Azure AKS). You should validate
 your specific environment before deploying to production.
@@ -47,7 +47,7 @@ masks the problem by:
 
 The same approach doesn't fit a container-based lifecycle where a container or pod needs to fully shutdown and start as a new container or pod.
 
-To support a Cloud Native deployment, Gitaly (non-Cluster) is the only option.
+To support a Cloud Native deployment, Gitaly (non-Cluster) is the only generally available option. [Gitaly Cluster (Praefect) on Kubernetes](praefect/_index.md#gitaly-cluster-on-kubernetes) is in beta.
 By leveraging the right Kubernetes and Gitaly features and configuration, you can minimize service disruption and provide a good user experience.
 
 ## Requirements

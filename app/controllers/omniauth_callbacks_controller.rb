@@ -28,14 +28,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   feature_category :system_access
 
-  # OAuth callbacks are authentication flows and must stay available while an
-  # organization is read-only, so the blanket write-blocking before_action from
-  # EnforcesReadOnlyOrganization must not intercept them. New-user creation is
-  # instead blocked precisely in Gitlab::Auth::OAuth::User#save, which raises
-  # NewUserOrganizationReadOnlyError (rescued in sign_in_user_flow), while
-  # existing-user sign-ins remain permitted.
-  skip_before_action :enforce_read_only_organization
-
   # To be used in ee version for raising error on user signup if user is from restricted country
   SignUpFromRestrictedCountyError = Class.new(StandardError)
 
@@ -242,6 +234,25 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to new_user_settings_identities_path(state: state)
   end
 
+  def prompt_login_to_link_identity
+    state = SecureRandom.uuid
+    session[:identity_link_state] = state
+    session[:identity_link_provider] = oauth['provider']
+    session[:identity_link_extern_uid] = oauth['uid']
+    session[:identity_link_user_id] = existing_user_for_email_link.id
+
+    store_location_for(:user, new_user_settings_identities_path(state: state))
+
+    label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
+    flash[:notice] = safe_format(
+      _('An account already exists with the email address for your %{label} account. ' \
+        'Sign in with your existing credentials to connect your %{label} account.'),
+      label: label
+    )
+
+    redirect_to new_user_session_path
+  end
+
   def build_auth_user(auth_user_class)
     strong_memoize_with(:build_auth_user, auth_user_class) do
       auth_user_class.new(oauth, build_auth_user_params)
@@ -292,10 +303,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         perform_registration_tasks(@user, oauth['provider']) if new_user
 
         enqueue_after_sign_in_workers(@user, auth_user)
+        record_user_activity(@user)
 
         sign_in_and_redirect_or_verify_identity(@user, auth_user, new_user)
       end
     else
+      @auth_user = auth_user
       fail_login(@user)
     end
   rescue Gitlab::Auth::OAuth::User::IdentityWithUntrustedExternUidError
@@ -304,8 +317,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_disabled_provider
   rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
-  rescue Gitlab::Auth::OAuth::User::NewUserOrganizationReadOnlyError
-    handle_new_user_organization_read_only
   rescue SignUpFromRestrictedCountyError
     handle_signup_from_restricted_country_error
   end
@@ -379,11 +390,24 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def fail_login(user)
     log_failed_login(user.username, oauth['provider'])
 
+    return prompt_login_to_link_identity if prompt_login_to_link_identity?
+
     @provider = Gitlab::Auth::OAuth::Provider.label_for(action_name)
     @error = user.errors.full_messages.to_sentence
 
     render 'errors/omniauth_error', layout: "oauth_error", status: :unprocessable_entity
   end
+
+  def prompt_login_to_link_identity?
+    return false unless existing_user_for_email_link
+
+    Feature.enabled?(:link_omniauth_to_existing_user_on_login, existing_user_for_email_link)
+  end
+
+  def existing_user_for_email_link
+    @auth_user.existing_user_for_email_link
+  end
+  strong_memoize_attr :existing_user_for_email_link
 
   def fail_auth0_login
     fail_login_with_message(_('Wrong extern UID provided. Make sure Auth0 is configured correctly.'))
@@ -416,13 +440,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
        ),
       label: label
     )
-
-    redirect_to new_user_session_path
-  end
-
-  def handle_new_user_organization_read_only
-    flash[:alert] = _('This organization is currently in read-only mode. ' \
-      'New account creation via SSO is currently unavailable.')
 
     redirect_to new_user_session_path
   end
@@ -554,6 +571,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # overridden in specific EE class
   def enqueue_after_sign_in_workers(_user, _auth_user)
     true
+  end
+
+  def record_user_activity(user)
+    Users::ActivityService.new(author: user).execute
   end
 
   # overridden in specific EE class

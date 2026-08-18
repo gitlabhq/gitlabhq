@@ -52,7 +52,7 @@ module Security
 
     def copy_identifiers_to_target(source_report)
       # no need for de-duping: it's done by Report internally
-      source_report.identifiers.values.each { |identifier| target_report.add_identifier(identifier) }
+      source_report.identifiers.each_value { |identifier| target_report.add_identifier(identifier) }
     end
 
     def copy_scanned_resources_to_target(source_report)

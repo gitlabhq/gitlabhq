@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 import { mockTracking } from 'helpers/tracking_helper';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
@@ -64,7 +65,7 @@ describe('NoteActions', () => {
     wrapper.findAllComponents(GlButton).filter((item) => item.props('icon') === 'remove');
   const findDeleteButton = () => findAllDeleteButtons().at(0);
   const findMoreActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findReportAbuseItem = () => wrapper.find('[data-testid="report-abuse-button"]');
+  const findReportAbuseItem = () => wrapper.findComponent('[data-testid="report-abuse-button"]');
   const findAbuseDrawer = () => wrapper.findComponent(AbuseCategorySelector);
   const findDropdownDeleteButton = () =>
     wrapper
@@ -93,6 +94,10 @@ describe('NoteActions', () => {
       },
       stubs: {
         EmojiPicker,
+        ViewSessionButton: stubComponent({
+          name: 'ViewSessionButton',
+          props: { sessionId: { type: Number, required: true } },
+        }),
       },
     });
   };
@@ -181,10 +186,10 @@ describe('NoteActions', () => {
       expect(findReplyButton().exists()).toBe(true);
     });
 
-    it('emits startReplying when ReplyButton emits start-replying', () => {
+    it('emits start-replying when ReplyButton emits start-replying', () => {
       createComponent({ showReply: true });
       findReplyButton().vm.$emit('start-replying');
-      expect(wrapper.emitted('startReplying')).toEqual([[]]);
+      expect(wrapper.emitted('start-replying')).toEqual([[]]);
     });
 
     it('renders the Edit button when canEdit is true', () => {
@@ -312,7 +317,8 @@ describe('NoteActions', () => {
   });
 
   describe('Resolve Button', () => {
-    const findResolveButton = () => wrapper.find('[data-testid="resolve-discussion-button"]');
+    const findResolveButton = () =>
+      wrapper.findComponent('[data-testid="resolve-discussion-button"]');
 
     it('renders when canResolve is true', () => {
       createComponent({ canResolve: true });
@@ -449,6 +455,34 @@ describe('NoteActions', () => {
 
       it('does not render the feedback modal', () => {
         expect(findFeedbackModal().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('view session button', () => {
+    const findViewSessionButton = () => wrapper.findComponent({ name: 'ViewSessionButton' });
+
+    describe('when the note has no linked session', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when the note has a linked session', () => {
+      beforeEach(() => {
+        createComponent({ duoSessionId: 42 });
+      });
+
+      it('renders the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(true);
+      });
+
+      it('passes the session id to the view session button', () => {
+        expect(findViewSessionButton().props('sessionId')).toBe(42);
       });
     });
   });

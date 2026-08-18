@@ -311,6 +311,67 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
         expect { subject }.to raise_error(ArgumentError, "Worker class 'UnknownWorker' is not in the allowed list")
       end
     end
+
+    context 'when cleaner_class is not in allowed list' do
+      let(:loose_foreign_keys_yaml) do
+        {
+          'projects' => [
+            {
+              'table' => 'namespaces',
+              'column' => 'namespace_id',
+              'on_delete' => 'async_delete',
+              'cleaner_class' => 'UnknownCleaner'
+            }
+          ]
+        }
+      end
+
+      subject { described_class.definitions }
+
+      before do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
+      end
+
+      after do
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, nil)
+      end
+
+      it 'raises ArgumentError with descriptive message' do
+        expect { subject }.to raise_error(ArgumentError, "Cleaner class 'UnknownCleaner' is not in the allowed list")
+      end
+    end
+
+    context 'when cleaner_class is in the allowed list' do
+      let(:loose_foreign_keys_yaml) do
+        {
+          'p_ci_job_artifacts' => [
+            {
+              'table' => 'projects',
+              'column' => 'project_id',
+              'on_delete' => 'async_delete',
+              'cleaner_class' => 'Ci::JobArtifacts::LooseForeignKeyCleanerService'
+            }
+          ]
+        }
+      end
+
+      subject { described_class.definitions }
+
+      before do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
+      end
+
+      after do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, nil)
+      end
+
+      it 'constantizes the cleaner_class into the definition options' do
+        expect(subject.first.options[:cleaner_class]).to eq(Ci::JobArtifacts::LooseForeignKeyCleanerService)
+      end
+    end
   end
 
   describe 'Loose Foreign Key sharding key coverage' do
@@ -318,7 +379,6 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
     let(:pending_exceptions) do
       %w[
         merge_request_diff_commits
-        push_rules
       ]
     end
 

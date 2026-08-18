@@ -16,8 +16,8 @@ describe('BoardAddNewColumnForm', () => {
   };
 
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
-  const cancelButton = () => wrapper.findByTestId('cancelAddNewColumn');
-  const submitButton = () => wrapper.findByTestId('addNewColumnButton');
+  const cancelButton = () => wrapper.findComponentByTestId('cancelAddNewColumn');
+  const submitButton = () => wrapper.findComponentByTestId('addNewColumnButton');
   const formGroup = () => wrapper.findByTestId('boardValueDropdown');
 
   it('shows form title', () => {
@@ -31,7 +31,7 @@ describe('BoardAddNewColumnForm', () => {
 
     cancelButton().vm.$emit('click');
 
-    expect(wrapper.emitted('setAddColumnFormVisibility')).toEqual([[false]]);
+    expect(wrapper.emitted('set-add-column-form-visibility')).toEqual([[false]]);
   });
 
   describe('Add list button', () => {

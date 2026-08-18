@@ -31,7 +31,7 @@ consistent. If you have a reason to choose a different reviewer, add a comment t
 it to a Product Designer of your choice.
 
 If you are a **community contributor**: We favor choosing the Product Designer that is a
-[domain expert](../code_review.md#domain-experts) in the area you are contributing, to regardless
+[domain expert](../code_review.md#domain-experts) in the area you are contributing, regardless
 of the Reviewer Roulette.
 
 ## Checklist

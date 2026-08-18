@@ -24,6 +24,12 @@ RSpec.describe Issues::DestroyService, feature_category: :team_planning do
         })
     end
 
+    it 'triggers the work_item_deleted GraphQL subscription' do
+      expect(GraphqlTriggers).to receive(:work_item_deleted).with(issue)
+
+      service.execute(issue)
+    end
+
     it 'updates open issues count cache' do
       expect_next_instance_of(Projects::OpenIssuesCountService) do |instance|
         expect(instance).to receive(:delete_cache)

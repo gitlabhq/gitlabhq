@@ -110,8 +110,8 @@ export default {
     isLoading() {
       return Boolean(
         this.$apollo.queries.doraMetrics.loading ||
-          this.$apollo.queries.flowMetrics.loading ||
-          this.$apollo.queries.flowMetricsCommits.loading,
+        this.$apollo.queries.flowMetrics.loading ||
+        this.$apollo.queries.flowMetricsCommits.loading,
       );
     },
     groupedMetrics() {

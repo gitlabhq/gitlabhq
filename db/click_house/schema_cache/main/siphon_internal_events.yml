@@ -1,0 +1,59 @@
+---
+name: siphon_internal_events
+engine: ReplacingMergeTree
+engine_full: ReplacingMergeTree(version, deleted) PARTITION BY toYYYYMM(timestamp)
+  PRIMARY KEY (postgresql_schema, postgresql_table, timestamp, uuid) ORDER BY (postgresql_schema,
+  postgresql_table, timestamp, uuid) TTL timestamp + toIntervalMonth(12) SETTINGS
+  index_granularity = 8192
+partition_key: toYYYYMM(timestamp)
+primary_key: postgresql_schema, postgresql_table, timestamp, uuid
+sorting_key: postgresql_schema, postgresql_table, timestamp, uuid
+settings:
+  index_granularity: '8192'
+columns:
+- name: uuid
+  type: UUID
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: stream_identifier
+  type: LowCardinality(String)
+- name: producer_application_identifier
+  type: LowCardinality(String)
+- name: consumer_application_identifier
+  type: LowCardinality(String)
+- name: postgresql_schema
+  type: LowCardinality(String)
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: postgresql_table
+  type: LowCardinality(String)
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: timestamp
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: produced_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: consumed_at
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+- name: package_events_count
+  type: UInt64
+- name: package_size_in_bytes
+  type: UInt64
+- name: event_type
+  type: UInt8
+- name: version
+  type: DateTime64(6, 'UTC')
+  default_kind: DEFAULT
+  default_expression: now64(6, 'UTC')
+- name: deleted
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'

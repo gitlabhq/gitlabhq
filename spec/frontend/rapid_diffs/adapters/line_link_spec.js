@@ -244,5 +244,43 @@ describe('lineLinkAdapter', () => {
       expect(link.href).toContain('file_path=app%2Fmodels%2Fuser.rb');
       expect(link.href).not.toContain('other_file.rb');
     });
+
+    it('does not add the line param for non-expanded lines', () => {
+      mount();
+      show();
+
+      getAllLinks().forEach((link) => {
+        expect(link.href).not.toContain('line=');
+      });
+    });
+
+    it('adds the line param for expanded lines', () => {
+      mount();
+
+      const expandedRow = document.createElement('tr');
+      expandedRow.id = 'line_abc_30';
+      expandedRow.dataset.expanded = '';
+      expandedRow.innerHTML = `
+        <td data-position="old">
+          <a data-line-number="30" href="#line_abc_30"></a>
+        </td>
+        <td data-position="new">
+          <a data-line-number="31" href="#line_abc_30"></a>
+        </td>
+      `;
+      document.querySelector('tbody').appendChild(expandedRow);
+
+      getComponent().trigger(EXPANDED_LINES);
+
+      expandedRow.querySelectorAll('[data-line-number]').forEach((link) => {
+        expect(link.href).toContain('line=line_abc_30');
+      });
+      getLink()
+        .closest('tr')
+        .querySelectorAll('[data-line-number]')
+        .forEach((link) => {
+          expect(link.href).not.toContain('line=');
+        });
+    });
   });
 });

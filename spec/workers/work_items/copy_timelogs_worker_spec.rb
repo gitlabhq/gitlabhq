@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::CopyTimelogsWorker, type: :worker, feature_category: :team_planning do
+RSpec.describe WorkItems::CopyTimelogsWorker, feature_category: :team_planning do
   let_it_be_with_reload(:from_issue) { create(:issue) }
   let_it_be(:to_issue) { create(:issue) }
   let_it_be_with_reload(:timelog) { create(:timelog, issue: from_issue) }

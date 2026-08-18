@@ -1,6 +1,7 @@
 <script>
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'GoogleCloudField',
@@ -8,6 +9,7 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
+  mixins: [glSlotsMixin],
   model: {
     prop: 'value',
     event: 'change',
@@ -75,7 +77,7 @@ export default {
     :invalid-feedback="invalidFeedback"
     :label="label"
   >
-    <template v-for="slot in Object.keys($scopedSlots)" #[slot]>
+    <template v-for="slot in Object.keys(glSlots())" #[slot]>
       <slot :name="slot"></slot>
     </template>
     <gl-form-input

@@ -19,6 +19,7 @@
 
 import { GlAvatarLink, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import UserAvatarImage from './user_avatar_image.vue';
 
 export default {
@@ -30,6 +31,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     lazy: {
       type: Boolean,
@@ -90,6 +92,11 @@ export default {
       required: false,
       default: '',
     },
+    truncateUsername: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     userId() {
@@ -127,7 +134,7 @@ export default {
       :tooltip-placement="tooltipPlacement"
       :lazy="lazy"
     >
-      <slot></slot>
+      <template v-if="glSlots().default" #default><slot></slot></template>
     </user-avatar-image>
 
     <span
@@ -136,6 +143,7 @@ export default {
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
       class="gl-ml-1"
+      :class="{ 'gl-truncate': truncateUsername }"
       data-testid="user-avatar-link-username"
     >
       {{ username }}

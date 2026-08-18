@@ -43,7 +43,7 @@ export default {
       required: true,
     },
   },
-  emits: ['next', 'onRequiredFieldsUpdate'],
+  emits: ['next', 'on-required-fields-update'],
   data() {
     return {
       runUntagged: this.isRunUntagged,
@@ -60,7 +60,7 @@ export default {
     onNext() {
       if (this.runUntagged || this.tags !== '') {
         this.isValidationAlertVisible = false;
-        this.$emit('onRequiredFieldsUpdate', { tags: this.tags, runUntagged: this.runUntagged });
+        this.$emit('on-required-fields-update', { tags: this.tags, runUntagged: this.runUntagged });
         this.$emit('next');
       } else {
         this.isValidationAlertVisible = true;

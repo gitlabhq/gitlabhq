@@ -17,3 +17,20 @@ export function normalizeRender(originalComponent) {
     },
   };
 }
+
+/**
+ * Version-agnostic slot lookup for hand-written render functions.
+ *
+ * Vue 2 exposes every slot (scoped or not) as a function on
+ * `vm.$scopedSlots`; Vue 3 exposes them as functions on `vm.$slots`.
+ * Returns the slot function, or undefined when the slot was not provided.
+ *
+ * @param {Object} vm - The component instance (`this` inside `render`).
+ * @param {string} [name] - The slot name.
+ * @returns {Function|undefined}
+ */
+export function getSlotFunction(vm, name = 'default') {
+  // Vue 2 and @vue/compat expose every slot as a function on $scopedSlots;
+  // plain Vue 3 has no $scopedSlots and exposes them on $slots.
+  return vm.$scopedSlots?.[name] ?? vm.$slots?.[name];
+}

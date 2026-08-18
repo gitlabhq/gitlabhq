@@ -4,9 +4,10 @@ FIPS_MODE ?= 0
 PKG := gitlab.com/gitlab-org/gitlab/workhorse
 BUILD_DIR ?= $(CURDIR)
 TARGET_DIR ?= $(BUILD_DIR)/_build
-VERSION_STRING := $(shell git describe)
+VERSION_STRING := $(shell git describe --tags --exact-match --match 'v*' 2>/dev/null)
 ifeq ($(strip $(VERSION_STRING)),)
-VERSION_STRING := v$(shell cat VERSION)
+GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
+VERSION_STRING := v$(shell cat VERSION)$(if $(GIT_COMMIT),-g$(GIT_COMMIT))
 endif
 DATE_FMT = +%Y%m%d.%H%M%S
 ifdef SOURCE_DATE_EPOCH
@@ -24,7 +25,7 @@ BUILD_TAGS := tracer_static tracer_static_jaeger continuous_profiler_stackdriver
 OS := $(shell uname | tr A-Z a-z)
 ARCH ?= $(shell uname -m | sed -e 's/x86_64/amd64/' | sed -e 's/aarch64/arm64/')
 
-LABKIT_VALIDATE_VERSION := v2.0.0-20260325011833-45bdfd4bfc9f
+LABKIT_VALIDATE_VERSION := v2.3.0
 
 GOLANGCI_LINT_VERSION := 2.11.4
 GOLANGCI_LINT_ARCH ?= ${ARCH}
@@ -36,10 +37,17 @@ ifeq (${FIPS_MODE}, 1)
     # If the golang-fips compiler is built with CGO_ENABLED=0, this needs to be
     # explicitly switched on.
     export CGO_ENABLED=1
-    # Go 1.19+ now requires GOEXPERIMENT=boringcrypto for FIPS compilation.
-    # See https://github.com/golang/go/issues/51940 for more details.
-    ifeq ($(shell GOEXPERIMENT=boringcrypto go version > /dev/null 2>&1; echo $$?), 0)
-      export GOEXPERIMENT=boringcrypto
+    # The Go Cryptographic Module (GOFIPS140, Go 1.24+) is mutually exclusive
+    # with GOEXPERIMENT=boringcrypto. Toolchains that select the native module
+    # report its version via "go env GOFIPS140"; legacy golang-fips toolchains
+    # report "off" (or empty on Go < 1.24) and still require boringcrypto.
+    GOFIPS140_MODULE := $(shell go env GOFIPS140 2>/dev/null)
+    ifeq ($(filter-out off,$(GOFIPS140_MODULE)),)
+      # Go 1.19+ now requires GOEXPERIMENT=boringcrypto for FIPS compilation.
+      # See https://github.com/golang/go/issues/51940 for more details.
+      ifeq ($(shell GOEXPERIMENT=boringcrypto go version > /dev/null 2>&1; echo $$?), 0)
+        export GOEXPERIMENT=boringcrypto
+      endif
     endif
 endif
 
@@ -124,17 +132,7 @@ $(GITALY_PID_FILE): gitaly.toml
 	$(call message, "Starting gitaly")
 	cd ..; GITALY_TESTING_NO_GIT_HOOKS=1 GITALY_PID_FILE=workhorse/$(GITALY_PID_FILE) scripts/gitaly-test-spawn workhorse/gitaly.toml
 
-GITALY_CONFIGURATION_SOURCE_BASE = ../tmp/tests/gitaly/config.toml
-ifeq ($(GITALY_TRANSACTIONS_ENABLED),true)
-	GITALY_CONFIGURATION_SOURCE = ${GITALY_CONFIGURATION_SOURCE_BASE}.transactions
-else
-	GITALY_CONFIGURATION_SOURCE = ${GITALY_CONFIGURATION_SOURCE_BASE}
-endif
-
-# Mark the target phony so the configuration is always refreshed in case the `GITALY_TRANSACTIONS_ENABLED`
-# environment variable has been changed.
-.PHONY: gitaly.toml
-gitaly.toml: ${GITALY_CONFIGURATION_SOURCE}
+gitaly.toml: ../tmp/tests/gitaly/config.toml
 	sed -e 's/^socket_path.*$$/listen_addr = "0.0.0.0:8075"/;s/^\[auth\]$$//;s/^token.*$$//;s/^internal_socket_dir.*$$//' \
 		$< > $@
 

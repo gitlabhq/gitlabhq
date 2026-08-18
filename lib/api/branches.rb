@@ -7,7 +7,7 @@ module API
     include PaginationParams
     include APIGuard
 
-    BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
+    BRANCH_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: ::API::NO_SLASH_URL_PART_REGEX)
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? || request.post? }
 
@@ -47,7 +47,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all repository branches' do
         detail 'Lists all repository branches from a specified project, sorted alphabetically by name. Search by ' \
           'name, or use regular expressions to find specific branch patterns. Returns detailed information about the ' \

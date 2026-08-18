@@ -6,6 +6,7 @@ import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
 import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
@@ -226,7 +227,7 @@ export default {
       );
     },
   },
-  safeHtmlConfig: { ADD_TAGS: ['strong', 'span'] },
+  titleInLinkSafeHtmlConfig,
 };
 </script>
 <template>
@@ -253,15 +254,19 @@ export default {
       @token-remove="focusInputText"
       @blur="handleBlur"
     >
-      <template #token-content="{ token }"> {{ token.iid }} {{ token.title }} </template>
+      <template #token-content="{ token }">
+        {{ token.iid }}
+        &nbsp;
+        <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="token.titleHtml"></span>
+      </template>
       <template #dropdown-item-content="{ dropdownItem }">
         <div class="gl-flex">
           <div
-            v-safe-html:[$options.safeHtmlConfig]="formatResults(dropdownItem.iid)"
+            v-safe-html:[$options.titleInLinkSafeHtmlConfig]="formatResults(dropdownItem.iid)"
             class="gl-mr-4 gl-text-sm gl-text-subtle"
           ></div>
           <div
-            v-safe-html:[$options.safeHtmlConfig]="formatResults(dropdownItem.title)"
+            v-safe-html:[$options.titleInLinkSafeHtmlConfig]="formatResults(dropdownItem.title)"
             class="gl-truncate"
           ></div>
         </div>

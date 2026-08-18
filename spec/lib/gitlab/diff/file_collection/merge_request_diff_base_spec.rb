@@ -46,8 +46,6 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
   end
 
   describe '.max_blob_size' do
-    let(:project) { merge_request.project }
-
     before do
       allow(Gitlab::Highlight).to receive(:file_size_limit).and_return(max_config)
     end
@@ -56,7 +54,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
       let(:max_config) { described_class::MAX_BLOB_SIZE - 1 }
 
       it 'returns the MAX_BLOB_SIZE constant' do
-        expect(described_class.max_blob_size(project)).to eq(described_class::MAX_BLOB_SIZE)
+        expect(described_class.max_blob_size).to eq(described_class::MAX_BLOB_SIZE)
       end
     end
 
@@ -64,7 +62,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
       let(:max_config) { described_class::MAX_BLOB_SIZE + 1 }
 
       it 'returns the maximum_text_highlight_size_kilobytes setting' do
-        expect(described_class.max_blob_size(project)).to eq(max_config)
+        expect(described_class.max_blob_size).to eq(max_config)
       end
     end
   end

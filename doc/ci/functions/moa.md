@@ -150,8 +150,9 @@ ${{ false }}
 
 ### Numbers
 
-Numbers are IEEE 754 double-precision floating point values with 53 bits of significand
-precision. Integers, decimals, and scientific notation are supported.
+Numbers are IEEE 754 double-precision floating point values with 53 bits of precision.
+Integers larger than 2^53 (about 9 quadrillion) can't be represented exactly. Integers,
+decimals, and scientific notation are supported.
 
 ```yaml
 ${{ 42 }}

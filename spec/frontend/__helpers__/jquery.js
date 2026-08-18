@@ -14,5 +14,3 @@ $.ajax = () => {
   global.fail(err);
   throw err;
 };
-
-export default $;

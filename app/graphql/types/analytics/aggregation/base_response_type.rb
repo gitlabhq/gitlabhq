@@ -7,10 +7,10 @@ module Types
         extend ActiveSupport::Concern
 
         class_methods do
-          def declare_parameterized_field(part)
+          def declare_parameterized_field(part, field_name: part.identifier.to_sym)
             adapter = ::Gitlab::Database::Aggregation::Graphql::Adapter
             params = part.respond_to?(:parameters) ? part.parameters : {}
-            field part.identifier.to_sym,
+            field field_name,
               adapter.graphql_type(part.type),
               null: true,
               description: part.description do
@@ -21,7 +21,7 @@ module Types
               end
             end
 
-            define_method(part.identifier) do |**field_kwargs|
+            define_method(field_name) do |**field_kwargs|
               allowed_params = field_kwargs.slice(*params.keys)
 
               object[part.instance_key(parameters: allowed_params)]

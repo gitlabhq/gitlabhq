@@ -9,14 +9,6 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
-    NO_SLASH_URL_PART_REGEX = ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
-    NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-    COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
-    USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
-    # Grape 2.4+ no longer honors route-level `format: false`; this never-matching `:format`
-    # requirement re-suppresses the implicit `(.:format)` suffix so a trailing extension or
-    # dot stays inside the wildcard/param instead of being parsed off as a response format.
-    NO_FORMAT_SUFFIX_REQUIREMENT = { format: /(?!)/ }.freeze
     # Origin of the catch-all `route :any, '*path'` that handles requests mapping to no real
     # endpoint (unknown paths and unmatched API versions).
     UNMATCHED_ROUTE_ORIGIN = '/api/:version/*path'
@@ -26,8 +18,8 @@ module API
     # grape_logging 3.0.0's Reporters::LoggerReporter clones the logger it is given, so the request
     # logger emits through a clone of LOGGER rather than LOGGER itself. The clone exists only to hold a
     # per-reporter formatter, which we already supply explicitly via `formatter:` below, so it changes
-    # nothing in production. Returning self from #clone keeps LOGGER the single emitting object, matching
-    # Grape 2.0/grape_logging 1.8.4 behavior and letting specs stub LOGGER directly.
+    # nothing in production. Returning self from #clone keeps LOGGER the single emitting object, so specs
+    # can stub LOGGER directly.
     LOGGER = Logger.new(LOG_FILENAME, level: ::Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
       .tap { |logger| def logger.clone = self }
 
@@ -48,6 +40,7 @@ module API
       logger: LOGGER,
       formatter: LOG_FORMATTER,
       include: [
+        Gitlab::GrapeLogging::Loggers::TruncateParameters.new,
         Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS, nil, LOG_FILTER_EXCEPTIONS),
         Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
         Gitlab::GrapeLogging::Loggers::JsonMetadataLogger.new,
@@ -117,7 +110,6 @@ module API
     end
 
     before_validation do
-      next unless Feature.enabled?(:set_current_organization_for_grape_api, Feature.current_request)
       next if ::Current.organization_assigned
 
       endpoint_class = request.env[Grape::Env::API_ENDPOINT]&.options&.dig(:for)
@@ -127,7 +119,7 @@ module API
       begin
         ::Current.organization = Gitlab::Current::Organization.new(
           params: {},
-          user: -> { safe_find_user_from_sources },
+          user: -> { safe_find_organization_actor_from_sources },
           rack_env: request.env
         ).organization
       rescue ::Current::OrganizationAlreadyAssignedError
@@ -355,6 +347,7 @@ module API
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::MlModelPackages
+        mount ::API::MobilePushSubscriptions
         mount ::API::Namespaces
         mount ::API::NpmGroupPackages
         mount ::API::NpmInstancePackages
@@ -430,6 +423,8 @@ module API
         mount ::API::WorkItems::LinkedItems
         mount ::API::WorkItems::LinkedResources
         mount ::API::WorkItems::AwardEmoji
+        mount ::API::WorkItems::ClosingMergeRequests
+        mount ::API::WorkItems::RelatedMergeRequests
         mount ::API::WorkItems::CurrentUserTodos
         mount ::API::WorkItems::Notes
         mount ::API::WorkItems::Discussions
@@ -496,39 +491,6 @@ module API
     route_setting :authorization, skip_granular_token_authorization: :catch_all
     route :any, '*path', feature_category: :not_owned do
       error!('404 Not Found', 404)
-    end
-  end
-
-  class TrackAPIRequestFromPersonalAccessToken < ::Grape::Middleware::Base
-    delegate :endpoint_id, to: :context
-
-    def after
-      token_info = ::Current.token_info
-      return unless token_info.is_a?(Hash) && token_info[:token_type] == 'PersonalAccessToken'
-
-      # NOTE: use instance_variable_get to avoid triggering lazy current_user evaluation
-      user = context.instance_variable_get(:@current_user)
-
-      return unless user
-      return unless Feature.enabled?(:track_api_request_from_personal_access_token, user)
-
-      additional_properties = {
-        label: endpoint_id,
-        pat_type: token_info[:pat_type],
-        response_code: context.status
-      }
-
-      denied_permissions = ::Current.formatted_granular_denied_permissions
-      additional_properties[:denied_permissions] = denied_permissions if denied_permissions
-
-      ::Gitlab::InternalEvents.track_event(
-        'use_pat',
-        user: user,
-        additional_properties: additional_properties
-      )
-
-      # Explicit nil is needed or the api call return value will be overwritten
-      nil
     end
   end
 end

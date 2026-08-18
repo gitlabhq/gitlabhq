@@ -20,7 +20,7 @@ a documentation site.
 When you finish this tutorial, you will have a new project on GitLab.com and a working documentation site
 using [Docusaurus](https://docusaurus.io/).
 
-To complete this tutorial, you will:
+To complete this tutorial:
 
 1. Create a project to hold the Docusaurus files
 1. Create the initial pipeline configuration file
@@ -98,7 +98,7 @@ in the project and runners are available to run jobs.
 
 This step introduces:
 
-- [Jobs](../jobs/_index.md): These are self-contained parts of a pipeline that run your commands.
+- [Jobs](../jobs/_index.md): Jobs are self-contained parts of a pipeline that run your commands.
   Jobs run on [runners](../runners/_index.md), separate from the GitLab instance.
 - [`script`](../yaml/_index.md#script): This section of a job's configuration is
   where you define the commands for jobs. If there are multiple commands (in an array),
@@ -179,7 +179,7 @@ This step introduces:
   while jobs in later stages wait for jobs in earlier stages to complete. If a job fails,
   the whole stage is considered failed and jobs in later stages do not start running.
 - [GitLab Pages](../../user/project/pages/_index.md): To host your static site, you
-  will use GitLab Pages.
+  use GitLab Pages.
 
 In this step:
 
@@ -341,7 +341,7 @@ This step introduces:
   to configure job behavior in the configuration file and in script commands.
   [Predefined CI/CD variables](../variables/predefined_variables.md) are variables
   that you do not need to manually define. They are automatically injected into pipelines
-  so you can use them to configure your pipeline. Variables are usually formatted as `$VARIABLE_NAME`.
+  so you can use them to configure your pipeline. Variables are usually formatted as `$VARIABLE_NAME`,
   and predefined variables are usually prefixed with `$CI_`.
 
 In this step:

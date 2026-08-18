@@ -455,14 +455,15 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+- Configurable rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3. Feature flag `web_hook_event_resend_api_endpoint_rate_limit` removed.
 
 {{< /history >}}
 
 Resends a specific hook event.
 
-This endpoint has a rate limit of five requests per minute for each hook and authenticated user.
-To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
+This endpoint has a rate limit of five requests per minute for each authenticated user for a given group.
+All webhooks in the same group share the limit. On GitLab Self-Managed and GitLab Dedicated,
+administrators can [change this limit](../administration/settings/rate-limit-on-webhook-operations.md).
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
@@ -733,14 +734,15 @@ On success, no message is returned.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
 - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+- Configurable rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3. Feature flag `web_hook_test_api_endpoint_rate_limit` removed.
 
 {{< /history >}}
 
 Trigger a test hook for a specified group.
 
-This endpoint has a rate limit of five requests per minute for each group and authenticated user.
-To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`.
+This endpoint has a rate limit of five requests per minute for each authenticated user for a given group.
+On GitLab Self-Managed and GitLab Dedicated, administrators can
+[change this limit](../administration/settings/rate-limit-on-webhook-operations.md).
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/test/:trigger
@@ -832,12 +834,6 @@ curl --request DELETE \
 On success, no message is returned.
 
 ## Update a URL variable
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
-
-{{< /history >}}
 
 Updates a URL variable for a specified group hook.
 

@@ -115,7 +115,7 @@ describe('Board List Header Component', () => {
   const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
   const isCollapsed = () => wrapper.vm.list.collapsed;
   const findTitle = () => wrapper.find('.board-title');
-  const findCaret = () => wrapper.findByTestId('board-title-caret');
+  const findCaret = () => wrapper.findComponentByTestId('board-title-caret');
   const findNewIssueButton = () => wrapper.findByTestId('new-issue-btn');
   const findSettingsButton = () => wrapper.findByTestId('settings-btn');
   const findBoardListHeader = () => wrapper.findByTestId('board-list-header');

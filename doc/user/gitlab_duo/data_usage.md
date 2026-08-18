@@ -86,7 +86,7 @@ GitLab Duo collects aggregated or de-identified first-party usage data through a
 
 ## GitLab Model Context Protocol server
 
-The following information applies to [GitLab Model Context Protocol (MCP) server](model_context_protocol/mcp_server.md) usage in GitLab
+The following information applies to [GitLab Model Context Protocol (MCP) server](../model_context_protocol/mcp_server.md) usage in GitLab
 Self-Managed instances.
 
 GitLab does not transmit, store, retain, or process any data when the GitLab MCP server is used. All

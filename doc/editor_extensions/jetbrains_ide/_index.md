@@ -75,12 +75,6 @@ information to GitLab. To enable telemetry in your JetBrains IDE:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/291) in GitLab Duo 2.1 for GitLab 16.11 and later.
-
-{{< /history >}}
-
 You can configure the plugin to use 1Password secret references for authentication instead of
 hard-coding personal access tokens.
 

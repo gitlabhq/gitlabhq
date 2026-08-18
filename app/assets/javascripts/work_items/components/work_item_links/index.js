@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import WorkItemLinks from './work_item_links.vue';
@@ -13,23 +14,10 @@ export default function initWorkItemLinks() {
     return null;
   }
 
-  const {
-    fullPath,
-    registerPath,
-    signInPath,
-    wiCanAdminLabel,
-    wiGroupPath,
-    wiHasIssueWeightsFeature,
-    wiHasIterationsFeature,
-    wiHasIssuableHealthStatusFeature,
-    wiIssuesListPath,
-    wiLabelsManagePath,
-    wiReportAbusePath,
-    wiNewTrialPath,
-    hasLinkedItemsEpicsFeature,
-  } = workItemLinksRoot.dataset;
+  const { fullPath, registerPath, signInPath, hasLinkedItemsEpicsFeature } =
+    workItemLinksRoot.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: workItemLinksRoot,
     name: 'WorkItemLinksRoot',
     apolloProvider,
@@ -37,24 +25,12 @@ export default function initWorkItemLinks() {
       fullPath,
       registerPath,
       signInPath,
-      // for work item modal
-      canAdminLabel: wiCanAdminLabel,
-      groupPath: wiGroupPath,
-      hasIssueWeightsFeature: wiHasIssueWeightsFeature,
-      hasIterationsFeature: wiHasIterationsFeature,
-      hasIssuableHealthStatusFeature: wiHasIssuableHealthStatusFeature,
-      issuesListPath: wiIssuesListPath,
-      labelsManagePath: wiLabelsManagePath,
-      reportAbusePath: wiReportAbusePath,
-      planTrialPath: wiNewTrialPath,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
     },
-    render: (createElement) =>
-      createElement(WorkItemLinks, {
-        props: {
-          issuableId: parseInt(workItemLinksRoot.dataset.issuableId, 10),
-          issuableIid: parseInt(workItemLinksRoot.dataset.issuableIid, 10),
-        },
-      }),
+    component: WorkItemLinks,
+    props: {
+      issuableId: parseInt(workItemLinksRoot.dataset.issuableId, 10),
+      issuableIid: parseInt(workItemLinksRoot.dataset.issuableIid, 10),
+    },
   });
 }

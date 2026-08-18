@@ -40,4 +40,10 @@ RSpec.describe 'Updating an existing HTTP Integration', feature_category: :incid
   end
 
   it_behaves_like 'updating an existing HTTP integration'
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_http_integration do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 end

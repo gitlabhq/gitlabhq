@@ -35,7 +35,7 @@ For information on how approvals relate to assignees and reviewers, see
 
     > [!note]
     > Support for group merge request approval settings is tracked in
-    > [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
+    > [epic 4367](https://gitlab.com/groups/gitlab-org/-/work_items/4367).
 
 ## Configure approval rules
 
@@ -144,7 +144,7 @@ Each reviewer's status is shown next to their name.
 - {{< icon name="comment-lines" >}} Reviewer commented
 - {{< icon name="status_warning" >}} Reviewer requested changes
 
-   ![The warning status indicating a reviewer has requested changes.](img/reviewer_blocks_mr_v17_3.png)
+  ![The warning status indicating a reviewer has requested changes.](img/reviewer_blocks_mr_v17_3.png)
 
 To [re-request a review](../reviews/_index.md#re-request-a-review), select the **Re-request a review** icon ({{< icon name="redo" >}}) next to the user.
 
@@ -172,12 +172,6 @@ If you enable [approval rule overrides](settings.md#prevent-editing-approval-rul
 don't affect existing merge requests, except for [target branch](rules.md#approvals-for-protected-branches) changes.
 
 ## Invalid rules
-
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
-
-{{< /history >}}
 
 GitLab marks approval rules as **Auto approved** when they're impossible to satisfy, such as when:
 

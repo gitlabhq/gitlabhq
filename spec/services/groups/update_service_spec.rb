@@ -25,6 +25,42 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
           expect(subgroup.errors[:path]).to be_empty
         end
       end
+
+      context 'when a rename would collide with a descendant service desk address', :aggregate_failures do
+        # group/test-one and group/renamed-sub/one both slugify to
+        # "<group>-test-one" once renamed-sub is renamed to "test".
+        let_it_be(:owner) { create(:user) }
+        let_it_be(:group) { create(:group, owners: owner) }
+        let_it_be_with_reload(:subgroup) { create(:group, parent: group, path: 'renamed-sub') }
+        let_it_be(:existing_project) { create(:project, path: 'test-one', group: group) }
+        let_it_be(:descendant_project) { create(:project, path: 'one', group: subgroup) }
+
+        before do
+          create(:service_desk_setting, project: existing_project, project_key: 'key')
+          create(:service_desk_setting, project: descendant_project, project_key: 'key')
+        end
+
+        it 'blocks the rename with a clear error and does not change the path' do
+          expect(update_group(subgroup, owner, path: 'test')).to be false
+          expect(subgroup.errors[:base].join).to include('Service Desk address for project')
+          expect(subgroup.reload.path).to eq('renamed-sub')
+        end
+
+        context 'when refreshing a descendant slug fails for an unrelated reason' do
+          before do
+            allow_next_found_instance_of(ServiceDeskSetting) do |setting|
+              allow(setting).to receive(:refresh_project_key_address_slug!)
+                .and_raise(ActiveRecord::RecordInvalid.new(setting))
+            end
+          end
+
+          it 'surfaces the error without raising and does not change the path' do
+            expect(update_group(subgroup, owner, path: 'renamed-again')).to be false
+            expect(subgroup.errors[:base]).to be_present
+            expect(subgroup.reload.path).to eq('renamed-sub')
+          end
+        end
+      end
     end
 
     context "project visibility_level validation" do

@@ -260,8 +260,14 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
 
   describe 'add user into a group', :js do
     context 'when membership is set to expire' do
-      it 'renders relative time',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16767' do
+      before do
+        # The super sidebar fires an async request to Users::NamespaceVisitsController#create
+        # which enqueues TrackNamespaceVisitsWorker. Under transactional feature specs this
+        # can raise Sidekiq::Job::EnqueueFromTransactionError and flakily fail the example.
+        allow(Users::TrackNamespaceVisitsWorker).to receive(:perform_async)
+      end
+
+      it 'renders relative time' do
         expire_time = Time.current + 2.days
         current_user.update!(time_display_relative: true)
         group.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
@@ -317,8 +323,6 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
       within_modal do
         click_button _('Leave')
       end
-
-      wait_for_all_requests
 
       expect(page).to have_content(format(_('You left the "%{group_name}" group.'), group_name: group.name))
 

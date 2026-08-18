@@ -71,6 +71,8 @@ class ProjectPolicy < BasePolicy
   desc "Project pipeline variables minimum override role is in a privileged state"
   condition(:project_pipeline_override_role_privileged) { project.pipeline_override_role_privileged? }
 
+  condition(:project_feature_flags_minimum_role_privileged) { project.feature_flags_minimum_role_privileged? }
+
   desc "Project is in the process of being deleted"
   condition(:self_deletion_in_progress) { project.self_deletion_in_progress? }
 
@@ -245,6 +247,11 @@ class ProjectPolicy < BasePolicy
     @subject.override_pipeline_variables_allowed?(team_access_level, @user)
   end
 
+  condition(:feature_flags_management_not_allowed) do
+    ::Feature.enabled?(:feature_flag_management_permissions, @subject) &&
+      !@subject.feature_flags_management_allowed?(team_access_level, @user)
+  end
+
   desc "CI job token allowed to push to project, self-referential or allowlisted cross-project"
   condition(:push_repository_for_job_token_allowed) do
     next false unless @user&.from_ci_job_token?
@@ -331,6 +338,9 @@ class ProjectPolicy < BasePolicy
   rule { project_pipeline_override_role_privileged & ~can?(:_update_privileged_pipeline_variable_override_setting) }
     .prevent :update_pipeline_variable_override_setting
 
+  rule { project_feature_flags_minimum_role_privileged & ~can?(:_update_privileged_feature_flags_minimum_role_setting) }
+    .prevent :update_feature_flags_minimum_role_setting
+
   condition(:can_create_fork_in_namespace) do
     can?(:create_project_fork, project.namespace.root_ancestor)
   end
@@ -386,6 +396,22 @@ class ProjectPolicy < BasePolicy
     prevent(:admin_feature_flags_client)
   end
 
+  # Restrict who can manage feature flags to the minimum role configured for
+  # the project. Reading feature flags is intentionally left available to
+  # everyone with project access.
+  #
+  # User lists are included because a feature flag strategy can target a user
+  # list, so editing one changes which users a flag applies to. Leaving it out
+  # would let a member below the threshold alter rollout behaviour without
+  # touching the flag itself.
+  rule { feature_flags_management_not_allowed }.policy do
+    prevent :create_feature_flag
+    prevent :update_feature_flag
+    prevent :admin_feature_flag
+    prevent :destroy_feature_flag
+    prevent :admin_feature_flags_user_lists
+  end
+
   rule { releases_disabled }.policy do
     prevent :read_release
     prevent :create_release
@@ -426,7 +452,6 @@ class ProjectPolicy < BasePolicy
   rule { infrastructure_disabled | terraform_state_disabled }.policy do
     prevent :read_terraform_state
     prevent :create_terraform_state
-    prevent :update_terraform_state
     prevent :admin_terraform_state
     prevent :destroy_terraform_state
     prevent :create_terraform_state_protection_rule
@@ -870,7 +895,6 @@ class ProjectPolicy < BasePolicy
   rule { security_and_compliance_disabled }.policy do
     prevent :access_security_and_compliance
     prevent :admin_vulnerability
-    prevent :read_compliance_framework
     prevent :read_vulnerability
     prevent :update_vulnerability_flag
     prevent :read_security_configuration
@@ -892,6 +916,9 @@ class ProjectPolicy < BasePolicy
     prevent :manage_project_security_exclusions
     prevent :read_security_scan_profiles
     prevent :apply_security_scan_profiles
+    prevent :create_security_scan_profiles
+    prevent :update_security_scan_profiles
+    prevent :delete_security_scan_profiles
     prevent :read_secret_push_protection_info
     prevent :enable_secret_push_protection
     prevent :enable_container_scanning_for_registry
@@ -901,8 +928,6 @@ class ProjectPolicy < BasePolicy
     prevent :create_on_demand_dast_scan
     prevent :edit_on_demand_dast_scan
     prevent :update_on_demand_dast_scan
-    prevent :_create_dast_pipeline
-    prevent :_run_dast_pipeline
     prevent :admin_vulnerability_external_issue_link
     prevent :admin_vulnerability_issue_link
     prevent :create_vulnerability_export

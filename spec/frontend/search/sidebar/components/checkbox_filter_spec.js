@@ -111,4 +111,33 @@ describe('CheckboxFilter', () => {
       });
     });
   });
+
+  describe('non-filterable buckets', () => {
+    const findNonFilterableRows = () => wrapper.findAllByTestId('non-filterable-row');
+
+    beforeEach(() => {
+      // Mix filterable languages with a synthetic "Unknown" bucket that carries
+      // `filterable: false` (produced by the backend when Zoekt didn't detect a language).
+      const bucketsWithUnknown = [
+        ...MOCK_LANGUAGE_AGGREGATIONS_BUCKETS.slice(0, 2),
+        { key: 'Unknown', count: 850, filterable: false },
+      ];
+      createComponent({
+        ...defaultProps,
+        filtersData: convertFiltersData(bucketsWithUnknown),
+      });
+    });
+
+    it('does not render non-filterable buckets as checkboxes', () => {
+      // The two filterable languages become checkboxes; the "Unknown" row does not.
+      expect(findAllCheckboxes()).toHaveLength(2);
+    });
+
+    it('renders non-filterable buckets as display-only rows with a count', () => {
+      const rows = findNonFilterableRows();
+      expect(rows).toHaveLength(1);
+      expect(rows.at(0).find('[data-testid="label"]').text()).toBe('Unknown');
+      expect(rows.at(0).find('[data-testid="labelCount"]').text()).toBe('850');
+    });
+  });
 });

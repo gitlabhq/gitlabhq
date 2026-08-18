@@ -15,8 +15,7 @@ module QA
       end
 
       it(
-        'parent pipelines passes if child passes',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358059'
+        'parent pipelines passes if child passes'
       ) do
         add_ci_files(success_child_ci_file)
         project.visit_latest_pipeline
@@ -28,8 +27,7 @@ module QA
       end
 
       it(
-        'parent pipeline passes even if child fails',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358060'
+        'parent pipeline passes even if child fails'
       ) do
         add_ci_files(fail_child_ci_file)
         project.visit_latest_pipeline

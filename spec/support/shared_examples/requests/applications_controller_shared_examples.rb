@@ -10,9 +10,9 @@ RSpec.shared_examples 'applications controller - GET #show' do
   end
 end
 
-RSpec.shared_examples 'applications controller - GET #new' do
-  it "sets `@scopes` to list of all scopes that should be shown" do
-    create_application
+RSpec.shared_examples 'applications controller - scopes include mcp' do
+  it "sets `@scopes` to list of all scopes that should be shown, including mcp scopes" do
+    perform_scopes_action
 
     expect(assigns[:scopes]).to match_array(%w[
       admin_mode
@@ -22,6 +22,8 @@ RSpec.shared_examples 'applications controller - GET #new' do
       email
       k8s_proxy
       manage_runner
+      mcp
+      mcp_orbit
       openid
       profile
       read_api

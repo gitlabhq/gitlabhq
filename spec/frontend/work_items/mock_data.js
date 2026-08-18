@@ -1,5 +1,6 @@
-import { map } from 'lodash-es';
+import { cloneDeep, map } from 'lodash-es';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
+import { findHierarchyWidget } from '~/work_items/utils';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   WIDGET_TYPE_LINKED_ITEMS,
@@ -808,6 +809,7 @@ export const mockParent = {
     id: 'gid://gitlab/Issue/1',
     iid: '5',
     title: 'Parent title',
+    titleHtml: 'Parent title',
     confidential: false,
     namespace: {
       id: 'gid://gitlab/Group/1',
@@ -829,6 +831,7 @@ export const mockParentWorkItem = {
   id: 'gid://gitlab/WorkItem/100',
   iid: '100',
   title: 'Parent Work Item',
+  titleHtml: 'Parent Work Item',
   confidential: false,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/100',
   reference: 'gitlab-org/gitlab-test#100',
@@ -850,6 +853,7 @@ export const mockParentIssue = {
   id: 'gid://gitlab/WorkItem/515',
   iid: '515',
   title: 'Parent Work Item',
+  titleHtml: 'Parent Work Item',
   confidential: false,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/515',
   reference: 'test-project-path#515',
@@ -871,6 +875,7 @@ export const mockParentObjective = {
   id: 'gid://gitlab/WorkItem/515',
   iid: '515',
   title: 'Parent Objective',
+  titleHtml: 'Parent Objective',
   confidential: false,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/515',
   reference: 'test-project-path#515',
@@ -1006,6 +1011,7 @@ export const mockBlockingLinkedItem = {
           },
           reference: 'test-project-path#1',
           title: 'Task 1201',
+          titleHtml: 'Task 1201',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1052,6 +1058,7 @@ export const mockBlockedByLinkedItem = {
           },
           reference: 'test-project-path#1',
           title: 'Task 1201',
+          titleHtml: 'Task 1201',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1086,6 +1093,7 @@ export const mockBlockedByLinkedItem = {
           },
           reference: 'test-project-path#1',
           title: 'Task 1202',
+          titleHtml: 'Task 1202',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1132,6 +1140,7 @@ export const mockBlockedByOpenAndClosedLinkedItems = {
           },
           reference: 'test-project-path#1',
           title: 'Task 1201',
+          titleHtml: 'Task 1201',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1166,6 +1175,7 @@ export const mockBlockedByOpenAndClosedLinkedItems = {
           },
           reference: 'test-project-path#1',
           title: 'Task 1202',
+          titleHtml: 'Task 1202',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1268,6 +1278,7 @@ export const mockLinkedItems = {
           },
           reference: 'test-project-path#83',
           title: 'Task 1201',
+          titleHtml: 'Task 1201',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1303,6 +1314,7 @@ export const mockLinkedItems = {
           },
           reference: 'test-project-path#55',
           title: 'Multilevel Objective 1',
+          titleHtml: 'Multilevel Objective 1',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1338,6 +1350,7 @@ export const mockLinkedItems = {
           },
           reference: 'test-project-path#56',
           title: 'Multilevel Objective 2',
+          titleHtml: 'Multilevel Objective 2',
           state: 'OPEN',
           createdAt: '2023-03-28T10:50:16Z',
           closedAt: null,
@@ -1449,6 +1462,7 @@ export const workItemSingleLinkedItemResponse = {
                     },
                     reference: 'test-project-path#1',
                     title: 'Task 1201',
+                    titleHtml: 'Task 1201',
                     state: 'OPEN',
                     createdAt: '2023-03-28T10:50:16Z',
                     closedAt: null,
@@ -2423,6 +2437,7 @@ export const workItemResponseFactory = ({
                     closedAt: null,
                     confidential: false,
                     title: '123',
+                    titleHtml: '123',
                     state: 'OPEN',
                     webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
                     reference: 'test-project-path#5',
@@ -2717,6 +2732,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      titleHtml: 'New title',
       description: '',
       createdAt: '2022-08-03T12:41:54Z',
       updatedAt: null,
@@ -2774,6 +2790,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                   __typename: 'WorkItemType',
                 },
                 title: 'xyz',
+                titleHtml: 'xyz',
                 reference: 'test-project-path#2',
                 state: 'OPEN',
                 confidential: false,
@@ -2918,6 +2935,7 @@ export const confidentialWorkItemTask = {
     __typename: 'WorkItemType',
   },
   title: 'xyz',
+  titleHtml: 'xyz',
   state: 'OPEN',
   confidential: true,
   reference: 'test-project-path#2',
@@ -2953,6 +2971,7 @@ export const closedWorkItemTask = {
     __typename: 'WorkItemType',
   },
   title: 'abc',
+  titleHtml: 'abc',
   state: 'CLOSED',
   confidential: false,
   reference: 'test-project-path#3',
@@ -2988,6 +3007,7 @@ export const workItemTask = {
     __typename: 'WorkItemType',
   },
   title: 'bar',
+  titleHtml: 'bar',
   state: 'OPEN',
   confidential: false,
   reference: 'test-project-path#4',
@@ -3025,6 +3045,7 @@ export const workItemEpic = {
     __typename: 'WorkItemType',
   },
   title: 'bar',
+  titleHtml: 'bar',
   state: 'OPEN',
   confidential: false,
   reference: 'test-project-path#4',
@@ -3059,6 +3080,7 @@ export const otherNamespaceChild = {
     __typename: 'WorkItemType',
   },
   title: 'baz',
+  titleHtml: 'baz',
   state: 'OPEN',
   confidential: false,
   reference: 'test-project-path/other#24',
@@ -3089,6 +3111,7 @@ export const childrenWorkItems = [
       __typename: 'WorkItemType',
     },
     title: 'foobar',
+    titleHtml: 'foobar',
     state: 'OPEN',
     confidential: false,
     reference: 'test-project-path#1',
@@ -3112,6 +3135,7 @@ export const childrenWorkItemsObjectives = [
     iid: '5',
     workItemType: objectiveType,
     title: 'foobar',
+    titleHtml: 'foobar',
     state: 'OPEN',
     confidential: false,
     reference: 'test-project-path#1',
@@ -3140,6 +3164,7 @@ export const childrenWorkItemsObjectives = [
     iid: '6',
     workItemType: objectiveType,
     title: 'foobar6',
+    titleHtml: 'foobar6',
     state: 'OPEN',
     confidential: false,
     reference: 'test-project-path#2',
@@ -3181,6 +3206,7 @@ export const workItemHierarchyResponse = {
           __typename: 'WorkItemType',
         },
         title: 'New title',
+        titleHtml: 'New title',
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         userPermissions: {
           adminParentLink: true,
@@ -3404,6 +3430,7 @@ export const workItemHierarchyTreeEmptyResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      titleHtml: 'New title',
       userPermissions: {
         adminParentLink: true,
         adminWorkItemLink: true,
@@ -3477,6 +3504,7 @@ export const mockHierarchyChildren = [
       name: 'Project name',
     },
     title: 'Objective 2',
+    titleHtml: 'Objective 2',
     state: 'OPEN',
     confidential: false,
     reference: 'test-project-path#13',
@@ -3492,6 +3520,7 @@ export const mockHierarchyChildren = [
           id: 'gid://gitlab/WorkItem/2',
           iid: '2',
           title: 'New title',
+          titleHtml: 'New title',
           confidential: false,
           webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
           namespace: {
@@ -3735,6 +3764,7 @@ export const workItemHierarchyTreeResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      titleHtml: 'New title',
       userPermissions: {
         adminParentLink: true,
         adminWorkItemLink: true,
@@ -3784,6 +3814,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      titleHtml: 'New title',
       userPermissions: {
         adminParentLink: true,
         adminWorkItemLink: true,
@@ -3846,6 +3877,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
                   name: 'Project name',
                 },
                 title: 'Objective 2',
+                titleHtml: 'Objective 2',
                 state: 'CLOSED',
                 confidential: false,
                 reference: 'test-project-path#13',
@@ -3861,6 +3893,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
                       id: 'gid://gitlab/WorkItem/2',
                       iid: '2',
                       title: 'New title',
+                      titleHtml: 'New title',
                       confidential: false,
                       webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
                       namespace: {
@@ -3919,6 +3952,30 @@ export const workItemHierarchyPaginatedTreeResponse = {
       ],
     },
   },
+};
+
+/**
+ * Reshapes a `widgets[]`-based work item tree response into the `features`-based
+ * shape used when the `work_item_features_field` flag is enabled: the hierarchy
+ * moves to `workItem.features.hierarchy`, and every child node exposes `features`
+ * instead of `widgets[]`.
+ *
+ * The caller is responsible for gating on the flag; this helper always transforms.
+ */
+export const buildFeaturesTreeResponse = (widgetsResponse) => {
+  const clone = cloneDeep(widgetsResponse);
+  const { workItem } = clone.data;
+  const hierarchy = findHierarchyWidget(workItem);
+
+  hierarchy.children.nodes = hierarchy.children.nodes.map(({ widgets, ...node }) => ({
+    ...node,
+    features: mockWorkItemFeaturesData(),
+  }));
+
+  workItem.features = { __typename: 'WorkItemFeatures', hierarchy };
+  delete workItem.widgets;
+
+  return clone;
 };
 
 export const workItemHierarchyTreeFailureResponse = {
@@ -4150,6 +4207,7 @@ export const availableObjectivesResponse = {
             id: 'gid://gitlab/WorkItem/716',
             iid: '122',
             title: 'Objective 101',
+            titleHtml: 'Objective 101',
             confidential: false,
             webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
@@ -4169,6 +4227,7 @@ export const availableObjectivesResponse = {
             id: 'gid://gitlab/WorkItem/712',
             iid: '118',
             title: 'Objective 103',
+            titleHtml: 'Objective 103',
             confidential: false,
             webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
@@ -4188,6 +4247,7 @@ export const availableObjectivesResponse = {
             id: 'gid://gitlab/WorkItem/711',
             iid: '117',
             title: 'Objective 102',
+            titleHtml: 'Objective 102',
             confidential: false,
             webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
@@ -4220,6 +4280,7 @@ export const searchedObjectiveResponse = {
             id: 'gid://gitlab/WorkItem/716',
             iid: '122',
             title: 'Objective 101',
+            titleHtml: 'Objective 101',
             confidential: false,
             webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
@@ -4496,6 +4557,7 @@ export const mockEmptyAncestorWidgetResponse = {
       workItem: {
         id: 'gid://gitlab/WorkItem/2733',
         title: 'Objective progress child 1',
+        titleHtml: 'Objective progress child 1',
         widgets: [
           {
             type: 'HIERARCHY',
@@ -4520,6 +4582,7 @@ export const mockParentWidgetResponse = {
   id: 'gid://gitlab/WorkItem/716',
   iid: '122',
   title: 'Objective 101',
+  titleHtml: 'Objective 101',
   confidential: false,
   namespace: {
     id: 'gid://gitlab/Group/1',
@@ -4557,6 +4620,7 @@ export const mockAncestorWidgetResponse = {
       workItem: {
         id: 'gid://gitlab/WorkItem/2733',
         title: 'Objective progress child 1',
+        titleHtml: 'Objective progress child 1',
         widgets: [
           {
             type: 'HIERARCHY',
@@ -4565,6 +4629,7 @@ export const mockAncestorWidgetResponse = {
               id: 'gid://gitlab/WorkItem/1296',
               iid: '149',
               title: 'Objective 333',
+              titleHtml: 'Objective 333',
               confidential: false,
               namespace: {
                 id: 'gid://gitlab/Group/1',
@@ -4593,6 +4658,7 @@ export const mockAncestorWidgetResponse = {
                     __typename: 'WorkItemType',
                   },
                   title: 'Objective 3',
+                  titleHtml: 'Objective 3',
                   state: 'OPEN',
                   reference: 'gitlab-org/gitlab-test#71',
                   createdAt: '2023-04-24T10:48:19Z',
@@ -4619,6 +4685,7 @@ export const mockAncestorWidgetResponse = {
                     __typename: 'WorkItemType',
                   },
                   title: 'Objective 333',
+                  titleHtml: 'Objective 333',
                   state: 'OPEN',
                   reference: 'gitlab-org/gitlab-test#149',
                   createdAt: '2023-12-18T16:54:47Z',
@@ -4632,6 +4699,7 @@ export const mockAncestorWidgetResponse = {
                         id: 'gid://gitlab/WorkItem/663',
                         iid: '663',
                         title: 'Parent',
+                        titleHtml: 'Parent',
                         confidential: false,
                         webUrl: '/path/to/work_item',
                         namespace: {
@@ -6138,6 +6206,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             id: 'gid://gitlab/WorkItem/58',
             iid: '23',
             title: 'Epic 1',
+            titleHtml: 'Epic 1',
             confidential: false,
             webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/1',
             widgets: [
@@ -6163,6 +6232,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             id: 'gid://gitlab/WorkItem/59',
             iid: '24',
             title: 'Epic 2',
+            titleHtml: 'Epic 2',
             confidential: false,
             webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/2',
             widgets: [
@@ -6437,6 +6507,7 @@ const subChildBaseNodes = [
           id: 'gid://gitlab/WorkItem/102',
           iid: '102',
           title: 'a group level work item 102',
+          titleHtml: 'a group level work item 102',
           confidential: false,
           webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/34',
           namespace: {
@@ -6503,6 +6574,7 @@ const subChildBaseNodes = [
           id: 'gid://gitlab/WorkItem/1',
           iid: '1',
           title: 'Parent work item',
+          titleHtml: 'Parent work item',
           confidential: false,
           webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/1',
           namespace: {
@@ -6543,6 +6615,7 @@ const restHierarchyFromWidget = (widgetHierarchy) => ({
         id: widgetHierarchy.parent.id,
         iid: widgetHierarchy.parent.iid,
         title: widgetHierarchy.parent.title,
+        titleHtml: widgetHierarchy.parent.titleHtml,
         confidential: widgetHierarchy.parent.confidential,
         webUrl: widgetHierarchy.parent.webUrl,
         namespace: widgetHierarchy.parent.namespace,
@@ -8066,6 +8139,7 @@ export const mockCreateWorkItemDraftData = {
       iid: 'new-work-item-iid',
       archived: false,
       title: 'ssss',
+      titleHtml: 'ssss',
       state: 'OPEN',
       description: null,
       confidential: false,

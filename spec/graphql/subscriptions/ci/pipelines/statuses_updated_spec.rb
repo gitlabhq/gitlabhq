@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  it { expect(described_class).to have_graphql_arguments(:project_id, :sha) }
+  it { expect(described_class).to have_graphql_arguments(:project_id, :project_full_path, :sha) }
   it { expect(described_class.payload_type).to eq(Types::Ci::PipelineType) }
 
   describe '#resolve' do
@@ -17,6 +17,14 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
     let(:project_id) { project.to_gid }
 
     subject(:subscription) { resolver.resolve_with_support(project_id: project_id) }
+
+    it 'exposes project_id as an optional (nullable) argument' do
+      expect(described_class.arguments['projectId'].type.non_null?).to be(false)
+    end
+
+    it 'exposes project_full_path as an optional (nullable) argument' do
+      expect(described_class.arguments['projectFullPath'].type.non_null?).to be(false)
+    end
 
     context 'when initially subscribing to the project pipelines' do
       let(:resolver) { resolver_instance(described_class, ctx: query_context, subscription_update: false) }
@@ -40,6 +48,30 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
           expect { subscription }.to raise_error(GraphQL::ExecutionError)
         end
       end
+
+      context 'when subscribing by project_full_path' do
+        subject(:subscription) { resolver.resolve_with_support(project_full_path: project.full_path) }
+
+        it 'returns nil' do
+          expect(subscription).to be_nil
+        end
+
+        context 'when the user is unauthorized' do
+          let(:current_user) { unauthorized_user }
+
+          it 'raises an exception' do
+            expect { subscription }.to raise_error(GraphQL::ExecutionError)
+          end
+        end
+
+        context 'when the project does not exist' do
+          subject(:subscription) { resolver.resolve_with_support(project_full_path: 'does/not-exist') }
+
+          it 'raises an exception' do
+            expect { subscription }.to raise_error(GraphQL::ExecutionError)
+          end
+        end
+      end
     end
 
     context 'with subscription updates' do
@@ -52,11 +84,11 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
       end
 
       context 'with a sha filter' do
+        let(:sha) { pipeline.sha }
+
         subject(:subscription) { resolver.resolve_with_support(project_id: project_id, sha: sha) }
 
         context 'when the sha matches the pipeline' do
-          let(:sha) { pipeline.sha }
-
           it 'returns the resolved pipeline' do
             expect(subscription).to eq(pipeline)
           end

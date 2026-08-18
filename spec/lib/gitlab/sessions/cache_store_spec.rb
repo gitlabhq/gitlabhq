@@ -93,20 +93,64 @@ RSpec.describe Gitlab::Sessions::CacheStore, feature_category: :cell do
         env.set_header(described_class::ORIGINAL_SESSION_KEY, [session_id, session_data.deep_dup])
       end
 
-      context 'when last write was recent' do
+      context 'when the expiry allows the full throttle interval' do
+        let(:redis_expiry) { 1.week.to_i }
+
+        context 'when last write was recent' do
+          let(:last_write_at) { 5.minutes.ago.to_i }
+
+          it 'skips the write and returns the session id' do
+            expect(redis_cache_store).not_to receive(:write)
+
+            expect(write_session).to eq(session_id)
+          end
+        end
+
+        context 'when last write was more than an hour ago' do
+          let(:last_write_at) { 2.hours.ago.to_i }
+
+          it 'writes the session with an updated timestamp' do
+            expect(redis_cache_store).to receive(:write).with(
+              session_id.private_id,
+              session_data.merge(described_class::LAST_WRITE_AT_KEY => Time.now.to_i),
+              expires_in: redis_expiry
+            )
+
+            expect(write_session).to eq(session_id)
+          end
+        end
+
+        context 'when there is no last_write_at timestamp' do
+          let(:last_write_at) { nil }
+
+          it 'writes the session with a new timestamp' do
+            expect(redis_cache_store).to receive(:write).with(
+              session_id.private_id,
+              session_data.merge(described_class::LAST_WRITE_AT_KEY => Time.now.to_i),
+              expires_in: redis_expiry
+            )
+
+            expect(write_session).to eq(session_id)
+          end
+        end
+      end
+
+      context 'when redis_expiry is nil' do
+        let(:redis_expiry) { nil }
         let(:last_write_at) { 5.minutes.ago.to_i }
 
-        it 'skips the write and returns the session id' do
+        it 'throttles and skips the recent write' do
           expect(redis_cache_store).not_to receive(:write)
 
           expect(write_session).to eq(session_id)
         end
       end
 
-      context 'when last write was more than an hour ago' do
-        let(:last_write_at) { 2.hours.ago.to_i }
+      context 'when the expiry scales the interval down to minutes' do
+        let(:redis_expiry) { 30.minutes.to_i }
+        let(:last_write_at) { 5.minutes.ago.to_i }
 
-        it 'writes the session with an updated timestamp' do
+        it 'refreshes the TTL once the scaled interval has elapsed' do
           expect(redis_cache_store).to receive(:write).with(
             session_id.private_id,
             session_data.merge(described_class::LAST_WRITE_AT_KEY => Time.now.to_i),
@@ -117,17 +161,31 @@ RSpec.describe Gitlab::Sessions::CacheStore, feature_category: :cell do
         end
       end
 
-      context 'when there is no last_write_at timestamp' do
-        let(:last_write_at) { nil }
+      context 'when redis_expiry is the unauthenticated session expiry' do
+        let(:redis_expiry) { 2.hours.to_i }
 
-        it 'writes the session with a new timestamp' do
-          expect(redis_cache_store).to receive(:write).with(
-            session_id.private_id,
-            session_data.merge(described_class::LAST_WRITE_AT_KEY => Time.now.to_i),
-            expires_in: redis_expiry
-          )
+        context 'when last write was recent' do
+          let(:last_write_at) { 5.minutes.ago.to_i }
 
-          expect(write_session).to eq(session_id)
+          it 'skips the write and returns the session id' do
+            expect(redis_cache_store).not_to receive(:write)
+
+            expect(write_session).to eq(session_id)
+          end
+        end
+
+        context 'when last write was longer ago than the scaled interval' do
+          let(:last_write_at) { 30.minutes.ago.to_i }
+
+          it 'writes the session with an updated timestamp' do
+            expect(redis_cache_store).to receive(:write).with(
+              session_id.private_id,
+              session_data.merge(described_class::LAST_WRITE_AT_KEY => Time.now.to_i),
+              expires_in: redis_expiry
+            )
+
+            expect(write_session).to eq(session_id)
+          end
         end
       end
     end

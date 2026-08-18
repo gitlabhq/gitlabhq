@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { GREEN_BOX_IMAGE_URL, DUMMY_IMAGE_BLOB_PATH } from 'spec/test_constants';
 import ImageViewer from '~/vue_shared/components/content_viewer/viewers/image_viewer.vue';
 
@@ -60,6 +61,24 @@ describe('Image Viewer', () => {
       });
 
       expect(wrapper.find('img').element.src).toBe('/url/hello%20.jpg');
+    });
+  });
+
+  describe('img-loaded event', () => {
+    it('emits img-loaded with the image dimensions when the image loads', async () => {
+      jest.spyOn(global, 'requestIdleCallback').mockImplementation((cb) => cb());
+      wrapper = shallowMount(ImageViewer, { propsData: { path: GREEN_BOX_IMAGE_URL } });
+
+      const img = wrapper.find('img');
+      Object.defineProperty(img.element, 'naturalWidth', { value: 300 });
+      Object.defineProperty(img.element, 'naturalHeight', { value: 200 });
+
+      await img.trigger('load');
+      await nextTick();
+
+      expect(wrapper.emitted('img-loaded').at(-1)).toEqual([
+        { width: 300, height: 200, renderedWidth: 0, renderedHeight: 0 },
+      ]);
     });
   });
 });

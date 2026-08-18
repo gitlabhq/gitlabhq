@@ -63,12 +63,12 @@ describe('ScanProfileTable', () => {
 
     it('renders scanner type from promo item', () => {
       expect(wrapper.text()).toContain('SD');
-      expect(wrapper.text()).toContain('Secret Detection');
+      expect(wrapper.text()).toContain('Secret detection');
     });
 
     it('renders Dependency Scanning scanner type', () => {
       expect(wrapper.text()).toContain('DS');
-      expect(wrapper.text()).toContain('Dependency Scanning');
+      expect(wrapper.text()).toContain('Dependency scanning');
     });
 
     it('renders "No profile applied"', () => {

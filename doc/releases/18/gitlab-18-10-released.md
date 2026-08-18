@@ -262,7 +262,7 @@ Previously, blob search was limited to a single project, or required specifying 
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- Links: [Documentation](../../user/gitlab_duo/model_context_protocol/mcp_server_tools.md#manage_pipeline) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826)
+- Links: [Documentation](../../user/model_context_protocol/mcp_server_tools.md#manage_pipeline) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826)
 
 {{< /details >}}
 

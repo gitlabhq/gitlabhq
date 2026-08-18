@@ -14,8 +14,8 @@ title: Machine learning model experiments
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 15.11.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/9341) in GitLab 15.11.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/9341) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -32,7 +32,7 @@ short-lived (results from hyperparameter tuning triggered by a merge request),
 but usually hold model runs that have a similar set of parameters measured
 by the same metrics.
 
-![Model experiment table showing models and their number of runs, creator and last activity.](img/experiments_v17_9.png)
+![Model experiment table showing models and their number of runs, creator, and last activity.](img/experiments_v17_9.png)
 
 ## Model run
 

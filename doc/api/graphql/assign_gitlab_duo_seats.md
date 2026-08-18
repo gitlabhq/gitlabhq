@@ -13,12 +13,6 @@ title: Assign GitLab Duo seats by using GraphQL
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146620) in GitLab 16.11.
-
-{{< /history >}}
-
 Use this API to assign [GitLab Duo seats](../../user/gitlab_duo/_index.md) to users.
 
 ## Prerequisites

@@ -16,12 +16,6 @@ Use this API to interact with the GitLab Service Ping process.
 
 ## Export Service Ping data
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
-
-{{< /history >}}
-
 Exports the JSON payload collected in Service Ping. If no payload data is available in the application cache, it returns an empty response.
 If payload data is empty, make sure the [Service Ping feature is enabled](../administration/settings/usage_statistics.md#enable-or-disable-service-ping) and
 wait for the cron job to be executed, or generate payload data manually.

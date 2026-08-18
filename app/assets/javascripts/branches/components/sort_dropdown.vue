@@ -4,6 +4,7 @@ import { mergeUrlParams, visitUrl, getParameterValues } from '~/lib/utils/url_ut
 import { s__ } from '~/locale';
 
 export default {
+  name: 'SortDropdown',
   i18n: {
     searchPlaceholder: s__('Branches|Filter by branch name'),
   },

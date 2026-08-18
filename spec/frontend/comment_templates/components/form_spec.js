@@ -53,7 +53,8 @@ const findSavedReplyContentFormGroup = () =>
   wrapper.find('[data-testid="comment-template-content-form-group"]');
 const findSavedReplyFrom = () => wrapper.find('[data-testid="comment-template-form"]');
 const findAlerts = () => wrapper.findAllComponents(GlAlert);
-const findSubmitBtn = () => wrapper.find('[data-testid="comment-template-form-submit-btn"]');
+const findSubmitBtn = () =>
+  wrapper.findComponent('[data-testid="comment-template-form-submit-btn"]');
 
 describe('Comment templates form component', () => {
   describe('creates comment template', () => {

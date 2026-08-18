@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import PdfLab from '~/pdf/index.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'PdfViewer',
@@ -8,6 +9,7 @@ export default {
     PdfLab,
     GlLoadingIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     pdf: {
       type: String,
@@ -44,7 +46,7 @@ export default {
       :pdf="pdf"
       @pdflabload="onLoad"
       @pdflaberror="onError"
-      v-on="$listeners"
+      v-on="glListeners()"
     />
     <p v-if="error" class="!gl-text-center">
       <span v-if="loadError" ref="loadError">

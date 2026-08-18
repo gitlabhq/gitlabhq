@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'ReleaseAssetLinkDelete'
 
       authorize :destroy_release
+      authorize_granular_token permissions: :delete_release_link,
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       ReleaseAssetLinkID = ::Types::GlobalIDType[::Releases::Link]
 

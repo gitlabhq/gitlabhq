@@ -10,7 +10,7 @@ additional_properties:
     description: "Is 'template' when the page is a template"
   property:
     description: "Name of the markup language used by the page"
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 milestone: '17.5'

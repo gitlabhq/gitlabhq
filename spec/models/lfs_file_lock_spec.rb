@@ -29,15 +29,15 @@ RSpec.describe LfsFileLock, feature_category: :source_code_management do
       it 'can be unlocked by the author' do
         user = lfs_file_lock.user
 
-        expect(lfs_file_lock.can_be_unlocked_by?(user, true)).to eq(true)
+        expect(lfs_file_lock.can_be_unlocked_by?(user, true)).to be(true)
       end
 
       it 'can be unlocked by a maintainer' do
-        expect(lfs_file_lock.can_be_unlocked_by?(maintainer, true)).to eq(true)
+        expect(lfs_file_lock.can_be_unlocked_by?(maintainer, true)).to be(true)
       end
 
       it "can't be unlocked by other user" do
-        expect(lfs_file_lock.can_be_unlocked_by?(developer, true)).to eq(false)
+        expect(lfs_file_lock.can_be_unlocked_by?(developer, true)).to be(false)
       end
     end
 
@@ -45,25 +45,25 @@ RSpec.describe LfsFileLock, feature_category: :source_code_management do
       it 'can be unlocked by the author' do
         user = lfs_file_lock.user
 
-        expect(lfs_file_lock.can_be_unlocked_by?(user)).to eq(true)
+        expect(lfs_file_lock.can_be_unlocked_by?(user)).to be(true)
       end
 
       it "can't be unlocked by a maintainer" do
-        expect(lfs_file_lock.can_be_unlocked_by?(maintainer)).to eq(false)
+        expect(lfs_file_lock.can_be_unlocked_by?(maintainer)).to be(false)
       end
 
       it "can't be unlocked by other user" do
-        expect(lfs_file_lock.can_be_unlocked_by?(developer)).to eq(false)
+        expect(lfs_file_lock.can_be_unlocked_by?(developer)).to be(false)
       end
     end
 
     context 'when current_user is nil' do
       it "can't be unlocked" do
-        expect(lfs_file_lock.can_be_unlocked_by?(nil)).to eq(false)
+        expect(lfs_file_lock.can_be_unlocked_by?(nil)).to be(false)
       end
 
       it "can't be unlocked even when forced" do
-        expect(lfs_file_lock.can_be_unlocked_by?(nil, true)).to eq(false)
+        expect(lfs_file_lock.can_be_unlocked_by?(nil, true)).to be(false)
       end
     end
   end

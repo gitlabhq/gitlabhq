@@ -33,45 +33,34 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
 
   context 'scopes' do
     describe '.by_group_and_descendants' do
-      let_it_be(:another_group) { create(:group) }
+      subject(:result) { described_class.by_group_and_descendants(id) }
 
-      subject(:result) { described_class.by_group_and_descendants(group2.id) }
+      context 'when a group id is passed' do
+        let(:id) { group2.id }
 
-      it 'returns groups having group2.id in traversal_ids' do
-        expect(result.pluck(:namespace_id)).to contain_exactly(group2.id, group3.id, group4.id)
-      end
-    end
+        it 'returns groups having group2.id in traversal_ids' do
+          expect(result.pluck(:namespace_id)).to contain_exactly(group2.id, group3.id, group4.id)
+        end
 
-    describe '.by_group_and_descendants_using_covering_index' do
-      subject(:result) { described_class.by_group_and_descendants_using_covering_index(group2.id) }
-
-      it 'returns groups having group2.id in traversal_ids' do
-        expect(result.pluck(:namespace_id)).to contain_exactly(group2.id, group3.id, group4.id)
-      end
-
-      it 'returns the same result as .by_group_and_descendants' do
-        expect(result.pluck(:namespace_id))
-          .to match_array(described_class.by_group_and_descendants(group2.id).pluck(:namespace_id))
-      end
-
-      it 'matches descendants using the traversal_ids prefix instead of the GIN operator' do
-        # The unnest covering index is reached via the prefix form rather than the GIN
-        # `traversal_ids @>` operator; asserting its absence is the meaningful behavioral
-        # difference regardless of the test hierarchy depth.
-        expect(result.to_sql).not_to include('traversal_ids @>')
-      end
-
-      context 'when the namespace mirror does not exist' do
-        subject(:result) { described_class.by_group_and_descendants_using_covering_index(non_existing_record_id) }
-
-        it 'returns no records' do
-          expect(result).to be_empty
+        it 'matches descendants using the traversal_ids prefix instead of the GIN operator' do
+          # The unnest covering index is reached via the prefix form rather than the GIN
+          # `traversal_ids @>` operator; asserting its absence is the meaningful behavioral
+          # difference regardless of the test hierarchy depth.
+          expect(result.to_sql).not_to include('traversal_ids @>')
         end
       end
 
+      context 'when the namespace mirror does not exist' do
+        let(:id) { non_existing_record_id }
+
+        it { is_expected.to be_empty }
+      end
+
       context 'when an array of ids is passed' do
+        let(:id) { [group2.id, group3.id] }
+
         it 'raises ArgumentError' do
-          expect { described_class.by_group_and_descendants_using_covering_index([group2.id, group3.id]) }
+          expect { result }
             .to raise_error(ArgumentError, 'only a single id is supported')
         end
       end

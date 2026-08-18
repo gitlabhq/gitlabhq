@@ -1,0 +1,11 @@
+---
+name: update_package_setting
+description: Grants the ability to update package settings
+boundaries:
+  - group
+  - project
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - update_package_setting

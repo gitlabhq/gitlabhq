@@ -5,7 +5,7 @@ REST API for managing relationships between issues.
 ## List links
 
 ```bash
-glab api "projects/<project_id>/issues/<iid>/links" | jq '.[] | {iid, title, link_type}'
+glab api --method GET "projects/<project_id>/issues/<iid>/links" | jq '.[] | {iid, title, link_type}'
 ```
 
 ## Create links

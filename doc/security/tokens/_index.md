@@ -66,7 +66,7 @@ For example:
 | `api-read-reporting-dashboard` | Read-only API access for a reporting dashboard |
 | `automation-sync-vulnmapper-staging` | Automation script syncing data in staging |
 
-- Be specific. Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
+- Be specific. Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN`, or `default`.
   These make it impossible to identify a token's purpose during an audit.
 - Include the consuming system or tool. If a token is used by a specific application,
   script, or integration, include its name. For example: `terraform-state-backend` or
@@ -80,7 +80,7 @@ For example:
 - Set standardized capitalization and punctuation rules. Using consistent capitalization and separators makes
   it easier to read and search for tokens. For example, using hyphens (-) over underscores (_).
 - Use the description field. The token description field allows you to add additional details such as links
-  to related issues or names of team that uses the token.
+  to related issues or the name of the team that uses the token.
 
 ### Tokens in CI/CD
 
@@ -207,7 +207,7 @@ the Maintainer role.
 
 ## Runner authentication tokens
 
-In GitLab 16.0 and later, to register a runner, you can use a runner authentication token
+To register a runner, you can use a runner authentication token
 instead of a runner registration token. Runner registration tokens are
 [deprecated](../../ci/runners/new_creation_workflow.md).
 
@@ -345,12 +345,22 @@ Prerequisites:
 ### Incoming email token
 
 Each user has an incoming email token that does not expire. The token
-is included in email addresses associated with a personal project.
-You use this token to [create a new issue by email](../../user/project/issues/create_issues.md#by-sending-an-email).
+is included in your personal project-specific email addresses.
+You use this token to create
+[issues](../../user/project/issues/create_issues.md#by-sending-an-email) and
+[merge requests](../../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email)
+by email.
 
-You cannot use this token to access any other data. Anyone who has
-your token can create issues and merge requests as if they were
-you. If you think your token has leaked, reset the token immediately.
+> [!warning]
+> Keep this token secret. Anyone with access to the token can create issues and merge requests
+> as if they were you. If you suspect this token was leaked, reset the token immediately.
+
+#### Reset an incoming email token
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
+1. Under **Incoming email token**, select **reset this token**.
 
 ### Workspace token
 
@@ -412,14 +422,14 @@ as they are designed to be standard identifications.
 | Impersonation token               | `glpat-`           |
 | Project access token              | `glpat-`           |
 | Group access token                | `glpat-`           |
-| Deploy token                      | `gldt-` ([Added in GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/376752)) |
+| Deploy token                      | `gldt-`            |
 | Runner authentication token       | `glrt-` or `glrtr-` if created via registration token |
-| CI/CD Job token                   | `glcbt-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426137) in GitLab 16.8 behind a feature flag named `prefix_ci_build_tokens`. Disabled by default.) <br /> &bull; ([Generally available](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17299) in GitLab 16.9. Feature flag `prefix_ci_build_tokens` removed.) |
+| CI/CD Job token                   | `glcbt-`           |
 | Trigger token                     | `glptt-`           |
 | Feed token                        | `glft-`            |
 | Incoming mail token               | `glimt-`           |
 | GitLab agent for Kubernetes token | `glagent-`         |
 | Workspace token                   | `glwt-` (Added in GitLab 18.2) |
 | GitLab session cookies            | `_gitlab_session=` |
-| SCIM Tokens                       | `glsoat-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435096) in GitLab 16.8 behind a feature flag named `prefix_scim_tokens`. Disabled by default.) <br > &bull; ([Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435423) in GitLab 16.9. Feature flag `prefix_scim_tokens` removed.) |
+| SCIM Tokens                       | `glsoat-`          |
 | Feature Flags Client token        | `glffct-`          |

@@ -35,7 +35,14 @@ To set up a merge request approval policy:
    - **Project name**: `sast-scan-result-policy`.
    - Select the **Enable Static Application Security Testing (SAST)** checkbox.
 1. Select **Create project**.
-1. Go to the newly created project and create [protected branches](../../user/project/repository/branches/protected.md).
+1. To protect the default branch:
+   1. In the top bar, select **Search or go to** and enter `sast-scan-result-policy`.
+   1. In the left sidebar, select **Settings** > **Repository**.
+   1. Expand **Branch rules**.
+   1. Select **Add branch rule** > **Branch name or pattern**.
+   1. From the dropdown list, search for and select `main` (or your default branch), then select **Create branch rule**.
+   1. From the **Allowed to merge** section, select **Edit**, set it to **Maintainers**, then select **Save changes**.
+   1. From the **Allowed to push and merge** section, select **Edit**, set it to **No one**, then select **Save changes**.
 
 ## Add a merge request approval policy
 
@@ -48,11 +55,13 @@ Next, you'll add a merge request approval policy to your test project:
 1. Complete the fields.
    - **Name**: `sast-scan-result-policy`
    - **Policy status**: **Enabled**
-1. Add the following rule:
-
-   ```plaintext
-   IF |Security Scan| from |SAST| find(s) more than |0| |All severity levels| |All vulnerability states| vulnerabilities in an open merge request targeting |All protected branches|
-   ```
+1. Select **Add new rule** and configure the rule:
+   - For scan type, select **security scan** with **SAST**.
+   - For the target, select **all protected branches** with **no exceptions**.
+   - For the vulnerability count, select **more than** and enter `0`.
+1. Under **Global Settings**, configure severity and status:
+   - **Severity is**: **All severity levels**
+   - **Status**: **New** + **All vulnerability states**
 
 1. Set **Actions** to the following:
 

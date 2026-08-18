@@ -39,7 +39,7 @@ module Gitlab
         #
         # The Duo review-instructions file is intentionally NOT here: its fences
         # are reconciled from merged-master content by a separate scheduled job
-        # (see Sync#reconcile_duo_instructions), decoupled from distillation so
+        # (see Sync#reconcile_duo_instructions_fences), decoupled from distillation so
         # a team's distilled MR and the fence update are independently
         # mergeable.
         TOOLING_PATHS = [
@@ -133,31 +133,35 @@ module Gitlab
         end
 
         # Whether a principle's owner_team should be @-mentioned (pinged) in
-        # the MR commit subject and description summary. Defaults to true;
-        # large groups (e.g. all of frontend/rails-backend) set `ping_team:
-        # false` to avoid mass-notifying every member on each weekly MR.
-        def principle_ping_team?(name)
-          principle_config(name)&.fetch('ping_team', true) != false
+        # the MR description summary when no SSOT author could be resolved
+        # (the team ping is only a fallback; resolved authors are pinged
+        # instead). Defaults to true; large groups (e.g. all of
+        # frontend/rails-backend) set `fallback_ping_team: false` to avoid
+        # mass-notifying every member on each weekly MR.
+        def principle_fallback_ping_team?(name)
+          principle_config(name)&.fetch('fallback_ping_team', true) != false
         end
 
-        # Whether the team identified by an owner_team handle should be pinged.
-        # The fan-out groups by handle, so a team is pinged unless *every*
-        # principle it owns opts out (mirrors explicit_slug_for_handle).
-        # Delegates the per-principle check to principle_ping_team? so the
-        # ping_team semantics live in one place.
-        def team_pings?(handle)
+        # Whether the team identified by an owner_team handle should be pinged
+        # when the fallback fires (no SSOT author resolved). The fan-out groups
+        # by handle, so a team is pinged unless *every* principle it owns opts
+        # out (mirrors explicit_slug_for_handle). Delegates the per-principle
+        # check to principle_fallback_ping_team? so the fallback_ping_team
+        # semantics live in one place.
+        def team_fallback_pings?(handle)
           owned = principles.keys.select { |name| principle_owner_team(name) == handle }
           return true if owned.empty?
 
-          owned.any? { |name| principle_ping_team?(name) }
+          owned.any? { |name| principle_fallback_ping_team?(name) }
         end
 
-        # The human-facing label for a team in pinging surfaces: the raw
-        # owner_team handle when the team opts into pings (so it notifies), or
-        # the non-mention team_slug when it does not. CODEOWNERS routing always
+        # The human-facing label for a team on the fallback ping path (used
+        # only when no SSOT author resolved): the raw owner_team handle when
+        # the team opts into fallback pings (so it notifies), or the
+        # non-mention team_slug when it does not. CODEOWNERS routing always
         # uses the real handle regardless of this.
         def team_display(handle)
-          team_pings?(handle) ? handle : team_slug(handle)
+          team_fallback_pings?(handle) ? handle : team_slug(handle)
         end
 
         # URL/branch-safe slug for the per-team branch suffix. Prefers the
@@ -198,14 +202,32 @@ module Gitlab
         def load_frontmatter_data
           Dir.glob(Workspace.safe_join(PRINCIPLES_DIR, '*.md')).each_with_object({}) do |path, data|
             name = File.basename(path, '.md')
-            frontmatter = extract_frontmatter(File.read(path))
+            content = File.read(path)
+            frontmatter = extract_frontmatter(content)
             next unless frontmatter&.key?('source_checksum')
 
             data[name] = {
               checksum: frontmatter['source_checksum'],
-              distilled_at_sha: frontmatter['distilled_at_sha']
+              distilled_at_sha: frontmatter['distilled_at_sha'],
+              source_paths: extract_source_paths(content)
             }
           end
+        end
+
+        # Paths listed in the committed authoritative-sources footer for a
+        # principle's prior distillation. The footer is the durable record of
+        # which manifest sources the agent had already considered.
+        def prior_source_paths(name)
+          path = Workspace.safe_join(principles_path(name))
+          return [] unless File.exist?(path)
+
+          extract_source_paths(File.read(path))
+        end
+
+        def new_sources_for(name, config)
+          prior_sources = prior_source_paths(name)
+
+          reject_known_sources(config.fetch('sources', []), prior_sources)
         end
 
         def extract_frontmatter(content)
@@ -269,29 +291,7 @@ module Gitlab
             if !force && current_checksum == stored_checksum
               puts "  ✅ #{name}: #{Rainbow('up to date').green}"
             else
-              sources = config.fetch('sources', [])
-              distilled_at_sha = stored&.dig(:distilled_at_sha)
-              affected[name] = {
-                config: config,
-                changed_sources: sources,
-                prior_sha: distilled_at_sha
-              }
-
-              reason = if force
-                         'forced'
-                       else
-                         (stored_checksum ? 'sources or docs changed' : 'no previous checksum')
-                       end
-
-              puts "  🔄 #{name}: #{Rainbow('needs update').yellow} (#{reason})"
-
-              if distilled_at_sha
-                source_paths = sources.map { |s| s['path'] }
-                baseline_path = config['baseline']
-                source_paths.unshift(baseline_path) if baseline_path
-                diff_cmd = build_diff_hint(distilled_at_sha, source_paths)
-                puts "     🔍 To see what changed: #{Rainbow(diff_cmd).cyan}"
-              end
+              record_affected_principle(affected, name, config, stored, force)
             end
           end
         end
@@ -498,7 +498,7 @@ module Gitlab
         # fence whose manifest entry exists but whose distilled file has not been
         # generated yet), and orphaned (a fence with neither a distilled file nor
         # a manifest entry). Every category is empty when the file is absent.
-        # Read-only; drives the --check-duo-instructions CI guard.
+        # Read-only; drives the check-fences CI guard.
         #
         # `seeded` is the full set of manifest principle keys, so the guard can
         # tell a valid pending seed from a truly orphaned fence.
@@ -554,6 +554,13 @@ module Gitlab
           lines[first...last].join.rstrip
         end
 
+        def extract_source_paths(content)
+          parts = strip_frontmatter(content).split(/^## Authoritative sources[ \t]*$/, 2)
+          return [] if parts.size < 2
+
+          parts.last.lines.filter_map { |line| line[/\A- (.+?)[\r\n]*\z/, 1]&.strip }
+        end
+
         # Idempotent. Updates existing notes if wording changed.
         def inject_prerequisite_notes
           principles.each_key do |name|
@@ -606,6 +613,41 @@ module Gitlab
         end
 
         private
+
+        def record_affected_principle(affected, name, config, stored, force)
+          sources = config.fetch('sources', [])
+          stored_checksum = stored&.dig(:checksum)
+          distilled_at_sha = stored&.dig(:distilled_at_sha)
+          prior_sources = stored&.dig(:source_paths) || []
+          new_sources = reject_known_sources(sources, prior_sources)
+          affected[name] = {
+            config: config,
+            changed_sources: sources,
+            new_sources: new_sources,
+            prior_sha: distilled_at_sha
+          }
+
+          reason = if force
+                     'forced'
+                   else
+                     (stored_checksum ? 'sources or docs changed' : 'no previous checksum')
+                   end
+
+          puts "  🔄 #{name}: #{Rainbow('needs update').yellow} (#{reason})"
+          puts "     🆕 #{new_sources.size} newly declared source(s)" if new_sources.any?
+          print_diff_hint(distilled_at_sha, config, sources) if distilled_at_sha
+        end
+
+        def reject_known_sources(sources, prior_sources)
+          sources.reject { |source| prior_sources.include?(source['path']) }
+        end
+
+        def print_diff_hint(distilled_at_sha, config, sources)
+          source_paths = sources.map { |source| source['path'] }
+          source_paths.unshift(config['baseline']) if config['baseline']
+          diff_cmd = build_diff_hint(distilled_at_sha, source_paths)
+          puts "     🔍 To see what changed: #{Rainbow(diff_cmd).cyan}"
+        end
 
         # The committed distilled content to build a fence from. Returns nil
         # when the file is absent so a not-yet-distilled fence is left

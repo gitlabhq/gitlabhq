@@ -10,13 +10,14 @@ RSpec.describe Gitlab::Database::Transaction::Observer, feature_category: :datab
 
     around do |example|
       # Emulate production environment when SQL comments come first to avoid truncation
-      Marginalia::Comment.prepend_comment = true
+      prepend_was = ActiveRecord::QueryLogs.prepend_comment
+      ActiveRecord::QueryLogs.prepend_comment = true
       subscriber = described_class.register!
 
       example.run
 
       ActiveSupport::Notifications.unsubscribe(subscriber)
-      Marginalia::Comment.prepend_comment = false
+      ActiveRecord::QueryLogs.prepend_comment = prepend_was
     end
 
     it 'tracks transaction data', :aggregate_failures do

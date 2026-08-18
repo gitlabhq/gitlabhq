@@ -59,6 +59,10 @@ describe('parse', () => {
   },
   "fields": [
     {
+      "_internal": {
+        "Static": "Title",
+      },
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title",
@@ -124,16 +128,38 @@ assignee = currentUser()`),
   },
   "fields": [
     {
+      "_internal": {
+        "Static": "Title",
+      },
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title",
     },
     {
+      "_internal": {
+        "Static": {
+          "AliasedField": [
+            "Assignee",
+            "assignees",
+          ],
+        },
+      },
+      "field": "assignees",
       "key": "assignees",
       "label": "Assignees",
       "name": "assignees",
     },
     {
+      "_internal": {
+        "Static": {
+          "AliasedField": [
+            "Due",
+            "dueDate",
+          ],
+        },
+      },
+      "field": "dueDate",
       "key": "dueDate",
       "label": "Due date",
       "name": "dueDate",
@@ -220,16 +246,38 @@ query: assignee = currentUser()
   },
   "fields": [
     {
+      "_internal": {
+        "Static": "Title",
+      },
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title",
     },
     {
+      "_internal": {
+        "Static": {
+          "AliasedField": [
+            "Assignee",
+            "assignees",
+          ],
+        },
+      },
+      "field": "assignees",
       "key": "assignees",
       "label": "Assignees",
       "name": "assignees",
     },
     {
+      "_internal": {
+        "Static": {
+          "AliasedField": [
+            "Due",
+            "dueDate",
+          ],
+        },
+      },
+      "field": "dueDate",
       "key": "dueDate",
       "label": "Due date",
       "name": "dueDate",

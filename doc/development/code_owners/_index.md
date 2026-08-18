@@ -40,7 +40,7 @@ namespace. Code Owners is an EE-only feature, so the files only exist in the `./
 - `Gitlab::CodeOwners::ReferenceExtractor`: extracts `CODEOWNER` user, group,
   and email references from texts.
   - Defined in `./ee/lib/gitlab/code_owners/reference_extractor.rb`.
-- `Gitlab::CodeOwners::UsersLoader`: the correct `CODEOWNER` file and loads the
+- `Gitlab::CodeOwners::UsersLoader`: finds the correct `CODEOWNER` file and loads the
   content into a `Gitlab::CodeOwners::File` instance.
   - Defined in `./ee/lib/gitlab/code_owners/users_loader.rb`.
 - `Gitlab::CodeOwners::GroupsLoader`: finds the correct `CODEOWNER` file and loads

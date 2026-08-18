@@ -87,7 +87,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 ## Backups
 
-Do not backup or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
+Do not back up or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
 
 [Read more about this and how to reconfigure backups](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 
@@ -232,11 +232,8 @@ Listed below are the most relevant ones and their defaults on a Linux package in
 - `pgbouncer['default_pool_size']` (default: `100`)
   This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
 
-The ideal number for `default_pool_size` must be enough to handle all provisioned services that need to access
-the database. For detailed guidance on calculating the required pool size, see [Tune PostgreSQL](tune.md).
-
-If you are using more than one PgBouncer with an internal Load Balancer, you may be able to divide the
-`default_pool_size` by the number of instances to guarantee an evenly distributed load between them.
+For detailed guidance on sizing `max_client_conn` and `default_pool_size` for your topology,
+see [With PgBouncer](tune.md#with-pgbouncer).
 
 The `pgbouncer['max_client_conn']` is the hard limit of connections PgBouncer can accept. It's unlikely you need
 to change this. If you are hitting that limit, you may want to consider adding additional PgBouncers with an internal
@@ -244,6 +241,18 @@ Load Balancer.
 
 When setting up the limits for a PgBouncer that points to the Geo Tracking Database,
 you can likely ignore `puma` from the equation, as it is only accessing that database sporadically.
+
+### Pooling mode
+
+GitLab requires PgBouncer to run in **transaction pooling mode** (`pool_mode = transaction`).
+In this mode, a backend connection is held only for the duration of a single transaction
+and then returned to the pool. This allows many frontend connections to share a much smaller
+set of backend connections, which is the basis for the `max_connections` reduction described
+in [With PgBouncer](tune.md#with-pgbouncer).
+
+In session mode, each frontend connection holds a backend connection for its entire lifetime.
+The backend pool would not be smaller than the frontend demand, so the `max_connections`
+reduction would not occur.
 
 ## Troubleshooting
 

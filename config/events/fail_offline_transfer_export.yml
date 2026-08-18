@@ -1,0 +1,15 @@
+---
+description: Tracks when an offline transfer export fails
+internal_events: true
+action: fail_offline_transfer_export
+identifiers:
+- user
+product_group: import
+product_categories:
+- importers
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248247
+tiers:
+- free
+- premium
+- ultimate

@@ -65,11 +65,11 @@
   transition: color 0.1s linear;
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     @apply gl-text-link;
   }
 
-  &:focus {
+  &:focus-visible {
     text-decoration: underline;
     outline: none;
   }

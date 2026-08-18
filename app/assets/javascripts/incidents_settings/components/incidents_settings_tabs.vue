@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlTabs, GlTab } from '@gitlab/ui';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
@@ -12,8 +13,9 @@ export default {
     GlTab,
     SettingsBlock,
     PagerDutySettingsForm,
-    ServiceLevelAgreementForm: () =>
-      import('ee_component/incidents_settings/components/service_level_agreement_form.vue'),
+    ServiceLevelAgreementForm: defineAsyncComponent(
+      () => import('ee_component/incidents_settings/components/service_level_agreement_form.vue'),
+    ),
   },
   computed: {
     activeTabs() {

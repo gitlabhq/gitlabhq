@@ -99,31 +99,31 @@ describe('NoteBody', () => {
       wrapper = createWrapper({ isEditing: true });
     });
 
-    it('should emit "cancel:edit" event when cancel event is emitted from the comment form', async () => {
+    it('should emit "cancel-edit" event when cancel event is emitted from the comment form', async () => {
       const wikiCommentForm = wrapper.findComponent(WikiCommentForm);
       wikiCommentForm.vm.$emit('cancel');
 
       await nextTick();
-      expect(wrapper.emitted('cancel:edit')).toHaveLength(1);
+      expect(wrapper.emitted('cancel-edit')).toHaveLength(1);
     });
 
-    it('should emit "creating-note:start" event when creating-note:start event is emitted from the comment form', async () => {
+    it('should emit "creating-note-start" event when creating-note-start event is emitted from the comment form', async () => {
       const wikiCommentForm = wrapper.findComponent(WikiCommentForm);
-      wikiCommentForm.vm.$emit('creating-note:start');
+      wikiCommentForm.vm.$emit('creating-note-start');
       await nextTick();
-      expect(wrapper.emitted('creating-note:start')).toHaveLength(1);
+      expect(wrapper.emitted('creating-note-start')).toHaveLength(1);
     });
 
-    it('should emit "creating-note:done" event when creating-note:done event is emitted from the comment form', async () => {
+    it('should emit "creating-note-done" event when creating-note-done event is emitted from the comment form', async () => {
       const wikiCommentForm = wrapper.findComponent(WikiCommentForm);
-      wikiCommentForm.vm.$emit('creating-note:done');
+      wikiCommentForm.vm.$emit('creating-note-done');
       await nextTick();
-      expect(wrapper.emitted('creating-note:done')).toHaveLength(1);
+      expect(wrapper.emitted('creating-note-done')).toHaveLength(1);
     });
 
-    it('should update note text correctly when creating-note:success event is emitted from the comment form', async () => {
+    it('should update note text correctly when creating-note-success event is emitted from the comment form', async () => {
       const wikiCommentForm = wrapper.findComponent(WikiCommentForm);
-      wikiCommentForm.vm.$emit('creating-note:success', {
+      wikiCommentForm.vm.$emit('creating-note-success', {
         ...note,
         body: 'updated note',
         bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">updated note</p>',

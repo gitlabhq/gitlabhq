@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Releases::Source do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   let(:tag_name) { 'v1.0' }
 

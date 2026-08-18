@@ -10,6 +10,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { resolvers } from '~/graphql_shared/issuable_client';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -73,6 +75,9 @@ import {
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
+import searchMilestonesQuery from '~/vue_shared/components/filtered_search_bar/queries/search_milestones.query.graphql';
+import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
@@ -194,6 +199,7 @@ const subscribeToSavedViewHandler = jest.fn().mockResolvedValue({
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
 let router;
+let apolloProvider;
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -236,18 +242,18 @@ const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 const findGlIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 const findStickySearchContainer = () => wrapper.findByTestId('issuable-sticky-search-container');
 const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
-const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
-const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
+const findResetViewButton = () => wrapper.findComponentByTestId('reset-view-button');
+const findUpdateViewButton = () => wrapper.findComponentByTestId('update-view-button');
 const findSaveChangesSeparator = () => wrapper.findByTestId('save-changes-separator');
 const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
 const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSavedViewsSelectors);
-const findViewNotFoundModal = () => wrapper.findByTestId('view-not-found-modal');
-const findViewLimitWarningModal = () => wrapper.findByTestId('view-limit-warning-modal');
+const findViewNotFoundModal = () => wrapper.findComponentByTestId('view-not-found-modal');
+const findViewLimitWarningModal = () => wrapper.findComponentByTestId('view-limit-warning-modal');
 const findDisplaySettingsDrawer = () => wrapper.findComponent(WorkItemDisplaySettingsDrawer);
-const findDisplaySettingsButton = () => wrapper.findByTestId('display-settings-button');
+const findDisplaySettingsButton = () => wrapper.findComponentByTestId('display-settings-button');
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
-const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
+const findBulkEditStartButton = () => wrapper.findComponentByTestId('bulk-edit-start-button');
 const findServiceDeskEmptyStateWithAnyIssues = () =>
   wrapper.findComponent(EmptyStateWithAnyTickets);
 const findServiceDeskEmptyStateWithoutAnyIssues = () =>
@@ -280,17 +286,20 @@ const mountComponent = async ({
 } = {}) => {
   const { glFeatures: provideGlFeatures, ...restProvide } = provide;
 
-  const apolloProvider = createMockApollo([
-    [namespaceWorkItemTypesQuery, namespaceQueryHandler],
-    [hasWorkItemsQuery, hasWorkItemsHandler],
-    [getWorkItemsCountOnlyQuery, countsOnlyHandler],
-    [getUserWorkItemsPreferences, mockPreferencesHandler],
-    [namespaceSavedViewQuery, savedViewHandler],
-    [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
-    [subscribeToSavedViewMutation, subscribeHandler],
-    [updateWorkItemListUserPreference, userPreferenceMutationResponse],
-    ...additionalHandlers,
-  ]);
+  apolloProvider = createMockApollo(
+    [
+      [namespaceWorkItemTypesQuery, namespaceQueryHandler],
+      [hasWorkItemsQuery, hasWorkItemsHandler],
+      [getWorkItemsCountOnlyQuery, countsOnlyHandler],
+      [getUserWorkItemsPreferences, mockPreferencesHandler],
+      [namespaceSavedViewQuery, savedViewHandler],
+      [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
+      [subscribeToSavedViewMutation, subscribeHandler],
+      [updateWorkItemListUserPreference, userPreferenceMutationResponse],
+      ...additionalHandlers,
+    ],
+    resolvers,
+  );
 
   router = new VueRouter({
     mode: 'history',
@@ -823,6 +832,47 @@ describe('planning-view', () => {
 
         expect(typeToken.operators).toEqual(OPERATORS_IS_NOT_OR);
       });
+
+      describe('when the work item types resolve', () => {
+        const mountWithLateTypes = async (typeParam) => {
+          setWindowLocation(`?type[]=${typeParam}`);
+
+          const workItemTypesConfiguration = ref([]);
+          await mountComponent({
+            provide: {
+              workItemTypesConfiguration: computed(() => workItemTypesConfiguration.value),
+            },
+          });
+
+          return workItemTypesConfiguration;
+        };
+
+        it('keeps the filter value the search bar already has when the type needs no conversion', async () => {
+          const workItemTypesConfiguration = await mountWithLateTypes('8');
+          const filterValue = findFilteredSearchBar().props('initialFilterValue');
+
+          workItemTypesConfiguration.value = [
+            { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', isGroupWorkItemType: true },
+          ];
+          await nextTick();
+
+          expect(findFilteredSearchBar().props('initialFilterValue')).toBe(filterValue);
+        });
+
+        it('converts an old enum type param to its gid', async () => {
+          const workItemTypesConfiguration = await mountWithLateTypes('epic');
+
+          workItemTypesConfiguration.value = [
+            { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', isGroupWorkItemType: true },
+          ];
+          await nextTick();
+
+          expect(findFilteredSearchBar().props('initialFilterValue')).toContainEqual({
+            type: TOKEN_TYPE_TYPE,
+            value: { operator: OPERATOR_IS, data: '8' },
+          });
+        });
+      });
     });
 
     describe('release token', () => {
@@ -852,6 +902,24 @@ describe('planning-view', () => {
           const result = await releaseToken.fetchReleases();
 
           expect(result).toEqual(mockReleases);
+        });
+
+        it('waits for metadata to finish loading before requesting releases', async () => {
+          mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
+          const metadataLoading = ref(true);
+          await mountComponent({
+            provide: { isGroup: false, metadataLoading: computed(() => metadataLoading.value) },
+          });
+
+          const fetchReleasesPromise = getReleaseToken().fetchReleases();
+          await waitForPromises();
+
+          expect(mockAxios.history.get).toHaveLength(0);
+
+          metadataLoading.value = false;
+          await fetchReleasesPromise;
+
+          expect(mockAxios.history.get).toHaveLength(1);
         });
 
         it('returns cached releases when cache is populated', async () => {
@@ -1532,6 +1600,167 @@ describe('planning-view', () => {
     expect(findListView().props('skipQuery')).toBe(true);
   });
 
+  describe('label token fetchLabels', () => {
+    const searchLabelsResponse = {
+      data: {
+        group: {
+          __typename: 'Group',
+          __persist: true,
+          id: 'gid://gitlab/Group/1',
+          labels: {
+            __typename: 'LabelConnection',
+            __persist: true,
+            nodes: [],
+          },
+        },
+      },
+    };
+    const searchLabelsHandler = jest.fn().mockResolvedValue(searchLabelsResponse);
+
+    const getLabelToken = () =>
+      findFilteredSearchBar()
+        .props('tokens')
+        .find((token) => token.type === TOKEN_TYPE_LABEL);
+
+    beforeEach(() => {
+      searchLabelsHandler.mockClear();
+    });
+
+    it('waits for metadata to finish loading before firing searchLabels query', async () => {
+      const metadataLoading = ref(true);
+
+      await mountComponent({
+        provide: { metadataLoading: computed(() => metadataLoading.value) },
+        additionalHandlers: [[searchLabelsQuery, searchLabelsHandler]],
+      });
+
+      const fetchLabelsPromise = getLabelToken().fetchLabels('test');
+      await waitForPromises();
+
+      expect(searchLabelsHandler).not.toHaveBeenCalled();
+
+      metadataLoading.value = false;
+      await fetchLabelsPromise;
+
+      expect(searchLabelsHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires searchLabels query immediately when metadata is already loaded', async () => {
+      await mountComponent({
+        provide: { metadataLoading: false },
+        additionalHandlers: [[searchLabelsQuery, searchLabelsHandler]],
+      });
+
+      await getLabelToken().fetchLabels('test');
+
+      expect(searchLabelsHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('milestone token fetchMilestones', () => {
+    const searchMilestonesResponse = {
+      data: {
+        group: {
+          __typename: 'Group',
+          id: 'gid://gitlab/Group/1',
+          milestones: { __typename: 'MilestoneConnection', nodes: [] },
+        },
+      },
+    };
+    const searchMilestonesHandler = jest.fn().mockResolvedValue(searchMilestonesResponse);
+
+    const getMilestoneToken = () =>
+      findFilteredSearchBar()
+        .props('tokens')
+        .find((token) => token.type === TOKEN_TYPE_MILESTONE);
+
+    beforeEach(() => {
+      searchMilestonesHandler.mockClear();
+    });
+
+    it('waits for metadata to finish loading before firing searchMilestones query', async () => {
+      const metadataLoading = ref(true);
+
+      await mountComponent({
+        provide: { metadataLoading: computed(() => metadataLoading.value) },
+        additionalHandlers: [[searchMilestonesQuery, searchMilestonesHandler]],
+      });
+
+      const fetchMilestonesPromise = getMilestoneToken().fetchMilestones('test');
+      await waitForPromises();
+
+      expect(searchMilestonesHandler).not.toHaveBeenCalled();
+
+      metadataLoading.value = false;
+      await fetchMilestonesPromise;
+
+      expect(searchMilestonesHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires searchMilestones query immediately when metadata is already loaded', async () => {
+      await mountComponent({
+        provide: { metadataLoading: false },
+        additionalHandlers: [[searchMilestonesQuery, searchMilestonesHandler]],
+      });
+
+      await getMilestoneToken().fetchMilestones('test');
+
+      expect(searchMilestonesHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe.each([TOKEN_TYPE_AUTHOR, TOKEN_TYPE_ASSIGNEE])('%s token fetchUsers', (tokenType) => {
+    const usersAutocompleteResponse = {
+      data: {
+        group: {
+          __typename: 'Group',
+          id: 'gid://gitlab/Group/1',
+          autocompleteUsers: [],
+        },
+      },
+    };
+    const usersAutocompleteHandler = jest.fn().mockResolvedValue(usersAutocompleteResponse);
+
+    const getUserToken = () =>
+      findFilteredSearchBar()
+        .props('tokens')
+        .find((token) => token.type === tokenType);
+
+    beforeEach(() => {
+      usersAutocompleteHandler.mockClear();
+    });
+
+    it('waits for metadata to finish loading before firing usersAutocomplete query', async () => {
+      const metadataLoading = ref(true);
+
+      await mountComponent({
+        provide: { metadataLoading: computed(() => metadataLoading.value) },
+        additionalHandlers: [[usersAutocompleteQuery, usersAutocompleteHandler]],
+      });
+
+      const fetchUsersPromise = getUserToken().fetchUsers('test');
+      await waitForPromises();
+
+      expect(usersAutocompleteHandler).not.toHaveBeenCalled();
+
+      metadataLoading.value = false;
+      await fetchUsersPromise;
+
+      expect(usersAutocompleteHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires usersAutocomplete query immediately when metadata is already loaded', async () => {
+      await mountComponent({
+        provide: { metadataLoading: false },
+        additionalHandlers: [[usersAutocompleteQuery, usersAutocompleteHandler]],
+      });
+
+      await getUserToken().fetchUsers('test');
+
+      expect(usersAutocompleteHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('Saved Views', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -1823,6 +2052,49 @@ describe('planning-view', () => {
 
         expect(trackEventSpy).not.toHaveBeenCalledWith('saved_view_view', {}, undefined);
       });
+
+      it('navigates to /work_items with sv_not_found query parameter when saved view is a board view and planningViewBoards is disabled', async () => {
+        const boardSavedView = {
+          ...singleSavedView[0],
+          displaySettings: { viewMode: VIEW_MODE_BOARD },
+        };
+        await mountComponent({
+          savedViewHandler: jest
+            .fn()
+            .mockResolvedValue(savedViewResponseFactory({ savedViews: [boardSavedView] })),
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+        });
+
+        expect(window.location.pathname).toBe('/work_items');
+        expect(window.location.search).toContain('sv_not_found');
+      });
+
+      it.each`
+        message                      | planningViewBoards | listViewExists | boardViewExists
+        ${'falls back to list view'} | ${false}           | ${true}        | ${false}
+        ${'restores board view'}     | ${true}            | ${false}       | ${true}
+      `(
+        '$message from the unsaved draft when planningViewBoards is $planningViewBoards',
+        async ({ planningViewBoards, listViewExists, boardViewExists }) => {
+          localStorage.setItem(
+            'full/path-saved-view-3',
+            JSON.stringify({
+              sortKey: 'UPDATED_DESC',
+              displaySettings: {},
+              viewMode: VIEW_MODE_BOARD,
+            }),
+          );
+
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards } },
+            route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+          });
+
+          expect(window.location.search).not.toContain('sv_not_found');
+          expect(findListView().exists()).toBe(listViewExists);
+          expect(findBoardView().exists()).toBe(boardViewExists);
+        },
+      );
 
       describe('when visiting an unsubscribed view', () => {
         describe('when at subscription limit', () => {
@@ -2248,6 +2520,18 @@ describe('planning-view', () => {
 
           expect(findBulkEditStartButton().exists()).toBe(canAdminIssue);
         });
+      });
+    });
+
+    describe('when board view is active', () => {
+      it('hides the bulk edit button', async () => {
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        expect(findBulkEditStartButton().exists()).toBe(false);
       });
     });
   });
@@ -2710,9 +2994,12 @@ describe('planning-view', () => {
         'rootPageFullPath',
         'queryVariables',
         'collapsedGroups',
+        'groupOrder',
+        'canReorder',
         'activeItem',
         'detailPanelEnabled',
-        'visibleGroups',
+        'preselectedWorkItemType',
+        'canCreateWorkItem',
       ],
       template: '<div />',
     };
@@ -2807,6 +3094,13 @@ describe('planning-view', () => {
           sort: RELATIVE_POSITION_ASC,
           state: STATUS_OPEN,
         });
+      });
+
+      it('passes the preselected work item type to the board view for in-column creation', async () => {
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', 'board');
+        await waitForPromises();
+
+        expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
       });
 
       describe('when board card is selected', () => {
@@ -2975,6 +3269,59 @@ describe('planning-view', () => {
       });
     });
 
+    describe('board feedback link', () => {
+      const findBoardFeedbackLink = () => wrapper.findByTestId('board-feedback-link');
+
+      describe('when planningViewBoards is enabled and board view is active', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: { BoardView: boardViewStub },
+          });
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('renders the feedback link', () => {
+          expect(findBoardFeedbackLink().exists()).toBe(true);
+        });
+
+        it('links to the feedback work item', () => {
+          expect(findBoardFeedbackLink().attributes('href')).toBe(
+            'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
+          );
+        });
+
+        it('opens in a new tab', () => {
+          expect(findBoardFeedbackLink().attributes('target')).toBe('_blank');
+        });
+      });
+
+      describe('when planningViewBoards is enabled but list view is active', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true } },
+          });
+        });
+
+        it('does not render the feedback link', () => {
+          expect(findBoardFeedbackLink().exists()).toBe(false);
+        });
+      });
+
+      describe('when planningViewBoards is disabled', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: false } },
+          });
+        });
+
+        it('does not render the feedback link', () => {
+          expect(findBoardFeedbackLink().exists()).toBe(false);
+        });
+      });
+    });
+
     describe('persistence on a saved view', () => {
       const mountSavedViewWithDrawer = async (savedViewOverride = {}) => {
         const savedView = { ...singleSavedView[0], ...savedViewOverride };
@@ -3057,6 +3404,11 @@ describe('planning-view', () => {
     describe('column collapse', () => {
       const collapsedId = 'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2';
 
+      const readVisibleGroups = () =>
+        apolloProvider.clients.defaultClient.readQuery({
+          query: workItemsGroupByVisibleGroupsQuery,
+        });
+
       const mountAllItemsBoard = async (options = {}) => {
         await mountComponent({
           provide: {
@@ -3084,20 +3436,72 @@ describe('planning-view', () => {
           expect(findBoardView().props('collapsedGroups')).toEqual([collapsedId]);
         });
 
-        it('passes the persisted visible groups to the board view', async () => {
-          await mountAllItemsBoard({
-            mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
+        describe('when visible groups are persisted', () => {
+          beforeEach(async () => {
+            await mountAllItemsBoard({
+              mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
+            });
           });
 
-          expect(findBoardView().props('visibleGroups')).toEqual([collapsedId]);
+          it('hydrates the local visible-groups cache with them', () => {
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: [collapsedId],
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
+          });
         });
 
-        it('defaults visibleGroups to null when none are persisted', async () => {
-          await mountAllItemsBoard({
-            mockPreferencesHandler: preferencesHandlerWith({}),
+        describe('when no visible groups are persisted', () => {
+          beforeEach(async () => {
+            await mountAllItemsBoard({
+              mockPreferencesHandler: preferencesHandlerWith({}),
+            });
           });
 
-          expect(findBoardView().props('visibleGroups')).toBeNull();
+          it('hydrates the local visible-groups cache with null', () => {
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: null,
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
+          });
+        });
+
+        describe('hydration timing', () => {
+          it('does not hydrate the local visible-groups cache until displaySettings resolves', async () => {
+            let resolvePreferences;
+            const deferredHandler = jest.fn(
+              () =>
+                new Promise((resolve) => {
+                  resolvePreferences = resolve;
+                }),
+            );
+
+            await mountComponent({ mockPreferencesHandler: deferredHandler, skipLastWait: true });
+
+            // The preferences query is still in flight, so the selection isn't known yet.
+            // Nothing has written to the local cache — an immediate write here (the bug
+            // this guards against) would make this a real, hydrated value instead of null.
+            expect(readVisibleGroups()).toBeNull();
+
+            resolvePreferences(await preferencesHandlerWith({ visibleGroups: [collapsedId] })());
+            await waitForPromises();
+
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: [collapsedId],
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
+          });
+
+          it('hydrates even when displaySettings fails, so the board is not skipped forever', async () => {
+            await mountComponent({
+              mockPreferencesHandler: jest.fn().mockRejectedValue(new Error('boom')),
+            });
+
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: null,
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
+          });
         });
 
         it('persists a newly collapsed column, merged with existing display settings', async () => {
@@ -3216,6 +3620,148 @@ describe('planning-view', () => {
           expect(saveSavedView).toHaveBeenCalledWith(
             expect.objectContaining({
               displaySettings: expect.objectContaining({ collapsedGroups: [collapsedId] }),
+            }),
+          );
+        });
+      });
+    });
+
+    describe('column reorder', () => {
+      const groupOrder = [
+        'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2',
+        'status:gid://gitlab/WorkItems::Statuses::Custom::Status/1',
+      ];
+
+      const mountAllItemsBoard = async (options = {}) => {
+        await mountComponent({
+          provide: {
+            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+          },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          ...options,
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+      };
+
+      const mountSavedViewBoard = async (displaySettings = {}) => {
+        const savedView = {
+          ...singleSavedView[0],
+          displaySettings: { viewMode: VIEW_MODE_BOARD, ...displaySettings },
+        };
+        await mountComponent({
+          provide: {
+            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+          },
+          savedViewHandler: jest
+            .fn()
+            .mockResolvedValue(savedViewResponseFactory({ savedViews: [savedView] })),
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+        });
+        await waitForPromises();
+      };
+
+      describe('on All Items', () => {
+        it('passes the persisted group order to the board view', async () => {
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ groupOrder }),
+          });
+
+          expect(findBoardView().props('groupOrder')).toEqual(groupOrder);
+        });
+
+        it('lets signed-in users reorder', async () => {
+          await mountAllItemsBoard();
+
+          expect(findBoardView().props('canReorder')).toBe(true);
+        });
+
+        it('does not offer reordering to signed-out users', async () => {
+          await mountAllItemsBoard({ isLoggedInValue: false });
+
+          expect(findBoardView().props('canReorder')).toBe(false);
+        });
+
+        it('persists a reorder, merged with existing display settings', async () => {
+          const mutationHandler = userPrefUpdateHandlerWith({
+            hiddenMetadataKeys: ['labels'],
+            groupOrder,
+          });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { hiddenMetadataKeys: ['labels'], groupOrder },
+          });
+        });
+
+        it('does not call the mutation when signed out', async () => {
+          await mountAllItemsBoard({ isLoggedInValue: false });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        });
+
+        it('shows an alert when persisting the reorder fails', async () => {
+          await mountAllItemsBoard({
+            userPreferenceMutationResponse: jest.fn().mockRejectedValue(new Error('boom')),
+          });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'Something went wrong while saving the preference.',
+            captureError: true,
+            error: expect.any(Error),
+          });
+        });
+      });
+
+      describe('on a saved view', () => {
+        it('writes the reorder to the localStorage draft without calling the mutation', async () => {
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await nextTick();
+
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            'full/path-saved-view-3',
+            expect.stringContaining(groupOrder[0]),
+          );
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('includes the group order in the payload when the view is saved', async () => {
+          saveSavedView.mockResolvedValue({
+            data: { workItemSavedViewUpdate: { errors: [], savedView: singleSavedView[0] } },
+          });
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await nextTick();
+          await findUpdateViewButton().vm.$emit('click');
+          await waitForPromises();
+
+          expect(saveSavedView).toHaveBeenCalledWith(
+            expect.objectContaining({
+              displaySettings: expect.objectContaining({ groupOrder }),
             }),
           );
         });

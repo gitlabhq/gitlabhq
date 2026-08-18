@@ -1,8 +1,8 @@
 ---
 stage: Software Supply Chain Security
 group: Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: CI/CDジョブトークンの詳細なアクセス許可設定
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: CI/CDジョブトークンのきめ細やかな権限
 ---
 
 <!--
@@ -24,64 +24,77 @@ title: CI/CDジョブトークンの詳細なアクセス許可設定
 
 {{< history >}}
 
-- GitLab 17.10で[実験](https://gitlab.com/groups/gitlab-org/-/epics/15234)として[導入](../../policy/development_stages_support.md#experiment)されました。
-- GitLab 18.0で実験からベータに[変更](https://gitlab.com/groups/gitlab-org/-/epics/16199)されました。
+- [導入](https://gitlab.com/groups/gitlab-org/-/epics/15234)（GitLab 17.10で[実験](../../policy/development_stages_support.md#experiment)として）
+- GitLab 18.0で[実験](https://gitlab.com/groups/gitlab-org/-/epics/16199)からベータに変更されました。
 - GitLab 18.3で[一般提供](https://gitlab.com/groups/gitlab-org/-/epics/15258)になりました。
 
 {{< /history >}}
 
-詳細なアクセス許可設定を使用すると、制限された一連のREST APIエンドポイントへのアクセスを明示的に許可できます。これらの権限は、指定されたプロジェクトのCI/CDジョブトークンに適用されます。
+きめ細やかな権限を使用して、限られたREST APIエンドポイントへのアクセスを明示的に許可できます。これらの権限は、指定されたプロジェクトのCI/CDジョブトークンに適用されます。
 
-## ジョブトークン許可リストにきめ細かい権限を追加する {#add-fine-grained-permissions-to-the-job-token-allowlist}
+[イシュー519575](https://gitlab.com/gitlab-org/gitlab/-/issues/519575)でフィードバックを共有してください。
 
-前提要件: 
+## ジョブトークン許可リストにきめ細やかな権限を追加 {#add-fine-grained-permissions-to-the-job-token-allowlist}
 
-- プロジェクトのメンテナー以上のロールを持っている必要があります。
-- プロジェクトできめ細かい権限の使用を有効にする必要があります。
+前提条件: 
 
-ジョブトークン許可リストのグループとプロジェクトに、きめ細かい権限を追加できます。これにより、ジョブトークンを使用して特定のプロジェクトリソースにアクセスし、これらのグループとプロジェクトで利用できるリソースをより正確に制御できます。
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
+- プロジェクトできめ細やかな権限の使用を有効にする必要があります。
 
-ジョブトークン許可リストのグループまたはプロジェクトに、きめ細かい権限を追加するには、次の手順に従います:
+ジョブトークン許可リストに、グループおよびプロジェクトのきめ細やかな権限を追加できます。これにより、ジョブトークンを使用して特定のプロジェクトリソースにアクセスし、これらのグループやプロジェクトで利用できるリソースをより正確に制御できます。
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. **設定 > CI/CD**を選択します。
+ジョブトークン許可リストのグループまたはプロジェクトにきめ細やかな権限を追加するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **設定** > **CI/CD**を選択します。
 1. **ジョブトークンの権限**を展開します。
 1. **CI/CDジョブトークン許可リスト**セクションで、**追加**を選択します。
 1. ドロップダウンリストから、**グループまたはプロジェクト**を選択します。
 1. 既存のグループまたはプロジェクトへのパスを入力します。
-1. **詳細なアクセス許可設定**を選択します。
+1. **きめ細やかな権限を持つアクセス許可**を選択します。
 1. [利用可能なAPIエンドポイント](#available-api-endpoints)に権限を付与します。
 1. **追加**を選択します。
 
-GitLabは、指定された権限を持つジョブトークン許可リストにグループまたはプロジェクトを追加します。グループまたはプロジェクトは、現在のプロジェクトで許可されているすべてのリソースにアクセスできるようになりました。
+GitLabは、指定された権限を持つグループまたはプロジェクトをジョブトークン許可リストに追加します。グループまたはプロジェクトは、現在のプロジェクトで許可されているリソースにアクセスできるようになります。
 
 ## 利用可能なAPIエンドポイント {#available-api-endpoints}
 
-CI/CDジョブトークンは、次のREST APIエンドポイントにアクセスできます:
+CI/CDジョブトークンは、以下のREST APIエンドポイントにアクセスできます:
+
+### バッジエンドポイント {#badges-endpoints}
+
+| 権限 | APIエンドポイント | 権限名 | スコープ |
+| ---------- | ------------ | --------------- | ----- |
+| プロジェクトのすべてのバッジを一覧表示 | `GET /projects/:id/badges` | `READ_BADGES` | 読み取り |
+| プロジェクトのバッジを取得する | `GET /projects/:id/badges/:badge_id` | `READ_BADGES` | 読み取り |
+| プロジェクトのバッジを作成 | `POST /projects/:id/badges` | `ADMIN_BADGES` | 読み取りと書き込み |
+| プロジェクトからバッジを削除 | `DELETE /projects/:id/badges/:badge_id` | `ADMIN_BADGES` | 読み取りと書き込み |
+| プロジェクトのバッジプレビューを取得する | `GET /projects/:id/badges/render` | `ADMIN_BADGES` | 読み取りと書き込み |
+| プロジェクトのバッジを更新 | `PUT /projects/:id/badges/:badge_id` | `ADMIN_BADGES` | 読み取りと書き込み |
 
 ### デプロイエンドポイント {#deployments-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| 特定のデプロイを取得 | `GET /projects/:id/deployments/:deployment_id` | `READ_DEPLOYMENTS` | 読み取り |
-| 特定のデプロイに関連付けられたマージリクエストの一覧 | `GET /projects/:id/deployments/:deployment_id/merge_requests` | `READ_DEPLOYMENTS` | 読み取り |
-| プロジェクトのデプロイの一覧 | `GET /projects/:id/deployments` | `READ_DEPLOYMENTS` | 読み取り |
-| ブロックされたデプロイを承認または拒否 | `POST /projects/:id/deployments/:deployment_id/approval` | `ADMIN_DEPLOYMENTS` | 読み取りと書き込み |
-| デプロイを作成する | `POST /projects/:id/deployments` | `ADMIN_DEPLOYMENTS`、`ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
-| 特定のデプロイを削除 | `DELETE /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | 読み取りと書き込み |
-| デプロイを更新する | `PUT /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | 読み取りと書き込み |
+| デプロイに関連付けられているすべてのマージリクエストを一覧表示 | `GET /projects/:id/deployments/:deployment_id/merge_requests` | `READ_DEPLOYMENTS` | 読み取り |
+| すべてのプロジェクトデプロイを一覧表示 | `GET /projects/:id/deployments` | `READ_DEPLOYMENTS` | 読み取り |
+| デプロイを取得する | `GET /projects/:id/deployments/:deployment_id` | `READ_DEPLOYMENTS` | 読み取り |
+| デプロイを承認または却下する | `POST /projects/:id/deployments/:deployment_id/approval` | `ADMIN_DEPLOYMENTS` | 読み取りと書き込み |
+| デプロイを作成 | `POST /projects/:id/deployments` | `ADMIN_DEPLOYMENTS`、`ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
+| デプロイを削除 | `DELETE /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | 読み取りと書き込み |
+| デプロイを更新 | `PUT /projects/:id/deployments/:deployment_id` | `ADMIN_DEPLOYMENTS` | 読み取りと書き込み |
 
 ### 環境エンドポイント {#environments-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| 特定の環境を取得 | `GET /projects/:id/environments/:environment_id` | `READ_ENVIRONMENTS` | 読み取り |
-| 環境の一覧 | `GET /projects/:id/environments` | `READ_ENVIRONMENTS` | 読み取り |
-| 新しい環境を作成 | `POST /projects/:id/environments` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
+| すべての環境を一覧表示 | `GET /projects/:id/environments` | `READ_ENVIRONMENTS` | 読み取り |
+| 環境を取得する | `GET /projects/:id/environments/:environment_id` | `READ_ENVIRONMENTS` | 読み取り |
+| 環境を作成 | `POST /projects/:id/environments` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
 | 環境を削除する | `DELETE /projects/:id/environments/:environment_id` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
-| 停止した複数のレビューアプリを削除 | `DELETE /projects/:id/environments/review_apps` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
-| 環境を停止します。 | `POST /projects/:id/environments/:environment_id/stop` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
-| 古くなった環境を停止 | `POST /projects/:id/environments/stop_stale` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
+| 複数の停止したレビューアプリの削除をスケジュール | `DELETE /projects/:id/environments/review_apps` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
+| 環境を停止 | `POST /projects/:id/environments/:environment_id/stop` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
+| 古い環境を停止 | `POST /projects/:id/environments/stop_stale` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
 | 既存の環境を更新 | `PUT /projects/:id/environments/:environment_id` | `ADMIN_ENVIRONMENTS` | 読み取りと書き込み |
 
 ### ジョブエンドポイント {#jobs-endpoints}
@@ -89,166 +102,169 @@ CI/CDジョブトークンは、次のREST APIエンドポイントにアクセ�
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
 | アーティファクトアーカイブから特定のファイルをダウンロード | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | `READ_JOBS` | 読み取り |
-| refsからアーティファクトアーカイブから特定のファイルをダウンロード | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | 読み取り |
-| ジョブからアーティファクトアーカイブをダウンロードします | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | 読み取り |
-| ジョブからアーティファクトアーカイブをダウンロードします | `GET /projects/:id/jobs/artifacts/:ref_name/download` | `READ_JOBS` | 読み取り |
-| ジョブのアーティファクトファイルをダウンロード | `GET /jobs/:id/artifacts` | `READ_JOBS` | 読み取り |
-| プロジェクトジョブを取得 | `GET /projects/:id/jobs` | `READ_JOBS` | 読み取り |
-| パイプラインジョブを取得します | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | 読み取り |
+| 参照からアーティファクトアーカイブの特定のファイルをダウンロード | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | 読み取り |
+| ジョブアーティファクトをダウンロードする | `GET /jobs/:id/artifacts` | `READ_JOBS` | 読み取り |
+| ジョブからアーティファクトアーカイブをダウンロード | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | 読み取り |
+| アーティファクトアーカイブ内のすべてのファイルを一覧表示 | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | 読み取り |
+| パイプライン別にすべてのジョブを一覧表示 | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | 読み取り |
+| プロジェクトのすべてのジョブを一覧表示 | `GET /projects/:id/jobs` | `READ_JOBS` | 読み取り |
+| ジョブアーティファクトを取得する | `GET /projects/:id/jobs/artifacts/:ref_name/download` | `READ_JOBS` | 読み取り |
 
 ### マージリクエストエンドポイント {#merge-requests-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| マージリクエストノートのリストを取得します | `GET /projects/:id/merge_requests/:noteable_id/notes` | `READ_MERGE_REQUESTS` | 読み取り |
-| 単一のマージリクエストノートを取得する | `GET /projects/:id/merge_requests/:noteable_id/notes/:note_id` | `READ_MERGE_REQUESTS` | 読み取り |
-| 単一のマージリクエストを取得します | `GET /projects/:id/merge_requests/:merge_request_iid` | `READ_MERGE_REQUESTS` | 読み取り |
-| プロジェクトマージリクエストをリストする | `GET /projects/:id/merge_requests` | `READ_MERGE_REQUESTS` | 読み取り |
+| すべてのマージリクエストノートをリストする | `GET /projects/:id/merge_requests/:noteable_id/notes` | `READ_MERGE_REQUESTS` | 読み取り |
+| すべてのプロジェクトマージリクエストを一覧表示 | `GET /projects/:id/merge_requests` | `READ_MERGE_REQUESTS` | 読み取り |
+| マージリクエストを取得する | `GET /projects/:id/merge_requests/:merge_request_iid` | `READ_MERGE_REQUESTS` | 読み取り |
+| マージリクエストノートを取得する | `GET /projects/:id/merge_requests/:noteable_id/notes/:note_id` | `READ_MERGE_REQUESTS` | 読み取り |
 
 ### パッケージエンドポイント {#packages-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
 | パッケージアーカイブをダウンロードするためのComposerパッケージエンドポイント | `GET /projects/:id/packages/composer/archives/*package_name` | `READ_PACKAGES` | 読み取り |
-| パッケージファイルをダウンロードする | `GET /projects/:id/packages/:package_id/package_files/:package_file_id/download` | `READ_PACKAGES` | 読み取り |
+| パッケージファイルをダウンロード | `GET /projects/:id/packages/:package_id/package_files/:package_file_id/download` | `READ_PACKAGES` | 読み取り |
 | モジュールファイルをダウンロード | `GET /projects/:id/packages/go/*module_name/@v/:module_version.mod` | `READ_PACKAGES` | 読み取り |
 | モジュールソースをダウンロード | `GET /projects/:id/packages/go/*module_name/@v/:module_version.zip` | `READ_PACKAGES` | 読み取り |
 | パッケージファイルをダウンロード | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `READ_PACKAGES` | 読み取り |
-| パッケージファイルをダウンロード | `GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `READ_PACKAGES` | 読み取り |
-| パッケージファイルをダウンロード | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `READ_PACKAGES` | 読み取り |
-| パッケージファイルをダウンロード | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name` | `READ_PACKAGES` | 読み取り |
-| レシピファイルをダウンロード | `GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `READ_PACKAGES` | 読み取り |
-| レシピファイルをダウンロード | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `READ_PACKAGES` | 読み取り |
-| レシピファイルをダウンロード | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | `READ_PACKAGES` | 読み取り |
 | NPM tarballをダウンロード | `GET /projects/:id/packages/npm/*package_name/-/*file_name` | `READ_PACKAGES` | 読み取り |
-| グループレベルでmavenパッケージファイルをダウンロード | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | 読み取り |
-| プロジェクトレベルでmavenパッケージファイルをダウンロード | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | 読み取り |
-| インスタンスレベルでmavenパッケージファイルをダウンロード | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | 読み取り |
-| プロジェクトのパッケージのリストを取得する | `GET /projects/:id/packages` | `READ_PACKAGES` | 読み取り |
-| 単一のプロジェクトパッケージを取得します | `GET /projects/:id/packages/:package_id` | `READ_PACKAGES` | 読み取り |
-| 特定のNPMパッケージに指定されたすべてのタグを取得 | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | 読み取り |
-| 特定のNPMパッケージに指定されたすべてのタグを取得 | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | 読み取り |
-| 特定のNPMパッケージに指定されたすべてのタグを取得 | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | 読み取り |
-| パッケージ参照メタデータを取得 | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search` | `READ_PACKAGES` | 読み取り |
-| パッケージ参照メタデータを取得 | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search` | `READ_PACKAGES` | 読み取り |
-| パッケージ参照メタデータを取得 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search` | `READ_PACKAGES` | 読み取り |
-| パッケージ参照メタデータを取得 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/search` | `READ_PACKAGES` | 読み取り |
-| 最新のパッケージリビジョンを取得 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest` | `READ_PACKAGES` | 読み取り |
-| 最新のレシピリビジョンを取得 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest` | `READ_PACKAGES` | 読み取り |
-| パッケージリビジョンの一覧を取得 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions` | `READ_PACKAGES` | 読み取り |
-| リビジョンの一覧を取得 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | `READ_PACKAGES` | 読み取り |
+| グループレベルでMavenパッケージファイルをダウンロード | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | 読み取り |
+| プロジェクトレベルでMavenパッケージファイルをダウンロード | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | 読み取り |
+| インスタンスレベルでMavenパッケージファイルをダウンロード | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | 読み取り |
+| 指定されたNPMパッケージのすべてのタグを取得 | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | 読み取り |
+| 指定されたNPMパッケージのすべてのタグを取得 | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | 読み取り |
+| 指定されたNPMパッケージのすべてのタグを取得 | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | 読み取り |
 | リスト | `GET /projects/:id/packages/go/*module_name/@v/list` | `READ_PACKAGES` | 読み取り |
-| パッケージファイルをリストする | `GET /projects/:id/packages/:package_id/package_files` | `READ_PACKAGES` | 読み取り |
-| パッケージファイルをリストする | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files` | `READ_PACKAGES` | 読み取り |
-| レシピファイルの一覧 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリの一括アドバイザリエンドポイント | `POST /groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリの一括アドバイザリエンドポイント | `POST /packages/npm/-/npm/v1/security/advisories/bulk` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリの一括アドバイザリエンドポイント | `POST /projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリのメタデータエンドポイント | `GET /projects/:id/packages/npm/*package_name` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリのクイック監査エンドポイント | `POST /groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリのクイック監査エンドポイント | `POST /packages/npm/-/npm/v1/security/audits/quick` | `READ_PACKAGES` | 読み取り |
-| NPMレジストリのクイック監査エンドポイント | `POST /projects/:id/packages/npm/-/npm/v1/security/audits/quick` | `READ_PACKAGES` | 読み取り |
-| パッケージダイジェスト | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest` | `READ_PACKAGES` | 読み取り |
-| パッケージダイジェスト | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest` | `READ_PACKAGES` | 読み取り |
-| パッケージダウンロードURL | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | 読み取り |
-| パッケージダウンロードURL | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | 読み取り |
-| パッケージスナップショット | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference` | `READ_PACKAGES` | 読み取り |
-| パッケージスナップショット | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference` | `READ_PACKAGES` | 読み取り |
-| パッケージアップロードURL | `POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` | `READ_PACKAGES` | 読み取り |
-| パッケージアップロードURL | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` | `READ_PACKAGES` | 読み取り |
-| レシピダイジェスト | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | `READ_PACKAGES` | 読み取り |
-| レシピダイジェスト | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | `READ_PACKAGES` | 読み取り |
-| レシピダウンロードURL | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls` | `READ_PACKAGES` | 読み取り |
-| レシピダウンロードURL | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls` | `READ_PACKAGES` | 読み取り |
-| レシピスナップショット | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `READ_PACKAGES` | 読み取り |
-| レシピスナップショット | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `READ_PACKAGES` | 読み取り |
-| レシピアップロードURL | `POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | `READ_PACKAGES` | 読み取り |
-| レシピアップロードURL | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | `READ_PACKAGES` | 読み取り |
-| PyPi Simple Projectインデックスエンドポイント | `GET /projects/:id/packages/pypi/simple` | `READ_PACKAGES` | 読み取り |
-| PyPi Simple Projectパッケージエンドポイント | `GET /projects/:id/packages/pypi/simple/*package_name` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージダウンロードURLを一覧表示 | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージダウンロードURLを一覧表示 | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージファイルを一覧表示 | `GET /projects/:id/packages/:package_id/package_files` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージファイルを一覧表示 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージリビジョンを一覧表示 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージアップロードURLを一覧表示 | `POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` | `READ_PACKAGES` | 読み取り |
+| すべてのパッケージアップロードURLを一覧表示 | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` | `READ_PACKAGES` | 読み取り |
+| プロジェクトのすべてのパッケージを一覧表示 | `GET /projects/:id/packages` | `READ_PACKAGES` | 読み取り |
+| プロジェクトのすべてのパッケージを一覧表示 | `GET /projects/:id/packages/pypi/simple` | `READ_PACKAGES` | 読み取り |
+| すべてのレシピダウンロードURLを一覧表示 | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls` | `READ_PACKAGES` | 読み取り |
+| すべてのレシピダウンロードURLを一覧表示 | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls` | `READ_PACKAGES` | 読み取り |
+| すべてのレシピファイルを一覧表示 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files` | `READ_PACKAGES` | 読み取り |
+| すべてのレシピリビジョンを一覧表示 | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | `READ_PACKAGES` | 読み取り |
+| すべてのレシピアップロードURLを一覧表示 | `POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | `READ_PACKAGES` | 読み取り |
+| すべてのレシピアップロードURLを一覧表示 | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリ一括アドバイザリエンドポイント | `POST /groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリ一括アドバイザリエンドポイント | `POST /packages/npm/-/npm/v1/security/advisories/bulk` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリ一括アドバイザリエンドポイント | `POST /projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリメタデータエンドポイント | `GET /projects/:id/packages/npm/*package_name` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリクイック監査エンドポイント | `POST /groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリクイック監査エンドポイント | `POST /packages/npm/-/npm/v1/security/audits/quick` | `READ_PACKAGES` | 読み取り |
+| NPMレジストリクイック監査エンドポイント | `POST /projects/:id/packages/npm/-/npm/v1/security/audits/quick` | `READ_PACKAGES` | 読み取り |
+| パッケージファイルを取得する | `GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `READ_PACKAGES` | 読み取り |
+| パッケージファイルを取得する | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `READ_PACKAGES` | 読み取り |
+| パッケージファイルを取得する | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name` | `READ_PACKAGES` | 読み取り |
+| パッケージマニフェストを取得する | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest` | `READ_PACKAGES` | 読み取り |
+| パッケージマニフェストを取得する | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest` | `READ_PACKAGES` | 読み取り |
+| パッケージスナップショットを取得する | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference` | `READ_PACKAGES` | 読み取り |
+| パッケージスナップショットを取得する | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference` | `READ_PACKAGES` | 読み取り |
+| プロジェクトパッケージを取得する | `GET /projects/:id/packages/:package_id` | `READ_PACKAGES` | 読み取り |
+| レシピファイルを取得する | `GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `READ_PACKAGES` | 読み取り |
+| レシピファイルを取得する | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `READ_PACKAGES` | 読み取り |
+| レシピファイルを取得する | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | `READ_PACKAGES` | 読み取り |
+| レシピマニフェストを取得する | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | `READ_PACKAGES` | 読み取り |
+| レシピマニフェストを取得する | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | `READ_PACKAGES` | 読み取り |
+| レシピスナップショットを取得する | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `READ_PACKAGES` | 読み取り |
+| レシピスナップショットを取得する | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `READ_PACKAGES` | 読み取り |
+| 最新のパッケージリビジョンを取得する | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest` | `READ_PACKAGES` | 読み取り |
+| 最新のレシピリビジョンを取得する | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest` | `READ_PACKAGES` | 読み取り |
+| パッケージ参照メタデータを取得する | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search` | `READ_PACKAGES` | 読み取り |
+| パッケージ参照メタデータを取得する | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search` | `READ_PACKAGES` | 読み取り |
+| パッケージ参照メタデータを取得する | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/search` | `READ_PACKAGES` | 読み取り |
+| レシピリビジョン別にパッケージ参照メタデータを取得する | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search` | `READ_PACKAGES` | 読み取り |
+| PyPiシンプルプロジェクトパッケージエンドポイント | `GET /projects/:id/packages/pypi/simple/*package_name` | `READ_PACKAGES` | 読み取り |
 | PyPiパッケージダウンロードエンドポイント | `GET /projects/:id/packages/pypi/files/:sha256/*file_identifier` | `READ_PACKAGES` | 読み取り |
 | バージョンメタデータ | `GET /projects/:id/packages/go/*module_name/@v/:module_version.info` | `READ_PACKAGES` | 読み取り |
-| NPMパッケージのアップロードを承認 | `PUT /projects/:id/packages/npm/:package_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| workhorseからのPyPiパッケージアップロードを承認 | `POST /projects/:id/packages/pypi/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージを登録するためのComposerパッケージエンドポイント | `POST /projects/:id/packages/composer` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| 指定されたNPMパッケージとバージョンに対して指定されたタグを作成または更新 | `PUT /groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| 指定されたNPMパッケージとバージョンに対して指定されたタグを作成または更新 | `PUT /packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| 指定されたNPMパッケージとバージョンに対して指定されたタグを作成または更新 | `PUT /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| NPMパッケージを作成または非推奨にする | `PUT /projects/:id/packages/npm/:package_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージを削除 | `DELETE /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージを削除 | `DELETE /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| NPMパッケージアップロードを承認 | `PUT /projects/:id/packages/npm/:package_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseからのPyPiパッケージアップロードを承認 | `POST /projects/:id/packages/pypi/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| パッケージを作成 | `POST /projects/:id/packages/composer` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| 指定されたNPMパッケージおよびバージョンのタグを作成または更新 | `PUT /groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| 指定されたNPMパッケージおよびバージョンのタグを作成または更新 | `PUT /packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| 指定されたNPMパッケージおよびバージョンのタグを作成または更新 | `PUT /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| NPMパッケージを作成または非推奨化 | `PUT /projects/:id/packages/npm/:package_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | パッケージファイルを削除する | `DELETE /projects/:id/packages/:package_id/package_files/:package_file_id` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| プロジェクトパッケージを削除する | `DELETE /projects/:id/packages/:package_id` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | パッケージリビジョンを削除 | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| プロジェクトパッケージを削除する | `DELETE /projects/:id/packages/:package_id` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| レシピとパッケージを削除 | `DELETE /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| レシピとパッケージを削除 | `DELETE /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | レシピリビジョンを削除 | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | 指定されたタグを削除 | `DELETE /groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | 指定されたタグを削除 | `DELETE /packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | 指定されたタグを削除 | `DELETE /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| PyPiパッケージアップロードエンドポイント | `POST /projects/:id/packages/pypi` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージファイルをアップロード | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| パッケージをアップロード | `POST /projects/:id/packages/pypi` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | パッケージファイルをアップロード | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | パッケージファイルをアップロード | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 | パッケージファイルをアップロード | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージファイルをアップロード | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージファイルをアップロード | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パッケージファイルをアップロード | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| Workhorseは汎用パッケージファイルを承認 | `PUT /projects/:id/packages/maven/*path/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanパッケージファイルを承認 | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanパッケージファイルを承認 | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanパッケージファイルを承認 | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanパッケージファイルを承認 | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanのレシピファイルを承認 | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanのレシピファイルを承認 | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| WorkhorseはConanのレシピファイルを承認 | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
-| パイプラインエンドポイント | `PUT /projects/:id/packages/maven/*path/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| レシピファイルをアップロード | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| レシピファイルをアップロード | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| レシピファイルをアップロード | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| パッケージファイルをアップロード | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| Mavenパッケージファイルをアップロード | `PUT /projects/:id/packages/maven/*path/:file_name` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| Workhorseが汎用パッケージファイルを承認 | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがConanパッケージファイルを承認 | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがConanパッケージファイルを承認 | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがConanパッケージファイルを承認 | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがConanレシピファイルを承認 | `PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがConanレシピファイルを承認 | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがConanレシピファイルを承認 | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
+| WorkhorseがMavenパッケージファイルのアップロードを承認 | `PUT /projects/:id/packages/maven/*path/:file_name/authorize` | `ADMIN_PACKAGES` | 読み取りと書き込み |
 
 ### パイプラインエンドポイント {#pipelines-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| プロジェクトのすべてのパイプラインを取得します | `GET /projects/:id/pipelines` | `READ_PIPELINES` | 読み取り |
-| パイプラインブリッジジョブを取得 | `GET /projects/:id/pipelines/:pipeline_id/bridges` | `READ_PIPELINES` | 読み取り |
-| 単一プロジェクトのパッケージのパイプラインを取得 | `GET /projects/:id/packages/:package_id/pipelines` | `READ_PIPELINES` | 読み取り |
-| プロジェクトの特定のパイプラインを取得 | `GET /projects/:id/pipelines/:pipeline_id` | `READ_PIPELINES` | 読み取り |
-| パイプラインメタデータを更新 | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | `ADMIN_PIPELINES` | 読み取りと書き込み |
+| パイプライン別にすべてのブリッジジョブを一覧表示 | `GET /projects/:id/pipelines/:pipeline_id/bridges` | `READ_PIPELINES` | 読み取り |
+| すべてのパッケージパイプラインを一覧表示 | `GET /projects/:id/packages/:package_id/pipelines` | `READ_PIPELINES` | 読み取り |
+| すべてのプロジェクトパイプラインを一覧表示 | `GET /projects/:id/pipelines` | `READ_PIPELINES` | 読み取り |
+| パイプライン別にすべてのトリガージョブを一覧表示 | `GET /projects/:id/pipelines/:pipeline_id/trigger_jobs` | `READ_PIPELINES` | 読み取り |
+| パイプラインを取得する | `GET /projects/:id/pipelines/:pipeline_id` | `READ_PIPELINES` | 読み取り |
+| パイプラインメタデータを更新する | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | `ADMIN_PIPELINES` | 読み取りと書き込み |
 
 ### リリースエンドポイント {#releases-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| プロジェクトリリースリリースアセットファイルをダウンロード | `GET /projects/:id/releases/:tag_name/downloads/*direct_asset_path` | `READ_RELEASES` | 読み取り |
-| リリースの変更履歴セクションを生成して返す | `GET /projects/:id/repository/changelog` | `READ_RELEASES` | 読み取り |
-| タグ名でリリースを取得する | `GET /projects/:id/releases/:tag_name` | `READ_RELEASES` | 読み取り |
-| リリースリンクを取得 | `GET /projects/:id/releases/:tag_name/assets/links/:link_id` | `READ_RELEASES` | 読み取り |
+| プロジェクトのリリースアセットファイルをダウンロード | `GET /projects/:id/releases/:tag_name/downloads/*direct_asset_path` | `READ_RELEASES` | 読み取り |
+| 変更履歴データを生成する | `GET /projects/:id/repository/changelog` | `READ_RELEASES` | 読み取り |
 | 最新のプロジェクトリリースを取得 | `GET /projects/:id/releases/permalink/latest(/)(*suffix_path)` | `READ_RELEASES` | 読み取り |
-| リリースをリストする | `GET /projects/:id/releases` | `READ_RELEASES` | 読み取り |
-| リリースのリンクの一覧 | `GET /projects/:id/releases/:tag_name/assets/links` | `READ_RELEASES` | 読み取り |
-| リリースエビデンスを収集する | `POST /projects/:id/releases/:tag_name/evidence` | `ADMIN_RELEASES` | 読み取りと書き込み |
+| すべてのリリースリンクを一覧表示 | `GET /projects/:id/releases/:tag_name/assets/links` | `READ_RELEASES` | 読み取り |
+| プロジェクト内のすべてのリリースを一覧表示 | `GET /projects/:id/releases` | `READ_RELEASES` | 読み取り |
+| タグ名でリリースを取得する | `GET /projects/:id/releases/:tag_name` | `READ_RELEASES` | 読み取り |
+| リリースリンクを取得する | `GET /projects/:id/releases/:tag_name/assets/links/:link_id` | `READ_RELEASES` | 読み取り |
 | リリースを作成する | `POST /projects/:id/releases` | `ADMIN_RELEASES` | 読み取りと書き込み |
-| リリースリンクを作成する | `POST /projects/:id/releases/:tag_name/assets/links` | `ADMIN_RELEASES` | 読み取りと書き込み |
+| リリースリンクを作成 | `POST /projects/:id/releases/:tag_name/assets/links` | `ADMIN_RELEASES` | 読み取りと書き込み |
 | リリースを削除する | `DELETE /projects/:id/releases/:tag_name` | `ADMIN_RELEASES` | 読み取りと書き込み |
-| リリースリンクを削除する | `DELETE /projects/:id/releases/:tag_name/assets/links/:link_id` | `ADMIN_RELEASES` | 読み取りと書き込み |
+| リリースリンクを削除 | `DELETE /projects/:id/releases/:tag_name/assets/links/:link_id` | `ADMIN_RELEASES` | 読み取りと書き込み |
+| リリースエビデンスを生成 | `POST /projects/:id/releases/:tag_name/evidence` | `ADMIN_RELEASES` | 読み取りと書き込み |
 | 新しいコンポーネントプロジェクトリリースをバージョンとしてCI/CDカタログに公開 | `POST /projects/:id/catalog/publish` | `ADMIN_RELEASES` | 読み取りと書き込み |
 | リリースを更新する | `PUT /projects/:id/releases/:tag_name` | `ADMIN_RELEASES` | 読み取りと書き込み |
-| リリースリンクを更新する | `PUT /projects/:id/releases/:tag_name/assets/links/:link_id` | `ADMIN_RELEASES` | 読み取りと書き込み |
+| リリースリンクを更新 | `PUT /projects/:id/releases/:tag_name/assets/links/:link_id` | `ADMIN_RELEASES` | 読み取りと書き込み |
 
 ### リポジトリエンドポイント {#repositories-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| コミットに関連付けられたマージリクエストを取得 | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | 読み取り |
-| プロジェクトリポジトリのブランチを取得 | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | 読み取り |
-| プロジェクトリポジトリタグを取得する | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | 読み取り |
-| プロジェクトの特定のコミットを取得 | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | 読み取り |
-| リポジトリからrawファイルの内容を取得 | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | 読み取り |
+| コミットに関連付けられているすべてのマージリクエストを一覧表示 | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | 読み取り |
+| すべてのプロジェクトリポジトリタグを一覧表示 | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | 読み取り |
+| すべてのリポジトリブランチを一覧表示 | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | 読み取り |
+| コミットを取得する | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | 読み取り |
+| リポジトリからrawファイルを取得する | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | 読み取り |
+| 単一のリポジトリタグを取得する | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | 読み取り |
 
 ### セキュアファイルエンドポイント {#secure-files-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
 | セキュアファイルをダウンロード | `GET /projects/:id/secure_files/:secure_file_id/download` | `READ_SECURE_FILES` | 読み取り |
-| プロジェクト内のセキュアファイルの一覧を取得 | `GET /projects/:id/secure_files` | `READ_SECURE_FILES` | 読み取り |
-| プロジェクト内の特定のセキュアファイルの詳細を取得 | `GET /projects/:id/secure_files/:secure_file_id` | `READ_SECURE_FILES` | 読み取り |
+| プロジェクトのすべてのセキュアファイルを一覧表示 | `GET /projects/:id/secure_files` | `READ_SECURE_FILES` | 読み取り |
+| セキュアファイルの詳細を取得する | `GET /projects/:id/secure_files/:secure_file_id` | `READ_SECURE_FILES` | 読み取り |
 | セキュアファイルを作成 | `POST /projects/:id/secure_files` | `ADMIN_SECURE_FILES` | 読み取りと書き込み |
 | セキュアファイルを削除 | `DELETE /projects/:id/secure_files/:secure_file_id` | `ADMIN_SECURE_FILES` | 読み取りと書き込み |
 
@@ -256,20 +272,20 @@ CI/CDジョブトークンは、次のREST APIエンドポイントにアクセ�
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| 名前でTerraformステートを取得 | `GET /projects/:id/terraform/state/:name` | `READ_TERRAFORM_STATE` | 読み取り |
-| Terraformステートバージョンを取得 | `GET /projects/:id/terraform/state/:name/versions/:serial` | `READ_TERRAFORM_STATE` | 読み取り |
-| 新しいTerraformステートを追加するか、既存のステートを更新 | `POST /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
-| 特定の名前のTerraformステートを削除 | `DELETE /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
+| Terraformステートを取得する | `GET /projects/:id/terraform/state/:name` | `READ_TERRAFORM_STATE` | 読み取り |
+| Terraformステートバージョンを取得する | `GET /projects/:id/terraform/state/:name/versions/:serial` | `READ_TERRAFORM_STATE` | 読み取り |
+| Terraformステートを作成または更新 | `POST /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
+| Terraformステートを削除 | `DELETE /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
 | Terraformステートバージョンを削除 | `DELETE /projects/:id/terraform/state/:name/versions/:serial` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
-| 特定の名前のTerraformステートをロック | `POST /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
-| 特定の名前のTerraformステートをアンロック | `DELETE /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
+| Terraformステートをロック | `POST /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
+| Terraformステートのロックを解除 | `DELETE /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | 読み取りと書き込み |
 
 ### 作業アイテムエンドポイント {#work-items-endpoints}
 
 | 権限 | APIエンドポイント | 権限名 | スコープ |
 | ---------- | ------------ | --------------- | ----- |
-| プロジェクトイシューの一覧を取得 | `GET /projects/:id/issues` | `READ_WORK_ITEMS` | 読み取り |
-| 単一プロジェクトイシューを取得します。 | `GET /projects/:id/issues/:issue_iid` | `READ_WORK_ITEMS` | 読み取り |
+| すべてのプロジェクトイシューを一覧表示 | `GET /projects/:id/issues` | `READ_WORK_ITEMS` | 読み取り |
+| プロジェクトイシューを取得する | `GET /projects/:id/issues/:issue_iid` | `READ_WORK_ITEMS` | 読み取り |
 
 ## 利用できないAPIエンドポイント {#unavailable-api-endpoints}
 
@@ -277,32 +293,33 @@ CI/CDジョブトークンは、以下のエンドポイントにアクセスで
 
 | 権限 | APIエンドポイント |
 | ---------- | ------------ |
-| リポジトリの削除 | `DELETE /projects/:id/registry/repositories/:repository_id` |
-| リポジトリタグの一括削除 | `DELETE /projects/:id/registry/repositories/:repository_id/tags` |
-| リポジトリタグの削除 | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
-| パッケージバージョンのメタデータ用、グループレベルのComposerパッケージエンドポイント | `GET /group/:id/-/packages/composer/*package_name` |
-| パッケージリストのグループレベルのComposerパッケージエンドポイント | `GET /group/:id/-/packages/composer/p/:sha` |
-| パッケージバージョンのメタデータ用、グループレベルのComposer v2パッケージp2エンドポイント | `GET /group/:id/-/packages/composer/p2/*package_name` |
-| グループレベルのComposerパッケージエンドポイント | `GET /group/:id/-/packages/composer/packages` |
-| NPMレジストリのメタデータエンドポイント | `GET /groups/:id/-/packages/npm/*package_name` |
+| レジストリリポジトリを削除する | `DELETE /projects/:id/registry/repositories/:repository_id` |
+| 複数のレジストリリポジトリタグを削除 | `DELETE /projects/:id/registry/repositories/:repository_id/tags` |
+| レジストリリポジトリのタグを削除する | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
+| パッケージバージョンメタデータのためのグループレベルのComposerパッケージエンドポイント | `GET /group/:id/-/packages/composer/*package_name` |
+| グループのすべてのパッケージを一覧表示 | `GET /group/:id/-/packages/composer/p/:sha` |
+| パッケージバージョンメタデータのためのグループレベルのComposer v2パッケージp2エンドポイント | `GET /group/:id/-/packages/composer/p2/*package_name` |
+| リポジトリURLテンプレートを取得する | `GET /group/:id/-/packages/composer/packages` |
+| NPMレジストリメタデータエンドポイント | `GET /groups/:id/-/packages/npm/*package_name` |
 | グループからパッケージファイルをダウンロード | `GET /groups/:id/-/packages/pypi/files/:sha256/*file_identifier` |
-| PyPi Simple Groupインデックスエンドポイント | `GET /groups/:id/-/packages/pypi/simple` |
-| PyPi Simple Groupパッケージエンドポイント | `GET /groups/:id/-/packages/pypi/simple/*package_name` |
-| トークンを使用して現在のジョブを取得 | `GET /job` |
-| 現在のエージェントを取得 | `GET /job/allowed_agents` |
-| パッケージの検索 | `GET /packages/conan/v1/conans/search` |
-| Conan APIをpingする | `GET /packages/conan/v1/ping` |
-| Conan CLIに対してユーザーを認証する | `GET /packages/conan/v1/users/authenticate` |
-| Conan CLIごとの有効なユーザー認証情報を確認 | `GET /packages/conan/v1/users/check_credentials` |
-| NPMレジストリのメタデータエンドポイント | `GET /packages/npm/*package_name` |
-| パッケージの検索 | `GET /projects/:id/packages/conan/v1/conans/search` |
-| Conan APIをpingする | `GET /projects/:id/packages/conan/v1/ping` |
-| Conan CLIに対してユーザーを認証する | `GET /projects/:id/packages/conan/v1/users/authenticate` |
-| Conan CLIごとの有効なユーザー認証情報を確認 | `GET /projects/:id/packages/conan/v1/users/check_credentials` |
-| パッケージの検索 | `GET /projects/:id/packages/conan/v2/conans/search` |
-| Conan CLIに対してユーザーを認証する | `GET /projects/:id/packages/conan/v2/users/authenticate` |
-| Conan CLIごとの有効なユーザー認証情報を確認 | `GET /projects/:id/packages/conan/v2/users/check_credentials` |
-| プロジェクト内のコンテナリポジトリの一覧表示 | `GET /projects/:id/registry/repositories` |
-| リポジトリのタグの一覧表示 | `GET /projects/:id/registry/repositories/:repository_id/tags` |
-| リポジトリタグに関する詳細の取得 | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
-| DASTサイト検証を新しい状態に移行します。 | `POST /internal/dast/site_validations/:id/transition` |
+| グループのすべてのパッケージを一覧表示 | `GET /groups/:id/-/packages/pypi/simple` |
+| PyPiシンプルグループパッケージエンドポイント | `GET /groups/:id/-/packages/pypi/simple/*package_name` |
+| ジョブトークンでジョブを取得する | `GET /job` |
+| ジョブトークンでGitLabのすべてのKubernetes向けGitLabエージェントを一覧表示 | `GET /job/allowed_agents` |
+| Conanパッケージを検索 | `GET /packages/conan/v1/conans/search` |
+| Conanリポジトリの可用性を検証 | `GET /packages/conan/v1/ping` |
+| 認証トークンを取得する | `GET /packages/conan/v1/users/authenticate` |
+| 認証認証情報を検証 | `GET /packages/conan/v1/users/check_credentials` |
+| NPMレジストリメタデータエンドポイント | `GET /packages/npm/*package_name` |
+| Conanパッケージを検索 | `GET /projects/:id/packages/conan/v1/conans/search` |
+| Conanリポジトリの可用性を検証 | `GET /projects/:id/packages/conan/v1/ping` |
+| 認証トークンを取得する | `GET /projects/:id/packages/conan/v1/users/authenticate` |
+| 認証認証情報を検証 | `GET /projects/:id/packages/conan/v1/users/check_credentials` |
+| Conanパッケージを検索 | `GET /projects/:id/packages/conan/v2/conans/search` |
+| 認証トークンを取得する | `GET /projects/:id/packages/conan/v2/users/authenticate` |
+| 認証認証情報を検証 | `GET /projects/:id/packages/conan/v2/users/check_credentials` |
+| プロジェクトのすべてのレジストリリポジトリを一覧表示 | `GET /projects/:id/registry/repositories` |
+| プロジェクトのすべてのレジストリリポジトリタグを一覧表示 | `GET /projects/:id/registry/repositories/:repository_id/tags` |
+| レジストリリポジトリタグの詳細を取得する | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
+| DASTサイト検証を新しい状態に遷移させます。 | `POST /internal/dast/site_validations/:id/transition` |
+| 単一のモジュラーサービスオーディエンスのために短命のJWTを発行 | `POST /token_exchange` |

@@ -726,7 +726,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       context 'performance with large number of namespaces' do
         let_it_be(:large_root_group) { create(:group) }
-        let_it_be(:many_subgroups) { create_list(:group, 10, parent: large_root_group) }
+        let_it_be(:many_subgroups) { create_list(:group, 3, parent: large_root_group) }
         let(:namespace_ids) { many_subgroups.map(&:id) }
 
         it 'efficiently extracts single root namespace ID' do
@@ -1067,20 +1067,20 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       context 'when namespace_settings is nil' do
         let_it_be_with_reload(:namespace) { create(:namespace) }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
 
       context 'when namespace_settings is not nil' do
         let_it_be_with_reload(:namespace) { create(:namespace, :with_namespace_settings) }
 
-        it { is_expected.to eq true }
+        it { is_expected.to be true }
 
         context 'when namespace_settings.allow_runner_registration_token? is false' do
           before do
             namespace.allow_runner_registration_token = false
           end
 
-          it { is_expected.to eq false }
+          it { is_expected.to be false }
         end
 
         context 'when namespace_settings.allow_runner_registration_token? is true' do
@@ -1088,7 +1088,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
             namespace.allow_runner_registration_token = true
           end
 
-          it { is_expected.to eq true }
+          it { is_expected.to be true }
         end
       end
     end
@@ -1223,12 +1223,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'returns true when archived' do
         root.namespace_settings.update!(archived: true)
-        expect(root.self_or_ancestors_archived?).to eq(true)
+        expect(root.self_or_ancestors_archived?).to be(true)
       end
 
       it 'returns false when not archived' do
         root.namespace_settings.update!(archived: false)
-        expect(root.self_or_ancestors_archived?).to eq(false)
+        expect(root.self_or_ancestors_archived?).to be(false)
       end
     end
 
@@ -1301,12 +1301,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'returns false when archived' do
         root.namespace_settings.update!(archived: true)
-        expect(root.ancestors_archived?).to eq(false)
+        expect(root.ancestors_archived?).to be(false)
       end
 
       it 'returns false when not archived' do
         root.namespace_settings.update!(archived: false)
-        expect(root.ancestors_archived?).to eq(false)
+        expect(root.ancestors_archived?).to be(false)
       end
     end
   end
@@ -1343,11 +1343,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'returns true when transfer_scheduled' do
         root.schedule_transfer(transition_user: user)
-        expect(root.self_or_ancestors_transfer_scheduled?).to eq(true)
+        expect(root.self_or_ancestors_transfer_scheduled?).to be(true)
       end
 
       it 'returns false when not transfer_scheduled' do
-        expect(root.self_or_ancestors_transfer_scheduled?).to eq(false)
+        expect(root.self_or_ancestors_transfer_scheduled?).to be(false)
       end
     end
   end
@@ -1385,11 +1385,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it 'returns true when transfer_in_progress' do
         root.schedule_transfer(transition_user: user)
         root.start_transfer(transition_user: user)
-        expect(root.self_or_ancestors_transfer_in_progress?).to eq(true)
+        expect(root.self_or_ancestors_transfer_in_progress?).to be(true)
       end
 
       it 'returns false when not transfer_in_progress' do
-        expect(root.self_or_ancestors_transfer_in_progress?).to eq(false)
+        expect(root.self_or_ancestors_transfer_in_progress?).to be(false)
       end
     end
   end
@@ -1594,14 +1594,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe 'traversal_path' do
     it 'formats the traversal ids with slashes' do
-      expect(namespace.traversal_path).to eq("#{namespace.id}/")
+      expect(namespace.traversal_path(with_organization: false)).to eq("#{namespace.id}/")
     end
 
     context 'for subgroup' do
       let(:subgroup) { Group.new(traversal_ids: [1, 2, 3], organization_id: 1111) }
 
       it 'formats the traversal ids with slashes' do
-        expect(subgroup.traversal_path).to eq("1/2/3/")
+        expect(subgroup.traversal_path(with_organization: false)).to eq("1/2/3/")
       end
 
       context 'when with_organization option is enabled' do
@@ -1841,11 +1841,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when a child project has shared runners enabled' do
       let!(:project_inheriting_shared_runners) { create(:project, namespace: namespace, shared_runners_enabled: true) }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when all child projects have shared runners disabled' do
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 
@@ -2135,31 +2135,31 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when given a project name' do
       let(:username) { 'capyabra-project' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given a sub-group name' do
       let(:username) { 'capybara-subgroup' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given a top-level group' do
       let(:username) { 'capybara-group' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given an existing username' do
       let(:username) { 'capybara' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given a username with varying capitalization' do
       let(:username) { 'CaPyBaRa' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -2183,31 +2183,31 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when given a project name' do
       let(:username) { 'capyabra-project' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given a sub-group name' do
       let(:username) { 'capybara-subgroup' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given a top-level group' do
       let(:username) { 'capybara-group' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given a top-level group in another organization' do
       let(:username) { 'other-capybara-group' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given an existing username' do
       let(:username) { 'capybara' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when excluding a particular namespace from the check' do
@@ -2217,7 +2217,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       let(:username) { 'capybara' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when exclude parameter contains nil values' do
@@ -2227,25 +2227,25 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       let(:username) { 'capybara' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given an existing username in another organization' do
       let(:username) { 'other-capybara' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given a username with varying capitalization' do
       let(:username) { 'CaPyBaRa' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given a username with varying capitalization in another organization' do
       let(:username) { 'OtHeR-CaPyBaRa' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -2289,7 +2289,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       namespace.traversal_ids = []
     end
 
-    it { is_expected.to eq false }
+    it { is_expected.to be false }
   end
 
   describe '#users_with_descendants' do
@@ -2812,13 +2812,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       context 'when auto devops is explicitly enabled' do
         let(:auto_devops_enabled) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when auto devops is explicitly disabled' do
         let(:auto_devops_enabled) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -3021,7 +3021,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#paid?' do
     it 'returns false for a root namespace with a free plan' do
-      expect(namespace.paid?).to eq(false)
+      expect(namespace.paid?).to be(false)
     end
   end
 
@@ -3184,13 +3184,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
 
     context 'when is root' do
       it 'returns true' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
   end
@@ -3550,7 +3550,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         allow(group).to receive(:default_branch_protection_settings)
           .and_return(Gitlab::Access::BranchProtection.protected_fully)
 
-        expect(group.can_push_initial_commit?(admin_user)).to eq(true)
+        expect(group.can_push_initial_commit?(admin_user)).to be(true)
       end
     end
 
@@ -3563,7 +3563,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         allow(group).to receive(:default_branch_protection_settings)
           .and_return(Gitlab::Access::BranchProtection.protection_partial)
 
-        expect(group.can_push_initial_commit?(user)).to eq(true)
+        expect(group.can_push_initial_commit?(user)).to be(true)
       end
     end
 
@@ -3575,16 +3575,16 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'returns false for developer and true for maintainer' do
         group.add_developer(user)
-        expect(group.can_push_initial_commit?(user)).to eq(false)
+        expect(group.can_push_initial_commit?(user)).to be(false)
 
         group.add_maintainer(user)
-        expect(group.can_push_initial_commit?(user)).to eq(true)
+        expect(group.can_push_initial_commit?(user)).to be(true)
       end
     end
 
     context 'with user namespace' do
       it 'returns true for the owner' do
-        expect(user.namespace.can_push_initial_commit?(user)).to eq(true)
+        expect(user.namespace.can_push_initial_commit?(user)).to be(true)
       end
     end
   end

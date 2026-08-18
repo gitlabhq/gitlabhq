@@ -34,7 +34,7 @@ describe('PlaceholderReassignedActions', () => {
     });
   };
 
-  const findUndoButton = () => wrapper.findByTestId('undo-button');
+  const findUndoButton = () => wrapper.findComponentByTestId('undo-button');
   const findAvatar = () =>
     wrapper.findByTestId('placeholder-reassigned').findComponent(GlAvatarLabeled);
 

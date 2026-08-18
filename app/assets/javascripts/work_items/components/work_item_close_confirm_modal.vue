@@ -26,35 +26,38 @@ export default {
   },
   emits: ['hide', 'proceed'],
   computed: {
+    lowercaseWorkItemType() {
+      return this.workItemType.toLowerCase();
+    },
     title() {
       if (this.isBlockedByOpenItems) {
         return sprintf(
           s__('WorkItem|Are you sure you want to close this blocked %{workItemType}?'),
-          { workItemType: this.workItemType },
+          { workItemType: this.lowercaseWorkItemType },
         );
       }
       return sprintf(s__('WorkItem|Are you sure you want to close this %{workItemType}?'), {
-        workItemType: this.workItemType,
+        workItemType: this.lowercaseWorkItemType,
       });
     },
     body() {
       if (this.isBlockedByOpenItems) {
         return sprintf(
           s__('WorkItem|This %{workItemType} is currently blocked by the following items:'),
-          { workItemType: this.workItemType },
+          { workItemType: this.lowercaseWorkItemType },
         );
       }
       return sprintf(
         s__(
           'WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open.',
         ),
-        { workItemType: this.workItemType },
+        { workItemType: this.lowercaseWorkItemType },
       );
     },
     actionPrimary() {
       return {
         text: sprintf(s__('WorkItem|Yes, close %{workItemType}'), {
-          workItemType: this.workItemType,
+          workItemType: this.lowercaseWorkItemType,
         }),
       };
     },

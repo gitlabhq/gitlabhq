@@ -10,7 +10,7 @@ module QA
       end
 
       it 'user rebases source branch of merge request', :requires_admin,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347735', quarantine: {
+        quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/1228',
           type: :bug
         } do

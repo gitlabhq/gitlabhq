@@ -2,19 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :user_management do
+RSpec.describe 'Admin::Users', feature_category: :user_management do
   include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
 
-  seed_internal_bot(:duo_code_review_bot)
-
-  let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
+  let_it_be(:common_organization) { create(:common_organization) }
+  let_it_be(:admin) { create(:admin) }
   let_it_be_with_reload(:user) do
-    create(:omniauth_user, provider: 'twitter', extern_uid: '123456', organizations: [current_organization])
+    create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
 
   before do
+    Users::Internal.in_organization(common_organization).duo_code_review_bot
+
     sign_in(admin)
     enable_admin_mode!(admin)
   end
@@ -55,7 +56,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
     end
 
     it 'shows the user popover on hover', :js do
-      expect(has_testid?('user-popover', count: 0)).to eq(true)
+      expect(has_testid?('user-popover', count: 0)).to be(true)
 
       within('body.page-initialised') do
         find_link(user.email).hover
@@ -458,17 +459,21 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
 
       user = User.find_by(username: 'bang')
       organization_user = Organizations::OrganizationUser
-        .find_by(user_id: user.id, organization_id: current_organization.id)
+        .find_by(user_id: user.id)
 
       expect(organization_user.access_level).to eq('owner')
     end
 
     context 'when instance has multiple organizations', :js do
-      let_it_be(:organization) { create(:organization, name: 'New Organization', users: [admin]) }
+      let_it_be(:organization) { create(:organization, name: 'New Organization') }
+
+      before do
+        create(:organization_user, organization: organization, user: admin)
+      end
 
       it 'creates user in the selected organization' do
         within_testid 'organization-section' do
-          select_from_listbox 'New Organization', from: current_organization.name
+          select_from_listbox 'New Organization', from: common_organization.name
         end
 
         expect { click_create_user! }.to change { organization.users.count }.by(1)
@@ -671,13 +676,13 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
         expect(user.name).to eq('Big Bang')
         expect(user.admin?).to be_truthy
         expect(user.password_expires_at).to be <= Time.zone.now
-        expect(user.private_profile).to eq(true)
+        expect(user.private_profile).to be(true)
       end
 
       context 'when updating the organization access level' do
         it 'updates the user organization access level' do
           organization_user = Organizations::OrganizationUser
-            .find_by(user_id: user.id, organization_id: current_organization.id)
+            .find_by(user_id: user.id, organization_id: common_organization.id)
 
           expect do
             within_testid 'organization-section' do

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
@@ -16,7 +17,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
@@ -29,6 +30,7 @@ import {
   EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
 } from '~/repository/constants';
 import { InternalEvents } from '~/tracking';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'RepositoryHeaderArea',
@@ -43,20 +45,25 @@ export default {
     Breadcrumbs,
     RepositoryOverflowMenu,
     BlobControls,
-    CompactCodeDropdown: () =>
-      import('ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue'),
+    CompactCodeDropdown: defineAsyncComponent(
+      () => import('ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue'),
+    ),
     AddToTree,
-    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
-    LockDirectoryButton: () =>
-      import('ee_component/repository/components/lock_directory_button.vue'),
-    HeaderLockIcon: () =>
-      import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    WebIdeLink: defineAsyncComponent(
+      () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+    ),
+    LockDirectoryButton: defineAsyncComponent(
+      () => import('ee_component/repository/components/lock_directory_button.vue'),
+    ),
+    HeaderLockIcon: defineAsyncComponent(
+      () => import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    ),
     FileTreeBrowserToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin(), glAbilitiesMixin()],
+  mixins: [InternalEvents.mixin(), glAbilitiesMixin(), glListenersMixin],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -128,8 +135,7 @@ export default {
   data() {
     return {
       directoryLocked: false,
-      fileLocked: false,
-      lockAuthor: undefined,
+      lockUser: null,
     };
   },
   computed: {
@@ -153,9 +159,6 @@ export default {
     },
     fileIconName() {
       return this.isTreeView ? 'folder-open' : this.directoryName;
-    },
-    isLocked() {
-      return this.isTreeView ? this.directoryLocked : this.fileLocked;
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -258,13 +261,9 @@ export default {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
-    onLockedDirectory({ isLocked, lockAuthor }) {
+    onLockedDirectory({ isLocked, lockUser }) {
       this.directoryLocked = isLocked;
-      this.lockAuthor = lockAuthor;
-    },
-    onLockedFile({ isLocked, lockAuthor }) {
-      this.fileLocked = isLocked;
-      this.lockAuthor = lockAuthor;
+      this.lockUser = lockUser;
     },
   },
 };
@@ -318,7 +317,7 @@ export default {
     >
       <h1
         v-if="!isReadmeView && !isProjectOverview"
-        class="gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1 @md/panel:gl-my-0"
+        class="gl-heading-1 gl-mt-2 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words @md/panel:gl-mb-0"
         data-testid="repository-heading"
       >
         <file-icon
@@ -330,10 +329,9 @@ export default {
           :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
         <header-lock-icon
-          v-if="!isRoot"
-          :is-tree-view="isTreeView"
-          :is-locked="isLocked"
-          :lock-author="lockAuthor"
+          v-if="!isRoot && isTreeView"
+          :is-locked="directoryLocked"
+          :lock-user="lockUser"
         />
       </h1>
       <!-- Tree controls -->
@@ -366,7 +364,7 @@ export default {
           v-if="!isRoot"
           :project-path="projectPath"
           :path="currentPath"
-          @lockedDirectory="onLockedDirectory"
+          @locked-directory="onLockedDirectory"
         />
         <gl-button
           v-gl-tooltip.html="findFileTooltip"
@@ -399,7 +397,7 @@ export default {
           :user-profile-enable-gitpod-path="userProfileEnableGitpodPath"
           :git-ref="currentRef"
           disable-fork-modal
-          v-on="$listeners"
+          v-on="glListeners()"
         />
         <!-- code + mobile panel -->
         <div class="project-code-holder gl-w-full @md/panel:gl-w-auto">
@@ -457,7 +455,6 @@ export default {
         :project-id-as-number="projectIdAsNumber"
         :ref-type="getRefType"
         :is-binary="isBinary"
-        @lockedFile="onLockedFile"
       />
     </div>
   </section>

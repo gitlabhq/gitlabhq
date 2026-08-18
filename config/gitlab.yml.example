@@ -277,6 +277,22 @@ production: &base
     # access_key_id: "YOUR-AWS-ACCESS-KEY-ID"
     # secret_access_key: "YOUR-AWS-SECRET-ACCESS-KEY"
 
+  ## Mobile push notifications
+  # Delivery of to-do push notifications to the GitLab mobile app over APNs,
+  # using Apple provider token (p8) authentication. Delivery is skipped when
+  # no key is configured.
+  # mobile_push:
+  #   apns:
+  #     # Path to the APNs provider token signing key (.p8) from your Apple Developer account.
+  #     auth_key_path: "/home/git/gitlab/.apns_auth_key.p8"
+  #     # The 10-character identifier of the signing key.
+  #     key_id: "YOUR-APNS-KEY-ID"
+  #     # The Apple Developer team identifier.
+  #     team_id: "YOUR-APPLE-TEAM-ID"
+  #     # apns-topic sent for subscriptions that don't carry a bundle identifier.
+  #     # Defaults to "com.gitlab-mobile.app".
+  #     topic:
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see https://docs.gitlab.com/ee/administration/reply_by_email.html
@@ -564,6 +580,15 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## Micro-frontends (MFE)
+  # Versioned micro-frontend apps are baked into release assets at build time
+  # and can be switched to newer registry-published versions at runtime.
+  # Disabled by default; also requires the `mfe_enabled` feature flag.
+  mfe:
+    enabled: false
+    # Base URL of the MFE registry (static, CORS-enabled host).
+    registry_url: https://mfe.gitlab.com
+
   ## Agent Plan Content (object storage for work item agent plan markdown)
   agent_plan_content:
     # storage_path: shared/agent_plan_content
@@ -582,6 +607,21 @@ production: &base
     object_store:
       enabled: false
       remote_directory: ai-catalog # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+
+  ci_catalog_bundles:
+    # storage_path: shared/ci_catalog_bundles
+    object_store:
+      enabled: false
+      remote_directory: ci-catalog-bundles # The bucket name
       connection:
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -816,6 +856,12 @@ production: &base
     #   backoff: 1s
     #   headers:
     #     Authorization: secret_phrase
+
+  ## Artifact Registry
+  # The organization-level Artifact Registry service the Rails-side client talks
+  # to.
+  artifact_registry:
+    # api_url: https://artifact-registry.example.com # internal address of the Artifact Registry API
 
   ## Error Reporting and Logging with Sentry
   sentry:
@@ -1460,11 +1506,47 @@ production: &base
     # name: null
     # database:
     #   skip_sequence_alteration: false
+    # email_forwarding:
+    #   # URL scheme used to reach cells when forwarding incoming email. Cell
+    #   # addresses are bare hosts, so the scheme is set here. Use "http" for
+    #   # local environments and "https" in production.
+    #   scheme: https
+    #   # Whether incoming emails that cannot be identified are routed to the
+    #   # default (first) cell instead of being dropped. Defaults to true.
+    #   route_unidentified_to_default_cell: true
+    #   # Redis arbitration for the cells-mailroom service. Lets several service
+    #   # instances poll the same mailbox without double-processing, using the
+    #   # same Redis lock namespace ("mail_room:gitlab") as the existing GitLab
+    #   # mailroom. Point it at the shared queues Redis. When omitted, the
+    #   # service runs without arbitration (safe for a single instance).
+    #   arbitration:
+    #     redis_url: redis://localhost:6379
+    #     # For a Sentinel setup, list the sentinels instead of (or with) redis_url:
+    #     # sentinels:
+    #     #   - { host: 10.0.0.1, port: 26379 }
+    #     # sentinel_password: sentinel-secret
     # topology_service_client:
     #   address: topology-service.gitlab.example.com:443
     #   ca_file: /home/git/gitlab/config/topology-service-ca.pem
     #   certificate_file: /home/git/gitlab/config/topology-service-cert.pem
     #   private_key_file: /home/git/gitlab/config/topology-service-key.pem
+
+  observability:
+    # mTLS client cert/key GitLab Rails presents when POSTing per-user
+    # session-exchange requests to the SigNoz BFF endpoint
+    # (POST /api/v1/complete/gitlab/bff). This is a single shared,
+    # fleet-wide secret (not per-group), so it lives on disk rather than in
+    # an encrypted ApplicationSetting column -- rotate via the same
+    # mechanism used for secrets.yml.
+    # bff_mtls:
+    #   enabled: false
+    #   certificate_file: /home/git/gitlab/config/observability-bff-client-cert.pem
+    #   private_key_file: /home/git/gitlab/config/observability-bff-client-key.pem
+    #   # Host/port of the ALB's dedicated mTLS-verified BFF listener --
+    #   # distinct from the instance's normal o11y_service_url/port (used
+    #   # for session-context/UI calls), which is not behind this listener.
+    #   listener_host: bff.o11y.example.com
+    #   listener_port: 8443
 
   gitlab_kas:
     # enabled: true
@@ -1492,6 +1574,23 @@ production: &base
     # secret_file: /home/git/gitlab/.gitlab_knowledge_graph_secret
 
   # The legacy `knowledge_graph` section remains supported as an alias for `orbit`.
+
+  ## NATS (JetStream messaging, used for audit event streaming)
+  # An empty (or absent) `servers` list means NATS is not configured; audit
+  # event streaming then falls back to the Sidekiq delivery path.
+  nats:
+    # servers:
+    #   - "tls://nats.example.com:4222"
+    # connect_timeout: 2
+    # Mutual TLS. The GitLab NATS clusters use verify_and_map, so the client
+    # must present a client certificate whose CN maps to a NATS user.
+    # tls:
+    #   ca_file: /path/to/ca.pem
+    #   cert: /path/to/client-cert.pem
+    #   key: /path/to/client-key.pem
+    # JetStream stream replication factor. Defaults to 1 for single-node
+    # deployments; set to 3 for a clustered NATS deployment.
+    # stream_replicas: 1
 
   ## GitLab Elasticsearch settings
   elasticsearch:
@@ -1727,6 +1826,17 @@ test:
     object_store:
       enabled: false
       remote_directory: ai-catalog
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
+  ci_catalog_bundles:
+    storage_path: tmp/tests/ci_catalog_bundles
+    object_store:
+      enabled: false
+      remote_directory: ci-catalog-bundles
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

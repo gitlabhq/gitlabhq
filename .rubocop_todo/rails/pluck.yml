@@ -18,7 +18,6 @@ Rails/Pluck:
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/lib/banzai/filter/references/iteration_reference_filter.rb'
     - 'ee/spec/support/helpers/feature_approval_helper.rb'
-    - 'lib/atlassian/jira_connect/client.rb'
     - 'lib/banzai/renderer.rb'
     - 'lib/gitlab/access.rb'
     - 'lib/gitlab/analytics/cycle_analytics/default_stages.rb'

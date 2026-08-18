@@ -10,19 +10,17 @@ title: 자동 검토자 할당
 
 - 계층: Premium, Ultimate
 - 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- 상태:  베타
 
 {{< /details >}}
 
 {{< history >}}
 
 - GitLab 18.10 에서 `auto_assign_code_owner_reviewers` [플래그](../../../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224175)되었습니다. 기본적으로 비활성화되어 있습니다.
+- GitLab 19.1에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239965)합니다. 기능 플래그 `auto_assign_code_owner_reviewers`이 제거되었습니다.
 
 {{< /history >}}
 
 자동 검토자 할당을 활성화하면 GitLab은 변경된 파일의 [코드 소유자](../../codeowners/_index.md)를 의 검토자로 할당합니다. `CODEOWNERS` 파일에서 검토자를 직접 선택할 필요가 없습니다.
-
-이 기능은 [베타](../../../../policy/development_stages_support.md#beta) 단계입니다. 피드백을 남기려면 [이슈 589700](https://gitlab.com/gitlab-org/gitlab/-/issues/589700)에 댓글을 달아주세요.
 
 ## 전제 조건 {#prerequisites}
 
@@ -57,11 +55,33 @@ GitLab이 자동 할당을 건너뛰는 경우:
 
 ## 검토자 할당 전략 {#reviewer-assignment-strategy}
 
-[GitLab Duo Agent Platform](../../../../user/duo_agent_platform/_index.md)이 검토자를 추천하는 프로젝트에서는 **Automatic reviewer assignment** 섹션에 다음의 옵션이 있는 **Reviewer assignment strategy**이 표시됩니다:
+{{< history >}}
 
-- **Do not assign reviewers automatically**: GitLab은 검토자를 변경하지 않습니다.
+- **Assign reviewers with GitLab Duo Agent Platform** 전략을 GitLab 19.0에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236211)했으며 [기능 플래그](../../../../administration/feature_flags/_index.md)로 명명된 `dap_powered_recommend_reviewers`로 제공합니다. 기본적으로 비활성화되어 있습니다.
+
+{{< /history >}}
+
+> [!flag]
+> **Assign reviewers with GitLab Duo Agent Platform** 전략의 가용성은 기능 플래그로 제어됩니다. 자세한 내용은 기록을 참조하세요. 이 기능은 테스트 가능하지만 프로덕션 사용 준비가 되지 않았습니다.
+
+[GitLab Duo Agent Platform](../../../../user/duo_agent_platform/_index.md)이 프로젝트에서 사용 가능하면, **Automatic reviewer assignment** 섹션에 단일 체크박스 대신 **Reviewer assignment strategy** 설정이 표시됩니다. 다음 옵션 중 하나를 선택합니다:
+
+- **Do not assign reviewers automatically**: GitLab이 검토자를 할당하지 않습니다.
 - **Assign all code owners as reviewers**: GitLab은 변경된 파일과 일치하는 `CODEOWNERS` 파일의 모든 코드 소유자를 할당합니다.
-- **Assign reviewers with GitLab Duo Agent Platform**: GitLab Duo Agent Platform은 각 을 만족하는 데 필요한 최소 검토자 수를 추천합니다.
+- **Assign reviewers with GitLab Duo Agent Platform**: GitLab Duo Agent Platform이 각 승인 규칙을 만족하는 데 필요한 최소 검토자 수를 권장하고 할당합니다.
+
+### GitLab Duo Agent Platform으로 검토자 할당 {#assign-reviewers-with-gitlab-duo-agent-platform}
+
+이 전략을 선택하면, GitLab Duo Agent Platform이 머지 리퀘스트에 필요한 승인 규칙을 읽습니다. 각 규칙에 대해 규칙을 만족하는 데 필요한 최소 검토자 수를 권장하고, 할당한 후, 선택을 설명하는 주석을 추가합니다. 이 전략은 코드 소유자뿐만 아니라 모든 승인 규칙 유형에 적용됩니다.
+
+규칙에 대한 적격 승인자 중에서 선택하려면, GitLab Duo Agent Platform이 각 승인자에 대해 다음을 고려합니다:
+
+- 가용성(해당 [상태](../../../profile/_index.md#set-your-status)에 기반).
+- 검토 워크로드(검토 대기 중인 열린 머지 리퀘스트의 수에 기반).
+- 현지 시간(프로필의 시간대에 기반).
+- 가장 최근 활동.
+
+GitLab이 머지 리퀘스트가 준비 상태가 되면 검토자를 할당하며, 이는 코드 소유자 전략과 같습니다. 권장 사항이 백그라운드에서 실행되므로 검토자가 표시되는 데 약간의 시간이 걸릴 수 있습니다. GitLab이 0개의 승인을 요구하는 승인 규칙을 무시합니다.
 
 ## 관련 항목 {#related-topics}
 

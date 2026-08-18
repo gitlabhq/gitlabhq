@@ -69,7 +69,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeSaver do
 
       context 'group attributes file' do
         let(:group_attributes_file) { exported_path_for("#{group.id}.json") }
-        let(:group_attributes) { ::JSON.parse(File.read(group_attributes_file)) }
+        let(:group_attributes) { Gitlab::Json::SafeParser.parse(File.read(group_attributes_file)) }
 
         it 'has a file for each group with its attributes' do
           expect(group_attributes['description']).to eq(group.description)

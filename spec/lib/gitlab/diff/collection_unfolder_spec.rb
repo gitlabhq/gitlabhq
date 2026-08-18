@@ -35,36 +35,10 @@ RSpec.describe Gitlab::Diff::CollectionUnfolder, feature_category: :code_review_
   context 'when there are unfoldable positions' do
     let(:unfoldable) { [position] }
 
-    before do
-      allow(diff_file).to receive(:unfolded?).and_return(true)
-      allow(diff_file).to receive(:highlighted_diff_lines=)
-    end
-
     it 'unfolds diff files' do
       expect(collection).to receive(:unfold_diff_files).with([position])
 
       unfolder.unfold!(collection)
-    end
-
-    it 'clears stale highlighted lines on unfolded files' do
-      allow(collection).to receive(:unfold_diff_files)
-
-      expect(diff_file).to receive(:highlighted_diff_lines=).with(nil)
-
-      unfolder.unfold!(collection)
-    end
-
-    context 'when file is not unfolded' do
-      before do
-        allow(collection).to receive(:unfold_diff_files)
-        allow(diff_file).to receive(:unfolded?).and_return(false)
-      end
-
-      it 'does not clear highlighted lines' do
-        expect(diff_file).not_to receive(:highlighted_diff_lines=)
-
-        unfolder.unfold!(collection)
-      end
     end
   end
 

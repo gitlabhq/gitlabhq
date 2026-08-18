@@ -56,8 +56,8 @@ export default {
       :runner-id="runnerId"
       :group-path="groupPath"
       :platform="platform"
-      @selectPlatform="onSelectPlatform"
-      @runnerRegistered="onRunnerRegistered"
+      @select-platform="onSelectPlatform"
+      @runner-registered="onRunnerRegistered"
     >
       <template #runner-list-name>{{ s__('Runners|Group area › Runners') }}</template>
     </registration-instructions>

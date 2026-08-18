@@ -37,7 +37,7 @@ describe('noteActions', () => {
   const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
   const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
-  const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-button"]`);
+  const findReportAbuseButton = () => wrapper.findComponent(`[data-testid="report-abuse-button"]`);
   const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findFeedbackButton = () => wrapper.find('[data-testid="amazon-q-feedback-button"]');
   const findDeleteButton = () => wrapper.find('.js-note-delete');
@@ -68,6 +68,10 @@ describe('noteActions', () => {
       pinia,
       propsData,
       stubs: {
+        ViewSessionButton: stubComponent({
+          name: 'ViewSessionButton',
+          props: { sessionId: { type: Number, required: true } },
+        }),
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: {
             close: mockCloseDropdown,
@@ -173,6 +177,12 @@ describe('noteActions', () => {
     describe('actions dropdown', () => {
       it('should be possible to edit the comment', () => {
         expect(wrapper.find('.js-note-edit').exists()).toBe(true);
+      });
+
+      it('emits `handle-edit` when the edit button is clicked', () => {
+        wrapper.findComponent('.js-note-edit').vm.$emit('click');
+
+        expect(wrapper.emitted('handle-edit')).toEqual([[]]);
       });
 
       it('should be possible to report abuse to admin', () => {
@@ -729,6 +739,34 @@ describe('noteActions', () => {
         await nextTick();
 
         expect(findAbuseCategorySelector().exists()).toEqual(false);
+      });
+    });
+  });
+
+  describe('view session button', () => {
+    const findViewSessionButton = () => wrapper.findComponent({ name: 'ViewSessionButton' });
+
+    describe('when the note has no linked session', () => {
+      beforeEach(() => {
+        wrapper = mountNoteActions(props);
+      });
+
+      it('does not render the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when the note has a linked session', () => {
+      beforeEach(() => {
+        wrapper = mountNoteActions({ ...props, duoSessionId: 42 });
+      });
+
+      it('renders the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(true);
+      });
+
+      it('passes the session id to the view session button', () => {
+        expect(findViewSessionButton().props('sessionId')).toBe(42);
       });
     });
   });

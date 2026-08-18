@@ -196,7 +196,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
   describe 'state machine' do
     it 'begins in pending state' do
-      expect(described_class.new.pending_reassignment?).to eq(true)
+      expect(described_class.new.pending_reassignment?).to be(true)
     end
 
     context 'when switching to pending_reassignment' do
@@ -208,7 +208,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
         source_user.undo_keep_as_placeholder
 
-        expect(source_user.pending_reassignment?).to eq(true)
+        expect(source_user.pending_reassignment?).to be(true)
         expect(source_user.reassign_to_user).to be_nil
         expect(source_user.reassigned_by_user).to be_nil
       end

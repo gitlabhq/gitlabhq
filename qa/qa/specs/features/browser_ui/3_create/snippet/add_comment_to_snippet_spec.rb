@@ -17,8 +17,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it "adds, edits, and deletes a comment on a project snippet",
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347817' do
+      it "adds, edits, and deletes a comment on a project snippet" do
         Page::Main::Menu.perform(&:sign_out)
 
         Flow::Login.sign_in(as: comment_author)

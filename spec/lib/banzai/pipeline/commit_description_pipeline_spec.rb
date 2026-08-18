@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::Pipeline::CommitDescriptionPipeline, feature_category: :source_code_management do
   describe 'formatting a cherry-picked commit description html' do
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:project) { create(:project, :small_repo, :public) }
 
     it 'formats correctly' do
       markdown = <<~MESSAGE

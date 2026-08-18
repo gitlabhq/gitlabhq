@@ -117,7 +117,7 @@ but the objects are internal and their IDs are never persisted or exposed throug
 an API.
 
 `WidgetDefinition` is a good example. It dynamically generates its items from all
-work item types and their widget configurations. The IDs are throwaway handles —
+work item types and their widget configurations. The IDs are throwaway handles -
 what matters is the combination of `widget_type` and `work_item_type_id`:
 
 ```ruby
@@ -304,9 +304,9 @@ Two instances are equal if they are the same class and have the same `id`.
 
 The module defines two custom error classes:
 
-- `ActiveRecord::FixedItemsModel::RecordNotFound` — raised by `.find` when no
+- `ActiveRecord::FixedItemsModel::RecordNotFound` - raised by `.find` when no
   item matches the given ID.
-- `ActiveRecord::FixedItemsModel::UnknownAttribute` — raised by `.find_by` or
+- `ActiveRecord::FixedItemsModel::UnknownAttribute` - raised by `.find_by` or
   `.where` when a query references an attribute that is not declared.
 
 Handle `RecordNotFound` the same way you would handle

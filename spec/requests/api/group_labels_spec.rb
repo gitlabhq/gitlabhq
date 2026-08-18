@@ -151,6 +151,33 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       expect(json_response['description']).to eq(group_label1.description)
     end
 
+    context 'when the label is looked up by label ID' do
+      it 'returns the label', :aggregate_failures do
+        get api("/groups/#{group.id}/labels/#{group_label1.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(group_label1.id)
+        expect(json_response['name']).to eq(group_label1.name)
+      end
+
+      it 'resolves by ID before matching a title when both exist for the same numeric segment', :aggregate_failures do
+        label_with_numeric_title = create(:group_label, title: group_label1.id.to_s, group: group)
+
+        get api("/groups/#{group.id}/labels/#{group_label1.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(group_label1.id)
+        expect(json_response['name']).to eq(group_label1.name)
+        expect(json_response['id']).not_to eq(label_with_numeric_title.id)
+      end
+
+      it 'returns 404 when the label ID does not exist' do
+        get api("/groups/#{group.id}/labels/#{non_existing_record_id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_label do
       let(:boundary_object) { group }
       let(:request) do

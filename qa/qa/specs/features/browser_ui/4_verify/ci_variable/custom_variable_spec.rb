@@ -42,8 +42,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'manually creates a pipeline and uses the defined custom variable value',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975' do
+      it 'manually creates a pipeline and uses the defined custom variable value' do
         initial_pipeline_count = project.pipelines.size
 
         Page::Project::Pipeline::New.perform do |new|

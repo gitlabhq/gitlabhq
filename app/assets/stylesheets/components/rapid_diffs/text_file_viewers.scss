@@ -340,7 +340,7 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
     color: var(--rd-line-link-color);
   }
 
-  &:focus {
+  &:focus-visible {
     outline: none;
   }
 
@@ -459,33 +459,33 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
   background-color: var(--gl-color-red-400);
 }
 
-[data-line-codequality] {
+[data-line-inline-findings] {
   display: none;
 }
 
-[data-codequality-has-findings] {
-  --rd-codequality-slot-width: 20px;
-  --rd-codequality-slot-gap: calc(var(--rd-codequality-slot-width) / 1.5);
-  --rd-line-sign-offset: calc(var(--rd-codequality-slot-gap) - 9px);
+[data-inline-findings-loaded] {
+  --rd-inline-findings-slot-width: 20px;
+  --rd-inline-findings-slot-gap: calc(var(--rd-inline-findings-slot-width) / 1.5);
+  --rd-line-sign-offset: calc(var(--rd-inline-findings-slot-gap) - 9px);
 }
 
-[data-codequality-has-findings] [data-line-codequality] {
+[data-inline-findings-loaded] [data-line-inline-findings] {
   display: flex;
   position: relative;
   flex: none;
   align-items: flex-start;
   justify-content: center;
-  width: var(--rd-codequality-slot-width);
-  margin-left: calc(var(--rd-codequality-slot-width) * -1 + 4px);
-  margin-right: var(--rd-codequality-slot-gap);
+  width: var(--rd-inline-findings-slot-width);
+  margin-left: calc(var(--rd-inline-findings-slot-width) * -1 + 4px);
+  margin-right: var(--rd-inline-findings-slot-gap);
 }
 
-.rd-codequality-toggle {
+.rd-inline-findings-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--rd-codequality-slot-width);
-  height: var(--rd-codequality-slot-width);
+  width: var(--rd-inline-findings-slot-width);
+  height: var(--rd-inline-findings-slot-width);
   padding: 0;
   border: 0;
   background: transparent;

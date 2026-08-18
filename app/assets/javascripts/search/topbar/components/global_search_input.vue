@@ -1,6 +1,7 @@
 <script>
 import { GlFormInput, GlIcon, GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import GlClearIconButton from './clear_icon_button.vue';
 
 export default {
@@ -15,6 +16,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glListenersMixin],
   inheritAttrs: false,
   model: {
     prop: 'value',
@@ -103,7 +105,7 @@ export default {
     },
     inputListeners() {
       return {
-        ...this.$listeners,
+        ...this.glListeners(),
         input: this.onInput,
         focusin: this.onFocusin,
         focusout: this.onFocusout,

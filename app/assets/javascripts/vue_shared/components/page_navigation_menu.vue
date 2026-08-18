@@ -125,7 +125,7 @@ export default {
       <li v-for="item in items" :key="item.id" class="gl-mb-2">
         <a
           :class="[
-            'on-this-page-link gl-relative gl-block gl-rounded-sm gl-px-4 gl-py-2 gl-text-sm gl-no-underline hover:gl-no-underline focus:gl-no-underline',
+            'on-this-page-link gl-relative gl-block gl-rounded-sm gl-px-4 gl-py-2 gl-text-sm gl-no-underline hover:gl-no-underline focus-visible:gl-no-underline',
             isActive(item.id)
               ? 'is-active gl-bg-subtle gl-font-bold gl-text-default'
               : 'gl-text-subtle hover:gl-bg-subtle hover:gl-text-default',

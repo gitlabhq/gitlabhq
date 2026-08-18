@@ -203,6 +203,10 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       '/api'             | true
       '/api/'            | false
       '/api/v4/groups/1' | false
+
+      '/-/collector/foo'   | true
+      '/-/collector/i'     | false
+      '/-/collector/i/foo' | false
     end
 
     with_them do

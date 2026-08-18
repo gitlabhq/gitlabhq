@@ -51,11 +51,11 @@ RSpec.describe UserPresenter do
       let(:gitpod_application_enabled) { false }
 
       describe '#preferences_gitpod_path' do
-        it { expect(presenter.preferences_gitpod_path).to eq(nil) }
+        it { expect(presenter.preferences_gitpod_path).to be_nil }
       end
 
       describe '#profile_enable_gitpod_path' do
-        it { expect(presenter.profile_enable_gitpod_path).to eq(nil) }
+        it { expect(presenter.profile_enable_gitpod_path).to be_nil }
       end
     end
   end

@@ -167,13 +167,6 @@ Example responses:
 
 ## Validate existing CI/CD configuration
 
-{{< history >}}
-
-- `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
-- `sha` and `ref` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098) to `content_ref` and `dry_run_ref` in GitLab 16.10.
-
-{{< /history >}}
-
 Validates the existing `.gitlab-ci.yml` configuration for a specified project.
 This endpoint validates the CI/CD configuration in the context of the
 project, including:
@@ -187,12 +180,12 @@ GET /projects/:id/ci/lint
 
 | Attribute      | Type    | Required | Description |
 |----------------|---------|----------|-------------|
-| `content_ref`  | string  | No       | The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
+| `content_ref`  | string  | No       | The CI/CD configuration content is taken from this commit SHA, branch, or tag. Defaults to the SHA of the head of the project's default branch when not set. |
 | `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
 | `dry_run_ref`  | string  | No       | If `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
 | `ref`          | string  | No       | (Deprecated) When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. Use `dry_run_ref` instead. |
-| `sha`          | string  | No       | (Deprecated) The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. Use `content_ref` instead. |
+| `sha`          | string  | No       | (Deprecated) The CI/CD configuration content is taken from this commit SHA, branch, or tag. Defaults to the SHA of the head of the project's default branch when not set. Use `content_ref` instead. |
 
 Example request:
 

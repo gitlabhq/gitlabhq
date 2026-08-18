@@ -1,6 +1,6 @@
 ---
-source_checksum: c7e9410a688b66d0
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 6bba7c96b055930c
+distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -106,7 +106,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Use `fullMount` from `test_helpers.js` (wraps `mount` and attaches to `document.body`) to mount the root component with the real `apolloProvider`.
 - Use native DOM APIs for all interactions and assertions in MSW integration tests; DO NOT use VTU wrapper methods (`wrapper.find()`, `wrapper.trigger()`, `wrapper.text()`, etc.).
 - DO NOT mock child components in MSW integration tests.
-- Reset the Apollo cache in `beforeEach` and stop the client in `afterEach` to prevent state leakage.
+- Reset the Apollo cache in `beforeEach` to prevent state leakage between tests.
 - DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown in MSW test files; `test_setup.js` handles this globally.
 - DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` in individual MSW test files; these are handled globally by `test_setup.js`.
 - Add a handler for every GraphQL operation that fires during an MSW test; unhandled operations return 400.
@@ -148,6 +148,27 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 - Eagerly import async-loaded modules in the spec file to force Jest to transpile and cache them at compile time, preventing runtime timeout errors.
 - DO NOT disregard test timeouts; investigate whether the async import reflects a real production bundle issue.
+
+### Path Helpers
+
+- Do not mock JavaScript path helpers imported from `app/assets/javascripts/lib/utils/path_helpers` or `ee/app/assets/javascripts/lib/utils/path_helpers` in Jest tests. You can assume that `gon.current_organization.has_scoped_paths` will be `false` and that `window.gon?.relative_url_root` will be `''` in Jest tests. There may be existing tests for the `relative_url_root` functionality, for these you can use `useConfigurePathHelpers` in `spec/frontend/__helpers__/configure_path_helpers.js`.
+
+### Test structure
+
+Follow BDD (Behaviour-Driven Development) conventions: use `describe` blocks to define the context or state the system is in, `it` blocks to declare the specific behaviour being verified, and `beforeEach` to set up shared state. Group related tests together under a shared `describe` block.
+
+```js
+// Bad
+it('does Y when X', () => { ... })
+```
+
+```js
+// Good
+describe('when X', () => {
+  beforeEach(() => { /* set up X */ });
+  it('does Y', () => { ... });
+});
+```
 
 ## Authoritative sources
 

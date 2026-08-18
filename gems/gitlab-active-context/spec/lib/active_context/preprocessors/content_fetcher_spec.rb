@@ -80,6 +80,8 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
           expect(e).to be_a(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError)
           expect(e.message).to eq("content not found for chunk with id: id2")
           expect(kwargs[:class_name]).to eq("Class")
+          expect(kwargs[:queue_name]).to be_nil
+          expect(kwargs[:preprocessor]).to eq('content_fetcher')
           expect(kwargs[:reference]).to match(/id2/)
           expect(kwargs[:reference_id]).to eq("id2")
         end
@@ -88,6 +90,45 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
 
         expect(result[:successful]).to eq([reference_1])
         expect(result[:failed]).to eq([reference_2])
+      end
+
+      context 'when queue_name is specified in the preprocess options' do
+        subject(:process_refs) do
+          ActiveContext::Reference.preprocess_references(
+            [reference_1, reference_2],
+            queue_name: 'test_queue'
+          )
+        end
+
+        it 'does not log the queue name if the reference preprocessor does not pass it' do
+          expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+            instance_of(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError),
+            hash_including(queue_name: nil)
+          )
+
+          process_refs
+        end
+
+        context 'when the reference preprocessor passes the queue name' do
+          let(:reference_class) do
+            Class.new(Test::References::Mock) do
+              include ::ActiveContext::Preprocessors::ContentFetcher
+
+              add_preprocessor :fetch_content do |refs, queue_name: nil|
+                fetch_content(refs: refs, query: '*', collection: 'mock_collection', queue_name: queue_name)
+              end
+            end
+          end
+
+          it 'logs the queue name' do
+            expect(ActiveContext::Logger).to receive(:retryable_exception).with(
+              instance_of(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError),
+              hash_including(queue_name: 'test_queue')
+            )
+
+            process_refs
+          end
+        end
       end
     end
 

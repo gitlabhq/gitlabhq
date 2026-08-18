@@ -90,7 +90,7 @@ The following are GitLab upgrade validation tests we performed.
 - Description: Tested upgrading from GitLab 12.5.7 to GitLab 12.6.6 in a multi-node configuration.
 - Outcome: Upgrade test was successful.
 - Follow up issue:
-  [Update documentation for zero-downtime upgrades to ensure deploy node it not in use](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5046).
+  [Update documentation for zero-downtime upgrades to ensure deploy node is not in use](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5046).
 
 [Upgrade Geo multi-node installation](https://gitlab.com/gitlab-org/gitlab/-/issues/37044):
 
@@ -164,7 +164,7 @@ The following are PostgreSQL upgrade validation tests we performed.
 - Description: Prior to making PostgreSQL 11 the default version of PostgreSQL in GitLab 12.10, we
   tested upgrading to PostgreSQL 11 in Geo deployments in GitLab 12.9.
 - Outcome: Partially successful. Issues were discovered in multi-node configurations with a separate
-  tracking database and concerns were raised about allowing automatic upgrades when Geo enabled.
+  tracking database and concerns were raised about allowing automatic upgrades when Geo is enabled.
 - Follow up issues:
   - [`replicate-geo-database` incorrectly tries to back up repositories](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5241).
   - [`pg-upgrade` fails to upgrade a standalone Geo tracking database](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5242).
@@ -198,19 +198,19 @@ The following are additional validation tests we performed.
 [Validate Object storage replication using AWS based object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/351463):
 
 - Description: Tested the average time it takes for a single image to replicate from the primary object storage location to the secondary when using AWS based object storage replication and [GitLab based object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication). This was tested by uploading a 1 MB image to a project on the primary site every second for 60 seconds. The time was then measured until an image was available on the secondary site. This was achieved using a [Ruby Script](https://gitlab.com/gitlab-org/quality/geo-replication-tester).
-- Outcome: When using AWS managed replication the average time for an image to replicate between sites is about 49 seconds, this is true for when sites are located in the same region and when they are further apart (Europe to America). When using Geo managed replication in the same region the average time for replication took just 5 seconds, however when replicating cross region the average time rose to 33 seconds.
+- Outcome: When using AWS managed replication the average time for an image to replicate between sites is about 49 seconds. This is true for when sites are located in the same region and when they are further apart (Europe to America). When using Geo managed replication in the same region the average time for replication took just 5 seconds. However, when replicating cross region the average time rose to 33 seconds.
 
 [Validate Object storage replication using GCP based object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/351464):
 
 - Description: Tested the average time it takes for a single image to replicate from the primary object storage location to the secondary when using GCP based object storage replication and [GitLab based object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication). This was tested by uploading a 1 MB image to a project on the primary site every second for 60 seconds. The time was then measured until an image was available on the secondary site. This was achieved using a [Ruby Script](https://gitlab.com/gitlab-org/quality/geo-replication-tester).
-- Outcome: GCP handles replication differently than other Cloud Providers. In GCP, the process is to a create single bucket that is either multi, dual, or single region based. This means that the bucket automatically stores replicas in a region based on the option chosen. Even when using multi region, this only replicates in a single continent, the options being America, Europe, or Asia. At current there doesn't seem to be any way to replicate objects between continents using GCP based replication. For Geo managed replication the average time when replicating in the same region was 6 seconds, and when replicating cross region this rose to just 9 seconds.
+- Outcome: GCP handles replication differently than other Cloud Providers. In GCP, the process is to create a single bucket that is either multi, dual, or single region based. This means that the bucket automatically stores replicas in a region based on the option chosen. Even when using multi region, this only replicates in a single continent, the options being America, Europe, or Asia. Currently, there doesn't seem to be any way to replicate objects between continents using GCP based replication. For Geo managed replication the average time when replicating in the same region was 6 seconds, and when replicating cross region this rose to just 9 seconds.
 
 ### January 2022
 
 [Validate Object storage replication using Azure based object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/348804#note_821294631):
 
 - Description: Tested the average time it takes for a single image to replicate from the primary object storage location to the secondary when using Azure based object storage replication and [GitLab based object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication). This was tested by uploading a 1 MB image to a project on the primary site every second for 60 seconds. The time was then measured until an image was available on the secondary site. This was achieved using a [Ruby Script](https://gitlab.com/gitlab-org/quality/geo-replication-tester).
-- Outcome: When using Azure based replication the average time for an image to replicate from the primary object storage to the secondary was recorded as 40 seconds, the longest replication time was 70 seconds and the quickest was 11 seconds. When using GitLab based replication the average time for replication to complete was 5 seconds, the longest replication time was 10 seconds and the quickest was 3 seconds.
+- Outcome: When using Azure based replication the average time for an image to replicate from the primary object storage to the secondary was recorded as 40 seconds, the longest replication time was 70 seconds, and the quickest was 11 seconds. When using GitLab based replication the average time for replication to complete was 5 seconds, the longest replication time was 10 seconds, and the quickest was 3 seconds.
 - Follow up issue:
   - [Validate Cross Region Object storage replication using Azure based object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/358154)
 

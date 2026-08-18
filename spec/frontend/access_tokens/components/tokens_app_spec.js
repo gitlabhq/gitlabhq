@@ -5,6 +5,8 @@ import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TokensApp from '~/access_tokens/components/tokens_app.vue';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '~/access_tokens/constants';
 
+const CAN_NOT_ACCESS_OTHER_DATA = 'It cannot be used to access any other data.';
+
 describe('TokensApp', () => {
   let wrapper;
 
@@ -51,7 +53,7 @@ describe('TokensApp', () => {
       'data-method': 'put',
       href: expectedResetPath,
     });
-    expect(container.props()).toMatchObject(expectedProps);
+    expect(wrapper.findComponentByTestId(testId).props()).toMatchObject(expectedProps);
   };
 
   it('renders all enabled tokens', () => {
@@ -78,7 +80,7 @@ describe('TokensApp', () => {
       expectedLabel: TokensApp.i18n[INCOMING_EMAIL_TOKEN].label,
       expectedDescription: TokensApp.i18n[INCOMING_EMAIL_TOKEN].description,
       expectedInputDescription:
-        'Keep this token secret. Anyone who has it can create issues as if they were you.',
+        'Keep this token secret. Anyone who has it can create issues and merge requests as if they were you.',
       expectedResetPath: defaultProvide.tokenTypes[INCOMING_EMAIL_TOKEN].resetPath,
       expectedResetConfirmMessage: TokensApp.i18n[INCOMING_EMAIL_TOKEN].resetConfirmMessage,
       expectedProps: {
@@ -104,6 +106,19 @@ describe('TokensApp', () => {
         copyButtonTitle: TokensApp.i18n[STATIC_OBJECT_TOKEN].copyButtonTitle,
       },
     });
+  });
+
+  it('only renders additional info for tokens that define it', () => {
+    createComponent();
+
+    const rendersAdditionalInfo = (tokenType) =>
+      extendedWrapper(wrapper.findByTestId(TokensApp.htmlAttributes[tokenType].containerTestId))
+        .findByText(CAN_NOT_ACCESS_OTHER_DATA, { exact: false })
+        .exists();
+
+    expect(rendersAdditionalInfo(FEED_TOKEN)).toBe(true);
+    expect(rendersAdditionalInfo(STATIC_OBJECT_TOKEN)).toBe(true);
+    expect(rendersAdditionalInfo(INCOMING_EMAIL_TOKEN)).toBe(false);
   });
 
   it("doesn't render disabled tokens", () => {

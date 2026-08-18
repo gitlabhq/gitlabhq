@@ -25,9 +25,11 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
     end
 
     it "logs a message for each query in a request" do
+      echo_variables = { "test" => "hello world" }
+
       expect(Gitlab::GraphqlLogger).to receive(:info).with(a_hash_including({
         **common_log_info,
-        variables: "{\"test\"=>\"hello world\"}",
+        variables: echo_variables.to_s,
         query_string: "{ echo(text: \"$test\") }"
       }))
 
@@ -85,7 +87,7 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
       let(:params) { { id: id } }
       let(:mutation) { graphql_mutation(:destroy_package, params, query) }
 
-      let(:expected_variables) { "{\"destroyPackageInput\"=>{\"id\"=>\"#{id}\"}}" }
+      let(:expected_variables) { { "destroyPackageInput" => { "id" => id } }.to_s }
       let(:sanitized_mutation_query_string) do
         "mutation {\n  destroyPackage(input: {id: \"<REDACTED>\"}) {\n    errors\n  }\n}"
       end

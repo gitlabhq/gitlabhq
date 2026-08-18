@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Atlassian::JiraConnect::Serializers::PullRequestEntity, feature_category: :integrations do
-  let_it_be(:project) { create_default(:project, :repository) }
+  let_it_be(:project) { create_default(:project, :small_repo) }
   # `freeze: false` is required in this spec: one or more `let_it_be` subjects
   # cannot be frozen by default (deep_freeze traversal failure, a non-AR
   # subject, or an in-memory mutation that survives reload/refind). Do not

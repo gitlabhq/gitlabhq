@@ -13,13 +13,6 @@ title: Configure workspaces
 
 {{< /details >}}
 
-{{< history >}}
-
-- Feature flag `remote_development_feature_flag` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
-
-{{< /history >}}
-
 You can use [workspaces](_index.md) to create and manage isolated development environments for your GitLab projects.
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.
@@ -48,10 +41,6 @@ For more information, see the
 
 {{< history >}}
 
-- **Time before automatic termination** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120168) in GitLab 16.0
-- Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
-- **Git reference** and **Devfile location** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) in GitLab 16.10.
-- **Time before automatic termination** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) to **Workspace automatically terminates after** in GitLab 16.10.
 - **Variables** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463514) in GitLab 17.1.
 - **Workspace automatically terminates after** [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166065) in GitLab 17.6.
 - **Workspace can be created from Merge Request page** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187320) in GitLab 18.0.
@@ -127,7 +116,7 @@ To choose a method that fits your platform requirements, see [configure sudo acc
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -139,7 +128,7 @@ To build and run containers in a workspace, see [configure sudo access for a wor
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14664) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14664) in GitLab 17.6.
 
 {{< /history >}}
 
@@ -154,7 +143,7 @@ For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -220,12 +209,6 @@ To configure sudo access with user namespaces:
    - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
 
 ## Connect to a workspace with SSH
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10478) in GitLab 16.3.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -316,7 +299,6 @@ USER gitlab-workspaces
 
 - [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md)
 - [Workspace settings](settings.md)
-- [Workspace configuration](configuration.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
 - [Quickstart guide for GitLab remote development workspaces](https://go.gitlab.com/AVKFvy)
 - [Set up your infrastructure for on-demand, cloud-based development environments in GitLab](https://go.gitlab.com/dp75xo)

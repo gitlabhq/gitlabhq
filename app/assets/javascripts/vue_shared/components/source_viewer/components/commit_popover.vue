@@ -70,7 +70,7 @@ export default {
         class="gl-h-5 gl-text-default hover:gl-text-default"
         data-testid="commit-title-link"
       >
-        <gl-truncate :text="commit.title" :lines="2" class="gl-font-bold" />
+        <gl-truncate :text="commit.title" :lines="2" class="gl-font-bold" with-tooltip />
       </gl-link>
 
       <!-- Author info + Commit SHA -->

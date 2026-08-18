@@ -16,7 +16,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all attestations for a project' do
           detail 'Lists all attestations for a specified project and artifact hash. This feature was introduced in ' \
             'GitLab 18.7.'

@@ -7,7 +7,7 @@ RSpec.describe 'Query.project.pipeline.stages', feature_category: :continuous_in
 
   subject(:post_query) { post_graphql(query, current_user: user) }
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 

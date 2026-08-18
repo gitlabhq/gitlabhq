@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ActiveContext::Reference do
+RSpec.describe ActiveContext::Reference, :aggregate_failures do
   describe '.deserialize' do
     context 'when ref_klass exists' do
       let(:mock_ref_klass) { class_double("ActiveContext::References::TestReference") }
@@ -61,6 +61,20 @@ RSpec.describe ActiveContext::Reference do
       it 'returns the pluralized class name' do
         expect(described_class.ref_module).to eq('ActiveContext::References')
       end
+    end
+  end
+
+  describe 'attributes' do
+    before do
+      allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(double)
+    end
+
+    let(:reference_class) { Class.new(Test::References::Mock) }
+    let(:reference) { reference_class.new(collection_id: 1, routing: 2, args: 3) }
+
+    it 'sets project_id and root_namespace_id as nil' do
+      expect(reference.project_id).to be_nil
+      expect(reference.root_namespace_id).to be_nil
     end
   end
 

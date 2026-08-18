@@ -30,7 +30,7 @@ If you want to seed the empty DB with sample data (approximately 4 minutes):
 bundle exec rake dev:setup
 ```
 
-If you just want to delete everything and start over with sample data (approximately 4 minutes). This
+If you just want to delete everything and start over with sample data (approximately 4 minutes), this
 also does `db:reset` and runs DB-specific migrations:
 
 ```shell
@@ -148,7 +148,7 @@ To create a database connection:
 
 1. When prompted to enter the **password of the PostgreSQL user**, enter the password you set or leave the field blank.
    - As you are logged in to the same machine that the Postgres server is running on, a password is not required.
-1. Enter**Port number to connect to**. The default port number is`5432`.
+1. Enter **Port number to connect to**. The default port number is `5432`.
 1. In the **use an SSL connection?** field, select the appropriate connection for your
    installation. The options are:
    - **Use Secure Connection**
@@ -204,11 +204,11 @@ Users receive this error when `db:migrate` detects that the current schema versi
 is older than the `MIN_SCHEMA_VERSION` defined in the `Gitlab::Database` library
 module.
 
-Over time we cleanup/combine old migrations in the codebase, so it is not always
+Over time we clean up/combine old migrations in the codebase, so it is not always
 possible to migrate GitLab from every previous version.
 
 In some cases you might want to bypass this check. For example, if you were on a version
-of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back the
+of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back
 to an older migration, from before. In this case, to migrate forward again,
 you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
 
@@ -239,7 +239,7 @@ PgBouncer can be fine-tuned to fit different installations. See our documentatio
 The `ANALYZE` command is a good first approach for solving many performance issues.
 By regenerating table statistics, the query planner creates more efficient query execution paths.
 
-Up to date statistics never hurt!
+Up-to-date statistics never hurt!
 
 - For Linux packages, run:
 
@@ -325,7 +325,7 @@ for the same queries while the environment is in either state.
 
 Index bloat shouldn't typically cause noticeable performance problems, but it can lead to high disk usage, particularly if there are [autovacuum issues](https://gitlab.com/gitlab-org/gitlab/-/issues/412672#note_1401807864).
 
-The query below calculates bloat percentage from PostgreSQL's own `postgres_index_bloat_estimates`
+The query below calculates bloat percentage from the built-in PostgreSQL `postgres_index_bloat_estimates`
 table, and orders the results by percentage value. PostgreSQL needs some amount of
 bloat to run correctly, so around 25% still represents standard behavior.
 

@@ -10,7 +10,6 @@ module Ci
         processed_inputs = process_job_inputs(job, inputs)
         return processed_inputs if processed_inputs.error?
 
-        job.ensure_scheduling_type!
         new_job = retry_job(job, variables: variables, inputs: processed_inputs.payload[:inputs])
 
         track_retry_with_new_input_values(processed_inputs.payload[:inputs])
@@ -30,6 +29,8 @@ module Ci
       # from the model and not overridden by other abstractions.
       raise TypeError unless job.instance_of?(Ci::Build) || job.instance_of?(Ci::Bridge)
 
+      pipeline = job.pipeline
+
       check_access!(job, variables: variables)
       variables = ensure_project_id!(variables)
 
@@ -38,11 +39,15 @@ module Ci
         new_job_inputs: inputs
       )
 
+      # Hold on to the record the clone service shared with `new_job`: the
+      # `new_job.reset` in `start_pipeline` drops that association cache.
+      job_definition = new_job.association(:job_definition).target
+
       if enqueue_if_actionable && new_job.action?
         new_job.set_enqueue_immediately!
       end
 
-      start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline
+      start_pipeline_proc = -> { start_pipeline(pipeline, new_job, job_definition) } if start_pipeline
 
       new_job.run_after_commit do
         new_job.link_to_environment(job.persisted_environment) if job.persisted_environment.present?
@@ -57,7 +62,7 @@ module Ci
       end
 
       add_job = -> do
-        ::Ci::Pipelines::AddJobService.new(job.pipeline).execute!(new_job) do |processable|
+        ::Ci::Pipelines::AddJobService.new(pipeline).execute!(new_job) do |processable|
           BulkInsertableAssociations.with_bulk_insert do
             processable.save!
           end
@@ -67,6 +72,8 @@ module Ci
       add_job.call
 
       job.reset # refresh the data to get new values of `retried` and `processed`.
+      job.pipeline = pipeline
+      job.project = project
 
       new_job
     end
@@ -106,9 +113,14 @@ module Ci
       end
     end
 
-    def start_pipeline(job, new_job)
-      Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
+    def start_pipeline(pipeline, new_job, job_definition)
+      Ci::PipelineCreation::StartPipelineService.new(pipeline).execute
       new_job.reset
+      new_job.pipeline = pipeline
+      new_job.project = project
+      # The definition row is immutable and shared with the source job, so it
+      # can be re-attached after the reset dropped the association cache.
+      new_job.association(:job_definition).target = job_definition if job_definition
     end
 
     def track_retry_with_new_input_values(filtered_inputs)

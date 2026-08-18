@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_management do
+RSpec.describe 'Issue Boards new issue', :js, feature_category: :planning_views do
   include ListboxHelpers
 
   let_it_be(:project)        { create(:project, :public) }

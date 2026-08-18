@@ -53,7 +53,7 @@ describe('BoardForm', () => {
   const findDeleteLastBoardMessage = () => wrapper.findByTestId('delete-last-board-message');
   const findInput = () => wrapper.find('#board-new-name');
   const findInputFormWrapper = () => wrapper.findComponent(GlForm);
-  const findDeleteButton = () => wrapper.findByTestId('delete-board-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-board-button');
 
   const defaultHandlers = {
     createBoardMutationHandler: jest.fn().mockResolvedValue({
@@ -211,7 +211,7 @@ describe('BoardForm', () => {
         });
 
         await mockApollo.resolveMutation(createBoardMutation);
-        expect(wrapper.emitted('addBoard')).toHaveLength(1);
+        expect(wrapper.emitted('add-board')).toHaveLength(1);
       });
 
       it('sets error in state if GraphQL mutation fails', async () => {
@@ -259,7 +259,7 @@ describe('BoardForm', () => {
       it('renders form wrapper', () => {
         expect(findFormWrapper().exists()).toBe(true);
       });
-      it('emits showBoardModal with delete when clicking on delete board button', async () => {
+      it('emits show-board-modal with delete when clicking on delete board button', async () => {
         await createComponent({
           props: {
             currentPage: formType.edit,
@@ -270,7 +270,7 @@ describe('BoardForm', () => {
         });
 
         findDeleteButton().vm.$emit('click');
-        expect(wrapper.emitted('showBoardModal')).toEqual([[formType.delete]]);
+        expect(wrapper.emitted('show-board-modal')).toEqual([[formType.delete]]);
       });
     });
 
@@ -292,8 +292,8 @@ describe('BoardForm', () => {
 
       await mockApollo.resolveMutation(updateBoardMutation);
       expect(global.window.location.href).not.toContain('?group_by=epic');
-      expect(wrapper.emitted('updateBoard')).toHaveLength(1);
-      expect(wrapper.emitted('updateBoard')).toEqual([
+      expect(wrapper.emitted('update-board')).toHaveLength(1);
+      expect(wrapper.emitted('update-board')).toEqual([
         [
           {
             id: 'gid://gitlab/Board/321',

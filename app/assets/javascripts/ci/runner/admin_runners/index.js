@@ -1,6 +1,6 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { runnersAppProvide } from 'ee_else_ce/ci/runner/provide';
 
@@ -12,7 +12,6 @@ import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import { createLocalState } from '../graphql/list/local_state';
 import AdminRunnersApp from './admin_runners_app.vue';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initAdminRunners = (selector = '#js-admin-runners') => {
@@ -35,6 +34,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
 
   const {
     newRunnerPath,
+    runnerSettingsPath,
     allowRegistrationToken,
     registrationToken,
     tagSuggestionsPath,
@@ -46,7 +46,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     defaultClient: createDefaultClient({}, { cacheConfig, typeDefs }),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminRunnersAppRoot',
     apolloProvider,
@@ -55,15 +55,13 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
       localMutations,
       tagSuggestionsPath,
     },
-    render(h) {
-      return h(AdminRunnersApp, {
-        props: {
-          newRunnerPath,
-          allowRegistrationToken: parseBoolean(allowRegistrationToken),
-          registrationToken,
-          canAdminRunners: parseBoolean(canAdminRunners),
-        },
-      });
+    component: AdminRunnersApp,
+    props: {
+      newRunnerPath,
+      runnerSettingsPath,
+      allowRegistrationToken: parseBoolean(allowRegistrationToken),
+      registrationToken,
+      canAdminRunners: parseBoolean(canAdminRunners),
     },
   });
 };

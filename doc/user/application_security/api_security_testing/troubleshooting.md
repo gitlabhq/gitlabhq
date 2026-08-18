@@ -233,7 +233,7 @@ If you cannot use a non-TLS connection to access the URL, contact the Support te
 
 You can expedite the investigation with the [testssl.sh tool](https://testssl.sh/). From a machine with a bash shell and connectivity to the affected server:
 
-1. Download the latest release `zip` or `tar.gz` file and extract from <https://github.com/drwetter/testssl.sh/releases>.
+1. Download the latest release `zip` or `tar.gz` file and extract from <https://github.com/testssl/testssl.sh/releases>.
 1. Run `./testssl.sh --log https://specs`.
 1. Attach the log file to your support ticket.
 
@@ -257,13 +257,9 @@ WARNING: Failed to pull image with policy "always": Error response from daemon: 
 ERROR: Job failed: failed to pull image "registry.example.com/my-target-app:latest" with specified policies [always]: Error response from daemon: Get https://registry.example.com/my-target-app/manifests/latest: unauthorized (manager.go:237:0s)
 ```
 
-**Error message**
-
-- In GitLab 15.9 and earlier, `ERROR: Job failed: failed to pull image` followed by `Error response from daemon: Get IMAGE: unauthorized`.
-
 **Solution**
 
-Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If your using a container registry provided by a 3rd party, such as a cloud provider (Azure, Google Could (GCP), AWS and so on), check the providers documentation for information on how to authenticate to their container registries.
+Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If you're using a container registry provided by a third party, such as a cloud provider (Azure, Google Cloud (GCP), AWS, and so on), check the providers documentation for information on how to authenticate to their container registries.
 
 The following example uses the [statically defined credentials](../../../ci/docker/using_docker_images.md#use-statically-defined-credentials) authentication method. In this example the container registry is `registry.example.com` and image is `my-target-app:latest`.
 

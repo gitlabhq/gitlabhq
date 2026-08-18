@@ -1,0 +1,11 @@
+---
+table_name: catalog_bundled_resource_versions
+classes:
+- Ci::Catalog::BundledResources::Version
+feature_categories:
+- pipeline_composition
+description: Cell-local versions of GitLab-maintained bundled catalog resources.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244179
+milestone: '19.2'
+gitlab_schema: gitlab_main_cell_local
+table_size: small

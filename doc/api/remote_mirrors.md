@@ -215,9 +215,6 @@ project pull mirroring API.
 
 {{< history >}}
 
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
-- Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
 - Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
 
 {{< /history >}}
@@ -299,7 +296,6 @@ Example response:
 
 {{< history >}}
 
-- Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
 - Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
 
 {{< /history >}}
@@ -374,12 +370,6 @@ Example response:
 ```
 
 ## Force push mirror update
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388907) in GitLab 16.11.
-
-{{< /history >}}
 
 [Force an update](../user/project/repository/mirror/_index.md#force-an-update) to a push mirror.
 

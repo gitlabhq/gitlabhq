@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Integrations::Jira, feature_category: :integrations do
   include AssetsHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:current_user) { build_stubbed(:user) }
   let(:url) { 'http://jira.example.com' }
@@ -228,7 +228,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     end
 
     it 'provides additional cookies to allow basic auth with oracle webgate' do
-      expect(integration.options[:use_cookies]).to eq(true)
+      expect(integration.options[:use_cookies]).to be(true)
       expect(integration.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
     end
 
@@ -803,7 +803,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     context 'with restricted restrict_project_key option' do
       subject(:find_issue) { jira_integration.find_issue(issue_key, restrict_project_key: true) }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
 
       context 'when project_keys includes issue_key' do
         let(:project_keys) { ['JIRA'] }
@@ -908,6 +908,14 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return(nil)
 
         expect { close_issue }.not_to raise_error
+      end
+
+      it 'fails closed without posting when the remote link lookup fails', :aggregate_failures do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_raise(Timeout::Error)
+
+        expect { close_issue }.not_to raise_error
+        expect(WebMock).not_to have_requested(:post, comment_url)
+        expect(WebMock).not_to have_requested(:post, remote_link_url)
       end
 
       # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
@@ -1240,6 +1248,35 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
           end
         end
 
+        context 'when a comment referencing the entity exists with different message text' do
+          # Reproduces gitlab-org/gitlab#233159: the same entity re-processed with a
+          # different branch name (for example after a fast-forward merge deletes the source branch).
+          let(:existing_comment_body) do
+            "[Someone Else|http://localhost/someone] mentioned this issue in " \
+              "[a #{resource_name.humanize.downcase}|#{resource_url}] of " \
+              "[#{project.full_path}|http://localhost/#{project.full_path}] on branch " \
+              "[deleted-branch|http://localhost/deleted-branch]:{quote}Old message{quote}"
+          end
+
+          before do
+            stub_request(:get, issue_url)
+              .with(basic_auth: [username, password])
+              .to_return(
+                status: 200,
+                headers: { 'Content-Type' => 'application/json' },
+                body: {
+                  fields: { comment: { comments: [{ id: '10000', body: existing_comment_body }] } }
+                }.to_json
+              )
+          end
+
+          it 'does not create a duplicate comment', :aggregate_failures do
+            expect(subject).to be_nil
+            expect(WebMock).not_to have_requested(:post, comment_url)
+            expect(WebMock).not_to have_requested(:post, remote_link_url)
+          end
+        end
+
         context 'when remote link already exists' do
           let(:link) { double(object: { 'url' => resource_url }) }
 
@@ -1247,10 +1284,104 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
             allow(jira_integration).to receive(:find_remote_link).and_return(link)
           end
 
-          it 'updates the remote link but does not create a comment' do
-            expect(link).to receive(:save!)
-            expect(subject).to eq(success_message)
+          it 'does not update the remote link or create a comment', :aggregate_failures do
+            expect(link).not_to receive(:save!)
+            expect(jira_integration).to receive(:log_info)
+              .with("Skipping duplicate remote link and comment", hash_including(:client_url, :client_path))
+
+            expect(subject).to be_nil
             expect(WebMock).not_to have_requested(:post, comment_url)
+          end
+        end
+
+        context 'when Jira rejects the remote link with HTTP 413' do
+          let(:remote_link_path) { '/rest/api/2/issue/JIRA-123/remotelink' }
+          let(:error_response_body) do
+            '{"errorMessages":["REMOTE_ISSUE_LINKS_PER_ISSUE_LIMIT_EXCEEDED: 2000"],"errors":{}}'
+          end
+
+          before do
+            WebMock.stub_request(:post, remote_link_url).with(basic_auth: [username, password])
+              .to_raise(JIRA::HTTPError.new(
+                double(message: 'Request Entity Too Large', code: '413', body: error_response_body)
+              ))
+          end
+
+          it 'creates the comment but skips the remote link, logs it, and does not raise', :aggregate_failures do
+            expect(jira_integration).to receive(:log_error).with(
+              'Skipped creating remote link: per-issue remote link limit exceeded',
+              client_url: url,
+              client_path: remote_link_path,
+              client_status: '413'
+            )
+
+            result = nil
+            expect { result = subject }.not_to raise_error
+
+            expect(result).to be_nil
+            expect(WebMock).to have_requested(:post, comment_url).once
+          end
+        end
+
+        context 'when Jira returns HTTP 413 for a reason other than the remote link limit' do
+          before do
+            WebMock.stub_request(:post, remote_link_url).with(basic_auth: [username, password])
+              .to_raise(JIRA::HTTPError.new(
+                double(message: 'Request Entity Too Large', code: '413', body: '{"errorMessages":["Payload too large"]}')
+              ))
+          end
+
+          it 'does not swallow the error and logs it via jira_request' do
+            expect(jira_integration).to receive(:log_exception).with(
+              kind_of(JIRA::HTTPError),
+              hash_including(message: 'Error sending message')
+            )
+
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'when Jira rejects the remote link with a non-413 HTTP error' do
+          before do
+            WebMock.stub_request(:post, remote_link_url).with(basic_auth: [username, password])
+              .to_raise(JIRA::HTTPError.new(
+                double(message: 'Internal Server Error', code: '500', body: 'error')
+              ))
+          end
+
+          it 'does not swallow the error and logs it via jira_request' do
+            expect(jira_integration).to receive(:log_exception).with(
+              kind_of(JIRA::HTTPError),
+              hash_including(message: 'Error sending message')
+            )
+
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'when the remote link lookup fails' do
+          before do
+            allow(JIRA::Resource::Remotelink).to receive(:all).and_raise(Timeout::Error)
+          end
+
+          it 'fails closed without creating a comment or remote link', :aggregate_failures do
+            expect(subject).to be_nil
+            expect(WebMock).not_to have_requested(:post, comment_url)
+            expect(WebMock).not_to have_requested(:post, remote_link_url)
+          end
+        end
+
+        context 'when the comments lookup fails' do
+          before do
+            allow_next_instance_of(JIRA::Resource::Issue) do |instance|
+              allow(instance).to receive(:comments).and_raise(Timeout::Error)
+            end
+          end
+
+          it 'fails closed without creating a comment or remote link', :aggregate_failures do
+            expect(subject).to be_nil
+            expect(WebMock).not_to have_requested(:post, comment_url)
+            expect(WebMock).not_to have_requested(:post, remote_link_url)
           end
         end
       end
@@ -1289,6 +1420,57 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       it_behaves_like 'handles cross-references' do
         let(:resource) { project.commit('master') }
         let(:comment_body) { /mentioned this issue in \[a commit\|.* on branch \[master\|/ }
+      end
+    end
+
+    context 'when the same commit is re-processed with an unstable branch tie-break' do
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244579#note_3564875455
+      # A commit on multiple branches can resolve to a different branch per run, so dedup must key on the entity URL.
+      let(:resource) { project.commit('master') }
+      let(:branch_a) { "jira-repro-a-#{SecureRandom.hex(4)}" }
+      let(:branch_b) { "jira-repro-b-#{SecureRandom.hex(4)}" }
+      let(:issue_url) { "#{url}/rest/api/2/issue/JIRA-123" }
+      let(:comment_url) { "#{issue_url}/comment" }
+      let(:remote_link_url) { "#{issue_url}/remotelink" }
+
+      before do
+        posted_comment_body = nil
+
+        project.repository.create_branch(branch_a, resource.sha)
+        project.repository.create_branch(branch_b, resource.sha)
+
+        allow(jira_integration).to receive(:can_cross_reference?) { true }
+        allow(resource).to receive(:first_ref_by_oid).and_return(branch_a, branch_b)
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+        stub_request(:post, remote_link_url).with(basic_auth: [username, password])
+
+        stub_request(:post, comment_url)
+          .with(basic_auth: [username, password])
+          .to_return do |request|
+            posted_comment_body = Gitlab::Json::SafeParser.parse(request.body)['body']
+            { status: 201, headers: { 'Content-Type' => 'application/json' }, body: {}.to_json }
+          end
+
+        stub_request(:get, issue_url)
+          .with(basic_auth: [username, password])
+          .to_return do |_request|
+            comments = posted_comment_body ? [{ id: '10000', body: posted_comment_body }] : []
+            { status: 200, headers: { 'Content-Type' => 'application/json' },
+              body: { fields: { comment: { comments: comments } } }.to_json }
+          end
+      end
+
+      after do
+        project.repository.delete_branch(branch_a)
+        project.repository.delete_branch(branch_b)
+      end
+
+      it 'posts a single comment and remote link', :aggregate_failures do
+        jira_integration.create_cross_reference_note(jira_issue, resource, user)
+        jira_integration.create_cross_reference_note(jira_issue, resource, user)
+
+        expect(WebMock).to have_requested(:post, comment_url).once
+        expect(WebMock).to have_requested(:post, remote_link_url).once
       end
     end
 

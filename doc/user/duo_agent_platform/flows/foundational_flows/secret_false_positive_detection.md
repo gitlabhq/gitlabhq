@@ -33,14 +33,14 @@ The GitLab Duo assessment includes information about each false positive detecti
 Results are based on AI analysis and should be reviewed by security professionals. This feature requires GitLab Duo with an active subscription.
 
 > [!note]
->You can't trigger this flow by mentioning, assigning, or requesting a review from its service account. The flow runs automatically after security scans complete. You can run it manually from the vulnerability report by clicking the **Check for false positive** button.
+> You can't trigger this flow by mentioning, assigning, or requesting a review from its service account. The flow runs automatically after security scans complete. To run it manually, on a vulnerability page, select **AI actions**, then select **Check for false positive**.
 
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../_index.md#prerequisites).
 - Turn on **Allow foundational flows** and **Secret Detection False Positive Detection** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Running secret false positive detection
 
@@ -55,7 +55,7 @@ You can also manually trigger analysis for existing vulnerabilities:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
-1. In the upper-right corner, select **Check for false positive**.
+1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
 
 ## Related links
 

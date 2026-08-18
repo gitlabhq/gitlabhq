@@ -48,6 +48,12 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
 
           service_result
         end
+
+        it 'triggers namespaceWorkItemChanges subscription' do
+          expect(GraphqlTriggers).to receive(:work_item_created).with(instance_of(WorkItem))
+
+          service_result
+        end
       end
 
       context 'when params are invalid' do

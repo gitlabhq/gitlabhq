@@ -7,8 +7,12 @@ module ActiveContext
         @preprocessors ||= []
       end
 
-      def add_preprocessor(name, &block)
-        preprocessors << { name: name, block: block }
+      def eligible_preprocessors
+        preprocessors.select { |preprocessor| preprocessor[:should_run].call }
+      end
+
+      def add_preprocessor(name, should_run: -> { true }, &block)
+        preprocessors << { name: name, should_run: should_run, block: block }
       end
 
       def preprocess(refs, **options)
@@ -21,7 +25,7 @@ module ActiveContext
           all_retryable_refs = []
           current_successful_refs = class_refs
 
-          klass.preprocessors.each do |preprocessor|
+          klass.eligible_preprocessors.each do |preprocessor|
             next if current_successful_refs.empty?
 
             processed = preprocessor[:block].call(current_successful_refs, **options)
@@ -39,7 +43,12 @@ module ActiveContext
         result
       end
 
-      def with_per_ref_handling(refs, retry_error_types: [StandardError], skip_error_types: [])
+      def with_per_ref_handling(
+        refs,
+        retry_error_types: [StandardError],
+        skip_error_types: [],
+        queue_name: nil,
+        preprocessor: nil)
         return { successful: [], failed: [] } unless refs.any?
 
         failed_refs = []
@@ -50,11 +59,22 @@ module ActiveContext
           successful_refs << ref
         rescue *skip_error_types => e
           ::ActiveContext::Logger.skippable_exception(
-            e, class_name: self.class.name, reference: ref.serialize, reference_id: ref.identifier
+            e,
+            class_name: self.class.name,
+            queue_name: queue_name,
+            preprocessor: preprocessor,
+            reference: ref.serialize,
+            reference_id: ref.identifier
           )
         rescue *retry_error_types => e
           ::ActiveContext::Logger.retryable_exception(
-            e, class_name: self.class.name, reference: ref.serialize, reference_id: ref.identifier
+            e,
+            class_name: self.class.name,
+            queue_name: queue_name,
+            preprocessor: preprocessor,
+            infinite_retry: false,
+            reference: ref.serialize,
+            reference_id: ref.identifier
           )
 
           failed_refs << ref
@@ -63,7 +83,12 @@ module ActiveContext
         { successful: successful_refs, failed: failed_refs }
       end
 
-      def with_batch_handling(refs, error_types: [StandardError], infinite_retry_error_types: [])
+      def with_batch_handling(
+        refs,
+        error_types: [StandardError],
+        infinite_retry_error_types: [],
+        queue_name: nil,
+        preprocessor: nil)
         return { successful: [], failed: [], retryable: [] } unless refs.any?
 
         begin
@@ -71,13 +96,40 @@ module ActiveContext
 
           { successful: refs, failed: [], retryable: [] }
         rescue *infinite_retry_error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, class_name: self.class.name, refs: refs.map(&:serialize))
+          ::ActiveContext::Logger.retryable_exception(
+            e,
+            class_name: self.class.name,
+            queue_name: queue_name,
+            preprocessor: preprocessor,
+            infinite_retry: true,
+            refs: refs.map(&:serialize)
+          )
 
           { successful: [], failed: [], retryable: refs }
         rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, class_name: self.class.name, refs: refs.map(&:serialize))
+          ::ActiveContext::Logger.retryable_exception(
+            e,
+            class_name: self.class.name,
+            queue_name: queue_name,
+            preprocessor: preprocessor,
+            infinite_retry: false,
+            refs: refs.map(&:serialize)
+          )
 
           { successful: [], failed: refs, retryable: [] }
+        end
+      end
+
+      private
+
+      def grouped_processing_result(grouped_refs)
+        initial_result = { successful: [], failed: [], retryable: [] }
+        grouped_refs.each_with_object(initial_result) do |(group_key, refs_in_group), result|
+          group_result = yield(group_key, refs_in_group)
+
+          result[:successful] += group_result[:successful]
+          result[:failed] += group_result[:failed]
+          result[:retryable] += group_result[:retryable]
         end
       end
     end

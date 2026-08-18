@@ -22,7 +22,9 @@ describe('CollapsedFilesWarning', () => {
   let pinia;
 
   const getAlertActionButton = () =>
-    wrapper.findComponent(CollapsedFilesWarning).find('button.gl-alert-action:first-child');
+    wrapper
+      .findComponent(CollapsedFilesWarning)
+      .findComponent('button.gl-alert-action:first-child');
   const getAlertCloseButton = () => wrapper.findComponent(CollapsedFilesWarning).find('button');
 
   const createComponent = (props = {}, { full } = { full: false }) => {

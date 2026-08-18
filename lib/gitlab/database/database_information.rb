@@ -9,10 +9,13 @@ module Gitlab
 
       USER_TOKEN = '$user'
 
-      # pg_stat_progress_vacuum gained delay_time in PostgreSQL 18. All other
-      # columns we read are present from PostgreSQL 17 (our minimum version),
-      # so this is the only column that needs version gating.
+      # pg_stat_progress_vacuum gained delay_time in PostgreSQL 18, and
+      # max_dead_tuple_bytes/dead_tuple_bytes/indexes_total/indexes_processed
+      # in PostgreSQL 17 (replacing the older max_dead_tuples/num_dead_tuples).
+      # 17 is our documented minimum, but CI still runs a nightly job against
+      # PG16 to cover self-managed instances mid-upgrade, so both need gating.
       DELAY_TIME_MINIMUM_VERSION = 18_00_00
+      DEAD_TUPLE_AND_INDEX_PROGRESS_MINIMUM_VERSION = 17_00_00
 
       # An autovacuum triggered to prevent transaction ID (or multixact)
       # wraparound is reported by PostgreSQL with this marker appended to the
@@ -33,6 +36,14 @@ module Gitlab
         ORDER BY is_current DESC, name ASC
       SQL
 
+      SCHEMA_TABLES_SQL = <<~SQL
+        SELECT n.nspname AS schema_name, c.relname AS table_name
+        FROM pg_catalog.pg_namespace n
+        JOIN pg_catalog.pg_class c ON c.relnamespace = n.oid
+        WHERE n.nspname NOT IN ('pg_catalog', 'pg_toast', 'information_schema')
+          AND c.relkind IN ('r', 'p', 'v', 'm')
+      SQL
+
       # Live snapshot of in-progress (auto)vacuums for the current database.
       # relid is resolved to schema.table via pg_class/pg_namespace, and the
       # result is scoped to the current database (the view reports for the
@@ -41,8 +52,9 @@ module Gitlab
       # backend_type separates autovacuum workers from manual VACUUM, the
       # query text reveals anti-wraparound runs, and query_start gives the
       # elapsed running time (computed server-side so the value does not depend
-      # on the browser clock). The %{delay_time_column} placeholder is filled
-      # in only on PostgreSQL 18+ (see DELAY_TIME_MINIMUM_VERSION).
+      # on the browser clock). %{delay_time_column} is filled in only on
+      # PostgreSQL 18+ and %{dead_tuple_and_index_progress_columns} only on
+      # PostgreSQL 17+ (see the MINIMUM_VERSION constants above).
       VACUUM_PROGRESS_SQL = <<~SQL
         SELECT v.pid,
           n.nspname AS schema_name,
@@ -52,13 +64,10 @@ module Gitlab
           v.heap_blks_scanned,
           v.heap_blks_vacuumed,
           v.index_vacuum_count,
-          v.max_dead_tuple_bytes,
-          v.dead_tuple_bytes,
-          v.indexes_total,
-          v.indexes_processed,
           a.backend_type,
           a.query AS activity_query,
           EXTRACT(EPOCH FROM (clock_timestamp() - a.query_start))::bigint AS running_time_seconds
+          %{dead_tuple_and_index_progress_columns}
           %{delay_time_column}
         FROM pg_stat_progress_vacuum v
         JOIN pg_class c ON c.oid = v.relid
@@ -100,13 +109,15 @@ module Gitlab
           }
         end
 
+        schema_tables = connection.select_all(SCHEMA_TABLES_SQL).map { |row| [row['schema_name'], row['table_name']] }
+
         current_user = connection.select_value('SELECT current_user').to_s
 
         {
           current_user: current_user,
           search_path: search_path,
           schemas: schemas,
-          findings: search_path_findings(search_path, schemas, current_user),
+          findings: search_path_findings(search_path, schemas, schema_tables, current_user),
           vacuums: collect_vacuums(connection)
         }
       rescue StandardError => e
@@ -117,7 +128,7 @@ module Gitlab
       # Inspects the live search_path against GitLab's PostgreSQL conventions
       # and returns an ordered list of findings. Each finding is a plain hash:
       # { severity: 'error'|'warning', code: String, message: String }.
-      def search_path_findings(search_path, schemas, current_user)
+      def search_path_findings(search_path, schemas, schema_tables, current_user)
         entries = parse_search_path(search_path)
         partition_schema_names = Gitlab::Database::EXTRA_SCHEMAS.map(&:to_s)
 
@@ -137,24 +148,73 @@ module Gitlab
         # are the candidate schemas the search path resolves objects against.
         candidate_names = entries.map { |entry| entry == USER_TOKEN ? current_user : entry } -
           partition_schema_names
-        populated = schemas.select do |schema|
-          candidate_names.include?(schema[:name]) && schema[:has_tables]
-        end
+        candidates = schemas.select { |schema| candidate_names.include?(schema[:name]) }
 
+        # More than one schema on the search path holds objects of any kind. On
+        # its own this can be legitimate (an extension's schema, a DBA's own
+        # tooling), so it is only a warning: unqualified references still resolve
+        # against the first match, which is worth flagging but not a defect.
+        populated = candidates.select { |schema| schema[:has_tables] }
         if populated.size > 1
           findings << {
             severity: 'warning',
             code: 'search_path_objects_split_across_schemas',
             message: format(
               s_('DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. ' \
-                'GitLab\'s objects should all live in a single schema. If they are split across ' \
-                'multiple schemas, unqualified references can resolve unexpectedly.'),
+                'This can be intentional, but unqualified references resolve against the first match, so ' \
+                'objects spread across schemas can resolve unexpectedly.'),
               schemas: populated.pluck(:name).join(', ')
             )
           }
         end
 
+        # More than one schema on the search path holds GitLab's own objects.
+        # GitLab expects all of its objects in a single schema, so this is a real
+        # misconfiguration rather than a possibility, and is reported as an error.
+        gitlab_populated = candidates.select { |schema| schema_has_gitlab_objects?(schema[:name], schema_tables) }
+        if gitlab_populated.size > 1
+          findings << {
+            severity: 'error',
+            code: 'search_path_gitlab_objects_split_across_schemas',
+            message: format(
+              s_('DatabaseDiagnostics|More than one schema in the search path contains GitLab objects: ' \
+                '%{schemas}. GitLab\'s objects should all live in a single schema. When they are split ' \
+                'across multiple schemas, unqualified references can resolve unexpectedly.'),
+              schemas: gitlab_populated.pluck(:name).join(', ')
+            )
+          }
+        end
+
+        # GitLab objects in a schema the search path never consults cannot be
+        # resolved by unqualified references, so GitLab never uses them. They
+        # are typically leftovers from a restore or a migration into the wrong
+        # schema. Partition schemas are exempt: GitLab keeps partitions there
+        # by design, outside the search path.
+        outside_names = schemas.pluck(:name) - candidate_names - partition_schema_names
+        gitlab_outside = outside_names.select { |name| schema_has_gitlab_objects?(name, schema_tables) }
+        if gitlab_outside.any?
+          findings << {
+            severity: 'warning',
+            code: 'gitlab_objects_outside_search_path',
+            message: format(
+              s_('DatabaseDiagnostics|Schemas outside the search path contain GitLab objects: %{schemas}. ' \
+                'GitLab does not resolve unqualified references against these schemas, so these objects are ' \
+                'never used. They may be leftovers from a restore or an earlier misconfiguration.'),
+              schemas: gitlab_outside.join(', ')
+            )
+          }
+        end
+
         findings
+      end
+
+      def schema_has_gitlab_objects?(schema_name, schema_tables)
+        schema_tables.any? { |(namespace, table_name)| namespace == schema_name && gitlab_object?(table_name) }
+      end
+
+      def gitlab_object?(table_name)
+        schema = Gitlab::Database::GitlabSchema.table_schema(table_name)
+        schema.present? && schema != :gitlab_internal
       end
 
       # Normalizes a raw search_path string into an ordered list of tokens,
@@ -169,9 +229,14 @@ module Gitlab
       # Returns an ordered list of in-progress vacuums as plain hashes. Reads
       # are routed to the primary because autovacuum only runs there; a replica
       # would report an empty progress view. Byte/count columns are returned as
-      # integers and delay_time (PostgreSQL 18+) as a float or nil.
+      # integers; delay_time (PostgreSQL 18+) and the dead-tuple/index-progress
+      # columns (PostgreSQL 17+) are nil on older versions.
       def collect_vacuums(connection)
-        sql = format(VACUUM_PROGRESS_SQL, delay_time_column: delay_time_column(connection))
+        sql = format(
+          VACUUM_PROGRESS_SQL,
+          dead_tuple_and_index_progress_columns: dead_tuple_and_index_progress_columns(connection),
+          delay_time_column: delay_time_column(connection)
+        )
 
         rows = Gitlab::Database::LoadBalancing::SessionMap
           .current(connection.load_balancer)
@@ -187,10 +252,10 @@ module Gitlab
             heap_blks_scanned: row['heap_blks_scanned'].to_i,
             heap_blks_vacuumed: row['heap_blks_vacuumed'].to_i,
             index_vacuum_count: row['index_vacuum_count'].to_i,
-            max_dead_tuple_bytes: row['max_dead_tuple_bytes'].to_i,
-            dead_tuple_bytes: row['dead_tuple_bytes'].to_i,
-            indexes_total: row['indexes_total'].to_i,
-            indexes_processed: row['indexes_processed'].to_i,
+            max_dead_tuple_bytes: row['max_dead_tuple_bytes']&.to_i,
+            dead_tuple_bytes: row['dead_tuple_bytes']&.to_i,
+            indexes_total: row['indexes_total']&.to_i,
+            indexes_processed: row['indexes_processed']&.to_i,
             vacuum_type: vacuum_type(row),
             anti_wraparound: anti_wraparound?(row),
             running_time_seconds: row['running_time_seconds']&.to_i,
@@ -214,6 +279,12 @@ module Gitlab
         return '' if connection.database_version < DELAY_TIME_MINIMUM_VERSION
 
         ', v.delay_time'
+      end
+
+      def dead_tuple_and_index_progress_columns(connection)
+        return '' if connection.database_version < DEAD_TUPLE_AND_INDEX_PROGRESS_MINIMUM_VERSION
+
+        ', v.max_dead_tuple_bytes, v.dead_tuple_bytes, v.indexes_total, v.indexes_processed'
       end
     end
   end

@@ -137,7 +137,7 @@ RSpec.describe Groups::ImportExport::ExportService, feature_category: :importers
         it 'does not create an audit event' do
           expect(Gitlab::Audit::Auditor).not_to receive(:audit)
 
-          expect { service.execute }.not_to change { AuditEvent.count }
+          expect { service.execute }.not_to change { AuditEventReader.count }
         end
 
         it 'does not create any Todos' do

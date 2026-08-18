@@ -55,14 +55,14 @@ module Admin
 
       def group_params
         params.require(:group).permit(:name, :path).merge(
-          organization_id: Current.organization.id,
+          organization_id: admin_current_organization.id,
           visibility_level: Gitlab::VisibilityLevel::PRIVATE
         )
       end
 
       def project_params
         params.require(:project).permit(:name, :path).merge(
-          organization_id: Current.organization.id,
+          organization_id: admin_current_organization.id,
           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
           template_name: permitted_template_name
         )

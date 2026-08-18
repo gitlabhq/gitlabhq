@@ -1,6 +1,6 @@
 ---
-stage: Software Supply Chain Security
-group: Pipeline Security
+stage: Security Platform
+group: Secrets Manager Application
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Secrets Manager
 ignore_in_report: true
@@ -91,7 +91,7 @@ Secrets defined for a group can only be accessed by pipelines in a project direc
 You can add secrets to the secrets manager so that it can be used for secure CI/CD pipelines
 and workflows.
 
-1. In the top bar, select **Search or go to** and find your project
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
    - **Name**: Must be unique in the project.
@@ -216,7 +216,7 @@ To update the secrets permissions for a project:
 
 Prerequisites:
 
-- You must have the Owner role for the group to be able to manage the secrets permissions.
+- You must have the Owner role for the group to manage the secrets permissions.
   Only users with the Owner role for the group can view the defined permissions.
 - The Secrets Manager must be enabled for the group.
 

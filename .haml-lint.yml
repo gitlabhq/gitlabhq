@@ -10,6 +10,7 @@ exclude:
 require:
   - './haml_lint/linter/inline_javascript.rb'
   - './haml_lint/linter/no_plain_nodes.rb'
+  - './haml_lint/linter/template_format.rb'
 
 linters:
   AltText:
@@ -193,6 +194,50 @@ linters:
 
   TagName:
     enabled: true
+
+  TemplateFormat:
+    enabled: true
+    include:
+      - 'app/views/**/*.haml'
+      - 'ee/app/views/**/*.haml'
+      - 'app/components/**/*.haml'
+      - 'ee/app/components/**/*.haml'
+    exclude:
+      # Legacy offenders being renamed over several MRs.
+      # Do not add new entries here.
+      - 'app/views/admin/application_settings/_cluster_agents.haml'
+      - 'app/views/admin/application_settings/_nuget_skip_metadata_url_validation.haml'
+      - 'app/views/admin/application_settings/_project_and_group_access_tokens.haml'
+      - 'app/views/devise/confirmations/almost_there.haml'
+      - 'app/views/devise/sessions/email_verification.haml'
+      - 'app/views/devise/sessions/skip_verification_confirmation.haml'
+      - 'app/views/devise/sessions/successful_verification.haml'
+      - 'app/views/devise/shared/_omniauth_provider_button.haml'
+      - 'app/views/import/bulk_imports/failures.haml'
+      - 'app/views/layouts/_diffs_colors_css.haml'
+      - 'app/views/projects/_importing_alert.haml'
+      - 'app/views/projects/attestations/_attestation_certificate.haml'
+      - 'app/views/projects/commit/_pipelines_list.haml'
+      - 'app/views/projects/deployments/_actions.haml'
+      - 'app/views/projects/pages/_destroy.haml'
+      - 'app/views/projects/protected_tags/_protected_tag_create_access_levels.haml'
+      - 'app/views/shared/form_elements/_apply_generated_description_warning.haml'
+      - 'app/views/shared/integrations/slack/_help.haml'
+      - 'app/views/shared/milestones/_merge_requests_tab.haml'
+      - 'app/views/user_settings/user_settings/_event_table.haml'
+      - 'app/views/user_settings/user_settings/authentication_log.haml'
+      - 'ee/app/views/admin/users/_role_promotion_requests_tab.haml'
+      - 'ee/app/views/dashboard/projects/_joining_a_project_alert.haml'
+      - 'ee/app/views/groups/analytics/devops_adoption/show.haml'
+      - 'ee/app/views/notify/compliance_project_frameworks_csv_email.haml'
+      - 'ee/app/views/notify/compliance_standards_adherence_csv_email.haml'
+      - 'ee/app/views/notify/compliance_violations_csv_email.haml'
+      - 'ee/app/views/projects/_importing_alert.haml'
+      - 'ee/app/views/projects/protected_environments/_deployment_approval_options.haml'
+      - 'ee/app/views/projects/protected_tags/_protected_tag_extra_create_access_levels.haml'
+      - 'ee/app/views/shared/issuable/_approver_suggestion.haml'
+      - 'ee/app/views/shared/issuable/_sidebar_cve_id_request.haml'
+      - 'ee/app/views/shared/push_rules/_reject_commits_not_dco_signed_setting.haml'
 
   TrailingEmptyLines:
     enabled: false

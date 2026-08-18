@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::ToggleComponent, type: :component do
+RSpec.describe Pajamas::ToggleComponent, type: :component, feature_category: :design_system do
   context 'with defaults' do
     before do
       render_inline described_class.new(classes: 'js-feature-toggle')

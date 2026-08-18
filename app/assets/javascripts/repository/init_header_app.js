@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import apolloProvider from './graphql';
@@ -30,7 +30,7 @@ const initClientQueries = ({ projectPath, projectShortPath, ref, escapedRef }) =
     });
 };
 
-export default function initHeaderApp({ router, isReadmeView = false, isBlobView = false }) {
+export default function initHeaderApp({ router, isReadmeView = false }) {
   const headerEl = document.getElementById('js-repository-blob-header-app');
   if (headerEl) {
     const {
@@ -90,8 +90,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
 
     initClientQueries({ projectPath, projectShortPath, ref, escapedRef });
 
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el: headerEl,
       name: 'RepositoryHeaderAreaRoot',
       pinia,
@@ -111,7 +110,6 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         uploadPath: breadcrumbsUploadPath,
         newDirPath: breadcrumbsNewDirPath,
         projectRootPath,
-        projectShortPath,
         comparePath,
         isReadmeView,
         isFork: parseBoolean(isFork),
@@ -137,22 +135,18 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         downloadArtifacts: downloadArtifacts ? JSON.parse(downloadArtifacts) : [],
         showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
         userSettingsSshKeysPath,
-        isBlobView,
         isBinary: parseBoolean(isBinary),
         rootRef,
         organizationId,
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef, fullName),
-      render(h) {
-        return h(HeaderArea, {
-          props: {
-            refType,
-            currentRef: ref,
-            projectPath,
-            projectId,
-          },
-        });
+      component: HeaderArea,
+      props: {
+        refType,
+        currentRef: ref,
+        projectPath,
+        projectId,
       },
     });
   }

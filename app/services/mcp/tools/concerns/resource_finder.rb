@@ -4,44 +4,41 @@ module Mcp
   module Tools
     module Concerns
       module ResourceFinder
+        include Gitlab::ResourceLookup
+
         private
 
-        def find_project(project_id)
-          raise ArgumentError, "project_id must be a string" unless project_id.is_a?(String)
-
-          projects = ::Project.without_deleted.not_hidden
-          project = if ::API::Helpers::INTEGER_ID_REGEX.match?(project_id)
-                      projects.find_by(id: project_id) # rubocop: disable CodeReuse/ActiveRecord -- no need to redefine a scope for the built-in method
-                    elsif project_id.include?('/')
-                      projects.find_by_full_path(project_id, follow_redirects: true)
-                    end
+        def find_project!(project_id)
+          project = find_project(project_id)
 
           raise StandardError, "Project '#{project_id}' not found or inaccessible" unless project
 
           project
         end
 
-        def find_group(group_id)
-          group = if ::API::Helpers::INTEGER_ID_REGEX.match?(group_id)
-                    ::Group.id_in(group_id).first
-                  else
-                    ::Group.find_by_full_path(group_id)
-                  end
+        def find_project(project_id)
+          raise ArgumentError, "project_id must be a string" unless project_id.is_a?(String)
+
+          lookup_project(project_id)
+        end
+
+        def find_group!(group_id)
+          group = lookup_group(group_id)
 
           raise StandardError, "Group '#{group_id}' not found or inaccessible" unless group
 
           group
         end
 
-        def find_parent_by_id_or_path(parent_type, identifier)
-          parent = parent_type == :project ? find_project(identifier) : find_group(identifier)
+        def find_parent_by_id_or_path!(parent_type, identifier)
+          parent = parent_type == :project ? find_project!(identifier) : find_group!(identifier)
 
           authorize_parent_access!(parent, parent_type, identifier)
 
           parent
         end
 
-        def find_work_item_in_parent(parent, iid)
+        def find_work_item_in_parent!(parent, iid)
           finder_params = build_work_item_finder_params(parent)
 
           work_item = ::WorkItems::WorkItemsFinder.new(

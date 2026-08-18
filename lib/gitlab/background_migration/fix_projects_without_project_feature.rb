@@ -33,12 +33,16 @@ module Gitlab
               repository_access_level,
               forking_access_level,
               pages_access_level,
+              model_registry_access_level,
+              model_experiments_access_level,
               created_at,
               updated_at
             )
               SELECT projects.id,
                 20, 20, 20, 20, 20, 20, 20,
                 #{pages_access_level},
+                #{model_features_access_level},
+                #{model_features_access_level},
                 TIMEZONE('UTC', NOW()), TIMEZONE('UTC', NOW())
               FROM projects
               WHERE projects.id BETWEEN #{Integer(from_id)} AND #{Integer(to_id)}
@@ -60,6 +64,13 @@ module Gitlab
         else
           "GREATEST(projects.visibility_level, 10)"
         end
+      end
+
+      # Visibility-based default matching ProjectFeature#set_model_features_access_level:
+      # ENABLED (20) for public projects, PRIVATE (10) otherwise. These columns no
+      # longer carry a DB default, so they must be written explicitly here.
+      def model_features_access_level
+        "GREATEST(projects.visibility_level, 10)"
       end
 
       def log(count, from_id, to_id)

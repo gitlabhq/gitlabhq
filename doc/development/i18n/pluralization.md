@@ -357,6 +357,37 @@ control over word order.
 > support multiple inline plural selectors natively. GitLab uses gettext,
 > so the split-and-combine pattern is the correct approach.
 
+## Do not use Rails `pluralize` on translated strings
+
+The Rails `pluralize` helper and `String#pluralize` inflect words using English
+rules only.
+They have no locale awareness.
+When you pass a translated word to either one, the function appends an English `s` to the translation, which produces broken output in
+every non-English locale.
+
+```ruby
+# Avoid: Rails pluralize applied to a translated word
+pluralize(count, _('day'))
+# In Japanese, _('day') is "日", and pluralize appends "s":
+# => "30 日s"
+```
+
+The same problem applies to `String#pluralize` called on a translated string,
+for example, `s_('ChatMessage|Failed job').pluralize(count)`.
+
+Pluralize the whole sentence with `n_` instead, so each locale's plural rules
+apply:
+
+```ruby
+# Preferred: whole-sentence n_ with a named %{count} placeholder
+n_('Your group %{group_name} will be removed in %{count} day.',
+   'Your group %{group_name} will be removed in %{count} days.',
+   count) % { group_name: name, count: count }
+```
+
+The `n_()` approach also avoids a separate counted phrase inserted through
+a placeholder, which is a form of [sentence splitting](externalization.md#splitting-sentences).
+
 ## CLDR plural categories
 
 The Unicode Common Locale Data Repository (CLDR) defines six plural categories.

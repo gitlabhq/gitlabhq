@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dropdown base', :js, feature_category: :team_planning do
+RSpec.describe 'Dropdown base', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project) }
@@ -11,7 +11,6 @@ RSpec.describe 'Dropdown base', :js, feature_category: :team_planning do
 
   before do
     project.add_maintainer(user)
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
     visit project_work_items_path(project)

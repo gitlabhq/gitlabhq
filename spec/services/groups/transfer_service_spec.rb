@@ -152,12 +152,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   context 'when disabling merge request collaboration on access reduction' do
-    let(:group) { create(:group, :public) }
+    let(:group) { create(:group, :public, owners: user) }
     let!(:project) { create(:project, :public, group: group) }
-
-    before do
-      group.add_owner(user)
-    end
 
     context 'when the new parent group is private' do
       let_it_be(:new_parent_group, freeze: false) { create(:group, :private, owners: user) }
@@ -170,7 +166,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when no project visibility is reduced' do
-        let(:group) { create(:group, :private) }
+        let(:group) { create(:group, :private, owners: user) }
         let!(:project) { create(:project, :private, group: group) }
 
         it 'does not enqueue the worker' do
@@ -183,7 +179,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when the new parent group is internal' do
-      let_it_be(:new_parent_group, freeze: false) { create(:group, :internal) }
+      let_it_be(:new_parent_group, freeze: false) { create(:group, :internal, owners: user) }
 
       it 'does not enqueue the worker' do
         expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
@@ -194,7 +190,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when transferring to a root group' do
-      let(:group) { create(:group, :public, :nested) }
+      let(:group) { create(:group, :public, :nested, owners: user) }
 
       it 'does not enqueue the worker' do
         expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
@@ -218,6 +214,13 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'adds an error on group' do
           transfer_service.execute(nil)
           expect(transfer_service.error).to eq('Transfer failed: Group is already a root group.')
+        end
+
+        it 'records a failure transfer metric' do
+          expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+            .with(namespace_type: 'group', result: 'failure')
+
+          transfer_service.execute(nil)
         end
       end
 
@@ -630,6 +633,40 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           it_behaves_like 'project namespace path is in sync with project path' do
             let(:group_full_path) { "#{new_parent_group.path}/#{group.path}" }
             let(:projects_with_project_namespace) { [project1, project2] }
+          end
+        end
+      end
+
+      context 'when a descendant project has a service desk project_key' do
+        # `let!`, not `let_it_be`: earlier examples transfer the shared group and
+        # mutate its in-memory route, so a project created in `before_all` can be
+        # persisted under a stale path. Sibling contexts use `let!` for the same
+        # reason.
+        let!(:project) { create(:project, namespace: group) }
+        let!(:setting) { create(:service_desk_setting, project: project, project_key: 'mykey') }
+
+        before do
+          TestEnv.clean_test_path
+        end
+
+        it 'recomputes project_key_address_slug from the new full path' do
+          transfer_service.execute(new_parent_group)
+
+          expect(setting.reload.project_key_address_slug).to eq("#{project.reload.full_path_slug}-mykey")
+        end
+
+        context 'when the new path collides with another service desk address' do
+          before do
+            # After the transfer the project's full path is
+            # "#{new_parent_group.path}/#{group.path}/#{project.path}", which
+            # slugifies to the same value as this existing project's path.
+            existing = create(:project, path: "#{group.path}-#{project.path}", namespace: new_parent_group)
+            create(:service_desk_setting, project: existing, project_key: 'mykey')
+          end
+
+          it 'blocks the transfer with a clear error' do
+            expect(transfer_service.execute(new_parent_group)).to be false
+            expect(transfer_service.error).to include('Service Desk address for project')
           end
         end
       end
@@ -1159,6 +1196,15 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         transfer_service.execute(target)
       end
 
+      it 'records a success transfer metric and duration' do
+        expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+          .with(namespace_type: 'group', result: 'success')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
+          .with(duration_s: kind_of(Numeric), namespace_type: 'group')
+
+        transfer_service.execute(target)
+      end
+
       it 'creates a transferred activity event' do
         expect { transfer_service.execute(target) }.to change {
           Event.transferred_action.where(group: group, project: nil).count
@@ -1320,8 +1366,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         schedule
 
         expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-          message: 'Cancelling stale transfer state - no active worker lease found',
-          group_id: group.id
+          'message' => 'Cancelling stale transfer state - no active worker lease found',
+          'group_id' => group.id,
+          'gl_namespace_id' => group.id,
+          'namespace_type' => 'group',
+          'correlation_id' => kind_of(String)
         ))
       end
     end

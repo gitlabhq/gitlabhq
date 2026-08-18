@@ -1,9 +1,0 @@
-export const suggestProps = {
-  pipelinePath: '/foo/bar/add/pipeline/path',
-  pipelineSvgPath: 'assets/illustrations/something.svg',
-  humanAccess: 'maintainer',
-
-  userCalloutFeatureId: 'suggest_pipeline',
-};
-
-export const iconName = 'information';

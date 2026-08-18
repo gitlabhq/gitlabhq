@@ -13,7 +13,6 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
     stub_feature_flags(hide_error_tracking_features: false)
 
     project.add_role(user, role) if role
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
     project.update!(service_desk_enabled: true)

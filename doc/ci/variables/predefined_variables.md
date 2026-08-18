@@ -32,7 +32,7 @@ Predefined variables become available at three different phases of pipeline exec
   up the job and runs it, and:
   - Can be used in job scripts.
   - Cannot be used with [trigger jobs](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
-  - Cannot be used with [`workflow`](../yaml/_index.md#workflow), [`include`](../yaml/_index.md#include)
+  - Cannot be used with [`workflow`](../yaml/_index.md#workflow), [`include`](../yaml/_index.md#include),
     or [`rules`](../yaml/_index.md#rules).
 
 ## Predefined variables
@@ -48,10 +48,10 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_BUILD_NETWORK_NAME`                         | Job-only     | The name of the network that the job created. Available only with the Docker executor when [`FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) is enabled. |
 | `CI_BUILDS_DIR`                                 | Job-only     | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                              | Pre-pipeline | The author of the commit in `Name <email>` format. |
-| `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` for merge request pipelines, scheduled pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
+| `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. It is always `0000000000000000000000000000000000000000` for merge request pipelines, scheduled pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
 | `CI_COMMIT_BRANCH`                              | Pre-pipeline | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DEFAULT_BRANCH_BASE_SHA`             | Pre-pipeline | The merge base between `CI_COMMIT_SHA` and the default branch. Available only in non-default branch pipelines. Introduced in GitLab 19.1. |
-| `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
+| `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the description is the message without the first line. |
 | `CI_COMMIT_MESSAGE`                             | Pre-pipeline | The full commit message. |
 | `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | Pre-pipeline | `true` if `CI_COMMIT_MESSAGE` is truncated to the size specified in the `GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES` system environment variable (default 100 KB) because the commit message is too long. Otherwise `false`. Introduced in GitLab 18.6. |
 | `CI_COMMIT_REF_NAME`                            | Pre-pipeline | The branch or tag name for which project is built. |
@@ -83,7 +83,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_DISPOSABLE_ENVIRONMENT`                     | Pipeline     | Only available if the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). `true` when available. |
 | `CI_ENVIRONMENT_ID`                             | Pipeline     | The ID of the environment for this job. Available if [`environment:name`](../yaml/_index.md#environmentname) is set. |
 | `CI_ENVIRONMENT_NAME`                           | Pipeline     | The name of the environment for this job. Available if [`environment:name`](../yaml/_index.md#environmentname) is set. |
-| `CI_ENVIRONMENT_SLUG`                           | Pipeline     | The simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, and so on. Available if [`environment:name`](../yaml/_index.md#environmentname) is set. The slug is [truncated to 24 characters](https://gitlab.com/gitlab-org/gitlab/-/issues/20941). A random suffix is automatically added to [uppercase environment names](https://gitlab.com/gitlab-org/gitlab/-/issues/415526). |
+| `CI_ENVIRONMENT_SLUG`                           | Pipeline     | The simplified version of the environment name, suitable for inclusion in DNS, URLs, and Kubernetes labels. Available if [`environment:name`](../yaml/_index.md#environmentname) is set. The slug is [truncated to 24 characters](https://gitlab.com/gitlab-org/gitlab/-/issues/20941). A random suffix is automatically added to [uppercase environment names](https://gitlab.com/gitlab-org/gitlab/-/issues/415526). |
 | `CI_ENVIRONMENT_URL`                            | Pipeline     | The URL of the environment for this job. Available if [`environment:url`](../yaml/_index.md#environmenturl) is set. |
 | `CI_ENVIRONMENT_ACTION`                         | Pipeline     | The action annotation specified for this job's environment. Available if [`environment:action`](../yaml/_index.md#environmentaction) is set. Can be `start`, `prepare`, or `stop`. |
 | `CI_ENVIRONMENT_TIER`                           | Pipeline     | The [deployment tier of the environment](../environments/_index.md#deployment-tier-of-environments) for this job. |
@@ -95,8 +95,10 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_JOB_MANUAL`                                 | Pipeline     | Only available if the job was started manually. `true` when available. |
 | `CI_JOB_NAME`                                   | Pipeline     | The name of the job. |
 | `CI_JOB_NAME_SLUG`                              | Pipeline     | `CI_JOB_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. |
+| `CI_JOB_RETRY_COUNT`                            | Job-only     | The number of times the job has been retried in the current pipeline. `0` on the first run, and increases by one with each retry. Introduced in GitLab 19.3. |
 | `CI_JOB_STAGE`                                  | Pipeline     | The name of the job's stage. |
 | `CI_JOB_STATUS`                                 | Job-only     | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/_index.md#after_script). Can be `success`, `failed`, or `canceled`. |
+| `CI_JOB_TAGS`                                   | Job-only     | A JSON array of the job's [runner tags](../yaml/_index.md#tags). For example `["tag_1", "tag_2"]`. Introduced in GitLab 19.3. |
 | `CI_JOB_TIMEOUT`                                | Job-only     | The job timeout, in seconds. |
 | `CI_JOB_TOKEN`                                  | Job-only     | A token to authenticate with [certain API endpoints](../jobs/ci_job_token.md). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                                    | Job-only     | The job details URL. |
@@ -109,8 +111,8 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PAGES_DOMAIN`                               | Pre-pipeline | The instance's domain that hosts GitLab Pages, not including the namespace subdomain. To use the full hostname, use `CI_PAGES_HOSTNAME` instead. |
 | `CI_PAGES_HOSTNAME`                             | Job-only     | The full hostname of the Pages deployment. |
 | `CI_PAGES_URL`                                  | Job-only     | The URL for a GitLab Pages site. Always a subdomain of `CI_PAGES_DOMAIN`. In GitLab 17.9 and later, the value includes the `path_prefix` when one is specified. |
-| `CI_PIPELINE_ID`                                | Job-only     | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
-| `CI_PIPELINE_IID`                               | Pipeline     | The project-level IID (internal ID) of the current pipeline. This ID is unique only in the current project. |
+| `CI_PIPELINE_ID`                                | Job-only     | The ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
+| `CI_PIPELINE_IID`                               | Pipeline     | The IID (internal ID) of the current pipeline. This ID is unique only in the current project. |
 | `CI_PIPELINE_SOURCE`                            | Pre-pipeline | How the pipeline was triggered. The value can be one of the [pipeline sources](../jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
 | `CI_PIPELINE_TRIGGERED`                         | Pipeline     | `true` for pipelines [triggered with a trigger token](../triggers/_index.md). For pipelines triggered with the [`trigger`](../yaml/_index.md#trigger) keyword, use [`CI_PIPELINE_SOURCE`](../jobs/job_rules.md#ci_pipeline_source-predefined-variable) instead. |
 | `CI_PIPELINE_URL`                               | Job-only     | The URL for the pipeline details. |
@@ -145,7 +147,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_RUNNER_ID`                                  | Job-only     | The unique ID of the runner being used. |
 | `CI_RUNNER_REVISION`                            | Job-only     | The revision of the runner running the job. |
 | `CI_RUNNER_SHORT_TOKEN`                         | Job-only     | The runner's unique ID, used to authenticate new job requests. The token contains a prefix, and the first 17 characters are used. |
-| `CI_RUNNER_TAGS`                                | Job-only     | A JSON array of runner tags. For example `["tag_1", "tag_2"]`. |
+| `CI_RUNNER_TAGS`                                | Job-only     | A JSON array of the runner tags configured on the runner that picked up the job. For example `["tag_1", "tag_2"]`. |
 | `CI_RUNNER_VERSION`                             | Job-only     | The version of the GitLab Runner running the job. |
 | `CI_SERVER_FQDN`                                | Pre-pipeline | The fully qualified domain name (FQDN) of the instance. For example `gitlab.example.com:8080`. |
 | `CI_SERVER_HOST`                                | Pre-pipeline | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |
@@ -200,8 +202,8 @@ and the merge request must be open.
 | `CI_MERGE_REQUEST_EVENT_TYPE`               | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
 | `CI_MERGE_REQUEST_DESCRIPTION`              | The description of the merge request. If the description is more than 2700 characters long, only the first 2700 characters are stored in the variable. |
 | `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long, otherwise `false`. |
-| `CI_MERGE_REQUEST_ID`                       | The instance-level ID of the merge request. The ID is unique across all projects on the GitLab instance. |
-| `CI_MERGE_REQUEST_IID`                      | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
+| `CI_MERGE_REQUEST_ID`                       | The ID of the merge request. The ID is unique across all projects on the GitLab instance. |
+| `CI_MERGE_REQUEST_IID`                      | The IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
 | `CI_MERGE_REQUEST_LABELS`                   | Comma-separated label names of the merge request. Only available if the merge request has at least one label. |
 | `CI_MERGE_REQUEST_MILESTONE`                | The milestone title of the merge request. Only available if the merge request has a milestone set. |
 | `CI_MERGE_REQUEST_PROJECT_ID`               | The ID of the project of the merge request. |

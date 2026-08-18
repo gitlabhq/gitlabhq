@@ -88,7 +88,7 @@ describe('~/environments/components/form.vue', () => {
     });
   };
 
-  const findAgentSelector = () => wrapper.findByTestId('agent-selector');
+  const findAgentSelector = () => wrapper.findComponentByTestId('agent-selector');
   const findNamespaceSelector = () => wrapper.findComponent(EnvironmentNamespaceSelector);
   const findFluxResourceSelector = () => wrapper.findComponent(EnvironmentFluxResourceSelector);
   const findMarkdownField = () => wrapper.findComponent(MarkdownEditor);

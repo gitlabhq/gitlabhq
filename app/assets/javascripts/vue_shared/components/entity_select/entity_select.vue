@@ -3,6 +3,7 @@ import { debounce, isObject } from 'lodash-es';
 import { GlFormGroup, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { RESET_LABEL, QUERY_TOO_SHORT_MESSAGE } from './constants';
 import { initialSelectionPropValidator } from './utils';
 
@@ -15,6 +16,7 @@ export default {
     GlCollapsibleListbox,
     GlLoadingIcon,
   },
+  mixins: [glSlotsMixin],
   props: {
     block: {
       type: Boolean,
@@ -207,7 +209,7 @@ export default {
 <template>
   <gl-form-group :label="label" :description="description">
     <slot name="error"></slot>
-    <template v-if="Boolean($scopedSlots.label)" #label>
+    <template v-if="Boolean(glSlots().label)" #label>
       <slot name="label"></slot>
     </template>
     <gl-collapsible-listbox
@@ -231,7 +233,7 @@ export default {
       @reset="onReset"
       @bottom-reached="onBottomReached"
     >
-      <template #list-item="{ item }">
+      <template v-if="glSlots()['list-item']" #list-item="{ item }">
         <slot name="list-item" :item="item"></slot>
       </template>
       <template v-if="!searchable" #footer>

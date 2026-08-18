@@ -42,14 +42,6 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_allowed(:read_artifact_registry) }
       it { expect_allowed(:transfer_group) }
       it { expect_allowed(:access_organization_admin_area) }
-
-      context 'when org_admin_area feature flag is disabled' do
-        before do
-          stub_organization_release(org_admin_area: false)
-        end
-
-        it { is_expected.to be_disallowed(:access_organization_admin_area) }
-      end
     end
 
     context 'when admin mode is disabled' do
@@ -103,14 +95,6 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { expect_allowed(:transfer_group) }
     it { expect_allowed(:access_organization_admin_area) }
-
-    context 'when org_admin_area feature flag is disabled' do
-      before do
-        stub_organization_release(org_admin_area: false)
-      end
-
-      it { expect_disallowed(:access_organization_admin_area) }
-    end
   end
 
   context 'when the user is not part of the organization' do

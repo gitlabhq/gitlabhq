@@ -69,5 +69,21 @@ export const pipelineExecutionPoliciesHelpPath = helpPagePath(
 // Vulnerability Resolution setting).
 export const ALL_SETTINGS = 'all';
 export const DUO_SAST_VR_WORKFLOW_ENABLED = 'duoSastVrWorkflowEnabled';
-export const DUO_SAST_FP_DETECTION_ENABLED = 'duoSastFpDetectionEnabled';
+export const DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED = 'duoSastFalsePositiveDetectionEnabled';
 export const DUO_SECRET_DETECTION_FP_ENABLED = 'duoSecretDetectionFpEnabled';
+export const DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED = 'duoVulnerabilityContextAnalysisEnabled';
+
+export const STATUS_DONE = 'done';
+export const STATUS_TODO = 'todo';
+export const STATUS_BLOCKED = 'blocked';
+export const STATUS_ERROR = 'error';
+
+export const RUNNER_TYPE_TO_TAB = {
+  instance_type: 'instance',
+  group_type: 'group',
+  project_type: 'assigned',
+};
+
+// The instance tab doubles as the fallback: with no qualifying runner it is the
+// documented place to register one.
+export const DEFAULT_RUNNERS_TAB = 'instance';

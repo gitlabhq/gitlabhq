@@ -25,10 +25,10 @@ describe('RunnerBulkActions', () => {
   let mockCheckedRunnerIds;
 
   const findBanner = () => wrapper.findByTestId('runner-bulk-actions-banner');
-  const findClearBtn = () => wrapper.findByTestId('clear-selection');
+  const findClearBtn = () => wrapper.findComponentByTestId('clear-selection');
   const findDeleteBtn = () => wrapper.findByTestId('delete-selected');
-  const findPauseBtn = () => wrapper.findByTestId('pause-selected');
-  const findUnpauseBtn = () => wrapper.findByTestId('unpause-selected');
+  const findPauseBtn = () => wrapper.findComponentByTestId('pause-selected');
+  const findUnpauseBtn = () => wrapper.findComponentByTestId('unpause-selected');
   const findModal = () => wrapper.findComponent(GlModal);
 
   const mockRunners = allRunnersData.data.runners.nodes;
@@ -213,7 +213,7 @@ describe('RunnerBulkActions', () => {
         });
 
         it(`emits ${test} confirmation`, () => {
-          expect(wrapper.emitted('toggledPaused')).toEqual([[{ message }]]);
+          expect(wrapper.emitted('toggled-paused')).toEqual([[{ message }]]);
         });
       });
 
@@ -247,7 +247,7 @@ describe('RunnerBulkActions', () => {
         });
 
         it(`does not emit ${test} confirmation`, () => {
-          expect(wrapper.emitted('toggledPaused')).toBeUndefined();
+          expect(wrapper.emitted('toggled-paused')).toBeUndefined();
         });
       });
 

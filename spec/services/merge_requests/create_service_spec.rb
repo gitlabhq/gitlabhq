@@ -573,12 +573,42 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         expect(merge_request.squash).to be false
       end
 
+      it 'defaults to true with no squash param when project squash_option is always' do
+        project.project_setting.update!(squash_option: 'always')
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts).execute
+
+        expect(merge_request.squash).to be true
+      end
+    end
+
+    context 'when squash param is provided' do
+      let(:opts) do
+        {
+          title: 'Test merge_request',
+          source_branch: 'feature',
+          target_branch: 'master'
+        }
+      end
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
       it 'respects explicit squash param over project default' do
         project.project_setting.update!(squash_option: 'default_on')
 
         merge_request = described_class.new(project: project, current_user: user, params: opts.merge(squash: false)).execute
 
         expect(merge_request.squash).to be false
+      end
+
+      it 'ignores explicit squash param when project squash_option is always' do
+        project.project_setting.update!(squash_option: 'always')
+
+        merge_request = described_class.new(project: project, current_user: user, params: opts.merge(squash: false)).execute
+
+        expect(merge_request.squash).to be true
       end
     end
 

@@ -38,14 +38,14 @@ describe('Container Expiration Policy Settings Form', () => {
 
   const findForm = () => wrapper.find('form');
 
-  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"');
-  const findSaveButton = () => wrapper.find('[data-testid="save-button"');
-  const findEnableToggle = () => wrapper.find('[data-testid="enable-toggle"]');
-  const findCadenceDropdown = () => wrapper.find('[data-testid="cadence-dropdown"]');
-  const findKeepNDropdown = () => wrapper.find('[data-testid="keep-n-dropdown"]');
-  const findKeepRegexInput = () => wrapper.find('[data-testid="keep-regex-input"]');
-  const findOlderThanDropdown = () => wrapper.find('[data-testid="older-than-dropdown"]');
-  const findRemoveRegexInput = () => wrapper.find('[data-testid="remove-regex-input"]');
+  const findCancelButton = () => wrapper.findComponent('[data-testid="cancel-button"');
+  const findSaveButton = () => wrapper.findComponent('[data-testid="save-button"');
+  const findEnableToggle = () => wrapper.findComponent('[data-testid="enable-toggle"]');
+  const findCadenceDropdown = () => wrapper.findComponent('[data-testid="cadence-dropdown"]');
+  const findKeepNDropdown = () => wrapper.findComponent('[data-testid="keep-n-dropdown"]');
+  const findKeepRegexInput = () => wrapper.findComponent('[data-testid="keep-regex-input"]');
+  const findOlderThanDropdown = () => wrapper.findComponent('[data-testid="older-than-dropdown"]');
+  const findRemoveRegexInput = () => wrapper.findComponent('[data-testid="remove-regex-input"]');
 
   const submitForm = () => {
     findForm().trigger('submit');

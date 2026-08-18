@@ -1,8 +1,11 @@
 <script>
-import { GlLink, GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { GlLink, GlAvatar, GlAvatarLink, GlIcon, GlSprintf, GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { createAlert } from '~/alert';
+import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import {
   TODO_ACTION_TYPE_ADDED_APPROVER,
   TODO_ACTION_TYPE_APPROVAL_REQUIRED,
@@ -22,7 +25,14 @@ import {
   DUO_ACCESS_GRANTED_ACTIONS,
   TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED,
   TODO_NOTE_PREVIEW_SAFE_HTML_CONFIG,
+  TODO_ACTION_TYPE_TRANSFER_FAILED,
 } from '../constants';
+import {
+  getTransferFailedRetryUrl,
+  getTransferFailedSource,
+  getTransferFailedSourceUrl,
+  getTransferFailedTarget,
+} from '../utils/transfer_failed_todo';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
 
@@ -33,6 +43,9 @@ export default {
     GlLink,
     GlAvatar,
     GlAvatarLink,
+    GlIcon,
+    GlSprintf,
+    GlButton,
   },
   directives: {
     SafeHtml,
@@ -64,14 +77,16 @@ export default {
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRED &&
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON &&
         this.todo.action !== TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED &&
+        this.todo.action !== TODO_ACTION_TYPE_TRANSFER_FAILED &&
         !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)
       );
     },
     showAvatarOnNote() {
       // do not show avatar on duo todo's which were authored by the user
       return (
-        !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action) ||
-        this.todo.author.id !== this.currentUserId
+        (!DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action) ||
+          this.todo.author.id !== this.currentUserId) &&
+        this.todo.action !== TODO_ACTION_TYPE_TRANSFER_FAILED
       );
     },
     titleComponent() {
@@ -188,17 +203,65 @@ export default {
 
       return `${name}.`;
     },
+    isTransferFailedAction() {
+      return this.todo.action === TODO_ACTION_TYPE_TRANSFER_FAILED;
+    },
+    transferFailedSource() {
+      return getTransferFailedSource(this.todo);
+    },
+    transferFailedTarget() {
+      return getTransferFailedTarget(this.todo);
+    },
+    transferFailedSourceUrl() {
+      return getTransferFailedSourceUrl(this.todo);
+    },
+    transferFailedRetryUrl() {
+      return getTransferFailedRetryUrl(this.todo);
+    },
+    transferFailedMessage() {
+      return sprintf(this.$options.i18n.transferFailedMessage, {
+        source: this.transferFailedSource,
+        target: this.transferFailedTarget,
+      });
+    },
   },
   i18n: {
     removed: s__('Todos|(removed)'),
+    retryTransferError: s__('Todos|Failed to retry transfer. Please try again.'),
+    transferFailedMessage: s__(
+      'Todos|Failed to transfer %{source} to %{target}. %{retryLinkStart}Try again.%{retryLinkEnd}',
+    ),
+  },
+  methods: {
+    async retryTransfer() {
+      if (!this.transferFailedRetryUrl) {
+        return;
+      }
+
+      try {
+        const response = await axios.put(this.transferFailedRetryUrl);
+        visitUrl(response?.request?.responseURL || this.transferFailedSourceUrl);
+      } catch {
+        createAlert({ message: this.$options.i18n.retryTransferError });
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div class="gl-flex gl-min-w-0 gl-gap-3" data-testid="todo-item-container">
-    <div v-if="showAvatarOnNote" class="gl-hidden @sm/panel:gl-inline-block">
-      <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1" class="gl-mt-1">
+    <div
+      v-if="showAvatarOnNote || isTransferFailedAction"
+      class="gl-hidden @sm/panel:gl-inline-block"
+    >
+      <div
+        v-if="isTransferFailedAction"
+        class="gl-mt-1 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-bg-feedback-danger"
+      >
+        <gl-icon name="error" :size="16" class="gl-fill-status-danger" />
+      </div>
+      <gl-avatar-link v-else :href="author.webUrl" aria-hidden="true" tabindex="-1" class="gl-mt-1">
         <gl-avatar :size="32" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>
     </div>
@@ -222,7 +285,23 @@ export default {
           <span v-else>{{ $options.i18n.removed }}</span>
           <span v-if="todo.note">:</span>
         </div>
-        <span v-if="actionName" data-testid="todo-action-name-content">
+        <template v-if="isTransferFailedAction">
+          <gl-sprintf :message="transferFailedMessage">
+            <template #retryLink="{ content }">
+              <gl-button
+                v-if="transferFailedRetryUrl"
+                variant="link"
+                data-testid="todo-transfer-failed-retry"
+                class="gl-relative gl-z-2"
+                @click.stop="retryTransfer"
+              >
+                {{ content }}
+              </gl-button>
+              <span v-else>{{ content }}</span>
+            </template>
+          </gl-sprintf>
+        </template>
+        <span v-else-if="actionName" data-testid="todo-action-name-content">
           {{ actionName }}
         </span>
         <span v-if="noteText" v-safe-html:[$options.safeHtmlConfig]="noteText"></span>

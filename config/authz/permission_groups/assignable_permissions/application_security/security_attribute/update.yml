@@ -1,0 +1,11 @@
+---
+name: update_security_attribute
+description: Grants the ability to update security attributes
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_security_attribute
+  - update_security_category

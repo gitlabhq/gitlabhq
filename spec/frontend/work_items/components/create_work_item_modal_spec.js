@@ -32,13 +32,15 @@ describe('CreateWorkItemModal', () => {
     base: 'basePath',
   });
 
-  const findTrigger = () => wrapper.find('[data-testid="new-epic-button"]');
+  const findTrigger = () => wrapper.findComponent('[data-testid="new-epic-button"]');
   const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findCreateModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(CreateWorkItem);
   const findOpenInFullPageButton = () => wrapper.find('[data-testid="new-work-item-modal-link"]');
   const findCancelConfirmationModal = () =>
     wrapper.findComponent(CreateWorkItemCancelConfirmationModal);
+  const findRelationshipNote = () =>
+    wrapper.find('[data-testid="merge-request-relationship-note"]');
 
   const createComponent = ({
     asDropdownItem = false,
@@ -47,6 +49,11 @@ describe('CreateWorkItemModal', () => {
     relatedItem = null,
     alwaysShowWorkItemTypeSelect = false,
     namespaceFullName = 'GitLab.org / GitLab',
+    mergeRequestLinkType = null,
+    mergeRequestTitle = '',
+    mergeRequestReference = '',
+    allowAnyNamespace = false,
+    suppressCreatedToast = false,
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
@@ -58,6 +65,11 @@ describe('CreateWorkItemModal', () => {
         relatedItem,
         alwaysShowWorkItemTypeSelect,
         namespaceFullName,
+        mergeRequestLinkType,
+        mergeRequestTitle,
+        mergeRequestReference,
+        allowAnyNamespace,
+        suppressCreatedToast,
       },
       mocks: {
         $toast: {
@@ -77,6 +89,60 @@ describe('CreateWorkItemModal', () => {
 
   afterEach(() => {
     localStorage.clear();
+  });
+
+  describe('namespace selection', () => {
+    it('limits the form to the current namespace by default', () => {
+      createComponent();
+
+      expect(findForm().props('allowAnyNamespace')).toBe(false);
+    });
+
+    it('lets the form select any namespace when allowAnyNamespace is set', () => {
+      createComponent({ allowAnyNamespace: true });
+
+      expect(findForm().props('allowAnyNamespace')).toBe(true);
+    });
+  });
+
+  describe('merge request relationship note', () => {
+    it('does not render the note when no merge request link type is set', () => {
+      createComponent({ mergeRequestTitle: 'Fix the bug' });
+
+      expect(findRelationshipNote().exists()).toBe(false);
+    });
+
+    it('does not render the note when no merge request title is set', () => {
+      createComponent({ mergeRequestLinkType: 'CLOSES' });
+
+      expect(findRelationshipNote().exists()).toBe(false);
+    });
+
+    it('renders the closing relationship with the merge request title and reference', () => {
+      createComponent({
+        mergeRequestLinkType: 'CLOSES',
+        mergeRequestTitle: 'Fix the bug',
+        mergeRequestReference: 'acme-web!1234',
+      });
+
+      const note = findRelationshipNote();
+      expect(note.text()).toContain('Item will be closed by:');
+      expect(note.text()).toContain('Fix the bug');
+      expect(note.text()).toContain('acme-web!1234');
+    });
+
+    it('renders the related relationship with the merge request title and reference', () => {
+      createComponent({
+        mergeRequestLinkType: 'RELATED',
+        mergeRequestTitle: 'Fix the bug',
+        mergeRequestReference: 'acme-web!1234',
+      });
+
+      const note = findRelationshipNote();
+      expect(note.text()).toContain('Item will be related to:');
+      expect(note.text()).toContain('Fix the bug');
+      expect(note.text()).toContain('acme-web!1234');
+    });
   });
 
   it('renders create-work-item component with preselectedWorkItemType prop set from localStorage draft', async () => {
@@ -133,6 +199,20 @@ describe('CreateWorkItemModal', () => {
         },
       }),
     );
+  });
+
+  it('does not show a toast on work-item-created when suppressCreatedToast is true', async () => {
+    createComponent({ suppressCreatedToast: true });
+
+    await waitForPromises();
+    findForm().vm.$emit('work-item-created', {
+      webUrl: '/',
+      workItem: { webUrl: '/full-path/-/issues/22' },
+      workItemType: { name: 'Epic' },
+    });
+
+    expect(showToast).not.toHaveBeenCalled();
+    expect(wrapper.emitted('work-item-created')).toHaveLength(1);
   });
 
   describe('default trigger', () => {

@@ -6,28 +6,37 @@ module Mcp
       module UrlParser
         extend ActiveSupport::Concern
 
+        class_methods do
+          include Gitlab::Utils::StrongMemoize
+
+          # Anchored and bounded by a path separator, so a project like
+          # `/gitlab-org/project` is not mangled by a `/gitlab` root.
+          def relative_url_root_regex
+            root = Gitlab.config.gitlab.relative_url_root
+            return if root.blank?
+
+            %r{\A/?#{Regexp.escape(root)}(?=/|\z)}
+          end
+          strong_memoize_attr :relative_url_root_regex
+        end
+
         WORK_ITEM_URL_PATTERN = %r{\A/?(?:groups/)?(?<path>\S*)/-/work_items/(?<id>\d+)\z}
+
+        BLOB_URL_PATTERN = %r{\A(?<project_path>.+?)/-/(?:blob|raw|blame)/(?<id>.+)\z}
 
         private
 
         def resolve_parent_from_url(url)
           parsed = parse_parent_url(url)
-          parent = find_parent_by_id_or_path(parsed[:type], parsed[:path])
-
-          raise ArgumentError, "#{parsed[:type].to_s.capitalize} not found: '#{parsed[:path]}'" unless parent
+          parent = find_parent_by_id_or_path!(parsed[:type], parsed[:path])
 
           { type: parsed[:type], full_path: parent.full_path, record: parent }
         end
 
         def resolve_work_item_from_url(url)
           parsed = parse_work_item_url(url)
-          parent = find_parent_by_id_or_path(parsed[:parent_type], parsed[:parent_path])
-
-          unless parent
-            raise ArgumentError, "#{parsed[:parent_type].to_s.capitalize} not found: '#{parsed[:parent_path]}'"
-          end
-
-          work_item = find_work_item_in_parent(parent, parsed[:work_item_iid])
+          parent = find_parent_by_id_or_path!(parsed[:parent_type], parsed[:parent_path])
+          work_item = find_work_item_in_parent!(parent, parsed[:work_item_iid])
 
           work_item.to_global_id.to_s
         end
@@ -64,17 +73,53 @@ module Mcp
           { parent_type: parent_type, parent_path: parent_path, work_item_iid: match[:id].to_i }
         end
 
-        def extract_path_from_url(url)
-          raise ArgumentError, "Invalid URL format: #{url}" unless valid_url?(url)
+        def parse_blob_url(url)
+          path = extract_path_from_url(url)
+          match = path.match(BLOB_URL_PATTERN)
 
-          URI.parse(url).path.delete_prefix('/')
+          raise ArgumentError, "Invalid file URL format. Expected: .../-/blob/<ref>/<file_path>" unless match
+
+          {
+            project_path: match[:project_path],
+            id: unescape_and_scrub_uri(match[:id]),
+            ref_type: ref_type_from_url(url)
+          }
         end
 
-        def valid_url?(url)
+        def ref_type_from_url(url)
+          query = parse_url!(url).query
+          return if query.blank?
+
+          ::ExtractsRef::RefExtractor.ref_type(Rack::Utils.parse_nested_query(query)['ref_type'])
+        end
+
+        def unescape_and_scrub_uri(uri)
+          Addressable::URI.unescape(uri).scrub.delete("\0")
+        end
+
+        def extract_path_from_url(url)
+          path = parse_url!(url).path
+
+          strip_relative_url_root(path).delete_prefix('/')
+        end
+
+        def parse_url!(url)
           uri = URI.parse(url)
-          %w[http https].include?(uri.scheme)
+          raise ArgumentError, "Invalid URL format: #{url}" unless %w[http https].include?(uri.scheme)
+
+          uri
         rescue URI::BadURIError, URI::InvalidURIError => e
           raise ArgumentError, "Invalid URL format: #{e.message}"
+        end
+
+        # Instances served under a relative URL root (e.g. `/gitlab` or a GDK's
+        # `/gdk-instance`) include that prefix in work item URLs. Strip it so the
+        # remaining path resolves to the actual group/project full path.
+        def strip_relative_url_root(path)
+          regex = self.class.relative_url_root_regex
+          return path unless regex
+
+          path.sub(regex, '')
         end
       end
     end

@@ -144,7 +144,7 @@ Alternatively, add the `User.Read.All` application permission.
                  base_azure_url: "https://login.microsoftonline.us" } }
      ```
 
-   You can also optionally add the `scope` for [OAuth 2.0 scopes](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow) parameter to the `args` section. The default is `openid profile email`.
+   You can also optionally add the `scope` parameter for [OAuth 2.0 scopes](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow) to the `args` section. The default is `openid profile email`.
 
 1. Save the configuration file.
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)

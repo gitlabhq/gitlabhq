@@ -169,7 +169,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
         end
 
         it 'does not cause N+1 queries' do
-          expect { service.execute }.not_to exceed_all_query_limit(control)
+          expect { service.execute }.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
         end
 
         private
@@ -437,7 +437,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
 
     {
       id: pipeline.id,
-      path: project.project_namespace.traversal_path,
+      path: project.project_namespace.traversal_path(with_organization: false),
       committed_at: a_value_within(0.001.seconds).of(pipeline.committed_at || Time.at(0).utc),
       created_at: a_value_within(0.001.seconds).of(pipeline.created_at || Time.at(0).utc),
       started_at: a_value_within(0.001.seconds).of(pipeline.started_at || Time.at(0).utc),

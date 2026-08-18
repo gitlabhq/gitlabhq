@@ -38,6 +38,12 @@ gitlab-advanced-sast:
     - saas-linux-xlarge-amd64
   rules: !reference [".reports:rules:gitlab-advanced-sast", rules]
 
+# The template's rules have no tier gating, so without this override the job runs
+# in every MR and merge train pipeline. See
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247775.
+gitlab-advanced-sast-ext:
+  rules: !reference [".reports:rules:gitlab-advanced-sast-ext", rules]
+
 semgrep-sast:
   rules: !reference [".reports:rules:semgrep-sast", rules]
 

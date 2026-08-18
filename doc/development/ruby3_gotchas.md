@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Ruby 3 gotchas
 ---
 
-This section documents several problems we found while working on [Ruby 3 support](https://gitlab.com/groups/gitlab-org/-/epics/5149)
+This section documents several problems we found while working on [Ruby 3 support](https://gitlab.com/groups/gitlab-org/-/work_items/5149)
 and which led to subtle bugs or test failures that were difficult to understand. We encourage every GitLab contributor
 who writes Ruby code on a regular basis to familiarize themselves with these issues.
 

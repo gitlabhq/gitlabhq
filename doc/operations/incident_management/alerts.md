@@ -25,7 +25,7 @@ The alert list displays the following information:
 
 - **Search**: The alert list supports a simple free text search on the title,
   description, monitoring tool, and service fields.
-- **Severity**: The current importance of a alert and how much attention it
+- **Severity**: The current importance of an alert and how much attention it
   should receive. For a listing of all statuses, read [Alert Management severity](#alert-severity).
 - **Start time**: How long ago the alert fired. This field uses the standard
   GitLab pattern of `X time ago`, but is supported by a granular date/time
@@ -73,7 +73,7 @@ The **Alert details** tab has two sections. The top section provides a short lis
 
 ### Metrics tab
 
-In many cases, alerts are associated to metrics. You can upload screenshots of metric charts in the **Metrics** tab.
+In many cases, alerts are associated with metrics. You can upload screenshots of metric charts in the **Metrics** tab.
 
 To do so, either:
 
@@ -151,9 +151,9 @@ Changing the status has the following effects:
 
 - To **Acknowledged**: limits on-call pages based on the project's [escalation policy](escalation_policies.md).
 - To **Resolved**: silences all on-call pages for the alert.
-- From **Resolved** to **Triggered**: restarts the alert escalating.
+- From **Resolved** to **Triggered**: restarts the alert's escalation.
 
-In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](manage_incidents.md#from-an-alert) also updates the incident status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057), the incident status is independent and does not update when the alert status changes.
+Updating the status of an [alert with an associated incident](manage_incidents.md#from-an-alert) does not update the incident status. The incident status is independent of the alert status.
 
 ### Assign an alert
 

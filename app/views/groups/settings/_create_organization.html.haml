@@ -1,0 +1,16 @@
+- return unless can_create_organization_from_group_settings?(group)
+
+- organization_docs_url = link_to('', help_page_path('user/organization/_index.md'), target: '_blank', rel: 'noopener noreferrer')
+
+= render Pajamas::CardComponent.new do |card|
+  - card.with_header do
+    %h4.gl-text-base.gl-leading-24.gl-m-0= s_('GroupSettings|Create an organization')
+  - card.with_body do
+    = render Pajamas::AlertComponent.new(variant: :info, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |alert|
+      - alert.with_body do
+        %h5.gl-heading-5= s_('GroupSettings|This will:')
+        %ul.gl-pl-5
+          %li= s_('GroupSettings|Move your groups and projects into the organization.')
+          %li= s_('GroupSettings|Retain group and project access for members.')
+    %p= safe_format(s_('GroupSettings|Create an organization to manage your top-level group and its data. %{link_start}How do organizations work?%{link_end}'), tag_pair(organization_docs_url, :link_start, :link_end))
+    #js-group-settings-create-organization{ data: { app_data: group_settings_create_organization_app_data(group) } }

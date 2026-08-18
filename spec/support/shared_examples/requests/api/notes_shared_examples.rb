@@ -281,7 +281,9 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         subject
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
-        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:notes_create))
+        expect(response.headers).to include(
+          'Retry-After' => Gitlab::ApplicationRateLimiter.period_for(:notes_create)
+        )
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
       end
 

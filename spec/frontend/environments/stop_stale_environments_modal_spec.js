@@ -32,7 +32,7 @@ describe('~/environments/components/stop_stale_environments_modal.vue', () => {
     mock = new MockAdapter(axios);
     jest.spyOn(axios, 'post');
     wrapper = createWrapper();
-    before = wrapper.find("[data-testid='stop-environments-before']");
+    before = wrapper.findComponent("[data-testid='stop-environments-before']");
   });
 
   afterEach(() => {

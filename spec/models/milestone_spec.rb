@@ -222,7 +222,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
 
       it 'returns true when due_date is in the past', :aggregate_failures do
         expect(milestone.expired?).to be_truthy
-        expect(milestone.expired).to eq true
+        expect(milestone.expired).to be true
       end
     end
 
@@ -231,7 +231,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
 
       it 'returns false when due_date is in the future', :aggregate_failures do
         expect(milestone.expired?).to be_falsey
-        expect(milestone.expired).to eq false
+        expect(milestone.expired).to be false
       end
     end
   end
@@ -778,7 +778,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
         group = create(:group)
         subgroup = create(:group, :private, parent: group)
 
-        expect(build(:milestone, group: subgroup).subgroup_milestone?).to eq(true)
+        expect(build(:milestone, group: subgroup).subgroup_milestone?).to be(true)
       end
     end
 
@@ -786,7 +786,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
       it 'returns false' do
         group = create(:group)
 
-        expect(build(:milestone, group: group).subgroup_milestone?).to eq(false)
+        expect(build(:milestone, group: group).subgroup_milestone?).to be(false)
       end
     end
   end
@@ -846,7 +846,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
         milestone.title = 'New title'
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when spammable attribute description has changed' do
@@ -854,7 +854,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
         milestone.description = 'New description'
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when spammable attribute has changed but parent is private' do
@@ -863,7 +863,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
         milestone.parent.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when no spammable attribute has changed' do
@@ -872,7 +872,7 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
         milestone.description = milestone.description_was
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

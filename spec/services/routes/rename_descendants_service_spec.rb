@@ -192,7 +192,7 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
           # In practice, descendant routes always have '/' and are not claimable
           allow(Route).to receive(:cells_claims_attributes).and_return({
             path: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ROUTES,
+              type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
               feature_flag: :cells_claims_routes,
               if: ->(_record) { true }
             }
@@ -314,6 +314,54 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
 
         it 'does not burn any descendant project path' do
           expect { execute }.not_to change { Authn::BurnedProjectRoute.count }
+        end
+      end
+    end
+
+    context 'for descendant service desk project_key_address_slug' do
+      let!(:changes) do
+        {
+          path: { saved: true, old_value: 'old-path' },
+          name: { saved: false, old_value: 'old-name' }
+        }
+      end
+
+      let(:project_id) { subgroup_projects.first.id }
+
+      context 'when a descendant project has a service desk project_key' do
+        let!(:setting) do
+          create(:service_desk_setting, project_id: project_id, project_key: 'mykey')
+        end
+
+        it 'recomputes the slug from the new full path' do
+          execute
+
+          new_slug = Project.find(project_id).full_path_slug
+          expect(setting.reload.project_key_address_slug).to eq("#{new_slug}-mykey")
+        end
+      end
+
+      context 'when the path changes' do
+        it 'refreshes slugs scoped to the new parent path' do
+          expect(ServiceDesk::RefreshProjectKeyAddressSlugsService)
+            .to receive(:new).with('new-path').and_call_original
+
+          execute
+        end
+      end
+
+      context 'when only the name changes' do
+        let!(:changes) do
+          {
+            path: { saved: false, old_value: 'old-path' },
+            name: { saved: true, old_value: 'old-name' }
+          }
+        end
+
+        it 'does not refresh service desk slugs' do
+          expect(ServiceDesk::RefreshProjectKeyAddressSlugsService).not_to receive(:new)
+
+          execute
         end
       end
     end

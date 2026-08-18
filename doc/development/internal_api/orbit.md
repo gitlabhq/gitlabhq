@@ -1,11 +1,11 @@
 ---
-stage: Analytics
-group: Knowledge Graph
+stage: Orbit
+group: Context Systems
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Orbit Internal API
+title: GitLab Orbit Internal API
 ---
 
-The Orbit internal API is used by the knowledge graph service.
+The GitLab Orbit internal API is used by the knowledge graph service.
 The API cannot be used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
@@ -15,7 +15,7 @@ API endpoints should be externally accessible by default, with proper authentica
 Before adding a new internal endpoint, consider if the API would benefit the wider GitLab community and
 can be made externally accessible.
 
-The Orbit API uses internal endpoints because requests are authenticated with a service-level
+The GitLab Orbit API uses internal endpoints because requests are authenticated with a service-level
 JWT token rather than a user token, and should only be accessible through an internal load balancer.
 
 ## Authentication

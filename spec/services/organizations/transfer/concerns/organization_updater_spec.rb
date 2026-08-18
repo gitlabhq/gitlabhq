@@ -152,9 +152,10 @@ RSpec.describe Organizations::Transfer::Concerns::OrganizationUpdater, feature_c
     end
 
     context 'with different models' do
-      let_it_be(:project) { create(:project, organization: old_organization) }
-      let_it_be(:note1) { create(:note, project: project) }
-      let_it_be(:note2) { create(:note, project: project) }
+      let_it_be(:author) { create(:user, organization: old_organization) }
+      let_it_be(:snippet, freeze: false) { create(:personal_snippet, author: author, organization: old_organization) }
+      let_it_be(:note1) { create(:note_on_personal_snippet, noteable: snippet) }
+      let_it_be(:note2) { create(:note_on_personal_snippet, noteable: snippet) }
 
       before do
         # Manually set organization_id since Note might not have organization= setter
@@ -163,7 +164,7 @@ RSpec.describe Organizations::Transfer::Concerns::OrganizationUpdater, feature_c
 
       it 'works with different models and scope columns' do
         service.update_organization_id_for(Note) do |relation|
-          relation.where(project_id: [project.id])
+          relation.where(id: [note1.id, note2.id])
         end
 
         expect(note1.reload.organization_id).to eq(new_organization.id)

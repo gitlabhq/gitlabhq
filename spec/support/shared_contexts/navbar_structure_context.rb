@@ -88,6 +88,12 @@ RSpec.shared_context 'project navbar structure' do
         nav_sub_items: project_analytics_sub_nav_item
       },
       {
+        nav_item: _('Observe'),
+        nav_sub_items: [
+          s_('Observability|Setup')
+        ]
+      },
+      {
         nav_item: _('Settings'),
         nav_sub_items: [
           _('General'),
@@ -175,7 +181,7 @@ RSpec.shared_context 'group navbar structure' do
 
   let(:observability_nav_item) do
     {
-      nav_item: _("Observability"),
+      nav_item: _("Observe"),
       nav_sub_items: [s_("Observability|O11y service settings"), s_('Observability|Setup')]
     }
   end

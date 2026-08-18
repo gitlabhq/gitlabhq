@@ -1,0 +1,51 @@
+#import "ee_else_ce/work_items/graphql/work_item_permissions.fragment.graphql"
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+fragment WorkItemBase on WorkItem {
+  id
+  iid
+  archived
+  externalAuthor
+  hidden
+  imported
+  title
+  titleHtml
+  state
+  description
+  confidential
+  createdAt
+  updatedAt
+  closedAt
+  userDiscussionsCount
+  webUrl
+  reference(full: true)
+  createNoteEmail
+  movedToWorkItemUrl
+  duplicatedToWorkItemUrl
+  showPlanUpgradePromotion
+  project {
+    id
+  }
+  namespace {
+    id
+    fullPath
+    name
+    fullName
+    webUrl
+  }
+  author {
+    ...Author
+  }
+  workItemType {
+    id
+    name
+    iconName
+  }
+  userPermissions {
+    ...WorkItemPermissions
+  }
+  commentTemplatesPaths {
+    text
+    href
+  }
+}

@@ -71,7 +71,7 @@ functionality is extended with additional features, without affecting the standa
 The following features are not found in standard Markdown:
 
 - [Alerts](#alerts)
-- [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
+- [Color chips written in `HEX`, `RGB`, or `HSL`](#colors)
 - [Description lists](#description-lists)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
 - [Emoji](#emoji)
@@ -94,7 +94,7 @@ The following features are extended from standard Markdown:
 |---------------------------------------|-----------------------------|
 | [Blockquotes](#blockquotes)           | [Multiline blockquotes](#multiline-blockquote) |
 | [Code blocks](#code-spans-and-blocks) | [Colored code and syntax highlighting](#syntax-highlighting) |
-| [Headings](#headings)                 | [Linkable heading IDs](#heading-ids-and-links) |
+| [Headings](#headings)                 | [Linkable heading anchors](#heading-anchors) |
 | [Images](#images)                     | [Embedded videos](#videos) and [audio](#audio) |
 | [Links](#links)                       | [Automatically linking URLs](#url-auto-linking) |
 
@@ -165,7 +165,7 @@ Alt-H2
 ------
 ```
 
-### Heading IDs and links
+### Heading anchors
 
 {{< history >}}
 
@@ -173,26 +173,25 @@ Alt-H2
 
 {{< /history >}}
 
-All Markdown-rendered headings automatically
-get IDs that can be linked to, except in comments.
+GitLab automatically adds an anchor to every Markdown heading,
+so you can link to it.
 
-On hover, a link to those IDs becomes visible to make it easier to copy the link to
+On hover, a link to those anchors becomes visible to make it easier to copy the link to
 the heading to use it somewhere else.
 
-The IDs are generated from the content of the heading according to the following rules:
+The anchors are generated from the content of the heading according to the following rules:
 
 1. All text is converted to lowercase.
-1. All non-word text (such as punctuation or HTML) is removed.
+1. All characters except letters, numbers, hyphens, and underscores are removed.
 1. All spaces are converted to hyphens.
-1. Two or more hyphens in a row are converted to one.
-1. If a heading with the same ID has already been generated, a unique
-   incrementing number is appended, starting at 1.
+1. If a heading with the same anchor has already been generated,
+   a unique incrementing number is appended, starting at 1.
 
 Example:
 
 <!--
 Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
-to stay in sync with the example link IDs.
+to stay in sync with the example anchors.
 -->
 
 ```markdown
@@ -202,18 +201,23 @@ to stay in sync with the example link IDs.
 ## This heading has spaces in it
 ### This heading has spaces in it
 ## This heading has 3.5 in it (and parentheses)
-## This heading has  multiple spaces and --- hyphens
+## This heading has  multiple spaces and --- hyphens_and_underscores
 ```
 
-Would generate the following link IDs:
+Would generate the following heading anchors:
 
-1. `this-heading-has-spaces-in-it`
-1. `this-heading-has-a-thumbsup-in-it`
-1. `this-heading-has-unicode-in-it-한글`
-1. `this-heading-has-spaces-in-it-1`
-1. `this-heading-has-spaces-in-it-2`
-1. `this-heading-has-35-in-it-and-parentheses`
-1. `this-heading-has--multiple-spaces-and-----hyphens`
+1. `#this-heading-has-spaces-in-it`
+1. `#this-heading-has-a-thumbsup-in-it`
+1. `#this-heading-has-unicode-in-it-한글`
+1. `#this-heading-has-spaces-in-it-1`
+1. `#this-heading-has-spaces-in-it-2`
+1. `#this-heading-has-35-in-it-and-parentheses`
+1. `#this-heading-has--multiple-spaces-and-----hyphens_and_underscores`
+
+In a snippet, headings also get a prefix derived from the filename,
+to prevent anchor collisions across multiple files.
+For example, a `## TL;DR` heading in a file named `README.md`
+gets the anchor `#readme-tldr` instead of `#tldr`.
 
 ## Line breaks
 
@@ -400,7 +404,7 @@ to stay in sync with the image.
 
 ![Inline diff with mixed formatting, as rendered by the GitLab interface](img/inline_diff_02_v13_3.png)
 
-### Horizontal rule
+## Horizontal rule
 
 Create a horizontal rule by using three or more hyphens, asterisks, or underscores:
 
@@ -414,7 +418,7 @@ ___
 
 When rendered, all horizontal rules look similar to:
 
----
+> ---
 
 ## Lists
 
@@ -455,7 +459,7 @@ When rendered, the example looks similar to:
 >    1. Next ordered sub-list item
 > 1. And another item.
 
-For an unordered list, add a `-`, `*` or `+`, followed by a space, at the start of
+For an unordered list, add a `-`, `*`, or `+`, followed by a space, at the start of
 each line. Don't mix the characters in the same list.
 
 ```markdown
@@ -686,18 +690,18 @@ You can also add task lists to [table cells](#task-lists-in-tables).
 You can create links in multiple ways:
 
 ```markdown
-- This line shows an [inline-style link](https://www.google.com)
+- This line shows an [inline-style link](https://example.com)
 - This line shows a [link to a repository file in the same directory](permissions.md)
 - This line shows a [relative link to a file one directory higher](../_index.md)
-- This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
+- This line shows a [link that also has title text](https://example.com "This link takes you to Example!")
 ```
 
 When rendered, the examples look similar to:
 
-> - This line shows an [inline-style link](https://www.google.com)
+> - This line shows an [inline-style link](https://example.com)
 > - This line shows a [link to a repository file in the same directory](permissions.md)
 > - This line shows a [relative link to a file one directory higher](../_index.md)
-> - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
+> - This line shows a [link that also has title text](https://example.com "This link takes you to Example!")
 
 You cannot use relative links to reference project files in a wiki
 page, or a wiki page in a project file. This limitation exists because wikis are always
@@ -705,17 +709,17 @@ in separate Git repositories in GitLab. For example, `[I'm a reference-style lin
 points to `wikis/style` only when the link is inside a wiki Markdown file.
 For more information, see [Wiki-specific Markdown](project/wiki/markdown.md).
 
-Use heading ID anchors to link to a specific section in a page:
+Use heading anchors to link to a specific section in a page:
 
 ```markdown
-- This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-permissions)
-- This line links to [a different section on the same page, using a `#` and the heading ID](#heading-ids-and-links)
+- This line links to [a section on a different Markdown page, using a `#` and the heading anchor](permissions.md#project-permissions)
+- This line links to [a different section on the same page, using a `#` and the heading anchor](#heading-anchors)
 ```
 
 When rendered, the examples look similar to:
 
-> - This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-permissions)
-> - This line links to [a different section on the same page, using a `#` and the heading ID](#heading-ids-and-links)
+> - This line links to [a section on a different Markdown page, using a `#` and the heading anchor](permissions.md#project-permissions)
+> - This line links to [a different section on the same page, using a `#` and the heading anchor](#heading-anchors)
 
 Using link references:
 
@@ -754,8 +758,7 @@ When rendered, the example look similar to:
 Almost any URL you put into your text is auto-linked:
 
 ```markdown
-- https://www.google.com
-- https://www.google.com
+- https://example.com
 - ftp://ftp.us.debian.org/debian/
 - smb://foo/bar/baz
 - irc://irc.freenode.net/
@@ -764,8 +767,7 @@ Almost any URL you put into your text is auto-linked:
 
 When rendered, the example looks similar to:
 
-> - <https://www.google.com>
-> - <https://www.google.com>
+> - <https://example.com>
 > - <ftp://ftp.us.debian.org/debian/>
 > - <a href="smb://foo/bar/baz/">smb://foo/bar/baz</a>
 > - <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
@@ -775,7 +777,6 @@ When rendered, the example looks similar to:
 
 {{< history >}}
 
-- Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
 - Option to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
 - Option to reference issues, epics, and work items with `[work_item:123]` syntax:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
@@ -836,8 +837,7 @@ GitLab Flavored Markdown recognizes the following:
 
 **Footnotes**:
 
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
-   Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+1. Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
    For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
    iterations cadence's ID is `1`.
 1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
@@ -861,7 +861,6 @@ For example:
 
 {{< history >}}
 
-- Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 - Support for epics introduced in GitLab 17.7, with the flag named `work_item_epics`, enabled by default.
 - Generally available for epics in GitLab 18.1. Feature flag `work_item_epics` removed.
 
@@ -879,7 +878,6 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 
 {{< history >}}
 
-- Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 - Support for epics introduced in GitLab 17.7, with the flag named `work_item_epics`, enabled by default.
 - Generally available for epics in GitLab 18.1. Feature flag `work_item_epics` removed.
 
@@ -889,7 +887,7 @@ To include an extended summary in the rendered link of an epic, issue, task, obj
 
 - Add a `+s` at the end of the reference.
 
-Summary includes information about **assignees**, **milestone** and **health status**, as applicable by work item type, of referenced item.
+Summary includes information about **assignees**, **milestone**, and **health status**, as applicable by work item type, of referenced item.
 
 For example, a reference like `#123+s` is rendered as
 `The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
@@ -1508,12 +1506,6 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 
 ### Mermaid
 
-{{< history >}}
-
-- Support for Entity Relationship diagrams and mind maps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
-
-{{< /history >}}
-
 Visit the [official page](https://mermaidjs.github.io/) for more details. The
 [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) helps you
 learn Mermaid and debug issues in your Mermaid code. Use it to identify and resolve
@@ -1628,11 +1620,11 @@ For more information, see the [Kroki integration](../administration/integration/
 ## Math equations
 
 Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
-_KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
+KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-To prevent malicious activity, GitLab renders only the first 50 inline math instances.
+To prevent malicious activity, GitLab renders only the first 1000 inline math instances.
 You can disable this limit [for a group](../api/graphql/reference/_index.md#mutationgroupupdate)
 or for the entire [GitLab Self-Managed instance](../administration/instance_limits.md#math-rendering-limits).
 
@@ -2113,6 +2105,7 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{current_ref}`          | `feature-branch`    | Current ref (branch, tag, or commit SHA) being viewed |
 | `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project's repository |
 | `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project's repository |
+| `%{merge_request_iid}`    | `57`                | Project-level IID of a merge request URL. Available only after the merge request is created. |
 
 ## Escape characters
 
@@ -2262,7 +2255,7 @@ You can also use raw HTML in your Markdown, and it usually works pretty well.
 
 See the documentation for `HTML::Pipeline`'s [SanitizationFilter](https://github.com/gjtorikian/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
-`SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
+`SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details`, and `summary` elements.
 `rel="license"` is allowed on links to support the [Rel-License microformat](https://microformats.org/wiki/rel-license) and license attribution.
 
 ```html
@@ -2302,7 +2295,7 @@ are separated into their own lines:
 When rendered, the example looks similar to:
 
 <!--
-The example below uses HTML to force correct rendering on docs.gitlab.com,
+The example below uses HTML to force correct rendering on `docs.gitlab.com`,
 Markdown is fine in GitLab.
 -->
 
@@ -2370,7 +2363,7 @@ PASTE LOGS HERE
 ````
 
 <!--
-The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown
+The example below uses HTML to force correct rendering on `docs.gitlab.com`, Markdown
 works correctly in GitLab.
 -->
 

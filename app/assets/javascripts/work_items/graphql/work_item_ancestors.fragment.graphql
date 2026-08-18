@@ -3,6 +3,7 @@
 fragment WorkItemAncestors on WorkItem {
   id
   title
+  titleHtml
   widgets @skip(if: $useWorkItemFeatures) {
     type
     ... on WorkItemWidgetHierarchy {

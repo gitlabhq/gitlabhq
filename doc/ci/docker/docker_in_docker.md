@@ -232,7 +232,7 @@ job:
 
 You might need to configure proxy settings to use the `docker push` command.
 
-For more information, see [Proxy settings when using dind service](https://docs.gitlab.com/runner/configuration/proxy/#proxy-settings-when-using-dind-service).
+For more information, see [Proxy settings when using `dind` service](https://docs.gitlab.com/runner/configuration/proxy/#proxy-settings-when-using-dind-service).
 
 ## Use with Kubernetes executor
 

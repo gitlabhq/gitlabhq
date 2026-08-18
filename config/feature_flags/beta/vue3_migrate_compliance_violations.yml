@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_compliance_violations
+description: Enables Vue 3 in compatibility mode for the compliance violations details page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607904
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248558
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607944
+milestone: '19.3'
+group: group::compliance
+type: beta
+default_enabled: false

@@ -25,8 +25,6 @@ export const deepCamelCase = (obj) => convertObjectPropsToCamelCase(obj, { deep:
 export const getStageByTitle = (stages, title) =>
   stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
 
-export const defaultStages = ['issue', 'plan', 'review', 'code', 'test', 'staging'];
-
 const stageFixtures = {
   issue: issueStageFixtures,
   plan: planStageFixtures,
@@ -35,13 +33,6 @@ const stageFixtures = {
   test: testStageFixtures,
   staging: stagingStageFixtures,
 };
-
-export const summary = [
-  { value: '20', title: 'New issues' },
-  { value: null, title: 'Commits' },
-  { value: null, title: 'Deploys' },
-  { value: null, title: 'Deployment frequency', unit: '/day' },
-];
 
 export const issueStage = {
   id: 'issue',
@@ -52,7 +43,7 @@ export const issueStage = {
   value: null,
 };
 
-export const planStage = {
+const planStage = {
   id: 'plan',
   title: 'Plan',
   name: 'plan',
@@ -61,22 +52,13 @@ export const planStage = {
   value: 75600,
 };
 
-export const codeStage = {
+const codeStage = {
   id: 'code',
   title: 'Code',
   name: 'code',
   legend: '',
   description: 'Time until first merge request',
   value: 172800,
-};
-
-export const testStage = {
-  id: 'test',
-  title: 'Test',
-  name: 'test',
-  legend: '',
-  description: 'Total test time for all commits/merges',
-  value: 17550,
 };
 
 export const reviewStage = {
@@ -88,15 +70,6 @@ export const reviewStage = {
   value: null,
 };
 
-export const stagingStage = {
-  id: 'staging',
-  title: 'Staging',
-  name: 'staging',
-  legend: '',
-  description: 'From merge request merge until deploy to production',
-  value: 172800,
-};
-
 export const selectedStage = {
   ...issueStage,
   value: null,
@@ -105,15 +78,6 @@ export const selectedStage = {
     'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.',
 
   slug: 'issue',
-};
-
-export const convertedData = {
-  summary: [
-    { value: '20', title: 'New issues' },
-    { value: '-', title: 'Commits' },
-    { value: '-', title: 'Deploys' },
-    { value: '-', title: 'Deployment frequency', unit: '/day' },
-  ],
 };
 
 export const rawIssueEvents = stageFixtures.issue;

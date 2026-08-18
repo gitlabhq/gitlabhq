@@ -315,7 +315,7 @@ of a project on GitLab.com:
 https://gitlab.com/<full-project-path>/-/jobs/artifacts/main/browse?job=build
 ```
 
-Replace `<full-project-path>` with a valid project path, you can find it in the URL for your project.
+Replace `<full-project-path>` with a valid project path. You can find it in the URL for your project.
 
 ## Set the maximum artifacts size
 
@@ -417,9 +417,6 @@ Then the artifacts in the earlier pipeline for that ref are allowed to expire to
 
 You can disable this behavior for all projects on GitLab Self-Managed with the
 [**Keep artifacts from latest successful pipelines**](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines) instance setting.
-
-You can disable this behavior for all projects on GitLab Self-Managed in the
-[instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
 
 ## Related topics
 

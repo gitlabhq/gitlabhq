@@ -81,7 +81,7 @@ RSpec.describe BulkImports::EntitiesFinder, feature_category: :importers do
       end
     end
 
-    context 'when order is specifed' do
+    context 'when order is specified' do
       subject { described_class.new(user: user, params: { sort: order }) }
 
       context 'when order is specified as asc' do

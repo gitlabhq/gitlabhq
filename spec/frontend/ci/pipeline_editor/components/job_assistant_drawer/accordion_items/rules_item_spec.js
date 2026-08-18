@@ -12,10 +12,13 @@ describe('Rules item', () => {
   let wrapper;
 
   const findLink = () => wrapper.findComponent(GlLink);
-  const findRulesWhenSelect = () => wrapper.findByTestId('rules-when-select');
-  const findRulesStartInNumberInput = () => wrapper.findByTestId('rules-start-in-number-input');
-  const findRulesStartInUnitSelect = () => wrapper.findByTestId('rules-start-in-unit-select');
-  const findRulesAllowFailureCheckBox = () => wrapper.findByTestId('rules-allow-failure-checkbox');
+  const findRulesWhenSelect = () => wrapper.findComponentByTestId('rules-when-select');
+  const findRulesStartInNumberInput = () =>
+    wrapper.findComponentByTestId('rules-start-in-number-input');
+  const findRulesStartInUnitSelect = () =>
+    wrapper.findComponentByTestId('rules-start-in-unit-select');
+  const findRulesAllowFailureCheckBox = () =>
+    wrapper.findComponentByTestId('rules-allow-failure-checkbox');
 
   const dummyRulesWhen = JOB_RULES_WHEN.delayed.value;
   const dummyRulesStartInNumber = 2;

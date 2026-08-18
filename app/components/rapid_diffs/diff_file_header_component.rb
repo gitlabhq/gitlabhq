@@ -4,6 +4,7 @@ module RapidDiffs
   class DiffFileHeaderComponent < ViewComponent::Base
     include ButtonHelper
     include DiffHelper
+    include Gitlab::Utils::StrongMemoize
 
     renders_one :before_file_menu
 
@@ -76,6 +77,25 @@ module RapidDiffs
       counters << (ns_('RapidDiffs|Removed %d line.', 'RapidDiffs|Removed %d lines.', removed) % removed) if removed > 0
       counters.join(' ')
     end
+
+    # Gitlab::Diff::File#new_blob/#old_blob can resolve to nil through Blob.lazy
+    # when Gitaly does not return a blob.
+    def new_blob_size
+      @diff_file.new_blob&.size
+    end
+    strong_memoize_attr :new_blob_size
+
+    def old_blob_size
+      @diff_file.old_blob&.size
+    end
+    strong_memoize_attr :old_blob_size
+
+    def binary_size_delta
+      return unless new_blob_size && old_blob_size
+
+      new_blob_size - old_blob_size
+    end
+    strong_memoize_attr :binary_size_delta
 
     def pretty_print_bytes(size)
       ActiveSupport::NumberHelper.number_to_human_size(size)

@@ -120,8 +120,6 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
       visit project_new_merge_request_path(project, merge_request: params)
 
       click_link 'Changes'
-
-      wait_for_requests
     end
 
     it_behaves_like 'Rapid Diffs application'

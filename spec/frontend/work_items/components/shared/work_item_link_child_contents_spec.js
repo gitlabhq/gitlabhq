@@ -41,7 +41,7 @@ describe('WorkItemLinkChildContents', () => {
   const findLinkChild = () => wrapper.findByTestId('links-child');
   const findStatusBadgeComponent = () =>
     wrapper.findByTestId('item-status-icon').findComponent(WorkItemStateBadge);
-  const findConfidentialIconComponent = () => wrapper.findByTestId('confidential-icon');
+  const findConfidentialIconComponent = () => wrapper.findComponentByTestId('confidential-icon');
   const findTitleEl = () => wrapper.findComponent(GlLink);
   const findStatusTooltipComponent = () => wrapper.findComponent(RichTimestampTooltip);
   const findMetadataComponent = () => wrapper.findComponent(WorkItemLinkChildMetadata);
@@ -271,10 +271,10 @@ describe('WorkItemLinkChildContents', () => {
       expect(findRemoveButton().exists()).toBe(false);
     });
 
-    it('removeChild event on menu triggers `click-remove-child` event', () => {
+    it('emits `remove-child` event when remove button is clicked', () => {
       findRemoveButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
-      expect(wrapper.emitted('removeChild')).toEqual([[workItemTask]]);
+      expect(wrapper.emitted('remove-child')).toEqual([[workItemTask]]);
     });
   });
 

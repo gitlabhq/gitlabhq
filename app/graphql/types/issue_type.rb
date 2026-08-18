@@ -18,6 +18,10 @@ module Types
 
     present_using IssuePresenter
 
+    field :available_quick_actions,
+      resolver: Resolvers::Notes::AvailableQuickActionsResolver,
+      null: true,
+      description: 'Quick actions available to the current user on the issue.'
     field :description, GraphQL::Types::String, null: true,
       description: 'Description of the issue.'
     field :id, GraphQL::Types::ID, null: false,

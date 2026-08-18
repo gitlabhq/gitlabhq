@@ -20,10 +20,12 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :cpu
   loggable_arguments 2, 3, 4
 
-  # Raised when a pipeline creation fails due to a ref not being found.
-  # This can be a user error, but is also known to happen
-  # transiently on Praefect-backed storage due to replication delay.
-  ReferenceNotFoundError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
+  # Raised when pipeline creation fails due to a transient Gitaly read during a
+  # read-after-write window: the ref pointer or the commit it points at is not yet
+  # visible on the node serving the read. This can be a user error, but is also known
+  # to happen transiently on Praefect-backed storage due to replication delay.
+  # Retried via Sidekiq (retry: 3) so the pipeline self-heals once Gitaly is consistent.
+  TransientGitalyReadError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
   def perform(project_id, user_id, ref, source, execute_options = {}, creation_params = {})
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464671')
@@ -43,7 +45,7 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
 
     return unless response.error?
 
-    raise_reference_not_found_error!(response, project, **creation_params)
+    raise_transient_gitaly_read_error!(response, project, **creation_params)
     log_pipeline_errors(response.message, project, **creation_params)
   end
 
@@ -76,11 +78,23 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
     creation_params.except(:push_options, :pipeline_creation_request)
   end
 
-  def raise_reference_not_found_error!(response, project, **creation_params)
+  def raise_transient_gitaly_read_error!(response, project, **creation_params)
+    raise_on_reference_not_found!(response, project, **creation_params)
+    raise_on_commit_not_found!(response, project)
+  end
+
+  def raise_on_reference_not_found!(response, project, **creation_params)
     return unless Feature.enabled?(:ci_create_pipeline_worker_retry_on_reference_not_found, project)
     return unless response.message == Gitlab::Ci::Pipeline::Chain::Validate::Repository::REFERENCE_NOT_FOUND_MESSAGE
     return unless Gitlab::Git.blank_ref?(creation_params[:before].to_s)
 
-    raise ReferenceNotFoundError, 'Reference not found'
+    raise TransientGitalyReadError, Gitlab::Ci::Pipeline::Chain::Validate::Repository::REFERENCE_NOT_FOUND_MESSAGE
+  end
+
+  def raise_on_commit_not_found!(response, project)
+    return unless Feature.enabled?(:ci_create_pipeline_worker_retry_on_commit_not_found, project)
+    return unless response.message == Gitlab::Ci::Pipeline::Chain::Validate::Repository::COMMIT_NOT_FOUND_MESSAGE
+
+    raise TransientGitalyReadError, Gitlab::Ci::Pipeline::Chain::Validate::Repository::COMMIT_NOT_FOUND_MESSAGE
   end
 end

@@ -160,6 +160,47 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
       end
     end
 
+    describe 'authorization refresh priority' do
+      shared_examples 'destroying memberships with a refresh priority of' do |expected_priority|
+        it "passes #{expected_priority.inspect} to the destroyed memberships" do
+          expect_next_found_instances_of(GroupMember, 1) do |member|
+            expect(member).to receive(:authorized_projects_refresh_priority=)
+              .with(expected_priority).and_call_original
+          end
+
+          service.execute(user)
+        end
+      end
+
+      before do
+        create(:group).add_developer(user)
+      end
+
+      context 'when the user is a project bot' do
+        let!(:user) { create(:user, :project_bot) }
+        # A project bot may hold only one membership (Member validates user_id
+        # uniqueness for project bots), so the bot must not also own a personal
+        # project: that membership would take the slot and the group membership
+        # below would fail to save.
+        let!(:project) { create(:project) }
+
+        it_behaves_like 'destroying memberships with a refresh priority of',
+          UserProjectAccessChangedService::MEDIUM_PRIORITY
+
+        context 'when deprioritize_destroyed_project_bot_user_project_authorizations_refresh is disabled' do
+          before do
+            stub_feature_flags(deprioritize_destroyed_project_bot_user_project_authorizations_refresh: false)
+          end
+
+          it_behaves_like 'destroying memberships with a refresh priority of', nil
+        end
+      end
+
+      context 'when the user is not a project bot' do
+        it_behaves_like 'destroying memberships with a refresh priority of', nil
+      end
+    end
+
     describe 'prometheus metrics', :prometheus do
       context 'scheduled records' do
         context 'with a single record' do

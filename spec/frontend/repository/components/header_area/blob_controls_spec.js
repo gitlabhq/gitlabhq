@@ -138,8 +138,8 @@ describe('Blob controls component', () => {
   };
 
   const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);
-  const findFindButton = () => wrapper.findByTestId('find');
-  const findBlameButton = () => wrapper.findByTestId('blame');
+  const findFindButton = () => wrapper.findComponentByTestId('find');
+  const findBlameButton = () => wrapper.findComponentByTestId('blame');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);
@@ -434,18 +434,11 @@ describe('Blob controls component', () => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Example raw text content');
     });
 
-    it('changes ForkSuggestionModal visibility when receives showForkSuggestion event', async () => {
-      findOverflowMenu().vm.$emit('showForkSuggestion');
+    it('changes ForkSuggestionModal visibility when receives show-fork-suggestion event', async () => {
+      findOverflowMenu().vm.$emit('show-fork-suggestion');
       await nextTick();
 
       expect(findForkSuggestionModal().props('visible')).toBe(true);
-    });
-
-    it('proxy locked-file event', async () => {
-      findOverflowMenu().vm.$emit('lockedFile', true);
-      await nextTick();
-
-      expect(wrapper.emitted('lockedFile')).toEqual([[true]]);
     });
   });
 

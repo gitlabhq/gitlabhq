@@ -83,6 +83,45 @@ RSpec.shared_examples 'groups query' do
         expect(names).to contain_exactly(owned_group.name)
       end
     end
+
+    context 'with negated `ids` argument' do
+      let(:filters) { { not: { ids: [public_group.to_global_id.to_s] } } }
+
+      it 'excludes the specified group from results' do
+        subject
+
+        expect(names).not_to include(public_group.name)
+      end
+
+      it 'returns other groups' do
+        private_group.add_maintainer(user)
+
+        subject
+
+        expect(names).to contain_exactly(private_group.name)
+      end
+
+      context 'when the negated arguments are empty' do
+        let(:filters) { { not: {} } }
+
+        it 'returns all accessible groups' do
+          subject
+
+          expect(names).to contain_exactly(public_group.name)
+        end
+      end
+
+      context 'when more IDs than the maximum are given' do
+        let(:filters) { { not: { ids: (1..11).map { |index| "gid://gitlab/Group/#{index}" } } } }
+
+        it 'returns an error' do
+          subject
+
+          expect(graphql_errors)
+            .to include(a_hash_including('message' => "ids is too long (maximum is 10)"))
+        end
+      end
+    end
   end
 
   describe 'active argument' do
@@ -114,6 +153,77 @@ RSpec.shared_examples 'groups query' do
         subject
 
         expect(groups_graphql_data).to match_array([a_graphql_entity_for(group_pending_deletion)])
+      end
+    end
+  end
+
+  describe 'visibilityLevel argument' do
+    let_it_be(:internal_group, freeze: false) { create(:group, :internal, name: 'Group C') }
+
+    before_all do
+      private_group.add_maintainer(user)
+    end
+
+    context 'when filtering by public visibility' do
+      let(:filters) { { visibilityLevel: :public } }
+
+      it 'returns only public groups' do
+        subject
+
+        expect(groups_graphql_data).to match_array([a_graphql_entity_for(public_group)])
+      end
+    end
+
+    context 'when filtering by private visibility' do
+      let(:filters) { { visibilityLevel: :private } }
+
+      it 'returns only accessible private groups' do
+        subject
+
+        expect(groups_graphql_data).to match_array([a_graphql_entity_for(private_group)])
+      end
+    end
+
+    context 'when the argument is omitted' do
+      it 'returns groups of every visibility level' do
+        subject
+
+        expect(groups_graphql_data).to match_array([
+          a_graphql_entity_for(public_group),
+          a_graphql_entity_for(internal_group),
+          a_graphql_entity_for(private_group)
+        ])
+      end
+    end
+  end
+
+  describe 'includeSubgroups argument' do
+    let_it_be(:parent_group, freeze: false) { create(:group, :public, name: 'Parent group') }
+    let_it_be(:child_group, freeze: false) { create(:group, :public, name: 'Child group', parent: parent_group) }
+    let_it_be(:grandchild_group, freeze: false) do
+      create(:group, :public, name: 'Grandchild group', parent: child_group)
+    end
+
+    context 'when includeSubgroups is true' do
+      let(:filters) { { parentPath: parent_group.full_path, includeSubgroups: true } }
+
+      it 'returns all descendant groups' do
+        subject
+
+        expect(groups_graphql_data).to match_array([
+          a_graphql_entity_for(child_group),
+          a_graphql_entity_for(grandchild_group)
+        ])
+      end
+    end
+
+    context 'when includeSubgroups is false' do
+      let(:filters) { { parentPath: parent_group.full_path, includeSubgroups: false } }
+
+      it 'returns only direct children' do
+        subject
+
+        expect(groups_graphql_data).to match_array([a_graphql_entity_for(child_group)])
       end
     end
   end
@@ -247,6 +357,26 @@ RSpec.shared_examples 'groups query' do
 
         expect(graphql_data_at(field_name, :nodes, 0, :project_statistics)).to be_nil
       end
+    end
+  end
+
+  describe 'aimedForDeletion argument' do
+    let_it_be(:group_aimed_for_deletion, freeze: false) do
+      create(:group_with_deletion_schedule, owners: user)
+    end
+
+    let_it_be(:regular_group, freeze: false) do
+      create(:group, :public, owners: user)
+    end
+
+    let(:filters) { { aimedForDeletion: true } }
+
+    it 'returns groups aimed for deletion' do
+      subject
+
+      expect(groups_graphql_data).to match_array(
+        [a_graphql_entity_for(group_aimed_for_deletion)]
+      )
     end
   end
 end

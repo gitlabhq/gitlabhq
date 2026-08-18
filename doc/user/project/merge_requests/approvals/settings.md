@@ -87,13 +87,6 @@ this setting, unless you configure one of these options:
 
 ## Prevent approvals by users who add commits
 
-{{< history >}}
-
-- [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127744) added in GitLab 16.3 to also include merge commits in this check.
-- [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131778) removed in GitLab 16.5. This check now includes merge commits.
-
-{{< /history >}}
-
 By default, users who commit to a merge request (the committers) can still approve it. To prevent
 committers in your project (or your instance) from approving merge requests that are partially
 their own:

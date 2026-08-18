@@ -41,4 +41,52 @@ RSpec.describe RapidDiffs::BasePresenter, feature_category: :source_code_managem
       expect { presenter.send(:reload_stream_url) }.to raise_error(NotImplementedError)
     end
   end
+
+  describe '#transform_file' do
+    let(:diff_file) { build(:diff_file) }
+    let(:request_params) { { line: 'line_abc_20' } }
+
+    subject(:presenter) do
+      described_class.new(Class.new, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, environment: environment)
+    end
+
+    context 'when the file is the linked file' do
+      before do
+        diff_file.linked = true
+      end
+
+      it 'unfolds it through the linked line unfolder built from the line param' do
+        unfolder = instance_double(Gitlab::Diff::LinkedLineUnfolder)
+
+        expect(Gitlab::Diff::LinkedLineUnfolder).to receive(:from_param).with('line_abc_20').and_return(unfolder)
+        expect(unfolder).to receive(:unfold!).with(diff_file)
+
+        presenter.send(:transform_file, diff_file)
+      end
+    end
+
+    context 'when the file is not the linked file' do
+      it 'does not unfold' do
+        expect(diff_file).not_to receive(:unfold_diff_lines)
+
+        expect(presenter.send(:transform_file, diff_file)).to eq(diff_file)
+      end
+    end
+
+    context 'when there is no line param' do
+      let(:request_params) { {} }
+
+      before do
+        diff_file.linked = true
+      end
+
+      it 'does not unfold' do
+        allow(Gitlab::Diff::LinkedLineUnfolder).to receive(:from_param).and_return(nil)
+        expect(diff_file).not_to receive(:unfold_diff_lines)
+
+        expect(presenter.send(:transform_file, diff_file)).to eq(diff_file)
+      end
+    end
+  end
 end

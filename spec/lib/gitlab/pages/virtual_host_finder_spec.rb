@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       it 'passes the correct data to the virtual domain' do
         expect(::Pages::VirtualDomain).to receive(:new).with(
           projects: [project],
-          namespace: project.namespace,
+          namespace: project.root_ancestor,
           domain: pages_domain
         ).and_call_original
 
@@ -151,7 +151,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         it 'passes the correct data to the virtual domain' do
           expect(::Pages::VirtualDomain).to receive(:new).with(
             projects: [project],
-            namespace: project.namespace
+            namespace: project.root_ancestor
           ).and_call_original
 
           expect { virtual_domain }.not_to raise_error
@@ -199,6 +199,70 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         it 'returns nil' do
           expect(virtual_domain).to be_nil
         end
+      end
+    end
+  end
+
+  describe 'force_pages_access_control enforcement for nested projects' do
+    let_it_be(:top_level_group) do
+      create(:group).tap do |g|
+        g.namespace_settings.update!(force_pages_access_control: true)
+      end
+    end
+
+    let_it_be(:subgroup) { create(:group, parent: top_level_group) }
+    let_it_be_with_reload(:nested_project) { create(:project, namespace: subgroup) }
+
+    before_all do
+      create(:pages_deployment, project: nested_project)
+      nested_project.project_feature.update!(pages_access_level: ProjectFeature::PUBLIC)
+    end
+
+    before do
+      stub_pages_setting(host: 'example.com', access_control: true)
+    end
+
+    context 'when served via a unique domain' do
+      before_all do
+        nested_project.project_setting.update!(
+          pages_unique_domain: 'nested-unique-domain',
+          pages_unique_domain_enabled: true
+        )
+      end
+
+      subject(:virtual_domain) { described_class.new('nested-unique-domain.example.com').execute }
+
+      it 'builds the virtual domain from the root ancestor' do
+        expect(::Pages::VirtualDomain).to receive(:new).with(
+          projects: [nested_project],
+          namespace: nested_project.root_ancestor
+        ).and_call_original
+
+        virtual_domain
+      end
+
+      it 'enforces access control on the lookup path' do
+        expect(virtual_domain.lookup_paths.first.access_control).to be(true)
+      end
+    end
+
+    context 'when served via a custom domain' do
+      let_it_be(:pages_domain) { create(:pages_domain, project: nested_project) }
+
+      subject(:virtual_domain) { described_class.new(pages_domain.domain).execute }
+
+      it 'builds the virtual domain from the root ancestor' do
+        expect(::Pages::VirtualDomain).to receive(:new).with(
+          projects: [nested_project],
+          domain: pages_domain,
+          namespace: nested_project.root_ancestor
+        ).and_call_original
+
+        virtual_domain
+      end
+
+      it 'enforces access control on the lookup path' do
+        expect(virtual_domain.lookup_paths.first.access_control).to be(true)
       end
     end
   end

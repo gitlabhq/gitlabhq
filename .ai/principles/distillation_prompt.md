@@ -101,23 +101,15 @@ adds those wrappers automatically.
     (Use, Prefer, Ensure, Include, Add, Set, Follow, Freeze, Pass, Wrap,
     etc.). DO NOT write descriptive or passive statements.
 
-    Category examples:
-    a) Anti-patterns with nouns — restructure to "DO NOT `<verb>` `<noun>`":
-       - BAD: "No business logic in controllers"
-       - GOOD: "DO NOT put business logic in controllers"
-       - BAD: "No HTML in translation strings"
-       - GOOD: "DO NOT include HTML in translation strings"
-    b) Anti-patterns with "Avoid" — convert to "DO NOT `<verb>`":
-       - BAD: "Avoid deep nesting beyond two levels"
-       - GOOD: "DO NOT nest beyond two levels of method calls"
-    c) Passive/descriptive — convert to imperative:
+    Category examples (rule 8 mandates the "No " and "Avoid " rewrites):
+    a) Passive/descriptive — convert to imperative:
        - BAD: "Method naming follows Ruby conventions"
        - GOOD: "Follow Ruby naming conventions for methods"
        - BAD: "Errors propagated appropriately"
        - GOOD: "Propagate errors appropriately (DO NOT silently swallow them)"
        - BAD: "Constants are frozen"
        - GOOD: "Freeze constants (`CONSTANT = 'value'.freeze`)"
-    d) Descriptive defaults — convert to prohibition:
+    b) Descriptive defaults — convert to prohibition:
        - BAD: "Feature flags are enabled by default in tests"
        - GOOD: "DO NOT stub feature flags to `true` — they are enabled by
          default in the test environment"
@@ -137,46 +129,19 @@ adds those wrappers automatically.
     every bullet against every other bullet across ALL subsections. Two
     bullets are duplicates when they mandate or prohibit the same
     underlying behavior, even when their wording, examples, subsection, or
-    surface subject differ. Keep the bullet in the most relevant
-    subsection; if the other location genuinely needs the pointer, replace
-    the duplicate with a short cross-reference ("generate payloads via the
-    RSpec fixture job — see Test Fixtures") instead of restating the rule.
-    Example:
-    - BAD (same directive stated twice under different subsections):
-      - Under "Test Fixtures": "Generate API fixtures by running
-        `bundle exec rspec spec/frontend/fixtures/foo.rb`; DO NOT
-        hand-write JSON fixture files"
-      - Under "Mocking": "Generate MSW handler response payloads via the
-        RSpec fixture job; DO NOT write the JSON by hand"
-     - GOOD (one canonical rule, cross-reference at the other site):
-       - Under "Test Fixtures": "Generate API fixtures (including MSW
-         handler payloads) by running
-         `bundle exec rspec spec/frontend/fixtures/foo.rb`; DO NOT
-         hand-write JSON fixture files"
-       - Under "Mocking": "Use MSW (Mock Service Worker) to mock network
-         requests (generate handler payloads via the RSpec fixture job —
-         see Test Fixtures)"
-
-     Two bullets are still duplicates when they state the SAME requirement
-     at DIFFERENT levels of specificity in different subsections. Keep the
-     MOST specific bullet and replace the other with a cross-reference (or
-     trim it to only the point unique to its section). DO NOT keep both.
-     Example:
-     - BAD (same requirement, two specificity levels, two sections):
-       - Under "Cells Compatibility": "Expose every new plan limit column
-         through the admin Plan Limits API (`PUT /application/plan_limits`)"
-       - Under "Application Limits": "Expose every new plan limit column
-         through the admin Plan Limits API by adding it as an `optional`
-         parameter on `PUT /application/plan_limits` and to the response
-         entity in `lib/api/entities/plan_limit.rb`"
-     - GOOD (keep the specific one; cross-reference from the other):
-       - Under "Cells Compatibility": "`plan_limits` is cell-local
-         configuration; expose new plan limit columns through the admin
-         Plan Limits API (see Application Limits)"
-       - Under "Application Limits": "Expose every new plan limit column
-         through the admin Plan Limits API by adding it as an `optional`
-         parameter on `PUT /application/plan_limits` and to the response
-         entity in `lib/api/entities/plan_limit.rb`"
+    surface subject differ — including when they state the SAME requirement
+    at DIFFERENT levels of specificity. Keep the MOST specific bullet in the
+    most relevant subsection; if the other location genuinely needs the
+    pointer, replace the duplicate with a short cross-reference instead of
+    restating the rule. DO NOT keep both. Example:
+    - BAD: "Generate API fixtures by running
+      `bundle exec rspec spec/frontend/fixtures/foo.rb`" under "Test
+      Fixtures", and "Generate MSW handler payloads via the RSpec fixture
+      job" under "Mocking" — the same directive stated twice.
+    - GOOD: keep the canonical rule under "Test Fixtures" (widened to cover
+      MSW payloads), and under "Mocking" write "Use MSW to mock network
+      requests (generate handler payloads via the RSpec fixture job — see
+      Test Fixtures)".
 12. **Precedence between rules.** When SSOT presents two related rules
     with a precedence relationship ("use X unless Y", "prefer X but use Z
     when W"), emit a single bullet using "Exception:", "Except when", or
@@ -225,6 +190,16 @@ adds those wrappers automatically.
       contradictory guidance.
     - Add a new subsection only when no existing subsection covers the
       baseline topic.
+    - Baseline rules must appear verbatim in your output — preserve their
+      exact wording and punctuation. You may re-wrap long lines (the check
+      compares whole rules with whitespace normalized), but every baseline
+      rule must appear exactly once. The sync tooling mechanically rejects
+      (and retries) any output that alters, duplicates, or omits a
+      baseline rule, so a paraphrased baseline can never be published.
+    - Once baseline rules are integrated, DO NOT relocate them on a later
+      run: keep them in the same subsection and position they occupy in
+      the prior distilled file. Moving a baseline section elsewhere in the
+      checklist is reordering churn under rule 18.
 16. **Reconcile against the SSOT — capture new, revise changed.** The
     current distilled file is the PRIOR version; the SSOT is the current
     truth. Do not simply re-emit the prior checklist. On every invocation,
@@ -256,11 +231,43 @@ adds those wrappers automatically.
            is placed outside `spec/frontend/widgets/`"
        - GOOD (fold enforcement into the existing bullet):
          - "Place widget specs in `spec/frontend/widgets/` (enforced in CI
-           by the `Widgets/SpecPlacement` ESLint rule)"
-    b) **Revise changed rules.** If the SSOT narrowed, broadened, or
-       redirected an existing rule, rewrite that item to match the current
-       SSOT. DO NOT keep the prior wording when it now conflicts with the
-       SSOT. Examples:
+            by the `Widgets/SpecPlacement` ESLint rule)"
+
+        **This-run capture pass (mirror of the rule 18 gate).** Diff each
+        SSOT source between the prior file's `distilled_at_sha` and HEAD
+        (`git diff <distilled_at_sha>..HEAD -- <source_path>`). Every line the
+        SSOT **added or modified** this run MUST be either captured by an
+        emitted/revised item, or explicitly excludable under a named rule
+        (rule 9 universal best practice, rule 11 duplicate, rule 16d
+        delegation, or purely conceptual prose). An added normative line that
+        is neither is a **capture defect** — as serious as an unjustified drop
+        (16c). "Minor" or "the nearby item is close enough" is NOT an
+        exclusion: emit the constraint, or fold it into the adjacent item.
+        Example: a source adding "keep logical word groupings together on the
+        same line" next to a 100-character line-splitting bullet is a new
+        constraint — fold it in; do NOT drop it.
+
+        When the user prompt identifies an SSOT source as newly declared,
+        its `git diff <distilled_at_sha>..HEAD` is empty by construction:
+        the manifest changed, not the document. Read that source in full and
+        treat its normative content as this-run additions exempt from this
+        diff gate. Rules 9, 11, and 16d still apply, so a source that is
+        purely conceptual, duplicates another rule, or delegates elsewhere
+        may correctly yield zero items.
+    b) **Revise changed rules — only when the item's own SSOT guidance
+       changed.** If the SSOT narrowed, broadened, or redirected an existing
+       rule, rewrite that item to match the current SSOT. DO NOT keep the
+       prior wording when it now conflicts with the SSOT. This clause is a
+       license to revise ONLY when the rule's own governing SSOT text
+       changed such that the prior wording is now wrong, contradictory, or
+       so incomplete that following it would violate the SSOT's current
+       requirement (i.e., a concise-but-correct item is NOT incomplete in
+       this sense). It is NOT a license to enrich an already-correct item with
+       detail you happened to find in the full sources (that is churn — see
+       rule 18). "The full SSOT contains more detail than the item states"
+       is NOT, by itself, a changed rule: a concise item that correctly
+       captures the rule is complete even when the source elaborates.
+       Examples:
        - SSOT now mandates a generator over manual steps:
          - STALE: "Create the YAML definition manually in `config/foo/`"
          - CORRECT: "Run `bin/foo.rb <name>` to generate the YAML
@@ -343,45 +350,76 @@ adds those wrappers automatically.
       extension is an optional local aid"
 
     More broadly, DO NOT emit checklist items for actions an automated
-    reviewer cannot perform on the change under review. These include:
-    - ongoing production oversight (continuous monitoring, observability
-      dashboards, SLO/alerting, on-call review) — operational activities,
-      not MR actions;
-    - human support or escalation channels (e.g. "comment `@gitlab-bot
-      help`", "ask in the Community Discord/Slack", "open a support
-      ticket") — directing a human to a help channel;
-    - other human-only actions ("ask your EM/maintainer", request a manual
-      sign-off, schedule a meeting, "reach out to the team").
-    If the SSOT lists such a step in a workflow or tool-selection matrix,
-    omit it; emit only steps the reviewer can perform on the change itself.
-    Examples:
+    reviewer cannot perform on the change under review: ongoing production
+    oversight (monitoring, dashboards, SLO/alerting, on-call review), human
+    support or escalation channels ("comment `@gitlab-bot help`", "ask in
+    the Community Discord/Slack"), and other human-only actions (a manual
+    sign-off, "ask your EM/maintainer", scheduling a meeting). If the SSOT
+    lists such a step in a workflow or tool-selection matrix, omit it; emit
+    only steps the reviewer can perform on the change itself. Example:
     - BAD: "For complete pages: apply feature tests + browser extension +
       monitoring" (monitoring is a continuous production setup, not an MR
       action)
     - GOOD: "For complete pages: apply feature tests + browser extension"
-    - BAD: "Use `@gitlab-bot help` on the MR or the Community Discord
-      `contribute` channel for pipeline help" (a human support channel)
-    - GOOD: keep the actionable troubleshooting rules instead, e.g. "For an
-      unrelated failure that also fails on the default branch, wait for the
-      broken-master fix before re-running" and "For a failed
-      `danger-review` job with more than 20 commits, rebase and squash;
-      otherwise re-run the job"
 18. **Diff discipline.** Beyond the required reconciliation work (rule 16)
     and the mandatory imperative rewrite (rules 8/10), keep the diff
     against the prior checklist minimal:
     - DO NOT reword, reorder, split, or merge items that already
       accurately reflect the SSOT.
     - DO NOT expand an item with extra detail from the SSOT when the
-      existing wording is already a correct and sufficient rule.
+      existing wording is already a correct and sufficient rule. An item is
+      "sufficient" when it correctly captures the rule at a checkable level;
+      it does NOT need to restate every threshold, enumeration, class name,
+      or example the source provides. Finding such detail in the full
+      sources is NOT a reason to touch the item — the reconciliation pass
+      (rule 16) reads the full sources to catch genuinely NEW or genuinely
+      CHANGED rules, not to enrich already-correct ones.
+    - Specifically, DO NOT rewrite an already-accurate item just because the
+      full SSOT could support a more precise or more complete phrasing when
+      that precision was NOT itself added or changed by the SSOT this run.
+      Enriching a correct item with pre-existing source detail is churn, not
+      reconciliation, and is forbidden here — even though the detail is
+      grounded. Leave the item exactly as it was. This covers adding a
+      threshold the source already documented, appending extra class-name
+      mappings, and expanding a deliberate trailing "etc." into every value
+      the source enumerates: a trailing "etc." is a sufficient summary, NOT
+      an invitation to enumerate.
     - DO NOT add items for SSOT content that the prior checklist already
       covers, or that rule 9 excludes (universal best practices).
+
+    **Mechanical per-item gate (apply to EVERY item you change or add).**
+    Determine what changed THIS run: the prior distilled file's frontmatter
+    records the `distilled_at_sha` it was generated from. Use your tools to
+    diff each SSOT source between that sha and the current checkout (for
+    example `git diff <distilled_at_sha>..HEAD -- <source_path>`, or a
+    targeted `grep` of the changed regions) to see exactly which source lines
+    were added or removed since the last distillation. Before you emit any
+    line that differs from the prior checklist, you MUST be able to point to
+    SPECIFIC source lines that changed this run AND that GOVERN THIS ITEM. If
+    the only justification you can give is "the full source contains this
+    detail" or "this makes the item more complete/precise" — WITHOUT a
+    this-run change to the lines governing that item — then the change is
+    FORBIDDEN: revert the item to its prior text verbatim. "Grounded in the
+    full source" is necessary but NOT sufficient; the governing lines must
+    have changed this run. If you cannot run the diff, or cannot tie a
+    proposed edit to a this-run source change, keep the prior line exactly.
+
+    This gate is **bidirectional**: "keep the prior line exactly" applies ONLY
+    to items whose governing source lines did NOT change this run — it NEVER
+    licenses ignoring a line the SSOT added or changed this run, which must
+    still produce an add or revise (rule 16a). Silently dropping it is a
+    capture defect, not diff discipline.
+
     When in doubt whether a change is required by the SSOT or merely
     stylistic, leave the prior item untouched. A reviewer should be able to
     map every changed line in your output to one of: (a) a change in the
     SSOT, (b) a rule-2 removal, (c) the imperative rewrite, (d) a
     dedup/cross-reference consolidation (rule 11), (e) a precedence or
     exception merge (rules 12/14), or (f) baseline integration (rule 15) —
-    anything else is churn and makes the sync MRs impossible to review.
+    anything else is churn and makes the sync MRs impossible to review. In
+    particular, "(a) a change in the SSOT" means the source text governing
+    THAT item changed this run; it does NOT cover detail that was already in
+    the sources before this run and merely went unstated in a correct item.
 
 ## How to read inputs
 

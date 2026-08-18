@@ -9,7 +9,7 @@
 # This is a regular migration on purpose: it must run before the post-deploy
 # finalize migration 20260428232406 when both ship in the same upgrade.
 class RemoveProjectIdForeignKeyFromPackagesNugetSymbolStates < Gitlab::Database::Migration[2.3]
-  milestone '19.2'
+  milestone '19.3'
 
   disable_ddl_transaction!
 

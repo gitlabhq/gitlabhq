@@ -5,6 +5,7 @@ import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'NoteHeader',
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     author: {
       type: Object,
@@ -166,7 +168,7 @@ export default {
       >
         <a
           ref="authorUsernameLink"
-          class="author-username-link focus:gl-focus"
+          class="author-username-link focus-visible:gl-focus"
           :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
@@ -181,7 +183,7 @@ export default {
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">
       <span
-        v-if="$scopedSlots.default"
+        v-if="glSlots().default"
         class="system-note-message"
         :class="!isSystemNote && !emailParticipant && '@md/panel:-gl-ml-2'"
         data-testid="system-note-content"

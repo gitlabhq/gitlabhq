@@ -26,7 +26,7 @@
   z-index: $zindex-dropdown-menu;
   width: $award-emoji-width;
   font-size: 14px;
-  background-color: $white;
+  background-color: var(--gl-dropdown-background-color);
   @apply gl-border;
   border-radius: $border-radius-base;
   box-shadow: 0 6px 12px $award-emoji-menu-shadow;
@@ -107,7 +107,7 @@
     transform: scale(1.3);
   }
 
-  &:focus,
+  &:focus-visible,
   &:active {
     outline: 0;
   }
@@ -149,8 +149,8 @@
   &.active,
   &.is-active,
   &:active {
-    background-color: $blue-50;
-    border-color: $blue-200;
+    @apply gl-bg-blue-50;
+    @apply gl-border-blue-200;
   }
 
   &.is-active {
@@ -166,7 +166,7 @@
   }
 
   &.btn {
-    &:focus {
+    &:focus-visible {
       outline: 0;
     }
   }
@@ -279,7 +279,7 @@
     cursor: default;
 
     &:hover,
-    &:focus,
+    &:focus-visible,
     &:active {
       .reaction-control-icon .gl-icon {
         color: inherit;

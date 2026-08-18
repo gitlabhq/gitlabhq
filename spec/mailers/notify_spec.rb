@@ -832,6 +832,30 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             is_expected.not_to have_body_text('#heading-2')
           end
         end
+
+        context 'when note is internal' do
+          let(:note) do
+            create(:discussion_note_on_issue, :internal, noteable: issue, project: project, author: note_author)
+          end
+
+          it 'shows the internal note indicator in the HTML part' do
+            is_expected.to have_body_text('Internal note')
+          end
+
+          it 'shows the [Internal note] indicator in the plain-text part' do
+            is_expected.to have_plain_text_content('[Internal note]')
+          end
+        end
+
+        context 'when note is not internal (public comment)' do
+          it 'does not show an internal note indicator in the HTML part' do
+            is_expected.not_to have_body_text('Internal note')
+          end
+
+          it 'does not show an [Internal note] indicator in the plain-text part' do
+            is_expected.not_to have_plain_text_content('[Internal note]')
+          end
+        end
       end
 
       describe 'on a wiki_page' do
@@ -1824,6 +1848,11 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             end
           end
 
+          it 'does not include a confidential work item indicator', :aggregate_failures do
+            expect(subject.html_part.body.decoded).not_to include('Confidential work item')
+            expect(subject.text_part.body.decoded).not_to include('[Confidential work item]')
+          end
+
           context 'when noteable is confidential' do
             before_all do
               note.noteable.update_attribute(:confidential, "true")
@@ -1837,6 +1866,14 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
               expect(subject.header['X-GitLab-ConfidentialIssue'].value).to eq('true')
             end
 
+            it 'includes a confidential work item indicator in the HTML part' do
+              expect(subject.html_part.body.decoded).to include('Confidential work item')
+            end
+
+            it 'includes a confidential work item indicator in the text part' do
+              expect(subject.text_part.body.decoded).to include('[Confidential work item]')
+            end
+
             it 'has In-Reply-To header pointing to the issue' do
               expect(subject.header['In-Reply-To'].message_ids).to eq(["issue_#{note.noteable.id}@#{host}"])
             end
@@ -1848,7 +1885,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             context 'with private references accessible to the recipient' do
               let_it_be(:private_project) { create(:project, :private, guests: recipient) }
               let_it_be(:private_issue) { create(:issue, :closed, project: private_project) }
-              let(:html_part) { subject.body.parts.last.to_s }
+              let(:html_part) { subject.body.parts.last.decoded }
 
               before_all do
                 note.update!(note: private_issue.to_reference(full: true).to_s)
@@ -2172,6 +2209,19 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
       end
     end
+
+    context 'when text blobs are truncated' do
+      before do
+        # Stub the Blob instance to simulate a truncated blob in diff files
+        allow_next_instance_of(Blob) do |blob_instance|
+          allow(blob_instance).to receive(:truncated?).and_return(true)
+        end
+      end
+
+      it 'still shows the diff for text files' do
+        is_expected.to have_body_text('archive_formats_regex')
+      end
+    end
   end
 
   describe 'email on push with a single commit' do
@@ -2409,8 +2459,17 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     let(:recipient) { issue.assignees.first }
 
     before do
-      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:notification_emails).and_return(1)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+        :notification_emails,
+        scope: contain_exactly(issue.project, recipient),
+        peek: true
+      ).and_return(false, false, true)
+
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+        :notification_emails,
+        scope: contain_exactly(issue.project, recipient),
+        peek: false
+      ).and_return(false, true, true)
     end
 
     it 'logs a message, stops sending notifications, and notifies the user of the rate limit only once', :aggregate_failures do

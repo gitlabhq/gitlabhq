@@ -22,7 +22,7 @@ RSpec.describe "Projects::Observability::AccessRequests", feature_category: :obs
 
     context 'when feature flag is disabled' do
       before do
-        stub_feature_flags(observability_sass_features: false)
+        stub_feature_flags(observability_saas_features_user_namespace: false)
       end
 
       it 'returns 404 without calling service' do
@@ -37,7 +37,7 @@ RSpec.describe "Projects::Observability::AccessRequests", feature_category: :obs
 
     context 'when feature flag is enabled' do
       before do
-        stub_feature_flags(observability_sass_features: user_namespace)
+        stub_feature_flags(observability_saas_features_user_namespace: user_namespace)
       end
 
       context 'when project belongs to a group' do
@@ -69,6 +69,10 @@ RSpec.describe "Projects::Observability::AccessRequests", feature_category: :obs
           expect(response).to redirect_to(project_observability_setup_path(project))
           expect(flash[:alert]).to eq('Observability is already enabled for this namespace')
         end
+
+        it 'does not track the create_observability_access_request internal event' do
+          expect { create_access_request }.not_to trigger_internal_events('create_observability_access_request')
+        end
       end
 
       context 'when service succeeds' do
@@ -88,6 +92,17 @@ RSpec.describe "Projects::Observability::AccessRequests", feature_category: :obs
             expect(service_instance).to have_received(:execute)
           end
         end
+
+        it 'tracks the create_observability_access_request internal event', :clean_gitlab_redis_shared_state do
+          expect { create_access_request }
+            .to trigger_internal_events('create_observability_access_request')
+            .with(user: user, namespace: user_namespace, additional_properties: { label: 'project' },
+              category: 'Projects::Observability::AccessRequestsController')
+            .and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_create_observability_access_request_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_create_observability_access_request_weekly'
+            )
+        end
       end
 
       context 'when service fails' do
@@ -104,6 +119,10 @@ RSpec.describe "Projects::Observability::AccessRequests", feature_category: :obs
             expect(response).to redirect_to(project_observability_setup_path(project))
             expect(flash[:alert]).to eq(error_message)
           end
+        end
+
+        it 'does not track the create_observability_access_request internal event' do
+          expect { create_access_request }.not_to trigger_internal_events('create_observability_access_request')
         end
       end
 

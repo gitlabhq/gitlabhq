@@ -8,7 +8,6 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'ee/spec/policies/ai/duo_workflows/workflow_policy_spec.rb'
     - 'ee/spec/policies/ai/setting_policy_spec.rb'
     - 'ee/spec/policies/app_sec/fuzzing/coverage/corpus_policy_spec.rb'
-    - 'ee/spec/policies/approval_rules/approval_group_rule_policy_spec.rb'
     - 'ee/spec/policies/audit_events/group/namespace_filter_policy_spec.rb'
     - 'ee/spec/policies/ci/build_policy_spec.rb'
     - 'ee/spec/policies/ci/job_artifact_policy_spec.rb'

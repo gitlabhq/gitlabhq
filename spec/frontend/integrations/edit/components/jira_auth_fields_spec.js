@@ -31,8 +31,8 @@ describe('JiraAuthFields', () => {
 
   const findAuthTypeRadio = () => wrapper.findComponent(GlFormRadioGroup);
   const findAuthTypeOptions = () => wrapper.findAllComponents(GlFormRadio);
-  const findUsernameField = () => wrapper.findByTestId('jira-auth-username');
-  const findPasswordField = () => wrapper.findByTestId('jira-auth-password');
+  const findUsernameField = () => wrapper.findComponentByTestId('jira-auth-username');
+  const findPasswordField = () => wrapper.findComponentByTestId('jira-auth-password');
 
   const selectRadioOption = (authType) => findAuthTypeRadio().vm.$emit('input', authType);
 

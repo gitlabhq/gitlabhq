@@ -13,6 +13,10 @@ class MergeRequests::PipelineEntity < Grape::Entity
     project_pipeline_path(pipeline.project, pipeline)
   end
 
+  expose :project_full_path do |pipeline|
+    pipeline.project.full_path
+  end
+
   expose :project_path do |pipeline|
     project_path(pipeline.project)
   end

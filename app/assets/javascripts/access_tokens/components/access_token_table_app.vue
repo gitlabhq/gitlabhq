@@ -57,6 +57,7 @@ export default {
     lastTimeUsed: s__('AccessTokens|The last time a token was used'),
     tokenValidity: __('Token valid until revoked'),
     modal: {
+      ariaLabel: s__('AccessTokens|Rotate access token'),
       message: {
         revoke: s__(
           'AccessTokens|Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
@@ -348,6 +349,7 @@ export default {
           v-model="modalVisible"
           :action-cancel="$options.i18n.modal.actionCancel"
           :action-primary="actionPrimary"
+          :aria-label="$options.i18n.modal.ariaLabel"
           modal-id="token-action-modal"
           size="sm"
           hide-header

@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     class Manager
-      include VersionHelper
+      include Base::VersionHelper
 
       class ToolNotFoundError < StandardError
         attr_reader :tool_name, :args
@@ -42,13 +42,20 @@ module Mcp
       }.freeze
 
       GRAPHQL_TOOLS = {
+        'add_branch' => ::Mcp::Tools::Repositories::Branches::AddBranchService,
         'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
         'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
+        'get_merge_request' => ::Mcp::Tools::MergeRequests::GetMergeRequestService,
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
+        'get_repository_file' => ::Mcp::Tools::Repositories::GetRepositoryFileService,
+        'get_pipeline' => ::Mcp::Tools::Pipelines::GetPipelineService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
+        'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
+        'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
+        'save_pipeline' => ::Mcp::Tools::Pipelines::SavePipelineService,
         'search_labels' => ::Mcp::Tools::Labels::SearchService
       }.freeze
 
@@ -136,9 +143,9 @@ module Mcp
         map = {}
 
         tools.each do |tool_name, tool|
-          next unless tool.class.respond_to?(:tool_aliases)
+          next unless tool.respond_to?(:tool_aliases)
 
-          tool.class.tool_aliases.each { |alias_name| map[alias_name] = tool_name }
+          tool.tool_aliases.each { |alias_name| map[alias_name] = tool_name }
         end
 
         map
@@ -181,7 +188,7 @@ module Mcp
             next if settings[:aggregators].present?
 
             name = settings[:tool_name].to_s
-            tool = Mcp::Tools::ApiTool.new(name: name, route: route)
+            tool = Mcp::Tools::Base::ApiTool.new(name: name, route: route)
             api_tools[name] = tool
           end
 
@@ -201,7 +208,7 @@ module Mcp
             aggregators = settings[:aggregators]
             next if aggregators.blank?
 
-            tool = Mcp::Tools::ApiTool.new(name: name, route: route)
+            tool = Mcp::Tools::Base::ApiTool.new(name: name, route: route)
 
             aggregators.each do |aggregator|
               aggregated_api_tools[aggregator] ||= []

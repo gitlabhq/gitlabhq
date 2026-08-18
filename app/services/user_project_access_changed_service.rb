@@ -8,6 +8,8 @@ class UserProjectAccessChangedService
   MEDIUM_PRIORITY = :medium
   LOW_PRIORITY = :low
 
+  SAFETY_NET_REFRESH_PURPOSE = 'safety_net'
+
   def initialize(user_ids)
     @user_ids = Array.wrap(user_ids)
   end
@@ -25,12 +27,17 @@ class UserProjectAccessChangedService
         AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
       when LOW_PRIORITY
         if Feature.disabled?(:do_not_run_safety_net_auth_refresh_jobs)
-          with_related_class_context do
-            # We wrap the execution in `with_related_class_context`so as to obtain
-            # the location of the original caller
-            # in jobs enqueued from within `AuthorizedProjectUpdate::UserRefreshFromReplicaWorker`
-            AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
-              DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
+          Gitlab::ApplicationContext.with_raw_context(
+            authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
+          ) do
+            # We wrap the execution in `with_related_class_context`so as
+            # to obtain the location of the original caller in jobs
+            # enqueued from within
+            # `AuthorizedProjectUpdate::UserRefreshFromReplicaWorker`
+            with_related_class_context do
+              AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in( # rubocop:disable Scalability/BulkPerformWithContext
+                DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
+            end
           end
         end
       end

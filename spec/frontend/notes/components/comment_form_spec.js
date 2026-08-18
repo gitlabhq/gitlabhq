@@ -51,15 +51,17 @@ describe('issue_comment_form component', () => {
   let axiosMock;
   let pinia;
 
-  const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
+  const findCloseReopenButton = () => wrapper.findComponentByTestId('close-reopen-button');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findMarkdownEditorTextarea = () => findMarkdownEditor().find('textarea');
   const findStartReviewButton = () => wrapper.findByTestId('start-review-button');
   const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
   const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('internal-note-checkbox');
+  const findConfidentialNoteCheckboxComponent = () =>
+    wrapper.findComponent('[data-testid="internal-note-checkbox"]');
   const findInternalNoteTooltipIcon = () => wrapper.findByTestId('question-o-icon');
-  const findCommentTypeDropdown = () => wrapper.findByTestId('comment-button');
+  const findCommentTypeDropdown = () => wrapper.findComponentByTestId('comment-button');
   const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
   const findDiscussionLockedWidget = () => wrapper.findComponent(DiscussionLockedWidget);
@@ -298,7 +300,7 @@ describe('issue_comment_form component', () => {
           'should render textarea with placeholder for $noteType',
           async ({ noteIsInternal, placeholder }) => {
             await mountComponent();
-            await findConfidentialNoteCheckbox().vm.$emit('input', noteIsInternal);
+            await findConfidentialNoteCheckboxComponent().vm.$emit('input', noteIsInternal);
             expect(findMarkdownEditor().props('formFieldProps').placeholder).toBe(placeholder);
           },
         );
@@ -539,7 +541,7 @@ describe('issue_comment_form component', () => {
       it('should update buttons texts when it has note', () => {
         mountComponent({ initialData: { note: 'Foo' } });
 
-        expect(findCloseReopenButton().text()).toBe('Comment & close ticket');
+        expect(findCloseReopenButton().text()).toBe('Comment and close ticket');
       });
 
       it('updates button text with noteable type', () => {

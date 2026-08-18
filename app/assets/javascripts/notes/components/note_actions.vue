@@ -1,10 +1,12 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlTooltipDirective,
   GlButton,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import Api from '~/api';
@@ -37,7 +39,7 @@ export default {
   name: 'NoteActions',
   components: {
     AbuseCategorySelector,
-    EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    EmojiPicker: defineAsyncComponent(() => import('~/emoji/components/picker.vue')),
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -45,11 +47,14 @@ export default {
     ReplyButton,
     TimelineEventButton,
     UserAccessRoleBadge,
+    ViewSessionButton: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/view_session_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [resolvedStatusMixin, Tracking.mixin()],
+  mixins: [resolvedStatusMixin, Tracking.mixin(), GlToastMixin],
   props: {
     author: {
       type: Object,
@@ -159,8 +164,13 @@ export default {
       required: false,
       default: '',
     },
+    duoSessionId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
-  emits: ['handleDelete', 'handleEdit', 'handleResolve', 'start-replying', 'updateAssignees'],
+  emits: ['handle-delete', 'handle-edit', 'handle-resolve', 'start-replying', 'update-assignees'],
   data() {
     return {
       isReportAbuseDrawerOpen: false,
@@ -277,13 +287,13 @@ export default {
   methods: {
     ...mapActions(useNotes, ['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
     onEdit() {
-      this.$emit('handleEdit');
+      this.$emit('handle-edit');
     },
     onDelete() {
-      this.$emit('handleDelete');
+      this.$emit('handle-delete');
     },
     onResolve() {
-      this.$emit('handleResolve');
+      this.$emit('handle-resolve');
     },
     onAbuse() {
       this.toggleReportAbuseDrawer(true);
@@ -314,7 +324,7 @@ export default {
       this.$toast.show(__('Link copied to clipboard.'));
     },
     handleAssigneeUpdate(assignees) {
-      this.$emit('updateAssignees', assignees);
+      this.$emit('update-assignees', assignees);
     },
     assignUser() {
       let { assignees } = this;
@@ -379,6 +389,11 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <span class="note-actions__mobile-spacer"></span>
+    <view-session-button
+      v-if="duoSessionId"
+      :session-id="duoSessionId"
+      class="note-action-button"
+    />
     <gl-button
       v-if="canResolve"
       ref="resolveButton"

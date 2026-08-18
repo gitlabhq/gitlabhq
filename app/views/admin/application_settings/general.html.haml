@@ -33,6 +33,15 @@
 
 = render_if_exists 'admin/application_settings/integrations_settings'
 
+= render ::Layouts::SettingsBlockComponent.new(_('Merge requests'),
+  id: 'js-merge-requests-settings',
+  testid: 'merge-requests-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure merge request settings.')
+  - c.with_body do
+    = render 'merge_requests'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Diff limits'),
   id: 'js-merge-request-settings',
   testid: 'diff-limits-settings',

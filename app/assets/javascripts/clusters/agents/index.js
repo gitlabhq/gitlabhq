@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AgentShowPage from 'ee_else_ce/clusters/agents/components/show.vue';
 import apolloProvider from './graphql/provider';
@@ -22,7 +22,7 @@ export default () => {
     canAdminCluster,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AgentShowPageRoot',
     apolloProvider,
@@ -37,8 +37,6 @@ export default () => {
       kasInstallVersion,
       canAdminCluster: parseBoolean(canAdminCluster),
     },
-    render(createElement) {
-      return createElement(AgentShowPage);
-    },
+    component: AgentShowPage,
   });
 };

@@ -130,8 +130,7 @@ export default {
         :key="error"
         class="gl-mb-5 gl-whitespace-pre-wrap gl-break-anywhere"
         data-testid="ci-lint-errors"
-        >{{ error }}</pre
-      >
+        >{{ error }}</pre>
     </template>
 
     <ci-lint-warnings

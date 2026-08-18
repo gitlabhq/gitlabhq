@@ -1143,6 +1143,14 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
       merge_request.compare = compare
     end
 
+    context 'when the description contains a Markdown placeholder' do
+      let(:merge_request_description) { '%{merge_request_iid}' }
+
+      it 'preserves the placeholder for rendering after creation' do
+        expect(result_message).to eq('%{merge_request_iid}')
+      end
+    end
+
     context 'when project has template with all variables' do
       let(:merge_request_description) { <<~MSG.rstrip }
         source_branch:%{source_branch}

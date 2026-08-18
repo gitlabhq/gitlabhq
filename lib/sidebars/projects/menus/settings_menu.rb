@@ -34,6 +34,7 @@ module Sidebars
             :admin_push_rules,
             :manage_deploy_tokens,
             :admin_protected_branch,
+            :manage_merge_request_settings,
             :manage_protected_tags
           ],
           merge_requests_menu_item: [
@@ -87,7 +88,8 @@ module Sidebars
             title: _('General'),
             link: edit_project_path(context.project),
             active_routes: { path: 'projects#edit' },
-            item_id: :general
+            item_id: :general,
+            library_icon: 'settings'
           )
         end
 
@@ -96,7 +98,8 @@ module Sidebars
             title: _('Integrations'),
             link: project_settings_integrations_path(context.project),
             active_routes: { path: %w[integrations#index integrations#edit] },
-            item_id: :integrations
+            item_id: :integrations,
+            library_icon: 'settings'
           )
         end
 
@@ -105,7 +108,8 @@ module Sidebars
             title: _('Webhooks'),
             link: project_hooks_path(context.project),
             active_routes: { path: %w[hooks#index hooks#edit hook_logs#show] },
-            item_id: :webhooks
+            item_id: :webhooks,
+            library_icon: 'settings'
           )
         end
 
@@ -118,7 +122,8 @@ module Sidebars
             title: _('Access tokens'),
             link: project_settings_access_tokens_path(context.project),
             active_routes: { path: 'access_tokens#index' },
-            item_id: :access_tokens
+            item_id: :access_tokens,
+            library_icon: 'settings'
           )
         end
 
@@ -127,7 +132,8 @@ module Sidebars
             title: _('Repository'),
             link: project_settings_repository_path(context.project),
             active_routes: { path: ['repository#show'], controller: ['deploy_keys'] },
-            item_id: :repository
+            item_id: :repository,
+            library_icon: 'settings'
           )
         end
 
@@ -141,7 +147,8 @@ module Sidebars
             title: _('CI/CD'),
             link: project_settings_ci_cd_path(context.project),
             active_routes: { path: 'ci_cd#show' },
-            item_id: :ci_cd
+            item_id: :ci_cd,
+            library_icon: 'settings'
           )
         end
 
@@ -154,7 +161,8 @@ module Sidebars
             title: _('Packages and registries'),
             link: project_settings_packages_and_registries_path(context.project),
             active_routes: { controller: :packages_and_registries },
-            item_id: :packages_and_registries
+            item_id: :packages_and_registries,
+            library_icon: 'settings'
           )
         end
 
@@ -168,7 +176,8 @@ module Sidebars
             title: _('Monitor'),
             link: project_settings_operations_path(context.project),
             active_routes: { path: 'operations#show' },
-            item_id: :monitor
+            item_id: :monitor,
+            library_icon: 'settings'
           )
         end
 
@@ -179,7 +188,8 @@ module Sidebars
             title: _('Service accounts'),
             link: project_settings_service_accounts_path(context.project),
             active_routes: { path: %w[projects/settings/service_accounts#index] },
-            item_id: :service_accounts
+            item_id: :service_accounts,
+            library_icon: 'settings'
           )
         end
 
@@ -193,7 +203,8 @@ module Sidebars
             title: s_('UsageQuota|Usage quotas'),
             link: project_usage_quotas_path(context.project),
             active_routes: { path: 'usage_quotas#index' },
-            item_id: :usage_quotas
+            item_id: :usage_quotas,
+            library_icon: 'settings'
           )
         end
 
@@ -204,7 +215,8 @@ module Sidebars
             title: _('Merge requests'),
             link: project_settings_merge_requests_path(context.project),
             active_routes: { path: 'projects/settings/merge_requests#show' },
-            item_id: context.is_super_sidebar ? :merge_request_settings : :merge_requests
+            item_id: context.is_super_sidebar ? :merge_request_settings : :merge_requests,
+            library_icon: 'settings'
           )
         end
 

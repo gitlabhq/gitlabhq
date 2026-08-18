@@ -138,7 +138,7 @@ RSpec.shared_examples 'clone quick action' do
         it_behaves_like 'applies the commands to issues in both projects, target and source'
       end
 
-      context 'applies multiple commands with clone command in the begining' do
+      context 'applies multiple commands with clone command in the beginning' do
         before do
           fill_in('Add a reply', with: "/clone #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
           click_button 'Comment'
@@ -182,6 +182,9 @@ RSpec.shared_examples 'clone quick action' do
         # missspelled quick action
         fill_in('Add a reply', with: "test note.\n/cloe #{target_project.full_path}")
         click_button 'Comment'
+        # Barrier before the negative assertion, which would otherwise pass
+        # vacuously while the comment mutation is still in flight.
+        expect(page).to have_field('Add a reply', with: '')
 
         expect(page).not_to have_content 'Commands applied'
 

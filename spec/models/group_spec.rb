@@ -544,8 +544,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
 
         it 'return true but the record is invalid' do
-          expect(group.visibility_level_allowed_by_organization?).to eq(true)
-          expect(group.valid?).to eq(false)
+          expect(group.visibility_level_allowed_by_organization?).to be(true)
+          expect(group.valid?).to be(false)
         end
       end
 
@@ -2016,21 +2016,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
-  describe '#has_maintainer?' do
-    before do
-      @members = setup_group_members(group)
-      create(:group_member, :invited, :maintainer, group: group)
-    end
-
-    it { expect(group.has_maintainer?(@members[:owner])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:maintainer])).to be_truthy }
-    it { expect(group.has_maintainer?(@members[:developer])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:reporter])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:guest])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:requester])).to be_falsey }
-    it { expect(group.has_maintainer?(nil)).to be_falsey }
-  end
-
   describe '#last_owner?' do
     before do
       @members = setup_group_members(group)
@@ -2363,16 +2348,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'returns true for owner' do
-      expect(group.owned_by?(@members[:owner])).to eq(true)
+      expect(group.owned_by?(@members[:owner])).to be(true)
     end
 
     it 'returns false for developer' do
-      expect(group.owned_by?(@members[:developer])).to eq(false)
+      expect(group.owned_by?(@members[:developer])).to be(false)
     end
 
     it 'returns false when nil is passed' do
-      expect(invited_group_member.user).to eq(nil)
-      expect(group.owned_by?(invited_group_member.user)).to eq(false)
+      expect(invited_group_member.user).to be_nil
+      expect(group.owned_by?(invited_group_member.user)).to be(false)
     end
   end
 
@@ -2447,7 +2432,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     context 'when the user is an invited member' do
       it 'returns false when nil is passed' do
-        expect(invited_group_member.user).to eq(nil)
+        expect(invited_group_member.user).to be_nil
         expect(group.has_user?(invited_group_member.user)).to be_falsey
       end
     end
@@ -3738,20 +3723,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe '#parent_allows_two_factor_authentication?' do
     it 'returns true for top-level group' do
-      expect(group.parent_allows_two_factor_authentication?).to eq(true)
+      expect(group.parent_allows_two_factor_authentication?).to be(true)
     end
 
     context 'for subgroup' do
       let(:subgroup) { create(:group, parent: group) }
 
       it 'returns true if parent group allows two factor authentication for its descendants' do
-        expect(subgroup.parent_allows_two_factor_authentication?).to eq(true)
+        expect(subgroup.parent_allows_two_factor_authentication?).to be(true)
       end
 
       it 'returns true if parent group allows two factor authentication for its descendants' do
         group.namespace_settings.update!(allow_mfa_for_subgroups: false)
 
-        expect(subgroup.parent_allows_two_factor_authentication?).to eq(false)
+        expect(subgroup.parent_allows_two_factor_authentication?).to be(false)
       end
     end
   end
@@ -3769,14 +3754,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       context 'for top level group' do
         let_it_be(:project) { create(:project, group: group, service_desk_enabled: true) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         context 'when service desk is not supported' do
           before do
             allow(::ServiceDesk).to receive(:supported?).and_return(false)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 
@@ -3784,7 +3769,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let_it_be(:subgroup) { create(:group, :private, parent: group) }
         let_it_be(:project) { create(:project, group: subgroup, service_desk_enabled: true) }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -3795,7 +3780,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         project.update!(service_desk_enabled: false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -3977,7 +3962,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     it 'builds a new policy if one does not exist', :aggregate_failures do
       expect(ttl_policy.ttl).to eq(90)
-      expect(ttl_policy.enabled).to eq(false)
+      expect(ttl_policy.enabled).to be(false)
       expect(ttl_policy.created_at).to be_nil
       expect(ttl_policy.updated_at).to be_nil
     end
@@ -3989,7 +3974,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'returns the policy if it already exists', :aggregate_failures do
         expect(ttl_policy.ttl).to eq(30)
-        expect(ttl_policy.enabled).to eq(true)
+        expect(ttl_policy.enabled).to be(true)
         expect(ttl_policy.created_at).not_to be_nil
         expect(ttl_policy.updated_at).not_to be_nil
       end
@@ -4000,7 +3985,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject(:setting) { group.dependency_proxy_setting }
 
     it 'builds a new policy if one does not exist', :aggregate_failures do
-      expect(setting.enabled).to eq(true)
+      expect(setting.enabled).to be(true)
       expect(setting).not_to be_persisted
     end
 
@@ -4010,7 +3995,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'returns the policy if it already exists', :aggregate_failures do
-        expect(setting.enabled).to eq(false)
+        expect(setting.enabled).to be(false)
         expect(setting).to be_persisted
       end
     end

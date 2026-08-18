@@ -118,7 +118,7 @@ Hover over any rotation shift participants in the schedule to view their individ
 
 See [Paging](paging.md#paging) for more details.
 
-## Removal or deletion of on-call user
+## Removal or deletion of an on-call user
 
 If an on-call user is removed from the project or group, or their account is deleted, the
 confirmation dialog displays the list of that user's on-call schedules. If the user's removal or

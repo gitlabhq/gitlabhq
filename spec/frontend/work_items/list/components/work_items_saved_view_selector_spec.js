@@ -52,11 +52,11 @@ describe('WorkItemsSavedViewSelector', () => {
     });
   };
 
-  const findSelector = () => wrapper.findByTestId('saved-view-selector');
+  const findSelector = () => wrapper.findComponentByTestId('saved-view-selector');
   const findEditAction = () => wrapper.findByTestId('edit-action');
-  const findCopyAction = () => wrapper.findByTestId('copy-action');
-  const findUnsubscribeAction = () => wrapper.findByTestId('unsubscribe-action');
-  const findDeleteAction = () => wrapper.findByTestId('delete-action');
+  const findCopyAction = () => wrapper.findComponentByTestId('copy-action');
+  const findUnsubscribeAction = () => wrapper.findComponentByTestId('unsubscribe-action');
+  const findDeleteAction = () => wrapper.findComponentByTestId('delete-action');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findButton = () => wrapper.findComponent(GlButton);
 

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlCollapsibleListbox, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { debounce } from 'lodash-es';
@@ -80,8 +81,9 @@ export default {
     ExternalConfigEmptyState,
     PipelinesEmptyState,
     PipelinesErrorState,
-    PipelineAccountVerificationAlert: () =>
-      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    PipelineAccountVerificationAlert: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    ),
   },
   mixins: [Tracking.mixin()],
   inject: {

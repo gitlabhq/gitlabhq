@@ -1,0 +1,6 @@
+# Curated OpenAPI tag descriptions are fragments merged into the generated spec, not pages on
+# the docs site, so they have no top-level heading. Every other rule from the root
+# configuration still applies.
+extends: "../../../../.markdownlint-cli2.yaml"
+config:
+  first-line-heading: false # MD041

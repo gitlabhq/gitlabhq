@@ -311,7 +311,7 @@ Supported attributes:
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a single artifact file.
 
-If the job or artifact file are not found, returns [`404`](rest/troubleshooting.md#status-codes).
+If the job or artifact file is not found, returns [`404`](rest/troubleshooting.md#status-codes).
 
 Example request:
 
@@ -392,7 +392,10 @@ Example response:
 
 ## Delete job artifacts
 
-Delete all artifacts associated with a specific job. Artifacts cannot be recovered after they are deleted.
+Delete a job's artifacts. This includes archived files, metadata, and [report artifacts](../ci/yaml/artifacts_reports.md)
+such as JUnit reports. This endpoint does not delete the job log. You cannot recover artifacts after deletion.
+
+To delete the job log along with its artifacts, use the [erase a job](jobs.md#erase-a-job) API endpoint.
 
 Prerequisites:
 

@@ -13,8 +13,12 @@ module API
       aws_s3_configuration: :aws,
       s3_compatible_configuration: :s3_compatible,
       gcs_configuration: :gcs,
-      gcs_hmac_configuration: :gcs_hmac
+      gcs_hmac_configuration: :gcs_hmac,
+      gcs_adc_configuration: :gcs_application_default
     }.freeze
+
+    ADC_DOCS_URL = 'https://docs.gitlab.com/administration/settings/import_and_export_settings/' \
+      '#allow-application-default-credentials-for-offline-transfer'
 
     helpers do
       params :object_storage_configuration_params do
@@ -49,6 +53,13 @@ module API
           optional :path_style, type: Boolean, default: true,
             desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
         end
+        optional :gcs_adc_configuration, type: Hash,
+          desc: 'Google Cloud Storage configuration using Application Default Credentials. ' \
+            'Available on GitLab Self-Managed or GitLab Dedicated, and must be enabled by an administrator. ' \
+            'Only administrators can use these credentials, and the bucket name must start with ' \
+            "\"gitlab-offline-transfer-\". For more information, see #{ADC_DOCS_URL}" do
+          requires :google_project, type: String, desc: 'Google Cloud project ID'
+        end
         exactly_one_of(*OBJECT_STORAGE_PROVIDERS.keys)
       end
 
@@ -81,10 +92,12 @@ module API
     resource :offline_exports do
       before do
         not_found! unless Feature.enabled?(:offline_transfer_exports, current_user)
+        not_found! unless Gitlab::CurrentSettings.offline_transfer_exports_enabled
       end
 
       desc 'Start a new offline transfer export' do
-        detail 'Initiates a new offline transfer export'
+        detail 'Initiates a new offline transfer export. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         tags ['offline_transfers']
       end
       params do
@@ -119,7 +132,8 @@ module API
       end
 
       desc 'List all offline transfer exports' do
-        detail 'Lists all offline transfer exports'
+        detail 'Lists all offline transfer exports. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         tags ['offline_transfers']
       end
       params do
@@ -135,7 +149,8 @@ module API
       end
 
       desc 'Get offline transfer export details' do
-        detail 'Retrieves details of an offline transfer export'
+        detail 'Retrieves details of an offline transfer export. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         tags ['offline_transfers']
       end
       params do
@@ -148,8 +163,14 @@ module API
     end
 
     resource :offline_imports do
+      before do
+        not_found! unless Feature.enabled?(:offline_transfer_imports, current_user)
+        not_found! unless Gitlab::CurrentSettings.offline_transfer_imports_enabled
+      end
+
       desc 'Start a new offline transfer import' do
-        detail 'Initiates a new offline transfer import from object storage'
+        detail 'Initiates a new offline transfer import from object storage. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         success code: 201, model: Entities::BulkImport
         failure [
           { code: 400, message: 'Bad request' },
@@ -173,8 +194,6 @@ module API
       end
       route_setting :authorization, permissions: :create_offline_import, boundary_type: :instance
       post do
-        not_found! unless Feature.enabled?(:offline_transfer_imports, current_user)
-
         check_rate_limit!(:offline_import, scope: current_user)
 
         provider, credentials = object_storage_provider_and_credentials

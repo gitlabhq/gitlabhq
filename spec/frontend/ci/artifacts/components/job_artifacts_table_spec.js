@@ -77,8 +77,9 @@ describe('JobArtifactsTable component', () => {
 
   const findDownloadButton = () => wrapper.findByTestId('job-artifacts-download-button');
   const findBrowseButton = () => wrapper.findByTestId('job-artifacts-browse-button');
-  const findDeleteButton = () => wrapper.findByTestId('job-artifacts-delete-button');
-  const findArtifactDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('job-artifacts-delete-button');
+  const findArtifactDeleteButton = () =>
+    wrapper.findComponentByTestId('job-artifact-row-delete-button');
 
   // first checkbox is the "select all" checkbox in the table header
   const findSelectAllCheckbox = () => wrapper.findComponent(GlFormCheckbox);
@@ -567,14 +568,14 @@ describe('JobArtifactsTable component', () => {
 
       expect(findBulkDeleteContainer().exists()).toBe(true);
 
-      await findBulkDelete().vm.$emit('clearSelectedArtifacts');
+      await findBulkDelete().vm.$emit('clear-selected-artifacts');
 
       expect(findBulkDeleteContainer().exists()).toBe(false);
     });
 
     it('shows a modal to confirm bulk delete', async () => {
       findJobCheckbox().vm.$emit('change', true);
-      findBulkDelete().vm.$emit('showBulkDeleteModal');
+      findBulkDelete().vm.$emit('show-bulk-delete-modal');
 
       await nextTick();
 
@@ -583,7 +584,7 @@ describe('JobArtifactsTable component', () => {
 
     it('deletes the selected artifacts and shows a toast', async () => {
       findJobCheckbox().vm.$emit('change', true);
-      findBulkDelete().vm.$emit('showBulkDeleteModal');
+      findBulkDelete().vm.$emit('show-bulk-delete-modal');
       findBulkDeleteModal().vm.$emit('primary');
 
       expect(bulkDestroyMutationHandler).toHaveBeenCalledWith({
@@ -600,7 +601,7 @@ describe('JobArtifactsTable component', () => {
 
     it('clears selected artifacts on success', async () => {
       findJobCheckbox().vm.$emit('change', true);
-      findBulkDelete().vm.$emit('showBulkDeleteModal');
+      findBulkDelete().vm.$emit('show-bulk-delete-modal');
       findBulkDeleteModal().vm.$emit('primary');
 
       await waitForPromises();
@@ -681,7 +682,7 @@ describe('JobArtifactsTable component', () => {
           await nextTick();
 
           // mock the selection of an artifact on another page by emitting a select event
-          findDetailsInRow(1).vm.$emit('selectArtifact', otherPageArtifact, true);
+          findDetailsInRow(1).vm.$emit('select-artifact', otherPageArtifact, true);
         });
 
         it('is not checked even though an artifact is selected', () => {
@@ -822,7 +823,7 @@ describe('JobArtifactsTable component', () => {
       await waitForPromises();
 
       findJobCheckbox().vm.$emit('change', true);
-      findBulkDelete().vm.$emit('showBulkDeleteModal');
+      findBulkDelete().vm.$emit('show-bulk-delete-modal');
       findBulkDeleteModal().vm.$emit('primary');
 
       await waitForPromises();

@@ -1141,6 +1141,65 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
     end
   end
 
+  describe 'Result#ip_addresses' do
+    let(:hostname) { 'example.test' }
+    let(:public_ips) { ['198.51.100.1', '198.51.100.2'] }
+
+    def stub_getaddrinfo(*ips)
+      addrs = ips.map { |ip| Addrinfo.tcp(ip, 80) }
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with(hostname, anything, anything, :STREAM, any_args)
+        .and_return(addrs)
+    end
+
+    def validate(url = "http://#{hostname}", **opts)
+      described_class.validate_url_with_proxy!(
+        url,
+        schemes: %w[http https],
+        allow_local_network: true,
+        allow_localhost: true,
+        **opts
+      )
+    end
+
+    it 'exposes the full resolved set on the validated path' do
+      stub_getaddrinfo(*public_ips)
+
+      expect(validate.ip_addresses).to eq(public_ips)
+    end
+
+    it 'is nil when the domain matches outbound_local_requests_allowlist' do
+      stub_getaddrinfo(*public_ips)
+
+      expect(validate(outbound_local_requests_allowlist: [hostname]).ip_addresses).to be_nil
+    end
+
+    it 'is nil when the resolved IP matches outbound_local_requests_allowlist' do
+      stub_getaddrinfo('198.51.100.1')
+
+      expect(validate(outbound_local_requests_allowlist: ['198.51.100.1']).ip_addresses).to be_nil
+    end
+
+    it 'is nil when the URI is in extra_allowed_uris' do
+      stub_getaddrinfo(*public_ips)
+
+      expect(validate(extra_allowed_uris: [URI("http://#{hostname}")]).ip_addresses).to be_nil
+    end
+
+    it 'blocks a non-allowlisted host that co-resolves to loopback (SSRF)' do
+      stub_getaddrinfo('198.51.100.1', '127.0.0.1')
+
+      expect { validate(allow_localhost: false) }.to raise_error(described_class::BlockedUrlError)
+    end
+
+    it 'is nil when dns_rebind_protection is disabled so the OS keeps selecting addresses' do
+      stub_getaddrinfo(*public_ips)
+
+      expect(validate(dns_rebind_protection: false).ip_addresses).to be_nil
+    end
+  end
+
   describe '#validate_hostname' do
     let(:ip_addresses) do
       [

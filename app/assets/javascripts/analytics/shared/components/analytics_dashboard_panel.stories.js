@@ -136,3 +136,70 @@ WithViews.args = {
     { text: 'Monthly', visualization: monthlyVisualization },
   ],
 };
+
+// A visualization component that defines panel actions by emitting the
+// `set-actions` event, which the panel forwards to its `setActions` method.
+const VisualizationWithActions = {
+  name: 'VisualizationWithActions',
+  props: {
+    data: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
+  emits: ['set-actions'],
+  mounted() {
+    this.$emit('set-actions', [
+      { text: 'Open GitLab.com', href: 'https://gitlab.com', icon: 'external-link' },
+      { text: 'Reload page', action: () => window.location.reload(), icon: 'retry' },
+    ]);
+  },
+  template: `<div class="gl-text-subtle">Visualization providing panel actions</div>`,
+};
+
+// Simulates the generic visualization component defining panel actions.
+// The data source must return non-empty data, otherwise the panel renders
+// its empty state and the visualization (which emits the actions) never mounts.
+const PanelWithActions = {
+  name: 'PanelWithActions',
+  extends: AnalyticsDashboardPanel,
+  components: { VisualizationWithActions },
+  methods: {
+    async importDataSourceModule(dataType) {
+      return async () => dataByType[dataType];
+    },
+  },
+};
+
+const actionsVisualization = {
+  slug: 'visualization_with_actions',
+  type: 'VisualizationWithActions',
+  data: { type: 'code_suggestions_weekly', query: {} },
+  options: {},
+};
+
+const ActionsTemplate = (args, { argTypes }) => ({
+  components: { PanelWithActions },
+  provide: {
+    namespaceId: '1',
+    namespaceFullPath: 'gitlab-org/gitlab',
+    namespaceName: 'GitLab',
+    isProject: true,
+    dataSourceClickhouse: false,
+    overviewCountsAggregationEnabled: true,
+    glAbilities: {},
+    glLicensedFeatures: {},
+  },
+  props: Object.keys(argTypes),
+  template: `
+    <div class="gl-h-48">
+      <panel-with-actions v-bind="$props" />
+    </div>`,
+});
+
+export const WithActions = ActionsTemplate.bind({});
+WithActions.args = {
+  title: 'Code Suggestions',
+  visualization: actionsVisualization,
+};

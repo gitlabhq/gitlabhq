@@ -25,7 +25,7 @@ export default {
       required: false,
     },
   },
-  emits: ['deleted', 'toggledPaused'],
+  emits: ['deleted', 'toggled-paused'],
   data() {
     return {
       isDeleting: false,
@@ -145,7 +145,7 @@ export default {
           }
 
           if (updatedCount) {
-            this.$emit('toggledPaused', {
+            this.$emit('toggled-paused', {
               message: this.toastPausedConfirmationMessage(paused, updatedCount),
             });
           }

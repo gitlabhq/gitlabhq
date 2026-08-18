@@ -293,6 +293,10 @@ For more information, see
 
 You can configure GitLab to use the hosted AI Gateway on AWS.
 
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
+
 1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, for installations that use the Linux package, run:
 
    ```shell
@@ -302,13 +306,13 @@ You can configure GitLab to use the hosted AI Gateway on AWS.
 1. To view the currently assigned service URL, run:
 
    ```ruby
-   Ai::Setting.instance.ai_gateway_url
+   ApplicationSetting.current.ai_gateway_url
    ```
 
 1. To update the service URL, run:
 
    ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: "https://cloud.gitlab.com/aws/ai")
+   ApplicationSetting.current.update!(ai_gateway_url: "https://cloud.gitlab.com/aws/ai")
    ```
 
 ## Turn off GitLab Duo with Amazon Q
@@ -370,7 +374,16 @@ You might also encounter the following issue.
 
 ### GitLab instance UUID mismatch
 
-You might encounter a `GitLab instance UUID mismatch` error when disconnecting Amazon Q. This issue typically occurs when:
+You might encounter a `GitLab instance UUID mismatch` error when you disconnect Amazon Q,
+or a `Cannot obtain OIDC token` error when you run a health check.
+For example:
+
+```plaintext
+Authentication with the AI gateway services failed: AI Gateway returned code 500: {"detail":"Cannot obtain OIDC token"}
+Amazon Q connectivity check failed: Cannot obtain OIDC token
+```
+
+These errors typically occur when:
 
 - The GitLab instance has been restored from a backup.
 - The GitLab instance has been migrated to new infrastructure.

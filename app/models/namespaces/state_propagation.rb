@@ -17,5 +17,12 @@ module Namespaces
     scope :pending, -> { status_pending }
     scope :processing, -> { status_processing }
     scope :order_by_created_at_asc, -> { order(created_at: :asc) }
+    scope :for_namespace_and_target, ->(namespace_id, target_state) do
+      where(namespace_id: namespace_id, target_state: target_state)
+    end
+
+    def self.next_pending_for(namespace_id, target_state)
+      pending.for_namespace_and_target(namespace_id, target_state).first
+    end
   end
 end

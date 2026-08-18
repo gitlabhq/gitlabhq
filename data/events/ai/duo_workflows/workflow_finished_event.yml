@@ -1,0 +1,7 @@
+---
+event: Ai::DuoWorkflows::WorkflowFinishedEvent
+description: Published when a Duo workflow transitions to :finished (the agent
+  completed successfully). Only emitted for messaging-triggered workflows. Deferred
+  via run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

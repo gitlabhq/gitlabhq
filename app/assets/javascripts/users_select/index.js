@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-shadow, no-self-compare, no-unused-expressions, camelcase, no-param-reassign */
+/* eslint-disable func-names, consistent-return, no-shadow, no-self-compare, no-unused-expressions, camelcase */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -12,6 +12,7 @@ import { fixTitle, dispose } from '~/tooltips';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean, spriteIcon } from '~/lib/utils/common_utils';
 import { s__, __, sprintf } from '~/locale';
+import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import { getAjaxUsersSelectParams } from './utils';
 
 // TODO: remove eventHub hack after code splitting refactor
@@ -21,7 +22,7 @@ function UsersSelect(currentUser, els, options = {}) {
   const elsClassName = els?.toString().match('.(.+$)')[1];
   const $els = $(els || '.js-user-search');
   this.users = this.users.bind(this);
-  this.usersPath = '/-/autocomplete/users.json';
+  this.usersPath = autocompleteUsersPath({ format: 'json' });
   if (currentUser != null) {
     if (typeof currentUser === 'object') {
       this.currentUser = currentUser;
@@ -659,7 +660,7 @@ function UsersSelect(currentUser, els, options = {}) {
 // Return users list. Filtered by query
 // Only active users retrieved
 UsersSelect.prototype.users = function (query, options, callback) {
-  const url = this.buildUrl(this.usersPath);
+  const url = this.usersPath;
   const params = {
     search: query,
     active: true,
@@ -686,13 +687,6 @@ UsersSelect.prototype.users = function (query, options, callback) {
   return axios.get(url, { params }).then(({ data }) => {
     callback(data);
   });
-};
-
-UsersSelect.prototype.buildUrl = function (url) {
-  if (gon.relative_url_root != null) {
-    url = gon.relative_url_root.replace(/\/$/, '') + url;
-  }
-  return url;
 };
 
 // eslint-disable-next-line max-params

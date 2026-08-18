@@ -32,7 +32,8 @@ GET /user/keys
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/keys"
 ```
 
@@ -74,7 +75,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1/keys"
 ```
 
@@ -99,7 +101,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/keys/1"
 ```
 
@@ -133,8 +136,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/users/1/keys/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/1/keys/1"
 ```
 
 Example response:
@@ -150,12 +154,6 @@ Example response:
 ```
 
 ## Add an SSH key
-
-{{< history >}}
-
-- The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
-
-{{< /history >}}
 
 Adds an SSH key for your user account.
 
@@ -174,7 +172,7 @@ Supported attributes:
 | `title`      | string | yes      | Title for key |
 | `key`        | string | yes      | Public key value |
 | `expires_at` | string | no       | Expiration date of the key in ISO format (`YYYY-MM-DD`). |
-| `usage_type` | string | no       | Usage scope for the key. Possible values: `auth`, `signing` or `auth_and_signing`. Default value: `auth_and_signing` |
+| `usage_type` | string | no       | Usage scope for the key. Possible values: `auth`, `signing`, or `auth_and_signing`. Default value: `auth_and_signing` |
 
 Returns either:
 
@@ -207,12 +205,6 @@ Example response:
 
 ## Add an SSH key for a user
 
-{{< history >}}
-
-- The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
-
-{{< /history >}}
-
 Adds an SSH key for a specified user account.
 
 > [!note]
@@ -234,7 +226,7 @@ Supported attributes:
 | `title`      | string  | yes      | Title for key |
 | `key`        | string  | yes      | Public key value  |
 | `expires_at` | string  | no       | Expiration date of the key in ISO format (`YYYY-MM-DD`). |
-| `usage_type` | string  | no       | Usage scope for the key. Possible values: `auth`, `signing` or `auth_and_signing`. Default value: `auth_and_signing` |
+| `usage_type` | string  | no       | Usage scope for the key. Possible values: `auth`, `signing`, or `auth_and_signing`. Default value: `auth_and_signing` |
 
 Returns either:
 
@@ -322,7 +314,8 @@ GET /user/gpg_keys
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
@@ -355,7 +348,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
@@ -392,7 +386,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
@@ -424,7 +419,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/2/gpg_keys/1"
 ```
 
@@ -461,8 +457,10 @@ Example request:
 ```shell
 export KEY="$(gpg --armor --export <your_gpg_key_id>)"
 
-curl --data-urlencode "key=<PGP_PUBLIC_KEY_BLOCK>" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "key=<PGP_PUBLIC_KEY_BLOCK>" \
+  --url "https://gitlab.example.com/api/v4/user/gpg_keys"
 ```
 
 Example response:
@@ -499,8 +497,10 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --data-urlencode "key=<PGP_PUBLIC_KEY_BLOCK>" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/2/gpg_keys"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "key=<PGP_PUBLIC_KEY_BLOCK>" \
+  --url "https://gitlab.example.com/api/v4/users/2/gpg_keys"
 ```
 
 Example response:

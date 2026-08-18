@@ -20,7 +20,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       end
 
       it 'returns false' do
-        expect(recipient.notifiable?).to eq false
+        expect(recipient.notifiable?).to be false
       end
     end
 
@@ -28,13 +28,13 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       it 'returns false if group disabled' do
         expect(project.namespace).to receive(:emails_enabled?).and_return(false)
         expect(recipient).to receive(:emails_disabled?).and_call_original
-        expect(recipient.notifiable?).to eq false
+        expect(recipient.notifiable?).to be false
       end
 
       it 'returns false if project disabled' do
         expect(project).to receive(:emails_disabled?).and_return(true)
         expect(recipient).to receive(:emails_disabled?).and_call_original
-        expect(recipient.notifiable?).to eq false
+        expect(recipient.notifiable?).to be false
       end
     end
 
@@ -42,38 +42,44 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       it 'returns true if group enabled' do
         expect(project.namespace).to receive(:emails_enabled?).and_return(true)
         expect(recipient).to receive(:emails_disabled?).and_call_original
-        expect(recipient.notifiable?).to eq true
+        expect(recipient.notifiable?).to be true
       end
 
       it 'returns true if project enabled' do
         expect(project).to receive(:emails_disabled?).and_return(false)
         expect(recipient).to receive(:emails_disabled?).and_call_original
-        expect(recipient.notifiable?).to eq true
+        expect(recipient.notifiable?).to be true
       end
     end
 
     context 'when recipient email is blocked', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:temporary_email_failure).and_return(1)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:permanent_email_failure).and_return(1)
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!).and_return(true)
       end
 
       context 'with permanent failures' do
         before do
+          allow(Gitlab::ApplicationRateLimiter::LabkitAdapter)
+            .to receive(:run!).with(:permanent_email_failure, any_args).and_return(false, true)
+
           2.times { Gitlab::ApplicationRateLimiter.throttled?(:permanent_email_failure, scope: user.email) }
         end
 
         it 'returns false' do
-          expect(recipient.notifiable?).to eq(false)
+          expect(recipient.notifiable?).to be(false)
         end
       end
 
       context 'with temporary failures' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter::LabkitAdapter)
+            .to receive(:run!).with(:temporary_email_failure, any_args).and_return(false, true)
+        end
+
         it 'returns false' do
           2.times { Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: user.email) }
 
-          expect(recipient.notifiable?).to eq(false)
+          expect(recipient.notifiable?).to be(false)
         end
       end
     end
@@ -93,7 +99,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       end
 
       it 'returns false' do
-        expect(recipient.has_access?).to eq false
+        expect(recipient.has_access?).to be false
       end
     end
 
@@ -103,7 +109,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       it 'returns false' do
         expect(user).to receive(:can?).with(:read_project, project).and_return(false)
         expect(user).not_to receive(:can?).with(:read_cross_project)
-        expect(recipient.has_access?).to eq false
+        expect(recipient.has_access?).to be false
       end
     end
 
@@ -112,7 +118,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
       it 'returns false' do
         expect(user).to receive(:can?).with(:read_build, target).and_return(false)
-        expect(recipient.has_access?).to eq false
+        expect(recipient.has_access?).to be false
       end
     end
 
@@ -121,7 +127,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
       it 'returns false' do
         expect(user).to receive(:can?).with(:read_commit, target).and_return(false)
-        expect(recipient.has_access?).to eq false
+        expect(recipient.has_access?).to be false
       end
     end
 
@@ -129,7 +135,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       let(:target) { double.as_null_object }
 
       it 'returns true' do
-        expect(recipient.has_access?).to eq true
+        expect(recipient.has_access?).to be true
       end
     end
   end
@@ -234,13 +240,13 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
         let(:recipient) { described_class.new(user, :mention, target: target, project: project) }
 
         it 'returns true' do
-          expect(recipient.suitable_notification_level?).to eq true
+          expect(recipient.suitable_notification_level?).to be true
         end
       end
 
       context 'when type is not mention' do
         it 'returns false' do
-          expect(recipient.suitable_notification_level?).to eq false
+          expect(recipient.suitable_notification_level?).to be false
         end
       end
     end
@@ -252,7 +258,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
         let(:recipient) { described_class.new(user, :participating, target: target, project: project) }
 
         it 'returns true' do
-          expect(recipient.suitable_notification_level?).to eq true
+          expect(recipient.suitable_notification_level?).to be true
         end
       end
 
@@ -260,7 +266,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
         let(:recipient) { described_class.new(user, :mention, target: target, project: project) }
 
         it 'returns true' do
-          expect(recipient.suitable_notification_level?).to eq true
+          expect(recipient.suitable_notification_level?).to be true
         end
       end
 
@@ -277,7 +283,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -293,7 +299,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -309,7 +315,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns false' do
-            expect(recipient.suitable_notification_level?).to eq false
+            expect(recipient.suitable_notification_level?).to be false
           end
         end
       end
@@ -338,7 +344,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -348,7 +354,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
       end
@@ -371,7 +377,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -381,7 +387,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns false' do
-            expect(recipient.suitable_notification_level?).to eq false
+            expect(recipient.suitable_notification_level?).to be false
           end
         end
       end
@@ -403,7 +409,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
         end
 
         it 'returns true because mentions always notify' do
-          expect(recipient.suitable_notification_level?).to eq true
+          expect(recipient.suitable_notification_level?).to be true
         end
       end
 
@@ -425,7 +431,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -435,7 +441,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
       end
@@ -458,7 +464,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -468,7 +474,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns false' do
-            expect(recipient.suitable_notification_level?).to eq false
+            expect(recipient.suitable_notification_level?).to be false
           end
         end
 
@@ -488,7 +494,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -510,7 +516,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
             end
 
             it 'returns true' do
-              expect(recipient.suitable_notification_level?).to eq true
+              expect(recipient.suitable_notification_level?).to be true
             end
           end
 
@@ -520,7 +526,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
             end
 
             it 'returns false' do
-              expect(recipient.suitable_notification_level?).to eq false
+              expect(recipient.suitable_notification_level?).to be false
             end
           end
         end
@@ -535,7 +541,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       context 'when type is watch' do
         context 'without excluded watcher events' do
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -545,7 +551,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns false' do
-            expect(recipient.suitable_notification_level?).to eq false
+            expect(recipient.suitable_notification_level?).to be false
           end
         end
 
@@ -555,7 +561,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns false since plain watchers remain excluded' do
-            expect(recipient.suitable_notification_level?).to eq false
+            expect(recipient.suitable_notification_level?).to be false
           end
         end
 
@@ -565,7 +571,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true since mentions override the watcher exclusion' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
       end
@@ -575,7 +581,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           let(:recipient) { described_class.new(user, :participating, target: target, project: project) }
 
           it 'returns true' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -585,7 +591,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true because participants trump the watcher exclusion' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
 
@@ -597,7 +603,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           end
 
           it 'returns true so MR participants are notified of pushes' do
-            expect(recipient.suitable_notification_level?).to eq true
+            expect(recipient.suitable_notification_level?).to be true
           end
         end
       end

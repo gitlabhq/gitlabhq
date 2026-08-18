@@ -52,6 +52,14 @@
     "lock_pypi_package_requests_forwarding": {
       "type": "boolean",
       "description": "Enforce PyPI package forwarding for all subgroups"
+    },
+    "rubygems_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enables or disables RubyGems package forwarding for the instance"
+    },
+    "lock_rubygems_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enforce RubyGems package forwarding for all subgroups"
     }
   },
   "additionalProperties": false

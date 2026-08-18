@@ -22,7 +22,7 @@ module Terraform
       end
 
       def execute
-        unless can?(current_user, :admin_terraform_state, protection_rule.project)
+        unless can?(current_user, :update_terraform_state_protection_rule, protection_rule.project)
           return service_response_error(
             message: _('Unauthorized to update a Terraform state protection rule')
           )

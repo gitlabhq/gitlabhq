@@ -47,7 +47,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
       context 'when there are multiple batches' do
         before do
           stub_application_setting(relation_export_batch_size: 1)
-          create_list(:group_label, 10, group: portable)
+          create_list(:group_label, 2, group: portable)
         end
 
         it 'creates a batch record for each batch of records' do
@@ -55,7 +55,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
 
           export = portable.bulk_import_exports.first
 
-          expect(export.batches.count).to eq(11)
+          expect(export.batches.count).to eq(3)
         end
 
         it 'caches the batch size for the export' do
@@ -68,7 +68,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
           described_class.new(user, portable, relation, jid).execute
           export = portable.bulk_import_exports.first
 
-          expect(export.batches.count).to eq(11)
+          expect(export.batches.count).to eq(3)
         end
       end
 
@@ -234,29 +234,19 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
       expect(export.batches.count).to eq(1)
     end
 
-    it 'corrects total_objects_count and batches_count to what was actually enqueued', :aggregate_failures do
-      # The upfront count sees 3 notes (batches_count would be 3 at batch size 1), but
-      # stub the walk to enqueue only one batch, e.g. the other notes' commits are no
-      # longer reachable from refs.
-      stub_application_setting(relation_export_batch_size: 1)
-      create_list(:note_on_commit, 2, project: project, commit_id: commit_sha)
+    it 'enqueues FinishBatchedRelationExportWorker' do
+      expect(BulkImports::FinishBatchedRelationExportWorker).to receive(:perform_async)
 
-      allow_next_instance_of(::Import::Export::Project::CommitNotesBatcher) do |batcher|
-        allow(batcher).to receive(:each_commit_note_id_batch).and_yield([commit_note.id])
-      end
+      service.execute
+    end
+
+    it 'does not walk the repository when the pagination succeeds' do
+      expect(::Import::Export::Project::CommitNotesBatcher).not_to receive(:new)
 
       service.execute
 
       export = project.bulk_import_exports.first
       expect(export.total_objects_count).to eq(1)
-      expect(export.batches_count).to eq(1)
-      expect(export.batches.count).to eq(1)
-    end
-
-    it 'enqueues FinishBatchedRelationExportWorker' do
-      expect(BulkImports::FinishBatchedRelationExportWorker).to receive(:perform_async)
-
-      service.execute
     end
 
     context 'when there are more commit notes than the batch size' do
@@ -281,25 +271,108 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
       end
     end
 
-    context 'with the commit notes batch size' do
-      let(:default_batch_size) { ::Import::Export::Project::CommitNotesBatcher::DEFAULT_BATCH_SIZE }
+    context 'when the notes-table pagination times out' do
+      before do
+        timing_out_relation = project.commit_notes
+        allow(timing_out_relation).to receive(:in_batches).and_raise(ActiveRecord::QueryCanceled)
 
-      it 'uses relation_export_batch_size when it exceeds the batcher default' do
-        stub_application_setting(relation_export_batch_size: default_batch_size + 50)
-
-        expect(::Import::Export::Project::CommitNotesBatcher)
-          .to receive(:new).with(project, batch_size: default_batch_size + 50).and_call_original
-
-        service.execute
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:resolved_relation).and_return(timing_out_relation)
+        end
       end
 
-      it 'uses the batcher default when it exceeds relation_export_batch_size' do
-        stub_application_setting(relation_export_batch_size: default_batch_size - 50)
+      it 'logs the fallback, walks the repository, and enqueues the note batches' do
+        expect(::Import::Export::Project::CommitNotesBatcher).to receive(:new).and_call_original
+        expect(BulkImports::RelationBatchExportWorker).to receive(:perform_async).at_least(:once)
+        expect(Gitlab::Export::Logger).to receive(:warn).with(
+          hash_including(message: a_string_matching(/falling back to git repository walk/))
+        )
 
-        expect(::Import::Export::Project::CommitNotesBatcher)
-          .to receive(:new)
-          .with(project, batch_size: default_batch_size)
-          .and_call_original
+        service.execute
+
+        export = project.bulk_import_exports.first
+        cached_ids = export.batches.flat_map do |batch|
+          Gitlab::Cache::Import::Caching.values_from_set(described_class.cache_key(export.id, batch.id))
+        end
+        expect(cached_ids).to contain_exactly(commit_note.id.to_s)
+      end
+
+      it 'corrects total_objects_count and batches_count to what the repo walk enqueued', :aggregate_failures do
+        # The upfront count sees 3 notes (batches_count would be 3 at batch size 1), but
+        # stub the walk to enqueue only one batch, e.g. the other notes' commits are no
+        # longer reachable from refs.
+        create_list(:note_on_commit, 2, project: project, commit_id: commit_sha)
+
+        allow_next_instance_of(::Import::Export::Project::CommitNotesBatcher) do |batcher|
+          allow(batcher).to receive(:each_commit_note_id_batch).and_yield([commit_note.id])
+        end
+
+        service.execute
+
+        export = project.bulk_import_exports.first
+        expect(export.total_objects_count).to eq(1)
+        expect(export.batches_count).to eq(1)
+        expect(export.batches.count).to eq(1)
+      end
+
+      context 'with the commit notes batch size' do
+        let(:default_batch_size) { ::Import::Export::Project::CommitNotesBatcher::DEFAULT_BATCH_SIZE }
+
+        it 'uses relation_export_batch_size when it exceeds the batcher default' do
+          stub_application_setting(relation_export_batch_size: default_batch_size + 50)
+
+          expect(::Import::Export::Project::CommitNotesBatcher)
+            .to receive(:new).with(project, batch_size: default_batch_size + 50).and_call_original
+
+          service.execute
+        end
+
+        it 'uses the batcher default when it exceeds relation_export_batch_size' do
+          stub_application_setting(relation_export_batch_size: default_batch_size - 50)
+
+          expect(::Import::Export::Project::CommitNotesBatcher)
+            .to receive(:new)
+            .with(project, batch_size: default_batch_size)
+            .and_call_original
+
+          service.execute
+        end
+      end
+    end
+
+    context 'when the pagination creates a batch and then times out' do
+      # in_batches yields one (bogus) batch, then times out before enqueueing.
+      before do
+        timing_out_relation = project.commit_notes
+        allow(timing_out_relation).to receive(:in_batches) do |&block|
+          block.call(instance_double(ActiveRecord::Relation, pluck: [-1], model: Note))
+          raise ActiveRecord::QueryCanceled
+        end
+
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:resolved_relation).and_return(timing_out_relation)
+        end
+      end
+
+      it 'discards the pre-timeout batch and its cached IDs before the repo walk', :aggregate_failures do
+        service.execute
+
+        export = project.bulk_import_exports.first
+        expect(export.batches.count).to eq(1)
+
+        cached_ids = export.batches.flat_map do |batch|
+          Gitlab::Cache::Import::Caching.values_from_set(described_class.cache_key(export.id, batch.id))
+        end
+        # The stale "-1" batch was discarded; only the repo-walk note ID remains.
+        expect(cached_ids).to contain_exactly(commit_note.id.to_s)
+        expect(export.total_objects_count).to eq(1)
+        expect(export.batches_count).to eq(1)
+      end
+
+      it 'does not enqueue a worker for the discarded batch' do
+        # Only the repo-walk batch is enqueued; the pre-timeout batch never was,
+        # because workers are enqueued only after all batches are created.
+        expect(BulkImports::RelationBatchExportWorker).to receive(:perform_async).once
 
         service.execute
       end
@@ -318,18 +391,6 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
         export = empty_notes_project.bulk_import_exports.first
         expect(export.finished?).to be(true)
         expect(export.batches.count).to eq(0)
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(commit_notes_export_via_repo: false)
-      end
-
-      it 'falls back to the default notes batching path' do
-        expect(::Import::Export::Project::CommitNotesBatcher).not_to receive(:new)
-
-        service.execute
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_planning do
+RSpec.describe 'Work items > Labels bulk assignment', feature_category: :planning_views do
   include ListboxHelpers
 
   let(:user)      { create(:user) }
@@ -20,8 +20,6 @@ RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_pl
   context 'as an allowed user', :js do
     before do
       project.add_maintainer(user)
-
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in user
     end
 

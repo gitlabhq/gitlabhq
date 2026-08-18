@@ -11,7 +11,6 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
   let(:group_invite) { group.group_members.invite.last }
 
   before do
-    stub_feature_flags(subscription_sm_unification: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
     project.add_maintainer(owner)
     group.add_owner(owner)

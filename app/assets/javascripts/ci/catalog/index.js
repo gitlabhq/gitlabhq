@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
 import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
+import { exploreCatalogIndexPath } from '~/lib/utils/path_helpers/explore';
 
 import GlobalCatalog from './global_catalog.vue';
 import CiResourcesPage from './components/pages/ci_resources_page.vue';
@@ -16,8 +18,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
     return null;
   }
 
-  const { dataset } = el;
-  const { ciCatalogPath, reportAbusePath, legalDisclaimer } = dataset;
+  const { reportAbusePath, legalDisclaimer } = el.dataset;
 
   Vue.use(VueApollo);
 
@@ -25,22 +26,19 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
     defaultClient: createDefaultClient(resolvers, { cacheConfig, typeDefs }),
   });
 
-  const router = createRouter(ciCatalogPath, CiResourcesPage);
+  const router = createRouter(exploreCatalogIndexPath(), CiResourcesPage);
 
   injectVueAppBreadcrumbs(router, CiCatalogBreadcrumb);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GlobalCatalog',
     router,
     apolloProvider,
     provide: {
-      ciCatalogPath,
       reportAbusePath,
       legalDisclaimer,
     },
-    render(h) {
-      return h(GlobalCatalog);
-    },
+    component: GlobalCatalog,
   });
 };

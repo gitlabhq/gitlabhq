@@ -1,21 +1,36 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
+import { buildApiUrl } from '~/api/api_utils';
+import {
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import OfflineTransferExportApp from '~/import/offline_transfer/export/app.vue';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.vue';
+import ExportConfigTab from '~/import/offline_transfer/export/export_config_tab.vue';
+import ReviewExportTab from '~/import/offline_transfer/export/review_export_tab.vue';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { OFFLINE_EXPORT_TAB_HEADINGS } from '~/import/offline_transfer/constants';
 import {
   mockGroups,
   mockGroupsResponse,
   mockGroupsPage1Response,
   mockGroupsPage2Response,
+  emptyGroupsResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
+
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('OfflineTransferExportApp', () => {
   let wrapper;
@@ -30,9 +45,12 @@ describe('OfflineTransferExportApp', () => {
 
   const findFormStepper = () => wrapper.findComponent(FormStepper);
   const findSelectGroupsTab = () => wrapper.findComponent(SelectGroupsTab);
-  const findCompletionAlert = () => wrapper.findByTestId('completion-alert');
-  const findValidationErrorAlert = () => wrapper.findByTestId('validation-alert');
-  const findFetchErrorAlert = () => wrapper.findByTestId('fetch-error-alert');
+  const findExportConfigTab = () => wrapper.findComponent(ExportConfigTab);
+  const findReviewExportTab = () => wrapper.findComponent(ReviewExportTab);
+
+  const queryError = new Error('query failed');
+  const failingHandler = () => jest.fn().mockRejectedValue(queryError);
+  const emptyHandler = () => jest.fn().mockResolvedValue(emptyGroupsResponse);
 
   describe('passes to FormStepper', () => {
     beforeEach(() => {
@@ -50,6 +68,51 @@ describe('OfflineTransferExportApp', () => {
     it('validateStep as a function', () => {
       expect(findFormStepper().props('validateStep')).toBeInstanceOf(Function);
     });
+
+    describe('canStart', () => {
+      it('as false when the user has no groups', async () => {
+        createComponent({ handler: emptyHandler() });
+        await waitForPromises();
+
+        expect(findFormStepper().props('canStart')).toBe(false);
+      });
+
+      it('as false when there is a fetch error', async () => {
+        createComponent({ handler: failingHandler() });
+        await waitForPromises();
+
+        expect(findFormStepper().props('canStart')).toBe(false);
+      });
+
+      it('as true while a search is active, even with no matches', async () => {
+        createComponent({ handler: emptyHandler() });
+        await waitForPromises();
+        expect(findFormStepper().props('canStart')).toBe(false);
+
+        findSelectGroupsTab().vm.$emit('search', 'no match');
+        await waitForPromises();
+
+        expect(findFormStepper().props('canStart')).toBe(true);
+      });
+
+      it('as true when groups are selected, even if a later fetch fails', async () => {
+        const handler = jest
+          .fn()
+          .mockResolvedValueOnce(mockGroupsResponse)
+          .mockRejectedValue(queryError);
+        createComponent({ handler });
+        await waitForPromises();
+
+        findSelectGroupsTab().vm.$emit('toggle', mockGroups[0]);
+        await nextTick();
+
+        findSelectGroupsTab().vm.$emit('search', 'triggers a failing refetch');
+        await waitForPromises();
+        expect(findSelectGroupsTab().props('hasFetchError')).toBe(true);
+
+        expect(findFormStepper().props('canStart')).toBe(true);
+      });
+    });
   });
 
   describe('events', () => {
@@ -57,40 +120,12 @@ describe('OfflineTransferExportApp', () => {
       createComponent();
     });
 
-    it('triggers a completion alert when FormStepper emits complete', async () => {
-      expect(findCompletionAlert().exists()).toBe(false);
+    it('when `stepped-back` emitted clears previous step validation error', async () => {
+      await findFormStepper().vm.$emit('validation-failed', 1);
+      expect(findExportConfigTab().props('validationAttempted')).toBe(true);
 
-      await findFormStepper().vm.$emit('complete');
-
-      expect(findCompletionAlert().exists()).toBe(true);
-    });
-
-    // TODO delete or replace test when all steps are added
-    it('triggers a validation error alert when a step without inline errors fails', async () => {
-      expect(findValidationErrorAlert().exists()).toBe(false);
-
-      await findFormStepper().vm.$emit('validation-failed', 2);
-
-      expect(findValidationErrorAlert().exists()).toBe(true);
-    });
-
-    it('clears the shared validation error alert when that step is passed (stepped-forward)', async () => {
-      await findFormStepper().vm.$emit('validation-failed', 2);
-      expect(findValidationErrorAlert().exists()).toBe(true);
-
-      await findFormStepper().vm.$emit('stepped-forward', { previousTabIndex: 2 });
-      expect(findValidationErrorAlert().exists()).toBe(false);
-    });
-
-    it('sets the previously completed step as invalid after FormStepper emits stepped-back', async () => {
-      wrapper.vm.isStepComplete.export = true;
-      expect(findFormStepper().props('validateStep')(2)).toBe(true);
-
-      await findFormStepper().vm.$emit('stepped-back', {
-        previousTabIndex: 2,
-      });
-
-      expect(findFormStepper().props('validateStep')(2)).toBe(false);
+      await findFormStepper().vm.$emit('stepped-back', { previousTabIndex: 1 });
+      expect(findExportConfigTab().props('validationAttempted')).toBe(false);
     });
   });
 
@@ -101,7 +136,7 @@ describe('OfflineTransferExportApp', () => {
 
       expect(
         findSelectGroupsTab()
-          .props('pageGroups')
+          .props('currentPageGroups')
           .map((group) => group.id),
       ).toEqual(['gid://glab/Group/1', 'gid://glab/Group/2', 'gid://glab/Group/3']);
     });
@@ -125,11 +160,40 @@ describe('OfflineTransferExportApp', () => {
       expect(findSelectGroupsTab().props('initialLoading')).toBe(false);
     });
 
-    it('shows the fetch error alert when groups query fails', async () => {
-      createComponent({ handler: jest.fn().mockRejectedValue(new Error('query failed')) });
+    it('receives hasFetchError as false by default', () => {
+      createComponent();
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(false);
+    });
+
+    it('passes hasFetchError when the groups query fails', async () => {
+      createComponent({ handler: failingHandler() });
       await waitForPromises();
 
-      expect(findFetchErrorAlert().exists()).toBe(true);
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(true);
+    });
+
+    it('reports the error to Sentry when the groups query fails', async () => {
+      createComponent({ handler: failingHandler() });
+      await waitForPromises();
+
+      expect(captureException).toHaveBeenCalledWith(queryError);
+    });
+
+    it('re-runs the query when the tab emits retry-fetch', async () => {
+      const handler = jest
+        .fn()
+        .mockRejectedValueOnce(queryError)
+        .mockResolvedValue(mockGroupsResponse);
+      createComponent({ handler });
+      await waitForPromises();
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(true);
+
+      findSelectGroupsTab().vm.$emit('retry-fetch');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledTimes(2);
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(false);
+      expect(findSelectGroupsTab().props('currentPageGroups')).toHaveLength(3);
     });
 
     describe('selection', () => {
@@ -212,7 +276,7 @@ describe('OfflineTransferExportApp', () => {
         );
         expect(
           findSelectGroupsTab()
-            .props('pageGroups')
+            .props('currentPageGroups')
             .map((group) => group.id),
         ).toEqual(PAGE_2_IDS);
       });
@@ -333,7 +397,7 @@ describe('OfflineTransferExportApp', () => {
       });
     });
 
-    describe('validation', () => {
+    describe('form validation', () => {
       beforeEach(async () => {
         createComponent();
         await waitForPromises();
@@ -369,6 +433,199 @@ describe('OfflineTransferExportApp', () => {
         findSelectGroupsTab().vm.$emit('deselect-all');
         await nextTick();
         expect(findSelectGroupsTab().props('showSelectError')).toBe(false);
+      });
+    });
+  });
+
+  describe('Review export tab', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('passes the selected groups down to the tab', async () => {
+      findSelectGroupsTab().vm.$emit('toggle', mockGroups[0]);
+      findSelectGroupsTab().vm.$emit('toggle', mockGroups[1]);
+      await nextTick();
+
+      expect(findReviewExportTab().props('selectedGroups')).toEqual([mockGroups[0], mockGroups[1]]);
+    });
+
+    it('always passes validation since the step has no action to validate', () => {
+      expect(findFormStepper().props('validateStep')(2)).toBe(true);
+    });
+  });
+
+  describe('form submission', () => {
+    let mock;
+
+    const submitUrl = buildApiUrl('/api/:version/offline_exports');
+    const storageConfig = {
+      accessKeyId: ' access-key ',
+      secretAccessKey: 'secret-key',
+      region: 'us-east-1 ',
+      bucketName: 'my-bucket',
+      pathStyle: true,
+    };
+
+    const submitForm = async () => {
+      findFormStepper().vm.$emit('complete');
+      await waitForPromises();
+    };
+
+    beforeEach(async () => {
+      mock = new MockAdapter(axios);
+      createComponent();
+      await waitForPromises();
+
+      findSelectGroupsTab().vm.$emit('toggle', mockGroups[0]);
+      findExportConfigTab().vm.$emit('input', storageConfig);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('POSTs the correct payload', async () => {
+      mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+
+      await submitForm();
+
+      expect(JSON.parse(mock.history.post[0].data)).toEqual({
+        bucket: 'my-bucket',
+        aws_s3_configuration: {
+          aws_access_key_id: 'access-key',
+          aws_secret_access_key: 'secret-key',
+          region: 'us-east-1',
+          path_style: true,
+        },
+        entities: [{ full_path: mockGroups[0].fullPath }],
+      });
+    });
+
+    it('marks the isSubmitting as true only while the request is pending', async () => {
+      mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+
+      findFormStepper().vm.$emit('complete');
+      await nextTick();
+      expect(findFormStepper().props('isSubmitting')).toBe(true);
+
+      await waitForPromises();
+      expect(findFormStepper().props('isSubmitting')).toBe(false);
+    });
+
+    describe('when the export starts (201)', () => {
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+        await submitForm();
+      });
+
+      it('marks the submission as succeeded', () => {
+        expect(findReviewExportTab().props('hasSubmitSucceeded')).toBe(true);
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findFormStepper().props('isFormComplete')).toBe(true);
+      });
+    });
+
+    describe('when the server rejects with 422', () => {
+      const serverMessage = 'Unable to access object storage bucket.';
+
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {
+          message: serverMessage,
+        });
+        await submitForm();
+      });
+
+      it('shows the server message and blocks retry', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(serverMessage);
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(true);
+        expect(findReviewExportTab().props('hasSubmitSucceeded')).toBe(false);
+      });
+
+      it('does not report the failure to Sentry', () => {
+        expect(captureException).not.toHaveBeenCalled();
+      });
+
+      it('clears the error and unblocks retry when the user goes back', async () => {
+        await findFormStepper().vm.$emit('stepped-back', { previousTabIndex: 2 });
+
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+    });
+
+    describe('when server responds with the rate limit 429', () => {
+      const rateLimitMessage = 'This endpoint has been requested too many times. Try again later.';
+
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_TOO_MANY_REQUESTS, {
+          message: { error: rateLimitMessage },
+        });
+        await submitForm();
+      });
+
+      it('shows the server message and blocks retry', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(rateLimitMessage);
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(true);
+      });
+
+      it('does not report the failure to Sentry', () => {
+        expect(captureException).not.toHaveBeenCalled();
+      });
+
+      it('clears the error and unblocks retry when the user goes back', async () => {
+        await findFormStepper().vm.$emit('stepped-back', { previousTabIndex: 2 });
+
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+    });
+
+    describe('when the failure is unrecognized (500)', () => {
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        await submitForm();
+      });
+
+      it('shows the generic error and keeps retry available', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(
+          'Something went wrong. Try again later.',
+        );
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+
+      it('reports the failure to Sentry', () => {
+        expect(captureException).toHaveBeenCalled();
+      });
+
+      it('clears the error when a retry succeeds', async () => {
+        expect(findReviewExportTab().props('submissionError')).not.toBe('');
+
+        mock.reset();
+        mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+        await submitForm();
+
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findReviewExportTab().props('hasSubmitSucceeded')).toBe(true);
+      });
+    });
+
+    describe('when a rejection carries no readable message', () => {
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {});
+        await submitForm();
+      });
+
+      it('falls back to the generic error and keeps retry available', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(
+          'Something went wrong. Try again later.',
+        );
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+
+      it('reports the failure to Sentry', () => {
+        expect(captureException).toHaveBeenCalled();
       });
     });
   });

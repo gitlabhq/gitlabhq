@@ -119,6 +119,17 @@ module WorkItems
         resolve_all.find { |type| type.name == name_str }
       end
 
+      # Resolves a list of type names (case-insensitive) to the ids persisted in
+      # `work_item_type_id`. Converted custom types persist under their base
+      # system-defined id, so we return `persistable_id` rather than `id`. Distinct
+      # names can collapse to the same base id, so the result is de-duplicated.
+      def persistable_ids_by_names(names)
+        downcased = Array.wrap(names).filter_map { |name| name.to_s.downcase.presence }.to_set
+        return [] if downcased.empty?
+
+        resolve_all.filter_map { |type| type.persistable_id if downcased.include?(type.name.downcase) }.uniq
+      end
+
       def default_issue_type
         find_by_base_type(:issue)
       end

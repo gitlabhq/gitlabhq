@@ -27,6 +27,8 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         otp_authenticator_registration(user.reload.current_otp, user.password)
 
         expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
+        expect(find_by_testid('breadcrumb-links'))
+          .to have_link(s_('ProfilesAuthentication|Password and authentication'), href: profile_two_factor_auth_path)
 
         click_button 'Copy codes'
         click_link 'Proceed'
@@ -76,7 +78,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
 
           it 'renders alert for administrator users' do
             visit profile_two_factor_auth_path
-            expect(page).to have_content('Administrator users are required to enable Two-Factor Authentication for their account. You need to do this before ')
+            expect(page).to have_content('Administrator users are required to enable two-factor authentication (2FA) for their account. You need to do this before ')
           end
         end
       end
@@ -87,7 +89,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
 
           it 'does not render an alert for administrator users' do
             visit profile_two_factor_auth_path
-            expect(page).not_to have_content('Administrator users are required to enable Two-Factor Authentication for their account. You need to do this before ')
+            expect(page).not_to have_content('Administrator users are required to enable two-factor authentication (2FA) for their account. You need to do this before ')
           end
         end
       end
@@ -121,7 +123,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
 
             otp_authenticator_registration('123')
 
-            expect(page).to have_content('The global settings require you to enable Two-Factor Authentication for your account. You need to do this before ')
+            expect(page).to have_content('The global settings require you to enable two-factor authentication (2FA) for your account. You need to do this before ')
           end
         end
 
@@ -135,7 +137,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
             click_button 'Register with two-factor app'
 
             expect(page).to have_content(
-              'The global settings require you to enable Two-Factor Authentication for your account'
+              'The global settings require you to enable two-factor authentication (2FA) for your account'
             )
           end
         end
@@ -151,7 +153,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
 
             expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
             expect(page).to have_content(
-              'The global settings require you to enable Two-Factor Authentication for your account'
+              'The global settings require you to enable two-factor authentication (2FA) for your account'
             )
           end
         end
@@ -189,7 +191,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         expect(page).to have_content('Two-factor authentication has been disabled successfully!')
       end
 
-      it 'requires the current_password to regenerate recovery codes', :js do
+      it 'requires the current_password to regenerate recovery codes', :js, :aggregate_failures do
         visit profile_two_factor_auth_path
 
         click_button _('Regenerate recovery codes')
@@ -201,6 +203,8 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         modal_submit(user.password)
 
         expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
+        expect(find_by_testid('breadcrumb-links'))
+          .to have_link(s_('ProfilesAuthentication|Password and authentication'), href: profile_two_factor_auth_path)
       end
 
       context 'when user authenticates with an external service' do
@@ -252,6 +256,20 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
           visit profile_two_factor_auth_path
 
           expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
+        end
+
+        it 'can leave the enforcing group from the banner' do
+          visit profile_two_factor_auth_path
+          expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
+
+          click_link _('Leave group')
+
+          expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
+          expect(page).to have_content(
+            format(_('You left the "%{membershipable_human_name}" %{source_type}.'),
+              membershipable_human_name: group_require_2fa.human_name, source_type: _('group'))
+          )
+          expect(group_require_2fa).not_to have_user(user)
         end
       end
 
@@ -405,9 +423,11 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
     def expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
       visit group_path(group_name)
       expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
-      expect(page).to have_content(
-        "The group settings for #{group_name} require you to enable Two-Factor Authentication for your account"
-      )
+      expect(page).to have_content('One or more groups require you to add 2FA to your account')
+      find('summary', text: _('Review and leave groups')).click
+      within_testid('two-factor-groups-notification') do
+        expect(page).to have_link(group_name)
+      end
     end
   end
 end

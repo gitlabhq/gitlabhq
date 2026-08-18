@@ -37,13 +37,8 @@ describe('DeleteModal', () => {
         ...propsData,
       },
       stubs: {
-        DeleteModalSecretsCount,
+        SecretsCount: stubComponent(DeleteModalSecretsCount),
         GlModal: stubComponent(GlModal),
-      },
-      mocks: {
-        $apollo: {
-          queries: { secretsCount: { loading: false } },
-        },
       },
     });
   };

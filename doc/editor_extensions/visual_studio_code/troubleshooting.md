@@ -20,14 +20,12 @@ provide logs that can help you troubleshoot.
 To enable debug logging:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
 1. Select **Extensions** > **GitLab** > **Other**.
 1. Under **GitLab: Debug**, select the checkbox to turn on debug mode.
 1. Reload the window to restart the extension.
-   1. Open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   1. In VS Code, select **View** > **Command Palette**.
    1. Type `Developer: Reload Window` and press <kbd>Enter</kbd>.
 
 ### View debug logs
@@ -73,7 +71,7 @@ To work around this error on macOS:
 
 1. On your machine, open **Keychain Access**, and search for `vscodegitlab.gitlab-workflow`.
 1. Delete `vscodegitlab.gitlab-workflow` from your keychain.
-1. Press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open the Command Palette.
+1. In VS Code, select **View** > **Command Palette**.
 1. Type `GitLab: Remove Account from VS Code` and press <kbd>Enter</kbd> to remove the
    corrupted account from VS Code.
 1. Open the Command Palette again and run `GitLab: Authenticate` to add the account again.
@@ -91,7 +89,7 @@ If you use a version of VS Code earlier than 1.68.0, try one of these workaround
   1. Install VS Code from the [`.deb` package](https://code.visualstudio.com/Download).
   1. Go to Ubuntu's **Password & Keys**, find the `vscodegitlab.workflow/gitlab-tokens` entry, and
      remove it.
-  1. In VS Code, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open the Command Palette.
+  1. In VS Code, select **View** > **Command Palette**.
   1. Type `Gitlab: Remove Your Account` and press <kbd>Enter</kbd> to remove the account with
      missing credentials.
   1. Open the Command Palette again and run `GitLab: Authenticate` to add the account again.
@@ -100,7 +98,7 @@ If you use VS Code version 1.68.0 or later, try to re-authenticate:
 
 1. Go to Ubuntu's **Password & Keys**, find the `vscodegitlab.workflow/gitlab-tokens` entry, and
    remove it.
-1. In VS Code, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open the Command Palette.
+1. In VS Code, select **View** > **Command Palette**.
 1. Type `Gitlab: Remove Your Account` and press <kbd>Enter</kbd> to remove the account with
    missing credentials.
 1. Open the Command Palette again and run `GitLab: Authenticate` to add the account again.
@@ -123,9 +121,7 @@ hosted on `https`.
 
 To resolve this:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Type `GitLab: Authenticate` and press <kbd>Enter</kbd>.
 1. Select the option to manually enter an `http` URL for your instance and press <kbd>Enter</kbd>.
 1. Follow the remaining prompts to authenticate.
@@ -168,8 +164,8 @@ To configure a default namespace:
 
 1. [Determine the namespace your project is in](../../user/namespace/_index.md#determine-which-type-of-namespace-youre-in).
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**
 1. Select **Extensions** > **GitLab** > **GitLab Duo**.
 1. Under **GitLab › Duo Agent Platform: Default Namespace**, enter your namespace.
 
@@ -231,10 +227,10 @@ These errors can occur if your certificates use the following settings:
 
 | Setting name                     | Information |
 |----------------------------------|-------------|
-| `gitlab.ca`                      | Deprecated. See [the SSL setup guide](ssl.md) for more information on how to set up your self-signed CA.|
-| `gitlab.cert`                    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
-| `gitlab.certKey`                 | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
-| `gitlab.ignoreCertificateErrors` | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
+| `gitlab.ca`                      | Supported. See [the SSL setup guide](ssl.md#use-a-self-signed-ssl-certificate) for more information on how to set up your self-signed CA.|
+| `gitlab.cert`                    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244). |
+| `gitlab.certKey`                 | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244). |
+| `gitlab.ignoreCertificateErrors` | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244). |
 
 To resolve, see [configure the extension for Custom Certificate Authorities](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/docs/user/custom-certificates.md).
 
@@ -247,10 +243,62 @@ You might encounter a false expired SSL certificate error. For example:
 To resolve this error, disable system certificates:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**
 1. On the **User** settings tab, select **Application** > **Proxy**.
 1. Disable the settings for **Proxy Strict SSL** and **System Certificates**.
+
+### Unreachable localhost port
+
+When you use the GitLab Duo Agent Platform in VS Code, either on the desktop or in
+your browser, you might get an error that states:
+
+```plaintext
+GitLab could not reach a service running on localhost:<unreachable_port> that this view depends on.
+```
+
+The cause of this issue and its resolution depend on whether
+you use VS Code on the desktop or in your browser.
+
+#### Desktop environment
+
+The GitLab Language Server runs an HTTP server on a localhost port to render the
+GitLab Duo Agent Platform UI in VS Code. This server might cause issues in the
+following VS Code desktop-based remote development environments:
+
+- Remote-SSH: A VS Code feature that lets you connect to a remote machine
+  (for example, a cloud VM or server) over SSH.
+- Dev Containers: A VS Code feature (and open standard) that runs your development
+  environment inside a Docker container.
+- Windows Subsystem for Linux (WSL): A Windows feature that runs a Linux
+  environment directly on Windows.
+
+The issue occurs in these remote development environments because the Language
+Server webview port is not guaranteed to be reachable from the VS Code UI
+rendering context.
+
+To resolve this issue:
+
+1. To open the **Ports** panel, select **View** > **Open View...** > **Ports**.
+1. Find the port from the error message and open it, or enter the port
+   manually.
+
+   A green dot next to the port does not guarantee that the connection works.
+   Reopen the GitLab Duo Agent Platform view to confirm.
+1. If you cannot open the port, your firewall, VPN, or antivirus settings might be
+   blocking it. Check those settings, then reopen the view.
+
+#### Browser environment
+
+How you resolve this issue depends on whether your browser-based VS Code environment
+supports forwarding this type of localhost port.
+
+- If your environment does support forwarding this type of localhost port,
+  and a **Ports** panel is available, select **View** > **Open View...** > **Ports**.
+  Find and open the blocked port from the error message.
+- If your environment does not support forwarding this type of localhost port,
+  this webview does not work. Instead, use the VS Code desktop application connected
+  to the same workspace.
 
 ## GitLab Duo
 
@@ -264,23 +312,19 @@ To troubleshoot GitLab Duo errors in VS Code:
    are on.
 1. Ensure that [Admin mode is disabled](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session).
 1. Review diagnostics output:
-   1. In VS Code, open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
-      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+   1. In VS Code, select **View** > **Command Palette**.
    1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
 1. If the diagnostics indicate that the feature is not turned on:
    1. In VS Code, open the Settings editor:
-      - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+      - For macOS, select **Code** > **Preferences** > **Settings**.
+      - For Windows or Linux, select **File** > **Preferences** > **Settings**
    1. Select **Extensions** > **GitLab** > **GitLab Duo**.
    1. Find the **GitLab ›** section for the missing feature and select the checkbox to turn it on.
 1. If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
    [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment).
 1. If the diagnostics indicate that all Agentic Chat checks pass and you still do not
    see the panel, it might be hidden in your [custom VS Code layout](https://code.visualstudio.com/docs/configure/custom-layout).
-   1. In VS Code, open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
-      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+   1. In VS Code, select **View** > **Command Palette**.
    1. Run the command `View: Show GitLab Duo Agent Platform` or `View: Toggle GitLab Duo Agent Platform`.
 
 For support with Code Suggestions, see [troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
@@ -295,6 +339,9 @@ This occurs when your GitLab instance blocks WebSocket connections.
 To resolve this error, ask your network administrator to modify your GitLab instance to
 [allow inbound WebSocket connections from IDE clients](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance).
 
+If the connection to the GitLab Duo Agent Platform fails with a WebSocket error `1006` or `404`, see
+[connection fails with WebSocket error `1006` or `404`](../../user/duo_agent_platform/troubleshooting.md#connection-fails-with-websocket-error-1006-or-404).
+
 ### GitLab Duo Chat fails to initialize in remote environments
 
 When using GitLab Duo Chat in remote development environments (such as browser-based VS Code or remote
@@ -307,8 +354,8 @@ SSH connections), you might encounter initialization failures like:
 To resolve these errors:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add or modify this setting:
 
@@ -317,9 +364,7 @@ To resolve these errors:
    ```
 
 1. Save your changes and reload the window:.
-   1. Open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   1. In VS Code, select **View** > **Command Palette**.
    1. Type `Developer: Reload Window` and press <kbd>Enter</kbd>.
 
 For updates on a permanent solution, see
@@ -415,9 +460,7 @@ Gather this information from affected users and provide it in your bug report:
 1. The error message shown to the user.
 1. **GitLab** and **GitLab Language Server** [logs](#logs).
 1. Diagnostics output.
-   1. Open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   1. In VS Code, select **View** > **Command Palette**.
    1. Type `GitLab: Diagnostics` and press <kbd>Enter</kbd>.
    1. Note the extension version.
 1. System details:

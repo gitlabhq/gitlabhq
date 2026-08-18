@@ -69,18 +69,18 @@ describe('DiffsFileTree', () => {
     expect(wrapper.findComponent(FileBrowserHeight).exists()).toBe(true);
   });
 
-  it('re-emits clickFile event', () => {
+  it('re-emits click-file event', () => {
     const obj = {};
     createComponent();
-    wrapper.findComponent(TreeList).vm.$emit('clickFile', obj);
-    expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
+    wrapper.findComponent(TreeList).vm.$emit('click-file', obj);
+    expect(wrapper.emitted('click-file')).toStrictEqual([[obj]]);
   });
 
-  it('re-emits toggleFolder event', () => {
+  it('re-emits toggle-folder event', () => {
     const obj = {};
     createComponent();
-    wrapper.findComponent(TreeList).vm.$emit('toggleFolder', obj);
-    expect(wrapper.emitted('toggleFolder')).toStrictEqual([[obj]]);
+    wrapper.findComponent(TreeList).vm.$emit('toggle-folder', obj);
+    expect(wrapper.emitted('toggle-folder')).toStrictEqual([[obj]]);
   });
 
   describe('size', () => {

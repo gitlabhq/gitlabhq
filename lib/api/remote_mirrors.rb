@@ -34,8 +34,9 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc "List the project's remote mirrors" do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'List all remote mirrors for a project' do
+        detail 'Lists all remote mirrors for a specified project.'
         success code: 200, model: Entities::RemoteMirror
         is_array true
         failure [
@@ -53,7 +54,8 @@ module API
           with: Entities::RemoteMirror
       end
 
-      desc 'Get a single remote mirror' do
+      desc 'Retrieve a remote mirror for a project' do
+        detail 'Retrieves a specified remote mirror for a project.'
         success code: 200, model: Entities::RemoteMirror
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -71,7 +73,8 @@ module API
         present mirror, with: Entities::RemoteMirror
       end
 
-      desc 'Triggers a push mirror operation' do
+      desc 'Force push mirror update' do
+        detail 'Forces an update to a push mirror.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -96,7 +99,8 @@ module API
         end
       end
 
-      desc 'Create remote mirror for a project' do
+      desc 'Create a push mirror' do
+        detail 'Creates a push mirror.'
         success code: 201, model: Entities::RemoteMirror
         failure [
           { code: 400, message: 'Bad request' },
@@ -134,7 +138,8 @@ module API
         end
       end
 
-      desc 'Update the attributes of a single remote mirror' do
+      desc 'Update a remote mirror in a project' do
+        detail 'Updates the configuration or operational status of a specified remote mirror.'
         success code: 200, model: Entities::RemoteMirror
         failure [
           { code: 400, message: 'Bad request' },
@@ -170,8 +175,8 @@ module API
         present result.payload[:remote_mirror], with: Entities::RemoteMirror
       end
 
-      desc 'Delete a single remote mirror' do
-        detail 'This feature was introduced in GitLab 14.10'
+      desc 'Delete a remote mirror from a project' do
+        detail 'Deletes a specified remote mirror from a project.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -194,7 +199,8 @@ module API
         end
       end
 
-      desc 'Get the public key of a single remote mirror' do
+      desc 'Retrieve a public key for a remote mirror' do
+        detail 'Retrieves the public key of a specified remote mirror that uses SSH authentication.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },

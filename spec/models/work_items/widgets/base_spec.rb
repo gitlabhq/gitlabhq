@@ -11,6 +11,10 @@ RSpec.describe WorkItems::Widgets::Base do
     it { is_expected.to eq(:base) }
   end
 
+  describe '.required_user_ability' do
+    it { expect(described_class.required_user_ability).to be_nil }
+  end
+
   describe '#type' do
     subject { described_class.new(work_item).type }
 

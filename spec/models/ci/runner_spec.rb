@@ -1635,52 +1635,37 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     describe '.belonging_to_group_or_project_descendants' do
       subject(:relation) { described_class.belonging_to_group_or_project_descendants(scope.id) }
 
-      shared_examples 'returns descendants runners' do
-        context 'with scope set to top_level_group' do
-          let(:scope) { top_level_group }
+      context 'with scope set to top_level_group' do
+        let(:scope) { top_level_group }
 
-          it 'returns the expected group and project runners without duplicates', :aggregate_failures do
-            expect(relation).to contain_exactly(
-              top_level_group_runner,
-              top_level_group_project_runner,
-              child_group_runner,
-              child_group_project_runner,
-              child_group2_runner,
-              shared_top_level_group_project_runner
-            )
+        it 'returns the expected group and project runners without duplicates', :aggregate_failures do
+          expect(relation).to contain_exactly(
+            top_level_group_runner,
+            top_level_group_project_runner,
+            child_group_runner,
+            child_group_project_runner,
+            child_group2_runner,
+            shared_top_level_group_project_runner
+          )
 
-            # Ensure no duplicates are returned
-            expect(relation.distinct).to match_array(relation)
-          end
-        end
-
-        context 'with scope set to child_group' do
-          let(:scope) { child_group }
-
-          it 'returns the expected group and project runners without duplicates', :aggregate_failures do
-            expect(relation).to contain_exactly(
-              child_group_runner,
-              child_group_project_runner,
-              shared_top_level_group_project_runner
-            )
-
-            # Ensure no duplicates are returned
-            expect(relation.distinct).to match_array(relation)
-          end
+          # Ensure no duplicates are returned
+          expect(relation.distinct).to match_array(relation)
         end
       end
 
-      context 'when the ci_runners_count_traversal_ids_index feature flag is enabled' do
-        # enabled by default in the test environment
-        it_behaves_like 'returns descendants runners'
-      end
+      context 'with scope set to child_group' do
+        let(:scope) { child_group }
 
-      context 'when the ci_runners_count_traversal_ids_index feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_runners_count_traversal_ids_index: false)
+        it 'returns the expected group and project runners without duplicates', :aggregate_failures do
+          expect(relation).to contain_exactly(
+            child_group_runner,
+            child_group_project_runner,
+            shared_top_level_group_project_runner
+          )
+
+          # Ensure no duplicates are returned
+          expect(relation.distinct).to match_array(relation)
         end
-
-        it_behaves_like 'returns descendants runners'
       end
     end
 

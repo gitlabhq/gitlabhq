@@ -313,6 +313,13 @@ Settings.ai_catalog['storage_path'] = Settings.absolute(Settings.ai_catalog['sto
 Settings.ai_catalog['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ai_catalog['object_store'], 'ai_catalog')
 
 #
+# CI catalog bundles
+#
+Settings['ci_catalog_bundles'] ||= {}
+Settings.ci_catalog_bundles['storage_path'] = Settings.absolute(Settings.ci_catalog_bundles['storage_path'] || File.join(Settings.shared['path'], "ci_catalog_bundles"))
+Settings.ci_catalog_bundles['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_catalog_bundles['object_store'], 'ci_catalog_bundles')
+
+#
 # Reply by email
 #
 Settings['incoming_email'] ||= {}
@@ -353,6 +360,12 @@ Settings.registry['host_port'] ||= [Settings.registry['host'], Settings.registry
 # If you are changing default storage paths, then you must change them in the gitlab-backup-cli gem as well
 Settings.registry['path']            = Settings.absolute(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'))
 Settings.registry['notifications'] ||= []
+
+#
+# Artifact Registry
+#
+Settings['artifact_registry'] ||= {}
+Settings.artifact_registry['api_url'] ||= 'http://localhost:8080' if Rails.env.development? || Rails.env.test?
 
 #
 # Error Reporting and Logging with Sentry
@@ -480,6 +493,13 @@ Settings.terraform_state['storage_path'] = Settings.absolute(Settings.terraform_
 Settings.terraform_state['object_store'] = ObjectStoreSettings.legacy_parse(Settings.terraform_state['object_store'], 'terraform_state')
 
 #
+# Micro-frontends (MFE) delivery
+#
+Settings['mfe'] ||= {}
+Settings.mfe['enabled'] = false if Settings.mfe['enabled'].nil?
+Settings.mfe['registry_url'] ||= Gitlab::Mfe::DEFAULT_REGISTRY_URL
+
+#
 # Mattermost
 #
 Settings['mattermost'] ||= {}
@@ -577,6 +597,25 @@ Settings.cell.topology_service_client['tls']['enabled'] = true if Settings.cell.
 Settings.cell.topology_service_client['metadata'] ||= {}
 
 #
+# Observability
+#
+# BFF (backend-for-frontend) mTLS: GitLab Rails presents this client cert/key
+# when POSTing per-user session-exchange requests to the SigNoz BFF endpoint.
+# Filesystem-based (not ApplicationSetting) since this is a single shared
+# fleet-wide secret, not per-group data. See
+# https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/141
+Settings['observability'] ||= {}
+Settings.observability['bff_mtls'] ||= {}
+Settings.observability.bff_mtls['enabled'] ||= false
+Settings.observability.bff_mtls['certificate_file'] ||= nil
+Settings.observability.bff_mtls['private_key_file'] ||= nil
+# Host/port of the ALB's dedicated mTLS-verified BFF listener. This is
+# distinct from the instance's normal o11y_service_url/port (used for
+# session-context and UI calls), which is not behind the mTLS listener.
+Settings.observability.bff_mtls['listener_host'] ||= nil
+Settings.observability.bff_mtls['listener_port'] ||= nil
+
+#
 # GitLab KAS
 #
 Settings['gitlab_kas'] ||= {}
@@ -597,6 +636,27 @@ Gitlab.ee do
   Settings.orbit['secret_file'] ||= Rails.root.join('.gitlab_knowledge_graph_secret')
   Settings.orbit['enabled'] ||= false
   Settings.orbit['grpc_endpoint'] ||= ENV.fetch('KNOWLEDGE_GRAPH_GRPC_ENDPOINT', 'localhost:50054')
+end
+
+#
+# NATS (JetStream messaging, used for audit event streaming)
+#
+Gitlab.ee do
+  Settings['nats'] ||= {}
+  # An empty `servers` list means NATS is not configured on this instance
+  # (Gitlab::Nats.configured? returns false and consumers fall back to
+  # their non-NATS code paths, e.g. Sidekiq for audit event streaming).
+  Settings.nats['servers'] ||= Rails.env.development? ? ['nats://127.0.0.1:4222'] : []
+  Settings.nats['connect_timeout'] ||= nil
+  # Mutual TLS: the GitLab NATS clusters use verify_and_map, so the client
+  # presents a client cert whose CN maps to a NATS authorization user. When
+  # present, `tls` carries file paths for the CA, client cert, and key.
+  Settings.nats['tls'] ||= nil
+  # JetStream stream replication factor for audit event streaming. Defaults
+  # to 1 for single-node deployments (e.g. GDK/dev); clustered production
+  # NATS overrides this to 3. A value > 1 on a non-clustered server is
+  # rejected by JetStream (err 10074).
+  Settings.nats['stream_replicas'] ||= 1
 end
 
 #
@@ -651,23 +711,16 @@ end
 #
 Gitlab.ee do
   Settings['duo_workflow'] ||= {}
-  executor_version = Rails.root.join('DUO_WORKFLOW_EXECUTOR_VERSION').read.chomp
-  # The os/arch for which duo-workflow-executor binary is build: https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/-/packages/35054593
-  executor_binary_urls = %w[
-    linux/arm linux/amd64 linux/arm64 linux/386 linux/ppc64le darwin/arm64 darwin/amd64
-    freebsd/arm freebsd/386 freebsd/amd64 windows/amd64 windows/386 windows/arm64
-  ].index_with do |os_info|
-    "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/#{os_info.sub('/', '-')}-duo-workflow-executor.tar.gz"
-  end
-
   Settings.duo_workflow.reverse_merge!(
     secure: true,
     service_url: nil, # service_url is constructued in Gitlab::DuoWorkflow::Client
-    debug: false,
-    executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
-    executor_binary_urls: executor_binary_urls,
-    executor_version: executor_version
+    debug: false
   )
+
+  if ENV['GITLAB_DUO_WORKFLOW_SERVICE_URL'].present?
+    Settings.duo_workflow['service_url'] = ENV['GITLAB_DUO_WORKFLOW_SERVICE_URL']
+    Settings.duo_workflow['secure'] = Gitlab::Utils.to_boolean(ENV['GITLAB_DUO_WORKFLOW_SECURE'], default: true)
+  end
 end
 
 #
@@ -736,6 +789,16 @@ Settings.amazon_ses_mailer['region'] ||= nil
 Settings.amazon_ses_mailer['access_key_id'] ||= nil
 Settings.amazon_ses_mailer['secret_access_key'] ||= nil
 Settings.amazon_ses_mailer['role_arn'] ||= nil
+
+#
+# Mobile push notifications
+#
+Settings['mobile_push'] ||= {}
+Settings.mobile_push['apns'] ||= {}
+Settings.mobile_push.apns['auth_key_path'] ||= nil
+Settings.mobile_push.apns['key_id'] ||= nil
+Settings.mobile_push.apns['team_id'] ||= nil
+Settings.mobile_push.apns['topic'] ||= 'com.gitlab-mobile.app'
 
 #
 # Kerberos

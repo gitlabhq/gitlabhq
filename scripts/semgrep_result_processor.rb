@@ -16,6 +16,14 @@ class SemgrepResultProcessor
   UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
   APPSEC_HANDLE = "@gitlab-com/gl-security/appsec"
   TRIAGE_VERDICTS_ARTIFACT = 'gl-sast-triage-verdicts.json'
+  VERDICT_RECOMMENDATION_THRESHOLD = 60
+
+  # Only definitive verdicts are surfaced to the engineer; 'uncertain' and errored
+  # verdicts fall back to the standard comment.
+  VERDICT_LABELS = { 'tp' => 'Likely true positive', 'fp' => 'Likely false positive' }.freeze
+  TRIAGE_RECOMMENDATION_HEADING = '**Duo triage recommendation:**'
+  TRIAGE_RECOMMENDATION_DISCLAIMER =
+    '<small>Automated recommendation from Duo. Advisory only — AppSec makes the final determination.</small>'
 
   LABEL_INSTRUCTION = 'Apply the ~"appsec-sast-ping::resolved" label after reviewing.'
 
@@ -79,8 +87,8 @@ class SemgrepResultProcessor
     return unless ENV['SAST_TRIAGE_ENABLED'] == '1'
 
     puts "Running shadow-mode SAST triage on #{findings.size} finding(s)"
-    verdicts = SastTriageClassifier.new.classify(findings)
-    write_triage_verdicts(records_from(findings, verdicts))
+    @triage_verdicts = SastTriageClassifier.new.classify(findings)
+    write_triage_verdicts(records_from(findings, @triage_verdicts))
   rescue StandardError => e
     puts "Triage step failed (continuing without verdicts): #{e.class}: #{e.message}"
   end
@@ -193,7 +201,7 @@ class SemgrepResultProcessor
       header_information = JSON.dump({ 'fingerprint' => fingerprint, 'check_id' => finding[:check_id] })
       message_header = "<!-- #{header_information} -->"
       new_line = finding[:line]
-      message = finding[:message]
+      message = sanitize_rationale(finding[:message])
       check_id = finding[:check_id]
       uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions")
       suffix = if check_id&.start_with?("builds.sast-custom-rules.secure-coding-guidelines")
@@ -204,7 +212,7 @@ class SemgrepResultProcessor
                  "\n#{MESSAGE_PING_APPSEC}"
                end
 
-      message_from_bot = "#{message_header}\n#{message}#{suffix}\n#{MESSAGE_FOOTER}"
+      message_from_bot = "#{message_header}\n#{message}#{suffix}#{triage_recommendation_for(fingerprint)}\n#{MESSAGE_FOOTER}"
 
       request = Net::HTTP::Post.new(uri)
       request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
@@ -234,6 +242,42 @@ class SemgrepResultProcessor
   end
 
   private
+
+  # Renders the shadow-mode Duo verdict for a finding as an advisory block appended
+  # to the inline comment, so the engineer sees the true/false-positive recommendation
+  # inline. Gated by SAST_TRIAGE_COMMENT_ENABLED, which requires SAST_TRIAGE_ENABLED=1
+  # since verdicts only exist once triage has run. Returns an empty string when disabled,
+  # when there is no verdict for the finding, or when the verdict is uncertain or errored.
+  def triage_recommendation_for(fingerprint)
+    return '' unless ENV['SAST_TRIAGE_COMMENT_ENABLED'] == '1'
+
+    verdict = (@triage_verdicts || {})[fingerprint]
+    return '' unless verdict && verdict[:error].nil?
+
+    label = VERDICT_LABELS[verdict[:verdict]]
+    return '' unless label
+
+    confidence = (verdict[:confidence].to_f * 100).round
+    rationale = sanitize_rationale(verdict[:rationale])
+    return '' unless confidence >= VERDICT_RECOMMENDATION_THRESHOLD
+
+    recommendation = "\n\n#{TRIAGE_RECOMMENDATION_HEADING} #{label} · confidence #{confidence}%"
+    recommendation << "\n> #{rationale}" unless rationale.empty?
+    recommendation << "\n\n#{TRIAGE_RECOMMENDATION_DISCLAIMER}"
+    recommendation
+  end
+
+  # Duo derives the rationale from a prompt that includes the attacker-influenced code
+  # excerpt under review, so it is untrusted output that the bot would otherwise post
+  # with its PAT. Collapsing whitespace defuses line-leading GitLab quick actions
+  # (e.g. "/label", "/assign"), and wrapping the result in an inline code span
+  # neutralizes @mentions and Markdown/HTML so the rationale renders as literal text.
+  def sanitize_rationale(text)
+    collapsed = text.to_s.gsub(/\s+/, ' ').delete('`').strip
+    return '' if collapsed.empty?
+
+    "`#{collapsed}`"
+  end
 
   def sast_stop_label_present?
     stripped_labels.include?('appsec-sast::stop')
@@ -314,15 +358,19 @@ class SemgrepResultProcessor
   end
 
   def post_comment(message)
-    uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions?body=#{message}")
+    # Send the comment body as form data rather than interpolating it into the URL
+    # query string. The body can carry attacker-influenced content (the Semgrep
+    # message and the Duo-derived triage rationale), so query-string interpolation
+    # would let structural characters (&, =, #) inject extra API parameters.
+    uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions")
 
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = (uri.scheme == 'https')
-
-    request = Net::HTTP::Post.new(uri.request_uri)
+    request = Net::HTTP::Post.new(uri)
     request['PRIVATE-TOKEN'] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
+    request.set_form_data("body" => message)
 
-    response = http.request(request)
+    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
+    end
 
     return if response.instance_of?(Net::HTTPCreated)
 

@@ -5,6 +5,9 @@ module Mutations
     class Move < ::Mutations::BaseMutation
       graphql_name "DesignManagementMove"
 
+      authorize_granular_token permissions: :update_design,
+        boundary_argument: :current_design, boundary: :project, boundary_type: :project
+
       DesignID = ::Types::GlobalIDType[::DesignManagement::Design]
 
       argument :id, DesignID,

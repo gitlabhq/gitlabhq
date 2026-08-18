@@ -15,4 +15,4 @@ the most out of GitLab.
 | [Take advantage of Git rebase](https://about.gitlab.com/blog/take-advantage-of-git-rebase/) | Learn how to use the `rebase` command in your workflow. Estimated time: 15-20 minutes. | |
 | [Update Git commit messages](update_commit_messages/_index.md) | Learn how to update commit messages and push the changes to GitLab. Estimated time: 5-10 minutes. | |
 | [Update Git remote URLs](update_git_remote_url/_index.md) | Learn how to update the Git remote URLs in your local project when they have changed. Estimated time: 15-20 minutes. | |
-| [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF of common Git commands. | |
+| [Git Cheat Sheet](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/source/images/press/git-cheat-sheet.pdf) | Download a PDF of common Git commands. | |

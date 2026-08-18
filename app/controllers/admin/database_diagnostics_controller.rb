@@ -6,7 +6,8 @@ module Admin
 
     feature_category :database
     authorize! :read_admin_database_diagnostics,
-      only: %i[index run_collation_check collation_check_results run_schema_check schema_check_results]
+      only: %i[index run_collation_check collation_check_results run_schema_check schema_check_results
+        run_lfk_backlog_check lfk_backlog_check_results]
 
     WORKER_CONFIGS = {
       collation: {
@@ -16,6 +17,10 @@ module Admin
       schema: {
         worker: ::Database::SchemaCheckerWorker,
         cache_key: ::Database::SchemaCheckerWorker::SCHEMA_CHECK_CACHE_KEY
+      },
+      lfk_backlog: {
+        worker: ::Database::LooseForeignKeysBacklogCheckerWorker,
+        cache_key: ::Database::LooseForeignKeysBacklogCheckerWorker::BACKLOG_CHECK_CACHE_KEY
       }
     }.freeze
 
@@ -41,7 +46,26 @@ module Admin
       check_results(:schema)
     end
 
+    def run_lfk_backlog_check
+      # Gate scheduling of this net-new worker so it is not enqueued from the web fleet before the
+      # Sidekiq fleet has been updated to know the class during a rolling deploy. Enable after rollout.
+      unless lfk_backlog_diagnostic_enabled?
+        return render json: { error: 'Loose foreign keys backlog diagnostic is not enabled' },
+          status: :service_unavailable
+      end
+
+      run_check(:lfk_backlog)
+    end
+
+    def lfk_backlog_check_results
+      check_results(:lfk_backlog)
+    end
+
     private
+
+    def lfk_backlog_diagnostic_enabled?
+      Feature.enabled?(:loose_foreign_keys_backlog_diagnostic, :instance, type: :ops)
+    end
 
     def run_check(check_type)
       worker_class = WORKER_CONFIGS[check_type][:worker]

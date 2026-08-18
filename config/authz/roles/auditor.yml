@@ -32,6 +32,7 @@ project:
   - download_pypi_package
   - download_wiki_code
   - export_work_items
+  - read_advanced_dependency_management
   - read_agent_artifacts
   - read_ai_catalog_item_consumer
   - read_ai_tool_rule
@@ -162,12 +163,14 @@ project:
   - read_vulnerability
   - read_wiki
   - read_work_item
+  - update_work_item_user_preference
 group:
   permissions: []
   raw_permissions:
   - _bypass_ip_enforcement
   - create_vulnerability_export
   - read_add_on_purchase
+  - read_advanced_dependency_management
   - read_agent_artifacts
   - read_ai_domain_settings
   - read_any_audit_event
@@ -191,6 +194,7 @@ group:
   - read_dora4_analytics
   - read_email_enterprise_user
   - read_enterprise_user
+  - read_govern_policy
   - read_group
   - read_group_all_available_runners
   - read_group_contribution_analytics
@@ -215,6 +219,7 @@ group:
   - read_vulnerability
   - read_vulnerability_statistics
   - read_wiki
+  - update_work_item_user_preference
   - view_group_ci_cd_analytics
   - view_group_devops_adoption
   - view_productivity_analytics

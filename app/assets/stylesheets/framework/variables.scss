@@ -79,11 +79,6 @@ $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
 
 /*
- * UI elements
- */
-$well-expand-item: #e8f2f7 !default;
-
-/*
  * Text
  */
 $gl-font-size: 14px;
@@ -161,7 +156,6 @@ $performance-bar-height: 2.5rem;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
 $top-bar-height: 3rem; //= 48px
-$work-item-sticky-header-height: 52px;
 $home-panel-title-row-height: 48px;
 $home-panel-avatar-mobile-size: 24px;
 $issuable-title-max-width: 350px;
@@ -343,8 +337,6 @@ $input-lg-width: 320px;
 */
 $label-font-size: 12px;
 $label-padding: 7px;
-$label-gray-bg: #f8fafc;
-$label-inverse-bg: #333;
 $label-border-radius: 100px;
 
 /*

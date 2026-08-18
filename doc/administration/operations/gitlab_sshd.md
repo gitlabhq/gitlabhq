@@ -79,7 +79,7 @@ directs SSH traffic to the `gitlab-sshd` port to hide this.
 
 Users may see host key warnings because the newly-generated host keys
 differ from the OpenSSH host keys. Consider disabling host key
-generation and copy the existing OpenSSH host keys into
+generation and copying the existing OpenSSH host keys into
 `/var/opt/gitlab/gitlab-sshd` if this is an issue.
 
 {{< /tab >}}

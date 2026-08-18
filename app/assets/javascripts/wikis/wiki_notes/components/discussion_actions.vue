@@ -26,7 +26,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showReplyForm'],
+  emits: ['show-reply-form'],
   data() {
     return {
       loading: false,
@@ -58,7 +58,7 @@ export default {
 
 <template>
   <div class="discussion-with-resolve-btn gl-clearfix">
-    <discussion-reply-placeholder @focus="$emit('showReplyForm')" />
+    <discussion-reply-placeholder @focus="$emit('show-reply-form')" />
 
     <div v-if="showResolveButton" class="btn-group discussion-actions" role="group">
       <div class="btn-group">

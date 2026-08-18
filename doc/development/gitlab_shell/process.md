@@ -50,7 +50,7 @@ For a security fix in GitLab Shell, two sets of merge requests are required:
 
 The first step could be to create a merge request with a fix targeting `main`
 in `gitlab-org/security/gitlab-shell`. When the merge request is approved by maintainers,
-backports targeting previous 3 versions of GitLab Shell must be created. The stable
+backports targeting the previous 3 versions of GitLab Shell must be created. The stable
 branches for those versions may not exist, so feel free to ask a maintainer to create
 them. The stable branches must be created out of the GitLab Shell tags or versions
 used by the 3 previous GitLab releases.

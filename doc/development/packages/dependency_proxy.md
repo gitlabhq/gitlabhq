@@ -10,7 +10,7 @@ feature is constructed in GitLab.
 
 ## Container registry
 
-The Dependency Proxy for the container registry acts a stand-in for a remote container registry. In our case,
+The Dependency Proxy for the container registry acts as a stand-in for a remote container registry. In our case,
 the remote registry is the public DockerHub registry.
 
 ```mermaid
@@ -76,7 +76,7 @@ rails project or web service.
 
 When a user tries to sign in to the dependency proxy with a Docker client, we must tell it where to get a JWT. We
 can use the same endpoint we use with the container registry: `https://gitlab.com/jwt/auth`. But in our case,
-we tell the Docker client to specify `service=dependency_proxy` in the parameters so can use a separate underlying
+we tell the Docker client to specify `service=dependency_proxy` in the parameters so we can use a separate underlying
 service to generate the token.
 
 This sequence diagram shows the request flow for logging into the Dependency Proxy.
@@ -166,7 +166,7 @@ sequenceDiagram
         Workhorse->>Rails: GET /v2/*group_id/dependency_proxy/containers/*image/manifest/*tag/authorize
         Rails->>Workhorse: Respond with upload instructions
         Workhorse->>Client: Send the manifest file to the client with original headers
-        Workhorse->>Object Storage: Save the manifest file with some of it's header values
+        Workhorse->>Object Storage: Save the manifest file with some of its header values
         Workhorse->>Rails: Finalize the upload
     end
 ```

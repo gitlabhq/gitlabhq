@@ -27,10 +27,16 @@ A client presents this token to the OpenBao backend to read secrets directly,
 the same way GitLab Runner reads secrets during a CI/CD job.
 The response includes the OpenBao connection details the client needs.
 
-The token expires after 5 minutes.
+You call this API with a personal access token, project or group access token, or service account
+token that has the `api` scope.
+The token the API returns is a separate, short-lived OpenBao JWT, not a GitLab access token.
+It expires after five minutes.
 Reading a secret value also requires the principal to have the read value permission for that secret.
 
-## Create a project access token
+To use the returned connection details to read a secret, see
+[Access secrets from non-CI/CD workloads](../ci/secrets/secrets_manager/non_cicd_access.md).
+
+## Create a Secrets Manager access token for a project
 
 Mints an access token for reading a project's secrets.
 
@@ -59,13 +65,14 @@ Example response:
   "expires_at": "2026-05-27T10:35:00Z",
   "provider": {
     "vault": {
-      "server": "https://openbao.example.com",
-      "namespace": "org_5/ns_42/project_99",
+      "server": "https://secrets.gitlab.com",
+      "namespace": "org_5/group_42/project_99",
       "path": "secrets/kv",
       "version": "v2",
+      "secrets_path": "explicit",
       "auth": {
         "jwt": {
-          "path": "api_jwt",
+          "path": "api_jwt/cel",
           "role": "all_api",
           "token": "<JWT>"
         }
@@ -79,16 +86,17 @@ Response attributes:
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
-| `expires_at` | string | ISO 8601 timestamp when the token expires. Tokens are valid for 5 minutes. |
-| `provider.vault.server` | string | URL of the OpenBao server to connect to. |
-| `provider.vault.namespace` | string | OpenBao namespace that holds the project's secrets. |
+| `expires_at` | string | ISO 8601 timestamp when the token expires. Tokens are valid for five minutes. |
+| `provider.vault.server` | string | URL of the OpenBao server to connect to. On GitLab.com this is `https://secrets.gitlab.com`. On GitLab Self-Managed it is the OpenBao URL configured for the instance. |
+| `provider.vault.namespace` | string | OpenBao namespace that holds the project's secrets. Pass it as the `X-Vault-Namespace` header. |
 | `provider.vault.path` | string | Mount path of the KV secrets engine. |
 | `provider.vault.version` | string | Version of the KV secrets engine. |
-| `provider.vault.auth.jwt.path` | string | Mount path of the JWT authentication method. |
+| `provider.vault.secrets_path` | string | Base path under the KV engine where secrets are stored. Prepend it to a secret name to build the read path (`<path>/data/<secrets_path>/<secret_name>`). |
+| `provider.vault.auth.jwt.path` | string | Mount path for the JWT authentication method. Authenticate at `auth/<path>/login`. |
 | `provider.vault.auth.jwt.role` | string | JWT authentication role to log in with. |
 | `provider.vault.auth.jwt.token` | string | Short-lived JWT the client presents to OpenBao. |
 
-## Create a group access token
+## Create a Secrets Manager access token for a group
 
 Mints an access token for reading a group's secrets.
 
@@ -117,13 +125,14 @@ Example response:
   "expires_at": "2026-05-27T10:35:00Z",
   "provider": {
     "vault": {
-      "server": "https://openbao.example.com",
-      "namespace": "org_5/group_42",
+      "server": "https://secrets.gitlab.com",
+      "namespace": "org_5/group_42/group_99",
       "path": "secrets/kv",
       "version": "v2",
+      "secrets_path": "explicit",
       "auth": {
         "jwt": {
-          "path": "api_jwt",
+          "path": "api_jwt/cel",
           "role": "all_api",
           "token": "<JWT>"
         }
@@ -133,4 +142,6 @@ Example response:
 }
 ```
 
-The response attributes are the same as for [Create a project access token](#create-a-project-access-token), with `provider.vault.namespace` scoped to the group.
+The response attributes are the same as for
+[Create a Secrets Manager access token for a project](#create-a-secrets-manager-access-token-for-a-project),
+with `provider.vault.namespace` scoped to the group.

@@ -21,14 +21,6 @@ module Gitlab
         return if unfoldable.empty?
 
         collection.unfold_diff_files(unfoldable)
-
-        # unfold_diff_lines updates @diff_lines but the memoized
-        # @highlighted_diff_lines may already be set from the highlight cache
-        # (pre-loaded by MergeRequestDiffBase#diff_files). Clearing it forces
-        # re-highlighting from the now-expanded @diff_lines.
-        collection.diff_files.each do |diff_file|
-          diff_file.highlighted_diff_lines = nil if diff_file.unfolded?
-        end
       end
     end
   end

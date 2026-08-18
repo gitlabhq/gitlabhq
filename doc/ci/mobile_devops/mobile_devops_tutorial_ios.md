@@ -30,7 +30,7 @@ or set up [self-managed runners](https://docs.gitlab.com/runner/#use-self-manage
 for complete control over the build environment.
 
 1. Create a `.gitlab-ci.yml` file in your repository root.
-1. Add a [supported macOS images](../runners/hosted_runners/macos.md#supported-macos-images) to run a job on a [macOS GitLab hosted runners](../runners/hosted_runners/macos.md) (beta):
+1. Add [supported macOS images](../runners/hosted_runners/macos.md#supported-macos-images) to run a job on [macOS GitLab hosted runners](../runners/hosted_runners/macos.md) (beta):
 
    ```yaml
    test:

@@ -116,11 +116,11 @@ describe('BlobButtonGroup component', () => {
         expect(showUploadBlobModalMock).not.toHaveBeenCalled();
       });
 
-      it('emits showForkSuggestion from the replace item', async () => {
+      it('emits show-fork-suggestion from the replace item', async () => {
         findReplaceItem().vm.$emit('action');
         await nextTick();
 
-        expect(wrapper.emitted('showForkSuggestion')).toEqual([[]]);
+        expect(wrapper.emitted('show-fork-suggestion')).toEqual([[]]);
       });
     });
   });
@@ -140,6 +140,6 @@ describe('BlobButtonGroup component', () => {
       path: 'some/file.js',
       replacePath: 'some/replace/file.js',
     });
-    expect(wrapper.emitted('showForkSuggestion')).toBeUndefined();
+    expect(wrapper.emitted('show-fork-suggestion')).toBeUndefined();
   });
 });

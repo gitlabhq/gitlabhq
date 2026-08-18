@@ -24,7 +24,7 @@ export default {
       default: true,
     },
   },
-  emits: ['confirm', 'selectTransferLocation'],
+  emits: ['confirm', 'select-transfer-location'],
   data() {
     return {
       selectedTransferLocation: null,
@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     selectedTransferLocation(selectedTransferLocation) {
-      this.$emit('selectTransferLocation', selectedTransferLocation.id);
+      this.$emit('select-transfer-location', selectedTransferLocation.id);
     },
   },
   methods: {

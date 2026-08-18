@@ -7,6 +7,7 @@ query getBlobSearchQuery(
   $regex: Boolean
   $includeArchived: Boolean
   $excludeForks: Boolean
+  $language: [String!]
 ) {
   blobSearch(
     search: $search
@@ -17,6 +18,7 @@ query getBlobSearchQuery(
     regex: $regex
     includeArchived: $includeArchived
     excludeForks: $excludeForks
+    language: $language
   ) {
     fileCount
     files {

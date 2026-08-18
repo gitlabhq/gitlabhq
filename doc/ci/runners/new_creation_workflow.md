@@ -2,6 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn about the new GitLab Runner creation workflow that uses the runner authentication tokens instead of legacy registration tokens to improve CI/CD runner security.
 title: Migrating to the new runner registration workflow
 ---
 
@@ -55,7 +56,7 @@ To continue using registration tokens after GitLab 17.0:
 
 ## Impact on existing runners
 
-Existing runners will continue to work as usual after upgrading to GitLab 17.0. This change only affects registration of new runners.
+Existing runners continue to work as usual after upgrading to GitLab 17.0. This change only affects registration of new runners.
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes/) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
@@ -188,7 +189,7 @@ data:
 
 ### Pod name is not visible in runner details page
 
-When you use the new registration workflow to register your runners with Helm chart, the pod name doesn't appear
+When you use the new registration workflow to register your runners with the Helm chart, the pod name doesn't appear
 on the runner details page.
 For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
 

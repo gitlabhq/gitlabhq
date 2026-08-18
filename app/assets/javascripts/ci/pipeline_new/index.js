@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PipelineNewForm from './components/pipeline_new_form.vue';
@@ -34,7 +35,7 @@ const mountPipelineNewForm = (el) => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PipelineNewFormRoot',
     apolloProvider,
@@ -52,18 +53,15 @@ const mountPipelineNewForm = (el) => {
       projectPath,
       userRole,
     },
-    render(createElement) {
-      return createElement(PipelineNewForm, {
-        props: {
-          defaultBranch,
-          fileParams,
-          maxWarnings: Number(maxWarnings),
-          projectId,
-          refParam,
-          settingsLink,
-          variableParams,
-        },
-      });
+    component: PipelineNewForm,
+    props: {
+      defaultBranch,
+      fileParams,
+      maxWarnings: Number(maxWarnings),
+      projectId,
+      refParam,
+      settingsLink,
+      variableParams,
     },
   });
 };

@@ -53,11 +53,11 @@ Because this endpoint can be called recursively, slow performance on this endpoi
 ### Refs
 
 The number of [`refs`](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
-on the Git repository have a notable effect on the performance of `git` commands
+on the Git repository has a notable effect on the performance of `git` commands
 called upon it. Gitaly RPCs are similarly affected. Certain `git` commands scan
 through all refs, causing a notable impact on the speed of those commands.
 
-On the `internal/allowed` endpoint, the recursive nature of RPC calls mean the
+On the `internal/allowed` endpoint, the recursive nature of RPC calls means the
 ref counts have an exponential effect on performance.
 
 #### Environment refs

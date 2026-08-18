@@ -102,7 +102,7 @@ describe('vue_shared/components/awards_list', () => {
     wrapper = mount(AwardsList, { propsData: props });
   };
   const matchingEmojiTag = (name) => expect.stringMatching(`gl-emoji data-name="${name}"`);
-  const findAwardButtons = () => wrapper.findAll('[data-testid="award-button"]');
+  const findAwardButtons = () => wrapper.findAllComponents('[data-testid="award-button"]');
   const findAwardsData = () =>
     findAwardButtons().wrappers.map((x) => {
       return {
@@ -113,7 +113,7 @@ describe('vue_shared/components/awards_list', () => {
         count: Number(x.find('.js-counter').text()),
       };
     });
-  const findAddAwardButton = () => wrapper.find('[data-testid="emoji-picker"]');
+  const findAddAwardButton = () => wrapper.findComponent('[data-testid="emoji-picker"]');
 
   describe('default', () => {
     beforeEach(() => {

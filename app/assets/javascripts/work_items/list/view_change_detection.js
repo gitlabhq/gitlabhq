@@ -47,6 +47,7 @@ const pickTrackedPreferences = (preferences) => ({
   hiddenMetadataKeys: preferences?.hiddenMetadataKeys ?? [],
   collapsedGroups: preferences?.collapsedGroups ?? [],
   visibleGroups: preferences?.visibleGroups ?? null,
+  groupOrder: preferences?.groupOrder ?? [],
 });
 
 export const preferencesChanged = ({ currentPreferences, baselinePreferences }) =>

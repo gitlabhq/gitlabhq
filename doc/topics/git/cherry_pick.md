@@ -156,7 +156,7 @@ When you cherry-pick the merge commit for a branch, your cherry-pick copies all 
 to your current working branch. Cherry-picking a merge commit requires the `-m` flag. This flag tells Git
 which parent commit to use. Merge commits can have multiple parent commits depending on how they were created.
 
-In simple cases, `-m 1` uses the first parent, which is merge commit for the branch. To specify the
+In simple cases, `-m 1` uses the first parent, which is the merge commit for the branch. To specify the
 second parent, which is often the last commit before the feature branch merged, use `-m 2`. These flags
 determine which changes Git applies to your current branch.
 

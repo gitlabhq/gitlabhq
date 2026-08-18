@@ -931,4 +931,57 @@ describe('AnalyticsDashboardPanel', () => {
       });
     });
   });
+
+  describe('actions', () => {
+    const mockActions = [
+      { text: 'View source', href: 'https://gitlab.com', icon: 'external-link' },
+      { text: 'Refresh', action: () => {}, icon: 'retry' },
+    ];
+
+    it('passes no actions to the panels base component by default', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(findExtendedDashboardPanel().props('actions')).toEqual([]);
+    });
+
+    describe('when the visualization emits actions', () => {
+      beforeEach(async () => {
+        mockFetch.mockResolvedValue([{ name: 'foo' }]);
+        createWrapper();
+        await waitForPromises();
+
+        findVisualization().vm.$emit('set-actions', mockActions);
+        await nextTick();
+      });
+
+      it('passes the actions to the panels base component', () => {
+        expect(findExtendedDashboardPanel().props('actions')).toEqual(mockActions);
+      });
+
+      it('resets the actions when the data is refetched', async () => {
+        wrapper.setProps({ filters: { startDate: new Date() } });
+        await nextTick();
+
+        expect(findExtendedDashboardPanel().props('actions')).toEqual([]);
+      });
+    });
+  });
+
+  describe('when the visualization emits reload', () => {
+    beforeEach(async () => {
+      mockFetch.mockResolvedValue([{ name: 'foo' }]);
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('refetches the visualization data', async () => {
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+
+      findVisualization().vm.$emit('reload');
+      await waitForPromises();
+
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+  });
 });

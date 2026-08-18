@@ -6,7 +6,7 @@ module Mutations
       class Reorder < BaseMutation
         graphql_name 'WorkItemSavedViewReorder'
 
-        authorize :read_saved_view
+        authorize :reorder_saved_view
 
         description "Reorders a saved view for the current user."
 

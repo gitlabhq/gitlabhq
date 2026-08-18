@@ -15,7 +15,7 @@ module API
         requires :id, type: String,
           desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user"
       end
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all access requests for a #{source_type}" do
           detail "Lists all access requests for a specified #{source_type} that are viewable by the authenticated user."
           success Entities::AccessRequester

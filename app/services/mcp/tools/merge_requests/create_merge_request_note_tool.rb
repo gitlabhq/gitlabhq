@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     module MergeRequests
-      class CreateMergeRequestNoteTool < Mcp::Tools::GraphqlTool
+      class CreateMergeRequestNoteTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ContentValidation
         include Mcp::Tools::Concerns::ResourceFinder
 
@@ -27,7 +27,7 @@ module Mcp
             match = ::MergeRequest.link_reference_pattern.match(params[:url])
             raise ArgumentError, "Invalid merge request URL: #{params[:url]}" unless match
 
-            project = find_project("#{match[:namespace]}/#{match[:project]}")
+            project = find_project!("#{match[:namespace]}/#{match[:project]}")
             iid = match[:merge_request].to_i
           else
             iid = params[:merge_request_iid]
@@ -35,7 +35,7 @@ module Mcp
               raise ArgumentError, 'Provide either url, or project_id and merge_request_iid'
             end
 
-            project = find_project(params[:project_id])
+            project = find_project!(params[:project_id])
           end
 
           merge_request = ::MergeRequestsFinder.new(

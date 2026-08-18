@@ -24,8 +24,8 @@ kinds of upgrades exist for PostgreSQL databases:
   poor database performance and high CPU use on the database server.
 
 All major cloud providers support in-place major version upgrades of database
-instances, using the `pg_upgrade` utility. However you must follow the pre- and
-post- upgrade steps to reduce the risk of performance degradation or database disruption.
+instances, using the `pg_upgrade` utility. However, you must follow the pre- and
+post-upgrade steps to reduce the risk of performance degradation or database disruption.
 
 Read carefully the major version upgrade steps of your external database platform:
 
@@ -44,7 +44,12 @@ This should be done for all databases on the upgraded PostgreSQL service/instanc
 When you plan your maintenance window, you should include the `ANALYZE` duration
 because this operation might significantly degrade GitLab performance.
 
-To speed up the `ANALYZE` operation, use the
-[`vacuumdb` utility](https://www.postgresql.org/docs/16/app-vacuumdb.html),
-with `--analyze-only --jobs=njobs` to execute the `ANALYZE` command in parallel by
-running `njobs` commands simultaneously.
+## Restart GitLab after a database upgrade
+
+You must restart GitLab (Sidekiq, Puma, PgBouncer, and Praefect,
+where applicable) after any PostgreSQL engine upgrade, minor or major,
+because a database service restart invalidates existing connections
+and these components might require a restart to reconnect successfully.
+
+When you plan your maintenance window, you should include time to restart
+GitLab immediately after the upgrade completes.

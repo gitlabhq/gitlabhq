@@ -17,12 +17,6 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           [
-            :tracing,
-            :traces_explorer,
-            :metrics,
-            :metrics_explorer,
-            :logs,
-            :logs_explorer,
             :error_tracking,
             :alert_management,
             :incidents,

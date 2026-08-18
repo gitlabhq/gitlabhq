@@ -15,10 +15,6 @@ description: "Migrate from Bitbucket Cloud to GitLab."
 
 {{< history >}}
 
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-- Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a feature flag](../../administration/feature_flags/_index.md) named `bitbucket_parallel_importer`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.6.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.7. Feature flag `bitbucket_parallel_importer` removed.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461210) in GitLab 17.2.
 
 {{< /history >}}
@@ -64,7 +60,7 @@ For pull requests, the importer:
 
 For issues, the importer:
 
-- Adds a label corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal` or `task`.
+- Adds a label corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal`, or `task`.
 - If the issue on Bitbucket was one of `resolved`, `invalid`, `duplicate`, `wontfix`, or `closed`, closes the issue on
   GitLab.
 

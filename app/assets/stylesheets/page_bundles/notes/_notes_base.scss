@@ -253,7 +253,7 @@
       @apply gl-text-link;
     }
 
-    &:focus,
+    &:focus-visible,
     &:hover {
       text-decoration: none;
 

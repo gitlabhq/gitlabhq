@@ -12,6 +12,15 @@ RSpec.describe ::AuditEvents::ProjectAuditEvent, feature_category: :audit_events
     it { is_expected.to validate_presence_of(:project_id) }
   end
 
+  describe 'entity attributes' do
+    let_it_be(:event) { create(:audit_events_project_audit_event) }
+
+    it 'maps the scoped column onto the generic entity attributes' do
+      expect(event.entity_id).to eq(event.project_id)
+      expect(event.entity_type).to eq('Project')
+    end
+  end
+
   describe '.by_project' do
     let_it_be(:project_audit_event_1) { create(:audit_events_project_audit_event) }
     let_it_be(:project_audit_event_2) { create(:audit_events_project_audit_event) }

@@ -19,7 +19,10 @@ module WorkItems
       namespace = Namespace.find_by_id(namespace_id)
       return unless namespace
 
+      # Both refresh namespace-derived denormalized data on the work items after a
+      # hierarchy change; kept as focused services sharing this enqueue path.
       UpdateNamespaceTraversalIdsService.execute(namespace)
+      UpdatePositioningNamespaceIdService.execute(namespace)
     rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
       logger.info(
         class: self.class.name,

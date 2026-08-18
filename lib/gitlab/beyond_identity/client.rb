@@ -37,7 +37,7 @@ module Gitlab
       def execute(params)
         options = { headers: headers, query: params }
         response = Gitlab::HTTP.get(API_URL, options)
-        body = Gitlab::Json.parse(response.body) || {}
+        body = Gitlab::Json::SafeParser.parse(response.body) || {}
 
         raise ApiError.new(body.dig('error', 'message'), response.code) unless response.success?
         raise ApiError.new(body['message'], response.code) unless body['authorized']

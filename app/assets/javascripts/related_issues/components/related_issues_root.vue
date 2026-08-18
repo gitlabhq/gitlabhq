@@ -24,7 +24,6 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
 
 */
 import { createAlert } from '~/alert';
-import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { __ } from '~/locale';
@@ -128,14 +127,6 @@ export default {
       return this.state.relatedIssues.find((issue) => issue.id === id);
     },
     onRelatedIssueRemoveRequest(idToRemove) {
-      if (isGid(idToRemove)) {
-        const deletedId = getIdFromGraphQLId(idToRemove);
-        this.state.relatedIssues = this.state.relatedIssues.filter(
-          (issue) => issue.id !== deletedId,
-        );
-        return;
-      }
-
       const issueToRemove = this.findRelatedIssueById(idToRemove);
 
       if (issueToRemove) {
@@ -151,9 +142,6 @@ export default {
       } else {
         createAlert({ message: pathIndeterminateErrorMap[this.issuableType] });
       }
-    },
-    onToggleAddRelatedIssuesForm() {
-      this.isFormVisible = !this.isFormVisible;
     },
     onPendingIssueRemoveRequest(indexToRemove) {
       this.store.removePendingRelatedIssue(indexToRemove);
@@ -277,14 +265,13 @@ export default {
     :has-error="hasError"
     :item-add-failure-message="errorMessage"
     @save-reorder="saveIssueOrder"
-    @toggleAddRelatedIssuesForm="onToggleAddRelatedIssuesForm"
     @add-issuable-form-input="onInput"
     @add-issuable-form-blur="onBlur"
     @add-issuable-form-submit="onPendingFormSubmit"
     @add-issuable-form-cancel="onPendingFormCancel"
     @pending-issuable-remove-request="onPendingIssueRemoveRequest"
     @related-issue-remove-request="onRelatedIssueRemoveRequest"
-    @showForm="isFormVisible = true"
-    @hideForm="isFormVisible = false"
+    @show-form="isFormVisible = true"
+    @hide-form="isFormVisible = false"
   />
 </template>

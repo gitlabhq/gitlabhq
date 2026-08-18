@@ -19,6 +19,7 @@ RSpec.describe API::Entities::PlanLimit do
       :ci_registered_project_runners,
       :dotenv_size,
       :dotenv_variables,
+      :cargo_max_file_size,
       :conan_max_file_size,
       :enforcement_limit,
       :generic_packages_max_file_size,

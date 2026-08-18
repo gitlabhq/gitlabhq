@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import ShowDeployment from './components/show_deployment.vue';
 
 Vue.use(VueApollo);
@@ -12,16 +12,9 @@ export const initializeShowDeployment = (selector = 'js-deployment-details') => 
     const apolloProvider = new VueApollo({
       defaultClient: createDefaultClient(),
     });
-    const {
-      projectPath,
-      deploymentIid,
-      environmentName,
-      graphqlEtagKey,
-      protectedEnvironmentsAvailable,
-      protectedEnvironmentsSettingsPath,
-    } = el.dataset;
+    const { projectPath, deploymentIid, environmentName, graphqlEtagKey } = el.dataset;
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'ShowDeploymentRoot',
       apolloProvider,
@@ -30,12 +23,8 @@ export const initializeShowDeployment = (selector = 'js-deployment-details') => 
         deploymentIid,
         environmentName,
         graphqlEtagKey,
-        protectedEnvironmentsAvailable: parseBoolean(protectedEnvironmentsAvailable),
-        protectedEnvironmentsSettingsPath,
       },
-      render(h) {
-        return h(ShowDeployment);
-      },
+      component: ShowDeployment,
     });
   }
 

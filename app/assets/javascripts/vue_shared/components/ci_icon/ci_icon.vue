@@ -50,7 +50,7 @@ export default {
       required: false,
     },
   },
-  emits: ['ciStatusBadgeClick'],
+  emits: ['ci-status-badge-click'],
   computed: {
     href() {
       // href can come from GraphQL (camelCase) or REST API (snake_case)
@@ -127,7 +127,7 @@ export default {
     :aria-label="attributes.ariaLabel"
     :href="attributes.href"
     data-testid="ci-icon"
-    @click="$emit('ciStatusBadgeClick')"
+    @click="$emit('ci-status-badge-click')"
   >
     <span class="ci-icon-gl-icon-wrapper"><gl-icon :name="icon" /></span
     ><span

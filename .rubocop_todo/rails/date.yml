@@ -173,7 +173,6 @@ Rails/Date:
     - 'spec/services/projects/fetch_statistics_increment_service_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'
     - 'spec/services/resource_access_tokens/create_service_spec.rb'
-    - 'spec/services/system_notes/time_tracking_service_spec.rb'
     - 'spec/services/users/activity_service_spec.rb'
     - 'spec/services/users/upsert_credit_card_validation_service_spec.rb'
     - 'spec/services/work_items/callbacks/start_and_due_date_spec.rb'

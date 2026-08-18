@@ -42,8 +42,7 @@ module Gitlab
         extra_attributes: {},
         capture_exception: true
       )
-
-        if import_state.blank? && project_id.blank?
+        if import_state.blank? && project_id.blank? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- Avoid conflict with Layout/EmptyLinesAroundMethodBody
           raise ArgumentError, 'import_state OR project_id must be provided'
         end
 

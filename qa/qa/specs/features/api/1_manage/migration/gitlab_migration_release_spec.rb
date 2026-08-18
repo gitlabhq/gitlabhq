@@ -50,8 +50,7 @@ module QA
         end
 
         it(
-          'successfully imports project release',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243'
+          'successfully imports project release'
         ) do
           expect_project_import_finished_successfully
 

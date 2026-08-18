@@ -1,3 +1,3 @@
-import cycleAnalyticsAppBundle from 'ee_else_ce/analytics/cycle_analytics/bundle';
+import initCycleAnalytics from '~/analytics/cycle_analytics';
 
-cycleAnalyticsAppBundle();
+initCycleAnalytics();

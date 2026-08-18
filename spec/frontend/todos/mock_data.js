@@ -7,6 +7,7 @@ export const MR_REVIEW_REQUEST_TODO = {
   body: 'body',
   targetType: 'MERGEREQUEST',
   targetUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/merge_requests/8',
+  transferFailedRetryUrl: null,
   memberAccessType: 'mergerequest',
   author: {
     id: 'gid://gitlab/User/1',
@@ -41,6 +42,7 @@ export const MR_BUILD_FAILED_TODO = {
   body: 'body',
   targetType: 'MERGEREQUEST',
   targetUrl: 'http://gdk.test:3000/flightjs/Flight/-/merge_requests/17/pipelines',
+  transferFailedRetryUrl: null,
   memberAccessType: 'mergerequest',
   author: {
     id: 'gid://gitlab/User/1',
@@ -75,6 +77,7 @@ export const DESIGN_TODO = {
   targetType: 'DESIGN',
   targetUrl:
     'http://gdk.test:3000/flightjs/Flight/-/issues/35/designs/Screenshot_2024-11-22_at_16.11.25.png#note_1760',
+  transferFailedRetryUrl: null,
   memberAccessType: 'designmanagement::design',
   author: {
     id: 'gid://gitlab/User/1',

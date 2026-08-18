@@ -3,6 +3,8 @@
 
 require 'fileutils'
 require_relative '../../lib/gitlab_edition'
+require_relative '../../lib/gitlab/vue3_migration'
+require_relative 'foundational_flow_feature_flags'
 
 ADDITIONAL_EDITIONS = %w[ee jh].freeze
 
@@ -48,6 +50,41 @@ def mark_replicator_flags_as_used(edition)
   end
 end
 
+def mark_vue3_migration_flags_as_used
+  # Feature flags referenced from `vue3_migration.yml` files are consumed
+  # dynamically by `Gitlab::Vue3Migration#entrypoint_for`, which cannot be
+  # resolved statically by Rubocop. Mark each flag declared in a YAML file
+  # as used so it doesn't get reported as orphan.
+  require 'yaml'
+
+  Dir.glob(Gitlab::Vue3Migration::VUE3_MIGRATION_GLOB).each do |path|
+    doc = YAML.safe_load_file(path)
+    next unless doc.is_a?(Hash)
+
+    feature_flag_name = doc['feature_flag']
+    next unless feature_flag_name.is_a?(String) && !feature_flag_name.empty?
+
+    FileUtils.touch(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
+  end
+end
+
+def mark_foundational_flow_flags_as_used(edition)
+  return unless GitlabEdition.public_send(:"#{edition}?") # rubocop:disable GitlabSecurity/PublicSend
+
+  Dir.glob("#{edition}/app/models/ai/catalog/foundational_flow/definitions/**/*.rb").each do |path|
+    sexp = FoundationalFlowFeatureFlags.parse(File.read(path))
+    unless sexp
+      warn "Could not parse #{path}, skipping."
+      next
+    end
+
+    feature_flag_name = FoundationalFlowFeatureFlags.feature_flag_name(sexp)
+    next unless feature_flag_name
+
+    FileUtils.touch(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
+  end
+end
+
 flag_definition_paths = [
   'config/feature_flags/**/*.yml'
 ]
@@ -55,7 +92,10 @@ flag_definition_paths = [
 ADDITIONAL_EDITIONS.each do |edition|
   add_definition_path!(edition, flag_definition_paths)
   mark_replicator_flags_as_used(edition)
+  mark_foundational_flow_flags_as_used(edition)
 end
+
+mark_vue3_migration_flags_as_used
 
 all_flags = {}
 additional_flags = Set.new

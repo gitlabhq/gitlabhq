@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ProjectSelect from './project_select.vue';
 
@@ -27,27 +27,24 @@ export const initProjectSelects = () => {
     const membership = parseBoolean(el.dataset.membership);
     const hasHtmlLabel = parseBoolean(el.dataset.hasHtmlLabel);
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'ProjectSelectRoot',
-      render(createElement) {
-        return createElement(ProjectSelect, {
-          props: {
-            label,
-            hasHtmlLabel,
-            description,
-            inputName,
-            inputId,
-            groupId,
-            userId,
-            orderBy,
-            block,
-            withShared,
-            includeSubgroups,
-            membership,
-            initialSelection,
-          },
-        });
+      component: ProjectSelect,
+      props: {
+        label,
+        hasHtmlLabel,
+        description,
+        inputName,
+        inputId,
+        groupId,
+        userId,
+        orderBy,
+        block,
+        withShared,
+        includeSubgroups,
+        membership,
+        initialSelection,
       },
     });
   });

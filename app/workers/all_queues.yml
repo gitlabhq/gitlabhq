@@ -908,7 +908,7 @@
   :queue_namespace: :cronjob
 - :name: cronjob:gitlab_performance_bar_stats
   :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :observability
+  :feature_category: :performance_tooling
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :cpu
@@ -1109,6 +1109,16 @@
 - :name: cronjob:namespaces_stuck_transfers_cancel_cron
   :worker_name: Namespaces::StuckTransfersCancelCronWorker
   :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:notifications_mobile_push_prune_stale_subscriptions
+  :worker_name: Notifications::MobilePush::PruneStaleSubscriptionsWorker
+  :feature_category: :notifications
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1456,16 +1466,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:trending_projects
-  :worker_name: TrendingProjectsWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
 - :name: cronjob:update_container_registry_info
   :worker_name: UpdateContainerRegistryInfoWorker
   :feature_category: :container_registry
@@ -1526,8 +1526,28 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:users_migrate_project_bot_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateProjectBotRecordsToGhostUserInBatchesWorker
+  :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
+  :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:users_migrate_service_account_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateServiceAccountRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
@@ -2248,6 +2268,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :mail_scheduler
+- :name: namespaces:namespaces_state_propagation
+  :worker_name: Namespaces::StatePropagationWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :namespaces
 - :name: namespaces:namespaces_unlink_project_forks
   :worker_name: Namespaces::UnlinkProjectForksWorker
   :feature_category: :source_code_management
@@ -3195,6 +3225,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: authn_oauth_applications_cleanup_dynamic_applications
+  :worker_name: Authn::OauthApplications::CleanupDynamicApplicationsWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: authorized_keys
   :worker_name: AuthorizedKeysWorker
   :feature_category: :source_code_management
@@ -3914,6 +3954,16 @@
 - :name: database_lock_tables
   :worker_name: Database::LockTablesWorker
   :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: database_loose_foreign_keys_backlog_checker
+  :worker_name: Database::LooseForeignKeysBacklogCheckerWorker
+  :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -4954,6 +5004,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_transfer_topic_avatar
+  :worker_name: Organizations::TransferTopicAvatarWorker
+  :feature_category: :organization
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages
@@ -5530,6 +5590,16 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: todos_push_notification
+  :worker_name: Todos::PushNotificationWorker
+  :feature_category: :notifications
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: update_external_pull_requests

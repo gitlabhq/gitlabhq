@@ -1,7 +1,7 @@
 ---
 stage: Shared responsibility based on functional area
 group: Shared responsibility based on functional area
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Prometheusメトリクス
 ---
 
@@ -12,13 +12,13 @@ title: GitLab Prometheusメトリクス
 
 {{< /details >}}
 
-GitLab Prometheusメトリクスを有効にするには、次の手順に従います:
+GitLab Prometheusメトリクスを有効にするには、次の手順に従います。
 
 1. 管理者アクセス権を持つユーザーとしてGitLabにサインインします。
-1. 左側のサイドバーの下部で、**管理者**を選択します。[新しいナビゲーションをオン](../../../user/interface_redesign.md#turn-new-navigation-on-or-off)にした場合は、右上隅でアバターを選択し、**管理者**を選択します。
-1. **設定** > **メトリクスとプロファイリング**を選択します。
+1. 右上隅で、**管理者**を選択します。
+1. 左サイドバーで、**設定** > **メトリクスとプロファイリング**を選択します。
 1. **メトリクス - Prometheus**セクションを見つけて、**GitLab Prometheusメトリックエンドポイントを有効にする**を選択します。
-1. 変更を反映させるため、[GitLabを再起動](../../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. 変更を反映するために[GitLabを再起動](../../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
 
 自己コンパイルによるインストールの場合は、手動でこの設定を行う必要があります。
 
@@ -32,15 +32,9 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 
 ## 利用可能なメトリクス {#metrics-available}
 
-{{< history >}}
+次のメトリクスを利用できます。
 
-- GitLab 15.11で、`caller_id`が`redis_hit_miss_operations_total`および`redis_cache_generation_duration_seconds`から[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/392622)されました。
-
-{{< /history >}}
-
-次のメトリクスを利用できます:
-
-| メトリック                                                                         | 種類      | 提供開始 | ラベル                                                                  | 説明 |
+| メトリック                                                                         | 型      | 提供開始 | ラベル                                                                  | 説明 |
 |:-------------------------------------------------------------------------------|:----------|------:|:------------------------------------------------------------------------|:------------|
 | `action_cable_active_connections`                                              | ゲージ     |  13.4 | `server_mode`                                                           | 現在接続中のActionCable WSクライアントの数 |
 | `action_cable_broadcasts_total`                                                | カウンター   | 13.10 | `server_mode`                                                           | 発行されたActionCableブロードキャストの数 |
@@ -54,6 +48,7 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `action_cable_subscription_confirmations_total`                                | カウンター   | 13.10 | `server_mode`                                                           | クライアントからのActionCableサブスクリプションのうち確認された数 |
 | `action_cable_subscription_rejections_total`                                   | カウンター   | 13.10 | `server_mode`                                                           | クライアントからのActionCableサブスクリプションのうち拒否された数 |
 | `action_cable_transmitted_bytes_total`                                         | カウンター   |  16.0 | `operation`、`channel`                                                  | ActionCable経由で送信された総バイト数 |
+| `active_context_queue_size`                                                    | ゲージ     | 18.7  | `queue_name`、`shard`                                                   | 各ActiveContextキュー内の項目数 |
 | `artifact_report_<report_type>_builds_completed_total`                         | カウンター   |  15.3 |                                                                         | レポートタイプのアーティファクトを含む完了したCIビルドのカウンター（レポートタイプ別にグループ化、状態別にラベル付け） |
 | `auto_devops_pipelines_completed_total`                                        | カウンター   |  12.7 |                                                                         | 完了したAuto DevOpsパイプラインのカウンター（状態別にラベル付け） |
 | `cached_object_operations_total`                                               | カウンター   |  15.3 | `controller`、`action`、`endpoint_id`                                   | 特定のWebリクエストに対してキャッシュされたオブジェクトの総数 |
@@ -62,6 +57,8 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `email_receiver_error`                                                         | カウンター   |  14.1 |                                                                         | 受信メール処理時のエラーの総数 |
 | `failed_login_captcha_total`                                                   | ゲージ     |  11.0 |                                                                         | ログイン時にCAPTCHA試行に失敗した回数のカウンター |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio`                   | ヒストグラム |  17.6 | `throttle_key`、`peek`、`feature_category`                              | GitLab Application Rate Limiterにおけるスロットル使用率 |
+| `gitaly_circuit_breaker_requests_total`                                        | カウンター   |  18.9 | `circuit_state`、`result`、`reason`                                     | サーキットブレーカーによって処理された総Gitalyリクエスト数。`result`は`allowed`、`rejected`、または`error`になります。`reason`はエラーの詳細を提供します（例: `resource_exhausted`）。 |
+| `gitaly_circuit_breaker_transitions_total`                                     | カウンター   |  18.9 | `from_state`、`to_state`                                                | サーキットブレーカーの総移行回数。状態は`closed`、`open`です。詳細なエンドポイントとストレージ情報は、構造化されたログで利用できます。 |
 | `gitlab_cache_misses_total`                                                    | カウンター   |  10.2 | `controller`、`action`、`store`、`endpoint_id`                          | キャッシュ読み取りミス |
 | `gitlab_cache_operation_duration_seconds`                                      | ヒストグラム |  10.2 | `operation`、`store`、`endpoint_id`                                     | キャッシュアクセス時間 |
 | `gitlab_cache_operations_total`                                                | カウンター   |  12.2 | `controller`、`action`、`operation`、`store`、`endpoint_id`             | コントローラーまたはアクション別のキャッシュ操作 |
@@ -105,8 +102,8 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `gitlab_ghost_user_migration_scheduled_records_total`                          | ゲージ     |  15.6 |                                                                         | スケジュールされたGhostユーザー移行の総数 |
 | `gitlab_highlight_usage`                                                       | カウンター   |  16.8 | `used_on`                                                               | `Gitlab::Highlight`が使用された回数 |
 | `gitlab_http_router_rule_total`                                                | カウンター   |  17.4 | `rule_action`、`rule_type`                                              | HTTPルーターのルールにおける`rule_action`および`rule_type`の出現回数をカウントする |
-| `gitlab_issuable_fast_count_by_state_failures_total`                           | カウンター   |  13.5 |                                                                         | **Issue**ページと**マージリクエスト**ページでソフトフェイルとなった行数取得操作の数 |
-| `gitlab_issuable_fast_count_by_state_total`                                    | カウンター   |  13.5 |                                                                         | **Issue**ページと**マージリクエスト**ページでの行数取得操作の総数 |
+| `gitlab_issuable_fast_count_by_state_failures_total`                           | カウンター   |  13.5 |                                                                         | **イシュー**ページと**マージリクエスト**ページでソフトフェイルとなった行数取得操作の数 |
+| `gitlab_issuable_fast_count_by_state_total`                                    | カウンター   |  13.5 |                                                                         | **イシュー**ページと**マージリクエスト**ページでの行数取得操作の総数 |
 | `gitlab_keeparound_refs_created_total`                                         | カウンター   | 16.10 | `source`                                                                | 実際に作成されたkeep-around refsの数をカウントする |
 | `gitlab_keeparound_refs_requested_total`                                       | カウンター   | 16.10 | `source`                                                                | 作成がリクエストされたkeep-around refsの数をカウントする |
 | `gitlab_memwd_violations_handled_total`                                        | カウンター   |  15.9 |                                                                         | Rubyプロセスのメモリ違反が処理された回数の合計 |
@@ -168,7 +165,6 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `gitlab_transaction_event_patch_hard_limit_bytes_hit_total`                    | カウンター   |  13.9 |                                                                         | 差分パッチサイズ制限に達した回数のカウンター |
 | `gitlab_transaction_event_push_branch_total`                                   | カウンター   |   9.4 |                                                                         | すべてのブランチへのプッシュ回数のカウンター |
 | `gitlab_transaction_event_rails_exception_total`                               | カウンター   |   9.4 |                                                                         | Railsの例外数のカウンター |
-| `gitlab_transaction_event_receive_email_total`                                 | カウンター   |   9.4 | `handler`                                                               | 受信メール数のカウンター |
 | `gitlab_transaction_event_remove_branch_total`                                 | カウンター   |   9.4 |                                                                         | いずれかのリポジトリでブランチが削除された回数のカウンター |
 | `gitlab_transaction_event_remove_repository_total`                             | カウンター   |   9.4 |                                                                         | リポジトリが削除された回数のカウンター |
 | `gitlab_transaction_event_remove_tag_total`                                    | カウンター   |   9.4 |                                                                         | いずれかのリポジトリでタグが削除された回数のカウンター |
@@ -183,6 +179,8 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `gitlab_vulnerability_report_branch_comparison_real_duration_seconds`          | ヒストグラム | 15.11 |                                                                         | 脆弱性レポートのデフォルトブランチ上のSQLクエリのウォールクロック実行時間 |
 | `http_elasticsearch_requests_duration_seconds`                                 | ヒストグラム |  13.1 | `controller`、`action`、`endpoint_id`                                   | Webトランザクション中のElasticsearchリクエストの処理時間。PremiumおよびUltimateのみです。 |
 | `http_elasticsearch_requests_total`                                            | カウンター   |  13.1 | `controller`、`action`、`endpoint_id`                                   | Webトランザクション中のElasticsearchリクエスト数。PremiumおよびUltimateのみです。 |
+| `http_zoekt_requests_duration_seconds`                                         | ヒストグラム |  19.2 | `controller`、`action`、`endpoint_id`                                   | ウェブトランザクション中のZoektサーバーのクエリ時間。PremiumおよびUltimateのみです。 |
+| `http_zoekt_requests_total`                                                    | カウンター   |  19.2 | `controller`、`action`、`endpoint_id`                                   | ウェブトランザクション中のZoektサーバーへの呼び出し回数。PremiumおよびUltimateのみです。 |
 | `http_request_duration_seconds`                                                | ヒストグラム |   9.4 | `method`                                                                | 成功したリクエストに対するRackミドルウェアからのHTTP応答時間 |
 | `http_requests_total`                                                          | カウンター   |   9.4 | `method`、`status`                                                      | Rackリクエスト数 |
 | `job_queue_duration_seconds`                                                   | ヒストグラム |   9.5 |                                                                         | リクエスト処理の実行時間 |
@@ -202,14 +200,83 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `successful_login_captcha_total`                                               | ゲージ     |  11.0 |                                                                         | ログイン時にCAPTCHA試行に成功した回数のカウンター |
 | `upload_file_does_not_exist`                                                   | カウンター   |  10.7 |                                                                         | アップロードレコードに対応するファイルが見つからなかった回数。 |
 | `user_session_logins_total`                                                    | カウンター   |   9.4 |                                                                         | GitLabの起動または再起動以降にログインしたユーザー数のカウンター |
-| `validity_check_network_errors_total`                                          | カウンター   |  18.6 | `partner`、`error_class`                                                | パートナートークン検証APIコール中の合計ネットワークエラー。Ultimateのみです。 |
-| `validity_check_partner_api_duration_seconds`                                  | ヒストグラム |  18.6 | `partner`                                                               | トークン検証リクエストに対するパートナーAPIの応答時間（秒）。Ultimateのみです。 |
-| `validity_check_partner_api_requests_total`                                    | カウンター   |  18.6 | `partner`、`status`、`error_type`                                       | 成功/失敗ステータスを含む、パートナーAPI検証リクエストの合計数。Ultimateのみです。 |
-| `validity_check_rate_limit_hits_total`                                         | カウンター   |  18.6 | `limit_type`                                              | パートナートークン検証中の合計レート制限ヒット数。Ultimateのみです。 |
+| `validity_check_network_errors_total`                                          | カウンター   |  18.6 | `partner`、`error_class`                                                | パートトークン検証API呼び出し中のネットワークエラーの合計数。Ultimateのみです。 |
+| `validity_check_partner_api_duration_seconds`                                  | ヒストグラム |  18.6 | `partner`                                                               | パートAPIのトークン検証リクエストに対する応答時間（秒単位）。Ultimateのみです。 |
+| `validity_check_partner_api_requests_total`                                    | カウンター   |  18.6 | `partner`、`status`、`error_type`                                       | 成功/失敗のステータスを持つパートナーAPI検証リクエストの総数。Ultimateのみです。 |
+| `validity_check_rate_limit_hits_total`                                         | カウンター   |  18.6 | `limit_type`                                              | パートトークン検証中の総レート制限ヒット数。Ultimateのみです。 |
+
+## Zoektメトリクス {#zoekt-metrics}
+
+{{< details >}}
+
+- プラン: Premium、Ultimate
+- 提供形態: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241045)されました。
+
+{{< /history >}}
+
+Zoektを搭載した[完全一致コードの検索](../../../user/search/exact_code_search.md)のメトリクス。
+
+### リクエストごとのリクエストとジョブごとのメトリクス {#per-request-and-per-job-metrics}
+
+これらのメトリクスは、GitLab RailsからZoektノードへのすべてのHTTPリクエストに対して、ウェブ/GrapeリクエストとSidekiqジョブの両方から発行されます。
+
+| メトリック | 型 | 提供開始 | ラベル | 説明 |
+|:-------|:-----|------:|:-------|:------------|
+| `http_zoekt_requests_total` | カウンター | 19.2 | `controller`、`action`、`endpoint_id` | ウェブトランザクション中のZoektサーバーへの呼び出し回数。PremiumおよびUltimateのみです。 |
+| `http_zoekt_requests_duration_seconds` | ヒストグラム | 19.2 | `controller`、`action`、`endpoint_id` | ウェブトランザクション中のZoektサーバーのクエリ時間。PremiumおよびUltimateのみです。 |
+| `sidekiq_zoekt_requests_total` | カウンター | 19.2 | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | Sidekiqジョブ実行中のZoektリクエスト。PremiumおよびUltimateのみです。 |
+| `sidekiq_zoekt_requests_duration_seconds` | ヒストグラム | 19.2 | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | SidekiqジョブがZoektサーバーへのリクエストに費やした時間（秒単位）。PremiumおよびUltimateのみです。 |
+
+2つの`sidekiq_zoekt_*`行は、Sidekiqメトリクス表に、同等のElasticsearchおよびRedisメトリクスと並んでリストされています。
+
+### データベース由来のZoektメトリクス（GitLab exporterから） {#database-derived-zoekt-metrics-from-gitlab-exporter}
+
+データベース由来のZoektメトリクス（ノードステータス、タスクキューの深さ、インデックス状態、ストレージバイト）は、`gitlab-exporter`プロセスによって`search_zoekt_*`プレフィックスの下で発行されます。`gitlab-exporter`エンドポイントはこれらのメトリクスを発行しますが、Rails `/-/metrics`エンドポイントは発行しません。
+
+| メトリック | 型 | 提供開始 | ラベル | 説明 |
+|:-------|:-----|------:|:-------|:------------|
+| `search_zoekt_task_processing_queue_size` | ゲージ | **なし** | `node_name`、`node_id` | Zoektによる処理待ちのタスク数。 |
+| `search_zoekt_repositories_schema_version_count` | ゲージ | **なし** | `target_schema_version`、`zoekt_node_id`、`zoekt_node_name` | 最新のスキーマバージョンを持たない`zoekt_repositories`の数。 |
+| `search_zoekt_nodes_status` | ゲージ | **なし** | `zoekt_node_id`、`zoekt_node_name` | 各Zoektノードのステータス。`0`はオフライン（2分以上前に最後に確認）、`1`はオンラインです。 |
+| `search_zoekt_node_unclaimed_storage_bytes` | ゲージ | **なし** | `zoekt_node_id`、`zoekt_node_name` | Zoektノードの未請求ストレージバイト。 |
+| `search_zoekt_node_storage_percent_used` | ゲージ | **なし** | `zoekt_node_id`、`zoekt_node_name` | Zoektノードで使用されているストレージの割合（範囲: `0`から`1`）。 |
+| `search_zoekt_repositories_states_total` | ゲージ | **なし** | `state` | 各状態のZoektリポジトリ数。 |
+| `search_zoekt_indices_states` | ゲージ | **なし** | `state` | 各状態のZoektインデックス数。 |
+| `search_zoekt_indices_watermark_levels` | ゲージ | **なし** | `watermark_level` | 各透かしレベルのZoektインデックス数。 |
+| `search_zoekt_indices_reserved_storage_bytes` | ゲージ | **なし** | `zoekt_index_id`、`zoekt_node_name` | 各Zoektインデックスの予約済みストレージバイト。 |
+| `search_zoekt_indices_used_storage_bytes` | ゲージ | **なし** | `zoekt_index_id`、`zoekt_node_name` | 各Zoektインデックスの使用済みストレージバイト。 |
+| `search_zoekt_node_enabled_namespaces` | ゲージ | 19.2 | `node_id`、`node_name` | Zoektノードごとの有効なネームスペース数。 |
+| `search_zoekt_node_tasks` | ゲージ | 19.2 | `node_id`、`node_name`、`state` | ノード上のZoektインデックス作成タスク数（状態別）。 |
+| `search_zoekt_indices_with_stale_used_storage_bytes` | ゲージ | 19.2 | **なし** | 最後のインデックス実行以降、`used_storage_bytes`値が更新されていないZoektインデックスの数。 |
+
+### サービスレベル指標メトリクス {#sli-metrics}
+
+グローバル検索のサービスレベル指標メトリクスには、`search_type="zoekt"`ラベルの下にZoekt検索が含まれます。詳細については、[アプリケーションサービスレベル指標](../../../development/application_slis/_index.md)を参照してください。
+
+| メトリック | 型 | 提供開始 | ラベル | 説明 |
+|:-------|:-----|------:|:-------|:------------|
+| `gitlab_sli_global_search_apdex_success_total` | カウンター | 14.4 | `search_type`、`search_level`、`search_scope`、`endpoint_id` | レイテンシーターゲット（コード検索の場合は15.52秒）を満たしたZoekt検索の総数。`search_type="zoekt"`でフィルタリングします。 |
+| `gitlab_sli_global_search_apdex_total` | カウンター | 14.4 | `search_type`、`search_level`、`search_scope`、`endpoint_id` | Zoekt検索のApdex測定値の総数。`search_type="zoekt"`でフィルタリングします。 |
+| `gitlab_sli_global_search_error_total` | カウンター | 14.4 | `search_type`、`search_level`、`search_scope`、`endpoint_id` | Zoekt検索エラー測定値の総数。`search_type="zoekt"`でフィルタリングします。 |
+
+### Zoektタスクサービスレベル指標メトリクス {#zoekt-task-sli-metrics}
+
+| メトリック | 型 | 提供開始 | ラベル | 説明 |
+|:-------|:-----|------:|:-------|:------------|
+| `gitlab_sli_search_zoekt_tasks_apdex_success_total` | カウンター | 16.0 | `zoekt_node`、`task_type` | 30分目標以内に完了したZoektインデックス作成タスクの総数。 |
+| `gitlab_sli_search_zoekt_tasks_apdex_total` | カウンター | 16.0 | `zoekt_node`、`task_type` | Zoektインデックス作成タスクのApdex測定値の総数。 |
+| `gitlab_sli_search_zoekt_tasks_error_total` | カウンター | 16.0 | `zoekt_node`、`task_type` | Zoektインデックス作成タスクエラーの総数。 |
+| `gitlab_sli_search_zoekt_tasks_requests_total` | カウンター | 16.0 | `zoekt_node`、`task_type` | キューに追加されたZoektタスクの総数。 |
 
 ## 機能フラグで制御されるメトリクス {#metrics-controlled-by-a-feature-flag}
 
-次のメトリクスは、機能フラグで制御できます:
+次のメトリクスは、機能フラグで制御できます。
 
 | メトリック                                       | 機能フラグ |
 |:---------------------------------------------|:-------------|
@@ -221,6 +288,8 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 | `gitlab_ci_current_queue_size`               | `gitlab_ci_builds_queuing_metrics` |
 | `gitlab_ci_queue_retrieval_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
 | `gitlab_ci_queue_active_runners_total`       | `gitlab_ci_builds_queuing_metrics` |
+| `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
+| `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
 
 ## Praefectメトリクス {#praefect-metrics}
 
@@ -230,12 +299,12 @@ Sidekiqノードのメトリクスを有効にして表示する方法につい�
 
 Sidekiqジョブもメトリクスを収集することがあり、Sidekiq exporterが有効になっている場合にこれらのメトリクスにアクセスできます。たとえば、`gitlab.yml`の`monitoring.sidekiq_exporter`設定オプションを使用します。これらのメトリクスは、設定されたポートの`/metrics`パスから提供されます。
 
-| メトリック                                                   | 種類      | 提供開始 | ラベル                                                                                    | 説明 |
+| メトリック                                                   | 型      | 提供開始 | ラベル                                                                                    | 説明 |
 |:---------------------------------------------------------|:----------|:------|:------------------------------------------------------------------------------------------|:------------|
 | `destroyed_job_artifacts_count_total`                    | カウンター   | 13.6  |                                                                                           | 破棄された期限切れのジョブアーティファクトの数 |
 | `destroyed_pipeline_artifacts_count_total`               | カウンター   | 13.8  |                                                                                           | 破棄された期限切れのパイプラインアーティファクトの数 |
 | `geo_ci_secure_files_checksum_failed`                    | ゲージ     | 15.3  | `url`                                                                                     | プライマリでチェックサムの計算に失敗した安全なファイルの数 |
-| `geo_ci_secure_files_checksum_total`                     | ゲージ     | 15.3  | `url`                                                                                     | プライマリでチェックサムが計算された安全なファイルの数 |
+| `geo_ci_secure_files_checksum_total`                     | ゲージ     | 15.3  | `url`                                                                                     | プライマリでチェックサムの計算対象となる安全なファイルの数 |
 | `geo_ci_secure_files_checksummed`                        | ゲージ     | 15.3  | `url`                                                                                     | プライマリでチェックサムの計算に成功した安全なファイルの数 |
 | `geo_ci_secure_files_failed`                             | ゲージ     | 15.3  | `url`                                                                                     | セカンダリで同期に失敗した同期可能な安全なファイルの数 |
 | `geo_ci_secure_files_registry`                           | ゲージ     | 15.3  | `url`                                                                                     | レジストリ内の安全なファイルの数 |
@@ -258,7 +327,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_cursor_last_event_timestamp`                        | ゲージ     | 10.2  | `url`                                                                                     | セカンダリが処理したイベントログの最後のUNIXタイムスタンプ |
 | `geo_db_replication_lag_seconds`                         | ゲージ     | 10.2  | `url`                                                                                     | データベースのレプリケーションラグ（秒） |
 | `geo_dependency_proxy_blob_checksum_failed`              | ゲージ     | 15.6  |                                                                                           | プライマリでチェックサムの計算に失敗した依存プロキシblobの数 |
-| `geo_dependency_proxy_blob_checksum_total`               | ゲージ     | 15.6  |                                                                                           | プライマリでチェックサムが計算された依存プロキシblobの数 |
+| `geo_dependency_proxy_blob_checksum_total`               | ゲージ     | 15.6  |                                                                                           | プライマリでチェックサムの計算対象となる依存プロキシblobの数 |
 | `geo_dependency_proxy_blob_checksummed`                  | ゲージ     | 15.6  |                                                                                           | プライマリでチェックサムの計算に成功した依存プロキシblobの数 |
 | `geo_dependency_proxy_blob_failed`                       | ゲージ     | 15.6  |                                                                                           | セカンダリで同期に失敗した依存プロキシblobの数 |
 | `geo_dependency_proxy_blob_registry`                     | ゲージ     | 15.6  |                                                                                           | レジストリ内の依存プロキシblobの数 |
@@ -268,7 +337,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_dependency_proxy_blob_verified`                     | ゲージ     | 15.6  |                                                                                           | セカンダリで検証に成功した依存プロキシblobの数 |
 | `geo_dependency_proxy_blob`                              | ゲージ     | 15.6  |                                                                                           | プライマリにおける依存プロキシblobの数 |
 | `geo_dependency_proxy_manifests_checksum_failed`         | ゲージ     | 15.6  | `url`                                                                                     | プライマリでチェックサムの計算に失敗した依存プロキシマニフェストの数 |
-| `geo_dependency_proxy_manifests_checksum_total`          | ゲージ     | 15.6  | `url`                                                                                     | プライマリでチェックサムが計算された依存プロキシマニフェストの数 |
+| `geo_dependency_proxy_manifests_checksum_total`          | ゲージ     | 15.6  | `url`                                                                                     | プライマリでチェックサムの計算対象となる依存プロキシマニフェストの数 |
 | `geo_dependency_proxy_manifests_checksummed`             | ゲージ     | 15.6  | `url`                                                                                     | プライマリでチェックサムの計算に成功した依存プロキシマニフェストの数 |
 | `geo_dependency_proxy_manifests_failed`                  | ゲージ     | 15.6  | `url`                                                                                     | セカンダリで同期に失敗した同期可能な依存プロキシマニフェストの数 |
 | `geo_dependency_proxy_manifests_registry`                | ゲージ     | 15.6  | `url`                                                                                     | レジストリ内の依存プロキシマニフェストの数 |
@@ -288,7 +357,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_design_management_repositories_verified`            | ゲージ     | 16.1  | `url`                                                                                     | セカンダリで検証されたデザインリポジトリの数 |
 | `geo_design_management_repositories`                     | ゲージ     | 16.1  | `url`                                                                                     | プライマリにおけるデザインリポジトリの数 |
 | `geo_group_wiki_repositories_checksum_failed`            | ゲージ     | 13.10 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したグループWikiの数 |
-| `geo_group_wiki_repositories_checksum_total`             | ゲージ     | 16.3  | `url`                                                                                     | プライマリでチェックサムが計算されたグループWikiの数 |
+| `geo_group_wiki_repositories_checksum_total`             | ゲージ     | 16.3  | `url`                                                                                     | プライマリでチェックサムの計算対象となるグループWikiの数 |
 | `geo_group_wiki_repositories_checksummed`                | ゲージ     | 13.10 | `url`                                                                                     | プライマリでチェックサムの計算に成功したグループWikiの数 |
 | `geo_group_wiki_repositories_failed`                     | ゲージ     | 13.10 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なグループWikiの数 |
 | `geo_group_wiki_repositories_registry`                   | ゲージ     | 13.10 | `url`                                                                                     | レジストリ内のグループWikiの数 |
@@ -298,7 +367,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_group_wiki_repositories_verified`                   | ゲージ     | 16.3  | `url`                                                                                     | セカンダリで検証に成功したグループWikiの数 |
 | `geo_group_wiki_repositories`                            | ゲージ     | 13.10 | `url`                                                                                     | プライマリにおけるグループWikiの数 |
 | `geo_job_artifacts_checksum_failed`                      | ゲージ     | 14.8  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したジョブアーティファクトの数 |
-| `geo_job_artifacts_checksum_total`                       | ゲージ     | 14.8  | `url`                                                                                     | プライマリでチェックサムが計算されたジョブアーティファクトの数 |
+| `geo_job_artifacts_checksum_total`                       | ゲージ     | 14.8  | `url`                                                                                     | プライマリでチェックサムの計算対象となるジョブアーティファクトの数 |
 | `geo_job_artifacts_checksummed`                          | ゲージ     | 14.8  | `url`                                                                                     | プライマリでチェックサムの計算に成功したジョブアーティファクトの数 |
 | `geo_job_artifacts_failed`                               | ゲージ     | 14.8  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なジョブアーティファクトの数 |
 | `geo_job_artifacts_registry`                             | ゲージ     | 14.8  | `url`                                                                                     | レジストリ内のジョブアーティファクトの数 |
@@ -321,7 +390,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_lfs_objects_verified`                               | ゲージ     | 14.6  | `url`                                                                                     | セカンダリで検証に成功したLFSオブジェクトの数 |
 | `geo_lfs_objects`                                        | ゲージ     | 10.2  | `url`                                                                                     | プライマリのLFSオブジェクトの数 |
 | `geo_merge_request_diffs_checksum_failed`                | ゲージ     | 13.4  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したマージリクエスト差分の数 |
-| `geo_merge_request_diffs_checksum_total`                 | ゲージ     | 13.12 | `url`                                                                                     | プライマリでチェックサムが計算されたマージリクエスト差分の数 |
+| `geo_merge_request_diffs_checksum_total`                 | ゲージ     | 13.12 | `url`                                                                                     | プライマリでチェックサムの計算対象となるマージリクエスト差分の数 |
 | `geo_merge_request_diffs_checksummed`                    | ゲージ     | 13.4  | `url`                                                                                     | プライマリでチェックサムの計算に成功したマージリクエスト差分の数 |
 | `geo_merge_request_diffs_failed`                         | ゲージ     | 13.4  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なマージリクエスト差分の数 |
 | `geo_merge_request_diffs_registry`                       | ゲージ     | 13.4  | `url`                                                                                     | レジストリ内のマージリクエスト差分の数 |
@@ -331,23 +400,33 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_merge_request_diffs_verified`                       | ゲージ     | 13.12 | `url`                                                                                     | セカンダリで検証に成功したマージリクエスト差分の数 |
 | `geo_merge_request_diffs`                                | ゲージ     | 13.4  | `url`                                                                                     | プライマリにおけるマージリクエスト差分の数 |
 | `geo_package_files_checksum_failed`                      | ゲージ     | 13.0  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したパッケージファイルの数 |
-| `geo_package_files_checksummed`                          | ゲージ     | 13.0  | `url`                                                                                     | プライマリでチェックサムが計算されたパッケージファイルの数 |
+| `geo_package_files_checksummed`                          | ゲージ     | 13.0  | `url`                                                                                     | プライマリでチェックサムの計算対象となるパッケージファイルの数 |
 | `geo_package_files_failed`                               | ゲージ     | 13.3  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なパッケージファイルの数 |
 | `geo_package_files_registry`                             | ゲージ     | 13.3  | `url`                                                                                     | レジストリ内のパッケージファイルの数 |
 | `geo_package_files_synced`                               | ゲージ     | 13.3  | `url`                                                                                     | セカンダリで同期された同期可能なパッケージファイルの数 |
 | `geo_package_files`                                      | ゲージ     | 13.0  | `url`                                                                                     | プライマリにおけるパッケージファイルの数 |
-| `geo_packages_nuget_symbols`                             | ゲージ     | 18.6  | `url`                                                                                     | プライマリ上のNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_checksum_total`              | ゲージ     | 18.6  | `url`                                                                                     | プライマリ上でチェックサムするNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_checksummed`                 | ゲージ     | 18.6  | `url`                                                                                     | プライマリでチェックサムの計算に成功したNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_checksum_failed`             | ゲージ     | 18.6  | `url`                                                                                     | プライマリ上でチェックサムの計算に失敗したNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_synced`                      | ゲージ     | 18.6  | `url`                                                                                     | セカンダリ上で同期された同期なNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_failed`                      | ゲージ     | 18.6  | `url`                                                                                     | セカンダリ上での同期に失敗した、同期なNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_registry`                    | ゲージ     | 18.6  | `url`                                                                                     | レジストリ内のNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_verification_total`          | ゲージ     | 18.6  | `url`                                                                                     | セカンダリ上で検証を試みるNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_verified`                    | ゲージ     | 18.6  | `url`                                                                                     | セカンダリ上で正常に検証されたNuGetシンボルファイルの数 |
-| `geo_packages_nuget_symbols_verification_failed`         | ゲージ     | 18.6  | `url`                                                                                     | セカンダリ上で検証に失敗したNuGetシンボルファイルの数 |
+| `geo_packages_nuget_symbols`                             | ゲージ     | 18.6  | `url`                                                                                     | プライマリにあるNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_checksum_total`              | ゲージ     | 18.6  | `url`                                                                                     | プライマリでチェックサムの計算対象となるNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_checksummed`                 | ゲージ     | 18.6  | `url`                                                                                     | プライマリでチェックサムを正常に計算したNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_checksum_failed`             | ゲージ     | 18.6  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_synced`                      | ゲージ     | 18.6  | `url`                                                                                     | セカンダリで同期された同期可能なNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_failed`                      | ゲージ     | 18.6  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_registry`                    | ゲージ     | 18.6  | `url`                                                                                     | レジストリ内のNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_verification_total`          | ゲージ     | 18.6  | `url`                                                                                     | セカンダリで検証を試みるNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_verified`                    | ゲージ     | 18.6  | `url`                                                                                     | セカンダリで正常に検証されたNuGetシンボルファイルの数。 |
+| `geo_packages_nuget_symbols_verification_failed`         | ゲージ     | 18.6  | `url`                                                                                     | セカンダリで検証に失敗したNuGetシンボルファイルの数。 |
+| `geo_packages_helm_metadata_caches`                      | ゲージ     | 18.9  | `url`                                                                                     | プライマリにあるHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_checksum_total`       | ゲージ     | 18.9  | `url`                                                                                     | プライマリでチェックサムの計算対象となるHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_checksummed`          | ゲージ     | 18.9  | `url`                                                                                     | プライマリでチェックサムを正常に計算したHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_checksum_failed`      | ゲージ     | 18.9  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_synced`               | ゲージ     | 18.9  | `url`                                                                                     | セカンダリで同期された同期可能なHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_failed`               | ゲージ     | 18.9  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_registry`             | ゲージ     | 18.9  | `url`                                                                                     | レジストリ内のHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_verification_total`   | ゲージ     | 18.9  | `url`                                                                                     | セカンダリで検証を試みるHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_verified`             | ゲージ     | 18.9  | `url`                                                                                     | セカンダリで正常に検証されたHelmメタデータキャッシュの数。 |
+| `geo_packages_helm_metadata_caches_verification_failed`  | ゲージ     | 18.9  | `url`                                                                                     | セカンダリで検証に失敗したHelmメタデータキャッシュの数。 |
 | `geo_pages_deployments_checksum_failed`                  | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したPagesデプロイの数 |
-| `geo_pages_deployments_checksum_total`                   | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムが計算されたPagesデプロイの数 |
+| `geo_pages_deployments_checksum_total`                   | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムの計算対象となるPagesデプロイの数 |
 | `geo_pages_deployments_checksummed`                      | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムの計算に成功したPagesデプロイの数 |
 | `geo_pages_deployments_failed`                           | ゲージ     | 14.3  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なPagesデプロイの数 |
 | `geo_pages_deployments_registry`                         | ゲージ     | 14.3  | `url`                                                                                     | レジストリ内のPagesデプロイの数 |
@@ -357,7 +436,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_pages_deployments_verified`                         | ゲージ     | 14.6  | `url`                                                                                     | セカンダリで検証に成功したPagesデプロイの数 |
 | `geo_pages_deployments`                                  | ゲージ     | 14.3  | `url`                                                                                     | プライマリにおけるPagesデプロイの数 |
 | `geo_project_repositories_checksum_failed`               | ゲージ     | 16.2  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したプロジェクトリポジトリの数 |
-| `geo_project_repositories_checksum_total`                | ゲージ     | 16.2  | `url`                                                                                     | プライマリでチェックサムが計算されたプロジェクトリポジトリの数 |
+| `geo_project_repositories_checksum_total`                | ゲージ     | 16.2  | `url`                                                                                     | プライマリでチェックサムの計算対象となるプロジェクトリポジトリの数 |
 | `geo_project_repositories_checksummed`                   | ゲージ     | 16.2  | `url`                                                                                     | プライマリでチェックサムの計算に成功したプロジェクトリポジトリの数 |
 | `geo_project_repositories_failed`                        | ゲージ     | 16.2  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なプロジェクトリポジトリの数 |
 | `geo_project_repositories_registry`                      | ゲージ     | 16.2  | `url`                                                                                     | レジストリ内のプロジェクトリポジトリの数 |
@@ -367,7 +446,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_project_repositories_verified`                      | ゲージ     | 16.2  | `url`                                                                                     | セカンダリで検証に成功したプロジェクトリポジトリの数 |
 | `geo_project_repositories`                               | ゲージ     | 16.2  | `url`                                                                                     | プライマリにおけるプロジェクトリポジトリの数 |
 | `geo_project_wiki_repositories_checksum_failed`          | ゲージ     | 15.10 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したプロジェクトWikiリポジトリの数 |
-| `geo_project_wiki_repositories_checksum_total`           | ゲージ     | 15.10 | `url`                                                                                     | プライマリでチェックサムが計算されたプロジェクトWikiリポジトリの数 |
+| `geo_project_wiki_repositories_checksum_total`           | ゲージ     | 15.10 | `url`                                                                                     | プライマリでチェックサムの計算対象となるプロジェクトWikiリポジトリの数 |
 | `geo_project_wiki_repositories_checksummed`              | ゲージ     | 15.10 | `url`                                                                                     | プライマリでチェックサムの計算に成功したプロジェクトWikiリポジトリの数 |
 | `geo_project_wiki_repositories_failed`                   | ゲージ     | 15.10 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なプロジェクトWikiリポジトリの数 |
 | `geo_project_wiki_repositories_registry`                 | ゲージ     | 15.10 | `url`                                                                                     | レジストリ内のプロジェクトWikiリポジトリの数 |
@@ -377,18 +456,260 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_project_wiki_repositories_verified`                 | ゲージ     | 15.10 | `url`                                                                                     | セカンダリで検証に成功したプロジェクトWikiリポジトリの数 |
 | `geo_project_wiki_repositories`                          | ゲージ     | 15.10 | `url`                                                                                     | プライマリにおけるプロジェクトWikiリポジトリの数 |
 | `geo_repositories_checksum_failed`                       | ゲージ     | 10.7  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_checksum_failed`に置き換えられました。プライマリでチェックサムの計算に失敗したリポジトリの数です |
-| `geo_repositories_checksummed`                           | ゲージ     | 10.7  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_checksummed`に置き換えられました。プライマリでチェックサムが計算されたリポジトリの数です |
+| `geo_repositories_checksummed`                           | ゲージ     | 10.7  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_checksummed`に置き換えられました。プライマリでチェックサムの計算対象となるリポジトリの数 |
 | `geo_repositories_failed`                                | ゲージ     | 10.2  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_failed`に置き換えられました。セカンダリで同期に失敗したリポジトリの数です |
 | `geo_repositories_synced`                                | ゲージ     | 10.2  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_synced`に置き換えられました。セカンダリで同期されたリポジトリの数です |
 | `geo_repositories_verification_failed`                   | ゲージ     | 10.7  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_verification_failed`に置き換えられました。セカンダリで検証に失敗したリポジトリの数です |
 | `geo_repositories_verified`                              | ゲージ     | 10.7  | `url`                                                                                     | 非推奨となりました。17.0で削除される予定です。16.3と16.4では欠落しています。`geo_project_repositories_verified`に置き換えられました。セカンダリで検証に成功したリポジトリの数です |
 | `geo_repositories`                                       | ゲージ     | 10.2  | `url`                                                                                     | 17.9で非推奨になりました。今後のどのGitLabリリースで削除対象となるのかは、まだ確定していません。代わりに`geo_project_repositories`を使用してください。プライマリで利用可能なリポジトリの総数です |
 | `geo_snippet_repositories_checksum_failed`               | ゲージ     | 13.4  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したスニペットの数 |
-| `geo_snippet_repositories_checksummed`                   | ゲージ     | 13.4  | `url`                                                                                     | プライマリでチェックサムが計算されたスニペットの数 |
+| `geo_snippet_repositories_checksummed`                   | ゲージ     | 13.4  | `url`                                                                                     | プライマリでチェックサムの計算対象となるスニペットの数 |
 | `geo_snippet_repositories_failed`                        | ゲージ     | 13.4  | `url`                                                                                     | セカンダリで同期に失敗した、同期可能なスニペットの数 |
 | `geo_snippet_repositories_registry`                      | ゲージ     | 13.4  | `url`                                                                                     | レジストリ内の同期可能なスニペットの数 |
 | `geo_snippet_repositories_synced`                        | ゲージ     | 13.4  | `url`                                                                                     | セカンダリで同期された、同期可能なスニペットの数 |
 | `geo_snippet_repositories`                               | ゲージ     | 13.4  | `url`                                                                                     | プライマリにおけるスニペットの数 |
+| `geo_abuse_report_uploads`                               | ゲージ     | 18.10 | `url`                                                                                     | プライマリにある不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_checksum_total`                | ゲージ     | 18.10 | `url`                                                                                     | プライマリでチェックサムの計算対象となる不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_checksummed`                   | ゲージ     | 18.10 | `url`                                                                                     | プライマリでチェックサムを正常に計算した不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_checksum_failed`               | ゲージ     | 18.10 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_synced`                        | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで同期された同期可能な不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_failed`                        | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_registry`                      | ゲージ     | 18.10 | `url`                                                                                     | レジストリ内の不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_verification_total`            | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで検証を試みる不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_verified`                      | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで正常に検証された不正使用レポートアップロードの数。 |
+| `geo_abuse_report_uploads_verification_failed`           | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで検証に失敗した不正使用レポートアップロードの数。 |
+| `geo_project_uploads`                                    | ゲージ     | 18.10 | `url`                                                                                     | プライマリにあるプロジェクトアップロードの数。 |
+| `geo_project_uploads_checksum_total`                     | ゲージ     | 18.10 | `url`                                                                                     | プライマリでチェックサムの計算対象となるプロジェクトアップロードの数。 |
+| `geo_project_uploads_checksummed`                        | ゲージ     | 18.10 | `url`                                                                                     | プライマリでチェックサムを正常に計算したプロジェクトアップロードの数。 |
+| `geo_project_uploads_checksum_failed`                    | ゲージ     | 18.10 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したプロジェクトアップロードの数。 |
+| `geo_project_uploads_synced`                             | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで同期された同期可能なプロジェクトアップロードの数。 |
+| `geo_project_uploads_failed`                             | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なプロジェクトアップロードの数。 |
+| `geo_project_uploads_registry`                           | ゲージ     | 18.10 | `url`                                                                                     | レジストリ内のプロジェクトアップロードの数。 |
+| `geo_project_uploads_verification_total`                 | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで検証を試みるプロジェクトアップロードの数。 |
+| `geo_project_uploads_verified`                           | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで正常に検証されたプロジェクトアップロードの数。 |
+| `geo_project_uploads_verification_failed`                | ゲージ     | 18.10 | `url`                                                                                     | セカンダリで検証に失敗したプロジェクトアップロードの数。 |
+| `geo_group_uploads`                                      | ゲージ     | 18.11 | `url`                                                                                     | プライマリにあるグループアップロードの数。 |
+| `geo_group_uploads_checksum_total`                       | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算対象となるグループアップロードの数。 |
+| `geo_group_uploads_checksummed`                          | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムを正常に計算したグループアップロードの数。 |
+| `geo_group_uploads_checksum_failed`                      | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したグループアップロードの数。 |
+| `geo_group_uploads_synced`                               | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期された同期可能なグループアップロードの数。 |
+| `geo_group_uploads_failed`                               | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なグループアップロードの数。 |
+| `geo_group_uploads_registry`                             | ゲージ     | 18.11 | `url`                                                                                     | レジストリ内のグループアップロードの数。 |
+| `geo_group_uploads_verification_total`                   | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証を試みるグループアップロードの数。 |
+| `geo_group_uploads_verified`                             | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで正常に検証されたグループアップロードの数。 |
+| `geo_group_uploads_verification_failed`                  | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証に失敗したグループアップロードの数。 |
+| `geo_user_uploads`                                       | ゲージ     | 18.11 | `url`                                                                                     | プライマリにあるユーザーアップロードの数。 |
+| `geo_user_uploads_checksum_total`                        | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算対象となるユーザーアップロードの数。 |
+| `geo_user_uploads_checksummed`                           | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムを正常に計算したユーザーアップロードの数。 |
+| `geo_user_uploads_checksum_failed`                       | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したユーザーアップロードの数。 |
+| `geo_user_uploads_synced`                                | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期された同期可能なユーザーアップロードの数。 |
+| `geo_user_uploads_failed`                                | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なユーザーアップロードの数。 |
+| `geo_user_uploads_registry`                              | ゲージ     | 18.11 | `url`                                                                                     | レジストリ内のユーザーアップロードの数。 |
+| `geo_user_uploads_verification_total`                    | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証を試みるユーザーアップロードの数。 |
+| `geo_user_uploads_verified`                              | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで正常に検証されたユーザーアップロードの数。 |
+| `geo_user_uploads_verification_failed`                   | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証に失敗したユーザーアップロードの数。 |
+| `geo_design_management_action_uploads`                   | ゲージ     | 18.11 | `url`                                                                                     | プライマリにあるデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_checksum_total`    | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算対象となるデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_checksummed`       | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムを正常に計算したデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_checksum_failed`   | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_synced`            | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期された同期可能なデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_failed`            | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_registry`          | ゲージ     | 18.11 | `url`                                                                                     | レジストリ内のデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_verification_total`| ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証を試みるデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_verified`          | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで正常に検証されたデザイン管理アクションアップロードの数。 |
+| `geo_design_management_action_uploads_verification_failed`| ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証に失敗したデザイン管理アクションアップロードの数。 |
+| `geo_bulk_import_export_upload_uploads`                  | ゲージ     | 19.0 | `url`                                                                                     | プライマリにあるバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_checksum_total`   | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算対象となるバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_checksummed`      | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムを正常に計算したバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_checksum_failed`  | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_synced`           | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期された同期可能なバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_failed`           | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_registry`         | ゲージ     | 19.0 | `url`                                                                                     | レジストリ内のバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_verification_total`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証を試みるバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_verified`         | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで正常に検証されたバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_bulk_import_export_upload_uploads_verification_failed`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証に失敗したバルクインポート/エクスポートアーカイブファイルの数。 |
+| `geo_achievement_uploads`                                | ゲージ     | 18.11 | `url`                                                                                     | プライマリにあるアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_checksum_total`                 | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算対象となるアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_checksummed`                    | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムを正常に計算したアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_checksum_failed`                | ゲージ     | 18.11 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_synced`                         | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期された同期可能なアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_failed`                         | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_registry`                       | ゲージ     | 18.11 | `url`                                                                                     | レジストリ内のアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_verification_total`             | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証を試みるアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_verified`                       | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで正常に検証されたアチーブメントアップロードの数。 |
+| `geo_achievement_uploads_verification_failed`            | ゲージ     | 18.11 | `url`                                                                                     | セカンダリで検証に失敗したアチーブメントアップロードの数。 |
+| `geo_import_export_upload_uploads`                       | ゲージ     | 19.0  | `url`                                                                                     | プライマリにあるインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_checksum_total`        | ゲージ     | 19.0  | `url`                                                                                     | プライマリでチェックサムの計算対象となるインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_checksummed`           | ゲージ     | 19.0  | `url`                                                                                     | プライマリでチェックサムを正常に計算したインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_checksum_failed`       | ゲージ     | 19.0  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_synced`                | ゲージ     | 19.0  | `url`                                                                                     | セカンダリで同期された同期可能なインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_failed`                | ゲージ     | 19.0  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_registry`              | ゲージ     | 19.0  | `url`                                                                                     | レジストリ内のインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_verification_total`    | ゲージ     | 19.0  | `url`                                                                                     | セカンダリで検証を試みるインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_verified`              | ゲージ     | 19.0  | `url`                                                                                     | セカンダリで正常に検証されたインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_import_export_upload_uploads_verification_failed`   | ゲージ     | 19.0  | `url`                                                                                     | セカンダリで検証に失敗したインポート/エクスポートアーカイブアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads`               | ゲージ     | 19.0 | `url`                                                                                     | プライマリにある脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_checksum_total`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算対象となる脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_checksummed`   | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムを正常に計算した脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_checksum_failed`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_synced`        | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期された同期可能な脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_failed`        | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_registry`      | ゲージ     | 19.0 | `url`                                                                                     | レジストリ内の脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_verification_total`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証を試みる脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_verified`      | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで正常に検証された脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_vulnerability_archive_export_uploads_verification_failed`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証に失敗した脆弱性アーカイブエクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads`| ゲージ     | 19.0 | `url`                                                                                     | プライマリにあるプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_checksum_total`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算対象となるプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_checksummed`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムを正常に計算したプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_checksum_failed`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_synced`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期された同期可能なプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_failed`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_registry`| ゲージ     | 19.0 | `url`                                                                                     | レジストリ内のプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_verification_total`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証を試みるプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_verified`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで正常に検証されたプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_verification_failed`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証に失敗したプロジェクトインポートエクスポート関連エクスポートアップロードの数。 |
+| `geo_project_import_export_relation_export_upload_uploads_oldest_unsynced_time`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリにある最も古い未同期のプロジェクトインポートエクスポート関連エクスポートアップロードのタイムスタンプ。 |
+| `geo_vulnerability_export_part_uploads`                  | ゲージ     | 19.1 | `url`                                                                                     | プライマリにある脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_checksum_total`   | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算対象となる脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_checksummed`      | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムを正常に計算した脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_checksum_failed`  | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_synced`           | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期された同期可能な脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_failed`           | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_registry`         | ゲージ     | 19.1 | `url`                                                                                     | レジストリ内の脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_verification_total`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証を試みる脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_verified`         | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで正常に検証された脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_verification_failed`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証に失敗した脆弱性エクスポートパートアップロードの数。 |
+| `geo_vulnerability_export_part_uploads_oldest_unsynced_time`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリにある最も古い未同期の脆弱性エクスポートパートアップロードのタイムスタンプ。 |
+| `geo_vulnerability_export_uploads`                       | ゲージ     | 19.0 | `url`                                                                                     | プライマリにある脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_checksum_total`        | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算対象となる脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_checksummed`           | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムを正常に計算した脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_checksum_failed`       | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_synced`                | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期された同期可能な脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_failed`                | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_registry`              | ゲージ     | 19.0 | `url`                                                                                     | レジストリ内の脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_verification_total`    | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証を試みる脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_verified`              | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで正常に検証された脆弱性エクスポートアップロードの数。 |
+| `geo_vulnerability_export_uploads_verification_failed`   | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証に失敗した脆弱性エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads`              | ゲージ     | 19.0 | `url`                                                                                     | プライマリにあるユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_checksum_total`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算対象となるユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_checksummed`  | ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムを正常に計算したユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_checksum_failed`| ゲージ     | 19.0 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_synced`       | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期された同期可能なユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_failed`       | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_registry`     | ゲージ     | 19.0 | `url`                                                                                     | レジストリ内のユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_verification_total`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証を試みるユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_verified`     | ゲージ     | 19.0 | `url`                                                                                     | セカンダリで正常に検証されたユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_verification_failed`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリで検証に失敗したユーザー権限エクスポートアップロードの数。 |
+| `geo_user_permission_export_upload_uploads_oldest_unsynced_time`| ゲージ     | 19.0 | `url`                                                                                     | セカンダリにある最も古い未同期のユーザー権限エクスポートアップロードのタイムスタンプ。 |
+| `geo_issuable_metric_image_uploads`                      | ゲージ     | 19.1 | `url`                                                                                     | プライマリにある発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_checksum_total`       | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算対象となる発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_checksummed`          | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムを正常に計算した発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_checksum_failed`      | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_synced`               | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期された同期可能な発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_failed`               | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_registry`             | ゲージ     | 19.1 | `url`                                                                                     | レジストリ内の発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_verification_total`   | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証を試みる発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_verified`             | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで正常に検証された発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_verification_failed`  | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証に失敗した発行可能なメトリクス画像アップロードの数。 |
+| `geo_issuable_metric_image_uploads_oldest_unsynced_time` | ゲージ     | 19.1 | `url`                                                                                     | セカンダリにある最も古い未同期の発行可能なメトリクス画像アップロードのタイムスタンプ。 |
+| `geo_dependency_list_export_uploads`                     | ゲージ     | 19.1 | `url`                                                                                     | プライマリにある依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_checksum_total`      | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算対象となる依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_checksummed`         | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムを正常に計算した依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_checksum_failed`     | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_synced`              | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期された同期可能な依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_failed`              | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_registry`            | ゲージ     | 19.1 | `url`                                                                                     | レジストリ内の依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_verification_total`  | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証を試みる依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_verified`            | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで正常に検証された依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_verification_failed` | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証に失敗した依存関係リストエクスポートアップロードの数。 |
+| `geo_dependency_list_export_uploads_oldest_unsynced_time`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリにある最も古い未同期の依存関係リストエクスポートアップロードのタイムスタンプ。 |
+| `geo_packages_debian_project_component_files`                     | ゲージ     | 19.1 | `url`                                                                                     | プライマリにあるDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_checksum_total`      | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算対象となるDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_checksummed`         | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムを正常に計算したDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_checksum_failed`     | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_synced`              | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期された同期可能なDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_failed`              | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_registry`            | ゲージ     | 19.1 | `url`                                                                                     | レジストリ内のDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_verification_total`  | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証を試みるDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_verified`            | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで正常に検証されたDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_packages_debian_project_component_files_verification_failed` | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証に失敗したDebianプロジェクトコンポーネントファイルの数。 |
+| `geo_alert_management_metric_image_uploads`              | ゲージ     | 19.1 | `url`                                                                                     | プライマリにあるアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_checksum_total`| ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算対象となるアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_checksummed`  | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムを正常に計算したアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_checksum_failed`| ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_synced`       | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期された同期可能なアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_failed`       | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_registry`     | ゲージ     | 19.1 | `url`                                                                                     | レジストリ内のアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_verification_total`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証を試みるアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_verified`     | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで正常に検証されたアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_verification_failed`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証に失敗したアラート管理メトリクス画像アップロードの数。 |
+| `geo_alert_management_metric_image_uploads_oldest_unsynced_time`| ゲージ     | 19.1 | `url`                                                                                     | セカンダリにある最も古い未同期のアラート管理メトリクス画像アップロードのタイムスタンプ。 |
+| `geo_personal_snippet_uploads`                           | ゲージ     | 19.1 | `url`                                                                                     | プライマリにあるパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_checksum_total`            | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算対象となるパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_checksummed`               | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムを正常に計算したパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_checksum_failed`           | ゲージ     | 19.1 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_synced`                    | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期された同期可能なパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_failed`                    | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_registry`                  | ゲージ     | 19.1 | `url`                                                                                     | レジストリ内のパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_verification_total`        | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証を試みるパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_verified`                  | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで正常に検証されたパーソナルスニペットアップロードの数。 |
+| `geo_personal_snippet_uploads_verification_failed`       | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで検証に失敗した個人スニペットアップロードの数 |
+| `geo_personal_snippet_uploads_oldest_unsynced_time`      | ゲージ     | 19.1 | `url`                                                                                     | セカンダリで最も古い同期されていない個人スニペットアップロードのタイムスタンプ |
+| `geo_project_topic_uploads`                              | ゲージ     | 19.2 | `url`                                                                                     | プライマリでのプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_checksum_total`               | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算対象となるプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_checksummed`                  | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムが正常に計算されたプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_checksum_failed`              | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算に失敗したプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_synced`                       | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期された同期可能なプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_failed`                       | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期に失敗した同期可能なプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_registry`                     | ゲージ     | 19.2 | `url`                                                                                     | レジストリ内のプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_verification_total`           | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証を試みるプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_verified`                     | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで正常に検証されたプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_verification_failed`          | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証に失敗したプロジェクトトピックアップロード数 |
+| `geo_project_topic_uploads_oldest_unsynced_time`         | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで最も古い同期されていないプロジェクトトピックアップロードのタイムスタンプ |
+| `geo_organization_detail_uploads`                        | ゲージ     | 19.2 | `url`                                                                                     | プライマリでの組織詳細アップロード数 |
+| `geo_organization_detail_uploads_checksum_total`         | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算対象となる組織詳細アップロード数 |
+| `geo_organization_detail_uploads_checksummed`            | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムが正常に計算された組織詳細アップロード数 |
+| `geo_organization_detail_uploads_checksum_failed`        | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した組織詳細アップロード数 |
+| `geo_organization_detail_uploads_synced`                 | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期された同期可能な組織詳細アップロード数 |
+| `geo_organization_detail_uploads_failed`                 | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な組織詳細アップロード数 |
+| `geo_organization_detail_uploads_registry`               | ゲージ     | 19.2 | `url`                                                                                     | レジストリ内の組織詳細アップロード数 |
+| `geo_organization_detail_uploads_verification_total`     | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証を試みる組織詳細アップロード数 |
+| `geo_organization_detail_uploads_verified`               | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで正常に検証された組織詳細アップロード数 |
+| `geo_organization_detail_uploads_verification_failed`    | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証に失敗した組織詳細アップロード数 |
+| `geo_organization_detail_uploads_oldest_unsynced_time`   | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで最も古い同期されていない組織詳細アップロードのタイムスタンプ |
+| `geo_dependency_list_export_part_uploads`                | ゲージ     | 19.2 | `url`                                                                                     | プライマリでの依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_checksum_total` | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算対象となる依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_checksummed`    | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムが正常に計算された依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_checksum_failed`| ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_synced`         | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期された同期可能な依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_failed`         | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_registry`       | ゲージ     | 19.2 | `url`                                                                                     | レジストリ内の依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_verification_total`| ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証を試みる依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_verified`       | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで正常に検証された依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_verification_failed`| ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証に失敗した依存関係リストエクスポートパートアップロード数 |
+| `geo_dependency_list_export_part_uploads_oldest_unsynced_time`| ゲージ     | 19.2 | `url`                                                                                     | セカンダリで最も古い同期されていない依存関係リストエクスポートパートアップロードのタイムスタンプ |
+| `geo_vulnerability_remediation_uploads`                  | ゲージ     | 19.2 | `url`                                                                                     | プライマリでの脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_checksum_total`   | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算対象となる脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_checksummed`      | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムが正常に計算された脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_checksum_failed`  | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_synced`           | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期された同期可能な脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_failed`           | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_registry`         | ゲージ     | 19.2 | `url`                                                                                     | レジストリ内の脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_verification_total`| ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証を試みる脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_verified`         | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで正常に検証された脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_verification_failed`| ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証に失敗した脆弱性修正アップロード数 |
+| `geo_vulnerability_remediation_uploads_oldest_unsynced_time`| ゲージ     | 19.2 | `url`                                                                                     | セカンダリで最も古い同期されていない脆弱性修正アップロードのタイムスタンプ |
+| `geo_appearance_uploads`                                 | ゲージ     | 19.2 | `url`                                                                                     | プライマリでの外観アップロード数 |
+| `geo_appearance_uploads_checksum_total`                  | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算対象となる外観アップロード数 |
+| `geo_appearance_uploads_checksummed`                     | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムが正常に計算された外観アップロード数 |
+| `geo_appearance_uploads_checksum_failed`                 | ゲージ     | 19.2 | `url`                                                                                     | プライマリでチェックサムの計算に失敗した外観アップロード数 |
+| `geo_appearance_uploads_synced`                          | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期された同期可能な外観アップロード数 |
+| `geo_appearance_uploads_failed`                          | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで同期に失敗した同期可能な外観アップロード数 |
+| `geo_appearance_uploads_registry`                        | ゲージ     | 19.2 | `url`                                                                                     | レジストリ内の外観アップロード数 |
+| `geo_appearance_uploads_verification_total`              | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証を試みる外観アップロード数 |
+| `geo_appearance_uploads_verified`                        | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで正常に検証された外観アップロード数 |
+| `geo_appearance_uploads_verification_failed`             | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで検証に失敗した外観アップロード数 |
+| `geo_appearance_uploads_oldest_unsynced_time`            | ゲージ     | 19.2 | `url`                                                                                     | セカンダリで最も古い同期されていない外観アップロードのタイムスタンプ |
 | `geo_status_failed_total`                                | カウンター   | 10.2  | `url`                                                                                     | Geoノードからの状態の取得に失敗した回数 |
 | `geo_terraform_state_versions_checksum_failed`           | ゲージ     | 13.5  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したTerraformステートバージョンの数 |
 | `geo_terraform_state_versions_checksum_total`            | ゲージ     | 13.12 | `url`                                                                                     | プライマリでチェックサムの計算が必要なTerraformステートバージョンの数 |
@@ -401,7 +722,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_terraform_state_versions_verified`                  | ゲージ     | 13.12 | `url`                                                                                     | セカンダリで検証に成功したTerraformステートバージョンの数 |
 | `geo_terraform_state_versions`                           | ゲージ     | 13.5  | `url`                                                                                     | プライマリのTerraformステートバージョンの数 |
 | `geo_uploads_checksum_failed`                            | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムの計算に失敗したアップロードの数 |
-| `geo_uploads_checksum_total`                             | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムが計算されたアップロードの数 |
+| `geo_uploads_checksum_total`                             | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムの計算対象となるアップロードの数 |
 | `geo_uploads_checksummed`                                | ゲージ     | 14.6  | `url`                                                                                     | プライマリでチェックサムの計算に成功したアップロードの数 |
 | `geo_uploads_failed`                                     | ゲージ     | 14.1  | `url`                                                                                     | セカンダリで同期に失敗した同期可能なアップロードの数 |
 | `geo_uploads_registry`                                   | ゲージ     | 14.1  | `url`                                                                                     | レジストリ内のアップロードの数 |
@@ -410,17 +731,24 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `geo_uploads_verification_total`                         | ゲージ     | 14.6  | `url`                                                                                     | セカンダリで検証を試行するアップロードの数 |
 | `geo_uploads_verified`                                   | ゲージ     | 14.6  | `url`                                                                                     | セカンダリで検証に成功したアップロードの数 |
 | `geo_uploads`                                            | ゲージ     | 14.1  | `url`                                                                                     | プライマリにおけるアップロードの数 |
+| `gitlab_audit_event_streaming_worker_total`              | カウンター   | 18.9  | `should_stream`、`should_persist`、`streamable`                                           | ストリーミングワーカーによって処理された監査イベント |
 | `gitlab_ci_queue_active_runners_total`                   | ヒストグラム | 16.3  |                                                                                           | プロジェクトでCI/CDキューを処理できるアクティブなRunnerの数 |
 | `gitlab_maintenance_mode`                                | ゲージ     | 15.11 |                                                                                           | GitLabメンテナンスモードが有効かどうか |
 | `gitlab_memwd_violations_handled_total`                  | カウンター   | 15.9  |                                                                                           | Sidekiqプロセスのメモリ違反が処理された回数の合計 |
 | `gitlab_memwd_violations_total`                          | カウンター   | 15.9  |                                                                                           | Sidekiqプロセスがメモリのしきい値に違反した回数の合計 |
 | `gitlab_optimistic_locking_retries`                      | ヒストグラム | 13.10 |                                                                                           | 楽観的リトライロックの実行の再試行回数 |
+| `gitlab_transaction_event_receive_email_create_issue_total`                     | カウンター   | 12.3  |                                                                                           | イシューを作成したメール受信のカウンター |
+| `gitlab_transaction_event_receive_email_create_merge_request_total`             | カウンター   | 12.3  |                                                                                           | マージリクエストを作成したメール受信のカウンター |
+| `gitlab_transaction_event_receive_email_create_note_issuable_total`             | カウンター   | 12.3  |                                                                                           | メールが通知への返信ではない場合に、イシューにコメントを作成したメール受信のカウンター |
+| `gitlab_transaction_event_receive_email_create_note_total`                      | カウンター   | 12.3  |                                                                                           | メールが通知への返信である場合に、コメントを作成したメール受信のカウンター |
+| `gitlab_transaction_event_receive_email_service_desk_total`                     | カウンター   | 12.3  |                                                                                           | 受信したサービスデスクへの返信メールのカウンター |
+| `gitlab_transaction_event_receive_email_unsubscribe_total`                      | カウンター   | 12.3  |                                                                                           | 購読解除メールのカウンター |
 | `gitlab_transaction_event_remote_mirrors_failed_total`   | カウンター   | 10.8  |                                                                                           | 失敗したリモートミラーのカウンター |
 | `gitlab_transaction_event_remote_mirrors_finished_total` | カウンター   | 10.8  |                                                                                           | 完了したリモートミラーのカウンター |
 | `gitlab_transaction_event_remote_mirrors_running_total`  | カウンター   | 10.8  |                                                                                           | 実行中のリモートミラーのカウンター |
-| `global_search_awaiting_indexing_queue_size`             | ゲージ     | 13.2  |                                                                                           | 非推奨となりました。18.0で削除される予定です。`search_advanced_awaiting_indexing_queue_size`に置き換えられました。インデックス作成が一時停止されている間、Elasticsearchへの同期を待機しているデータベース更新の数です |
-| `global_search_bulk_cron_initial_queue_size`             | ゲージ     | 13.1  |                                                                                           | 非推奨となりました。18.0で削除される予定です。`search_advanced_bulk_cron_initial_queue_size`に置き換えられました。Elasticsearchへの同期を待機している初期データベース更新の数です |
-| `global_search_bulk_cron_queue_size`                     | ゲージ     | 12.10 |                                                                                           | 非推奨となりました。18.0で削除される予定です。`search_advanced_bulk_cron_queue_size`に置き換えられました。Elasticsearchへの同期を待機している増分データベース更新の数です |
+| `global_search_awaiting_indexing_queue_size`             | ゲージ     | 13.2  |                                                                                           | 18.7で非推奨となり、削除されました。`search_advanced_awaiting_indexing_queue_size`に置き換えられました。インデックス作成が一時停止されている間、Elasticsearchへの同期を待機しているデータベース更新の数です |
+| `global_search_bulk_cron_initial_queue_size`             | ゲージ     | 13.1  |                                                                                           | 18.7で非推奨となり、削除されました。`search_advanced_bulk_cron_initial_queue_size`に置き換えられました。Elasticsearchへの同期を待機している初期データベース更新の数です |
+| `global_search_bulk_cron_queue_size`                     | ゲージ     | 12.10 |                                                                                           | 18.7で非推奨となり、削除されました。`search_advanced_bulk_cron_queue_size`に置き換えられました。Elasticsearchへの同期を待機している増分データベース更新の数です |
 | `limited_capacity_worker_max_running_jobs`               | ゲージ     | 13.5  | `worker`                                                                                  | 実行中のジョブの最大数 |
 | `limited_capacity_worker_remaining_work_count`           | ゲージ     | 13.5  | `worker`                                                                                  | キューに入れられるのを待機しているジョブの数 |
 | `limited_capacity_worker_running_jobs`                   | ゲージ     | 13.5  | `worker`                                                                                  | 実行中のジョブの数 |
@@ -435,6 +763,8 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 | `sidekiq_concurrency`                                    | ゲージ     | 12.5  |                                                                                           | Sidekiqジョブの最大数 |
 | `sidekiq_elasticsearch_requests_duration_seconds`        | ヒストグラム | 13.1  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | SidekiqジョブがElasticsearchサーバーへのリクエストに費やした時間（秒） |
 | `sidekiq_elasticsearch_requests_total`                   | カウンター   | 13.1  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | Sidekiqジョブの実行中に発生したElasticsearchリクエストの数 |
+| `sidekiq_zoekt_requests_duration_seconds`                | ヒストグラム | 19.2  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | SidekiqジョブがZoektサーバーへのリクエストに費やした時間（秒単位）。 |
+| `sidekiq_zoekt_requests_total`                           | カウンター   | 19.2  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | Sidekiqジョブ実行中のZoektリクエスト。 |
 | `sidekiq_jobs_completion_seconds`                        | ヒストグラム | 12.2  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | Sidekiqジョブの完了にかかった時間（秒） |
 | `sidekiq_jobs_cpu_seconds`                               | ヒストグラム | 12.4  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | Sidekiqジョブの実行にかかったCPU時間（秒） |
 | `sidekiq_jobs_db_seconds`                                | ヒストグラム | 12.9  | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency` | Sidekiqジョブの実行にかかったDB時間（秒） |
@@ -461,9 +791,9 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 
 {{< /details >}}
 
-次のメトリクスを利用できます:
+次のメトリクスを利用できます。
 
-| メトリック                                                  | 種類    | 提供開始                                                       | ラベル   | 説明 |
+| メトリック                                                  | 型    | 提供開始                                                       | ラベル   | 説明 |
 |:--------------------------------------------------------|:--------|:------------------------------------------------------------|:---------|:------------|
 | `db_load_balancing_hosts`                               | ゲージ   | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630) |          | 現在のロードバランシングホストの数 |
 | `sidekiq_load_balancing_count`                          | カウンター | 13.11                                                       | `queue`、`boundary`、`external_dependencies`、`feature_category`、`job_status`、`urgency`、`data_consistency`、`load_balancing_strategy` | データ整合性を`:sticky`または`:delayed`に設定したロードバランシング使用時のSidekiqジョブ |
@@ -478,16 +808,16 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 
 {{< /details >}}
 
-次のメトリクスを利用できます:
+次のメトリクスを利用できます。
 
-| メトリック                  | 種類  | 提供開始                                                        | 説明 |
+| メトリック                  | 型  | 提供開始                                                        | 説明 |
 |:------------------------|:------|:-------------------------------------------------------------|:------------|
 | `db_partitions_present` | ゲージ | [13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/227353) | 存在するデータベースパーティションの数 |
 | `db_partitions_missing` | ゲージ | [13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/227353) | 現在予期されているが存在していないデータベースパーティションの数 |
 
 ## 接続プールメトリクス {#connection-pool-metrics}
 
-これらのメトリクスは、データベースの[接続プール](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html)の状態を記録し、すべてのメトリクスには次のラベルが付いています:
+これらのメトリクスは、データベースの[接続プール](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html)の状態を記録し、すべてのメトリクスには次のラベルが付いています。
 
 - `class` - 記録対象のRubyクラス。
   - `ActiveRecord::Base`は、メインのデータベース接続。
@@ -495,20 +825,24 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 - `host` - データベースへの接続に使用するホスト名。
 - `port` - データベースへの接続に使用するポート。
 
-| メトリック                                        | 種類  | 提供開始 | 説明 |
-|:----------------------------------------------|:------|:------|:------------|
-| `gitlab_database_connection_pool_size`        | ゲージ | 13.0  | 接続プールの合計容量 |
-| `gitlab_database_connection_pool_connections` | ゲージ | 13.0  | プール内の現在の接続数 |
-| `gitlab_database_connection_pool_busy`        | ゲージ | 13.0  | オーナーがまだアクティブで使用中の接続数 |
-| `gitlab_database_connection_pool_dead`        | ゲージ | 13.0  | オーナーが非アクティブで使用中の接続数 |
-| `gitlab_database_connection_pool_idle`        | ゲージ | 13.0  | 未使用の接続数 |
-| `gitlab_database_connection_pool_waiting`     | ゲージ | 13.0  | 現在このキューで待機しているスレッド数 |
+| メトリック                                              | 型  | 提供開始 | 説明 |
+|:----------------------------------------------------|:------|:------|:------------|
+| `gitlab_database_connection_pool_size`              | ゲージ | 13.0  | 接続プールの合計容量 |
+| `gitlab_database_connection_pool_connections`       | ゲージ | 13.0  | 現在の接続プールの接続数（=アイドル + ビジー + デッド） |
+| `gitlab_database_connection_pool_busy`              | ゲージ | 13.0  | オーナーがまだアクティブで使用中の接続数 |
+| `gitlab_database_connection_pool_dead`              | ゲージ | 13.0  | オーナーが非アクティブで使用中の接続数 |
+| `gitlab_database_connection_pool_idle`              | ゲージ | 13.0  | 作成されたが現在使用されていない接続 |
+| `gitlab_database_connection_pool_waiting`           | ゲージ | 13.0  | 現在このキューで待機しているスレッド数 |
+| `gitlab_database_extended_connection_pool_busy`     | ゲージ | 17.11 | オーナーがまだ稼働している使用中の接続、スレッドごと |
+| `gitlab_database_extended_connection_pool_dead`     | ゲージ | 17.11 | オーナーが稼働していない使用中の接続、スレッドごと |
+
+`gitlab_database_extended_connection_pool_busy`と`gitlab_database_extended_connection_pool_dead`のメトリクスは、`thread_name`のラベルを含み、スレッドごとの粒度で表示されます。これらのメトリクスは高いカーディナリティのため、デフォルトで無効になっています。ポッドの割合でそれらを有効にするには、`per_thread_db_connection_pool_metrics` [ops機能フラグ](../../../development/feature_flags/_index.md)を使用します。
 
 ## Rubyメトリクス {#ruby-metrics}
 
-いくつかの基本的なRubyランタイムメトリクスを利用できます:
+いくつかの基本的なRubyランタイムメトリクスを利用できます。
 
-| メトリック                                    | 種類    | 提供開始 | 説明 |
+| メトリック                                    | 型    | 提供開始 | 説明 |
 |:------------------------------------------|:--------|:------|:------------|
 | `ruby_gc_duration_seconds`                | カウンター | 11.1  | RubyがGCで費やした時間 |
 | `ruby_gc_stat_...`                        | ゲージ   | 11.1  | [GC.stat](https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat)からのさまざまなメトリクス |
@@ -526,7 +860,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 
 ## Pumaメトリクス {#puma-metrics}
 
-| メトリック                    | 種類  | 提供開始 | 説明 |
+| メトリック                    | 型  | 提供開始 | 説明 |
 |:--------------------------|:------|:------|:------------|
 | `puma_workers`            | ゲージ | 12.0  | ワーカーの総数 |
 | `puma_running_workers`    | ゲージ | 12.0  | 起動済みのワーカーの数 |
@@ -540,9 +874,9 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 
 ## Redisメトリクス {#redis-metrics}
 
-これらのクライアントメトリクスは、Redisサーバーメトリクスを補完することを目的としています。各メトリクスは[Redisインスタンス](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances)ごとに分類されています。すべてのメトリクスにRedisインスタンスを示す`storage`ラベルが付けられています。例えば、`cache`や`shared_state`です。
+これらのクライアントメトリクスは、Redisサーバーメトリクスを補完することを目的としています。各メトリクスは[Redisインスタンス](https://docs.gitlab.com/omnibus/settings/redis/#running-with-multiple-redis-instances)ごとに分類されています。すべてのメトリクスにRedisインスタンスを示す`storage`ラベルが付けられています。例えば、`cache`や`shared_state`です。
 
-| メトリック                                            | 種類      | 提供開始 | 説明 |
+| メトリック                                            | 型      | 提供開始 | 説明 |
 |:--------------------------------------------------|:----------|:------|:------------|
 | `gitlab_redis_client_exceptions_total`            | カウンター   | 13.2  | Redisクライアント例外の数（例外クラス別に分類） |
 | `gitlab_redis_client_requests_total`              | カウンター   | 13.2  | Redisクライアントリクエストの数 |
@@ -555,7 +889,7 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 
 さまざまな[Git LFS](https://git-lfs.com/)機能を追跡するメトリクスです。
 
-| メトリック                                             | 種類    | 提供開始 | 説明 |
+| メトリック                                             | 型    | 提供開始 | 説明 |
 |:---------------------------------------------------|:--------|:------|:------------|
 | `gitlab_sli_lfs_update_objects_total`              | カウンター | 16.10 | LFSオブジェクトの更新の総数 |
 | `gitlab_sli_lfs_update_objects_error_total`        | カウンター | 16.10 | LFSオブジェクトの更新エラーの総数 |
@@ -579,22 +913,22 @@ Sidekiqジョブもメトリクスを収集することがあり、Sidekiq expor
 
 {{< /history >}}
 
-外部パートナーAPI（AWS、GCP、Postmanなど）を使用した、シークレット検出パートナートークン検証を追跡するためのメトリクス。
+外部パートナーAPI（AWS、GCP、Postmanなど）を使用してシークレット検出パートナートークン検証を追跡するためのメトリクス。
 
-| メトリック                                            | 種類      | 提供開始 | ラベル                                        | 説明 |
+| メトリック                                            | 型      | 提供開始 | ラベル                                        | 説明 |
 |:--------------------------------------------------|:----------|:------|:----------------------------------------------|:------------|
-| `validity_check_partner_api_duration_seconds`     | ヒストグラム | 18.6  | `partner`                                     | パートナートークン検証リクエストのAPI応答時間を追跡します。ヒストグラムバケット：[0.1、0.25、0.5、1、2、5、10]秒。 |
-| `validity_check_partner_api_requests_total`       | カウンター   | 18.6  | `partner`、`status`、`error_type`             | パートナーAPI検証リクエストの合計数。`status`は`success`または`failure`になります。`error_type`は失敗した場合にのみ含まれます（例：`network_error`、`rate_limit`、`response_error`）。 |
-| `validity_check_network_errors_total`             | カウンター   | 18.6  | `partner`、`error_class`                      | パートナーAPIコール中の合計ネットワークエラー。`error_class`は、エラーのタイプを示します（例：`Timeout`、`ConnectionRefused`、`HTTPError`）。 |
-| `validity_check_rate_limit_hits_total`            | カウンター   | 18.6  | `limit_type`                    | トークン検証中の合計レート制限ヒット数。`limit_type`は、パートナーレート制限キーに対応します（例：`partner_aws_api`、`partner_gcp_api`、`partner_postman_api`）。 |
+| `validity_check_partner_api_duration_seconds`     | ヒストグラム | 18.6  | `partner`                                     | パートナートークン検証リクエストのAPI応答時間を追跡します。ヒストグラムバケット: [0.1, 0.25, 0.5, 1, 2, 5, 10] 秒。 |
+| `validity_check_partner_api_requests_total`       | カウンター   | 18.6  | `partner`、`status`、`error_type`             | パートナーAPI検証リクエストの合計数。`status`は`success`または`failure`のいずれかです。`error_type`は失敗した場合にのみ含まれます（例: `network_error`、`rate_limit`、`response_error`）。 |
+| `validity_check_network_errors_total`             | カウンター   | 18.6  | `partner`、`error_class`                      | パートナーAPIコール中のネットワークエラーの合計数。`error_class`はエラーのタイプを示します（例: `Timeout`、`ConnectionRefused`、`HTTPError`）。 |
+| `validity_check_rate_limit_hits_total`            | カウンター   | 18.6  | `limit_type`                    | トークン検証中のレート制限ヒットの合計数。`limit_type`はパートナーレート制限キーに対応します（例: `partner_aws_api`、`partner_gcp_api`、`partner_postman_api`）。 |
 
 ### パートナーラベル {#partner-labels}
 
-`partner`ラベルには、次の値を使用できます:
+`partner`のラベルは、次の値を持つことができます:
 
-- `aws` - Amazon Web Services (AWS)
-- `gcp` - Google Cloud Platform (GCP)
-- `postman` - Postman APIトークン
+- `aws` - Amazon Web Servicesトークン
+- `gcp` - Google Cloud Platformトークン
+- `postman` - PostmanAPIトークン
 
 ## メトリクス共有ディレクトリ {#metrics-shared-directory}
 

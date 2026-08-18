@@ -46,8 +46,8 @@ const createComponent = (data = {}) => {
 
 const findModal = () => wrapper.findComponent(GlModal);
 const findModalMessage = () => wrapper.findByTestId('modal-message');
-const findDeleteButton = () => wrapper.findByTestId('delete-tag-confirmation-button');
-const findCancelButton = () => wrapper.findByTestId('delete-tag-cancel-button');
+const findDeleteButton = () => wrapper.findComponentByTestId('delete-tag-confirmation-button');
+const findCancelButton = () => wrapper.findComponentByTestId('delete-tag-cancel-button');
 const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
 

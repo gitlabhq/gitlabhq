@@ -9,6 +9,7 @@ import createContactMutation from './graphql/create_contact.mutation.graphql';
 import updateContactMutation from './graphql/update_contact.mutation.graphql';
 
 export default {
+  name: 'ContactFormWrapper',
   components: {
     CrmForm,
   },

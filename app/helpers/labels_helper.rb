@@ -52,8 +52,8 @@ module LabelsHelper
     html = render_colored_label(label)
 
     if link
-      title = label_tooltip_title(label, tooltip_shows_title: tooltip_shows_title) if tooltip
-      html = render_label_link(html, link: link, title: title, dataset: dataset, aria_label: label.name)
+      title = label_tooltip_title_html(label, tooltip_shows_title: tooltip_shows_title) if tooltip
+      html = render_label_link(html, link: link, title: title, dataset: dataset, aria_label: label.name, html: true)
     end
 
     wrap_label_html(html, label: label)
@@ -79,6 +79,18 @@ module LabelsHelper
   # Returns a String containing text.
   def label_tooltip_title(label, tooltip_shows_title: false)
     tooltip_shows_title ? label.title : label.description
+  end
+
+  # Returns a String containing HTML.
+  def label_tooltip_title_html(label, tooltip_shows_title: false)
+    tooltip_html = CGI.escapeHTML(label_tooltip_title(label, tooltip_shows_title: tooltip_shows_title).to_s)
+
+    if label.archived?
+      archived_html = %(<span class="gl-label-tooltip-footer">#{CGI.escapeHTML(_('Archived'))}</span>)
+      tooltip_html = tooltip_html.present? ? "#{tooltip_html}<br>#{archived_html}" : archived_html
+    end
+
+    tooltip_html
   end
 
   def suggested_colors
@@ -215,13 +227,14 @@ module LabelsHelper
 
   private
 
-  def render_label_link(label_html, link:, title:, dataset:, aria_label: nil)
+  def render_label_link(label_html, link:, title:, dataset:, aria_label: nil, html: false)
     classes = %w[gl-link gl-label-link]
     dataset ||= {}
 
     if title.present?
       classes << 'has-tooltip'
       dataset['title'] = title
+      dataset['html'] = 'true' if html
     end
 
     options = { class: classes.join(' '), data: dataset }

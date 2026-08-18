@@ -43,7 +43,7 @@ describe('WorkItemAssignees component', () => {
   });
 
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
-  const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
+  const findAssignSelfButton = () => wrapper.findComponentByTestId('assign-self');
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);
 
@@ -68,11 +68,11 @@ describe('WorkItemAssignees component', () => {
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const showDropdown = () => {
-    findSidebarDropdownWidget().vm.$emit('dropdownShown');
+    findSidebarDropdownWidget().vm.$emit('dropdown-shown');
   };
 
   const hideDropdown = () => {
-    findSidebarDropdownWidget().vm.$emit('dropdownHidden');
+    findSidebarDropdownWidget().vm.$emit('dropdown-hidden');
   };
 
   const newWorkItemPath = newWorkItemFullPath(fullPath, 'task');
@@ -84,6 +84,7 @@ describe('WorkItemAssignees component', () => {
     participants = [],
     searchQueryHandler = successSearchQueryHandler,
     currentUserQueryHandler = successCurrentUserQueryHandler,
+    updateMutationHandler = successUpdateWorkItemMutationHandler,
     allowsMultipleAssignees = false,
     canInviteMembers = false,
     canUpdate = true,
@@ -94,7 +95,7 @@ describe('WorkItemAssignees component', () => {
         [usersSearchQuery, searchQueryHandler],
         [groupUsersSearchQuery, successGroupSearchQueryHandler],
         [currentUserQuery, currentUserQueryHandler],
-        [updateWorkItemMutation, successUpdateWorkItemMutationHandler],
+        [updateWorkItemMutation, updateMutationHandler],
       ],
       resolvers,
     );
@@ -160,7 +161,7 @@ describe('WorkItemAssignees component', () => {
 
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', expectedParticipant.username);
+      findSidebarDropdownWidget().vm.$emit('search-started', expectedParticipant.username);
 
       await nextTick();
 
@@ -334,7 +335,7 @@ describe('WorkItemAssignees component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', [
+      findSidebarDropdownWidget().vm.$emit('update-value', [
         'gid://gitlab/User/5',
         'gid://gitlab/User/6',
       ]);
@@ -349,7 +350,7 @@ describe('WorkItemAssignees component', () => {
 
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', [
+      findSidebarDropdownWidget().vm.$emit('update-value', [
         'gid://gitlab/User/5',
         currentUser.id,
         'gid://gitlab/User/6',
@@ -372,11 +373,11 @@ describe('WorkItemAssignees component', () => {
       trackingSpy = null;
     });
 
-    it('tracks editing the assignees on dropdown widget updateValue', async () => {
+    it('tracks editing the assignees on dropdown widget `update-value`', async () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', mockAssignees[0].id);
+      findSidebarDropdownWidget().vm.$emit('update-value', mockAssignees[0].id);
       await waitForPromises();
 
       expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_assignees', {
@@ -385,6 +386,23 @@ describe('WorkItemAssignees component', () => {
         property: 'type_Task',
         extra: { viewContext: 'full_screen' },
       });
+    });
+  });
+
+  describe('when the update mutation returns errors', () => {
+    it('emits the specific error messages instead of the generic update error', async () => {
+      const mutationError = 'You can assign only one service account at a time.';
+      const errorResponse = cloneDeep(updateWorkItemMutationResponse);
+      errorResponse.data.workItemUpdate.errors = [mutationError];
+      const updateMutationErrorHandler = jest.fn().mockResolvedValue(errorResponse);
+
+      createComponent({ updateMutationHandler: updateMutationErrorHandler, assignees: [] });
+      await waitForPromises();
+
+      findAssignSelfButton().vm.$emit('click', new MouseEvent('click'));
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toEqual([[mutationError]]);
     });
   });
 
@@ -429,7 +447,7 @@ describe('WorkItemAssignees component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', currentUser.id);
+      findSidebarDropdownWidget().vm.$emit('update-value', currentUser.id);
 
       expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
         { text: currentUser.name },
@@ -448,7 +466,7 @@ describe('WorkItemAssignees component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', currentUser.id);
+      findSidebarDropdownWidget().vm.$emit('update-value', currentUser.id);
 
       expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
         { text: currentUser.name },

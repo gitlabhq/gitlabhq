@@ -1,6 +1,8 @@
 <script>
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import WorkItemPopover from '~/issuable/popover/components/work_item_popover.vue';
 
 export default {
@@ -10,6 +12,10 @@ export default {
     GlLink,
     WorkItemPopover,
   },
+  directives: {
+    SafeHtml,
+  },
+  titleInLinkSafeHtmlConfig,
   props: {
     parent: {
       type: Object,
@@ -33,6 +39,9 @@ export default {
     parentTitle() {
       return this.parent?.title;
     },
+    parentTitleHtml() {
+      return this.parent?.titleHtml;
+    },
     parentIid() {
       return this.parent?.iid || '';
     },
@@ -46,7 +55,7 @@ export default {
 <template>
   <div
     :id="linkId"
-    class="gl-flex gl-cursor-pointer gl-items-center gl-gap-2 hover:gl-underline focus:gl-no-underline active:gl-no-underline"
+    class="gl-flex gl-cursor-pointer gl-items-center gl-gap-2 hover:gl-underline focus-visible:gl-no-underline active:gl-no-underline"
   >
     <gl-icon name="work-item-parent" :size="iconSize" class="gl-shrink-0" variant="subtle" />
     <gl-link
@@ -55,7 +64,7 @@ export default {
       :href="parentWebUrl"
       @click.stop
     >
-      {{ parentTitle }}
+      <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="parentTitleHtml"></span>
     </gl-link>
     <work-item-popover
       :cached-title="parentTitle"

@@ -1,0 +1,10 @@
+---
+name: aura_tinted_themes
+description: Aura visual UI changes including tinted themes and bloom gradients
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21835
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244250
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605836
+milestone: '19.3'
+group: group::design system
+type: beta
+default_enabled: false

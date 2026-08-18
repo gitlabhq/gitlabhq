@@ -6,12 +6,14 @@ import { renderHtmlStreams } from '~/rapid_diffs/streaming/render_html_streams';
 import waitForPromises from 'helpers/wait_for_promises';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
+import { settledScrollIntoView } from '~/rapid_diffs/utils/settled_scroll_into_view';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { createAlert } from '~/alert';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/streaming/polyfills');
 jest.mock('~/rapid_diffs/streaming/render_html_streams');
+jest.mock('~/rapid_diffs/utils/settled_scroll_into_view');
 jest.mock('~/performance/utils');
 jest.mock('~/alert');
 
@@ -224,6 +226,95 @@ describe('Diffs list store', () => {
       expect(store.linkedFileData).toEqual({
         old_path: 'app/models/user.rb',
         new_path: 'app/models/user.rb',
+      });
+    });
+  });
+
+  describe('#loadSingleFile', () => {
+    const params = {
+      endpoint: '/diff_file',
+      oldPath: 'old.rb',
+      newPath: 'new.rb',
+      viewType: 'inline',
+      showWhitespace: true,
+    };
+
+    it('fetches the file with request params and streams it', async () => {
+      store.loadSingleFile(params);
+      const { signal } = store.loadingController;
+      await waitForPromises();
+      const url = new URL(global.fetch.mock.calls[0][0]);
+      expect(url.pathname).toBe('/diff_file');
+      expect(url.searchParams.get('old_path')).toBe('old.rb');
+      expect(url.searchParams.get('new_path')).toBe('new.rb');
+      expect(url.searchParams.get('ignore_whitespace_changes')).toBe('false');
+      expect(renderHtmlStreams).toHaveBeenCalledWith([streamResponse.body], findDiffsList(), {
+        signal,
+      });
+    });
+
+    it('adds the parallel view param', async () => {
+      store.loadSingleFile({ ...params, viewType: 'parallel' });
+      await waitForPromises();
+      const url = new URL(global.fetch.mock.calls[0][0]);
+      expect(url.searchParams.get('view')).toBe('parallel');
+    });
+
+    itCancelsRunningRequest(() => store.loadSingleFile(params));
+    itSetsStatuses(() => store.loadSingleFile(params));
+    itHandlesServerErrors(() => store.loadSingleFile(params));
+
+    it('shows the overlay and keeps existing content until the response arrives', async () => {
+      renderHtmlStreams.mockResolvedValue();
+      let resolveRequest;
+      global.fetch.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveRequest = resolve;
+          }),
+      );
+
+      store.loadSingleFile(params);
+      await waitForPromises();
+
+      expect(findDiffsOverlay().dataset.loading).toBe('true');
+      expect(findDiffsList().innerHTML).toBe('Existing data');
+
+      resolveRequest(streamResponse);
+      await waitForPromises();
+
+      expect(findDiffsList().innerHTML).toBe('');
+      expect(findDiffsOverlay().dataset.loading).toBe(undefined);
+    });
+
+    describe('scrolling to the loaded file start', () => {
+      const loadFileWithTop = async (top) => {
+        renderHtmlStreams.mockImplementation((streams, container) => {
+          const file = document.createElement('diff-file');
+          jest.spyOn(file, 'getBoundingClientRect').mockReturnValue({ top });
+          container.appendChild(file);
+          return Promise.resolve();
+        });
+        store.loadSingleFile(params);
+        await waitForPromises();
+      };
+
+      it('does not scroll when the file start is already visible', async () => {
+        await loadFileWithTop(100);
+        expect(settledScrollIntoView).not.toHaveBeenCalled();
+      });
+
+      it('scrolls when the file start is above the viewport', async () => {
+        await loadFileWithTop(-100);
+        expect(settledScrollIntoView).toHaveBeenCalledWith(
+          expect.any(HTMLElement),
+          document.querySelector('[data-rapid-diffs]'),
+        );
+      });
+
+      it('scrolls when the file start is below the viewport', async () => {
+        await loadFileWithTop(window.innerHeight + 100);
+        expect(settledScrollIntoView).toHaveBeenCalled();
       });
     });
   });

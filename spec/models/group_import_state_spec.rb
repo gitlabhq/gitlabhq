@@ -42,7 +42,7 @@ RSpec.describe GroupImportState do
       it "returns true" do
         group_import_state = build(:group_import_state, :created)
 
-        expect(group_import_state.in_progress?).to eq true
+        expect(group_import_state.in_progress?).to be true
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe GroupImportState do
       it "returns true" do
         group_import_state = build(:group_import_state, :started)
 
-        expect(group_import_state.in_progress?).to eq true
+        expect(group_import_state.in_progress?).to be true
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe GroupImportState do
       it "returns false" do
         group_import_state = build(:group_import_state, :finished)
 
-        expect(group_import_state.in_progress?).to eq false
+        expect(group_import_state.in_progress?).to be false
       end
     end
 
@@ -66,7 +66,7 @@ RSpec.describe GroupImportState do
       it "returns false" do
         group_import_state = build(:group_import_state, :failed)
 
-        expect(group_import_state.in_progress?).to eq false
+        expect(group_import_state.in_progress?).to be false
       end
     end
   end

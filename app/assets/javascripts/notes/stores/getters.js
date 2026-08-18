@@ -143,7 +143,7 @@ export const descriptionVersions = (state) => state.descriptionVersions;
 export const canUserAddIncidentTimelineEvents = (state) => {
   return Boolean(
     state.userData?.can_add_timeline_events &&
-      state.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
+    state.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
   );
 };
 

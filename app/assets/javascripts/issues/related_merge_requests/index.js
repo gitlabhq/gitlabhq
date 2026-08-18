@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedMergeRequests from './components/related_merge_requests.vue';
@@ -17,17 +18,15 @@ export function initRelatedMergeRequests() {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     apolloProvider,
     el,
     name: 'RelatedMergeRequestsRoot',
-    render: (createElement) =>
-      createElement(RelatedMergeRequests, {
-        props: {
-          hasClosingMergeRequest: parseBoolean(hasClosingMergeRequest),
-          projectPath,
-          iid,
-        },
-      }),
+    component: RelatedMergeRequests,
+    props: {
+      hasClosingMergeRequest: parseBoolean(hasClosingMergeRequest),
+      projectPath,
+      iid,
+    },
   });
 }

@@ -1,12 +1,17 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by the source component
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
+import { PortalTarget } from 'portal-vue';
 import { Mousetrap } from '~/lib/mousetrap';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
+import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
 import { sidebarState } from '~/super_sidebar/state';
 import {
@@ -17,6 +22,8 @@ import {
 import { trackContextAccess } from '~/super_sidebar/utils';
 import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
+
+Vue.use(VueApollo);
 
 const { lg, xl } = breakpoints;
 const initialSidebarState = { ...sidebarState };
@@ -40,6 +47,10 @@ describe('SuperSidebar component', () => {
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
+  const findSettingsDisclosureTarget = () =>
+    wrapper
+      .findAllComponents(PortalTarget)
+      .wrappers.find((w) => w.props('name') === 'super-sidebar-settings-disclosure');
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
   const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
@@ -109,6 +120,18 @@ describe('SuperSidebar component', () => {
     it('renders SidebarPortalTarget', () => {
       createWrapper();
       expect(findSidebarPortalTarget().exists()).toBe(true);
+    });
+
+    describe('settings disclosure portal target', () => {
+      it('is not rendered when hideUnpinnedSidebarItems is disabled', () => {
+        createWrapper();
+        expect(findSettingsDisclosureTarget()).toBeUndefined();
+      });
+
+      it('is rendered when hideUnpinnedSidebarItems is enabled', () => {
+        createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
+        expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+      });
     });
 
     it('renders hidden shortcut links', () => {
@@ -379,5 +402,70 @@ describe('SuperSidebar component', () => {
       findSidebar().trigger('keydown', { keyCode: ESC_KEY });
       expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
     });
+  });
+
+  describe('portalled settings disclosure', () => {
+    // The Settings section is portalled out of SidebarMenu into the sidebar
+    // footer. Icon-only state still reaches it through inject only because
+    // SuperSidebar both provides it and renders the portal target. This would
+    // break silently if the target ever moved out of SuperSidebar, so mount the
+    // real SidebarMenu (not the stub) to exercise the whole chain.
+    const sidebarDataWithSettings = {
+      ...mockSidebarData,
+      panel_type: 'project',
+      is_logged_in: true,
+      current_menu_items: [
+        {
+          id: 'settings_menu',
+          title: 'Settings',
+          icon: 'settings',
+          items: [{ id: 'settings_general', title: 'General', link: '/general' }],
+        },
+      ],
+    };
+
+    const mountWithSettings = async ({ isIconOnly }) => {
+      Object.assign(sidebarState, { isMobile: false, isIconOnly });
+
+      wrapper = mountExtended(SuperSidebar, {
+        apolloProvider: createMockApollo([
+          [superSidebarDataQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
+        ]),
+        propsData: { sidebarData: sidebarDataWithSettings },
+        provide: {
+          showTrialWidget: false,
+          currentPath: 'group/project',
+          glFeatures: { hideUnpinnedSidebarItems: true },
+        },
+        stubs: {
+          UserBar: true,
+          HelpCenter: true,
+          SidebarPortalTarget: true,
+          IconOnlyToggle: true,
+          TrialWidget: true,
+          PinnedSection: true,
+          NavItem: true,
+          FeatureLibraryModal: true,
+        },
+        attachTo: document.body,
+      });
+
+      // Portal content only reaches the target on the next tick.
+      await nextTick();
+    };
+
+    const findPortalledSettingsSection = () =>
+      findSettingsDisclosureTarget()
+        .findAllComponents(MenuSection)
+        .wrappers.find((w) => w.props('item').id === 'settings_menu');
+
+    it.each([true, false])(
+      'passes injected isIconOnly=%s to the portalled settings section',
+      async (isIconOnly) => {
+        await mountWithSettings({ isIconOnly });
+
+        expect(findPortalledSettingsSection().vm.isIconOnly).toBe(isIconOnly);
+      },
+    );
   });
 });

@@ -86,6 +86,10 @@ module API
             audit_message[:written_bytes] = params[:written_bytes] if params[:written_bytes].present?
             audit_message[:received_bytes] = params[:received_bytes] if params[:received_bytes].present?
 
+            # Surface the SSH key used for the operation so that owners can
+            # correlate Git-over-SSH activity with a specific credential.
+            audit_message.merge!(actor.key_details)
+
             # If the protocol is SSH, we need to send the original IP from the PROXY
             # protocol to the audit streaming event. The original IP from gitlab-shell
             # is set through the `check_ip` parameter.

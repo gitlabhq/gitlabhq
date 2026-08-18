@@ -192,6 +192,179 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
+    context 'with taskListToggle in the description widget input', :freeze_time do
+      let_it_be_with_refind(:mutation_work_item) do
+        create(:work_item, project: project, description: "Intro\n\n- [ ] Task 1\n- [x] Task 2")
+      end
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            description
+            widgets {
+              type
+              ... on WorkItemWidgetDescription {
+                description
+                lastEditedAt
+                lastEditedBy {
+                  id
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      let(:input) do
+        {
+          'descriptionWidget' => {
+            'taskListToggle' => {
+              'checked' => true, 'lineSource' => '- [ ] Task 1', 'lineSourcepos' => '3:4-3:4'
+            }
+          }
+        }
+      end
+
+      it 'toggles only the targeted task list item' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          mutation_work_item.reload
+        end.to change { mutation_work_item.description }
+          .to("Intro\n\n- [x] Task 1\n- [x] Task 2")
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to be_empty
+        expect(mutation_response['workItem']['description']).to eq("Intro\n\n- [x] Task 1\n- [x] Task 2")
+      end
+
+      it 'patches the cached HTML in place instead of re-rendering' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        checkboxes = Nokogiri::HTML5.fragment(mutation_work_item.reload.description_html)
+          .css('input.task-list-item-checkbox')
+        expect(checkboxes.map { |checkbox| checkbox.has_attribute?('checked') }).to eq([true, true])
+      end
+
+      it 'sets last edited attributes' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        widget_response = widgets_response.find { |widget| widget['type'] == 'DESCRIPTION' }
+        expect(widget_response['lastEditedAt']).to eq(Time.current.iso8601)
+        expect(widget_response['lastEditedBy']).to eq('id' => current_user.to_gid.to_s)
+      end
+
+      it 'creates a system note about the task status change' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { mutation_work_item.notes.count }.by(1)
+
+        expect(mutation_work_item.notes.last.note).to include('marked the checklist item **Task 1** as completed')
+      end
+
+      context 'with an item-level multi-line sourcepos' do
+        let(:input) do
+          {
+            'descriptionWidget' => {
+              'taskListToggle' => {
+                'checked' => true, 'lineSource' => '- [ ] Task 1', 'lineSourcepos' => '3:1-4:12'
+              }
+            }
+          }
+        end
+
+        it 'falls back to the imprecise toggle and still updates the item' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.to change { mutation_work_item.description }
+            .to("Intro\n\n- [x] Task 1\n- [x] Task 2")
+        end
+      end
+
+      context 'when the targeted line no longer matches' do
+        let(:input) do
+          {
+            'descriptionWidget' => {
+              'taskListToggle' => {
+                'checked' => true, 'lineSource' => '- [ ] Task 1 (edited)', 'lineSourcepos' => '3:4-3:4'
+              }
+            }
+          }
+        end
+
+        it 'returns a conflict error along with the current work item state' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.not_to change { mutation_work_item.description }
+
+          expect(mutation_response['errors'].first).to include('Someone edited this')
+          expect(mutation_response['workItem']['description']).to eq("Intro\n\n- [ ] Task 1\n- [x] Task 2")
+        end
+      end
+
+      context 'when combined with a description' do
+        let(:input) do
+          {
+            'descriptionWidget' => {
+              'description' => 'new description',
+              'taskListToggle' => {
+                'checked' => true, 'lineSource' => '- [ ] Task 1', 'lineSourcepos' => '3:4-3:4'
+              }
+            }
+          }
+        end
+
+        it 'returns a mutually exclusive argument error' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(graphql_errors.first['message']).to match(/description, taskListToggle/)
+        end
+      end
+
+      context 'when the description widget input is empty' do
+        let(:input) { { 'descriptionWidget' => {} } }
+
+        it 'returns an exactly-one-of argument error' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(graphql_errors.first['message']).to match(/description, taskListToggle/)
+        end
+      end
+
+      context 'when combined with other arguments' do
+        let(:input) do
+          super().merge('title' => 'updated title')
+        end
+
+        it 'returns an argument error' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(graphql_errors.first['message'])
+            .to include('`taskListToggle` cannot be combined with other arguments')
+        end
+      end
+
+      context 'when the user cannot update the work item' do
+        let(:current_user) { guest }
+
+        it_behaves_like 'a mutation that returns a top-level access error'
+      end
+
+      context 'when the work_items_task_list_toggle feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items_task_list_toggle: false)
+        end
+
+        it 'returns an argument error mentioning the feature flag' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(graphql_errors.first['message']).to include('work_items_task_list_toggle')
+        end
+      end
+    end
+
     context 'with labels widget input' do
       shared_examples 'mutation updating work item labels' do
         it 'updates labels' do
@@ -1414,7 +1587,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
             it_behaves_like 'a mutation that returns top-level errors', errors: [
               'The resource that you are attempting to access does not exist or you don\'t have permission to ' \
-              'perform this action'
+                'perform this action'
             ]
           end
         end

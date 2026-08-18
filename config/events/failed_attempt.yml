@@ -3,7 +3,7 @@ description: Tracks Credit card validation errors as part of Identity Verificati
 action: failed_attempt
 identifiers:
 - user
-product_group: anti-abuse
+product_group: abuse_engineering
 product_categories:
 - instance_resiliency
 - insider_threat

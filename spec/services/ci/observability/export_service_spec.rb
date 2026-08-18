@@ -25,7 +25,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
 
   shared_context 'with observability settings' do |url|
     let(:observability_settings) do
-      instance_double(Observability::GroupO11ySetting, otel_http_endpoint: url || 'http://example.com')
+      instance_double(Observability::GroupO11ySetting, otel_https_endpoint: url || 'https://example.com')
     end
 
     before do
@@ -40,6 +40,18 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       key: described_class::OBSERVABILITY_VARIABLE,
       value: value,
       to_s: value)
+  end
+
+  def create_token_variable(value)
+    instance_double(Gitlab::Ci::Variables::Collection::Item,
+      key: described_class::OBSERVABILITY_TOKEN_VARIABLE,
+      value: value,
+      to_s: value)
+  end
+
+  def stub_variables(*items)
+    by_key = items.compact.index_by(&:key)
+    allow(variables_collection).to receive(:[]) { |key| by_key[key] }
   end
 
   describe '#execute' do
@@ -113,7 +125,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:export_variable) { create_export_variable('traces,metrics') }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
       end
 
       it 'returns true' do
@@ -123,7 +135,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
 
     context 'when CI variable is not set' do
       before do
-        allow(variables_collection).to receive(:find).and_return(nil)
+        allow(variables_collection).to receive(:[]).and_return(nil)
       end
 
       it 'returns false' do
@@ -135,7 +147,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:export_variable) { create_export_variable('') }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
       end
 
       it 'returns false' do
@@ -151,7 +163,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:export_variable) { create_export_variable('traces,metrics') }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
       end
 
       it 'returns traces and metrics' do
@@ -163,7 +175,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:export_variable) { create_export_variable('traces,invalid,metrics') }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
       end
 
       it 'returns only valid values' do
@@ -173,7 +185,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
 
     context 'when CI variable is not set' do
       before do
-        allow(variables_collection).to receive(:find).and_return(nil)
+        allow(variables_collection).to receive(:[]).and_return(nil)
       end
 
       it 'returns empty array' do
@@ -214,7 +226,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:converted_data) { { data: [] } }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
         allow(converter_class).to receive(:new)
           .with(integration, pipeline_data)
           .and_return(converter)
@@ -231,7 +243,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
     end
 
     it 'builds pipeline data' do
-      allow(variables_collection).to receive(:find).and_return(create_export_variable('traces'))
+      allow(variables_collection).to receive(:[]).and_return(create_export_variable('traces'))
       allow(Gitlab::Observability::PipelineToTraces).to receive(:new).and_return(instance_double(
         Gitlab::Observability::PipelineToTraces, convert: {}))
       allow(exporter).to receive(:export_traces)
@@ -246,7 +258,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
 
     describe 'trace correlation feature flag' do
       before do
-        allow(variables_collection).to receive(:find).and_return(create_export_variable('traces'))
+        allow(variables_collection).to receive(:[]).and_return(create_export_variable('traces'))
         allow(Gitlab::Observability::PipelineToTraces).to receive(:new).and_return(instance_double(
           Gitlab::Observability::PipelineToTraces, convert: {}))
         allow(exporter).to receive(:export_traces)
@@ -287,7 +299,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:logs_data) { { logs: [] } }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
         allow(Gitlab::Observability::PipelineToTraces).to receive(:new)
           .with(integration, pipeline_data).and_return(traces_converter)
         allow(Gitlab::Observability::PipelineToMetrics).to receive(:new)
@@ -320,7 +332,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:traces_converter) { instance_double(Gitlab::Observability::PipelineToTraces) }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
         allow(Gitlab::Observability::PipelineToTraces).to receive(:new)
           .with(integration, pipeline_data).and_return(traces_converter)
         allow(traces_converter).to receive(:convert).and_return(nil)
@@ -337,7 +349,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:metrics_converter) { instance_double(Gitlab::Observability::PipelineToMetrics) }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
         allow(Gitlab::Observability::PipelineToMetrics).to receive(:new)
           .with(integration, pipeline_data).and_return(metrics_converter)
         allow(metrics_converter).to receive(:convert).and_return(nil)
@@ -354,7 +366,7 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
       let(:logs_converter) { instance_double(Gitlab::Observability::PipelineToLogs) }
 
       before do
-        allow(variables_collection).to receive(:find).and_return(export_variable)
+        allow(variables_collection).to receive(:[]).and_return(export_variable)
         allow(Gitlab::Observability::PipelineToLogs).to receive(:new)
           .with(integration, pipeline_data).and_return(logs_converter)
         allow(logs_converter).to receive(:convert).and_return(nil)
@@ -380,17 +392,122 @@ RSpec.describe Ci::Observability::ExportService, feature_category: :observabilit
     end
   end
 
+  describe '#observability_token' do
+    include_context 'with pipeline variables setup'
+
+    context 'when the token variable is set' do
+      before do
+        stub_variables(create_token_variable('secret-token'))
+      end
+
+      it 'returns the token value' do
+        expect(service.send(:observability_token)).to eq('secret-token')
+      end
+    end
+
+    context 'when the token variable has surrounding whitespace' do
+      before do
+        stub_variables(create_token_variable("  secret-token\n"))
+      end
+
+      it 'returns the trimmed token value' do
+        expect(service.send(:observability_token)).to eq('secret-token')
+      end
+    end
+
+    context 'when the token variable is not set' do
+      before do
+        stub_variables(create_export_variable('traces'))
+      end
+
+      it 'returns nil' do
+        expect(service.send(:observability_token)).to be_nil
+      end
+    end
+
+    context 'when the token variable is blank' do
+      before do
+        stub_variables(create_token_variable('   '))
+      end
+
+      it 'returns nil' do
+        expect(service.send(:observability_token)).to be_nil
+      end
+    end
+
+    context 'when the token variable contains control characters' do
+      before do
+        stub_variables(create_token_variable("secret\r\nX-Injected: evil"))
+      end
+
+      it 'returns nil to prevent header injection' do
+        expect(service.send(:observability_token)).to be_nil
+      end
+    end
+
+    context 'when build is nil' do
+      let(:builds_relation) { instance_spy(ActiveRecord::Relation) }
+
+      before do
+        allow(pipeline).to receive(:builds).and_return(builds_relation)
+        allow(builds_relation).to receive(:first).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(service.send(:observability_token)).to be_nil
+      end
+    end
+  end
+
+  describe '#otel_headers' do
+    include_context 'with pipeline variables setup'
+
+    context 'when a token is present' do
+      before do
+        stub_variables(create_token_variable('secret-token'))
+      end
+
+      it 'returns an Authorization bearer header' do
+        expect(service.send(:otel_headers)).to eq({ 'Authorization' => 'Bearer secret-token' })
+      end
+    end
+
+    context 'when no token is present' do
+      before do
+        stub_variables(create_export_variable('traces'))
+      end
+
+      it 'returns an empty hash' do
+        expect(service.send(:otel_headers)).to eq({})
+      end
+    end
+  end
+
   describe '#integration' do
-    include_context 'with observability settings', 'http://test.example.com'
+    include_context 'with observability settings', 'https://test.example.com'
 
     it 'returns a Struct with correct fields and values' do
       integration = service.send(:integration)
 
       expect(integration).to be_a(Struct)
-      expect(integration.otel_endpoint_url).to eq('http://test.example.com')
+      expect(integration.otel_endpoint_url).to eq('https://test.example.com')
       expect(integration.otel_headers).to eq({})
       expect(integration.service_name).to eq('gitlab-ci')
       expect(integration.environment).to eq(Rails.env)
+    end
+
+    context 'when a token variable is set' do
+      include_context 'with pipeline variables setup'
+
+      before do
+        stub_variables(create_token_variable('secret-token'))
+      end
+
+      it 'sets the Authorization bearer header on the integration' do
+        integration = service.send(:integration)
+
+        expect(integration.otel_headers).to eq({ 'Authorization' => 'Bearer secret-token' })
+      end
     end
   end
 

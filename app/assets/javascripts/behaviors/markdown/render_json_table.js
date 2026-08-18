@@ -1,5 +1,5 @@
 import { memoize } from 'lodash-es';
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -47,13 +47,7 @@ const mountJSONTableVueComponent = (userData, element, isHtmlSafe = false) => {
     props.caption = caption;
   }
 
-  return new Vue({
-    el: container,
-    name: 'JSONTableRoot',
-    render(h) {
-      return h(JSONTable, { props });
-    },
-  });
+  return initVueApp({ el: container, name: 'JSONTableRoot', component: JSONTable, props });
 };
 
 const renderTable = (element) => {

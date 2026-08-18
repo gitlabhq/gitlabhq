@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlAnimatedNotificationIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
@@ -13,9 +13,6 @@ import updateWorkItemNotificationsMutation from '../graphql/update_work_item_not
 import { WIDGET_TYPE_NOTIFICATIONS } from '../constants';
 import { findNotificationsWidget } from '../utils';
 
-const ICON_ON = 'notifications';
-const ICON_OFF = 'notifications-off';
-
 export default {
   name: 'WorkItemNotificationsWidget',
   i18n: {
@@ -26,7 +23,7 @@ export default {
   },
   components: {
     GlButton,
-    GlIcon,
+    GlAnimatedNotificationIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -73,11 +70,11 @@ export default {
         ? this.$options.i18n.labelOn
         : this.$options.i18n.labelOff;
     },
-    notificationIcon() {
-      return this.workItemNotificationsSubscribed ? ICON_ON : ICON_OFF;
-    },
     isLoggedIn() {
       return isLoggedIn();
+    },
+    workItemNotificationsSubscribedStateText() {
+      return this.workItemNotificationsSubscribed ? 'true' : 'false';
     },
   },
   methods: {
@@ -139,18 +136,20 @@ export default {
   <gl-button
     v-if="isLoggedIn"
     ref="tooltip"
-    v-gl-tooltip.hover
-    category="secondary"
+    v-gl-tooltip.bottom="notificationTooltip"
+    category="tertiary"
+    size="small"
+    :selected="workItemNotificationsSubscribed"
     data-testid="subscribe-button"
-    :data-subscribed="workItemNotificationsSubscribed ? 'true' : 'false'"
-    :title="notificationTooltip"
+    :data-subscribed="workItemNotificationsSubscribedStateText"
+    :aria-label="notificationTooltip"
+    :aria-pressed="workItemNotificationsSubscribedStateText"
     class="btn-icon"
     @click="toggleNotifications(!workItemNotificationsSubscribed)"
   >
-    <gl-icon
-      :name="notificationIcon"
-      :size="16"
-      :class="{ '!gl-text-status-info': workItemNotificationsSubscribed }"
+    <gl-animated-notification-icon
+      :is-on="!workItemNotificationsSubscribed"
+      class="gl-button-icon"
     />
   </gl-button>
 </template>

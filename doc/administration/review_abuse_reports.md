@@ -38,12 +38,6 @@ To find out more about reporting abuse, see
 
 ## Resolving abuse reports
 
-{{< history >}}
-
-- **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131102) in GitLab 16.4.
-
-{{< /history >}}
-
 To access abuse reports:
 
 1. In the upper-right corner, select **Admin**.

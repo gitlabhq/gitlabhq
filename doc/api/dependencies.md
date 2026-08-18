@@ -13,8 +13,8 @@ title: Dependencies API
 
 {{< /details >}}
 
-Every call to this endpoint requires authentication. To perform this call, user should be authorized to read repository.
-To see vulnerabilities in response, user should be authorized to read
+Every call to this endpoint requires authentication. To perform this call, the user must be authorized to read the repository.
+To see vulnerabilities in response, the user must be authorized to read
 [Project Security Dashboard](../user/application_security/security_dashboard/_index.md).
 
 ## List project dependencies

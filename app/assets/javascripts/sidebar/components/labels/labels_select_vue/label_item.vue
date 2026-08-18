@@ -87,7 +87,7 @@ export default normalizeRender({
         class: 'gl-flex gl-items-center label-item gl-text-default',
         on: {
           click: () => {
-            listeners.clickLabel(label);
+            listeners['click-label'](label);
           },
         },
       },

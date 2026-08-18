@@ -1,6 +1,6 @@
 ---
-source_checksum: 29cbb8c6517cd27b
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 4f4508ed3a4c3e52
+distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -13,6 +13,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT change the token resolution order in `AuthFinders` (`lib/gitlab/auth/auth_finders.rb`); deploy tokens, bearer tokens, job tokens, and sessions are checked in a specific priority — reordering can cause one token type to shadow another.
 - DO NOT implement custom API authentication; use `API::APIGuard` (`lib/api/api_guard.rb`).
 - DO NOT hand-roll JWT or token parsing; use `Authn::IamService::JwtValidationService`.
+- DO NOT use `lib/gitlab/auth/request_authenticator.rb` for access control; it is for `Rack::Attack` and logging only.
 - Use `check_rate_limit!` for rate limiting on token creation and verification endpoints.
 
 ### Token Prefixes and Storage
@@ -93,7 +94,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - Ensure composite identity OAuth token scopes include the concrete dynamic scope `user:$ID` for the human user who originated the AI request, plus any required base scopes (for example, `api`).
 - Always use `Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)` to resolve the actor for any write operation; DO NOT determine the composite identity context manually.
 - Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, issues/MRs, commits, pipeline user context).
-- Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually.
+- Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually. In the `:authentication` context, audit events store `author_name` as `<service account name> on behalf of @<human username>` truncated to 255 characters, and record `human_author_id`, `human_author_name`, and `human_author_username` in event `details`; in the `:permission_check` context the human remains the author and no `human_author_*` keys are added (GitLab 19.3 and later).
 
 ### Feature Flags
 
@@ -105,3 +106,4 @@ For the full picture, see:
 
 - doc/development/authentication.md
 - doc/development/ai_features/composite_identity.md
+

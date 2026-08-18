@@ -57,7 +57,7 @@ Security incidents related to credentials exposure can vary in severity from low
 - Review the available [audit events](../administration/compliance/audit_event_reports.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../user/compliance/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../user/compliance/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
-- Review [job logs](../administration/cicd/job_logs.md) for any pipelines ran by an adversary
+- Review [job logs](../administration/cicd/job_logs.md) for any pipelines run by an adversary
 
 ### Suspected compromised user account
 
@@ -89,7 +89,7 @@ Review the [audit events](../administration/compliance/audit_event_reports.md) a
 
 ### CI/CD-related security incidents
 
-CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
+CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test, and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
 
 - Security incidents related to exposed GitLab CI/CD job tokens.
 - Secrets exposed through misconfigured GitLab CI/CD.
@@ -104,11 +104,11 @@ Under typical circumstances, the `CI_JOB_TOKEN` is not displayed in the job logs
 
 - Enabling verbose logging in a pipeline.
 - Running commands that echo shell environment variables to the console.
-- Failing to properly secure runner infrastructure can expose this data unintentionally.
+- Failing to properly secure runner infrastructure.
 
 In such instances, you should:
 
-- Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
+- Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](#suspected-compromised-user-account).
 - Any suspicious modification to any code that is called by that file can cause issues and should be investigated and may lead to exposed secrets.
 - Consider rotating the exposed secrets after determining the production impact of revocation.
 - Review [audit logs](../administration/compliance/audit_event_reports.md) available to you for any suspicious modifications to user and project settings.
@@ -140,7 +140,7 @@ It is important to [regularly update GitLab](../policy/maintenance.md), update y
 If you suspect that your GitLab instance has been compromised, you should:
 
 - Review the [audit events](../administration/compliance/audit_event_reports.md) available to you for suspicious account behavior.
-- Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account) if necessary.
+- Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](#suspected-compromised-user-account) if necessary.
 - Review the Credentials Inventory, if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
 - Update to the latest version of GitLab and adopt a plan to update after every security patch release.
@@ -156,7 +156,7 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 #### Event types
 
-Review [system access audit events](../user/compliance/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
+Review [system access audit events](../user/compliance/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions, and user login events.
 
 ### Misconfigured project or group settings
 
@@ -173,7 +173,7 @@ Security incidents can occur as a result of improperly configured project or gro
 If you suspect unauthorized modifications to project settings, consider taking the following steps:
 
 - Begin by reviewing the available [audit events](../administration/compliance/audit_event_reports.md) to identify the user responsible for the action.
-- If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
+- If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](#suspected-compromised-user-account).
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
 #### Event types

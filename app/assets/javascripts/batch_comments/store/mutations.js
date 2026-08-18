@@ -55,18 +55,6 @@ export default {
       this.drafts.splice(index, 1, processDraft(data));
     }
   },
-  [types.TOGGLE_RESOLVE_DISCUSSION](draftId) {
-    this.drafts = this.drafts.map((draft) => {
-      if (draft.id === draftId) {
-        return {
-          ...draft,
-          resolve_discussion: !draft.resolve_discussion,
-        };
-      }
-
-      return draft;
-    });
-  },
   [types.CLEAR_DRAFTS]() {
     this.drafts = [];
   },

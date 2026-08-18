@@ -5,9 +5,9 @@ class Tree
 
   attr_accessor :repository, :sha, :path, :entries, :cursor, :ref_type
 
-  def initialize(
+  def initialize( # rubocop:disable Metrics/ParameterLists -- one additional parameter for last commit enrichment
     repository, sha, path = '/', recursive: false, skip_flat_paths: true, pagination_params: nil,
-    ref_type: nil, rescue_not_found: true)
+    ref_type: nil, rescue_not_found: true, with_last_commit: false)
     path = '/' if path.blank?
 
     @repository = repository
@@ -25,11 +25,16 @@ class Tree
       recursive: recursive,
       skip_flat_paths: skip_flat_paths,
       rescue_not_found: rescue_not_found,
-      pagination_params: pagination_params
+      pagination_params: pagination_params,
+      with_last_commit: with_last_commit
     )
 
     @entries.each do |entry|
       entry.ref_type = self.ref_type
+
+      # Gitaly returns a raw Gitlab::Git::Commit. Wrap it in ::Commit so views and
+      # API entities get the presentation methods they expect.
+      entry.last_commit = ::Commit.new(entry.last_commit, repository.container) if entry.last_commit
     end
   end
 

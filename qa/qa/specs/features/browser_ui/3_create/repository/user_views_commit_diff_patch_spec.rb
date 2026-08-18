@@ -23,8 +23,7 @@ module QA
         end
       end
 
-      it 'user views raw email patch', :skip_live_env,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347755' do
+      it 'user views raw email patch', :skip_live_env do
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
         expect(page).to have_content(/From: "?#{Regexp.escape(user.name)}"? <#{user.commit_email}>/)
@@ -32,7 +31,7 @@ module QA
         expect(page).to have_content('diff --git a/second b/second')
       end
 
-      it 'user views raw commit diff', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347754' do
+      it 'user views raw commit diff' do
         Page::Project::Commit::Show.perform(&:select_plain_diff)
 
         expect(find('pre').text).to start_with('diff --git a/second b/second')

@@ -15,8 +15,6 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
   end
 
   it 'toggles subscription' do
-    wait_for_requests
-
     find_by_testid('subscribe-button').click
     expect(page).to have_selector('svg.gl-animated-icon-on')
 

@@ -58,7 +58,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       let(:access_control) { true }
 
       it 'sets access_control to true' do
-        expect(lookup_path.access_control).to eq(true)
+        expect(lookup_path.access_control).to be(true)
       end
     end
 
@@ -66,7 +66,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       let(:access_control) { false }
 
       it 'sets access_control to true' do
-        expect(lookup_path.access_control).to eq(false)
+        expect(lookup_path.access_control).to be(false)
       end
     end
   end
@@ -88,7 +88,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       let(:domain) { nil }
 
       it 'delegates to Project#pages_https_only?' do
-        expect(lookup_path.https_only).to eq(true)
+        expect(lookup_path.https_only).to be(true)
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       let(:domain) { instance_double(PagesDomain, https?: false) }
 
       it 'takes into account the https setting of the domain' do
-        expect(lookup_path.https_only).to eq(false)
+        expect(lookup_path.https_only).to be(false)
       end
     end
   end

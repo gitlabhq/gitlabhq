@@ -72,26 +72,6 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
     expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control)
   end
 
-  context 'when the achievements feature flag is disabled for a namespace' do
-    let_it_be(:group2) { create(:group) }
-    let_it_be(:achievement2) { create(:achievement, namespace: group2) }
-    let_it_be(:user_achievement2) do
-      create(:user_achievement, achievement: achievement2, user: user, show_on_profile: true)
-    end
-
-    before do
-      stub_feature_flags(achievements: false)
-      stub_feature_flags(achievements: group2)
-      post_graphql(query, current_user: current_user)
-    end
-
-    it 'does not return user_achievements for that namespace' do
-      expect(graphql_data_at(:user, :userAchievements, :nodes)).to contain_exactly(
-        a_graphql_entity_for(user_achievement2)
-      )
-    end
-  end
-
   context 'when current user is not a member of the private group' do
     let(:current_user) { create(:user) }
 

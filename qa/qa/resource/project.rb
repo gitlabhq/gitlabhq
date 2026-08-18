@@ -334,6 +334,57 @@ module QA
         )
       end
 
+      def change_skip_branch_pipelines_for_mrs(enabled)
+        mutation = <<~GQL
+          mutation {
+            projectCiCdSettingsUpdate(input: {
+              fullPath: "#{full_path}"
+              skipBranchPipelinesForMrs: #{enabled}
+            }) {
+              ciCdSettings {
+                skipBranchPipelinesForMrs
+              }
+              errors
+            }
+          }
+        GQL
+
+        response = post(
+          Runtime::API::Request.new(api_client, '/graphql').url,
+          { query: mutation }
+        )
+
+        unless response.code == HTTP_STATUS_OK
+          raise(
+            ResourceUpdateFailedError,
+            "Failed to update skip_branch_pipelines_for_mrs to '#{enabled}'. " \
+              "Response (#{response.code}): `#{response}`."
+          )
+        end
+
+        parsed = parse_body(response)
+        errors = parsed[:errors] || parsed.dig(:data, :projectCiCdSettingsUpdate, :errors)
+
+        return unless errors.present?
+
+        raise(
+          ResourceUpdateFailedError,
+          "Failed to update skip_branch_pipelines_for_mrs to '#{enabled}'. Errors: #{errors}"
+        )
+      end
+
+      def change_only_allow_merge_if_pipeline_succeeds(enabled)
+        response = put(request_url(api_put_path), only_allow_merge_if_pipeline_succeeds: enabled)
+
+        return if response.code == HTTP_STATUS_OK
+
+        raise(
+          ResourceUpdateFailedError,
+          "Failed to update only_allow_merge_if_pipeline_succeeds to '#{enabled}'. " \
+            "Response (#{response.code}): `#{response}`."
+        )
+      end
+
       def change_repository_storage(new_storage)
         response = put(request_url(api_put_path), repository_storage: new_storage)
 

@@ -41,7 +41,7 @@ export default {
       default: null,
     },
   },
-  emits: ['toggleSidebar', 'toggleSubscription'],
+  emits: ['toggle-sidebar', 'toggleSubscription'],
   computed: {
     // eslint-disable-next-line vue/no-unused-properties -- tracking() is used by the `Tracking` mixin
     tracking() {
@@ -96,7 +96,7 @@ export default {
       });
     },
     onClickCollapsedIcon() {
-      this.$emit('toggleSidebar');
+      this.$emit('toggle-sidebar');
     },
   },
 };

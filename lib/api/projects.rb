@@ -270,6 +270,43 @@ module API
         params
       end
 
+      # `cicd_catalog_enabled` is not a project attribute. It is backed by the
+      # presence of a `Ci::Catalog::Resource` record, so it is handled through a
+      # dedicated service rather than the project create/update service.
+      def update_cicd_catalog_setting!(project, enabled)
+        response = ::Ci::Catalog::Resources::ApplyCiCdCatalogSettingService.new(
+          project, current_user, enabled: enabled
+        ).execute
+
+        render_api_error!(response.message, 400) if response.error?
+      end
+
+      # On project creation, `update_cicd_catalog_setting!` runs after the project
+      # is already persisted, so a description-required failure there would leave
+      # a project behind despite the client receiving a 400. Checked up front so
+      # project creation is never attempted for a request that would fail this way.
+      def validate_cicd_catalog_description!(attrs, cicd_catalog_enabled)
+        return unless cicd_catalog_enabled
+        return if attrs[:description].present?
+
+        render_api_error!(
+          ::Ci::Catalog::Resources::ApplyCiCdCatalogSettingService::DESCRIPTION_REQUIRED_MESSAGE, 400
+        )
+      end
+
+      # Changing the catalog resource state requires the Owner role, whether
+      # enabling or disabling. Checking it up front keeps create consistent with
+      # update and avoids orphaning a project when the setting is applied.
+      def validate_cicd_catalog_owner_access!(attrs, cicd_catalog_enabled)
+        return if cicd_catalog_enabled.nil?
+        return if current_user.can_admin_all_resources?
+
+        namespace = Namespace.find_by_id(attrs[:namespace_id]) || current_user.namespace
+        return if namespace.max_member_access_for_user(current_user) >= Gitlab::Access::OWNER
+
+        forbidden!('You must have the Owner role in the namespace to set the project as a catalog resource.')
+      end
+
       def enqueue_async_transfer(project, namespace)
         service = ::Projects::TransferService.new(project, current_user)
         result = service.schedule_async_transfer(namespace)
@@ -292,7 +329,7 @@ module API
       end
     end
 
-    resource :users, requirements: API::USER_REQUIREMENTS do
+    resource :users, requirements: ::API::USER_REQUIREMENTS do
       desc 'List all personal projects for a user' do
         detail 'Lists all personal projects for a specified user. Does not return group or subgroup projects. ' \
           'If the user profile is private, returns only an empty list.'
@@ -381,6 +418,9 @@ module API
         success ::API::Entities::Project
         tags ['projects']
       end
+      params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      end
       route_setting :authorization, permissions: :restore_project, boundary_type: :project
       post ':id/restore', feature_category: :system_access do
         authorize!(:remove_project, user_project)
@@ -440,18 +480,27 @@ module API
       end
       route_setting :authorization, permissions: :create_project, boundary_type: :user
       post urgency: :low do
+        if Feature.enabled?(:namespace_create_rate_limit, current_user)
+          check_rate_limit!(:projects_create, scope: [current_user])
+        end
+
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         attrs = add_import_params(attrs)
+        cicd_catalog_enabled = attrs.delete(:cicd_catalog_enabled)
         filter_attributes_using_license!(attrs)
+        validate_cicd_catalog_description!(attrs, cicd_catalog_enabled)
+        validate_cicd_catalog_owner_access!(attrs, cicd_catalog_enabled)
 
         validate_git_import_url!(params[:import_url])
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
-          present_project project, with: Entities::Project,
+          update_cicd_catalog_setting!(project, cicd_catalog_enabled)
+
+          present_project project, with: Entities::Projects::WithCatalogSetting,
             user_can_admin_project: can?(current_user, :admin_project, project),
             current_user: current_user
         else
@@ -495,13 +544,17 @@ module API
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         attrs = add_import_params(attrs)
+        cicd_catalog_enabled = attrs.delete(:cicd_catalog_enabled)
         filter_attributes_using_license!(attrs)
+        validate_cicd_catalog_description!(attrs, cicd_catalog_enabled)
         validate_git_import_url!(params[:import_url])
 
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
-          present_project project, with: Entities::Project,
+          update_cicd_catalog_setting!(project, cicd_catalog_enabled)
+
+          present_project project, with: Entities::Projects::WithCatalogSetting,
             user_can_admin_project: can?(current_user, :admin_project, project),
             current_user: current_user
         else
@@ -533,11 +586,11 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve a project' do
         detail 'Retrieves details on a specified project. This endpoint can be accessed without authentication if ' \
           'the project is publicly accessible.'
-        success code: 200, model: Entities::ProjectWithAccess
+        success code: 200, model: Entities::Projects::WithAccessAndCatalogSetting
         tags %w[projects]
       end
       params do
@@ -553,7 +606,7 @@ module API
         check_rate_limit_by_user_or_ip!(:project_api)
 
         options = {
-          with: current_user ? Entities::ProjectWithAccess : Entities::ProjectDetails,
+          with: current_user ? Entities::Projects::WithAccessAndCatalogSetting : Entities::ProjectDetails,
           current_user: current_user,
           user_can_admin_project: can?(current_user, :admin_project, user_project),
           statistics: params[:statistics],
@@ -655,7 +708,7 @@ module API
         detail 'Updates an existing project. If your HTTP repository is not publicly accessible, add authentication ' \
           'information to the URL `https://username:password@gitlab.company.com/group/project.git`, where `password` ' \
           'is a public access key with the `api` scope.'
-        success code: 200, model: Entities::Project
+        success code: 200, model: Entities::Projects::WithCatalogSetting
         failure [
           { code: 400, message: 'Bad request' },
           { code: 403, message: 'Unauthenticated' }
@@ -679,19 +732,24 @@ module API
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if user_project.visibility_attribute_present?(attrs)
         authorize! :destroy_pipeline, user_project if attrs.key?(:ci_delete_pipelines_in_seconds)
+        authorize! :add_catalog_resource, user_project if attrs.key?(:cicd_catalog_enabled)
 
+        cicd_catalog_enabled = attrs.delete(:cicd_catalog_enabled)
         attrs = translate_params_for_compatibility(attrs)
         attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
         verify_update_project_attrs!(user_project, attrs)
 
-        user_project.remove_avatar! if attrs.key?(:avatar) && attrs[:avatar].nil?
-
+        # Blank avatar params are mapped to CarrierWave's `remove_avatar`
+        # virtual attribute by Projects::UpdateService, so removal happens
+        # inside the save lifecycle after validations pass.
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
         case result[:status]
         when :success
-          present_project user_project, with: Entities::Project,
+          update_cicd_catalog_setting!(user_project, cicd_catalog_enabled)
+
+          present_project user_project, with: Entities::Projects::WithCatalogSetting,
             user_can_admin_project: can?(current_user, :admin_project, user_project),
             current_user: current_user
         when :api_error

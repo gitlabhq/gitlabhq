@@ -449,7 +449,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
       integration.deactivate!
 
-      expect(integration.active).to eq(false)
+      expect(integration.active).to be(false)
     end
   end
 
@@ -459,7 +459,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
       integration.activate!
 
-      expect(integration.active).to eq(true)
+      expect(integration.active).to be(true)
     end
   end
 

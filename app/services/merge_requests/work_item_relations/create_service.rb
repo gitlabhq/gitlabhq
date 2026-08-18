@@ -13,7 +13,7 @@ module MergeRequests
     # are reported in the response payload under :errors rather than silently
     # dropped.
     class CreateService < BaseService
-      def initialize(merge_request:, current_user:, target_work_items:, link_type: :mentioned)
+      def initialize(merge_request:, current_user:, target_work_items:, link_type: :related)
         super(merge_request: merge_request, current_user: current_user)
 
         @target_work_items = target_work_items
@@ -22,6 +22,7 @@ module MergeRequests
 
       def execute
         return forbidden_response unless authorized?
+        return mentioned_not_allowed_response if link_type.to_s == 'mentioned'
         return too_many_relations_response if target_work_items.size > MAX_RELATIONS
 
         readable_work_items = readable_work_items_for(target_work_items)
@@ -62,6 +63,13 @@ module MergeRequests
 
       def required_permission
         :create_merge_request_work_item_relation
+      end
+
+      def mentioned_not_allowed_response
+        ServiceResponse.error(
+          message: _('Mentioned relations are managed automatically and cannot be created.'),
+          reason: :bad_request
+        )
       end
 
       # The work items, among the targets, that the current user can read --

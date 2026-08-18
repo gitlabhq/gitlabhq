@@ -425,45 +425,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    describe '.with_needs' do
-      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
-      let_it_be(:build_b) { create(:ci_build, pipeline: pipeline) }
-      let_it_be(:build_need_a) { create(:ci_build_need, build: build) }
-      let_it_be(:build_need_b) { create(:ci_build_need, build: build_b) }
-
-      context 'when passing build name' do
-        subject { described_class.with_needs(build_need_a.name) }
-
-        it { is_expected.to contain_exactly(build) }
-      end
-
-      context 'when not passing any build name' do
-        subject { described_class.with_needs }
-
-        it { is_expected.to contain_exactly(build, build_b) }
-      end
-
-      context 'when not matching build name' do
-        subject { described_class.with_needs('undefined') }
-
-        it { is_expected.to be_empty }
-      end
-    end
-
-    describe '.without_needs' do
-      subject { described_class.without_needs }
-
-      context 'when no build_need is created' do
-        it { is_expected.to contain_exactly(build, old_build, new_build) }
-      end
-
-      context 'when a build_need is created' do
-        let!(:need_a) { create(:ci_build_need, build: build) }
-
-        it { is_expected.to contain_exactly(old_build, new_build) }
-      end
-    end
-
     describe '.belonging_to_runner_manager' do
       subject { described_class.belonging_to_runner_manager(runner_manager) }
 
@@ -672,45 +633,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it_behaves_like 'a triggerable processable', :ci_build
 
   describe '#stick_build_if_status_changed' do
-    it 'sticks the build if the status changed' do
+    it 'sticks the build after the status change commits', :aggregate_failures do
       job = create(:ci_build, :pending, pipeline: pipeline)
 
-      expect(described_class.sticking).to receive(:stick)
+      allow(described_class.sticking).to receive(:stick)
+
+      described_class.transaction do
+        job.update!(status: :running)
+
+        expect(described_class.sticking).not_to have_received(:stick)
+      end
+
+      expect(described_class.sticking).to have_received(:stick)
         .with(:build, job.id)
-
-      job.update!(status: :running)
-    end
-
-    context 'when ci_stick_build_after_commit is enabled' do
-      it 'sticks the build after the status change commits' do
-        job = create(:ci_build, :pending, pipeline: pipeline)
-
-        allow(described_class.sticking).to receive(:stick)
-
-        described_class.transaction do
-          job.update!(status: :running)
-
-          expect(described_class.sticking).not_to have_received(:stick)
-        end
-
-        expect(described_class.sticking).to have_received(:stick)
-          .with(:build, job.id)
-      end
-    end
-
-    context 'when ci_stick_build_after_commit is disabled' do
-      it 'sticks the build immediately if the status changed' do
-        job = build_stubbed(:ci_build, :running)
-
-        allow(job).to receive(:saved_change_to_status?).and_return(true)
-        job.send(:stick_build_after_commit=, false)
-
-        expect(job).not_to receive(:run_after_commit)
-        expect(described_class.sticking).to receive(:stick)
-          .with(:build, job.id)
-
-        job.send(:stick_build_if_status_changed)
-      end
     end
   end
 
@@ -1938,34 +1873,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#has_live_trace?' do
-    subject { build.has_live_trace? }
-
-    let(:build) { create(:ci_build, :trace_live, pipeline: pipeline) }
-
-    it { is_expected.to be_truthy }
-
-    context 'when build does not have live trace' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '#has_archived_trace?' do
-    subject { build.has_archived_trace? }
-
-    let(:build) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
-
-    it { is_expected.to be_truthy }
-
-    context 'when build does not have archived trace' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
   describe '#has_job_artifacts?' do
     subject { build.has_job_artifacts? }
 
@@ -3024,6 +2931,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_JOB_TOKEN', value: 'my-token', public: false, masked: true },
           { key: 'CI_JOB_STARTED_AT', value: build.started_at&.iso8601, public: true, masked: false },
           { key: 'CI_JOB_STARTED_AT_SLUG', value: build.started_at && Gitlab::Utils.slugify(build.started_at.iso8601), public: true, masked: false },
+          { key: 'CI_JOB_RETRY_COUNT', value: '0', public: true, masked: false },
           { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
@@ -3033,6 +2941,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_GROUP_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
+          { key: 'CI_JOB_TAGS', value: '[]', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
@@ -3134,6 +3043,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(environment_based_variables_collection).to be_empty
+      end
+
+      context 'when the job has been retried' do
+        before do
+          create_list(:ci_build, 2, :retried, name: build.name, pipeline: pipeline)
+        end
+
+        it 'counts the retries in CI_JOB_RETRY_COUNT' do
+          expect(subject.to_runner_variables)
+            .to include({ key: 'CI_JOB_RETRY_COUNT', value: '2', public: true, masked: false })
+        end
       end
 
       describe 'variables ordering' do
@@ -6424,7 +6344,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'logs a message and increments the job failure counter', :aggregate_failures do
       expect(::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter)
         .to(receive(:increment))
-        .with(reason: :data_integrity_failure)
+        .with(reason: :data_integrity_failure, runner_type: 'none')
 
       expect(Gitlab::AppLogger)
         .to receive(:info)
@@ -6432,6 +6352,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         .and_call_original
 
       doom!
+    end
+
+    context 'when the build has a runner' do
+      let(:runner) { create(:ci_runner, :instance) }
+
+      before do
+        build.runner = runner
+      end
+
+      it 'increments the job failure counter with the runner type' do
+        expect(::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter)
+          .to(receive(:increment))
+          .with(reason: :data_integrity_failure, runner_type: 'instance_type')
+
+        doom!
+      end
     end
 
     context 'with deployment' do
@@ -6543,6 +6479,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build is part of parallel build' do
       let(:build) { create(:ci_build, name: 'build 1/2', pipeline: pipeline) }
+
+      it 'uses the group name for test suite name' do
+        expect(build.test_suite_name).to eq('build')
+      end
+    end
+
+    context 'when build is part of a legacy parallel build with integer parallel options' do
+      let(:build) { create(:ci_build, name: 'build 1/2', pipeline: pipeline, options: { parallel: 2 }) }
 
       it 'uses the group name for test suite name' do
         expect(build.test_suite_name).to eq('build')

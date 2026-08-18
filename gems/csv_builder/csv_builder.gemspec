@@ -18,9 +18,18 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_dependency "csv"
+
+  # base64, bigdecimal and mutex_m are former default gems that ActiveSupport
+  # 7.0 (pulled in by the gitlab-styles RuboCop toolchain) requires without
+  # declaring. Ruby 3.4 no longer ships them, so RuboCop's config load fails
+  # unless they are present.
+  spec.add_development_dependency "base64"
+  spec.add_development_dependency "bigdecimal"
+  spec.add_development_dependency "gitlab-styles", "~> 14.0"
+  spec.add_development_dependency "mutex_m"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop", "~> 1.50"
-  spec.add_development_dependency "rubocop-rspec", "~> 2.22"
+  spec.add_development_dependency "rubocop-rspec", "~> 3.0"
 end

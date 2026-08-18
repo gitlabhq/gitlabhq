@@ -34,6 +34,25 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_
 
         execute_worker
       end
+
+      it 'sets its own class as related_class so the refresh is attributed to the periodic sweep' do
+        execute_worker
+
+        expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.jobs).to all(
+          include(Labkit::Context.log_key(:related_class) => described_class.name)
+        )
+      end
+
+      it 'tags the job with the safety-net refresh purpose' do
+        execute_worker
+
+        expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.jobs).to all(
+          include(
+            Labkit::Context.log_key(:authorized_projects_refresh_purpose) =>
+              UserProjectAccessChangedService::SAFETY_NET_REFRESH_PURPOSE
+          )
+        )
+      end
     end
 
     context 'when there are no additions or removals to be made to project authorizations for a specific user' do

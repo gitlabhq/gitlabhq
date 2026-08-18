@@ -13,7 +13,7 @@ module API
         desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/error_tracking' do
         before do
           authorize! :admin_operations, user_project
@@ -54,6 +54,9 @@ module API
             { code: 404, message: 'Not found' }
           ]
           tags ERROR_TRACKING_CLIENT_KEYS_TAGS
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the client key'
         end
         route_setting :authorization, permissions: :delete_error_tracking_client_key, boundary_type: :project
         delete '/client_keys/:key_id' do

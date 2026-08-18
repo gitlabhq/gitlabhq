@@ -201,25 +201,25 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     context 'when a stopping environment has not been updated recently' do
       let(:environment1) { create(:environment, state: 'stopping', project: project, updated_at: long_ago) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when a stopping environment has been updated recently' do
       let(:environment1) { create(:environment, state: 'stopping', project: project, updated_at: not_long_ago) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when a non stopping environment has not been updated recently' do
       let(:environment1) { create(:environment, project: project, updated_at: long_ago) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when a non stopping environment has been updated recently' do
       let(:environment1) { create(:environment, project: project, updated_at: not_long_ago) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -657,6 +657,27 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       environment.stop
 
       expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+
+    context 'when a merge request displays the environment' do
+      let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+      let(:sha) { project.commit(merge_request.target_branch).id }
+      let(:ci_environments_status_path) do
+        Gitlab::Routing.url_helpers.ci_environments_status_project_merge_request_path(project, merge_request)
+      end
+
+      before do
+        merge_request.update!(merge_commit_sha: sha)
+        create(:deployment, environment: environment, project: project, sha: sha)
+      end
+
+      it 'also expires the merge request ci_environments_status ETag' do
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch).with(environment.etag_cache_key, ci_environments_status_path)
+        end
+
+        environment.stop
+      end
     end
   end
 
@@ -1522,8 +1543,20 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '#upcoming_deployment' do
     subject { environment.upcoming_deployment }
 
-    context 'when environment has a successful deployment' do
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
+    it 'uses status-specific index lookups' do
+      sql = environment.association(:upcoming_deployment).scope.to_sql
+
+      expect(sql).to include('UNION ALL')
+      expect(sql).to include(%("deployments"."status" = #{Deployment.statuses.fetch('blocked')}))
+      expect(sql).to include(%("deployments"."status" = #{Deployment.statuses.fetch('running')}))
+    end
+
+    context 'when the environment only has finished deployments' do
+      before do
+        create(:deployment, :success, environment: environment, project: project)
+        create(:deployment, :failed, environment: environment, project: project)
+        create(:deployment, :canceled, environment: environment, project: project)
+      end
 
       it { is_expected.to be_nil }
     end
@@ -1538,6 +1571,25 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       let!(:deployment) { create(:deployment, :blocked, environment: environment, project: project) }
 
       it { is_expected.to eq(deployment) }
+    end
+
+    context 'when environment has multiple upcoming deployments' do
+      let!(:running_deployment) { create(:deployment, :running, environment: environment, project: project) }
+      let!(:blocked_deployment) { create(:deployment, :blocked, environment: environment, project: project) }
+      let!(:created_deployment) { create(:deployment, :created, environment: environment, project: project) }
+
+      it 'returns the latest blocked or running deployment' do
+        is_expected.to eq(blocked_deployment)
+      end
+    end
+
+    context 'when the latest upcoming deployment is running' do
+      let!(:blocked_deployment) { create(:deployment, :blocked, environment: environment, project: project) }
+      let!(:running_deployment) { create(:deployment, :running, environment: environment, project: project) }
+
+      it 'returns the running deployment with the highest id' do
+        is_expected.to eq(running_deployment)
+      end
     end
   end
 
@@ -1705,14 +1757,14 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     subject { environment.has_running_deployments? }
 
     it 'return false when no deployments exist' do
-      is_expected.to eq(false)
+      is_expected.to be(false)
     end
 
     context 'when deployment is running on the environment' do
       let!(:deployment) { create(:deployment, :running, environment: environment) }
 
       it 'return true' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
   end
@@ -2116,13 +2168,13 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       context 'when environment is production tier' do
         let(:environment) { create(:environment, project: project, name: 'production/aws') }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when environment is development tier' do
         let(:environment) { create(:environment, project: project, name: 'review/feature') }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -2130,13 +2182,13 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       context 'when environment is production tier' do
         let(:environment) { create(:environment, project: project, name: 'production') }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when environment is development tier' do
         let(:environment) { create(:environment, project: project, name: 'development') }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
   end

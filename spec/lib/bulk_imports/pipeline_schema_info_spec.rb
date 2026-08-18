@@ -33,28 +33,4 @@ RSpec.describe BulkImports::PipelineSchemaInfo, feature_category: :importers do
       end
     end
   end
-
-  describe '#db_table' do
-    context 'when pipeline defines a relation name which is an association' do
-      it 'returns the name of the table used by the association' do
-        expect(subject.db_table).to eq('labels')
-      end
-    end
-
-    context 'when pipeline does not define a relation name' do
-      let(:pipeline_name) { BulkImports::Common::Pipelines::EntityFinisher.to_s }
-
-      it 'returns nil' do
-        expect(subject.db_table).to eq(nil)
-      end
-    end
-
-    context 'when pipeline relation name is not an association' do
-      let(:pipeline_name) { BulkImports::Projects::Pipelines::CommitNotesPipeline.to_s }
-
-      it 'returns nil' do
-        expect(subject.db_table).to eq(nil)
-      end
-    end
-  end
 end

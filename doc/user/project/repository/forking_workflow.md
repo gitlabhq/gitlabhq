@@ -37,12 +37,6 @@ use a personal fork of a public project.
 
 ## Create a fork
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24894) in GitLab 16.6.
-
-{{< /history >}}
-
 To fork an existing project in GitLab:
 
 1. On the project's homepage, in the upper-right corner, select **Fork** ({{< icon name="fork" >}}).
@@ -83,12 +77,6 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 [configuring forks as pull mirrors](#with-repository-mirroring) of the upstream project.
 
 ### From the UI
-
-{{< history >}}
-
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
-
-{{< /history >}}
 
 When you update a fork from the UI, the following repository protection settings on the fork are
 bypassed:

@@ -1,0 +1,19 @@
+# @feature_category: pipeline_composition
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getCiCatalogBundledResources($first: Int = 20, $after: String) {
+  ciCatalogBundledResources(first: $first, after: $after) {
+    pageInfo {
+      ...PageInfo
+    }
+    nodes {
+      id
+      name
+      description
+      fullPath
+      serverFqdn
+      latestReleasedAt
+      latestVersionName
+    }
+  }
+}

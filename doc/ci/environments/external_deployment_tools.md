@@ -13,7 +13,7 @@ title: Track deployments of an external deployment tool
 {{< /details >}}
 
 While GitLab offers a [built-in deployment solution](_index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
-GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.
+GitLab can receive deployment events from these external tools and lets you track them directly.
 For example, the following features are available by setting up tracking:
 
 - [See when a merge request has been deployed, and to which environment](../../user/project/merge_requests/widgets.md#post-merge-pipeline-status).
@@ -43,7 +43,7 @@ You can configure your tool to make a request to the GitLab [Deployment API](../
 You can use [ArgoCD webhook](https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/services/webhook/) to send deployment events to GitLab Deployment API.
 Here is an example setup that creates a `success` deployment record in GitLab when ArgoCD successfully deploys a new revision:
 
-1. Create a new webhook. You can save the following manifest file and apply it by `kubectl apply -n argocd -f <manifiest-file-path>`:
+1. Create a new webhook. You can save the following manifest file and apply it by `kubectl apply -n argocd -f <manifest-file-path>`:
 
    ```yaml
    apiVersion: v1

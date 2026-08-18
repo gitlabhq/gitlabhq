@@ -122,9 +122,5 @@ export default function projectMergeRequestsTest(data) {
     );
   }
 
-  console.log(
-    `Request ${__ITER}: ${res.request.method} ${res.request.url} - Status ${res.status} - Duration ${res.timings.duration}ms`,
-  );
-
   sleep(1);
 }

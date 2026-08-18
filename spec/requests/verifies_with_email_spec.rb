@@ -279,7 +279,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         it 'unlocks the user, create logs and records the activity', :freeze_time do
           expect { submit_token }.to change { user.reload.unlock_token }.to(nil)
             .and change { user.locked_at }.to(nil)
-            .and change { AuditEvent.count }.by(1)
+            .and change { AuditEventReader.count }.by(1)
             .and change { AuthenticationEvent.count }.by(1)
             .and change { user.last_activity_on }.to(Date.today)
         end
@@ -358,7 +358,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         it 'clears the otp, create logs and records the activity', :freeze_time do
           expect { submit_token }.to change { user.reload.email_otp }.to(nil)
             .and not_change { user.email_otp_last_sent_at }
-            .and change { AuditEvent.count }.by(1)
+            .and change { AuditEventReader.count }.by(1)
             .and change { AuthenticationEvent.count }.by(1)
             .and change { user.last_activity_on }.to(Date.today)
         end
@@ -1201,7 +1201,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         post(users_fallback_to_email_otp_path(user: { login: user.username }))
         expect(json_response).to match({
           'success' => false,
-          'message' => 'Not permitted.'
+          'message' => s_('IdentityVerification|Email verification is no longer available for this ' \
+            'sign-in attempt. Log in again.')
         })
       end
     end
@@ -1219,7 +1220,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
           expect(json_response).to match({
             'success' => false,
-            'message' => 'Not permitted.'
+            'message' => s_('IdentityVerification|Email verification is no longer available for this ' \
+              'sign-in attempt. Log in again.')
           })
         end
       end
@@ -1232,7 +1234,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
           expect(json_response).to match({
             'success' => false,
-            'message' => 'Not permitted.'
+            'message' => s_('IdentityVerification|Email verification is no longer available for this ' \
+              'sign-in attempt. Log in again.')
           })
         end
       end
@@ -1250,7 +1253,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
             expect(json_response).to match({
               'success' => false,
-              'message' => 'Not permitted.'
+              'message' => s_('IdentityVerification|Email verification is no longer available for this ' \
+                'sign-in attempt. Log in again.')
             })
           end
         end

@@ -24,8 +24,7 @@ module QA
       end
 
       it(
-        'spans r/w postgres web sidekiq git api',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360837'
+        'spans r/w postgres web sidekiq git api'
       ) do
         Page::Project::Show.perform(&:close_dap_panel_if_exists)
 

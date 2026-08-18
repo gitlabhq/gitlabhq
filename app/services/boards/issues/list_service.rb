@@ -22,7 +22,7 @@ module Boards
       def order(items)
         return items.order_closed_at_desc if list&.closed?
 
-        items.order_by_relative_position
+        items.order_by_relative_position(board&.resource_parent&.root_ancestor)
       end
 
       def finder

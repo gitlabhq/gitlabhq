@@ -36,6 +36,14 @@ module WorkItems
         enable :read_saved_view
       end
 
+      # Subscribe, unsubscribe and reorder act only on the current user's own subscription, not on the saved view
+      # itself, so they require nothing more than the ability to read the view.
+      rule { can?(:read_saved_view) }.policy do
+        enable :subscribe_saved_view
+        enable :unsubscribe_saved_view
+        enable :reorder_saved_view
+      end
+
       private
 
       def saved_view_container

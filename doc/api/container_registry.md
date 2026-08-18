@@ -117,12 +117,6 @@ Example response:
 
 ### Within a group
 
-{{< history >}}
-
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336912) the `tags` and `tag_count` attributes in GitLab 15.0.
-
-{{< /history >}}
-
 Lists all registry repositories for a specified group.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
@@ -234,11 +228,8 @@ curl --request DELETE \
 
 ### Within a project
 
-{{< history >}}
-
-- Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432470) in GitLab 16.10 for GitLab.com only.
-
-{{< /history >}}
+> [!note]
+> Keyset pagination is available for GitLab.com only.
 
 Lists all tags for a specified registry repository.
 
@@ -343,7 +334,7 @@ This operation does not delete blobs. To reclaim disk space, [run garbage collec
 Deletes registry repository tags in bulk based on specified criteria.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Use the container registry API to delete all tags except *](https://youtu.be/Hi19bKe_xsg).
+For an overview, see [Use the container registry API to delete all tags except \*](https://www.youtube.com/watch?v=Hi19bKe_xsg).
 
 ```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags

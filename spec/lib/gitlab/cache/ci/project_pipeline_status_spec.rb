@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:pipeline_status) { described_class.new(project) }
   let(:cache_key) { pipeline_status.cache_key }
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
 
       it 'loads 10 projects without hitting Gitaly call limit', :request_store do
         projects = Gitlab::GitalyClient.allow_n_plus_1_calls do
-          (1..10).map { create(:project, :repository) }
+          (1..10).map { create(:project, :small_repo) }
         end
         Gitlab::GitalyClient.reset_counts
 

@@ -27,6 +27,8 @@ describe('ColorPicker', () => {
   const colorPicker = () => wrapper.findComponent(GlFormInput);
   const colorInput = () => wrapper.find('input[type="color"]');
   const colorTextInput = () => wrapper.findComponent(GlFormInputGroup).find('input[type="text"]');
+  const colorTextInputComponent = () =>
+    wrapper.findComponent(GlFormInputGroup).findComponent('input[type="text"]');
   const invalidFeedback = () => wrapper.find('.invalid-feedback');
   const description = () => wrapper.findComponent(GlFormGroup).attributes('description');
   const presetColors = () => wrapper.findAllComponents(GlLink);
@@ -78,13 +80,13 @@ describe('ColorPicker', () => {
         `border-color: ${BORDER_COLOR_DEFAULT_MOCK};`,
       );
       expect(colorPicker().props('value')).toBe('');
-      expect(colorTextInput().props('value')).toBe('');
+      expect(colorTextInputComponent().props('value')).toBe('');
     });
 
     it('has a color set on initialization', () => {
       createComponent(mount, { value: setColor });
 
-      expect(colorTextInput().props('value')).toBe(setColor);
+      expect(colorTextInputComponent().props('value')).toBe(setColor);
     });
 
     it('emits input event from component when a color is selected', async () => {

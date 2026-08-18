@@ -24,7 +24,7 @@
       height: 100%;
     }
 
-    &:focus {
+    &:focus-visible {
       outline: none;
     }
   }
@@ -67,7 +67,7 @@
   left: 0;
 
   &:active,
-  &:focus {
+  &:focus-visible {
     outline: 0;
   }
 }

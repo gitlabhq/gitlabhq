@@ -16,6 +16,7 @@ title: Agent tool governance
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20466) in GitLab 19.1 as a [beta](../../../policy/development_stages_support.md) with a [feature flag](../../../administration/feature_flags/_index.md) named `gitlab_duo_governance_settings`. Enabled by default.
+- Enforcement for background flows, such as the Duo Developer foundational flow, added in GitLab 19.3 behind a [feature flag](../../../administration/feature_flags/_index.md) named `duo_workflow_background_tool_governance`. Disabled by default.
 
 {{< /history >}}
 
@@ -28,6 +29,10 @@ Tool governance sits at the execution boundary. After an agent has been
 admitted to a project, and before a tool is invoked, the governance layer
 consults the configured rules for the user's role and the tool's action
 category, then enforces the resulting mode.
+
+> [!flag]
+> Enforcement for background flows is controlled by a feature flag.
+> For more information, see the history.
 
 Tools are classified into three action categories:
 
@@ -49,8 +54,7 @@ This feature applies to Agentic Chat and IDE extensions. For flows, governance
 enforcement depends on where the flow runs:
 
 - For flows that run in an IDE extension, GitLab enforces governance rules.
-- For flows that run in CI/CD runners, such as the Duo Developer or Duo Code Review foundational flows,
-  GitLab does not enforce governance rules. For more information, see [Known issues](#known-issues).
+- For background flows, such as the Duo Developer foundational flow, GitLab enforces governance rules.
 
 ## Default governance matrix
 
@@ -133,15 +137,91 @@ To configure tool governance rules for a project:
 1. For each tool, select a mode from the dropdown: **Always Allow**, **Always Ask**, or **Always Deny**.
 1. Select **Save changes**.
 
+## Block Model Context Protocol (MCP) servers
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601159) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md) with a [feature flag](../../../administration/feature_flags/_index.md) named `mcp_server_block_enforcement`. Disabled by default.
+
+{{< /history >}}
+
+> [!warning]
+> This feature is in [beta](../../../policy/development_stages_support.md).
+> It is subject to change without notice.
+> For more information, see [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+In addition to [per-tool governance](#default-governance-matrix), group Owners can block all tools from a specific
+external MCP server. When an MCP server is blocked, no tools from that server can be
+invoked, regardless of individual tool governance settings or user approvals.
+
+This block is enforced on every tool call, including mid-session. If an administrator
+blocks an MCP server while a workflow is running, subsequent calls to tools from that
+server are denied immediately.
+
+When a tool from a blocked MCP server is called, the agent receives a policy message
+instead of a tool result. The agent cannot use any tools from that server.
+
+This differs from the **Always Deny** tool governance mode:
+
+- **Always Deny** applies to individual tools and is configured per project or group.
+- Blocking an MCP server applies to all tools from that server and is configured in
+  the MCP Registry. It overrides any user approval or tool governance setting.
+
+> [!note]
+> Blocking an MCP server requires GitLab 19.3 or later. On older GitLab Self-Managed
+> and Dedicated instances, the block is not enforced and tools from the server are
+> allowed by default. In GitLab 19.3, enforcing the block requires one additional
+> request per MCP tool call.
+
+### Block an MCP server
+
+You can block an MCP server at the group or project level:
+
+- **Group level**: blocks the server for all projects in the group and their subgroups.
+  If a server is blocked at the group level, project-level settings cannot unblock it.
+- **Project level**: blocks the server for that project only.
+
+#### Block an MCP server for a group
+
+Prerequisites:
+
+- You have the Owner role for the top-level group.
+
+To block an MCP server for a group:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change governance**.
+1. Select the **MCP Registry** tab.
+1. Find the MCP server you want to block and select **Block**.
+
+The block applies immediately. All tools from the blocked server are denied for all users
+in the group and its subgroups and projects.
+
+#### Block an MCP server for a project
+
+Prerequisites:
+
+- You have the Owner role for the project.
+
+To block an MCP server for a project:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **General** > **GitLab Duo**.
+1. Select **Change governance**.
+1. Select the **MCP Registry** tab.
+1. Find the MCP server you want to block and select **Block**.
+
+The block applies immediately. All tools from the blocked server are denied for all users
+in the project.
+
 ## Known issues
 
-- Tool governance rules do not apply to flows that run in CI/CD runners, such as the
-  [Duo Developer foundational flow](../flows/foundational_flows/developer.md).
-  When a flow runs in a runner, the runner's permissions override governance
-  enforcement, and the configured Always Allow, Always Ask, or Always Deny
-  modes have no effect.
-- The governance UI has two access categories: Web (browser-based sessions) and
-  Local (IDE and CLI). Flows that run in CI/CD runners do not map to either category.
+- The governance UI has three access categories: Web (browser-based sessions),
+  Local (IDE and CLI), and Runner (background flows that run in CI/CD runners).
+  Runner access supports only Always Allow and Always Deny. Always Ask does not apply,
+  because no user is present to respond to an approval prompt in a background flow.
+  A tool with no configured runner rule defaults to Always Allow.
 
 ## Related topics
 

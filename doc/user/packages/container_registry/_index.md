@@ -126,11 +126,6 @@ registry.example.com/mynamespace/myproject/my/image:rc1
 
 ## Move or rename container registry repositories
 
-{{< history >}}
-
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429734) in GitLab 16.7.
-
-{{< /history >}}
 The path of a container repository always matches the related project's repository path,
 so renaming or moving only the container registry is not possible. Instead, you can either:
 
@@ -203,12 +198,6 @@ see [roles and permissions](../../permissions.md).
 | Any project with container registry `disabled`                                                                    | All operations on container registry          | No                                   | No    | No                                     |
 
 ## Supported image types
-
-{{< history >}}
-
-- OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
-
-{{< /history >}}
 
 The container registry supports the [Docker V2](https://distribution.github.io/distribution/spec/manifest-v2-2/)
 and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md)

@@ -1,155 +1,156 @@
 # frozen_string_literal: true
 
-class Projects::WorkItemsController < Projects::ApplicationController
-  include WorkhorseAuthorization
-  include WorkItemsCollections
-  extend Gitlab::Utils::Override
-  include IssueBuildParameters
+module Projects
+  class WorkItemsController < Projects::ApplicationController
+    include WorkhorseAuthorization
+    include WorkItemsCollections
+    extend Gitlab::Utils::Override
+    include IssueBuildParameters
 
-  EXTENSION_ALLOWLIST = %w[csv].map(&:downcase).freeze
+    EXTENSION_ALLOWLIST = %w[csv].map(&:downcase).freeze
 
-  before_action :authorize_import_access!, only: [:import_csv, :authorize] # rubocop:disable Rails/LexicallyScopedActionFilter
-  before_action do
-    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:use_work_item_url, !!project&.use_work_item_url?)
-    push_force_frontend_feature_flag(:work_item_features_field,
-      Feature.enabled?(:work_item_features_field, current_user))
-    push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
-    push_frontend_feature_flag(:work_item_rest_api_frontend_users, current_user)
-    push_frontend_feature_flag(:planning_view_boards, current_user)
-    push_frontend_feature_flag(:work_items_realtime, current_user)
-    push_frontend_feature_flag(:work_items_realtime_broadcast, project&.root_ancestor)
-  end
-
-  before_action :check_search_rate_limit!, if: ->(c) do
-    c.action_name.to_sym == :calendar || c.action_name.to_sym == :rss
-  end
-
-  prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
-
-  feature_category :portfolio_management, [:index, :rss, :calendar]
-  feature_category :team_planning
-  urgency :high, [:authorize]
-  urgency :low
-
-  def import_csv
-    file = import_params[:file]
-    return render json: { errors: invalid_file_message }, status: :bad_request unless file_is_valid?(file)
-
-    result = WorkItems::PrepareImportCsvService.new(project, current_user, file: file).execute
-
-    if result.status == :error
-      render json: { errors: result.message }, status: :bad_request
-    else
-      render json: { message: result.message }, status: :ok
-    end
-  end
-
-  def index; end
-
-  def new
-    service = ::WorkItems::BuildService.new(
-      container: project,
-      current_user: current_user,
-      params: build_params
-    )
-
-    @work_item = service.execute
-    @related_issue = service.related_issue
-    @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
-
-    if service.discussion_to_resolve_id.present?
-      @discussion_to_resolve = service.discussions_to_resolve.first
-      Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
-        .track_resolve_thread_in_issue_action(user: current_user)
+    before_action :authorize_import_access!, only: [:import_csv, :authorize] # rubocop:disable Rails/LexicallyScopedActionFilter
+    before_action do
+      push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:use_work_item_url, !!project&.use_work_item_url?)
+      push_force_frontend_feature_flag(:work_item_features_field,
+        Feature.enabled?(:work_item_features_field, current_user))
+      push_frontend_feature_flag(:work_item_rest_api_frontend_users, current_user)
+      push_frontend_feature_flag(:planning_view_boards, current_user)
+      push_frontend_feature_flag(:work_items_realtime, current_user)
     end
 
-    render :show
-  end
-
-  def show
-    return if show_params[:iid] == 'new'
-
-    @work_item = issuable
-  end
-
-  def edit
-    # Check if user can edit the work item
-    work_item = issuable
-    return render_404 unless work_item
-
-    if can?(current_user, :update_work_item, work_item)
-      # Redirect to work_items detail page with edit mode enabled
-      redirect_to project_work_item_path(project, show_params[:iid], edit: 'true')
-    else
-      # Redirect to work_items detail page without edit mode
-      redirect_to project_work_item_path(project, show_params[:iid])
+    before_action :check_search_rate_limit!, if: ->(c) do
+      c.action_name.to_sym == :calendar || c.action_name.to_sym == :rss
     end
-  end
 
-  def calendar
-    @work_items = work_items_for_calendar
+    prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
+    prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
+    prepend_before_action :authenticate_user!, only: [:new]
+    before_action :authorize_create_work_item!, only: [:new]
 
-    respond_to do |format|
-      format.ics do
-        response.headers['Content-Type'] = 'text/plain' if request.referer&.start_with?(::Settings.gitlab.base_url)
+    feature_category :planning_views, [:index, :rss, :calendar]
+    feature_category :team_planning
+    urgency :high, [:authorize]
+    urgency :low
+
+    def import_csv
+      file = import_params[:file]
+      return render json: { errors: invalid_file_message }, status: :bad_request unless file_is_valid?(file)
+
+      result = WorkItems::PrepareImportCsvService.new(project, current_user, file: file).execute
+
+      if result.status == :error
+        render json: { errors: result.message }, status: :bad_request
+      else
+        render json: { message: result.message }, status: :ok
       end
     end
-  end
 
-  def rss
-    @work_items = work_items_for_rss
+    def index; end
 
-    respond_to do |format|
-      format.atom { render layout: 'xml' }
+    def new
+      service = ::WorkItems::BuildService.new(
+        container: project,
+        current_user: current_user,
+        params: build_params
+      )
+
+      @work_item = service.execute
+      @related_issue = service.related_issue
+      @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
+
+      if service.discussion_to_resolve_id.present?
+        @discussion_to_resolve = service.discussions_to_resolve.first
+        Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+          .track_resolve_thread_in_issue_action(user: current_user)
+      end
+
+      render :show
     end
-  end
 
-  private
+    def show
+      return if show_params[:iid] == 'new'
 
-  def import_params
-    params.permit(:file)
-  end
-
-  def show_params
-    params.permit(:iid)
-  end
-
-  def authorize_import_access!
-    return if can?(current_user, :import_work_items, project)
-
-    if current_user || action_name == 'authorize'
-      render_404
-    else
-      authenticate_user!
+      @work_item = issuable
     end
-  end
 
-  def invalid_file_message
-    supported_file_extensions = ".#{EXTENSION_ALLOWLIST.join(', .')}"
-    format(_("The uploaded file was invalid. Supported file extensions are %{extensions}."),
-      { extensions: supported_file_extensions })
-  end
+    def edit
+      # Check if user can edit the work item
+      work_item = issuable
+      return render_404 unless work_item
 
-  def uploader_class
-    FileUploader
-  end
+      if can?(current_user, :update_work_item, work_item)
+        # Redirect to work_items detail page with edit mode enabled
+        redirect_to project_work_item_path(project, show_params[:iid], edit: 'true')
+      else
+        # Redirect to work_items detail page without edit mode
+        redirect_to project_work_item_path(project, show_params[:iid])
+      end
+    end
 
-  def maximum_size
-    Gitlab::CurrentSettings.max_attachment_size.megabytes
-  end
+    def calendar
+      @work_items = work_items_for_calendar
 
-  def file_extension_allowlist
-    EXTENSION_ALLOWLIST
-  end
+      respond_to do |format|
+        format.ics do
+          response.headers['Content-Type'] = 'text/plain' if request.referer&.start_with?(::Settings.gitlab.base_url)
+        end
+      end
+    end
 
-  def issuable
-    # remove order by since we return just one item anyway. In some cases keeping order by confuses PG planner on which
-    # index to use to return the result.
-    @issuable ||= ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
-      .execute.without_order.find_by_iid(show_params[:iid])
+    def rss
+      @work_items = work_items_for_rss
+
+      respond_to do |format|
+        format.atom { render layout: 'xml' }
+      end
+    end
+
+    private
+
+    def import_params
+      params.permit(:file)
+    end
+
+    def show_params
+      params.permit(:iid)
+    end
+
+    def authorize_import_access!
+      return if can?(current_user, :import_work_items, project)
+
+      if current_user || action_name == 'authorize'
+        render_404
+      else
+        authenticate_user!
+      end
+    end
+
+    def invalid_file_message
+      supported_file_extensions = ".#{EXTENSION_ALLOWLIST.join(', .')}"
+      format(_("The uploaded file was invalid. Supported file extensions are %{extensions}."),
+        { extensions: supported_file_extensions })
+    end
+
+    def uploader_class
+      FileUploader
+    end
+
+    def maximum_size
+      Gitlab::CurrentSettings.max_attachment_size.megabytes
+    end
+
+    def file_extension_allowlist
+      EXTENSION_ALLOWLIST
+    end
+
+    def issuable
+      # remove order by since we return just one item anyway. In some cases keeping order by confuses PG planner on
+      # which index to use to return the result.
+      @issuable ||= ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
+        .execute.without_order.find_by_iid(show_params[:iid])
+    end
   end
 end
 

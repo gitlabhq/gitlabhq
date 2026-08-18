@@ -244,8 +244,7 @@ export default {
                   v-if="shouldShowCodeBlock(item)"
                   class="gl-text-left gl-text-sm"
                   data-testid="input-code-block"
-                  >{{ getCodeBlock(item) }}</pre
-                >
+                  >{{ getCodeBlock(item) }}</pre>
                 <code v-else-if="getItemValue(item)" data-testid="input-default">
                   <gl-truncate
                     :text="getItemValue(item)"

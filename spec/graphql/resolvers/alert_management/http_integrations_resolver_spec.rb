@@ -65,13 +65,13 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver, feature_cat
       it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }
     end
 
-    context 'when types value is explictly excluded' do
+    context 'when types value is explicitly excluded' do
       let(:params) { { types: nil } }
 
       it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }
     end
 
-    context 'when types value is explictly emptied' do
+    context 'when types value is explicitly emptied' do
       let(:params) { { types: [] } }
 
       it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }

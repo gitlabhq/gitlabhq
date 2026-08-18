@@ -16,7 +16,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let_it_be_with_refind(:task) { create(:work_item, :task, project: project) }
   let_it_be_with_refind(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
   let_it_be_with_refind(:milestone) { create(:milestone, project: project) }
-  let_it_be_with_refind(:milestones) { create_list(:milestone, 10, project: project) }
+  let_it_be_with_refind(:milestones) { create_list(:milestone, 3, project: project) }
   let_it_be_with_refind(:note) { create(:note, noteable: work_item, project: work_item.project) }
   let_it_be_with_refind(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
@@ -35,14 +35,12 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     let(:linked_item) { task }
 
     before_all do
-      stub_feature_flags(comment_temperature: false)
       group.add_developer(user)
     end
 
     before do
-      stub_feature_flags(notifications_todos_buttons: false)
+      stub_feature_flags(comment_temperature: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
       visit work_items_path
     end
@@ -68,8 +66,69 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       it_behaves_like 'work items crm contacts'
     end
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554457' do
+    it_behaves_like 'work items linked items'
+
+    context 'when there is a pre-existing closed linked item' do
+      let(:closed_linked_item) { create(:work_item, :closed, project: project) }
+
+      before do
+        create(:work_item_link, source: work_item, target: closed_linked_item)
+        visit work_items_path
+      end
+
+      it 'toggles display of closed linked items', :aggregate_failures do
+        within_testid('work-item-relationships') do
+          expect(page).to have_link(closed_linked_item.title)
+
+          click_button 'Display options'
+          click_button 'Show closed items'
+          send_keys :escape
+
+          expect(page).not_to have_link(closed_linked_item.title)
+          expect(page).to have_selector('[data-testid="work-item-show-closed"]')
+
+          find_by_testid('work-item-show-closed').find('button').click
+
+          expect(page).to have_link(closed_linked_item.title)
+        end
+      end
+    end
+
+    context 'for task work item type' do
+      let(:work_item) { task }
+      let(:linked_item) { create(:work_item, :task, project: project) }
+
+      before do
+        visit project_work_item_path(project, task.iid)
+      end
+
       it_behaves_like 'work items linked items'
+
+      context 'when there is a pre-existing closed linked item' do
+        let(:closed_linked_item) { create(:work_item, :closed, project: project) }
+
+        before do
+          create(:work_item_link, source: work_item, target: closed_linked_item)
+          visit project_work_item_path(project, task.iid)
+        end
+
+        it 'toggles display of closed linked items', :aggregate_failures do
+          within_testid('work-item-relationships') do
+            expect(page).to have_link(closed_linked_item.title)
+
+            click_button 'Display options'
+            click_button 'Show closed items'
+            send_keys :escape
+
+            expect(page).not_to have_link(closed_linked_item.title)
+            expect(page).to have_selector('[data-testid="work-item-show-closed"]')
+
+            find_by_testid('work-item-show-closed').find('button').click
+
+            expect(page).to have_link(closed_linked_item.title)
+          end
+        end
+      end
     end
 
     it_behaves_like 'work items comments'

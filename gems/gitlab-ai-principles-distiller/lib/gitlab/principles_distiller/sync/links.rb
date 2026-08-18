@@ -4,7 +4,7 @@ module Gitlab
   module PrinciplesDistiller
     class Sync
       # Rewrites source-relative Markdown links in distilled output to absolute
-      # docs.gitlab.com URLs.
+      # docs.gitlab.com URLs while leaving examples in code regions untouched.
       #
       # The distillation agent copies links verbatim from the SSOT documents. A
       # relative link like `../../user/gitlab_duo/feature_summary.md` resolves
@@ -26,6 +26,19 @@ module Gitlab
           \((?<path>(?:\./|\.\./|\w[\w./-]*)[\w./-]*?\.md)(?<anchor>\#[^)]*)?\)
         }x
 
+        # Fenced code blocks and same-line inline code spans are displayed
+        # verbatim, so link-shaped text inside them must not be resolved.
+        # Code regions are matched before Markdown links by CODE_OR_LINK_PATTERN.
+        CODE_PATTERN = /
+          (?<code>
+            ^[ \t]*(?:`{3,}|~{3,}).*?^[ \t]*(?:`{3,}|~{3,})[ \t]*$
+            |
+            (?<ticks>`+)[^\n]*?\k<ticks>
+          )
+        /mx
+
+        CODE_OR_LINK_PATTERN = Regexp.union(CODE_PATTERN, LINK_PATTERN)
+
         # Doc-tree prefixes that map onto the published docs site root.
         DOC_PREFIXES = ['doc/', 'ee/doc/'].freeze
 
@@ -43,8 +56,10 @@ module Gitlab
         def absolutize(content, sources:, exist: nil, warn_unresolved: nil)
           source_dirs = source_directories(sources)
 
-          content.gsub(LINK_PATTERN) do
+          content.gsub(CODE_OR_LINK_PATTERN) do
             match = Regexp.last_match
+            next match[0] if match[:code]
+
             text = match[:text]
             rel_path = match[:path]
             anchor = match[:anchor].to_s

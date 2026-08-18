@@ -4,6 +4,12 @@ export const mockEmptyDashboardsListResponse = {
   },
 };
 
+// Shape returned when the query is unauthorized, e.g. the `custom_dashboard_storage`
+// feature flag is disabled: the field resolves to null rather than an empty list.
+export const mockNullDashboardsListResponse = {
+  customDashboards: null,
+};
+
 export const mockCustomDashboard = {
   id: 'gid://gitlab/Analytics::CustomDashboards::Dashboard/3',
   name: 'Fake trends',
@@ -95,4 +101,42 @@ export const mockDashboardCompactGridResponse = {
       gridHeight: 'COMPACT',
     },
   },
+};
+
+export const mockDashboardWithViews = {
+  ...mockCustomDashboard,
+  config: {
+    ...mockCustomDashboard.config,
+    views: [
+      {
+        title: 'Overview',
+        panels: [
+          {
+            title: 'Overview panel',
+            visualization: 'overview_over_time',
+            gridAttributes: { xPos: 0, yPos: 0, width: 3, height: 1 },
+          },
+        ],
+      },
+      {
+        title: 'Details',
+        panels: [
+          {
+            title: 'Details panel one',
+            visualization: 'details_one_over_time',
+            gridAttributes: { xPos: 0, yPos: 0, width: 3, height: 1 },
+          },
+          {
+            title: 'Details panel two',
+            visualization: 'details_two_over_time',
+            gridAttributes: { xPos: 3, yPos: 0, width: 3, height: 1 },
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const mockDashboardWithViewsResponse = {
+  customDashboard: mockDashboardWithViews,
 };

@@ -97,7 +97,7 @@ span across multiple processes (for example, background jobs).
 
 ### Using standard method call to record single event
 
-This method allows recording single audit event and involves fewer moving parts.
+This method allows recording a single audit event and involves fewer moving parts.
 
 ```ruby
 if merge_approval_rule.save
@@ -196,12 +196,6 @@ In addition to recording to the database, we also write these events to
 
 ## Event type definitions
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367847) in GitLab 15.4.
-
-{{< /history >}}
-
 All new audit events must have a type definition stored in `config/audit_events/types/` or `ee/config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
 
 ### Add a new audit event type
@@ -219,7 +213,7 @@ To add a new audit event type:
 
 | Field | Required | Description |
 | ----- | -------- |--------------|
-| `name` | yes     | Unique, lowercase and underscored name describing the type of event. Must match the filename. |
+| `name` | yes     | Unique, lowercase, and underscored name describing the type of event. Must match the filename. |
 | `description` | yes | Human-readable description of how this event is triggered |
 | `group` | yes | Name of the group that introduced this audit event. For example, `manage::compliance` |
 | `introduced_by_issue` | yes | Issue URL that proposed the addition of this type |
@@ -227,7 +221,7 @@ To add a new audit event type:
 | `milestone` | yes | Milestone in which this type was added |
 | `saved_to_database` | yes | Indicate whether to persist events to database and JSON logs |
 | `streamed` | yes | Indicate that events should be streamed to external services (if configured) |
-| `scope` | yes | List of scopes that this audit event type is available for. Should be an Array containing one or more of `Project`, `User`, `Group` or `Instance` |
+| `scope` | yes | List of scopes that this audit event type is available for. Should be an Array containing one or more of `Project`, `User`, `Group`, or `Instance` |
 
 ### Generate documentation
 
@@ -260,7 +254,7 @@ All events where the entity is a `Group` or `Project` are recorded in the audit 
 You can add streaming-only events that are not stored in the GitLab database. Streaming-only events are primarily intended to be used for actions that generate
 a large amount of data. See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719/diffs#d56e47632f0384722d411ed3ab5b15e947bd2265_26_36)
 for an example.
-This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
+This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/work_items/5925) for updates on feature
 development.
 
 ### I18N and the audit event `:message` attribute

@@ -1,6 +1,6 @@
 ---
-stage: GitLab Delivery
-group: Operate
+stage: Create
+group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting project import and export
 ---
@@ -96,4 +96,4 @@ If you're attempting to import a large project into a development environment, G
 Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
 ```
 
-This error is due to a n+1 calls limit for development setups. To resolve this error, set `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable. Then restart your development environment and import again.
+This error is due to an n+1 calls limit for development setups. To resolve this error, set `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable. Then restart your development environment and import again.

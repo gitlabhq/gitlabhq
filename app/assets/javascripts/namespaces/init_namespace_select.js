@@ -22,7 +22,7 @@ export function mountNamespaceSelect() {
           origSelectedText: selectedText,
         },
         on: {
-          setNamespace(newNamespace) {
+          'set-namespace': (newNamespace) => {
             if (fieldName && updateLocation) {
               window.location = mergeUrlParams({ [fieldName]: newNamespace }, window.location.href);
             }

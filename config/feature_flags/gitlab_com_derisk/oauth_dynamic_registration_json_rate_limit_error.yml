@@ -1,0 +1,9 @@
+---
+name: oauth_dynamic_registration_json_rate_limit_error
+description: Return a JSON error body (instead of plain text) when /oauth/register is rate limited
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248395
+rollout_issue_url:
+milestone: '19.3'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

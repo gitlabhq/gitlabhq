@@ -79,7 +79,10 @@ Embeddings for indexed content are generated asynchronously through a queue syst
 The `Ai::ActiveContext::BulkProcessWorker` is a cron job that runs every minute and processes embedding references from the queue.
 It fetches references, generates embeddings, and removes them from the queue.
 If the queue is not empty after processing, the worker re-enqueues itself to continue processing.
-If embedding generation fails, it gets retried once and is then placed on a dead queue.
+If embedding generation fails, the references are moved to a retry queue.
+Items in the retry queue become visible for processing five minutes after they are pushed,
+so transient errors have time to clear before the retry.
+If the retry fails, the references are placed on a dead queue.
 
 ### Query execution
 

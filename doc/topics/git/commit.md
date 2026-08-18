@@ -141,7 +141,7 @@ You can use push options to skip integration CI/CD pipelines.
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|
-| `integrations.skip_ci`         | Skip push events for CI/CD integrations, such as Atlassian Bamboo, Buildkite, Drone, Jenkins, and JetBrains TeamCity. Introduced in [GitLab 16.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123837). | `git push -o integrations.skip_ci` |
+| `integrations.skip_ci`         | Skip push events for CI/CD integrations, such as Atlassian Bamboo, Buildkite, Drone, Jenkins, and JetBrains TeamCity. | `git push -o integrations.skip_ci` |
 
 ### Push options for merge requests
 
@@ -151,7 +151,7 @@ Git push options can perform actions for merge requests while pushing changes:
 |----------------------------------------------|-------------|
 | `merge_request.create`                       | Create a new merge request for the pushed branch. When pushing from the default branch, you must specify a target branch using the `merge_request.target` option to create a merge request. |
 | `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch, such as: `git push -o merge_request.target=branch_name`. Required when creating a merge request from the default branch. |
-| `merge_request.target_project=<project>`     | Set the target of the merge request to a particular upstream project, such as: `git push -o merge_request.target_project=path/to/project`. Introduced in [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132475). |
+| `merge_request.target_project=<project>`     | Set the target of the merge request to a particular upstream project, such as: `git push -o merge_request.target_project=path/to/project`. |
 | `merge_request.merge_when_pipeline_succeeds` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185368) in GitLab 17.11 favor of the `auto_merge` option. |
 | `merge_request.auto_merge` | Set the merge request to [auto merge](../../user/project/merge_requests/auto_merge.md). |
 | `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged. |

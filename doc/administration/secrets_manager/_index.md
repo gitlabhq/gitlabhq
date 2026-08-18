@@ -1,6 +1,6 @@
 ---
-stage: Sec
-group: Pipeline Security
+stage: Security Platform
+group: Secrets Manager OpenBao
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Secrets Manager (OpenBao)
 ---
@@ -120,7 +120,7 @@ Where:
 - `Git Pull RPS` is the peak Git pull throughput of your GitLab instance.
   You can measure this from your existing environment monitoring,
   see
-  [Extract peak traffic metrics](../reference_architectures/sizing.md#extract-peak-traffic-metrics).
+  [Extract peak traffic metrics](../../install/sizing.md#extract-peak-traffic-metrics).
 - `adoption rate` is the fraction of CI/CD jobs that use Secrets Manager
   (for example, 0.05 for 5%, 0.20 for 20%, or 0.50 for 50%).
 - `3` is the assumed average number of secrets fetched per job that uses the Secrets Manager.
@@ -324,8 +324,12 @@ and standby nodes provide automatic failover if the active node fails.
 
 ### Failover
 
-Standby nodes load all namespace metadata at startup, so promotion to active
-requires no additional initialization. The number of namespaces does not affect failover time.
+When the active node fails, a standby node takes over and initializes each namespace before it can
+serve secret operations. Failover time increases with the number of namespaces, similar to
+[upgrade downtime](#upgrade-downtime).
+
+On-demand namespace loading would reduce this initialization time. This work is proposed in
+[issue 607703](https://gitlab.com/gitlab-org/gitlab/-/work_items/607703).
 
 For production deployments:
 

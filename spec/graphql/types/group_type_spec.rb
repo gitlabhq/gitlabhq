@@ -638,4 +638,40 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       end
     end
   end
+
+  describe 'transferInProgress field' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group, developers: user) }
+    let_it_be(:transfer_in_progress_group) { create(:group, state: :transfer_in_progress, developers: user) }
+
+    let(:group_full_path) { group.full_path }
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group_full_path}") {
+            transferInProgress
+          }
+        }
+      )
+    end
+
+    subject(:transfer_in_progress) do
+      GitlabSchema.execute(query, context: { current_user: user }).as_json
+        .dig('data', 'group', 'transferInProgress')
+    end
+
+    context 'when group is in transfer_in_progress state' do
+      let(:group_full_path) { transfer_in_progress_group.full_path }
+
+      it 'returns true' do
+        expect(transfer_in_progress).to be true
+      end
+    end
+
+    context 'when group is not being transferred' do
+      it 'returns false' do
+        expect(transfer_in_progress).to be false
+      end
+    end
+  end
 end

@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     module WorkItems
-      class BaseTool < Mcp::Tools::GraphqlTool
+      class BaseTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ContentValidation
         include Mcp::Tools::Concerns::ResourceFinder
         include Mcp::Tools::Concerns::UrlParser
@@ -32,7 +32,7 @@ module Mcp
 
           raise ArgumentError, 'Must provide either project_id or group_id' unless identifier
 
-          parent = find_parent_by_id_or_path(parent_type, identifier)
+          parent = find_parent_by_id_or_path!(parent_type, identifier)
 
           { type: parent_type, full_path: parent.full_path, record: parent }
         end
@@ -42,7 +42,7 @@ module Mcp
           raise ArgumentError, 'Must provide work_item_iid' unless iid
 
           parent_info = resolve_parent
-          work_item = find_work_item_in_parent(parent_info[:record], iid)
+          work_item = find_work_item_in_parent!(parent_info[:record], iid)
 
           work_item.to_global_id.to_s
         end

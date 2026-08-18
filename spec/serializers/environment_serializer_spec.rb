@@ -248,7 +248,7 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
           last_deployment = create(:deployment, :success, environment: environment, project: project, deployable: build)
         end
 
-        create(:deployment, :running, environment: environment, project: project)
+        create(:deployment, :blocked, environment: environment, project: project)
         upcoming_deployment = create(:deployment, :running, environment: environment, project: project)
       end
 

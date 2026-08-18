@@ -1,12 +1,13 @@
 <script>
-import { GlAlert, GlOutsideDirective as Outside } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
+import { GlAlert } from '@gitlab/ui';
 import Autosize from 'autosize';
-import MarkdownComposer from 'ee_component/vue_shared/components/markdown/composer.vue';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   EDITING_MODE_KEY,
   EDITING_MODE_MARKDOWN_FIELD,
@@ -38,14 +39,14 @@ export default {
     GlAlert,
     MarkdownField,
     LocalStorageSync,
-    MarkdownComposer,
-    ContentEditor: () =>
-      import(
-        /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
-      ),
+    ContentEditor: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
+        ),
+    ),
   },
-  directives: { Outside },
-  inject: { canUseComposer: { default: false } },
+  mixins: [glSlotsMixin],
   props: {
     value: {
       type: String,
@@ -174,7 +175,7 @@ export default {
     'blur',
     'contentEditor',
     'focus',
-    'handleSuggestDismissed',
+    'handle-suggest-dismissed',
     'input',
     'keydown',
     'markdownField',
@@ -218,9 +219,6 @@ export default {
     },
     isDefaultEditorEnabled() {
       return ['plain_text_editor', 'rich_text_editor'].includes(window.gon?.text_editor);
-    },
-    composerComponent() {
-      return this.canUseComposer ? 'markdown-composer' : 'div';
     },
   },
   watch: {
@@ -389,11 +387,6 @@ export default {
       }
       this.$emit('keydown', event);
     },
-    onClickOutside() {
-      if (!this.canUseComposer) return;
-
-      eventHub.$emit('CLOSE_COMPOSER');
-    },
   },
   EDITING_MODE_KEY,
   i18n: {
@@ -434,7 +427,6 @@ export default {
     >
       {{ alert.message }}
     </gl-alert>
-    <!-- <markdown-composer v-if="!isContentEditorActive && canUseComposer"  /> -->
     <markdown-field
       v-if="!isContentEditorActive"
       ref="markdownField"
@@ -456,46 +448,34 @@ export default {
       :drawio-enabled="drawioEnabled"
       :immersive="immersive"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
-      @enableContentEditor="onEditingModeChange('contentEditor')"
-      @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+      @enable-content-editor="onEditingModeChange('contentEditor')"
+      @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
     >
-      <template #header><slot name="header"></slot></template>
+      <template v-if="glSlots().header" #header><slot name="header"></slot></template>
       <template #header-buttons>
         <div>
           <slot name="header-buttons"></slot>
         </div>
       </template>
-      <template #toolbar><slot name="toolbar"></slot></template>
+      <template v-if="glSlots().toolbar" #toolbar><slot name="toolbar"></slot></template>
       <template #textarea>
-        <component
-          :is="composerComponent"
-          v-outside="onClickOutside"
-          :markdown="canUseComposer ? markdown : null"
-        >
-          <textarea
-            v-bind="formFieldProps"
-            ref="textarea"
-            :value="markdown"
-            class="note-textarea js-gfm-input markdown-area"
-            :class="[
-              {
-                'gl-relative gl-z-3': canUseComposer,
-                'focus:gl-outline-none': immersive,
-              },
-              formFieldProps.class || '',
-            ]"
-            dir="auto"
-            :data-can-suggest="codeSuggestionsConfig.canSuggest"
-            :data-noteable-type="noteableType"
-            :data-supports-quick-actions="supportsQuickActions"
-            :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
-            :disabled="disabled"
-            @input="updateMarkdownFromMarkdownField"
-            @keydown="$emit('keydown', $event)"
-            @focus="$emit('focus')"
-            @blur="$emit('blur')"
-          ></textarea>
-        </component>
+        <textarea
+          v-bind="formFieldProps"
+          ref="textarea"
+          :value="markdown"
+          class="note-textarea js-gfm-input markdown-area"
+          :class="[{ 'focus-visible:gl-outline-none': immersive }, formFieldProps.class || '']"
+          dir="auto"
+          :data-can-suggest="codeSuggestionsConfig.canSuggest"
+          :data-noteable-type="noteableType"
+          :data-supports-quick-actions="supportsQuickActions"
+          :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
+          :disabled="disabled"
+          @input="updateMarkdownFromMarkdownField"
+          @keydown="$emit('keydown', $event)"
+          @focus="$emit('focus')"
+          @blur="$emit('blur')"
+        ></textarea>
       </template>
     </markdown-field>
     <div v-else class="md-content-editor-wrapper">
@@ -525,13 +505,15 @@ export default {
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="onKeydown"
-        @enableMarkdownEditor="onEditingModeChange('markdownField')"
+        @enable-markdown-editor="onEditingModeChange('markdownField')"
         @focus="$emit('focus')"
         @blur="$emit('blur')"
       >
-        <template #header><slot name="header"></slot></template>
-        <template #header-buttons><slot name="header-buttons"></slot></template>
-        <template #toolbar><slot name="toolbar"></slot></template>
+        <template v-if="glSlots().header" #header><slot name="header"></slot></template>
+        <template v-if="glSlots()['header-buttons']" #header-buttons
+          ><slot name="header-buttons"></slot
+        ></template>
+        <template v-if="glSlots().toolbar" #toolbar><slot name="toolbar"></slot></template>
       </content-editor>
       <input v-bind="formFieldProps" :value="markdown" type="hidden" />
     </div>

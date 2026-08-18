@@ -6,7 +6,7 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
   include GraphqlHelpers
 
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' }, 'runbook' => 'runbook' } }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, severity: :low).present }
   let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload).present }

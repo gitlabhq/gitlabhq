@@ -23,7 +23,7 @@ module API
       prerelease_specs.#{MARSHAL_VERSION}.gz
     ].freeze
     FILE_NAME_REQUIREMENTS = {
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
     GEMSPEC_FILE_NAME_REQUIREMENTS = {
       file_name: Gitlab::Regex.rubygems_gemspec_file_name_regex
@@ -59,7 +59,7 @@ module API
     params do
       requires :id, types: [Integer, String], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/rubygems' do
         desc 'Download the spec index file' do
           detail 'Downloads a RubyGems spec index file (specs.4.8.gz, latest_specs.4.8.gz, or ' \

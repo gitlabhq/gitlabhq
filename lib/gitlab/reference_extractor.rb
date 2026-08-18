@@ -63,6 +63,10 @@ module Gitlab
       end
     end
 
+    def issues_and_work_items
+      (issues + work_items).uniq(&:id)
+    end
+
     def all
       self.class.referrables.each { |referable| send(referable.to_s.pluralize) } # rubocop:disable GitlabSecurity/PublicSend
       @references.values.flatten

@@ -12,7 +12,7 @@ title: Linux package deprecation policy
 
 {{< /details >}}
 
-The Linux packages come with number of different libraries and services which offers users plethora of configuration options.
+The Linux packages come with a number of different libraries and services which offer users a plethora of configuration options.
 
 As libraries and services get updated, their configuration options change
 and become obsolete. To increase maintainability and preserve a working
@@ -62,7 +62,7 @@ Common steps:
 
 Removal target:
 
-For regular configuration, removal target should always be the date of the **next major** release. If the date is not known, you can reference the next major version.
+For regular configuration, the removal target should always be the date of the **next major** release. If the date is not known, you can reference the next major version.
 
 For sensitive configuration things are a bit more complicated.
 We should aim to not remove sensitive configuration in the next major release if the next major release is 2 minor releases away (This number is chosen to match our security backport release policy).
@@ -91,7 +91,7 @@ The final comment in the issue must have:
 
 ## Example
 
-User configuration available in `/etc/gitlab/gitlab.rb` was introduced in GitLab version 10.0, `gitlab_rails['configuration'] = true`. In GitLab version 10.4.0, a new change was introduced that requires rename of this configuration option. New configuration option is `gitlab_rails['better_configuration'] = true`. Development team translates the old configuration into a new one
+User configuration available in `/etc/gitlab/gitlab.rb` was introduced in GitLab version 10.0, `gitlab_rails['configuration'] = true`. In GitLab version 10.4.0, a new change was introduced that requires a rename of this configuration option. New configuration option is `gitlab_rails['better_configuration'] = true`. The development team translates the old configuration into a new one
 and triggers a deprecation procedure.
 
 This means that these two configuration
@@ -102,5 +102,5 @@ However, setting the old version of the configuration prints out a deprecation
 notice at the end of installation/upgrade/reconfigure run.
 
 In GitLab 11, `gitlab_rails['configuration'] = true` no longer works and you must manually change the configuration in `/etc/gitlab/gitlab.rb` to the new valid configuration.
-**Note** If this configuration option is sensitive and can put integrity of the installation or
-data in danger,the installation or upgrade is aborted.
+**Note** If this configuration option is sensitive and can put the integrity of the installation or
+data in danger, the installation or upgrade is aborted.

@@ -11,8 +11,6 @@ import { frecentProjectsMock } from '../../../mock_data';
 
 Vue.use(VueApollo);
 
-const TEST_PROJECTS_PATH = '/mock/project/path';
-
 describe('FrequentlyVisitedProjects', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
@@ -26,9 +24,6 @@ describe('FrequentlyVisitedProjects', () => {
 
     wrapper = shallowMount(FrequentProjects, {
       apolloProvider: mockApollo,
-      provide: {
-        projectsPath: TEST_PROJECTS_PATH,
-      },
       ...options,
     });
   };
@@ -56,7 +51,7 @@ describe('FrequentlyVisitedProjects', () => {
       groupName: 'Frequently visited projects',
       viewAllItemsIcon: 'project',
       viewAllItemsText: 'View all my projects',
-      viewAllItemsPath: TEST_PROJECTS_PATH,
+      viewAllItemsPath: '/dashboard/projects',
     });
   });
 

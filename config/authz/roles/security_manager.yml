@@ -7,9 +7,7 @@ project:
   permissions: []
   raw_permissions:
   - _contribute_security_policy_project
-  - _create_dast_pipeline
   - _read_security_report_job_artifact
-  - _run_dast_pipeline
   - access_security_and_compliance
   - admin_security_attributes
   - admin_vulnerability
@@ -19,11 +17,15 @@ project:
   - cancel_build
   - create_build
   - create_on_demand_dast_scan
+  - create_security_scan_profiles
   - create_vulnerability_archive_export
   - create_vulnerability_export
+  - delete_security_scan_profiles
   - edit_on_demand_dast_scan
   - enable_container_scanning_for_registry
   - enable_secret_push_protection
+  - execute_vulnerability_duo_workflow
+  - force_evaluate_merge_request_security_policy
   - manage_project_security_exclusions
   - read_agent_artifacts
   - read_any_audit_event
@@ -51,6 +53,7 @@ project:
   - update_cvs_for_dependency_scanning
   - update_on_demand_dast_scan
   - update_sec_ai_workflow_settings
+  - update_security_scan_profiles
   - update_security_setting
   - update_storage_ai_audit_events
 group:
@@ -62,8 +65,11 @@ group:
   - admin_security_attributes
   - admin_vulnerability
   - apply_security_scan_profiles
+  - create_security_scan_profiles
   - create_vulnerability_export
+  - delete_security_scan_profiles
   - enable_secret_push_protection
+  - read_advanced_dependency_management
   - read_agent_artifacts
   - read_any_audit_event
   - read_audit_event
@@ -83,4 +89,5 @@ group:
   - read_vulnerability
   - read_vulnerability_statistics
   - update_compliance_violations_report
+  - update_security_scan_profiles
   - update_storage_ai_audit_events

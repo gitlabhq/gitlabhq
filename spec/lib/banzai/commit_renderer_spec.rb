@@ -6,7 +6,7 @@ RSpec.describe Banzai::CommitRenderer, feature_category: :source_code_management
   describe '.render', :clean_gitlab_redis_cache do
     it 'renders a commit description and title' do
       user = build(:user)
-      project = create(:project, :repository)
+      project = create(:project, :small_repo)
 
       expect(Banzai::ObjectRenderer)
         .to receive(:new)

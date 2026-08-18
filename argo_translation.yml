@@ -20,6 +20,7 @@ components:
       - 'doc/user/markdown.md'
       - 'doc/AGENTS.md'
       - 'doc/CLAUDE.md'
+      - 'doc/SKILLS.md'
      # Redirects: See Redirects component for more info
       - 'doc/install/postgresql_extensions.md'
       - 'doc/ci/pipeline_security/slsa/provenance_v1.md'

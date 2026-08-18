@@ -258,6 +258,7 @@ class MergeRequestDiff < ApplicationRecord
   mount_uploader :external_diff, ExternalDiffUploader
 
   before_save :ensure_project_id
+  before_save :ensure_diff_files_project_id
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
@@ -1035,6 +1036,21 @@ class MergeRequestDiff < ApplicationRecord
 
   def ensure_project_id
     self.project_id ||= merge_request.target_project_id
+  end
+
+  # Ensure project_id is set on all diff files before bulk insert.
+  # This is needed because BulkInsertableAssociations only sets the foreign key
+  # (merge_request_diff_id), not the project_id which is required for the
+  # partitioned merge_request_diff_files table.
+  #
+  # We use association.target directly to avoid triggering a database load
+  # on persisted records where the association hasn't been loaded yet.
+  def ensure_diff_files_project_id
+    return unless project_id
+
+    association(:merge_request_diff_files).target.each do |diff_file|
+      diff_file.project_id ||= project_id
+    end
   end
 
   def repository

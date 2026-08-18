@@ -259,8 +259,8 @@ describe('InstallAgentModal', () => {
         });
       });
 
-      it('emits `clusterAgentCreated` event', () => {
-        expect(wrapper.emitted('clusterAgentCreated')).toEqual([['agent-name']]);
+      it('emits `cluster-agent-created` event', () => {
+        expect(wrapper.emitted('cluster-agent-created')).toEqual([['agent-name']]);
       });
 
       it('renders success alert', () => {

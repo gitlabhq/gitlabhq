@@ -122,13 +122,14 @@ describe('Access Level Dropdown', () => {
   const findAllDropdownHeaders = () => findDropdown().findAllComponents(GlDropdownSectionHeader);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findDeployKeyDropdownItem = () => wrapper.findByTestId('deploy_key-dropdown-item');
-  const findMemberRoleDropdownItems = () => wrapper.findAllByTestId('member-role-dropdown-item');
+  const findMemberRoleDropdownItems = () =>
+    wrapper.findAllComponentsByTestId('member-role-dropdown-item');
 
   const findDropdownItemWithText = (items, text) =>
     items.filter((item) => item.text().includes(text)).at(0);
 
   const findSelected = (type) =>
-    wrapper.findAllByTestId(`${type}-dropdown-item`).filter((w) => w.props('isChecked'));
+    wrapper.findAllComponentsByTestId(`${type}-dropdown-item`).filter((w) => w.props('isChecked'));
 
   describe('data request', () => {
     it('should make an api call for users, groups && deployKeys when user has a license', () => {
@@ -536,6 +537,39 @@ describe('Access Level Dropdown', () => {
       role.trigger('click');
       await nextTick();
       expect(role.props('isChecked')).toBe(false);
+    });
+
+    it('emits the selection with member_role_id when a custom role is selected', async () => {
+      createComponent({ showCustomRoles: true, accessLevel: ACCESS_LEVELS.MERGE });
+      await waitForPromises();
+
+      findMemberRoleDropdownItems().at(0).trigger('click');
+
+      expect(last(wrapper.emitted('select'))[0]).toContainEqual({ member_role_id: 1 });
+    });
+
+    it('preselects a custom role from preselected items and shows it in the toggle label', async () => {
+      createComponent({
+        showCustomRoles: true,
+        accessLevel: ACCESS_LEVELS.MERGE,
+        preselectedItems: [{ type: LEVEL_TYPES.MEMBER_ROLE, member_role_id: 1 }],
+      });
+      await waitForPromises();
+
+      expect(findMemberRoleDropdownItems().at(0).props('isChecked')).toBe(true);
+      expect(findDropdownToggleLabel()).toBe('1 custom role');
+    });
+
+    it('prioritises member_role_id over access_level when building the selection', async () => {
+      createComponent({ showCustomRoles: true, accessLevel: ACCESS_LEVELS.MERGE });
+      await waitForPromises();
+
+      // A member role row also carries an access_level; setDataForSave must classify
+      // it as a custom role, not a plain role. The items watcher only fires on change,
+      // so update the prop after mount to exercise it.
+      await wrapper.setProps({ items: [{ member_role_id: 1, access_level: 30 }] });
+
+      expect(findDropdownToggleLabel()).toBe('1 custom role');
     });
   });
 

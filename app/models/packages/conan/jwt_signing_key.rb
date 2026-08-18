@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Stores the instance-wide signing key(s) used to sign and verify the JWTs that
+# Stores the cell-local signing key(s) used to sign and verify the JWTs that
 # the Conan client uses to authenticate with GitLab. New tokens are signed with
 # the current (most recent) key, while verification accepts any stored key so a
 # token signed with a previous key still validates after a key rotation. The

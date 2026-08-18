@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
@@ -24,7 +25,9 @@ export default {
     GlDisclosureDropdownItem,
     GlToggle,
     LocalStorageSync,
-    ToggleEpicsSwimlanes: () => import('ee_component/boards/components/toggle_epics_swimlanes.vue'),
+    ToggleEpicsSwimlanes: defineAsyncComponent(
+      () => import('ee_component/boards/components/toggle_epics_swimlanes.vue'),
+    ),
   },
   directives: {
     GlTooltipDirective,
@@ -42,7 +45,7 @@ export default {
       default: false,
     },
   },
-  emits: ['toggleSwimlanes'],
+  emits: ['toggle-swimlanes'],
   data() {
     return {
       isShowingLabels: null,
@@ -79,14 +82,14 @@ export default {
     toggleEpicSwimlanes() {
       if (this.isSwimlanesOn) {
         historyPushState(removeParams(['group_by']), window.location.href, true);
-        this.$emit('toggleSwimlanes', false);
+        this.$emit('toggle-swimlanes', false);
       } else {
         historyPushState(
           mergeUrlParams({ group_by: GroupByParamType.epic }, window.location.href, {
             spreadArrays: true,
           }),
         );
-        this.$emit('toggleSwimlanes', true);
+        this.$emit('toggle-swimlanes', true);
       }
     },
     setShowLabels() {

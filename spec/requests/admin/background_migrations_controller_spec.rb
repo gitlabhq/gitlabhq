@@ -149,5 +149,45 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, featur
         expect { retry_migration }.not_to change { migration.reload.status }
       end
     end
+
+    context 'when the migration is cursor based' do
+      let(:cursor_job_class) do
+        stub_const('Gitlab::BackgroundMigration::TestCursorJob',
+          Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+            cursor :id
+          end
+        )
+      end
+
+      let(:migration) do
+        create(:batched_background_migration, :failed, job_class_name: cursor_job_class.name.demodulize)
+      end
+
+      let!(:failed_job) do
+        create(:batched_background_migration_job, :failed,
+          batched_migration: migration,
+          min_cursor: [1],
+          max_cursor: [100],
+          attempts: 3)
+      end
+
+      it 'redirects the user to the admin migrations page' do
+        retry_migration
+
+        expect(response).to redirect_to(admin_background_migrations_path)
+      end
+
+      it 'retries the migration' do
+        retry_migration
+
+        expect(migration.reload.status_name).to be :active
+      end
+
+      it 'resets attempts on failed jobs' do
+        retry_migration
+
+        expect(failed_job.reload.attempts).to be_zero
+      end
+    end
   end
 end

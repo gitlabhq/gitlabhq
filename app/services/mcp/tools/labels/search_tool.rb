@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     module Labels
-      class SearchTool < Mcp::Tools::GraphqlTool
+      class SearchTool < Mcp::Tools::Base::GraphqlTool
         register_version VERSIONS[:v0_1_0], {
           graphql_operation: load_graphql('labels/search.query.graphql')
         }
@@ -22,7 +22,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 
@@ -36,25 +36,21 @@ module Mcp
           return processed_result if processed_result[:isError]
 
           labels = extract_labels(processed_result[:structuredContent])
-          return ::Mcp::Tools::Response.error("Operation returned no data") unless labels
+          return ::Mcp::Tools::Base::Response.error("Operation returned no data") unless labels
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(labels) }]
-          ::Mcp::Tools::Response.success(formatted_content, labels)
+          ::Mcp::Tools::Base::Response.success(formatted_content, labels)
         end
 
         def extract_labels(structured_content)
           structured_content&.dig('labels', 'nodes')
         end
 
-        def resource_not_found?(result)
-          result['errors'].blank? && result.dig('data', operation_name).nil?
-        end
-
         def resource_not_found_error
           resource_type = params[:is_project] ? 'Project' : 'Group'
           message = "#{resource_type} not found: the provided #{resource_type.downcase} path " \
             "\"#{params[:full_path]}\" does not exist or you do not have access to it."
-          ::Mcp::Tools::Response.error(message)
+          ::Mcp::Tools::Base::Response.error(message)
         end
       end
     end

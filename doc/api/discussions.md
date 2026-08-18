@@ -1078,7 +1078,7 @@ Supported attributes for all comments:
 | `position[base_sha]`      | string            | Yes (if `position*` is supplied)     | Base commit SHA in the source branch. |
 | `position[head_sha]`      | string            | Yes (if `position*` is supplied)     | SHA referencing HEAD of this merge request. |
 | `position[start_sha]`     | string            | Yes (if `position*` is supplied)     | SHA referencing commit in target branch. |
-| `position[position_type]` | string            | Yes (if position* is supplied)       | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position[position_type]` | string            | Yes (if position* is supplied)       | Type of the position reference. Allowed values: `text`, `image`, or `file`. |
 | `position[new_path]`      | string            | Yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`      | string            | Yes (if the position type is `text`) | File path before change. |
 | `position[new_line]`      | integer           | No                                   | For `text` diff notes, the line number after change. |
@@ -1446,7 +1446,7 @@ Example response:
 ]
 ```
 
-Diff comments contain also position:
+Diff comments also contain position:
 
 ```json
 [
@@ -1537,7 +1537,7 @@ Supported attributes:
 | `position[base_sha]`      | string            | Yes (if `position*` is supplied) | SHA of the parent commit. |
 | `position[head_sha]`      | string            | Yes (if `position*` is supplied) | The SHA of this commit. Same as `commit_id`. |
 | `position[start_sha]`     | string            | Yes (if `position*` is supplied) | SHA of the parent commit. |
-| `position[position_type]` | string            | Yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position[position_type]` | string            | Yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. |
 | `position[new_path]`      | string            | No                               | File path after change. |
 | `position[new_line]`      | integer           | No                               | Line number after change. |
 | `position[old_path]`      | string            | No                               | File path before change. |

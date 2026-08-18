@@ -6,10 +6,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:public_project, freeze: false) { create(:project, :public, group: group) }
+  let_it_be_with_reload(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project, freeze: false) { public_project }
-  let_it_be(:developer, freeze: false) { create(:user, developer_of: [public_project, repository_project]) }
+  let_it_be_with_reload(:developer) { create(:user, developer_of: [public_project, repository_project]) }
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -687,6 +687,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         expect(message).to eq(_("Unable to move. Target project or group doesn't exist or doesn't support this item type."))
       end
 
+      it 'returns move issue failure message when too many parameters are provided' do
+        _, _, message = service.execute("/move #{project.full_path} extra", issue)
+
+        expect(message).to eq(_('Failed to move this item: wrong parameters.'))
+      end
+
       context "when we pass a work_item" do
         let(:work_item) { create(:work_item, :issue, project: project) }
         let(:move_command) { "/move #{project.full_path}" }
@@ -695,6 +701,65 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, _, message = service.execute(move_command, work_item)
 
           expect(message).to eq("Moved this item to #{project.full_path}.")
+        end
+      end
+
+      context 'with an optional target work item type' do
+        let_it_be(:target_project) { create(:project, developers: developer) }
+
+        before do
+          target_project.add_maintainer(current_user)
+        end
+
+        it 'sets target_work_item_type_id update when an explicit type is supplied', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/move #{target_project.full_path} [type:#{source_type.name}]", issue)
+
+          expect(message).to eq("Moved this item to #{target_project.full_path}.")
+          expect(updates[:target_container]).to eq(target_project)
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'uses the source type when it exists at the destination', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/move #{target_project.full_path}", issue)
+
+          expect(message).to eq("Moved this item to #{target_project.full_path}.")
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'fails when the explicit type is not available in the target namespace', :aggregate_failures do
+          _, updates, message = service.execute("/move #{target_project.full_path} [type:DoesNotExist]", issue)
+
+          expect(message).to start_with(
+            'Unable to move. The work item type "DoesNotExist" is not available in the target namespace.'
+          )
+          expect(message).to include('Available types:')
+          expect(updates).not_to have_key(:target_container)
+        end
+
+        it 'ignores the supplied type for a same-namespace move when its the same type', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/move #{project.full_path} [type:#{source_type.name}]", issue)
+
+          expect(message).to eq("Moved this item to #{project.full_path}.")
+          expect(updates[:target_container]).to eq(project)
+          # Same-namespace conversion is a no-op, so no target_work_item_type_id is applied.
+          expect(updates).not_to have_key(:target_work_item_type_id)
+        end
+
+        it 'validates the supplied type for a same-namespace move and fails on unknown types', :aggregate_failures do
+          _, updates, message = service.execute("/move #{project.full_path} [type:DoesNotExist]", issue)
+
+          expect(message).to start_with(
+            'Unable to move. The work item type "DoesNotExist" is not available in the target namespace.'
+          )
+          expect(message).to include('Available types:')
+          expect(updates).not_to have_key(:target_container)
+          expect(updates).not_to have_key(:target_work_item_type_id)
         end
       end
     end
@@ -706,6 +771,43 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         formatted_message = format(translated_string, project_full_path: project.full_path.to_s)
 
         expect(message).to eq(formatted_message)
+      end
+
+      context 'with an optional target work item type' do
+        let_it_be(:target_project) { create(:project, developers: developer) }
+
+        before do
+          target_project.add_maintainer(current_user)
+        end
+
+        it 'sets target_work_item_type_id when an explicit type is supplied', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/clone #{target_project.full_path} [type:#{source_type.name}]", issue)
+
+          expect(message).to eq("Cloned this item to #{target_project.full_path}.")
+          expect(updates[:target_clone_container]).to eq(target_project)
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'uses the source type when it exists at the destination', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/clone #{target_project.full_path}", issue)
+
+          expect(message).to eq("Cloned this item to #{target_project.full_path}.")
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'fails when the explicit type is not available in the target namespace', :aggregate_failures do
+          _, updates, message = service.execute("/clone #{target_project.full_path} [type:DoesNotExist]", issue)
+
+          expect(message).to start_with(
+            'Unable to clone. The work item type "DoesNotExist" is not available in the target namespace.'
+          )
+          expect(message).to include('Available types:')
+          expect(updates).not_to have_key(:target_clone_container)
+        end
       end
 
       it 'returns clone issue failure message when the referenced project is not found' do
@@ -1411,7 +1513,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     context 'only group milestones available' do
       let_it_be(:ancestor_group) { create(:group) }
       let_it_be(:group) { create(:group, parent: ancestor_group) }
-      let_it_be(:project, freeze: false) { create(:project, :public, namespace: group, developers: developer) }
+      let_it_be_with_reload(:project) { create(:project, :public, namespace: group, developers: developer) }
       let_it_be(:milestone) { create(:milestone, group: ancestor_group, title: '10.0') }
 
       it_behaves_like 'milestone command' do
@@ -1824,7 +1926,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       it_behaves_like 'confidential command' do
-        let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+        let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
         let(:content) { '/confidential' }
         let(:issuable) { work_item }
       end
@@ -3357,7 +3459,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe 'run_pipeline command' do
-      let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
 
       let(:content) { '/run_pipeline' }
       let(:create_pipeline_service) do
@@ -3649,7 +3751,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             stub_licensed_features(epics: false)
           end
 
-          let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+          let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
           it 'does not contain command' do
             expect(service.available_commands(issue)).not_to include(a_hash_including(name: :set_parent))
@@ -4224,7 +4326,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe 'type command' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
       let(:command) { '/type issue' }
@@ -4477,7 +4579,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   describe '#available_commands' do
     context 'when Guest is creating a new issue' do
       let_it_be(:guest) { create(:user, guest_of: public_project) }
-      let_it_be(:developer, freeze: false) { create(:user) }
+      let_it_be_with_reload(:developer) { create(:user) }
 
       let(:current_user) { guest }
 

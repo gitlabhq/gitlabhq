@@ -99,7 +99,6 @@ RSpec.describe 'Merge request > User sees threads', :js, feature_category: :code
 
       it 'displays correct header' do
         page.within(find("#note_#{note.id}", match: :first)) do
-          wait_for_requests
           expect(page).to have_content "commented on commit #{note.commit_id[0...7]}"
         end
       end

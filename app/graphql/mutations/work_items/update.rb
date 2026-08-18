@@ -103,18 +103,36 @@ module Mutations
         # Treat reordering as a base attribute so it is covered by the permission check below.
         attributes[:move_between_ids] = move_between_ids if move_between_ids
 
+        extract_task_list_toggle!(work_item, attributes, widget_params)
+
         # Only checks permissions for base attributes because widgets define their own permissions independently.
         raise_resource_not_available_error! if attributes.present? && !can_update?(work_item)
 
         params = attributes.merge(scope_validator: context[:scope_validator])
 
-        update_result = ::WorkItems::UpdateService.new(
-          container: work_item.resource_parent,
-          current_user: current_user,
-          params: params,
-          widget_params: widget_params,
-          perform_spam_check: true
-        ).execute(work_item)
+        begin
+          update_result = ::WorkItems::UpdateService.new(
+            container: work_item.resource_parent,
+            current_user: current_user,
+            params: params,
+            widget_params: widget_params,
+            perform_spam_check: true
+          ).execute(work_item)
+        rescue ActiveRecord::StaleObjectError => e
+          raise if e.attempted_action != IssuableBaseService::TOGGLE_TASK_ITEM_ACTION
+
+          # Raised by the task list toggle path when the targeted line no longer
+          # matches what the client saw. Return the current server state so
+          # clients can recover without a refetch.
+          return {
+            work_item: work_item.reset,
+            errors: [format(
+              _("Someone edited this %{issueType} at the same time you did. " \
+                "The description has been updated and you will need to make your changes again."),
+              issueType: work_item.work_item_type.name.downcase
+            )]
+          }
+        end
 
         check_spam_action_response!(work_item)
 
@@ -135,6 +153,36 @@ module Mutations
 
       def can_update?(work_item)
         current_user.can?(:update_work_item, work_item)
+      end
+
+      # The task list toggle arrives in the description widget, but it's executed
+      # by `update_task` (IssuableBaseService#update_task_event), which doesn't
+      # run widget callbacks => no widget-level permission checking.
+      #
+      # We move it into the base attributes to ensure it triggers the `can_update?` check.
+      def extract_task_list_toggle!(work_item, attributes, widget_params)
+        toggle = widget_params[:description_widget]&.delete(:task_list_toggle)
+        return unless toggle
+
+        if Feature.disabled?(:work_items_task_list_toggle, work_item.resource_parent)
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            '`taskListToggle` is not available. The `work_items_task_list_toggle` feature flag is disabled.'
+        end
+
+        # `update_task` path doesn't run any other normal update processing,
+        # so deny combining toggle with anything else.
+        if attributes.present? || widget_params.except(:description_widget).present?
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            '`taskListToggle` cannot be combined with other arguments'
+        end
+
+        widget_params.delete(:description_widget)
+
+        attributes[:update_task] = {
+          checked: toggle[:checked],
+          line_source: toggle[:line_source],
+          line_sourcepos: toggle[:line_sourcepos]
+        }
       end
     end
   end

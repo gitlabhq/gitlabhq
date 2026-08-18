@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.first_owner }
 
   let(:ref) { 'refs/heads/master' }

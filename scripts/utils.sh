@@ -198,8 +198,7 @@ function setup_db() {
   fi
 
   setup_db_user_only
-  run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate gitlab:db:lock_writes" "setup_db"
-  run_timed_command_with_metric "bundle exec rake db:schema:cache:dump" "setup_db_schema_cache_dump"
+  run_timed_command_with_metric "bundle exec rake db:prepare gitlab:db:lock_writes db:schema:cache:dump" "setup_db"
   setup_db_praefect
 
   section_end "setup-db"

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import NewUserOrganizationField from './components/new_user_organization_field.vue';
 
@@ -16,19 +16,16 @@ export const initAdminNewUserOrganizationField = () => {
     { deep: true },
   );
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminEditUserOrganizationFieldRoot',
-    render(createElement) {
-      return createElement(NewUserOrganizationField, {
-        props: {
-          organizationUser,
-          initialOrganization,
-          hasMultipleOrganizations: false,
-          organizationInputName: 'user[organization_users_attributes][][organization_id]',
-          organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
-        },
-      });
+    component: NewUserOrganizationField,
+    props: {
+      organizationUser,
+      initialOrganization,
+      hasMultipleOrganizations: false,
+      organizationInputName: 'user[organization_users_attributes][][organization_id]',
+      organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
     },
   });
 };

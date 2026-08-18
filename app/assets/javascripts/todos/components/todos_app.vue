@@ -12,6 +12,7 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import {
@@ -293,7 +294,7 @@ export default {
       return this.$apollo.queries.pendingTodosCount.refetch();
     },
     async updateAllQueries(showLoading = true) {
-      this.$root.$emit('bv::hide::tooltip', 'todo-refresh-btn');
+      this.$root.$emit(BV_HIDE_TOOLTIP, 'todo-refresh-btn');
       this.showSpinnerWhileLoading = showLoading;
 
       await Promise.all([this.updateCounts(), this.$apollo.queries.todos.refetch()]);

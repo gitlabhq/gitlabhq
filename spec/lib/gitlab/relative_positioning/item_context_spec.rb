@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RelativePositioning::ItemContext do
+RSpec.describe Gitlab::RelativePositioning::ItemContext, feature_category: :portfolio_management do
   def create_issue(pos)
     create(:issue, project: project, relative_position: pos)
   end
@@ -229,6 +229,49 @@ RSpec.describe Gitlab::RelativePositioning::ItemContext do
 
     it 'computes correct maximum' do
       expect(described_class.new(issue_1, range).max_relative_position).to eq(105)
+    end
+  end
+
+  describe 'position column source (read_relative_positions_from_work_item_positions)' do
+    let_it_be(:cutover_issue) { create_issue(500) }
+    let_it_be(:cutover_issue_2) { create_issue(510) }
+
+    let(:context) { described_class.new(cutover_issue.reset, range) }
+
+    context 'when the cutover flag is enabled' do
+      it 'orders and compares on the joined work_item_positions column' do
+        expect(context.position_column.relation.name).to eq('work_item_positions')
+      end
+
+      it 'joins work_item_positions in the move-flow scope' do
+        expect(context.scoped_items.to_sql).to include('INNER JOIN "work_item_positions"')
+      end
+
+      it 'reads positions through the joined column', :aggregate_failures do
+        expect(context.min_relative_position).to eq(500)
+        expect(context.max_relative_position).to eq(510)
+        expect(context.at_position(510)).to eq(described_class.new(cutover_issue_2, range))
+      end
+    end
+
+    context 'when the cutover flag is disabled' do
+      before do
+        stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+      end
+
+      it 'orders and compares on issues.relative_position' do
+        expect(context.position_column.relation.name).to eq('issues')
+      end
+
+      it 'does not join work_item_positions in the move-flow scope' do
+        expect(context.scoped_items.to_sql).not_to include('work_item_positions')
+      end
+
+      it 'reads the same positions from the legacy column', :aggregate_failures do
+        expect(context.min_relative_position).to eq(500)
+        expect(context.max_relative_position).to eq(510)
+        expect(context.at_position(510)).to eq(described_class.new(cutover_issue_2, range))
+      end
     end
   end
 end

@@ -21,12 +21,13 @@ describe('TotpCode', () => {
   const findIllustration = () => wrapper.find('img');
   const findForm = () => wrapper.find('form');
   const findField = () => wrapper.findByTestId('two-fa-code-field');
-  const findVerifyButton = () => wrapper.findByTestId('verify-code-button');
+  const findVerifyButton = () => wrapper.findComponentByTestId('verify-code-button');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findMethodInput = () => wrapper.find('input[name="two_factor_method"]');
   const findRecoverButton = () => wrapper.findByTestId('recovery-button');
-  const findSecurityDeviceButton = () => wrapper.findByTestId('security-device-button');
+  const findSecurityDeviceButton = () => wrapper.findComponentByTestId('security-device-button');
+  const findEmailCodeButton = () => wrapper.findComponentByTestId('email-code-button');
 
   beforeEach(() => {
     createComponent();
@@ -57,6 +58,10 @@ describe('TotpCode', () => {
     expect(findVerifyButton().props('variant')).toBe('confirm');
   });
 
+  it('submits totp as the two_factor_method hint', () => {
+    expect(findMethodInput().attributes('value')).toBe('totp');
+  });
+
   it('renders the form pointing at path with post method', () => {
     expect(findForm().attributes('action')).toBe(defaultProps.path);
     expect(findForm().attributes('method')).toBe('post');
@@ -75,10 +80,6 @@ describe('TotpCode', () => {
     createComponent({ rememberMeEnabled: false });
 
     expect(findRememberMeInput().exists()).toBe(false);
-  });
-
-  it('submits totp as the two_factor_method hint', () => {
-    expect(findMethodInput().attributes('value')).toBe('totp');
   });
 
   it('emits switch-method with "recovery" when the recover button is clicked', () => {
@@ -100,6 +101,22 @@ describe('TotpCode', () => {
       findSecurityDeviceButton().vm.$emit('click');
 
       expect(wrapper.emitted('switch-method')).toEqual([['webauthn']]);
+    });
+  });
+
+  describe('email a code button', () => {
+    it('is absent when emailEnabled is false', () => {
+      expect(findEmailCodeButton().exists()).toBe(false);
+    });
+
+    it('is present and emits switch-method "email" when emailEnabled is true', () => {
+      createComponent({ emailEnabled: true });
+
+      expect(findEmailCodeButton().exists()).toBe(true);
+
+      findEmailCodeButton().vm.$emit('click');
+
+      expect(wrapper.emitted('switch-method')).toEqual([['email']]);
     });
   });
 });

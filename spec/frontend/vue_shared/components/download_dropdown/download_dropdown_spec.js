@@ -32,8 +32,8 @@ describe('Download Dropdown', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findSourceCodeGroup = () => wrapper.findByTestId('source-code-group');
-  const findArtifactsGroup = () => wrapper.findByTestId('artifacts-group');
+  const findSourceCodeGroup = () => wrapper.findComponentByTestId('source-code-group');
+  const findArtifactsGroup = () => wrapper.findComponentByTestId('artifacts-group');
 
   const createComponent = (propsData = defaultPropsData) => {
     wrapper = shallowMountExtended(DownloadDropdown, {

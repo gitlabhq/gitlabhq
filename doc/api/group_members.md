@@ -111,7 +111,7 @@ Example response:
 Lists all members of a specified group, including inherited members, invited users, and permissions through ancestor groups.
 
 If a user is a member of this group and also of one or more ancestor groups,
-only its membership with the highest `access_level` is returned.
+only their membership with the highest `access_level` is returned.
 This represents the effective permission of the user.
 
 Members from an invited group are returned if either:
@@ -273,7 +273,6 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a feature flag](../administration/feature_flags/_index.md) named `webui_members_inherited_users`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
 - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
@@ -572,7 +571,7 @@ Changes the membership state for a specified user in a group.
 
 When a user is over [the free user limit](../user/free_user_limit.md), changing their membership state
 for a group or project to `awaiting` or `active` can allow them to access that group or project. The change
-is applied to applied to all subgroups and projects.
+is applied to all subgroups and projects.
 
 ```plaintext
 PUT /groups/:id/members/:user_id/state

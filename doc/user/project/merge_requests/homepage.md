@@ -43,7 +43,7 @@ The **Role** view sorts your merge requests by your role in the merge request.
 
 {{< history >}}
 
-- Merge request homepage [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `merge_request_dashboard`. Disabled by default.
+- Merge request homepage [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13448) in GitLab 17.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `merge_request_dashboard`. Disabled by default.
 - Feature flag `merge_request_dashboard` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480854) on GitLab.com in GitLab 17.9.
 - Feature flag `mr_dashboard_list_type_toggle` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/535244) for GitLab.com in GitLab 18.1.
 - Feature flag `merge_request_dashboard` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194999) in GitLab 18.2.

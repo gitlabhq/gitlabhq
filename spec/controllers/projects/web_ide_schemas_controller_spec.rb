@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::WebIdeSchemasController do
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project, :private, :repository, namespace: developer.namespace, developers: developer) }
+  let_it_be(:project) { create(:project, :private, :small_repo, namespace: developer.namespace, developers: developer) }
 
   before do
     sign_in(user)

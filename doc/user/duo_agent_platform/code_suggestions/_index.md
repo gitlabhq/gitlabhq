@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: DAP Repository Flows
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
 title: Code Suggestions
@@ -23,13 +23,13 @@ title: Code Suggestions
 
 {{< history >}}
 
-- [Introduced support for Gemini Enterprise Agent Platform Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
-- [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
+- [Introduced support for Gemini Enterprise Agent Platform Codey APIs](https://gitlab.com/groups/gitlab-org/-/work_items/10562) in GitLab 16.1.
+- [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/work_items/10752) in GitLab 16.2.
 - [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
-- [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
+- [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/work_items/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187397) support for Qwen2.5 code completion model in GitLab 17.11.
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
 - Changed to include GitLab Duo Core in GitLab 18.0.
@@ -58,7 +58,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 - If you have GitLab Duo Core, [IDE features are on](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Code Suggestions is set up](../../project/repository/code_suggestions/set_up.md) in your IDE.
-- You have a [default GitLab Duo namespace](../../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
+- You have a [default GitLab Duo namespace](../../profile/preferences.md#namespace-resolution-in-your-local-environment)
   set, or have a project open that has GitLab Duo access.
 
 > [!note]
@@ -73,10 +73,8 @@ To use Code Suggestions:
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets
    or completes the current line, depending on the cursor position.
-
 1. Describe the requirements in natural language.
    Code Suggestions generates functions and code snippets based on the context provided.
-
 1. When you receive a suggestion, you can do any of the following:
    - To accept a suggestion, press <kbd>Tab</kbd>.
    - To accept a partial suggestion, press either <kbd>Control</kbd>+<kbd>Right arrow</kbd> or <kbd>Command</kbd>+<kbd>Right arrow</kbd>.

@@ -44,7 +44,7 @@ are valid:
 
 For complete cron documentation, refer to the
 [crontab(5) Linux manual page](https://man7.org/linux/man-pages/man5/crontab.5.html).
-This documentation is accessible offline by entering `man 5 crontab` in a Linux or MacOS
+This documentation is accessible offline by entering `man 5 crontab` in a Linux or macOS
 terminal.
 
 Additionally, GitLab uses [`fugit`](#how-gitlab-parses-cron-syntax-strings), which
@@ -72,7 +72,7 @@ More examples of how to write a cron schedule can be found at
 ## How GitLab parses cron syntax strings
 
 GitLab uses [`fugit`](https://github.com/floraison/fugit) to parse cron syntax
-strings on the server and [cron-validator](https://github.com/TheCloudConnectors/cron-validator)
+strings on the server and [cron-validator](https://github.com/GuillaumeRochat/cron-validator)
 to validate cron syntax in the browser. GitLab uses
 [`cRonstrue`](https://github.com/bradymholt/cRonstrue) to convert cron to human-readable strings
 in the browser.

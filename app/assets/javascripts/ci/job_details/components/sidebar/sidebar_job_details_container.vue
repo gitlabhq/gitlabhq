@@ -48,12 +48,12 @@ export default {
     hasAnyDetail() {
       return Boolean(
         this.job.duration ||
-          this.job.finished_at ||
-          this.job.erased_at ||
-          this.job.queued_duration ||
-          this.job.runner ||
-          this.job.source ||
-          this.job.coverage,
+        this.job.finished_at ||
+        this.job.erased_at ||
+        this.job.queued_duration ||
+        this.job.runner ||
+        this.job.source ||
+        this.job.coverage,
       );
     },
     runnerId() {

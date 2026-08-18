@@ -1,10 +1,10 @@
-#import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_mutation_result.fragment.graphql"
 
 # @feature_category: team_planning
 mutation workItemConvert($input: WorkItemConvertInput!, $useWorkItemFeatures: Boolean = false) {
   workItemConvert(input: $input) {
     workItem {
-      ...WorkItem
+      ...WorkItemMutationResult
     }
     errors
   }

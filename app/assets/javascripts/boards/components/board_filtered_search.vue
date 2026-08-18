@@ -55,7 +55,7 @@ export default {
       required: true,
     },
   },
-  emits: ['setFilters'],
+  emits: ['set-filters'],
   data() {
     return {
       filterParams: this.initialFilterParams,
@@ -421,7 +421,7 @@ export default {
   created() {
     if (!isEmpty(this.eeFilters)) {
       this.filterParams = this.eeFilters;
-      this.$emit('setFilters', this.formattedFilterParams);
+      this.$emit('set-filters', this.formattedFilterParams);
     }
   },
   methods: {
@@ -434,7 +434,7 @@ export default {
     },
     // eslint-disable-next-line vue/no-unused-properties -- updateTokens() is called via $refs by ee/boards/components/board_filtered_search.vue
     updateTokens() {
-      this.$emit('setFilters', this.formattedFilterParams());
+      this.$emit('set-filters', this.formattedFilterParams());
       this.filteredSearchKey += 1;
     },
     handleFilter(filters) {
@@ -450,7 +450,7 @@ export default {
         replace: true,
       });
 
-      this.$emit('setFilters', this.formattedFilterParams());
+      this.$emit('set-filters', this.formattedFilterParams());
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');
@@ -533,6 +533,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable vue/v-on-event-hyphenation -- FilteredSearchBar is a shared component that emits the camelCase `onFilter` event -->
   <filtered-search-bar
     :key="filteredSearchKey"
     class="gl-w-full"
@@ -543,4 +544,5 @@ export default {
     :initial-filter-value="getFilteredSearchValue"
     @onFilter="handleFilter"
   />
+  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

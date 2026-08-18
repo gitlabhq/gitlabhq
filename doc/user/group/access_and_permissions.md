@@ -18,13 +18,6 @@ For more information, see also [Sharing projects and groups](../project/members/
 
 ## Restrict Git access protocols
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/365357) in GitLab 16.0.
-
-{{< /history >}}
-
 You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
 is disabled when the [instance setting](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
 configured by an administrator.
@@ -116,6 +109,9 @@ list of security implications when accessing GitLab from a disallowed IP address
 - Users can always view the names and hierarchies of groups and projects.
 - Users can always use the [reply by email feature](../../administration/reply_by_email.md)
   to create and edit comments on issues or merge requests.
+- Users can create issues and merge requests by email with their
+  [incoming email token](../../security/tokens/_index.md#incoming-email-token), because
+  incoming email is not subject to IP restrictions.
 - Users can sometimes view push, merge, issue, or comment events on their dashboard.
 - IP restrictions always apply to public projects, but cached project files may sometimes be accessible.
 - IP restrictions always apply to Git operations through SSH on GitLab.com and GitLab Dedicated.
@@ -143,12 +139,6 @@ purpose of IP address-based access restriction.
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
-
-{{< /history >}}
 
 You can define an email domain allowlist at the top-level namespace to restrict which users can
 access a group and its projects. A user's primary email domain must match an entry in the allowlist
@@ -281,8 +271,7 @@ Group syncing allows LDAP groups to be mapped to GitLab groups. This provides mo
 
 Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings** > **LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group. After you have configured the link:
 
-- In GitLab 16.7 and earlier, group Owners cannot add members to or remove members from the group. The LDAP server is considered the single source of truth for group membership for all users who have signed in with LDAP credentials.
-- In GitLab 16.8 and later, group Owners can use the [member roles API](../../api/member_roles.md) or [group members API](../../api/group_members.md#add-a-group-member) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
+Group Owners can use the [member roles API](../../api/member_roles.md) or [group members API](../../api/group_members.md#add-a-group-member) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
 
 When a user belongs to multiple LDAP groups configured for the same GitLab group, GitLab assigns
 them the higher of the two associated roles. For example:
@@ -347,6 +336,8 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 
 > [!note]
 > When you remove LDAP group syncing, the existing memberships and role assignment are retained.
+> If the group has no remaining LDAP group links, you can edit these memberships directly.
+> You do not need to override them first.
 
 ### Override user permissions
 

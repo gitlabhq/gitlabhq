@@ -48,11 +48,11 @@ bundle exec rake gitlab:clickhouse:migrate; bundle exec rake gitlab:clickhouse:s
 ClickHouse queries in GitLab can be written in two ways:
 
 1. **Raw SQL queries**
-1. **QueryBuilder** – an ActiveRecord-like abstraction ([documentation](clickhouse_within_gitlab.md#writing-query-conditions))
+1. **QueryBuilder** - an ActiveRecord-like abstraction ([documentation](clickhouse_within_gitlab.md#writing-query-conditions))
 
 When reviewing raw SQL queries, pay close attention to variable interpolation:
 
-- Prefer: Variables must use ClickHouse's placeholder syntax to prevent sensitive data from being logged:
+- Prefer: Variables must use the ClickHouse placeholder syntax to prevent sensitive data from being logged:
 
   ```ruby
   sql = 'SELECT * FROM events WHERE id > {min_id:UInt64}'
@@ -141,19 +141,19 @@ PrimaryKey
 ```
 
 In the output, look for the `PrimaryKey` section and check the **Granules** ratio.
-For example: `185/72937` granules means only a small subset of the table was scanned - ideal for performance.
+For example: `185/72937` granules mean only a small subset of the table was scanned - ideal for performance.
 
 **When to raise a discussion about performance:**
 
 - The query scans more than **10 million rows**.
-- The query consistently exceeds **5–10 seconds** execution time.
+- The query consistently exceeds **5-10 seconds** execution time.
 - The query will be frequently executed.
 
 Ensure performance validation uses real-world (or synthetic) data from large namespaces (e.g., `gitlab-org` or `gitlab-org/gitlab`).
 
 ## New materialized views review
 
-Make sure materialized view is created with the `POPULATE` keyword or has a backfill migration for large datasets.
+Make sure the materialized view is created with the `POPULATE` keyword or has a backfill migration for large datasets.
 
 ## Table Engine Specific Behavior
 

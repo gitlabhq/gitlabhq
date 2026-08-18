@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
   let_it_be_with_reload(:pipeline) do
     create(

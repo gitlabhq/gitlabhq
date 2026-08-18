@@ -53,7 +53,8 @@ RSpec.describe API::Helpers::RateLimiter, 'Retry-After header integration', feat
       end
 
       it 'includes Retry-After header with custom interval (5 minutes)' do
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:interval).with(:test_endpoint).and_return(5.minutes)
+        expect(::Gitlab::ApplicationRateLimiter)
+          .to receive(:period_for).with(:test_endpoint).and_return(5.minutes)
 
         get 'test_rate_limit'
 
@@ -82,7 +83,7 @@ RSpec.describe API::Helpers::RateLimiter, 'Retry-After header integration', feat
 
         test_cases.each do |test_case|
           expect(::Gitlab::ApplicationRateLimiter)
-            .to receive(:interval).with(:test_endpoint).and_return(test_case[:interval])
+            .to receive(:period_for).with(:test_endpoint).and_return(test_case[:interval])
 
           get 'test_rate_limit'
 
@@ -119,7 +120,7 @@ RSpec.describe API::Helpers::RateLimiter, 'Retry-After header integration', feat
       }
 
       rate_limit_configs.each do |key, expected_interval|
-        rate_limit_interval = Gitlab::ApplicationRateLimiter.interval(key)
+        rate_limit_interval = Gitlab::ApplicationRateLimiter.period_for(key)
 
         expect(rate_limit_interval).to eq(expected_interval.to_i),
           "Expected #{key} to have interval #{expected_interval.to_i} seconds, got #{rate_limit_interval}"

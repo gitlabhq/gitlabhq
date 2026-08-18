@@ -9,7 +9,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
 import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
@@ -18,13 +18,14 @@ import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import {
   MR_PIPELINE_TYPE_DETACHED,
   MR_PIPELINE_TYPE_MERGED_RESULT,
+  MR_PIPELINE_TYPE_MERGE_TRAIN,
 } from '~/ci/merge_requests/constants';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
+import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
 import getMergeRequestSinglePipeline from '~/ci/merge_requests/graphql/queries/get_merge_request_single_pipeline.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
-import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
 import downstreamPipelineStatusUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
 import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
@@ -39,10 +40,10 @@ import {
   generateMockPipeline,
   generateMockDownstreamPipeline,
   generateSinglePipelineResponse,
-  generateMockDownstreamResponse,
   mockPipelineUpdateResponseEmpty,
   mockPipelineUpdateResponse,
   mockDownstreamPipelineUpdateResponse,
+  generatePipelinesDownstreamResponse,
   generatePipelineCreationRequestsResponse,
   generatePipelineCreationSubscriptionResponse,
   generatePipelineCreationRequest,
@@ -51,8 +52,11 @@ import {
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
-jest.mock('~/ci/pipeline_details/graph/utils');
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/graphql_shared/utils', () => ({
+  ...jest.requireActual('~/graphql_shared/utils'),
+  setupQueryPollingByVisibility: jest.fn(),
+}));
 
 const $toast = {
   show: jest.fn(),
@@ -60,8 +64,8 @@ const $toast = {
 
 let wrapper;
 let mergeRequestPipelinesRequest;
+let pipelinesDownstreamRequest;
 let getSinglePipelineRequest;
-let getPipelinesDownstreamRequest;
 let cancelPipelineMutationRequest;
 let retryPipelineMutationRequest;
 let subscriptionHandler;
@@ -82,6 +86,16 @@ const defaultProps = {
   projectId: '5',
   mergeRequestId: 1,
   targetProjectFullPath: '/group/project',
+};
+
+// Downstream is fetched separately from the connection query. This configures the separate
+// downstream query's mock response for the given pipeline and returns the plain pipeline node
+// (no inline downstream) for insertion into the connection query's mocked response.
+const pipelineWithDownstream = (pipeline, downstreamNodes) => {
+  pipelinesDownstreamRequest.mockResolvedValue(
+    generatePipelinesDownstreamResponse([{ id: pipeline.id, downstreamNodes }]),
+  );
+  return pipeline;
 };
 
 const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
@@ -109,8 +123,8 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
 
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
+    [getPipelinesDownstream, pipelinesDownstreamRequest],
     [getMergeRequestSinglePipeline, getSinglePipelineRequest],
-    [getPipelinesDownstream, getPipelinesDownstreamRequest],
     [cancelPipelineMutation, cancelPipelineMutationRequest],
     [retryPipelineMutation, retryPipelineMutationRequest],
     [mrPipelineStatusesUpdatedSubscription, subscriptionHandler],
@@ -161,18 +175,19 @@ const findCreationFailedAlert = () => wrapper.findComponent(GlAlert);
 const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
 const findUserPermissionsDocsLink = () => wrapper.findByTestId('user-permissions-docs-link');
 const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+const displayedPipelines = () => findPipelinesList().props('pipelines');
 
 beforeEach(() => {
   mergeRequestPipelinesRequest = jest.fn();
   mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse({ count: 1 }));
 
+  pipelinesDownstreamRequest = jest.fn();
+  pipelinesDownstreamRequest.mockResolvedValue(generatePipelinesDownstreamResponse([]));
+
   getSinglePipelineRequest = jest.fn();
   getSinglePipelineRequest.mockResolvedValue(
     generateSinglePipelineResponse(generateMockPipeline({ id: '1' })),
   );
-
-  getPipelinesDownstreamRequest = jest.fn();
-  getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
 
   cancelPipelineMutationRequest = jest.fn();
   cancelPipelineMutationRequest.mockResolvedValue({ data: { pipelineCancel: { errors: [] } } });
@@ -239,7 +254,7 @@ describe('PipelinesTableWrapper component', () => {
 
       it('renders a pipeline list', () => {
         expect(findPipelinesList().exists()).toBe(true);
-        expect(findPipelinesList().props().pipelines).toHaveLength(1);
+        expect(displayedPipelines()).toHaveLength(1);
       });
 
       it('renders pagination', () => {
@@ -295,83 +310,11 @@ describe('PipelinesTableWrapper component', () => {
     });
   });
 
-  describe('polling', () => {
-    it('toggles polling by tab visibility', async () => {
-      await createComponent();
-
-      expect(setupQueryPollingByVisibility).toHaveBeenCalledWith(expect.anything(), 60000);
-    });
-
-    it('polls every 60 seconds', async () => {
-      await createComponent();
-
-      expect(mergeRequestPipelinesRequest).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(30000);
-      await waitForPromises();
-
-      expect(mergeRequestPipelinesRequest).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(30000);
-      await waitForPromises();
-
-      expect(mergeRequestPipelinesRequest).toHaveBeenCalledTimes(2);
-    });
-
-    describe('with pending pipelines from subscription', () => {
-      const succeededRequest = generatePipelineCreationRequest({
-        status: 'SUCCEEDED',
-        pipelineId: 'gid://gitlab/Ci::Pipeline/999',
-      });
-
-      const addPipelineViaSubscription = async () => {
-        mockPipelineCreationSubscription.next(
-          generatePipelineCreationSubscriptionResponse({ requests: [succeededRequest] }),
-        );
-        await waitForPromises();
-      };
-
-      it('preserves pipelines not yet returned by server', async () => {
-        await createComponent();
-        await addPipelineViaSubscription();
-
-        expect(findPipelinesList().props('pipelines')[0].id).toBe(999);
-
-        mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse({ count: 1 }));
-        apolloMock.defaultClient.resetStore();
-        await waitForPromises();
-
-        const pipelines = findPipelinesList().props('pipelines');
-        expect(pipelines).toHaveLength(2);
-        expect(pipelines[0].id).toBe(999);
-      });
-
-      it('does not duplicate pipeline once server returns it', async () => {
-        await createComponent();
-        await addPipelineViaSubscription();
-
-        const responseWithNewPipeline = generateMRPipelinesResponse({ count: 2 });
-        responseWithNewPipeline.data.project.mergeRequest.pipelines.nodes = [
-          generateMockPipeline({ id: '999', status: 'RUNNING' }),
-          generateMockPipeline({ id: '1', status: 'SUCCESS' }),
-        ];
-        mergeRequestPipelinesRequest.mockResolvedValue(responseWithNewPipeline);
-        apolloMock.defaultClient.resetStore();
-        await waitForPromises();
-
-        const pipelineIds = findPipelinesList()
-          .props('pipelines')
-          .map((p) => p.id);
-        expect(pipelineIds).toHaveLength(2);
-        expect(pipelineIds.filter((id) => id === 999)).toHaveLength(1);
-      });
-    });
-  });
-
   describe.each`
     eventType                         | description
     ${MR_PIPELINE_TYPE_DETACHED}      | ${'detached merge request pipeline'}
     ${MR_PIPELINE_TYPE_MERGED_RESULT} | ${'merged-results pipeline'}
+    ${MR_PIPELINE_TYPE_MERGE_TRAIN}   | ${'merge train pipeline'}
   `('when latest pipeline is a $description', ({ eventType }) => {
     beforeEach(async () => {
       const response = generateMRPipelinesResponse({
@@ -385,6 +328,20 @@ describe('PipelinesTableWrapper component', () => {
 
     it('renders the run pipeline button', () => {
       expect(findRunPipelineBtn().props()).toMatchObject({ isLoading: false, mergeRequestId: 1 });
+    });
+  });
+
+  describe('when latest pipeline is a branch pipeline', () => {
+    beforeEach(async () => {
+      mergeRequestPipelinesRequest.mockResolvedValue(
+        generateMRPipelinesResponse({ mergeRequestEventType: null }),
+      );
+
+      await createComponent();
+    });
+
+    it('does not render the run pipeline button', () => {
+      expect(findRunPipelineBtn().exists()).toBe(false);
     });
   });
 
@@ -495,6 +452,31 @@ describe('PipelinesTableWrapper component', () => {
       });
     });
 
+    describe('on click for fork merge request when the latest pipeline ran in the target project', () => {
+      beforeEach(async () => {
+        const response = generateMRPipelinesResponse({
+          mergeRequestEventType: MR_PIPELINE_TYPE_DETACHED,
+        });
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        await createComponent({
+          props: {
+            canCreatePipelineInTargetProject: true,
+            sourceProjectFullPath: 'test/fork-project',
+            targetProjectFullPath: 'gitlab-org/gitlab',
+          },
+        });
+
+        jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
+      });
+
+      it('runs the pipeline without showing the security warning modal', async () => {
+        await findRunPipelineBtn().vm.$emit('run-pipeline');
+
+        expect(showMock).not.toHaveBeenCalled();
+        expect(Api.postMergeRequestPipeline).toHaveBeenCalledWith('5', { mergeRequestId: 1 });
+      });
+    });
+
     describe('when no pipelines were created on a forked merge request', () => {
       beforeEach(async () => {
         const response = generateMRPipelinesResponse({ count: 0 });
@@ -521,16 +503,8 @@ describe('PipelinesTableWrapper component', () => {
     });
 
     describe('events', () => {
-      const response = generateMRPipelinesResponse();
-      const rawPipeline = response.data.project.mergeRequest.pipelines.nodes[0];
-      const pipeline = {
-        ...rawPipeline,
-        id: 1,
-        graphqlId: rawPipeline.id,
-      };
-
       beforeEach(async () => {
-        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse());
         await createComponent();
       });
 
@@ -538,7 +512,7 @@ describe('PipelinesTableWrapper component', () => {
         it('execute the cancel graphql mutation', async () => {
           expect(cancelPipelineMutationRequest.mock.calls).toHaveLength(0);
 
-          findPipelinesList().vm.$emit('cancel-pipeline', pipeline);
+          findPipelinesList().vm.$emit('cancel-pipeline', displayedPipelines()[0]);
 
           await waitForPromises();
 
@@ -550,7 +524,7 @@ describe('PipelinesTableWrapper component', () => {
         it('refetches the single pipeline after successful cancel', async () => {
           expect(getSinglePipelineRequest).not.toHaveBeenCalled();
 
-          findPipelinesList().vm.$emit('cancel-pipeline', pipeline);
+          findPipelinesList().vm.$emit('cancel-pipeline', displayedPipelines()[0]);
 
           await waitForPromises();
 
@@ -565,7 +539,7 @@ describe('PipelinesTableWrapper component', () => {
         it('sends the retry action graphql mutation', async () => {
           expect(retryPipelineMutationRequest.mock.calls).toHaveLength(0);
 
-          findPipelinesList().vm.$emit('retry-pipeline', pipeline);
+          findPipelinesList().vm.$emit('retry-pipeline', displayedPipelines()[0]);
 
           await waitForPromises();
 
@@ -577,7 +551,7 @@ describe('PipelinesTableWrapper component', () => {
         it('refetches the single pipeline after successful retry', async () => {
           expect(getSinglePipelineRequest).not.toHaveBeenCalled();
 
-          findPipelinesList().vm.$emit('retry-pipeline', pipeline);
+          findPipelinesList().vm.$emit('retry-pipeline', displayedPipelines()[0]);
 
           await waitForPromises();
 
@@ -592,7 +566,7 @@ describe('PipelinesTableWrapper component', () => {
         it('refetches the single pipeline', async () => {
           expect(getSinglePipelineRequest).not.toHaveBeenCalled();
 
-          findPipelinesList().vm.$emit('job-action-executed', pipeline);
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
 
           await waitForPromises();
 
@@ -608,12 +582,11 @@ describe('PipelinesTableWrapper component', () => {
             generateSinglePipelineResponse(updatedPipeline),
           );
 
-          findPipelinesList().vm.$emit('job-action-executed', pipeline);
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
 
           await waitForPromises();
 
-          const pipelinesAfterUpdate = findPipelinesList().props('pipelines');
-          expect(pipelinesAfterUpdate[0].detailedStatus.name).toBe('RUNNING');
+          expect(displayedPipelines()[0].detailedStatus.name).toBe('RUNNING');
         });
 
         it('updates a running pipeline to canceled status after cancel action', async () => {
@@ -621,41 +594,75 @@ describe('PipelinesTableWrapper component', () => {
           mergeRequestPipelinesRequest.mockResolvedValue(runningResponse);
           await createComponent();
 
-          const pipelinesBefore = findPipelinesList().props('pipelines');
-          expect(pipelinesBefore[0].detailedStatus.name).toBe('RUNNING');
+          expect(displayedPipelines()[0].detailedStatus.name).toBe('RUNNING');
 
           const canceledPipeline = generateMockPipeline({ id: '1', status: 'CANCELED' });
           getSinglePipelineRequest.mockResolvedValue(
             generateSinglePipelineResponse(canceledPipeline),
           );
 
-          findPipelinesList().vm.$emit('job-action-executed', pipelinesBefore[0]);
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
 
           await waitForPromises();
 
-          const pipelinesAfter = findPipelinesList().props('pipelines');
-          expect(pipelinesAfter[0].detailedStatus.name).toBe('CANCELED');
+          expect(displayedPipelines()[0].detailedStatus.name).toBe('CANCELED');
         });
 
-        it('preserves the graphqlId and numeric id on merged pipeline', async () => {
+        it('keeps the same pipeline row after refetch', async () => {
           const updatedPipeline = generateMockPipeline({ id: '1', status: 'RUNNING' });
           getSinglePipelineRequest.mockResolvedValue(
             generateSinglePipelineResponse(updatedPipeline),
           );
 
-          findPipelinesList().vm.$emit('job-action-executed', pipeline);
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
 
           await waitForPromises();
 
-          const pipelinesAfterUpdate = findPipelinesList().props('pipelines');
-          expect(pipelinesAfterUpdate[0].id).toBe(1);
-          expect(pipelinesAfterUpdate[0].graphqlId).toBe('gid://gitlab/Ci::Pipeline/1');
+          expect(displayedPipelines()).toHaveLength(1);
+          expect(displayedPipelines()[0].id).toBe('gid://gitlab/Ci::Pipeline/1');
+        });
+
+        it('preserves the cached downstream after a base-only single-pipeline refetch', async () => {
+          const downstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
+          mergeRequestPipelinesRequest.mockResolvedValue(
+            (() => {
+              const response = generateMRPipelinesResponse({ count: 1, status: 'RUNNING' });
+              response.data.project.mergeRequest.pipelines.nodes = [
+                pipelineWithDownstream(generateMockPipeline({ id: '1', status: 'RUNNING' }), [
+                  downstream,
+                ]),
+              ];
+              return response;
+            })(),
+          );
+          await createComponent();
+
+          expect(displayedPipelines()[0].downstream.nodes).toHaveLength(1);
+
+          // The single-pipeline query does not select downstream; the refetch must not wipe it.
+          getSinglePipelineRequest.mockResolvedValue(
+            generateSinglePipelineResponse(generateMockPipeline({ id: '1', status: 'SUCCESS' })),
+          );
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
+          await waitForPromises();
+
+          expect(displayedPipelines()[0].detailedStatus.name).toBe('SUCCESS');
+          expect(displayedPipelines()[0].downstream.nodes).toHaveLength(1);
+        });
+
+        it('refetches downstream pipelines, since a job action can create a new one', async () => {
+          expect(pipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
+
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
+          await waitForPromises();
+
+          expect(pipelinesDownstreamRequest).toHaveBeenCalledTimes(2);
         });
 
         it('captures Sentry error on refetch failure', async () => {
           getSinglePipelineRequest.mockRejectedValueOnce(new Error('network error'));
 
-          findPipelinesList().vm.$emit('job-action-executed', pipeline);
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
 
           await waitForPromises();
 
@@ -666,22 +673,64 @@ describe('PipelinesTableWrapper component', () => {
       describe('when a manual job is played via pipeline actions dropdown', () => {
         beforeEach(() => {
           // simulate PipelinesManualActions → PipelineOperations → PipelinesTable
-          findPipelinesList().vm.$emit('job-action-executed', pipeline);
+          findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
           return waitForPromises();
         });
 
         it('refetches the single pipeline', () => {
           expect(getSinglePipelineRequest).toHaveBeenCalledWith({
             fullPath: defaultProps.targetProjectFullPath,
-            id: pipeline.graphqlId,
+            id: 'gid://gitlab/Ci::Pipeline/1',
           });
         });
 
         it('does not reset pagination', () => {
-          // refetchSinglePipeline does not reset pagination
+          // refetchSinglePipeline does not re-run the connection query
           expect(mergeRequestPipelinesRequest).toHaveBeenCalledTimes(1); // only initial load
         });
       });
+    });
+  });
+
+  describe('polling', () => {
+    const POLL_INTERVAL_MS = 60 * 1000;
+
+    it('sets a poll interval on the pipelines queries', async () => {
+      await createComponent();
+      expect(mergeRequestPipelinesRequest).toHaveBeenCalledTimes(1);
+      expect(pipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(POLL_INTERVAL_MS + 1);
+      expect(mergeRequestPipelinesRequest).toHaveBeenCalledTimes(2);
+      expect(pipelinesDownstreamRequest).toHaveBeenCalledTimes(2);
+    });
+
+    it('sets up visibility-based polling for the pipelines and downstreamPipelines queries', async () => {
+      await createComponent();
+
+      expect(setupQueryPollingByVisibility).toHaveBeenCalledTimes(2);
+      expect(setupQueryPollingByVisibility).toHaveBeenCalledWith(
+        wrapper.vm.$apollo.queries.pipelines,
+        POLL_INTERVAL_MS,
+      );
+      expect(setupQueryPollingByVisibility).toHaveBeenCalledWith(
+        wrapper.vm.$apollo.queries.downstreamPipelines,
+        POLL_INTERVAL_MS,
+      );
+    });
+
+    it('cleans up visibility listeners on unmount', async () => {
+      const pipelinesCleanup = jest.fn();
+      const downstreamCleanup = jest.fn();
+      setupQueryPollingByVisibility
+        .mockReturnValueOnce(pipelinesCleanup)
+        .mockReturnValueOnce(downstreamCleanup);
+
+      await createComponent();
+      wrapper.destroy();
+
+      expect(pipelinesCleanup).toHaveBeenCalled();
+      expect(downstreamCleanup).toHaveBeenCalled();
     });
   });
 
@@ -752,54 +801,6 @@ describe('PipelinesTableWrapper component', () => {
           fullPath: '/group/project',
           mergeRequestIid: '1',
         });
-      });
-    });
-
-    describe('clears downstream data on page change', () => {
-      const fullDownstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
-
-      beforeEach(() => {
-        getPipelinesDownstreamRequest.mockResolvedValue(
-          generateMockDownstreamResponse([{ pipelineId: '1', downstreamNodes: [fullDownstream] }]),
-        );
-      });
-
-      it('clears downstream data when navigating to next page', async () => {
-        await createComponent();
-        await waitForPromises();
-
-        const pipelinesBeforeNav = findPipelinesList().props('pipelines');
-        expect(pipelinesBeforeNav[0].downstream?.nodes).toHaveLength(1);
-
-        getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
-
-        findPagination().vm.$emit('next');
-        await waitForPromises();
-
-        const pipelinesAfterNav = findPipelinesList().props('pipelines');
-        expect(pipelinesAfterNav[0].downstream?.nodes).toHaveLength(0);
-      });
-
-      it('clears downstream data when navigating to previous page', async () => {
-        const responseWithPreviousPage = createResponseWithPageInfo({
-          hasNextPage: false,
-          hasPreviousPage: true,
-        });
-        mergeRequestPipelinesRequest.mockResolvedValue(responseWithPreviousPage);
-
-        await createComponent();
-        await waitForPromises();
-
-        const pipelinesBeforeNav = findPipelinesList().props('pipelines');
-        expect(pipelinesBeforeNav[0].downstream?.nodes).toHaveLength(1);
-
-        getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
-
-        findPagination().vm.$emit('prev');
-        await waitForPromises();
-
-        const pipelinesAfterNav = findPipelinesList().props('pipelines');
-        expect(pipelinesAfterNav[0].downstream?.nodes).toHaveLength(0);
       });
     });
   });
@@ -882,7 +883,7 @@ describe('PipelinesTableWrapper component', () => {
         },
       );
 
-      it('passes overall stage status to the pipelines table', async () => {
+      it('applies the subscription status update to the rendered row', async () => {
         const mockSub = createMockSubscription();
         subscriptionHandler = jest.fn().mockReturnValue(mockSub);
 
@@ -894,18 +895,16 @@ describe('PipelinesTableWrapper component', () => {
         mergeRequestPipelinesRequest.mockResolvedValue(response);
         await createComponent();
 
-        const originalPipeline = findPipelinesList().props('pipelines')[0];
-        const originalStageStatuses = originalPipeline.stages.nodes.map(
-          (s) => s.detailedStatus.name,
-        );
-
-        expect(originalStageStatuses).toEqual(['SUCCESS', 'SUCCESS', 'SUCCESS']);
+        expect(displayedPipelines()[0].stages.nodes.map((s) => s.detailedStatus.name)).toEqual([
+          'SUCCESS',
+          'SUCCESS',
+          'SUCCESS',
+        ]);
 
         mockSub.next(mockPipelineUpdateResponse);
         await waitForPromises();
 
-        const updatedPipeline = findPipelinesList().props('pipelines')[0];
-        const updatedStages = updatedPipeline.stages.nodes;
+        const updatedStages = displayedPipelines()[0].stages.nodes;
 
         expect(updatedStages.map((s) => s.detailedStatus.name)).toEqual([
           'RUNNING',
@@ -916,11 +915,6 @@ describe('PipelinesTableWrapper component', () => {
           'status_running',
           'status_created',
           'status_created',
-        ]);
-        expect(updatedStages.map((s) => s.detailedStatus.tooltip)).toEqual([
-          'running',
-          'created',
-          'created',
         ]);
       });
 
@@ -954,8 +948,7 @@ describe('PipelinesTableWrapper component', () => {
 
         expect(subscriptionHandler).not.toHaveBeenCalled();
 
-        const pipeline = findPipelinesList().props('pipelines')[0];
-        findPipelinesList().vm.$emit('retry-pipeline', pipeline);
+        findPipelinesList().vm.$emit('retry-pipeline', displayedPipelines()[0]);
         await waitForPromises();
 
         expect(subscriptionHandler).toHaveBeenCalledWith({
@@ -970,8 +963,7 @@ describe('PipelinesTableWrapper component', () => {
 
         expect(subscriptionHandler).not.toHaveBeenCalled();
 
-        const pipeline = findPipelinesList().props('pipelines')[0];
-        findPipelinesList().vm.$emit('job-action-executed', pipeline);
+        findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
         await waitForPromises();
 
         expect(subscriptionHandler).toHaveBeenCalledWith({
@@ -983,22 +975,16 @@ describe('PipelinesTableWrapper component', () => {
         const downstream = generateMockDownstreamPipeline({ id: '100', status: 'SUCCESS' });
         const response = generateMRPipelinesResponse({ count: 0 });
         response.data.project.mergeRequest.pipelines.nodes = [
-          {
-            ...generateMockPipeline({ id: '1', status: 'RUNNING' }),
-            downstream: {
-              count: 1,
-              nodes: [downstream],
-              __typename: 'PipelineConnection',
-            },
-          },
+          pipelineWithDownstream(generateMockPipeline({ id: '1', status: 'RUNNING' }), [
+            downstream,
+          ]),
         ];
         mergeRequestPipelinesRequest.mockResolvedValue(response);
         await createComponent();
 
         expect(downstreamSubscriptionHandler).not.toHaveBeenCalled();
 
-        const pipeline = findPipelinesList().props('pipelines')[0];
-        findPipelinesList().vm.$emit('job-action-executed', pipeline);
+        findPipelinesList().vm.$emit('job-action-executed', displayedPipelines()[0]);
         await waitForPromises();
 
         expect(downstreamSubscriptionHandler).toHaveBeenCalledWith({
@@ -1017,22 +1003,19 @@ describe('PipelinesTableWrapper component', () => {
         mergeRequestPipelinesRequest.mockResolvedValue(response);
         await createComponent();
 
-        expect(findPipelinesList().props('pipelines')[0].detailedStatus.name).toBe('RUNNING');
+        expect(displayedPipelines()[0].detailedStatus.name).toBe('RUNNING');
 
         mockParentSub.next(buildTick('SUCCESS'));
         await waitForPromises();
 
-        expect(findPipelinesList().props('pipelines')[0].detailedStatus.name).toBe('SUCCESS');
+        expect(displayedPipelines()[0].detailedStatus.name).toBe('SUCCESS');
 
         // Subscription is torn down; second tick should be ignored
-        const statusBeforeSecondTick =
-          findPipelinesList().props('pipelines')[0].detailedStatus.name;
+        const statusBeforeSecondTick = displayedPipelines()[0].detailedStatus.name;
         mockParentSub.next(buildTick('RUNNING'));
         await waitForPromises();
 
-        expect(findPipelinesList().props('pipelines')[0].detailedStatus.name).toBe(
-          statusBeforeSecondTick,
-        );
+        expect(displayedPipelines()[0].detailedStatus.name).toBe(statusBeforeSecondTick);
       });
     });
 
@@ -1043,14 +1026,10 @@ describe('PipelinesTableWrapper component', () => {
       ) => {
         const response = generateMRPipelinesResponse({ count: 0 });
         response.data.project.mergeRequest.pipelines.nodes = [
-          {
-            ...generateMockPipeline({ id: '1', status: parentStatus }),
-            downstream: {
-              count: downstreamPipelines.length,
-              nodes: downstreamPipelines,
-              __typename: 'PipelineConnection',
-            },
-          },
+          pipelineWithDownstream(
+            generateMockPipeline({ id: '1', status: parentStatus }),
+            downstreamPipelines,
+          ),
         ];
         mergeRequestPipelinesRequest.mockResolvedValue(response);
         subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponseEmpty);
@@ -1102,90 +1081,12 @@ describe('PipelinesTableWrapper component', () => {
         const downstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
         await createWithDownstream([downstream]);
 
-        expect(
-          findPipelinesList().props('pipelines')[0].downstream.nodes[0].detailedStatus.name,
-        ).toBe('RUNNING');
+        expect(displayedPipelines()[0].downstream.nodes[0].detailedStatus.name).toBe('RUNNING');
 
         mockDownstreamSubscription.next(mockDownstreamPipelineUpdateResponse);
-        await nextTick();
-
-        expect(
-          findPipelinesList().props('pipelines')[0].downstream.nodes[0].detailedStatus.name,
-        ).toBe('SUCCESS');
-      });
-    });
-
-    describe('downstream pipeline fetching', () => {
-      it('fetches full downstream data lazily after initial query', async () => {
-        await createComponent();
-
-        expect(getPipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
-        expect(getPipelinesDownstreamRequest).toHaveBeenCalledWith(
-          expect.objectContaining({
-            fullPath: defaultProps.targetProjectFullPath,
-            mergeRequestIid: String(defaultProps.mergeRequestId),
-          }),
-        );
-      });
-
-      it('does not duplicate bulk fetch when already in flight', async () => {
-        await createComponent();
-
-        expect(getPipelinesDownstreamRequest).toHaveBeenCalledTimes(1);
-      });
-
-      it('fetches downstream for a single pipeline after job action', async () => {
-        await createComponent();
         await waitForPromises();
 
-        getPipelinesDownstreamRequest.mockClear();
-
-        const pipelines = findPipelinesList().props('pipelines');
-        getSinglePipelineRequest.mockResolvedValue(
-          generateSinglePipelineResponse(
-            generateMockPipeline({ id: String(pipelines[0].id), status: 'RUNNING' }),
-          ),
-        );
-        findPipelinesList().vm.$emit('job-action-executed', pipelines[0]);
-        await waitForPromises();
-
-        expect(getPipelinesDownstreamRequest).toHaveBeenCalledWith(
-          expect.objectContaining({
-            ids: [pipelines[0].graphqlId],
-          }),
-        );
-      });
-
-      it('merges full downstream data with existing skeleton data', async () => {
-        const fullDownstream = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
-        getPipelinesDownstreamRequest.mockResolvedValue(
-          generateMockDownstreamResponse([{ pipelineId: '1', downstreamNodes: [fullDownstream] }]),
-        );
-
-        await createComponent();
-        await waitForPromises();
-
-        const pipelines = findPipelinesList().props('pipelines');
-        const downstreamNode = pipelines[0].downstream?.nodes?.find(
-          (n) => n.id === 'gid://gitlab/Ci::Pipeline/100',
-        );
-
-        if (downstreamNode) {
-          expect(downstreamNode.iid).toBe('100');
-          expect(downstreamNode.name).toBe('child-pipeline-100');
-          expect(downstreamNode.project.fullPath).toBe('root/child-project');
-        } else {
-          expect(getPipelinesDownstreamRequest).toHaveBeenCalled();
-        }
-      });
-
-      it('skips downstream merge when fetch returns empty nodes', async () => {
-        getPipelinesDownstreamRequest.mockResolvedValue(generateMockDownstreamResponse());
-        await createComponent();
-        await waitForPromises();
-
-        const pipelines = findPipelinesList().props('pipelines');
-        expect(pipelines[0].downstream.nodes).toEqual([]);
+        expect(displayedPipelines()[0].downstream.nodes[0].detailedStatus.name).toBe('SUCCESS');
       });
     });
   });
@@ -1263,6 +1164,35 @@ describe('PipelinesTableWrapper component', () => {
       });
     });
 
+    describe('optimistic new pipelines', () => {
+      it('shows a SUCCEEDED creation-request pipeline the server list has not returned yet', async () => {
+        setupPipelineCreationRequestsResponse([succeededRequest]);
+
+        await createComponent();
+
+        const pipelines = displayedPipelines();
+        expect(pipelines).toHaveLength(2);
+        expect(pipelines[0].id).toBe('gid://gitlab/Ci::Pipeline/999');
+      });
+
+      it('does not duplicate the pipeline once the server list includes it', async () => {
+        setupPipelineCreationRequestsResponse([succeededRequest]);
+
+        const responseWithNewPipeline = generateMRPipelinesResponse({ count: 2 });
+        responseWithNewPipeline.data.project.mergeRequest.pipelines.nodes = [
+          generateMockPipeline({ id: '999', status: 'RUNNING' }),
+          generateMockPipeline({ id: '1', status: 'SUCCESS' }),
+        ];
+        mergeRequestPipelinesRequest.mockResolvedValue(responseWithNewPipeline);
+
+        await createComponent();
+
+        const pipelineIds = displayedPipelines().map((p) => p.id);
+        expect(pipelineIds).toHaveLength(2);
+        expect(pipelineIds.filter((id) => id === 'gid://gitlab/Ci::Pipeline/999')).toHaveLength(1);
+      });
+    });
+
     describe('initial state from query', () => {
       describe('failed alert', () => {
         it('shows alert when pipeline creation fails', async () => {
@@ -1334,14 +1264,14 @@ describe('PipelinesTableWrapper component', () => {
       it('prepends new pipeline to list on SUCCEEDED', async () => {
         await createComponent();
 
-        const initialPipelineCount = findPipelinesList().props('pipelines').length;
+        const initialPipelineCount = displayedPipelines().length;
 
         emitSubscriptionUpdate([succeededRequest]);
         await waitForPromises();
 
-        const pipelines = findPipelinesList().props('pipelines');
+        const pipelines = displayedPipelines();
         expect(pipelines).toHaveLength(initialPipelineCount + 1);
-        expect(pipelines[0].id).toBe(999);
+        expect(pipelines[0].id).toBe('gid://gitlab/Ci::Pipeline/999');
       });
 
       it('updates badge count on SUCCEEDED', async () => {
@@ -1356,7 +1286,7 @@ describe('PipelinesTableWrapper component', () => {
           const eventPromise = new Promise((resolve) => {
             element.addEventListener('update-pipelines-count', (event) => {
               eventCount += 1;
-              if (eventCount === 2) {
+              if (eventCount === 1) {
                 resolve(event.detail.pipelineCount);
               }
             });
@@ -1420,7 +1350,7 @@ describe('PipelinesTableWrapper component', () => {
         emitSubscriptionUpdate([succeededRequest]);
         await waitForPromises();
 
-        expect(findPipelinesList().props('pipelines')).toHaveLength(2);
+        expect(displayedPipelines()).toHaveLength(2);
 
         const anotherSucceededRequest = generatePipelineCreationRequest({
           status: 'SUCCEEDED',
@@ -1430,10 +1360,10 @@ describe('PipelinesTableWrapper component', () => {
         emitSubscriptionUpdate([succeededRequest, anotherSucceededRequest]);
         await waitForPromises();
 
-        const pipelines = findPipelinesList().props('pipelines');
+        const pipelines = displayedPipelines();
         expect(pipelines).toHaveLength(3);
-        expect(pipelines[0].id).toBe(1000);
-        expect(pipelines[1].id).toBe(999);
+        expect(pipelines[0].id).toBe('gid://gitlab/Ci::Pipeline/1000');
+        expect(pipelines[1].id).toBe('gid://gitlab/Ci::Pipeline/999');
       });
     });
   });

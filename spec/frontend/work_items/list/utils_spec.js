@@ -22,6 +22,12 @@ import {
   editSavedViewFormOnlyResponse,
   savedViewFiltersWithWildcards,
   savedViewFilterTokensWithWildcards,
+  savedViewFiltersWithIterationCadence,
+  savedViewFilterTokensWithIterationCadence,
+  savedViewFiltersWithIterationCadenceOnly,
+  savedViewFilterTokensWithIterationCadenceOnly,
+  savedViewFiltersWithMultipleIterationCadences,
+  savedViewFilterTokensWithMultipleIterationCadences,
   savedViewFiltersWithNotParent,
   savedViewFilterTokensWithNotParent,
   savedViewFiltersWithSingleIn,
@@ -321,6 +327,13 @@ describe('convertToApiParams', () => {
     );
   });
 
+  it('splits an iteration cadence token into a cadence and a wildcard param', () => {
+    expect(convertToApiParams(savedViewFilterTokensWithIterationCadence)).toEqual({
+      iterationCadenceId: 'gid://gitlab/Iterations::Cadence/5',
+      iterationWildcardId: 'CURRENT',
+    });
+  });
+
   describe('"Me" wildcard value', () => {
     it('maps a "Me" assignee to the assignee wildcard param', () => {
       const tokens = [{ type: TOKEN_TYPE_ASSIGNEE, value: { data: 'Me', operator: OPERATOR_IS } }];
@@ -428,6 +441,64 @@ describe('getSavedViewFilterTokens', () => {
     expect(getSavedViewFilterTokens(savedViewFiltersWithMultipleSearchTokens)).toEqual(
       savedViewFilterTokensWithMultipleSearchTokens,
     );
+  });
+
+  describe('iteration cadence', () => {
+    it('combines the iteration wildcard and cadence into a single token', () => {
+      expect(getSavedViewFilterTokens(savedViewFiltersWithIterationCadence)).toEqual(
+        savedViewFilterTokensWithIterationCadence,
+      );
+    });
+
+    // The cadence key comes first in the params `convertToApiParams` builds,
+    // so the wildcard must be found regardless of which key is visited first.
+    it('combines the iteration wildcard and cadence whichever key comes first', () => {
+      const { iterationWildcardId, iterationCadenceId } = savedViewFiltersWithIterationCadence;
+
+      expect(getSavedViewFilterTokens({ iterationCadenceId, iterationWildcardId })).toEqual(
+        savedViewFilterTokensWithIterationCadence,
+      );
+    });
+
+    it('defaults the wildcard to Any when only a cadence is saved', () => {
+      expect(getSavedViewFilterTokens(savedViewFiltersWithIterationCadenceOnly)).toEqual(
+        savedViewFilterTokensWithIterationCadenceOnly,
+      );
+    });
+
+    it('returns a token for each saved cadence', () => {
+      expect(getSavedViewFilterTokens(savedViewFiltersWithMultipleIterationCadences)).toEqual(
+        savedViewFilterTokensWithMultipleIterationCadences,
+      );
+    });
+
+    it('leaves an iteration wildcard saved without a cadence alone', () => {
+      expect(getSavedViewFilterTokens({ iterationWildcardId: 'CURRENT' })).toEqual([
+        { type: TOKEN_TYPE_ITERATION, value: { data: 'Current', operator: OPERATOR_IS } },
+      ]);
+    });
+
+    it('leaves a plain iteration id alone', () => {
+      expect(getSavedViewFilterTokens({ iterationId: ['1'] })).toEqual([
+        { type: TOKEN_TYPE_ITERATION, value: { data: '1', operator: OPERATOR_IS } },
+      ]);
+    });
+
+    it('ignores an empty cadence list', () => {
+      expect(
+        getSavedViewFilterTokens({ iterationWildcardId: 'CURRENT', iterationCadenceId: [] }),
+      ).toEqual([
+        { type: TOKEN_TYPE_ITERATION, value: { data: 'Current', operator: OPERATOR_IS } },
+      ]);
+    });
+
+    // Regression: the cadence used to come back as a bare GID, which
+    // convertToApiParams then sent as `iterationId` instead of `iterationCadenceId`.
+    it('round trips through the api params', () => {
+      const tokens = savedViewFilterTokensWithIterationCadence;
+
+      expect(getSavedViewFilterTokens(convertToApiParams(tokens))).toEqual(tokens);
+    });
   });
 });
 

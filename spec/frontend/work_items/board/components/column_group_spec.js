@@ -135,6 +135,31 @@ describe('ColumnGroup', () => {
     });
   });
 
+  describe('create item', () => {
+    it('does not let the header offer creation by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findColumnHeader().props('canCreateWorkItem')).toBe(false);
+    });
+
+    it('lets the header offer creation when canCreateWorkItem is true', async () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+      await waitForPromises();
+
+      expect(findColumnHeader().props('canCreateWorkItem')).toBe(true);
+    });
+
+    it('forwards create-item from the header with the column value', async () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+      await waitForPromises();
+
+      findColumnHeader().vm.$emit('create-item');
+
+      expect(wrapper.emitted('create-item')).toEqual([[mockStatus]]);
+    });
+  });
+
   describe('collapsed state', () => {
     it('is expanded by default: full-height wide column showing the card list', async () => {
       createComponent();
@@ -145,13 +170,14 @@ describe('ColumnGroup', () => {
       expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-h-full', 'gl-w-48']));
     });
 
-    it('renders a narrow, content-height strip and hides the card list when collapsed', async () => {
+    it('renders a narrow, content-height strip and drops the card list when collapsed', async () => {
       createComponent({ props: { collapsed: true } });
       await waitForPromises();
 
       expect(findColumnHeader().props('collapsed')).toBe(true);
-      // The card list stays in the DOM (so aria-controls stays valid) but is hidden.
-      expect(findDraggable().isVisible()).toBe(false);
+      // The card list is not rendered while collapsed, so retained cards can't be surfaced
+      // when the column is dragged. The body div (its id) stays in the DOM for aria-controls.
+      expect(findDraggable().exists()).toBe(false);
       expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-w-8', 'gl-self-start']));
       expect(wrapper.classes()).not.toContain('gl-h-full');
     });
@@ -275,7 +301,10 @@ describe('ColumnGroup', () => {
     it('binds the work items to a shared draggable group keyed by id', () => {
       expect(findDraggable().props('value')).toEqual(nodes);
       expect(findDraggable().props('itemKey')).toBe('id');
-      expect(findDraggable().vm.$attrs.group).toEqual({ name: 'work-item-board', put: true });
+      expect(findDraggable().vm.$attrs.group).toEqual({
+        name: 'work-item-board',
+        put: ['work-item-board'],
+      });
       expect(findDraggable().attributes('tag')).toBe('ul');
       expect(findDraggable().attributes('data-group-value-id')).toBe(mockStatus.id);
     });
@@ -299,12 +328,44 @@ describe('ColumnGroup', () => {
     });
   });
 
+  describe('busy indicator', () => {
+    it('does not dim or mark the column busy by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.classes()).not.toContain('gl-opacity-5');
+      expect(wrapper.attributes('aria-busy')).toBeUndefined();
+    });
+
+    it('dims the column, shows a wait cursor and marks it busy when showBusyIndicator is true', async () => {
+      createComponent({ props: { showBusyIndicator: true } });
+      await waitForPromises();
+
+      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-opacity-5', 'gl-cursor-wait']));
+      expect(wrapper.classes()).not.toContain('gl-cursor-not-allowed');
+      expect(wrapper.attributes('aria-busy')).toBe('true');
+    });
+
+    it('prefers the not-allowed cursor when both dropDisabled and showBusyIndicator are true', async () => {
+      createComponent({ props: { dropDisabled: true, showBusyIndicator: true } });
+      await waitForPromises();
+
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['gl-opacity-5', 'gl-cursor-not-allowed']),
+      );
+      expect(wrapper.classes()).not.toContain('gl-cursor-wait');
+    });
+  });
+
   describe('drop-disabled column', () => {
     it('keeps put enabled and the column un-dimmed by default', async () => {
       createComponent();
       await waitForPromises();
 
-      expect(findDraggable().vm.$attrs.group).toEqual({ name: 'work-item-board', put: true });
+      expect(findDraggable().vm.$attrs.group).toEqual({
+        name: 'work-item-board',
+        put: ['work-item-board'],
+      });
       expect(wrapper.classes()).not.toContain('gl-opacity-5');
     });
 

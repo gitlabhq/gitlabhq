@@ -57,7 +57,7 @@ To verify that OIDC/OAuth authentication is working correctly on GitLab, you can
    curl --header "Authorization: Bearer <access_token>" https://mygitlabinstance.com/api/v4/user
    ```
 
-    Replace `<access_token>` with the actual access token you received in the previous step. If the API request succeeds and returns information about the authenticated user, then OIDC/OAuth authentication is working correctly.
+   Replace `<access_token>` with the actual access token you received in the previous step. If the API request succeeds and returns information about the authenticated user, then OIDC/OAuth authentication is working correctly.
 
 1. Check that the scopes you specified in your OAuth application are being enforced correctly. You can do this by making API requests that require the specific scopes and checking that they succeed or fail as expected.
 

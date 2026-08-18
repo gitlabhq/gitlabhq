@@ -24,7 +24,7 @@ present when the job is scheduled, or the context that is present is
 likely to be incorrect. For these instances, we've added RuboCop rules
 to draw attention and avoid incorrect metadata in our logs.
 
-As with most our cops, there are perfectly valid reasons for disabling
+As with most of our cops, there are perfectly valid reasons for disabling
 them. In this case it could be that the context from the request is
 correct. Or maybe you've specified a context already in a way that
 isn't picked up by the cops. In any case, leave a code comment
@@ -70,7 +70,7 @@ somewhere within the worker:
      end
    ```
 
-1. Use the a batch scheduling method that provides context:
+1. Use a batch scheduling method that provides context:
 
    ```ruby
      def schedule_projects_in_batch(projects)

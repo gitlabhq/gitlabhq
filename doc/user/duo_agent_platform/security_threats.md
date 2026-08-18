@@ -52,7 +52,7 @@ The [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/
 The following table shows strengths and risk factors for each GitLab Duo Agent Platform execution environment.
 The table assumes agents and flows have access to all available tools.
 
-| Trifecta element | [Remote flows (GitLab CI)](flows/execution.md#configure-cicd-execution) | Chat [agents](agents/_index.md) (GitLab UI) | Chat agents and flows (IDE local environment) |
+| Trifecta element | [Remote flows (GitLab CI)](flows/execution/_index.md#configure-cicd-execution) | Chat [agents](agents/_index.md) (GitLab UI) | Chat agents and flows (IDE local environment) |
 |---|---|---|---|
 | Access to private data | Same access as the user who started the flow session, scoped to a top-level group | Same access to GitLab resources as the user who started the flow session, including public resources from groups or projects the user is not a member of | Same access as Chat agents on the GitLab UI, plus access to the local working directory |
 | External communication | [Sandboxed](environment_sandbox.md) (`srt`) blocks external communication. GitLab API writes are scoped to the top-level group | Writes to GitLab API only (public and private projects) | Unrestricted network access. Writes to GitLab API (public and private projects) |

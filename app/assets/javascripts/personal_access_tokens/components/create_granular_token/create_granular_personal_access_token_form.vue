@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlForm,
   GlFormGroup,
@@ -60,10 +61,10 @@ export default {
     GlSprintf,
     GlLoadingIcon,
     GlFormCheckbox,
-    AskDapPermissions: () =>
-      import(
-        'ee_component/personal_access_tokens/components/create_granular_token/ask_dap_permissions.vue'
-      ),
+    AskDapPermissions: defineAsyncComponent(
+      () =>
+        import('ee_component/personal_access_tokens/components/create_granular_token/ask_dap_permissions.vue'),
+    ),
   },
   mixins: [InternalEvents.mixin()],
   inject: {

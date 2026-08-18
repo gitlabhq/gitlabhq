@@ -91,6 +91,17 @@ describe('ProjectList', () => {
     });
   });
 
+  describe('Sorting', () => {
+    it('emits `sort-changed` when the table sorting changes', () => {
+      const context = { sortBy: 'storage', sortDesc: false };
+
+      createComponent();
+      findTable().vm.$emit('sort-changed', context);
+
+      expect(wrapper.emitted('sort-changed')).toEqual([[context]]);
+    });
+  });
+
   describe('Empty state', () => {
     it('displays empty state message', () => {
       createComponent({ props: { projects: [] } });

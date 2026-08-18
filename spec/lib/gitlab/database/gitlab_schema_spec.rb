@@ -33,6 +33,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       'ci_builds'                                    | :gitlab_ci
       'my_schema.ci_builds'                          | :gitlab_ci
       'my_schema.ci_runner_machine_builds_100'       | :gitlab_ci
+      'ci_build_tags_100'                            | :gitlab_ci
       'my_schema._test_gitlab_main_table'            | :gitlab_main
       'information_schema.columns'                   | :gitlab_internal
       'audit_events_part_5fc467ac26'                 | :gitlab_main
@@ -72,9 +73,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         end
 
         let(:dynamic_views) do
-          %w[ci_builds_views_100 ci_builds_views_102 merge_request_diff_commits_views
-            merge_request_diff_commits_views_1 merge_request_diff_commits_views_2
-            merge_request_diff_commits_views_3 merge_request_diff_commits_views_4]
+          %w[ci_builds_views_100 ci_builds_views_102]
         end
 
         db_infos.to_h { |db_info| [db_info.name, db_info.connection_class] }

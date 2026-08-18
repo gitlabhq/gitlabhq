@@ -49,6 +49,14 @@ RSpec.describe Import::BulkImports::CommitNotesExportService, feature_category: 
       expect(records.map { |record| record['note'] }).to contain_exactly('review feedback')
     end
 
+    it 'does not walk the repository when the pagination succeeds' do
+      expect(Import::Export::Project::CommitNotesBatcher).not_to receive(:new)
+
+      service.execute
+
+      expect(ndjson_records.size).to eq(1)
+    end
+
     context 'when there are no commit notes' do
       let_it_be(:project) { create(:project, :small_repo) }
       let_it_be(:commit_note) { nil }
@@ -64,6 +72,40 @@ RSpec.describe Import::BulkImports::CommitNotesExportService, feature_category: 
         service.execute
 
         expect(File.exist?(File.join(export_path, 'commit_notes.ndjson'))).to be(false)
+      end
+    end
+
+    context 'when the notes-table pagination times out' do
+      before do
+        allow_next_instance_of(Gitlab::ImportExport::Json::StreamingSerializer) do |serializer|
+          allow(serializer).to receive(:serialize_relation).and_wrap_original do |original, *args, **kwargs|
+            raise ActiveRecord::QueryCanceled unless kwargs.key?(:batch_ids)
+
+            original.call(*args, **kwargs)
+          end
+        end
+      end
+
+      it 'logs the fallback, walks the repository, and writes the notes' do
+        expect(Gitlab::Export::Logger).to receive(:warn).with(
+          hash_including(message: a_string_matching(/falling back to git repository walk/))
+        )
+
+        service.execute
+
+        records = ndjson_records
+        expect(records.size).to eq(1)
+        expect(records.first).to include('note' => 'review feedback', 'commit_id' => commit_sha)
+      end
+
+      it 'resets a partially written file so rows are not duplicated' do
+        File.write(File.join(export_path, 'commit_notes.ndjson'), %({"note":"stale"}\n))
+
+        service.execute
+
+        records = ndjson_records
+        expect(records.size).to eq(1)
+        expect(records.first).to include('note' => 'review feedback')
       end
     end
   end

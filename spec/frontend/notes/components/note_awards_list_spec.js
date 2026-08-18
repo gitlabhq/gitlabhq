@@ -41,7 +41,7 @@ describe('Note Awards List', () => {
   };
 
   const findAddAward = () => wrapper.find('.js-add-award');
-  const findAwardButton = () => wrapper.findByTestId('award-button');
+  const findAwardButton = () => wrapper.findComponentByTestId('award-button');
   const findAllEmojiAwards = () => wrapper.findAll('gl-emoji');
   const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
 

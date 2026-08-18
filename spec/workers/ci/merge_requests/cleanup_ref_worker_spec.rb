@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::CleanupRefWorker, :sidekiq_inline, feature_category: :code_review_workflow do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:source_project) { create(:project, :repository) }
+  let_it_be(:source_project) { create(:project, :small_repo) }
   let_it_be(:merge_request) { create(:merge_request, source_project: source_project) }
 
   let(:worker) { described_class.new }

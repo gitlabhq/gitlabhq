@@ -7,7 +7,7 @@ module API
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
-    TAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+    TAG_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: ::API::NO_SLASH_URL_PART_REGEX)
 
     before do
       authorize_read_code!
@@ -26,8 +26,9 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a project repository tags' do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'List all project repository tags' do
+        detail 'Lists all repository tags from a project, sorted by update date and time in descending order.'
         is_array true
         success code: 200, model: Entities::Tag
         failure [
@@ -75,7 +76,9 @@ module API
         service_unavailable!
       end
 
-      desc 'Get a single repository tag' do
+      desc 'Retrieve a single repository tag' do
+        detail 'Retrieves a repository tag with a specified name. This endpoint can be accessed without ' \
+          'authentication if the repository is publicly accessible.'
         success code: 200, model: Entities::Tag
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -97,7 +100,8 @@ module API
         present tag, with: Entities::Tag, project: user_project, releases: find_releases(tag), current_user: current_user
       end
 
-      desc 'Create a new repository tag' do
+      desc 'Create a tag' do
+        detail 'Creates a tag in the repository that points to a specified reference.'
         success code: 201, model: Entities::Tag
         failure [
           { code: 400, message: 'Bad request' },
@@ -128,7 +132,8 @@ module API
         end
       end
 
-      desc 'Delete a repository tag' do
+      desc 'Delete a tag' do
+        detail 'Deletes a specified repository tag.'
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -158,7 +163,8 @@ module API
         end
       end
 
-      desc "Get a tag's signature" do
+      desc 'Retrieve X.509 signature of a tag' do
+        detail 'Retrieves the X.509 signature from a signed tag. Unsigned tags return a `404 Not Found` response.'
         success code: 200, model: Entities::TagSignature
         tags %w[tags]
         failure [

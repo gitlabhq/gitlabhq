@@ -24,7 +24,7 @@ module API
       end
     end
 
-    WIKI_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: API::NO_SLASH_URL_PART_REGEX)
+    WIKI_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: ::API::NO_SLASH_URL_PART_REGEX)
 
     ::API::Helpers::WikisHelpers.wiki_resource_kinds.each do |container_resource|
       boundary_type = case container_resource
@@ -46,6 +46,7 @@ module API
           is_array true
         end
         params do
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
           optional :with_content, type: Boolean, default: false, desc: "Include pages' content"
         end
         route_setting :authorization, permissions: :read_wiki, boundary_type: boundary_type
@@ -59,7 +60,17 @@ module API
             current_user: current_user
           }
 
-          present container.wiki.list_pages(load_content: params[:with_content]), options
+          pages = container.wiki.list_pages(load_content: params[:with_content])
+
+          # Bulk-fetch last commits so serialization does not make one Gitaly call per page
+          # (which times out on large wikis). See Wiki#last_commits_for_pages.
+          last_commits = container.wiki.last_commits_for_pages(pages)
+          pages.each do |page|
+            last_commit = last_commits[page.path]
+            page.last_version = last_commit if last_commit
+          end
+
+          present pages, options
         end
 
         desc "Retrieve a wiki page for a #{boundary_type}" do
@@ -71,6 +82,7 @@ module API
           tags %w[wikis]
         end
         params do
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
           requires :slug, type: String, desc: 'The slug of a wiki page'
           optional :version, type: String, desc: 'The version hash of a wiki page'
           optional :render_html, type: Boolean, default: false, desc: 'Render content to HTML'
@@ -100,6 +112,7 @@ module API
           tags %w[wikis]
         end
         params do
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
           requires :title, type: String, desc: 'Title of a wiki page'
           optional :front_matter, type: Hash,  desc: 'Object that contains YAML frontmatter' do
             optional :title, type: String, desc: 'Frontmatter title of a wiki page'
@@ -133,6 +146,7 @@ module API
           tags %w[wikis]
         end
         params do
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
           optional :title, type: String, desc: 'Title of a wiki page'
           optional :front_matter, type: Hash,  desc: 'Object that contains YAML frontmatter' do
             optional :title, type: String, desc: 'Frontmatter title of a wiki page'
@@ -168,6 +182,7 @@ module API
           tags %w[wikis]
         end
         params do
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
           requires :slug, type: String, desc: 'The slug of a wiki page'
         end
 
@@ -195,6 +210,7 @@ module API
           tags %w[wikis]
         end
         params do
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
           requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
           optional :branch, type: String, desc: 'The name of the branch'
         end

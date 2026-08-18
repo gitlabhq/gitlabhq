@@ -141,7 +141,7 @@ module CommitsHelper
       repo = project.repository
 
       Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo,
-        Gitlab::Diff::FileCollection::MergeRequestDiffBase.max_blob_size(project)])
+        Gitlab::Diff::FileCollection::MergeRequestDiffBase.max_blob_size])
       Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo, Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE])
 
       Kaminari.paginate_array(diff_files).page(page).per(per).tap do |diff_files|

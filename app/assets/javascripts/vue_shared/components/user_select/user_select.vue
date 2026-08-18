@@ -18,6 +18,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { participantsQueries, userSearchQueries } from '~/sidebar/queries/constants';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'UserSelect',
@@ -36,6 +37,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     headerText: {
       type: String,
@@ -427,7 +429,7 @@ export default {
         </gl-dropdown-item>
       </template>
     </gl-dropdown-form>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </gl-dropdown>

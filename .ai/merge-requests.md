@@ -22,7 +22,7 @@ Before opening a merge request, verify each predicate that applies to your chang
 ### Tests
 
 - Add or update tests for code changes. Recommended for documentation changes that ship code examples.
-- Detail: `.ai/principles/distilled/qa-rspec.md` (backend, RSpec) and `.ai/principles/distilled/qa-jest.md` (frontend, Jest).
+- Detail: `.ai/principles/distilled/testing-rspec.md` (backend, RSpec) and `.ai/principles/distilled/testing-jest.md` (frontend, Jest).
 
 ### Documentation
 

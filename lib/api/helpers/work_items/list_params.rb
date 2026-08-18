@@ -16,10 +16,13 @@ module API
           optional :state, type: String,
             values: %w[opened closed all],
             desc: 'Filter by state. Values: opened, closed, or all.'
-          optional :types, type: Array[String],
-            values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types,
-            desc: 'Filter by work item types.',
+          optional :work_item_type_ids, type: Array[Integer],
+            desc: 'Filter by work item type IDs.',
+            coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce
+          optional :work_item_type_names, type: Array[String],
+            desc: 'Filter by work item type names (case-insensitive). Supports custom types.',
             coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+          mutually_exclusive :work_item_type_ids, :work_item_type_names
 
           optional :author_username, type: String,
             desc: 'Filter work items authored by one of the given usernames.'
@@ -133,10 +136,13 @@ module API
             optional :release_tag, type: Array[String],
               desc: 'Exclude work items with these release tags.',
               coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
-            optional :types, type: Array[String],
-              values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types,
-              desc: 'Exclude work items of these types.',
+            optional :work_item_type_ids, type: Array[Integer],
+              desc: 'Exclude work items with these work item type IDs.',
+              coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce
+            optional :work_item_type_names, type: Array[String],
+              desc: 'Exclude work items of these type names (case-insensitive). Supports custom types.',
               coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+            mutually_exclusive :work_item_type_ids, :work_item_type_names
 
             use :work_items_not_filter_params_ee
           end

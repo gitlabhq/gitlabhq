@@ -4,7 +4,7 @@ module API
   class ProtectedBranches < ::API::Base
     include PaginationParams
 
-    BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
+    BRANCH_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: ::API::NO_SLASH_URL_PART_REGEX)
 
     feature_category :source_code_management
 
@@ -16,7 +16,7 @@ module API
         desc: 'The ID or URL-encoded path of the project',
         documentation: { example: 'gitlab-org/gitlab' }
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all protected branches' do
         detail 'Lists all protected branches for a specified project.'
         success code: 200, model: Entities::ProtectedBranch

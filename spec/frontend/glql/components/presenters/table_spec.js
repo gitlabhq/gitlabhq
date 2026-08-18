@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ThResizable from '~/glql/components/common/th_resizable.vue';
+import FieldPresenter from '~/glql/components/presenters/field.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ProjectPresenter from '~/glql/components/presenters/project.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -37,6 +38,91 @@ describe('TablePresenter', () => {
     const headerCells = wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
 
     expect(headerCells).toEqual(['Title', 'Author', 'State', 'Description']);
+  });
+
+  it('renders header rows with granularity when fields have parameters', async () => {
+    const fieldsWithGranularity = [
+      {
+        key: 'finished',
+        label: 'Finished',
+        name: 'finishedAt',
+        type: 'dimension',
+        parameters: { granularity: 'weekly' },
+      },
+      { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+    ];
+
+    await createWrapper({ data: { nodes: [] }, fields: fieldsWithGranularity });
+
+    const headerCells = wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
+
+    expect(headerCells).toEqual(['Finished (weekly)', 'Total count']);
+  });
+
+  it('renders the alias label without the granularity suffix for aliased fields', async () => {
+    const aliasedTimeDimension = {
+      key: 'foo',
+      field: 'created',
+      label: 'foo',
+      name: 'createdAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+
+    await createWrapper({ data: { nodes: [] }, fields: [aliasedTimeDimension] });
+
+    const headerCells = wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
+
+    expect(headerCells).toEqual(['foo']);
+  });
+
+  it('passes field key for data access and presenter key for dispatch on aliased fields', async () => {
+    const aliasedField = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    await createWrapper({
+      data: { nodes: [{ p50: 3661 }] },
+      fields: [aliasedField],
+    });
+
+    const fieldPresenter = wrapper.findComponent(FieldPresenter);
+    expect(fieldPresenter.props('fieldKey')).toBe('p50');
+    expect(fieldPresenter.props('presenterKey')).toBe('durationQuantile');
+  });
+
+  it('renders formatted values, not "None", for aliased parameterised fields', async () => {
+    const fields = [
+      {
+        key: 'Monthly',
+        field: 'timestamp',
+        label: 'Monthly',
+        name: 'timestamp',
+        type: 'dimension',
+        parameters: { granularity: 'monthly' },
+      },
+      {
+        key: 'p50',
+        field: 'durationQuantile',
+        label: 'Duration P50',
+        name: 'durationQuantile',
+        type: 'metric',
+        parameters: { quantile: 0.5 },
+      },
+    ];
+
+    await createWrapper(
+      { data: { nodes: [{ id: '1', Monthly: '2026-06-01', p50: 3661 }] }, fields },
+      mountExtended,
+    );
+
+    const cells = getCells(wrapper.findByTestId('table-row-0'));
+
+    expect(cells).toEqual(['Jun 1, 2026', '1h 1m 1s']);
   });
 
   it('renders skeleton loader if loading is true', () => {
@@ -166,6 +252,56 @@ describe('TablePresenter', () => {
 
         expect(icon.props('name')).toBe('arrow-down');
       });
+    });
+  });
+
+  describe('when sorting by an aliased column', () => {
+    const aliasedField = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    beforeEach(async () => {
+      await createWrapper(
+        {
+          data: {
+            nodes: [
+              { id: '1', p50: 7200 },
+              { id: '2', p50: 3600 },
+            ],
+          },
+          fields: [aliasedField],
+        },
+        mountExtended,
+      );
+
+      await wrapper.findByTestId('column-0').trigger('click');
+    });
+
+    it('reorders the rows by the alias key in ascending order', () => {
+      const actualOrder = wrapper.findAll('tbody tr').wrappers.map(getCells);
+
+      expect(actualOrder).toEqual([['1h'], ['2h']]);
+    });
+
+    it('shows an arrow-up icon on the sorted column', () => {
+      const icon = wrapper.findByTestId('column-0').findComponent(GlIcon);
+
+      expect(icon.props('name')).toBe('arrow-up');
+    });
+
+    it('reorders the rows in descending order on a second click', async () => {
+      await wrapper.findByTestId('column-0').trigger('click');
+
+      const actualOrder = wrapper.findAll('tbody tr').wrappers.map(getCells);
+
+      expect(actualOrder).toEqual([['2h'], ['1h']]);
+      expect(wrapper.findByTestId('column-0').findComponent(GlIcon).props('name')).toBe(
+        'arrow-down',
+      );
     });
   });
 });

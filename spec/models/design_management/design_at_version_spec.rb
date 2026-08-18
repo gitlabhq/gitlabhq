@@ -38,7 +38,7 @@ RSpec.describe DesignManagement::DesignAtVersion do
       this = build_stubbed(:design_at_version, design: design, version: version_a)
       other = build_stubbed(:design_at_version, design: design, version: version_b)
 
-      expect(this).not_to eq(nil)
+      expect(this).not_to be_nil
       expect(this).not_to eq(design)
       expect(this).not_to eq(other)
       expect(other).not_to eq(this)

@@ -1,6 +1,6 @@
 ---
-source_checksum: 2d3fc0da7ad3e90f
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 42486251c09350ab
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -25,8 +25,10 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 ### Assignable Permissions
 
+- Prefer adding raw permissions to an existing assignable permission over creating a new one; only create a new assignable permission when the raw permissions represent a capability users should be able to grant separately from existing assignable permissions for that resource.
 - Place assignable permission YAML files at exactly `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml`; DO NOT add extra directories.
 - Ensure every raw permission listed in an assignable permission's `permissions` array already exists as a raw permission definition file before referencing it.
+- Set `available_for` to `granular_access_token`, `role`, or both; an assignable permission declaring `granular_access_token` must have at least one of its raw permissions referenced by a REST authorization decorator or GraphQL granular scope directive.
 - Select `boundaries` based only on the organizational levels the bundled raw permissions actually support; DO NOT include boundaries where the permissions do not apply.
 - Include `project` in `boundaries` when raw permissions cover `/projects/:id/...` endpoints; include `group` for `/groups/:id/...` endpoints; include `user` for `/users/:id/...` or personal-namespace operations; use `instance` sparingly and only for admin-facing permissions.
 - Create a category `.metadata.yml` only when titleization produces an incorrect display name (e.g., `ci_cd` → "CI/CD"); DO NOT create one when the folder name titleizes correctly.
@@ -46,7 +48,8 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Use the `boundary` option (a callable returning the boundary object) only when the boundary cannot be determined through standard parameter lookup.
 - Use `boundary_param` when the request parameter containing the boundary identifier is not the default `:id`.
 - When using `boundaries` array, include a `boundary_type` key in each entry and optionally a `boundary_param`; the system evaluates boundaries in priority order `project` > `group` > `user` > `instance` and uses the first resolvable boundary.
-- Use `skip_granular_token_authorization: true` only for endpoints that are publicly accessible, authenticate by means other than PATs, or where authentication is optional; DO NOT use it to bypass permission checks on authenticated endpoints.
+- Use `skip_granular_token_authorization: :<reason>` (a symbol naming the reason, e.g., `:public_endpoint`) only for endpoints that are publicly accessible, authenticate by means other than PATs, or where authentication is optional; DO NOT use it to bypass permission checks on authenticated endpoints, and DO NOT pass `true` — the reason must be a key defined in `lib/tasks/gitlab/permissions/routes/skip_reasons.rb` (add a new key with a human-readable label if no existing reason fits).
+- Use `todo: '<issue-link-or-reason>'` (a non-empty string) to defer granular token authorization when you have not yet decided how it should work for an endpoint; granular PATs receive `403 Forbidden` while legacy PATs are unaffected. Replace `todo` with `permissions` + `boundary_type` (or `skip_granular_token_authorization`) once the decision is made. DO NOT leave `todo` blank — the validation task fails on a blank value.
 - Add permissions that represent read-only access to publicly visible data to `config/authz/roles/public_anonymous.yml` under the matching `project:` or `group:` boundary so that granular PATs without an explicit scope can access them on public resources; DO NOT add `user` or `instance` boundary permissions to this file.
 
 ### Testing
@@ -54,6 +57,13 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Add the `'authorizing granular token permissions'` shared example for every endpoint, providing `boundary_object`, `user`, and `request` let-bindings.
 - Set `boundary_object` to match the `boundary_type`: `project` → `project`, `group` → `group`, `:user` → `:user`, `:instance` → `:instance`.
 - Ensure the `user` is a member of the namespace (project or group) when the boundary object is a project or group.
+- Pass `expected_success_status:` as a keyword argument to the shared example when the success response is not `:success` (e.g., `:created`, `:accepted`, `:no_content`, `:redirect`).
+- Pass `legacy_token_scopes:` as a keyword argument when the endpoint requires legacy token scopes other than the default `%w[api]`.
+- Ensure the `request` block supplies valid `params` and that any resource the request path references exists, so the "granting access" assertion receives a real success response.
+
+### Documentation and Validation
+
+- Regenerate the fine-grained token reference documentation by running `bundle exec rake gitlab:permissions:routes:compile_docs` after adding or changing REST API endpoint authorization; DO NOT edit `doc/auth/tokens/fine_grained_access_tokens_rest.md` by hand.
 
 ### Job Token Permissions
 

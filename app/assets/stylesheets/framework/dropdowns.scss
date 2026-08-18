@@ -75,7 +75,7 @@
 .dropdown-menu-toggle,
 .dropdown-menu-close {
   &:active,
-  &:focus {
+  &:focus-visible {
     @apply gl-focus;
   }
 }
@@ -95,7 +95,7 @@
     border-color: var(--gl-button-default-primary-border-color-hover);
   }
 
-  &:focus {
+  &:focus-visible {
     color: var(--gl-button-default-primary-foreground-color-focus);
     background-color: var(--gl-button-default-primary-background-color-focus);
     border-color: var(--gl-button-default-primary-border-color-focus);
@@ -107,7 +107,7 @@
     background-color: var(--gl-button-default-primary-background-color-active);
     border-color: var(--gl-button-default-primary-border-color-active);
 
-    &:focus {
+    &:focus-visible {
       @apply gl-focus;
     }
   }
@@ -217,7 +217,7 @@
 
   &:not(.disable-hover):hover,
   &:active,
-  &:focus,
+  &:focus-visible,
   &.is-focused {
     @include dropdown-item-hover;
 
@@ -225,8 +225,8 @@
   }
 
   &:active,
-  &:focus,
-  &:focus:active,
+  &:focus-visible,
+  &:focus-visible:active,
   &.is-focused {
     @include gl-focus($inset: true);
   }
@@ -330,7 +330,7 @@
 
   .dropdown-menu-empty-item a {
     &:hover,
-    &:focus {
+    &:focus-visible {
       background-color: transparent;
     }
   }
@@ -646,7 +646,7 @@
   border-radius: $gl-border-radius-base;
   outline: 0;
 
-  &:focus {
+  &:focus-visible {
     @apply gl-focus;
   }
 

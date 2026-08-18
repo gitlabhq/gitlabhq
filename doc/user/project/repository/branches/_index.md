@@ -231,6 +231,7 @@ To change the default pattern for branches created from issues:
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
    - `%{id}`: The numeric ID of the issue.
    - `%{title}`: The title of the issue, modified to use only characters acceptable in Git branch names.
+   - `%{branch_creator}`: The username of the user who creates the branch, modified to use only characters acceptable in Git branch names.
 1. Select **Save changes**.
 
 ### Prefix branch names with a number
@@ -354,13 +355,6 @@ To do this:
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a feature flag](../../../../administration/feature_flags/_index.md) named `target_branch_rules_flag`. Enabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136431) in GitLab 16.7.
-
-{{< /history >}}
 
 Some projects use multiple long-term branches for development, like `develop` and `qa`.
 In these projects, you might want to keep `main` as the default branch, but expect

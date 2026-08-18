@@ -109,7 +109,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel', 'handleSuggestDismissed', 'input'],
+  emits: ['cancel', 'handle-suggest-dismissed', 'input'],
   data() {
     return {
       editedNoteBody: this.noteBody,
@@ -273,7 +273,7 @@ export default {
         @keydown.ctrl.enter.exact="handleKeySubmit()"
         @keydown.exact.up="editMyLastNote()"
         @keydown.exact.esc="cancel(true)"
-        @handleSuggestDismissed="$emit('handleSuggestDismissed')"
+        @handle-suggest-dismissed="$emit('handle-suggest-dismissed')"
       />
       <div class="gl-mt-3">
         <template v-if="showResolveDiscussionToggle">

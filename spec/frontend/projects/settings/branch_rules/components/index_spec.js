@@ -48,6 +48,8 @@ import {
   protectableBranchesMockResponse,
   allowedToMergeDrawerProps,
   protectionPropsMock,
+  pushAccessLevelsCount,
+  mergeAccessLevelsCount,
 } from 'ee_else_ce_jest/projects/settings/branch_rules/components/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -158,9 +160,9 @@ describe('View branch rules', () => {
   const findBranchName = () => wrapper.findByTestId('branch');
   const findAllBranches = () => wrapper.findByTestId('all-branches');
   const findSettingsSection = () => wrapper.findComponent(SettingsSection);
-  const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
-  const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
-  const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
+  const findAllowedToMerge = () => wrapper.findComponentByTestId('allowed-to-merge-content');
+  const findAllowedToPush = () => wrapper.findComponentByTestId('allowed-to-push-content');
+  const findAllowForcePushToggle = () => wrapper.findComponentByTestId('force-push-content');
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
   const findDeleteRuleButtonPopover = () => wrapper.findComponent(GlPopover);
@@ -169,8 +171,9 @@ describe('View branch rules', () => {
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
+  const findGroupLevelEmptyState = () => wrapper.findByTestId('group-level-rule-empty-state');
   const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
-  const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
+  const findSquashSettingSection = () => wrapper.findComponentByTestId('squash-setting-content');
   const findSquashSettingsDrawer = () => wrapper.findComponent(SquashSettingsDrawer);
 
   const findMatchingBranchesLink = () =>
@@ -441,7 +444,7 @@ describe('View branch rules', () => {
     expect(findAllowedToPush().props()).toMatchObject({
       roles: protectionPropsMock.roles,
       header: 'Allowed to push and merge',
-      count: 2,
+      count: pushAccessLevelsCount,
       isProtectedByPolicy: false,
     });
   });
@@ -483,7 +486,7 @@ describe('View branch rules', () => {
     expect(findAllowedToMerge().props()).toMatchObject({
       roles: protectionPropsMock.roles,
       header: 'Allowed to merge',
-      count: 2,
+      count: mergeAccessLevelsCount,
     });
   });
 
@@ -743,7 +746,7 @@ describe('View branch rules', () => {
 
     it('when save button is clicked it calls edit rule mutation', async () => {
       await openEditRuleDrawer();
-      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      findAccessLevelsDrawer().vm.$emit('edit-rule', [{ accessLevel: 30 }]);
       await nextTick();
 
       expect(findAccessLevelsDrawer().props('isLoading')).toEqual(true);
@@ -769,7 +772,7 @@ describe('View branch rules', () => {
     it('emits a tracking event when save button is clicked', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       await openEditRuleDrawer();
-      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      findAccessLevelsDrawer().vm.$emit('edit-rule', [{ accessLevel: 30 }]);
       await waitForPromises();
 
       const eventName =
@@ -848,6 +851,7 @@ describe('View branch rules', () => {
 
     it('shows empty state', () => {
       expect(findNoDataTitle().text()).toBe('No data to display');
+      expect(findGroupLevelEmptyState().exists()).toBe(false);
     });
   });
 

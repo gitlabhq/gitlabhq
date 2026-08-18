@@ -79,7 +79,7 @@ describe('Ci Catalog Breadcrumb', () => {
       const links = wrapper.findAll('a');
 
       expect(links).toHaveLength(2);
-      expect(links.at(0).props('href')).toEqual('/static');
+      expect(links.at(0).attributes('href')).toEqual('/static');
       expect(links.at(0).text()).toContain('static');
     });
   });

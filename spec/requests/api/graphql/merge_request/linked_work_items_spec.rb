@@ -93,13 +93,37 @@ RSpec.describe 'Query.mergeRequest.linkedWorkItems', feature_category: :code_rev
       GRAPHQL
     end
 
-    it 'returns only mentioned work items' do
+    it 'returns mentioned issue work items' do
       work_item_ids = linked_work_items_data.pluck('workItem').pluck('id')
 
       expect(work_item_ids).to contain_exactly(
         global_id_of(issue_to_mention, model_name: 'WorkItem').to_s
       )
       expect(linked_work_items_data.pluck('linkType')).to all(eq('MENTIONED'))
+    end
+
+    context 'when work items are referenced by URLs' do
+      let_it_be(:task_to_mention) { create(:work_item, :task, project: project_with_repo) }
+      let_it_be(:mr_with_mentioned_work_items) do
+        create(:merge_request, :simple, :unique_branches,
+          source_project: project_with_repo,
+          target_branch: project_with_repo.default_branch,
+          description: "Related to #{Gitlab::UrlBuilder.build(issue_to_mention)} " \
+            "and #{Gitlab::UrlBuilder.build(task_to_mention)}"
+        )
+      end
+
+      let(:merge_request_params) { { 'id' => global_id_of(mr_with_mentioned_work_items) } }
+
+      it 'returns mentioned work items' do
+        work_item_ids = linked_work_items_data.pluck('workItem').pluck('id')
+
+        expect(work_item_ids).to contain_exactly(
+          global_id_of(issue_to_mention, model_name: 'WorkItem').to_s,
+          global_id_of(task_to_mention).to_s
+        )
+        expect(linked_work_items_data.pluck('linkType')).to all(eq('MENTIONED'))
+      end
     end
   end
 

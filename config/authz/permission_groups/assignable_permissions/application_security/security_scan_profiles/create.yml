@@ -1,0 +1,9 @@
+---
+name: create_security_scan_profiles
+description: Grants the ability to create security scan profiles
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_security_scan_profiles

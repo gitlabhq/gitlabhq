@@ -13,6 +13,13 @@ module API
       helpers ::API::Helpers::WorkItems::ShowParams
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
+      helpers ::API::Helpers::WorkItems::HierarchyActions
+      helpers ::API::Helpers::WorkItems::HierarchyFinders
+
+      ATTACH_CHILD_FAILURE_RESPONSES = (FAILURE_RESPONSES + [
+        { code: 409, message: 'Conflict - the work item is already a child of this parent' },
+        { code: 422, message: 'Unprocessable entity - the hierarchy is not valid' }
+      ]).freeze
 
       resource :namespaces do
         params do
@@ -42,14 +49,35 @@ module API
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get ':work_item_iid/children' do
-            namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
-            not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
-            resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
 
-            parent_work_item = find_work_item_by_iid(resource_parent, params[:work_item_iid])
-            not_found!('Work Item') unless parent_work_item
-
+            parent_work_item = find_parent_work_item!(resource_parent, params[:work_item_iid])
             render_children_for(parent_work_item)
+          end
+
+          desc 'Attach a child work item.' do
+            detail 'Attach an existing work item as a child of a work item in a namespace. ' \
+              'Project and group namespaces are supported.'
+            hidden true
+            success Entities::WorkItemBasic
+            failure ATTACH_CHILD_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+          params do
+            requires :work_item_iid, type: Integer, desc: 'The internal ID of the parent work item'
+            requires :child_id, type: Integer,
+              desc: 'The ID of the work item to attach as a child. ' \
+                'The internal ID (iid) cannot be used because the child ' \
+                'can belong to a different namespace than the parent.'
+          end
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_work_item,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+          post ':work_item_iid/children/:child_id' do
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
+
+            attach_child_work_item!(resource_parent, params[:work_item_iid], params[:child_id])
           end
         end
       end
@@ -83,10 +111,32 @@ module API
           get ':work_item_iid/children' do
             project = find_project!(params[:id])
 
-            parent_work_item = find_work_item_by_iid(project, params[:work_item_iid])
-            not_found!('Work Item') unless parent_work_item
-
+            parent_work_item = find_parent_work_item!(project, params[:work_item_iid])
             render_children_for(parent_work_item)
+          end
+
+          desc 'Attach a child work item to a work item in a project.' do
+            detail 'Attach an existing work item as a child of a work item in a project.'
+            hidden true
+            success Entities::WorkItemBasic
+            failure ATTACH_CHILD_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+          params do
+            requires :work_item_iid, type: Integer, desc: 'The internal ID of the parent work item'
+            requires :child_id, type: Integer,
+              desc: 'The ID of the work item to attach as a child. ' \
+                'The internal ID (iid) cannot be used because the child ' \
+                'can belong to a different namespace than the parent.'
+          end
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_work_item,
+            boundary_type: :project
+          post ':work_item_iid/children/:child_id' do
+            project = find_project!(params[:id])
+
+            attach_child_work_item!(project, params[:work_item_iid], params[:child_id])
           end
         end
       end
@@ -119,10 +169,32 @@ module API
           get ':work_item_iid/children' do
             group = find_group!(params[:id])
 
-            parent_work_item = find_work_item_by_iid(group, params[:work_item_iid])
-            not_found!('Work Item') unless parent_work_item
-
+            parent_work_item = find_parent_work_item!(group, params[:work_item_iid])
             render_children_for(parent_work_item)
+          end
+
+          desc 'Attach a child work item to a work item in a group.' do
+            detail 'Attach an existing work item as a child of a work item in a group.'
+            hidden true
+            success Entities::WorkItemBasic
+            failure ATTACH_CHILD_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+          params do
+            requires :work_item_iid, type: Integer, desc: 'The internal ID of the parent work item'
+            requires :child_id, type: Integer,
+              desc: 'The ID of the work item to attach as a child. ' \
+                'The internal ID (iid) cannot be used because the child ' \
+                'can belong to a different namespace than the parent.'
+          end
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_work_item,
+            boundary_type: :group
+          post ':work_item_iid/children/:child_id' do
+            group = find_group!(params[:id])
+
+            attach_child_work_item!(group, params[:work_item_iid], params[:child_id])
           end
         end
       end

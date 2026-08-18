@@ -6,8 +6,8 @@ module API
 
     before { authenticate! }
 
-    SUBSCRIBE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
-      subscribable_id: API::NO_SLASH_URL_PART_REGEX)
+    SUBSCRIBE_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      subscribable_id: ::API::NO_SLASH_URL_PART_REGEX)
 
     subscribables = [
       {

@@ -77,6 +77,12 @@ describe('Work Item Discussion', () => {
       expect(findToggleRepliesWidget().exists()).toBe(false);
     });
 
+    // `replies` is null on a thread with none, but the note prop wants an array,
+    // which is the whole reason `replyNotes` exists.
+    it('passes an empty array of replies to the first note when there are none', () => {
+      expect(findThreadAtIndex(0).props('replies')).toEqual([]);
+    });
+
     it('should not show the comment form by default', () => {
       expect(findWorkItemAddNote().exists()).toBe(false);
     });

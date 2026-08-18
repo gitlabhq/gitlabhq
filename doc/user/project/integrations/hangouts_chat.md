@@ -16,7 +16,7 @@ description: "Configure the Google Chat integration to receive notifications fro
 You can configure your project in GitLab to send notifications to a
 space of your choice in [Google Chat](https://chat.google.com/).
 
-In GitLab 16.10 and later, threaded notifications are enabled by default
+Threaded notifications are enabled by default
 in Google Chat for the same GitLab object (for example, an issue or merge request).
 For more information, see [issue 438452](https://gitlab.com/gitlab-org/gitlab/-/issues/438452).
 

@@ -402,7 +402,7 @@ On GitLab.com, WebSocket connections are served from dedicated infrastructure,
 entirely separate from the regular Web fleet and deployed with Kubernetes. This
 limits risk to nodes handling requests but not to shared services. For more
 information on the WebSockets Kubernetes deployment see
-[this epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/355).
+[this epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/355).
 
 ## The GitLab real-time stack in depth
 
@@ -426,7 +426,7 @@ In the GitLab Rails backend:
 
 In the GitLab frontend:
 
-- Apollo Client to handle GraphQL requests, routing and caching.
+- Apollo Client to handle GraphQL requests, routing, and caching.
 - Vue.js to define and render view components that update in real-time.
 
 The following figure illustrates how data propagates between these layers.
@@ -567,7 +567,7 @@ as well as additional utility modules. Because we run a Ruby backend, we use `ap
 
 It simplifies:
 
-- Networking, connection management and request routing.
+- Networking, connection management, and request routing.
 - Client-side state management and response caching.
 - Integrating GraphQL with view components using a bridge module.
 
@@ -577,7 +577,7 @@ It simplifies:
 
 Apollo provides functions and hooks with which you define how:
 
-- Views send queries, mutations or subscriptions.
+- Views send queries, mutations, or subscriptions.
 - Responses should be dealt with.
 - Response data is cached.
 

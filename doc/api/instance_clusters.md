@@ -13,7 +13,7 @@ title: Instance clusters API (certificate-based) (deprecated)
 {{< /details >}}
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 
 With [instance-level Kubernetes clusters](../user/instance/clusters/_index.md),
 you can connect a Kubernetes cluster to the GitLab instance and use the same cluster across all of
@@ -251,7 +251,7 @@ Parameters:
 | `platform_kubernetes_attributes[namespace]` | string  | no       | The unique namespace related to the project                                                |
 
 > [!note]
-> `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
+> `name`, `api_url`, `ca_cert`, and `token` can only be updated if the cluster was added
 > through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
 > through the [Create an instance cluster](#create-an-instance-cluster) endpoint.
 

@@ -1,6 +1,7 @@
 <script>
 import { getStartLineNumber, getEndLineNumber } from '~/notes/components/multiline_comment_utils';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DraftNote from './draft_note.vue';
 import SystemNote from './system_note.vue';
 import NoteableNote from './noteable_note.vue';
@@ -15,6 +16,7 @@ export default {
     ToggleRepliesWidget,
     LineRangeHeadline,
   },
+  mixins: [glSlotsMixin],
   inject: {
     userPermissions: {
       type: Object,
@@ -63,11 +65,11 @@ export default {
   },
   emits: [
     'cancel-editing',
-    'noteEdited',
+    'note-edited',
     'resolve',
     'start-editing',
-    'startReplying',
-    'toggleDiscussionReplies',
+    'start-replying',
+    'toggle-discussion-replies',
   ],
   computed: {
     hasReplies() {
@@ -109,15 +111,15 @@ export default {
       :is-resolved="isResolved"
       :is-resolving="isResolving"
       @resolve="$emit('resolve')"
-      @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
-      @startReplying="$emit('startReplying')"
+      @note-edited="$emit('note-edited', { note: firstNote, value: $event })"
+      @start-replying="$emit('start-replying')"
       @start-editing="$emit('start-editing', firstNote)"
       @cancel-editing="$emit('cancel-editing', firstNote)"
     >
       <template v-if="showMultiLineComment" #headline>
         <line-range-headline :line-range="lineRange" />
       </template>
-      <template #avatar-badge>
+      <template v-if="glSlots()['avatar-badge']" #avatar-badge>
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer>
@@ -132,7 +134,7 @@ export default {
                 :collapsed="!expanded"
                 :replies="replies"
                 class="gl-mx-2 !gl-border-0 gl-border-t-subtle !gl-px-0"
-                @toggle="$emit('toggleDiscussionReplies')"
+                @toggle="$emit('toggle-discussion-replies')"
               />
             </li>
             <template v-if="expanded">
@@ -148,7 +150,7 @@ export default {
                   :key="note.id"
                   :note="note"
                   :is-last-discussion="isLastDiscussion"
-                  @noteEdited="$emit('noteEdited', { note, value: $event })"
+                  @note-edited="$emit('note-edited', { note, value: $event })"
                   @start-editing="$emit('start-editing', note)"
                   @cancel-editing="$emit('cancel-editing', note)"
                 />

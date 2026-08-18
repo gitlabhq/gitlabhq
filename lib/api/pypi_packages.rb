@@ -166,10 +166,10 @@ module API
       # persisted on upload. CE intentionally does nothing.
       def enforce_dependency_firewall_on_upload!(_project, _name, _version); end
 
-      # Overridden in EE to redirect a forwarded (non-local) package download to the
-      # upstream artifact after a Dependency Firewall check. CE returns false so the
-      # file route falls through to its 404.
-      def handle_pypi_upstream_file_redirect!(_project)
+      # Overridden in EE to enforce the Dependency Firewall on a forwarded package
+      # download and 302 to the upstream artifact. CE returns false so the forward
+      # route 404s (CE never rewrites simple-index URLs to this route).
+      def handle_pypi_forwarded_download!(_project, _package_name, _upstream_path)
         false
       end
     end
@@ -177,7 +177,7 @@ module API
     params do
       requires :id, types: [Integer, String], desc: 'The ID or full path of the group.'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
         ensure_group!
       end
@@ -263,7 +263,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/pypi' do
         desc 'The PyPi package download endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
@@ -305,12 +305,36 @@ module API
             track_package_event('pull_package', :pypi, project: project, namespace: project.namespace)
 
             present_package_file!(package_file, supports_direct_download: true)
-          elsif handle_pypi_upstream_file_redirect!(project)
-            # The EE forwarded path issued a 302 to the upstream artifact (after firewall
-            # enforcement). Nothing more to do - the redirect is the terminal response.
           else
             not_found!('Package')
           end
+        end
+
+        desc 'Download a forwarded (proxied) PyPI package file' do
+          detail 'Enforces the Dependency Firewall then redirects to the upstream artifact.'
+          success code: 302
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[packages_pypi]
+        end
+        params do
+          requires :package_name, type: String, file_path: true, desc: 'The normalized PyPI package name',
+            documentation: { example: 'my.pypi.package' }
+          requires :upstream_path, type: String, file_path: true,
+            desc: 'The upstream artifact host and path, as emitted by the Simple index rewrite'
+        end
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        route_setting :authorization, permissions: :download_pypi_package, boundary_type: :project,
+          job_token_policies: :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry
+        get 'forward/:package_name/*upstream_path', requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
+          project = project!
+          authorize_job_token_policies!(project)
+
+          handle_pypi_forwarded_download!(project, params[:package_name], params[:upstream_path]) || not_found!('Package')
         end
 
         desc 'List all packages for a project' do

@@ -178,4 +178,31 @@ RSpec.describe 'getting dependency proxy blobs in a group', feature_category: :v
       end
     end
   end
+
+  context 'when current organization differs from the group organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_group) { create(:group, :private, organization: other_organization) }
+
+    let(:query) do
+      graphql_query_for(
+        'group',
+        { 'fullPath' => other_group.full_path },
+        fields
+      )
+    end
+
+    before_all do
+      other_group.add_owner(owner)
+    end
+
+    before do
+      current_organization.mark_as_isolated!
+    end
+
+    it 'does not return the group' do
+      subject
+
+      expect(graphql_data['group']).to be_nil
+    end
+  end
 end

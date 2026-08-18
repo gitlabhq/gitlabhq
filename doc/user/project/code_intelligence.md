@@ -24,7 +24,7 @@ Code intelligence is built into GitLab and powered by [LSIF](https://lsif.dev/)
 intelligence data. GitLab processes one LSIF file per project, and
 Code intelligence does not support different LSIF files per branch.
 
-[SCIP](https://github.com/sourcegraph/scip/) is the next evolution of tooling
+[SCIP](https://github.com/scip-code/scip) is the next evolution of tooling
 for indexing source code. You can use it to power code navigation features,
 such as:
 
@@ -32,12 +32,12 @@ such as:
 - Find references
 
 GitLab does not natively support SCIP for code intelligence. However, you can use the
-[SCIP CLI](https://github.com/sourcegraph/scip/blob/main/docs/CLI.md) to convert
+[SCIP CLI](https://github.com/scip-code/scip/blob/main/docs/CLI.md) to convert
 indexes generated with SCIP tooling into a LSIF-compatible file. For discussions on native
 SCIP support, see [issue 412981](https://gitlab.com/gitlab-org/gitlab/-/issues/412981).
 
 For progress on upcoming code intelligence enhancements, see
-[epic 4212](https://gitlab.com/groups/gitlab-org/-/epics/4212).
+[epic 4212](https://gitlab.com/groups/gitlab-org/-/work_items/4212).
 
 ## Configure code intelligence
 
@@ -45,7 +45,7 @@ Prerequisites:
 
 - You've checked to ensure there is a compatible indexer for your project's languages:
   - [LSIF indexers](https://lsif.dev/#implementations-server)
-  - [SCIP indexers](https://github.com/sourcegraph/scip/#tools-using-scip)
+  - [SCIP indexers](https://github.com/scip-code/scip#tools-using-scip)
 
 To see how your language is best supported, review the
 [indexers recommended by Sourcegraph](https://sourcegraph.com/docs/code-search/code-navigation/writing_an_indexer#sourcegraph-recommended-indexers).

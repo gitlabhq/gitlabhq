@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create', only: { pipeline: %i[staging staging-canary] }, feature_category: :source_code_management do
     describe 'Git push to canary Gitaly node over HTTP' do
-      it 'pushes to a project using a canary specific Gitaly repository storage', :smoke, :requires_admin, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/351116' do
+      it 'pushes to a project using a canary specific Gitaly repository storage', :smoke, :requires_admin do
         Flow::Login.sign_in_as_admin
 
         project = create(:project, name: 'canary-specific-repository-storage', repository_storage: 'gitaly-cny-01-stor-gstg.c.gitlab-staging-1.internal') # TODO: move to ENV var

@@ -1,23 +1,32 @@
 <script>
 import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
+import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
+import DuoReadinessRunnerRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_runner_row.vue';
+import DuoOrbitRow from 'ee_component/pages/projects/shared/permissions/components/duo_orbit_row.vue';
+import DuoMcpRow from 'ee_component/pages/projects/shared/permissions/components/duo_mcp_row.vue';
 import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
-
 import {
   amazonQHelpPath,
   duoFlowHelpPath,
   duoHelpPath,
   ALL_SETTINGS,
   DUO_SAST_VR_WORKFLOW_ENABLED,
-  DUO_SAST_FP_DETECTION_ENABLED,
+  DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
+  DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
+  STATUS_DONE,
+  STATUS_TODO,
+  STATUS_BLOCKED,
 } from '../constants';
 import ProjectSettingRow from './project_setting_row.vue';
 import ExclusionSettings from './exclusion_settings.vue';
+import DuoReadinessRow from './duo_readiness_row.vue';
+import DuoLocalSetupSection from './duo_local_setup_section.vue';
 
 const AUTO_REMEDIATION_PROFILE_SCAN_TYPE = 'DEPENDENCY_SCANNING_POST_PROCESSING';
 const AUTO_REMEDIATION_PROFILE_VIRTUAL_ID =
@@ -35,6 +44,12 @@ export default {
     CascadingLockIcon,
     ExclusionSettings,
     DuoDependencyBumpProfileModal,
+    DuoReadinessRow,
+    DuoReadinessPlatformRow,
+    DuoReadinessRunnerRow,
+    DuoLocalSetupSection,
+    DuoOrbitRow,
+    DuoMcpRow,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -109,7 +124,7 @@ export default {
       required: false,
       default: false,
     },
-    initialDuoSastFpDetectionEnabled: {
+    initialDuoSastFalsePositiveDetectionEnabled: {
       type: Boolean,
       required: false,
       default: false,
@@ -135,6 +150,11 @@ export default {
       default: '',
     },
     initialDuoSastVrWorkflowEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    initialDuoVulnerabilityContextAnalysisEnabled: {
       type: Boolean,
       required: false,
       default: false,
@@ -169,6 +189,26 @@ export default {
       required: false,
       default: false,
     },
+    duoReadiness: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    duoReadinessAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    duoOrbit: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    duoMcp: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     visibleSettings: {
       type: Array,
       required: false,
@@ -182,10 +222,11 @@ export default {
       exclusionRules: this.duoContextExclusionSettings?.exclusionRules || [],
       duoRemoteFlowsAvailability: this.initialDuoRemoteFlowsAvailability,
       duoFoundationalFlowsAvailability: this.initialDuoFoundationalFlowsAvailability,
-      duoSastFpDetectionEnabled: this.initialDuoSastFpDetectionEnabled,
+      duoSastFalsePositiveDetectionEnabled: this.initialDuoSastFalsePositiveDetectionEnabled,
       duoSecretDetectionFpEnabled: this.initialDuoSecretDetectionFpEnabled,
       duoDependencyBumpBreakingChangesEnabled: this.initialDuoDependencyBumpBreakingChangesEnabled,
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
+      duoVulnerabilityContextAnalysisEnabled: this.initialDuoVulnerabilityContextAnalysisEnabled,
       toolApprovalForSessionEnabled: this.initialToolApprovalForSessionEnabled,
       dapSessionTrackingEnabled: this.initialDapSessionTrackingEnabled,
       auditEventsStorageEnabled: this.aiAuditEventsStorageEnabled,
@@ -246,6 +287,48 @@ export default {
     },
     showSastVrWorkflow() {
       return this.ultimateFeaturesAvailable;
+    },
+    // The readiness card replaces the flat Duo/flow toggles. Amazon Q projects keep the old
+    // layout: they have no flow settings, so a "run agents here" card would be meaningless.
+    showReadinessCard() {
+      return (
+        this.duoReadinessAvailable &&
+        Boolean(this.duoEnabledSetting) &&
+        this.showAllSettings &&
+        !this.amazonQAvailable
+      );
+    },
+    // The design's blocked cascade: with the Agent Platform off above the project, nothing
+    // below its row is actionable, so every row reads blocked and its control is disabled.
+    platformEnabled() {
+      return Boolean(this.duoReadiness.platformEnabled);
+    },
+    showOrbitRow() {
+      return this.showReadinessCard && Boolean(this.duoOrbit.rootGroupPath);
+    },
+    showMcpRow() {
+      return this.showReadinessCard && Boolean(this.duoMcp.serversPath);
+    },
+    showOptionalGroup() {
+      return this.platformEnabled && (this.showOrbitRow || this.showMcpRow);
+    },
+    duoRowStatus() {
+      if (!this.platformEnabled) return STATUS_BLOCKED;
+
+      return this.duoEnabled ? STATUS_DONE : STATUS_TODO;
+    },
+    flowExecutionRowStatus() {
+      if (!this.platformEnabled || !this.duoEnabled) return STATUS_BLOCKED;
+
+      return this.duoRemoteFlowsAvailability ? STATUS_DONE : STATUS_TODO;
+    },
+    foundationalFlowsRowStatus() {
+      if (!this.effectiveFlowExecutionEnabled) return STATUS_BLOCKED;
+
+      return this.duoFoundationalFlowsAvailability ? STATUS_DONE : STATUS_TODO;
+    },
+    effectiveFlowExecutionEnabled() {
+      return this.platformEnabled && this.duoEnabled && this.duoRemoteFlowsAvailability;
     },
     showAllSettings() {
       return this.visibleSettings.includes(ALL_SETTINGS);
@@ -334,9 +417,21 @@ export default {
   },
   duoFlowHelpPath,
   DUO_SAST_VR_WORKFLOW_ENABLED,
-  DUO_SAST_FP_DETECTION_ENABLED,
+  DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
+  DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
   i18n: {
+    readinessHeading: s__('DuoAgentPlatform|Run GitLab Duo agents on this project'),
+    requiredHeading: s__('DuoAgentPlatform|Required'),
+    requiredSubtitle: s__(
+      'DuoAgentPlatform|Agents cannot run here until everything below is in place.',
+    ),
+    otherSettingsHeading: s__('DuoAgentPlatform|Other Duo settings'),
+    otherSettingsSubtitle: s__('DuoAgentPlatform|Project-wide behavior, unrelated to readiness.'),
+    optionalHeading: s__('DuoAgentPlatform|Optional'),
+    optionalSubtitle: s__(
+      'DuoAgentPlatform|Features that give your agent more context to work with.',
+    ),
     saveChanges: __('Save changes'),
     saveChangesAriaLabel: __('Save changes for GitLab Duo'),
     governanceTitle: s__('AiPowered|Governance'),
@@ -348,8 +443,146 @@ export default {
 
 <template>
   <div class="project-visibility-setting" data-testid="gitlab-duo-settings">
+    <div v-if="showReadinessCard" class="gl-mb-6" data-testid="duo-readiness-block">
+      <h3 class="gl-heading-3 gl-mb-2" data-testid="readiness-heading">
+        {{ $options.i18n.readinessHeading }}
+      </h3>
+
+      <div class="gl-mb-3 gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
+        <span class="gl-font-bold">{{ $options.i18n.requiredHeading }}</span>
+        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.requiredSubtitle }}</span>
+      </div>
+
+      <div class="gl-border gl-overflow-hidden gl-rounded-lg">
+        <duo-readiness-platform-row :readiness="duoReadiness" />
+
+        <duo-readiness-row
+          :title="duoEnabledSetting.label"
+          :description="duoEnabledSetting.helpText"
+          :status="duoRowStatus"
+          data-testid="duo-row"
+        >
+          <template #title-icon>
+            <cascading-lock-icon
+              v-if="showAvailabilityCascadingButton"
+              data-testid="duo-cascading-lock-icon"
+              :is-locked-by-group-ancestor="duoAvailabilityCascadingSettings.lockedByAncestor"
+              :is-locked-by-application-settings="
+                duoAvailabilityCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="duoAvailabilityCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
+          <gl-toggle
+            v-model="duoEnabled"
+            :disabled="!platformEnabled || duoFeaturesLocked"
+            :label="duoEnabledSetting.label"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_features_enabled]"
+            data-testid="duo_features_enabled_toggle"
+          />
+        </duo-readiness-row>
+
+        <duo-readiness-row
+          :title="s__('DuoAgentPlatform|Allow flow execution')"
+          :status="flowExecutionRowStatus"
+          data-testid="flow-execution-row"
+        >
+          <template #title-icon>
+            <cascading-lock-icon
+              v-if="showRemoteFlowsCascadingLock"
+              data-testid="duo-flows-cascading-lock-icon"
+              :is-locked-by-group-ancestor="duoRemoteFlowsCascadingSettings.lockedByAncestor"
+              :is-locked-by-application-settings="
+                duoRemoteFlowsCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="duoRemoteFlowsCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
+          <template #description>
+            {{ s__('DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project.') }}
+            <gl-sprintf :message="s__('DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}')">
+              <template #link="{ content }">
+                <gl-link :href="$options.duoFlowHelpPath" target="_blank">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+          <gl-toggle
+            v-model="duoRemoteFlowsAvailability"
+            :disabled="!platformEnabled || !duoEnabled || showRemoteFlowsCascadingLock"
+            :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_remote_flows_enabled]"
+            data-testid="duo-remote-flows-enabled"
+          />
+        </duo-readiness-row>
+
+        <duo-readiness-row
+          nested
+          :title="s__('DuoAgentPlatform|Allow foundational flows')"
+          :description="
+            s__(
+              'DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project.',
+            )
+          "
+          :status="foundationalFlowsRowStatus"
+          data-testid="foundational-flows-row"
+        >
+          <template #title-icon>
+            <cascading-lock-icon
+              v-if="areFoundationalFlowsLocked"
+              data-testid="duo-foundational-flows-cascading-lock-icon"
+              :is-locked-by-group-ancestor="duoFoundationalFlowsCascadingSettings.lockedByAncestor"
+              :is-locked-by-application-settings="
+                duoFoundationalFlowsCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="duoFoundationalFlowsCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
+          <gl-toggle
+            v-model="duoFoundationalFlowsAvailability"
+            :disabled="
+              !platformEnabled ||
+              !duoEnabled ||
+              !duoRemoteFlowsAvailability ||
+              areFoundationalFlowsLocked
+            "
+            :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_foundational_flows_enabled]"
+            data-testid="duo-foundational-flows-enabled"
+          />
+        </duo-readiness-row>
+
+        <duo-readiness-runner-row
+          :readiness="duoReadiness"
+          :flow-execution-enabled="effectiveFlowExecutionEnabled"
+          :project-full-path="projectFullPath"
+        />
+      </div>
+
+      <div v-if="showOptionalGroup" class="gl-mt-5" data-testid="duo-optional-group">
+        <div class="gl-mb-3 gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
+          <span class="gl-font-bold">{{ $options.i18n.optionalHeading }}</span>
+          <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.optionalSubtitle }}</span>
+        </div>
+        <div class="gl-border gl-overflow-hidden gl-rounded-lg">
+          <duo-orbit-row
+            v-if="showOrbitRow"
+            :orbit="duoOrbit"
+            :project-full-path="projectFullPath"
+          />
+          <duo-mcp-row v-if="showMcpRow" :mcp="duoMcp" />
+        </div>
+      </div>
+
+      <duo-local-setup-section class="gl-mt-5" />
+    </div>
     <project-setting-row
-      v-if="duoEnabledSetting"
+      v-if="duoEnabledSetting && !showReadinessCard"
       data-testid="duo-settings"
       :label="duoEnabledSetting.label"
       :help-text="duoEnabledSetting.helpText"
@@ -401,260 +634,292 @@ export default {
           />
         </project-setting-row>
       </div>
-      <div
-        v-else-if="duoEnabled"
-        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5"
-      >
-        <project-setting-row
-          v-if="showAllSettings"
-          :label="s__('DuoAgentPlatform|Allow flow execution')"
-          class="gl-mt-5"
-          :help-text="
-            s__('DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project.')
-          "
-        >
-          <template #label-icon>
-            <cascading-lock-icon
-              v-if="showRemoteFlowsCascadingLock"
-              data-testid="duo-flows-cascading-lock-icon"
-              :is-locked-by-group-ancestor="duoRemoteFlowsCascadingSettings.lockedByAncestor"
-              :is-locked-by-application-settings="
-                duoRemoteFlowsCascadingSettings.lockedByApplicationSetting
-              "
-              :ancestor-namespace="duoRemoteFlowsCascadingSettings.ancestorNamespace"
-              class="gl-ml-1"
-            />
-          </template>
-          <gl-toggle
-            v-model="duoRemoteFlowsAvailability"
-            class="gl-mt-2"
-            :disabled="!duoEnabled || showRemoteFlowsCascadingLock"
-            :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
-            label-position="hidden"
-            name="project[project_setting_attributes][duo_remote_flows_enabled]"
-            data-testid="duo-remote-flows-enabled"
-          />
-          <template #help-link>
-            <gl-sprintf :message="s__('DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?')">
-              <template #link="{ content }">
-                <gl-link :href="$options.duoFlowHelpPath" target="_blank">{{ content }}</gl-link>
-              </template>
-            </gl-sprintf>
-          </template>
-        </project-setting-row>
-        <project-setting-row
-          v-if="showAllSettings"
-          :label="s__('DuoAgentPlatform|Allow foundational flows')"
-          :help-text="
-            s__(
-              'DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project.',
-            )
-          "
-        >
-          <template #label-icon>
-            <cascading-lock-icon
-              v-if="areFoundationalFlowsLocked"
-              data-testid="duo-foundational-flows-cascading-lock-icon"
-              :is-locked-by-group-ancestor="duoFoundationalFlowsCascadingSettings.lockedByAncestor"
-              :is-locked-by-application-settings="
-                duoFoundationalFlowsCascadingSettings.lockedByApplicationSetting
-              "
-              :ancestor-namespace="duoFoundationalFlowsCascadingSettings.ancestorNamespace"
-              class="gl-ml-1"
-            />
-          </template>
-          <gl-toggle
-            v-model="duoFoundationalFlowsAvailability"
-            class="gl-mt-2"
-            :disabled="!duoEnabled || !duoRemoteFlowsAvailability || areFoundationalFlowsLocked"
-            :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
-            label-position="hidden"
-            name="project[project_setting_attributes][duo_foundational_flows_enabled]"
-            data-testid="duo-foundational-flows-enabled"
-          />
-        </project-setting-row>
-        <project-setting-row
-          v-if="showAllSettings"
-          :label="s__('AiPowered|Tool approval for sessions')"
-          class="gl-mt-5"
-          :help-text="
-            s__('AiPowered|Allow users to approve tools for a session in the IDE and CLI.')
-          "
-          :locked="showToolApprovalCascadingLock"
-        >
-          <template #label-icon>
-            <cascading-lock-icon
-              v-if="showToolApprovalCascadingLock"
-              data-testid="tool-approval-cascading-lock-icon"
-              :is-locked-by-group-ancestor="
-                toolApprovalForSessionCascadingSettings.lockedByAncestor
-              "
-              :is-locked-by-application-settings="
-                toolApprovalForSessionCascadingSettings.lockedByApplicationSetting
-              "
-              :ancestor-namespace="toolApprovalForSessionCascadingSettings.ancestorNamespace"
-              class="gl-ml-1"
-            />
-          </template>
-          <gl-toggle
-            v-model="toolApprovalForSessionEnabled"
-            class="gl-mt-2"
-            :disabled="!duoEnabled || showToolApprovalCascadingLock"
-            :label="s__('AiPowered|Tool approval for sessions')"
-            label-position="hidden"
-            name="project[project_setting_attributes][tool_approval_for_session_enabled]"
-            data-testid="tool-approval-for-session-enabled"
-          />
-        </project-setting-row>
-        <project-setting-row
-          v-if="dapSessionTrackingAvailable && showAllSettings"
-          :label="s__('DuoAgentPlatform|Track GitLab Duo Agent Platform sessions in commits')"
-          class="gl-mt-5"
-          :help-text="
-            s__(
-              'DuoAgentPlatform|Add a session URL to commits authored by GitLab Duo Agent Platform, so reviewers can trace AI-assisted changes back to the originating session.',
-            )
-          "
-        >
-          <gl-toggle
-            v-model="dapSessionTrackingEnabled"
-            class="gl-mt-2"
-            :disabled="duoFeaturesLocked || !duoEnabled"
-            :label="s__('DuoAgentPlatform|Track GitLab Duo Agent Platform sessions in commits')"
-            label-position="hidden"
-            name="project[project_setting_attributes][dap_session_tracking_enabled]"
-            data-testid="dap-session-tracking-enabled"
-          />
-        </project-setting-row>
-        <project-setting-row
-          v-if="glFeatures.agentArtifactsPage && showAllSettings"
-          :label="s__('AiPowered|Store AI audit events')"
-          class="gl-mt-5"
-          :help-text="
-            s__(
-              'AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse. Real-time streaming of AI audit events is not affected.',
-            )
-          "
-          :locked="showAuditEventsStorageCascadingLock"
-        >
-          <template #label-icon>
-            <cascading-lock-icon
-              v-if="showAuditEventsStorageCascadingLock"
-              data-testid="ai-audit-events-storage-cascading-lock-icon"
-              :is-locked-by-group-ancestor="aiAuditEventsStorageCascadingSettings.lockedByAncestor"
-              :is-locked-by-application-settings="
-                aiAuditEventsStorageCascadingSettings.lockedByApplicationSetting
-              "
-              :ancestor-namespace="aiAuditEventsStorageCascadingSettings.ancestorNamespace"
-              class="gl-ml-1"
-            />
-          </template>
-          <gl-toggle
-            v-model="auditEventsStorageEnabled"
-            class="gl-mt-2"
-            :disabled="showAuditEventsStorageCascadingLock"
-            :label="s__('AiPowered|Store AI audit events')"
-            label-position="hidden"
-            name="project[project_setting_attributes][ai_audit_events_storage_enabled]"
-            data-testid="ai-audit-events-storage-enabled"
-          />
-        </project-setting-row>
-        <project-setting-row
-          v-if="
-            ultimateFeaturesAvailable && isSettingVisible($options.DUO_SAST_FP_DETECTION_ENABLED)
-          "
-          :label="s__('DuoSAST|Turn on SAST false positive detection')"
-          class="gl-mt-5"
-          :help-text="
-            s__('DuoSAST|Use false positive detection for vulnerabilities on the default branch')
-          "
-        >
-          <gl-toggle
-            v-model="duoSastFpDetectionEnabled"
-            class="gl-mt-2"
-            :disabled="!duoEnabled"
-            :label="s__('DuoSAST|Turn on SAST false positive detection')"
-            label-position="hidden"
-            name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"
-            data-testid="duo-sast-fp-detection-enabled"
-          />
-        </project-setting-row>
-        <project-setting-row
-          v-if="
-            ultimateFeaturesAvailable && isSettingVisible($options.DUO_SECRET_DETECTION_FP_ENABLED)
-          "
-          :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
-          class="gl-mt-5"
-          :help-text="
-            s__(
-              'DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch',
-            )
-          "
-        >
-          <gl-toggle
-            v-model="duoSecretDetectionFpEnabled"
-            class="gl-mt-2"
-            :disabled="!duoEnabled"
-            :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
-            label-position="hidden"
-            name="project[project_setting_attributes][duo_secret_detection_fp_enabled]"
-            data-testid="duo-secret-detection-fp-enabled"
-          />
-        </project-setting-row>
-        <project-setting-row
-          v-if="
-            glFeatures.enableDependencyBumpBreakingChanges &&
-            ultimateFeaturesAvailable &&
-            showAllSettings
-          "
-          :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
-          class="gl-mt-5"
-          :help-text="
-            s__(
-              'DuoDependencyBump|Use AI to analyze and fix breaking changes in failed pipelines for dependency bump merge requests',
-            )
-          "
-        >
-          <gl-toggle
-            :value="duoDependencyBumpBreakingChangesEnabled"
-            class="gl-mt-2"
-            :disabled="!duoEnabled"
-            :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
-            label-position="hidden"
-            name="project[project_setting_attributes][duo_dependency_bump_breaking_changes_enabled]"
-            data-testid="duo-dependency-bump-breaking-changes-enabled"
-            @change="handleDependencyBumpToggleChange"
-          />
-        </project-setting-row>
-        <duo-dependency-bump-profile-modal
-          :visible="showAutoRemediationModal"
-          :is-loading="autoRemediationModalLoading"
-          @confirm="onAutoRemediationModalConfirm"
-          @cancel="onAutoRemediationModalCancel"
-          @hide="onAutoRemediationModalHide"
-        />
-        <project-setting-row
-          v-if="showSastVrWorkflow && isSettingVisible($options.DUO_SAST_VR_WORKFLOW_ENABLED)"
-          :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
-          class="gl-mt-5"
-          :help-text="
-            s__(
-              'DuoSAST|Use vulnerability resolution workflow for vulnerabilities on the default branch',
-            )
-          "
-        >
-          <gl-toggle
-            v-model="duoSastVrWorkflowEnabled"
-            class="gl-mt-2"
-            :disabled="!duoEnabled"
-            :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
-            label-position="hidden"
-            name="project[project_setting_attributes][duo_sast_vr_workflow_enabled]"
-            data-testid="duo-sast-vr-workflow-enabled"
-          />
-        </project-setting-row>
-      </div>
     </project-setting-row>
+
+    <!-- Everything below the card is project-wide behaviour rather than readiness, so the
+         design separates it under its own heading. Only shown alongside the card; without it
+         the page keeps its existing ungrouped layout. -->
+    <div v-if="showReadinessCard" class="gl-border-t gl-mb-5 gl-pt-5">
+      <div class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
+        <span class="gl-font-bold">{{ $options.i18n.otherSettingsHeading }}</span>
+        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.otherSettingsSubtitle }}</span>
+      </div>
+    </div>
+
+    <div
+      v-if="duoEnabled && !amazonQAvailable"
+      class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5"
+    >
+      <!-- Rendered here only while the readiness card is off; the card renders them as rows. -->
+      <project-setting-row
+        v-if="showAllSettings && !showReadinessCard"
+        :label="s__('DuoAgentPlatform|Allow flow execution')"
+        class="gl-mt-5"
+        :help-text="
+          s__('DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project.')
+        "
+      >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="showRemoteFlowsCascadingLock"
+            data-testid="duo-flows-cascading-lock-icon"
+            :is-locked-by-group-ancestor="duoRemoteFlowsCascadingSettings.lockedByAncestor"
+            :is-locked-by-application-settings="
+              duoRemoteFlowsCascadingSettings.lockedByApplicationSetting
+            "
+            :ancestor-namespace="duoRemoteFlowsCascadingSettings.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
+        <gl-toggle
+          v-model="duoRemoteFlowsAvailability"
+          class="gl-mt-2"
+          :disabled="!duoEnabled || showRemoteFlowsCascadingLock"
+          :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_remote_flows_enabled]"
+          data-testid="duo-remote-flows-enabled"
+        />
+        <template #help-link>
+          <gl-sprintf :message="s__('DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?')">
+            <template #link="{ content }">
+              <gl-link :href="$options.duoFlowHelpPath" target="_blank">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+      </project-setting-row>
+      <project-setting-row
+        v-if="showAllSettings && !showReadinessCard"
+        :label="s__('DuoAgentPlatform|Allow foundational flows')"
+        :help-text="
+          s__(
+            'DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project.',
+          )
+        "
+      >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="areFoundationalFlowsLocked"
+            data-testid="duo-foundational-flows-cascading-lock-icon"
+            :is-locked-by-group-ancestor="duoFoundationalFlowsCascadingSettings.lockedByAncestor"
+            :is-locked-by-application-settings="
+              duoFoundationalFlowsCascadingSettings.lockedByApplicationSetting
+            "
+            :ancestor-namespace="duoFoundationalFlowsCascadingSettings.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
+        <gl-toggle
+          v-model="duoFoundationalFlowsAvailability"
+          class="gl-mt-2"
+          :disabled="!duoEnabled || !duoRemoteFlowsAvailability || areFoundationalFlowsLocked"
+          :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_foundational_flows_enabled]"
+          data-testid="duo-foundational-flows-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="showAllSettings"
+        :label="s__('AiPowered|Tool approval for sessions')"
+        class="gl-mt-5"
+        :help-text="s__('AiPowered|Allow users to approve tools for a session in the IDE and CLI.')"
+        :locked="showToolApprovalCascadingLock"
+      >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="showToolApprovalCascadingLock"
+            data-testid="tool-approval-cascading-lock-icon"
+            :is-locked-by-group-ancestor="toolApprovalForSessionCascadingSettings.lockedByAncestor"
+            :is-locked-by-application-settings="
+              toolApprovalForSessionCascadingSettings.lockedByApplicationSetting
+            "
+            :ancestor-namespace="toolApprovalForSessionCascadingSettings.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
+        <gl-toggle
+          v-model="toolApprovalForSessionEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled || showToolApprovalCascadingLock"
+          :label="s__('AiPowered|Tool approval for sessions')"
+          label-position="hidden"
+          name="project[project_setting_attributes][tool_approval_for_session_enabled]"
+          data-testid="tool-approval-for-session-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="dapSessionTrackingAvailable && showAllSettings"
+        :label="s__('DuoAgentPlatform|Track GitLab Duo Agent Platform sessions in commits')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'DuoAgentPlatform|Add a session URL to commits authored by GitLab Duo Agent Platform, so reviewers can trace AI-assisted changes back to the originating session.',
+          )
+        "
+      >
+        <gl-toggle
+          v-model="dapSessionTrackingEnabled"
+          class="gl-mt-2"
+          :disabled="duoFeaturesLocked || !duoEnabled"
+          :label="s__('DuoAgentPlatform|Track GitLab Duo Agent Platform sessions in commits')"
+          label-position="hidden"
+          name="project[project_setting_attributes][dap_session_tracking_enabled]"
+          data-testid="dap-session-tracking-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="glFeatures.agentArtifactsPage && showAllSettings"
+        :label="s__('AiPowered|Store AI audit events')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse. Real-time streaming of AI audit events is not affected.',
+          )
+        "
+        :locked="showAuditEventsStorageCascadingLock"
+      >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="showAuditEventsStorageCascadingLock"
+            data-testid="ai-audit-events-storage-cascading-lock-icon"
+            :is-locked-by-group-ancestor="aiAuditEventsStorageCascadingSettings.lockedByAncestor"
+            :is-locked-by-application-settings="
+              aiAuditEventsStorageCascadingSettings.lockedByApplicationSetting
+            "
+            :ancestor-namespace="aiAuditEventsStorageCascadingSettings.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
+        <gl-toggle
+          v-model="auditEventsStorageEnabled"
+          class="gl-mt-2"
+          :disabled="showAuditEventsStorageCascadingLock"
+          :label="s__('AiPowered|Store AI audit events')"
+          label-position="hidden"
+          name="project[project_setting_attributes][ai_audit_events_storage_enabled]"
+          data-testid="ai-audit-events-storage-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="
+          ultimateFeaturesAvailable &&
+          isSettingVisible($options.DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED)
+        "
+        :label="s__('DuoSAST|Turn on SAST false positive detection')"
+        class="gl-mt-5"
+        :help-text="
+          s__('DuoSAST|Use false positive detection for vulnerabilities on the default branch')
+        "
+      >
+        <gl-toggle
+          v-model="duoSastFalsePositiveDetectionEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled"
+          :label="s__('DuoSAST|Turn on SAST false positive detection')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"
+          data-testid="duo-sast-fp-detection-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="
+          ultimateFeaturesAvailable && isSettingVisible($options.DUO_SECRET_DETECTION_FP_ENABLED)
+        "
+        :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch',
+          )
+        "
+      >
+        <gl-toggle
+          v-model="duoSecretDetectionFpEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled"
+          :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_secret_detection_fp_enabled]"
+          data-testid="duo-secret-detection-fp-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="
+          glFeatures.enableDependencyBumpBreakingChanges &&
+          ultimateFeaturesAvailable &&
+          showAllSettings
+        "
+        :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'DuoDependencyBump|Use AI to analyze and fix breaking changes in failed pipelines for dependency bump merge requests',
+          )
+        "
+      >
+        <gl-toggle
+          :value="duoDependencyBumpBreakingChangesEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled"
+          :label="s__('DuoDependencyBump|Turn on Agentic Breaking Change Resolution')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_dependency_bump_breaking_changes_enabled]"
+          data-testid="duo-dependency-bump-breaking-changes-enabled"
+          @change="handleDependencyBumpToggleChange"
+        />
+      </project-setting-row>
+      <duo-dependency-bump-profile-modal
+        :visible="showAutoRemediationModal"
+        :is-loading="autoRemediationModalLoading"
+        @confirm="onAutoRemediationModalConfirm"
+        @cancel="onAutoRemediationModalCancel"
+        @hide="onAutoRemediationModalHide"
+      />
+      <project-setting-row
+        v-if="showSastVrWorkflow && isSettingVisible($options.DUO_SAST_VR_WORKFLOW_ENABLED)"
+        :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'DuoSAST|Use vulnerability resolution workflow for vulnerabilities on the default branch',
+          )
+        "
+      >
+        <gl-toggle
+          v-model="duoSastVrWorkflowEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled"
+          :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_sast_vr_workflow_enabled]"
+          data-testid="duo-sast-vr-workflow-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="
+          ultimateFeaturesAvailable &&
+          isSettingVisible($options.DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED)
+        "
+        :label="s__('DuoVulnerabilityContext|Turn on Vulnerability Context Analysis')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'DuoVulnerabilityContext|Analyze project codebase to generate security context for vulnerability prioritization',
+          )
+        "
+      >
+        <gl-toggle
+          v-model="duoVulnerabilityContextAnalysisEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled"
+          :label="s__('DuoVulnerabilityContext|Turn on Vulnerability Context Analysis')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_vulnerability_context_analysis_enabled]"
+          data-testid="duo-vulnerability-context-analysis-enabled"
+        />
+      </project-setting-row>
+    </div>
 
     <exclusion-settings
       v-if="showAllSettings"

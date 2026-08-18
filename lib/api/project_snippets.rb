@@ -14,7 +14,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers Helpers::SnippetsHelpers
       helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
       helpers do
@@ -35,7 +35,8 @@ module API
         end
       end
 
-      desc 'Get all project snippets' do
+      desc 'List all snippets for a project' do
+        detail 'Lists all snippets for a specified project.'
         success Entities::ProjectSnippet
         failure [
           { code: 404, message: 'Not found' }
@@ -53,7 +54,8 @@ module API
         present paginate(snippets_for_current_user), with: Entities::ProjectSnippet, current_user: current_user
       end
 
-      desc 'Get a single project snippet' do
+      desc 'Retrieve a project snippet' do
+        detail 'Retrieves a specified project snippet.'
         success Entities::ProjectSnippet
         failure [
           { code: 404, message: 'Not found' }
@@ -72,7 +74,8 @@ module API
         present snippet, with: Entities::ProjectSnippet, current_user: current_user
       end
 
-      desc 'Create a new project snippet' do
+      desc 'Create a project snippet' do
+        detail 'Creates a project snippet. The user must have permission to create snippets.'
         success Entities::ProjectSnippet
         failure [
           { code: 400, message: 'Validation error' },
@@ -109,7 +112,9 @@ module API
         end
       end
 
-      desc 'Update an existing project snippet' do
+      desc 'Update a project snippet' do
+        detail 'Updates a specified project snippet. The user must have permission to modify snippets. ' \
+          'Updates to snippets with multiple files must use the `files` attribute.'
         success Entities::ProjectSnippet
         failure [
           { code: 400, message: 'Validation error' },
@@ -159,6 +164,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete a project snippet' do
+        detail 'Deletes a specified project snippet.'
         success code: 204
         failure [
           { code: 400, message: 'Validation error' },
@@ -191,7 +197,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a raw project snippet' do
+      desc 'Retrieve a raw project snippet' do
+        detail 'Retrieves the raw contents of a specified project snippet as plain text'
         success Entities::ProjectSnippet
         failure [
           { code: 404, message: 'Not found' }
@@ -210,7 +217,8 @@ module API
         present content_for(snippet)
       end
 
-      desc 'Get raw project snippet file contents from the repository' do
+      desc 'Retrieve snippet repository file content' do
+        detail 'Retrieves the raw file content from a snippet repository as plain text.'
         success Entities::ProjectSnippet
         failure [
           { code: 404, message: 'Not found' }
@@ -223,7 +231,7 @@ module API
         use :raw_file_params
       end
       route_setting :authorization, permissions: :read_snippet, boundary_type: :project
-      get ":id/snippets/:snippet_id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+      get ":id/snippets/:snippet_id/files/:ref/:file_path/raw", requirements: { file_path: ::API::NO_SLASH_URL_PART_REGEX } do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet&.repo_exists?
 
@@ -231,7 +239,8 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get the user agent details for a project snippet' do
+      desc 'Retrieve user agent details for a project snippet' do
+        detail 'Retrieves user agent details for a specified snippet. Available only for administrators.'
         success Entities::UserAgentDetail
         failure [
           { code: 404, message: 'Not found' }

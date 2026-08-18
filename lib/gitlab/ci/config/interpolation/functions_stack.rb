@@ -18,7 +18,8 @@ module Gitlab
           FUNCTIONS = [
             Functions::Truncate,
             Functions::ExpandVars,
-            Functions::PosixEscape
+            Functions::PosixEscape,
+            Functions::Split
           ].freeze
 
           attr_reader :errors
@@ -53,16 +54,9 @@ module Gitlab
 
           attr_reader :functions, :ctx
 
-          def available_functions
-            return FUNCTIONS unless Gitlab::Ci::Config::FeatureFlags.enabled?(:ci_interpolation_split_function)
-
-            FUNCTIONS + [Functions::Split]
-          end
-
           def build_stack(function_expressions)
-            funcs = available_functions
             function_expressions.each_with_index.filter_map do |function_expression, index|
-              matching_function = funcs.find { |function| function.matches?(function_expression) }
+              matching_function = FUNCTIONS.find { |function| function.matches?(function_expression) }
 
               if matching_function.present?
                 if matching_function == Functions::Split && index < function_expressions.length - 1

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Git::RepositoryCleaner, feature_category: :source_code_management do
   include HttpIOHelpers
 
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
   let(:head_sha) { repository.head_commit.id }
   let(:object_map_data) { "#{head_sha} #{Gitlab::Git::SHA1_BLANK_SHA}" }

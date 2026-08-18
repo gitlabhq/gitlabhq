@@ -88,6 +88,7 @@ import {
   getHiddenMetadataKeysFromLocalStorage,
   makeDetailPanelUrlParam,
   makeDetailPanelItemFullPath,
+  findDetailPanelWorkItem,
   getItems,
   canRouterNav,
   formatSelectOptionForCustomField,
@@ -419,6 +420,44 @@ describe('`makeDetailPanelUrlParam`', () => {
     expect(result).toEqual(
       btoa(JSON.stringify({ iid: '123', full_path: 'gitlab-org/gitlab', id: 1 })),
     );
+  });
+});
+
+describe('`findDetailPanelWorkItem`', () => {
+  const items = [
+    { id: 'gid://gitlab/WorkItem/1', iid: '1' },
+    { id: 'gid://gitlab/WorkItem/2', iid: '2' },
+  ];
+  const showParam = (id) => btoa(JSON.stringify({ iid: '1', full_path: 'group/project', id }));
+
+  it('returns the matching item merged with fullPath from the param', () => {
+    expect(findDetailPanelWorkItem(showParam(2), items, null)).toEqual({
+      item: { ...items[1], fullPath: 'group/project' },
+      notFound: false,
+    });
+  });
+
+  it('flags notFound when the referenced item is not in the list', () => {
+    expect(findDetailPanelWorkItem(showParam(999), items, null)).toEqual({
+      item: null,
+      notFound: true,
+    });
+  });
+
+  it('returns no item and does not flag notFound when the item is already active', () => {
+    expect(findDetailPanelWorkItem(showParam(1), items, items[0])).toEqual({
+      item: null,
+      notFound: false,
+    });
+  });
+
+  it('returns no item and does not flag notFound when the param has no id', () => {
+    const param = btoa(JSON.stringify({ iid: '1', full_path: 'group/project' }));
+
+    expect(findDetailPanelWorkItem(param, items, null)).toEqual({
+      item: null,
+      notFound: false,
+    });
   });
 });
 

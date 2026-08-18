@@ -13,6 +13,7 @@ RSpec.describe 'Profile > Comment templates > User deletes comment template', :j
 
   it 'shows the user a list of their comment template' do
     visit profile_comment_templates_path
+    expect(page).to have_content(saved_reply.name)
 
     click_button 'Comment template actions'
     find_by_testid('comment-template-delete-btn').click
@@ -20,8 +21,6 @@ RSpec.describe 'Profile > Comment templates > User deletes comment template', :j
     page.within('.gl-modal') do
       click_button 'Delete'
     end
-
-    wait_for_requests
 
     expect(page).not_to have_content(saved_reply.name)
   end

@@ -29,7 +29,7 @@ export default {
       required: false,
     },
   },
-  emits: ['toggledPaused'],
+  emits: ['toggled-paused'],
   computed: {
     isPaused() {
       return this.runner.paused;
@@ -60,7 +60,7 @@ export default {
 </script>
 
 <template>
-  <runner-pause-action :runner="runner" @done="$emit('toggledPaused')">
+  <runner-pause-action :runner="runner" @done="$emit('toggled-paused')">
     <template #default="{ loading, onClick }">
       <gl-button
         v-gl-tooltip="loading ? '' : tooltip"

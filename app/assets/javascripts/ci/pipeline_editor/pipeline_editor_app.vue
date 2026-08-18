@@ -1,6 +1,6 @@
 <script>
-import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import { debounce } from 'lodash-es';
+import { GlLoadingIcon, GlModal, GlToastMixin } from '@gitlab/ui';
+import { cloneDeep, debounce } from 'lodash-es';
 import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { mergeUrlParams, queryToObject, visitUrl } from '~/lib/utils/url_utility';
@@ -45,7 +45,7 @@ export default {
     PipelineEditorHome,
     PipelineEditorMessages,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath', 'usesExternalConfig'],
   data() {
     return {
@@ -298,10 +298,6 @@ export default {
       );
       visitUrl(url);
     },
-    async refetchContent() {
-      this.$apollo.queries.initialCiFileContent.skip = false;
-      await this.$apollo.queries.initialCiFileContent.refetch();
-    },
     reportFailure(type, reasons = []) {
       this.showFailure = true;
       this.failureType = type;
@@ -379,7 +375,7 @@ export default {
           },
         });
 
-        const config = structuredClone(data?.ciLint?.config || {});
+        const config = cloneDeep(data?.ciLint?.config || {});
         if (config.stages) {
           config.stages = unwrapStagesFromMutation(config.stages);
         }
@@ -410,7 +406,6 @@ export default {
     <pipeline-editor-empty-state
       v-else-if="showEmptyState"
       @create-empty-config-file="setNewEmptyCiConfigFile"
-      @refetchContent="refetchContent"
     />
     <div v-else>
       <pipeline-editor-messages
@@ -426,11 +421,10 @@ export default {
         :has-unsaved-changes="hasUnsavedChanges"
         :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
-        @resetContent="confirmReset"
-        @showError="showErrorAlert"
-        @refetchContent="refetchContent"
-        @updateCiConfig="updateCiConfig"
-        @updateCommitSha="updateCommitSha"
+        @reset-content="confirmReset"
+        @show-error="showErrorAlert"
+        @update-ci-config="updateCiConfig"
+        @update-commit-sha="updateCommitSha"
       />
       <gl-modal
         v-model="showResetConfirmationModal"

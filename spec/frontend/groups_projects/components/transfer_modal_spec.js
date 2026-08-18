@@ -50,7 +50,7 @@ describe('GroupsProjectsTransferModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findTransferLocations = () => wrapper.findComponent(TransferLocations);
-  const findUrlChangeCheckbox = () => wrapper.findByTestId('url-change-confirmation');
+  const findUrlChangeCheckbox = () => wrapper.findComponentByTestId('url-change-confirmation');
 
   const selectLocation = async (value) => {
     findTransferLocations().vm.$emit('input', value);

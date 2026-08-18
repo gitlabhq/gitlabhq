@@ -12,13 +12,6 @@ title: Command palette
 
 {{< /details >}}
 
-{{< history >}}
-
-- Introduced in GitLab 16.2 [with a feature flag](../../administration/feature_flags/_index.md) named `command_palette`. Enabled by default.
-- Feature flag `command_palette` removed in GitLab 16.4.
-
-{{< /history >}}
-
 You can use command palette to narrow down the scope of your search or to
 find an object more quickly.
 

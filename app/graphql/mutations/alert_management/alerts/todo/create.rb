@@ -7,6 +7,9 @@ module Mutations
         class Create < Base
           graphql_name 'AlertTodoCreate'
 
+          authorize_granular_token permissions: :create_todo,
+            boundary_argument: :project_path, boundary_type: :project
+
           def resolve(args)
             alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])
             result = ::AlertManagement::Alerts::Todo::CreateService.new(alert, current_user).execute

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Boards::Lists::Destroy, feature_category: :portfolio_management do
+RSpec.describe Mutations::Boards::Lists::Destroy, feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be_with_reload(:current_user) { create(:user) }

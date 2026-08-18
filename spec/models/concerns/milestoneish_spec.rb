@@ -244,12 +244,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     end
   end
 
-  describe '#total_merge_requests_count' do
-    it 'counts merge requests' do
-      expect(milestone.total_merge_requests_count).to eq 1
-    end
-  end
-
   describe '#remaining_days' do
     it 'shows 0 if no due date' do
       milestone = build_stubbed(:milestone)
@@ -267,26 +261,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
       milestone = build_stubbed(:milestone, due_date: 2.days.from_now)
 
       expect(milestone.remaining_days).to eq(2)
-    end
-  end
-
-  describe '#elapsed_days' do
-    it 'shows 0 if no start_date set' do
-      milestone = build_stubbed(:milestone)
-
-      expect(milestone.elapsed_days).to eq(0)
-    end
-
-    it 'shows 0 if start_date is a future' do
-      milestone = build_stubbed(:milestone, start_date: Time.current + 2.days)
-
-      expect(milestone.elapsed_days).to eq(0)
-    end
-
-    it 'shows correct amount of days' do
-      milestone = build_stubbed(:milestone, start_date: Time.current - 2.days)
-
-      expect(milestone.elapsed_days).to eq(2)
     end
   end
 

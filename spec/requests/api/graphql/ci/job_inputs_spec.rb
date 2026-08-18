@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query.project.job.inputs', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:query) do
     %(
       query {

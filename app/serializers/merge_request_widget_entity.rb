@@ -6,7 +6,6 @@ class MergeRequestWidgetEntity < Grape::Entity
   include ApplicationHelper
   include ApplicationSettingsHelper
 
-  SUGGEST_PIPELINE = 'suggest_pipeline'
   MIGRATE_FROM_JENKINS_BANNER = 'migrate_from_jenkins_banner'
 
   expose :id
@@ -64,21 +63,8 @@ class MergeRequestWidgetEntity < Grape::Entity
     ci_environments_status_project_merge_request_path(merge_request.project, merge_request)
   end
 
-  expose :merge_request_add_ci_config_path, if: ->(mr, _) { can_add_ci_config_path?(mr) } do |merge_request|
-    project = merge_request.source_project
-    params = {
-      branch_name: merge_request.source_branch,
-      add_new_config_file: true
-    }
-    project_ci_pipeline_editor_path(project, params)
-  end
-
   expose :user_callouts_path do |_merge_request|
     callouts_path
-  end
-
-  expose :suggest_pipeline_feature_id do |_merge_request|
-    SUGGEST_PIPELINE
   end
 
   expose :migrate_jenkins_feature_id do |_merge_request|
@@ -90,10 +76,6 @@ class MergeRequestWidgetEntity < Grape::Entity
     next true unless Gitlab::CurrentSettings.show_migrate_from_jenkins_banner?
 
     current_user.dismissed_callout?(feature_name: MIGRATE_FROM_JENKINS_BANNER)
-  end
-
-  expose :human_access do |merge_request|
-    merge_request.project.team.human_max_access(current_user&.id)
   end
 
   expose :new_project_pipeline_path do |merge_request|
@@ -169,14 +151,6 @@ class MergeRequestWidgetEntity < Grape::Entity
   def presenter(merge_request)
     @presenters ||= {}
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
-  end
-
-  def can_add_ci_config_path?(merge_request)
-    merge_request.open? &&
-      merge_request.source_branch_exists? &&
-      !merge_request.source_project.has_ci? &&
-      can?(current_user, :read_build, merge_request.source_project) &&
-      can?(current_user, :create_pipeline, merge_request.source_project)
   end
 
   def head_pipeline_downloadable_path_for_report_type(file_type)

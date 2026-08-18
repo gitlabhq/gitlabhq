@@ -225,11 +225,10 @@ export default {
       :board-id="boardId"
       :is-swimlanes-on="isSwimlanesOn"
       :filters="filterParams"
-      @switchBoard="switchBoard"
-      @setFilters="setFilters"
-      @setAddColumnFormVisibility="addColumnFormVisible = $event"
-      @toggleSwimlanes="setIsShowingEpicSwimlanes"
-      @updateBoard="refetchLists"
+      @switch-board="switchBoard"
+      @set-filters="setFilters"
+      @toggle-swimlanes="setIsShowingEpicSwimlanes"
+      @update-board="refetchLists"
     />
     <board-content
       class="board-content"
@@ -244,9 +243,9 @@ export default {
       :board-lists="boardLists"
       :error="error"
       :list-query-variables="listQueryVariables"
-      @setActiveList="setActiveId"
-      @setAddColumnFormVisibility="addColumnFormVisible = $event"
-      @setFilters="setFilters"
+      @set-active-list="setActiveId"
+      @set-add-column-form-visibility="addColumnFormVisible = $event"
+      @set-filters="setFilters"
       @drawer-closed="handleWorkItemDrawerClose"
       @drawer-opened="isWorkItemDrawerOpened = true"
     />
@@ -256,7 +255,7 @@ export default {
       :list-id="activeListId"
       :board-id="boardId"
       :query-variables="listQueryVariables"
-      @unsetActiveId="setActiveId('')"
+      @unset-active-id="setActiveId('')"
     />
   </div>
 </template>

@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_server do
   let(:service_name) { 'test_aggregated_tool' }
-  let(:mock_tool) { instance_double(Mcp::Tools::ApiTool, name: :gitlab_search_in_instance) }
-  let(:mock_tool_2) { instance_double(Mcp::Tools::ApiTool, name: :gitlab_search_in_group) }
+  let(:mock_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :gitlab_search_in_instance) }
+  let(:mock_tool_2) { instance_double(Mcp::Tools::Base::ApiTool, name: :gitlab_search_in_group) }
   let(:tools) { [mock_tool, mock_tool_2] }
 
   describe '#initialize' do
@@ -83,13 +83,13 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
 
           private
 
-          def perform_1_0_0(_args)
+          def perform_v1_0_0(_args)
             tool = tools.first
 
             tool.execute(request:, params:)
           end
 
-          def perform_2_0_0(_args)
+          def perform_v2_0_0(_args)
             tool = tools.second
             params[:arguments][:another] = 1
 
@@ -115,8 +115,7 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
         mock_response_1 = { content: [{ type: 'text', text: 'Success one' }], isError: false }
         mock_response_2 = { content: [{ type: 'text', text: 'Success two' }], isError: false }
 
-        params_2 = params
-        params_2[:arguments][:search_type] = 'basic'
+        params_2 = { arguments: arguments.merge(search_type: 'basic') }
 
         expect(mock_tool).to receive(:execute).with(request: nil, params: params).and_return(mock_response_1)
         expect(mock_tool_2).to receive(:execute).with(request: nil, params: params_2).and_return(mock_response_2)
@@ -134,7 +133,11 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
         Class.new(described_class) do
           register_version '3.0.0', {
             description: 'Version without implementation',
-            input_schema: { type: 'object', properties: {}, required: [] }
+            input_schema: {
+              type: 'object',
+              properties: { scope: { type: 'string' }, search: { type: 'string' } },
+              required: []
+            }
           }
 
           def self.tool_name
@@ -169,7 +172,11 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
         Class.new(described_class) do
           register_version '3.0.0', {
             description: 'Version without implementation',
-            input_schema: { type: 'object', properties: {}, required: [] }
+            input_schema: {
+              type: 'object',
+              properties: { scope: { type: 'string' }, search: { type: 'string' } },
+              required: []
+            }
           }
 
           def self.tool_name
@@ -294,7 +301,11 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
         Class.new(described_class) do
           register_version '3.0.0', {
             description: 'Version without implementation',
-            input_schema: { type: 'object', properties: {}, required: [] }
+            input_schema: {
+              type: 'object',
+              properties: { scope: { type: 'string' }, search: { type: 'string' } },
+              required: []
+            }
           }
 
           def self.tool_name

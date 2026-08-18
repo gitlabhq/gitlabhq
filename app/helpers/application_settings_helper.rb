@@ -301,6 +301,7 @@ module ApplicationSettingsHelper
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
+      :import_jobs_concurrency_limit,
       :container_expiration_policies_enable_historic_entries,
       :container_registry_expiration_policies_caching,
       :container_registry_token_expire_delay,
@@ -567,6 +568,8 @@ module ApplicationSettingsHelper
       :email_restrictions_enabled,
       :email_restrictions,
       :issues_create_limit,
+      :project_create_limit,
+      :group_create_limit,
       :notes_create_limit,
       :notes_create_limit_allowlist_raw,
       :members_delete_limit,
@@ -599,7 +602,7 @@ module ApplicationSettingsHelper
       :sidekiq_job_limiter_mode,
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
-      :suggest_pipeline_enabled,
+      :sidekiq_timezone_override,
       :enable_artifact_external_redirect_warning_page,
       :search_rate_limit,
       :search_rate_limit_unauthenticated,
@@ -623,6 +626,9 @@ module ApplicationSettingsHelper
       :silent_admin_exports_enabled,
       :allow_contribution_mapping_to_admins,
       :allow_s3_compatible_storage_for_offline_transfer,
+      :allow_application_default_credentials_for_offline_transfer,
+      :offline_transfer_exports_enabled,
+      :offline_transfer_imports_enabled,
       :allow_runner_registration_token,
       :valid_runner_registrars,
       :user_defaults_to_private_profile,
@@ -636,6 +642,7 @@ module ApplicationSettingsHelper
       :groups_api_limit,
       :project_api_limit,
       :project_invited_groups_api_limit,
+      :project_repositories_blobs_batch_limit,
       :projects_api_limit,
       :project_members_api_limit,
       :create_organization_api_limit,
@@ -649,6 +656,8 @@ module ApplicationSettingsHelper
       :users_api_limit_ssh_key,
       :users_api_limit_gpg_keys,
       :users_api_limit_gpg_key,
+      :web_hook_event_resend_limit,
+      :web_hook_test_limit,
       :gitlab_dedicated_instance,
       :gitlab_environment_toolkit_instance,
       :ci_max_includes,
@@ -700,6 +709,7 @@ module ApplicationSettingsHelper
         settings << :nuget_skip_metadata_url_validation
         settings << :helm_max_packages_count
         settings << :mcp_server_enabled
+        settings << :dynamic_client_registration_enabled
       end
     end
   end
@@ -790,6 +800,30 @@ module ApplicationSettingsHelper
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
       pending_user_count: pending_user_count
     }
+  end
+
+  # Builds the view model for the Sidekiq cron jobs timezone dropdown.
+  #
+  # @return [Hash] the timezone dropdown view model
+  def sidekiq_timezone_dropdown_view_model
+    {
+      inputId: 'application_setting_sidekiq_timezone_override',
+      value: @application_setting.sidekiq_timezone_override.to_s,
+      timezoneData: timezone_data_with_unique_identifiers,
+      name: 'application_setting[sidekiq_timezone_override]',
+      defaultText: _('System default'),
+      additionalClass: ['gl-md-form-input-lg'],
+      disabled: managed_setting?(:sidekiq_timezone_override)
+    }
+  end
+
+  # Whether the given application setting is managed by configuration and therefore read-only
+  # in the Admin UI.
+  #
+  # @param attr [Symbol, String]
+  # @return [Boolean]
+  def managed_setting?(attr)
+    Gitlab::ManagedSettings.managed?(attr)
   end
 
   def vscode_extension_marketplace_settings_view

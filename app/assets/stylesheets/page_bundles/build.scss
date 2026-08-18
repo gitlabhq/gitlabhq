@@ -75,7 +75,7 @@
         @apply gl-bg-strong;
       }
 
-      a:focus {
+      a:focus-visible {
         @apply gl-relative;
         @apply gl-z-2;
       }

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Customize instructions for AI to use in merge request reviews.
 title: Customize review instructions for the Agent Platform
@@ -170,12 +170,24 @@ You can define custom review instructions for a group by specifying a project to
 The template project must contain a `.gitlab/duo/mr-review-instructions.yaml` file with review
 instructions that apply to all projects in the group and its subgroups.
 
-When GitLab Duo performs a code review, it combines instructions from the top-level group with instructions defined in the individual project.
+When GitLab Duo performs a code review, it combines instructions from the top-level group with
+instructions defined in the individual project.
+
+> [!note]
+> If you already configured a project to store [automatic review exclusion rules](../flows/foundational_flows/code_review/_index.md#exclude-merge-requests-for-a-project) for your group, store your `mr-review-instructions.yaml`
+> in the same project.
+> You can only specify a single project to customize code review for a group, so GitLab automatically
+> checks that project for review instructions as well. You do not need to follow the steps below again.
 
 Prerequisites:
 
 - The Owner role for the top-level group.
 - A project in the group contains the custom review instructions that you want to use as a template.
+
+  > [!warning]
+  > Do not store sensitive or confidential information in `mr-review-instructions.yaml`.
+  > Any user who can view a merge request in the group can access group review instructions,
+  > even if they do not have access to the project that contains the file.
 
 To configure custom review instructions for a group:
 
@@ -211,6 +223,11 @@ Prerequisites:
 
 - Administrator access for the instance.
 - A project on the instance contains the custom review instructions that you want to use as a template.
+
+  > [!warning]
+  > Do not store sensitive or confidential information in `mr-review-instructions.yaml`.
+  > Any user who can view a merge request on the instance can access instance review instructions,
+  > even if they do not have access to the project that contains the file.
 
 To configure custom review instructions for an instance:
 
@@ -966,4 +983,4 @@ codes that start with `I` are informational notes about valid but worth-knowing 
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
-- [Code Review Flow](../flows/foundational_flows/code_review.md)
+- [Code Review Flow](../flows/foundational_flows/code_review/_index.md)

@@ -124,11 +124,3 @@ environment variable is set to `dumb`. To fix the formatting for these tools, yo
 
 - Add an additional script line to set `TERM=ansi` in the shell's environment before running the command.
 - Add a `TERM` [CI/CD variable](../variables/_index.md) with a value of `ansi`.
-
-## `after_script` section execution stops early and incorrect `$CI_JOB_STATUS` values
-
-In GitLab Runner 16.9.0 to 16.11.0:
-
-- The `after_script` section execution sometimes stops too early.
-- The status of the `$CI_JOB_STATUS` predefined variable is
-  [incorrectly set as `failed` while the job is canceling](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37485).

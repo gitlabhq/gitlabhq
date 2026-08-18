@@ -18,6 +18,18 @@ Vue.use(VueApollo);
 const namespaceProjectsData = namespaceProjectsList.data.namespace.projects.nodes;
 const namespaceGroupsData = namespaceGroupsList.data.group.descendantGroups.nodes;
 
+const mockFrequentlyUsedGroups = [
+  {
+    id: 33,
+    name: 'Group A',
+    namespace: 'Group A',
+    webUrl: '/group-a',
+    avatarUrl: null,
+    lastAccessedOn: 125,
+    frequency: 5,
+  },
+];
+
 describe('WorkItemNamespaceListbox', () => {
   let wrapper;
 
@@ -25,12 +37,21 @@ describe('WorkItemNamespaceListbox', () => {
     return 'root/frequent-projects';
   };
 
+  const getGroupsLocalstorageKey = () => {
+    return 'root/frequent-groups';
+  };
+
   const setLocalStorageFrequentItems = (json = mockFrequentlyUsedProjects) => {
     localStorage.setItem(getLocalstorageKey(), JSON.stringify(json));
   };
 
+  const setLocalStorageFrequentGroups = (json = mockFrequentlyUsedGroups) => {
+    localStorage.setItem(getGroupsLocalstorageKey(), JSON.stringify(json));
+  };
+
   const removeLocalstorageFrequentItems = () => {
     localStorage.removeItem(getLocalstorageKey());
+    localStorage.removeItem(getGroupsLocalstorageKey());
   };
 
   const namespaceProjectsFormLinksWidgetResolver = jest
@@ -45,11 +66,12 @@ describe('WorkItemNamespaceListbox', () => {
   const findAllDropdownItemsFor = (fullPath) => wrapper.findAllByTestId(`listbox-item-${fullPath}`);
   const findDropdownToggle = () => wrapper.findByTestId('base-dropdown-toggle');
 
-  const createComponent = async (
+  const createComponent = async ({
     isGroup = true,
     fullPath = 'group-a',
     selectedNamespacePath = null,
-  ) => {
+    projectsOnly = false,
+  } = {}) => {
     wrapper = mountExtended(WorkItemNamespaceListbox, {
       apolloProvider: createMockApollo([
         [namespaceProjectsForLinksWidgetQuery, namespaceProjectsFormLinksWidgetResolver],
@@ -59,6 +81,7 @@ describe('WorkItemNamespaceListbox', () => {
         fullPath,
         isGroup,
         selectedNamespacePath,
+        projectsOnly,
       },
     });
 
@@ -171,5 +194,85 @@ describe('WorkItemNamespaceListbox', () => {
     // group A is the auto-selected namespace so it will still be displayed
     // in the toggle. Search results are displayed in the dropdown item list
     expect(findDropdown().props('toggleText')).toBe('Group A');
+  });
+
+  describe('when projectsOnly is true', () => {
+    let groupsResolver;
+
+    const createProjectsOnlyComponent = async () => {
+      groupsResolver = jest.fn().mockResolvedValue(namespaceGroupsList);
+
+      wrapper = mountExtended(WorkItemNamespaceListbox, {
+        apolloProvider: createMockApollo([
+          [namespaceProjectsForLinksWidgetQuery, namespaceProjectsFormLinksWidgetResolver],
+          [namespaceGroupsForLinksWidgetQuery, groupsResolver],
+        ]),
+        propsData: {
+          fullPath: 'group-a',
+          isGroup: true,
+          selectedNamespacePath: null,
+          projectsOnly: true,
+        },
+      });
+
+      await waitForPromises();
+    };
+
+    beforeEach(async () => {
+      await createProjectsOnlyComponent();
+      gon.current_username = 'root';
+    });
+
+    it('does not offer groups', () => {
+      expect(findDropdownItemFor(namespaceProjectsData[0].fullPath).exists()).toBe(true);
+      expect(findDropdownItemFor(namespaceGroupsData[0].fullPath).exists()).toBe(false);
+    });
+
+    it('does not request groups', () => {
+      expect(groupsResolver).not.toHaveBeenCalled();
+    });
+
+    it('labels the list of options as projects', () => {
+      expect(findDropdown().text()).toContain('All projects');
+      expect(findDropdown().text()).not.toContain('All groups and projects');
+    });
+
+    it('does not offer recently used groups', async () => {
+      setLocalStorageFrequentItems();
+      setLocalStorageFrequentGroups();
+
+      findDropdown().vm.$emit('shown');
+      await nextTick();
+
+      expect(findDropdown().text()).toContain('Recently used');
+      expect(findDropdownItemFor('group-a').exists()).toBe(false);
+    });
+
+    it('asks the user to select a project when there is no namespace to default to', async () => {
+      await createComponent({ fullPath: '', projectsOnly: true });
+
+      expect(findDropdown().props('toggleText')).toBe('Select a project');
+    });
+  });
+
+  it('renders without error when the group query returns null (e.g. personal namespace)', async () => {
+    const nullGroupResolver = jest.fn().mockResolvedValue({ data: { group: null } });
+
+    wrapper = mountExtended(WorkItemNamespaceListbox, {
+      apolloProvider: createMockApollo([
+        [namespaceProjectsForLinksWidgetQuery, namespaceProjectsFormLinksWidgetResolver],
+        [namespaceGroupsForLinksWidgetQuery, nullGroupResolver],
+      ]),
+      propsData: {
+        fullPath: 'group-a',
+        isGroup: true,
+        selectedNamespacePath: null,
+      },
+    });
+
+    await waitForPromises();
+
+    expect(findDropdown().exists()).toBe(true);
+    expect(findDropdown().props('items')).not.toBeUndefined();
   });
 });

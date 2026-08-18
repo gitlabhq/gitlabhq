@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Database::PartitionHelpers, feature_category: :database d
   describe "#table_partitioned?" do
     subject { model.table_partitioned?(table_name) }
 
-    let(:table_name) { 'p_ci_builds_metadata' }
+    let(:table_name) { 'p_ci_builds' }
 
     it { is_expected.to be_truthy }
 

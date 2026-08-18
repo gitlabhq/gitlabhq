@@ -300,4 +300,381 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
       end
     end
   end
+
+  describe '#sharding_keys_for' do
+    it 'resolves a sharding key referencing projects to the project deleted-records table' do
+      expect(migration.sharding_keys_for('project_repositories')).to contain_exactly(
+        { table: 'loose_foreign_keys_project_deleted_records', column: 'project_id', source: 'project_id' }
+      )
+    end
+
+    it 'resolves by the referenced table, not the source column name' do
+      stub_sharding_key('_test_lfk_group_table', 'group_id' => 'namespaces')
+
+      expect(migration.sharding_keys_for('_test_lfk_group_table')).to contain_exactly(
+        { table: 'loose_foreign_keys_namespace_deleted_records', column: 'namespace_id', source: 'group_id' }
+      )
+    end
+
+    it 'returns an empty array for a table without a sharding key' do
+      expect(migration.sharding_keys_for('loose_foreign_keys_deleted_records')).to eq([])
+    end
+
+    it 'ignores sharding keys referencing non-routable tables' do
+      stub_sharding_key('_test_lfk_ci_table', 'pipeline_id' => 'ci_pipelines')
+
+      expect(migration.sharding_keys_for('_test_lfk_ci_table')).to eq([])
+    end
+
+    it 'raises when two sharding keys route to the same table' do
+      stub_sharding_key('_test_lfk_ambiguous_table', 'group_id' => 'namespaces', 'namespace_id' => 'namespaces')
+
+      expect { migration.sharding_keys_for('_test_lfk_ambiguous_table') }.to raise_error(
+        ArgumentError, /more than one sharding key routed to loose_foreign_keys_namespace_deleted_records/
+      )
+    end
+  end
+
+  describe '#sharding_keys_args' do
+    it 'returns a quoted JSON literal of the routing targets' do
+      targets = [{ table: 'loose_foreign_keys_project_deleted_records', column: 'project_id', source: 'project_id' }]
+
+      expect(migration.sharding_keys_args('project_repositories')).to(eq(migration.connection.quote(targets.to_json)))
+    end
+
+    it 'returns nil when there are no routable sharding keys' do
+      expect(migration.sharding_keys_args('loose_foreign_keys_deleted_records')).to be_nil
+    end
+
+    it 'raises when the declared sharding key column is missing from the table' do
+      stub_sharding_key('project_repositories', 'nonexistent_id' => 'projects')
+
+      expect { migration.sharding_keys_args('project_repositories') }.to raise_error(
+        ArgumentError, /missing the sharding key column\(s\) nonexistent_id/
+      )
+    end
+
+    it 'raises when the target deleted-records table does not exist' do
+      stub_const(
+        "#{described_class}::SHARDING_KEY_TARGETS",
+        { 'projects' => { table: '_test_lfk_no_such_deleted_records', column: 'project_id' } }
+      )
+
+      expect { migration.sharding_keys_args('project_repositories') }.to raise_error(
+        ArgumentError,
+        /Missing loose foreign keys deleted-records target\(s\) _test_lfk_no_such_deleted_records.project_id/
+      )
+    end
+  end
+
+  describe 'sharding key routing' do
+    let(:current_schema) { migration.connection.current_schema }
+    let(:dynamic_partitions_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
+    let(:sharding_keys) do
+      %w[organization namespace project user].map do |key|
+        { table: "loose_foreign_keys_#{key}_deleted_records", column: "#{key}_id", source: "#{key}_id" }
+      end
+    end
+
+    before do
+      create_deleted_records_partitions
+      clear_deleted_records
+    end
+
+    after do
+      clear_deleted_records
+    end
+
+    # Runs against both trigger functions. The routing logic is duplicated between
+    # insert_into_loose_foreign_keys_deleted_records and its _override_table variant
+    # because a transition table cannot be passed to another function, so both have
+    # to be held to the same behavior here.
+    shared_examples 'routing deleted records by sharding key' do
+      before do
+        allow(migration).to receive(:sharding_keys_for).and_return(sharding_keys)
+      end
+
+      it 'writes one record per sharding key the row carries' do
+        insert_rows({ organization_id: 1, namespace_id: 2, project_id: 3, user_id: 4 })
+        install_trigger
+
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 0, organization: 1, namespace: 1, project: 1, user: 1)
+      end
+
+      it 'routes each row by the sharding keys it actually carries' do
+        insert_rows({ project_id: 3 }, { namespace_id: 2 }, { organization_id: 1, user_id: 4 })
+        install_trigger
+
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 0, organization: 1, namespace: 1, project: 1, user: 1)
+      end
+
+      it 'keeps rows carrying no sharding key value in the cell-local table' do
+        insert_rows({ project_id: 3 }, {}, {})
+        install_trigger
+
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 2, organization: 0, namespace: 0, project: 1, user: 0)
+      end
+
+      it 'accounts for every deleted row' do
+        insert_rows({ project_id: 3 }, {}, { namespace_id: 2, project_id: 3 }, { user_id: 4 })
+        install_trigger
+        deleted_ids = current_ids
+
+        delete_rows
+
+        expect(tracked_row_ids).to match_array(deleted_ids)
+        expect(records_per_store.values.sum).to eq(5)
+      end
+
+      it 'treats zero and negative sharding key values as present' do
+        insert_rows({ project_id: 0 }, { project_id: -1 })
+        install_trigger
+
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 0, organization: 0, namespace: 0, project: 2, user: 0)
+      end
+
+      it 'writes nothing when the statement deletes no rows' do
+        insert_rows({ project_id: 3 })
+        install_trigger
+
+        delete_rows('id < 0')
+
+        expect(records_per_store.values).to all(eq(0))
+      end
+
+      it 'accumulates records across separate delete statements' do
+        insert_rows({ project_id: 3 }, { project_id: 4 }, {})
+        install_trigger
+
+        current_ids.each { |id| delete_rows("id = #{id}") }
+
+        expect(records_per_store).to eq(cell_local: 1, organization: 0, namespace: 0, project: 2, user: 0)
+      end
+
+      it 'records the tracked table name on every record' do
+        insert_rows({ project_id: 3 }, {})
+        install_trigger
+
+        delete_rows
+
+        expect(tracked_table_names).to eq([expected_table_name])
+      end
+
+      context 'when the table has no routable sharding key' do
+        let(:sharding_keys) { [] }
+
+        it 'keeps every deletion in the cell-local table' do
+          insert_rows({ project_id: 3 }, {})
+          install_trigger
+
+          delete_rows
+
+          expect(records_per_store).to eq(cell_local: 2, organization: 0, namespace: 0, project: 0, user: 0)
+        end
+      end
+    end
+
+    describe '#track_record_deletions_with_sharding_keys' do
+      let(:table_name) { :_test_gitlab_shared_cell_local_lfk_sharded }
+      let(:insert_target) { table_name }
+      let(:delete_target) { table_name }
+      let(:extra_insert_attributes) { {} }
+      let(:expected_table_name) { "#{current_schema}.#{table_name}" }
+
+      before do
+        migration.connection.execute(<<~SQL)
+          CREATE TABLE #{table_name} (
+            id serial PRIMARY KEY,
+            organization_id bigint,
+            namespace_id bigint,
+            project_id bigint,
+            user_id bigint
+          );
+        SQL
+      end
+
+      after do
+        migration.connection.execute("DROP TABLE IF EXISTS #{table_name} CASCADE")
+      end
+
+      it_behaves_like 'routing deleted records by sharding key'
+
+      it 'rewrites an existing cell-local trigger in place' do
+        allow(migration).to receive(:sharding_keys_for).and_return(sharding_keys)
+        migration.track_record_deletions(table_name)
+        insert_rows({ project_id: 3 })
+
+        install_trigger
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 0, organization: 0, namespace: 0, project: 1, user: 0)
+      end
+
+      # organizations is tracked with `sharding_key: { id: organizations }`, so the value routed
+      # to the sharded table is the deleted row's own primary key.
+      it 'routes a table whose sharding key is its own primary key' do
+        allow(migration).to receive(:sharding_keys_for).and_return(
+          [{ table: 'loose_foreign_keys_organization_deleted_records', column: 'organization_id', source: 'id' }]
+        )
+        insert_rows({ project_id: 3 }, {})
+        install_trigger
+        deleted_ids = current_ids
+
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 0, organization: 2, namespace: 0, project: 0, user: 0)
+        expect(LooseForeignKeys::OrganizationDeletedRecord.pluck(:primary_key_value, :organization_id)).to(
+          match_array(deleted_ids.map { |id| [id, id] })
+        )
+      end
+
+      it 'leaves the existing trigger in place when validation fails' do
+        allow(migration).to receive(:sharding_keys_for).and_return(
+          [{ table: '_test_lfk_no_such_deleted_records', column: 'project_id', source: 'project_id' }]
+        )
+        migration.track_record_deletions(table_name)
+        insert_rows({ project_id: 3 })
+
+        expect { install_trigger }.to raise_error(ArgumentError, /Missing loose foreign keys deleted-records target/)
+
+        delete_rows
+
+        expect(records_per_store).to eq(cell_local: 1, organization: 0, namespace: 0, project: 0, user: 0)
+      end
+
+      it 'fails loudly when the trigger names a target table that does not exist' do
+        insert_rows({ project_id: 3 })
+
+        migration.connection.execute(<<~SQL.squish)
+          CREATE TRIGGER #{table_name}_loose_fk_trigger
+          AFTER DELETE ON #{table_name} REFERENCING OLD TABLE AS old_table
+          FOR EACH STATEMENT
+          EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records(
+            '[{"table":"_test_lfk_no_such_table","column":"project_id","source":"project_id"}]'
+          );
+        SQL
+
+        expect do
+          migration.connection.transaction(requires_new: true) { delete_rows }
+        end.to raise_error(ActiveRecord::StatementInvalid, /relation "_test_lfk_no_such_table" does not exist/)
+      end
+
+      def install_trigger
+        migration.track_record_deletions_with_sharding_keys(table_name)
+      end
+    end
+
+    describe '#track_record_deletions_override_table_name_with_sharding_keys' do
+      let(:partitioned_table) { :_test_gitlab_shared_cell_local_lfk_sharded_part }
+      let(:partition) { :_test_gitlab_shared_cell_local_lfk_sharded_partition_01 }
+      let(:insert_target) { partitioned_table }
+      let(:delete_target) { "#{dynamic_partitions_schema}.#{partition}" }
+      let(:extra_insert_attributes) { { partition_id: 1 } }
+      let(:expected_table_name) { "#{current_schema}.#{partitioned_table}" }
+
+      before do
+        migration.connection.execute(<<~SQL)
+          CREATE TABLE #{partitioned_table} (
+            id serial NOT NULL,
+            organization_id bigint,
+            namespace_id bigint,
+            project_id bigint,
+            user_id bigint,
+            partition_id integer NOT NULL,
+            PRIMARY KEY (id, partition_id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{dynamic_partitions_schema}.#{partition}
+            PARTITION OF #{partitioned_table} FOR VALUES IN (1);
+        SQL
+      end
+
+      after do
+        migration.connection.execute("DROP TABLE IF EXISTS #{partitioned_table} CASCADE")
+      end
+
+      it_behaves_like 'routing deleted records by sharding key'
+
+      def install_trigger
+        migration.track_record_deletions_override_table_name_with_sharding_keys(delete_target, partitioned_table)
+      end
+    end
+
+    def deleted_record_stores
+      {
+        cell_local: LooseForeignKeys::DeletedRecord,
+        organization: LooseForeignKeys::OrganizationDeletedRecord,
+        namespace: LooseForeignKeys::NamespaceDeletedRecord,
+        project: LooseForeignKeys::ProjectDeletedRecord,
+        user: LooseForeignKeys::UserDeletedRecord
+      }
+    end
+
+    def create_deleted_records_partitions
+      deleted_record_stores.each_value do |store|
+        migration.connection.execute(<<~SQL)
+          CREATE TABLE IF NOT EXISTS #{dynamic_partitions_schema}.#{store.table_name}_1
+            PARTITION OF #{store.table_name} FOR VALUES IN (1);
+        SQL
+      end
+    end
+
+    def clear_deleted_records
+      deleted_record_stores.each_value do |store|
+        migration.connection.execute("DELETE FROM #{store.table_name}")
+      end
+    end
+
+    def records_per_store
+      deleted_record_stores.transform_values(&:count)
+    end
+
+    def tracked_row_ids
+      deleted_record_stores.each_value.flat_map { |store| store.pluck(:primary_key_value) }.uniq
+    end
+
+    def tracked_table_names
+      deleted_record_stores.each_value.flat_map { |store| store.pluck(:fully_qualified_table_name) }.uniq
+    end
+
+    def insert_rows(*rows)
+      rows.each do |row|
+        attributes = row.merge(extra_insert_attributes)
+
+        if attributes.empty?
+          migration.connection.execute("INSERT INTO #{insert_target} DEFAULT VALUES")
+        else
+          values = attributes.values.map { |value| migration.connection.quote(value) }
+
+          migration.connection.execute(
+            "INSERT INTO #{insert_target} (#{attributes.keys.join(', ')}) VALUES (#{values.join(', ')})"
+          )
+        end
+      end
+    end
+
+    def delete_rows(condition = nil)
+      migration.connection.execute("DELETE FROM #{delete_target}#{" WHERE #{condition}" if condition}")
+    end
+
+    def current_ids
+      migration.connection.select_values("SELECT id FROM #{delete_target} ORDER BY id")
+    end
+  end
+
+  def stub_sharding_key(table_name, sharding_key)
+    entry = instance_double(Gitlab::Database::Dictionary::Entry, sharding_key: sharding_key)
+
+    allow(Gitlab::Database::Dictionary.entries).to receive(:find_by_table_name).and_call_original
+    allow(Gitlab::Database::Dictionary.entries).to receive(:find_by_table_name)
+      .with(table_name).and_return(entry)
+  end
 end

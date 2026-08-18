@@ -7,7 +7,6 @@ module QA
     describe 'Multiple Cells' do
       it(
         'user logged into one Cell is logged into all',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/433548',
         only: :local
       ) do
         Flow::Login.sign_in(as: create(:user))

@@ -72,58 +72,85 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, :aggrega
     end
   end
 
-  describe 'sign-in when the current organization is read-only', :without_current_organization do
-    let_it_be_with_reload(:read_only_organization) { create(:organization) }
-
-    let(:extern_uid) { 'read-only-uid' }
-    let(:auth_email) { 'new-user@example.com' }
-    let(:organization_headers) do
-      { Gitlab::Current::Organization::HTTP_HEADER => read_only_organization.id.to_s }
-    end
+  describe 'sign-in when the email matches an existing account and auto_link is disabled' do
+    let(:extern_uid) { 'collision-uid' }
+    let(:auth_email) { 'collision@example.com' }
+    let(:password) { User.random_password }
+    let(:existing_user) { create(:user, email: 'collision@example.com', password: password) }
 
     around do |example|
       with_omniauth_full_host { example.run }
     end
 
     before do
-      stub_omniauth_setting(enabled: true, auto_link_user: true, allow_single_sign_on: ['atlassian_oauth2'])
+      existing_user
+      stub_omniauth_setting(enabled: true, auto_link_user: false, allow_single_sign_on: ['atlassian_oauth2'])
       stub_omniauth_setting(block_auto_created_users: false)
       mock_auth_hash('atlassian_oauth2', extern_uid, auth_email)
-
-      read_only_organization.start_read_only!(read_only_reason: 'migration')
-      read_only_organization.confirm_read_only!
-
-      stub_feature_flags(organization_read_only_enforcement: true)
     end
 
-    context 'when the user does not yet exist (new-user INSERT)' do
-      it 'blocks creation, surfaces the read-only flash, and redirects to sign-in' do
-        expect do
-          post '/users/auth/atlassian_oauth2/callback', headers: organization_headers
-        end.not_to change { User.count }
+    it 'redirects to sign-in, stashes the pending identity, and does not create a user' do
+      state = SecureRandom.uuid
+      allow(SecureRandom).to receive(:uuid).and_return(state)
 
-        expect(response).to redirect_to(new_user_session_path)
-        expect(flash[:alert]).to eq(
-          'This organization is currently in read-only mode. ' \
-            'New account creation via SSO is currently unavailable.'
-        )
+      expect do
+        post '/users/auth/atlassian_oauth2/callback'
+      end.not_to change { User.count }
+
+      expect(response).to redirect_to(new_user_session_path)
+      expect(request.env['warden']).not_to be_authenticated
+
+      expect(session['identity_link_state']).to eq(state)
+      expect(session['identity_link_provider']).to eq('atlassian_oauth2')
+      expect(session['identity_link_extern_uid']).to eq(extern_uid)
+      expect(session['identity_link_user_id']).to eq(existing_user.id)
+      expect(session['user_return_to']).to eq(new_user_settings_identities_path(state: state))
+      expect(flash[:notice]).to include('Sign in with your existing credentials to connect your')
+    end
+
+    it 'lands on the identity authorization page once the user signs in' do
+      post '/users/auth/atlassian_oauth2/callback'
+
+      state = session['identity_link_state']
+      expect(state).to be_present
+      expect(session['user_return_to']).to eq(new_user_settings_identities_path(state: state))
+
+      post user_session_path(user: { login: existing_user.username, password: existing_user.password })
+
+      expect(request.env['warden']).to be_authenticated
+      expect(response).to redirect_to(new_user_settings_identities_path(state: state))
+      expect(session['identity_link_provider']).to eq('atlassian_oauth2')
+      expect(session['identity_link_extern_uid']).to eq(extern_uid)
+      expect(session['identity_link_user_id']).to eq(existing_user.id)
+    end
+
+    context 'when the failure is not an email collision' do
+      before do
+        allow_next_instance_of(Gitlab::Auth::OAuth::User) do |auth_user|
+          allow(auth_user).to receive(:existing_user_for_email_link).and_return(nil)
+        end
+      end
+
+      it 'falls back to the 422 failure page and does not stash an identity' do
+        post '/users/auth/atlassian_oauth2/callback'
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(request.env['warden']).not_to be_authenticated
+        expect(session['identity_link_provider']).to be_nil
       end
     end
 
-    context 'when the user already exists (existing-user sign-in)' do
-      let_it_be(:existing_user) do
-        create(:atlassian_user, extern_uid: 'read-only-uid', organization: read_only_organization)
+    context 'when the link_omniauth_to_existing_user_on_login feature flag is disabled' do
+      before do
+        stub_feature_flags(link_omniauth_to_existing_user_on_login: false)
       end
 
-      let(:auth_email) { existing_user.email }
+      it 'falls back to the 422 failure page and does not stash an identity' do
+        post '/users/auth/atlassian_oauth2/callback'
 
-      it 'permits sign-in without creating a user' do
-        expect do
-          post '/users/auth/atlassian_oauth2/callback', headers: organization_headers
-        end.not_to change { User.count }
-
-        expect(request.env['warden']).to be_authenticated
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(request.env['warden']).not_to be_authenticated
+        expect(session['identity_link_provider']).to be_nil
       end
     end
   end

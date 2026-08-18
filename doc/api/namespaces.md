@@ -25,12 +25,6 @@ This API uses [Pagination](rest/_index.md#pagination) to filter results.
 
 ## List all namespaces
 
-{{< history >}}
-
-- `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
-
-{{< /history >}}
-
 Lists all namespaces available to the current user. If the user is an
 administrator, this endpoint returns all namespaces in the instance.
 
@@ -42,7 +36,7 @@ GET /namespaces
 |--------------------|---------|----------|-----------------------------------------------------------------------------------------|
 | `search`           | string  | no       | Returns only namespaces that contain the specified value in their name or path.         |
 | `owned_only`       | boolean | no       | If `true`, only returns namespaces by the current user.                                 |
-| `top_level_only`   | boolean | no       | In GitLab 16.8 and later, if `true`, only returns top-level namespaces.                 |
+| `top_level_only`   | boolean | no       | If `true`, only returns top-level namespaces.                                           |
 | `full_path_search` | boolean | no       | If `true`, the `search` parameter is matched against the full path of the namespaces. |
 
 Example request:

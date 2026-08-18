@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_insights
+description: Enables Vue 3 in compatibility mode for the group and project insights pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607825
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248656
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608139
+milestone: '19.3'
+group: group::optimize
+type: beta
+default_enabled: false

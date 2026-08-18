@@ -10,13 +10,15 @@ auto_mr:
     - type::maintenance
   remove_source_branch: true
 
-# Non-distilled .ai/ files included in AGENTS.md Context Loading.
+# Non-distilled .ai/ files included in AGENTS.md Context Loading or Always-on rules.
 # These are manually maintained and have no SSOT sources.
 static_entries:
   - description: Git, commits, or branches
     path: .ai/git.md
   - description: CI/CD pipelines or `.gitlab-ci.yml`
     path: .ai/ci-cd.md
+  - description: Confidential issue with `~security` label and without `~security-fix-in-public` label
+    path: .ai/security-fixes.md
 
 principles:
   # ── Database (4 sub-domains) ──────────────────────────────────────────────
@@ -298,7 +300,7 @@ principles:
     description: General code review practices and acceptance checklist
     group: Code Review
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - '**/*'
     sources:
@@ -308,9 +310,9 @@ principles:
   ai-instruction-files:
     description: Reviewing AI instruction files under .ai/ (hand-authored modules, distilled principles, baselines, distillation config)
     group: Code Review
-    owner_team: '@dgruzd @pedropombeiro @ghavenga @tkuah @dmishunov'
+    owner_team: '@gitlab-org/maintainers/ai-harness'
     team_slug: ai-harness
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - '.ai/**/*'
     sources:
@@ -323,7 +325,7 @@ principles:
     description: Ruby/Rails style, logging, common pitfalls
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     prerequisite: true
     file_filters:
       - 'app/**/*.rb'
@@ -369,7 +371,7 @@ principles:
     description: Service patterns, abstractions, design conventions
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/services/**/*.rb'
       - 'app/finders/**/*.rb'
@@ -396,7 +398,7 @@ principles:
     description: EE/CE separation, licensing, code placement
     group: Backend
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'ee/**/*.rb'
     sources:
@@ -456,7 +458,7 @@ principles:
     description: Sidekiq worker design and reliability
     group: Workers
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/workers/**/*.rb'
       - 'ee/app/workers/**/*.rb'
@@ -499,7 +501,7 @@ principles:
     description: Vue.js components, state management, patterns
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     prerequisite: true
     file_filters:
       - 'app/assets/javascripts/**/*.vue'
@@ -532,7 +534,7 @@ principles:
     description: CSS/SCSS, Tailwind, dark mode
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/assets/stylesheets/**/*.scss'
       - 'ee/app/assets/stylesheets/**/*.scss'
@@ -549,7 +551,7 @@ principles:
     description: HAML templates, ViewComponents, Pajamas
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/views/**/*.haml'
       - 'ee/app/views/**/*.haml'
@@ -563,7 +565,7 @@ principles:
     description: Frontend accessibility patterns and requirements
     group: Frontend
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/assets/javascripts/**/*.vue'
       - 'app/views/**/*.haml'
@@ -574,6 +576,8 @@ principles:
         url: https://docs.gitlab.com/development/fe_guide/accessibility/
       - path: doc/development/fe_guide/accessibility/best_practices.md
         url: https://docs.gitlab.com/development/fe_guide/accessibility/best_practices/
+      - path: doc/development/fe_guide/accessibility/feature_tests.md
+        url: https://docs.gitlab.com/development/fe_guide/accessibility/feature_tests/
 
   # ── Testing  ───────────────────────────────────────────────────
 
@@ -585,6 +589,8 @@ principles:
     file_filters:
       - 'spec/**/*_spec.rb'
       - 'ee/spec/**/*_spec.rb'
+      - 'spec/support/**/*.rb'
+      - 'ee/spec/support/**/*.rb'
       - '!spec/migrations/db/**/*_spec.rb'
       - '!ee/spec/migrations/db/**/*.rb'
       - '!ee/db/geo/migrate/**/*.rb'
@@ -599,6 +605,8 @@ principles:
         url: https://docs.gitlab.com/development/testing_guide/testing_levels/
       - path: doc/development/testing_guide/testing_rake_tasks.md
         url: https://docs.gitlab.com/development/testing_guide/testing_rake_tasks/
+      - path: doc/development/testing_guide/unhealthy_tests.md
+        url: https://docs.gitlab.com/development/testing_guide/unhealthy_tests/
 
   authentication-testing:
     description: Test quality for authentication and authorization specs — positive and negative path coverage, token edge cases (expired, revoked, wrong-scope), the authorization actor matrix (authorized, unauthorized, anonymous, admin), auth-stubbing red flags, rate-limit specs, and narrow token scopes in specs
@@ -631,9 +639,11 @@ principles:
       - 'spec/services/group_access_tokens/**/*_spec.rb'
       - 'spec/services/project_access_tokens/**/*_spec.rb'
       - 'spec/services/resource_access_tokens/**/*_spec.rb'
+      - 'spec/workers/authn/**/*_spec.rb'
       - 'spec/policies/**/*_spec.rb'
       - 'spec/lib/authn/**/*_spec.rb'
       - 'spec/lib/gitlab/auth/**/*_spec.rb'
+      - 'spec/lib/api/entities/*token*_spec.rb'
       - 'spec/requests/api/api_guard_spec.rb'
       - 'spec/requests/api/admin/token_spec.rb'
       - 'spec/requests/api/deploy_tokens_spec.rb'
@@ -656,6 +666,7 @@ principles:
       - 'ee/spec/lib/authn/**/*_spec.rb'
       - 'ee/spec/lib/gitlab/auth/**/*_spec.rb'
       - 'ee/spec/policies/**/*_spec.rb'
+      - 'ee/spec/services/authz/**/*_spec.rb'
       - 'ee/spec/services/ee/personal_access_tokens/**/*_spec.rb'
       - 'ee/spec/services/namespaces/service_accounts/**/*_spec.rb'
       - 'ee/spec/services/users/service_accounts/**/*_spec.rb'
@@ -668,10 +679,11 @@ principles:
     description: Jest, jsdom, Vue Test Utils patterns
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'spec/frontend/**/*'
       - 'ee/spec/frontend/**/*'
+    baseline: .ai/principles/baselines/testing-jest.md
     sources:
       - path: doc/development/testing_guide/frontend_testing.md
         url: https://docs.gitlab.com/development/testing_guide/frontend_testing/
@@ -693,8 +705,6 @@ principles:
     description: Frontend testing hierarchy — which test type to write (unit vs MSW integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    secondary_teams:
-      - '@gitlab-org/plan-stage/frontend-engineers'
     file_filters:
       - 'spec/frontend/**/*'
       - 'ee/spec/frontend/**/*'
@@ -711,10 +721,7 @@ principles:
     description: How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    secondary_teams:
-      - '@gitlab-org/plan-stage/frontend-engineers'
     file_filters:
-      - 'spec/frontend/msw_integration/**/*'
       - 'ee/spec/frontend/msw_integration/**/*'
     baseline: .ai/principles/baselines/testing-msw.md
     sources:
@@ -754,7 +761,7 @@ principles:
     description: Performance and scalability
     group: Performance
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'app/**/*.rb'
       - 'ee/app/**/*.rb'
@@ -844,7 +851,7 @@ principles:
     description: Feature flag usage and lifecycle
     group: Feature Flags
     owner_team: '@gitlab-org/maintainers/rails-backend'
-    ping_team: false
+    fallback_ping_team: false
     file_filters:
       - 'config/feature_flags/**/*.yml'
       - 'ee/config/feature_flags/**/*.yml'
@@ -872,3 +879,89 @@ principles:
         url: https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
       - path: doc/development/internal_analytics/metrics/metrics_instrumentation.md
         url: https://docs.gitlab.com/development/internal_analytics/metrics/metrics_instrumentation/
+
+  # ── Import/Export ─────────────────────────────────────────────────────────
+
+  import-fundamentals:
+    description: Import/Export framework internals and general importer-design points that are NOT specific to particular import source
+    group: Import
+    owner_team: '@gitlab-com/create-team/import'
+    prerequisite: true
+    file_filters:
+      - 'lib/import/**/*.rb'
+      - 'ee/lib/import/**/*.rb'
+      - 'app/controllers/import/**/*.rb'
+      - 'spec/lib/import/**/*.rb'
+      - 'spec/controllers/import/**/*.rb'
+      - 'ee/spec/lib/import/**/*.rb'
+    sources:
+      - path: doc/development/import/principles_of_importer_design.md
+        url: https://docs.gitlab.com/development/import/principles_of_importer_design/
+      - path: doc/development/import_export.md
+        url: https://docs.gitlab.com/development/import_export/
+
+  import-direct-and-offline:
+    description: Bulk Import/Offline Transfer specific import/export documentation
+    group: Import
+    owner_team: '@gitlab-com/create-team/import'
+    file_filters:
+      # Direct transfer (bulk imports) — implementation
+      - 'app/controllers/import/bulk_imports_controller.rb'
+      - 'app/finders/bulk_imports/**/*.rb'
+      - 'app/models/bulk_import.rb'
+      - 'app/models/bulk_imports/**/*.rb'
+      - 'app/serializers/import/bulk_import_entity.rb'
+      - 'app/services/bulk_imports/**/*.rb'
+      - 'app/services/concerns/import/bulk_imports/**/*.rb'
+      - 'app/services/import/bulk_imports/**/*.rb'
+      - 'app/uploaders/bulk_imports/**/*.rb'
+      - 'app/workers/bulk_import_worker.rb'
+      - 'app/workers/bulk_imports/**/*.rb'
+      - 'app/workers/import/bulk_imports/**/*.rb'
+      - 'lib/api/bulk_imports.rb'
+      - 'lib/api/entities/bulk_import.rb'
+      - 'lib/api/entities/bulk_imports/**/*.rb'
+      - 'lib/api/helpers/bulk_imports/**/*.rb'
+      - 'lib/api/validations/validators/bulk_imports.rb'
+      - 'lib/bulk_imports/**/*.rb'
+      - 'lib/import/bulk_imports/**/*.rb'
+      - 'ee/app/services/ee/bulk_imports/**/*.rb'
+      - 'ee/lib/bulk_imports/**/*.rb'
+      - 'ee/lib/ee/bulk_imports/**/*.rb'
+      # Direct transfer (bulk imports) — specs
+      - 'spec/controllers/import/bulk_imports_controller_spec.rb'
+      - 'spec/finders/bulk_imports/**/*_spec.rb'
+      - 'spec/models/bulk_import_spec.rb'
+      - 'spec/models/bulk_imports/**/*_spec.rb'
+      - 'spec/serializers/import/bulk_import_entity_spec.rb'
+      - 'spec/services/bulk_imports/**/*_spec.rb'
+      - 'spec/services/import/bulk_imports/**/*_spec.rb'
+      - 'spec/uploaders/bulk_imports/**/*_spec.rb'
+      - 'spec/workers/bulk_import_worker_spec.rb'
+      - 'spec/workers/bulk_imports/**/*_spec.rb'
+      - 'spec/workers/import/bulk_imports/**/*_spec.rb'
+      - 'spec/requests/api/bulk_imports_spec.rb'
+      - 'spec/lib/bulk_imports/**/*_spec.rb'
+      - 'spec/lib/import/bulk_imports/**/*_spec.rb'
+      - 'ee/spec/services/ee/bulk_imports/**/*_spec.rb'
+      - 'ee/spec/lib/bulk_imports/**/*_spec.rb'
+      - 'ee/spec/lib/ee/bulk_imports/**/*_spec.rb'
+      # Offline transfer — implementation
+      - 'app/controllers/import/offline_controller.rb'
+      - 'app/controllers/import/offline/**/*.rb'
+      - 'app/finders/import/offline/**/*.rb'
+      - 'app/models/import/offline/**/*.rb'
+      - 'app/services/concerns/import/offline/**/*.rb'
+      - 'app/services/import/offline/**/*.rb'
+      - 'app/workers/import/offline/**/*.rb'
+      - 'lib/api/entities/import/offline/**/*.rb'
+      - 'lib/import/offline/**/*.rb'
+      - 'ee/lib/ee/import/offline/**/*.rb'
+      # Offline transfer — specs
+      - 'spec/lib/import/offline/**/*_spec.rb'
+      - 'ee/spec/lib/ee/import/offline/**/*_spec.rb'
+    sources:
+      - path: doc/development/bulk_import.md
+        url: https://docs.gitlab.com/development/bulk_import/
+      - path: doc/development/bulk_imports/contributing.md
+        url: https://docs.gitlab.com/development/bulk_imports/contributing/

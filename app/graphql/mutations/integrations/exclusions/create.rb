@@ -34,6 +34,8 @@ module Mutations
           description: "IDs of groups to exclude up to a maximum of #{MAX_GROUP_IDS}."
 
         authorize :admin_all_resources
+        authorize_granular_token permissions: :create_integration_exclusion, boundary: :instance,
+          boundary_type: :instance
 
         def resolve(integration_name:, project_ids: [], group_ids: [])
           authorize!(:global)

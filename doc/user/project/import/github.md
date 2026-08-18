@@ -57,7 +57,7 @@ by default on GitLab.com.
 To use the GitHub importer, you must have:
 
 - Access to the source GitHub project
-- The Maintainer or Owner role for the destination GitLab group (introduced in GitLab 16.0)
+- The Maintainer or Owner role for the destination GitLab group
 
 Also, the organization the GitHub repository belongs to must not impose restrictions of a
 [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions)
@@ -159,12 +159,6 @@ To import your GitHub repository using the GitLab REST API:
 
 ### Filter repositories list
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385113) in GitLab 16.0.
-
-{{< /history >}}
-
 After you authorize access to your GitHub repositories, GitLab redirects you to the importer page and
 your GitHub repositories are listed.
 
@@ -177,14 +171,6 @@ Use one of the following tabs to filter the list of repositories:
 When the **Organization** tab is selected, you can further narrow down your search by selecting an available GitHub organization from a dropdown list.
 
 ### Select additional items to import
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139410) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `github_import_extended_events`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146695) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
-
-{{< /history >}}
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
@@ -228,12 +214,6 @@ Completed imports can be re-imported by selecting **Re-import** and specifying n
 
 ### Check status of imports
 
-{{< history >}}
-
-- Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
-
-{{< /history >}}
-
 After imports are completed, they can be in one of three states:
 
 - **Complete**: GitLab imported all repository entities.
@@ -257,7 +237,7 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](../../import/mapping/post_migration_mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/14667) to [**user contribution and membership mapping**](../../import/mapping/post_migration_mapping.md) in GitLab 17.8.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
@@ -424,12 +404,6 @@ For more information, see [issue 370948](https://gitlab.com/gitlab-org/gitlab/-/
 
 ### Collaborators (members)
 
-{{< history >}}
-
-- Importing collaborators as an additional item [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
-
-{{< /history >}}
-
 These GitHub collaborator roles are mapped to these GitLab [member roles](../../permissions.md#roles):
 
 | GitHub role | Mapped GitLab role |
@@ -460,7 +434,7 @@ The proxy needs to:
 
 GitHub API uses the `Link` header for pagination.
 
-After configuring the proxy, test it by making API requests. Below there are some examples of commands to test the API:
+After configuring the proxy, test it by making API requests. Below are some example commands to test the API:
 
 ```shell
 curl --header "Authorization: Bearer <YOUR-TOKEN>" "https://{PROXY_HOSTNAME}/user"

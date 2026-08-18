@@ -61,6 +61,10 @@ describe('CommitPopover component', () => {
       expect(findTitleLink().attributes('href')).toBe(defaultCommit.webPath);
     });
 
+    it('shows the full commit title in a tooltip when it is truncated', () => {
+      expect(wrapper.findComponent(GlTruncate).props('withTooltip')).toBe(true);
+    });
+
     it('renders author info', () => {
       expect(wrapper.findByTestId('commit-author').text()).toBe(defaultCommit.authorName);
       expect(wrapper.findComponent(GlAvatar).props('src')).toBe(defaultCommit.authorGravatar);

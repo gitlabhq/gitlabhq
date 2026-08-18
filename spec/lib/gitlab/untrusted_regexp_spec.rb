@@ -173,8 +173,8 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       let(:regexp) { '' }
       let(:text) { 'foo' }
 
-      it 'returns an array of nil matches' do
-        is_expected.to eq([nil, nil, nil, nil])
+      it 'returns an array of empty string matches' do
+        is_expected.to eq(['', '', '', ''])
       end
     end
 
@@ -182,8 +182,8 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
       let(:regexp) { '()' }
       let(:text) { 'foo' }
 
-      it 'returns an array of nil matches in an array' do
-        is_expected.to eq([[nil], [nil], [nil], [nil]])
+      it 'returns an array of empty string matches in an array' do
+        is_expected.to eq([[''], [''], [''], ['']])
       end
     end
 

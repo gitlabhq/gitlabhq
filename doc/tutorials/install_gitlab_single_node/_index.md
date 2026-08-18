@@ -286,7 +286,7 @@ For more information about configuring NGINX to be more secure, read about
 ### Configure emails
 
 Next, you'll set up and configure an email service. Emails are important for
-verifying new sign ups, resetting passwords, and notifying
+verifying new user accounts, resetting passwords, and notifying
 you of GitLab activity.
 
 #### Configure SMTP
@@ -418,9 +418,9 @@ In this tutorial, you learned how to set up your server to be more secure, how
 to install GitLab, and how to configure GitLab to meet some security standards.
 Some [other steps](../../security/hardening_application_recommendations.md) you can take to secure GitLab include:
 
-- Disabling sign ups. By default, a new GitLab instance has sign up enabled by default. If you don't
-  plan to make your GitLab instance public, you should to disable sign ups.
-- Allowing or denying sign ups using specific email domains.
+- Disabling new user accounts. By default, a new GitLab instance has new user accounts enabled. If you don't
+  plan to make your GitLab instance public, you should disable new user accounts.
+- Allowing or denying new user accounts using specific email domains.
 - Setting a minimum password length limit for new users.
 - Enforcing two-factor authentication for all users.
 

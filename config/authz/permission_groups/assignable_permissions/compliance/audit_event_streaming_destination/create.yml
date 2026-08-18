@@ -1,0 +1,10 @@
+---
+name: create_audit_event_streaming_destination
+description: Grants the ability to create audit event streaming destinations
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_audit_event_streaming_destination

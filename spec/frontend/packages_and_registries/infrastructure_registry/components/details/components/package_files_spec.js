@@ -14,15 +14,17 @@ describe('Package Files', () => {
   const findAllRows = () => wrapper.findAll('[data-testid="file-row"');
   const findFirstRow = () => findAllRows().at(0);
   const findSecondRow = () => findAllRows().at(1);
-  const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"]');
+  const findFirstRowDownloadLink = () =>
+    findFirstRow().findComponent('[data-testid="download-link"]');
   const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"]');
   const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"]');
   const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
   const findFirstActionMenu = () => findFirstRow().findComponent(GlDisclosureDropdown);
-  const findActionMenuDelete = () => findFirstActionMenu().find('[data-testid="delete-file"]');
+  const findActionMenuDelete = () =>
+    findFirstActionMenu().findComponent('[data-testid="delete-file"]');
   const findFirstToggleDetailsButton = () => findFirstRow().findComponent(GlButton);
-  const findFirstRowShaComponent = (id) => wrapper.find(`[data-testid="${id}"]`);
+  const findFirstRowShaComponent = (id) => wrapper.findComponent(`[data-testid="${id}"]`);
 
   const createComponent = ({ packageFiles = npmFiles, canDelete = true } = {}) => {
     wrapper = mount(component, {

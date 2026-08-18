@@ -20,7 +20,7 @@ description: Review the official GitLab API documentation for Epics. Discover ho
 > Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
 > This change is a breaking change.
 
-Every API call to epic must be authenticated.
+Every API call to epics must be authenticated.
 
 If a user is not a member of a private group, a `GET` request on that group results in a `404` status code.
 
@@ -39,9 +39,9 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 ## Milestone dates integration
 
 Because start date and due date can be dynamically sourced from related issue milestones,
-additional fields are shown when user has edit permission. These include two boolean
+additional fields are shown when the user has edit permission. These include two boolean
 fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`,
-`start_date_from_inherited_source`, `due_date_fixed` and `due_date_from_inherited_source`.
+`start_date_from_inherited_source`, `due_date_fixed`, and `due_date_from_inherited_source`.
 
 - `end_date` has been deprecated in favor of `due_date`.
 - `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`
@@ -70,12 +70,12 @@ GET /groups/:id/epics?state=opened
 | `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `author_username`   | string           | no         | Return epics created by the user with the given `username`. |
-| `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
+| `labels`            | string           | no         | Return epics matching a comma-separated list of label names. Label names from the epic group or a parent group can be used |
 | `with_labels_details` | boolean        | no         | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 | `order_by`          | string           | no         | Return epics ordered by `created_at`, `updated_at`, or `title` fields. Default is `created_at`                              |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `search`            | string           | no         | Search epics against their `title` and `description`                                                                        |
-| `state`             | string           | no         | Search epics against their `state`, possible filters: `opened`, `closed` and `all`, default: `all`                          |
+| `state`             | string           | no         | Search epics against their `state`, possible filters: `opened`, `closed`, and `all`, default: `all`                         |
 | `created_after`     | datetime         | no         | Return epics created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return epics created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_after`     | datetime         | no         | Return epics updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
@@ -457,13 +457,15 @@ Example response:
 
 ## Delete an epic
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can remove child epics from the parent epic before you delete it.
-
-{{< /history >}}
-
 Deletes a specified epic from a group.
+
+Deleting an epic does not delete its child epics. Instead, the child epics are detached from the
+deleted epic.
+
+> [!warning]
+> In GitLab 16.10 and earlier, deleting an epic also deleted all its child epics and their
+> descendants. If needed, remove child epics from the parent epic before you delete it.
+> For more information, see [issue 452189](https://gitlab.com/gitlab-org/gitlab/-/issues/452189).
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid

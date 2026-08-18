@@ -217,19 +217,22 @@ RSpec.describe MergeRequests::StackFinder, feature_category: :code_review_workfl
       end
     end
 
+    context 'when the stack size equals MAX_STACK_SIZE' do
+      it 'returns the full stack regardless of which merge request is the input' do
+        stub_const("#{described_class}::MAX_STACK_SIZE", 3)
+        stack = [merge_request_1, merge_request_2, merge_request_3]
+
+        results = stack.map { |merge_request| described_class.new(user, merge_request).execute.to_a }
+
+        expect(results).to all(eq(stack))
+      end
+    end
+
     context 'when the stack exceeds MAX_STACK_SIZE' do
-      it 'stops at MAX_STACK_SIZE entries' do
-        merge_requests = []
-        merge_requests << create_merge_request(source_branch: 'stack-branch-0', target_branch: project.default_branch)
+      it 'returns none' do
+        stub_const("#{described_class}::MAX_STACK_SIZE", 2)
 
-        described_class::MAX_STACK_SIZE.times do |i|
-          merge_requests << create_merge_request(
-            source_branch: "stack-branch-#{i + 1}",
-            target_branch: "stack-branch-#{i}"
-          )
-        end
-
-        expect(described_class.new(user, merge_requests.first).execute.size).to eq(described_class::MAX_STACK_SIZE)
+        expect(described_class.new(user, merge_request_1).execute).to be_none
       end
     end
   end

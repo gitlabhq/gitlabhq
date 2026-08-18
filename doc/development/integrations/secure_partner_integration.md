@@ -50,7 +50,7 @@ best place to integrate your own product and its results into GitLab.
   are in place for a project, developers must resolve specific findings or get
   an approval from a specific list of people.
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md)
-  also shows results which can developers can use to quickly see all the
+  also shows results which developers can use to quickly see all the
   vulnerabilities that need to be addressed in the code.
 - When the developer reads the details about a vulnerability, they are
   presented with additional information and choices on next steps:
@@ -62,7 +62,7 @@ best place to integrate your own product and its results into GitLab.
   1. Auto-Remediation / Create Merge Request: A fix for the vulnerability can
      be offered, allowing an easy solution that does not require extra effort
      from users. This should be offered whenever possible.
-  1. Links: Vulnerabilities can link out external sites or sources for users
+  1. Links: Vulnerabilities can link out to external sites or sources for users
      to get more data around the vulnerability.
 
 ## How to onboard

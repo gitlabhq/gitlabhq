@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: none
+group: none
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Duo Glossary
 ---
@@ -13,7 +13,7 @@ to AI that you think could benefit from being in this list, add it!
 
 ### Adapters
 
-A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customisation of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
+A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customization of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
 
 ### AI Catalog
 
@@ -35,7 +35,7 @@ Standalone service used to give access to AI features to non-SaaS GitLab users. 
 
 ### AI Gateway prompt
 
-An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
+An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/work_items/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
 
 ### AI Gateway prompt registry
 
@@ -59,7 +59,7 @@ Cloud Connector is a way to access services common to multiple GitLab deployment
 
 ### Closed source model
 
-A private model fine-tuned or built from scratch by an organisation. These may be hosted as cloud services, for example ChatGPT.
+A private model fine-tuned or built from scratch by an organization. These may be hosted as cloud services, for example ChatGPT.
 
 ### Consensus filtering
 
@@ -99,7 +99,7 @@ A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://g
 
 ### Golden questions
 
-A small subset of the types of questions we think a user should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation. [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/epics/10550#what-the-user-can-ask).
+A small subset of the types of questions we think a user should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation. [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/work_items/10550#what-the-user-can-ask).
 
 ### Ground truth
 
@@ -107,7 +107,7 @@ Data that is determined to be the true output for a given input, representing th
 
 ### Local model
 
-A LLM running on a user's workstation. [More information](https://gitlab.com/groups/gitlab-org/-/epics/12907).
+A LLM running on a user's workstation. [More information](https://gitlab.com/groups/gitlab-org/-/work_items/12907).
 
 ### LLM
 
@@ -135,11 +135,11 @@ Natural language instructions sent to an LLM to perform certain tasks. [Prompt g
 
 ### RAG (Retrieval Augmented Generation)
 
-RAG provide contextual data to an LLM as part of a query to personalise results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
+RAG provides contextual data to an LLM as part of a query to personalize results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
 
 ### RAG pipeline
 
-A mechanism used to take an input (such as a user question) into a system, retrieve any relevant data for that input, augment the input with additional context, and then synthesize the information to generate a coherent, contextualy-relevant answer. This design pattern is helpful in open-domain question answering with LLMs, which is why we use this design pattern for answering questions to GitLab Duo Chat.
+A mechanism used to take an input (such as a user question) into a system, retrieve any relevant data for that input, augment the input with additional context, and then synthesize the information to generate a coherent, contextually-relevant answer. This design pattern is helpful in open-domain question answering with LLMs, which is why we use this design pattern for answering questions to GitLab Duo Chat.
 
 ### Self-hosted model
 
@@ -227,7 +227,7 @@ system in the GitLab ecosystem
 - **Custom**: Built by users through the AI Catalog.
   - Purpose: Enables teams to leverage proprietary knowledge, tools, and decision logic in GitLab guardrails.
   - How to invoke: Custom Agents can be invoked in GitLab Duo Chat only
-  - Example: An agent created specifically answering a questions about a codebase
+  - Example: An agent created specifically answering questions about a codebase
 - **External**: Also known as "Third-Party Flows" or "CLI Agents." An externally developed agent integrated into the GitLab Duo Agent Platform
   - Purpose: Expands platform capability by allowing external vendors to operate
     in the GitLab workflow orchestration and policy layer.
@@ -269,8 +269,10 @@ A **discrete, deterministic capability** an agent (or flow step) invokes to perf
 actions. Tools can be used to perform these in GitLab or in third-party applications through MCP
 or other protocols.
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 *Examples:* read GitLab issues, clone a repository, commit and push changes, call a REST API.
 Tools expose data or side-effects; they themselves perform **no reasoning**.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 ### Trigger
 
@@ -281,7 +283,7 @@ there must be a trigger configured for that External Agent or Flow in that proje
 Events include:
 
 - System events (for example, new merge request opened, CI job failed)
-- User prompts or actions (for example, `@` mention on an issue, issue assignment “)
+- User prompts or actions (for example, `@` mention on an issue, issue assignment)
 - Time-based (for example, daily at 18:00, every Monday) (planned)
 
 Many Triggers can be created to start Flows, however, there are only two available
@@ -316,7 +318,7 @@ beyond a single file, including open file tabs, imports, dependencies,
 cross-file symbols and definitions, and project-wide relevant code snippets.
 
 Advanced context *resolver* is a system designed to gather the above advanced context.
-By providing advanced context, the resolver providers the LLM with a more
+By providing advanced context, the resolver provides the LLM with a more
 holistic understanding of the project structure, enabling more accurate and
 context-aware code suggestions and generation.
 

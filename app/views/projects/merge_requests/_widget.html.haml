@@ -14,7 +14,6 @@
     window.gl.mrWidgetData.eligible_approvers_docs_path = '#{help_page_path('user/project/merge_requests/approvals/rules.md', anchor: 'eligible-approvers')}';
     window.gl.mrWidgetData.approvals_help_path = '#{help_page_path("user/project/merge_requests/approvals/_index.md")}';
     window.gl.mrWidgetData.codequality_help_path = '#{help_page_path("ci/testing/code_quality.md", anchor: "pipeline-details-view")}';
-    window.gl.mrWidgetData.false_positive_doc_url = '#{help_page_path('user/application_security/vulnerabilities/_index.md')}';
     window.gl.mrWidgetData.can_view_false_positive = '#{@merge_request.project.licensed_feature_available?(:sast_fp_reduction).to_s}';
     window.gl.mrWidgetData.user_preferences_gitpod_path = '#{profile_preferences_path(anchor: 'user_gitpod_enabled')}';
     window.gl.mrWidgetData.user_profile_enable_gitpod_path = '#{user_settings_profile_path(user: { gitpod_enabled: true })}';

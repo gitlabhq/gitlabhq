@@ -41,7 +41,7 @@ These integrations have to do with using GitLab to build application workloads a
 [Supported Providers](https://docs.aws.amazon.com/dtconsole/latest/userguide/supported-versions-connections.html).
 [Supported AWS Services](https://docs.aws.amazon.com/dtconsole/latest/userguide/integrations-connections.html) -
 each one may have to make updates to support GitLab, so here is the subset that
-support GitLab. This works with GitLab.com, GitLab Self-Managed and GitLab Dedicated.
+supports GitLab. This works with GitLab.com, GitLab Self-Managed and GitLab Dedicated.
 AWS CodeStar connections are not available in all AWS regions - the exclusion list is
 [documented here](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodestarConnectionSource.html).
 ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
@@ -92,7 +92,7 @@ See [CD and Operations Integrations](#cd-and-operations-integrations) below for 
 
 ### CI Integrations
 
-- **Direct CI Integrations That Use Keys, IAM or OIDC/JWT to Authenticate to AWS Services from GitLab Runners**
+- **Direct CI Integrations That Use Keys, IAM, or OIDC/JWT to Authenticate to AWS Services from GitLab Runners**
 - **Amazon CodeGuru Reviewer CI workflows using GitLab CI** - can be done, not yet documented.`[AWS Solution]` `[CI Solution]`
 - [Amazon CodeGuru Secure Scanning using GitLab CI](https://docs.aws.amazon.com/codeguru/latest/security-ug/get-started-gitlab.html) ([06/13/2022](https://aws.amazon.com/about-aws/whats-new/2023/06/amazon-codeguru-security-available-preview/)) `[AWS Solution]` `[CI Solution]`
 
@@ -123,7 +123,7 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 ### CloudFormation
 
-[CloudFormation Development and Deployment With GitLab Lifecycle Managed DevOps Environments Working Code](https://gitlab.com/guided-explorations/aws/cloudformation-deploy) `[GitLab Solution]` `[CI Solution]`
+[CloudFormation Development and Deployment With GitLab Lifecycle Managed DevOps Environments Working Code](https://gitlab.com/guided-explorations/aws/cloudformation/cloudformation-deploy) `[GitLab Solution]` `[CI Solution]`
 
 ### CDK
 

@@ -31,11 +31,19 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
 
     describe 'classification facts' do
       it 'is not a frontend request without a verified CSRF token' do
-        # web_request? is no longer a fact (the registry matches it as WEB_PATH_REGEX);
-        # frontend is the one web-side fact left, since it is CSRF/session-based and
-        # cannot be a path matcher. A plain request carries no CSRF token.
+        # frontend is CSRF/session-based and cannot be a path matcher. A plain
+        # request carries no CSRF token.
         expect(facts_for('/dashboard')).to include(frontend: false)
         expect(facts_for('/api/v4/projects')).to include(frontend: false)
+      end
+
+      # web_or_frontend carries the web throttles' disjunction as one fact, so each
+      # web throttle is a single rule counting on a single Redis counter.
+      it 'classifies a web path as web_or_frontend and API/health/collector paths as not', :aggregate_failures do
+        expect(facts_for('/dashboard')).to include(web_or_frontend: true)
+        expect(facts_for('/api/v4/projects')).to include(web_or_frontend: false)
+        expect(facts_for('/-/health')).to include(web_or_frontend: false)
+        expect(facts_for('/-/collector/i')).to include(web_or_frontend: false)
       end
 
       it 'reflects the bypass header only when set to 1', :aggregate_failures do
@@ -71,18 +79,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
     end
 
-    # The web-before-api ordering rests on a real frontend request (an API path with
-    # a verified CSRF token) producing frontend: true, so the web throttle's frontend
-    # companion claims it before the API rule. The synthetic selection spec proves the
-    # ordering given the fact; this proves a real frontend request produces it.
+    # The synthetic selection spec proves the web-vs-API split given the facts;
+    # this proves a real frontend request (verified CSRF token) produces them.
     describe 'a frontend request on an API path' do
-      it 'is frontend even though the path is an API path' do
+      it 'is frontend (and so web_or_frontend) even though the path is an API path' do
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
 
         facts = facts_for('/api/v4/projects',
           'HTTP_X_CSRF_TOKEN' => 'token', 'rack.session' => { _csrf_token: 'token' })
 
-        expect(facts).to include(frontend: true, path: '/api/v4/projects')
+        expect(facts).to include(frontend: true, web_or_frontend: true, path: '/api/v4/projects')
       end
     end
 
@@ -93,10 +99,57 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         request = described_class.new(Rack::MockRequest.env_for('/api/v4/jobs/request'))
         runner = instance_double(Ci::Runner, id: 1)
         authenticator = instance_double(Gitlab::Auth::RequestAuthenticator,
-          find_authenticated_requester: nil, runner: runner)
+          find_authenticated_requester: nil, runner: runner, job_from_token: nil)
         allow(request).to receive(:request_authenticator).and_return(authenticator)
 
         expect(request.labkit_facts).to include(runner_id: '1', requester_id: nil)
+      end
+    end
+
+    # runner_jobs mirrors runner_jobs_request?: the path plus the auth method. The
+    # method matters because a job token resolves to the job's user, so requester
+    # presence alone cannot separate a runner updating its job from a PAT-driven
+    # bot polling the same endpoints - and only the former is exempt from the
+    # authenticated API throttle.
+    describe 'the runner_jobs fact' do
+      def request_with(path:, runner: nil, job: nil, requester: nil)
+        request = described_class.new(Rack::MockRequest.env_for(path))
+        authenticator = instance_double(Gitlab::Auth::RequestAuthenticator,
+          find_authenticated_requester: requester, runner: runner, job_from_token: job)
+        allow(request).to receive(:request_authenticator).and_return(authenticator)
+        request
+      end
+
+      it 'is true for a job-token request on the runner-jobs path' do
+        request = request_with(path: '/api/v4/jobs/1/trace',
+          job: instance_double(Ci::Build), requester: instance_double(User, id: 1))
+
+        expect(request.labkit_facts).to include(runner_jobs: true, requester_id: '1')
+      end
+
+      it 'is true for a runner-token request on the runner-jobs path' do
+        request = request_with(path: '/api/v4/jobs/request', runner: instance_double(Ci::Runner, id: 1))
+
+        expect(request.labkit_facts).to include(runner_jobs: true, runner_id: '1', requester_id: nil)
+      end
+
+      it 'is false for a PAT-authenticated request on the runner-jobs path' do
+        request = request_with(path: '/api/v4/jobs/1', requester: instance_double(User, id: 1))
+
+        expect(request.labkit_facts).to include(runner_jobs: false, requester_id: '1')
+      end
+
+      it 'is false for an anonymous request on the runner-jobs path' do
+        request = request_with(path: '/api/v4/jobs/1')
+
+        expect(request.labkit_facts).to include(runner_jobs: false, requester_id: nil)
+      end
+
+      it 'is false for a job-token request outside the runner-jobs path' do
+        request = request_with(path: '/api/v4/projects/1/packages/npm/foo',
+          job: instance_double(Ci::Build), requester: instance_double(User, id: 1))
+
+        expect(request.labkit_facts).to include(runner_jobs: false)
       end
     end
 

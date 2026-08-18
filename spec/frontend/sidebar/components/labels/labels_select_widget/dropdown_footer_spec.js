@@ -42,10 +42,10 @@ describe('DropdownFooter', () => {
         expect(findCreateLabelButton().exists()).toBe(true);
       });
 
-      it('emits `toggleDropdownContentsCreateView` event on create label button click', () => {
+      it('emits `toggle-dropdown-contents-create-view` event on create label button click', () => {
         findCreateLabelButton().trigger('click');
 
-        expect(wrapper.emitted('toggleDropdownContentsCreateView')).toEqual([[]]);
+        expect(wrapper.emitted('toggle-dropdown-contents-create-view')).toEqual([[]]);
       });
     });
 

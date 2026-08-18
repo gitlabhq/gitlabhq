@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import RemoveAvatar from './components/remove_avatar.vue';
 import MergeTopics from './components/merge_topics.vue';
@@ -19,16 +20,14 @@ export const initRemoveAvatar = () => {
 
   const { path, name } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'RemoveAvatarRoot',
     provide: {
       path,
       name,
     },
-    render(h) {
-      return h(RemoveAvatar);
-    },
+    component: RemoveAvatar,
   });
 };
 
@@ -39,13 +38,11 @@ export const initMergeTopics = () => {
 
   const { path } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MergeTopicsRoot',
     apolloProvider,
     provide: { path },
-    render(createElement) {
-      return createElement(MergeTopics);
-    },
+    component: MergeTopics,
   });
 };

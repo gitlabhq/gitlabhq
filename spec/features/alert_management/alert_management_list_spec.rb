@@ -12,7 +12,6 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
       stub_feature_flags(hide_incident_management_features: false)
 
       visit project_alert_management_index_path(project)
-      wait_for_requests
     end
 
     it 'shows the alert page title and empty state without filtered search or alert table' do

@@ -84,12 +84,12 @@ describe('Work item comment form component', () => {
 
   const findCommentFieldLayout = () => wrapper.findComponent(CommentFieldLayout);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findConfirmButton = () => wrapper.findByTestId('confirm-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
+  const findConfirmButton = () => wrapper.findComponentByTestId('confirm-button');
   const findInternalNoteCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findInternalNoteTooltipIcon = () => wrapper.findComponent(HelpIcon);
   const findWorkItemToggleStateButton = () => wrapper.findComponent(WorkItemStateToggle);
-  const findToggleResolveCheckbox = () => wrapper.findByTestId('toggle-resolve-checkbox');
+  const findToggleResolveCheckbox = () => wrapper.findComponentByTestId('toggle-resolve-checkbox');
   const findCloseConfirmModal = () => wrapper.findComponent(WorkItemCloseConfirmModal);
 
   const createComponent = ({

@@ -1,5 +1,3 @@
-const { IS_PRODUCTION } = require('../webpack.constants');
-
 const boolEnv = (value) => {
   if (value === 'true') return true;
   if (value === 'false') return false;
@@ -16,7 +14,7 @@ if (boolEnv(process.env.FE_WEBPACK_REPORT)) {
   HASHED_CHUNKS = false;
 }
 
-let DEVTOOL = IS_PRODUCTION ? 'source-map' : 'cheap-module-source-map';
+let DEVTOOL = 'source-map';
 if (SOURCEMAPS === false) {
   DEVTOOL = false;
 }

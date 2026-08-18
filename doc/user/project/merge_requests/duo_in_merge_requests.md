@@ -65,7 +65,7 @@ standards.
 When you request a review from GitLab Duo, it automatically runs one of two code review features
 based on your add-on. Users with the Owner role for the group can configure which feature runs for all users.
 
-| Detail              | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
+| Detail              | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
 |---------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
 | Reviewer            | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
 | Type                | Agentic                                                                              | Non-agentic                                               |
@@ -107,12 +107,9 @@ After the review completes, you can also look for a Code Review Flow session in 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240432) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_code_review_dap_routing_consent_enabled`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/602689) in GitLab 19.3. Feature flag `duo_code_review_dap_routing_consent_enabled` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 To prevent GitLab Duo Enterprise seat holders from using a feature that consumes GitLab Credits, all
 code reviews they initiate use GitLab Duo Code Review by default. This behavior occurs even
@@ -130,7 +127,7 @@ To override the default code review feature for GitLab Duo Enterprise seats:
 Prerequisites:
 
 - The Owner role for the top-level group.
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites)
   turned on and configured correctly for your top-level group.
 
 1. In the top bar, select **Search or go to** and find your top-level group.
@@ -147,7 +144,7 @@ Prerequisites:
 Prerequisites:
 
 - The Maintainer or Owner role for the group.
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites)
   turned on and configured correctly for the instance.
 
 1. In the top bar, select **Search or go to** and find your group or subgroup.
@@ -172,15 +169,19 @@ To switch all reviews back to GitLab Duo Code Review, turn off Code Review Flow.
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990) as a [beta](../../../policy/development_stages_support.md) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `resolve_discussion_with_duo`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603482) in GitLab 19.3.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use GitLab Duo to resolve review discussions on merge requests.
 
@@ -196,7 +197,7 @@ Prerequisites:
 - The [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 - **Allow foundational flows** and **Developer** turned on [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Push rules configured to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Your own runners configured](../../duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows), or [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) turned on for your project.
+- [Your own runners configured](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows), or [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) turned on for your project.
 
 To resolve a discussion with GitLab Duo:
 
@@ -300,7 +301,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 - [Control GitLab Duo availability](../../gitlab_duo/turn_on_off.md)
 - [All GitLab Duo features](../../gitlab_duo/_index.md)
-- [Resolve merge conflicts with GitLab Duo](../../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo)
+- [Resolve merge conflicts with GitLab Duo](conflicts.md#resolve-conflicts-with-gitlab-duo)
 
 ## Troubleshooting
 

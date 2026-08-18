@@ -24,7 +24,7 @@ describe('CI Templates', () => {
   };
 
   const findTemplateDescription = () => wrapper.findByTestId('template-description');
-  const findTemplateLink = () => wrapper.findByTestId('template-link');
+  const findTemplateLink = () => wrapper.findComponentByTestId('template-link');
   const findTemplateNames = () => wrapper.findAllByTestId('template-name');
   const findTemplateName = () => wrapper.findByTestId('template-name');
   const findTemplateLogo = () => wrapper.findByTestId('template-logo');

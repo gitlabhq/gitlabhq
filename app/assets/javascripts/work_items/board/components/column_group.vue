@@ -66,6 +66,11 @@ export default {
       required: false,
       default: false,
     },
+    showBusyIndicator: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     collapsed: {
       type: Boolean,
       required: false,
@@ -86,8 +91,36 @@ export default {
       required: false,
       default: true,
     },
+    reorderable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canMoveLeft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canMoveRight: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canCreateWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['card-move', 'set-active-item', 'toggle-collapse', 'drag-start'],
+  emits: [
+    'card-move',
+    'set-active-item',
+    'toggle-collapse',
+    'drag-start',
+    'check-board-params',
+    'move-column',
+    'create-item',
+  ],
   data() {
     return {
       workItemsConnection: { nodes: [], pageInfo: {} },
@@ -127,9 +160,11 @@ export default {
       return this.strategy.headerDecoration(this.value);
     },
     groupConfig() {
-      // Shared group so cards drag between columns; `put: false` makes THIS column
-      // reject incoming drops (a status the dragged type can't take) while others accept.
-      return { name: BOARD_DND_GROUP, put: !this.dropDisabled };
+      // Shared group so cards drag between columns. `put` is an allowlist of the
+      // card group (not `true`, which in sortablejs accepts *any* group — that let
+      // a dragged column drop into a card list). `false` makes THIS column reject
+      // incoming drops (a status the dragged type can't take) while others accept.
+      return { name: BOARD_DND_GROUP, put: this.dropDisabled ? false : [BOARD_DND_GROUP] };
     },
     countQueryVariables() {
       return boardColumnCountVariables({
@@ -137,6 +172,16 @@ export default {
         baseQueryVariables: this.baseQueryVariables,
         columnFilter: this.strategy.columnFilter(this.value),
       });
+    },
+    columnClasses() {
+      return [
+        this.collapsed ? 'gl-w-8 gl-self-start' : 'gl-h-full gl-w-48',
+        {
+          'gl-opacity-5': this.dropDisabled || this.showBusyIndicator,
+          'gl-cursor-not-allowed': this.dropDisabled,
+          'gl-cursor-wait': this.showBusyIndicator && !this.dropDisabled,
+        },
+      ];
     },
   },
   apollo: {
@@ -150,10 +195,11 @@ export default {
         update(data) {
           return data?.namespace?.workItems ?? { nodes: [], pageInfo: {} };
         },
-        result(result) {
-          if (!result.error) {
+        result({ data, error }) {
+          if (!error) {
             this.error = null;
           }
+          this.$emit('check-board-params', data?.namespace?.workItems?.nodes ?? []);
         },
         variables() {
           return this.queryVariables;
@@ -242,10 +288,8 @@ export default {
 <template>
   <div
     class="gl-flex gl-shrink-0 gl-flex-col gl-rounded-xl gl-bg-strong dark:gl-bg-subtle"
-    :class="[
-      collapsed ? 'gl-w-8 gl-self-start' : 'gl-h-full gl-w-48',
-      { 'gl-cursor-not-allowed gl-opacity-5': dropDisabled },
-    ]"
+    :class="columnClasses"
+    :aria-busy="showBusyIndicator"
   >
     <column-header
       :value="value"
@@ -253,7 +297,13 @@ export default {
       :count="totalCount"
       :collapsed="collapsed"
       :controls-id="columnBodyId"
+      :reorderable="reorderable"
+      :can-move-left="canMoveLeft"
+      :can-move-right="canMoveRight"
+      :can-create-work-item="canCreateWorkItem"
       @toggle-collapse="$emit('toggle-collapse')"
+      @move-column="$emit('move-column', $event)"
+      @create-item="$emit('create-item', value)"
     />
     <div
       v-show="!collapsed"
@@ -267,9 +317,11 @@ export default {
       >
         {{ error }}
       </p>
-      <!-- Always rendered (outside the error state) so an empty column stays a drop target. -->
+      <!-- Rendered whenever expanded (outside the error state) so an empty column stays a drop
+      target. Skipped while collapsed so retained cards aren't surfaced when the column is dragged;
+      the body div (and its id) stays in the DOM via v-show so the header's aria-controls resolves. -->
       <draggable-compat
-        v-else
+        v-else-if="!collapsed"
         :value="workItems"
         item-key="id"
         tag="ul"

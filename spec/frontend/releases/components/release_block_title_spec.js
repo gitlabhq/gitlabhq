@@ -4,6 +4,7 @@ import originalRelease from 'test_fixtures/api/releases/release.json';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import CiCdCatalogWrapper from '~/releases/components/ci_cd_catalog_wrapper.vue';
 import ReleaseBlockTitle from '~/releases/components/release_block_title.vue';
 
@@ -21,8 +22,11 @@ describe('ReleaseBlockTitle', () => {
       stubs: {
         CiCdCatalogWrapper: {
           ...stubComponent(CiCdCatalogWrapper),
+          // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+          // render-function emulation, which misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
           render() {
-            return this.$scopedSlots.default({
+            return getSlotFunction(this)({
               detailsPagePath,
               isCatalogRelease,
             });

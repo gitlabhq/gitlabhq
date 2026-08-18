@@ -77,9 +77,6 @@ export default {
     hasYamlErrors() {
       return this.pipeline?.flags?.yaml_errors || this.pipeline?.yamlErrors;
     },
-    yamlErrorMessages() {
-      return this.pipeline?.yaml_errors || this.pipeline?.yamlErrorMessages;
-    },
     hasFailureReason() {
       return this.pipeline?.flags?.failure_reason || Boolean(this.pipeline?.failureReason);
     },
@@ -148,7 +145,11 @@ export default {
     <button
       v-if="hasYamlErrors"
       v-gl-tooltip
-      :title="yamlErrorMessages"
+      :title="
+        s__(
+          'Pipeline|Pipeline could not be created due to CI/CD configuration problems. Validate the configuration on pipeline editor page for the full list of issues.',
+        )
+      "
       :class="$options.buttonClass"
       data-testid="pipeline-url-yaml"
     >
@@ -175,7 +176,7 @@ export default {
           {{ __('Auto DevOps') }}
         </gl-badge>
       </gl-link>
-      <gl-popover :target="autoDevopsTagId" triggers="focus" placement="top">
+      <gl-popover :target="autoDevopsTagId" placement="top">
         <template #title>
           <div class="gl-font-normal gl-leading-normal">
             <gl-sprintf

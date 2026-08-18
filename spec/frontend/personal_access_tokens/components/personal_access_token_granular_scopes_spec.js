@@ -193,5 +193,17 @@ describe('PersonalAccessTokenGranularScopes', () => {
 
       expect(findUserCollapse().text()).toContain('No resources added');
     });
+
+    it('deduplicates permissions shared across multiple namespace scopes', () => {
+      createComponent({
+        scopes: [mockGranularGroupScope, mockGranularProjectScope],
+      });
+
+      // mockGranularGroupScope and mockGranularProjectScope both grant `read_project`,
+      // so the combined count should be 4 (deduplicated), not 5.
+      expect(findGroupToggleButton().text()).toContain('Group and project permissions (4)');
+      expect(findGroupCollapse().text()).toContain('Project: Read, Write');
+      expect(findGroupCollapse().text()).not.toContain('Project: Read, Write, Read');
+    });
   });
 });

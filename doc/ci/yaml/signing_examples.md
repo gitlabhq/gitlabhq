@@ -100,7 +100,7 @@ build_and_sign_artifact:
 
 | Name                        | Value |
 |-----------------------------|-------|
-| `--certificate-identity`    | The SAN of the signing certificate issued by Fulcio. Can be constructed with the following information from the project where the image/artifact was signed: GitLab instance URL + project path + `//` + CI config path + `@` + ref path. |
+| `--certificate-identity`    | The SAN of the signing certificate issued by Fulcio. Can be constructed with the following information from the project where the image/artifact was signed: GitLab instance URL + project path + `//` + CI configuration path + `@` + ref path. |
 | `--certificate-oidc-issuer` | The GitLab instance URL where the image/artifact was signed. For example, `https://gitlab.com`. |
 | `--bundle`                  | The `bundle` file produced by `cosign sign-blob`. Only used for verifying build artifacts. |
 
@@ -123,8 +123,10 @@ verify_image:
 
 **Additional details**:
 
-- The double backslash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
-- If the verification is happening in the same pipeline as the signing, then this path can be used: `"${CI_PROJECT_URL}//.gitlab-ci.yml@refs/heads/${CI_COMMIT_REF_NAME}"`
+- The double slash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
+- If the verification happens in the same pipeline as the signing, you can use
+  `"${CI_PROJECT_URL}//.gitlab-ci.yml@refs/heads/${CI_COMMIT_REF_NAME}"` for `--certificate-identity`
+  and `"${CI_SERVER_URL}"` for `--certificate-oidc-issuer`.
 
 #### Build artifacts
 
@@ -143,8 +145,10 @@ verify_artifact:
 
 **Additional details**:
 
-- The double backslash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
-- If the verification is happening in the same pipeline as the signing, then this path can be used: `"${CI_PROJECT_URL}//.gitlab-ci.yml@refs/heads/${CI_COMMIT_REF_NAME}"`
+- The double slash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
+- If the verification happens in the same pipeline as the signing, you can use
+  `"${CI_PROJECT_URL}//.gitlab-ci.yml@refs/heads/${CI_COMMIT_REF_NAME}"` for `--certificate-identity`
+  and `"${CI_SERVER_URL}"` for `--certificate-oidc-issuer`.
 
 ## Use Sigstore and npm to generate keyless provenance
 
@@ -193,7 +197,7 @@ build:
     - npm publish --provenance --access public
 ```
 
-The npm GitLab template provides this functionality as well, the example is in
+The npm GitLab template provides this functionality as well. The example is in
 the [templates documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/npm.gitlab-ci.yml).
 
 ## Verifying npm provenance

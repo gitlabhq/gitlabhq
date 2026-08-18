@@ -12,14 +12,14 @@ Gem::Specification.new do |spec|
   spec.description = "GitLab HTTP client"
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-http"
   spec.license = 'MIT'
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.2"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']
   spec.test_files = Dir['spec/**/*']
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'activesupport', '>= 7', '< 9'
+  spec.add_runtime_dependency 'activesupport', '>= 7.2', '< 9'
   spec.add_runtime_dependency 'concurrent-ruby', '~> 1.2'
   spec.add_runtime_dependency 'httparty', '~> 0.21'
   spec.add_runtime_dependency 'ipaddress', '~> 0.8.3'

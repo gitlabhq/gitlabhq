@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 # These examples encode the routing behaviour that
-# config/initializers/grape_router_pattern_patch.rb restores under Grape 2.4,
-# and that Grape 2.0 already provides natively, so they must pass on both the
-# Gemfile and Gemfile.next bundles.
+# config/initializers/grape_router_pattern_patch.rb preserves: a `type: Integer`
+# path parameter must not constrain route matching.
 #
-# Without the patch, Grape 2.4 turns a `type: Integer` path parameter into a
+# Without the patch, Grape turns a `type: Integer` path parameter into a
 # digits-only route segment, so non-numeric and signed segments fail to match
 # the route and return a generic `{"error":"404 Not Found"}` before reaching
-# validation or the endpoint.
+# validation or the endpoint. The patch has been necessary to upgrade Grape
+# from version 2.0 to 2.4, where the behaviour changed.
 RSpec.describe 'Grape router pattern patch', feature_category: :api do
   include Rack::Test::Methods
 

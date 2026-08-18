@@ -3,7 +3,7 @@
 require('spec_helper')
 
 RSpec.describe Projects::ProtectedBranchesController, feature_category: :source_code_management do
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
   let_it_be_with_reload(:empty_project) { create(:project, :empty_repo) }
   let_it_be(:maintainer) { create(:user, maintainer_of: [project, empty_project]) }
 

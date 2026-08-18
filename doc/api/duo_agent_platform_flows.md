@@ -18,7 +18,7 @@ Use this API to create and manage [flows](../user/duo_agent_platform/flows/_inde
 Flows are combinations of AI agents that work together to complete developer tasks,
 such as fixing bugs, writing code, or resolving vulnerabilities.
 
-## Create a flow
+## Trigger a flow
 
 {{< details >}}
 
@@ -26,7 +26,7 @@ such as fixing bugs, writing code, or resolving vulnerabilities.
 
 {{< /details >}}
 
-Creates and starts a new flow.
+Triggers and starts a new flow.
 
 ```plaintext
 POST /ai/duo_workflows/workflows
@@ -43,7 +43,7 @@ Supported attributes:
 | `allow_agent_to_request_user` | boolean | No | When `true` (default), the agent may pause to ask the user questions before proceeding. When `false`, the agent runs to completion without user input. |
 | `environment` | string | No | Execution environment. One of: `ide`, `web`, `chat_partial`, `chat`, `ambient`. |
 | `goal` | string | No | Description of the task for the agent to complete. Example: `Fix the failing pipeline`. |
-| `image` | string | No | Container image to use when running the flow in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution.md#custom-image-requirements). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
+| `image` | string | No | Container image to use when running the flow in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution/images.md#use-a-custom-image). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
 | `issue_id` | integer | No | IID of the issue to associate the flow with. Requires `project_id`. |
 | `merge_request_id` | integer | No | IID of the merge request to associate the flow with. Requires `project_id`. |
 | `namespace_id` | string | No | ID or path of the namespace to associate the flow with. |
@@ -53,6 +53,7 @@ Supported attributes:
 | `source_branch` | string | No | Source branch for the CI pipeline. Defaults to the project's default branch. |
 | `start_workflow` | boolean | No | When `true`, starts the flow immediately after creation. |
 | `workflow_definition` | string | No | Flow type identifier. Example: `developer/v1`. Cannot be used with `ai_catalog_item_consumer_id`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. |
+| `source`                        | string | No | Where the session was triggered from in the UI. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
 attributes:
@@ -162,6 +163,153 @@ Example response:
 }
 ```
 
+## Register a flow callback endpoint
+
+Registers an HTTPS endpoint that receives flow lifecycle events (`flow.started`, `flow.completed`,
+and `flow.failed`). Reference the returned `id` as the `callback_hook_id` attribute when you
+[trigger a flow](#trigger-a-flow) to receive lifecycle notifications instead of polling for status.
+
+The URL and secrets are encrypted at rest and are never returned by the API after registration.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+POST /ai/duo_workflows/flow_callbacks
+```
+
+Supported attributes:
+
+| Attribute        | Type   | Required | Description |
+|------------------|--------|----------|-------------|
+| `url`            | string | Yes      | HTTPS URL that receives callbacks. |
+| `name`           | string | No       | A label for this endpoint. |
+| `signing_token`  | string | No       | `HMAC` signing secret in `whsec_<base64-of-32-bytes>` format, used to compute the `webhook-signature` header so you can verify payloads. Not returned. |
+| `token`          | string | No       | Shared secret sent verbatim as the `X-Gitlab-Token` header. Not returned. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
+attributes:
+
+| Attribute            | Type    | Description |
+|----------------------|---------|-------------|
+| `created_at`         | string  | Date and time the endpoint was registered. |
+| `id`                 | integer | ID of the flow callback endpoint. |
+| `name`               | string  | Label for this endpoint. |
+| `signing_token_set`  | boolean | Whether a `signing_token` is set. |
+| `token_set`          | boolean | Whether a `token` is set. |
+| `url`                | string  | HTTPS URL that receives callbacks. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "url": "https://autoflow.example.com/duo/callbacks",
+    "name": "AutoFlow",
+    "signing_token": "whsec_<base64_encoded_32_byte_secret>"
+  }' \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "url": "https://autoflow.example.com/duo/callbacks",
+  "name": "AutoFlow",
+  "signing_token_set": true,
+  "token_set": false,
+  "created_at": "2026-07-22T11:37:00.000Z"
+}
+```
+
+## List flow callback endpoints
+
+Lists the flow callback endpoints registered for your organization. Secrets are not returned.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+GET /ai/duo_workflows/flow_callbacks
+```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of
+[flow callback endpoint](#register-a-flow-callback-endpoint) objects.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks"
+```
+
+## Get a flow callback endpoint
+
+Returns a single registered flow callback endpoint. Secrets are not returned.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+GET /ai/duo_workflows/flow_callbacks/:id
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | ID of the flow callback endpoint. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and a
+[flow callback endpoint](#register-a-flow-callback-endpoint) object.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks/1"
+```
+
+## Delete a flow callback endpoint
+
+Deletes a registered flow callback endpoint so it no longer receives deliveries.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+DELETE /ai/duo_workflows/flow_callbacks/:id
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | ID of the flow callback endpoint. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks/1"
+```
+
 ## Get workflow trace as JSONL
 
 {{< details >}}
@@ -170,14 +318,14 @@ Example response:
 
 {{< /details >}}
 
-Returns the `ui_chat_log` entries from the most recent checkpoint of a workflow session
+Returns the `ui_chat_log` entries of a workflow session
 as [JSON Lines](https://jsonlines.org/) (JSONL).
 Each line is a valid JSON object representing one entry from the `ui_chat_log` array.
 Use this endpoint to parse or pipe the trace into tools like `jq`.
 
-> [!note]
-> LangGraph checkpoints are cumulative snapshots. Each checkpoint row contains the full
-> accumulated state, so the most recent checkpoint has the complete `ui_chat_log`.
+By default, the endpoint returns the complete conversation across all threads of the session,
+including messages from before any context compaction.
+Use the `thread` attribute to return a single thread instead.
 
 ```plaintext
 GET /ai/duo_workflows/workflows/:workflow_id/trace.jsonl
@@ -188,12 +336,13 @@ Supported attributes:
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `workflow_id` | integer | Yes | ID of the workflow. |
+| `thread` | string | No | Which thread to return. Omit for the full trace across all threads. Use `latest` for the most recent thread only, or a thread ID for a specific thread. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with:
 
 - **Content-Type**: `application/x-ndjson`
-- **Body**: One JSON object per line, each representing a `ui_chat_log` entry from the most recent checkpoint.
-  Returns an empty body if the workflow has no checkpoints or the latest checkpoint has no `ui_chat_log`.
+- **Body**: One JSON object per line, each representing a `ui_chat_log` entry.
+  Returns an empty body if the workflow has no checkpoints or no `ui_chat_log` entries.
 
 Example request:
 

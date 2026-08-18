@@ -2,7 +2,7 @@
 
 module API
   class Submodules < ::API::Base
-    SUBMODULE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(submodule: API::NO_SLASH_URL_PART_REGEX)
+    SUBMODULE_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(submodule: ::API::NO_SLASH_URL_PART_REGEX)
 
     before { authenticate! }
 
@@ -25,8 +25,9 @@ module API
         desc: 'The ID or URL-encoded path of a project',
         documentation: { example: 'gitlab-org/gitlab' }
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Update existing submodule reference in repository' do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'Update a submodule reference' do
+        detail 'Updates a reference for a specified submodule.'
         success code: 200, model: Entities::CommitDetail
         tags ['submodules']
         failure [

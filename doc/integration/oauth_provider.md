@@ -5,14 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure GitLab as an OAuth 2.0 authentication identity provider
 ---
 
-{{< history >}}
-
-- Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
-- Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561778) in GitLab 18.5. Feature flag `ff_oauth_redirect_to_sso_login` removed.
-
-{{< /history >}}
-
 [OAuth 2.0](https://oauth.net/2/) provides secure delegated server resource
 access to client applications on behalf of a resource owner. OAuth 2 allows
 authorization servers to issue access tokens to third-party clients with the approval
@@ -90,26 +82,19 @@ To create an application for your GitLab instance:
 1. In the left sidebar, select **Applications**.
 1. Select **New application**.
 
-When creating application in the **Admin** area, mark it as **trusted**.
+When creating an application in the **Admin** area, mark it as **trusted**.
 The user authorization step is automatically skipped for this application.
 
 ## View all authorized applications
 
-{{< history >}}
-
-- `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a feature flag](../administration/feature_flags/_index.md) named `k8s_proxy_pat`. Enabled by default.
-- Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
-
-{{< /history >}}
-
-To see all the application you've authorized with your GitLab credentials:
+To see all the applications you've authorized with your GitLab credentials:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the left sidebar, select **Access** > **Applications**.
 1. See the **Authorized applications** section.
 
-The GitLab OAuth 2 applications support scopes, which allow application to perform
+The GitLab OAuth 2 applications support scopes, which allow applications to perform
 different actions. See the following table for all available scopes.
 
 | Scope                    | Description |

@@ -4,7 +4,7 @@ Gitlab::GrapeOpenapi.configure do |config|
   config.info = Gitlab::GrapeOpenapi::Models::Info.new(
     title: 'GitLab REST API',
     description: 'GitLab REST API used to interact with a GitLab installation.',
-    version: 'v4',
+    version: Gitlab::VERSION,
     terms_of_service: 'https://handbook.gitlab.com/handbook/legal/api-terms/',
     license: {
       name: 'CC BY-SA 4.0',
@@ -59,7 +59,8 @@ Gitlab::GrapeOpenapi.configure do |config|
   # value: rendered annotation key
   # e.g. route_setting :lifecycle, "experimental" => YAML: `x-gitlab-lifecycle: experimental`
   config.annotations = {
-    lifecycle: 'x-gitlab-lifecycle'
+    lifecycle: 'x-gitlab-lifecycle',
+    tier: 'x-gitlab-tier'
   }
 
   config.tag_overrides = {
@@ -67,6 +68,7 @@ Gitlab::GrapeOpenapi.configure do |config|
     'Api' => 'API',
     'bitbucket' => 'Bitbucket',
     'Ci' => 'CI',
+    'Code suggestions' => 'Code Suggestions',
     'Dora' => 'DORA',
     'Duo workflows' => 'Duo Workflows',
     'geo' => 'Geo',

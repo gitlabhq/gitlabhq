@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RestoreAiInfrastructureSettingsFromAiSettings < Gitlab::Database::Migration[2.3]
-  milestone '19.2'
+  milestone '19.3'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 

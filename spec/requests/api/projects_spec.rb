@@ -1391,7 +1391,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect do
           request
-        end.not_to exceed_all_query_limit(control)
+        end.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
       end
     end
 
@@ -1453,6 +1453,35 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   describe 'POST /projects' do
     let(:path) { '/projects' }
 
+    context 'when rate limiting project creation' do
+      let_it_be(:current_user) { user }
+      let_it_be(:create_params) { { name: 'rate-limited-project', path: 'rate-limited-project' } }
+
+      def request
+        post api(path, current_user), params: create_params
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :projects_create, use_second_scope: false
+
+      context 'when the namespace_create_rate_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(namespace_create_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
+
+          request
+        end
+
+        it 'creates the project' do
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
@@ -1478,6 +1507,46 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(project.name).to eq('Foo Project')
       expect(project.path).to eq('foo-project')
+    end
+
+    it 'does not publish the project to the CI/CD catalog by default' do
+      post api(path, user), params: { name: 'Foo Project' }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['cicd_catalog_enabled']).to be(false)
+      expect(Project.last.catalog_resource).to be_nil
+    end
+
+    it 'publishes the project to the CI/CD catalog when cicd_catalog_enabled is true' do
+      post api(path, user), params: { name: 'Foo Project', description: 'A component', cicd_catalog_enabled: true }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['cicd_catalog_enabled']).to be(true)
+      expect(Project.last.catalog_resource).to be_present
+    end
+
+    it 'returns 400 when cicd_catalog_enabled is true but the project has no description' do
+      expect { post api(path, user), params: { name: 'Foo Project', cicd_catalog_enabled: true } }
+        .not_to change { Project.count }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq('To set the project as a catalog resource, the project must have a description.')
+    end
+
+    # Maintainers may create projects here but only Owners may change the catalog
+    # resource state. Any change (enabling or disabling) must be rejected up front
+    # so a non-Owner never creates a project that is then orphaned.
+    [true, false].each do |enabled|
+      it "returns 403 without creating a project when a non-Owner sets cicd_catalog_enabled to #{enabled}" do
+        group = create(:group, project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+        group.add_maintainer(user)
+
+        params = { name: 'Foo Project', description: 'A component', namespace_id: group.id, cicd_catalog_enabled: enabled }
+
+        expect { post api(path, user), params: params }.not_to change { Project.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
 
     it 'creates new project without name but with path and returns 201' do
@@ -2304,6 +2373,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       subject(:request) { post api(path, admin, admin_mode: true), params: params }
     end
 
+    it 'publishes the project to the CI/CD catalog when cicd_catalog_enabled is true' do
+      post api(path, admin, admin_mode: true),
+        params: { name: 'Foo Project', description: 'A component', cicd_catalog_enabled: true }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['cicd_catalog_enabled']).to be(true)
+      expect(Project.find(json_response['id']).catalog_resource).to be_present
+    end
+
+    it 'returns 400 when cicd_catalog_enabled is true but the project has no description' do
+      expect do
+        post api(path, admin, admin_mode: true), params: { name: 'Foo Project', cicd_catalog_enabled: true }
+      end.not_to change { Project.count }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq('To set the project as a catalog resource, the project must have a description.')
+    end
+
     it 'responds with 400 on failure and not project' do
       expect { post api(path, admin, admin_mode: true) }
         .not_to change { Project.count }
@@ -2787,6 +2874,31 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       def request_with_second_scope
         get api(path, user2)
+      end
+    end
+
+    describe 'cicd_catalog_enabled attribute' do
+      it 'is false when the project is not published to the CI/CD catalog' do
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['cicd_catalog_enabled']).to be(false)
+      end
+
+      it 'is true when the project is published to the CI/CD catalog' do
+        create(:ci_catalog_resource, project: project)
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['cicd_catalog_enabled']).to be(true)
+      end
+
+      it 'is exposed to any user who can view the project' do
+        get api(path, user3)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['cicd_catalog_enabled']).to be(false)
       end
     end
 
@@ -4546,6 +4658,77 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:ok)
         expect(project.reload.ci_display_pipeline_variables).to be_truthy
         expect(json_response['ci_display_pipeline_variables']).to be(true)
+      end
+    end
+
+    describe 'updating cicd_catalog_enabled attribute' do
+      it 'is not published to the CI/CD catalog by default' do
+        expect(project.catalog_resource).to be_nil
+      end
+
+      it 'publishes the project to the CI/CD catalog' do
+        put(api(path, user), params: { description: 'A component', cicd_catalog_enabled: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.catalog_resource).to be_present
+        expect(json_response['cicd_catalog_enabled']).to be(true)
+      end
+
+      it 'returns 400 when enabling on a project without a description' do
+        project.update!(description: nil)
+
+        put(api(path, user), params: { cicd_catalog_enabled: true })
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('To set the project as a catalog resource, the project must have a description.')
+        expect(project.reload.catalog_resource).to be_nil
+      end
+
+      it 'publishes the project when it already has a description' do
+        project.update!(description: 'A component')
+
+        put(api(path, user), params: { cicd_catalog_enabled: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.catalog_resource).to be_present
+        expect(json_response['cicd_catalog_enabled']).to be(true)
+      end
+
+      it 'removes the project from the CI/CD catalog' do
+        create(:ci_catalog_resource, project: project)
+
+        put(api(path, user), params: { cicd_catalog_enabled: false })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.catalog_resource).to be_nil
+        expect(json_response['cicd_catalog_enabled']).to be(false)
+      end
+
+      it 'does not change the catalog state when the value is unchanged' do
+        put(api(path, user), params: { cicd_catalog_enabled: false })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.catalog_resource).to be_nil
+        expect(json_response['cicd_catalog_enabled']).to be(false)
+      end
+
+      it 'is forbidden for a user who cannot manage the catalog resource' do
+        maintainer = create(:user, maintainer_of: project)
+
+        put(api(path, maintainer), params: { cicd_catalog_enabled: true })
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project.reload.catalog_resource).to be_nil
+      end
+
+      it 'is forbidden for a user who cannot remove an existing catalog resource' do
+        create(:ci_catalog_resource, project: project)
+        maintainer = create(:user, maintainer_of: project)
+
+        put(api(path, maintainer), params: { cicd_catalog_enabled: false })
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project.reload.catalog_resource).to be_present
       end
     end
 

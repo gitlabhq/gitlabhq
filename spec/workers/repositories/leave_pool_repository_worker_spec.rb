@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Repositories::LeavePoolRepositoryWorker, feature_category: :gitaly do
   let_it_be(:pool_repository) { create(:pool_repository, :ready) }
-  let_it_be(:project) { create(:project, :repository, pool_repository: pool_repository) }
+  let_it_be(:project) { create(:project, :small_repo, pool_repository: pool_repository) }
 
   subject(:worker) { described_class.new }
 

@@ -337,7 +337,7 @@ For example, the following output shows that four anchor links discovered during
 ## Chromium DevTools logging
 
 > [!warning]
-> Logging DevTools messages is a security risk. The output contains secrets such as usernames, passwords and authentication tokens.
+> Logging DevTools messages is a security risk. The output contains secrets such as usernames, passwords, and authentication tokens.
 > The output is uploaded to the GitLab server and may be visible in job logs.
 
 The DAST Browser-based scanner orchestrates a Chromium browser using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
@@ -354,7 +354,7 @@ To log all DevTools messages, turn the `CHROM` log module to `trace` and configu
 
 ### Customizing DevTools log levels
 
-Chrome DevTools requests, responses and events are namespaced by domain. DAST allows each domain and each domain with message to have different logging configuration.
+Chrome DevTools requests, responses, and events are namespaced by domain. DAST allows each domain and each domain with message to have different logging configuration.
 The environment variable `DAST_LOG_DEVTOOLS_CONFIG` accepts a semi-colon separated list of logging configurations.
 Logging configurations are declared using the structure `[domain/message]:[what-to-log][,truncate:[max-message-size]]`.
 

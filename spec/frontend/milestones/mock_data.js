@@ -165,8 +165,3 @@ export const groupMilestones = [
     web_url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/-/milestones/1',
   },
 ];
-
-export default {
-  projectMilestones,
-  groupMilestones,
-};

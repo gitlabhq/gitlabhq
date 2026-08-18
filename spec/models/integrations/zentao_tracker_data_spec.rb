@@ -8,7 +8,7 @@ RSpec.describe Integrations::ZentaoTrackerData, feature_category: :team_planning
   describe 'factory available' do
     let(:zentao_tracker_data) { create(:zentao_tracker_data) }
 
-    it { expect(zentao_tracker_data.valid?).to eq true }
+    it { expect(zentao_tracker_data.valid?).to be true }
   end
 
   describe 'encrypted attributes' do

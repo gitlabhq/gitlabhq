@@ -3,7 +3,7 @@ import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_
 import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A renderless component for querying/dismissing UserCallouts via GraphQL.
@@ -47,12 +47,6 @@ import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
  *  - shouldShowCallout: boolean
  *    - `true` if the query has loaded without error, the user is logged in,
  *      and the callout has not been dismissed yet; `false` otherwise.
- *
- * The component emits a `queryResult` event when the GraphQL query
- * completes. The payload is a combination of the ApolloQueryResult object and
- * this component's `slotProps` computed property. This is useful for things
- * like cleaning up/unmounting the component if the callout shouldn't be
- * displayed.
  */
 export default normalizeRender({
   name: 'UserCalloutDismisser',
@@ -79,9 +73,6 @@ export default normalizeRender({
       query: getUserCalloutsQuery,
       update(data) {
         return data?.currentUser;
-      },
-      result(data) {
-        this.$emit('queryResult', { ...data, ...this.slotProps });
       },
       error(err) {
         logError(err);
@@ -156,7 +147,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default(this.slotProps);
+    return getSlotFunction(this)(this.slotProps);
   },
 });
 </script>

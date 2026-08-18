@@ -11,4 +11,5 @@ group:
   permissions: []
   raw_permissions:
   - read_group
+  - update_work_item_user_preference
   - upload_file

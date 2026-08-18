@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Config::External::Header::Mapper, feature_category: :
   include StubRequests
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.owner }
 
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }

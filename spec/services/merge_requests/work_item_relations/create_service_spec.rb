@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :public) }
   let(:target_work_items) { [work_item] }
-  let(:link_type) { :mentioned }
+  let(:link_type) { :related }
   let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project) }
@@ -39,10 +39,21 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
       expect(result).to be_success
       expect(relation).to have_attributes(
         issue_id: work_item.id,
-        link_type: 'mentioned',
+        link_type: 'related',
         from_mr_description: false,
         project_id: merge_request.project_id
       )
+    end
+
+    context 'with link_type mentioned' do
+      let(:link_type) { :mentioned }
+
+      it 'is rejected and creates nothing', :aggregate_failures do
+        expect { result }.not_to change { merge_request.merge_request_issues.count }
+
+        expect(result).to be_error
+        expect(result.reason).to eq(:bad_request)
+      end
     end
 
     context 'with link_type closes' do
@@ -78,7 +89,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
     context 'when the relation already exists' do
       before do
         create(:merge_requests_closing_issues,
-          merge_request: merge_request, issue: work_item, link_type: :mentioned, from_mr_description: false)
+          merge_request: merge_request, issue: work_item, link_type: :related, from_mr_description: false)
       end
 
       it 'is idempotent and does not duplicate the row', :aggregate_failures do

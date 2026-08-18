@@ -80,6 +80,10 @@ class DraftNote < ApplicationRecord
     false
   end
 
+  def should_update_position?
+    super && commit_id.blank?
+  end
+
   def importing?
     false
   end

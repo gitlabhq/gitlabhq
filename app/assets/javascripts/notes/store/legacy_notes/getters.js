@@ -148,7 +148,7 @@ export function getUserDataByProp() {
 export function canUserAddIncidentTimelineEvents() {
   return Boolean(
     this.userData?.can_add_timeline_events &&
-      this.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
+    this.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
   );
 }
 

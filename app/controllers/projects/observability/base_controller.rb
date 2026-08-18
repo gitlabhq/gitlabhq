@@ -20,7 +20,7 @@ module Projects
       end
 
       def authorize_request_access!
-        return render_404 unless ::Feature.enabled?(:observability_sass_features, project.root_namespace)
+        return render_404 if ::Feature.disabled?(:observability_saas_features_user_namespace, project.root_namespace)
 
         return if Ability.allowed?(current_user, :create_observability_access_request, project)
 

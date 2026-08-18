@@ -150,7 +150,7 @@ The automatic housekeeping process will then clean up these artifacts during its
 
 #### `@final` artifacts not deleted from object store
 
-In GitLab 16.1 and later, artifacts are uploaded directly to their final storage location in the `@final` directory, rather than using a temporary location first.
+Artifacts are uploaded directly to their final storage location in the `@final` directory, rather than using a temporary location first.
 
 An issue in GitLab 16.1 and 16.2 causes [artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920) when they expire.
 The cleanup process for expired artifacts does not remove artifacts from the `@final` directory. This issue is fixed in GitLab 16.3 and later.
@@ -205,7 +205,7 @@ kubectl exec -it -c toolbox <toolbox-pod-name> bash
 gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
 ```
 
-When the command complete, copy the file out of the session onto persistent storage.
+When the command completes, copy the file out of the session onto persistent storage.
 
 {{< /tab >}}
 
@@ -274,7 +274,7 @@ kubectl exec -it -c toolbox <toolbox-pod-name> bash
 gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
 ```
 
-- When the command complete, copy the file out of the session onto persistent storage.
+- When the command completes, copy the file out of the session onto persistent storage.
 
 {{< /tab >}}
 

@@ -150,7 +150,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect do
           get api(endpoint_path, user)
-        end.not_to exceed_query_limit(control).with_threshold(allowed_query_threshold)
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency.with_threshold(allowed_query_threshold)
       end
     end
 
@@ -174,7 +174,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect do
           get api(endpoint_path, user)
-        end.not_to exceed_query_limit(control).with_threshold(allowed_query_threshold)
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency.with_threshold(allowed_query_threshold)
       end
 
       context 'when merge requests are merged' do
@@ -189,7 +189,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
           expect do
             get api(endpoint_path, user)
-          end.not_to exceed_query_limit(control).with_threshold(allowed_query_threshold)
+          end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency.with_threshold(allowed_query_threshold)
         end
       end
 
@@ -1263,6 +1263,26 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect_response_contain_exactly(merge_request2.id)
       end
 
+      it 'returns merge requests merged before a specific date' do
+        merge_request2 = create(:merge_request, :merged, source_project: project, target_project: project)
+
+        merge_request2.metrics.update!(merged_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?merged_before=2000-01-02T00:00:00.060Z', user)
+
+        expect_response_contain_exactly(merge_request2.id)
+      end
+
+      it 'returns merge requests merged after a specific date' do
+        merge_request2 = create(:merge_request, :merged, source_project: project, target_project: project)
+
+        merge_request2.metrics.update!(merged_at: 1.week.from_now)
+
+        get api("/merge_requests?merged_after=#{merge_request2.metrics.merged_at}", user)
+
+        expect_response_contain_exactly(merge_request2.id)
+      end
+
       context 'search params' do
         let_it_be(:merge_request, freeze: false) do
           create(:merge_request, :simple, author: user, source_project: project, target_project: project, title: 'Search title', description: 'Search description')
@@ -1464,6 +1484,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         get api(endpoint_path, user), params: { deployed_before: '1990-01-01' }
 
         expect_empty_array_response
+      end
+
+      it 'returns 400 when deployed_before is not a valid date' do
+        get api(endpoint_path, user), params: { deployed_before: '2021-99-99' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns 400 when deployed_after is not a valid date' do
+        get api(endpoint_path, user), params: { deployed_after: '2021-99-99' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -1843,13 +1875,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
     let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
-
-    describe 'mcp route setting' do
-      subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user) }
-
-      it_behaves_like 'an endpoint with mcp route setting', :get_merge_request,
-        expected_params: [:id, :merge_request_iid]
-    end
 
     it_behaves_like 'enforcing job token policies', :read_merge_requests,
       allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
@@ -4326,6 +4351,25 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it_behaves_like 'merging with auto merge strategies'
     end
 
+    context 'when the MR is still preparing and a pipeline is being created', :clean_gitlab_redis_shared_state do
+      # Reproduces the transient state right after POST /merge_requests, where the MR is
+      # preparing (diffs not computed) and a pipeline is being created.
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/473054
+      before do
+        merge_request.mark_as_preparing!
+        Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+      end
+
+      it 'sets auto merge instead of returning 405' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+          params: { auto_merge: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(merge_request.reload.auto_merge_enabled).to be(true)
+        expect(merge_request.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+      end
+    end
+
     it 'enables auto merge if the MR is not mergeable and only_allow_merge_if_pipeline_succeeds is true' do
       allow_any_instance_of(MergeRequest)
         .to receive_messages(
@@ -4619,6 +4663,62 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['state']).to eq('closed')
+      end
+    end
+
+    context "to reopen a MR" do
+      let(:merge_request) do
+        create(:merge_request, :closed, author: user, assignees: [user], source_project: project,
+          target_project: project, source_branch: 'markdown')
+      end
+
+      it "reopens the merge request" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: "reopen" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['state']).to eq('opened')
+      end
+
+      context "when the source branch no longer exists" do
+        let(:merge_request) do
+          create(:merge_request, :closed, author: user, assignees: [user], source_project: project,
+            target_project: project, source_branch: 'this-source-branch-does-not-exist')
+        end
+
+        let(:branch_error) do
+          'Cannot reopen this merge request because the source or target branch no longer exists.'
+        end
+
+        it "does not reopen the merge request and returns an error" do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+            params: { state_event: "reopen" }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to include(branch_error)
+        end
+
+        it "does not apply other changes in the same request" do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+            params: { state_event: "reopen", title: "A brand new title" }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(merge_request.reload).to be_closed
+          expect(merge_request.title).not_to eq("A brand new title")
+        end
+
+        context "when the prevent_reopen_merge_request_without_branch feature flag is disabled" do
+          before do
+            stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
+          end
+
+          it "reopens the merge request" do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+              params: { state_event: "reopen" }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['state']).to eq('opened')
+          end
+        end
       end
     end
 

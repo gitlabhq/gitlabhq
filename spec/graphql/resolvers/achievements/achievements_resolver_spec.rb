@@ -26,16 +26,6 @@ RSpec.describe Resolvers::Achievements::AchievementsResolver, feature_category: 
         expect(resolve_achievements.items).to contain_exactly(achievements[0], achievements[1])
       end
     end
-
-    context 'when `achievements` feature flag is diabled' do
-      before do
-        stub_feature_flags(achievements: false)
-      end
-
-      it 'is empty' do
-        expect(resolve_achievements).to be_empty
-      end
-    end
   end
 
   def resolve_achievements

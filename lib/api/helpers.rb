@@ -10,6 +10,7 @@ module API
     include Gitlab::Ci::Artifacts::Logger
     include Gitlab::Utils::StrongMemoize
     include Gitlab::RackLoadBalancingHelpers
+    include Gitlab::ResourceLookup
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
@@ -17,7 +18,7 @@ module API
     API_USER_ENV = 'gitlab.api.user'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
-    INTEGER_ID_REGEX = /^-?\d+$/
+    INTEGER_ID_REGEX = Gitlab::ResourceLookup::INTEGER_ID_REGEX
     GLOBAL_ID_LOG_REGEXES = [
       %r{^/ai/.*$},
       %r{^/code_suggestions/.*$}
@@ -106,16 +107,6 @@ module API
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def set_current_organization(user: current_user)
-      # When the feature flag is enabled the global before_validation hook in
-      # API::API resolves Current.organization for every non-opted-out Grape
-      # request, so the per-endpoint helper has nothing to do. Returning
-      # early lets us delete the explicit calls in a follow-up MR without
-      # changing behaviour while the flag is on.
-      #
-      # Endpoints that opt out of the global hook (skip_global_organization_setup!)
-      # still rely on the helper, so do not short-circuit for those.
-      return if global_hook_will_resolve_current_organization?
-
       return if ::Current.organization_assigned
 
       ::Current.organization = Gitlab::Current::Organization.new(
@@ -125,15 +116,6 @@ module API
       ).organization
 
       check_organization_read_only!
-    end
-
-    def global_hook_will_resolve_current_organization?
-      return false unless Feature.enabled?(:set_current_organization_for_grape_api, Feature.current_request)
-
-      endpoint_class = request.env[Grape::Env::API_ENDPOINT]&.options&.dig(:for)
-      return true unless endpoint_class.respond_to?(:skip_global_organization_setup?)
-
-      !endpoint_class.skip_global_organization_setup?
     end
 
     def save_current_user_in_env(user)
@@ -171,19 +153,9 @@ module API
       UserFinder.new(id).find_by_id_or_username
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
-      return unless id
-
-      projects = find_project_scopes
-
-      if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
-        projects.find_by(id: id)
-      elsif id.include?("/")
-        projects.find_by_full_path(id, follow_redirects: true)
-      end
+      lookup_project(id, scope: find_project_scopes)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Can be overridden by API endpoints
     def find_project_scopes
@@ -259,17 +231,11 @@ module API
       check_organization_access(organization)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id, organization: nil)
       collection = organization.present? ? Group.in_organization(organization) : Group.all
 
-      if INTEGER_ID_REGEX.match?(id.to_s)
-        collection.find_by(id: id)
-      else
-        collection.find_by_full_path(id)
-      end
+      lookup_group(id, scope: collection)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_group!(id, organization: nil)
       group = find_group(id, organization: organization)
@@ -675,9 +641,9 @@ module API
     end
 
     def organization_read_only_enforced?(organization)
-      return false unless organization
+      return false unless organization&.read_only?
 
-      organization.read_only_enforced?
+      Feature.enabled?(:organization_read_only_enforcement, organization)
     end
 
     # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons
@@ -859,14 +825,7 @@ module API
     # content-based ETag should pass one via the `etag:` kwarg; otherwise we
     # suppress Rack::ETag's default by setting Last-Modified, matching the
     # approach used for streaming responses in ApplicationController.
-    #
-    # Gated by the `workhorse_download_etag_caching` feature flag so the change
-    # in response headers can be de-risked on GitLab.com. Uses `@project` (set
-    # by `user_project` / `find_project!` on project-scoped endpoints) as the
-    # actor; project-less endpoints fall back to nil, the global gate.
     def apply_etag_or_suppress_rack_etag!(etag)
-      return unless Feature.enabled?(:workhorse_download_etag_caching, @project) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @project is the conventional memoized project for API endpoints
-
       if etag
         header 'ETag', etag
       elsif !headers['Last-Modified']
@@ -1143,11 +1102,69 @@ module API
       body ''
     end
 
+    # Enforces the project download ban (and, for real downloads, emits an audit
+    # event) before an archive is served. Overridden in EE; a no-op in CE. Runs
+    # before the caching/conditional-request logic so a banned user cannot get a
+    # `304`, and an error response never inherits the archive's cache headers.
+    # Enforces the project download ban before an archive is served. Overridden
+    # in EE; a no-op in CE (download bans are an EE feature). Runs before the
+    # caching/conditional-request logic so a banned user never receives a 304 and
+    # an error response never inherits the archive's cache headers.
+    def check_repository_archive_download!(repository); end
+
+    # Emits an audit event for a served archive download. Overridden in EE; a
+    # no-op in CE. Called only after the request is known to transfer the archive
+    # (past the 304 short-circuit) and only for a real GET download.
+    def audit_repository_archive_download(repository, client_name: nil); end
+
+    # Emits the same Cache-Control and strong ETag headers as the web archive
+    # controller so API archives are cacheable under the same rules, and returns
+    # `304 Not Modified` for matching conditional requests. The caller passes the
+    # `ArchiveHeaderBuilder`; its metadata (a single Gitaly RPC) is reused for the
+    # content headers and the archive body so the ETag and the served archive
+    # always describe the same commit.
+    def set_repository_archive_cache_headers!(project, builder, ref:, include_lfs_blobs: true, exclude_paths: [])
+      metadata = builder.metadata
+
+      raise Gitlab::Workhorse::ArchiveNotFoundError, 'Repository or ref not found' if metadata.empty?
+
+      cache = Gitlab::Repositories::ArchiveCacheControl.new(
+        project, ref: ref, metadata: metadata, include_lfs_blobs: include_lfs_blobs, exclude_paths: exclude_paths
+      )
+
+      header 'Cache-Control', cache.cache_control
+      header 'ETag', cache.etag
+
+      not_modified! if archive_etag_matches?(cache.etag)
+    end
+
+    def archive_etag_matches?(etag)
+      if_none_match = headers['If-None-Match']
+      return false if if_none_match.blank?
+
+      validators = if_none_match.split(',').map(&:strip)
+      return true if validators.include?('*')
+
+      # `If-None-Match` uses weak comparison (RFC 9110): a validator weakened in
+      # transit (a `W/` prefix) must still match our strong ETag. Rails' own
+      # `etag_matches?` compares exactly, so normalize the `W/` prefix ourselves.
+      weak_etag = etag.delete_prefix('W/')
+      validators.any? { |candidate| candidate.delete_prefix('W/') == weak_etag }
+    end
+
+    # Prevents a shared cache from storing an error response with the archive's
+    # Cache-Control/ETag when a failure happens after the headers were set.
+    def reset_archive_cache_headers!
+      header 'Cache-Control', 'no-store'
+      header.delete('ETag')
+    end
+
     # Respond to HEAD requests for archive endpoints without generating the archive.
     # Sets appropriate Content-Type and Content-Disposition headers.
     # Raises an exception if the ref is not found, matching send_git_archive behavior.
-    def send_git_archive_head(repository, ref:, format:, append_sha:, path: nil, ref_type: nil)
-      builder = Gitlab::Repositories::ArchiveHeaderBuilder.new(
+    # An existing `builder` can be passed in to reuse already-fetched metadata.
+    def send_git_archive_head(repository, ref:, format:, append_sha:, path: nil, ref_type: nil, builder: nil)
+      builder ||= Gitlab::Repositories::ArchiveHeaderBuilder.new(
         repository,
         ref: ref,
         format: format,

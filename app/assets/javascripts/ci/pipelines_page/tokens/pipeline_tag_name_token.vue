@@ -4,6 +4,7 @@ import { debounce } from 'lodash-es';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { FILTER_PIPELINES_SEARCH_DELAY } from '../constants';
 
 export default {
@@ -13,6 +14,7 @@ export default {
     GlFilteredSearchSuggestion,
     GlLoadingIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -55,7 +57,11 @@ export default {
 </script>
 
 <template>
-  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners" @input="searchTags">
+  <gl-filtered-search-token
+    v-bind="{ ...$props, ...$attrs }"
+    v-on="glListeners()"
+    @input="searchTags"
+  >
     <template #suggestions>
       <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>

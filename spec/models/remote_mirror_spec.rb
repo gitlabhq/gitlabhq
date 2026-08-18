@@ -15,7 +15,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     it { is_expected.to validate_presence_of(:project) }
 
     describe '#validate_mirror_count' do
-      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
       before do
         stub_const('RemoteMirror::MAX_MIRRORS_PER_PROJECT', 3)
@@ -231,7 +231,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     end
 
     describe '#enabling_mirror?' do
-      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
       it 'returns true when enabling a disabled mirror' do
         mirror = project.remote_mirrors.create!(url: "http://test.com", enabled: false)
@@ -540,7 +540,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#sync' do
-    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+    let(:remote_mirror) { create(:project, :small_repo, :remote_mirror).remote_mirrors.first }
 
     around do |example|
       freeze_time { example.run }
@@ -632,7 +632,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#url=' do
-    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+    let(:remote_mirror) { create(:project, :small_repo, :remote_mirror).remote_mirrors.first }
 
     it 'resets all the columns when URL changes' do
       remote_mirror.update!(
@@ -653,7 +653,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#updated_since?' do
-    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+    let(:remote_mirror) { create(:project, :small_repo, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.current - 5.minutes }
 
     around do |example|
@@ -704,7 +704,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#disabled?' do
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
     subject { remote_mirror.disabled? }
 
@@ -722,7 +722,7 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   def create_mirror(params)
-    project = FactoryBot.create(:project, :repository)
+    project = FactoryBot.create(:project, :small_repo)
     project.remote_mirrors.create!(params)
   end
 end

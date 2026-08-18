@@ -50,6 +50,7 @@ module Gitlab
           when :events then setup_event
           when :milestone, :milestones then ensure_milestone_title_is_unique
           when :epic, :epics then setup_epic
+          when :award_emoji then setup_award_emoji
           end
 
           update_group_references
@@ -68,6 +69,10 @@ module Gitlab
           return unless @relation_hash['group_id']
 
           @relation_hash['group_id'] = @importable.id
+        end
+
+        def award_emoji_destination_group
+          @importable if @importable.is_a?(::Group)
         end
 
         def use_attributes_permitter?

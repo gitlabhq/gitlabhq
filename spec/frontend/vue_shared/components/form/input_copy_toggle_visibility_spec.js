@@ -23,7 +23,7 @@ describe('InputCopyToggleVisibility', () => {
   };
 
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
-  const findFormInput = () => findFormInputGroup().find('input');
+  const findFormInput = () => findFormInputGroup().findComponent('input');
   const findRevealButton = () =>
     wrapper.findByRole('button', {
       name: InputCopyToggleVisibility.i18n.toggleVisibilityLabelReveal,

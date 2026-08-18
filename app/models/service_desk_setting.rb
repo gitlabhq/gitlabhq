@@ -9,15 +9,21 @@ class ServiceDeskSetting < ApplicationRecord
   attribute :custom_email_enabled, default: false
 
   cells_claims_scope do
-    where.not(custom_email: nil)
+    where.not(custom_email: nil).or(where.not(project_key_address_slug: nil))
   end
 
   cells_claims_attribute :custom_email,
-    type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_CUSTOM_EMAILS,
+    type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SERVICE_DESK_CUSTOM_EMAIL,
     if: ->(record) { record.custom_email.present? }
+  cells_claims_attribute :project_key_address_slug,
+    type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SERVICE_DESK_PROJECT_KEY_ADDRESS_SLUG,
+    feature_flag: :cells_claims_service_desk_settings_project_key_address_slugs,
+    if: ->(record) { record.project_key_address_slug.present? }
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 
   belongs_to :project
+
+  before_save :set_project_key_address_slug
 
   validates :project_id, presence: true
   validate :valid_issue_template
@@ -47,6 +53,13 @@ class ServiceDeskSetting < ApplicationRecord
     if: :needs_custom_email_credentials?
 
   scope :with_project_key, ->(key) { where(project_key: key) }
+  scope :with_any_project_key, -> { where.not(project_key: nil) }
+  scope :preload_project, -> { preload(:project) }
+  scope :for_projects_inside_route_path, ->(path) do
+    where(
+      project_id: Route.for_routable_type('Project').inside_path(path).select(:source_id)
+    )
+  end
 
   def custom_email_credential
     project&.service_desk_custom_email_credential
@@ -91,6 +104,19 @@ class ServiceDeskSetting < ApplicationRecord
     end
   end
 
+  # Whether the current project_key would collide with another project's service
+  # desk address for the project's current full path slug. Used to block a
+  # project rename or transfer that would create such a collision.
+  def project_key_address_slug_conflict?
+    project_key.present? && projects_with_same_slug_and_key_exists?
+  end
+
+  def refresh_project_key_address_slug!
+    return unless project_key.present?
+
+    save!
+  end
+
   def custom_email_enabled_state
     return unless custom_email_enabled?
 
@@ -107,6 +133,11 @@ class ServiceDeskSetting < ApplicationRecord
   end
 
   private
+
+  def set_project_key_address_slug
+    self.project_key_address_slug =
+      project_key.present? ? "#{project.full_path_slug}-#{project_key}" : nil
+  end
 
   def source_template_project
     nil

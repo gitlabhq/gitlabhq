@@ -21,7 +21,8 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::SecureMenu, feature_category
       :dependency_list,
       :audit_events,
       :compliance,
-      :scan_policies
+      :scan_policies,
+      :policy_store
     ])
   end
 end

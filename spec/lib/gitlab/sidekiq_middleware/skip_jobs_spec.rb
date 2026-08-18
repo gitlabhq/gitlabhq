@@ -179,7 +179,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
     end
 
     context 'with worker opted for database health check' do
-      let(:health_signal_attrs) { { gitlab_schema: :gitlab_main, tables: [:users], delay: 1.minute } }
+      let(:health_signal_attrs) { { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute } }
 
       around do |example|
         with_sidekiq_server_middleware do |chain|
@@ -211,7 +211,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         it 'defers the job by set time' do
           expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
           expect(setter).to receive(:set).with(jid: anything).and_return(setter)
-          expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
+          expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay_by], *job['args'])
 
           TestWorker.perform_async(*job['args'])
         end
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         it 'increments counter' do
           expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
           expect(setter).to receive(:set).with(jid: anything).and_return(setter)
-          expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
+          expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay_by], *job['args'])
           expect(metric).to receive(:increment).with({
             worker: "TestWorker",
             action: "deferred",
@@ -228,6 +228,101 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
           })
 
           TestWorker.perform_async(*job['args'])
+        end
+
+        context 'when the job has already been deferred by the database health check' do
+          using RSpec::Parameterized::TableSyntax
+
+          let(:job) { { 'jid' => 123, 'args' => [456], 'deferred_count' => deferred_count } }
+
+          before do
+            allow(subject).to receive(:rand).and_return(0)
+          end
+
+          # delay_by is 1 minute, set by the health_signal_attrs fixture. deferred_count is the
+          # pre-increment value from the job hash;
+          # defer_job! increments it before computing the delay, so the first row is the job's
+          # second deferral. Each consecutive deferral doubles the delay, capped at 30 minutes.
+          where(:deferred_count, :expected_delay) do
+            1  | 2.minutes.to_i
+            2  | 4.minutes.to_i
+            4  | 16.minutes.to_i
+            5  | 30.minutes.to_i
+            50 | 30.minutes.to_i
+          end
+
+          with_them do
+            it 'defers the job with exponential backoff' do
+              expect(TestWorker).to receive(:deferred).with(deferred_count + 1, :database_health_check)
+                .and_return(setter)
+              expect(setter).to receive(:set).with(jid: job['jid']).and_return(setter)
+              expect(setter).to receive(:perform_in).with(expected_delay, *job['args'])
+
+              subject.call(TestWorker.new, job, queue) { nil }
+            end
+          end
+        end
+
+        context 'with jitter' do
+          let(:job) { { 'jid' => 123, 'args' => [456], 'deferred_count' => 50 } }
+
+          it 'subtracts up to 10% of the capped delay so the cap is a hard ceiling' do
+            expect(subject).to receive(:rand).with((30.minutes.to_i / 10) + 1).and_return(42)
+
+            expect(TestWorker).to receive(:deferred).with(51, :database_health_check).and_return(setter)
+            expect(setter).to receive(:set).with(jid: job['jid']).and_return(setter)
+            expect(setter).to receive(:perform_in).with(30.minutes.to_i - 42, *job['args'])
+
+            subject.call(TestWorker.new, job, queue) { nil }
+          end
+        end
+
+        context 'when the job was previously deferred by the feature flag' do
+          let(:job) do
+            { 'jid' => 123, 'args' => [456], 'deferred_count' => 3, 'deferred_by' => 'feature_flag' }
+          end
+
+          it 'backs off from the shared deferred_count' do
+            allow(subject).to receive(:rand).and_return(0)
+
+            expect(TestWorker).to receive(:deferred).with(4, :database_health_check).and_return(setter)
+            expect(setter).to receive(:set).with(jid: job['jid']).and_return(setter)
+            expect(setter).to receive(:perform_in).with(8.minutes.to_i, *job['args'])
+
+            subject.call(TestWorker.new, job, queue) { nil }
+          end
+        end
+
+        context 'when incremental_database_health_defer_delay is disabled' do
+          let(:job) { { 'jid' => 123, 'args' => [456], 'deferred_count' => 5 } }
+
+          before do
+            stub_feature_flags(incremental_database_health_defer_delay: false)
+          end
+
+          it 'defers the job by the fixed delay_by' do
+            expect(TestWorker).to receive(:deferred).with(6, :database_health_check).and_return(setter)
+            expect(setter).to receive(:set).with(jid: job['jid']).and_return(setter)
+            expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay_by], *job['args'])
+
+            subject.call(TestWorker.new, job, queue) { nil }
+          end
+        end
+
+        context 'when the job is deferred by the run_sidekiq_jobs feature flag' do
+          let(:job) { { 'jid' => 123, 'args' => [456], 'deferred_count' => 3 } }
+
+          before do
+            stub_feature_flags("run_sidekiq_jobs_#{TestWorker.name}": false)
+          end
+
+          it 'uses the fixed delay regardless of deferred_count' do
+            expect(TestWorker).to receive(:deferred).with(4, :feature_flag).and_return(setter)
+            expect(setter).to receive(:set).with(jid: job['jid']).and_return(setter)
+            expect(setter).to receive(:perform_in).with(described_class::DELAY, *job['args'])
+
+            subject.call(TestWorker.new, job, queue) { nil }
+          end
         end
       end
 

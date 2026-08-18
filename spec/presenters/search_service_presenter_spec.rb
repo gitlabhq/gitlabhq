@@ -55,12 +55,22 @@ RSpec.describe SearchServicePresenter, feature_category: :global_search do
   describe '#advanced_search_enabled?' do
     let(:scope) { nil }
 
-    it { expect(presenter.advanced_search_enabled?).to eq(false) }
+    it { expect(presenter.advanced_search_enabled?).to be(false) }
   end
 
   describe '#zoekt_enabled?' do
     let(:scope) { nil }
 
-    it { expect(presenter.zoekt_enabled?).to eq(false) }
+    it { expect(presenter.zoekt_enabled?).to be(false) }
+  end
+
+  describe '#zoekt_language_aggregations_enabled?' do
+    let(:scope) { nil }
+
+    before do
+      stub_feature_flags(zoekt_language_aggregations: false)
+    end
+
+    it { expect(presenter.zoekt_language_aggregations_enabled?).to be(false) }
   end
 end

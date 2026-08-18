@@ -31,7 +31,7 @@ GitLab can receive alerts via an HTTP endpoint that you configure.
 
 ### Single Alerting Endpoint
 
-Enabling an alerting endpoint in a GitLab projects activates it to
+Enabling an alerting endpoint in a GitLab project activates it to
 receive alert payloads in JSON format. You can always
 [customize the payload](#customize-the-alert-payload-outside-of-gitlab) to your liking.
 
@@ -64,7 +64,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. For each endpoint you want to create:
 
    1. Select **Add new integration**.
-   1. In the **Select integration type** dropdown list, select **Prometheus** for alerts from Prometheus, or **HTTP Endpoint** for any other monitoring tool. See details
+   1. In the **Select integration type** dropdown list, select **Prometheus** for alerts from Prometheus, or **HTTP Endpoint** for any other monitoring tool.
    1. Name the integration.
    1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
       configuration are available in the **View credentials** tab after you save the integration.
@@ -127,7 +127,7 @@ parameters. All fields are optional. If the incoming alert does not contain a va
 | `end_time`                | DateTime        | The resolution time of the alert. If provided, the alert is resolved. |
 | `service`                 | String          | The affected service. |
 | `monitoring_tool`         | String          | The name of the associated monitoring tool. |
-| `hosts`                   | String or Array | One or more hosts, as to where this incident occurred. |
+| `hosts`                   | String or Array | One or more hosts where this incident occurred. |
 | `severity`                | String          | The severity of the alert. Case-insensitive. Can be one of: `critical`, `high`, `medium`, `low`, `info`, `unknown`. Defaults to `critical` if missing or value is not in this list. |
 | `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. When the `generic_alert_fingerprinting` feature is enabled, the fingerprint is generated automatically based on the payload (excluding the `start_time`, `end_time`, and `hosts` parameters). |
 | `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/_index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/_index.md#adding-a-project-to-the-dashboard). |
@@ -196,7 +196,7 @@ You can alter the nested parameters listed below to configure the GitLab alert.
 | `g0.expr` query parameter in `generatorUrl`                                | String   | No       | Query of associated metric.          |
 | `labels/gitlab_environment_name`                                           | String   | No       | The name of the associated GitLab [environment](../../ci/environments/_index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/_index.md#adding-a-project-to-the-dashboard). |
 | `labels/severity`                                                          | String   | No       | Severity of the alert. Should be one of the [Prometheus severity options](#prometheus-severity-options). Defaults to `critical` if missing or value is not in this list. |
-| `status`                                                                   | String   | No       | Status of the alert in Prometheus. If value is 'resolved', the alert is resolved. |
+| `status`                                                                   | String   | No       | Status of the alert in Prometheus. If the value is 'resolved', the alert is resolved. |
 | One of `annotations/gitlab_y_label`,  `annotations/title`, `annotations/summary`, or `labels/alertname` | String | No | The Y-Axis label to be used when embedding the metrics for this alert in [GitLab Flavored Markdown](../../user/markdown.md). |
 
 Additional attributes included under `annotations` are available on
@@ -221,7 +221,7 @@ can be a nested JSON object. For example:
 
 #### Prometheus severity options
 
-Alerts from Prometheus can provide any of the case-insensitive follow values for [alert severity](alerts.md#alert-severity):
+Alerts from Prometheus can provide any of the case-insensitive following values for [alert severity](alerts.md#alert-severity):
 
 - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`
 - **High**: `high`, `s2`, `p2`, `major`, `page`
@@ -418,12 +418,6 @@ You can also configure the associated [incident to be closed automatically](mana
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
-
-{{< /history >}}
 
 > [!warning]
 > We are building deeper integration with Opsgenie and other alerting tools through

@@ -24,6 +24,7 @@ export const initSignInForm = () => {
     newPasswordPath,
     showCaptcha,
     isRememberMeEnabled,
+    showPasskeyImmediately,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   return new Vue({
@@ -41,6 +42,7 @@ export const initSignInForm = () => {
           newPasswordPath,
           showCaptcha,
           isRememberMeEnabled,
+          showPasskeyImmediately,
         },
       });
     },

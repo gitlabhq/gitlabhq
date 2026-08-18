@@ -102,7 +102,7 @@ If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repo
 
 [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
 
-In Agentic Chat, authentication errors may happen and not result in A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
+In Agentic Chat, authentication errors may happen and not result in an A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
 
 ### Tips for local development
 
@@ -126,7 +126,7 @@ Apply the following feature flags to any AI feature work:
 - A general flag (`ai_global_switch`) that applies to all other AI features. It's enabled by default.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/_index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
-See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
+See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/work_items/10524) for the list of all feature flags and how to use them.
 
 ### Push feature flags to AI Gateway
 
@@ -232,7 +232,7 @@ mutation {
 }
 ```
 
-In our component, we then listen on the `aiCompletionResponse` using the `userId`, `resourceId` and `clientSubscriptionId` (`"randomId"`):
+In our component, we then listen on the `aiCompletionResponse` using the `userId`, `resourceId`, and `clientSubscriptionId` (`"randomId"`):
 
 ```graphql
 subscription aiCompletionResponse(
@@ -259,22 +259,22 @@ To not have many concurrent subscriptions, you should also only subscribe to the
 
 When working with the `aiAction` mutation, several ID parameters are used for routing requests and responses correctly. Here's what each parameter does:
 
-- **user_id** (required)
+- `user_id` (required)
   - Purpose: Identifies and authenticates the requesting user
   - Used for: Permission checks, request attribution, and response routing
   - Example: `gid://gitlab/User/123`
   - Note: This ID is automatically included by the GraphQL API framework
-- **client_subscription_id** (recommended for streaming or multiple features)
+- `client_subscription_id` (recommended for streaming or multiple features)
   - Client-generated UUID for tracking specific request/response pairs
   - Required when using streaming responses or when multiple AI features share the same page
   - Example: `"9f5dedb3-c58d-46e3-8197-73d653c71e69"`
   - Can be omitted for simple, isolated requests with no streaming
-- **resource_id** (contextual - required for some features)
+- `resource_id` (contextual - required for some features)
   - Purpose: References a specific GitLab entity (project, issue, MR) that provides context for the AI operation
   - Used for: Permission verification and contextual information gathering
   - Real example: `"gid://gitlab/Issue/164723626"`
   - Note: Some features may not require a specific resource
-- **project_id** (contextual - required for some features)
+- `project_id` (contextual - required for some features)
   - Purpose: Identifies the project context for the AI operation
   - Used for: Project-specific permission checks and context
   - Real example: `"gid://gitlab/Project/278964"`

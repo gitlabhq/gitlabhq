@@ -61,6 +61,48 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
         destroy_group(group, user, async)
       end
+
+      context 'when Mattermost team removal raises Gitlab::HTTP::BlockedUrlError' do
+        before do
+          allow_next_instance_of(::Mattermost::Team) do |instance|
+            allow(instance).to receive(:destroy)
+              .and_raise(Gitlab::HTTP_V2::BlockedUrlError, 'URL is blocked: Only allowed schemes are https')
+          end
+        end
+
+        it 'still destroys the group' do
+          destroy_group(group, user, async)
+
+          expect(Group.unscoped.all).not_to include(group)
+        end
+
+        it 'logs a warning' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            hash_including(
+              message: "Mattermost team deletion failed, proceeding with group deletion",
+              Labkit::Fields::ERROR_TYPE => 'Gitlab::HTTP_V2::BlockedUrlError'
+            )
+          )
+
+          destroy_group(group, user, async)
+        end
+      end
+
+      context 'when Mattermost team removal raises Mattermost::ConnectionError' do
+        before do
+          stub_const('Mattermost::ConnectionError', Class.new(::Mattermost::Error))
+          allow_next_instance_of(::Mattermost::Team) do |instance|
+            allow(instance).to receive(:destroy)
+              .and_raise(::Mattermost::ConnectionError, 'connection refused')
+          end
+        end
+
+        it 'still destroys the group' do
+          destroy_group(group, user, async)
+
+          expect(Group.unscoped.all).not_to include(group)
+        end
+      end
     end
 
     context 'file system', :sidekiq_might_not_need_inline do

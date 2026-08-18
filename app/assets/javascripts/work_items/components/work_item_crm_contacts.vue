@@ -278,10 +278,10 @@ export default {
     multi-select
     clear-search-on-item-select
     data-testid="work-item-crm-contacts"
-    @dropdownShown="search"
-    @searchStarted="search"
+    @dropdown-shown="search"
+    @search-started="search"
     @updateSelected="updateCount"
-    @updateValue="updateItems"
+    @update-value="updateItems"
   >
     <template #readonly>
       <div class="gl-mt-1 gl-gap-2">

@@ -25,17 +25,17 @@
   - if params[:visibility_level].present?
     = hidden_field_tag :visibility_level, params[:visibility_level]
 
-  - if params[:language].present?
-    = hidden_field_tag :language, params[:language]
+  - if params[:language_name].present?
+    = hidden_field_tag :language_name, params[:language_name]
 
   .dropdown{ class: '!gl-m-0 gl-grow' }
     = dropdown_toggle(search_language_placeholder, { toggle: 'dropdown', testid: 'project-language-dropdown' })
     %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
       %li
-        = link_to _('Any'), filter_projects_path(language: nil, name: nil)
+        = link_to _('Any'), filter_projects_path(language_name: nil, name: nil)
       - programming_languages.each do |language|
         %li
-          = link_to filter_projects_path(language: language.id, name: nil), class: language_state_class(language) do
+          = link_to filter_projects_path(language_name: language.name, name: nil), class: language_state_class(language) do
             = language.name
 
   = submit_tag nil, class: '!gl-hidden'

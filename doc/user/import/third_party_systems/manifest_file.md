@@ -19,12 +19,6 @@ Use the manifest to import a project with many repositories like the Android Ope
 
 ## Prerequisites
 
-{{< history >}}
-
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-
-{{< /history >}}
-
 - [Manifest import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   enabled. If not enabled, ask your GitLab administrator to enable it. The Manifest import source is enabled
   by default on GitLab.com.

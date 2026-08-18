@@ -1,0 +1,9 @@
+---
+name: assign_member_role
+description: Grants the ability to assign member roles to users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - assign_member_role

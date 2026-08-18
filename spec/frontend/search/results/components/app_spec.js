@@ -30,6 +30,13 @@ describe('GlobalSearchResultsApp', () => {
 
   const getterSpies = {
     currentScope: jest.fn(() => 'blobs'),
+    queryLanguageFilters: (state) => {
+      const language = state.query?.language;
+
+      if (!language) return [];
+
+      return Array.isArray(language) ? language : [language];
+    },
   };
 
   const blobSearchHandler = jest.fn().mockResolvedValue(mockGetBlobSearchQuery);
@@ -153,6 +160,42 @@ describe('GlobalSearchResultsApp', () => {
 
     it(`correctly renders status`, () => {
       expect(findStatusBar().exists()).toBe(true);
+    });
+  });
+
+  describe('GraphQL variables', () => {
+    const runWithQuery = async (queryOverrides) => {
+      const handler = jest.fn().mockResolvedValue(mockGetBlobSearchQuery);
+      createComponent({
+        initialState: {
+          query: { scope: 'blobs', search: 'test', ...queryOverrides },
+          searchType: 'zoekt',
+        },
+        queryHandler: handler,
+      });
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+      return handler;
+    };
+
+    it.each`
+      queryOverrides      | description
+      ${{}}               | ${'the language filter is unset'}
+      ${{ language: [] }} | ${'the language filter array is empty'}
+    `('does not include language when $description', async ({ queryOverrides }) => {
+      const handler = await runWithQuery(queryOverrides);
+      const variables = handler.mock.calls[0][0];
+      expect(variables).not.toHaveProperty('language');
+    });
+
+    it.each`
+      language          | expected
+      ${'Ruby'}         | ${['Ruby']}
+      ${['Ruby', 'Go']} | ${['Ruby', 'Go']}
+    `('passes $language as an array', async ({ language, expected }) => {
+      const handler = await runWithQuery({ language });
+      const variables = handler.mock.calls[0][0];
+      expect(variables.language).toEqual(expected);
     });
   });
 });

@@ -7,6 +7,7 @@ module Oauth
     skip_before_action :authenticate_user!, only: [:create]
     skip_before_action :verify_authenticity_token, only: [:create]
     before_action :check_rate_limit, only: [:create]
+    before_action :check_dynamic_client_registration_enabled, only: [:create]
 
     RESOURCE_SCOPE_MAP = {
       '/api/v4/orbit/mcp' => Gitlab::Auth::MCP_ORBIT_SCOPE.to_s,
@@ -100,7 +101,33 @@ module Oauth
     def check_rate_limit
       return if Rails.env.test? || Rails.env.development?
 
-      check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
+      unless Feature.enabled?(:oauth_dynamic_registration_json_rate_limit_error, :instance)
+        return check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
+      end
+
+      check_rate_limit!(:oauth_dynamic_registration, scope: request.ip) do
+        # RFC 6749 section 5.2 / RFC 7591 section 3.2.2 define a JSON
+        # error-response shape for OAuth endpoints; standards-compliant
+        # clients (including the MCP SDK) fail to parse the default
+        # plain-text throttled response.
+        retry_after = Gitlab::ApplicationRateLimiter.period_for(:oauth_dynamic_registration).to_i
+        response.headers['Retry-After'] = retry_after.to_s
+
+        render json: {
+          error: 'temporarily_unavailable',
+          error_description: "Rate limit exceeded, retry after #{retry_after} seconds"
+        }, status: :too_many_requests
+      end
+    end
+
+    def check_dynamic_client_registration_enabled
+      return if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
+
+      # 403 (not 404) so clients can distinguish "disabled" from "endpoint does not exist" (RFC 7591).
+      render json: {
+        error: "access_denied",
+        error_description: "Dynamic client registration is disabled on this instance"
+      }, status: :forbidden
     end
   end
 end

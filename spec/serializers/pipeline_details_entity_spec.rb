@@ -62,7 +62,7 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
       end
 
       it 'sets :has_manual_actions to true' do
-        expect(subject[:details][:has_manual_actions]).to eq true
+        expect(subject[:details][:has_manual_actions]).to be true
       end
     end
 
@@ -83,13 +83,13 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
         end
 
         it 'retryable flag is true' do
-          expect(subject[:flags][:retryable]).to eq true
+          expect(subject[:flags][:retryable]).to be true
         end
       end
 
       context 'user does not have ability to retry pipeline' do
         it 'retryable flag is false' do
-          expect(subject[:flags][:retryable]).to eq false
+          expect(subject[:flags][:retryable]).to be false
         end
       end
     end
@@ -111,13 +111,13 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
         end
 
         it 'cancelable flag is true' do
-          expect(subject[:flags][:cancelable]).to eq true
+          expect(subject[:flags][:cancelable]).to be true
         end
       end
 
       context 'user does not have ability to cancel pipeline' do
         it 'cancelable flag is false' do
-          expect(subject[:flags][:cancelable]).to eq false
+          expect(subject[:flags][:cancelable]).to be false
         end
       end
     end
@@ -204,7 +204,7 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
 
         expect(source_jobs[cross_project_pipeline.id][:name]).to eq('cross-project')
         expect(source_jobs[child_pipeline.id][:name]).to eq('child')
-        expect(source_jobs[child_pipeline.id][:retried]).to eq false
+        expect(source_jobs[child_pipeline.id][:retried]).to be false
       end
     end
   end

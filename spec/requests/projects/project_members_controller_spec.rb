@@ -21,6 +21,57 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
     it_behaves_like 'request_accessable'
   end
 
+  describe 'GET /*namespace_id/:project_id/-/project_members.json (direct members)' do
+    let_it_be(:parent_group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, :public, namespace: parent_group) }
+    let_it_be(:direct_member) { create(:project_member, :developer, source: project).user }
+    let_it_be(:inherited_member) { create(:group_member, :developer, source: parent_group).user }
+
+    let(:params) { {} }
+    let(:member_ids) { json_response['members'].map { |member| member['id'] } }
+
+    before_all do
+      project.add_maintainer(user)
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    subject(:make_json_request) do
+      get namespace_project_project_members_path(parent_group, project, format: :json), params: params
+    end
+
+    it 'returns only direct project members, excluding inherited members' do
+      make_json_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(member_ids).to include(project.member(user).id, project.member(direct_member).id)
+      expect(json_response['members'].map { |member| member['source']['id'] }).to all(eq(project.id))
+    end
+
+    it 'returns a complete direct members list independent of inherited membership volume' do
+      # Add many inherited members that would sort ahead of direct members on the
+      # combined members list, which previously pushed direct members past page 1.
+      create_list(:group_member, 3, :developer, source: parent_group)
+
+      make_json_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(member_ids).to include(project.member(direct_member).id)
+    end
+
+    context 'with a direct-members search' do
+      let(:params) { { search_direct_members: direct_member.name } }
+
+      it 'filters the direct members' do
+        make_json_request
+
+        expect(member_ids).to contain_exactly(project.member(direct_member).id)
+      end
+    end
+  end
+
   describe 'DELETE /*namespace_id/:project_id/-/project_members/leave' do
     before do
       sign_in(user)

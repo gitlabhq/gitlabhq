@@ -83,7 +83,7 @@ describe('WorkItemByEmail', () => {
       );
 
   const clickResetEmail = async () => {
-    wrapper.findByTestId('reset_email_token_link').vm.$emit('click');
+    wrapper.findComponentByTestId('reset_email_token_link').vm.$emit('click');
 
     await waitForPromises();
   };

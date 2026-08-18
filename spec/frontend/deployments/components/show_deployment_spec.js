@@ -24,7 +24,6 @@ const PROJECT_PATH = 'group/project';
 const ENVIRONMENT_NAME = mockEnvironmentFixture.data.project.environment.name;
 const DEPLOYMENT_IID = mockDeploymentFixture.data.project.deployment.iid;
 const GRAPHQL_ETAG_KEY = 'project/environments';
-const PROTECTED_ENVIRONMENTS_SETTINGS_PATH = '/settings/ci_cd#js-protected-environments-settings';
 
 describe('~/deployments/components/show_deployment.vue', () => {
   let wrapper;
@@ -49,8 +48,6 @@ describe('~/deployments/components/show_deployment.vue', () => {
         environmentName: ENVIRONMENT_NAME,
         deploymentIid: DEPLOYMENT_IID,
         graphqlEtagKey: GRAPHQL_ETAG_KEY,
-        protectedEnvironmentsAvailable: true,
-        protectedEnvironmentsSettingsPath: PROTECTED_ENVIRONMENTS_SETTINGS_PATH,
       },
       stubs: {
         GlSprintf,

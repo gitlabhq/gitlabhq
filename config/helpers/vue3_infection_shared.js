@@ -80,7 +80,12 @@ function loadScannerData() {
   const data = JSON.parse(readFileSync(SCANNER_JSON_PATH, 'utf-8'));
   const graph = new Map();
   for (const [filePath, entry] of Object.entries(data.graph)) {
-    graph.set(filePath, { infected: entry.infected, appRoot: entry.appRoot });
+    // Keep the resolved import edges (sans the bulky `alternatives`) so the loader can
+    // propagate infection via the scanner's resolution instead of re-resolving.
+    const imports = Array.isArray(entry.imports)
+      ? entry.imports.map((e) => ({ source: e.source, resolved: e.resolved, dynamic: e.dynamic }))
+      : [];
+    graph.set(filePath, { infected: entry.infected, appRoot: entry.appRoot, imports });
   }
   console.log(
     `[vue3-infection] Loaded scanner data: ${graph.size} files, ` +
@@ -91,7 +96,10 @@ function loadScannerData() {
 
 /**
  * Run the infection scanner script synchronously.
- * Logs a warning on failure but does not throw.
+ *
+ * On failure:
+ * - For production and CI: throws to avoid stale data.
+ * - For development environments: Logs a warning but does not throw.
  */
 function runInfectionScanner() {
   const scriptPath = path.join(
@@ -105,6 +113,10 @@ function runInfectionScanner() {
     env: process.env,
   });
   if (res.status !== 0) {
+    if (process.env.NODE_ENV === 'production' || process.env.CI) {
+      throw new Error(`[vue3-infection] Infection scanner failed (code ${res.status}).`);
+    }
+
     console.warn(
       `[vue3-infection] Infection scanner failed (code ${res.status}). Continuing with stale data if available.`,
     );

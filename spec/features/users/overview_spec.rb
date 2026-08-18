@@ -110,9 +110,9 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'user has more than ten personal projects' do
+    describe 'user has more personal projects than the overview shows' do
       before do
-        create_list(:project, 11, :private, namespace: user.namespace, creator: user) do |project|
+        create_list(:project, 4, :private, namespace: user.namespace, creator: user) do |project|
           project.add_maintainer(user)
         end
       end

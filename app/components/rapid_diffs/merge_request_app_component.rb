@@ -8,7 +8,7 @@ module RapidDiffs
       :noteable_type, :preview_markdown_endpoint, :markdown_docs_path, :register_path, :sign_in_path,
       :report_abuse_path, :versions, :linked_file, :suggestions_help_path,
       :default_suggestion_commit_message, :new_comment_template_paths, :coverage_endpoint, :codequality_endpoint,
-      :initial_preparation?, :empty_state_type,
+      :sast_report_available, :initial_preparation?, :empty_state_type,
       to: :presenter
 
     def initialize(presenter)
@@ -38,8 +38,16 @@ module RapidDiffs
         new_comment_template_paths: new_comment_template_paths,
         versions: versions,
         coverage_endpoint: coverage_endpoint,
-        codequality_endpoint: codequality_endpoint
+        codequality_endpoint: codequality_endpoint,
+        sast_report_available: sast_report_available,
+        **check_out_branch_data
       }
+    end
+
+    def check_out_branch_data
+      helpers.how_merge_modal_data(presenter.resource).slice(
+        :is_fork, :source_project_path, :source_project_default_url, :reviewing_docs_path
+      )
     end
   end
 end

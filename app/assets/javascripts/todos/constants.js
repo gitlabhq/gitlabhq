@@ -10,6 +10,8 @@ export const TODO_TARGET_TYPE_ALERT = 'ALERT';
 export const TODO_TARGET_TYPE_EPIC = 'EPIC';
 export const TODO_TARGET_TYPE_SSH_KEY = 'KEY';
 export const TODO_TARGET_TYPE_PIPELINE = 'PIPELINE';
+export const TODO_TARGET_TYPE_PROJECT = 'PROJECT';
+export const TODO_TARGET_TYPE_NAMESPACE = 'NAMESPACE';
 export const TODO_TARGET_TYPE_WIKI_PAGE = 'WIKIPAGEMETA';
 
 export const TODO_ACTION_TYPE_ASSIGNED = 'assigned';
@@ -31,6 +33,7 @@ export const TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED = 'duo_pro_access_granted';
 export const TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED = 'duo_enterprise_access_granted';
 export const TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED = 'duo_core_access_granted';
 export const TODO_ACTION_TYPE_DUO_WORKFLOW_INPUT_REQUIRED = 'duo_workflow_input_required';
+export const TODO_ACTION_TYPE_TRANSFER_FAILED = 'transfer_failed';
 
 export const DUO_ACCESS_GRANTED_ACTIONS = [
   TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,

@@ -100,6 +100,9 @@
         },
         "input_format": {
           "type": "string"
+        },
+        "custom": {
+          "type": "boolean"
         }
       },
       "required": [

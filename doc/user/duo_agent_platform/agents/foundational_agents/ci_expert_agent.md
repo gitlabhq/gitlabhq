@@ -7,9 +7,8 @@ title: CI Expert Agent
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -19,6 +18,7 @@ title: CI Expert Agent
   [with a feature flag](../../../../administration/feature_flags/_index.md) named `foundational_pipeline_authoring_agent`.
   Disabled by default.
 - Feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/588564) in GitLab 19.0.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/21405) in GitLab 19.2.
 
 {{< /history >}}
 

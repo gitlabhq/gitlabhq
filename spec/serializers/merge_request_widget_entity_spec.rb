@@ -39,7 +39,7 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
       end
 
       it 'includes the correct permission info' do
-        expect(subject[:can_create_pipeline_in_target_project]).to eq(true)
+        expect(subject[:can_create_pipeline_in_target_project]).to be(true)
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
       end
 
       it 'includes the correct permission info' do
-        expect(subject[:can_create_pipeline_in_target_project]).to eq(false)
+        expect(subject[:can_create_pipeline_in_target_project]).to be(false)
       end
     end
   end
@@ -77,144 +77,12 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
       .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.diff")
   end
 
-  describe 'merge_request_add_ci_config_path' do
-    let!(:project_auto_devops) { create(:project_auto_devops, :disabled, project: project) }
-
-    before do
-      project.add_role(user, role)
-    end
-
-    context 'when there is a standard ci config file in the source project' do
-      let(:role) { :developer }
-
-      before do
-        project.repository.create_file(user, project.ci_config_path_or_default, 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
-      end
-
-      it 'no ci config path' do
-        expect(subject[:merge_request_add_ci_config_path]).to be_nil
-      end
-    end
-
-    context 'when there is no standard ci config file in the source project' do
-      context 'when user has permissions' do
-        let(:role) { :developer }
-
-        it 'has add ci config path' do
-          expected_path = project_ci_pipeline_editor_path(project)
-
-          expect(subject[:merge_request_add_ci_config_path]).to include(expected_path)
-        end
-
-        it 'has expected params' do
-          expected_params = {
-            branch_name: resource.source_branch,
-            add_new_config_file: 'true'
-          }.with_indifferent_access
-
-          uri = Addressable::URI.parse(subject[:merge_request_add_ci_config_path])
-
-          expect(uri.query_values).to match(expected_params)
-        end
-
-        context 'when auto devops is enabled' do
-          before do
-            project_auto_devops.enabled = true
-          end
-
-          it 'returns a blank ci config path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
-        context 'when source project is missing' do
-          before do
-            resource.source_project = nil
-          end
-
-          it 'returns a blank ci config path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
-        context 'when build feature is disabled' do
-          before do
-            project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
-          end
-
-          it 'has no path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
-        context 'when creating the pipeline is not allowed' do
-          before do
-            user.state = 'blocked'
-          end
-
-          it 'has no path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
-        context 'when merge request is merged' do
-          before do
-            resource.mark_as_merged!
-          end
-
-          it 'returns a blank ci config path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
-        context 'when merge request is closed' do
-          before do
-            resource.close!
-          end
-
-          it 'returns a blank ci config path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-
-        context 'when source branch does not exist' do
-          before do
-            resource.source_project.repository.rm_branch(user, resource.source_branch)
-          end
-
-          it 'returns a blank ci config path' do
-            expect(subject[:merge_request_add_ci_config_path]).to be_nil
-          end
-        end
-      end
-
-      context 'when user does not have permissions' do
-        let(:role) { :reporter }
-
-        it 'has add ci config path' do
-          expect(subject[:merge_request_add_ci_config_path]).to be_nil
-        end
-      end
-    end
-  end
-
   describe 'user callouts' do
     subject { described_class.new(resource, request: request).as_json }
 
     it 'provides a valid path value for user callout path' do
       expect(subject[:user_callouts_path]).to eq '/-/users/callouts'
     end
-
-    it 'provides a valid value for suggest pipeline feature id' do
-      expect(subject[:suggest_pipeline_feature_id]).to eq described_class::SUGGEST_PIPELINE
-    end
-  end
-
-  it 'has human access' do
-    project.add_maintainer(user)
-
-    expect(subject[:human_access])
-      .to eq('Maintainer')
   end
 
   it 'has new pipeline path for project' do

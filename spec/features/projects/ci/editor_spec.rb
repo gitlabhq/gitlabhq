@@ -40,6 +40,16 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     YAML
   end
 
+  let(:branch_with_broken_yaml) { 'broken-yaml' }
+
+  let(:content_with_broken_yaml) do
+    <<~YAML
+      job_a:
+        script: echo first
+         misindented_key: echo second
+    YAML
+  end
+
   before do
     sign_in(user)
     project.add_developer(user)
@@ -48,6 +58,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     project.repository.create_file(user, project.ci_config_path_or_default, valid_content, message: 'Create CI file for test', branch_name: other_branch)
     project.repository.create_file(user, project.ci_config_path_or_default, invalid_content, message: 'Create CI file for test', branch_name: branch_with_invalid_ci)
     project.repository.create_file(user, 'index.js', "file", message: 'New js file', branch_name: branch_without_ci)
+    project.repository.create_file(user, project.ci_config_path_or_default, content_with_broken_yaml, message: 'Create CI file with broken YAML', branch_name: branch_with_broken_yaml)
 
     visit project_ci_pipeline_editor_path(project)
     wait_for_requests
@@ -163,6 +174,28 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
       within_testid('merged-tab') do
         expect(page).to have_content("job3")
       end
+    end
+  end
+
+  describe 'when CI yml cannot be parsed' do
+    before do
+      visit project_ci_pipeline_editor_path(project, branch_name: branch_with_broken_yaml)
+      wait_for_requests
+    end
+
+    it 'shows a diagnostic from the YAML language worker', :aggregate_failures do
+      page.within('#source-editor-') do
+        expect(page).to have_content('script: echo first')
+
+        # The worker computes diagnostics asynchronously, so retry the
+        # "go to next problem" shortcut until they arrive
+        wait_for('YAML worker diagnostic') do
+          find('textarea').send_keys(:f8)
+          page.has_content?('Nested mappings are not allowed in compact mappings', wait: 1)
+        end
+      end
+
+      expect(page).to have_content('Nested mappings are not allowed in compact mappings')
     end
   end
 

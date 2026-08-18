@@ -1,4 +1,4 @@
-- if current_user&.following_users_allowed?(@user)
+- if current_user&.following_users_allowed?(@user) && !@user.blocked?
   - if current_user.following?(@user)
     = form_tag user_unfollow_path(@user, :json) do
       = render Pajamas::ButtonComponent.new(type: :submit, button_options: { data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do

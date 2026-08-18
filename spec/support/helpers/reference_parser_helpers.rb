@@ -25,7 +25,7 @@ module ReferenceParserHelpers
       create(:project_member, project: project)
       create(:project_group_link, project: project)
 
-      expect { request.call(actual_links) }.not_to exceed_query_limit(control)
+      expect { request.call(actual_links) }.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
     end
   end
 

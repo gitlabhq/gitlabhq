@@ -13,12 +13,6 @@ title: GeoJSON files
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14134) in GitLab 16.1.
-
-{{< /history >}}
-
 A GeoJSON file is a format for encoding geographical data structures using JavaScript Object Notation (JSON).
 It is commonly used for representing geographic features, such as points, lines, and polygons, along with their associated attributes.
 

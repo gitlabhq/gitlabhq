@@ -157,15 +157,13 @@ Example response:
 
 {{< history >}}
 
-- Feature flag `mirror_only_branches_match_regex` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
 
 {{< /history >}}
 
 > [!warning]
 > This configuration option was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6
-> and is planned for removal in v5 of the API. Use the [new configuration and endpoint](project_pull_mirroring.md#update-project-pull-mirroring-settings) instead.
+> and is planned for removal in v5 of the API. Use the [new configuration and endpoint](#update-project-pull-mirroring-settings) instead.
 > This change is a breaking change.
 
 If the remote repository is publicly accessible or uses `username:token` authentication, use the API
@@ -221,6 +219,12 @@ curl --request PUT \
 
 ## Start the pull mirroring process for a project
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/576606) the `force` attribute in GitLab 19.3.
+
+{{< /history >}}
+
 Start the pull mirroring process for a project.
 
 ```plaintext
@@ -232,13 +236,27 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `force`   | boolean           | No       | If `true`, resets a hard-failed mirror and retries the update. Ignored for requests authenticated with a GitHub webhook signature. |
 
-If successful, returns [`202 Accepted`](rest/troubleshooting.md#status-codes).
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes).
 
 Example request:
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+```
+
+To recover a hard-failed mirror, set `force` to `true`.
+For more information, see
+[fix hard failures when mirroring](../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring).
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "force=true" \
   --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
 ```

@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :pipeline_composition do
-  before do
-    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-      .with(:ci_interpolation_split_function)
-      .and_return(false)
-  end
-
   subject { described_class.new(YAML.safe_load(config), ctx) }
 
   let(:config) do
@@ -124,6 +118,23 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
 
     it 'interpolates the array element' do
       expect(subject.interpolated).to eq({ 'test' => { 'script' => 'echo hello' } })
+    end
+  end
+
+  context 'when an interpolated value inside a larger string contains backslash sequences' do
+    let(:config) do
+      <<~CFG
+      test:
+        script: 'run $[[ inputs.cmd ]] now'
+      CFG
+    end
+
+    let(:ctx) do
+      { inputs: { cmd: 'sed s/\1/x/' } }
+    end
+
+    it 'inserts the value verbatim without interpreting backreferences' do
+      expect(subject.interpolated).to eq({ 'test' => { 'script' => 'run sed s/\1/x/ now' } })
     end
   end
 end

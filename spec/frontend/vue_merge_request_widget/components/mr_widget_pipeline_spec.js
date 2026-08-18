@@ -82,7 +82,7 @@ describe('MRWidgetPipeline', () => {
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRetargetedMessage = () => wrapper.findByTestId('retargeted-message');
-  const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
+  const findRunPipelineButton = () => wrapper.findComponentByTestId('run-pipeline-button');
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findPipelineCreationMessage = () => wrapper.findByTestId('pipeline-creation-message');
 

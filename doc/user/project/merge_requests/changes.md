@@ -113,14 +113,6 @@ first in the list of changed files. To copy a merge request link that shows your
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145100) in GitLab 16.10.
-- `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
-
-{{< /history >}}
-
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
 several common types of generated files. GitLab collapses these files by default, because
 they rarely require code reviews:
@@ -308,7 +300,6 @@ To turn off Rapid Diffs and switch back to the classic diff loading experience:
 
 {{< history >}}
 
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
@@ -511,13 +502,6 @@ https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456/diffs.patch?diff_id
 ```
 
 ## Add a comment to a merge request file
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `comment_on_files`. Enabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125130) in GitLab 16.2.
-
-{{< /history >}}
 
 You can add comments to a merge request diff file. These comments persist across
 rebases and file changes.

@@ -58,7 +58,7 @@ module QA
         def job_running?(name)
           res = execute <<~GROOVY
             project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{name}')}
-            build = project.getBuilds().find{b -> b.getExecutor()}
+            build = project?.getBuilds()?.find{b -> b.getExecutor()}
             return build ? build.getExecutor().isActive() : false
           GROOVY
           JSON.parse parse_result(res)
@@ -71,10 +71,10 @@ module QA
         def number_of_jobs_running(name)
           res = execute <<~GROOVY
             project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{name}')}
-            builds = project.getBuilds().findAll{b -> b.getExecutor()}
-            return builds.size
+            builds = project?.getBuilds()?.findAll{b -> b.getExecutor()}
+            return builds ? builds.size : 0
           GROOVY
-          JSON.parse parse_result(res)&.to_i
+          parse_nullable_result(res).to_i
         end
 
         # Latest build status for a job
@@ -84,24 +84,108 @@ module QA
         def last_build_status(name)
           res = execute <<~GROOVY
             project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{name}')}
-            build = project.getBuilds()[-1]
-            return build.getResult()
+            build = project?.getBuilds()?.getAt(0)
+            return build?.getResult()
           GROOVY
-          parse_result(res)&.downcase&.to_sym
+          parse_nullable_result(res)&.downcase&.to_sym
         end
 
         # Latest build id for a job
         # Can be used to reference in other queries
         #
         # @param job_name [String] the name of the job
-        # @return [Integer] the latest build id
+        # @return [Integer, nil] the latest build id, or nil if no build exists
         def last_build_id(job_name)
           res = execute <<~GROOVY
             project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{job_name}')}
-            build = project.getBuilds()[-1]
-            return build.getId()
+            build = project?.getBuilds()?.getAt(0)
+            return build?.getNumber()
           GROOVY
-          parse_result(res)&.to_i
+          parse_nullable_result(res)&.to_i
+        end
+
+        # Status of a given build
+        #
+        # @param job_name [String] the name of the job
+        # @param build_id [Integer] the build number
+        # @return [Symbol, nil] the build status eg, (:success, :failure), or nil while it runs
+        def build_status(job_name, build_id)
+          res = execute <<~GROOVY
+            project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{job_name}')}
+            build = project?.getBuildByNumber(#{build_id})
+            return build?.getResult()
+          GROOVY
+          parse_nullable_result(res)&.downcase&.to_sym
+        end
+
+        # Whether a given build is still running
+        #
+        # Run#getResult can be set while the build still runs, for example when a step fails
+        # and the post-build steps continue. isBuilding is the exact check.
+        #
+        # @param job_name [String] the name of the job
+        # @param build_id [Integer] the build number
+        # @return [Boolean, nil] whether the build runs, or nil if the build does not exist
+        def build_running?(job_name, build_id)
+          res = execute <<~GROOVY
+            project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{job_name}')}
+            build = project?.getBuildByNumber(#{build_id})
+            return build?.isBuilding()
+          GROOVY
+          result = parse_nullable_result(res)
+
+          result.nil? ? nil : result == 'true'
+        end
+
+        # The number of the build that checked out a given revision
+        #
+        # A push can produce more than one build, so a caller must select the build by the
+        # commit it built and not by the build number.
+        #
+        # @param job_name [String] the name of the job
+        # @param revision [String] the SHA to look for
+        # @return [Integer, nil] the build number, or nil if no build used that revision
+        def build_number_for_revision(job_name, revision)
+          res = execute <<~GROOVY
+            project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{job_name}')}
+            build = project?.getBuilds()?.find { b ->
+              b.getAction(hudson.plugins.git.util.BuildData)?.getLastBuiltRevision()?.getSha1String() == '#{revision}'
+            }
+            return build?.getNumber()
+          GROOVY
+          parse_nullable_result(res)&.to_i
+        end
+
+        # A dump of the job's builds and the Jenkins queue, for failure diagnostics
+        #
+        # @param job_name [String] the name of the job
+        # @return [String] the raw Groovy result
+        def state_dump(job_name)
+          res = execute <<~GROOVY
+            project = Jenkins.instance.getProjects().find{p -> p.getName().equals('#{job_name}')}
+            builds = project ? project.getBuilds().collect { b -> [
+              number: b.number,
+              result: b.getResult()?.toString(),
+              causes: b.getCauses().collect { c -> c.getClass().getSimpleName() },
+              revision: b.getAction(hudson.plugins.git.util.BuildData)?.getLastBuiltRevision()?.getSha1String()
+            ] } : []
+            queued = Jenkins.instance.queue.items.collect { i -> [task: i.task.name, why: i.getWhy()] }
+            return [builds: builds, queued: queued]
+          GROOVY
+          parse_result(res)
+        end
+
+        # Log for a given build
+        #
+        # @param job_name [String] the name of the job
+        # @param build_id [Integer] the build number
+        # @param start [Integer] the log offset to return
+        # @return [String] the Jenkins log/output for that build
+        def build_log(job_name, build_id, start = 0)
+          get(
+            path: "/job/#{job_name}/#{build_id}/logText/progressiveText",
+            params: { start: start }
+          ).body
         end
 
         # Latest build log for a job
@@ -110,10 +194,10 @@ module QA
         # @param start [Integer] the log offset to return
         # @return [String] the latest Jenkins log/output for this job
         def last_build_log(job_name, start = 0)
-          get(
-            path: "/job/#{job_name}/#{last_build_id(job_name)}/logText/progressiveText",
-            params: { start: start }
-          ).body
+          build_id = last_build_id(job_name)
+          return '' unless build_id
+
+          build_log(job_name, build_id, start)
         end
 
         # Triggers a build for a given job
@@ -189,12 +273,38 @@ module QA
           configure_gitlab(url, secret_id, **hargs)
         end
 
+        # Sets the Jenkins root URL
+        #
+        # Without it Jenkins reports `unconfigured-jenkins-location` in the URLs it sends to
+        # GitLab, and the plugin logs a warning on each build.
+        #
+        # @param url [String] the address of this Jenkins instance
+        def configure_jenkins_location(url)
+          res = execute <<~GROOVY
+            import jenkins.model.JenkinsLocationConfiguration;
+            config = JenkinsLocationConfiguration.get();
+            config.setUrl("#{url}");
+            config.save();
+            return config.getUrl();
+          GROOVY
+          parse_nullable_result(res)
+        end
+
         private
 
         def parse_result(res)
           check_network_error(res)
 
-          res.body.scan(/Result: (.*)/)&.dig(0, 0)
+          # `.` matches \r, so an unstripped value breaks exact comparisons such as a SHA.
+          res.body.scan(/Result: (.*)/)&.dig(0, 0)&.strip
+        end
+
+        # A Groovy script that returns null prints the literal string "null", which would
+        # otherwise become 0 for an Integer or :null for a Symbol.
+        def parse_nullable_result(res)
+          result = parse_result(res)
+
+          result == 'null' ? nil : result
         end
 
         def configure_gitlab(

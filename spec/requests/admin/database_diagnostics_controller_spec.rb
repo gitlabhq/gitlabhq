@@ -140,6 +140,112 @@ RSpec.describe 'Admin::DatabaseDiagnostics', feature_category: :database do
     end
   end
 
+  describe 'POST /admin/database_diagnostics/run_lfk_backlog_check' do
+    subject(:send_request) do
+      post run_lfk_backlog_check_admin_database_diagnostics_path(format: :json)
+    end
+
+    it_behaves_like 'unauthorized request'
+
+    context 'when admin mode is enabled', :enable_admin_mode do
+      before do
+        login_as(admin)
+      end
+
+      context 'when the loose_foreign_keys_backlog_diagnostic flag is enabled' do
+        before do
+          stub_feature_flags(loose_foreign_keys_backlog_diagnostic: true)
+        end
+
+        it 'returns 200 response and schedules the worker' do
+          expect(::Database::LooseForeignKeysBacklogCheckerWorker).to receive(:perform_async).and_return('lfk_job_id')
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('status' => 'scheduled', 'job_id' => 'lfk_job_id')
+        end
+
+        it 'returns 500 response when worker fails to schedule' do
+          expect(::Database::LooseForeignKeysBacklogCheckerWorker).to receive(:perform_async).and_return(nil)
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(json_response).to include('error' => 'Failed to schedule job')
+        end
+      end
+
+      context 'when the loose_foreign_keys_backlog_diagnostic flag is disabled' do
+        before do
+          stub_feature_flags(loose_foreign_keys_backlog_diagnostic: false)
+        end
+
+        it 'does not schedule the worker and returns 503' do
+          expect(::Database::LooseForeignKeysBacklogCheckerWorker).not_to receive(:perform_async)
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+        end
+      end
+    end
+  end
+
+  describe 'GET /admin/database_diagnostics/lfk_backlog_check_results' do
+    subject(:send_request) do
+      get lfk_backlog_check_results_admin_database_diagnostics_path(format: :json)
+    end
+
+    it_behaves_like 'unauthorized request'
+
+    context 'when admin mode is enabled', :enable_admin_mode do
+      before do
+        login_as(admin)
+      end
+
+      context 'when results are available' do
+        let(:results) do
+          {
+            metadata: { last_run_at: Time.current.iso8601 },
+            connections: {
+              main: [
+                {
+                  parent_table: 'public.projects',
+                  pending_records: 49_459,
+                  capped: false,
+                  oldest_pending_age_seconds: 50_000_000,
+                  deferred_records: 0
+                }
+              ]
+            }
+          }
+        end
+
+        it 'returns 200 response with the results' do
+          allow(Rails.cache).to receive(:read)
+          expect(Rails.cache).to receive(:read)
+            .with(::Database::LooseForeignKeysBacklogCheckerWorker::BACKLOG_CHECK_CACHE_KEY)
+            .and_return(results.to_json)
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('metadata', 'connections')
+        end
+      end
+
+      context 'when no results are available' do
+        it 'returns 404 response' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response).to include('error' => 'No results available yet')
+        end
+      end
+    end
+  end
+
   describe 'GET /admin/database_diagnostics/collation_check_results' do
     subject(:send_request) do
       get collation_check_results_admin_database_diagnostics_path(format: :json)

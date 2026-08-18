@@ -102,8 +102,22 @@ module BulkImports
     end
 
     def enqueue_batch_exports
+      perform_enqueue
+    rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- notes-table pagination timed out; fall back to the repository walk
+      raise e unless export_commit_notes_via_repo?
+
+      log_fallback(e)
+      reset_enqueued_batches!
+      @fallback_to_repository = true
+
+      perform_enqueue
+    end
+
+    # rubocop:disable CodeReuse/ActiveRecord -- Export orchestration pages through relations and persists batch records directly
+    def perform_enqueue
       batch_number = 0
       exported_count = 0
+      batch_ids = []
 
       each_export_batch do |ids|
         batch_number += 1
@@ -112,15 +126,16 @@ module BulkImports
 
         Gitlab::Cache::Import::Caching.set_add(self.class.cache_key(export.id, batch_id), ids, timeout: CACHE_DURATION)
 
-        RelationBatchExportWorker.perform_async(user.id, batch_id)
+        batch_ids << batch_id
       end
+
+      batch_ids.each { |batch_id| RelationBatchExportWorker.perform_async(user.id, batch_id) }
 
       exported_count
     end
 
-    # rubocop:disable CodeReuse/ActiveRecord -- Export orchestration pages through relations and persists batch records directly
     def each_export_batch(&block)
-      if export_commit_notes_via_repo?
+      if @fallback_to_repository
         ::Import::Export::Project::CommitNotesBatcher
           .new(portable, batch_size: commit_notes_batch_size)
           .each_commit_note_id_batch(&block)
@@ -129,6 +144,17 @@ module BulkImports
           yield batch.pluck(batch.model.primary_key)
         end
       end
+    end
+
+    # Discards the batches (and their cached IDs) created before the pagination
+    # timed out, so the repository-walk retry starts from a clean slate. No
+    # workers were scheduled for them yet, since #perform_enqueue only enqueues
+    # after every batch has been created.
+    def reset_enqueued_batches!
+      cache_keys = export.batches.pluck(:id).map { |batch_id| self.class.cache_key(export.id, batch_id) }
+      Gitlab::Cache::Import::Caching.del_multiple(cache_keys)
+
+      export.batches.destroy_all # rubocop: disable Cop/DestroyAll -- delete_all would nullify export_id (NOT NULL) instead of deleting rows, since the association has no `dependent:` option
     end
 
     def export_commit_notes_via_repo?
@@ -154,6 +180,15 @@ module BulkImports
         relation: relation,
         export_id: export.id,
         importer: export.import_source
+      )
+    end
+
+    def log_fallback(error)
+      Gitlab::Export::Logger.warn(
+        message: 'commit_notes export via notes-table pagination timed out, falling back to git repository walk',
+        relation: relation,
+        export_id: export.id,
+        Labkit::Fields::ERROR_MESSAGE => error.message
       )
     end
   end

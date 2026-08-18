@@ -4,14 +4,12 @@ HealthCheck.setup do |config|
   config.standard_checks = %w[database all-migrations cache]
   config.full_checks = %w[database all-migrations cache]
 
-  # In Rails 7.1+, `check_pending!` was deprecated in favor of `check_all_pending!`
-  # which loops through all DB connection pools.
-  # This isn't supported natively by the gem so we implement a custom check for this.
-  # See https://github.com/Purple-Devs/health_check/pull/148
   config.add_custom_check('all-migrations') do
-    # `check_all_pending!` mutates the `ActiveRecord::Base` connection pool so we use
-    # `#check_pending_migrations` because it uses a separate `ActiveRecord::PendingMigrationConnection`
-    ActiveRecord::Migration.check_pending_migrations
+    # We use a custom check (rather than `ActiveRecord::Migration.check_pending_migrations`)
+    # so we can exclude post-deployment migrations, which are on the runtime migration path
+    # by default but which the running application does not depend on.
+    #
+    Gitlab::Database::Migrations::PendingMigrationsCheck.check!
     ''
   rescue ActiveRecord::PendingMigrationError => ex
     ex.message

@@ -115,7 +115,7 @@ describe('DiffContent', () => {
         props: { diffFile: textDiffFile },
       });
 
-      wrapper.find('[data-testid="diff-load-file-button"]').vm.$emit('click');
+      wrapper.findComponent('[data-testid="diff-load-file-button"]').vm.$emit('click');
 
       expect(wrapper.emitted('load-file')).toEqual([[{ w: '0' }]]);
     });

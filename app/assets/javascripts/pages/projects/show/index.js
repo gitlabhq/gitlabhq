@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initFindFileShortcut } from '~/projects/behaviors';
@@ -6,7 +6,7 @@ import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert'
 import leaveByUrl, { NAMESPACE_TYPES } from '~/namespaces/leave_by_url';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
-import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
 import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
@@ -134,30 +134,27 @@ const initCodeDropdown = () => {
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
     convertObjectPropsToCamelCase(ideData ? JSON.parse(ideData) : {});
 
-  return new Vue({
+  return initVueApp({
     el: codeDropdownEl,
     name: 'CompactCodeDropdownRoot',
     provide: { newWorkspacePath, organizationId },
     apolloProvider,
-    render(createElement) {
-      return createElement(CompactCodeDropdown, {
-        props: {
-          sshUrl,
-          httpUrl,
-          kerberosUrl,
-          xcodeUrl,
-          webIdeUrl,
-          gitpodUrl,
-          showWebIdeButton,
-          isGitpodEnabledForInstance: parseBoolean(showGitpodButton),
-          isGitpodEnabledForUser: parseBoolean(gitpodEnabled),
-          directoryDownloadLinks: directoryDownloadLinks ? JSON.parse(directoryDownloadLinks) : [],
-          showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
-          userSettingsSshKeysPath,
-          projectId,
-          projectPath,
-        },
-      });
+    component: CompactCodeDropdown,
+    props: {
+      sshUrl,
+      httpUrl,
+      kerberosUrl,
+      xcodeUrl,
+      webIdeUrl,
+      gitpodUrl,
+      showWebIdeButton,
+      isGitpodEnabledForInstance: parseBoolean(showGitpodButton),
+      isGitpodEnabledForUser: parseBoolean(gitpodEnabled),
+      directoryDownloadLinks: directoryDownloadLinks ? JSON.parse(directoryDownloadLinks) : [],
+      showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
+      userSettingsSshKeysPath,
+      projectId,
+      projectPath,
     },
   });
 };

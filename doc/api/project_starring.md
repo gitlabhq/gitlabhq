@@ -32,8 +32,8 @@ Supported attributes:
 | `sort`                        | string   | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean  | No       | Limit by projects starred by the current user. |
 | `statistics`                  | boolean  | No       | Include project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role. |
-| `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
-| `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
+| `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). |
+| `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). |
 | `visibility`                  | string   | No       | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean  | No       | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean  | No       | Limit by enabled issues feature. |

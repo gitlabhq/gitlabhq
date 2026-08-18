@@ -39,10 +39,10 @@ export default {
         :sorting="sorting"
         :tokens="[] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */"
         :sortable-fields="sortableFields"
-        @sorting:changed="updateSorting"
-        @filter:changed="setFilter"
-        @filter:submit="$emit('update')"
-        @query:changed="updateQuery"
+        @sorting-changed="updateSorting"
+        @filter-changed="setFilter"
+        @filter-submit="$emit('update')"
+        @query-changed="updateQuery"
       />
     </template>
   </url-sync>

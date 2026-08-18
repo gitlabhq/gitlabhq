@@ -64,6 +64,7 @@ permissions:
   - create_resource_access_tokens
   - create_runners
   - create_saved_replies
+  - create_security_policy
   - create_service_account
   - create_subgroup
   - create_test_case

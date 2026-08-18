@@ -48,11 +48,11 @@ describe('PersonalAccessTokenDrawer', () => {
   const findMountingPortal = () => wrapper.findComponent(MountingPortal);
   const findDynamicPanel = () => wrapper.findComponent(DynamicPanel);
   const findAttributeList = () => wrapper.findComponent(GlAttributeList);
-  const findRotateButton = () => wrapper.findByTestId('rotate-token');
-  const findRevokeButton = () => wrapper.findByTestId('revoke-token');
-  const findDuplicateButton = () => wrapper.findByTestId('duplicate-token');
+  const findRotateButton = () => wrapper.findComponentByTestId('rotate-token');
+  const findRevokeButton = () => wrapper.findComponentByTestId('revoke-token');
+  const findDuplicateButton = () => wrapper.findComponentByTestId('duplicate-token');
   const findStatusBadge = () => wrapper.findComponent(PersonalAccessTokenStatusBadge);
-  const findSudoBadge = () => wrapper.findByTestId('token-sudo-badge');
+  const findSudoBadge = () => wrapper.findComponentByTestId('token-sudo-badge');
   const findPageTitle = () => wrapper.findByTestId('page-heading');
 
   const findTokenExpiry = () => wrapper.findByTestId('token-expiry');

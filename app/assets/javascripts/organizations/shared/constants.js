@@ -1,5 +1,7 @@
 import { formValidators } from '@gitlab/ui/src/utils';
 import { s__, __ } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
@@ -7,7 +9,10 @@ import {
 } from '~/groups_projects/constants';
 
 export const DEFAULT_ORGANIZATION_ID = 1;
-export const DEFAULT_ORGANIZATION_NAME = __('GitLab');
+export const DEFAULT_ORGANIZATION_GID = convertToGraphQLId(
+  TYPE_ORGANIZATION,
+  DEFAULT_ORGANIZATION_ID,
+);
 
 export const RESOURCE_TYPE_GROUPS = 'groups';
 export const RESOURCE_TYPE_PROJECTS = 'projects';

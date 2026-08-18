@@ -6,7 +6,7 @@ module Mutations
       class Unsubscribe < BaseMutation
         graphql_name 'WorkItemSavedViewUnsubscribe'
 
-        authorize :read_saved_view
+        authorize :unsubscribe_saved_view
 
         description "Unsubscribes the current user from a saved view."
 
@@ -26,7 +26,7 @@ module Mutations
 
           ::WorkItems::SavedViews::UserSavedView.unsubscribe(user: current_user, saved_view: saved_view)
 
-          { saved_view: saved_view }
+          { saved_view: saved_view, errors: [] }
         end
       end
     end

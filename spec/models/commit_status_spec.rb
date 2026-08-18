@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe CommitStatus, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id, user: create(:user))
@@ -190,7 +190,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       commit_status.update!(retried: false, status: :running)
 
       # we look at a persisted state in DB
-      expect(described_class.find(commit_status.id).processed).to eq(false)
+      expect(described_class.find(commit_status.id).processed).to be(false)
     end
   end
 
@@ -217,7 +217,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   describe '#supports_force_cancel?' do
     subject { commit_status.supports_force_cancel? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
   end
 
   describe '#started?' do
@@ -238,7 +238,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
             commit_status.status = status
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
 
@@ -535,7 +535,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     context 'with a single path' do
-      let(:other_project) { create(:project, :repository) }
+      let_it_be(:other_project) { create(:project, :small_repo) }
       let(:paths) { other_project.full_path }
 
       let(:other_pipeline) do
@@ -789,8 +789,8 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     shared_examples 'incrementing failure reason counter' do
-      it 'increments the counter with the failure_reason' do
-        expect { subject }.to change { counter.get(reason: failure_reason) }.by(1)
+      it 'increments the counter with the failure_reason and runner_type' do
+        expect { subject }.to change { counter.get(reason: failure_reason, runner_type: 'none') }.by(1)
       end
     end
 
@@ -817,6 +817,17 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       it { is_expected.to be_unmet_prerequisites }
 
       it_behaves_like 'incrementing failure reason counter'
+    end
+
+    context 'when the commit status is a build with a runner' do
+      let(:runner) { create(:ci_runner, :instance) }
+      let(:commit_status) { create(:ci_build, :created, runner: runner) }
+      let(:reason) { :script_failure }
+      let(:failure_reason) { reason.to_s }
+
+      it 'increments the counter with the runner type' do
+        expect { subject }.to change { counter.get(reason: failure_reason, runner_type: 'instance_type') }.by(1)
+      end
     end
 
     context 'when status is manual' do
@@ -870,7 +881,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:commit_status) { build_stubbed(:commit_status) }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
   end
 
   describe '#enqueue' do
@@ -963,7 +974,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
         commit_status.success!
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -1114,7 +1125,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       expect(commit_status.commit_id).to eq(pipeline.id)
       expect(commit_status.partition_id).to eq(123)
       expect(commit_status.project_id).to eq(pipeline.project_id)
-      expect(commit_status.processed).to eq(false)
+      expect(commit_status.processed).to be(false)
       expect(commit_status.stage_id).to eq(456)
     end
 

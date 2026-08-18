@@ -90,10 +90,10 @@ In addition, runners must be able to connect to:
 | Destination | Port | Purpose |
 |-------------|------|---------|
 | `registry.npmjs.org` | `443` | Download the Duo CLI package at runtime |
-| `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)) |
+| `registry.gitlab.com` | `443` | Download the default Docker image (unless using a [custom image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)) |
 
 If your organization cannot allow access to the public npm registry, you can use a
-[custom Docker image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)
+[custom Docker image](../../../user/duo_agent_platform/flows/execution/images.md#change-the-default-docker-image)
 with the required dependencies already installed.
 
 > [!note]
@@ -182,6 +182,7 @@ These tests are performed:
 | Code Suggestions          | GitLab Duo Self-Hosted models only. Tests whether Code Suggestions is available: <br>- Your license includes access to Code Suggestions.<br>- You have the necessary permissions to use the feature. |
 | GitLab Duo Agent Platform | Tests whether the backend service is operational and accessible. This service is required for agentic features like the Agent Platform and GitLab Duo Agentic Chat.<br><br>For GitLab Duo Self-Hosted, this test does not pass until you [select a self-hosted model for the GitLab Duo Agent Platform feature](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature).<br><br>Also verifies the following foundational flows prerequisites:<br>- The instance-level flow execution setting is enabled.<br>- The instance-level foundational flows setting is enabled.<br>- At least one active instance runner with the `gitlab--duo` tag is registered and connected, and uses a Docker-compatible executor.|
 | System exchange           | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
+| Usage billing           | Tests whether your instance can connect to usage billing endpoints, including Customers Portal, the AI Gateway, and Duo Workflow Service. |
 
 For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check,
 see the [troubleshooting page](../../../user/gitlab_duo/troubleshooting.md).

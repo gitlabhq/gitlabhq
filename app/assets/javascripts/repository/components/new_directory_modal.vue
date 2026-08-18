@@ -3,6 +3,7 @@ import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import CommitChangesModal from './commit_changes_modal.vue';
 
 const DIR_LABEL = __('Directory name');
@@ -15,6 +16,7 @@ export default {
     GlFormInput,
     CommitChangesModal,
   },
+  mixins: [glListenersMixin],
   i18n: {
     DIR_LABEL,
     COMMIT_MESSAGE,
@@ -96,7 +98,7 @@ export default {
     :commit-message="$options.i18n.COMMIT_MESSAGE"
     :target-branch="targetBranch"
     :original-branch="originalBranch"
-    v-on="$listeners"
+    v-on="glListeners()"
     @submit-form="submitForm"
   >
     <template #body>

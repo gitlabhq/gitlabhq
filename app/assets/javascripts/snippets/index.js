@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 
 import {
@@ -34,8 +35,9 @@ export default function appFactory(el, Component) {
     ...restDataset
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
+    name: 'SnippetsRoot',
     apolloProvider,
     provide: {
       visibilityLevels: JSON.parse(visibilityLevels),
@@ -45,12 +47,9 @@ export default function appFactory(el, Component) {
       reportAbusePath,
       canReportSpam,
     },
-    render(createElement) {
-      return createElement(Component, {
-        props: {
-          ...restDataset,
-        },
-      });
+    component: Component,
+    props: {
+      ...restDataset,
     },
   });
 }

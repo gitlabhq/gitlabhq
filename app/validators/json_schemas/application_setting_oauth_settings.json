@@ -12,6 +12,10 @@
       "minimum": 300,
       "maximum": 7200,
       "description": "Lifetime of OAuth access tokens in seconds. Minimum 300s (5 minutes) with a 7200s (2 hrs) maximum."
+    },
+    "dynamic_client_registration_enabled": {
+      "type": "boolean",
+      "description": "Whether OAuth dynamic client registration (RFC 7591) is enabled for this instance"
     }
   }
 }

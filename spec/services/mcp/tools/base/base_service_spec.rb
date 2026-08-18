@@ -35,7 +35,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
         raise StandardError, 'Something went wrong' if arguments[:required_field] == 'error'
 
         formatted_content = [{ type: 'text', text: 'Success' }]
-        Mcp::Tools::Response.success(formatted_content, { processed: true })
+        Mcp::Tools::Base::Response.success(formatted_content, { processed: true })
       end
     end
   end
@@ -84,6 +84,14 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
     end
   end
 
+  describe '#tool_aliases' do
+    it 'delegates to the class method' do
+      allow(test_service_class).to receive(:tool_aliases).and_return(['old_name'])
+
+      expect(test_service.tool_aliases).to eq(['old_name'])
+    end
+  end
+
   describe '#to_h' do
     it 'returns tool metadata without annotations when empty' do
       result = test_service.to_h
@@ -101,7 +109,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
           },
           required: ['required_field']
         },
-        icons: [Mcp::Tools::IconConfig.gitlab_icons.first]
+        icons: [Mcp::Tools::Base::IconConfig.gitlab_icons.first]
       })
 
       expect(result).not_to have_key(:annotations)
@@ -129,7 +137,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
           protected
 
           def perform(_arguments, _query = {})
-            Mcp::Tools::Response.success([], {})
+            Mcp::Tools::Base::Response.success([], {})
           end
         end
       end
@@ -145,7 +153,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
           name: service_name,
           description: 'Test tool with annotations',
           inputSchema: { type: 'object', properties: {} },
-          icons: [Mcp::Tools::IconConfig.gitlab_icons.first],
+          icons: [Mcp::Tools::Base::IconConfig.gitlab_icons.first],
           annotations: { readOnlyHint: true }
         })
       end
@@ -231,7 +239,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
         result = test_service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
-        expect(result[:content].first[:text]).to include('Validation error:')
+        expect(result[:content].first[:text]).to eq('Validation error: required_field is invalid')
       end
     end
 
@@ -251,6 +259,75 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
 
       it 'returns validation error' do
         result = test_service.execute(request: nil, params: arguments)
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('required_field is missing')
+      end
+    end
+
+    context 'when an optional argument is sent as nil or an empty string' do
+      let(:echo_service_class) do
+        Class.new(described_class) do
+          def description
+            'Echoes the arguments it received'
+          end
+
+          def input_schema
+            {
+              type: 'object',
+              properties: {
+                required_field: { type: 'string' },
+                optional_field: { type: 'integer' },
+                enum_field: { type: 'string', enum: %w[option_a option_b option_c] },
+                flag_field: { type: 'boolean' },
+                list_field: { type: 'array', items: { type: 'string' } }
+              },
+              required: ['required_field']
+            }
+          end
+
+          def version
+            '1.0.0'
+          end
+
+          protected
+
+          def perform(arguments, _query = {})
+            Mcp::Tools::Base::Response.success([{ type: 'text', text: 'ok' }], arguments)
+          end
+        end
+      end
+
+      let(:echo_service) { echo_service_class.new(name: service_name) }
+
+      def execute_with(args)
+        echo_service.execute(request: nil, params: { arguments: args })
+      end
+
+      it 'treats them as omitted instead of rejecting them', :aggregate_failures do
+        result = execute_with({ required_field: 'test', optional_field: nil, enum_field: '' })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ required_field: 'test' })
+      end
+
+      it 'preserves false and empty collections', :aggregate_failures do
+        result = execute_with({ required_field: 'test', flag_field: false, list_field: [] })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ required_field: 'test', flag_field: false, list_field: [] })
+      end
+
+      it 'still rejects a value that is present but not allowed', :aggregate_failures do
+        result = execute_with({ required_field: 'test', enum_field: 'nope' })
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text])
+          .to include("Invalid enum_field: 'nope'. Must be one of: option_a, option_b, option_c")
+      end
+
+      it 'reports a required field sent as nil as missing', :aggregate_failures do
+        result = execute_with({ required_field: nil })
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('required_field is missing')

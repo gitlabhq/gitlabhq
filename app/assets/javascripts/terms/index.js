@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import TermsApp from 'jh_else_ce/terms/components/app.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -13,12 +13,10 @@ export const initTermsApp = () => {
     { deep: true },
   );
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'TermsAppRoot',
     provide: { terms, permissions, paths },
-    render(createElement) {
-      return createElement(TermsApp);
-    },
+    component: TermsApp,
   });
 };

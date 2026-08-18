@@ -307,16 +307,18 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
             accept_gl_confirm do
               find(action_link_selector).click
             end
-
-            # Wait for UI to transition to ensure we an GraphQL request has been made
-            within(actions_button_selector) { find('.gl-spinner') }
-            within(actions_button_selector) { find_by_testid('play-icon') }
-
-            wait_for_requests
           end
 
-          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9337' do
-            expect(delayed_job.reload).to be_pending
+          it 'enqueues the delayed job' do
+            # The play action fires a client-side mutation with no distinct success
+            # indicator on the button (it only transitions play-icon -> spinner ->
+            # play-icon), so poll the backend state instead of racing the transient
+            # loading UI.
+            wait_for('delayed job to be enqueued', reload: false) do
+              delayed_job.reload.pending?
+            end
+
+            expect(delayed_job).to be_pending
           end
         end
       end
@@ -329,7 +331,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         create(:deployment, :failed, environment: environment, sha: project.commit.id)
       end
 
-      it 'does not show deployments', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9337' do
+      it 'does not show deployments' do
         visit_environments(project)
 
         expect(page).to have_content(s_('Environments|There are no deployments for this environment yet. Learn more about setting up deployments.'))

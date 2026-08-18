@@ -635,6 +635,28 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
   describe '#validate' do
     subject(:validate) { lint.validate(content, dry_run: dry_run, ref: ref) }
 
+    shared_examples 'sets merged_yaml when the pipeline would be skipped' do
+      let(:content) do
+        <<~YAML
+        build:
+          stage: build
+          script: echo
+        YAML
+      end
+
+      before do
+        allow_next_instance_of(::Ci::Pipeline) do |pipeline|
+          allow(pipeline).to receive(:git_commit_message).and_return('commit message [skip ci]')
+        end
+      end
+
+      it 'still returns the merged configuration', :aggregate_failures do
+        expect(subject).to be_valid
+        expect(subject.merged_yaml).to be_present
+        expect(subject.merged_yaml).to eq({ 'build' => { 'stage' => 'build', 'script' => 'echo' } }.to_yaml)
+      end
+    end
+
     shared_examples 'content is valid' do
       let(:content) do
         <<~YAML
@@ -946,6 +968,8 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
         it_behaves_like 'sets config metadata'
 
+        it_behaves_like 'sets merged_yaml when the pipeline would be skipped'
+
         include_context 'advanced validations' do
           it 'does not catch advanced logical errors' do
             expect(subject).to be_valid
@@ -1075,6 +1099,8 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
           subject
         end
+
+        it_behaves_like 'sets merged_yaml when the pipeline would be skipped'
       end
     end
 

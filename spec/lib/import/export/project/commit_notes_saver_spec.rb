@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::Export::Project::CommitNotesSaver, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:commit_sha) { project.repository.commit.id }
   let_it_be(:commit_note) { create(:note_on_commit, project: project, commit_id: commit_sha, note: 'Looks good!') }
 
@@ -43,22 +43,18 @@ RSpec.describe Import::Export::Project::CommitNotesSaver, feature_category: :imp
       expect(notes).to contain_exactly('Looks good!')
     end
 
-    it 'logs a summary with the exported count' do
-      allow(Gitlab::Export::Logger).to receive(:info)
-      expect(Gitlab::Export::Logger).to receive(:info).with(
-        hash_including(
-          message: 'commit_notes exported via git repository',
-          project_id: project.id,
-          exported_count: 1,
-          relation: Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION
-        )
-      )
+    it 'does not walk the repository when the pagination succeeds' do
+      expect(Import::Export::Project::CommitNotesBatcher).not_to receive(:new)
 
-      saver.save # rubocop:disable Rails/SaveBang -- Call CommitNotesSaver's #save, not ActiveRecord
+      expect(saver.save).to be(true)
+
+      file = File.join(export_path, 'tree', 'project', 'commit_notes.ndjson')
+      records = File.foreach(file).map { |line| Gitlab::Json.safe_parse(line) }
+      expect(records.first).to include('note' => 'Looks good!')
     end
 
     context 'when the project has no commit notes' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let_it_be(:commit_note) { nil }
 
       it 'returns true without walking the repository' do
@@ -68,18 +64,66 @@ RSpec.describe Import::Export::Project::CommitNotesSaver, feature_category: :imp
       end
     end
 
-    context 'when a SHA batch resolves to no notes' do
-      it 'skips serialization for that batch' do
-        unrelated_sha = 'a' * 40
-        allow_next_instance_of(Import::Export::Project::CommitNotesBatcher) do |batcher|
-          allow(batcher).to receive(:each_batch).and_yield([unrelated_sha]).and_yield([commit_sha])
+    context 'when the notes-table pagination times out' do
+      before do
+        allow_next_instance_of(Gitlab::ImportExport::Json::StreamingSerializer) do |serializer|
+          allow(serializer).to receive(:serialize_relation).and_wrap_original do |original, *args, **kwargs|
+            # The SQL pass serializes the whole relation (no batch_ids); the
+            # repo-walk pass passes resolved batch_ids. Time out only the SQL pass.
+            raise ActiveRecord::QueryCanceled unless kwargs.key?(:batch_ids)
+
+            original.call(*args, **kwargs)
+          end
         end
+      end
+
+      it 'logs the fallback and summary, then walks the repository to write the note' do
+        allow(Gitlab::Export::Logger).to receive(:info)
+
+        expect(Gitlab::Export::Logger).to receive(:warn).with(
+          hash_including(message: a_string_matching(/falling back to git repository walk/))
+        )
+        expect(Gitlab::Export::Logger).to receive(:info).with(
+          hash_including(
+            message: 'commit_notes exported via git repository',
+            project_id: project.id,
+            exported_count: 1,
+            relation: Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION
+          )
+        )
 
         expect(saver.save).to be(true)
 
         file = File.join(export_path, 'tree', 'project', 'commit_notes.ndjson')
         records = File.foreach(file).map { |line| Gitlab::Json.safe_parse(line) }
+        expect(records.first).to include('note' => 'Looks good!', 'commit_id' => commit_sha)
+      end
+
+      it 'resets a partially written file so rows are not duplicated' do
+        file = File.join(export_path, 'tree', 'project', 'commit_notes.ndjson')
+        FileUtils.mkdir_p(File.dirname(file))
+        File.write(file, %({"note":"stale"}\n))
+
+        expect(saver.save).to be(true)
+
+        records = File.foreach(file).map { |line| Gitlab::Json.safe_parse(line) }
         expect(records.size).to eq(1)
+        expect(records.first).to include('note' => 'Looks good!')
+      end
+
+      context 'when a SHA batch resolves to no notes' do
+        it 'skips serialization for that batch' do
+          unrelated_sha = 'a' * 40
+          allow_next_instance_of(Import::Export::Project::CommitNotesBatcher) do |batcher|
+            allow(batcher).to receive(:each_batch).and_yield([unrelated_sha]).and_yield([commit_sha])
+          end
+
+          expect(saver.save).to be(true)
+
+          file = File.join(export_path, 'tree', 'project', 'commit_notes.ndjson')
+          records = File.foreach(file).map { |line| Gitlab::Json.safe_parse(line) }
+          expect(records.size).to eq(1)
+        end
       end
     end
 

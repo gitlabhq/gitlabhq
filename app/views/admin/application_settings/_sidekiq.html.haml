@@ -1,0 +1,28 @@
+= gitlab_ui_form_for @application_setting, url: preferences_admin_application_settings_path(anchor: 'js-sidekiq-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :sidekiq_job_limiter_mode, _('Limiting mode'), class: 'label-bold'
+      = f.select :sidekiq_job_limiter_mode, sidekiq_job_limiter_modes_for_select, {}, class: 'form-control'
+      .form-text.gl-text-subtle
+        = sidekiq_job_limiter_mode_help_text
+    .form-group
+      = f.label :sidekiq_job_limiter_compression_threshold_bytes, _('Sidekiq job compression threshold (bytes)'), class: 'label-bold'
+      = f.number_field :sidekiq_job_limiter_compression_threshold_bytes, class: 'form-control gl-form-input'
+      .form-text.gl-text-subtle
+        = _('Threshold in bytes at which to compress Sidekiq job arguments.')
+    .form-group
+      = f.label :sidekiq_job_limiter_limit_bytes, _('Sidekiq job size limit (bytes)'), class: 'label-bold'
+      = f.number_field :sidekiq_job_limiter_limit_bytes, class: 'form-control gl-form-input'
+      .form-text.gl-text-subtle
+        = _("Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs.")
+    .form-group
+      = f.label :sidekiq_timezone_override, _('Cron jobs time zone'), class: 'label-bold'
+      - if managed_setting?(:sidekiq_timezone_override)
+        = render Admin::ManagedSettingAlertComponent.new
+      .js-timezone-dropdown{ data: { view_model: sidekiq_timezone_dropdown_view_model.to_json } }
+      .form-text.gl-text-subtle
+        = _('Time zone used to evaluate cron schedules for Sidekiq jobs. Select "System default" to use the instance time zone.')
+
+  = f.submit _('Save changes'), pajamas_button: true

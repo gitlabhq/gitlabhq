@@ -193,12 +193,6 @@ There might be new configuration options available for
 
 #### New configuration for `database.yml`
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119139) in GitLab 16.0 to have `ci:` section in `config/database.yml.postgresql`.
-
-{{< /history >}}
-
 There might be new configuration options available for
 [`database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql).
 
@@ -426,8 +420,8 @@ If you have trouble during the upgrade, try some of the steps in the following s
 
 To revert to a previous version, you must follow the upgrading guides for the previous version.
 
-For example, if you have upgraded to GitLab 16.6 and want to revert back to
-16.5, follow the guides for upgrading from 16.4 to 16.5.
+For example, if you have upgraded to GitLab 19.2 and want to revert back to
+19.1, follow the guides for upgrading from 19.0 to 19.1.
 
 When reverting:
 

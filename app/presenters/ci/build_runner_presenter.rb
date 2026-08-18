@@ -42,16 +42,21 @@ module Ci
     def runner_inputs
       return [] unless options&.key?(:inputs)
 
-      input_values = inputs.index_by(&:name)
+      specs = options.fetch(:inputs, {})
+      stored_by_name = inputs.index_by(&:name)
 
-      options.fetch(:inputs, {}).map do |name, spec|
-        stored = input_values[name.to_s]
-        input_value = stored.nil? ? spec[:default] : stored.value
+      provided_values = specs.each_key.with_object({}) do |name, values|
+        stored = stored_by_name[name.to_s]
+        values[name] = stored.value unless stored.nil?
+      end
 
+      coerced_values = ::Ci::Inputs::Builder.new(specs).to_params(provided_values)
+
+      specs.map do |name, spec|
         {
           key: name,
           value: {
-            content: input_value,
+            content: coerced_values.fetch(name),
             type: spec[:type]
           }
         }
@@ -175,7 +180,7 @@ module Ci
 
     def git_depth_value
       strong_memoize(:git_depth_value) do
-        variables&.to_hash&.dig("GIT_DEPTH")
+        variables&.[]("GIT_DEPTH")&.value
       end
     end
 

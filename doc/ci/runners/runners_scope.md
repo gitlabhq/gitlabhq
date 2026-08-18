@@ -213,7 +213,7 @@ When several CI/CD jobs run concurrently, the fair usage algorithm assigns jobs 
 1. Job 6 is next, because 6 is now the lowest job number from projects with no running jobs (Projects 1 and 2 have jobs running).
 1. Job 2 is next, because, of projects with the lowest number of jobs running (each has 1), it is the lowest job number.
 1. Job 5 is next, because Project 1 now has 2 jobs running and Job 5 is the lowest remaining job number between Projects 2 and 3.
-1. Finally is Job 3 because it's the only job left.
+1. Finally, Job 3 is next because it's the only job left.
 
 When only one job runs at a time, the fair usage algorithm assigns jobs in this order:
 
@@ -430,7 +430,7 @@ must be enabled for each project explicitly.
 Project runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
 
 > [!note]
-> Project runners do not get instance with forked projects automatically.
+> Project runners are not automatically enabled for forked projects.
 > A fork does copy the CI/CD settings of the cloned repository.
 
 ### Project runner ownership
@@ -452,7 +452,7 @@ Prerequisites:
 - You must have the Maintainer role for the project.
 
 You can create a project runner for GitLab Self-Managed or for GitLab.com. When you create a runner,
-it is assigned a runner authentication token that you use to register to the runner. The runner uses the token to
+it is assigned a runner authentication token that you use to register it. The runner uses the token to
 authenticate with GitLab when it picks up jobs from the job queue.
 
 To create a project runner:
@@ -690,7 +690,7 @@ To determine the IP address of an instance runner:
 
 ### Determine the IP address of a project runner
 
-To can find the IP address of a runner for a project,
+To find the IP address of a runner for a project,
 you must have the Owner role for the
 project.
 

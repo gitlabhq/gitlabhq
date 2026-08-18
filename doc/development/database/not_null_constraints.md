@@ -76,7 +76,7 @@ The steps required are:
 
       > [!note]
       > Depending on the size of the table, a background migration for cleanup could be required in the next release.
-      > See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
+      > See the [`NOT NULL` constraints on large tables](#not-null-constraints-on-large-tables) section for more information.
 
 1. Release `N.M+1` (next release)
 
@@ -201,7 +201,7 @@ end
 
 #### Add the `NOT NULL` constraint (next release)
 
-Adding the `NOT NULL` constraint scans the whole table and make sure that each record is correct.
+Adding the `NOT NULL` constraint scans the whole table and makes sure that each record is correct.
 
 Still in our example, for the 13.1 milestone (next), we run the `add_not_null_constraint`
 migration helper in a final post-deployment migration:

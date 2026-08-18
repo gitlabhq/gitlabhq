@@ -12,12 +12,6 @@ title: Group epic boards API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385903) in GitLab 15.9.
-
-{{< /history >}}
-
 Use this API to manage [group epic boards](../user/group/epics/epic_boards.md). Every request to this API must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET`
@@ -194,12 +188,6 @@ Example response:
 
 ## List group epic board lists
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
-
-{{< /history >}}
-
 Lists all group epic board lists for a specified board. Does not include `open` and `closed` lists.
 
 ```plaintext
@@ -257,12 +245,6 @@ Example response:
 ```
 
 ## Retrieve a group epic board list
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
-
-{{< /history >}}
 
 Retrieves a specified group epic board list.
 

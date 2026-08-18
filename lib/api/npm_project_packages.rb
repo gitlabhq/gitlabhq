@@ -39,6 +39,14 @@ module API
       end
       strong_memoize_attr :metadata_cache
 
+      def package_or_nil
+        ::Packages::Npm::Package
+          .for_projects(project)
+          .by_name_and_file_name(params[:package_name], params[:file_name])
+      rescue ActiveRecord::RecordNotFound
+        nil
+      end
+
       def project
         user_project(action: :read_package)
       end
@@ -55,6 +63,54 @@ module API
       # Overridden in EE to enforce the Dependency Firewall before a locally
       # hosted package tarball is served. CE intentionally does nothing.
       def enforce_dependency_firewall_on_download!(_package); end
+
+      # Forwards a not-locally-hosted tarball to the upstream registry (302) when npm
+      # request forwarding is enabled, mirroring the metadata forward; otherwise 404s
+      # via the block. Overridden in EE to firewall-gate the redirect; the plain forward
+      # stays in CE so GitLab tarball URLs baked into committed lockfiles keep resolving
+      # even if the Dependency Firewall license or flag lapses.
+      def forward_npm_tarball_download_or_404!(project, package_name, file_name)
+        redirect_registry_request(
+          forward_to_registry: true,
+          package_type: :npm,
+          target: project,
+          path: "#{package_name}/-",
+          package_name: file_name
+        ) do
+          not_found!('Package')
+        end
+      end
+
+      # Serves local npm metadata or, when the package isn't hosted locally,
+      # 302-redirects to the upstream registry. Overridden in EE to hand the
+      # upstream packument off to Workhorse (with a tarball-rewriting transform)
+      # and firewall-gate the follow-up download when forwarding enforcement is on.
+      def present_or_forward_npm_metadata!(package_name, packages)
+        redirect_request = project_or_nil.blank? || packages.empty?
+
+        redirect_registry_request(
+          forward_to_registry: redirect_request,
+          package_type: :npm,
+          target: project_or_nil,
+          package_name: package_name
+        ) do
+          authorize_read_package!(project)
+
+          not_found!('Packages') if packages.empty?
+
+          if metadata_cache&.file&.exists?
+            metadata_cache.touch_last_downloaded_at unless request.head?
+            present_carrierwave_file!(metadata_cache.file)
+
+            break
+          end
+
+          enqueue_sync_npm_metadata_cache_worker(project, package_name)
+
+          metadata = generate_metadata_service(packages).execute.payload
+          present metadata, with: ::API::Entities::NpmPackage
+        end
+      end
     end
 
     def self.authorization_boundary_options
@@ -84,23 +140,23 @@ module API
       route_setting :authorization, permissions: :download_npm_package, boundary_type: :project,
         job_token_policies: :read_packages,
         allow_public_access_for_enabled_project_features: :package_registry
-      get '*package_name/-/*file_name', requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+      get '*package_name/-/*file_name', requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
         authorize_read_package!(project)
 
-        package = ::Packages::Npm::Package
-                    .for_projects(project)
-                    .by_name_and_file_name(params[:package_name], params[:file_name])
+        package = package_or_nil
 
-        not_found!('Package') unless package
+        if package
+          package_file = ::Packages::PackageFileFinder
+            .new(package, params[:file_name]).execute!
 
-        package_file = ::Packages::PackageFileFinder
-          .new(package, params[:file_name]).execute!
+          enforce_dependency_firewall_on_download!(package)
 
-        enforce_dependency_firewall_on_download!(package)
+          track_package_event('pull_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
 
-        track_package_event('pull_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
-
-        present_package_file!(package_file)
+          present_package_file!(package_file)
+        else
+          forward_npm_tarball_download_or_404!(project, params[:package_name], params[:file_name])
+        end
       end
 
       desc 'Authorize NPM package upload' do
@@ -197,35 +253,11 @@ module API
         allow_public_access_for_enabled_project_features: :package_registry
       get '*package_name',
         requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS
-          .merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+          .merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
         package_name = declared_params[:package_name]
         packages = ::Packages::Npm::PackageFinder.new(project: project_or_nil, params: { package_name: package_name }).execute
 
-        # In order to redirect a request, packages should not exist (without taking the user into account).
-        redirect_request = project_or_nil.blank? || packages.empty?
-
-        redirect_registry_request(
-          forward_to_registry: redirect_request,
-          package_type: :npm,
-          target: project_or_nil,
-          package_name: package_name
-        ) do
-          authorize_read_package!(project)
-
-          not_found!('Packages') if packages.empty?
-
-          if metadata_cache&.file&.exists?
-            metadata_cache.touch_last_downloaded_at unless request.head?
-            present_carrierwave_file!(metadata_cache.file)
-
-            break
-          end
-
-          enqueue_sync_npm_metadata_cache_worker(project, package_name)
-
-          metadata = generate_metadata_service(packages).execute.payload
-          present metadata, with: ::API::Entities::NpmPackage
-        end
+        present_or_forward_npm_metadata!(package_name, packages)
       end
     end
   end

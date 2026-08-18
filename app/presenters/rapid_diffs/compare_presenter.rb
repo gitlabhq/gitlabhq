@@ -32,8 +32,8 @@ module RapidDiffs
 
     protected
 
-    override(:offset)
-    def offset
+    override(:baseline_offset)
+    def baseline_offset
       0
     end
   end

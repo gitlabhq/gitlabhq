@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import JhTransitionBanner from './components/jh_transition_banner.vue';
 
@@ -16,17 +17,14 @@ export const initJHTransitionBanner = () => {
 
   const { featureName, userPreferredLanguage } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'JhTransitionBannerRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(JhTransitionBanner, {
-        props: {
-          featureName,
-          userPreferredLanguage,
-        },
-      });
+    component: JhTransitionBanner,
+    props: {
+      featureName,
+      userPreferredLanguage,
     },
   });
 };

@@ -14,13 +14,6 @@ title: Control GitLab Duo availability
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Settings to turn AI features on and off introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
-- [Settings to turn AI features on and off added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
-
-{{< /history >}}
-
 GitLab Duo is on by default.
 GitLab Duo includes a [set of features](feature_summary.md).
 
@@ -72,6 +65,9 @@ Users with the Owner role for a subgroup or project cannot turn GitLab Duo off.
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To lock GitLab Duo on for an instance:
 
@@ -145,7 +141,7 @@ To clear the admin lock for a subgroup:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. In the **Namespace availability overrides** section, find the subgroup.
-1. In the row for the subgroup, select **Reset**.
+1. In the row for the subgroup, select **Reset override**.
 
 The subgroup returns to the instance default.
 Users with the Owner role for the subgroup can now control GitLab Duo availability.
@@ -207,6 +203,9 @@ To change GitLab Duo availability for a project:
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To change GitLab Duo availability for an instance:
 
@@ -293,6 +292,9 @@ It might take up to 10 minutes for the change to take effect.
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To change GitLab Duo Core availability for an instance:
 
@@ -339,6 +341,9 @@ experiment and beta features for your GitLab Self-Managed instance.
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To turn on GitLab Duo experiment and beta features for an instance:
 
@@ -355,6 +360,9 @@ To turn on GitLab Duo experiment and beta features for an instance:
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 - [Network connectivity](../../administration/gitlab_duo/configure/_index.md) enabled.
 - [Silent Mode](../../administration/silent_mode/_index.md) turned off.
 

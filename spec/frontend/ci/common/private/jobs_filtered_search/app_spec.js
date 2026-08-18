@@ -118,7 +118,7 @@ describe('Jobs filtered search', () => {
 
     findFilteredSearch().vm.$emit('submit', mockFailedSearchToken);
 
-    expect(wrapper.emitted('filterJobsBySearch')).toEqual([[mockFailedSearchToken]]);
+    expect(wrapper.emitted('filter-jobs-by-search')).toEqual([[mockFailedSearchToken]]);
   });
 
   it('filtered search value is empty array when no query string is passed', () => {

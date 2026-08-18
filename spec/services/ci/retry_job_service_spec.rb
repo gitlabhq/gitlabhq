@@ -190,34 +190,6 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
       end
     end
 
-    context 'when the pipeline has other jobs' do
-      let_it_be_with_reload(:other_test_build) { create(:ci_build, pipeline: pipeline, ci_stage: stage) }
-      let_it_be_with_reload(:deploy) { create(:ci_build, pipeline: pipeline, ci_stage: deploy_stage) }
-      let_it_be(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: other_test_build.name) }
-
-      context 'when job has a nil scheduling_type' do
-        before do
-          job.pipeline.processables.update_all(scheduling_type: nil)
-          job.reload
-        end
-
-        it 'populates scheduling_type of processables' do
-          expect(new_job.scheduling_type).to eq('stage')
-          expect(job.reload.scheduling_type).to eq('stage')
-          expect(other_test_build.reload.scheduling_type).to eq('stage')
-          expect(deploy.reload.scheduling_type).to eq('dag')
-        end
-      end
-
-      context 'when job has scheduling_type' do
-        it 'does not call populate_scheduling_type!' do
-          expect(job.pipeline).not_to receive(:ensure_scheduling_type!)
-
-          expect(new_job.scheduling_type).to eq('stage')
-        end
-      end
-    end
-
     context 'when the pipeline is a child pipeline and the bridge uses a strategy' do
       let_it_be(:parent_pipeline) { create(:ci_pipeline, project: project) }
 
@@ -364,6 +336,20 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
             expect(new_job.job_variables.count).to be_zero
           end
         end
+      end
+    end
+
+    context 'when the source job definition is loaded' do
+      include_context 'retryable build'
+
+      # `start_pipeline` resets the clone, which drops the association cache
+      # populated by `Ci::CloneJobService`.
+      let(:start_pipeline_on_clone) { true }
+
+      it 're-attaches the shared record to the clone after the reset' do
+        shared_definition = job.job_definition
+
+        expect(new_job.association(:job_definition).target).to be(shared_definition)
       end
     end
 

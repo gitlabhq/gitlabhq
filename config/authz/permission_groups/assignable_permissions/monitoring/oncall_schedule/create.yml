@@ -1,0 +1,10 @@
+---
+name: create_oncall_schedule
+description: Grants the ability to create on-call schedules and their rotations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_oncall_schedule
+  - create_oncall_rotation

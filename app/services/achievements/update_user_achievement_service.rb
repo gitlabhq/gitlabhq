@@ -14,6 +14,8 @@ module Achievements
     def execute
       return error_no_permissions unless allowed?
 
+      remove_unallowed_params
+
       if user_achievement.update(params)
         ServiceResponse.success(payload: user_achievement)
       else
@@ -22,6 +24,14 @@ module Achievements
     end
 
     private
+
+    def remove_unallowed_params
+      unless current_user&.can?(:update_user_achievement_show_on_profile, user_achievement)
+        params.delete(:show_on_profile)
+      end
+
+      params.delete(:award_message) unless current_user&.can?(:update_user_achievement_award_message, user_achievement)
+    end
 
     def allowed?
       current_user&.can?(:update_user_achievement, user_achievement)

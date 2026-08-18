@@ -14,6 +14,11 @@
 
       %fieldset
         .form-group
+          = f.label :project_create_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'), api_name: tag.code('POST /projects'), timeframe: 'day'), class: 'label-bold'
+          = f.number_field :project_create_limit, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
           = f.label :projects_api_rate_limit_unauthenticated, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests'), api_name: tag.code('GET /projects'), timeframe: '10 minutes'), class: 'label-bold'
           = f.number_field :projects_api_rate_limit_unauthenticated,  min: 0, class: 'form-control gl-form-input'
 

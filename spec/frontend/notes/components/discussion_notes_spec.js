@@ -157,11 +157,11 @@ describe('DiscussionNotes', () => {
         createComponent({ shouldGroupReplies: true, isExpanded: true });
       });
 
-      it('emits deleteNote when first note emits handleDeleteNote', async () => {
-        findNoteableNotes().at(0).vm.$emit('handleDeleteNote');
+      it('emits delete-note when first note emits handle-delete-note', async () => {
+        findNoteableNotes().at(0).vm.$emit('handle-delete-note');
 
         await nextTick();
-        expect(wrapper.emitted().deleteNote).toHaveLength(1);
+        expect(wrapper.emitted()['delete-note']).toHaveLength(1);
       });
 
       it('emits start-replying when first note emits start-replying', async () => {
@@ -171,11 +171,11 @@ describe('DiscussionNotes', () => {
         expect(wrapper.emitted()['start-replying']).toHaveLength(1);
       });
 
-      it('emits deleteNote when second note emits handleDeleteNote', async () => {
-        findNoteableNotes().at(1).vm.$emit('handleDeleteNote');
+      it('emits delete-note when second note emits handle-delete-note', async () => {
+        findNoteableNotes().at(1).vm.$emit('handle-delete-note');
 
         await nextTick();
-        expect(wrapper.emitted().deleteNote).toHaveLength(1);
+        expect(wrapper.emitted()['delete-note']).toHaveLength(1);
       });
     });
 
@@ -183,14 +183,14 @@ describe('DiscussionNotes', () => {
       let note;
       beforeEach(() => {
         createComponent();
-        note = wrapper.find('.notes > *');
+        note = wrapper.findComponent('.notes > *');
       });
 
-      it('emits deleteNote when first note emits handleDeleteNote', async () => {
-        note.vm.$emit('handleDeleteNote');
+      it('emits delete-note when first note emits handle-delete-note', async () => {
+        note.vm.$emit('handle-delete-note');
 
         await nextTick();
-        expect(wrapper.emitted().deleteNote).toHaveLength(1);
+        expect(wrapper.emitted()['delete-note']).toHaveLength(1);
       });
     });
   });

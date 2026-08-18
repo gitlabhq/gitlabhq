@@ -144,7 +144,7 @@ Adding text limits to existing database columns requires multiple steps split in
 
      > [!note]
      > Depending on the size of the table, a background migration for cleanup could be required in the next release.
-     > See [text limit constraints on large tables](strings_and_the_text_data_type.md#text-limit-constraints-on-large-tables) for more information.
+     > See [text limit constraints on large tables](#text-limit-constraints-on-large-tables) for more information.
 
    - Create an issue for the next milestone to validate the text limit.
 
@@ -173,7 +173,7 @@ We first add the limit as a `NOT VALID` check constraint to the table, which enf
 new records are inserted or current records are updated.
 
 In the example above, the existing issues with more than 1024 characters in their title are not
-affected, and you are still able to update records in the `issues` table. However, when you'd try
+affected, and you are still able to update records in the `issues` table. However, when you try
 to update the `title_html` with a title that has more than 1024 characters, the constraint causes
 a database error.
 
@@ -254,7 +254,7 @@ end
 
 To keep this guide short, we skipped the definition of the background migration and only
 provided a high level example of the post-deployment migration that is used to schedule the batches.
-You can find more information on the guide about [batched background migrations](batched_background_migrations.md)
+You can find more information in the guide about [batched background migrations](batched_background_migrations.md)
 
 #### Validate the text limit (next release)
 

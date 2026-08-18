@@ -1,0 +1,10 @@
+---
+name: block_ai_catalog_mcp_server
+description: Grants the ability to block or allow an AI catalog MCP server for a group or project
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - block_ai_catalog_mcp_server

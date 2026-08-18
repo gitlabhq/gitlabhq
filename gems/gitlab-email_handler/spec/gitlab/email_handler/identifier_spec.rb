@@ -94,6 +94,23 @@ RSpec.describe Gitlab::EmailHandler::Identifier, feature_category: :service_desk
       end
     end
 
+    context 'with an opaque service desk project key' do
+      let(:mail_key) { 'gitlab-org-gitlab-ce-mykey_123' }
+
+      it 'identifies the target by the whole slug-key composite' do
+        expect(identification.handler).to eq(:service_desk)
+        expect(identification.target).to eq(
+          target_class.service_desk_project_key_address_slug('gitlab-org-gitlab-ce-mykey_123')
+        )
+      end
+    end
+
+    context 'with a key that only superficially resembles a project key' do
+      let(:mail_key) { 'ends-with-an-uppercase-X' }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'with an unknown key' do
       let(:mail_key) { '!!!not-a-key!!!' }
 

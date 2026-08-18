@@ -19,6 +19,12 @@
 
 ---
 offenses:
+    - callsite: cmd/gitlab-workhorse/channel_test.go
+      deprecated_field: url
+      standard_field: fields.HTTPURL
+    - callsite: cmd/gitlab-workhorse/sendfile_test.go
+      deprecated_field: url
+      standard_field: fields.HTTPURL
     - callsite: internal/ai_assist/duoworkflow/actions.go
       deprecated_field: error
       standard_field: fields.ErrorMessage
@@ -35,14 +41,32 @@ offenses:
       deprecated_field: error
       standard_field: fields.ErrorMessage
     - callsite: internal/git/git-http.go
+      deprecated_field: service
+      standard_field: fields.ServiceName
+    - callsite: internal/git/git-http.go
       deprecated_field: username
       standard_field: fields.GitLabUserName
     - callsite: internal/healthcheck/puma_checker.go
       deprecated_field: error
       standard_field: fields.ErrorMessage
+    - callsite: internal/healthcheck/puma_checker.go
+      deprecated_field: url
+      standard_field: fields.HTTPURL
+    - callsite: internal/helper/helpers.go
+      deprecated_field: url
+      standard_field: fields.HTTPURL
     - callsite: internal/loadshedding/service.go
       deprecated_field: status_code
       standard_field: fields.HTTPStatusCode
+    - callsite: internal/oauthproxy/oauthproxy.go
+      deprecated_field: reason
+      standard_field: fields.LogMessage
+    - callsite: internal/sendurl/sendurl.go
+      deprecated_field: url
+      standard_field: fields.HTTPURL
+    - callsite: internal/testhelper/testhelper.go
+      deprecated_field: url
+      standard_field: fields.HTTPURL
     - callsite: internal/upload/exif/exif.go
       deprecated_field: error
       standard_field: fields.ErrorMessage

@@ -132,7 +132,7 @@ describe('AlertDetails', () => {
     mock.restore();
   });
 
-  const findTabs = () => wrapper.findByTestId('alert-details-tabs');
+  const findTabs = () => wrapper.findComponentByTestId('alert-details-tabs');
   const findCreateIncidentBtn = () => wrapper.findByTestId('create-incident-button');
   const findViewIncidentBtn = () => wrapper.findByTestId('view-incident-button');
   const findIncidentCreationAlert = () => wrapper.findByTestId('incident-creation-error');
@@ -180,7 +180,9 @@ describe('AlertDetails', () => {
 
       it('renders a start time', () => {
         expect(wrapper.findByTestId('start-time-item').exists()).toBe(true);
-        expect(wrapper.findByTestId('start-time-item').props('time')).toBe(mockAlert.startedAt);
+        expect(wrapper.findComponentByTestId('start-time-item').props('time')).toBe(
+          mockAlert.startedAt,
+        );
       });
     });
 

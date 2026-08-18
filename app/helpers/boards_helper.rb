@@ -16,9 +16,6 @@ module BoardsHelper
       can_admin_board: can_admin_board?.to_s,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
       parent: current_board_parent.model_name.param_key,
-      group_id: group_id,
-      labels_filter_base_path: build_issue_link_base,
-      labels_fetch_path: labels_fetch_path,
       labels_manage_path: labels_manage_path,
       releases_fetch_path: releases_fetch_path,
       board_type: board.to_type,
@@ -33,33 +30,11 @@ module BoardsHelper
     board.group_board? ? @group : @project
   end
 
-  def group_id
-    return @group.id if board.group_board?
-
-    @project&.group&.id
-  end
-
   def full_path
     if board.group_board?
       @group.full_path
     else
       @project.full_path
-    end
-  end
-
-  def build_issue_link_base
-    if board.group_board?
-      "/:project_path/-/issues"
-    else
-      project_issues_path(@project)
-    end
-  end
-
-  def labels_fetch_path
-    if board.group_board?
-      group_labels_path(@group, format: :json, only_group_labels: true, include_ancestor_groups: true)
-    else
-      project_labels_path(@project, format: :json, include_ancestor_groups: true)
     end
   end
 

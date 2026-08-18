@@ -4,7 +4,7 @@ import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { ListType } from 'ee_else_ce/boards/constants';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { identifyAffectedLists } from '../graphql/cache_updates';
 
 export default normalizeRender({
@@ -138,7 +138,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       activeIssuable: this.activeBoardItem,
       onDrawerClosed: this.onDrawerClosed,
       onAttributeUpdated: this.onAttributeUpdated,

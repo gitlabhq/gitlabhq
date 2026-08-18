@@ -1,0 +1,3 @@
+managed_settings:
+  sidekiq_timezone_override: "Europe/London"
+  not_a_real_column: 1

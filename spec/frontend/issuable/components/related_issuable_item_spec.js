@@ -1,28 +1,16 @@
 import { GlIcon, GlLink, GlButton } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { localeDateFormat } from '~/lib/utils/datetime_utility';
-import { updateHistory } from '~/lib/utils/url_utility';
-import { stubComponent } from 'helpers/stub_component';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import IssueAssignees from '~/issuable/components/issue_assignees.vue';
-import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import { mockWorkItemCommentNote } from 'jest/work_items/mock_data';
 import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data';
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  updateHistory: jest.fn(),
-}));
 
 describe('RelatedIssuableItem', () => {
   let wrapper;
-  let showModalSpy;
 
   const defaultProps = {
     idKey: 10,
@@ -45,25 +33,12 @@ describe('RelatedIssuableItem', () => {
   const findLockIcon = () => wrapper.find('[data-testid="lockIcon"]');
   const findRemoveButton = () => wrapper.findComponent(GlButton);
   const findTitleLink = () => wrapper.findComponent(GlLink);
-  const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
-  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 
   function mountComponent({ data = {}, props = {} } = {}) {
-    showModalSpy = jest.fn();
     wrapper = shallowMount(RelatedIssuableItem, {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        reportAbusePath: '/report/abuse/path',
-      },
-      stubs: {
-        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
-          methods: {
-            show: showModalSpy,
-          },
-        }),
       },
       data() {
         return data;
@@ -239,96 +214,6 @@ describe('RelatedIssuableItem', () => {
 
     it('renders status in CI icon', () => {
       expect(wrapper.findComponent(CiIcon).props('status')).toEqual(pipelineStatus);
-    });
-  });
-
-  describe('work item modal', () => {
-    const workItemId = 'gid://gitlab/WorkItem/10';
-
-    it('renders', () => {
-      mountComponent();
-
-      expect(findWorkItemDetailModal().props()).toMatchObject({
-        workItemId,
-        workItemIid: '1',
-      });
-    });
-
-    describe('when work item is issue and the related issue title is clicked', () => {
-      it('does not open', () => {
-        mountComponent({ props: { workItemType: 'ISSUE' } });
-
-        findTitleLink().vm.$emit('click', { preventDefault: () => {} });
-
-        expect(showModalSpy).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when work item is task and the related issue title is clicked', () => {
-      beforeEach(() => {
-        mountComponent({ props: { workItemType: 'TASK' } });
-        findTitleLink().vm.$emit('click', { preventDefault: () => {} });
-      });
-
-      it('opens', () => {
-        expect(showModalSpy).toHaveBeenCalled();
-      });
-
-      it('updates the url params with the work item id', () => {
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?show=10`,
-          replace: true,
-        });
-      });
-    });
-
-    describe('when it emits "work-item-deleted" event', () => {
-      it('emits "related-issue-remove-request" event', () => {
-        mountComponent();
-
-        findWorkItemDetailModal().vm.$emit('work-item-deleted', workItemId);
-
-        expect(wrapper.emitted('related-issue-remove-request')).toEqual([[workItemId]]);
-      });
-    });
-
-    describe('when it emits "close" event', () => {
-      it('removes the work item id from the url params', () => {
-        mountComponent();
-
-        findWorkItemDetailModal().vm.$emit('close');
-
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/`,
-          replace: true,
-        });
-      });
-    });
-  });
-
-  describe('abuse category selector', () => {
-    beforeEach(() => {
-      mountComponent({ props: { workItemType: 'TASK' } });
-      findTitleLink().vm.$emit('click', { preventDefault: () => {} });
-    });
-
-    it('should not be visible by default', () => {
-      expect(showModalSpy).toHaveBeenCalled();
-      expect(findAbuseCategorySelector().exists()).toBe(false);
-    });
-
-    it('should be visible when the work item modal emits `openReportAbuse` event', async () => {
-      findWorkItemDetailModal().vm.$emit('openReportAbuse', mockWorkItemCommentNote);
-
-      await nextTick();
-
-      expect(findAbuseCategorySelector().exists()).toBe(true);
-
-      findAbuseCategorySelector().vm.$emit('close-drawer');
-
-      await nextTick();
-
-      expect(findAbuseCategorySelector().exists()).toBe(false);
     });
   });
 });

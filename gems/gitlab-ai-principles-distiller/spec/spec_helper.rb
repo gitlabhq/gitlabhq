@@ -4,6 +4,14 @@ require 'fileutils'
 require 'tmpdir'
 
 RSpec.configure do |config|
+  config.around do |example|
+    original_branch = ENV['CI_DEFAULT_BRANCH']
+    ENV['CI_DEFAULT_BRANCH'] ||= 'master'
+    example.run
+  ensure
+    ENV['CI_DEFAULT_BRANCH'] = original_branch
+  end
+
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end

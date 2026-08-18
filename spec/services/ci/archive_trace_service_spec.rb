@@ -14,6 +14,14 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
       expect(job.reload.job_artifacts_trace).to be_exist
     end
 
+    it 'does not schedule an organization isolation status check' do
+      stub_feature_flags(isolation_status_check: true)
+
+      expect(::Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+      subject
+    end
+
     context 'integration hooks' do
       it do
         expect(job.project).to receive(:execute_integrations) do |data, hook_type|

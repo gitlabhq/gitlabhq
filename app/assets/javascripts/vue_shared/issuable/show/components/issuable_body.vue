@@ -6,6 +6,7 @@ import TaskList from '~/task_list';
 import { TYPE_ISSUE } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import IssuableDescription from './issuable_description.vue';
 import IssuableEditForm from './issuable_edit_form.vue';
 import IssuableTitle from './issuable_title.vue';
@@ -19,6 +20,7 @@ export default {
     IssuableDescription,
     IssuableEditForm,
   },
+  mixins: [glSlotsMixin],
   props: {
     issuable: {
       type: Object,
@@ -169,7 +171,7 @@ export default {
         @keydown-title="handleKeydownTitle"
         @keydown-description="handleKeydownDescription"
       >
-        <template #edit-form-actions="{ issuableMeta }">
+        <template v-if="glSlots()['edit-form-actions']" #edit-form-actions="{ issuableMeta }">
           <slot name="edit-form-actions" v-bind="{ issuableMeta }"></slot>
         </template>
       </issuable-edit-form>
@@ -182,7 +184,7 @@ export default {
           :workspace-type="workspaceType"
           @edit-issuable="$emit('edit-issuable', $event)"
         >
-          <template #status-badge>
+          <template v-if="glSlots()['status-badge']" #status-badge>
             <slot name="status-badge"></slot>
           </template>
         </issuable-title>

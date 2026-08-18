@@ -15,7 +15,7 @@ module API
     default_format :json
 
     COMPOSER_ENDPOINT_REQUIREMENTS = {
-      package_name: API::NO_SLASH_URL_PART_REGEX
+      package_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     default_format :json
@@ -65,7 +65,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a group'
     end
 
-    resource :group, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :group, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
         find_authorized_group!
       end
@@ -103,7 +103,7 @@ module API
         presenter.provider
       end
 
-      desc 'Composer v2 packages p2 endpoint at group level for package versions metadata' do
+      desc "Composer v2 packages p2 endpoint for a group's package versions metadata" do
         detail 'This feature was introduced in GitLab 13.1'
         success code: 200
         failure [
@@ -123,7 +123,7 @@ module API
         presenter.package_versions
       end
 
-      desc 'Composer packages endpoint at group level for package versions metadata' do
+      desc "Composer packages endpoint for a group's package versions metadata" do
         detail 'This feature was introduced in GitLab 12.1'
         success code: 200
         failure [
@@ -149,7 +149,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/composer' do
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
         route_setting :authorization, job_token_policies: :admin_packages, permissions: :publish_composer_package,
@@ -224,11 +224,14 @@ module API
 
           # Return early for HEAD requests to avoid generating archives.
           if request.head?
+            check_repository_archive_download!(project.repository)
             send_git_archive_head(project.repository, ref: package.target_sha, format: 'zip', append_sha: true)
           else
             # For now we keep writing to the existing packages_packages table.
             # It contains the trigger to sync the data with packages_composer_packages table.
             ::Packages::Composer::Sti::Package.touch_last_downloaded_at(package.id)
+            check_repository_archive_download!(project.repository)
+            audit_repository_archive_download(project.repository)
             send_git_archive project.repository, ref: package.target_sha, format: 'zip', append_sha: true
           end
         end

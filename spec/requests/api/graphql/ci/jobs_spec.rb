@@ -689,7 +689,7 @@ RSpec.describe 'previousStageJobs', feature_category: :pipeline_composition do
 
     expect do
       post_graphql(query, current_user: user2)
-    end.not_to exceed_query_limit(control)
+    end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
 
     expect(graphql_data_previous_stage_jobs).to eq(
       'build_build' => [],

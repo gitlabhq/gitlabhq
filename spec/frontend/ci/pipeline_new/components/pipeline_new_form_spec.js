@@ -69,10 +69,9 @@ describe('Pipeline New Form', () => {
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);
   const findPipelineVariablesForm = () => wrapper.findComponent(PipelineVariablesForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
-  const findSubmitButton = () => wrapper.findByTestId('run-pipeline-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('run-pipeline-button');
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
-  const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');
   const findMrPipelineInfoAlert = () => wrapper.findByTestId('mr-pipeline-info-alert');
   const findMrLink = () => wrapper.findByTestId('mr-link');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
@@ -316,24 +315,6 @@ describe('Pipeline New Form', () => {
   describe('Form errors and warnings', () => {
     beforeEach(async () => {
       await createComponentWithApollo();
-    });
-
-    describe('when the refs cannot be loaded', () => {
-      beforeEach(async () => {
-        await createComponentWithApollo();
-        mock
-          .onGet(`/api/v4/projects/${mockProjectId}/repository/branches`, {
-            params: { search: '' },
-          })
-          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-        findRefsDropdown().vm.$emit('loadingError');
-        await waitForPromises();
-      });
-
-      it('shows an error alert', () => {
-        expect(findErrorAlert().exists()).toBe(true);
-        expect(findWarningAlert().exists()).toBe(false);
-      });
     });
 
     describe('when pipeline creation mutation is not successful', () => {

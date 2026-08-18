@@ -27,12 +27,12 @@ describe('ConfigToggle', () => {
     expect(findButton().element.title).toBe('Configure board');
   });
 
-  it('emits `showBoardModal` when button is clicked', () => {
+  it('emits `show-board-modal` when button is clicked', () => {
     wrapper = createComponent();
 
     findButton().vm.$emit('click', { preventDefault: () => {} });
 
-    expect(wrapper.emitted('showBoardModal')).toEqual([['edit']]);
+    expect(wrapper.emitted('show-board-modal')).toEqual([['edit']]);
   });
 
   it('tracks clicking the button', () => {

@@ -11,7 +11,8 @@ module Projects
       participants =
         noteable_owner +
         participants_in_noteable +
-        project_members
+        project_members +
+        mentioned_users(project_members_relation)
 
       participants += groups(organization: organization) unless relation_at_search_limit?(project_members)
       participants = organization_user_details_for_participants(participants.uniq)

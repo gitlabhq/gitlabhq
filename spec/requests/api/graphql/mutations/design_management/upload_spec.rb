@@ -29,6 +29,31 @@ RSpec.describe "uploading designs", feature_category: :design_management do
     project.add_developer(current_user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_design do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    # Select only the scalar `errors` field: the `designs` payload field resolves
+    # to a DesignType, which carries its own granular token directive.
+    let(:mutation) do
+      input = {
+        project_path: project.full_path,
+        iid: issue.iid,
+        files: files.dup
+      }
+      graphql_mutation(:design_management_upload, input, 'errors')
+    end
+
+    let(:request) do
+      upload_params = mutation_to_apollo_uploads_param(mutation, files: file_paths_in_mutation(mutation))
+
+      workhorse_post_with_file(
+        api('/', version: 'graphql', personal_access_token: pat),
+        params: upload_params,
+        file_key: '1'
+      )
+    end
+  end
+
   context 'when the input does not include a null value for each mapped file' do
     let(:operations) { { query: mutation.query, variables: mutation.variables.merge(files: []) } }
     let(:mapping) { { '1' => ['variables.files.0'] } }

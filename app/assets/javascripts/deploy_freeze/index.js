@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeployFreezeSettings from './components/deploy_freeze_settings.vue';
 import createStore from './store';
 
@@ -16,12 +16,10 @@ export default () => {
     timezoneData: JSON.parse(timezoneData),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DeployFreezeSettingsRoot',
     store,
-    render(createElement) {
-      return createElement(DeployFreezeSettings);
-    },
+    component: DeployFreezeSettings,
   });
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::DependencyProxy, :api, feature_category: :virtual_registry do
+RSpec.describe API::DependencyProxy, :api, :with_current_organization, feature_category: :virtual_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:blob) { create(:dependency_proxy_blob) }
   let_it_be_with_reload(:group) { blob.group }
@@ -65,6 +65,31 @@ RSpec.describe API::DependencyProxy, :api, feature_category: :virtual_registry d
       let(:boundary_object) { group }
       let(:request) do
         delete api("/groups/#{group.id}/dependency_proxy/cache", personal_access_token: pat)
+      end
+    end
+
+    context 'when current organization differs from the group organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_group) { create(:group, :private, organization: other_organization) }
+
+      before_all do
+        other_group.add_owner(user)
+      end
+
+      before do
+        current_organization.mark_as_isolated!
+      end
+
+      it 'denies access for numeric id' do
+        delete api("/groups/#{other_group.id}/dependency_proxy/cache", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'denies access for url-encoded path id' do
+        delete api("/groups/#{ERB::Util.url_encode(other_group.full_path)}/dependency_proxy/cache", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

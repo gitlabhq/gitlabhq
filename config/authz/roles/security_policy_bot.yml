@@ -7,12 +7,14 @@ project:
   permissions: []
   raw_permissions:
   - build_download_code
+  - build_read_container_image
   - create_bot_pipeline
   - create_on_demand_dast_scan
   - create_pipeline
   - create_vulnerability_state_transition
   - read_build
   - read_on_demand_dast_scan
+  - read_package
   - read_project
   - update_pipeline
 group:

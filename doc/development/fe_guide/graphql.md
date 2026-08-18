@@ -1990,8 +1990,8 @@ Queries and mutations are held pending until explicitly resolved, enabling preci
 
 The helper provides two exports:
 
-- `createControlledMockApollo` (named) — **controlled mode**: queries hang until explicitly resolved.
-- `createMockApollo` (default) — **legacy mode**: queries resolve immediately.
+- `createControlledMockApollo` (named) - **controlled mode**: queries hang until explicitly resolved.
+- `createMockApollo` (default) - **legacy mode**: queries resolve immediately.
 
 Both accept `(handlers, resolvers, cacheOptions)`.
 

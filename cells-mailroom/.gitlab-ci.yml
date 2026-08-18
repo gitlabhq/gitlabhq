@@ -1,0 +1,43 @@
+# Child pipeline that runs the cells-mailroom service's RSpec suite.
+#
+# The service is a standalone, no-Rails bundle, so this only needs Ruby and the
+# service's own dependencies (which include path gems from the main repo, hence
+# the full checkout fetched from the parent pipeline's clone-gitlab-repo job).
+workflow:
+  name: 'cells-mailroom Ruby $RUBY_VERSION pipeline'
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
+    - when: always
+
+variables:
+  BUNDLE_PATH: "vendor"
+  BUNDLE_FROZEN: "true"
+  # Download repo from artifacts. See .repo-from-artifacts.
+  GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
+  RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
+
+include:
+  - local: .gitlab/ci/version.yml
+
+rspec:
+  tags:
+    - gitlab-org
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  cache:
+    key: "cells-mailroom-${RUBY_VERSION}"
+    paths:
+      - "cells-mailroom/vendor/ruby"
+  before_script:
+    - cd cells-mailroom
+    - ruby -v
+    - bundle_version=$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1 | sed -e 's/[[:space:]]//')
+    - gem install bundler --version "$bundle_version" --no-document
+    - bundle config
+    - bundle install --jobs=$(nproc) --retry=3
+  script:
+    - bundle exec rspec

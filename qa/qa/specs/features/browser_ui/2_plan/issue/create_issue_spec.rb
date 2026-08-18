@@ -21,23 +21,20 @@ module QA
 
       it(
         'creates an issue',
-        :mobile,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347989'
+        :mobile
       ) do
         created_issue = Resource::WorkItem.fabricate_via_browser_ui! { |issue| issue.project = project }
 
         Page::Project::Menu.perform(&:go_to_work_items)
 
         Page::Project::WorkItem::Index.perform do |index|
-          index.dismiss_onboarding_modal_if_present
           expect(index).to have_issue(created_issue)
         end
       end
 
       it(
         'closes an issue',
-        :mobile,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347967'
+        :mobile
       ) do
         issue.visit!
 
@@ -50,8 +47,6 @@ module QA
         Page::Project::Menu.perform(&:go_to_work_items)
 
         Page::Project::WorkItem::Index.perform do |index|
-          index.dismiss_onboarding_modal_if_present
-
           expect(index).not_to have_issue(issue)
 
           index.click_closed_issues_tab
@@ -62,8 +57,7 @@ module QA
 
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/526755
       it(
-        'creates an issue and updates the description',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/533855'
+        'creates an issue and updates the description'
       ) do
         updated_description = "Updated issue description"
 
@@ -81,8 +75,7 @@ module QA
         let(:file_to_attach) { Runtime::Path.fixture('designs', png_file_name) }
 
         it(
-          'comments on an issue with an attachment',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946'
+          'comments on an issue with an attachment'
         ) do
           issue.visit!
 

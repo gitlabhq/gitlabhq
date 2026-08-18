@@ -1,6 +1,7 @@
 <script>
 import {
   GlButton,
+  GlEmptyState,
   GlFormGroup,
   GlFormInput,
   GlLoadingIcon,
@@ -35,6 +36,7 @@ export default {
   name: 'TimelogsApp',
   components: {
     GlButton,
+    GlEmptyState,
     GlFormGroup,
     GlFormInput,
     GlLoadingIcon,
@@ -48,6 +50,16 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    canReadAllResources: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    emptyStateSvgPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -80,6 +92,9 @@ export default {
   apollo: {
     report: {
       query: getTimelogsQuery,
+      skip() {
+        return this.showFilterPrompt;
+      },
       variables() {
         return {
           ...this.queryVariables,
@@ -100,6 +115,13 @@ export default {
   computed: {
     isLoading() {
       return this.$apollo.queries.report.loading;
+    },
+    hasPrincipalFilter() {
+      const { username, groupId, projectId } = this.queryVariables;
+      return Boolean(username || groupId || projectId);
+    },
+    showFilterPrompt() {
+      return !this.canReadAllResources && !this.hasPrincipalFilter;
     },
     showPagination() {
       return this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage;
@@ -242,6 +264,7 @@ export default {
     },
   },
   i18n: {
+    filterPrompt: s__('TimeTrackingReport|Select a group or user to see results.'),
     username: s__('TimeTrackingReport|Username'),
     from: s__('TimeTrackingReport|From the start of'),
     to: s__('TimeTrackingReport|To the end of'),
@@ -318,7 +341,13 @@ export default {
         >{{ $options.i18n.runReport }}</gl-button
       >
     </form>
-    <div v-if="!isLoading" data-testid="table-container" class="gl-flex gl-flex-col">
+    <gl-empty-state
+      v-if="showFilterPrompt"
+      :svg-path="emptyStateSvgPath"
+      :title="$options.i18n.filterPrompt"
+      data-testid="filter-prompt-empty-state"
+    />
+    <div v-else-if="!isLoading" data-testid="table-container" class="gl-flex gl-flex-col">
       <div v-if="report.length" class="gl-border-t gl-flex gl-gap-2 gl-py-4">
         <span class="gl-font-bold">{{ $options.i18n.totalTimeSpentText }}</span>
         <span data-testid="total-time-spent-container">{{ formattedTotalSpentTime }}</span>

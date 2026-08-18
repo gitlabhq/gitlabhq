@@ -14,9 +14,9 @@ jest.mock('~/super_sidebar/user_counts_manager', () => ({
 describe('UserCounts component', () => {
   let wrapper;
 
-  const findIssuesCounter = () => wrapper.findByTestId('issues-shortcut-button');
-  const findMRsCounter = () => wrapper.findByTestId('merge-requests-shortcut-button');
-  const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
+  const findIssuesCounter = () => wrapper.findComponentByTestId('issues-shortcut-button');
+  const findMRsCounter = () => wrapper.findComponentByTestId('merge-requests-shortcut-button');
+  const findTodosCounter = () => wrapper.findComponentByTestId('todos-shortcut-button');
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(UserCounts, {

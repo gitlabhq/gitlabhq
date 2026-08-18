@@ -30,6 +30,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
         allow_s3_compatible_storage_for_offline_transfer: false,
+        allow_application_default_credentials_for_offline_transfer: false,
+        offline_transfer_exports_enabled: false,
+        offline_transfer_imports_enabled: false,
         allow_possible_spam: false,
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
@@ -140,6 +143,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         gravatar_enabled: Settings.gravatar['enabled'],
         group_api_limit: 400,
         group_archive_unarchive_api_limit: 60,
+        group_create_limit: 200,
         group_download_export_limit: 1,
         group_export_limit: 6,
         group_import_limit: 6,
@@ -170,6 +174,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         lock_maven_package_requests_forwarding: false,
         lock_npm_package_requests_forwarding: false,
         lock_pypi_package_requests_forwarding: false,
+        lock_rubygems_package_requests_forwarding: false,
         lock_require_sha_for_merge: false,
         lock_resource_access_token_notify_inherited: false,
         login_recaptcha_protection_enabled: false,
@@ -211,6 +216,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         plantuml_enabled: false,
         plantuml_diagram_proxy_enabled: false,
         project_api_limit: 400,
+        project_create_limit: 200,
         project_members_api_limit: 200,
         project_download_export_limit: 1,
         project_export_enabled: true,
@@ -218,6 +224,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         project_import_limit: 6,
         project_invited_groups_api_limit: 60,
         project_jobs_api_rate_limit: 600,
+        project_repositories_blobs_batch_limit: 5,
         projects_api_limit: 2000,
         projects_api_rate_limit_unauthenticated: 400,
         protected_ci_variables: true,
@@ -226,6 +233,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         push_event_activities_limit: 3,
         push_event_hooks_limit: 3,
         pypi_package_requests_forwarding: true,
+        rubygems_package_requests_forwarding: false,
         raw_blob_request_limit: 300,
         raw_blob_request_limit_unauthenticated: ApplicationSetting::DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT,
         rate_limiting_response_text: nil,
@@ -265,6 +273,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_COMPRESSION_THRESHOLD_BYTES,
         sidekiq_job_limiter_limit_bytes: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_SIZE_LIMIT,
         sidekiq_job_limiter_mode: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE,
+        sidekiq_timezone_override: nil,
         sign_in_restrictions: {
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
@@ -279,7 +288,6 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
         spam_check_endpoint_enabled: false,
-        suggest_pipeline_enabled: true,
         terminal_max_session_time: 0,
         throttle_authenticated_git_http_enabled: false,
         throttle_authenticated_git_http_requests_per_period:
@@ -326,11 +334,14 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         vscode_extension_marketplace_extension_host_domain:
           ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         vscode_extension_marketplace_single_origin_fallback_enabled: true,
+        web_hook_event_resend_limit: 5,
+        web_hook_test_limit: 5,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes,
         pipeline_limit_per_user: 0,
-        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN
+        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN,
+        dynamic_client_registration_enabled: true
       )
     end
   end
@@ -517,6 +528,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it { is_expected.to allow_value(true).for(:silent_admin_exports_enabled) }
     it { is_expected.to allow_value(false).for(:silent_admin_exports_enabled) }
 
+    it { is_expected.to allow_value(true).for(:offline_transfer_exports_enabled) }
+    it { is_expected.to allow_value(false).for(:offline_transfer_exports_enabled) }
+
+    it { is_expected.to allow_value(true).for(:offline_transfer_imports_enabled) }
+    it { is_expected.to allow_value(false).for(:offline_transfer_imports_enabled) }
+
     it { is_expected.to allow_values([true, false]).for(:enforce_ci_inbound_job_token_scope_enabled) }
     it { is_expected.not_to allow_value(nil).for(:enforce_ci_inbound_job_token_scope_enabled) }
 
@@ -537,6 +554,11 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it { is_expected.to allow_values([true, false]).for(:lock_pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
+
+    it { is_expected.to allow_values([true, false]).for(:rubygems_package_requests_forwarding) }
+    it { is_expected.to allow_values([true, false]).for(:lock_rubygems_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:rubygems_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:lock_rubygems_package_requests_forwarding) }
 
     it { is_expected.to allow_values([true, false]).for(:pages_unique_domain_default_enabled) }
     it { is_expected.not_to allow_value(nil).for(:pages_unique_domain_default_enabled) }
@@ -651,6 +673,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           pipeline_limit_per_project_user_sha
           create_organization_api_limit
           project_api_limit
+          project_create_limit
+          group_create_limit
+          project_repositories_blobs_batch_limit
           projects_api_limit
           projects_api_rate_limit_unauthenticated
           raw_blob_request_limit
@@ -676,6 +701,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           users_api_limit_gpg_key
           git_push_pipeline_limit
           pipeline_limit_per_user
+          web_hook_event_resend_limit
+          web_hook_test_limit
         ]
       end
 
@@ -988,6 +1015,16 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
 
     context 'when mailgun_events_enabled is not enabled' do
       it { is_expected.not_to validate_presence_of(:mailgun_signing_key) }
+    end
+
+    describe 'sidekiq_timezone_override' do
+      it { is_expected.to validate_length_of(:sidekiq_timezone_override).is_at_most(255) }
+      it { is_expected.to allow_value(nil).for(:sidekiq_timezone_override) }
+      it { is_expected.to allow_value('').for(:sidekiq_timezone_override) }
+      it { is_expected.to allow_value('America/Chicago').for(:sidekiq_timezone_override) }
+      it { is_expected.to allow_value('UTC').for(:sidekiq_timezone_override) }
+      it { is_expected.not_to allow_value('Not/AZone').for(:sidekiq_timezone_override) }
+      it { is_expected.not_to allow_value('Pacific Time (US & Canada)').for(:sidekiq_timezone_override) }
     end
 
     context "when user accepted let's encrypt terms of service" do
@@ -2402,13 +2439,28 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         it { is_expected.not_to allow_value(0).for(:oauth_access_token_expires_in) }
         it { is_expected.not_to allow_value(-1).for(:oauth_access_token_expires_in) }
       end
+
+      describe '#dynamic_client_registration_enabled' do
+        it 'defaults to true' do
+          expect(setting.dynamic_client_registration_enabled).to be(true)
+        end
+
+        it { is_expected.to allow_value({ dynamic_client_registration_enabled: true }).for(:oauth_settings) }
+        it { is_expected.to allow_value({ dynamic_client_registration_enabled: false }).for(:oauth_settings) }
+        it { is_expected.not_to allow_value({ dynamic_client_registration_enabled: 'yes' }).for(:oauth_settings) }
+      end
     end
 
     describe 'diff_limits jsonb settings' do
       context 'for diff_limits json schema validation' do
         it 'allows valid integer values' do
-          is_expected.to allow_value({ diff_max_versions: 500, diff_max_commits: 100 })
-            .for(:diff_limits)
+          is_expected.to allow_value({
+            diff_max_patch_bytes: 300_000,
+            diff_max_files: 2000,
+            diff_max_lines: 60_000,
+            diff_max_versions: 500,
+            diff_max_commits: 100
+          }).for(:diff_limits)
         end
 
         it 'allows empty hash' do
@@ -2420,7 +2472,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         end
 
         where(:attribute) do
-          %i[diff_max_versions diff_max_commits]
+          %i[diff_max_patch_bytes diff_max_files diff_max_lines diff_max_versions diff_max_commits]
         end
 
         with_them do
@@ -2428,6 +2480,42 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           it { is_expected.not_to allow_value({ attribute => 0 }).for(:diff_limits) }
           it { is_expected.not_to allow_value({ attribute => 'abc' }).for(:diff_limits) }
         end
+      end
+
+      it 'has correct defaults for migrated diff settings', :aggregate_failures do
+        expect(setting.diff_max_patch_bytes).to eq(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+        expect(setting.diff_max_files).to eq(Commit::DEFAULT_MAX_DIFF_FILES_SETTING)
+        expect(setting.diff_max_lines).to eq(Commit::DEFAULT_MAX_DIFF_LINES_SETTING)
+      end
+
+      it 'has correct defaults for new diff settings', :aggregate_failures do
+        expect(setting.diff_max_versions).to eq(1_000)
+        expect(setting.diff_max_commits).to eq(1_000_000)
+      end
+    end
+
+    describe 'dual-write to legacy columns' do
+      it 'syncs diff limits to legacy columns on save', :aggregate_failures do
+        setting.update_columns(diff_max_patch_bytes: 1, diff_max_files: 1, diff_max_lines: 1)
+        setting.update!(diff_limits: {
+          diff_max_patch_bytes: 300_000,
+          diff_max_files: 2000,
+          diff_max_lines: 60_000,
+          diff_max_versions: 1_000,
+          diff_max_commits: 1_000_000
+        })
+
+        legacy_diff_limits = described_class.connection.select_one(<<~SQL)
+          SELECT diff_max_patch_bytes, diff_max_files, diff_max_lines
+          FROM application_settings
+          WHERE id = #{setting.id}
+        SQL
+
+        expect(legacy_diff_limits).to include(
+          'diff_max_patch_bytes' => 300_000,
+          'diff_max_files' => 2000,
+          'diff_max_lines' => 60_000
+        )
       end
     end
 
@@ -3094,6 +3182,43 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           it { is_expected.to be true }
         end
       end
+    end
+  end
+
+  describe '#latest_terms' do
+    it 'returns the latest terms' do
+      terms = create(:term)
+
+      expect(setting.latest_terms).to eq(terms)
+    end
+
+    it 'memoizes the terms and does not re-query on subsequent calls', :aggregate_failures do
+      create(:term)
+
+      setting.latest_terms
+
+      expect(ApplicationSetting::Term).not_to receive(:latest)
+      expect { setting.latest_terms }.not_to exceed_query_limit(0)
+    end
+
+    it 'memoizes the absence of terms and does not re-query on subsequent calls', :aggregate_failures do
+      setting.latest_terms
+
+      expect(ApplicationSetting::Term).not_to receive(:latest)
+      expect(setting.latest_terms).to be_nil
+    end
+  end
+
+  describe '#reset_memoized_terms', :aggregate_failures do
+    it 're-reads the terms after they change' do
+      first_terms = create(:term)
+      expect(setting.latest_terms).to eq(first_terms)
+
+      newer_terms = create(:term)
+
+      setting.reset_memoized_terms
+
+      expect(setting.latest_terms).to eq(newer_terms)
     end
   end
 end

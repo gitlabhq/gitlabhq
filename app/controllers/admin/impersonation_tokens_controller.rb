@@ -14,7 +14,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   def create
     @impersonation_token = finder.build(impersonation_token_params)
-    @impersonation_token.organization = Current.organization
+    @impersonation_token.organization = admin_current_organization
 
     if @impersonation_token.save
       active_access_tokens = active_impersonation_tokens
@@ -74,7 +74,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     PersonalAccessTokensFinder.new({
       user: user,
       impersonation: true,
-      organization: Current.organization
+      organization: admin_current_organization
     }.merge(options))
   end
 

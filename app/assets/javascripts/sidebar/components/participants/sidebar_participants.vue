@@ -45,7 +45,7 @@ export default {
       default: true,
     },
   },
-  emits: ['toggleSidebar'],
+  emits: ['toggle-sidebar'],
   computed: {
     participantLabel() {
       return sprintf(
@@ -67,7 +67,7 @@ export default {
       v-gl-tooltip.left.viewport
       :title="participantLabel"
       class="sidebar-collapsed-icon"
-      @click="$emit('toggleSidebar')"
+      @click="$emit('toggle-sidebar')"
     >
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />

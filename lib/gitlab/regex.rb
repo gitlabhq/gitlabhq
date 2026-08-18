@@ -5,12 +5,7 @@ module Gitlab
     extend self
     extend MergeRequests
     extend Packages
-
-    # Matches a single URL path segment (any characters except a forward slash).
-    # Defined here rather than in API::API so that it can be referenced from
-    # files that are loaded before API::API without triggering a Zeitwerk
-    # circular autoload.
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    extend Cd
 
     def project_name_regex
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
@@ -275,14 +270,6 @@ module Gitlab
 
     def feature_flag_regex
       /\A[a-z]([-_a-z0-9]*[a-z0-9])?\z/
-    end
-
-    def cd_name_regex
-      @cd_name_regex ||= /\A[a-zA-Z0-9_]([a-zA-Z0-9_\-]*[a-zA-Z0-9_])?\z/
-    end
-
-    def cd_name_regex_message
-      "can contain only letters, digits, '_' and '-'. Cannot start or end with '-'."
     end
 
     # One or more `part`s, separated by separator

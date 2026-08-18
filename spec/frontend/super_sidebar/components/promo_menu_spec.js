@@ -7,8 +7,8 @@ describe('PromoMenu', () => {
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findMenu = () => wrapper.findByTestId('menu');
-  const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
-  const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
+  const findSigninButton = () => wrapper.findComponentByTestId('topbar-signin-button');
+  const findSignupButton = () => wrapper.findComponentByTestId('topbar-signup-button');
 
   const createComponent = (props = {}, provideOverrides = {}) => {
     wrapper = shallowMountExtended(PromoMenu, {
@@ -74,7 +74,6 @@ describe('PromoMenu', () => {
       createComponent(
         {
           allowSignUp: true,
-          signInVisible: true,
           sidebarData: {
             trial_registration_path: '/trial_registrations/new',
           },
@@ -90,7 +89,6 @@ describe('PromoMenu', () => {
     it('renders buttons in self-managed mode', () => {
       createComponent({
         allowSignUp: true,
-        signInVisible: true,
       });
 
       expect(findSigninButton().props('href')).toBe('/users/sign_in?redirect_to_referer=yes');
@@ -102,7 +100,6 @@ describe('PromoMenu', () => {
       createComponent(
         {
           allowSignUp: true,
-          signInVisible: true,
         },
         { isSaas: true },
       );
@@ -114,21 +111,10 @@ describe('PromoMenu', () => {
     it('does not render register button when signup is disabled', () => {
       createComponent({
         allowSignUp: false,
-        signInVisible: true,
       });
 
       expect(findSignupButton().exists()).toBe(false);
       expect(findSigninButton().exists()).toBe(true);
-    });
-
-    it('does not render auth buttons section when both signup and signin are disabled', () => {
-      createComponent({
-        allowSignUp: false,
-        signInVisible: false,
-      });
-
-      expect(findSignupButton().exists()).toBe(false);
-      expect(findSigninButton().exists()).toBe(false);
     });
   });
 });

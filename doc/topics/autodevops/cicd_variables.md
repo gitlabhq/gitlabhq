@@ -22,18 +22,18 @@ Use these variables to customize and deploy your build.
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:22`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Using quotes doesn't prevent word splitting. [More details](customize.md#pass-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](customize.md#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
-| `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | In GitLab 15.0 and later, port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
+| `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | Port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
 | `AUTO_DEVOPS_BUILD_IMAGE_CONTEXT`       | Used to set the build context directory for Dockerfile and Cloud Native Buildpacks. Defaults to the root directory. |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app). |
 | `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | Used to set the name of the Helm repository. Defaults to `gitlab`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | Used to set a username to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | Used to set a password to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME`. |
-| `AUTO_DEVOPS_CHART_REPOSITORY_PASS_CREDENTIALS` | Set to a non-empty value to enable forwarding of the Helm repository credentials to the chart server when the chart artifacts are on a different host than repository. |
+| `AUTO_DEVOPS_CHART_REPOSITORY_PASS_CREDENTIALS` | Set to a non-empty value to enable forwarding of the Helm repository credentials to the chart server when the chart artifacts are on a different host than the repository. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_INSECURE` | Set to a non-empty value to add a `--insecure-skip-tls-verify` argument to the Helm commands. By default, Helm uses TLS verification. |
 | `AUTO_DEVOPS_CHART_CUSTOM_ONLY`         | Set to a non-empty value to use only a custom chart. By default, the latest chart is downloaded from GitLab. |
 | `AUTO_DEVOPS_CHART_VERSION`             | Set the version of the deployment chart. Defaults to the latest available version. |
-| `AUTO_DEVOPS_COMMON_NAME`               | From GitLab 15.5, set to a valid domain name to customize the common name used for the TLS certificate. Defaults to `le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN`. Set to `false` to not set this alternative host on the Ingress. |
+| `AUTO_DEVOPS_COMMON_NAME`               | Set to a valid domain name to customize the common name used for the TLS certificate. Defaults to `le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN`. Set to `false` to not set this alternative host on the Ingress. |
 | `AUTO_DEVOPS_DEPLOY_DEBUG`              | If this variable is present, Helm outputs debug logs. |
 | `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V<N>` | From [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image) v1.0.0, if this variable is present, a new major version of chart is forcibly deployed. For more information, see [Ignore warnings and continue deploying](upgrading_auto_deploy_dependencies.md#ignore-warnings-and-continue-deploying). |
 | `BUILDPACK_URL`                         | A full Buildpack URL. [Must point to a URL supported by Pack](customize.md#custom-buildpacks). |
@@ -41,7 +41,7 @@ Use these variables to customize and deploy your build.
 | `BUILDPACK_VOLUMES`                     | Specify one or more [Buildpack volumes to mount](stages.md#mount-volumes-into-the-build-container). Use a pipe `\|` as list separator. |
 | `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
-| `CI_APPLICATION_REPOSITORY`             | The repository of container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](customize.md#custom-container-image). |
+| `CI_APPLICATION_REPOSITORY`             | The repository of the container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](customize.md#custom-container-image). |
 | `CI_APPLICATION_TAG`                    | The tag of the container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](customize.md#custom-container-image). |
 | `DAST_AUTO_DEPLOY_IMAGE_VERSION`        | Customize the image version used for DAST deployments on the default branch. Should usually be the same as `AUTO_DEPLOY_IMAGE_VERSION`. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
 | `DOCKERFILE_PATH`                       | Allows overriding the [default Dockerfile path for the build stage](customize.md#custom-dockerfiles) |
@@ -64,7 +64,7 @@ Use these variables to customize and deploy your build.
 ## Database variables
 
 > [!warning]
-> From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), `POSTGRES_ENABLED` is no longer set by default.
+> `POSTGRES_ENABLED` is no longer set by default.
 
 Use these variables to integrate CI/CD with PostgreSQL databases.
 
@@ -76,7 +76,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
 | `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/_index.md#predefined-cicd-variables). Set it to use a custom database name. |
-| `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments. If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
+| `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments. If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments use the default version `9.6.2`. |
 | `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | When using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
 | `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | When using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Using quotes doesn't prevent word splitting. |
 | `POSTGRES_CHART_REPOSITORY`             | Helm Chart repository used to search for PostgreSQL chart. Defaults to `https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami`. |
@@ -88,7 +88,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 
 | **Job name**                           | **CI/CD variable**              | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
-| `.fuzz_base`                           | `COVFUZZ_DISABLED`              |                       | [Read more](../../user/application_security/coverage_fuzzing/_index.md) about how `.fuzz_base` provide capability for your own jobs. The job isn't created if the value is `"true"`. |
+| `.fuzz_base`                           | `COVFUZZ_DISABLED`              |                       | [Read more](../../user/application_security/coverage_fuzzing/_index.md) about how `.fuzz_base` provides capability for your own jobs. The job isn't created if the value is `"true"`. |
 | `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          |                       | The job isn't created if the value is `"true"`. |
 | `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
@@ -105,12 +105,10 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 | `gemnasium-maven-dependency_scanning`  | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
 | `gemnasium-python-dependency_scanning` | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
 | `kubesec-sast`                         | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
-| `license_management`                   | `LICENSE_MANAGEMENT_DISABLED`   | GitLab 12.7 and earlier | If the variable is present, the job isn't created. Job deprecated [from GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) |
 | `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   |                       | The job isn't created if the value is `"true"`. Job deprecated [from GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111071) |
 | `load_performance`                     | `LOAD_PERFORMANCE_DISABLED`     |                       | If the variable is present, the job isn't created. |
 | `nodejs-scan-sast`                     | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
-| `performance`                          | `PERFORMANCE_DISABLED`          | GitLab 13.12 and earlier | Browser performance. If the variable is present, the job isn't created. Replaced by `browser_performance`. |
-| `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  |                       | Browser performance. If the variable is present, the job isn't created. Replaces `performance`. |
+| `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  |                       | Browser performance. If the variable is present, the job isn't created. |
 | `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `review`                               | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |

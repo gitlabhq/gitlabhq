@@ -9,6 +9,7 @@ import getAgentActivityEventsQuery from '../graphql/queries/get_agent_activity_e
 import ActivityHistoryItem from './activity_history_item.vue';
 
 export default {
+  name: 'ActivityEventsList',
   components: {
     GlLoadingIcon,
     GlEmptyState,

@@ -121,7 +121,7 @@ RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_revi
 
     context 'when many merge requests are to be retargeted' do
       let!(:many_merge_requests) do
-        create_list(:merge_request, 10, :unique_branches,
+        create_list(:merge_request, 3, :unique_branches,
           source_project: merge_request.source_project,
           target_project: merge_request.source_project,
           target_branch: merge_request.source_branch
@@ -129,16 +129,17 @@ RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_revi
       end
 
       before do
+        stub_const("#{described_class}::MAX_RETARGET_MERGE_REQUESTS", 2)
         merge_request.mark_as_merged
       end
 
-      it 'retargets only 4 of them' do
+      it 'retargets only 2 of them' do
         subject
 
         expect(many_merge_requests.each(&:reload).pluck(:target_branch).tally)
           .to eq(
-            merge_request.source_branch => 6,
-            merge_request.target_branch => 4
+            merge_request.source_branch => 1,
+            merge_request.target_branch => 2
           )
       end
     end

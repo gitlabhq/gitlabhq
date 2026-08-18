@@ -87,7 +87,7 @@ describe('List Selector spec', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findAllListBoxComponents = () => wrapper.findAllComponents(GlCollapsibleListbox);
   const findSearchResultsDropdown = () => findAllListBoxComponents().at(0);
-  const findNamespaceDropdown = () => wrapper.findByTestId('namespace-dropdown');
+  const findNamespaceDropdown = () => wrapper.findComponentByTestId('namespace-dropdown');
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findAllUserComponents = () => wrapper.findAllComponents(UserItem);
   const findAllGroupComponents = () => wrapper.findAllComponents(GroupItem);

@@ -33,7 +33,7 @@ export default {
       default: null,
     },
   },
-  emits: ['clear', 'reset', 'selectTemplate'],
+  emits: ['clear', 'reset', 'select-template'],
   data() {
     return {
       descriptionTemplates: [],
@@ -141,7 +141,7 @@ export default {
   methods: {
     handleSelect(item) {
       const { name, projectId, category } = JSON.parse(item);
-      this.$emit('selectTemplate', { name, projectId, category });
+      this.$emit('select-template', { name, projectId, category });
     },
     handleSearch(searchTerm) {
       this.searchTerm = searchTerm;

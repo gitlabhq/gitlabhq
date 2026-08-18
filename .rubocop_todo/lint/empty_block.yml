@@ -61,7 +61,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/sidekiq_middleware/size_limiter/server_spec.rb'
     - 'spec/lib/gitlab/verify/uploads_spec.rb'
     - 'spec/lib/gitlab_spec.rb'
-    - 'spec/lib/marginalia_spec.rb'
     - 'spec/lib/mattermost/session_spec.rb'
     - 'spec/models/aws/role_spec.rb'
     - 'spec/models/ci/build_dependencies_spec.rb'

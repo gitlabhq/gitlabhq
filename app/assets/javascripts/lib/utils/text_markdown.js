@@ -818,11 +818,18 @@ function updateOlLineNumbersAfterSelection(textArea, listLineMatch, from) {
   updateOlLineNumbers({ textArea, lines, startPos, endPos, from });
 }
 
+/**
+ * Continues a markdown list when Enter is pressed on a list item.
+ *
+ * @param {KeyboardEvent} e
+ * @param {HTMLTextAreaElement} textArea
+ * @returns {Boolean} whether the event was consumed
+ */
 function handleContinueList(e, textArea) {
-  if (!gon.markdown_automatic_lists) return;
+  if (!gon.markdown_automatic_lists) return false;
 
   if (!shouldHandleIndentation(e, textArea)) {
-    return;
+    return false;
   }
 
   const selectedLines = linesFromSelection(textArea);
@@ -836,7 +843,7 @@ function handleContinueList(e, textArea) {
 
     if (selectedLines.selectionStart - selectedLines.startPos < prefixLength) {
       // cursor in the indent/leader area,  allow the natural line feed to be added
-      return;
+      return false;
     }
 
     if (emptyListItem) {
@@ -844,7 +851,7 @@ function handleContinueList(e, textArea) {
       // natural line feed to erase the text
       textArea.selectionStart = textArea.selectionStart - listLineMatch[0].length;
       updateOlLineNumbersAfterSelection(textArea, listLineMatch, 1);
-      return;
+      return false;
     }
 
     let itemToInsert;
@@ -855,7 +862,7 @@ function handleContinueList(e, textArea) {
       itemToInsert = createOlText(listLineMatch, nextNum);
       updateOlLineNumbersAfterSelection(textArea, listLineMatch, nextNum + 1);
     } else {
-      if (firstSelectedLine.match(HR_PATTERN)) return;
+      if (firstSelectedLine.match(HR_PATTERN)) return false;
 
       itemToInsert = `${indent}${leader}`;
     }
@@ -872,7 +879,11 @@ function handleContinueList(e, textArea) {
       select: '',
       tagContent: '',
     });
+
+    return true;
   }
+
+  return false;
 }
 
 function handleContinueIndentedText(e, textArea) {
@@ -912,15 +923,39 @@ function handleContinueIndentedText(e, textArea) {
   });
 }
 
+/**
+ * Handles Tab / Shift+Tab for indent / outdent when text is selected.
+ * When nothing is selected, does nothing so native browser Tab behaviour
+ * (focus navigation) is preserved for keyboard-only users.
+ *
+ * @param {KeyboardEvent} e
+ * @param {HTMLTextAreaElement} textArea
+ * @returns {Boolean} whether the event was consumed
+ */
+function handleTabIndent(e, textArea) {
+  if (e.key !== 'Tab') return false;
+  if (textArea.selectionStart === textArea.selectionEnd) return false;
+
+  e.preventDefault();
+
+  const $textArea = $(textArea);
+  if (e.shiftKey) {
+    outdentLines($textArea);
+  } else {
+    indentLines($textArea);
+  }
+
+  return true;
+}
+
 export function keypressNoteText(e) {
   const textArea = this;
 
   if ($(textArea).atwho?.('isSelecting')) return;
 
-  handleContinueList(e, textArea);
+  if (handleTabIndent(e, textArea)) return;
 
-  // If this was in fact a valid list item, indentation was handled already
-  if (!e.isDefaultPrevented()) {
+  if (!handleContinueList(e, textArea)) {
     handleContinueIndentedText(e, textArea);
   }
   handleSurroundSelectedText(e, textArea);

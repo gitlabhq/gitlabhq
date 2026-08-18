@@ -91,7 +91,7 @@ domain layer and infrastructure layer.
 
 For **domain layer** we refer to:
 
-1. Code in `app`, excluding the **application adapters** (controllers, API endpoints and views).
+1. Code in `app`, excluding the **application adapters** (controllers, API endpoints, and views).
 1. Code in `lib` that specifically relates to domain logic.
 
 This includes `ActiveRecord` models, service objects, workers, and domain-specific Plain Old Ruby Objects.
@@ -206,7 +206,7 @@ The [guidelines above](#use-namespaces-to-define-bounded-contexts) refer primari
 For domain code we should put Ruby classes under a namespace that represents a given bounded context
 (a cohesive set of features and capabilities).
 
-The domain code is unique to GitLab product. It describes the business logic, policies and data.
+The domain code is unique to GitLab product. It describes the business logic, policies, and data.
 This code should live in the GitLab repository. The domain code is split between `app/` and `lib/`
 primarily.
 
@@ -414,7 +414,7 @@ These represent different use cases, coming from different domains.
 
 ### Solution
 
-Design around use cases instead of entities. If the personas, use case and intention is different, create a
+Design around use cases instead of entities. If the personas, use case, and intention is different, create a
 separate abstraction:
 
 - A different endpoint (controller, GraphQL, or REST) nested to the specific domain of the use case.

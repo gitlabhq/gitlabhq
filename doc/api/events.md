@@ -14,7 +14,7 @@ title: Events API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) `epics` target type in GitLab 17.3.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13056) `epics` target type in GitLab 17.3.
 
 {{< /history >}}
 

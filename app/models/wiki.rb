@@ -7,6 +7,7 @@ class Wiki
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
   include Gitlab::Git::WrapsGitalyErrors
+  include Gitlab::Loggable
 
   extend ActiveModel::Naming
 
@@ -86,6 +87,8 @@ class Wiki
   DIRECTION_ASC = 'asc'
 
   REDIRECTS_YML_SIZE_LIMIT = 0.5.megabytes
+
+  LAST_COMMITS_BATCH_SIZE = 1000
 
   attr_reader :container, :user
 
@@ -245,6 +248,54 @@ class Wiki
       fetch_pages_content!(pages, size_limit: size_limit) if load_content
 
       pages
+    end
+  end
+
+  # Returns { page path => last Commit } for the given pages, using one Gitaly call per
+  # directory instead of one per page (the per-page version times out on large wikis).
+  def last_commits_for_pages(pages)
+    paths = pages.filter_map { |wiki_page| wiki_page.page&.path }
+    return {} if paths.empty?
+
+    paths.group_by { |path| tree_directory(path) }.each_with_object({}) do |(dir, dir_paths), commits|
+      wanted = dir_paths.to_set
+      found = 0
+      offset = 0
+
+      # Scoped per directory so a Gitaly error in one directory only skips that directory's
+      # pages, instead of discarding every already-collected commit.
+      succeeded = capture_git_error(:last_commits_for_pages, response_on_error: nil) do
+        loop do
+          batch = repository.list_last_commits_for_tree(
+            default_branch, dir, offset: offset, limit: LAST_COMMITS_BATCH_SIZE, literal_pathspec: true)
+          break if batch.empty?
+
+          batch.each do |path, commit|
+            next unless wanted.include?(path)
+
+            commits[path] = commit
+            found += 1
+          end
+
+          offset += batch.size
+          directory_exhausted = batch.size < LAST_COMMITS_BATCH_SIZE
+          all_wanted_found = found >= wanted.size
+          break if directory_exhausted || all_wanted_found
+        end
+
+        true
+      end
+
+      next if succeeded
+
+      Gitlab::AppLogger.warn(
+        build_structured_payload_labkit(
+          message: 'Wiki last commits batch fetch failed for directory; falling back to per-page lookups',
+          wiki_id: id,
+          directory: dir,
+          page_count: wanted.size
+        )
+      )
     end
   end
 
@@ -593,6 +644,14 @@ class Wiki
 
   def strip_extension(path)
     path.sub(/\.[^.]+\z/, "")
+  end
+
+  # Directory of a page path for ListLastCommitsForTree: "" for the repo root, else "dir/".
+  def tree_directory(path)
+    dir = File.dirname(path)
+    return "" if dir == "."
+
+    "#{dir}/"
   end
 
   # Caution: Gitaly applies `limit`/`offset` in git tree order, which is path-ascending (matching

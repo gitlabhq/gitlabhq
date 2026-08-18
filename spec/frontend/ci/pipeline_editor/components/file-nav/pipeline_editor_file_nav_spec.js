@@ -45,7 +45,7 @@ describe('Pipeline editor file nav', () => {
   };
 
   const findBranchSwitcher = () => wrapper.findComponent(BranchSwitcher);
-  const findFileTreeBtn = () => wrapper.findByTestId('file-tree-toggle');
+  const findFileTreeBtn = () => wrapper.findComponentByTestId('file-tree-toggle');
   const findPopoverContainer = () => wrapper.findComponent(FileTreePopover);
 
   describe('template', () => {

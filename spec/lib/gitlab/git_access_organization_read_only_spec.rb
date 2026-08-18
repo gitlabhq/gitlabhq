@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
   let(:actor) { user }
   let(:organization) { create(:organization) }
-  let(:project) { create(:project, :repository, organization: organization) }
+  let(:project) { create(:project, :small_repo, organization: organization) }
   let(:repository_path) { "#{project.full_path}.git" }
   let(:protocol) { 'ssh' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }

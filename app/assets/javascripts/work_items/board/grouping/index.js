@@ -32,13 +32,18 @@ import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
  * @property {Object} valuesQuery - GraphQL query listing the values that become columns.
  * @property {(data: Object) => GroupingValue[]} extractValues - Pulls the column values from the query result.
  * @property {(value: GroupingValue) => Object} columnFilter - work-items query variables that filter a column, e.g. `{ status: { name } }`.
+ * @property {(item: Object) => (string|null)} itemValueId - the column value id a work item belongs to, or null when it belongs to no column. Used to move a card to the correct column when the grouped attribute is changed in a side panel.
  * @property {(value: GroupingValue) => Object} moveInput - workItemUpdate input fragment that moves an item into the column, e.g. `{ statusWidget: { status } }`.
+ * @property {(value: GroupingValue) => Object} newItemDraft - new-work-item widgets-draft fragment that pre-populates the grouped attribute when creating an item in the column, keyed by widget type, e.g. `{ STATUS: { status } }`. Read by `setNewWorkItemCache` when the create modal opens.
  * @property {(node: Object, value: GroupingValue) => void} patchCard - Mutates the cloned card in place so its attribute matches the target column optimistically.
  * @property {(value: GroupingValue) => HeaderDecoration} headerDecoration - How the column header renders the value.
  * @property {Object} [gateQuery] - Optional GraphQL query for drag-eligibility data. Omit to allow all drops.
  * @property {(data: Object) => *} [extractGateData] - Pulls gate data (e.g. a lookup map) from the `gateQuery` result.
  * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether the dragged work item `item` may be dropped into `value`'s column. Omit to allow all drops.
  */
+
+// Only grouping supported so far; not yet user-selectable.
+export const DEFAULT_GROUP_BY = { property: 'status' };
 
 // The available strategies differ by edition (status is EE-only), so the list
 // is supplied by an `ee_else_ce` module and keyed by property here.

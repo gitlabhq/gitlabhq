@@ -6,7 +6,7 @@ RSpec.describe 'autocomplete users for a project', feature_category: :team_plann
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, :public, group: group) }
+  let_it_be(:project) { create(:project, :public, group: group) }
 
   let_it_be(:direct_member) { create(:user, guest_of: project) }
   let_it_be(:indirect_member) { create(:user, guest_of: group) }
@@ -23,7 +23,7 @@ RSpec.describe 'autocomplete users for a project', feature_category: :team_plann
 
   let_it_be(:member_from_parent_group_share) { create(:user, guest_of: group_invited_to_parent_group) }
 
-  let_it_be(:sibling_project) { create(:project, :repository, :public, group: group) }
+  let_it_be(:sibling_project) { create(:project, :public, group: group) }
   let_it_be(:sibling_member) { create(:user, guest_of: sibling_project) }
 
   let(:params) { {} }

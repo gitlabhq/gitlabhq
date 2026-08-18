@@ -224,7 +224,7 @@ Supported attributes:
 |-------------|---------|----------|-------------|
 | `file_path` | string  | Yes      | URL-encoded path to file. |
 | `id`        | integer | Yes      | ID of snippet to retrieve. |
-| `ref`       | string  | Yes      | Reference to a tag, branch or commit. |
+| `ref`       | string  | Yes      | Reference to a tag, branch, or commit. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the raw file content.
 
@@ -575,12 +575,6 @@ Example response:
 
 ## List all snippets
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3.
-
-{{< /history >}}
-
 List all snippets the current user has access to.
 Users with the Administrator or Auditor access levels can see all snippets
 (both personal and project).
@@ -597,7 +591,7 @@ Supported attributes:
 | `created_before`     | datetime | No       | Return snippets created before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `page`               | integer  | No       | Page to retrieve. |
 | `per_page`           | integer  | No       | Number of snippets to return per page. |
-| `repository_storage` | string   | No       | Filter by repository storage used by snippet _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3. |
+| `repository_storage` | string   | No       | Filter by repository storage used by snippet _(administrators only)_. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:

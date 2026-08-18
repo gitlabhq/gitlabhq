@@ -40,16 +40,6 @@ input[type='file'] {
   @apply gl-text-subtle #{!important};
 }
 
-.bg-success,
-.bg-primary,
-.bg-info,
-.bg-danger,
-.bg-warning {
-  .card-header {
-    color: $white;
-  }
-}
-
 // Polyfill deprecated selectors
 
 .hidden {
@@ -77,16 +67,6 @@ input[type='file'] {
   font-style: normal;
   font-weight: $gl-font-weight-normal;
   display: inline-block;
-
-  &.badge-gray {
-    background-color: $label-gray-bg;
-    @apply gl-text-default;
-    text-shadow: none;
-  }
-
-  &.badge-inverse {
-    background-color: $label-inverse-bg;
-  }
 }
 
 .divider {
@@ -110,10 +90,6 @@ input[type='file'] {
 
   margin-bottom: 16px;
 
-  .ref-list {
-    border-color: var(--gl-border-color-section);
-  }
-
   .well-segment {
     padding: 1rem;
 
@@ -130,10 +106,6 @@ input[type='file'] {
         margin-bottom: 0;
       }
     }
-  }
-
-  .badge.badge-gray {
-    background-color: $well-expand-item;
   }
 }
 
@@ -163,31 +135,10 @@ input[type='file'] {
   border-radius: 0;
 }
 
-.alert-success {
-  background-color: $green-500;
-  border-color: $green-500;
-}
-
-.alert-info {
-  background-color: $blue-500;
-  border-color: $blue-500;
-}
-
 .alert-danger {
-  background-color: $red-500;
-  border-color: $red-500;
-}
-
-.alert-success,
-.alert-info,
-.alert-warning,
-.alert-danger {
-  color: $white;
-
-  h4,
-  .alert-link {
-    color: $white;
-  }
+  background-color: var(--gl-feedback-danger-background-color);
+  border-color: var(--gl-feedback-danger-border-color);
+  color: var(--gl-feedback-danger-text-color);
 }
 
 input[type=color].form-control {

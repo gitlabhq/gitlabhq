@@ -33,6 +33,7 @@ export default {
 </script>
 <template>
   <editor-state-observer @alert="displayAlert">
+    <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event, which must be matched exactly in Vue 2 compat mode -->
     <gl-alert
       v-if="message"
       :variant="variant"
@@ -42,5 +43,6 @@ export default {
     >
       {{ message }}
     </gl-alert>
+    <!-- eslint-enable vue/v-on-event-hyphenation -->
   </editor-state-observer>
 </template>

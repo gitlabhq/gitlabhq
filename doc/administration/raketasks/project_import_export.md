@@ -56,7 +56,7 @@ bundle exec rake "gitlab:import_export:import[root, group/subgroup, testingproje
 
 ## Export large projects
 
-You can use a Rake task to export large project.
+You can use a Rake task to export large projects.
 
 Parameters:
 

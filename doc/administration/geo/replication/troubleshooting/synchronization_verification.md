@@ -357,12 +357,6 @@ models that correspond to Geo registry tables that can be queried are:
 
 ### Resync and reverify multiple components
 
-{{< history >}}
-
-- Bulk resync and reverify [added](https://gitlab.com/gitlab-org/gitlab/-/issues/364729) in GitLab 16.5.
-
-{{< /history >}}
-
 When component resources fail to sync or verify, you can trigger bulk actions to re-kick the replication queue.
 These actions reset the retry count and schedule time back to 0, causing the system to process the failed resources
 sooner rather than waiting up to 1 hour.
@@ -1818,8 +1812,7 @@ Removing the malformed objects causing consistency errors involves rewriting the
 To ignore these consistency checks, reconfigure Gitaly **on the secondary Geo sites** to ignore these `git fsck` issues.
 The following configuration example:
 
-- [Uses the new configuration structure](../../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change)
-  required from GitLab 16.0.
+- [Uses the updated configuration structure](../../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change).
 - Ignores five common check failures.
 
 [The Gitaly documentation has more details](../../../gitaly/consistency_checks.md)
@@ -1851,7 +1844,7 @@ gitaly['configuration'] = {
 
 A comprehensive list of `fsck` errors can be found in the [Git documentation](https://git-scm.com/docs/git-fsck#_fsck_messages).
 
-GitLab 16.1 and later [include an enhancement](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5879) that might resolve some of these issues.
+GitLab [includes an enhancement](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5879) that might resolve some of these issues.
 
 [Gitaly issue 5625](https://gitlab.com/gitlab-org/gitaly/-/issues/5625) proposes to ensure that Geo replicates repositories even if the source repository contains
 problematic commits.

@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'BranchRuleDelete'
 
       authorize :delete_branch_rule
+      authorize_granular_token permissions: :delete_branch_rule,
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       argument :id, ::Types::GlobalIDType[::Projects::BranchRule],
         required: true,

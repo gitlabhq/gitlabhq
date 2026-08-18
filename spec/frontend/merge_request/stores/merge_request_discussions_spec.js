@@ -476,6 +476,28 @@ describe('mergeRequestDiscussions store', () => {
       expect(store.lineRangeEditing).toMatchObject({ discussion: form, lineRange });
     });
 
+    it('resets the previously edited form when editing starts on another form', () => {
+      const formA = createForm();
+      store.addNewLineDiscussionForm({
+        oldPath: 'a.rb',
+        newPath: 'a.rb',
+        lineRange: {
+          start: { old_line: null, new_line: 10, type: 'new' },
+          end: { old_line: null, new_line: 12, type: 'new' },
+        },
+        lineChange: { change: 'added', position: 'new' },
+        lineCode: 'abc_0_12',
+      });
+      const formB = useDiffDiscussions().discussionForms[1];
+
+      store.startLineRangeEditing(formA);
+      store.startLineRangeEditing(formB);
+
+      expect(formA.editingLineRange).toBe(false);
+      expect(formB.editingLineRange).toBe(true);
+      expect(store.lineRangeEditing).toMatchObject({ discussion: formB });
+    });
+
     it('commitLineRangeEditing re-creates the form at the new range end with the note body', () => {
       const form = createForm();
       store.startLineRangeEditing(form);
@@ -836,6 +858,7 @@ describe('mergeRequestDiscussions store', () => {
               ignore_whitespace_change: !useDiffsView().showWhitespace,
             }),
             type: 'DiffNote',
+            commit_id: null,
             line_code: 'hash_0_1',
           },
         },

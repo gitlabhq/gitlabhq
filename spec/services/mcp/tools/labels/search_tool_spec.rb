@@ -169,32 +169,6 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     end
   end
 
-  describe '#resource_not_found?' do
-    context 'when operation data is nil and there are no errors' do
-      let(:result) { { 'data' => { 'project' => nil } } }
-
-      it 'returns true' do
-        expect(tool.send(:resource_not_found?, result)).to be(true)
-      end
-    end
-
-    context 'when operation data exists' do
-      let(:result) { { 'data' => { 'project' => { 'labels' => { 'nodes' => [] } } } } }
-
-      it 'returns false' do
-        expect(tool.send(:resource_not_found?, result)).to be(false)
-      end
-    end
-
-    context 'when there are GraphQL errors' do
-      let(:result) { { 'errors' => ['Some error'], 'data' => { 'project' => nil } } }
-
-      it 'returns false' do
-        expect(tool.send(:resource_not_found?, result)).to be(false)
-      end
-    end
-  end
-
   describe '#resource_not_found_error' do
     context 'when searching a project' do
       it 'returns an error mentioning the project path' do

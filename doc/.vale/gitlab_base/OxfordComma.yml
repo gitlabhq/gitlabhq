@@ -3,10 +3,15 @@ name: gitlab_base.OxfordComma
 description: |
   Checks for the lack of an Oxford comma. In some cases, will catch overly
   complex sentence structures with lots of commas.
+
+  The final item before the flagged 'and'/'or' is restricted to a single token
+  (no spaces) so the match cannot span across the real serial conjunction and
+  latch onto a later, unrelated 'and'/'or' in the same sentence. Trade-off:
+  missing Oxford commas where the last item is multiple words are not caught.
 extends: existence
 message: "Use a comma before the last 'and' or 'or' in a list of four or more items."
 link: https://docs.gitlab.com/development/documentation/styleguide/#punctuation
 vocab: false
 level: warning
 raw:
-  - '(?:[\w-_` ]+,){2,}(?:[\w-_` ]+) (and |or )'
+  - '(?:[\w-_` ]+, ?){2,}[\w-_`]+ (and |or )'

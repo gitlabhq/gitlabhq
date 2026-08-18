@@ -22,7 +22,7 @@ The GitLab-managed AI Gateway and models are not available.
 
 To set up GitLab Duo Self-Hosted:
 
-1. Ensure [Silent Mode is turned off](../../../administration/silent_mode/_index.md#turn-off-silent-mode).
+1. Ensure [Silent Mode is turned off](../../silent_mode/_index.md#turn-off-silent-mode).
 1. [Install the GitLab AI Gateway](../../../install/install_ai_gateway.md) in your AWS GovCloud (US-West).
    For optimal performance, [co-locate your AI Gateway and instance](../../../install/install_ai_gateway.md#co-locate-your-ai-gateway-and-instance).
    - Use a [FIPS-validated AI Gateway image](../../../install/install_ai_gateway.md#fips-validated-images).
@@ -38,6 +38,8 @@ To set up GitLab Duo Self-Hosted:
    to use with GitLab Duo features.
 1. Request that GitLab enable network connectivity from your instance to your self-hosted AI Gateway
    and selected LLMs by [creating a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. [View GitLab Duo and SDLC trends](../../../user/analytics/duo_and_sdlc_trends.md#view-gitlab-duo-and-sdlc-trends)
+   to measure the impact of GitLab Duo on your team's productivity.
 
 ## Related topics
 

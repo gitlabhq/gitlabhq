@@ -31,7 +31,9 @@ RSpec.describe Packages::Rubygems::MetadataExtractionService, feature_category: 
       metadata = package.rubygems_metadatum
 
       expect(metadata.authors).to eq(gemspec.authors.to_json)
-      expect(metadata.files).to eq(gemspec.files.to_json)
+      # The gem file list is preserved in object storage and read by nothing,
+      # so we no longer persist it (avoids CHECK constraint overflow on large gems).
+      expect(metadata.files).to be_nil
       expect(metadata.summary).to eq(gemspec.summary)
       expect(metadata.description).to eq(gemspec.description)
       expect(metadata.email).to eq(gemspec.email)

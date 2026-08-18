@@ -197,7 +197,7 @@ export default {
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
           (!this.codequalityReportAvailable ||
-            codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
+            codequalityReportsComparer?.status === FINDINGS_STATUS_PARSED)
         ) {
           this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }
@@ -502,7 +502,7 @@ export default {
       notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
-      diffsEventHub.$on('setFileActive', this.setFileActive);
+      diffsEventHub.$on('set-file-active', this.setFileActive);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
     },
@@ -516,7 +516,7 @@ export default {
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
-      diffsEventHub.$off('setFileActive', this.setFileActive);
+      diffsEventHub.$off('set-file-active', this.setFileActive);
     },
     autoScroll() {
       const lineCode = window.location.hash;
@@ -835,11 +835,11 @@ export default {
           :show-whitespace="showWhitespace"
           :view-diffs-file-by-file="viewDiffsFileByFile"
           :diff-view-type="diffViewType"
-          @expandAllFiles="expandAllFiles"
-          @collapseAllFiles="collapseAllFiles"
-          @updateDiffViewType="setDiffViewType"
-          @toggleWhitespace="toggleWhitespace"
-          @toggleFileByFile="toggleFileByFile"
+          @expand-all-files="expandAllFiles"
+          @collapse-all-files="collapseAllFiles"
+          @update-diff-view-type="setDiffViewType"
+          @toggle-whitespace="toggleWhitespace"
+          @toggle-file-by-file="toggleFileByFile"
         />
       </div>
 
@@ -857,8 +857,8 @@ export default {
           :total-files-count="numTotalFiles"
           :current-diff-file-id="currentDiffFileId"
           :linked-file-path="linkedFile ? linkedFile.file_path : null"
-          @clickFile="onFileTreeClick"
-          @toggleFolder="toggleTreeOpen"
+          @click-file="onFileTreeClick"
+          @toggle-folder="toggleTreeOpen"
         />
         <div class="gl-col-md-auto diff-files-holder gl-px-5">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />

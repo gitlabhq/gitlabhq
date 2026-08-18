@@ -474,8 +474,6 @@ operations_feature_flags:
 - project_id
 operations_feature_flags_clients:
 - project_id
-p_ci_builds_metadata:
-- project_id
 p_ci_job_artifacts:
 - project_id
 p_ci_pipelines:

@@ -7,10 +7,11 @@ import { lineHighlightingAdapter } from '~/rapid_diffs/adapters/line_highlightin
 import { lineCoverageAdapter } from '~/rapid_diffs/adapters/line_coverage';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
 import { viewedAdapter } from '~/rapid_diffs/adapters/viewed';
+import { resolveConflictsLocallyAdapter } from '~/rapid_diffs/adapters/resolve_conflicts_locally';
 import { pinia } from '~/pinia/instance';
 import { s__ } from '~/locale';
 
-const MR_HEADER_ADAPTERS = [...HEADER_ADAPTERS, viewedAdapter];
+const MR_HEADER_ADAPTERS = [...HEADER_ADAPTERS, viewedAdapter, resolveConflictsLocallyAdapter];
 
 const store = useMergeRequestDiscussions(pinia);
 const discussionsErrorMessage = s__(

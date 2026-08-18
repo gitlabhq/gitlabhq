@@ -8,7 +8,7 @@ RSpec.describe 'Adding an DiscussionNote', feature_category: :code_review_workfl
   let_it_be(:current_user) { create(:user) }
 
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:diff_refs) { noteable.diff_refs }
   let(:mutation) do
     variables = {
@@ -41,7 +41,7 @@ RSpec.describe 'Adding an DiscussionNote', feature_category: :code_review_workfl
   end
 
   context 'when the user has permission' do
-    before do
+    before_all do
       project.add_developer(current_user)
     end
 

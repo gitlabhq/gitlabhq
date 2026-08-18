@@ -17,10 +17,35 @@ In projects with frequent merges to the default branch, changes in different mer
 might conflict with each other. Use merge trains to put merge requests in a queue.
 Each merge request is compared to the other, earlier merge requests, to ensure they all work together.
 
-For more information about:
+A [merged results pipeline](merged_results_pipelines.md) tests one merge request's changes
+combined with the target branch.
+A merged results pipeline does not account for other merge requests that merge around the same time.
+Two merge requests can each pass their own pipeline, but their combined changes can still conflict.
+If both merge, the target branch can break, even though every pipeline succeeded.
 
-- How merge trains work, review the [merge train workflow](#merge-train-workflow).
-- Why you might want to use merge trains, read [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/all-aboard-merge-trains/).
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph LR
+accTitle: Two merge requests that pass individually but conflict together
+accDescr: Merge request A and merge request B each pass a pipeline that tests their changes combined with the target branch alone. When both merge, the combined changes break the target branch.
+
+  subgraph Without merge trains
+    target[Target branch] --> pipeline_a[Pipeline for A: passes]
+    target --> pipeline_b[Pipeline for B: passes]
+    pipeline_a --> merge_both[Both merge]
+    pipeline_b --> merge_both
+    merge_both -.-> broken[Target branch breaks]
+  end
+```
+
+Merge trains prevent this by testing each merge request against the combined changes of every merge request ahead of it in the queue.
+This catches conflicts before they reach the target branch.
+
+Use merge trains if your project has:
+
+- Frequent merges to the default branch
+- Multiple merge requests that are often ready to merge around the same time
+- A requirement to keep pipelines passing on the default branch at all times
 
 ## Merge train workflow
 
@@ -38,6 +63,19 @@ to add it to the train. This second merge train pipeline runs on the changes of
 _both_ merge requests combined with the target branch. Similarly, if you add a
 third merge request, that pipeline runs on the changes of all three merge
 requests merged with the target branch. The pipelines all run in parallel.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph LR
+accTitle: Merge train pipelines test combined changes
+accDescr: Pipeline 1 tests merge request A against the target branch. Pipeline 2 tests merge request A and B together against the target branch. Pipeline 3 tests merge request A, B, and C together against the target branch. The three pipelines run in parallel.
+
+  subgraph Merge train
+    target[Target branch] --> pipeline_1[Pipeline 1: A]
+    target --> pipeline_2[Pipeline 2: A + B]
+    target --> pipeline_3[Pipeline 3: A + B + C]
+  end
+```
 
 Each merge request merges into the target branch only after:
 
@@ -153,7 +191,7 @@ You can also remove ({{< icon name="close" >}}) a merge request from the merge t
 
 {{< history >}}
 
-- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a feature flag](../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10874) in GitLab 17.2 [with a feature flag](../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
 - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
 - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) by default in GitLab 17.4.
 - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
@@ -178,6 +216,12 @@ Each merge train can run a [maximum number of pipelines in parallel](#merge-trai
 The default limit is 20. If you add more merge requests to the merge
 train than the limit, the extra merge requests are queued until a
 pipeline completes. The number of queued merge requests is unlimited.
+
+After a merge request joins a merge train, new conversation threads do not remove it from the
+train or prevent the merge, even when
+[all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
+is enabled. This behavior is intentional. For more information, see
+[issue 220916](https://gitlab.com/gitlab-org/gitlab/-/issues/220916).
 
 ## Remove a merge request from a merge train
 
@@ -277,9 +321,8 @@ or restarted.
 
 {{< /history >}}
 
-By default, each [merge train](../../ci/pipelines/merge_trains.md) can run
-a maximum of 20 pipelines in parallel. When this limit is reached,
-additional merge requests are queued until a pipeline slot is available.
+By default, each merge train can run a maximum of 20 pipelines in parallel. When this limit is
+reached, additional merge requests are queued until a pipeline slot is available.
 
 To modify this limit for your project:
 
@@ -299,23 +342,27 @@ You can also use the [projects API](../../api/projects.md), or the
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
-
-By default, users with permission to merge can bypass the merge train and merge directly,
-for example with **Merge immediately** or a direct API request.
-Merge train enforcement requires all changes to go through the train.
+By default, if you have permission to merge, you can bypass the merge train. Enforcement
+requires every merge request to go through the train.
 
 When enforcement is enabled:
 
 - GitLab hides the **Merge immediately** options, including **Merge now and don't restart train**.
-- GitLab rejects direct merges through the REST API and GraphQL API.
-- GitLab routes all merges through auto-merge, which adds the merge request to the train.
+- The REST API and GraphQL API reject direct merges.
+- Auto-merge routes all merges to the train.
+
+Merge train enforcement has three levels:
+
+- **Allow bypass** (default): Users with permission to merge can bypass the merge train
+  through the UI or API.
+- **Enforce for all users**: All merge requests must go through the merge train.
+  No one can bypass the merge train, including Owners and administrators.
+- **Enforce with Owner override**: All merge requests must go through the merge train,
+  but Owners and administrators can bypass the merge train for individual merge requests.
 
 Prerequisites:
 
@@ -326,13 +373,7 @@ To configure merge train enforcement:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Merge requests**.
-1. In the **Merge options** section, under **Merge train enforcement**, select one of:
-   - **Allow bypass**: Users with permission to merge can bypass the merge train through the UI or API.
-     This is the default.
-   - **Enforce for all users**: All merge requests must go through the merge train.
-     No one can bypass the merge train. This applies to Owners and administrators.
-   - **Enforce with Owner override**: All merge requests must go through the merge train,
-     but Owners and administrators can bypass the merge train for individual merge requests.
+1. In the **Merge options** section, under **Merge train enforcement**, select an enforcement level.
 1. Select **Save changes**.
 
 ## Troubleshooting
@@ -344,10 +385,8 @@ the merge train drops your merge request automatically. Common causes include:
 
 - Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
 - A merge conflict.
-- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
-  is enabled.
 
-You can find reason the merge request was dropped from the merge train in the system
+You can find the reason the merge request was dropped from the merge train in the system
 notes. Check the **Activity** section in the **Overview** tab for a message similar to:
 `User removed this merge request from the merge train because ...`
 
@@ -385,5 +424,15 @@ Before you can re-add a merge request to a merge train, you can try to:
 - Rerun the whole pipeline. On the **Pipelines** tab, select **Run pipeline**.
 - Push a new commit that fixes the issue, which also triggers a new pipeline.
 
-See [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35135)
-for more information.
+For more information, see [issue 35135](https://gitlab.com/gitlab-org/gitlab/-/issues/35135).
+
+### Automation tools fail to merge with a 405 error
+
+If merge train enforcement is enabled, any tool that calls the
+[merge requests API](../../api/merge_requests.md#merge-a-merge-request) without `auto_merge=true`
+receives a `405 Method Not Allowed` response. This includes scripts, CI/CD jobs, and bots.
+
+To resolve this, update the tool to pass `auto_merge=true`, which adds the merge request to
+the merge train instead of merging it directly. For example, if you use
+[Renovate](https://docs.renovatebot.com/configuration-options/#platformautomerge), enable the
+`platformAutomerge` configuration option.

@@ -31,7 +31,7 @@ export default {
       default: false,
     },
   },
-  emits: ['select-branch', 'showError'],
+  emits: ['select-branch', 'show-error'],
   data() {
     return {
       branchSelected: null,
@@ -70,7 +70,7 @@ export default {
       }
     },
     showFetchError() {
-      this.$emit('showError', {
+      this.$emit('show-error', {
         type: DEFAULT_FAILURE,
         reasons: [this.$options.i18n.fetchError],
       });

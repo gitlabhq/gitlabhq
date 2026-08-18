@@ -18,8 +18,7 @@ module QA
         project.visit!
       end
 
-      it 'user transfers a project between groups',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347878' do
+      it 'user transfers a project between groups' do
         Page::Project::Menu.perform(&:go_to_general_settings)
 
         Page::Project::Settings::Main.perform(&:expand_advanced_settings)

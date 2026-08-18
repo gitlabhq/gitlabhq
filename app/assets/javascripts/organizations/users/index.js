@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import OrganizationsUsersApp from './components/app.vue';
@@ -20,7 +21,7 @@ export const initOrganizationsUsers = () => {
     deep: true,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationsUsersRoot',
     apolloProvider,
@@ -28,8 +29,6 @@ export const initOrganizationsUsers = () => {
       organizationGid,
       paths,
     },
-    render(createElement) {
-      return createElement(OrganizationsUsersApp);
-    },
+    component: OrganizationsUsersApp,
   });
 };

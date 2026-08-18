@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import produce from 'immer';
 import { GlButton, GlDrawer, GlLabel, GlModal, GlModalDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
@@ -28,10 +29,12 @@ export default {
     GlDrawer,
     GlLabel,
     MountingPortal,
-    BoardSettingsSidebarWipLimit: () =>
-      import('ee_component/boards/components/board_settings_wip_limit.vue'),
-    BoardSettingsListTypes: () =>
-      import('ee_component/boards/components/board_settings_list_types.vue'),
+    BoardSettingsSidebarWipLimit: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_settings_wip_limit.vue'),
+    ),
+    BoardSettingsListTypes: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_settings_list_types.vue'),
+    ),
   },
   directives: {
     GlModal: GlModalDirective,
@@ -54,7 +57,7 @@ export default {
       required: true,
     },
   },
-  emits: ['unsetActiveId'],
+  emits: ['unset-active-id'],
   data() {
     return {
       ListType,
@@ -97,7 +100,7 @@ export default {
       this.unsetActiveListId();
     },
     unsetActiveListId() {
-      this.$emit('unsetActiveId');
+      this.$emit('unset-active-id');
     },
     async deleteList(listId) {
       try {

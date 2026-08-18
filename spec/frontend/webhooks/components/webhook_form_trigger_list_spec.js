@@ -42,7 +42,7 @@ describe('WebhookFormTriggerList', () => {
   };
 
   const findAllTriggerItems = () => wrapper.findAllComponents(WebhookFormTriggerItem);
-  const findTriggerByTestId = (key) => wrapper.findByTestId(key);
+  const findTriggerByTestId = (key) => wrapper.findComponentByTestId(key);
   const findPushEvents = () => wrapper.findComponent(PushEvents);
 
   const nthTriggerItem = (n) => {

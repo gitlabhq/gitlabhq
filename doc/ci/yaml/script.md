@@ -104,7 +104,7 @@ job2:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10158) in GitLab 17.0 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
 
 {{< /history >}}
@@ -112,7 +112,7 @@ job2:
 [`after_script`](_index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.
 
-The job's status in the UI is `canceling` while the `after_script` are executing,
+The job's status in the UI is `canceling` while the `after_script` is executing,
 and changes to `canceled` after the `after_script` commands complete. The `$CI_JOB_STATUS`
 predefined variable has a value of `canceled` while the `after_script` commands are running.
 

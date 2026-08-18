@@ -85,8 +85,11 @@ class Compare
     commit&.sha
   end
 
-  def raw_diffs(...)
-    @compare.diffs(...)
+  def raw_diffs(diff_options = {})
+    diff_options = (diff_options || {}).to_h
+    diff_options[:merge_base] = @base_sha if !@straight && @base_sha.present?
+
+    @compare.diffs(diff_options)
   end
 
   def diffs(diff_options = nil)

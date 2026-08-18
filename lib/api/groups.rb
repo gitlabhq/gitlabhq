@@ -325,6 +325,10 @@ module API
       end
       route_setting :authorization, permissions: :create_group, boundary_type: :user
       post feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:namespace_create_rate_limit, current_user)
+          check_rate_limit!(:groups_create, scope: [current_user])
+        end
+
         organization = find_organization!(params[:organization_id]) if params[:organization_id].present?
         authorize! :create_group, organization if organization
 
@@ -350,7 +354,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Update group attributes' do
         detail 'Updates the attributes for a specified group. You must be an administrator or have ' \
           'the Owner role for the group.'

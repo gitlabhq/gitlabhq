@@ -28,3 +28,7 @@ RSpec/SpecFilePathFormat:
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - 'spec/**/*.rb'
+
+# The Gitlab::HTTP wrapper sits above this gem and isn't available here.
+Gitlab/HttpV2:
+  Enabled: false

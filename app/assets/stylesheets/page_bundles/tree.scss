@@ -2,6 +2,15 @@
 
 $bottom-padding: $gl-spacing-scale-6;
 $file-tree-browser-z-index: 500;
+$repository-max-width: 1600px;
+
+// Repository tree/blob views host the file tree browser and content
+// side-by-side, so on Fixed layout they get a wider max-width than
+// $fixed-layout-width. Scoped to `.container-limited` so the Fluid layout
+// preference stays full-width.
+.container-limited.repository-max-width {
+  max-width: $repository-max-width;
+}
 
 .file-tree-browser-overlay {
   @apply gl-bg-overlay;

@@ -1834,7 +1834,7 @@ module Gitlab
 
         context "when validating a ci config file within a project" do
           let(:include_content) { "/local.gitlab-ci.yml" }
-          let(:project) { create(:project, :repository) }
+          let(:project) { create(:project, :small_repo) }
           let(:opts) { { project: project, sha: project.commit.sha } }
 
           context "when the included internal file is present" do

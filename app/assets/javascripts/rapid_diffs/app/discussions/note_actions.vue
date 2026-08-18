@@ -1,10 +1,12 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlTooltipDirective,
   GlButton,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
@@ -33,12 +35,17 @@ export default {
     GlDisclosureDropdownGroup,
     ReplyButton,
     UserAccessRoleBadge,
-    DuoChatFeedbackModal: () => import('ee_component/ai/components/duo_chat_feedback_modal.vue'),
+    DuoChatFeedbackModal: defineAsyncComponent(
+      () => import('ee_component/ai/components/duo_chat_feedback_modal.vue'),
+    ),
+    ViewSessionButton: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/view_session_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   props: {
     authorId: {
       type: Number,
@@ -122,8 +129,13 @@ export default {
       required: false,
       default: false,
     },
+    duoSessionId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
-  emits: ['award', 'delete', 'resolve', 'start-editing', 'startReplying'],
+  emits: ['award', 'delete', 'resolve', 'start-editing', 'start-replying'],
   data() {
     return {
       abuseDrawerOpen: false,
@@ -224,6 +236,7 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <span class="@max-sm/discussion:gl-flex-1"></span>
+    <view-session-button v-if="duoSessionId" :session-id="duoSessionId" />
     <gl-button
       v-if="canResolve"
       v-gl-tooltip
@@ -242,7 +255,7 @@ export default {
       data-testid="note-emoji-button"
       @click="$emit('award', $event)"
     />
-    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('startReplying')" />
+    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('start-replying')" />
     <gl-button
       v-if="canEdit"
       v-gl-tooltip

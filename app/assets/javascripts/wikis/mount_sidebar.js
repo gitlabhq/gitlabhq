@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import WikiSidebar from './components/wiki_sidebar.vue';
 
@@ -12,12 +12,11 @@ export const mountWikiSidebar = () => {
     viewAllPagesPath,
     editing,
     customSidebarContent,
-    hasWikiPages,
     editSidebarUrl,
     isEditingSidebar,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WikiSidebarRoot',
     provide: {
@@ -27,12 +26,9 @@ export const mountWikiSidebar = () => {
       viewAllPagesPath,
       editing,
       customSidebarContent,
-      hasWikiPages: parseBoolean(hasWikiPages),
       editSidebarUrl,
       isEditingSidebar: parseBoolean(isEditingSidebar),
     },
-    render(createElement) {
-      return createElement(WikiSidebar);
-    },
+    component: WikiSidebar,
   });
 };

@@ -89,13 +89,13 @@ describe('WorkItemRelationships', () => {
   };
 
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
-  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCrudCollapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('crud-empty');
-  const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-bage');
+  const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-badge');
   const findAllWorkItemRelationshipListComponents = () =>
     wrapper.findAllComponents(WorkItemRelationshipList);
-  const findAddButton = () => wrapper.findByTestId('link-item-add-button');
+  const findAddButton = () => wrapper.findComponentByTestId('link-item-add-button');
   const findWorkItemRelationshipForm = () => wrapper.findComponent(WorkItemAddRelationshipForm);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
 
@@ -221,14 +221,27 @@ describe('WorkItemRelationships', () => {
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
 
-  it('removes linked item and shows toast message when removeLinkedItem event is emitted', async () => {
+  it('re-emits show-modal with the widget name when a list asks to open the drawer', async () => {
+    await createComponent();
+
+    const child = { id: 'gid://gitlab/WorkItem/2' };
+    await findAllWorkItemRelationshipListComponents()
+      .at(0)
+      .vm.$emit('show-modal', { event: null, child });
+
+    expect(wrapper.emitted('show-modal')).toEqual([
+      [{ event: null, child, context: 'linkeditems' }],
+    ]);
+  });
+
+  it('removes linked item and shows toast message when remove-linked-item event is emitted', async () => {
     await createComponent();
 
     expect(findLinkedItemsCountBadge().text()).toBe('3');
 
     await findAllWorkItemRelationshipListComponents()
       .at(0)
-      .vm.$emit('removeLinkedItem', { id: 'gid://gitlab/WorkItem/2' });
+      .vm.$emit('remove-linked-item', { id: 'gid://gitlab/WorkItem/2' });
 
     await waitForPromises();
 
@@ -257,7 +270,7 @@ describe('WorkItemRelationships', () => {
 
       await findAllWorkItemRelationshipListComponents()
         .at(0)
-        .vm.$emit('removeLinkedItem', { id: 'gid://gitlab/WorkItem/2' });
+        .vm.$emit('remove-linked-item', { id: 'gid://gitlab/WorkItem/2' });
 
       await waitForPromises();
 
@@ -366,7 +379,7 @@ describe('WorkItemRelationships', () => {
     expect(blockingList.props('linkedItems')).toHaveLength(1);
     expect(blockedByList.props('linkedItems')).toHaveLength(1);
 
-    blockingList.vm.$emit('updateLinkedItem', {
+    blockingList.vm.$emit('update-linked-item', {
       linkedItem: blockingList.props('linkedItems')[0],
       fromRelationshipType: 'blocks',
       toRelationshipType: 'is_blocked_by',
@@ -382,13 +395,41 @@ describe('WorkItemRelationships', () => {
       type          | eventLabel           | collapsed
       ${'collapse'} | ${'click-collapsed'} | ${true}
       ${'expand'}   | ${'click-expanded'}  | ${false}
-    `('tracks user $type events', ({ eventLabel, collapsed }) => {
+    `('tracks user $type events', async ({ eventLabel, collapsed }) => {
       utils.saveToggleToLocalStorage(WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY, collapsed);
-      createComponent();
+      await createComponent();
 
       findCrudCollapseToggle().vm.$emit('click');
 
       expect(findCrudComponent().emitted(eventLabel)).toEqual([[]]);
+    });
+  });
+
+  describe('collapses by default when empty', () => {
+    useLocalStorageSpy();
+
+    it('is not collapsed while the query is loading', async () => {
+      await createComponent({
+        workItemLinkedItemsHandler: jest.fn().mockReturnValue(new Promise(() => {})),
+      });
+
+      expect(findCrudComponent().props('collapsed')).toBe(false);
+    });
+
+    it('is collapsed once the query resolves with no linked items', async () => {
+      await createComponent({
+        workItemLinkedItemsHandler: jest.fn().mockResolvedValue(workItemEmptyLinkedItemsResponse),
+      });
+
+      expect(findCrudComponent().props('collapsed')).toBe(true);
+      expect(wrapper.findByTestId('crud-body').isVisible()).toBe(false);
+    });
+
+    it('is not collapsed when linked items exist', async () => {
+      await createComponent();
+
+      expect(findCrudComponent().props('collapsed')).toBe(false);
+      expect(wrapper.findByTestId('crud-body').isVisible()).toBe(true);
     });
   });
 

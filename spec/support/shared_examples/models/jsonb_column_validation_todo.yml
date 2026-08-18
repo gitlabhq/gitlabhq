@@ -6,6 +6,8 @@
 - Ai::DuoWorkflows::Checkpoint#checkpoint
 - Ai::DuoWorkflows::Checkpoint#metadata
 - Ai::DuoWorkflows::Checkpoint#ui_chat_log
+- Ai::DuoWorkflows::CheckpointHeader#checkpoint
+- Ai::DuoWorkflows::CheckpointHeader#metadata
 - AlertManagement::Alert#payload
 - AlertManagement::HttpIntegration#payload_example
 - ApplicationSetting#ci_cd_settings
@@ -18,6 +20,9 @@
 - Geo::Event#payload
 - Geo::SecondaryUsageData#payload
 - GitlabSubscriptions::UserAddOnAssignmentVersion#object
+- Govern::Policy#actions
+- Govern::Policy#policy_scope
+- Govern::Policy#rules
 - Operations::FeatureFlags::Strategy#parameters
 - Packages::Composer::Metadatum#composer_json
 - Packages::Composer::Package#composer_json

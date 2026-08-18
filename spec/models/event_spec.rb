@@ -1361,17 +1361,17 @@ RSpec.describe Event, feature_category: :user_profile do
     let(:event) { build(:event) }
 
     it 'returns true when the event author and user are the same' do
-      expect(event.authored_by?(event.author)).to eq(true)
+      expect(event.authored_by?(event.author)).to be(true)
     end
 
     it 'returns false when passing nil as an argument' do
-      expect(event.authored_by?(nil)).to eq(false)
+      expect(event.authored_by?(nil)).to be(false)
     end
 
     it 'returns false when the given user is not the author of the event' do
       user = double(:user, id: -1)
 
-      expect(event.authored_by?(user)).to eq(false)
+      expect(event.authored_by?(user)).to be(false)
     end
   end
 

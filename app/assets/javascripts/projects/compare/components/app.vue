@@ -164,8 +164,8 @@ export default {
           :projects="to.projects"
           :selected-project="to.selectedProject"
           disable-repo-dropdown
-          @selectProject="onSelectProject"
-          @selectRevision="onSelectRevision"
+          @select-project="onSelectProject"
+          @select-revision="onSelectRevision"
         />
         <gl-button
           v-gl-tooltip="$options.i18n.swapRevisions"
@@ -191,8 +191,8 @@ export default {
           params-name="from"
           :params-branch="from.revision"
           :selected-project="from.selectedProject"
-          @selectProject="onSelectProject"
-          @selectRevision="onSelectRevision"
+          @select-project="onSelectProject"
+          @select-revision="onSelectRevision"
         />
       </div>
       <gl-form-group :label="$options.i18n.optionsLabel" class="gl-mt-4">

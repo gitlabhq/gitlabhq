@@ -121,8 +121,9 @@ and whether any additional configuration is set.
 By default, when you run a pipeline:
 
 - On a branch:
-  - On the **default branch**, the Git working tree is scanned.
-    This means the current repository state is scanned as though it were a typical directory.
+  - On the **default branch**:
+    - In analyzer version `v7.38.1` and later, if a valid prior commit is available through the [predefined CI/CD variable](../../../../ci/variables/predefined_variables.md) `CI_COMMIT_BEFORE_SHA`, the content of all commits from the prior commit to the current commit is scanned.
+    - If no valid prior commit is available (for example, the first commit pushed to a new repository), the contents of Git working tree is scanned.
   - On a **feature branch**:
     - In analyzer version `v7.35.0` and later, the content of all commits from the merge
       base to the latest commit (all commits unique to the branch after it diverged) are scanned.
@@ -389,12 +390,6 @@ Follow these guidelines when you roll out pipeline secret detection:
 1. Document the implementation. Record common false positives and remediation patterns.
 
 ## FIPS-enabled images
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
-
-{{< /history >}}
 
 The default scanner images are built off a base Alpine image for size and maintainability. GitLab
 offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)

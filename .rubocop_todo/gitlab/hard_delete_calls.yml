@@ -2,7 +2,6 @@
 Gitlab/HardDeleteCalls:
   Exclude:
     - 'app/controllers/groups_controller.rb'
-    - 'app/controllers/organizations/groups_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/services/projects/overwrite_project_service.rb'
     - 'app/services/users/destroy_service.rb'

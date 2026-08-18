@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set up and configure Elasticsearch to use advanced search in GitLab.
@@ -62,12 +62,6 @@ The cluster cannot assign replica shards to the same node as primary shards.
 ### Version compatibility
 
 #### Elasticsearch
-
-{{< history >}}
-
-- Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
-
-{{< /history >}}
 
 > [!warning]
 > Support for Elasticsearch 7.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/583544)
@@ -308,12 +302,6 @@ the master username and password on your GitLab instance:
 1. Select **Save changes**.
 
 ### Upgrade to a new Elasticsearch version
-
-{{< history >}}
-
-- Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -562,7 +550,7 @@ The following Elasticsearch settings are available:
 
 | Parameter                                                   | Description |
 |-------------------------------------------------------------|-------------|
-| **Turn on indexing for advanced search**                    | Turns on or turns off indexing and creates an empty index if one does not already exist. You may want to turn on indexing but turn off search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
+| **Turn on indexing for advanced search**                    | Turns on or turns off indexing and creates an empty index if one does not already exist. You may want to turn on indexing but turn off search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data. This only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | **Pause indexing for advanced search**                      | Pauses advanced search indexing. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the index until resumed. |
 | **Search with advanced search**                             | Turns on or turns off the advanced search capabilities in search and [advanced vulnerability management](../../user/application_security/vulnerability_report/_index.md#advanced-vulnerability-management). |
 | **Code search with advanced search**                        | Turns on or turns off code search with advanced search. When this setting is turned off, all code is deleted from your Elasticsearch instance. To turn this setting back on, fully reindex your code. If exact code search is enabled, you should turn off this setting to save resources. |
@@ -572,7 +560,7 @@ The following Elasticsearch settings are available:
 | **Password**                                                | The password of your Elasticsearch instance. |
 | **Number of Elasticsearch shards and replicas per index**   | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
 | **Limit the amount of namespace and project data to index** | When you enable this setting, you can specify namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this setting but do not specify any namespace or project, only project records are indexed. For more information, see [Limit the amount of namespace and project data to index](#limit-the-amount-of-namespace-and-project-data-to-index). |
-| **Use AWS OpenSearch Service with IAM credentials**         | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
+| **Use AWS OpenSearch Service with IAM credentials**         | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | **AWS Region**                                              | The AWS region in which your OpenSearch Service is located. |
 | **AWS Access Key**                                          | The AWS access key. |
 | **AWS Secret Access Key**                                   | The AWS secret access key. |
@@ -597,8 +585,6 @@ The following Elasticsearch settings are available:
 
 {{< history >}}
 
-- Indexing all project records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a feature flag](../../administration/feature_flags/_index.md) named `search_index_all_projects`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
 - Indexing vulnerability records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `vulnerability_es_ingestion`. Disabled by default.
 - Indexing vulnerability records is [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.2. Feature flag `vulnerability_es_ingestion` removed.
 
@@ -665,7 +651,7 @@ and [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/a
 
 To enable custom language analyzers:
 
-1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
+1. Install the desired plugins. Refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugin installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Search**.
 1. Locate **Custom analyzers: language support**.
@@ -678,10 +664,10 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
-| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
-| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
-| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
-| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices. |
+| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index. |
+| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices. |
+| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index. |
 
 ## Disable advanced search
 
@@ -863,13 +849,6 @@ To abandon an unfinished reindexing job and resume indexing:
 
 ## Index integrity
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a feature flag](../../administration/feature_flags/_index.md) named `search_index_integrity`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.4. Feature flag `search_index_integrity` removed.
-
-{{< /history >}}
-
 Index integrity detects and fixes missing repository data.
 This feature is automatically used when code searches
 scoped to a group or project return no results.
@@ -885,12 +864,6 @@ to enable or disable the migration worker.
 By default, the migration worker is enabled.
 
 ### Migration dictionary files
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
-
-{{< /history >}}
 
 Every migration has a corresponding dictionary file in the `ee/elastic/docs/` folder with the following information:
 
@@ -1020,6 +993,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Performs an Elasticsearch import that indexes the snippets data. |
 | [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                       | Imports all users into Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:index_vulnerabilities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Indexes all vulnerabilities. |
+| [`sudo gitlab-rake gitlab:elastic:index_sbom_occurrence_refs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)        | Indexes all SBOM occurrence references. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Determines the overall indexing status of all project repository data (code, commits, and wikis). The status is calculated by dividing the number of indexed projects by the total number of projects and multiplying by 100. This task does not include non-repository data such as issues, merge requests, or milestones. |
 | [`sudo gitlab-rake gitlab:elastic:index_groups_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Determines the overall indexing status of all group repository data (group wikis). The status is calculated by dividing the number of indexed groups by the total number of groups and multiplying by 100. This task does not include non-repository data such as epics, merge requests, or milestones. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Deletes all instances of IndexStatus for all projects. This command results in a complete wipe of the index, and it should be used with caution. |
@@ -1032,7 +1006,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Mark the most recent reindex job as failed. |
 | [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)           | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Get an estimate of code and wiki index sizes and total cluster size based on the total repository size. |
-| [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Get an estimate of shard sizes for each index based on approximate database counts. This estimate does not include repository data (code, commits, and wikis). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11. |
+| [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Get an estimate of shard sizes for each index based on approximate database counts. This estimate does not include repository data (code, commits, and wikis). |
 | [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)  | Enables advanced search with Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Disables advanced search with Elasticsearch. |
 
@@ -1104,7 +1078,6 @@ For basic guidance on choosing a cluster configuration, see also [Elastic Cloud 
 
 {{< history >}}
 
-- `gitlab:elastic:estimate_shard_sizes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11.
 - `gitlab:elastic:estimate_shard_sizes` [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/348452) in GitLab 18.3 to include sizing for indices that contain repository data.
 
 {{< /history >}}
@@ -1345,7 +1318,7 @@ For the following steps, consider the entry of `sidekiq['routing_rules']`:
 - `["feature_category=global_search", "global_search"]` as all indexing jobs are routed to the `global_search` queue.
 - `["*", "default"]` as all other non-indexing jobs are routed to the `default` queue.
 
-At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
+At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue. Otherwise, mailers jobs are not processed at all.
 
 > [!warning]
 > When starting multiple processes, the number of processes cannot exceed the number of CPU
@@ -1373,13 +1346,6 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
    ]
 
    sidekiq['concurrency'] = 20
-   ```
-
-   If you are using GitLab 16.11 and earlier, explicitly disable any
-   [queue selectors](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated):
-
-   ```ruby
-   sidekiq['queue_selector'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
@@ -1412,13 +1378,6 @@ To handle these queue groups on two nodes:
    sidekiq['concurrency'] = 20
    ```
 
-   If you are using GitLab 16.11 and earlier, explicitly disable any
-   [queue selectors](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated):
-
-   ```ruby
-   sidekiq['queue_selector'] = false
-   ```
-
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
    for the changes to take effect.
 1. To set up the non-indexing Sidekiq process, on your non-indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
@@ -1438,13 +1397,6 @@ To handle these queue groups on two nodes:
    sidekiq['concurrency'] = 20
    ```
 
-   If you are using GitLab 16.11 and earlier, explicitly disable any
-   [queue selectors](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated):
-
-   ```ruby
-   sidekiq['queue_selector'] = false
-   ```
-
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as the previous configuration.
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
    for the changes to take effect.
@@ -1460,7 +1412,7 @@ To handle these queue groups on two nodes:
 
 ### Deleted documents
 
-Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
+Whenever a change or deletion is made to an indexed GitLab object, like when a merge request description is changed, a file is deleted from the default branch in a repository, or a project is deleted, a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
 
 Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
 

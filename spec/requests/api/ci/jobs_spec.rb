@@ -519,7 +519,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           another_build.save!
         end
 
-        expect { go }.not_to exceed_query_limit(control)
+        expect { go }.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
       end
 
       context 'filter project with one scope element' do

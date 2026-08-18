@@ -58,7 +58,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         use :pagination
         use :filter_params
@@ -170,7 +170,7 @@ module API
     params do
       requires :id, types: [Integer, String], desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         use :pagination
         use :filter_params

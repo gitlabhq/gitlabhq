@@ -190,7 +190,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
 
         it 'returns marked_for_deletion as true for child projects and groups' do
           [group, subgroup, sub_subgroup, project].each do |item|
-            expect(described_class.new(item, request: request).as_json[:marked_for_deletion]).to eq(true)
+            expect(described_class.new(item, request: request).as_json[:marked_for_deletion]).to be(true)
           end
         end
 
@@ -215,11 +215,11 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
         end
 
         it 'returns is_self_deletion_scheduled as true for top group' do
-          expect(described_class.new(group, request: request).as_json[:is_self_deletion_scheduled]).to eq(true)
+          expect(described_class.new(group, request: request).as_json[:is_self_deletion_scheduled]).to be(true)
         end
 
         it 'returns is_self_deletion_scheduled as false for subgroups' do
-          expect(described_class.new(subgroup, request: request).as_json[:is_self_deletion_scheduled]).to eq(false)
+          expect(described_class.new(subgroup, request: request).as_json[:is_self_deletion_scheduled]).to be(false)
         end
 
         it 'returns permanent_deletion_date as the date the group will be deleted' do
@@ -236,7 +236,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
 
         it 'returns marked_for_deletion as false for child projects and groups' do
           [group, subgroup, sub_subgroup, project].each do |item|
-            expect(described_class.new(item, request: request).as_json[:marked_for_deletion]).to eq(false)
+            expect(described_class.new(item, request: request).as_json[:marked_for_deletion]).to be(false)
           end
         end
 
@@ -358,7 +358,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
     it 'does not hit the external authorization service' do
       expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
 
-      expect(json[:can_edit]).to eq(false)
+      expect(json[:can_edit]).to be(false)
     end
   end
 

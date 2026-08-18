@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckCommitsStatusService < CheckBaseService
       set_identifier :commits_status
+      set_failure_explanation N_('The source branch must exist and contain commits.')
       set_description 'Checks source branch exists and contains commits.'
 
       def execute

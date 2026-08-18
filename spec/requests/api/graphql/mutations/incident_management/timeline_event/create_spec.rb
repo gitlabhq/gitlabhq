@@ -41,6 +41,11 @@ RSpec.describe 'Creating an incident timeline event', feature_category: :inciden
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_create) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_timeline_event do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'creates incident timeline event', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)
 

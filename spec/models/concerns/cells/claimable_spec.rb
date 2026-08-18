@@ -15,7 +15,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   let(:instance) { test_klass.create!(path: 'gitlab') }
 
   before do
-    test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+    test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
       feature_flag: :cells_claims_organizations
     test_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
       subject_key: subject_key
@@ -32,7 +32,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(test_klass.cells_claims_subject_type).to eq(Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION)
       expect(test_klass.cells_claims_source_type).to eq(Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
       expect(test_klass.cells_claims_attributes).to eq(
-        path: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+        path: { type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
                 feature_flag: :cells_claims_organizations, if: nil }
       )
     end
@@ -46,9 +46,42 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     it 'raises ArgumentError when if: is not a Proc or nil' do
       expect do
         test_klass.cells_claims_attribute :name,
-          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
           if: 'not_a_proc'
       end.to raise_error(ArgumentError, %r{must be a Proc/lambda or nil})
+    end
+  end
+
+  describe 'CLAIM_FIELD_BY_TYPE' do
+    # CLAIM_FIELD_BY_TYPE keys claims by ClaimType value, but resolves the field via the Claim
+    # field number, assuming the two always match. That alignment lives in Topology Service and
+    # isn't enforced here, so guard against a field landing with a mismatched number.
+    it 'keeps Claim field numbers aligned with ClaimType values' do
+      fields_by_number = described_class::CLAIMS_CLAIM.descriptor.to_h { |f| [f.number, f.name] }
+
+      described_class::CLAIMS_CLAIM_TYPE.descriptor.each do |name, value|
+        next if value.zero?
+
+        expect(fields_by_number[value]).to eq(name.to_s.delete_prefix('CLAIM_TYPE_').downcase)
+      end
+    end
+  end
+
+  describe '.cells_claims_claim_hash' do
+    let(:string_type) { described_class::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH }
+    let(:integer_type) { described_class::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_NAMESPACE_ID }
+
+    it 'builds a string claim' do
+      expect(test_klass.cells_claims_claim_hash(string_type, 'gitlab')).to eq(organization_path: 'gitlab')
+    end
+
+    it 'builds an integer claim' do
+      expect(test_klass.cells_claims_claim_hash(integer_type, '42')).to eq(namespace_id: 42)
+    end
+
+    it 'raises on a blank value instead of coercing it to a 0 claim' do
+      expect { test_klass.cells_claims_claim_hash(integer_type, '') }
+        .to raise_error(ArgumentError, /blank claim value for namespace_id/)
     end
   end
 
@@ -70,7 +103,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
             expect(transaction_record).to receive(:create_record).once.with(
               {
-                bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'newpath' },
+                claim: { organization_path: 'newpath' },
                 source: { type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
                           rails_primary_key_id: be_a(String) },
                 subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: be_a(Integer) },
@@ -96,13 +129,9 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
             new_path = 'new-path'
 
             expect(transaction_record)
-            .to receive(:destroy_record).with(a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: old_path
-            }))
+            .to receive(:destroy_record).with(a_hash_including(claim: { organization_path: old_path }))
             expect(transaction_record)
-              .to receive(:create_record).with(a_hash_including(bucket: {
-                type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: new_path
-              }))
+              .to receive(:create_record).with(a_hash_including(claim: { organization_path: new_path }))
 
             instance.update!(path: new_path)
           end
@@ -137,9 +166,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
               if destroys
                 expect(transaction_record).to receive(:destroy_record).with(
-                  a_hash_including(bucket: {
-                    type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: was
-                  })
+                  a_hash_including(claim: { organization_path: was })
                 )
               else
                 expect(transaction_record).not_to receive(:destroy_record)
@@ -147,9 +174,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
               if creates
                 expect(transaction_record).to receive(:create_record).with(
-                  a_hash_including(bucket: {
-                    type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: is
-                  })
+                  a_hash_including(claim: { organization_path: is })
                 )
               else
                 expect(transaction_record).not_to receive(:create_record)
@@ -194,9 +219,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
           old_path = instance.path
 
           expect(transaction_record)
-            .to receive(:destroy_record).with(a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: old_path
-            }))
+            .to receive(:destroy_record).with(a_hash_including(claim: { organization_path: old_path }))
           instance.destroy!
         end
 
@@ -259,7 +282,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     before do
       stub_config_cell(enabled: true)
       conditional_klass.cells_claims_attribute :path,
-        type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+        type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
         feature_flag: :cells_claims_organizations,
         if: ->(record) { record.path.exclude?('/') }
       conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
@@ -304,9 +327,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
           allow(Cells::TransactionRecord)
             .to receive(:current_transaction).with(record.connection).and_return(transaction_record)
           expect(transaction_record).to receive(:destroy_record).with(
-            a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'claimtop'
-            })
+            a_hash_including(claim: { organization_path: 'claimtop' })
           )
           expect(transaction_record).not_to receive(:create_record)
 
@@ -321,14 +342,10 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
           allow(Cells::TransactionRecord)
             .to receive(:current_transaction).with(record.connection).and_return(transaction_record)
           expect(transaction_record).to receive(:destroy_record).with(
-            a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'group/project'
-            })
+            a_hash_including(claim: { organization_path: 'group/project' })
           )
           expect(transaction_record).to receive(:create_record).with(
-            a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'newpath'
-            })
+            a_hash_including(claim: { organization_path: 'newpath' })
           )
 
           record.update!(path: 'newpath')
@@ -344,9 +361,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
           allow(Cells::TransactionRecord)
             .to receive(:current_transaction).with(claimable_instance.connection).and_return(transaction_record)
           expect(transaction_record).to receive(:destroy_record).with(
-            a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'claimable'
-            })
+            a_hash_including(claim: { organization_path: 'claimable' })
           )
 
           claimable_instance.destroy!
@@ -378,9 +393,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         it 'includes the entry' do
           record = conditional_klass.create!(path: 'toponly')
           expect(record.cells_claims_metadata).to contain_exactly(
-            a_hash_including(bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'toponly'
-            })
+            a_hash_including(claim: { organization_path: 'toponly' })
           )
         end
       end
@@ -432,7 +445,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       before do
         scoped_klass.cells_claims_attribute :path,
-          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
           feature_flag: :cells_claims_organizations,
           if: ->(record) { record.path.exclude?('/') }
         scoped_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
@@ -474,7 +487,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     end
 
     it 'does not include duplicates when cells_claims_attribute is called multiple times' do
-      test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+      test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH
 
       expect(described_class.models_with_claims.count(test_klass)).to eq(1)
     end
@@ -487,13 +500,12 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(metadata.size).to eq(test_klass.cells_claims_attributes.size)
     end
 
-    it 'includes bucket type and value for each attribute' do
+    it 'includes the claim for each attribute' do
       metadata = instance.cells_claims_metadata
 
       expect(metadata).to include(
         a_hash_including(
-          bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
-                    value: instance.path }
+          claim: { organization_path: instance.path }
         )
       )
     end
@@ -662,7 +674,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       it 'returns true' do
         test_klass.cells_claims_attribute :no_flag_attr,
-          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+          type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH
 
         expect(test_klass.cells_claims_enabled_for_attribute?(:no_flag_attr)).to be(true)
       end
@@ -713,7 +725,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         metadata = instance.build_destroy_metadata_for_worker(:path)
 
         expect(metadata).to eq({
-          'bucket_type' => Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          'bucket_type' => Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
           'bucket_value' => instance.path,
           'subject_type' => Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
           'subject_id' => instance.id,
@@ -735,7 +747,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       before do
         conditional_klass.cells_claims_attribute :path,
-          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
           feature_flag: :cells_claims_organizations,
           if: ->(record) { record.path.exclude?('/') }
         conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
@@ -785,7 +797,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
       before do
         conditional_klass.cells_claims_attribute :path,
-          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
           feature_flag: :cells_claims_organizations,
           if: ->(record) { record.path.exclude?('/') }
         conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
@@ -806,7 +818,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         metadata = instance.cells_claims_metadata_for_attribute(:path)
 
         expect(metadata).to include(
-          bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: instance.path },
+          claim: { organization_path: instance.path },
           subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id }
         )
       end
@@ -836,6 +848,32 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       it "assigns attribute-specific message" do
         model.handle_grpc_error(grpc_error)
         expect(model.errors[:base]).to include("path has already been taken")
+      end
+
+      context "when the model does not override unique_attributes" do
+        let(:model) { test_klass.new(path: 'gitlab') }
+
+        before do
+          stub_const('TestOrganization', test_klass)
+        end
+
+        it "builds the message from the claimed attributes" do
+          model.handle_grpc_error(grpc_error)
+          expect(model.errors[:base]).to include("path has already been taken")
+        end
+
+        context "with multiple claimed attributes" do
+          before do
+            test_klass.cells_claims_attribute :name,
+              type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
+              feature_flag: :cells_claims_organizations
+          end
+
+          it "joins the claimed attributes in the message" do
+            model.handle_grpc_error(grpc_error)
+            expect(model.errors[:base]).to include("path or name has already been taken")
+          end
+        end
       end
     end
 

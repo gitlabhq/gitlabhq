@@ -8,7 +8,10 @@ import { HTTP_STATUS_IM_A_TEAPOT, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 
-jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
 jest.mock('~/alert');
 
 describe('Delete milestone modal', () => {
@@ -44,26 +47,35 @@ describe('Delete milestone modal', () => {
     });
 
     it('deletes milestone and redirects to overview page', async () => {
-      const responseURL = `${TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
-      jest.spyOn(axios, 'delete').mockImplementation((url) => {
+      const redirectUrl = `${TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
+      jest.spyOn(axios, 'delete').mockImplementation((url, config) => {
         expect(url).toBe(mockProps.milestoneUrl);
+        expect(config).toEqual({ headers: { accept: 'application/json' } });
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'delete-milestone-modal-request-started',
           mockProps.milestoneUrl,
         );
         eventHub.$emit.mockReset();
         return Promise.resolve({
-          request: {
-            responseURL,
+          data: {
+            redirect_url: redirectUrl,
           },
         });
       });
       await findModal().vm.$emit('primary');
-      expect(visitUrl).toHaveBeenCalledWith(responseURL);
+      expect(visitUrl).toHaveBeenCalledWith(redirectUrl);
       expect(eventHub.$emit).toHaveBeenCalledWith('delete-milestone-modal-request-finished', {
         milestoneUrl: mockProps.milestoneUrl,
         successful: true,
       });
+    });
+
+    it('redirects to the milestone list page when the response has no redirect_url', async () => {
+      jest.spyOn(axios, 'delete').mockResolvedValue({ data: {} });
+
+      await findModal().vm.$emit('primary');
+
+      expect(visitUrl).toHaveBeenCalledWith(`${TEST_HOST}/delete_milestone_modal.vue/`);
     });
 
     it.each`

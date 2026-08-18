@@ -1,5 +1,6 @@
 <script>
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 /**
  * Usage:
@@ -19,6 +20,7 @@ import { __ } from '~/locale';
  */
 export default {
   name: 'RunnerDetail',
+  mixins: [glSlotsMixin],
   props: {
     label: {
       type: String,
@@ -42,12 +44,12 @@ export default {
 <template>
   <div class="gl-contents">
     <dt class="gl-max-w-26" data-testid="label-slot">
-      <template v-if="label || $scopedSlots.label">
+      <template v-if="label || glSlots().label">
         <slot name="label">{{ label }}</slot>
       </template>
     </dt>
     <dd class="@md/panel:gl-mb-0" data-testid="value-slot">
-      <template v-if="value || $scopedSlots.value">
+      <template v-if="value || glSlots().value">
         <slot name="value">{{ value }}</slot>
       </template>
       <span v-else class="gl-text-subtle">{{ emptyValue }}</span>

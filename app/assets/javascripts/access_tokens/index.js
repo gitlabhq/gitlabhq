@@ -5,7 +5,6 @@ import { pinia } from '~/pinia/instance';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { setUTCTime } from '~/lib/utils/datetime_utility';
 import { parseRailsFormFields } from '~/lib/utils/forms';
-import { __, sprintf } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import AccessTokens from '~/vue_shared/access_tokens/components/access_tokens.vue';
 import AccessTokenTableApp from './components/access_token_table_app.vue';
@@ -27,20 +26,11 @@ export const initAccessTokenTableApp = () => {
 
   const {
     accessTokenType,
-    accessTokenTypePlural,
     backendPagination,
     initialActiveAccessTokens: initialActiveAccessTokensJson,
-    noActiveTokensMessage: noTokensMessage,
+    noActiveTokensMessage,
   } = el.dataset;
 
-  // Default values
-  const noActiveTokensMessage =
-    noTokensMessage ||
-    sprintf(
-      __('This user has no active %{accessTokenTypePlural}.'),
-      { accessTokenTypePlural },
-      false,
-    );
   const showRole = 'showRole' in el.dataset;
 
   const initialActiveAccessTokens = JSON.parse(initialActiveAccessTokensJson);
@@ -50,7 +40,6 @@ export const initAccessTokenTableApp = () => {
     name: 'AccessTokenTableRoot',
     provide: {
       accessTokenType,
-      accessTokenTypePlural,
       backendPagination: parseBoolean(backendPagination),
       initialActiveAccessTokens,
       noActiveTokensMessage,

@@ -2,4 +2,3 @@
 Database/AvoidInheritanceColumn:
   Exclude:
     - 'app/models/event.rb'
-    - 'lib/gitlab/background_migration/backfill_project_repositories.rb'

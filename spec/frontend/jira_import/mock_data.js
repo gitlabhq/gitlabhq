@@ -86,31 +86,83 @@ export const jiraProjects = [
   { text: 'Migrate to GitLab (MTG)', value: 'MTG' },
 ];
 
-export const jiraUsersResponse = new Array(userMappingsPageSize);
+export const jiraUsersResponse = new Array(userMappingsPageSize).fill(null).map((_, index) => ({
+  jiraAccountId: `jira-account-id-${index}`,
+  jiraDisplayName: `Jira user ${index}`,
+  jiraEmail: `jirauser${index}@example.com`,
+  gitlabId: null,
+  gitlabName: null,
+  gitlabUsername: null,
+  __typename: 'JiraUser',
+}));
 
 export const imports = [
   {
     jiraProjectKey: 'MTG',
     scheduledAt: '2020-04-08T10:11:12+00:00',
     scheduledBy: {
+      id: 'gid://gitlab/User/1',
       name: 'John Doe',
+      __typename: 'User',
     },
+    __typename: 'JiraImport',
   },
   {
     jiraProjectKey: 'MSJP',
     scheduledAt: '2020-04-09T13:14:15+00:00',
     scheduledBy: {
+      id: 'gid://gitlab/User/2',
       name: 'Jimmy Doe',
+      __typename: 'User',
     },
+    __typename: 'JiraImport',
   },
   {
     jiraProjectKey: 'MTG',
     scheduledAt: '2020-04-09T16:17:18+00:00',
     scheduledBy: {
+      id: 'gid://gitlab/User/3',
       name: 'Jane Doe',
+      __typename: 'User',
     },
+    __typename: 'JiraImport',
   },
 ];
+
+// Jira project nodes which `extractJiraProjectsOptions` turns into `jiraProjects`
+export const jiraProjectNodes = [
+  { key: 'MJP', name: 'My Jira Project', __typename: 'JiraProject' },
+  { key: 'MSJP', name: 'My Second Jira Project', __typename: 'JiraProject' },
+  { key: 'MTG', name: 'Migrate to GitLab', __typename: 'JiraProject' },
+];
+
+export const getJiraImportDetailsQueryResponse = ({
+  jiraImportStatus = IMPORT_STATE.NONE,
+} = {}) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      jiraImportStatus,
+      jiraImports: {
+        nodes: imports,
+        __typename: 'JiraImportConnection',
+      },
+      services: {
+        nodes: [
+          {
+            projects: {
+              nodes: jiraProjectNodes,
+              __typename: 'JiraProjectConnection',
+            },
+            __typename: 'JiraService',
+          },
+        ],
+        __typename: 'ServiceConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+});
 
 export const userMappings = [
   {
@@ -118,13 +170,17 @@ export const userMappings = [
     jiraDisplayName: 'Jane Doe',
     jiraEmail: 'janedoe@example.com',
     gitlabId: 15,
+    gitlabName: 'Jane Doe',
     gitlabUsername: 'janedoe',
+    __typename: 'JiraUser',
   },
   {
     jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
     jiraDisplayName: 'Fred Chopin',
     jiraEmail: 'fredchopin@example.com',
-    gitlabId: undefined,
-    gitlabUsername: undefined,
+    gitlabId: null,
+    gitlabName: null,
+    gitlabUsername: null,
+    __typename: 'JiraUser',
   },
 ];

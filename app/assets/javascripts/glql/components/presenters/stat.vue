@@ -2,7 +2,7 @@
 import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { dimensionsOf, metricsOf } from '../../utils/chart_data';
+import { baseFieldKeyOf, dimensionsOf, metricsOf } from '../../utils/chart_data';
 import { formatterFor } from '../../utils/value_format';
 
 // Rendered when an aggregated query has no row for the single metric. Aggregations
@@ -57,7 +57,7 @@ export default {
       if (!this.metric) return '';
       const value = this.data?.nodes?.[0]?.[this.metric.key];
       if (value == null) return NO_VALUE;
-      return formatterFor(this.metric.key)(value);
+      return formatterFor(baseFieldKeyOf(this.metric))(value);
     },
   },
   watch: {

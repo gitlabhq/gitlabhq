@@ -5,6 +5,8 @@ import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import noUnsanitizedPlugin from 'eslint-plugin-no-unsanitized';
+import globals from 'globals';
+import confusingBrowserGlobals from 'confusing-browser-globals';
 import { conditionalIgnores } from './tooling/eslint-config/conditional_ignores.js';
 import * as todoLists from './.eslint_todo/index.mjs';
 import { eslintLocalRules } from './tooling/eslint-config/eslint-local-rules/index.mjs';
@@ -85,8 +87,45 @@ const jestConfig = {
     // resolve to different files, but in FOSS the latter falls back to
     // the former, collapsing both imports onto the same path.
     'local-rules/no-mixed-jest-aliases': 'error',
+    // Specs must not rely on the VTU v1 "find upgrade" (string-selector
+    // find() returning component wrappers), which the vue-test-utils-compat
+    // shim emulates in the Vue 3 jest lane via
+    // WRAPPER_FIND_BY_CSS_SELECTOR_RETURNS_COMPONENTS. Use the explicit
+    // component finders (findComponent/findComponentByTestId) instead.
+    // Batch-fix with `scripts/frontend/codemods/vue3_find_component_upgrade.mjs`.
+    'local-rules/vue3-find-component-upgrade': 'error',
   },
 };
+
+// ── Restricted Globals ──
+
+const restrictedGlobals = [
+  ...confusingBrowserGlobals,
+  {
+    name: 'isFinite',
+    message:
+      'Use Number.isFinite instead https://github.com/airbnb/javascript#standard-library--isfinite',
+  },
+  {
+    name: 'isNaN',
+    message:
+      'Use Number.isNaN instead https://github.com/airbnb/javascript#standard-library--isnan',
+  },
+  {
+    name: 'escape',
+    message: 'The global `escape` function is deprecated, use `encodeURI` instead.',
+  },
+  {
+    name: 'unescape',
+    message: 'The global `unescape` function is deprecated, use `decodeURI` instead.',
+  },
+  {
+    name: 'structuredClone',
+    message:
+      'Use `cloneDeep` from lodash-es instead. `structuredClone` throws `DataCloneError` on a Proxy, ' +
+      'and Vue 3 reactive state is a Proxy.',
+  },
+];
 
 // ── Restricted Imports ──
 
@@ -203,8 +242,10 @@ export default [
       'spec/frontend/scripts/infection_scanner/fixtures/**',
 
       // Dot-prefixed directories were implicitly ignored under legacy
-      // eslintrc config (FlatCompat) but must be listed explicitly in flat config
+      // eslintrc config (FlatCompat) but must be listed explicitly in flat config.
+      // Both of these hold generated todo lists, so they are not linted.
       '.eslint_todo/**',
+      '.dependency_cruiser_todo/**',
 
       // Shared agent skills are documentation assets (including example
       // .graphql queries), not application code, so they are not linted.
@@ -223,8 +264,15 @@ export default [
   ...compat.plugins('no-jquery'),
   // Native flat config plugins
   noUnsanitizedPlugin.configs.recommended,
-  // Global rule overrides
+  // Registered here with no `files` key so it applies to every linted file:
+  // flat config merges the `plugins` of all matching objects before resolving
+  // rule names, so rules need not be co-located with their plugin.
+  // https://eslint.org/docs/latest/use/configure/configuration-files
   {
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+
     rules: {
       'no-unused-vars': [
         'error',
@@ -243,10 +291,6 @@ export default [
   // Main application code rules
   {
     files: ['**/*.{js,vue}'],
-
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
 
     languageOptions: {
       globals: {
@@ -270,8 +314,8 @@ export default [
       // Import rules
       'import/no-commonjs': 'error',
       'import/no-default-export': 'off',
-      // Use dependency-cruiser to get an accurate analysis on circular dependencies
-      // and for better performance
+      // Dependency rules are enfoced by `config/dependency_cruiser.mjs`
+      // It is more accurate and faster than the ESLint rule.
       'import/no-cycle': 'off',
 
       'no-underscore-dangle': [
@@ -410,6 +454,8 @@ export default [
       // Restricted syntax, properties, and imports
       'no-restricted-syntax': ['error', ...baseNoRestrictedSyntax],
 
+      'no-restricted-globals': ['error', ...restrictedGlobals],
+
       'no-restricted-properties': [
         'error',
         {
@@ -509,6 +555,7 @@ export default [
       'local-rules/vue-require-valid-help-page-link-component': 'error',
       'local-rules/vue-require-vue-constructor-name': 'error',
       'local-rules/no-orphaned-feature-flag-references': 'error',
+      'local-rules/gl-toast-mixin': 'error',
       'local-rules/no-web-url': 'error',
       'local-rules/vue-no-web-url': 'error',
     },
@@ -542,6 +589,8 @@ export default [
           groups: ['props', 'data', 'computed', 'methods', 'setup'],
         },
       ],
+      // Mirrors `vue/no-unused-properties` for `inject` declarations
+      'local-rules/vue-no-unused-injects': 'error',
       'vue/no-undef-components': [
         'error',
         {
@@ -556,6 +605,12 @@ export default [
 
       // Vue 3 deprecated features
       'vue/no-deprecated-data-object-declaration': 'error',
+      // $listeners reads are converted to the dual-runtime glListeners()
+      // mixin (lib/utils/vue3compat/gl_listeners_mixin.js): Vue 3 removed
+      // $listeners, and on Vue 2 $attrs never contains listeners, so
+      // neither spelling works alone on both runtimes.
+      // Batch-fix with `scripts/frontend/codemods/vue3_gl_listeners.mjs`.
+      'vue/no-deprecated-dollar-listeners-api': 'error',
       'vue/no-deprecated-html-element-is': 'error',
       'vue/no-deprecated-inline-template': 'error',
       'vue/no-deprecated-props-default-this': 'error',
@@ -577,6 +632,47 @@ export default [
             'Renderless components must be wrapped in normalizeRender(...) to ensure Vue.js 3 compatibility, e.g. export default normalizeRender({ ... }).',
         },
       ],
+
+      // Vue 3 components slots mixin
+      'local-rules/vue3-gl-slots': 'error',
+      'local-rules/vue3-gl-slots-mixin-pairing': 'error',
+      'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
+    },
+  },
+  // App code only: the deliberate slot-forwarding fixtures in
+  // spec/frontend/vue3migration and storybook helpers stay unguarded.
+  {
+    files: ['{,ee/,jh/}app/assets/javascripts/**/*.vue'],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'error',
+    },
+  },
+  {
+    files: [
+      'app/assets/javascripts/access_tokens/components/token.vue',
+      'ee/app/assets/javascripts/groups/settings/components/comma_separated_list_token_selector.vue',
+      'ee/app/assets/javascripts/members/components/action_dropdowns/ldap_override_dropdown_item.vue',
+    ],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
+    },
+  },
+  {
+    files: [
+      'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',
+      'app/assets/javascripts/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue',
+    ],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
     },
   },
   // Spec files (unit tests)
@@ -632,6 +728,7 @@ export default [
       'no-unsanitized/property': 'off',
       'local-rules/require-valid-help-page-path': 'off',
       'local-rules/vue-require-valid-help-page-link-component': 'off',
+      'local-rules/no-apollo-mock': 'error',
 
       'no-restricted-imports': [
         'error',
@@ -642,38 +739,7 @@ export default [
       ],
     },
   },
-  // Frontend test guardrails (WS1 Guardrail 2).
-  // Scoped to .js/.vue so the `local-rules` plugin and the rule live in the
-  // same config object (flat config requires co-location for non-`off`
-  // rules). New tests must not stub Apollo via `mocks: { $apollo }`; use
-  // createMockApollo instead. Existing offenders are grandfathered in
-  // `.eslint_todo/local-rules-no-apollo-mock.mjs` and surfaced non-blocking
-  // by the `eslint-todo` CI job (REVEAL_ESLINT_TODO=true).
-  // See https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/477
-  {
-    files: ['{,ee/,jh/}spec/frontend*/**/*.{js,vue}'],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
-    rules: {
-      'local-rules/no-apollo-mock': 'error',
-    },
-  },
-  // Flag unused `inject` declarations in Vue components, mirroring
-  // `vue/no-unused-properties` for props/data/computed/methods/setup. Scoped to
-  // `*.vue` (the `local-rules` plugin must be co-located with the non-`off` rule
-  // in flat config). Existing offenders are grandfathered in
-  // `.eslint_todo/local-rules-vue-no-unused-injects.mjs` and surfaced non-blocking
-  // by the `eslint-todo` CI job (REVEAL_ESLINT_TODO=true).
-  {
-    files: ['*.vue', '**/*.vue'],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
-    rules: {
-      'local-rules/vue-no-unused-injects': 'error',
-    },
-  },
+
   // Storybook stories
   {
     files: ['**/*.stories.js'],
@@ -707,7 +773,6 @@ export default [
 
     plugins: {
       '@graphql-eslint': graphqlPlugin,
-      'local-rules': eslintLocalRules,
     },
 
     rules: {
@@ -818,9 +883,9 @@ export default [
     },
   },
 
-  // MSW integration tests
+  // MSW integration tests (EE-only)
   {
-    files: ['{,ee/}spec/frontend/msw_integration/**/*_spec.js'],
+    files: ['ee/spec/frontend/msw_integration/**/*_spec.js'],
     languageOptions: {
       globals: {
         waitForElement: 'readonly',
@@ -941,6 +1006,22 @@ export default [
     },
   },
 
+  // MSW integration tests are EE-only. Block any file from being (re)introduced
+  // under the CE path; the harness and fixtures live under ee/spec/frontend/msw_integration/.
+  {
+    files: ['spec/frontend/msw_integration/**/*'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Program',
+          message:
+            'MSW integration tests are EE-only; use Capybara for FOSS/licensed behavior. Place this file under ee/spec/frontend/msw_integration/ instead.',
+        },
+      ],
+    },
+  },
+
   /*
   contracts specs are a little different, as they are not "normal" jest specs.
 
@@ -1002,13 +1083,16 @@ export default [
     files: ['{,ee/}app/assets/javascripts/**/*_worker.js'],
 
     languageOptions: {
-      globals: {
-        self: 'readonly',
-      },
+      globals: globals.worker,
     },
 
     rules: {
-      'no-restricted-globals': 'off',
+      // `no-restricted-globals` still bans the `confusing-browser-globals` list.
+      // The rule options replace instead of merging, so the full list has to be restated.
+      'no-restricted-globals': [
+        'error',
+        ...restrictedGlobals.filter((entry) => !Object.hasOwn(globals.worker, entry.name ?? entry)),
+      ],
     },
   },
 

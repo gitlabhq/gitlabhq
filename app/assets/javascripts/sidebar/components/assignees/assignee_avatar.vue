@@ -42,13 +42,7 @@ export default {
 
 <template>
   <span class="gl-relative">
-    <gl-avatar
-      :label="user.name"
-      :src="avatarUrl"
-      :size="imgSize"
-      aria-hidden="true"
-      data-testid="avatar-image"
-    />
+    <gl-avatar :label="user.name" :src="avatarUrl" :size="imgSize" aria-hidden="true" />
     <gl-icon
       v-if="hasMergeIcon"
       :aria-label="__('Cannot merge')"

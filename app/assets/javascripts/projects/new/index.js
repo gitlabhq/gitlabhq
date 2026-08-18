@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import initAccordion from '~/accordion';
@@ -43,13 +44,12 @@ export function initNewProjectCreation() {
     pushToCreateProjectCommand,
   };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'NewProjectCreationAppRoot',
     provide,
-    render(h) {
-      return h(NewProjectCreationApp, { props });
-    },
+    component: NewProjectCreationApp,
+    props,
   });
 }
 
@@ -62,25 +62,24 @@ export function initNewProjectUrlSelect() {
 
   Vue.use(VueApollo);
 
-  elements.forEach(
-    (el) =>
-      new Vue({
-        el,
-        name: 'NewProjectUrlSelectRoot',
-        apolloProvider: new VueApollo({
-          defaultClient: createDefaultClient(),
-        }),
-        provide: {
-          namespaceFullPath: el.dataset.namespaceFullPath,
-          namespaceId: el.dataset.namespaceId,
-          rootUrl: el.dataset.rootUrl,
-          trackLabel: el.dataset.trackLabel,
-          userNamespaceId: el.dataset.userNamespaceId,
-          inputId: el.dataset.inputId,
-          inputName: el.dataset.inputName,
-        },
-        render: (createElement) => createElement(NewProjectUrlSelect),
+  elements.forEach((el) =>
+    initVueApp({
+      el,
+      name: 'NewProjectUrlSelectRoot',
+      apolloProvider: new VueApollo({
+        defaultClient: createDefaultClient(),
       }),
+      provide: {
+        namespaceFullPath: el.dataset.namespaceFullPath,
+        namespaceId: el.dataset.namespaceId,
+        rootUrl: el.dataset.rootUrl,
+        trackLabel: el.dataset.trackLabel,
+        userNamespaceId: el.dataset.userNamespaceId,
+        inputId: el.dataset.inputId,
+        inputName: el.dataset.inputName,
+      },
+      component: NewProjectUrlSelect,
+    }),
   );
 }
 
@@ -91,11 +90,7 @@ export function initDeploymentTargetSelect() {
     return null;
   }
 
-  return new Vue({
-    el,
-    name: 'DeploymentTargetSelectRoot',
-    render: (createElement) => createElement(DeploymentTargetSelect),
-  });
+  return initVueApp({ el, name: 'DeploymentTargetSelectRoot', component: DeploymentTargetSelect });
 }
 
 initAccordion(document.getElementById('js-experimental-setting-accordion'));

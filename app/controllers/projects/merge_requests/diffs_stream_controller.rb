@@ -10,6 +10,8 @@ module Projects
       def diff_file_component(diff_file)
         ::RapidDiffs::MergeRequestDiffFileComponent.new(
           diff_file: diff_file, merge_request: @merge_request,
+          conflict_resolution_path: rapid_diffs_presenter.conflict_resolution_path,
+          can_merge: rapid_diffs_presenter.can_merge,
           parallel_view: view == :parallel
         )
       end
@@ -17,6 +19,8 @@ module Projects
       def diff_files_collection(diff_files)
         ::RapidDiffs::MergeRequestDiffFileComponent.with_collection(
           diff_files, merge_request: @merge_request,
+          conflict_resolution_path: rapid_diffs_presenter.conflict_resolution_path,
+          can_merge: rapid_diffs_presenter.can_merge,
           parallel_view: view == :parallel
         )
       end

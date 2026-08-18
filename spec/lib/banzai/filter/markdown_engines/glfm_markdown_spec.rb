@@ -3,29 +3,79 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: :markdown do
-  it 'defaults to generating sourcepos' do
-    engine = described_class.new({})
-    html = engine.render('# hi')
+  describe 'header rendering' do
+    it 'renders header with anchor by default' do
+      engine = described_class.new({})
+      html = engine.render('# Hello')
 
-    fragment = Nokogiri::HTML.fragment(html)
-    expect(fragment.css('h1').first['data-sourcepos']).to eq('1:1-1:4')
-  end
+      fragment = Nokogiri::HTML.fragment(html)
+      h1 = fragment.css('h1').first
 
-  it 'turns off sourcepos' do
-    engine = described_class.new({ no_sourcepos: true })
-    html = engine.render('# hi')
+      expect(h1['id']).to eq('user-content-hello')
+      expect(h1['data-sourcepos']).to eq('1:1-1:7')
+      expect(h1.css('a.anchor').first['href']).to eq('#hello')
+      expect(h1.css('a.anchor').first['aria-label']).to eq("Link to heading 'Hello'")
+      expect(h1.css('a.anchor').first['data-heading-content']).to eq('Hello')
+    end
 
-    fragment = Nokogiri::HTML.fragment(html)
-    expect(fragment.css('h1').first['data-sourcepos']).to be_nil
-  end
+    it 'turns off header anchors' do
+      engine = described_class.new({ no_header_anchors: true, no_sourcepos: true })
+      expected = <<~HTML
+        <h1>hi</h1>
+      HTML
 
-  it 'turns off header anchors' do
-    engine = described_class.new({ no_header_anchors: true, no_sourcepos: true })
-    expected = <<~HTML
-      <h1>hi</h1>
-    HTML
+      expect(engine.render('# hi')).to eq expected
+    end
 
-    expect(engine.render('# hi')).to eq expected
+    describe 'file prefix' do
+      describe 'when different file paths produce slug collision' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:requested_path, :markdown) do
+          'file.md'         | '## 1. Overview'
+          'file-1.md'       | '## Overview'
+          'file-1.markdown' | '## Overview'
+          'file-1.mdown'    | '## Overview'
+          'file-1.mkd'      | '## Overview'
+          'file-1.mkdn'     | '## Overview'
+        end
+
+        with_them do
+          it 'allows slug collision from different file and heading combinations' do
+            engine = described_class.new(
+              use_filename_in_anchor: true, requested_path: requested_path, no_sourcepos: true
+            )
+            html = engine.render(markdown)
+            fragment = Nokogiri::HTML.fragment(html)
+
+            expect(fragment.at_css('h2')['id']).to eq('user-content-file-1-overview')
+            expect(fragment.at_css('h2 a.anchor')['href']).to eq('#file-1-overview')
+          end
+        end
+      end
+
+      describe 'when heading slugs should not be prefixed' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:context, :case_name) do
+          { requested_path: '!#$%&*+,./:;=?@\^`|~<>[]{}().md',
+            use_filename_in_anchor: true } | 'when slug would be empty'
+          { requested_path: 'docs/CONTRIBUTING.md' } | 'when use_filename_in_anchor is not set'
+          { use_filename_in_anchor: true }           | 'when requested_path is absent'
+        end
+
+        with_them do
+          it 'generates heading IDs without file prefix' do
+            engine = described_class.new({ no_sourcepos: true }.merge(context))
+            html = engine.render('## CoC')
+            fragment = Nokogiri::HTML.fragment(html)
+
+            expect(fragment.at_css('h2')['id']).to eq('user-content-coc')
+            expect(fragment.at_css('h2 a.anchor')['href']).to eq('#coc')
+          end
+        end
+      end
+    end
   end
 
   it 'turns off autolinking' do
@@ -37,13 +87,23 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
     expect(engine.render('http://example.com')).to eq expected
   end
 
-  it 'returns proper inline sourcepos' do
-    engine = described_class.new({})
-    expected = <<~HTML
-      <p data-sourcepos="1:1-1:6"><code data-sourcepos="1:1-1:6">code</code></p>
-    HTML
+  describe 'sourcepos' do
+    it 'turns off sourcepos' do
+      engine = described_class.new({ no_sourcepos: true })
+      html = engine.render('# hi')
 
-    expect(engine.render('`code`')).to eq expected
+      fragment = Nokogiri::HTML.fragment(html)
+      expect(fragment.css('h1').first['data-sourcepos']).to be_nil
+    end
+
+    it 'returns proper inline sourcepos' do
+      engine = described_class.new({})
+      expected = <<~HTML
+        <p data-sourcepos="1:1-1:6"><code data-sourcepos="1:1-1:6">code</code></p>
+      HTML
+
+      expect(engine.render('`code`')).to eq expected
+    end
   end
 
   describe 'placeholder detection' do

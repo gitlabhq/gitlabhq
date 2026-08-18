@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlBreadcrumb, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -6,7 +7,7 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
-import { adminRootPath } from '~/lib/utils/path_helpers/admin';
+import { adminRootPath } from '~/lib/utils/path_helpers/instance_admin';
 import { exploreAnalyticsDashboardsPath } from '~/lib/utils/path_helpers/explore';
 import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
@@ -30,12 +31,15 @@ export default {
     UserCounts,
     UserMenu,
     PromoMenu,
-    OrganizationSwitcher: () =>
-      import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
-    SearchModal: () =>
-      import(
-        /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
-      ),
+    OrganizationSwitcher: defineAsyncComponent(
+      () => import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
+    ),
+    SearchModal: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
+        ),
+    ),
   },
   directives: {
     GlModal: GlModalDirective,
@@ -71,13 +75,9 @@ export default {
     allowSignUp() {
       return parseBoolean(this.sidebarData?.allow_signup);
     },
-    signInVisible() {
-      return parseBoolean(this.sidebarData?.sign_in_visible);
-    },
     shouldShowOrganizationSwitcher() {
       return (
-        this.glFeatures.uiForOrganizations &&
-        this.glFeatures.organizationSwitching &&
+        this.glFeatures.orgSwitcher &&
         this.isLoggedIn &&
         window.gon.current_organization &&
         this.sidebarData.has_multiple_organizations
@@ -117,7 +117,7 @@ export default {
     autofocus
   >
     <gl-button
-      class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
+      class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only focus-visible:gl-not-sr-only"
       data-testid="super-topbar-skip-to"
       href="#content-body"
       variant="confirm"
@@ -139,7 +139,6 @@ export default {
         v-if="!isLoggedIn"
         :pricing-url="sidebarData.compare_plans_url"
         :allow-sign-up="allowSignUp"
-        :sign-in-visible="signInVisible"
         class="gl-hidden lg:gl-flex"
       />
 
@@ -242,7 +241,6 @@ export default {
           {{ isSaas ? __('Get free trial') : __('Register') }}
         </gl-button>
         <gl-button
-          v-if="signInVisible"
           :href="signInPath()"
           class="gl-hidden lg:gl-flex"
           data-testid="topbar-signin-button"
@@ -254,7 +252,6 @@ export default {
           :sidebar-data="sidebarData"
           :pricing-url="sidebarData.compare_plans_url"
           :allow-sign-up="allowSignUp"
-          :sign-in-visible="signInVisible"
           class="gl-flex lg:gl-hidden"
         />
       </template>

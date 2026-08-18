@@ -6,7 +6,7 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
   describe "#perform" do
     let_it_be(:developer) { create(:user) }
     let_it_be(:author) { create(:user) }
-    let_it_be(:project) { create(:project, :public, :repository, developers: [developer]) }
+    let_it_be(:project) { create(:project, :public, :small_repo, developers: [developer]) }
     let_it_be_with_reload(:issue) { create(:issue, project: project, author: author) }
 
     let(:project_id) { project.id }

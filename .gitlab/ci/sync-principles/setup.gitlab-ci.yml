@@ -1,0 +1,27 @@
+# Shared before_script for every gitlab-ai-principles-distiller job.
+#
+# Lives in its own file because the distillation now spans two pipelines: the parent (sync-principles.gitlab-ci.yml) and
+# the generated child (sync-principles/child.gitlab-ci.yml).
+# A child pipeline does not inherit the parent's YAML, so both must include this rather than share an anchor.
+#
+# Kept as a hidden job referenced via `!reference` rather than an `extends:` base, so each consuming job keeps its own
+# `variables:` block: they need different tokens and timeouts.
+.ai-principles-setup:
+  before_script:
+    - apk add --no-cache build-base git
+    # Audit-trail visibility: log the identity making the calls (the service account; see access request #43931).
+    - echo "Identity:${GITLAB_USER_LOGIN:-<unset>} (job triggered from $CI_PIPELINE_SOURCE)"
+    - git config --global user.email "service-modelops-agent-principles-distiller@gitlab.com"
+    - git config --global user.name "Agent Principles Distiller"
+    # Ensure the default branch ref is available so distillation_base_sha
+    # (Gitlab::PrinciplesDistiller::Sync's `git merge-base HEAD master`) can resolve.
+    # The runner does a shallow clone (depth 20) by default and only fetches the pipeline ref; we just need master's
+    # tip.
+    - git fetch --depth=1 origin "$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH" || true
+    # Install gem dependencies from the gem directory.
+    # Pre-install the exact Bundler the lockfile pins so the alpine image's older bundler doesn't self-upgrade
+    # mid-install; that self-upgrade triggers a confusing "Cannot write a changed lockfile while frozen" stderr line
+    # even though the install succeeds.
+    - cd gems/gitlab-ai-principles-distiller
+    - gem install bundler --no-document --version "$(tail -n 1 Gemfile.lock | tr -d '[:space:]')"
+    - bundle install --jobs=$(nproc) --retry=3

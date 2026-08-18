@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import MlExperimentsIndex from './routes/experiments/index';
 
@@ -21,12 +22,11 @@ export const initIndexMlExperiments = () => {
 
   const apolloProvider = new VueApollo({ defaultClient: createDefaultClient() });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MlExperimentsIndexApp',
     apolloProvider,
-    render(h) {
-      return h(MlExperimentsIndex, { props });
-    },
+    component: MlExperimentsIndex,
+    props,
   });
 };

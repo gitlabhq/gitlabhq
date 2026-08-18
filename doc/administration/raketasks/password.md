@@ -23,10 +23,10 @@ To reset a password using a Rake task, see [reset user passwords](../../security
 Starting with GitLab 17.11, the salts of password hashes on FIPS instances
 are increased when a user signs in.
 
-Non FIPS instances started to use a updated bcrypt work factor in
+Non FIPS instances started to use an updated bcrypt work factor in
 GitLab 17.9.
 
-You can check how many users have a unmigrated password hashes:
+You can check how many users have unmigrated password hashes:
 
 ```shell
 # omnibus-gitlab

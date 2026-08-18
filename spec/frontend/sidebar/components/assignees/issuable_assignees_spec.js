@@ -48,7 +48,7 @@ describe('IssuableAssignees', () => {
   describe('when clicking "assign yourself"', () => {
     it('emits "assign-self"', () => {
       createComponent({ signedIn: true });
-      wrapper.find('[data-testid="assign-yourself"]').vm.$emit('click');
+      wrapper.findComponent('[data-testid="assign-yourself"]').vm.$emit('click');
       expect(wrapper.emitted('assign-self')).toHaveLength(1);
     });
   });

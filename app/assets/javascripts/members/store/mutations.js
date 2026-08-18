@@ -3,6 +3,22 @@ import * as types from './mutation_types';
 import { findMember } from './utils';
 
 export default {
+  [types.REQUEST_MEMBERS](state) {
+    state.loading = true;
+    state.loadRequested = true;
+  },
+  [types.RECEIVE_MEMBERS_SUCCESS](state, { members, pagination }) {
+    state.members = members;
+    state.pagination = pagination;
+    state.loading = false;
+  },
+  [types.RECEIVE_MEMBERS_ERROR](state, { error }) {
+    state.loading = false;
+    state.errorMessage =
+      error?.response?.data?.message ||
+      s__('Members|An error occurred while loading members, please try again.');
+    state.showError = true;
+  },
   [types.RECEIVE_MEMBER_ROLE_ERROR](state, { error }) {
     state.errorMessage =
       error.response?.data?.message ||

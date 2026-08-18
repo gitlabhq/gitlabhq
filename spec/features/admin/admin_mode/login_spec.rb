@@ -98,7 +98,7 @@ RSpec.describe 'Admin mode login', :with_current_organization, feature_category:
               context 'with invalid code' do
                 it 'blocks login' do
                   code = codes.first
-                  expect(user.invalidate_otp_backup_code!(code)).to eq true
+                  expect(user.invalidate_otp_backup_code!(code)).to be true
 
                   user.save!
                   expect(user.reload.otp_backup_codes.size).to eq 9

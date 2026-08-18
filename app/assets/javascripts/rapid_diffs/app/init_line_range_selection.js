@@ -14,6 +14,8 @@ function getToggleSide(toggle) {
 
 export function initLineRangeSelection(appElement) {
   const toggle = appElement.querySelector('[data-new-discussion-toggle]');
+  if (!toggle) return;
+
   let drag = null;
   toggle.setAttribute('draggable', 'true');
 

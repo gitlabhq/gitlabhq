@@ -69,15 +69,6 @@ describe('Markdown field component', () => {
           supportsQuickActions: true,
           ...props,
         },
-        mocks: {
-          $apollo: {
-            queries: {
-              currentUser: {
-                loading: false,
-              },
-            },
-          },
-        },
       },
     );
   }
@@ -97,7 +88,7 @@ describe('Markdown field component', () => {
     });
   }
 
-  const getPreviewToggle = () => subject.findByTestId('preview-toggle');
+  const getPreviewToggle = () => subject.findComponentByTestId('preview-toggle');
   const getSkipButton = () => subject.findByTestId('skip-to-input');
   const getMarkdownButton = () => subject.find('.js-md');
   const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');
@@ -512,6 +503,14 @@ describe('Markdown field component', () => {
       createSubject({ showContentEditorSwitcher: false });
 
       expect(findMarkdownToolbar().classes()).not.toContain('gl-border-t');
+    });
+
+    it('re-emits `enable-content-editor` from the toolbar', () => {
+      createWrapper();
+
+      findMarkdownToolbar().vm.$emit('enable-content-editor');
+
+      expect(subject.emitted('enable-content-editor')).toEqual([[]]);
     });
   });
 

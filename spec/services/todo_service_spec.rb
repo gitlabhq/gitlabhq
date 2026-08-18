@@ -980,6 +980,13 @@ RSpec.describe TodoService, feature_category: :notifications do
         expect(todo.reload).to be_done
       end
 
+      it 'marks build_failed todos as done for all users' do
+        todo = create(:todo, :build_failed, user: author, project: project, target: mentioned_mr, author: john_doe)
+        service.close_merge_request(mentioned_mr, john_doe)
+
+        expect(todo.reload).to be_done
+      end
+
       it 'does not mark todos with non-qualifying actions as done for other users' do
         todo = create(:todo, :mentioned, user: author, project: project, target: mentioned_mr, author: john_doe)
         service.close_merge_request(mentioned_mr, john_doe)
@@ -1027,6 +1034,13 @@ RSpec.describe TodoService, feature_category: :notifications do
 
       it 'marks added_approver todos as done for all users' do
         todo = create(:todo, action: Todo::ADDED_APPROVER, user: john_doe, project: project, target: mentioned_mr, author: author)
+        service.merge_merge_request(mentioned_mr, john_doe)
+
+        expect(todo.reload).to be_done
+      end
+
+      it 'marks build_failed todos as done for all users' do
+        todo = create(:todo, :build_failed, user: author, project: project, target: mentioned_mr, author: john_doe)
         service.merge_merge_request(mentioned_mr, john_doe)
 
         expect(todo.reload).to be_done
@@ -1571,18 +1585,27 @@ RSpec.describe TodoService, feature_category: :notifications do
     let_it_be_with_reload(:project) { create(:project, :public, group: group) }
 
     shared_examples 'member access request is raised' do
-      context 'when the source has more than 10 owners' do
-        it 'creates todos for 10 recently active source owners' do
-          users = create_list(:user, 12, :with_sign_ins)
-          users.each do |user|
-            source.add_owner(user)
-          end
-          ten_most_recently_active_source_owners = users.sort_by(&:last_sign_in_at).last(10)
-          excluded_source_owners = users - ten_most_recently_active_source_owners
+      shared_context 'with owners exceeding the access request approvers limit' do
+        before do
+          stub_const('Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
+        end
 
+        let_it_be(:users) { create_list(:user, 3, :with_sign_ins) }
+        let(:most_recently_active_source_owners) { users.sort_by(&:last_sign_in_at).last(2) }
+        let(:excluded_source_owners) { users - most_recently_active_source_owners }
+
+        before_all do
+          users.each { |user| source.add_owner(user) }
+        end
+      end
+
+      context 'when the source has more owners than ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT' do
+        include_context 'with owners exceeding the access request approvers limit'
+
+        it 'creates todos for the most recently active source owners, up to the limit' do
           service.create_member_access_request_todos(requester1)
 
-          ten_most_recently_active_source_owners.each do |owner|
+          most_recently_active_source_owners.each do |owner|
             expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
           end
 
@@ -1608,18 +1631,13 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
 
       context 'when multiple access requests are raised' do
-        it 'creates todos for 10 recently active source owners for multiple requests' do
-          users = create_list(:user, 12, :with_sign_ins)
-          users.each do |user|
-            source.add_owner(user)
-          end
-          ten_most_recently_active_source_owners = users.sort_by(&:last_sign_in_at).last(10)
-          excluded_source_owners = users - ten_most_recently_active_source_owners
+        include_context 'with owners exceeding the access request approvers limit'
 
+        it 'creates todos for the most recently active source owners, up to the limit, for multiple requests' do
           service.create_member_access_request_todos(requester1)
           service.create_member_access_request_todos(requester2)
 
-          ten_most_recently_active_source_owners.each do |owner|
+          most_recently_active_source_owners.each do |owner|
             expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
             expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester2.user).count).to eq 1
           end
@@ -1645,6 +1663,36 @@ RSpec.describe TodoService, feature_category: :notifications do
         let_it_be_with_reload(:source) { create(:project, :public) }
         let_it_be_with_reload(:requester1) { create(:project_member, :access_request, project: source, user: assignee) }
         let_it_be_with_reload(:requester2) { create(:project_member, :access_request, project: source, user: non_member) }
+      end
+    end
+  end
+
+  describe '#transfer_failed' do
+    context 'when transfer target is a project' do
+      it 'creates a transfer_failed todo scoped to the project' do
+        service.transfer_failed(project, author)
+
+        should_create_todo(
+          user: author,
+          target: project,
+          action: Todo::TRANSFER_FAILED,
+          project: project,
+          group: nil
+        )
+      end
+    end
+
+    context 'when transfer target is a group' do
+      it 'creates a transfer_failed todo scoped to the group' do
+        service.transfer_failed(group, author)
+
+        should_create_todo(
+          user: author,
+          target: group,
+          action: Todo::TRANSFER_FAILED,
+          project: nil,
+          group: group
+        )
       end
     end
   end
@@ -1690,6 +1738,67 @@ RSpec.describe TodoService, feature_category: :notifications do
         todo = Todo.find_by(user: service_account, target: issue, action: Todo::ASSIGNED)
         expect(todo.author).to eq(human)
       end
+    end
+  end
+
+  describe 'push notification dispatch' do
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:service) { described_class.new }
+
+    before do
+      allow(::Todos::PushNotificationWorker).to receive(:perform_async)
+    end
+
+    context 'when the recipient has a registered device' do
+      before do
+        create(:mobile_device_push_subscription, user: john_doe)
+      end
+
+      it 'enqueues one batch push notification job for the created todos' do
+        service.mark_todo(issue, john_doe)
+
+        todo = Todo.find_by(user: john_doe, target: issue, action: Todo::MARKED)
+        expect(::Todos::PushNotificationWorker).to have_received(:perform_async).with([todo.id])
+      end
+
+      it 'does not enqueue when the dispatch feature flag is disabled' do
+        stub_feature_flags(mobile_push_notifications_dispatch: false)
+
+        service.mark_todo(issue, john_doe)
+
+        expect(::Todos::PushNotificationWorker).not_to have_received(:perform_async)
+      end
+
+      context 'when a database transaction is open' do
+        it 'defers the enqueue until the transaction commits' do
+          todo = create(:todo, user: john_doe, project: project, target: issue)
+
+          Todo.transaction do
+            service.send(:enqueue_push_notifications, [todo])
+
+            expect(::Todos::PushNotificationWorker).not_to have_received(:perform_async)
+          end
+
+          expect(::Todos::PushNotificationWorker).to have_received(:perform_async).with([todo.id])
+        end
+      end
+    end
+
+    it 'does not enqueue for recipients without a registered device' do
+      service.mark_todo(issue, john_doe)
+
+      expect(::Todos::PushNotificationWorker).not_to have_received(:perform_async)
+    end
+
+    it 'enqueues only the todos of recipients with a registered device' do
+      create(:mobile_device_push_subscription, user: john_doe)
+      subscribed_todo = create(:todo, user: john_doe, project: project, target: issue)
+      unsubscribed_todo = create(:todo, user: author, project: project, target: issue)
+
+      service.send(:enqueue_push_notifications, [subscribed_todo, unsubscribed_todo])
+
+      expect(::Todos::PushNotificationWorker).to have_received(:perform_async).with([subscribed_todo.id])
     end
   end
 

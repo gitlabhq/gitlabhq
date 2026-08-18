@@ -1,7 +1,7 @@
 <script>
 import { computed } from 'vue';
 import { s__ } from '~/locale';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
@@ -131,7 +131,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

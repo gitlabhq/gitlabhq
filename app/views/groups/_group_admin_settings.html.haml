@@ -30,7 +30,7 @@
     = _("Time (in hours) that users are allowed to skip forced configuration of two-factor authentication.")
 
 - if @group.namespace_settings.present?
-  - if @group.licensed_feature_available?(:security_orchestration_policies) && @group.root?
+  - if ::Security::PolicyAvailability.any_available?(@group) && @group.root?
     = render_if_exists 'groups/admin_security_policies', form: f
 
   .form-group.gl-form-group

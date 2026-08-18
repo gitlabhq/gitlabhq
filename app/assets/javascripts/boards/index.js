@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BoardApp from '~/boards/components/board_app.vue';
 import { TYPE_ISSUE, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import {
@@ -62,7 +63,6 @@ const apolloProvider = new VueApollo({
 function mountBoardApp(el) {
   const {
     boardId,
-    groupId,
     fullPath,
     rootPath,
     wiHasScopedLabelsFeature,
@@ -79,8 +79,7 @@ function mountBoardApp(el) {
 
   const boardType = el.dataset.parent;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'BoardAppRoot',
     router: new VueRouter(),
@@ -88,7 +87,6 @@ function mountBoardApp(el) {
     provide: {
       initialBoardId: fullBoardId(boardId),
       disabled: parseBoolean(el.dataset.disabled),
-      groupId: Number(groupId),
       rootPath,
       fullPath,
       groupPath: wiGroupPath,
@@ -99,13 +97,10 @@ function mountBoardApp(el) {
       isGroupBoard: boardType === NAMESPACE_GROUP,
       isProjectBoard: boardType === NAMESPACE_PROJECT,
       currentUserId: gon.current_user_id || null,
-      boardWeight: el.dataset.boardWeight ? parseInt(el.dataset.boardWeight, 10) : null,
       labelsManagePath: el.dataset.labelsManagePath,
-      labelsFilterBasePath: el.dataset.labelsFilterBasePath,
       releasesFetchPath: el.dataset.releasesFetchPath,
       timeTrackingLimitToHours: parseBoolean(el.dataset.timeTrackingLimitToHours),
       issuableType: TYPE_ISSUE,
-      emailsEnabled: parseBoolean(el.dataset.emailsEnabled),
       hasMissingBoards: parseBoolean(el.dataset.hasMissingBoards),
       weights: el.dataset.weights ? JSON.parse(el.dataset.weights) : [],
       isIssueBoard: true,
@@ -117,11 +112,9 @@ function mountBoardApp(el) {
       canAdminList: parseBoolean(el.dataset.canAdminList),
       canAdminBoard: parseBoolean(el.dataset.canAdminBoard),
       allowLabelCreate: parseBoolean(el.dataset.canUpdate),
-      allowLabelEdit: parseBoolean(el.dataset.canUpdate),
       isSignedIn: isLoggedIn(),
       canAdminLabel: parseBoolean(wiCanAdminLabel),
       // Features
-      multipleAssigneesFeatureAvailable: parseBoolean(el.dataset.multipleAssigneesFeatureAvailable),
       epicFeatureAvailable: parseBoolean(el.dataset.epicFeatureAvailable),
       iterationFeatureAvailable: parseBoolean(el.dataset.iterationFeatureAvailable),
       weightFeatureAvailable: parseBoolean(el.dataset.weightFeatureAvailable),
@@ -136,17 +129,13 @@ function mountBoardApp(el) {
       scopedIssueBoardFeatureEnabled: parseBoolean(el.dataset.scopedIssueBoardFeatureEnabled),
       allowSubEpics: false,
       hasScopedLabelsFeature: parseBoolean(wiHasScopedLabelsFeature),
-      hasIterationsFeature: parseBoolean(el.dataset.iterationFeatureAvailable),
-      hasIssueWeightsFeature: parseBoolean(el.dataset.weightFeatureAvailable),
-      hasIssuableHealthStatusFeature: parseBoolean(el.dataset.healthStatusFeatureAvailable),
       hasSubepicsFeature: parseBoolean(el.dataset.subEpicsFeatureAvailable),
       hasLinkedItemsEpicsFeature: parseBoolean(el.dataset.hasLinkedItemsEpicsFeature),
-      hasOkrsFeature: parseBoolean(el.dataset.hasOkrsFeature),
       hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
       statusListsAvailable: parseBoolean(el.dataset.statusListsAvailable),
       hasStatusFeature: parseBoolean(el.dataset.workItemStatusAvailable),
     },
-    render: (createComponent) => createComponent(BoardApp),
+    component: BoardApp,
   });
 }
 

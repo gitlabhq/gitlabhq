@@ -327,9 +327,10 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
   end
 
   describe '#user_merge_branch' do
+    let_it_be(:project) { create(:project, :repository) }
     let(:target_branch) { 'master' }
     let(:target_sha) { repository.commit(target_branch).sha }
-    let(:source_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+    let(:source_sha) { repository.commit('feature').sha }
     let(:message) { 'Merge a branch' }
     let(:sign) { false }
 
@@ -1043,19 +1044,20 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
   end
 
   describe '#rebase' do
-    subject do
-      client.rebase(
-        user,
-        '',
-        branch: 'feature',
-        branch_sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9',
-        remote_repository: repository,
-        remote_branch: 'master'
-      ) { nil }
-    end
-
     context 'with clean repository' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
+      let(:feature_sha) { repository.commit('feature').sha }
+
+      subject do
+        client.rebase(
+          user,
+          '',
+          branch: 'feature',
+          branch_sha: feature_sha,
+          remote_repository: repository,
+          remote_branch: 'master'
+        ) { nil }
+      end
 
       it 'succeeds' do
         expect(subject).to be_present
@@ -1088,58 +1090,58 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
         expect { subject }.to raise_error(RuntimeError, 'expected response stream to finish')
       end
-    end
 
-    shared_examples '#rebase with an error' do
-      it 'raises a GitError exception' do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_rebase_confirmable)
-          .and_raise(raised_error)
+      shared_examples '#rebase with an error' do
+        it 'raises a GitError exception' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_rebase_confirmable)
+            .and_raise(raised_error)
 
-        expect { subject }.to raise_error(expected_error)
-      end
-    end
-
-    context 'when AccessError is raised' do
-      let(:raised_error) do
-        new_detailed_error(
-          GRPC::Core::StatusCodes::INTERNAL,
-          'something failed',
-          Gitaly::UserRebaseConfirmableError.new(
-            access_check: Gitaly::AccessCheckError.new(
-              error_message: 'something went wrong'
-            )))
+          expect { subject }.to raise_error(expected_error)
+        end
       end
 
-      let(:expected_error) { Gitlab::Git::PreReceiveError }
+      context 'when AccessError is raised' do
+        let(:raised_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::INTERNAL,
+            'something failed',
+            Gitaly::UserRebaseConfirmableError.new(
+              access_check: Gitaly::AccessCheckError.new(
+                error_message: 'something went wrong'
+              )))
+        end
 
-      it_behaves_like '#rebase with an error'
-    end
+        let(:expected_error) { Gitlab::Git::PreReceiveError }
 
-    context 'when RebaseConflictError is raised' do
-      let(:raised_error) do
-        new_detailed_error(
-          GRPC::Core::StatusCodes::INTERNAL,
-          'something failed',
-          Gitaly::UserSquashError.new(
-            rebase_conflict: Gitaly::MergeConflictError.new(
-              conflicting_files: ['conflicting-file']
-            )))
+        it_behaves_like '#rebase with an error'
       end
 
-      let(:expected_error) { Gitlab::Git::Repository::GitError }
+      context 'when RebaseConflictError is raised' do
+        let(:raised_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::INTERNAL,
+            'something failed',
+            Gitaly::UserSquashError.new(
+              rebase_conflict: Gitaly::MergeConflictError.new(
+                conflicting_files: ['conflicting-file']
+              )))
+        end
 
-      it_behaves_like '#rebase with an error'
-    end
+        let(:expected_error) { Gitlab::Git::Repository::GitError }
 
-    context 'when non-detailed gRPC error is raised' do
-      let(:raised_error) do
-        GRPC::Internal.new('non-detailed error')
+        it_behaves_like '#rebase with an error'
       end
 
-      let(:expected_error) { GRPC::Internal }
+      context 'when non-detailed gRPC error is raised' do
+        let(:raised_error) do
+          GRPC::Internal.new('non-detailed error')
+        end
 
-      it_behaves_like '#rebase with an error'
+        let(:expected_error) { GRPC::Internal }
+
+        it_behaves_like '#rebase with an error'
+      end
     end
   end
 

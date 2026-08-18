@@ -802,6 +802,13 @@ build:
 
 #### Dependency lock plugin
 
+> [!warning]
+> The `gradle-dependency-lock-plugin` is not compatible with Gradle 9 or later. When you try to
+> generate `dependencies.lock` files with those versions, the build fails because the plugin
+> depends on internal Gradle APIs that were removed in Gradle 9. For Gradle 9 or later projects, use the
+> [Gradle dependencies task](#gradle-dependencies-task) or
+> [HtmlDependencyReportTask](#htmldependencyreporttask) instead.
+
 This method uses the [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin)
 to generate two lockfiles: `dependencies.lock` (direct and transitive dependencies)
 and `dependencies.direct.lock` (direct dependency only). The analyzer uses both
@@ -872,7 +879,8 @@ generate nebula lockfile:
 This method uses the
 [`HtmlDependencyReportTask`](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)
 to produce a `gradle-html-dependency-report.js` file, which contains direct and transitive
-dependencies. It is tested with `gradle` versions 4 through 8.
+dependencies. This method is tested with Gradle versions 4 through 8, and it is recommended for
+Gradle 9 or later projects.
 
 To enable the analyzer on a Gradle project:
 
@@ -1273,7 +1281,7 @@ flowchart TD
 
 In the dependency detection phase the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
 
-In the static reachability phase he analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
+In the static reachability phase the analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
 This allows users to prioritize vulnerabilities based on whether the vulnerable component is reachable.
 For more information, see the [static reachability page](../static_reachability.md).
 

@@ -143,6 +143,37 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
 
     it_behaves_like 'enforces step-up authentication (request spec)'
 
+    context 'when rate limiting project creation' do
+      let_it_be(:current_user) { user }
+      let_it_be(:create_params) do
+        { project: { name: 'rate-limited-project', path: 'rate-limited-project', namespace_id: user.namespace.id } }
+      end
+
+      def request
+        post projects_path, params: create_params
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :projects_create, use_second_scope: false
+
+      context 'when the `namespace_create_rate_limit` feature flag is disabled' do
+        before do
+          stub_feature_flags(namespace_create_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
+
+          request
+        end
+
+        it 'creates the project' do
+          request
+
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+    end
+
     context 'with invalid namespace_id' do
       let(:project_params) do
         {

@@ -1,6 +1,7 @@
 <script>
-import { GlTabs } from '@gitlab/ui';
+import { GlTabs, GlToastMixin } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
 
 import RunnersTab from './runners_tab.vue';
@@ -24,6 +25,7 @@ export default {
     InstanceRunnersTabEmptyState,
     RunnerToggleAssignButton,
   },
+  mixins: [GlToastMixin],
   inject: {
     canAssignRunners: {
       default: false,
@@ -71,7 +73,12 @@ export default {
   },
   emits: ['error'],
   data() {
+    // Read once at creation, never written back: GlTabs' own query-param sync would
+    // push a history entry per tab click and drop the URL hash this page relies on.
+    const tab = getParameterByName('tab');
+
     return {
+      initialTabIndex: Math.max(0, this.$options.TAB_QUERY_VALUES.indexOf(tab)),
       groupRunnersEnabled: this.isGroupRunnersEnabled,
       instanceRunnersEnabledModel: this.instanceRunnersEnabled,
     };
@@ -91,6 +98,11 @@ export default {
       this.$refs.assignedRunners.refresh();
       this.$refs.otherAvailableRunners.refresh();
     },
+    // Reading the current value is not a change: refreshing here would race the
+    // refresh below and can leave the pre-toggle list showing.
+    onGroupRunnersFetched(value) {
+      this.groupRunnersEnabled = value;
+    },
     onGroupRunnersToggled(value) {
       this.groupRunnersEnabled = value;
       this.$refs.groupRunners.refresh();
@@ -103,10 +115,12 @@ export default {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PROJECT_TYPE,
+  // Tab order and names are a contract with deep-linking callers.
+  TAB_QUERY_VALUES: ['assigned', 'available', 'group', 'instance'],
 };
 </script>
 <template>
-  <gl-tabs>
+  <gl-tabs :value="initialTabIndex">
     <runners-tab
       ref="assignedRunners"
       data-testid="project-runners-tab"
@@ -169,6 +183,7 @@ export default {
         <group-runners-toggle
           v-if="canToggleGroupRunners"
           :project-full-path="projectFullPath"
+          @fetched="onGroupRunnersFetched"
           @change="onGroupRunnersToggled"
           @error="onError"
         />

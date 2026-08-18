@@ -7,8 +7,8 @@ describe('Duration Cell', () => {
 
   const findJobDuration = () => wrapper.findByTestId('job-duration');
   const findJobFinishedTime = () => wrapper.findByTestId('job-finished-time');
-  const findDurationIcon = () => wrapper.findByTestId('duration-icon');
-  const findFinishedTimeIcon = () => wrapper.findByTestId('finished-time-icon');
+  const findDurationIcon = () => wrapper.findComponentByTestId('duration-icon');
+  const findFinishedTimeIcon = () => wrapper.findComponentByTestId('finished-time-icon');
 
   const createComponent = (props) => {
     wrapper = extendedWrapper(
@@ -73,5 +73,11 @@ describe('Duration Cell', () => {
 
     expect(findFinishedTimeIcon().props('name')).toBe('calendar');
     expect(findDurationIcon().props('name')).toBe('timer');
+  });
+
+  it('renders a tooltip explaining the duration', () => {
+    createComponent({ duration: 7 });
+
+    expect(findJobDuration().attributes('title')).toBe('Total time to run');
   });
 });

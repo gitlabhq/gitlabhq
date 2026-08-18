@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_category: :code_review_workflow do
   subject(:check_lfs_file_locks) { described_class.new(merge_request: merge_request, params: params) }
 
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:merge_request) { build(:merge_request, source_project: project) }
   let(:params) { { skip_locked_lfs_files_check: skip_check } }
   let(:skip_check) { false }
@@ -34,7 +34,7 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
 
       before do
         allow(merge_request).to receive(:changed_paths).and_return(changed_paths)
-        allow(project.lfs_file_locks).to receive(:exists?).and_call_original
+        allow(project.lfs_file_locks).to receive(:any?).and_call_original
         allow(project.lfs_file_locks).to receive(:for_paths).and_call_original
       end
 
@@ -45,7 +45,7 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
 
         it 'returns early before querying for matching file locks' do
           execute
-          expect(project.lfs_file_locks).to have_received(:exists?)
+          expect(project.lfs_file_locks).to have_received(:any?)
           expect(project.lfs_file_locks).not_to have_received(:for_paths)
         end
       end
@@ -61,8 +61,16 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
 
         it 'deduplicates the changed paths' do
           execute
-          expect(project.lfs_file_locks).to have_received(:exists?)
+          expect(project.lfs_file_locks).to have_received(:any?)
           expect(project.lfs_file_locks).to have_received(:for_paths).with(changed_paths.map(&:path).uniq)
+        end
+
+        it 'checks lock existence without loading the association', :aggregate_failures do
+          expect(project.lfs_file_locks).not_to be_loaded
+
+          execute
+
+          expect(project.lfs_file_locks).not_to be_loaded
         end
       end
 
@@ -78,7 +86,7 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
 
         it 'deduplicates the changed paths' do
           execute
-          expect(project.lfs_file_locks).to have_received(:exists?)
+          expect(project.lfs_file_locks).to have_received(:any?)
           expect(project.lfs_file_locks).to have_received(:for_paths).with(changed_paths.map(&:path).uniq)
         end
       end
@@ -137,34 +145,6 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
       let(:lfs_enabled) { false }
 
       it { expect(cache_key).to eq('inactive_lfs_file_locks_mergeability_check') }
-    end
-  end
-
-  describe '#has_lfs_file_locks?' do
-    context 'when lfs_file_locks association is not loaded' do
-      before do
-        allow(project.lfs_file_locks).to receive(:loaded?).and_return(false)
-        allow(project.lfs_file_locks).to receive(:exists?)
-      end
-
-      it 'calls exists?' do
-        check_lfs_file_locks.has_lfs_file_locks?
-
-        expect(project.lfs_file_locks).to have_received(:exists?)
-      end
-    end
-
-    context 'when lfs_file_locks association is loaded' do
-      before do
-        allow(project.lfs_file_locks).to receive(:loaded?).and_return(true)
-        allow(project.lfs_file_locks).to receive(:any?)
-      end
-
-      it 'calls any?' do
-        check_lfs_file_locks.has_lfs_file_locks?
-
-        expect(project.lfs_file_locks).to have_received(:any?)
-      end
     end
   end
 end

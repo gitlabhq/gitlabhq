@@ -23,11 +23,11 @@ title: Duo Workflow Use Case for Applying Coding Style
 
 ## Duo Workflow Use Case: Improve Java Application with Style Guide
 
-The document describes GitLab Duo Workflow Solution with prompt and context library. The purpose of the solution is to improve application coding based on defined style.
+The document describes GitLab Duo Workflow Solution with a prompt and context library. The purpose of the solution is to improve application coding based on defined style.
 
 This solution provides a GitLab issue as the prompt and the style guide as the context, designed to automate Java style guidelines to codebases using GitLab Duo Workflow. The prompt and context library enables Duo Workflow to:
 
-1. Access centralized style guide content stored in GitLab repository,
+1. Access centralized style guide content stored in a GitLab repository,
 1. Understand domain-specific coding standards, and
 1. Apply consistent formatting to Java code while preserving functionality.
 
@@ -268,7 +268,7 @@ This repository includes a banking tutorial example to demonstrate how the style
 - Config Server
 - Discovery Server
 
-The sample examples applies enterprise style guidelines to the `AssetManagementService.java` class, demonstrating proper formatting for:
+The sample example applies enterprise style guidelines to the `AssetManagementService.java` class, demonstrating proper formatting for:
 
 1. Import organization
 1. Javadoc standards

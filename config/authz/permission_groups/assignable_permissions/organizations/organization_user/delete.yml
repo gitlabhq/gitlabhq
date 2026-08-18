@@ -1,0 +1,9 @@
+---
+name: delete_organization_user
+description: Grants the ability to delete organization users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_organization_user

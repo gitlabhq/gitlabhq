@@ -66,7 +66,9 @@ export default {
     <diff-discussion-reply
       v-if="showReplyForm"
       :render-reply-placeholder="Boolean(line.discussions.length)"
-      @showNewDiscussionForm="showCommentForm({ lineCode: line.line_code, fileHash: diffFileHash })"
+      @show-new-discussion-form="
+        showCommentForm({ lineCode: line.line_code, fileHash: diffFileHash })
+      "
     >
       <template #form>
         <diff-line-note-form

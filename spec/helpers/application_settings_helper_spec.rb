@@ -98,6 +98,20 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       end
     end
 
+    describe ':dynamic_client_registration_enabled' do
+      context 'when self-managed' do
+        it 'is included' do
+          expect(helper.visible_attributes).to include(:dynamic_client_registration_enabled)
+        end
+      end
+
+      context 'when on SaaS', :saas do
+        it 'is not included' do
+          expect(helper.visible_attributes).not_to include(:dynamic_client_registration_enabled)
+        end
+      end
+    end
+
     it 'contains rate limit parameters' do
       expect(helper.visible_attributes).to include(
         *%i[
@@ -121,6 +135,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           runner_jobs_patch_trace_api_limit
           runner_jobs_endpoints_api_limit
           pipeline_limit_per_user
+          web_hook_event_resend_limit
+          web_hook_test_limit
         ])
     end
 
@@ -439,6 +455,78 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     subject { helper.sidekiq_job_limiter_modes_for_select }
 
     it { is_expected.to eq([%w[Track track], %w[Compress compress]]) }
+  end
+
+  describe '#managed_setting?' do
+    before do
+      Gitlab::ManagedSettings.reset!
+      stub_const('Gitlab::ManagedSettings::PATH',
+        Rails.root.join('spec/fixtures/managed_settings/valid.yml'))
+    end
+
+    after do
+      Gitlab::ManagedSettings.reset!
+    end
+
+    it 'is true for a managed setting' do
+      expect(helper.managed_setting?(:sidekiq_timezone_override)).to be(true)
+    end
+
+    it 'is false for an unmanaged setting' do
+      expect(helper.managed_setting?(:signup_enabled)).to be(false)
+    end
+
+    context 'when no managed settings file is present' do
+      before do
+        stub_const('Gitlab::ManagedSettings::PATH',
+          Rails.root.join('spec/fixtures/managed_settings/does_not_exist.yml'))
+      end
+
+      it 'is false' do
+        expect(helper.managed_setting?(:sidekiq_timezone_override)).to be(false)
+      end
+    end
+  end
+
+  describe '#sidekiq_timezone_dropdown_view_model' do
+    let(:application_setting) { build(:application_setting, sidekiq_timezone_override: 'Europe/London') }
+
+    subject(:view_model) { helper.sidekiq_timezone_dropdown_view_model }
+
+    before do
+      helper.instance_variable_set(:@application_setting, application_setting)
+      allow(Gitlab::ManagedSettings).to receive(:managed?).and_return(false)
+    end
+
+    it 'returns the timezone dropdown view model' do
+      expect(view_model).to match(
+        inputId: 'application_setting_sidekiq_timezone_override',
+        value: 'Europe/London',
+        timezoneData: helper.timezone_data_with_unique_identifiers,
+        name: 'application_setting[sidekiq_timezone_override]',
+        defaultText: _('System default'),
+        additionalClass: ['gl-md-form-input-lg'],
+        disabled: false
+      )
+    end
+
+    context 'when no timezone override is set' do
+      let(:application_setting) { build(:application_setting, sidekiq_timezone_override: nil) }
+
+      it 'returns a blank value' do
+        expect(view_model[:value]).to eq('')
+      end
+    end
+
+    context 'when the form is re-rendered after a failed save' do
+      before do
+        application_setting.sidekiq_timezone_override = 'America/New_York'
+      end
+
+      it 'reflects the submitted value rather than the persisted one' do
+        expect(view_model[:value]).to eq('America/New_York')
+      end
+    end
   end
 
   describe '#instance_clusters_enabled?', :request_store do

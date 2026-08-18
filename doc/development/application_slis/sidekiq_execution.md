@@ -5,20 +5,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Sidekiq execution SLIs (service level indicators)
 ---
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/700) in GitLab 16.0. This version of Sidekiq execution SLIs replaces the old version of the SLI where you can now drill down by workers in the [Application SLI Violations dashboard](https://dashboards.gitlab.net/d/general-application-sli-violations/general-application-sli-violations?orgId=1&var-PROMETHEUS_DS=Global&var-environment=gprd&var-stage=main&var-product_stage=All&var-stage_group=All&var-component=sidekiq_execution) for stage groups.
-
-{{< /history >}}
+You can drill down by workers in the [Application SLI Violations dashboard](https://dashboards.gitlab.net/d/general-application-sli-violations/general-application-sli-violations?orgId=1&var-PROMETHEUS_DS=Global&var-environment=gprd&var-stage=main&var-product_stage=All&var-stage_group=All&var-component=sidekiq_execution) for stage groups.
 
 > [!note]
 > This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
 > by default.
 
-The Sidekiq execution Apdex measures the duration of successful jobs completion as an indicator for
+The Sidekiq execution Apdex measures the duration of successful job completions as an indicator for
 application performance.
 
-The error rate measures unsuccessful jobs completion when exception occurs as an indicator for
+The error rate measures unsuccessful job completions when an exception occurs as an indicator for
 server misbehavior.
 
 - `gitlab_sli_sidekiq_execution_apdex_total`: This counter gets

@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_allowlist_autopopulation
 description: Count of times the CI JobToken Allowlist Autopopulation action has been performed
-product_group: pipeline_security
+product_group: secrets_manager_application
 product_categories:
 - secrets_management
 performance_indicator_type: []

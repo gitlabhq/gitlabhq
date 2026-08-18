@@ -45,15 +45,15 @@ Parameters:
 | `state`                     | string | no | Return only `active` or `closed` milestones. |
 | `title`                     | string | no | Return only the milestones having the given `title` (case-sensitive). |
 | `search`                    | string | no | Return only milestones with a title or description matching the provided string (case-insensitive). |
-| `search_title`              | string | no | Return only milestones with a title matching the provided string (case-insensitive). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `17.4+17.5` will match substrings `17.4` and `17.5` (in any order). Introduced in GitLab 11.8. |
+| `search_title`              | string | no | Return only milestones with a title matching the provided string (case-insensitive). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `17.4+17.5` will match substrings `17.4` and `17.5` (in any order). |
 | `include_parent_milestones` | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298) in GitLab 16.7. Use `include_ancestors` instead. |
 | `include_ancestors`         | boolean | no | Include milestones for all parent groups. |
-| `include_descendants`       | boolean | no | Include milestones for group and its descendants. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421030) in GitLab 16.7. |
-| `updated_before`            | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10. |
-| `updated_after`             | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10. |
-| `containing_date`           | datetime | no | Return only milestones where `start_date <= containing_date <= due_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 13.5. |
-| `start_date`                | datetime | no | Return only milestones where `due_date >=` the provided `start_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `end_date` is also provided. Introduced in GitLab 12.8. |
-| `end_date`                  | datetime | no | Return only milestones where `start_date <=` the provided `end_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `start_date` is also provided. Introduced in GitLab 12.8. |
+| `include_descendants`       | boolean | no | Include milestones for the group and its descendants. |
+| `updated_before`            | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `updated_after`             | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `containing_date`           | datetime | no | Return only milestones where `start_date <= containing_date <= due_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `start_date`                | datetime | no | Return only milestones where `due_date >=` the provided `start_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `end_date` is also provided. |
+| `end_date`                  | datetime | no | Return only milestones where `start_date <=` the provided `end_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `start_date` is also provided. |
 
 ```shell
 curl --request GET \

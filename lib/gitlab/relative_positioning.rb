@@ -2,7 +2,7 @@
 
 module Gitlab
   module RelativePositioning
-    STEPS = 10
+    STEPS = 9
     IDEAL_DISTANCE = (2**(STEPS - 1)) + 1
 
     MIN_POSITION = Gitlab::Database::MIN_INT_VALUE

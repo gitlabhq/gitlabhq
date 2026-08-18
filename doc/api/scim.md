@@ -12,12 +12,6 @@ title: SCIM API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
-
-{{< /history >}}
-
 Use this API to manage SCIM identities in groups.
 
 Prerequisites:
@@ -38,12 +32,6 @@ This API differs from the [internal group SCIM API](../development/internal_api/
   - Create, delete, and update SCIM provisioned users for the group or instance.
 
 ## Retrieve SCIM identities for a group
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
-
-{{< /history >}}
 
 Retrieves SCIM identities for a group.
 
@@ -88,12 +76,6 @@ curl --location --request GET \
 
 ## Retrieve a single SCIM identity
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
-
-{{< /history >}}
-
 Retrieves a single SCIM identity.
 
 ```plaintext
@@ -127,12 +109,6 @@ Example response:
 
 ## Update `extern_uid` field for a SCIM identity
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
-
-{{< /history >}}
-
 Updates `extern_uid` field for a SCIM identity.
 
 Fields that can be updated are:
@@ -162,12 +138,6 @@ curl --location --request PATCH \
 ```
 
 ## Delete a single SCIM identity
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
-
-{{< /history >}}
 
 Deletes a single SCIM identity.
 

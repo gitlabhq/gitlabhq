@@ -29,12 +29,18 @@ module Gitlab
       # Session-based classify types from the HTTP Router's `ClassifyType` enum.
       # https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/src/rules/types.d.ts
       CLASSIFY_RULE_TYPES = %w[FIRST_CELL SESSION_PREFIX CELL_ID].freeze
-      # Claim types set by path-based routing rules. On a successful
-      # classification the HTTP Router emits the claim key (e.g.
-      # `organization_path`) as the rule type header, so the source of truth is
-      # the Topology Service `Claim` proto. Deriving the list from the generated
-      # client keeps it in sync as new claim types are added upstream.
-      CLAIM_RULE_TYPES = Gitlab::Cells::TopologyService::Types::V1::Claim.descriptor.map(&:name).freeze
+      # Claim types set by path-based routing rules. On a successful classification the
+      # HTTP Router emits the matched claim's key as the rule type header. The Topology
+      # Service serialises that claim with protojson, so the key arrives in camelCase
+      # (e.g. `organizationPath`), while the proto field name is snake_case
+      # (`organization_path`). Accept both forms so the type is recorded regardless of the
+      # upstream serialisation, and derive them from the generated client so the list stays
+      # in sync as new claim types are added upstream.
+      CLAIM_RULE_TYPES = Gitlab::Cells::TopologyService::Types::V1::Claim
+        .descriptor
+        .flat_map { |field| [field.name, field.json_name] }
+        .uniq
+        .freeze
       ALLOWED_ROUTER_RULE_TYPES = (CLASSIFY_RULE_TYPES + CLAIM_RULE_TYPES).freeze
 
       private

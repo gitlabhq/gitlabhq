@@ -98,7 +98,7 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
         it 'returns the ip address as nil if the domain is invalid' do
           allow(Settings.pages).to receive(:host).and_return('exampledomain')
 
-          expect(gitlab_pages[:ip_address]).to eq nil
+          expect(gitlab_pages[:ip_address]).to be_nil
         end
 
         it 'returns the ip address of the domain' do
@@ -405,7 +405,7 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
         allow(Time).to receive(:now).and_return(Time.current + described_class::EXPIRATION_TIME)
         Rails.cache.cleanup
 
-        expect(Rails.cache.read(described_class::CACHE_KEY)).to eq(nil)
+        expect(Rails.cache.read(described_class::CACHE_KEY)).to be_nil
       end
     end
   end

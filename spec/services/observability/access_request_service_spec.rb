@@ -225,6 +225,19 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
         end
       end
 
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(observability_saas_features_user_namespace: false)
+        end
+
+        it 'returns forbidden error' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.http_status).to eq(:forbidden)
+        end
+      end
+
       context 'when access is forbidden' do
         where(:scenario, :service_user, :service_project) do
           'user is not the namespace owner'   | ref(:other_user) | ref(:personal_project)

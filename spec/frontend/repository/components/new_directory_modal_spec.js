@@ -52,7 +52,7 @@ describe('NewDirectoryModal', () => {
   };
 
   const findCommitChangesModal = () => wrapper.findComponent(CommitChangesModal);
-  const findDirName = () => wrapper.find('[name="dir_name"]');
+  const findDirName = () => wrapper.findComponent('[name="dir_name"]');
   const fillForm = async (dirName = defaultFormValue.dirName) => {
     await findDirName().vm.$emit('input', dirName);
     await nextTick();

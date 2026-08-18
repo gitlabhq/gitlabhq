@@ -71,10 +71,10 @@ describe('ModelVersionCreate', () => {
   };
 
   const findDescription = () => wrapper.findByTestId('page-heading-description');
-  const findPrimaryButton = () => wrapper.findByTestId('primary-button');
-  const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
-  const findVersionInput = () => wrapper.findByTestId('versionId');
-  const findDescriptionInput = () => wrapper.findByTestId('descriptionId');
+  const findPrimaryButton = () => wrapper.findComponentByTestId('primary-button');
+  const findSecondaryButton = () => wrapper.findComponentByTestId('secondary-button');
+  const findVersionInput = () => wrapper.findComponentByTestId('versionId');
+  const findDescriptionInput = () => wrapper.findComponentByTestId('descriptionId');
   const findImportArtifactZone = () => wrapper.findComponent(ImportArtifactZone);
   const zone = () => wrapper.findComponent(UploadDropzone);
   const findGlAlert = () => wrapper.findComponent(GlAlert);

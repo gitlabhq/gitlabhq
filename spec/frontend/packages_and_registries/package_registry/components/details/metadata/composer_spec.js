@@ -18,9 +18,9 @@ describe('Composer Metadata', () => {
     });
   };
 
-  const findComposerTargetSha = () => wrapper.findByTestId('composer-target-sha');
+  const findComposerTargetSha = () => wrapper.findComponentByTestId('composer-target-sha');
   const findComposerTargetShaCopyButton = () => wrapper.findComponent(ClipboardButton);
-  const findComposerJson = () => wrapper.findByTestId('composer-json');
+  const findComposerJson = () => wrapper.findComponentByTestId('composer-json');
 
   beforeEach(() => {
     mountComponent();

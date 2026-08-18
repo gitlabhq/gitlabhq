@@ -6,6 +6,7 @@ import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import { EVENT_DETAILS, DEFAULT_ICON } from '../constants';
 
 export default {
+  name: 'ActivityHistoryItem',
   i18n: {
     defaultBodyText: s__('ClusterAgents|Event occurred'),
   },

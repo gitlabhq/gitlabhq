@@ -78,6 +78,7 @@ module Features
       page.within role_dropdown_selector do
         wait_for_requests
         toggle_listbox
+        expect_listbox_item(role) # panel is open and populated; retries if roles were still loading
         select_listbox_item(role)
       end
 

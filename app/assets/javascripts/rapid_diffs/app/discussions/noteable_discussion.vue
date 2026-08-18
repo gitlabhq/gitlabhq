@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButtonGroup, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -12,6 +13,7 @@ import { getNoteFormErrorMessages } from '~/notes/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
 import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
@@ -28,9 +30,11 @@ export default {
     ResolveWithIssueButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    ResolveWithDuoDropdownItem: () =>
-      import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
+    ResolveWithDuoDropdownItem: defineAsyncComponent(
+      () => import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
+    ),
   },
+  mixins: [glSlotsMixin],
   inject: {
     store: {
       type: Object,
@@ -72,11 +76,11 @@ export default {
   },
   emits: [
     'cancel-editing',
-    'noteEdited',
+    'note-edited',
     'start-editing',
-    'startReplying',
-    'stopReplying',
-    'toggleDiscussionReplies',
+    'start-replying',
+    'stop-replying',
+    'toggle-discussion-replies',
   ],
   data() {
     return {
@@ -162,7 +166,7 @@ export default {
     },
     showReplyForm(text) {
       suppressShortcutsUntilInputFocus();
-      this.$emit('startReplying');
+      this.$emit('start-replying');
       if (typeof text !== 'undefined') {
         this.$nextTick(() => {
           this.$refs.noteForm.append(text);
@@ -186,7 +190,7 @@ export default {
         }
       }
 
-      this.$emit('stopReplying');
+      this.$emit('stop-replying');
     }),
     async saveNote(noteText, shouldResolve) {
       if (!noteText) {
@@ -205,7 +209,7 @@ export default {
         if (shouldResolve) {
           await this.toggleResolve();
         }
-        this.$emit('stopReplying');
+        this.$emit('stop-replying');
       } catch (e) {
         const message = getNoteFormErrorMessages(e.response)[0];
         createAlert({ message, parent: this.$el });
@@ -225,7 +229,7 @@ export default {
 
       try {
         await this.store.addDraftToDiscussion(this.discussion, noteText, shouldResolve);
-        this.$emit('stopReplying');
+        this.$emit('stop-replying');
       } catch (e) {
         const message = getNoteFormErrorMessages(e.response)[0];
         createAlert({ message, parent: this.$el });
@@ -253,13 +257,13 @@ export default {
       :is-resolved="discussion.resolved"
       :is-resolving="isResolving"
       @resolve="toggleResolve"
-      @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
-      @startReplying="showReplyForm"
-      @noteEdited="$emit('noteEdited', $event)"
+      @toggle-discussion-replies="$emit('toggle-discussion-replies')"
+      @start-replying="showReplyForm"
+      @note-edited="$emit('note-edited', $event)"
       @start-editing="$emit('start-editing', $event)"
       @cancel-editing="$emit('cancel-editing', $event)"
     >
-      <template #avatar-badge>
+      <template v-if="glSlots()['avatar-badge']" #avatar-badge>
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer="{ hasReplies }">

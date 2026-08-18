@@ -46,13 +46,11 @@ describe('GlqlActions', () => {
   );
 
   describe('dropdown actions', () => {
-    it('emits view-source event with title when clicked', async () => {
-      createComponent({ modalTitle: 'Test Modal' });
-
+    it('emits view-source event when clicked', async () => {
       findDropdown().props('items')[0].action();
       await nextTick();
 
-      expect(wrapper.emitted('view-source').at(0)).toEqual([{ title: 'Test Modal' }]);
+      expect(wrapper.emitted('view-source').at(0)).toEqual([]);
     });
 
     it('emits copy-source event when clicked', async () => {

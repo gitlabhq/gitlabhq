@@ -79,6 +79,25 @@ RSpec.describe ChatName, feature_category: :integrations do
     end
   end
 
+  describe '#duo_privacy_notice_acknowledged?' do
+    it 'is false when the notice was never acknowledged' do
+      expect(subject.duo_privacy_notice_acknowledged?).to be(false)
+    end
+
+    it 'is true when the notice was acknowledged' do
+      subject.duo_privacy_notice_acknowledged_at = Time.current
+
+      expect(subject.duo_privacy_notice_acknowledged?).to be(true)
+    end
+  end
+
+  describe '#acknowledge_duo_privacy_notice!' do
+    it 'sets the acknowledgement timestamp' do
+      expect { subject.acknowledge_duo_privacy_notice! }
+        .to change { subject.duo_privacy_notice_acknowledged_at }.from(nil)
+    end
+  end
+
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :chat_name }
   end

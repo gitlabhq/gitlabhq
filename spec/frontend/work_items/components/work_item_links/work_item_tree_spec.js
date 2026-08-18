@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
@@ -17,6 +18,7 @@ import WorkItemRolledUpData from '~/work_items/components/work_item_links/work_i
 import WorkItemRolledUpCount from '~/work_items/components/work_item_links/work_item_rolled_up_count.vue';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import { config as issuableClientConfig } from '~/graphql_shared/issuable_client';
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -36,6 +38,7 @@ import {
   workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   workItemHierarchyTreeSingleClosedItemResponse,
+  buildFeaturesTreeResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
@@ -60,7 +63,7 @@ describe('WorkItemTree', () => {
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findShowClosedButton = () => wrapper.findComponent(WorkItemToggleClosedItems);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
-  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCrudCollapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findRolledUpData = () => wrapper.findComponent(WorkItemRolledUpData);
   const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
 
@@ -77,6 +80,7 @@ describe('WorkItemTree', () => {
     shouldWaitForPromise = true,
     closedChildrenCount = 0,
     useCachedRolledUpWeights = false,
+    workItemFeaturesField = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       propsData: {
@@ -90,14 +94,21 @@ describe('WorkItemTree', () => {
         canUpdate,
         canUpdateChildren,
       },
-      apolloProvider: createMockApollo([
-        [getWorkItemTreeQuery, workItemHierarchyTreeHandler],
-        [namespaceWorkItemTypesQuery, namespaceWorkItemTypesQueryHandler],
-      ]),
+      apolloProvider: createMockApollo(
+        [
+          [getWorkItemTreeQuery, workItemHierarchyTreeHandler],
+          [namespaceWorkItemTypesQuery, namespaceWorkItemTypesQueryHandler],
+        ],
+        {},
+        // Use the real `issuable_client` cache typePolicies so tests exercise the
+        // actual children-pagination merge (the default mock apollo uses the
+        // global typePolicies, which don't include it).
+        { typePolicies: issuableClientConfig.cacheConfig.typePolicies },
+      ),
       provide: {
         hasSubepicsFeature,
         closedChildrenCount,
-        glFeatures: { useCachedRolledUpWeights },
+        glFeatures: { useCachedRolledUpWeights, workItemFeaturesField },
       },
       stubs: { CrudComponent },
     });
@@ -262,7 +273,7 @@ describe('WorkItemTree', () => {
   });
 
   describe('pagination', () => {
-    const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+    const findWorkItemChildrenLoadMore = () => wrapper.findComponentByTestId('work-item-load-more');
     let workItemTreeQueryHandler;
 
     beforeEach(async () => {
@@ -290,6 +301,69 @@ describe('WorkItemTree', () => {
       await waitForPromises();
 
       expect(workItemTreeQueryHandler).toHaveBeenCalled();
+    });
+
+    // Covered for both data paths so appending stays agnostic of the
+    // `work_item_features_field` flag: `widgets[]` (off) and `features` (on).
+    describe.each`
+      dataPath       | workItemFeaturesField
+      ${'widgets[]'} | ${false}
+      ${'features'}  | ${true}
+    `('with the $dataPath data path', ({ workItemFeaturesField }) => {
+      const secondPageChildId = 'gid://gitlab/WorkItem/99999';
+      let initialChildIds;
+
+      // When the flag is on the tree reads children from `features.hierarchy`
+      // instead of `widgets[]`, so reshape the fixtures to match that path.
+      const toResponse = (widgetsResponse) =>
+        workItemFeaturesField ? buildFeaturesTreeResponse(widgetsResponse) : widgetsResponse;
+
+      beforeEach(async () => {
+        // A distinct second page so we can tell "append" from "replace".
+        const secondPageSource = cloneDeep(workItemHierarchyPaginatedTreeResponse);
+        const hierarchyWidget = utils.findHierarchyWidget(secondPageSource.data.workItem);
+        hierarchyWidget.children.nodes = [
+          { ...hierarchyWidget.children.nodes[0], id: secondPageChildId, iid: '99999' },
+        ];
+        hierarchyWidget.children.pageInfo = {
+          ...hierarchyWidget.children.pageInfo,
+          hasNextPage: false,
+          endCursor: 'second-page-cursor',
+        };
+
+        const paginatedHandler = jest
+          .fn()
+          .mockResolvedValueOnce(toResponse(workItemHierarchyPaginatedTreeResponse))
+          .mockResolvedValueOnce(toResponse(secondPageSource));
+
+        await createComponent({
+          workItemHierarchyTreeHandler: paginatedHandler,
+          workItemFeaturesField,
+        });
+
+        initialChildIds = findWorkItemLinkChildrenWrapper()
+          .props('children')
+          .map((child) => child.id);
+      });
+
+      it('renders only the first page of children', () => {
+        expect(initialChildIds).not.toContain(secondPageChildId);
+      });
+
+      describe('when "Load more" is clicked', () => {
+        beforeEach(async () => {
+          findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+          await waitForPromises();
+        });
+
+        it('appends the next page of children instead of replacing the existing ones', () => {
+          const childIds = findWorkItemLinkChildrenWrapper()
+            .props('children')
+            .map((child) => child.id);
+
+          expect(childIds).toEqual([...initialChildIds, secondPageChildId]);
+        });
+      });
     });
 
     it('shows alert message when fetching next page fails', async () => {
@@ -495,57 +569,57 @@ describe('WorkItemTree', () => {
   });
 
   describe('when there is show URL parameter', () => {
-    it('emits `show-modal` event when child work item id is encoded in the URL', async () => {
+    it('emits `select-child` event when child work item id is encoded in the URL', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       setWindowLocation(`?show=${encodedWorkItemId}`);
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
       ]);
     });
 
-    it('does not emit `show-modal` event when child work item id is not encoded in the URL', async () => {
+    it('does not emit `select-child` event when child work item id is not encoded in the URL', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 1 }));
       setWindowLocation(`?show=${encodedWorkItemId}`);
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toBeUndefined();
+      expect(wrapper.emitted('select-child')).toBeUndefined();
     });
 
-    it('emits `show-modal` event with child work item id on window `popstate` event', async () => {
+    it('emits `select-child` event with child work item id on window `popstate` event', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toEqual([[{ modalWorkItem: null }]]);
+      expect(wrapper.emitted('select-child')).toEqual([[{ child: null }]]);
 
       setWindowLocation(`?show=${encodedWorkItemId}`);
       window.dispatchEvent(new Event('popstate'));
 
       await waitForPromises();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: null }],
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: null }],
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
       ]);
     });
 
-    it('emits `show-modal` event with `null` id on window `popstate` event when there is no show URL parameter', async () => {
+    it('emits `select-child` event with `null` id on window `popstate` event when there is no show URL parameter', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       setWindowLocation(`?show=${encodedWorkItemId}`);
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
       ]);
 
       setWindowLocation('?otherThing=true');
       window.dispatchEvent(new Event('popstate'));
       await waitForPromises();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
-        [{ modalWorkItem: null }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+        [{ child: null }],
       ]);
     });
 
@@ -562,6 +636,42 @@ describe('WorkItemTree', () => {
 
         expect(findCrudComponent().emitted(eventLabel)).toEqual([[]]);
       });
+    });
+  });
+
+  describe('collapses by default when empty', () => {
+    it('is not collapsed while the query is loading', async () => {
+      await createComponent({ shouldWaitForPromise: false });
+
+      expect(findCrudComponent().props('collapsed')).toBe(false);
+    });
+
+    it('is collapsed once the query resolves with no children', async () => {
+      await createComponent({
+        workItemHierarchyTreeHandler: jest
+          .fn()
+          .mockResolvedValue(workItemHierarchyTreeEmptyResponse),
+      });
+
+      expect(findCrudComponent().props('collapsed')).toBe(true);
+      expect(wrapper.findByTestId('crud-body').isVisible()).toBe(false);
+    });
+
+    it('is not collapsed when children exist', async () => {
+      await createComponent();
+
+      expect(findCrudComponent().props('collapsed')).toBe(false);
+      expect(wrapper.findByTestId('crud-body').isVisible()).toBe(true);
+    });
+
+    it('is not collapsed when there are no children but an error occurred', async () => {
+      await createComponent({
+        workItemHierarchyTreeHandler: jest.fn().mockRejectedValue(new Error('Some error')),
+      });
+
+      expect(findCrudComponent().props('collapsed')).toBe(false);
+      expect(wrapper.findByTestId('crud-body').isVisible()).toBe(true);
+      expect(findErrorMessage().exists()).toBe(true);
     });
   });
 

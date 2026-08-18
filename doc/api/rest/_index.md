@@ -53,7 +53,7 @@ Access to some endpoints require authentication. For more information, see
 REST API requests are subject to rate limit settings. These settings reduce the risk of a GitLab
 instance being overloaded.
 
-- For details, see [Rate limits](../../security/rate_limits.md).
+- For details, see [Rate limits](../../rate_limits/_index.md).
 - For details of the rate limit settings used by GitLab.com, see
   [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
@@ -165,7 +165,7 @@ found in the project's URL or in the project's settings, under
 
 #### File path, branches, and tags name
 
-If a file path, branch or tag contains a `/`, make sure it is URL-encoded.
+If a file path, branch, or tag contains a `/`, make sure it is URL-encoded.
 
 For example, `/` is represented by `%2F`:
 
@@ -256,13 +256,6 @@ In boolean arguments, you should only set `true` or `false` values (not `null`).
 
 ### Redirects
 
-{{< history >}}
-
-- Introduced in GitLab 16.4 [with a feature flag](../../administration/feature_flags/_index.md) named `api_redirect_moved_projects`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
-
-{{< /history >}}
-
 After [path changes](../../user/project/repository/_index.md#repository-path-changes) the
 REST API might respond with a message noting that the endpoint has moved. When this happens, use
 the endpoint specified in the `Location` header.
@@ -288,10 +281,10 @@ This resource has been moved permanently to https://gitlab.example.com/api/v4/pr
 
 GitLab supports the following pagination methods:
 
-- Offset-based pagination. The default method and available on all endpoints except,
-  in GitLab 16.5 and later, the `users` endpoint.
+- Offset-based pagination. The default method and available on all endpoints except
+  the `users` endpoint.
 - Keyset-based pagination. Added to selected endpoints but being
-  [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
+  [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/work_items/2039).
 
 For large collections, you should use keyset pagination
 (when available) instead of offset pagination, for performance reasons.
@@ -472,7 +465,7 @@ options:
 | [Project jobs](../jobs.md#list-all-jobs-for-a-project)                         | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
 | [Project audit events](../audit_events.md#list-all-project-audit-events)   | `order_by=id`, `sort=desc` only                                                                                                                                                       | Authenticated users only. |
 | [Projects](../projects.md)                                                     | `order_by=id` only                                                                                                                                                                    | Authenticated and unauthenticated users. |
-| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`, `order_by=created_at`, or `order_by=updated_at`.                                                                                 | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
+| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`, `order_by=created_at`, or `order_by=updated_at`.                                                                                 | Authenticated and unauthenticated users. |
 | [Registry Repository Tags](../container_registry.md)                           | `order_by=name`, `sort=asc`, or `sort=desc` only.                                                                                                                                     | Authenticated users only. |
 | [List repository tree](../repositories.md#list-all-repository-trees-in-a-project)                | N/A                                                                                                                                                                                   | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154897) in GitLab 17.1. |
 | [Project issues](../issues.md#list-all-project-issues)                             | `order_by=created_at`, `order_by=updated_at`, `order_by=title`, `order_by=id`, `order_by=weight`, `order_by=due_date`, `order_by=relative_position`, `sort=asc`, or `sort=desc` only. | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199887/) in GitLab 18.3. |

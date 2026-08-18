@@ -234,30 +234,30 @@ Membership
   in that resource. Users can have different memberships and roles across multiple groups and
   projects.
 
+<!-- markdownlint-disable MD005 MD007 -->
+
 Boundaries
 : The organizational levels where permissions and policies can be applied:
-
-<!-- markdownlint-disable MD007 -->
 
   - Instance: Applies to the entire GitLab instance.
   - Group: Applies to a specific group, and any subgroups or projects.
   - Project: Applies only to a single project.
   - User: Applies to actions performed by or on behalf of a specific user.
 
-<!-- markdownlint-disable MD007 -->
+<!-- markdownlint-enable MD005 MD007 -->
 
 Inheritance
 : The automatic flow of permissions from parent groups to child groups and projects. Inheritance
   simplifies access management by applying permissions granted at a higher level to all nested
   subgroups and projects.
 
+<!-- markdownlint-disable MD005 MD007 -->
+
 Visibility
 : [Settings](../user/public_access.md) that control who can view and access your content:
-
-<!-- markdownlint-disable MD007 -->
 
   - Public: Visible to everyone, including users without GitLab accounts.
   - Internal: Visible to all authenticated GitLab users.
   - Private: Visible to members only.
 
-<!-- markdownlint-disable MD007 -->
+<!-- markdownlint-enable MD005 MD007 -->

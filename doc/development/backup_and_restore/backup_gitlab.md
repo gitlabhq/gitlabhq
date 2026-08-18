@@ -128,13 +128,13 @@ When a user executes the backup restoration Rake task, a sequence of steps are c
 1. Fetch a copy of the target archive tarball and unpack its content inside the work directory
 1. Validate that the archive data is able to be restored:
 
-   1. Read its backup metadata from the `backup_information.yml` file if exists.
+   1. Read its backup metadata from the `backup_information.yml` file if it exists.
    1. Verify the GitLab application version at the time of backup matches the current application version.
    1. Fail out of the whole restore process if any of these files do not exist, are malformed, or if the version does not match.
 
 1. Confirm the user wishes to destroy all current GitLab data before proceeding with restoration.
 1. Read and decompress each `.sql.gz` file corresponding to a known application database. Run the SQL content to overwrite the full state of each database.
-1. Fetch all repository bundle data stored in the `repositories` archive directory. Work with the Gitaly service to restore each repository to its expected storage location using the saved bundle data. find a `.tar.gz` file in the top archive directory that corresponds to the target feature. Decompress each feature tarball and read its binary file contents, copying to the appropriate blob storage configured for the system. This action is performed for each of the following features:
+1. Fetch all repository bundle data stored in the `repositories` archive directory. Work with the Gitaly service to restore each repository to its expected storage location using the saved bundle data. Find a `.tar.gz` file in the top archive directory that corresponds to the target feature. Decompress each feature tarball and read its binary file contents, copying to the appropriate blob storage configured for the system. This action is performed for each of the following features:
 
    - `uploads`
    - `builds`

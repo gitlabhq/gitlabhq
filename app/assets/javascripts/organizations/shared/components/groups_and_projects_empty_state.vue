@@ -2,6 +2,7 @@
 import { GlEmptyState } from '@gitlab/ui';
 import emptySearchSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'GroupsAndProjectsEmptyState',
@@ -10,6 +11,7 @@ export default {
     description: __('Edit your criteria and try again.'),
   },
   components: { GlEmptyState },
+  mixins: [glSlotsMixin],
   props: {
     svgPath: {
       type: String,
@@ -56,7 +58,7 @@ export default {
 
 <template>
   <gl-empty-state v-bind="glEmptyStateProps">
-    <template #actions>
+    <template v-if="glSlots().actions" #actions>
       <slot name="actions"></slot>
     </template>
   </gl-empty-state>

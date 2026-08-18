@@ -15,7 +15,7 @@ description: Information about Web terminals.
 
 {{< history >}}
 
-- This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+- This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 {{< /history >}}
@@ -39,7 +39,7 @@ GitLab uses these credentials to provide access to
 ## How web terminals work
 
 A detailed overview of the architecture of web terminals and how they work
-can be found in [this document](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/doc/channel.md).
+can be found in [this document](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/workhorse/channel.md).
 In brief:
 
 - GitLab relies on the user to provide their own Kubernetes credentials, and to

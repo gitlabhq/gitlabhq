@@ -15,14 +15,12 @@ title: Auto-merge
 
 {{< history >}}
 
-- **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `auto_merge_labels_mr_widget`. Enabled by default.
-- Renamed auto-merge feature [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120922) in GitLab 16.0. Feature flag `auto_merge_labels_mr_widget` removed.
 - Enhanced auto-merge:
-  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two feature flags](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10874) in GitLab 16.5 [with two feature flags](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
   - [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with the flag `merge_when_checks_pass` in GitLab 17.1.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
 - Auto-merge for merge trains:
-  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10874) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
 
 {{< /history >}}
@@ -118,14 +116,30 @@ To do this:
 
 ## Pipeline success for auto-merge
 
+{{< history >}}
+
+- Auto-merge retained when target branch updates and automatic rebase is enabled
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248017) in GitLab 19.3
+  [with a feature flag](../../../administration/feature_flags/_index.md) named
+  `retain_auto_merge_with_automatic_rebase`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 If the pipeline succeeds, the merge request merges. If the pipeline fails, the author
 can either retry any failed jobs, or push new commits to fix the failure:
 
 - If a retried job succeeds on the second try, the merge request merges.
 - If you add new commits to the merge request, GitLab cancels the request
   to ensure the new changes receive a review before merge.
-- If you add new commits to the target branch of the merge request, and your project
-  allows only fast-forward merge requests, GitLab cancels the request to prevent merge conflicts.
+- If you add new commits to the target branch, and your project uses the
+  **Merge commit with semi-linear history** or **Fast-forward merge** method without
+  [automatic rebase before merge](methods/_index.md#automatic-rebase-before-merge) turned on,
+  GitLab cancels the request to prevent merge conflicts. If you have automatic rebase before merge
+  turned on, auto-merge stays active and GitLab rebases when the merge request merges.
 
 For stricter control on pipeline status, you can also
 [require a successful pipeline](#require-a-successful-pipeline-for-merge) before merge.

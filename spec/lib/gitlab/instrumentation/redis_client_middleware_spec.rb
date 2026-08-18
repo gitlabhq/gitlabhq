@@ -33,12 +33,14 @@ RSpec.describe Gitlab::Instrumentation::RedisClientMiddleware, :request_store, f
       # Exercise counting of a bulk reply
       [[:set, 'foo', 'bar' * 100]] | [:get, 'foo'] | (3 + 3) | (3 * 100)
 
-      # Nested array response: [['foo', 0], ['bar', 1.1]]. Redis 7.2+ and Valkey
-      # return the shortest round-trip float representation (Grisu2) rather than
-      # Redis 7.0's full %.17g precision ("1.1000000000000001"). See
+      # Nested array response: [['foo', 0], ['bar', 1.5]]. Use a score that is
+      # exactly representable as a float so it serializes as "1.5" on every
+      # supported server. Scores like 1.1 are rendered at full %.17g precision
+      # ("1.1000000000000001") by Redis 7.0 but shortened to "1.1" by Redis
+      # 7.2+ and Valkey, which makes the byte count version-dependent. See
       # https://github.com/redis/redis/pull/10587.
       [[:zadd, 'myset', 0, 'foo'],
-        [:zadd, 'myset', 1.1,
+        [:zadd, 'myset', 1.5,
           'bar']] | [:zrange, 'myset', 0, -1, 'withscores'] | (6 + 5 + 1 + 2 + 10) | (3 + 1 + 3 + 3)
     end
 

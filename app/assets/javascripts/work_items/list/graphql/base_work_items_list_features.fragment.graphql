@@ -49,6 +49,14 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
   hierarchy {
     parent {
       id
+      iid
+      title
+      titleHtml
+      webUrl
+      namespace {
+        id
+        fullPath
+      }
     }
   }
   linkedResources {

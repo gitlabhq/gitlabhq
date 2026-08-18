@@ -12,7 +12,7 @@ module Gitlab
           end
 
           def identifier
-            :"#{name}_quantile"
+            dotted_name? ? name : :"#{name}_quantile"
           end
 
           def to_outer_arel(context)

@@ -4,7 +4,6 @@ import { produce } from 'immer';
 import { createAlert } from '~/alert';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
 import { todoMutationTypes } from '../../constants';
 import { todoQueries, todoMutations } from '../../queries/constants';
@@ -23,7 +22,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), trackingMixin],
+  mixins: [trackingMixin],
   inject: {
     isClassicSidebar: {
       default: false,
@@ -47,7 +46,6 @@ export default {
       type: String,
     },
   },
-  emits: ['todoUpdated'],
   data() {
     return {
       todoId: null,
@@ -80,7 +78,6 @@ export default {
         const currentUserTodos = data.namespace?.issuable?.currentUserTodos?.nodes ?? [];
         this.todoId = currentUserTodos[0]?.id;
         this.todoCount = currentUserTodos.length;
-        this.$emit('todoUpdated', currentUserTodos.length > 0);
       },
       error() {
         createAlert({
@@ -132,8 +129,8 @@ export default {
     tootltipTitle() {
       return todoLabel(this.hasTodo);
     },
-    isIconButton() {
-      return this.isMergeRequest || this.glFeatures.notificationsTodosButtons;
+    hasTodoStateText() {
+      return this.hasTodo ? 'true' : 'false';
     },
   },
   methods: {
@@ -205,7 +202,6 @@ export default {
 <template>
   <div data-testid="sidebar-todo" :class="{ 'inline-block': !isMergeRequest }">
     <todo-button
-      v-if="isIconButton"
       v-gl-tooltip.hover.top
       :title="tootltipTitle"
       :issuable-type="issuableType"
@@ -214,26 +210,13 @@ export default {
       :todo-count="todoCount"
       :disabled="isLoading"
       :is-icon-button="true"
+      :aria-pressed="hasTodoStateText"
+      :selected="hasTodo"
       class="hide-collapsed !gl-align-top"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-animated-todo-icon
-        :is-on="hasTodo"
-        :class="{ '!gl-text-status-info': hasTodo }"
-        class="gl-button-icon"
-      />
+      <gl-animated-todo-icon :is-on="hasTodo" class="gl-button-icon" />
     </todo-button>
-    <todo-button
-      v-else
-      :issuable-type="issuableType"
-      :issuable-id="issuableId"
-      :is-todo="hasTodo"
-      :todo-count="todoCount"
-      :loading="isLoading"
-      size="small"
-      class="hide-collapsed gl-mt-2"
-      @click.stop.prevent="toggleTodo"
-    />
     <gl-button
       v-if="isClassicSidebar && !isMergeRequest"
       v-gl-tooltip.left.viewport

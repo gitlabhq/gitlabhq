@@ -235,7 +235,7 @@ Alternatively, you can install GitLab using Docker Engine.
 
      This command downloads and starts a GitLab container, and
      [publishes ports](https://docs.docker.com/network/#published-ports) needed to
-     access SSH, HTTP and HTTPS. All GitLab data are stored as subdirectories of
+     access SSH, HTTP, and HTTPS. All GitLab data are stored as subdirectories of
      `$GITLAB_HOME`. The container automatically restarts after a system reboot.
 
    - If you are on SELinux, then run this instead:

@@ -10,22 +10,17 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can change the directory path of a page',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41033',
-          type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347821' do
+      it 'can change the directory path of a page' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)
 
         Page::Project::Wiki::Edit.perform do |edit|
           edit.set_path("#{new_path}/home")
+          edit.click_submit
           edit.set_message('changing the path of the home page')
+          edit.confirm_message
         end
-
-        Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
           wiki.expand_sidebar_if_collapsed

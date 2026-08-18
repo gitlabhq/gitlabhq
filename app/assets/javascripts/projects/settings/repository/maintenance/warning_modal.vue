@@ -2,6 +2,7 @@
 import { GlModal, GlAlert, GlFormInput } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { __, s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'WarningModal',
@@ -25,6 +26,7 @@ export default {
     ],
   },
   components: { GlModal, GlAlert, GlFormInput },
+  mixins: [glListenersMixin],
   props: {
     visible: {
       type: Boolean,
@@ -85,7 +87,7 @@ export default {
     :action-cancel="modalActionProps.cancel"
     @primary.prevent="$emit('confirm')"
     @show="userInput = ''"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #modal-title>{{ $options.i18n.title }}</template>
     <div>

@@ -55,12 +55,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_read_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_frontend_feature_flag(:hide_incident_management_features, project)
     push_force_frontend_feature_flag(:work_item_features_field,
       Feature.enabled?(:work_item_features_field, current_user))
-    push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
   end
 
   after_action :log_issue_show, only: :show
@@ -70,7 +68,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   respond_to :html
 
-  feature_category :portfolio_management, [:index, :calendar]
+  feature_category :planning_views, [:index, :calendar]
   feature_category :team_planning, [
     :show, :new, :create, :edit, :update,
     :destroy, :move, :reorder, :designs, :toggle_subscription,
@@ -232,7 +230,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create, suggested_branch_name: issue.suggested_branch_name }
+        render json: {
+          can_create_branch: can_create,
+          suggested_branch_name: issue.suggested_branch_name(current_user: current_user)
+        }
       end
     end
   end

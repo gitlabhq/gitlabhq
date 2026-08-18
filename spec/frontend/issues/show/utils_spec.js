@@ -1,4 +1,4 @@
-import { setHTMLFixture } from 'helpers/fixtures';
+import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import {
   convertDescriptionWithNewSort,
   deleteTaskListItem,
@@ -6,6 +6,9 @@ import {
   enableTaskListItem,
   extractTaskTitleAndDescription,
   insertNextToTaskListItemText,
+  removeTaskListDragCloneWrapper,
+  taskListSortableOptions,
+  wrapTaskListDragClone,
 } from '~/issues/show/utils';
 
 describe('app/assets/javascripts/issues/show/utils.js', () => {
@@ -568,6 +571,95 @@ describe('insertNextToTaskListItemText', () => {
       insertNextToTaskListItemText(dropdown, listItem);
 
       expect(listItem.firstElementChild.lastElementChild).toBe(dropdown);
+    });
+  });
+});
+
+describe('task list drag clone helpers', () => {
+  const createBodyClone = () => {
+    const clone = document.createElement('li');
+    clone.classList.add('task-list-item', 'is-dragging');
+    document.body.appendChild(clone);
+    return clone;
+  };
+
+  afterEach(() => {
+    resetHTMLFixture();
+    document.body.className = '';
+  });
+
+  describe('wrapTaskListDragClone', () => {
+    it('wraps the body-parented drag clone in a shell carrying the row style scopes', () => {
+      const clone = createBodyClone();
+
+      wrapTaskListDragClone();
+
+      const wrapper = document.querySelector('body > .js-drag-clone-wrapper');
+      expect(wrapper.outerHTML).toBe(
+        '<div class="md description has-task-list-item-actions js-drag-clone-wrapper" style="display: contents;" aria-hidden="true"><ul class="task-list" style="display: contents;"><li class="task-list-item is-dragging"></li></ul></div>',
+      );
+      expect(wrapper.querySelector('li')).toBe(clone);
+    });
+
+    it('replaces a stale shell from a drag that never ended', () => {
+      createBodyClone();
+      wrapTaskListDragClone();
+      const clone = createBodyClone();
+
+      wrapTaskListDragClone();
+
+      const wrappers = document.querySelectorAll('.js-drag-clone-wrapper');
+      expect(wrappers).toHaveLength(1);
+      expect(wrappers[0].querySelector('li')).toBe(clone);
+    });
+
+    it('does nothing when no drag clone is present', () => {
+      wrapTaskListDragClone();
+
+      expect(document.querySelector('.js-drag-clone-wrapper')).toBe(null);
+    });
+  });
+
+  describe('removeTaskListDragCloneWrapper', () => {
+    it('removes the shell', () => {
+      createBodyClone();
+      wrapTaskListDragClone();
+
+      removeTaskListDragCloneWrapper();
+
+      expect(document.querySelector('.js-drag-clone-wrapper')).toBe(null);
+    });
+
+    it('removes every orphaned shell', () => {
+      setHTMLFixture(
+        '<div class="js-drag-clone-wrapper"></div><div class="js-drag-clone-wrapper"></div>',
+      );
+
+      removeTaskListDragCloneWrapper();
+
+      expect(document.querySelector('.js-drag-clone-wrapper')).toBe(null);
+    });
+
+    it('does nothing when no shell is present', () => {
+      expect(() => removeTaskListDragCloneWrapper()).not.toThrow();
+    });
+  });
+
+  describe('taskListSortableOptions', () => {
+    it('toggles the body drag class and the clone shell around a drag', () => {
+      const { onStart, onEnd } = taskListSortableOptions;
+      const clone = createBodyClone();
+
+      onStart();
+
+      expect(document.body.classList.contains('is-dragging')).toBe(true);
+      expect(clone.closest('.js-drag-clone-wrapper')).not.toBe(null);
+
+      clone.remove();
+      onEnd();
+
+      expect(document.body.classList.contains('is-dragging')).toBe(false);
+      expect(document.querySelector('.js-drag-clone-wrapper')).toBe(null);
     });
   });
 });

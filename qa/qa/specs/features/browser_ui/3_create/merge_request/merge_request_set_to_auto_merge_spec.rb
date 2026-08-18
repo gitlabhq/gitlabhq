@@ -31,8 +31,7 @@ module QA
         runner&.remove_via_api!
       end
 
-      it 'merges after pipeline succeeds',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347686' do
+      it 'merges after pipeline succeeds' do
         merge_request = create(:merge_request, project: project)
 
         merge_request.visit!

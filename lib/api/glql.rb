@@ -9,17 +9,16 @@ module API
     include APIGuard
 
     feature_category :custom_dashboards_foundation
-    urgency :low
+    # Urgency is set per route because the two endpoints do very different
+    # amounts of work. It cannot also be set class-wide: a route overriding an
+    # attribute already defined for all actions raises, see
+    # Gitlab::EndpointAttributes::Config#set_attributes_for_actions.
 
     # Although this API endpoint responds to POST requests, it is a read-only operation
     allow_access_with_scope :read_api
     allow_ai_workflows_access
 
     MAXIMUM_QUERY_LIMIT = 100
-
-    before do
-      set_current_organization
-    end
 
     helpers do
       def get_compile_context(
@@ -143,7 +142,7 @@ module API
           desc: 'Cursor for forward pagination. Use the `endCursor` from previous response to fetch the next page'
       end
       route_setting :authorization, permissions: :read_glql, boundary_type: :user
-      post do
+      post urgency: :low do
         parsed_glql = parse_glql_yaml(params[:glql_yaml])
 
         compiled_glql, compile_context = compile_glql(parsed_glql)
@@ -162,6 +161,26 @@ module API
         present transformed_result.deep_symbolize_keys, with: ::API::Entities::Glql::Result
       rescue ArgumentError => e
         error!(e.message, 400)
+      end
+
+      desc 'Retrieve the GLQL schema' do
+        detail 'Retrieves the GLQL schema: data sources with their filter, display and sort ' \
+          'fields, the operator, value kind and reference type vocabularies, the available ' \
+          'functions, and the display types a query can be rendered as.'
+        success code: 200
+        failure [
+          { code: 500, message: 'Internal server error' }
+        ]
+        tags %w[glql]
+      end
+      # The document describes the query language and is identical for everyone,
+      # so it gives away no more than reading the GLQL source would. Declaring it
+      # public rather than gating it on `read_glql` keeps a granular token scoped
+      # to something else from getting a 403 where an anonymous caller gets a 200.
+      route_setting :authorization, skip_granular_token_authorization: :public_endpoint
+      # Serves a memoized hash and does no I/O, unlike the query endpoint.
+      get :schema, urgency: :high do
+        present ::Analytics::Glql::Schema.document
       end
     end
   end

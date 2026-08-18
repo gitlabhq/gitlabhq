@@ -1,26 +1,21 @@
 # frozen_string_literal: true
 
-# Grape 2.0 `Grape::Router::Route` delegates `settings` (one of
-# `Grape::Router::AttributeTranslator::ROUTE_ATTRIBUTES`) to its attribute
-# translator, so `settings` is a *defined* instance method and
-# `Grape::Router::Route.method_defined?(:settings)` is `true`.
+# `Grape::Router::Route < Grape::Router::BaseRoute` reaches `settings` and
+# `description` only through `delegate_missing_to :@options`, so both resolve via
+# `method_missing` rather than being defined. `route.settings` and
+# `route.respond_to?(:settings)` work, but `method_defined?(:settings)` is `false`.
 #
-# Grape 2.4 removed `AttributeTranslator`: `Route < Grape::Router::BaseRoute`
-# reaches `settings` only through `delegate_missing_to :@options`. At runtime
-# `route.settings` and `route.respond_to?(:settings)` still work, but
-# `method_defined?(:settings)` is now `false`.
-#
-# RSpec verifying doubles check `method_defined?` (not `respond_to?`), so every
-# `instance_double(Grape::Router::Route, settings: ...)` raises
+# RSpec verifying doubles check `method_defined?` (not `respond_to?`), so without
+# this patch every `instance_double(Grape::Router::Route, settings: ...)` raises
 # `the Grape::Router::Route class does not implement the instance method:
-# settings` on Grape 2.4.
+# settings`.
 #
-# This patch restores `settings` and `description` as real public methods,
-# delegating to `options[:settings]` / `options[:description]` (equivalent to
-# the 2.0 delegated accessors and the 2.4 `delegate_missing_to` result). The
-# guard makes it a no-op on Grape 2.0 (which already defines these methods via
-# AttributeTranslator), so it is safe in the dual-boot Gemfile/Gemfile.next
-# setup.
+# Defining the two attributes as real public methods over `options[...]` returns
+# exactly what `delegate_missing_to` returns, so behaviour is unchanged, and it
+# keeps them introspectable for callers that ask what the class implements.
+#
+# The guard makes this a no-op if a future Grape defines them for real, so it
+# never shadows an upstream implementation.
 if defined?(Grape::Router::Route) &&
     !Grape::Router::Route.method_defined?(:settings)
   module GrapeRouterRouteSettingsPatch

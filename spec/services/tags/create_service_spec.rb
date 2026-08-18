@@ -57,6 +57,16 @@ RSpec.describe Tags::CreateService, feature_category: :source_code_management do
       end
     end
 
+    context 'when tag name contains spaces' do
+      it 'returns an error naming the space rule' do
+        response = service.execute('v 1.0', 'master', 'Foo')
+
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(400)
+        expect(response[:message]).to eq('Tag name invalid. Tag names cannot have spaces in them.')
+      end
+    end
+
     context 'when tag already exists' do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)

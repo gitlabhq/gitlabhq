@@ -91,6 +91,14 @@ export default class ProtectedTagCreate {
 
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
+        // The form names the section to return to; the non-JS flow uses it as the
+        // redirect anchor. Apply it to the reload so the section renders expanded.
+        const sectionId = this.$form.find('input[name="update_section"]').val();
+
+        if (sectionId) {
+          window.location.hash = sectionId;
+        }
+
         window.location.reload();
       })
       .catch(() =>

@@ -30,11 +30,7 @@ module Ci
       return empty_config_result unless config.exists?
       return empty_config_result unless project_ref_contains_sha?(sha)
 
-      result = if Feature.enabled?(:optimize_list_config_variables, project)
-                 build_ci_config(sha, ref, config)
-               else
-                 execute_yaml_processor(sha, ref, config)
-               end
+      result = build_ci_config(sha, ref, config)
 
       result.valid? ? extract_variables(result) : {}
     rescue Gitlab::Ci::Config::ConfigError
@@ -56,16 +52,6 @@ module Ci
         sha: sha,
         ref: ref
       )
-    end
-
-    def execute_yaml_processor(sha, ref, config)
-      Gitlab::Ci::YamlProcessor.new(
-        config.content,
-        project: project,
-        user: current_user,
-        sha: sha,
-        ref: ref
-      ).execute
     end
 
     # Overridden in EE

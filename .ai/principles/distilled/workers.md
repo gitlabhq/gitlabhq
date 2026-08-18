@@ -1,6 +1,6 @@
 ---
-source_checksum: 83bb66f8bff79c34
-distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
+source_checksum: 902d91f6d44a1c63
+distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -19,6 +19,8 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 - DO NOT mark a worker as both `urgency :high` and `worker_resource_boundary :memory`.
 - Prepend `::Geo::SkipSecondary` to workers that attempt database writes if they can be enqueued on Geo secondary sites.
 - Scope all Sidekiq jobs to a single organization; allow cross-organization jobs only when the job is both a recurring cron job and idempotent.
+- Annotate CPU-bound or memory-bound workers with `worker_resource_boundary :cpu` or `worker_resource_boundary :memory`; if a worker is both, mark it as memory-bound.
+- Minimize direct `Sidekiq.redis` and Sidekiq API interactions in generic application logic; abstract them into a Sidekiq middleware for reuse across teams.
 
 ### Sharding
 
@@ -66,7 +68,7 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 - Add new arguments to `perform` with a default value first (Release M), update call sites in Release M+1, remove the default in Release M+2.
 - Deprecate removed arguments with a default of `nil` and a comment before removing them across two releases.
 - Control new worker scheduling with a feature flag to avoid scheduling before Sidekiq deployment completes.
-- When removing a worker: make `perform` a no-op in Release M, add a migration using `sidekiq_remove_jobs` in Release M+1, delete the class in Release M+2.
+- When removing a worker: make `perform` a no-op in Release M, add a standard (not post-deployment) migration using `sidekiq_remove_jobs` with `disable_ddl_transaction!` in Release M+1, delete the class in Release M+2.
 - Use `sidekiq_queue_migrate` in a **post-deployment migration** (not a standard migration) when renaming queues.
 - When renaming a worker class, have the old worker delegate to the new worker's `perform` in Release M, enable scheduling of the new worker in Release M+1, remove the old class in Release M+2.
 
@@ -84,15 +86,24 @@ distilled_at_sha: 4bdca94fd505e9510cf535c34f2343e7b91332fe
 
 - DO NOT pass large objects as job arguments; if compressed arguments exceed 5 MB, store data in object storage or reload from the database inside the job.
 
+### Job Duration
+
+- Prefer many small jobs over one large job; split long-running workers and parallelize when the 99th-percentile duration exceeds the urgency target for the worker's shard.
+- When breaking up a long-running job into many smaller jobs, set a `concurrency_limit` to avoid contention on database connections (see Concurrency Limit).
+
 ### Logging and Context
 
 - Use `loggable_arguments` to explicitly allowlist non-numeric arguments that are safe to log; DO NOT rely on default logging for string arguments containing sensitive data.
 - Wrap job scheduling in `with_context` or use `bulk_perform_async_with_contexts` / `bulk_perform_in_with_contexts` when scheduling from cron workers to propagate correct context.
 - Pre-load the route for namespaces and projects (`.with_route`) before passing them to context helpers.
+- Identify deferred jobs in logs by `job_status: deferred`, `job_deferred_by` (`feature_flag` or `database_health_check`), and `deferred_count` (the number of times the job has been deferred).
 
 ### Deferring Workers
 
-- Use `defer_on_database_health_signal` with `gitlab_schema`, `delay_by`, and `tables` parameters to opt in to automatic deferral based on database health indicators.
+- Opt in to automatic database-health deferral by calling `defer_on_database_health_signal` with `gitlab_schema`, `tables` (used by the autovacuum indicator), and `delay_by` (defaults to 5 seconds), in that parameter order.
+- When the schema and tables are not known in advance, pass a block to `defer_on_database_health_signal` that receives the job arguments and returns the `[schema, tables]` to check; the middleware evaluates it when the job is fetched.
+- Override `self.defer_on_database_health_signal?` to control when deferral applies, for example to gate it behind a feature flag.
+- Expect deferral delays to escalate: the first deferral waits `delay_by`, each consecutive deferral while the stop signal persists doubles the delay up to a 30-minute cap, with up to 10% random jitter subtracted so jobs deferred together do not retry simultaneously — this incremental delay is behind the `incremental_database_health_defer_delay` feature flag (disabled by default).
 
 ### LimitedCapacity::Worker
 

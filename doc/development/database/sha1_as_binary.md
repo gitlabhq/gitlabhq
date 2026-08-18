@@ -26,7 +26,7 @@ class Commit < ActiveRecord::Base
 end
 ```
 
-This allows you to use the value of the `sha` attribute as if it were a string,
+You can use the value of the `sha` attribute as if it were a string,
 while storing it as binary. This means that you can do something like this,
 without having to worry about converting data to the right binary format:
 
@@ -36,6 +36,6 @@ commit.sha = '971604de4cfa324d91c41650fabc129420c8d1cc'
 commit.save
 ```
 
-There is however one requirement: the column used to store the SHA has must be
+There is however one requirement: the column used to store the SHA must be
 a binary type. For Rails this means you need to use the `:binary` type instead
 of `:text` or `:string`.

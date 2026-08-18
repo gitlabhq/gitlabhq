@@ -105,10 +105,10 @@ export default {
         :sorting="sorting"
         :tokens="tokens"
         :sortable-fields="sortableFields"
-        @sorting:changed="updateSortingAndEmitUpdate"
-        @filter:changed="updateFilters"
-        @filter:submit="emitUpdate"
-        @query:changed="updateQuery"
+        @sorting-changed="updateSortingAndEmitUpdate"
+        @filter-changed="updateFilters"
+        @filter-submit="emitUpdate"
+        @query-changed="updateQuery"
       />
     </template>
   </url-sync>

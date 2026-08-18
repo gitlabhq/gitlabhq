@@ -99,7 +99,7 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
         merge_request.update!(merge_status: 'cannot_be_merged')
       end
 
-      it { is_expected.to be(false) }
+      it { is_expected.to be(true) }
     end
   end
 

@@ -20,8 +20,12 @@ RSpec.describe "User deletes milestone", :js, feature_category: :team_planning d
       click_link(milestone.title)
       click_button("Milestone actions")
       click_button("Delete")
+
+      expect(page).to have_content("Delete milestone #{milestone.title}?")
+
       click_button("Delete milestone")
 
+      expect(page).to have_content("Milestone deleted.")
       expect(page).to have_content("Use milestones to track issues and merge requests over a fixed period of time")
 
       visit(activity_project_path(project))
@@ -41,8 +45,12 @@ RSpec.describe "User deletes milestone", :js, feature_category: :team_planning d
       click_link(milestone_to_be_deleted.title)
       click_button("Milestone actions")
       click_button("Delete")
+
+      expect(page).to have_content("Delete milestone #{milestone_to_be_deleted.title}?")
+
       click_button("Delete milestone")
 
+      expect(page).to have_content("Milestone deleted.")
       expect(page).to have_content(milestone.title)
       expect(page).not_to have_content(milestone_to_be_deleted)
     end

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	gkgpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb"
+	orbitpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -38,7 +38,7 @@ type resourceAuth struct {
 
 var authHeaders = []string{"Authorization", "Private-Token", "Cookie", "X-Csrf-Token"}
 
-func (sq *SendQuery) callRedaction(ctx context.Context, originalReq *http.Request, required *gkgpb.RedactionRequired, clientIP string) (*gkgpb.RedactionResponse, error) {
+func (sq *SendQuery) callRedaction(ctx context.Context, originalReq *http.Request, required *orbitpb.RedactionRequired, clientIP string) (*orbitpb.RedactionResponse, error) {
 	reqBody := buildRedactionRequest(required)
 
 	body, err := json.Marshal(reqBody)
@@ -83,7 +83,7 @@ func (sq *SendQuery) callRedaction(ctx context.Context, originalReq *http.Reques
 	return toRedactionProto(required.GetResultId(), apiResp), nil
 }
 
-func buildRedactionRequest(required *gkgpb.RedactionRequired) redactionRequest {
+func buildRedactionRequest(required *orbitpb.RedactionRequired) redactionRequest {
 	req := redactionRequest{}
 	for _, res := range required.GetResources() {
 		for _, ability := range res.GetAbilities() {
@@ -97,8 +97,8 @@ func buildRedactionRequest(required *gkgpb.RedactionRequired) redactionRequest {
 	return req
 }
 
-func toRedactionProto(resultID string, apiResp redactionAPIResponse) *gkgpb.RedactionResponse {
-	protoResp := &gkgpb.RedactionResponse{ResultId: resultID}
+func toRedactionProto(resultID string, apiResp redactionAPIResponse) *orbitpb.RedactionResponse {
+	protoResp := &orbitpb.RedactionResponse{ResultId: resultID}
 	for _, auth := range apiResp.Authorizations {
 		authorized := make(map[int64]bool, len(auth.Authorized))
 		for idStr, allowed := range auth.Authorized {
@@ -110,7 +110,7 @@ func toRedactionProto(resultID string, apiResp redactionAPIResponse) *gkgpb.Reda
 			}
 			authorized[id] = allowed
 		}
-		protoResp.Authorizations = append(protoResp.Authorizations, &gkgpb.ResourceAuthorization{
+		protoResp.Authorizations = append(protoResp.Authorizations, &orbitpb.ResourceAuthorization{
 			ResourceType: auth.ResourceType,
 			Authorized:   authorized,
 		})

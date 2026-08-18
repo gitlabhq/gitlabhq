@@ -9,6 +9,7 @@ project:
   - _read_public_ci_cd_analytics
   - _read_public_pipeline
   - _read_public_pipeline_schedule
+  - download_cargo_package
   - download_code
   - download_debian_package
   - download_generic_package
@@ -25,6 +26,7 @@ project:
   - read_avatar
   - read_badge
   - read_branch
+  - read_cargo_package
   - read_code
   - read_code_review_analytics
   - read_commit

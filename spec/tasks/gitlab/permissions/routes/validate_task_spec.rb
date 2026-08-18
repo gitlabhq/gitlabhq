@@ -522,6 +522,34 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
+    context 'when a route has a todo reason' do
+      let(:route_settings) do
+        { authorization: { todo: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123456' } }
+      end
+
+      it 'completes successfully without requiring permissions' do
+        expect { run }.to output(/REST permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a route has a blank todo' do
+      let(:route_settings) { { authorization: { todo: '' } } }
+
+      it 'is treated as missing authorization' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following API routes are missing route_setting :authorization metadata.
+          #  Add authorization metadata to the endpoint.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide
+          #
+          #    - GET /projects/:id/test (lib/api/test.rb:42)
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
     context 'when a route permission has insufficient test coverage' do
       let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
       let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }

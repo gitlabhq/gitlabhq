@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import RevokeButton from './components/revoke_button.vue';
 
 export default () => {
@@ -11,16 +11,14 @@ export default () => {
   return containers.forEach((el) => {
     const { token, revokePath } = el.dataset;
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'RevokeButtonRoot',
       provide: {
         token: JSON.parse(token),
         revokePath,
       },
-      render(h) {
-        return h(RevokeButton);
-      },
+      component: RevokeButton,
     });
   });
 };

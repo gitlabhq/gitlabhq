@@ -38,6 +38,11 @@ export default {
       required: false,
       default: () => [],
     },
+    memberRoles: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     showDivider: {
       type: Boolean,
       required: false,
@@ -136,6 +141,12 @@ export default {
           :data-qa-role="$options.accessLevelsConfig[item].accessLevelLabel"
         >
           {{ $options.accessLevelsConfig[item].accessLevelLabel }}
+        </gl-badge>
+      </div>
+
+      <div v-if="memberRoles.length" class="gl-flex gl-flex-1 gl-flex-wrap gl-gap-2">
+        <gl-badge v-for="memberRole in memberRoles" :key="memberRole.id" data-testid="member-role">
+          {{ memberRole.name }}
         </gl-badge>
       </div>
 

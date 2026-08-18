@@ -2,26 +2,26 @@
 .incident-management-list,
 .alert-management-details {
   .icon-critical {
-    color: $red-800;
+    color: var(--severity-color-critical);
   }
 
   .icon-high {
-    color: $red-600;
+    color: var(--severity-color-high);
   }
 
   .icon-medium {
-    color: $orange-400;
+    color: var(--severity-color-medium);
   }
 
   .icon-low {
-    color: $orange-300;
+    color: var(--severity-color-low);
   }
 
   .icon-info {
-    color: $blue-400;
+    color: var(--severity-color-info);
   }
 
   .icon-unknown {
-    color: $gray-200;
+    color: var(--severity-color-unknown);
   }
 }

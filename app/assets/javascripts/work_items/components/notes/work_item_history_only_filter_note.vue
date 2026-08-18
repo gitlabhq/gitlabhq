@@ -21,10 +21,10 @@ export default {
     GlIcon,
     GlSprintf,
   },
-  emits: ['changeFilter'],
+  emits: ['change-filter'],
   methods: {
     selectFilter(value) {
-      this.$emit('changeFilter', value);
+      this.$emit('change-filter', value);
     },
   },
 };

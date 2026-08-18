@@ -69,7 +69,7 @@ module Gitlab
       end
 
       def web_request?
-        !api_request? && !health_check_request?
+        !api_request? && !health_check_request? && !product_analytics_collector_request?
       end
 
       def protected_path?

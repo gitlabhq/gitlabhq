@@ -17,11 +17,11 @@ describe('Sidebar Confidentiality Content', () => {
     });
   };
 
-  it('emits `expandSidebar` event on collapsed icon click', () => {
+  it('emits `expand-sidebar` event on collapsed icon click', () => {
     createComponent();
     findCollapsedIcon().trigger('click');
 
-    expect(wrapper.emitted('expandSidebar')).toHaveLength(1);
+    expect(wrapper.emitted('expand-sidebar')).toHaveLength(1);
   });
 
   describe('when issue is non-confidential', () => {

@@ -40,10 +40,16 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     def next_batch_sql
+      # Use a MATERIALIZED CTE so PostgreSQL evaluates the locked ID set exactly
+      # once before the UPDATE runs. Without MATERIALIZED, the planner may
+      # re-scan the sub-select mid-UPDATE and lock more than batch_size rows,
+      # causing the service to delete more records than intended per batch.
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/613699
       <<~SQL.squish
+      WITH batch AS MATERIALIZED (#{locked_object_ids_sql})
       UPDATE "ci_deleted_objects"
         SET "pick_up_at" = :new_pick_up_at
-        WHERE "ci_deleted_objects"."id" IN (#{locked_object_ids_sql})
+        WHERE "ci_deleted_objects"."id" IN (SELECT id FROM batch)
         RETURNING *
       SQL
     end

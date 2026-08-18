@@ -25,7 +25,7 @@ export default {
 <template>
   <a
     :href="author.path || author.webUrl"
-    class="js-user-link gl-overflow-hidden gl-break-words gl-text-default hover:gl-text-link focus:gl-focus"
+    class="js-user-link gl-overflow-hidden gl-break-words gl-text-default hover:gl-text-link focus-visible:gl-focus"
     :data-user-id="authorId"
     :data-username="author.username"
   >

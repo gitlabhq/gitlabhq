@@ -161,41 +161,6 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
   end
 
-  describe '#current_user_menu_items' do
-    subject(:items) { helper.current_user_menu_items }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(false)
-    end
-
-    it 'includes all default items' do
-      expect(items).to include(:help, :sign_out)
-    end
-
-    it 'includes the profile tab if the user can read themself' do
-      expect(helper).to receive(:can?).with(user, :read_user, user) { true }
-
-      expect(items).to include(:profile)
-    end
-
-    it 'includes the settings tab if the user can update themself' do
-      expect(helper).to receive(:can?).with(user, :update_user, user) { true }
-
-      expect(items).to include(:settings)
-    end
-
-    context 'when terms are enforced' do
-      before do
-        enforce_terms
-      end
-
-      it 'hides the profile and the settings tab' do
-        expect(items).not_to include(:settings, :profile, :help)
-      end
-    end
-  end
-
   describe '#impersonation_enabled' do
     context 'when impersonation is enabled' do
       before do
@@ -750,6 +715,25 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       it_behaves_like 'user cannot report'
+    end
+  end
+
+  describe '#user_activity_calendar_data' do
+    let_it_be(:user) { create(:user, timezone: 'America/New_York') }
+
+    subject(:data) { helper.user_activity_calendar_data(user) }
+
+    it 'returns the username' do
+      expect(data[:username]).to eq(user.username)
+    end
+
+    it 'returns the utc offset for the user timezone', time_travel_to: '2020-01-01 00:00:00 +0000' do
+      expect(data[:utc_offset]).to eq(-5.hours.to_i)
+    end
+
+    it 'falls back to the instance timezone when the user has none' do
+      expect(helper.user_activity_calendar_data(build(:user, timezone: nil))[:utc_offset])
+        .to eq(Time.zone.now.utc_offset)
     end
   end
 end

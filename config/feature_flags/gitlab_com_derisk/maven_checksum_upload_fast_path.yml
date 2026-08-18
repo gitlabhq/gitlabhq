@@ -1,0 +1,8 @@
+---
+name: maven_checksum_upload_fast_path
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244917
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605714
+milestone: '19.2'
+type: gitlab_com_derisk
+group: group::package registry
+default_enabled: false

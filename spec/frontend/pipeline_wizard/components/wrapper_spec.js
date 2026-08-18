@@ -43,7 +43,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
     wrapper.findAllComponents(WizardStep).wrappers.find((w) => w.isVisible());
   const getGlProgressBarWrapper = () => wrapper.getComponent(GlProgressBar);
   const findFirstVisibleStep = () =>
-    wrapper.findAllByTestId('step').wrappers.find((w) => w.isVisible());
+    wrapper.findAllComponentsByTestId('step').wrappers.find((w) => w.isVisible());
   const findFirstInputFieldForTarget = (target) =>
     wrapper.find(`[data-input-target="${target}"]`).find('input');
 

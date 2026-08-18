@@ -1,0 +1,10 @@
+---
+name: workplan_score
+description: Enable work_plan score on work items
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23050
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248374
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607899
+milestone: '19.3'
+group: group::spec-driven development
+type: wip
+default_enabled: false

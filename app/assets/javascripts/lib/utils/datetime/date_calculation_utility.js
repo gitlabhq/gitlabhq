@@ -258,17 +258,15 @@ export const getDatesInRange = (d1, d2, formatter = (x) => x) => {
   if (!(d1 instanceof Date) || !(d2 instanceof Date)) {
     return [];
   }
-  let startDate = d1.getTime();
-  const endDate = d2.getTime();
-  const oneDay = 24 * 3600 * 1000;
   const range = [d1];
+  let date = d1;
 
-  while (startDate < endDate) {
-    startDate += oneDay;
-    range.push(new Date(startDate));
+  while (date < d2) {
+    date = getDateInFuture(date, 1);
+    range.push(date);
   }
 
-  return range.map((date) => formatter(date));
+  return range.map((day) => formatter(day));
 };
 
 /**
@@ -771,6 +769,23 @@ export const getCurrentUtcDate = () => {
   const now = new Date();
 
   return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+};
+
+/**
+ * Returns the current date at midnight for a given UTC offset,
+ * i.e. today's calendar date in the timezone of that offset.
+ *
+ * @param {Number} utcOffsetSeconds The UTC offset in seconds
+ * @return {Date} The current date at the given UTC offset
+ */
+export const getCurrentDateAtOffset = (utcOffsetSeconds) => {
+  const nowAtOffset = new Date(Date.now() + secondsToMilliseconds(utcOffsetSeconds));
+
+  return new Date(
+    nowAtOffset.getUTCFullYear(),
+    nowAtOffset.getUTCMonth(),
+    nowAtOffset.getUTCDate(),
+  );
 };
 
 /**

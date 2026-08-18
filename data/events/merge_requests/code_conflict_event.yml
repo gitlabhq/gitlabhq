@@ -1,0 +1,5 @@
+---
+event: MergeRequests::CodeConflictEvent
+description: Published when a merge request cannot be merged due to a code conflict.
+  Only fires when the conflict notification condition is met.
+feature_category: code_review_workflow

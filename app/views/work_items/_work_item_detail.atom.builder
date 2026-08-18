@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-builder.title   markdown_field(work_item_detail, :title), type: 'html'
+builder.title   work_item_detail.title
 builder.updated work_item_detail.updated_at.xmlschema
 builder.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_user(work_item_detail.author))
 
@@ -10,7 +10,6 @@ builder.author do
 end
 
 builder.summary work_item_detail.title
-builder.description truncate(work_item_detail.description, length: 240) if work_item_detail.description
 builder.content markdown_field(work_item_detail, :description), type: 'html' if work_item_detail.description
 builder.milestone work_item_detail.milestone.title if work_item_detail.milestone
 

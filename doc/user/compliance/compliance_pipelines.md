@@ -93,12 +93,6 @@ To ensure that the correct compliance pipeline is included in a project:
 
 ## Configure a compliance pipeline
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.
-
-{{< /history >}}
-
 To configure a compliance pipeline:
 
 1. In the top bar, select **Search or go to** and find your group.
@@ -384,7 +378,7 @@ This configuration doesn't overwrite the compliance pipeline and you get the fol
 ### Prefilled variables are not shown
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857),
-compliance pipelines in GitLab 15.3 and later can prevent
+compliance pipelines can prevent
 [prefilled variables](../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines)
 from appearing when manually starting a pipeline.
 

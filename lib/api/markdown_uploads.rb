@@ -7,8 +7,8 @@ module API
 
     feature_category :team_planning
 
-    FILENAME_QUERY_PARAM_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
-      filename: API::NO_SLASH_URL_PART_REGEX
+    FILENAME_QUERY_PARAM_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      filename: ::API::NO_SLASH_URL_PART_REGEX
     )
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.post? }
@@ -35,7 +35,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 13.11'
         success code: 200
@@ -203,7 +203,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 19.0'
         success code: 200

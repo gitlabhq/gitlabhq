@@ -109,6 +109,26 @@ RSpec.describe AuditEvent do
     end
   end
 
+  describe '#author_name' do
+    context 'when the event was authored by a composite identity' do
+      it 'returns the stored composite author name' do
+        author = create(:user)
+        audit_event = build(:audit_event, :composite_identity_author, user: author)
+
+        expect(audit_event.author_name).to eq('Service Account on behalf of @human')
+      end
+    end
+
+    context 'when the stored author_name differs from the current author name' do
+      it 'returns the current author name' do
+        author = create(:user)
+        audit_event = build(:audit_event, user: author, author_name: 'Old Name', details: {})
+
+        expect(audit_event.author_name).to eq(author.name)
+      end
+    end
+  end
+
   describe '#author' do
     subject(:author) { audit_event.author }
 

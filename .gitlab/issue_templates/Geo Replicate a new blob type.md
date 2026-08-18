@@ -214,7 +214,6 @@ The generator handles most of the boilerplate, but some steps still require manu
 - [ ] Run: `bundle exec rake gitlab:geo:dev:ssf_metrics`
 - [ ] Run: `bundle exec rake gitlab:graphql:compile_docs`
 - [ ] Run: `bundle exec rake gitlab:graphql:generate_all_introspection_schemas`
-- [ ] Run: `bundle exec rake gitlab:openapi:v2:generate`
 - [ ] Run: `bundle exec rake gitlab:openapi:v3:generate`
 
 #### Step 5. Handle batch destroy

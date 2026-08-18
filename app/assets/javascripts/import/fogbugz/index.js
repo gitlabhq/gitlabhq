@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportFromFogBugzApp from './import_from_fogbugz_app.vue';
 
 export function initFogbugzImportProjectForm() {
@@ -12,11 +12,5 @@ export function initFogbugzImportProjectForm() {
 
   const props = { backButtonPath, formPath };
 
-  return new Vue({
-    el,
-    name: 'ImportFromFogBugzRoot',
-    render(createElement) {
-      return createElement(ImportFromFogBugzApp, { props });
-    },
-  });
+  return initVueApp({ el, name: 'ImportFromFogBugzRoot', component: ImportFromFogBugzApp, props });
 }

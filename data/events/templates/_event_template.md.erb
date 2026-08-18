@@ -15,11 +15,11 @@ and the Rake task at `lib/tasks/gitlab/docs/compile_events.rake`.
 To add or update an event, edit the corresponding YAML file in `data/events/`.
 Then regenerate this page by running:
 
-  bin/rake gitlab:docs:compile_events
+`bin/rake gitlab:docs:compile_events`
 
 To verify this page is up to date, run:
 
-  bin/rake gitlab:docs:check_events
+`bin/rake gitlab:docs:check_events`
 -->
 
 This page lists all domain events published through the
@@ -41,4 +41,5 @@ To find subscribers, search the subscription files under
 | `<%= event['event'] %>` | `<%= event['feature_category'] %>` | <%= event['ee_only'] ? 'EE' : 'CE' %> | <%= event['description'] %> |
 <%- end -%>
 <%- end -%>
+
 <!-- vale on -->

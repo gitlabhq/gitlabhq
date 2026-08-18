@@ -1,28 +1,24 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import UsageCounts from '~/analytics/usage_trends/components/usage_counts.vue';
-import { mockUsageCounts } from '../mock_data';
+import usageTrendsCountQuery from '~/analytics/usage_trends/graphql/queries/usage_trends_count.query.graphql';
+import { mockUsageCountsQueryResponse } from '../mock_data';
+
+Vue.use(VueApollo);
 
 describe('UsageCounts', () => {
   let wrapper;
 
-  const createComponent = ({ loading = false, data = {} } = {}) => {
-    const $apollo = {
-      queries: {
-        counts: {
-          loading,
-        },
-      },
-    };
+  const createComponent = () => {
+    const countsHandler = jest.fn().mockResolvedValue({ data: mockUsageCountsQueryResponse });
 
     wrapper = shallowMount(UsageCounts, {
-      mocks: { $apollo },
-      data() {
-        return {
-          ...data,
-        };
-      },
+      apolloProvider: createMockApollo([[usageTrendsCountQuery, countsHandler]]),
     });
   };
 
@@ -31,7 +27,7 @@ describe('UsageCounts', () => {
 
   describe('while loading', () => {
     beforeEach(() => {
-      createComponent({ loading: true });
+      createComponent();
     });
 
     it('displays a loading indicator', () => {
@@ -40,18 +36,19 @@ describe('UsageCounts', () => {
   });
 
   describe('with data', () => {
-    beforeEach(() => {
-      createComponent({ data: { counts: mockUsageCounts } });
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
     });
 
     it.each`
-      index | value                       | title
-      ${0}  | ${mockUsageCounts[0].value} | ${mockUsageCounts[0].label}
-      ${1}  | ${mockUsageCounts[1].value} | ${mockUsageCounts[1].label}
+      index | value   | title
+      ${0}  | ${'10'} | ${'Projects'}
+      ${1}  | ${'20'} | ${'Groups'}
     `('renders a GlSingleStat for "$title"', ({ index, value, title }) => {
       const singleStat = findAllSingleStats().at(index);
 
-      expect(singleStat.props('value')).toBe(`${value}`);
+      expect(singleStat.props('value')).toBe(value);
       expect(singleStat.props('title')).toBe(title);
     });
   });

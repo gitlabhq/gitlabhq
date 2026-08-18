@@ -1,0 +1,10 @@
+---
+name: validate_flow_trigger_filter_actions
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/601346
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244173
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605466
+milestone: '19.3'
+group: group::dap events
+type: gitlab_com_derisk
+default_enabled: false

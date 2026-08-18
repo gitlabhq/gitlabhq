@@ -72,12 +72,72 @@ The following table describes the most common models of structuring groups.
 > [!note]
 > On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
 > For more information about efforts to create an organization view of all groups,
-> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/work_items/9266).
 > A top-level group offers insights in your entire organization through a complete
 > [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
 > [Vulnerability report](../application_security/vulnerability_report/_index.md),
 > [compliance center](../compliance/compliance_center/_index.md), and
 > [value stream analytics](value_stream_analytics/_index.md).
+
+### Recommended limits for group structure
+
+Groups have no enforced limits on membership, hierarchy depth, or the number of group shares.
+However, large or deeply nested structures can degrade performance.
+Dashboards can load slowly, permission calculations can time out, and some operations can return `500` errors.
+To keep a group responsive, stay within the following recommended limits:
+
+| Structure | Recommended limit | Maximum limit | Likely symptom beyond the recommended limit |
+| --------- | ----------------- | ------------- | ------------------------------------------- |
+| Members per group | Fewer than 1,000 | None | Performance degrades. At 1,500 or more members, operations can time out or return `500` errors. |
+| Child groups per parent group | Fewer than 100 | None | Navigation and permission calculations slow down. |
+| Hierarchy depth | Five levels or fewer | 20 levels | Database queries can time out. |
+
+Recommended limits differ from maximum limits. A maximum limit is a technical ceiling that GitLab enforces.
+If a group is beyond a recommended limit, it is still supported.
+
+Performance issues are most severe when these limits combine.
+For example, a group that has both deep nesting and many child groups can cause database query timeouts
+sooner than either condition alone.
+
+The recommended limits reflect current performance behavior. For details on planned work to
+help you move from a large, deeply nested structure to a more performant one, see
+[epic 21582](https://gitlab.com/groups/gitlab-org/-/epics/21582).
+
+#### Stay within the recommended limits
+
+If a group approaches or exceeds the recommended limits, you can use the following workarounds
+to reduce the performance impact.
+
+For large group membership:
+
+- Split a group that has more than 1,000 members into smaller functional groups,
+  each with 500 members or fewer.
+  For example, replace a single group of all engineers with separate groups for frontend, backend, and infrastructure engineers.
+- Share each smaller group individually with projects and groups, rather than sharing
+  one large group.
+- For bulk member changes, use the [group members API](../../api/group_members.md) with delays between
+  requests to stay within the [member management rate limits](../../administration/instance_limits.md#rate-limits).
+
+For deep or wide hierarchies:
+
+- Keep hierarchies to five levels or fewer.
+- Use separate top-level groups for parts of your organization that do not need to
+  share inherited membership, rather than nesting everything under one hierarchy.
+- Reduce the number of direct child groups under a single parent group.
+
+For group shares:
+
+- Add a group directly to a project instead of sharing through nested group shares
+  when you need to manage individual member permissions.
+- If a new subgroup does not inherit permissions from a shared group, change the
+  share's role to a different value and then back again to trigger a permission
+  recalculation.
+
+For large hierarchies synced from an identity provider:
+
+- Configure [LDAP sync](../../administration/auth/ldap/ldap_synchronization.md)
+  intervals to avoid rate limiting on the identity provider.
+  Rate limit errors during a sync can block users or remove group memberships.
 
 ## Group visibility
 
@@ -106,7 +166,7 @@ To explore all public or internal groups:
 
 {{< history >}}
 
-- **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- **Member** tab [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13781) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
 
 {{< /history >}}
@@ -125,9 +185,9 @@ This page shows groups that you are a member of through:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13781) **Inactive** tab in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab on the **Explore groups** page in GitLab 18.8 [with a feature flag](../../administration/feature_flags/_index.md) named `explore_groups_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13781) **Inactive** tab on the **Explore groups** page in GitLab 18.8 [with a feature flag](../../administration/feature_flags/_index.md) named `explore_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/585432) in GitLab 18.11. Feature flag `explore_groups_vue` removed.
 
 {{< /history >}}
@@ -251,12 +311,6 @@ To edit group details:
 
 ## Leave a group
 
-{{< history >}}
-
-- The button to leave a group [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
-
-{{< /history >}}
-
 When you leave a group:
 
 - You are no longer a member of the group, its subgroups, and projects, and cannot contribute.
@@ -272,8 +326,7 @@ To leave a group:
 
 {{< history >}}
 
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
@@ -314,8 +367,7 @@ the deletion job instead restores the group, and the group is no longer schedule
 
 {{< history >}}
 
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
@@ -393,18 +445,14 @@ A table displays the member's:
 
 - **Account** name and username.
 - **Source** of their [membership](../project/members/_index.md#membership-types).
-  For transparency, GitLab displays all membership sources of group members.
-  Members who have multiple membership sources are displayed and counted as separate members.
-  For example, if a member has been added to the group both directly and through inheritance,
-  the member is displayed twice in the **Members** table, with different sources,
-  and is counted as two individual members of the group.
+  Group members with multiple sources show up twice in the **Members** table, and are counted as separate members.
+  Group members with elevated roles, like Owner or Maintainer, override less restrictive roles in descendant groups and projects.
+  For example, a group member with the Owner role can be directly assigned the Developer role in a descendant subgroup or project.
+  However, because the member is also assigned the Owner role, they have Owner-scoped permissions. [Issue 502458](https://gitlab.com/gitlab-org/gitlab/-/work_items/502458)
+  proposes a change to this behavior where a member's source displays the highest effective role.
 - [**Role**](../project/members/_index.md#which-roles-you-can-assign) in the group.
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
-
-> [!note]
-> The display of group members' **Source** might be inconsistent.
-> For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
 To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage quotas** page](../../subscriptions/manage_seats.md#view-seat-usage).
 
@@ -453,7 +501,6 @@ You can sort members by **Account**, **Access granted**, **Role**, or **Last sig
 
 {{< history >}}
 
-- Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
 - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
 
 {{< /history >}}

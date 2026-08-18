@@ -10,6 +10,7 @@ module MergeRequests
     delegator_override :class
     delegator_override :has_coverage_reports?
     delegator_override :has_codequality_reports?
+    delegator_override :has_sast_reports?
 
     VERSION_KEYS = %i[diff_id start_sha commit_id only_context_commits].freeze
 
@@ -57,6 +58,19 @@ module MergeRequests
       return false unless latest_diff_version?
 
       __getobj__.has_codequality_reports_for?(latest_diff_head_pipeline)
+    end
+
+    def has_sast_reports?
+      return false unless latest_diff_version?
+
+      __getobj__.has_sast_reports_for?(latest_diff_head_pipeline)
+    end
+
+    def files_count
+      return if compare
+      return if __getobj__.show_context_commits_diff?(@version_params)
+
+      resolved_version.try(:files_count)
     end
 
     private

@@ -54,7 +54,7 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/policies/ee/project_policy.rb'
     - 'ee/app/presenters/ee/project_presenter.rb'
     - 'ee/app/services/ee/users/build_service.rb'
-    - 'ee/app/views/admin/application_settings/_ee_package_registry.haml'
+    - 'ee/app/views/admin/application_settings/_ee_package_registry.html.haml'
     - 'ee/app/views/admin/application_settings/_elasticsearch_form.html.haml'
     - 'ee/app/views/admin/application_settings/_git_two_factor_session_expiry.html.haml'
     - 'ee/app/views/groups/contribution_analytics/show.html.haml'

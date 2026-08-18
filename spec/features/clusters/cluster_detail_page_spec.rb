@@ -303,7 +303,6 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
 
   def select_from_project_select
     click_button('Search for project')
-    wait_for_requests
     find('.gl-new-dropdown-item').click
   end
 end

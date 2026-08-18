@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ClustersDeprecationAlert from './components/clusters_deprecation_alert.vue';
 
 export default () => {
@@ -10,12 +10,12 @@ export default () => {
 
   const { message } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ClustersDeprecationAlertRoot',
     provide: {
       message,
     },
-    render: (createElement) => createElement(ClustersDeprecationAlert),
+    component: ClustersDeprecationAlert,
   });
 };

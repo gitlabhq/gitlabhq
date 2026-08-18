@@ -78,7 +78,7 @@ RSpec.describe ContextCommitsDiff do
       end
 
       it 'returns true' do
-        expect(subject.has_encoded_file_paths?).to eq(true)
+        expect(subject.has_encoded_file_paths?).to be(true)
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe ContextCommitsDiff do
       end
 
       it 'returns false' do
-        expect(subject.has_encoded_file_paths?).to eq(false)
+        expect(subject.has_encoded_file_paths?).to be(false)
       end
     end
   end

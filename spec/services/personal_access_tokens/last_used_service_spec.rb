@@ -258,8 +258,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
           expect(::Gitlab::Audit::Auditor).to have_received(:audit).with(
             hash_including(
               name: 'personal_access_token_used_from_unseen_ip',
-              authentication_event: true,
-              authentication_provider: :pat,
               additional_details: hash_including(
                 pat_id: personal_access_token.id,
                 pat_name: personal_access_token.name

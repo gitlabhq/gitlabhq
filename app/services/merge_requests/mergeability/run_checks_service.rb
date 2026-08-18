@@ -34,7 +34,8 @@ module MergeRequests
           message: 'Checks were not successful',
           payload: {
             results: results,
-            unsuccessful_check: unsuccessful_check
+            unsuccessful_check: unsuccessful_check,
+            unsuccessful_check_explanation: unsuccessful_check_explanation
           }
         )
       end
@@ -70,10 +71,21 @@ module MergeRequests
         results.none?(&:unsuccessful?)
       end
 
+      def unsuccessful_check_result
+        results.find(&:unsuccessful?)
+      end
+      strong_memoize_attr :unsuccessful_check_result
+
       def unsuccessful_check
         # NOTE: the identifier could be string when we retrieve it from the cache
         # so let's make sure we always return symbols here.
-        results.find(&:unsuccessful?)&.payload&.fetch(:identifier)&.to_sym
+        unsuccessful_check_result&.payload&.fetch(:identifier)&.to_sym
+      end
+
+      def unsuccessful_check_explanation
+        # Raw (untranslated) string; translated at the point of display. Old
+        # cache entries won't have the key, hence the nil default.
+        unsuccessful_check_result&.payload&.fetch(:failure_explanation, nil)
       end
     end
   end

@@ -54,30 +54,30 @@ describe('Registry Search', () => {
       });
     });
 
-    it('emits filter:changed when value changes', () => {
+    it('emits filter-changed when value changes', () => {
       mountComponent();
 
       findFilteredSearch().vm.$emit('input', 'foo');
 
-      expect(wrapper.emitted('filter:changed')).toEqual([['foo']]);
+      expect(wrapper.emitted('filter-changed')).toEqual([['foo']]);
     });
 
-    it('emits filter:submit and query:changed on submit event', () => {
+    it('emits filter-submit and query-changed on submit event', () => {
       mountComponent();
 
       findFilteredSearch().vm.$emit('submit');
-      expect(wrapper.emitted('filter:submit')).toEqual([[]]);
-      expect(wrapper.emitted('query:changed')).toEqual([[defaultQueryChangedPayload]]);
+      expect(wrapper.emitted('filter-submit')).toEqual([[]]);
+      expect(wrapper.emitted('query-changed')).toEqual([[defaultQueryChangedPayload]]);
     });
 
-    it('emits filter:changed, filter:submit and query:changed on clear event', () => {
+    it('emits filter-changed, filter-submit and query-changed on clear event', () => {
       mountComponent();
 
       findFilteredSearch().vm.$emit('clear');
 
-      expect(wrapper.emitted('filter:changed')).toEqual([[[]]]);
-      expect(wrapper.emitted('filter:submit')).toEqual([[]]);
-      expect(wrapper.emitted('query:changed')).toEqual([[defaultQueryChangedPayload]]);
+      expect(wrapper.emitted('filter-changed')).toEqual([[[]]]);
+      expect(wrapper.emitted('filter-submit')).toEqual([[]]);
+      expect(wrapper.emitted('query-changed')).toEqual([[defaultQueryChangedPayload]]);
     });
   });
 
@@ -91,25 +91,25 @@ describe('Registry Search', () => {
       ]);
     });
 
-    it('on sort change emits sorting:changed event', () => {
+    it('on sort change emits sorting-changed event', () => {
       mountComponent();
 
       findPackageListSorting().vm.$emit('sortDirectionChange');
-      expect(wrapper.emitted('sorting:changed')).toEqual([[{ sort: 'desc' }]]);
-      expect(wrapper.emitted('query:changed')).toEqual([
+      expect(wrapper.emitted('sorting-changed')).toEqual([[{ sort: 'desc' }]]);
+      expect(wrapper.emitted('query-changed')).toEqual([
         [{ ...defaultQueryChangedPayload, sort: 'desc' }],
       ]);
     });
 
-    it('on sort item click emits sorting:changed event', () => {
+    it('on sort item click emits sorting-changed event', () => {
       mountComponent();
 
       findPackageListSorting().vm.$emit('sortByChange', 'bar');
 
-      expect(wrapper.emitted('sorting:changed')).toEqual([
+      expect(wrapper.emitted('sorting-changed')).toEqual([
         [{ orderBy: defaultProps.sortableFields[1].orderBy }],
       ]);
-      expect(wrapper.emitted('query:changed')).toEqual([
+      expect(wrapper.emitted('query-changed')).toEqual([
         [{ ...defaultQueryChangedPayload, orderBy: 'bar' }],
       ]);
     });
@@ -128,7 +128,7 @@ describe('Registry Search', () => {
 
       findFilteredSearch().vm.$emit('submit');
 
-      expect(wrapper.emitted('query:changed')).toEqual([
+      expect(wrapper.emitted('query-changed')).toEqual([
         [
           {
             ...defaultQueryChangedPayload,

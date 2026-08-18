@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_management do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 
@@ -138,6 +140,106 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
     end
 
     describe 'Wildcard search' do
+      let(:empty_refs) do
+        instance_double(Gitlab::GitalyClient::RefCollectionWithNextCursor, next_cursor: nil, map: [])
+      end
+
+      def expect_list_refs_with(pattern)
+        expect(repository).to receive(:list_refs)
+          .with([pattern], any_args)
+          .and_return(empty_refs)
+      end
+
+      context 'with git-glob metacharacters' do
+        let(:params) do
+          { search: search, ref_type: ref_type }
+        end
+
+        where(:search, :ref_type, :expected_pattern) do
+          'release-[0-9]*' | :branches | 'refs/heads/release-\[0-9\]*'
+          'release-?*'     | :branches | 'refs/heads/release-\?*'
+          'release-\*'     | :branches | 'refs/heads/release-\\\*'
+          'release-{a,b}*' | :branches | 'refs/heads/release-{a,b}*'
+          'feature*'       | :branches | 'refs/heads/feature*'
+          '*'              | :branches | 'refs/heads/*'
+          'release-[*'     | :branches | 'refs/heads/release-\[*'
+          'v[0-9]*'        | :tags     | 'refs/tags/v\[0-9\]*'
+        end
+
+        with_them do
+          it 'passes a glob-safe wildcard pattern to the repository' do
+            expect_list_refs_with(expected_pattern)
+
+            subject
+          end
+        end
+      end
+
+      context 'without a wildcard search' do
+        let(:params) do
+          { search: 'release-[0-9]', ref_type: :branches }
+        end
+
+        it 'passes a glob-safe infix search pattern to the repository' do
+          expect_list_refs_with('refs/heads/**/*release-\[0-9\]*')
+
+          subject
+        end
+      end
+
+      context 'when search is blank' do
+        let(:params) do
+          { search: '', ref_type: :branches }
+        end
+
+        it 'keeps the blank infix search pattern unchanged' do
+          expect_list_refs_with('refs/heads/**/**')
+
+          subject
+        end
+      end
+
+      context 'with repository-backed matching' do
+        where(:search, :expected_names) do
+          'feature[0-9]*' | []
+          'feature?*'     | []
+          'feature*'      | %w[feature feature_conflict]
+        end
+
+        with_them do
+          let(:params) do
+            { search: search, ref_type: :branches }
+          end
+
+          it 'returns the same branches as RefMatcher', :aggregate_failures do
+            branch_names = project.repository.branch_names
+            finder_names = subject.map(&:name)
+            matcher_names = RefMatcher.new(search).matching(branch_names)
+
+            expect(finder_names).to match_array(matcher_names)
+            expect(finder_names).to match_array(expected_names)
+          end
+        end
+      end
+
+      context 'when ignore_case is true for a wildcard search' do
+        let(:params) do
+          { search: 'FEATURE*', ref_type: :branches, ignore_case: true }
+        end
+
+        it 'matches branches case-insensitively', :aggregate_failures do
+          case_sensitive_names = described_class.new(
+            repository,
+            search: 'FEATURE*',
+            ref_type: :branches,
+            ignore_case: false
+          ).execute.map(&:name)
+
+          expect(subject.map(&:name)).to include('feature')
+          expect(case_sensitive_names).not_to include('feature')
+        end
+      end
+
       context 'when searching tags with wildcard' do
         let(:params) do
           { search: 'v*', ref_type: :tags }

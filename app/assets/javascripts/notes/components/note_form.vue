@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { mapState, mapActions } from 'pinia';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -27,10 +28,12 @@ export default {
     GlSprintf,
     GlLink,
     GlFormCheckbox,
-    CommentTemperature: () =>
-      import(
-        /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
-      ),
+    CommentTemperature: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
+        ),
+    ),
   },
   mixins: [issuableStateMixin, resolvable, glAbilitiesMixin()],
   props: {
@@ -116,10 +119,10 @@ export default {
     },
   },
   emits: [
-    'cancelForm',
+    'cancel-form',
     'handleFormUpdate',
     'handleFormUpdateAddToReview',
-    'handleSuggestDismissed',
+    'handle-suggest-dismissed',
   ],
   data() {
     return {
@@ -228,8 +231,8 @@ export default {
     canSuggest() {
       return Boolean(
         this.getNoteableData.can_receive_suggestion &&
-          this.line &&
-          this.line.can_receive_suggestion,
+        this.line &&
+        this.line.can_receive_suggestion,
       );
     },
     changedCommentText() {
@@ -307,7 +310,7 @@ export default {
           .querySelector('textarea')
           ?.classList.contains('at-who-active')
       ) {
-        this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
+        this.$emit('cancel-form', shouldConfirm, this.noteBody !== this.updatedNoteBody);
       }
     },
     updatePlaceholder() {
@@ -437,7 +440,7 @@ export default {
           @keydown.exact.up="editMyLastNote()"
           @keydown.exact.esc="cancelHandler(true)"
           @input="onInput"
-          @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+          @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
         />
       </comment-field-layout>
       <comment-temperature

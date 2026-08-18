@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Duo Chat
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Customize GitLab Duo Agent Platform behavior to match your workflow, coding standards, and project requirements.
 title: Customize GitLab Duo Agent Platform
@@ -47,10 +47,10 @@ When you customize the Agent Platform, apply the following best practices:
 
   You can include other configuration files in the `.gitlab/duo/` folder, such as
   [custom flow definitions](../flows/custom.md), or an
-  [MCP server configuration](../../gitlab_duo/model_context_protocol/mcp_server.md) file.
+  [MCP server configuration](../../model_context_protocol/mcp_server.md) file.
 - Document your choices in comments to explain why certain instructions exist.
 - Protect customization files with [Code Owners](../../project/codeowners/_index.md) to manage changes.
 
 ## Related topics
 
-- [Hooks for GitLab Duo CLI](../../gitlab_duo_cli/_index.md#hooks)
+- [Hooks for GitLab Duo CLI](../../gitlab_duo_cli/customize.md#hooks)

@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'get list of boards', feature_category: :portfolio_management do
+RSpec.describe 'get list of boards', feature_category: :planning_views do
   include GraphqlHelpers
 
   include_context 'group and project boards query context'
 
   describe 'for a project' do
-    let(:board_parent) { create(:project, :repository, :private) }
+    let_it_be(:board_parent) { create(:project, :private) }
 
     it_behaves_like 'group and project boards query'
 

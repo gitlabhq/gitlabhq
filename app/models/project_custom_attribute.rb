@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectCustomAttribute < ApplicationRecord
+  include Gitlab::CustomAttributes::KeyLookup
   include EachBatch
 
   belongs_to :project

@@ -26,7 +26,6 @@ describe QA::Support::Formatters::AllureMetadataFormatter, feature_category: :to
       file_path: 'spec.rb',
       execution_result: instance_double(RSpec::Core::Example::ExecutionResult, status: status),
       metadata: {
-        testcase: 'testcase',
         quarantine: { issue: 'issue' }
       },
       exception: RSpec::Expectations::ExpectationNotMetError.new("Some failure message")

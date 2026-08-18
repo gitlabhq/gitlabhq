@@ -102,12 +102,6 @@ The image name must be in one of the following formats:
 
 ## Extended Docker configuration options
 
-{{< history >}}
-
-- Introduced in GitLab and GitLab Runner 9.4.
-
-{{< /history >}}
-
 You can use a string or a map for the `image` or `services` entries:
 
 - Strings must include the full image name
@@ -145,12 +139,6 @@ For example, the following two definitions are equal:
 When a CI job runs in a Docker container, the `before_script`, `script`, and `after_script` commands run in the `/builds/<project-path>/` directory. Your image may have a different default `WORKDIR` defined. To move to your `WORKDIR`, save the `WORKDIR` as an environment variable so you can reference it in the container during the job's runtime.
 
 ### Override the entrypoint of an image
-
-{{< history >}}
-
-- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](using_docker_images.md#extended-docker-configuration-options).
-
-{{< /history >}}
 
 Before explaining the available entrypoint override methods, let's describe
 how the runner starts. It uses a Docker image for the containers used in the
@@ -235,7 +223,7 @@ To access private container registries, the GitLab Runner process can use:
 
 When you use the [GitLab Container Registry](../../user/packages/container_registry/_index.md) on the same GitLab instance,
 GitLab provides default credentials for this registry. With these credentials, the `CI_JOB_TOKEN` is used for authentication.
-To use the job token, the user starting the job must have the Developer, Maintainer, or Owner role for the project where the private image is hosted.
+To use the job token, the user starting the job must have at least the Reporter role for the project where the private image is hosted.
 The project hosting the private image must also allow the other project to authenticate with the job token. This access is disabled by default.
 For more details, see [CI/CD job token](../jobs/ci_job_token.md#control-job-token-access-to-your-project).
 
@@ -247,13 +235,6 @@ To define which option should be used, the runner process reads the configuratio
 - A `config.json` file in the `$HOME/.docker` directory of the user who runs the process.
   If the `--user` flag is provided to run the child processes as unprivileged user,
   the home directory of the main runner process user is used.
-
-### Requirements and limitations
-
-- [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
-  require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
-  these features are not available on instance runners, or any other runner where the user does not
-  have access to the environment where the runner is installed.
 
 ### Use statically-defined credentials
 
@@ -398,12 +379,17 @@ To add `DOCKER_AUTH_CONFIG` to a runner:
 
 ### Use a Credentials Store
 
+A Credentials Store is not available on instance runners, or any other runner where you do not have
+access to the environment where the runner is installed.
+
+Prerequisites:
+
+- An external helper program to interact with a specific keychain or external store, available in
+  the GitLab Runner `$PATH`.
+
 To configure a Credentials Store:
 
-1. To use a Credentials Store, you need an external helper program to interact with a specific keychain or external store.
-   Make sure the helper program is available in the GitLab Runner `$PATH`.
-
-1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
+1. Make GitLab Runner use the helper program. You can accomplish this by using one of the following options:
 
    - Create a
      [CI/CD variable](../variables/_index.md)
@@ -422,19 +408,25 @@ To configure a Credentials Store:
 
 `credsStore` is used to access **all** the registries.
 If you use both images from a private registry and public images from Docker Hub,
-pulling from Docker Hub fails. Docker daemon tries to use the same credentials for **all** the registries.
+pulling from Docker Hub fails. The Docker daemon tries to use the same credentials for **all** the registries.
 
 ### Use Credential Helpers
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.
 
-To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follow these steps:
+Credential Helpers are not available on instance runners, or any other runner where you do not have
+access to the environment where the runner is installed.
 
-1. Make sure [`docker-credential-ecr-login`](https://github.com/awslabs/amazon-ecr-credential-helper) is available in the GitLab Runner `$PATH`.
-1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
-   GitLab Runner Manager acquires the credentials and passes them to the runners. Make sure that GitLab Runner can access the credentials.
-1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
+Prerequisites:
+
+- [`docker-credential-ecr-login`](https://github.com/awslabs/amazon-ecr-credential-helper), available in the GitLab Runner `$PATH`.
+- Any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
+  GitLab Runner Manager acquires the credentials and passes them to the runners. Make sure that GitLab Runner can access the credentials.
+
+To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`:
+
+1. Make GitLab Runner use the credential helper. You can accomplish this by using one of the following options:
 
    - Create a [CI/CD variable](../variables/_index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
@@ -467,7 +459,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      specific repository.
 
 1. You can now use any private image from `<aws_account_id>.dkr.ecr.<region>.amazonaws.com` defined in
-   `image` and/or `services` in your `.gitlab-ci.yml` file:
+   `image`, `services`, or both, in your `.gitlab-ci.yml` file:
 
    ```yaml
    image: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest

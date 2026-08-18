@@ -33,7 +33,7 @@ module API
       requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project'
       requires :package_id, type: Integer, desc: 'ID of a package'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all package files' do
         detail 'Lists all package files for a specified package.'
         success ::API::Entities::PackageFile

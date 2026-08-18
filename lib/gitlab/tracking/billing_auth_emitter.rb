@@ -42,15 +42,19 @@ module Gitlab
 
       def post_headers
         headers = { 'Content-Type' => 'application/json; charset=utf-8' }
-        token = token_source.token
+        token = auth_token
 
         if token.blank?
-          logger.warn('BillingEvents: no OIDC token available, sending request without Authorization header')
+          logger.warn('BillingEvents: no auth token available, sending request without Authorization header')
         else
           headers['Authorization'] = "Bearer #{token}"
         end
 
         headers
+      end
+
+      def auth_token
+        token_source.token
       end
 
       def token_source
@@ -63,3 +67,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Tracking::BillingAuthEmitter.prepend_mod

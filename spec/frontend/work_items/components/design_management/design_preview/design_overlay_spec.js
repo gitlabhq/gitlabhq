@@ -18,8 +18,8 @@ describe('Design overlay component', () => {
   const mockDimensions = { width: 100, height: 100 };
 
   const findOverlay = () => wrapper.findComponentByTestId('design-overlay');
-  const findAllNotes = () => wrapper.findAllByTestId('note-pin');
-  const findCommentBadge = () => wrapper.findByTestId('comment-badge');
+  const findAllNotes = () => wrapper.findAllComponentsByTestId('note-pin');
+  const findCommentBadge = () => wrapper.findComponentByTestId('comment-badge');
   const findBadgeAtIndex = (noteIndex) => findAllNotes().at(noteIndex);
   const findFirstBadge = () => findBadgeAtIndex(0);
   const findSecondBadge = () => findBadgeAtIndex(1);
@@ -79,7 +79,7 @@ describe('Design overlay component', () => {
     expect(wrapper.attributes().style).toBe('width: 100px; height: 100px; top: 0px; left: 0px;');
   });
 
-  it('should emit `openCommentForm` when clicking on overlay', () => {
+  it('should emit `open-comment-form` when clicking on overlay', () => {
     createComponent();
     const newCoordinates = {
       x: 10,
@@ -90,7 +90,7 @@ describe('Design overlay component', () => {
       .find('[data-testid="design-image-button"]')
       .trigger('mouseup', { offsetX: newCoordinates.x, offsetY: newCoordinates.y });
 
-    expect(wrapper.emitted('openCommentForm')).toEqual([
+    expect(wrapper.emitted('open-comment-form')).toEqual([
       [{ x: newCoordinates.x, y: newCoordinates.y }],
     ]);
   });
@@ -190,36 +190,43 @@ describe('Design overlay component', () => {
       expect(findFirstBadge().props('position')).toEqual({ left: '20px', top: '30px' });
     });
 
-    it('should update active discussion when clicking a note without moving it', async () => {
-      createComponent({
-        notes,
-        dimensions: {
-          width: 400,
-          height: 400,
-        },
+    describe('when clicking a note without moving it', () => {
+      beforeEach(async () => {
+        createComponent({
+          notes,
+          dimensions: {
+            width: 400,
+            height: 400,
+          },
+        });
+
+        const { position } = notes[0];
+
+        findFirstBadge().vm.$emit(
+          'mousedown',
+          new MouseEvent('click', { clientX: position.x, clientY: position.y }),
+        );
+        findFirstBadge().vm.$emit(
+          'mouseup',
+          new MouseEvent('click', { clientX: position.x, clientY: position.y }),
+        );
+        await waitForPromises();
       });
 
-      expect(findFirstBadge().props('isInactive')).toBe(null);
+      // isInactive starts as null, so `false` is only reachable by activating.
+      it('should update active discussion', () => {
+        expect(findFirstBadge().props('isInactive')).toBe(false);
+      });
 
-      const note = notes[0];
-      const { position } = note;
-
-      findFirstBadge().vm.$emit(
-        'mousedown',
-        new MouseEvent('click', { clientX: position.x, clientY: position.y }),
-      );
-
-      findFirstBadge().vm.$emit(
-        'mouseup',
-        new MouseEvent('click', { clientX: position.x, clientY: position.y }),
-      );
-      await waitForPromises();
-      expect(findFirstBadge().props('isInactive')).toBe(false);
+      it('emits `close-comment-form`', () => {
+        expect(wrapper.emitted('close-comment-form')).toEqual([[]]);
+        expect(wrapper.emitted('move-note')).toBeUndefined();
+      });
     });
   });
 
   describe('when moving notes', () => {
-    it('should emit `moveNote` event when note-moving action ends', async () => {
+    it('should emit `move-note` event when note-moving action ends', async () => {
       createComponent({ notes });
       const note = notes[0];
       const { position } = note;
@@ -228,7 +235,7 @@ describe('Design overlay component', () => {
       const badge = findFirstBadge();
       await clickAndDragBadge(badge, { x: position.x, y: position.y }, newCoordinates);
 
-      expect(wrapper.emitted('moveNote')).toEqual([
+      expect(wrapper.emitted('move-note')).toEqual([
         [
           {
             noteId: notes[0].id,
@@ -301,7 +308,7 @@ describe('Design overlay component', () => {
         expect(findCommentBadge().props('position')).toEqual({ left: '20px', top: '20px' });
       });
 
-      it('should emit `openCommentForm` event when mouseleave fired on overlay element', async () => {
+      it('should emit `open-comment-form` event when mouseleave fired on overlay element', async () => {
         const { position } = notes[0];
         createComponent({
           notes,
@@ -319,10 +326,10 @@ describe('Design overlay component', () => {
         );
 
         await findOverlay().trigger('mouseleave');
-        expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
+        expect(wrapper.emitted('open-comment-form')).toEqual([[newCoordinates]]);
       });
 
-      it('should emit `openCommentForm` event when mouseup fired on comment badge element', async () => {
+      it('should emit `open-comment-form` event when mouseup fired on comment badge element', async () => {
         const { position } = notes[0];
         createComponent({
           notes,
@@ -339,7 +346,7 @@ describe('Design overlay component', () => {
           newCoordinates,
         );
 
-        expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
+        expect(wrapper.emitted('open-comment-form')).toEqual([[newCoordinates]]);
       });
     });
   });

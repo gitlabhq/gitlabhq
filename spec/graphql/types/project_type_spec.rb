@@ -2143,4 +2143,44 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
     end
   end
+
+  describe 'transferInProgress field', feature_category: :groups_and_projects do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :public, developers: user) }
+    let_it_be_with_reload(:transfer_in_progress_project) { create(:project, :public, developers: user) }
+
+    let(:project_full_path) { project.full_path }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project_full_path}") {
+            transferInProgress
+          }
+        }
+      )
+    end
+
+    before_all do
+      transfer_in_progress_project.project_namespace.update_column(:state, Namespace.states[:transfer_in_progress])
+    end
+
+    subject(:transfer_in_progress) do
+      GitlabSchema.execute(query, context: { current_user: user }).as_json
+        .dig('data', 'project', 'transferInProgress')
+    end
+
+    context 'when project namespace is in transfer_in_progress state' do
+      let(:project_full_path) { transfer_in_progress_project.full_path }
+
+      it 'returns true' do
+        expect(transfer_in_progress).to be true
+      end
+    end
+
+    context 'when project is not being transferred' do
+      it 'returns false' do
+        expect(transfer_in_progress).to be false
+      end
+    end
+  end
 end

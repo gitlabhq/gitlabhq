@@ -3,6 +3,7 @@ import { GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { EXTENSION_ICONS } from '../../constants';
 import { generateText } from './utils';
 import ActionButtons from './action_buttons.vue';
@@ -19,6 +20,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [glSlotsMixin],
   props: {
     level: {
       type: Number,
@@ -75,7 +77,7 @@ export default {
   },
   methods: {
     hasHeader() {
-      return Boolean(this.$scopedSlots.header || this.header || this.shouldShowHeaderActions);
+      return Boolean(this.glSlots().header || this.header || this.shouldShowHeaderActions);
     },
   },
   i18n: {

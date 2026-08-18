@@ -2,10 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat do
+RSpec.describe Admin::AbuseReportsController, :with_current_organization,
+  feature_category: :insider_threat do
   include AdminModeHelper
 
   let_it_be(:admin) { create(:admin) }
+  let_it_be(:other_organization) { create(:organization) }
+  let_it_be(:other_org_reporter) { create(:user, organization: other_organization) }
 
   before do
     enable_admin_mode!(admin)
@@ -15,6 +18,16 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
   describe 'GET #index' do
     let_it_be(:open_report) { create(:abuse_report) }
     let_it_be(:closed_report) { create(:abuse_report, :closed) }
+    let_it_be(:other_org_report) do
+      create(:abuse_report, user: open_report.user, category: open_report.category,
+        reporter: other_org_reporter, organization: other_organization)
+    end
+
+    it 'excludes reports belonging to another organization' do
+      get admin_abuse_reports_path
+
+      expect(assigns(:abuse_reports)).to contain_exactly(open_report)
+    end
 
     it 'returns open reports by default' do
       get admin_abuse_reports_path
@@ -48,6 +61,16 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
       get admin_abuse_report_path(report)
 
       expect(assigns(:abuse_report)).to eq report
+    end
+
+    context 'when the report belongs to another organization' do
+      let!(:report) { create(:abuse_report, reporter: other_org_reporter, organization: other_organization) }
+
+      it 'returns 404' do
+        get admin_abuse_report_path(report)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 
@@ -97,6 +120,16 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
         expect(json_response['message']).to eq(error_message)
       end
     end
+
+    context 'when the report belongs to another organization' do
+      let_it_be(:report) { create(:abuse_report, reporter: other_org_reporter, organization: other_organization) }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'PUT #moderate_user' do
@@ -144,6 +177,16 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
         expect(json_response['message']).to eq(message)
       end
     end
+
+    context 'when the report belongs to another organization' do
+      let(:report) { create(:abuse_report, reporter: other_org_reporter, organization: other_organization) }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
@@ -154,6 +197,16 @@ RSpec.describe Admin::AbuseReportsController, feature_category: :insider_threat 
 
     it 'destroys the report' do
       expect { subject }.to change { AbuseReport.count }.by(-1)
+    end
+
+    context 'when the report belongs to another organization' do
+      let!(:report) { create(:abuse_report, reporter: other_org_reporter, organization: other_organization) }
+
+      it 'returns 404 and does not destroy the report', :aggregate_failures do
+        expect { subject }.not_to change { AbuseReport.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     context 'when passing the `remove_user` parameter' do

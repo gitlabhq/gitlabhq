@@ -1,6 +1,7 @@
 <script>
 import { cloneDeep } from 'lodash-es';
 import { produce } from 'immer';
+import { GlToastMixin } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -28,7 +29,7 @@ export default {
   components: {
     WorkItemLinkChild,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: ['getWorkItemTypeConfiguration'],
   props: {
     fullPath: {
@@ -113,7 +114,7 @@ export default {
       default: true,
     },
   },
-  emits: ['click', 'drag', 'drop', 'error', 'show-modal'],
+  emits: ['click', 'drag', 'drop', 'error', 'select-child'],
   data() {
     return {
       updateInProgress: false,
@@ -569,7 +570,7 @@ export default {
         return;
       }
       if (this.isTopLevel) {
-        this.$emit('show-modal', { event, child: event.childItem || child });
+        this.$emit('select-child', { event, child: event.childItem || child });
       } else {
         // To avoid incorrect work item to be bubbled up
         // Assign the correct child item
@@ -647,9 +648,9 @@ export default {
       @drop="$emit('drop')"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
-      @removeChild="removeChild"
+      @remove-child="removeChild"
       @error="$emit('error', $event)"
-      @toggleDrawer="onClick($event, child)"
+      @toggle-drawer="onClick($event, child)"
     />
   </component>
 </template>

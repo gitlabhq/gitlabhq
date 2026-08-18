@@ -18,7 +18,6 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to belong_to(:user).inverse_of(:abuse_reports) }
     it { is_expected.to belong_to(:organization).required }
     it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
-    it { is_expected.to have_many(:user_mentions).class_name('AntiAbuse::Reports::UserMention') }
 
     it "aliases reporter to author" do
       expect(subject.author).to be(subject.reporter)
@@ -167,6 +166,21 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
       end
     end
 
+    describe '.in_organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_report) do
+        create(:abuse_report, reporter: create(:user, organization: other_organization))
+      end
+
+      it 'returns only reports belonging to the given organization' do
+        expect(described_class.in_organization(other_organization)).to contain_exactly(other_org_report)
+      end
+
+      it 'excludes reports belonging to another organization' do
+        expect(described_class.in_organization(report1.organization)).not_to include(other_org_report)
+      end
+    end
+
     describe '.aggregated_by_user_and_category' do
       let_it_be(:report3) { create(:abuse_report, category: report1.category, user: report1.user) }
       let_it_be(:report4) { create(:abuse_report, category: 'phishing', user: report1.user) }
@@ -191,6 +205,31 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
         it 'does not sort using a specific order' do
           expect(aggregated).to match_array([report, report1, report4, report5])
+        end
+      end
+
+      context 'when called on an organization-scoped relation' do
+        let_it_be(:other_organization) { create(:organization) }
+
+        # Reports are grouped by reported user and category. This one has the same user and
+        # category as report1, so it lands in the group that report1 and report3 already form --
+        # but it belongs to a different organization, so it must not be counted in that group.
+        # If the organization filter fails to reach the grouping, report1's count comes back
+        # as 3 instead of 2.
+        let_it_be(:other_org_report) do
+          create(:abuse_report, category: report1.category, user: report1.user,
+            reporter: create(:user, organization: other_organization))
+        end
+
+        it 'aggregates only within the receiver relation organization', :aggregate_failures do
+          reports_in_report1_group = [report1, report3]
+
+          result = described_class.in_organization(report1.organization)
+            .aggregated_by_user_and_category(false)
+
+          expect(result).to match_array([report, report1, report4, report5])
+          expect(result.find { |aggregate| aggregate.id == report1.id }.count)
+            .to eq(reports_in_report1_group.size)
         end
       end
     end
@@ -326,16 +365,58 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
     subject(:reported_content) { report.reported_content }
 
+    # `record` and `source_text` are provided by the including context.
+    shared_examples 'self-healing cached HTML' do |field|
+      context 'when the cached HTML is empty' do
+        before do
+          record.update_columns("#{field}_html" => nil)
+        end
+
+        it 're-renders and returns the cached HTML from the source', :aggregate_failures do
+          expect(reported_content).to eq(record.reload.public_send(:"#{field}_html"))
+          expect(reported_content).to include(source_text)
+        end
+      end
+
+      context 'when the cached HTML version is stale' do
+        before do
+          record.update_columns("#{field}_html" => '<p>outdated cached html</p>', cached_markdown_version: 1)
+        end
+
+        it 're-renders from the source instead of returning the stale HTML', :aggregate_failures do
+          expect(reported_content).not_to include('outdated cached html')
+          expect(reported_content).to include(source_text)
+          expect(reported_content).to eq(record.reload.public_send(:"#{field}_html"))
+        end
+      end
+    end
+
     context 'when reported from an issue' do
       let(:url) { ::Gitlab::UrlBuilder.build(issue) }
 
       it { is_expected.to eq issue.description_html }
+
+      context 'with a stale or empty cache' do
+        let(:issue) { create(:issue, description: 'issue description') }
+        let(:record) { issue }
+        let(:source_text) { 'issue description' }
+
+        it_behaves_like 'self-healing cached HTML', :description
+      end
     end
 
     context 'when reported from a merge request' do
       let(:url) { project_merge_request_url(merge_request.project, merge_request) }
 
       it { is_expected.to eq merge_request.description_html }
+
+      context 'with a stale or empty cache' do
+        let(:merge_request) { create(:merge_request, description: 'mr description') }
+        let(:record) { merge_request }
+        let(:source_text) { 'mr description' }
+
+        it_behaves_like 'self-healing cached HTML', :description
+      end
     end
 
     context 'when reported from a merge request with an invalid note ID' do
@@ -369,6 +450,13 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
       let(:url) { project_issue_url(issue.project, issue, anchor: "note_#{note.id}") }
 
       it { is_expected.to eq note.note_html }
+
+      context 'with a stale or empty cache' do
+        let(:record) { note }
+        let(:source_text) { 'comment in issue' }
+
+        it_behaves_like 'self-healing cached HTML', :note
+      end
     end
 
     context 'when reported from a merge request comment' do

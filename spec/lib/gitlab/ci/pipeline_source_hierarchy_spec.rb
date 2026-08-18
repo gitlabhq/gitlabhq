@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::PipelineSourceHierarchy, feature_category: :continuous_integration do
   include Ci::SourcePipelineHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:ancestor) { create(:ci_pipeline, project: project) }
   let_it_be(:parent) { create(:ci_pipeline, project: project) }
   let_it_be(:child) { create(:ci_pipeline, project: project) }

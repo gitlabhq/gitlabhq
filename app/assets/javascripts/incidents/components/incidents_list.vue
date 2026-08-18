@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlLink,
   GlLoadingIcon,
@@ -127,9 +128,12 @@ export default {
     GlButton,
     TimeAgoTooltip,
     GlIcon,
-    PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
-    ServiceLevelAgreementCell: () =>
-      import('ee_component/vue_shared/components/incidents/service_level_agreement.vue'),
+    PublishedCell: defineAsyncComponent(
+      () => import('ee_component/incidents/components/published_cell.vue'),
+    ),
+    ServiceLevelAgreementCell: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/incidents/service_level_agreement.vue'),
+    ),
     GlEmptyState,
     SeverityToken,
     PaginatedTableWithSearchAndTabs,

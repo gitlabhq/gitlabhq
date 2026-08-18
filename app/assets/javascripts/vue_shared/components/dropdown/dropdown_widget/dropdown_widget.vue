@@ -8,6 +8,8 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'DropdownWidget',
@@ -19,6 +21,7 @@ export default {
     GlDropdownItem,
     GlSearchBoxByType,
   },
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     selectText: {
       type: String,
@@ -133,7 +136,7 @@ export default {
     lazy
     menu-class="!gl-w-full"
     class="gl-w-full"
-    v-on="$listeners"
+    v-on="glListeners()"
     @shown="setFocus"
   >
     <template #header>
@@ -194,7 +197,7 @@ export default {
         </template>
       </gl-dropdown-form>
     </slot>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </gl-dropdown>

@@ -17,7 +17,7 @@ module Resolvers
                 argument(name, type, **kwargs) # rubocop:disable Graphql/Descriptions -- defined in adapter
               end
             end
-            klass.class_eval(&block)
+            klass.class_eval(&block) if block
 
             klass
           end

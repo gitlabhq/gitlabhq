@@ -12,16 +12,9 @@ title: Migrate from CircleCI
 
 {{< /details >}}
 
-If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md),
-and start making use of all its powerful features.
-
-We have collected several resources that you may find useful before starting to migrate.
-
-The [Quick Start Guide](../quick_start/_index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/_index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
-
-For advanced CI/CD teams, [custom project templates](../../administration/project_templates.md) can enable the reuse of pipeline configurations.
-
-If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
+If you use CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md).
+Both platforms define pipelines with a YAML configuration file and run jobs in stages.
+Because of this, most CircleCI concepts have a direct equivalent in GitLab CI/CD.
 
 ## `config.yml` vs `.gitlab-ci.yml`
 
@@ -70,7 +63,7 @@ job1:
 
 ### Workflows
 
-CircleCI determines the run order for jobs with `workflows`. This is also used to determine concurrent, sequential, scheduled, or manual runs. The equivalent function in GitLab CI/CD is called [stages](../yaml/_index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/_index.md#allow_failure).
+CircleCI uses `workflows` to determine the run order for jobs, and whether runs are concurrent, sequential, scheduled, or manual. The equivalent function in GitLab CI/CD is called [stages](../yaml/_index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/_index.md#allow_failure).
 
 See [the Pipeline Architecture Overview](../pipelines/pipeline_architectures.md) for guidance on different types of pipelines that you can use. Pipelines can be tailored to meet your needs, such as for a large complex project or a monorepo with independent defined components.
 
@@ -143,7 +136,9 @@ job4:
 
 #### Scheduled run
 
-GitLab CI/CD has an easy to use UI to [schedule pipelines](../pipelines/schedules.md). Also, [rules](../yaml/_index.md#rules) can be used to determine if jobs should be included or excluded from a scheduled pipeline.
+You can [schedule pipelines](../pipelines/schedules.md) to run on a cron schedule in the GitLab
+UI. You can also use [rules](../yaml/_index.md#rules) to include or exclude jobs from a scheduled
+pipeline.
 
 CircleCI example of a scheduled workflow:
 
@@ -231,7 +226,7 @@ deploy:
 
 ### Caching
 
-GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/_index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
+GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the difference between [cache and artifacts](../caching/_index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
 
 CircleCI example of a job using a cache:
 
@@ -266,14 +261,13 @@ test_async:
 
 ## Contexts and variables
 
-CircleCI provides [Contexts](https://circleci.com/docs/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/_index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/_index.md#for-a-group) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
+CircleCI provides [Contexts](https://circleci.com/docs/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/_index.md) can be created to assemble related projects together. [CI/CD variables](../variables/_index.md#for-a-group) can be stored for a group, outside the individual projects, and securely passed into pipelines across multiple projects.
 
 ## Orbs
 
-There are two GitLab issues open addressing CircleCI Orbs and how GitLab can achieve similar functionality.
-
-- [issue #1151](https://gitlab.com/gitlab-com/Product/-/issues/1151)
-- [issue #195173](https://gitlab.com/gitlab-org/gitlab/-/issues/195173)
+CircleCI Orbs are reusable packages of CI/CD configuration. In GitLab,
+[CI/CD components](../components/_index.md) provide similar reusable pipeline
+configuration that you can use across projects.
 
 ## Build environments
 
@@ -332,3 +326,9 @@ osx job:
   script:
     - echo "Hello, $USER!"
 ```
+
+## Related topics
+
+- [Get started with GitLab CI/CD](../quick_start/_index.md)
+- [Auto DevOps](../../topics/autodevops/_index.md)
+- [Project templates](../../administration/project_templates.md)

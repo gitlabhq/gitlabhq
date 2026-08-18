@@ -38,7 +38,6 @@ Prerequisites:
 
 {{< history >}}
 
-- Ability to create non-expiring group access tokens was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Group access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
@@ -124,8 +123,6 @@ If you are an administrator, you can create group access tokens in the Rails con
 
 {{< history >}}
 
-- In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
-- The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
 - Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
 - Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
 
@@ -210,7 +207,7 @@ To revoke a group access token:
 Personal, group, and project access tokens expire at midnight UTC on the expiry date.
 After they expire, they can no longer be used to authenticate requests.
 
-In GitLab 16.0 and later, new access tokens must have an expiry date. If an expiry date isn't
+New access tokens must have an expiry date. If an expiry date isn't
 explicitly set during token creation, an expiry date of 365 days from the current date is applied.
 In GitLab Ultimate, administrators can configure a
 [maximum allowable lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)

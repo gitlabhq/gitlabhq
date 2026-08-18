@@ -74,7 +74,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
 
       expect do
         run_with_clean_state(query, context: ctx)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_query_limit(control_count).allow_skip_cache_inconsistency
     end
   end
 
@@ -318,7 +318,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
 
         expect do
           run_with_clean_state(query, context: ctx)
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
       end
     end
   end

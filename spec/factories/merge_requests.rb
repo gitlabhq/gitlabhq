@@ -362,7 +362,7 @@ FactoryBot.define do
     end
 
     after(:create) do |merge_request, evaluator|
-      merge_request.cache_merge_request_closes_issues!
+      merge_request.persist_merge_request_issues!
     end
 
     factory :merged_merge_request, traits: [:merged]

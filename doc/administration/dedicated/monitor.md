@@ -18,7 +18,10 @@ These logs contain both infrastructure and application data for monitoring, trou
 
 The S3 bucket contains logs that are:
 
-- Stored indefinitely and encrypted using AWS KMS keys managed by GitLab.
+- Retained for one year and encrypted using AWS KMS keys managed by GitLab.
+  S3 lifecycle rules automatically delete logs older than one year.
+  If you need to retain historical logs beyond one year, copy them to your own storage
+  with your configured [log access ARN](#view-and-manage-application-log-access).
 - Organized by date in `YYYY/MM/DD/HH` format.
 - Streamed in real-time using [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
 

@@ -1,3 +1,11 @@
+import {
+  GL_COLOR_ORANGE_100,
+  GL_COLOR_PURPLE_100,
+  GL_COLOR_RED_100,
+  GL_COLOR_BLUE_100,
+  GL_COLOR_GREEN_100,
+  GL_COLOR_NEUTRAL_100,
+} from '@gitlab/ui/src/tokens/build/js/tokens';
 import { getUsers } from '~/rest_api';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
@@ -89,12 +97,12 @@ export const FILTERED_SEARCH_TOKENS = [
 
 export const ABUSE_CATEGORIES = {
   spam: {
-    backgroundColor: '#f5d9a8',
+    backgroundColor: GL_COLOR_ORANGE_100,
     textColor: 'gl-text-orange-700',
     title: s__('AbuseReport|Spam'),
   },
   offensive: {
-    backgroundColor: '#e1d8f9',
+    backgroundColor: GL_COLOR_PURPLE_100,
     textColor: 'gl-text-purple-700',
     title: s__('AbuseReport|Offensive or Abusive'),
   },
@@ -104,27 +112,27 @@ export const ABUSE_CATEGORIES = {
     title: s__('AbuseReport|Phishing'),
   },
   crypto: {
-    backgroundColor: '#fdd4cd',
+    backgroundColor: GL_COLOR_RED_100,
     textColor: 'gl-text-red-700',
     title: s__('AbuseReport|Crypto Mining'),
   },
   credentials: {
-    backgroundColor: '#cbe2f9',
+    backgroundColor: GL_COLOR_BLUE_100,
     textColor: 'gl-text-blue-700',
     title: s__('AbuseReport|Personal information or credentials'),
   },
   copyright: {
-    backgroundColor: '#c3e6cd',
+    backgroundColor: GL_COLOR_GREEN_100,
     textColor: 'gl-text-success',
     title: s__('AbuseReport|Copyright or trademark violation'),
   },
   malware: {
-    backgroundColor: '#fdd4cd',
+    backgroundColor: GL_COLOR_RED_100,
     textColor: 'gl-text-red-700',
     title: s__('AbuseReport|Malware'),
   },
   other: {
-    backgroundColor: '#dcdcde',
+    backgroundColor: GL_COLOR_NEUTRAL_100,
     textColor: 'gl-text-subtle',
     title: s__('AbuseReport|Other'),
   },

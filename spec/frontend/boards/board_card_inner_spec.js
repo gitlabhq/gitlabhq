@@ -459,8 +459,8 @@ describe('Board card component', () => {
         expect(updateHistory).toHaveBeenCalledTimes(1);
       });
 
-      it('emits setFilters event', () => {
-        expect(wrapper.emitted('setFilters')).toHaveLength(1);
+      it('emits set-filters event', () => {
+        expect(wrapper.emitted('set-filters')).toHaveLength(1);
       });
     });
 
@@ -474,8 +474,8 @@ describe('Board card component', () => {
         expect(updateHistory).not.toHaveBeenCalled();
       });
 
-      it('does not emit setFilters event', () => {
-        expect(wrapper.emitted('setFilters')).toBeUndefined();
+      it('does not emit set-filters event', () => {
+        expect(wrapper.emitted('set-filters')).toBeUndefined();
       });
     });
   });

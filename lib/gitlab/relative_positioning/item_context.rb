@@ -49,9 +49,21 @@ module Gitlab
 
       def nextify(relation, gt = true)
         if gt
-          relation.where("relative_position > ?", relative_position)
+          relation.where(position_column.gt(relative_position))
         else
-          relation.where("relative_position < ?", relative_position)
+          relation.where(position_column.lt(relative_position))
+        end
+      end
+
+      # The Arel column that holds the ordering position. Resolved once per
+      # ItemContext from the object's flag state: for issues this is
+      # `work_item_positions.relative_position` (root-scoped and joined via
+      # `relative_positioning_query_base`) when the cutover flag is on, else
+      # `issues.relative_position`; for other models it stays the model's own
+      # `relative_position`.
+      def position_column
+        strong_memoize(:position_column) do
+          model_class.relative_positioning_column(object)
         end
       end
 
@@ -61,7 +73,9 @@ module Gitlab
 
       # Handles the possibility that the position is already occupied by a sibling
       def place_at_position(position, lhs)
-        current_occupant = relative_siblings.find_by(relative_position: position)
+        # rubocop:disable Rails/FindBy -- find_by(relative_position:) would qualify to the model's own table; must match position_column (may be the joined work_item_positions column)
+        current_occupant = relative_siblings.where(position_column.eq(position)).take
+        # rubocop:enable Rails/FindBy
 
         if current_occupant.present?
           Mover.new(position, range, ideal_distance: ideal_distance, max_gap: max_gap).move(object, lhs.object, current_occupant)
@@ -101,8 +115,10 @@ module Gitlab
 
         relation = yield relation if block_given?
 
+        aggregate = calculation == 'MIN' ? position_column.minimum : position_column.maximum
+
         relation
-          .pick(grouping_column, Arel.sql("#{calculation}(relative_position) AS position"))&.last
+          .pick(grouping_column, aggregate.as('position'))&.last
       end
 
       def grouping_column
@@ -111,7 +127,7 @@ module Gitlab
 
       def max_sibling
         sib = relative_siblings
-          .order(model_class.arel_table[:relative_position].desc.nulls_last)
+          .order(position_column.desc.nulls_last)
           .first
 
         neighbour(sib)
@@ -119,14 +135,16 @@ module Gitlab
 
       def min_sibling
         sib = relative_siblings
-          .order(model_class.arel_table[:relative_position].asc.nulls_last)
+          .order(position_column.asc.nulls_last)
           .first
 
         neighbour(sib)
       end
 
       def at_position(position)
-        item = scoped_items.find_by(relative_position: position)
+        # rubocop:disable Rails/FindBy -- find_by(relative_position:) would qualify to the model's own table; must match position_column (may be the joined work_item_positions column)
+        item = scoped_items.where(position_column.eq(position)).take
+        # rubocop:enable Rails/FindBy
 
         raise InvalidPosition, 'No item found at the specified position' if item.nil?
 
@@ -148,19 +166,25 @@ module Gitlab
       end
 
       def find_next_gap_before(min_gap: MIN_GAP)
+        window = Arel::Nodes::Window.new.order(position_column.desc)
+        lead = Arel::Nodes::NamedFunction.new('LEAD', [position_column]).over(window)
+
         items_with_next_pos = scoped_items
-                                .select('relative_position AS pos, LEAD(relative_position) OVER (ORDER BY relative_position DESC) AS next_pos')
-                                .where('relative_position <= ?', relative_position)
-                                .order(relative_position: :desc)
+                                .select(position_column.as('pos'), lead.as('next_pos'))
+                                .where(position_column.lteq(relative_position))
+                                .order(position_column.desc)
 
         find_next_gap(items_with_next_pos, range.first, order: :desc, min_gap: min_gap)
       end
 
       def find_next_gap_after(min_gap: MIN_GAP)
+        window = Arel::Nodes::Window.new.order(position_column.asc)
+        lead = Arel::Nodes::NamedFunction.new('LEAD', [position_column]).over(window)
+
         items_with_next_pos = scoped_items
-                                .select('relative_position AS pos, LEAD(relative_position) OVER (ORDER BY relative_position ASC) AS next_pos')
-                                .where('relative_position >= ?', relative_position)
-                                .order(:relative_position)
+                                .select(position_column.as('pos'), lead.as('next_pos'))
+                                .where(position_column.gteq(relative_position))
+                                .order(position_column.asc)
 
         find_next_gap(items_with_next_pos, range.last, order: :asc, min_gap: min_gap)
       end

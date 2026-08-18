@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlToastMixin } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
@@ -18,8 +18,9 @@ export default {
   components: {
     GlDisclosureDropdownItem,
   },
+  mixins: [GlToastMixin],
   inject: ['iid', 'issueType', 'projectPath', 'fullPath'],
-  emits: ['closeActionsDropdown'],
+  emits: ['close-actions-dropdown'],
   data() {
     return {
       confidential: false,
@@ -97,7 +98,7 @@ export default {
                 message: errors[0],
               });
             } else {
-              this.$emit('closeActionsDropdown');
+              this.$emit('close-actions-dropdown');
               this.$toast.show(this.confidentialityText);
             }
           },

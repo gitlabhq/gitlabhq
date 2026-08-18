@@ -15,9 +15,9 @@ title: Instance-wide compliance and security policy management
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/15864) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/550318) on GitLab Self-Managed in GitLab 18.3.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/17392) in GitLab 18.5. Feature flag `security_policies_csp` removed.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/17392) in GitLab 18.5. Feature flag `security_policies_csp` removed.
 
 {{< /history >}}
 
@@ -140,7 +140,7 @@ Project administrators and owners can:
 - Understand policy sources with clear indicators that show whether policies come from your project, group, or central administration.
 
 > [!note]
-> The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
+> The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
 
 ### Developers
 
@@ -154,7 +154,7 @@ Developers can:
 
 If you already use a security policy project to enforce policies across multiple groups, you can designate one of the linked groups as your compliance and security policy group.
 However, you should unlink the security policy project from all of the groups that are not the compliance and security policy group. Otherwise, the same policies
-are enforced twice in those groups. Once from the linked security policy group and again from the compliance and security policy group.
+are enforced twice in those groups: once from the linked security policy group and again from the compliance and security policy group.
 
 To automate the process of migrating your groups to a compliance and security policy group, you can use the following `csp_designation.rb` script.
 

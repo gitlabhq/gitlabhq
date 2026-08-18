@@ -14,7 +14,7 @@ fragment BaseWorkItemPopover on WorkItem {
     name
     iconName
   }
-  widgets {
+  widgets @skip(if: $useWorkItemFeatures) {
     ... on WorkItemWidgetAssignees {
       type
       assignees {

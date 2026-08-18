@@ -18,7 +18,7 @@ RSpec.describe Members::InvitedPrivateGroupAccessibilityAssigner, feature_catego
         specify do
           assigner.execute
 
-          expect(members.first.is_source_accessible_to_current_user).to eq(true)
+          expect(members.first.is_source_accessible_to_current_user).to be(true)
         end
       end
 

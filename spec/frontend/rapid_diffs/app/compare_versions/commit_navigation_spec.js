@@ -3,6 +3,10 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitNavigation from '~/rapid_diffs/app/compare_versions/commit_navigation.vue';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 describe('CommitNavigation', () => {
   let wrapper;
@@ -17,14 +21,20 @@ describe('CommitNavigation', () => {
   const createComponent = ({ commit = baseCommit } = {}) => {
     wrapper = shallowMountExtended(CommitNavigation, {
       propsData: { commit },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
   const findNavButtons = () => wrapper.findByTestId('commit-nav-buttons');
   const findPrevButton = () => wrapper.findByTestId('prev-commit-button');
   const findNextButton = () => wrapper.findByTestId('next-commit-button');
+  const findPrevDisabledTooltip = () => wrapper.findByTestId('prev-commit-disabled-tooltip');
+  const findNextDisabledTooltip = () => wrapper.findByTestId('next-commit-disabled-tooltip');
 
   beforeEach(() => {
+    shouldDisableShortcuts.mockReturnValue(false);
     setWindowLocation(`${TEST_HOST}/?commit_id=abc123full`);
   });
 
@@ -151,6 +161,105 @@ describe('CommitNavigation', () => {
       createComponent({ commit: lastCommit });
 
       expect(findNextButton().attributes('aria-label')).toBe("You're at the last commit");
+    });
+  });
+  describe('disabled-button tooltip overlay', () => {
+    it('renders a tooltip overlay on the disabled previous button at the first commit', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: null, next_commit_id: 'next456' },
+      });
+
+      expect(findPrevDisabledTooltip().exists()).toBe(true);
+      expect(findPrevDisabledTooltip().attributes('title')).toBe("You're at the first commit");
+      expect(findNextDisabledTooltip().exists()).toBe(false);
+    });
+
+    it('renders a tooltip overlay on the disabled next button at the last commit', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: 'prev123', next_commit_id: null },
+      });
+
+      expect(findNextDisabledTooltip().exists()).toBe(true);
+      expect(findNextDisabledTooltip().attributes('title')).toBe("You're at the last commit");
+      expect(findPrevDisabledTooltip().exists()).toBe(false);
+    });
+
+    it('renders no tooltip overlay when both buttons are enabled', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: 'prev123', next_commit_id: 'next456' },
+      });
+
+      expect(findPrevDisabledTooltip().exists()).toBe(false);
+      expect(findNextDisabledTooltip().exists()).toBe(false);
+    });
+  });
+
+  describe('aria-keyshortcuts', () => {
+    const commitWithNeighbors = {
+      ...baseCommit,
+      prev_commit_id: 'prev123',
+      next_commit_id: 'next456',
+    };
+
+    it('sets aria-keyshortcuts on both enabled buttons', () => {
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(findPrevButton().attributes('aria-keyshortcuts')).toBe('x');
+      expect(findNextButton().attributes('aria-keyshortcuts')).toBe('c');
+    });
+
+    it('omits aria-keyshortcuts on a disabled button', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: null, next_commit_id: 'next456' },
+      });
+
+      expect(findPrevButton().attributes('aria-keyshortcuts')).toBeUndefined();
+      expect(findNextButton().attributes('aria-keyshortcuts')).toBe('c');
+    });
+
+    it('omits aria-keyshortcuts when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(findPrevButton().attributes('aria-keyshortcuts')).toBeUndefined();
+      expect(findNextButton().attributes('aria-keyshortcuts')).toBeUndefined();
+    });
+  });
+
+  describe('tooltip shortcut hint', () => {
+    const tooltipValue = (buttonWrapper) => getBinding(buttonWrapper.element, 'gl-tooltip').value;
+
+    const commitWithNeighbors = {
+      ...baseCommit,
+      prev_commit_id: 'prev123',
+      next_commit_id: 'next456',
+    };
+
+    it('renders a kbd shortcut hint in enabled button tooltips', () => {
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(tooltipValue(findPrevButton())).toBe(
+        'Previous commit <kbd class="flat gl-ml-1" aria-hidden="true">x</kbd>',
+      );
+      expect(tooltipValue(findNextButton())).toBe(
+        'Next commit <kbd class="flat gl-ml-1" aria-hidden="true">c</kbd>',
+      );
+    });
+
+    it('renders plain-text tooltip on a disabled button', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: null, next_commit_id: 'next456' },
+      });
+
+      expect(tooltipValue(findPrevButton())).toBe("You're at the first commit");
+    });
+
+    it('renders plain-text tooltips when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(tooltipValue(findPrevButton())).toBe('Previous commit');
+      expect(tooltipValue(findNextButton())).toBe('Next commit');
     });
   });
 });

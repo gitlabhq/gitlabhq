@@ -47,12 +47,15 @@ describe('Modal', () => {
 
     expect(commands.at(0).props('command')).toBe(mockSetupBashScript);
     expect(commands.at(0).props('buttonTitle')).toBe('Copy commands');
+    expect(commands.at(0).props('language')).toBe('powershell');
 
     expect(commands.at(1).props('command')).toBe(mockSetupTerraformFile);
     expect(commands.at(1).props('buttonTitle')).toBe('Copy Terraform configuration');
+    expect(commands.at(1).props('language')).toBe('hcl');
 
     expect(commands.at(2).props('command')).toBe(mockApplyTerraformScript);
     expect(commands.at(2).props('buttonTitle')).toBe('Copy commands');
+    expect(commands.at(2).props('language')).toBe('powershell');
   });
 
   it('emits change event when modal visibility changes', async () => {

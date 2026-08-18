@@ -14,7 +14,7 @@ jest.mock('~/lib/mousetrap');
 describe('WorkItemSidebarDropdownWidget component', () => {
   let wrapper;
 
-  const findEditButton = () => wrapper.findByTestId('edit-button');
+  const findEditButton = () => wrapper.findComponentByTestId('edit-button');
   const findApplyButton = () => wrapper.findByTestId('apply-button');
   const findCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findWorkItemSidebarWidget = () => wrapper.findComponent(WorkItemSidebarWidget);
@@ -167,7 +167,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       findCollapsibleListbox().vm.$emit('select', listItems[0].id);
       await nextTick();
 
-      expect(wrapper.emitted('searchStarted')).toEqual([[''], ['']]);
+      expect(wrapper.emitted('search-started')).toEqual([[''], ['']]);
     });
 
     it('supports infinite scrolling', async () => {
@@ -194,20 +194,20 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
   describe('watcher', () => {
     describe('when createdLabelId prop is updated', () => {
-      it('emits "updateValue" event on listbox hide', async () => {
+      it('emits `update-value` event on listbox hide', async () => {
         createComponent({ isEditing: true, multiSelect: true });
         await nextTick();
 
         findCollapsibleListbox().vm.$emit('hidden');
         await nextTick();
 
-        expect(wrapper.emitted('updateValue')).toBeUndefined();
+        expect(wrapper.emitted('update-value')).toBeUndefined();
 
         findEditButton().vm.$emit('click');
         await wrapper.setProps({ createdLabelId: 'gid://gitlab/Label/33' });
         findCollapsibleListbox().vm.$emit('hidden');
 
-        expect(wrapper.emitted('updateValue')).toBeDefined();
+        expect(wrapper.emitted('update-value')).toBeDefined();
       });
     });
   });

@@ -57,21 +57,12 @@ include:
   variables:
     GITALY_PRAEFECT_WITH_DB: '1'
 
-.gitaly-with-transactions:
+# Runs against a Gitaly server that creates all new repositories with the MVCC
+# backend. Allowed to fail as the backend is still under development.
+.gitaly-mvcc:
+  allow_failure: true
   variables:
-    GITALY_TRANSACTIONS_ENABLED: "true"
-
-.gitaly-without-transactions:
-  extends:
-    - .rails:rules:gitaly-without-transactions
-  variables:
-    GITALY_TRANSACTIONS_ENABLED: "false"
-
-.ee-only-gitaly-without-transactions:
-  extends:
-    - .rails:rules:ee-only-gitaly-without-transactions
-  variables:
-    GITALY_TRANSACTIONS_ENABLED: "false"
+    GITALY_NEW_REPO_MVCC_BACKEND: "true"
 
 .rspec-base-needs:
   needs:
@@ -85,7 +76,6 @@ include:
     - .rails-job-base
     - .base-artifacts-with-junit-reports
     - .repo-from-artifacts
-    - .gitaly-with-transactions
   stage: test
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
@@ -172,6 +162,8 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-clickhouse25
+  variables:
+    RSPEC_DRY_RUN_TAGS: "click_house"
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
@@ -180,6 +172,8 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-clickhouse26
+  variables:
+    RSPEC_DRY_RUN_TAGS: "click_house"
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
@@ -191,6 +185,8 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-tz
+  variables:
+    RSPEC_DRY_RUN_TAGS: "partition_tz"
   script:
     - !reference [.base-script, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag partition_tz"

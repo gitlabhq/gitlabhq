@@ -6,23 +6,23 @@ GitLab group paths can be multiple levels deep (e.g. `gitlab-org/foundations/des
 
 ```bash
 # Two-level group
-glab api "groups/gitlab-org%2Ffoundations/epics"
+glab api --method GET "groups/gitlab-org%2Ffoundations/epics"
 
 # Three-level group
-glab api "groups/gitlab-org%2Ffoundations%2Fdesign-system/epics"
+glab api --method GET "groups/gitlab-org%2Ffoundations%2Fdesign-system/epics"
 
 # ❌ Unencoded slashes return 404 — this is a common mistake
-glab api "groups/gitlab-org/foundations/epics"   # FAILS
+glab api --method GET "groups/gitlab-org/foundations/epics"   # FAILS
 ```
 
 This applies everywhere you embed a group path in a REST URL segment:
 
 ```bash
 # Group ID lookup
-glab api "groups/gitlab-org%2Ffoundations" | jq '.id'   # → 12627982
+glab api --method GET "groups/gitlab-org%2Ffoundations" | jq '.id'   # → 12627982
 
 # List epics
-glab api "groups/gitlab-org%2Ffoundations%2Fdesign-system/epics"
+glab api --method GET "groups/gitlab-org%2Ffoundations%2Fdesign-system/epics"
 
 # Create epic in nested group
 glab api --method POST "groups/gitlab-org%2Ffoundations/epics" -f title="My Epic"
@@ -57,13 +57,13 @@ glab api graphql -f query='
 
 ```bash
 # Works the same for any depth
-glab api "groups/gitlab-org%2Ffoundations" | jq '.id'               # → 12627982
-glab api "groups/gitlab-org%2Ffoundations%2Fdesign-system" | jq '.id'  # → 90514461
+glab api --method GET "groups/gitlab-org%2Ffoundations" | jq '.id'               # → 12627982
+glab api --method GET "groups/gitlab-org%2Ffoundations%2Fdesign-system" | jq '.id'  # → 90514461
 ```
 
 Once you have the numeric ID you can use it directly in REST calls without any encoding:
 
 ```bash
-GROUP_ID=$(glab api "groups/gitlab-org%2Ffoundations" | jq '.id')
-glab api "groups/${GROUP_ID}/epics"
+GROUP_ID=$(glab api --method GET "groups/gitlab-org%2Ffoundations" | jq '.id')
+glab api --method GET "groups/${GROUP_ID}/epics"
 ```

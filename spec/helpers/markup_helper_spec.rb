@@ -234,6 +234,23 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       expect(doc.css('a')[4].attr('href')).to eq link
       expect(doc.css('a')[4].text).to eq ' for real'
     end
+
+    context 'with strip_links: true', :clean_gitlab_redis_cache do
+      it 'strips inner reference links and wraps the whole title in a single link' do
+        allow(commit).to receive(:title).and_return("This should finally fix #{issues[0].to_reference} for real")
+
+        actual = helper.link_to_markdown_field(commit, :title, link, {}, strip_links: true)
+        doc = Nokogiri::HTML5.parse(actual)
+
+        expect(doc.errors).to be_empty
+
+        # Only the outer link remains; the reference link is unwrapped
+        expect(doc.css('a').size).to eq 1
+        expect(doc.css('a')[0].attr('href')).to eq link
+        expect(doc.css('a')[0].text)
+          .to eq "This should finally fix #{issues[0].to_reference} for real"
+      end
+    end
   end
 
   describe '#link_to_markdown' do
@@ -322,6 +339,20 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       rendered = '<gl-emoji>&lt;div class="test"&gt;test&lt;/div&gt;</gl-emoji>'
       expect(helper.link_to_html(rendered, '/foo'))
         .to eq '<a href="/foo"><gl-emoji>&lt;div class="test"&gt;test&lt;/div&gt;</gl-emoji></a>'
+    end
+
+    context 'with strip_links: true' do
+      it 'unwraps inner links and wraps everything in a single link' do
+        rendered = 'before <a class="gfm" href="/ref">#1</a> after <code>x</code>'
+
+        wrapped = helper.link_to_html(rendered, '/foo', strip_links: true)
+        doc = Nokogiri::HTML5.parse(wrapped)
+
+        expect(doc.css('a').size).to eq 1
+        expect(doc.css('a')[0].attr('href')).to eq '/foo'
+        expect(doc.css('a')[0].text).to eq 'before #1 after x'
+        expect(doc.css('a code').text).to eq 'x'
+      end
     end
   end
 
@@ -465,7 +496,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
   describe '#first_line_in_markdown' do
     shared_examples_for 'common markdown examples' do
-      let(:project_base) { build(:project, :repository) }
+      let(:project_base) { build(:project, :small_repo) }
 
       it 'displays inline code' do
         object = create_object('Text with `inline code`')
@@ -516,7 +547,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       context 'custom emoji' do
         it 'includes fallback-src data attribute' do
           group = create(:group)
-          project = create(:project, :repository, group: group)
+          project = create(:project, :small_repo, group: group)
           custom_emoji = create(:custom_emoji, group: group)
 
           object = create_object(":#{custom_emoji.name}:", project: project)

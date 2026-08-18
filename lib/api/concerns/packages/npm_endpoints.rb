@@ -64,7 +64,7 @@ module API
             requires :package_name, type: String, desc: 'Package name'
           end
           namespace '-/package/*package_name' do
-            desc 'Get all tags for a given an NPM package' do
+            desc 'Get all tags for a given NPM package' do
               detail 'This feature was introduced in GitLab 12.7'
               success [
                 { code: 200, model: ::API::Entities::NpmPackageTag }
@@ -105,7 +105,7 @@ module API
             end
             namespace 'dist-tags/:tag',
               requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS
-                .merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+                .merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
               desc 'Create or Update the given tag for the given NPM package and version' do
                 detail 'This feature was introduced in GitLab 12.7'
                 success code: 204

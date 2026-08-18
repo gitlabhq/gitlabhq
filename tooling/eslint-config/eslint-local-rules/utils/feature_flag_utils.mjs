@@ -17,22 +17,33 @@ function snakeToCamel(str) {
   return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
 }
 
+let cachedOrganizationReleaseFlags;
+
 function getOrganizationReleaseFlags() {
+  if (cachedOrganizationReleaseFlags !== undefined) {
+    return cachedOrganizationReleaseFlags;
+  }
+
   if (!existsSync(ORGANIZATION_RELEASE_REGISTRY_PATH)) {
-    return [];
+    cachedOrganizationReleaseFlags = [];
+    return cachedOrganizationReleaseFlags;
   }
 
   try {
     const content = readFileSync(ORGANIZATION_RELEASE_REGISTRY_PATH, 'utf8');
     const { flags } = yaml.parse(content) ?? {};
 
-    return (flags ?? []).flatMap((flag) => (typeof flag.name === 'string' ? [flag.name] : []));
+    cachedOrganizationReleaseFlags = (flags ?? []).flatMap((flag) =>
+      typeof flag.name === 'string' ? [flag.name] : [],
+    );
   } catch (error) {
     console.warn(
       `Warning: Could not parse ${ORGANIZATION_RELEASE_REGISTRY_PATH}: ${error.message}`,
     );
-    return [];
+    cachedOrganizationReleaseFlags = [];
   }
+
+  return cachedOrganizationReleaseFlags;
 }
 
 export function getAllFeatureFlags() {

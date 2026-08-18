@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
+RSpec.describe "Admin::AbuseReports", :js, :with_current_organization, feature_category: :insider_threat do
   include Features::SortingHelpers
 
   let_it_be(:user) { create(:user) }
@@ -11,6 +11,12 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
   let_it_be(:open_report) { create(:abuse_report, created_at: 5.days.ago, updated_at: 2.days.ago, category: 'spam', user: user) }
   let_it_be(:open_report2) { create(:abuse_report, created_at: 4.days.ago, updated_at: 3.days.ago, category: 'phishing') }
   let_it_be(:closed_report) { create(:abuse_report, :closed, user: user, category: 'spam') }
+
+  let_it_be(:other_organization) { create(:organization) }
+  let_it_be(:other_org_report) do
+    create(:abuse_report, category: 'spam', user: user,
+      reporter: create(:user, organization: other_organization), organization: other_organization)
+  end
 
   describe 'as an admin' do
     include FilteredSearchHelpers
@@ -22,6 +28,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       visit admin_abuse_reports_path
     end
 
+    let(:abuse_report_list_selector) { '[data-testid="abuse-reports-list"]' }
     let(:abuse_report_row_selector) { '[data-testid="abuse-report-row"]' }
 
     it 'only includes open reports by default' do
@@ -32,6 +39,12 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       within_testid('abuse-reports-filtered-search-bar') do
         expect(page).to have_content 'Status = Open'
       end
+    end
+
+    it 'does not include reports belonging to another organization' do
+      expect_displayed_reports_count(2)
+
+      expect_report_not_shown(other_org_report)
     end
 
     it 'can be filtered by status, user, reporter, and category', :aggregate_failures do
@@ -71,26 +84,26 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
     it 'can be sorted by created_at and updated_at in desc and asc order', :aggregate_failures do
       sort_by 'Created date'
       # created_at desc
-      expect(report_rows[0].text).to include(report_text(open_report2))
-      expect(report_rows[1].text).to include(report_text(open_report))
+      expect_report_at(1, report_text(open_report2))
+      expect_report_at(2, report_text(open_report))
 
       # created_at asc
       toggle_sort_direction
 
-      expect(report_rows[0].text).to include(report_text(open_report))
-      expect(report_rows[1].text).to include(report_text(open_report2))
+      expect_report_at(1, report_text(open_report))
+      expect_report_at(2, report_text(open_report2))
 
       # updated_at asc
       sort_by 'Updated date', from: 'Created date'
 
-      expect(report_rows[0].text).to include(report_text(open_report2))
-      expect(report_rows[1].text).to include(report_text(open_report))
+      expect_report_at(1, report_text(open_report2))
+      expect_report_at(2, report_text(open_report))
 
       # updated_at desc
       toggle_sort_direction
 
-      expect(report_rows[0].text).to include(report_text(open_report))
-      expect(report_rows[1].text).to include(report_text(open_report2))
+      expect_report_at(1, report_text(open_report))
+      expect_report_at(2, report_text(open_report2))
     end
 
     context 'when multiple reports for the same user are created' do
@@ -107,43 +120,43 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       it 'can sort aggregated reports by number_of_reports in desc order only', :aggregate_failures do
         sort_by 'Number of Reports'
 
-        expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
-        expect(report_rows[1].text).to include(report_text(open_report2))
+        expect_report_at(1, aggregated_report_text(open_report, 2))
+        expect_report_at(2, report_text(open_report2))
 
         toggle_sort_direction
 
-        expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
-        expect(report_rows[1].text).to include(report_text(open_report2))
+        expect_report_at(1, aggregated_report_text(open_report, 2))
+        expect_report_at(2, report_text(open_report2))
       end
 
       it 'can sort aggregated reports by created_at and updated_at in desc and asc order', :aggregate_failures do
         # number_of_reports desc (default)
-        expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
-        expect(report_rows[1].text).to include(report_text(open_report2))
+        expect_report_at(1, aggregated_report_text(open_report, 2))
+        expect_report_at(2, report_text(open_report2))
 
         # created_at desc
         sort_by 'Created date', from: 'Number of Reports'
 
-        expect(report_rows[0].text).to include(report_text(open_report2))
-        expect(report_rows[1].text).to include(aggregated_report_text(open_report, 2))
+        expect_report_at(1, report_text(open_report2))
+        expect_report_at(2, aggregated_report_text(open_report, 2))
 
         # created_at asc
         toggle_sort_direction
 
-        expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
-        expect(report_rows[1].text).to include(report_text(open_report2))
+        expect_report_at(1, aggregated_report_text(open_report, 2))
+        expect_report_at(2, report_text(open_report2))
 
         sort_by 'Updated date', from: 'Created date'
 
         # updated_at asc
-        expect(report_rows[0].text).to include(report_text(open_report2))
-        expect(report_rows[1].text).to include(aggregated_report_text(open_report, 2))
+        expect_report_at(1, report_text(open_report2))
+        expect_report_at(2, aggregated_report_text(open_report, 2))
 
         # updated_at desc
         toggle_sort_direction
 
-        expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
-        expect(report_rows[1].text).to include(report_text(open_report2))
+        expect_report_at(1, aggregated_report_text(open_report, 2))
+        expect_report_at(2, report_text(open_report2))
       end
 
       it 'does not aggregate closed reports', :aggregate_failures do
@@ -154,8 +167,11 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       end
     end
 
-    def report_rows
-      page.all(abuse_report_row_selector)
+    def expect_report_at(position, content)
+      expect(page).to have_css(
+        "#{abuse_report_list_selector} > li:nth-child(#{position}) > #{abuse_report_row_selector}",
+        text: content
+      )
     end
 
     def report_text(report)
@@ -185,7 +201,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
     end
 
     def expect_displayed_reports_count(count)
-      expect(page).to have_css(abuse_report_row_selector, count: count)
+      expect(page).to have_css("#{abuse_report_list_selector} #{abuse_report_row_selector}", count: count)
     end
 
     def filter(tokens)
@@ -201,10 +217,11 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       select_tokens(*tokens, submit: true, input_text: 'Filter reports')
     end
 
+    # Ensure calls to #sort_by are followed by a waiting Capybara assertion, since
+    # it doesn't (can't!) reliably wait until the sort is complete.
     def sort_by(sort, from: 'Number of Reports')
       page.within('.vue-filtered-search-bar-container .sort-dropdown-container') do
         pajamas_sort_by sort, from: from
-        wait_for_requests
       end
     end
   end

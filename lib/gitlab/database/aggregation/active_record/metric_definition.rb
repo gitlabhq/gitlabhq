@@ -45,7 +45,13 @@ module Gitlab
           # Returns an Arel node representing this column or metric in a SELECT statement.
           # Subclasses may wrap the expression (e.g., date_trunc, AVG, COUNT).
           def to_arel(context)
-            expression ? expression.call : context[:scope].arel_table[name]
+            expression ? expression.call : context[:scope].arel_table[source_column]
+          end
+
+          private
+
+          def supports_dotted_identifier?
+            true
           end
         end
       end

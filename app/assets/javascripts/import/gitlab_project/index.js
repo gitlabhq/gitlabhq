@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import importFromGitlabExportApp from './import_from_gitlab_export_app.vue';
 
@@ -35,15 +35,14 @@ export function initGitLabImportProjectForm() {
     rootUrl,
   };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportGitLabProjectRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     provide,
-    render(h) {
-      return h(importFromGitlabExportApp, { props });
-    },
+    component: importFromGitlabExportApp,
+    props,
   });
 }

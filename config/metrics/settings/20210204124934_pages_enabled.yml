@@ -2,7 +2,7 @@
 data_category: operational
 key_path: gitlab_pages.enabled
 description: Whether GitLab Pages is enabled
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - pages
 value_type: boolean

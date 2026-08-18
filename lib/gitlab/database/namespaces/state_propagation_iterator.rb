@@ -27,8 +27,8 @@ module Gitlab
       # See the ADR for the full design:
       # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/group_and_project_operations_and_state_management/decisions/003_state_propagation_model/
       class StatePropagationIterator < ::Gitlab::Database::NamespaceEachBatch
-        def initialize(namespace_class:, cursor:, state_filter:)
-          super(namespace_class: namespace_class, cursor: cursor)
+        def initialize(cursor:, state_filter:)
+          super(namespace_class: Namespace, cursor: cursor)
 
           @state_filter = state_filter
           @root_id = @cursor[:current_id]

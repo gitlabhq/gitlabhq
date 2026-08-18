@@ -129,7 +129,7 @@ describe('code quality issue body issue body', () => {
     it('renders the report-link path using the correct code quality issue', () => {
       createComponent(STATUS_NEUTRAL);
 
-      expect(wrapper.find('report-link-stub').props('issue')).toBe(codequalityIssue);
+      expect(wrapper.findComponent('report-link-stub').props('issue')).toBe(codequalityIssue);
     });
   });
 });

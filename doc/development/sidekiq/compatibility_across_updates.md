@@ -6,7 +6,7 @@ title: Sidekiq Compatibility across Updates
 ---
 
 The arguments for a Sidekiq job are stored in a queue while it is
-scheduled for execution. During a online update, this could lead to
+scheduled for execution. During an online update, this could lead to
 several possible situations:
 
 1. An older version of the application publishes a job, which is executed by an
@@ -19,7 +19,7 @@ several possible situations:
 
 On GitLab.com, we
 [do not currently have a Sidekiq deployment in the canary stage](https://gitlab.com/gitlab-org/gitlab/-/issues/19239).
-This means that a new worker than can be scheduled from an HTTP endpoint may
+This means that a new worker that can be scheduled from an HTTP endpoint may
 be scheduled from canary but not run on Sidekiq until the full
 production deployment is complete. This can be several hours later than
 scheduling the job. For some workers, this will not be a problem. For
@@ -43,7 +43,7 @@ For GitLab.com, this can occur if there are multiple deployments in the same mil
 
 ### Deprecate and remove an argument
 
-**Before you remove arguments from the `perform_async` and `perform` methods.**, deprecate them. The
+**Before you remove arguments from the `perform_async` and `perform` methods**, deprecate them. The
 following example deprecates and then removes `arg2` from the `perform_async` method:
 
 1. Provide a default value (usually `nil`) and use a comment to mark the
@@ -238,6 +238,6 @@ of the application, follow these steps over three minor releases:
 
 1. Create the newly named worker, and have the old worker call the new worker's `#perform` method. Introduce a feature flag to control when we start scheduling the new worker. (Release M)
 
-   Any old worker jobs that are still in the queue will delegate to the new worker. When this version is deployed, it is no longer relevant which version of the job is scheduled or which Sidekiq handles it, an old-Sidekiq will use the old worker's full implementation, a new-Sidekiq will delegate to the new worker.
+   Any old worker jobs that are still in the queue will delegate to the new worker. When this version is deployed, it is no longer relevant which version of the job is scheduled or which Sidekiq handles it: an old Sidekiq uses the old worker's full implementation, and a new Sidekiq delegates to the new worker.
 1. Enable the feature flag for GitLab.com, and after that prepare an MR to enable it by default. (Release M+1)
 1. Remove the old worker class and the feature flag. (Release M+2)

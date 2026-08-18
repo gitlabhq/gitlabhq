@@ -8,8 +8,7 @@ module QA
 
       context 'with uninitialized project' do
         it(
-          'successfully imports project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347610'
+          'successfully imports project'
         ) do
           expect_project_import_finished_successfully
 
@@ -62,8 +61,7 @@ module QA
         end
 
         it(
-          'successfully imports repository',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570'
+          'successfully imports repository'
         ) do
           expect_project_import_finished_successfully
 
@@ -82,8 +80,7 @@ module QA
         end
 
         it(
-          'successfully imports project wiki',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567'
+          'successfully imports project wiki'
         ) do
           expect_project_import_finished_successfully
 

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import routes from './routes';
@@ -34,8 +35,7 @@ export default () => {
     routes,
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'MergeRequestReportsAppRoot',
     router,
@@ -46,8 +46,6 @@ export default () => {
       hasPolicies: parseBoolean(hasPolicies),
       dismissalDescriptions: JSON.parse(window.gl?.mrWidgetData?.dismissal_descriptions || '{}'),
     },
-    render(createElement) {
-      return createElement(MergeRequestReportsApp);
-    },
+    component: MergeRequestReportsApp,
   });
 };

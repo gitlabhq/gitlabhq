@@ -134,7 +134,7 @@ FedRAMP requirement: Provide explanations of security-related settings that can 
 
 This section enumerates configuration settings specifically available to Dedicated for Government and point customers to the broad documentation already available for [administering GitLab](../administration/_index.md).
 
-### Infrastructure configurations by top-Level administrators
+### Infrastructure configurations by top-level administrators
 
 GitLab Dedicated for Government allows for specific infrastructure-level security and architecture configurations to be requested by top-level customer administrators, triggered through requests to the GitLab Support team.
 
@@ -185,6 +185,16 @@ These configurations include:
 - Root user passwords
 - Release rollout and maintenance schedule
 - Inbound and outbound IP and domain allowlists
+
+### Public visibility
+
+By default, GitLab restricts the public visibility level for the instance.
+A top-level administrator can turn on public visibility for the instance in the Admin area, then
+configure visibility for specific groups or projects.
+When you turn on public visibility, your responsibilities expand.
+For more information, see
+[public visibility and open source code sharing](dedicated_for_government_shared_responsibility_model.md#public-visibility-and-open-source-code-sharing)
+in the shared responsibility model.
 
 ## Recommendation 1: Security settings for privileged accounts
 

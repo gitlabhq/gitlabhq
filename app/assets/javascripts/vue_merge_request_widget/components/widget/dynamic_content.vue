@@ -37,7 +37,7 @@ export default {
       default: -1,
     },
   },
-  emits: ['clickedAction'],
+  emits: ['clicked-action'],
   computed: {
     statusIcon() {
       return this.data.icon?.name || undefined;
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     onClickedAction(action) {
-      this.$emit('clickedAction', action);
+      this.$emit('clicked-action', action);
     },
   },
 };
@@ -104,7 +104,7 @@ export default {
             v-if="hasActionButtons"
             :tertiary-buttons="data.actions"
             class="gl-ml-auto gl-pl-3"
-            @clickedAction="onClickedAction"
+            @clicked-action="onClickedAction"
           />
           <p v-if="data.subtext" v-safe-html="generatedSubtext" class="gl-m-0 gl-text-sm"></p>
         </div>
@@ -114,7 +114,7 @@ export default {
               :data="childData"
               :widget-name="widgetName"
               :level="3"
-              @clickedAction="onClickedAction"
+              @clicked-action="onClickedAction"
             />
           </li>
         </ul>

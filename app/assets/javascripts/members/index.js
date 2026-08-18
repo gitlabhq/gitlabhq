@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { parseDataAttributes } from '~/members/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersTabs from './components/members_tabs.vue';
 import membersStore from './store';
@@ -66,10 +67,10 @@ export const initMembersApp = (el, context, options) => {
   const isGroup = context === CONTEXT_TYPE.GROUP;
   const isProject = context === CONTEXT_TYPE.PROJECT;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MembersRoot',
-    components: { MembersTabs },
+    component: MembersTabs,
     store,
     apolloProvider: new VueApollo({
       defaultClient: graphqlClient,
@@ -101,6 +102,5 @@ export const initMembersApp = (el, context, options) => {
         path: projectPath,
       },
     },
-    render: (createElement) => createElement('members-tabs'),
   });
 };

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::Mapper::LocationExpander, feature_category: :pipeline_composition do
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.owner }
 
   let(:sha) { project.commit.sha }
@@ -118,8 +118,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::LocationExpander, feature_c
     end
 
     context 'when expandset contains files with same paths from different projects' do
-      let_it_be(:project1) { create(:project, :repository) }
-      let_it_be(:project2) { create(:project, :repository) }
+      let_it_be(:project1) { create(:project, :small_repo) }
+      let_it_be(:project2) { create(:project, :small_repo) }
 
       let(:locations) do
         [{ local: 'helpers/*.yml' }]

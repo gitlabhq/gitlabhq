@@ -3,6 +3,7 @@ import { GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'CiConfigMergedPreview',
@@ -13,6 +14,7 @@ export default {
     SourceEditor,
     GlIcon,
   },
+  mixins: [glListenersMixin],
   inject: ['ciConfigPath'],
   props: {
     ciConfigData: {
@@ -45,7 +47,7 @@ export default {
         :editor-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
           readOnly: true,
         } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-        v-on="$listeners"
+        v-on="glListeners()"
       />
     </div>
   </div>

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlFormGroup } from '@gitlab/ui';
 import { TRIGGER_CONFIG } from '../constants';
 import WebhookFormTriggerItem from './webhook_form_trigger_item.vue';
@@ -8,13 +9,16 @@ export default {
   name: 'WebhookFormTriggerList',
   components: {
     GlFormGroup,
-    GroupEventsTriggerItems: () =>
-      import('ee_component/webhooks/components/group_events_trigger_items.vue'),
-    MemberApprovalEventsTriggerItem: () =>
-      import('ee_component/webhooks/components/member_approval_events_trigger_item.vue'),
+    GroupEventsTriggerItems: defineAsyncComponent(
+      () => import('ee_component/webhooks/components/group_events_trigger_items.vue'),
+    ),
+    MemberApprovalEventsTriggerItem: defineAsyncComponent(
+      () => import('ee_component/webhooks/components/member_approval_events_trigger_item.vue'),
+    ),
     PushEvents,
-    VulnerabilityEventsTriggerItem: () =>
-      import('ee_component/webhooks/components/vulnerability_events_trigger_item.vue'),
+    VulnerabilityEventsTriggerItem: defineAsyncComponent(
+      () => import('ee_component/webhooks/components/vulnerability_events_trigger_item.vue'),
+    ),
     WebhookFormTriggerItem,
   },
   props: {

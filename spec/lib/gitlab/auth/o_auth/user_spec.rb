@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category: :system_access do
   include LdapHelpers
 
-  let_it_be_with_reload(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:organization) }
   let(:oauth_user) { described_class.new(auth_hash, organization_id: organization.id) }
   let(:oauth_user_2) { described_class.new(auth_hash_2, organization_id: organization.id) }
   let(:gl_user) { oauth_user.gl_user }
@@ -76,6 +76,85 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
         user = special_chars_user.save
 
         expect(described_class.find_by_uid_and_provider(dn, 'ldapmain')).to eq user
+      end
+    end
+  end
+
+  describe '#existing_user_for_email_link' do
+    subject(:result) { oauth_user.existing_user_for_email_link }
+
+    context 'when auto_link_user is disabled' do
+      before do
+        stub_omniauth_config(auto_link_user: false, allow_single_sign_on: [provider])
+      end
+
+      context 'and an existing user has the same email' do
+        let!(:existing_user) { create(:user, email: 'john@mail.com') }
+
+        it 'returns the existing user' do
+          expect(result).to eq(existing_user)
+        end
+      end
+
+      context 'and an existing user has the email as a confirmed secondary email' do
+        let!(:existing_user) { create(:user, email: 'primary@mail.com') }
+        let!(:secondary_email) { create(:email, :confirmed, user: existing_user, email: 'john@mail.com') }
+
+        it 'returns the existing user' do
+          expect(result).to eq(existing_user)
+        end
+      end
+
+      context 'and an existing user has the email as an unconfirmed secondary email' do
+        let!(:existing_user) { create(:user, email: 'primary@mail.com') }
+        let!(:secondary_email) { create(:email, user: existing_user, email: 'john@mail.com') }
+
+        it 'returns nil because only confirmed secondary emails are matched' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and no existing user has the same email' do
+        it 'returns nil' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and the identity already exists for the provider' do
+        let!(:existing_user) { create(:omniauth_user, extern_uid: uid, provider: provider, email: 'john@mail.com') }
+
+        it 'returns nil because the user is not a new record' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and the auth hash has no email' do
+        let(:info_hash) { { nickname: 'john', name: 'John' } }
+        let!(:existing_user) { create(:user, email: 'john@mail.com') }
+
+        it 'returns nil' do
+          expect(result).to be_nil
+        end
+      end
+    end
+
+    context 'when auto_link_user is enabled' do
+      before do
+        stub_omniauth_config(auto_link_user: true, allow_single_sign_on: [provider])
+      end
+
+      context 'and an existing user has the same email' do
+        let!(:existing_user) { create(:user, email: 'john@mail.com') }
+
+        it 'returns nil because auto-link links the existing user (not a new record)' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and no existing user has the same email' do
+        it 'returns nil because auto-link is enabled' do
+          expect(result).to be_nil
+        end
       end
     end
   end
@@ -428,9 +507,26 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
           include_examples "to verify compliance with allow_single_sign_on"
         end
 
+        context "and LDAP is disabled instance-wide" do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(false)
+          end
+
+          it "does not treat the user as an auto_link_ldap_user candidate" do
+            expect(oauth_user.send(:auto_link_ldap_user?)).to be false
+          end
+
+          it "does not attempt to construct an LDAP adapter for a disabled provider" do
+            expect(Gitlab::Auth::Ldap::Adapter).not_to receive(:new)
+
+            oauth_user.send(:ldap_person)
+          end
+        end
+
         context "and at least one LDAP provider is defined" do
           before do
             stub_ldap_config(providers: %w[ldapmain])
+            stub_ldap_setting(enabled: true)
           end
 
           context "and a corresponding LDAP person" do
@@ -684,6 +780,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
         context "and at least one LDAP provider is defined" do
           before do
             stub_ldap_config(providers: %w[ldapmain])
+            stub_ldap_setting(enabled: true)
           end
 
           context "and a corresponding LDAP person" do
@@ -775,106 +872,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
                 expect(gl_user.read_only_attribute?(:email)).to be_truthy
               end
             end
-          end
-        end
-      end
-    end
-
-    describe 'organization read-only enforcement' do
-      let(:provider) { 'twitter' }
-
-      before do
-        stub_omniauth_config(allow_single_sign_on: [provider])
-      end
-
-      context 'when the organization is in read-only state' do
-        before do
-          organization.start_read_only!(read_only_reason: 'migration')
-        end
-
-        context 'when the organization_read_only_enforcement feature flag is enabled' do
-          before do
-            stub_feature_flags(organization_read_only_enforcement: organization)
-          end
-
-          context 'when the user does not yet exist (new-user INSERT)' do
-            it 'raises NewUserOrganizationReadOnlyError and does not persist the user' do
-              expect { oauth_user.save }.to raise_error( # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
-                Gitlab::Auth::OAuth::User::NewUserOrganizationReadOnlyError
-              )
-
-              expect(oauth_user.gl_user).not_to be_persisted
-            end
-          end
-
-          context 'when the user already exists (existing-user sign-in)' do
-            let!(:existing_user) { create(:omniauth_user, extern_uid: uid, provider: provider) }
-
-            it 'does not raise and saves the user' do
-              expect { oauth_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
-            end
-
-            it 'keeps the user persisted' do
-              oauth_user.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
-
-              expect(oauth_user.gl_user).to be_persisted
-            end
-          end
-        end
-
-        context 'when the organization_read_only_enforcement feature flag is disabled' do
-          before do
-            stub_feature_flags(organization_read_only_enforcement: false)
-          end
-
-          it 'does not raise and creates the user' do
-            expect { oauth_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
-
-            expect(oauth_user.gl_user).to be_persisted
-          end
-        end
-      end
-
-      context 'when the organization is active (not read-only)' do
-        it 'does not raise and creates the user' do
-          expect { oauth_user.save }.not_to raise_error # rubocop:disable Rails/SaveBang -- not an ActiveRecord object
-
-          expect(oauth_user.gl_user).to be_persisted
-        end
-      end
-
-      describe '#new_user_blocked_by_read_only_organization?' do
-        subject(:blocked?) { oauth_user.send(:new_user_blocked_by_read_only_organization?) }
-
-        context 'when no organization_id is provided' do
-          let(:oauth_user) { described_class.new(auth_hash) }
-
-          it 'returns false without looking up an organization' do
-            # Force user construction first: building the user itself calls
-            # Organizations::Organization.find_by_id, so the expectation below must
-            # only cover the guard invocation, not construction.
-            oauth_user.gl_user
-
-            expect(::Organizations::Organization).not_to receive(:find_by_id)
-
-            expect(blocked?).to be(false)
-          end
-        end
-
-        context 'when the organization cannot be found' do
-          let(:oauth_user) { described_class.new(auth_hash, organization_id: non_existing_record_id) }
-
-          it 'returns false without checking the feature flag' do
-            # Force user construction first: building the user itself calls
-            # Organizations::Organization.find_by_id, so the expectations below must
-            # only cover the guard invocation, not construction.
-            oauth_user.gl_user
-
-            expect(::Organizations::Organization)
-              .to receive(:find_by_id).with(non_existing_record_id).and_return(nil)
-            expect(Feature).not_to receive(:enabled?).with(:organization_read_only_enforcement, anything)
-
-            expect(blocked?).to be(false)
           end
         end
       end

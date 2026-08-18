@@ -35,7 +35,8 @@ describe('WorkItemDevelopmentBranchItem', () => {
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLink = () => wrapper.findComponent(GlLink);
-  const findCreateMRAction = () => wrapper.find('[data-testid="branch-create-merge-request"]');
+  const findCreateMRAction = () =>
+    wrapper.findComponent('[data-testid="branch-create-merge-request"]');
 
   it('should render the comparePath and name with icon', () => {
     createComponent();

@@ -23,7 +23,7 @@ module QA
         end
       end
 
-      it 'imports group from UI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347862' do
+      it 'imports group from UI' do
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(source_group.path, target_sandbox.path)
 

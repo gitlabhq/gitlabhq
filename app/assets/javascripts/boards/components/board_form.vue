@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlForm, GlModal, GlAlert, GlButton } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -50,7 +51,9 @@ export default {
     titleFieldPlaceholder: s__('Boards|Enter board name'),
   },
   components: {
-    BoardScope: () => import('ee_component/boards/components/board_scope.vue'),
+    BoardScope: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_scope.vue'),
+    ),
     GlModal,
     GlButton,
     BoardConfigurationOptions,
@@ -105,7 +108,7 @@ export default {
       default: null,
     },
   },
-  emits: ['addBoard', 'cancel', 'showBoardModal', 'shown', 'updateBoard'],
+  emits: ['add-board', 'cancel', 'show-board-modal', 'shown', 'update-board'],
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
@@ -220,7 +223,7 @@ export default {
     isFocusMode() {
       return Boolean(
         document.querySelector('.content-wrapper > .js-focus-mode-board.is-focused') ||
-          document.querySelector('.js-content-panels.is-focused'),
+        document.querySelector('.js-content-panels.is-focused'),
       );
     },
     cancel() {
@@ -243,7 +246,7 @@ export default {
       return response.data.updateBoard.board;
     },
     openDeleteModal() {
-      this.$emit('showBoardModal', this.$options.formType.delete);
+      this.$emit('show-board-modal', this.$options.formType.delete);
     },
     async deleteBoard() {
       await this.$apollo.mutate({
@@ -271,9 +274,9 @@ export default {
         try {
           const board = await this.createOrUpdateBoard();
           if (this.board.id) {
-            this.$emit('updateBoard', board);
+            this.$emit('update-board', board);
           } else {
-            this.$emit('addBoard', board);
+            this.$emit('add-board', board);
           }
           this.close();
         } catch (error) {

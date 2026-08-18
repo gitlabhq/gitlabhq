@@ -1,0 +1,11 @@
+# @feature_category: team_planning
+mutation destroyMergeRequestWorkItemRelation(
+  $projectPath: ID!
+  $iid: String!
+  $ids: [MergeRequestsClosingIssuesID!]!
+) {
+  mergeRequestDestroyWorkItemRelations(input: { projectPath: $projectPath, iid: $iid, ids: $ids }) {
+    errors
+    removedRelationIds
+  }
+}

@@ -8,31 +8,31 @@ Work item IIDs and issue IIDs share the same space within a project. The `/work_
 
 ```bash
 # ✅ Correct — issues API works for work items
-glab api "projects/org%2Fproject/issues/<iid>"
-glab api "projects/<project_id>/issues/<iid>/notes"
+glab api --method GET "projects/org%2Fproject/issues/<iid>"
+glab api --method GET "projects/<project_id>/issues/<iid>/notes"
 glab api --method POST "projects/<project_id>/issues/<iid>/notes" -f "body=comment"
 
 # ❌ Wrong — this endpoint doesn't exist
-glab api "projects/org%2Fproject/work_items/<iid>"   # → 404
+glab api --method GET "projects/org%2Fproject/work_items/<iid>"   # → 404
 ```
 
 URL parsing:
 ```
 https://gitlab.com/org/project/-/work_items/539076
-→ project: org/project  →  glab api "projects/org%2Fproject/issues/539076"
+→ project: org/project  →  glab api --method GET "projects/org%2Fproject/issues/539076"
 ```
 
 ## Group-level work_items — REST endpoint doesn't exist
 
 ```bash
-glab api "groups/<id>/work_items"   # → 404 always
+glab api --method GET "groups/<id>/work_items"   # → 404 always
 ```
 
 Use these instead:
 
 ```bash
 # List epics (REST)
-glab api "groups/<group_id>/epics" | jq '.[] | {iid, title, state}'
+glab api --method GET "groups/<group_id>/epics" | jq '.[] | {iid, title, state}'
 
 # Single epic as work item (GraphQL)
 glab api graphql -f query='

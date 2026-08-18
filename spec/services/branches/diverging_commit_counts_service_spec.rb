@@ -19,13 +19,34 @@ RSpec.describe Branches::DivergingCommitCountsService, feature_category: :source
       expect(result).to eq(behind: 29, ahead: 2)
     end
 
-    it 'calls diverging_commit_count without max count' do
+    it 'calls diverging_commit_count with default max count' do
       expect(repository.raw_repository)
         .to receive(:diverging_commit_count)
-        .with(root_ref_sha, diverged_branch_sha)
+        .with(root_ref_sha, diverged_branch_sha, max_count: 0)
         .and_return([29, 2])
 
       service.call(diverged_branch)
+    end
+  end
+
+  describe '#diverging_counts' do
+    let(:service) { described_class.new(repository) }
+    let(:from_sha) { repository.commit('master').sha }
+    let(:to_sha) { repository.commit('fix').sha }
+
+    it 'returns the commit counts behind and ahead' do
+      result = service.diverging_counts(from_sha, to_sha)
+
+      expect(result).to match(behind: a_kind_of(Integer), ahead: a_kind_of(Integer))
+    end
+
+    it 'passes max_count through to the repository' do
+      expect(repository.raw_repository)
+        .to receive(:diverging_commit_count)
+        .with(from_sha, to_sha, max_count: 100)
+        .and_return([1, 2])
+
+      service.diverging_counts(from_sha, to_sha, max_count: 100)
     end
   end
 end

@@ -174,3 +174,17 @@ export const extendedWrapper = (wrapper) => {
 
 export const shallowMountExtended = flowRight(extendedWrapper, shallowMount);
 export const mountExtended = flowRight(extendedWrapper, mount);
+
+/**
+ * Version-agnostic function-shaped slot map of a component instance, for
+ * specs invoking a child's slot functions directly.
+ *
+ * Vue 2 and @vue/compat expose every provided slot as a function on
+ * `vm.$scopedSlots` (compat's `$slots` can be the legacy auto-invoking
+ * proxy, so it is not a substitute there). Plain Vue 3 has no
+ * `$scopedSlots`; its native `$slots` is already the function-shaped map.
+ *
+ * @param {Object} vm - component instance (e.g. `wrapper.findComponent(X).vm`)
+ * @returns {Object} slot-name -> slot function map
+ */
+export const getInstanceSlots = (vm) => vm.$scopedSlots ?? vm.$slots;

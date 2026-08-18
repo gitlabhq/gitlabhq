@@ -172,13 +172,6 @@ greater than 1000. The cached value is rounded to thousands (or millions) and up
 
 ## Check out merge requests locally through the `head` ref
 
-{{< history >}}
-
-- Deleting `head` refs 14 days after a merge request closes or merges [enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
-- Deleting `head` refs 14 days after a merge request closes or merges [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/336070) in GitLab 16.6. Feature flag `merge_request_refs_cleanup` removed.
-
-{{< /history >}}
-
 A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few
 ways to check out a merge request locally.
@@ -190,7 +183,7 @@ This relies on the merge request `head` ref (`refs/merge-requests/:iid/head`)
 that is available for each merge request. It allows checking out a merge
 request by using its ID instead of its branch.
 
-In GitLab 16.6 and later, the merge request `head` ref is deleted 14 days after
+The merge request `head` ref is deleted 14 days after
 a merge request is closed or merged. The merge request is then no longer available
 for local checkout from the merge request `head` ref anymore. The merge request
 can still be re-opened. If the merge request's branch

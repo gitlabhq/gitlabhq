@@ -36,12 +36,6 @@ For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#side
 
 ## Metrics available
 
-{{< history >}}
-
-- `caller_id` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392622) from `redis_hit_miss_operations_total` and `redis_cache_generation_duration_seconds` in GitLab 15.11.
-
-{{< /history >}}
-
 The following metrics are available:
 
 | Metric                                                                         | Type      | Since | Labels                                                                  | Description |
@@ -69,6 +63,11 @@ The following metrics are available:
 | `gitlab_application_rate_limiter_throttle_utilization_ratio`                   | Histogram |  17.6 | `throttle_key`, `peek`, `feature_category`                              | Utilization ratio of a throttle in GitLab Application Rate Limiter. |
 | `gitaly_circuit_breaker_requests_total`                                        | Counter   |  18.9 | `circuit_state`, `result`, `reason`                                     | Total Gitaly requests processed by circuit breaker. `result` can be `allowed`, `rejected`, or `error`. `reason` provides error detail (for example, `resource_exhausted`) |
 | `gitaly_circuit_breaker_transitions_total`                                     | Counter   |  18.9 | `from_state`, `to_state`                                                | Total circuit breaker state transitions. States are `closed`, `open`. Detailed endpoint and storage information is available in structured logs |
+| `gitlab_audit_event_streaming_nats_consumer_lag_seconds`                       | Histogram |  19.3 | `feature_category`                                                      | Audit event streaming NATS consumer lag (publish to dispatch) in seconds |
+| `gitlab_audit_event_streaming_nats_publish_fallback_total`                     | Counter   |  19.3 | `feature_category`                                                      | Audit event publishes that fell back from NATS to Sidekiq (a degradation ratio, not an error) |
+| `gitlab_audit_event_streaming_nats_publish_total`                              | Counter   |  19.3 | `feature_category`                                                      | Audit event publish attempts through NATS |
+| `gitlab_authorized_projects_safety_net_refresh_rows_total`                     | Counter   |  19.3 | `trigger`, `direction`                                                  | Total number of `project_authorizations` rows added or deleted by a safety-net refresh |
+| `gitlab_bootsnap_compile_cache_events_total`                                   | Counter   |  19.3 | `event`                                                                 | Number of Bootsnap compile cache events observed during boot, by type (`hit`, `revalidated`, `miss`, `stale`). The hit rate is `(hit + revalidated) / total` |
 | `gitlab_cache_misses_total`                                                    | Counter   |  10.2 | `controller`, `action`, `store`, `endpoint_id`                          | Cache read miss |
 | `gitlab_cache_operation_duration_seconds`                                      | Histogram |  10.2 | `operation`, `store`, `endpoint_id`                                     | Cache access time |
 | `gitlab_cache_operations_total`                                                | Counter   |  12.2 | `controller`, `action`, `operation`, `store`, `endpoint_id`             | Cache operations by controller or action |
@@ -76,12 +75,14 @@ The following metrics are available:
 | `gitlab_ci_active_jobs`                                                        | Histogram |  14.2 |                                                                         | Count of active jobs when pipeline is created |
 | `gitlab_ci_build_trace_errors_total`                                           | Counter   |  14.4 | `error_reason`                                                          | Total amount of different error types on a build trace |
 | `gitlab_ci_current_queue_size`                                                 | Gauge     |  16.3 |                                                                         | Current size of initialized CI/CD builds queue |
+| `gitlab_ci_job_failure_reasons`                                                | Counter   |  19.3 | `reason`, `runner_type`                                                 | Counter of job failure reasons by runner type |
 | `gitlab_ci_job_token_authorization_failures`                                   | Counter   | 17.11 | `same_root_ancestor`                                                    | Count of failed authorization attempts via CI JOB Token |
 | `gitlab_ci_job_token_inbound_access`                                           | Counter   |  17.2 |                                                                         | Count of inbound accesses via CI job token |
 | `gitlab_ci_pipeline_builder_scoped_variables_duration`                         | Histogram |  14.5 |                                                                         | Time in seconds it takes to create the scoped variables for a CI/CD job |
 | `gitlab_ci_pipeline_creation_duration_seconds`                                 | Histogram |  13.0 | `gitlab`                                                                | Time in seconds it takes to create a CI/CD pipeline |
 | `gitlab_ci_pipeline_security_orchestration_policy_processing_duration_seconds` | Histogram | 13.12 |                                                                         | Time in seconds it takes to process Security Policies in CI/CD pipeline |
 | `gitlab_ci_pipeline_size_builds`                                               | Histogram |  13.1 | `source`                                                                | Total number of builds within a pipeline grouped by a pipeline source |
+| `gitlab_ci_pipeline_time_to_finished_seconds`                                  | Histogram |  19.2 | `source`, `status`                                                      | Wall-clock time in seconds from pipeline creation to a finished status (success, failed, or canceled) |
 | `gitlab_ci_queue_depth_total`                                                  | Histogram |  16.3 |                                                                         | Size of a CI/CD builds queue in relation to the operation result |
 | `gitlab_ci_queue_iteration_duration_seconds`                                   | Histogram |  16.3 |                                                                         | Time it takes to find a build in CI/CD queue |
 | `gitlab_ci_queue_operations_total`                                             | Counter   |  16.3 |                                                                         | Counts all the operations that are happening inside a queue |
@@ -200,6 +201,7 @@ The following metrics are available:
 | `pipeline_graph_links_per_job_ratio`                                           | Histogram |  13.9 |                                                                         | Ratio of links to job per graph |
 | `pipeline_graph_links_total`                                                   | Histogram |  13.9 |                                                                         | Number of links per graph |
 | `pipelines_created_total`                                                      | Counter   |   9.4 | `source`, `partition_id`                                                | Counter of pipelines created |
+| `pipelines_finished_total`                                                     | Counter   |  19.2 | `source`, `partition_id`, `status`                                      | Counter of pipelines finished (success, failed, or canceled) |
 | `rack_uncaught_errors_total`                                                   | Counter   |   9.4 |                                                                         | Rack connections handling uncaught errors count |
 | `redis_cache_generation_duration_seconds`                                      | Histogram |  15.6 | `cache_hit`, `cache_identifier`, `feature_category`, `backing_resource` | Time to generate Redis cache |
 | `redis_hit_miss_operations_total`                                              | Counter   |  15.6 | `cache_hit`, `cache_identifier`, `feature_category`, `backing_resource` | Total number of Redis cache hits and misses |
@@ -289,6 +291,18 @@ For more information, see [Application SLIs](../../../development/application_sl
 | `gitlab_sli_search_zoekt_tasks_apdex_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task Apdex measurements |
 | `gitlab_sli_search_zoekt_tasks_error_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task errors |
 | `gitlab_sli_search_zoekt_tasks_requests_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt tasks added to the queue |
+
+### Audit event streaming SLI metrics
+
+These SLIs track the NATS audit event streaming pipeline.
+For more information, see [Application SLIs](../../../development/application_slis/_index.md).
+
+| Metric | Type | Since | Labels | Description |
+|:-------|:-----|------:|:-------|:------------|
+| `gitlab_sli_audit_event_streaming_nats_dispatch_apdex_success_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatches that met the consumer lag target |
+| `gitlab_sli_audit_event_streaming_nats_dispatch_apdex_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatch Apdex measurements |
+| `gitlab_sli_audit_event_streaming_nats_dispatch_error_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatches that failed |
+| `gitlab_sli_audit_event_streaming_nats_dispatch_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatch attempts |
 
 ## Metrics controlled by a feature flag
 
@@ -851,20 +865,59 @@ and the metrics all have these labels:
 | Metric                                              | Type  | Since | Description |
 |:----------------------------------------------------|:------|:------|:------------|
 | `gitlab_database_connection_pool_size`              | Gauge | 13.0  | Total connection pool capacity |
-| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Current connections in the pool (= idle + busy + dead) |
+| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Number of connections that have been created in the pool. <sup>1</sup> |
 | `gitlab_database_connection_pool_busy`              | Gauge | 13.0  | Connections in use where the owner is still alive |
 | `gitlab_database_connection_pool_dead`              | Gauge | 13.0  | Connections in use where the owner is not alive |
 | `gitlab_database_connection_pool_idle`              | Gauge | 13.0  | Connections created, but not currently in use |
 | `gitlab_database_connection_pool_waiting`           | Gauge | 13.0  | Threads currently waiting on this queue |
-| `gitlab_database_extended_connection_pool_busy`     | Gauge | 17.11 | Connections in use where the owner is still alive, per thread |
-| `gitlab_database_extended_connection_pool_dead`     | Gauge | 17.11 | Connections in use where the owner is not alive, per thread |
+| `gitlab_database_extended_connection_pool_busy`     | Gauge | 18.11 | Connections in use where the owner is still alive, per thread |
+| `gitlab_database_extended_connection_pool_dead`     | Gauge | 18.11 | Connections in use where the owner is not alive, per thread |
+
+**Footnotes**:
+
+1. Because `idle` counts only initialized connections that are not in use, the total of `busy`, `dead`, and `idle` connections can be less than or equal to the total number of connections.
+
+In GitLab 18.11 and later, the default connection pool gauges are
+aggregated across Puma worker processes, so a single time series is
+emitted per pod (rather than one per worker).
+
+The aggregation uses the [`multiprocess_mode`](https://github.com/prometheus/client_ruby#aggregation-settings-for-multi-process-stores)
+setting supported by the [`prometheus-client-mmap`](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap)
+client used by GitLab:
+
+- `gitlab_database_connection_pool_size` uses `min`. Because Puma
+  workers are forked with the same configuration, this value is the
+  same for every worker in a pod, so `min` just surfaces that shared
+  value.
+- `gitlab_database_connection_pool_connections`, `gitlab_database_connection_pool_busy`,
+  `gitlab_database_connection_pool_dead`, `gitlab_database_connection_pool_idle`, and
+  `gitlab_database_connection_pool_waiting` use `max` (the worst-case worker).
+
+Because these values are per-pod worst-case instead of sums across
+workers, dashboards or alerts that summed per-worker series in GitLab 18.10 and earlier
+(for example, `sum(gitlab_database_connection_pool_busy)`) now under-report the total.
+
+Do not try to reconstruct the previous sum by multiplying by the number
+of Puma workers. A sum across a pod does not reflect utilization on
+that pod or across the fleet, and monitoring should target the
+worst-case worker.
+
+If a single worker process saturates its pool, that worker cannot
+handle requests, regardless of what the other workers on the same pod
+are doing.
+
+For connection pool saturation monitoring, use `busy` plus `dead` instead of `connections` minus `idle`.
 
 The `gitlab_database_extended_connection_pool_busy` and
 `gitlab_database_extended_connection_pool_dead` metrics include a
-`thread_name` label for per-thread granularity. These metrics are
-disabled by default due to high cardinality. To enable them for a
-percentage of pods, use the `per_thread_db_connection_pool_metrics`
+`thread_name` label for per-thread granularity.
+These metrics are disabled by default due to high cardinality.
+To enable them for a percentage of pods, use the
+`per_thread_db_connection_pool_metrics`
 [ops feature flag](../../../development/feature_flags/_index.md).
+The flag is scoped to `Feature.current_pod`, so it can be turned on
+for a percentage of pods without emitting the high-cardinality series
+fleet-wide.
 
 ## Ruby metrics
 

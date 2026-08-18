@@ -16,8 +16,9 @@ RSpec.shared_examples 'issuable API rate-limited search' do
 
     it 'allows user in search_rate_limit_allowlist to bypass rate limits', :freeze_time,
       :clean_gitlab_redis_rate_limiting do
-      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-      allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1)
+      allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:limit_for).and_call_original
+      allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits)
+        .to receive(:limit_for).with(:search_rate_limit, context: anything).and_return(1)
 
       stub_application_setting(search_rate_limit_allowlist: [user.username])
 

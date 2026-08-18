@@ -78,7 +78,9 @@ export default {
         };
       },
       update({ customDashboards }) {
-        return customDashboards?.nodes;
+        // `customDashboards` is null when the query is unauthorized fall back to an
+        // empty list so the empty state renders instead of erroring.
+        return customDashboards?.nodes ?? [];
       },
       error(err) {
         this.errorText = s__(

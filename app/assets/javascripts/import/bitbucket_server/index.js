@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import importFromBitbucketServerApp from './import_from_bitbucket_server_app.vue';
 
 export function initBitbucketServerImportProjectForm() {
@@ -12,11 +12,10 @@ export function initBitbucketServerImportProjectForm() {
 
   const props = { backButtonPath, formPath };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportFromBitbucketServerRoot',
-    render(h) {
-      return h(importFromBitbucketServerApp, { props });
-    },
+    component: importFromBitbucketServerApp,
+    props,
   });
 }

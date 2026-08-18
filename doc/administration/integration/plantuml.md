@@ -56,9 +56,9 @@ by the `plantuml` block:
      Alice -> Bob: hi
   ```
 
-   Although you can use the `uml::` directive for compatibility with
-   [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/),
-   GitLab supports only the `caption` option.
+  Although you can use the `uml::` directive for compatibility with
+  [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/),
+  GitLab supports only the `caption` option.
 
 If the PlantUML server is configured correctly, these examples should render a
 diagram instead of the code block:

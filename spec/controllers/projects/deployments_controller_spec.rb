@@ -4,20 +4,20 @@ require 'spec_helper'
 
 RSpec.describe Projects::DeploymentsController, feature_category: :deployment_management do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, maintainers: user) }
   let(:environment) { create(:environment, name: 'production', project: project) }
 
   before do
-    project.add_maintainer(user)
-
     sign_in(user)
   end
 
   describe 'GET #index' do
     it 'returns list of deployments from last 8 hours' do
-      create(:deployment, :success, environment: environment, created_at: 9.hours.ago)
-      create(:deployment, :success, environment: environment, created_at: 7.hours.ago)
-      create(:deployment, :success, environment: environment)
+      create(:deployment, :success, sha: project.repository.commit.sha, environment: environment,
+        created_at: 9.hours.ago)
+      create(:deployment, :success, sha: project.repository.commit.sha, environment: environment,
+        created_at: 7.hours.ago)
+      create(:deployment, :success, sha: project.repository.commit.sha, environment: environment)
 
       get :index, params: deployment_params(after: 8.hours.ago)
 
@@ -27,7 +27,7 @@ RSpec.describe Projects::DeploymentsController, feature_category: :deployment_ma
     end
 
     it 'returns a list with deployments information' do
-      create(:deployment, :success, environment: environment)
+      create(:deployment, :success, sha: project.repository.commit.sha, environment: environment)
 
       get :index, params: deployment_params
 
@@ -53,7 +53,7 @@ RSpec.describe Projects::DeploymentsController, feature_category: :deployment_ma
         end
 
         it 'returns a list with deployments information' do
-          create(:deployment, :success, environment: environment)
+          create(:deployment, :success, sha: project.repository.commit.sha, environment: environment)
 
           get :index, params: deployment_params
 
@@ -72,7 +72,7 @@ RSpec.describe Projects::DeploymentsController, feature_category: :deployment_ma
         end
 
         it 'responds with not found' do
-          create(:deployment, :success, environment: environment)
+          create(:deployment, :success, sha: project.repository.commit.sha, environment: environment)
 
           get :index, params: deployment_params
 
@@ -85,7 +85,7 @@ RSpec.describe Projects::DeploymentsController, feature_category: :deployment_ma
   describe 'GET #show' do
     render_views
 
-    let(:deployment) { create(:deployment, :success, environment: environment) }
+    let(:deployment) { create(:deployment, :success, sha: project.repository.commit.sha, environment: environment) }
 
     subject do
       get :show, params: deployment_params(id: deployment.iid)

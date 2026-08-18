@@ -506,7 +506,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       let(:rate_limiter) { double(:rate_limiter, ip: "127.0.0.1", trusted_ip?: false) }
 
       it 'is throttled by rate limiter' do
-        allow(::Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(1)
+        allow(::Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, true)
         expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, actor]).twice.and_call_original
 
         request

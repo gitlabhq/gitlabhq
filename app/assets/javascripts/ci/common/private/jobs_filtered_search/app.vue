@@ -36,7 +36,7 @@ export default {
       default: false,
     },
   },
-  emits: ['filterJobsBySearch'],
+  emits: ['filter-jobs-by-search'],
   computed: {
     tokens() {
       const tokens = [
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     onSubmit(filters) {
-      this.$emit('filterJobsBySearch', filters);
+      this.$emit('filter-jobs-by-search', filters);
     },
   },
 };

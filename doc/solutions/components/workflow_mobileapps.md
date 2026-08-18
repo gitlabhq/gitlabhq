@@ -13,11 +13,11 @@ title: DevSecOps Workflow - Mobile Apps
 
 {{< /details >}}
 
-This document provides the instruction and functional detail for GitLab DevSecOps Workflow solution for building and delivering hybrid (React Native) mobile apps.
+This document provides instructions and functional details for the GitLab DevSecOps Workflow solution for building and delivering hybrid (React Native) mobile apps.
 
-For native mobile application using fastlane, refer to product documentation.
+For native mobile applications using fastlane, refer to product documentation.
 
-The instructions include a sample [**React Native**](https://reactnative.dev) application, bootstrapped using `react-native-community/cli`, and provide a cross-platform solution on both iOS and Android devices. The sample project provides an end-to-end solution for using GitLab CI/CD pipelines to build, test and deploy a mobile application.
+The instructions include a sample [**React Native**](https://reactnative.dev) application, bootstrapped using `react-native-community/cli`, and provide a cross-platform solution on both iOS and Android devices. The sample project provides an end-to-end solution for using GitLab CI/CD pipelines to build, test, and deploy a mobile application.
 
 ## Getting Started
 
@@ -30,8 +30,8 @@ Follow the steps below on how to use this React Native Mobile App sample project
 
 ### Set Up the Solution Component Project
 
-- The Mobile App solution component from the Product Accelerator marketplace has been downloaded. In the solution pack, it includes the mobile app sample project with the CI/CD files.
-- Create a new GitLab CI/CD catalog project to host the Snyk component in your environment. In the mobile app solution pack, it includes the Snyk CI/CD component project files which allow you to set up the Snyk CI/CD catalog project.
+- The Mobile App solution component from the Product Accelerator marketplace has been downloaded. The solution pack includes the mobile app sample project with the CI/CD files.
+- Create a new GitLab CI/CD catalog project to host the Snyk component in your environment. The mobile app solution pack includes the Snyk CI/CD component project files which allow you to set up the Snyk CI/CD catalog project.
   1. Create a new GitLab project to host this Snyk CI/CD catalog project
   1. Copy the provided files into your project
   1. Configure the required CI/CD variables in your project settings
@@ -42,7 +42,7 @@ Follow the steps below on how to use this React Native Mobile App sample project
   > public GitLab Snyk component, you don't need to set up your own Snyk CI/CD catalog
   > project. Instead, use the public component directly by following its documentation.
 
-- Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. See the documentation for the [change control workflow with ServiceNow solution component](integrated_servicenow.md), and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
+- Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments that require change controls. See the documentation for the [change control workflow with ServiceNow solution component](integrated_servicenow.md), and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
 - Copy the CI YAML files into your project:
   - `.gitlab-ci.yml`
   - `build-android.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
@@ -63,7 +63,7 @@ Follow the steps below on how to use this React Native Mobile App sample project
 
 ## How the Pipeline Works
 
-This pipeline is designed for a React Native project, handling both iOS and Android builds, test and deploy the Mobile App.
+This pipeline is designed for a React Native project, handling both iOS and Android builds, testing, and deploying the mobile app.
 
 This project includes a simple reactCounter demo app for React Native build for both iOS and Android. This version does not sign the artifacts yet, so we cannot upload to TestFlight or the Play Store.
 
@@ -109,7 +109,7 @@ In the mobile app project, add the required variables for the Snyk integration.
 |----------|-------------|---------------|
 | `SNYK_TOKEN` | API token to access Snyk | `d7da134c-xxxxxxxxxx` |
 
-This mobile app demo project uses a private Snyk component, that's the reason why we added the following additional variables for the mobile app project to access the private Snyk component project, but this is not needed if your Snyk component is public or accessible within your group.
+This mobile app demo project uses a private Snyk component. That's the reason we added the following additional variables for the mobile app project to access the private Snyk component project, but this is not needed if your Snyk component is public or accessible within your group.
 
 ```yaml
 SNYK_PROJECT_ACCESS_USERNAME: "MOBILE_APP_SNYK_COMPONENT_ACCESS"
@@ -144,7 +144,7 @@ This mobile app demo project CI/CD is integrated with Sauce Labs for automated f
 
 In order to use SauceLabs for automated testing, the app has to be uploaded to SauceLab App Management. The pipeline uses the API endpoint to upload the app to SauceLabs and make it available for testing.
 
-Added an Appium test script file in `tests/appium`for testing the React Native mobile application using WebdriverIO and Sauce Labs. The test script will use the following environment variables to access SauceLabs
+An Appium test script file was added in `tests/appium` for testing the React Native mobile application using WebdriverIO and Sauce Labs. The test script will use the following environment variables to access SauceLabs
 
 ``` bash
 # Using the variables defined in the project
@@ -164,7 +164,7 @@ This mobile app demo project CI/CD is integrated with ServiceNow for change cont
 
 #### CI/CD Variables
 
-In order for the pipeline to communicate with ServiceNow, the webhook integrations need to be created. If you are using API endpoints to communicates with ServiceNow, you will need to include the following variables. However, this is not required when using the ServiceNow DevOps Change Velocity integration. As part of the ServiceNow DevOps Change Velocity onboarding, the webhooks will be created.
+In order for the pipeline to communicate with ServiceNow, the webhook integrations need to be created. If you are using API endpoints to communicate with ServiceNow, you will need to include the following variables. However, this is not required when using the ServiceNow DevOps Change Velocity integration. As part of the ServiceNow DevOps Change Velocity onboarding, the webhooks will be created.
 
 | Variable | Description | Example Value |
 |----------|-------------|---------------|

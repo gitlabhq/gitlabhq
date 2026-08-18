@@ -95,7 +95,10 @@ More threads lead to excessive swapping and lower performance.
 
 ## Plan the database connections
 
-Before increasing Puma workers or threads, consider the database connection impact on your PostgreSQL `max_connections` setting.
+Before increasing Puma workers or threads, consider the database connection impact.
+The connection-demand formula on the [Tune PostgreSQL](../postgresql/tune.md) page computes the application's frontend connection demand: the number of connections Rails opens to the database or to PgBouncer.
+This value is not the same as PostgreSQL `max_connections`, which is bounded by what the database host can serve.
+For guidance on sizing `max_connections`, see [Determine your database host capacity](../postgresql/tune.md#determine-your-database-host-capacity-max_connections).
 
 For detailed connection planning and calculations, see the [Tune PostgreSQL](../postgresql/tune.md) page.
 
@@ -191,7 +194,7 @@ When running Puma in single mode, some features are not supported:
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Memory killers](#tuning-memory-use)
 
-For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
+For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/work_items/5303).
 
 ## Configuring Puma to listen over SSL
 
@@ -235,12 +238,6 @@ steps below:
 
 ### Using an encrypted SSL key
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
-
-{{< /history >}}
-
 Puma supports the use of an encrypted private SSL key, which can be
 decrypted at runtime. The following instructions illustrate how to
 configure this:
@@ -251,7 +248,7 @@ configure this:
    openssl rsa -aes256 -in /path/to/ssl-key.pem -out /path/to/encrypted-ssl-key.pem
    ```
 
-   Enter in a password twice to write the encrypted file. In this
+   Enter a password twice to write the encrypted file. In this
    example, we use `some-password-here`.
 
 1. Create a script or executable that prints the password. For
@@ -419,7 +416,7 @@ gitlab_rails['env'] = {
 ```
 
 For self-compiled installations, set the environment variable.
-Refer to [Puma Worker timeout](puma.md#change-the-worker-timeout).
+Refer to [Puma Worker timeout](#change-the-worker-timeout).
 
 [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 

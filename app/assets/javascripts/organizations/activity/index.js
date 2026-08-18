@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import OrganizationsActivityApp from './components/app.vue';
 
@@ -11,17 +11,14 @@ export const initOrganizationsActivity = () => {
   const { organizationActivityPath, organizationActivityEventTypes, organizationActivityAllEvent } =
     convertObjectPropsToCamelCase(JSON.parse(appData));
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationsActivityRoot',
-    render(createElement) {
-      return createElement(OrganizationsActivityApp, {
-        props: {
-          organizationActivityPath,
-          organizationActivityEventTypes,
-          organizationActivityAllEvent,
-        },
-      });
+    component: OrganizationsActivityApp,
+    props: {
+      organizationActivityPath,
+      organizationActivityEventTypes,
+      organizationActivityAllEvent,
     },
   });
 };

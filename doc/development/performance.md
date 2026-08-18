@@ -47,7 +47,7 @@ The process of solving performance problems is roughly as follows:
 1. Add your findings based on the measurement period (screenshots of graphs,
    timings, etc) to the issue mentioned in step 1.
 1. Solve the problem.
-1. Create a merge request, assign the "Performance" label and follow the [performance review process](merge_request_concepts/performance.md).
+1. Create a merge request, assign the "Performance" label, and follow the [performance review process](merge_request_concepts/performance.md).
 1. Once a change has been deployed make sure to again measure for at least 24
    hours to see if your changes have any impact on the production environment.
 1. Repeat until you're done.
@@ -392,7 +392,7 @@ and can additionally be enabled for [GDK](https://gitlab-org.gitlab.io/gitlab-de
 This patch provides the following metrics that make it easier to understand efficiency of memory use for a given code path:
 
 - `mem_total_bytes`: the number of bytes consumed both due to new objects being allocated into existing object slots
-                     plus additional memory allocated for large objects (that is, `mem_bytes + slot_size * mem_objects`).
+  plus additional memory allocated for large objects (that is, `mem_bytes + slot_size * mem_objects`).
 - `mem_bytes`: the number of bytes allocated by `malloc` for objects that did not fit into an existing object slot.
 - `mem_objects`: the number of objects allocated.
 - `mem_mallocs`: the number of `malloc` calls.

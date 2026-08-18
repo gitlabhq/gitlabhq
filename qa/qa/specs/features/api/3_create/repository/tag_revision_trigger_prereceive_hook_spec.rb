@@ -18,8 +18,7 @@ module QA
             project.change_path("project-reject-prereceive-#{SecureRandom.hex(8)}")
           end
 
-          it 'returns a custom server hook error', :skip_live_env,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/369053' do
+          it 'returns a custom server hook error', :skip_live_env do
             expect { project.create_repository_tag('v1.2.3') }
               .to raise_error.with_message(
                 /rejecting prereceive hook for projects with GL_PROJECT_PATH matching pattern reject-prereceive/

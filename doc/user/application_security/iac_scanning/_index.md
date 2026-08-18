@@ -411,13 +411,6 @@ include:
 
 ## Automatic vulnerability resolution
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags/_index.md) named `sec_mark_dropped_findings_as_resolved`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2. Feature flag `sec_mark_dropped_findings_as_resolved` removed.
-
-{{< /history >}}
-
 To help you focus on the vulnerabilities that are still relevant, IaC scanning automatically
 [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:
 

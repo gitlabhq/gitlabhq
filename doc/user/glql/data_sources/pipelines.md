@@ -105,7 +105,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ## Display fields
 

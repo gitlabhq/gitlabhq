@@ -36,6 +36,29 @@ RSpec.describe Preloaders::Environments::DeploymentPreloader do
     }
   end
 
+  context 'for the upcoming_deployment association' do
+    it 'preloads the correct upcoming deployment per environment', :aggregate_failures do
+      create(:deployment, :running, project: project, environment: environment_a)
+      upcoming_deployment_a = create(:deployment, :blocked, project: project, environment: environment_a)
+      create(:deployment, :blocked, project: project, environment: environment_b)
+      upcoming_deployment_b = create(:deployment, :running, project: project, environment: environment_b)
+
+      environments = project.environments.to_a
+
+      described_class.new(environments)
+        .execute_with_union(:upcoming_deployment, deployment_associations)
+
+      environments_by_id = environments.index_by(&:id)
+      preloaded_environment_a = environments_by_id.fetch(environment_a.id)
+      preloaded_environment_b = environments_by_id.fetch(environment_b.id)
+
+      expect(preloaded_environment_a.upcoming_deployment).to eq(upcoming_deployment_a)
+      expect(preloaded_environment_b.upcoming_deployment).to eq(upcoming_deployment_b)
+      expect(preloaded_environment_a.association(:upcoming_deployment)).to be_loaded
+      expect(preloaded_environment_b.association(:upcoming_deployment)).to be_loaded
+    end
+  end
+
   it 'does not trigger N+1 queries' do
     control = ActiveRecord::QueryRecorder.new { preload_association(:last_deployment) }
 

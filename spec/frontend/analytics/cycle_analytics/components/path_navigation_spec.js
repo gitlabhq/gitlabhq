@@ -41,7 +41,7 @@ describe('Project PathNavigation', () => {
   };
 
   const pathItemContent = () => findPathNavigationItems().wrappers.map(extendedWrapper);
-  const firstPopover = () => wrapper.findAllByTestId('stage-item-popover').at(0);
+  const firstPopover = () => wrapper.findAllComponentsByTestId('stage-item-popover').at(0);
 
   beforeEach(() => {
     wrapper = createComponent();

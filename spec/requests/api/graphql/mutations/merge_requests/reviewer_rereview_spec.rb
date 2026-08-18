@@ -39,6 +39,30 @@ RSpec.describe 'Setting assignees of a merge request', feature_category: :code_r
     project.add_developer(user)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_merge_request do
+    let(:reviewer) { create(:user) }
+    let(:merge_request) { create(:merge_request, reviewers: [reviewer]) }
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+
+    before do
+      project.add_developer(reviewer)
+    end
+
+    let(:request) do
+      variables = {
+        project_path: project.full_path,
+        iid: merge_request.iid.to_s,
+        user_id: global_id_of(reviewer)
+      }
+
+      post_graphql_mutation(
+        graphql_mutation(:merge_request_reviewer_rereview, variables, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   it 'returns an error if the user is not allowed to update the merge request' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

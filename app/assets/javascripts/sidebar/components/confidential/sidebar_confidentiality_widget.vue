@@ -48,7 +48,7 @@ export default {
       type: String,
     },
   },
-  emits: ['closeForm', 'confidentialityUpdated', 'expandSidebar'],
+  emits: ['close-form', 'expand-sidebar'],
   data() {
     return {
       confidential: false,
@@ -70,12 +70,6 @@ export default {
       },
       skip() {
         return !this.iid;
-      },
-      result({ data }) {
-        if (!data) {
-          return;
-        }
-        this.$emit('confidentialityUpdated', data.namespace?.issuable?.confidential);
       },
       error() {
         createAlert({
@@ -104,7 +98,7 @@ export default {
     closeForm() {
       this.$refs.editable.collapse();
       this.$el.dispatchEvent(hideDropdownEvent);
-      this.$emit('closeForm');
+      this.$emit('close-form');
     },
     // synchronizing the quick action with the sidebar widget
     // this is a temporary solution until we have confidentiality real-time updates
@@ -127,7 +121,7 @@ export default {
     },
     expandSidebar() {
       this.$refs.editable.expand();
-      this.$emit('expandSidebar');
+      this.$emit('expand-sidebar');
     },
   },
 };
@@ -148,7 +142,7 @@ export default {
           v-if="!isLoading"
           :confidential="confidential"
           :class="{ 'gl-mt-3': !isClassicSidebar }"
-          @expandSidebar="expandSidebar"
+          @expand-sidebar="expandSidebar"
         />
       </div>
     </template>
@@ -159,7 +153,7 @@ export default {
         :full-path="fullPath"
         :confidential="confidential"
         :issuable-type="issuableType"
-        @closeForm="closeForm"
+        @close-form="closeForm"
       />
     </template>
   </sidebar-editable-item>

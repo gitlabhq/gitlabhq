@@ -12,17 +12,9 @@ title: Identity verification
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a feature flag](../administration/feature_flags/_index.md) named `identity_verification`. Disabled by default.
-- Enabled on GitLab.com in GitLab 16.0.
-- Generally available in GitLab 16.11. Feature flag `identity_verification` removed.
-
-{{< /history >}}
-
 Identity verification provides multiple layers of GitLab account security.
-Depending on your [risk score](../integration/arkose.md), you might be required to perform up to
-three stages of verification to register an account:
+Depending on your [risk score](../development/integrations/arkose.md), you might be required to perform up to
+three stages of verification to create a user account:
 
 - **All users** - Email verification.
 - **Medium-risk users** - Phone number verification.

@@ -1,0 +1,177 @@
+# Organization transfer support registry
+#
+# This file tracks which organization-sharded tables have been updated
+# to support organization transfers.
+#
+# Valid statuses:
+#   supported      - Transfer logic is implemented and tested
+#   todo           - Transfer support has not yet been implemented (legacy tables only)
+#   no_work_needed - Table requires no changes for organization transfers
+#
+# New organization-sharded tables MUST use 'supported'. The 'todo' status is
+# only allowed for tables that existed before this tracking system was introduced.
+#
+# Tables are sorted alphabetically. Add new entries in sort order to avoid
+# merge conflicts.
+#
+# Owned by @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
+# Changes to this file do NOT require a database review.
+---
+abuse_events: supported
+abuse_report_events: supported
+abuse_report_upload_states: todo
+abuse_report_uploads: todo
+abuse_report_user_mentions: todo
+abuse_reports: supported
+admin_roles: no_work_needed
+agent_organization_authorizations: todo
+ai_catalog_item_stars: supported
+ai_catalog_item_version_dependencies: todo
+ai_catalog_item_versions: supported
+ai_catalog_items: supported
+ai_catalog_mcp_server_blocks: supported
+ai_catalog_mcp_servers: supported
+ai_catalog_mcp_servers_users: supported
+ai_conversation_messages: todo
+ai_conversation_threads: supported
+ai_events_counts: supported
+ai_settings: no_work_needed
+ai_usage_events: supported
+analytics_cycle_analytics_stage_event_hashes: todo
+artifact_registry_namespace_mappings: no_work_needed
+authentication_events: supported
+award_emoji: supported
+background_operation_jobs: todo
+background_operation_workers: todo
+bulk_import_batch_trackers: no_work_needed
+bulk_import_configurations: no_work_needed
+bulk_import_entities: no_work_needed
+bulk_import_failures: no_work_needed
+bulk_import_trackers: no_work_needed
+bulk_imports: supported
+burned_project_routes: todo
+cd_application_flow_definitions: todo
+cd_application_links: todo
+cd_applications: todo
+cd_artifact_sources: todo
+cd_deployment_transitions: todo
+cd_deployments: todo
+cd_environment_driver_bindings: todo
+cd_environments: no_work_needed
+cd_rollout_environments: todo
+cd_rollout_steps: todo
+cd_rollout_transitions: todo
+cd_rollouts: todo
+cd_service_environment_healths: todo
+cd_services: todo
+cd_version_set_entries: todo
+cd_version_sets: todo
+cd_versions: todo
+ci_runner_taggings_group_type: supported
+ci_runner_taggings_project_type: supported
+cluster_platforms_kubernetes: supported
+cluster_providers_aws: supported
+cluster_providers_gcp: supported
+clusters: supported
+clusters_kubernetes_namespaces: supported
+custom_dashboard_search_data: supported
+custom_dashboard_versions: supported
+custom_dashboards: supported
+dependency_list_export_part_upload_states: todo
+dependency_list_export_part_uploads: todo
+dependency_list_export_parts: todo
+dependency_list_export_upload_states: no_work_needed
+dependency_list_export_uploads: no_work_needed
+dependency_list_exports: no_work_needed
+enabled_foundational_flow_check_results: no_work_needed
+fork_networks: supported
+govern_policies: todo
+govern_policy_enforcements: todo
+granular_scopes: supported
+group_type_ci_runner_machines: supported
+group_type_ci_runners: supported
+iam_outbox: no_work_needed
+import_failures: supported
+import_offline_configurations: no_work_needed
+import_offline_exports: supported
+import_placeholder_user_details: supported
+integrations: no_work_needed
+issue_tracker_data: no_work_needed
+jira_connect_installations: todo
+jira_tracker_data: no_work_needed
+keys: supported
+labels: no_work_needed
+ldap_admin_role_links: no_work_needed
+loose_foreign_keys_organization_deleted_records: no_work_needed
+member_roles: no_work_needed
+merge_request_diff_commit_users: todo
+namespaces: supported
+non_sql_service_pings: no_work_needed
+notes: supported
+oauth_access_grants: supported
+oauth_access_tokens: supported
+oauth_applications: supported
+oauth_device_grants: todo
+oauth_openid_requests: todo
+organization_cluster_agent_mappings: supported
+organization_detail_upload_states: no_work_needed
+organization_detail_uploads: no_work_needed
+organization_details: no_work_needed
+organization_foundational_agent_statuses: no_work_needed
+organization_isolations: no_work_needed
+organization_push_rules: no_work_needed
+organization_settings: no_work_needed
+organization_user_details: todo
+organization_users: supported
+personal_access_token_granular_scopes: supported
+personal_access_token_last_used_ips: todo
+personal_access_tokens: supported
+personal_snippet_upload_states: todo
+pool_repositories: todo
+project_topic_upload_states: todo
+project_topic_uploads: no_work_needed
+project_type_ci_runner_machines: supported
+project_type_ci_runners: supported
+projects: supported
+queries_service_pings: no_work_needed
+raw_usage_data: no_work_needed
+sbom_component_versions: todo
+sbom_components: todo
+sbom_source_packages: todo
+sbom_sources: todo
+scim_oauth_access_tokens: todo
+security_policy_settings: todo
+slack_api_scopes: todo
+slack_integrations: no_work_needed
+slack_integrations_scopes: no_work_needed
+snippet_repositories: supported
+snippet_repository_states: supported
+snippet_repository_storage_moves: supported
+snippet_statistics: supported
+snippet_uploads: todo
+snippet_user_mentions: supported
+snippets: supported
+spam_logs: supported
+subscription_add_on_purchases: supported
+subscription_seat_assignments: supported
+subscription_user_add_on_assignment_versions: supported
+subscription_user_add_on_assignments: supported
+todos: supported
+topics: supported
+upcoming_reconciliations: todo
+user_agent_details: todo
+user_upload_states: todo
+user_uploads: todo
+users: supported
+vulnerability_export_part_upload_states: todo
+vulnerability_export_part_uploads: todo
+vulnerability_export_parts: todo
+vulnerability_export_upload_states: todo
+vulnerability_export_uploads: todo
+vulnerability_exports: supported
+web_hook_logs_daily: no_work_needed
+web_hooks: no_work_needed
+work_item_custom_types: no_work_needed
+work_item_settings: no_work_needed
+work_item_type_visibility_defaults: no_work_needed
+zentao_tracker_data: no_work_needed

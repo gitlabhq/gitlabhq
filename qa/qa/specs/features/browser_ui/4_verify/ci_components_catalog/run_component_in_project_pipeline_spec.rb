@@ -68,8 +68,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'runs in project pipeline with correct inputs', :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/451582' do
+      it 'runs in project pipeline with correct inputs', :aggregate_failures do
         test_project.visit_latest_pipeline
         Page::Project::Pipeline::Show.perform do |show|
           expect(show).to have_stage(test_stage), "Expected pipeline to have stage #{test_stage} but not found."

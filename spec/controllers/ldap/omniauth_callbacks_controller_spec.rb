@@ -18,7 +18,7 @@ RSpec.describe Ldap::OmniauthCallbacksController, type: :controller, feature_cat
 
   it 'creates an authentication audit event' do
     expect { post provider }.to change {
-      AuditEvent.where("details LIKE '%authenticated_with_ldap%'").count
+      AuditEventReader.where("details LIKE '%authenticated_with_ldap%'").count
     }.by(1)
   end
 
@@ -36,13 +36,31 @@ RSpec.describe Ldap::OmniauthCallbacksController, type: :controller, feature_cat
     end.to change { user.reload.remember_created_at }.from(nil)
   end
 
+  it 'does not remember the user when the remember me checkbox is unchecked' do
+    expect do
+      post provider, params: { remember_me: '0' }
+    end.not_to change { user.reload.remember_created_at }
+  end
+
+  it 'does not remember the user when the remember me param is absent' do
+    expect do
+      post provider
+    end.not_to change { user.reload.remember_created_at }
+  end
+
   context 'with 2FA' do
     let(:user) { create(:omniauth_user, :two_factor_via_otp, extern_uid: uid, provider: provider) }
 
     it 'passes remember_me to the Devise view' do
       post provider, params: { remember_me: '1' }
 
-      expect(assigns[:user].remember_me).to eq '1'
+      expect(assigns[:user].remember_me).to be(true)
+    end
+
+    it 'does not pass remember_me to the Devise view when unchecked' do
+      post provider, params: { remember_me: '0' }
+
+      expect(assigns[:user].remember_me).to be(false)
     end
   end
 

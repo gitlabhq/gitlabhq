@@ -16,7 +16,7 @@ description: Automatic detection and filtering of false positives in SAST findin
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19789) in GitLab 18.10.
 - Feature flags [`ai_experiment_sast_fp_detection`](https://gitlab.com/gitlab-org/gitlab/-/work_items/584344) and [`enable_vulnerability_fp_detection`](https://gitlab.com/gitlab-org/gitlab/-/work_items/584343) removed in GitLab 19.1.
 
@@ -58,7 +58,7 @@ You can manually trigger false positive detection for existing vulnerabilities:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
-1. In the upper-right corner, select **Check for false positive** to trigger false positive detection.
+1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
 
 The GitLab Duo analysis runs and results are displayed on the vulnerability details page.
 
@@ -121,10 +121,10 @@ When the GitLab Duo analysis identifies a vulnerability as a false positive, you
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to dismiss.
-1. Select **Change status**.
-1. From the **Status** dropdown list, select **Dismissed**.
-1. From the **Set dismissal reason** dropdown list, select **False positive**.
-1. In the **Add a comment** input, provide context about why you're dismissing it as a false positive.
+1. In the right sidebar, in the **Status** section, select **Edit**.
+1. From the **Status** dropdown list, under **Dismiss as...**, select **False positive**.
+1. In the **Comment** text box, provide context about why you're dismissing it as a false positive.
+   A comment is required.
 1. Select **Change status**.
 
 The vulnerability is marked as dismissed and does not appear in future scans unless it is reintroduced.

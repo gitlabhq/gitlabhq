@@ -113,7 +113,7 @@ describe('Merge request discussion filter component', () => {
   it('when clicking de-select it de-selects all options', async () => {
     createComponent();
 
-    wrapper.find('[data-testid="listbox-reset-button"]').vm.$emit('click');
+    wrapper.findComponent('[data-testid="listbox-reset-button"]').vm.$emit('click');
 
     await nextTick();
 
@@ -123,13 +123,13 @@ describe('Merge request discussion filter component', () => {
   it('when clicking select all it selects all options', async () => {
     createComponent();
 
-    wrapper.find('[data-testid="listbox-item-approval"]').vm.$emit('select', false);
+    wrapper.findComponent('[data-testid="listbox-item-approval"]').vm.$emit('select', false);
 
     await nextTick();
 
     expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(10);
 
-    wrapper.find('[data-testid="listbox-select-all-button"]').vm.$emit('click');
+    wrapper.findComponent('[data-testid="listbox-select-all-button"]').vm.$emit('click');
 
     await nextTick();
 
@@ -186,7 +186,7 @@ describe('Merge request discussion filter component', () => {
         useNotes().discussionSortOrder = sortOrder;
         await nextTick();
 
-        const sortDirectionButton = wrapper.findByTestId('mr-discussion-sort-direction');
+        const sortDirectionButton = wrapper.findComponentByTestId('mr-discussion-sort-direction');
 
         expect(sortDirectionButton.attributes()).toMatchObject({
           title: expectedTitle,

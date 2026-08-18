@@ -98,11 +98,11 @@ export default {
     jobHasPath() {
       return Boolean(
         this.restJob.erase_path ||
-          this.restJob.new_issue_path ||
-          this.restJob.terminal_path ||
-          this.restJob.retry_path ||
-          this.restJob.cancel_path ||
-          this.restJob.force_cancel_path,
+        this.restJob.new_issue_path ||
+        this.restJob.terminal_path ||
+        this.restJob.retry_path ||
+        this.restJob.cancel_path ||
+        this.restJob.force_cancel_path,
       );
     },
   },

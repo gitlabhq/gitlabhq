@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLoadingIcon, GlIntersectionObserver, GlIcon } from '@gitlab/ui';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { STATUS_CLOSED } from '~/issues/constants';
@@ -47,7 +48,9 @@ export default {
     BoardCard,
     BoardNewIssue,
     BoardCutLine,
-    BoardNewEpic: () => import('ee_component/boards/components/board_new_epic.vue'),
+    BoardNewEpic: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_new_epic.vue'),
+    ),
     GlLoadingIcon,
     GlIntersectionObserver,
     BoardCardMoveToPosition,
@@ -99,10 +102,10 @@ export default {
   emits: [
     'cannot-find-active-item',
     'drag-start',
-    'dragStop',
+    'drag-stop',
     'focus-adjacent',
-    'setFilters',
-    'toggleNewForm',
+    'set-filters',
+    'toggle-new-form',
   ],
   data() {
     return {
@@ -450,7 +453,7 @@ export default {
       if (draggableItemType !== DraggableItemTypes.card) {
         return;
       }
-      this.$emit('dragStop');
+      this.$emit('drag-stop');
 
       // Detach listener as soon as drag ends.
       document.removeEventListener('keyup', this.handleKeyUp.bind(this));
@@ -743,7 +746,7 @@ export default {
       }
     },
     async addListItem(input) {
-      this.$emit('toggleNewForm');
+      this.$emit('toggle-new-form');
       this.addItemToListInProgress = true;
       let issuable;
       try {
@@ -875,15 +878,15 @@ export default {
       v-if="issueCreateFormVisible"
       :list="list"
       :board-id="boardId"
-      @toggleNewForm="$emit('toggleNewForm')"
-      @addNewIssue="addListItem"
+      @toggle-new-form="$emit('toggle-new-form')"
+      @add-new-issue="addListItem"
     />
     <board-new-epic
       v-if="epicCreateFormVisible"
       :list="list"
       :board-id="boardId"
-      @toggleNewForm="$emit('toggleNewForm')"
-      @addNewEpic="addListItem"
+      @toggle-new-form="$emit('toggle-new-form')"
+      @add-new-epic="addListItem"
     />
     <component
       :is="treeRootWrapper"
@@ -916,7 +919,7 @@ export default {
         :column-index="columnIndex"
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
-        @setFilters="$emit('setFilters', $event)"
+        @set-filters="$emit('set-filters', $event)"
       >
         <board-card-move-to-position
           v-if="showMoveToPosition"
@@ -924,7 +927,7 @@ export default {
           :index="index"
           :list="list"
           :list-items-length="boardListItems.length"
-          @moveToPosition="moveToPosition($event, index, item)"
+          @move-to-position="moveToPosition($event, index, item)"
         />
         <gl-intersection-observer
           v-if="isObservableItem(index)"
@@ -944,7 +947,7 @@ export default {
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
         :list-items-length="boardListItems.length"
-        @setFilters="$emit('setFilters', $event)"
+        @set-filters="$emit('set-filters', $event)"
       >
         <board-card-move-to-position
           v-if="showMoveToPosition"
@@ -952,7 +955,7 @@ export default {
           :index="index"
           :list="list"
           :list-items-length="boardListItems.length"
-          @moveToPosition="moveToPosition($event, index, item)"
+          @move-to-position="moveToPosition($event, index, item)"
         />
         <gl-intersection-observer
           v-if="isObservableItem(index)"

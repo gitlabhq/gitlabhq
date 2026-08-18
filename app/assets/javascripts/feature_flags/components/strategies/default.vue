@@ -1,13 +1,14 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
+  name: 'StrategiesDefault',
+  emits: ['change'],
   mounted() {
     this.$emit('change', { parameters: {} });
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

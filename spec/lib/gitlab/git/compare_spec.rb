@@ -44,6 +44,14 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
       let(:compare) { described_class.new(repository, SeedRepo::BigCommit::ID, SeedRepo::BigCommit::ID) }
 
       it { is_expected.to be_empty }
+
+      context 'with a limit' do
+        it 'returns the cached empty collection without fetching commits' do
+          expect(Gitlab::Git::Commit).not_to receive(:between)
+
+          expect(compare.commits(limit: 3)).to be_empty
+        end
+      end
     end
 
     context 'providing nil as base ref or head ref' do
@@ -52,15 +60,23 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
       it { is_expected.to be_empty }
     end
 
-    context 'with limit parameter' do
-      it 'passes the limit to Commit.between and does not cache the result' do
-        expect(Gitlab::Git::Commit).to receive(:between)
-          .with(repository, anything, anything, limit: 10)
-          .twice
-          .and_return([])
+    context 'with a limit' do
+      subject do
+        compare.commits(limit: 3).map(&:id)
+      end
 
-        compare.commits(limit: 10)
-        compare.commits(limit: 10)
+      it 'returns at most the limited number of commits' do
+        expect(subject.size).to be <= 3
+      end
+
+      it 'does not cache the result' do
+        expect(Gitlab::Git::Commit).to receive(:between)
+          .with(repository, anything, anything, limit: 3)
+          .twice
+          .and_call_original
+
+        compare.commits(limit: 3)
+        compare.commits(limit: 3)
       end
     end
   end

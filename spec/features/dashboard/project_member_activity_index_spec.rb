@@ -10,43 +10,42 @@ RSpec.describe 'Project member activity', :js, feature_category: :user_profile d
     project.add_maintainer(user)
   end
 
-  def visit_activities_and_wait_with_event(event_type)
+  def visit_activities_with_event(event_type)
     Event.create!(project: project, author_id: user.id, action: event_type)
     visit activity_project_path(project)
-    wait_for_requests
   end
 
   context 'when a user joins the project' do
     before do
-      visit_activities_and_wait_with_event(:joined)
+      visit_activities_with_event(:joined)
     end
 
     it "presents the correct message" do
-      expect(page.find('.event-user-info').text).to eq("#{user.name} #{user.to_reference}")
-      expect(page.find('.event-title').text).to eq("joined project #{project.full_name}")
+      expect(page).to have_selector('.event-user-info', exact_text: "#{user.name} #{user.to_reference}")
+      expect(page).to have_selector('.event-title', exact_text: "joined project #{project.full_name}")
     end
   end
 
   context 'when a user leaves the project' do
     before do
-      visit_activities_and_wait_with_event(:left)
+      visit_activities_with_event(:left)
     end
 
     it "presents the correct message" do
-      expect(page.find('.event-user-info').text).to eq("#{user.name} #{user.to_reference}")
-      expect(page.find('.event-title').text).to eq("left project #{project.full_name}")
+      expect(page).to have_selector('.event-user-info', exact_text: "#{user.name} #{user.to_reference}")
+      expect(page).to have_selector('.event-title', exact_text: "left project #{project.full_name}")
     end
   end
 
   context 'when a users membership expires for the project' do
     before do
-      visit_activities_and_wait_with_event(:expired)
+      visit_activities_with_event(:expired)
     end
 
     it "presents the correct message" do
-      expect(page.find('.event-user-info').text).to eq("#{user.name} #{user.to_reference}")
-      expect(page.find('.event-title').text)
-        .to eq("removed due to membership expiration from project #{project.full_name}")
+      expect(page).to have_selector('.event-user-info', exact_text: "#{user.name} #{user.to_reference}")
+      expect(page).to have_selector('.event-title',
+        exact_text: "removed due to membership expiration from project #{project.full_name}")
     end
   end
 end

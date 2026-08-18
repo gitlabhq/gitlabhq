@@ -67,5 +67,5 @@ You can [view job artifacts in your browser](../jobs/job_artifacts.md#download-j
 > [!note]
 > The job definition provided by the template does not support Kubernetes.
 
-You cannot pass configurations into Pa11y via CI configuration.
+You cannot pass configurations into Pa11y through CI configuration.
 To change the configuration, edit a copy of the template in your CI file.

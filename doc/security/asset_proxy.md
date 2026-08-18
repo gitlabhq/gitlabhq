@@ -28,7 +28,7 @@ issues and comments. This helps ensure that malicious images do not expose the u
 when they are fetched.
 
 We currently recommend using [cactus/go-camo](https://github.com/cactus/go-camo#how-it-works)
-as it supports proxying video, audio, and is more configurable.
+as it supports proxying video and audio, and is more configurable.
 
 ## Installing Camo server
 
@@ -70,7 +70,7 @@ To install a Camo server as an asset proxy:
 ## Using the Camo server
 
 Once the Camo server is running and you've enabled the GitLab settings, any image, video, or audio that
-references an external source are proxied to the Camo server.
+references an external source is proxied to the Camo server.
 
 For example, the following is a link to an image in Markdown:
 

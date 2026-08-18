@@ -20,11 +20,11 @@ module RuboCop
         #   # bad
         #   Ability.allowed?(user, :manage_issue, project)
         #   Ability.allowed?(user, :admin_issue, project)
-        #   can?(current_user, :_run_dast_pipeline, project)
+        #   can?(current_user, :_read_protected, project)
         #
         #   # good
         #   Ability.allowed?(user, :update_issue, project)
-        #   can?(current_user, :run_pipeline, project)
+        #   can?(current_user, :read_protected_branch, project)
         class PermissionCheck < RuboCop::Cop::Base
           MSG_MANAGE = 'Avoid using coarse permission checks such as manage_* or admin_* permissions. ' \
             'Use granular permissions instead.'

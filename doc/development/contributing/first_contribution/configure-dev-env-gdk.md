@@ -12,7 +12,7 @@ a local version of GitLab that's yours to play with.
 The GDK is a local development environment that includes an installation of GitLab Self-Managed,
 sample projects, and administrator access with which you can test functionality.
 
-If you prefer to use GDK in a local container, use the steps in [Configure GDK-in-a-box](configure-dev-env-gdk-in-a-box.md)
+If you prefer to use GDK in a local container, use the steps in [Configure GDK-in-a-box](configure-dev-env-gdk-in-a-box.md).
 
 [View an interactive demo of this step](https://gitlab.navattic.com/xtk20s8x).
 

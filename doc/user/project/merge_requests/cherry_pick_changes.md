@@ -86,8 +86,7 @@ Prerequisites:
 - Your project must use the [merge commit](methods/_index.md#merge-commit) method.
   which is set in the project's **Settings** > **Merge requests**.
 
-  [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/142152), fast-forwarded
-  commits can be cherry-picked from the GitLab UI only when they are squashed or when the
+  Fast-forwarded commits can be cherry-picked from the GitLab UI only when they are squashed or when the
   merge request contains a single commit.
   You can always [cherry-pick individual commits](#cherry-pick-a-single-commit).
 

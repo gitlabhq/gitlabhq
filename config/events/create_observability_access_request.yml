@@ -1,0 +1,19 @@
+---
+description: Tracks when a user successfully requests access to enable Observability for a group or project.
+internal_events: true
+action: create_observability_access_request
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: Whether the access request was made from a group or a project context, e.g. "group" or "project".
+product_group: platform_insights
+product_categories:
+- observability
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248590
+tiers:
+- free
+- premium
+- ultimate

@@ -8,7 +8,7 @@ extra_properties:
     type: string
 identifiers:
   - user
-product_group: ai_framework
+product_group: ai_model_services
 product_categories:
 - ai_abstraction_layer
 milestone: '16.7'

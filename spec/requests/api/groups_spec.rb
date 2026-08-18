@@ -3227,6 +3227,35 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "POST /groups" do
+    context 'when rate limiting group creation' do
+      let_it_be(:current_user) { user3 }
+      let_it_be(:create_params) { { name: 'rate-limited-group', path: 'rate-limited-group' } }
+
+      def request
+        post api('/groups', current_user), params: create_params
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :groups_create, use_second_scope: false
+
+      context 'when the namespace_create_rate_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(namespace_create_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
+
+          request
+        end
+
+        it 'creates the group' do
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
     it_behaves_like 'group avatar upload' do
       def make_upload_request
         params = attributes_for_group_api(request_access_enabled: false).tap do |attrs|
@@ -3268,6 +3297,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           let(:user) { user1 }
           let(:request) do
             post api("/groups", personal_access_token: pat), params: { parent_id: group2.id, name: 'foo', path: 'foo' }
+          end
+
+          # Query-count reduction tracked in https://gitlab.com/gitlab-org/gitlab/-/work_items/605844.
+          before do
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(102)
           end
         end
 
@@ -3576,7 +3610,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           end.not_to change { Group.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq("Failed to save group {:path=>[\"has already been taken\"]}")
+          errors = { path: ['has already been taken'] }
+          expect(json_response['message']).to eq("Failed to save group #{errors}")
         end
       end
     end

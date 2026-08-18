@@ -11,12 +11,16 @@ module Gitlab
     #
     # `#target` returns the identified Target (the resource that owns the email),
     # or nil when the email can't be identified (legacy reply keys without an
-    # encoded namespace, opaque service desk keys):
+    # encoded namespace):
     #
     #   - Target.project_id   - project id encoded directly in the key
     #   - Target.namespace_id - decoded offline from a partitioned reply key
     #   - Target.route        - full project/group path (located by its top-level
     #                           namespace)
+    #   - Target.service_desk_project_key_address_slug
+    #                         - opaque service desk project key, matched verbatim
+    #                           against the claimed
+    #                           service_desk_settings.project_key_address_slug
     #   - nil                 - cannot be identified
     Identification = Data.define(:handler, :attributes) do
       def [](key)
@@ -59,6 +63,8 @@ module Gitlab
           Target.project_id(project_id)
         elsif project_path
           Target.route(project_path)
+        elsif attributes[:project_key_address_slug]
+          Target.service_desk_project_key_address_slug(attributes[:project_key_address_slug])
         end
       end
     end

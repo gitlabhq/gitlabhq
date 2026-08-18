@@ -68,15 +68,15 @@
   - c.with_body do
     = render 'localization'
 
-= render ::Layouts::SettingsBlockComponent.new(_('Sidekiq job size limits'),
-  id: 'js-sidekiq-job-limits-settings',
+= render ::Layouts::SettingsBlockComponent.new(_('Sidekiq Background Jobs'),
+  id: 'js-sidekiq-settings',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    = _('Limit the size of Sidekiq jobs stored in Redis.')
+    = _('Configure Sidekiq and Sidekiq cron related preferences.')
     %span
-      = link_to _('Learn more.'), help_page_path('administration/settings/sidekiq_job_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/sidekiq.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
-    = render 'sidekiq_job_limits'
+    = render 'sidekiq'
 
 = render ::Layouts::SettingsBlockComponent.new(s_('TerraformSettings|Terraform state'),
   id: 'js-terraform-limits-settings',

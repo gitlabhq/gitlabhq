@@ -6,6 +6,11 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::Utils::StrongMemoize
   include RequestPayloadLogger
 
+  # Marker appended to a dynamically-registered (DCR) application's name to
+  # record which user authorized it. DCR registration is anonymous, so the
+  # authorizing user is the earliest point at which we know who is behind the app.
+  DYNAMIC_APP_AUTHORIZED_BY = ' — authorized by @'
+
   prepend_before_action :set_current_organization
 
   before_action :add_gon_variables
@@ -13,6 +18,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
   before_action :validate_pkce_for_dynamic_applications, only: [:new, :create]
   after_action :audit_oauth_authorization, only: [:create]
+  after_action :stamp_authorizing_user_on_dynamic_application, only: [:create]
   # rubocop: enable Rails/LexicallyScopedActionFilter
 
   layout 'minimal'
@@ -63,6 +69,33 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
       },
       ip_address: request.remote_ip
     )
+  end
+
+  # DCR (dynamic client registration) happens without an authenticated user, so
+  # the application name can only identify the client, not who is using it. Once
+  # a user authorizes the app we stamp their username onto the name (once), so
+  # admins can tell which user is behind an otherwise-anonymous dynamic app.
+  #
+  # We stamp only on a genuine approval. Doorkeeper's `authorize_response` is a
+  # CodeResponse once an authorization code has been issued; a denial or error
+  # yields an ErrorResponse, so those are left untouched and we never
+  # misattribute an authorization the user did not grant.
+  def stamp_authorizing_user_on_dynamic_application
+    return unless performed? && authorize_response.is_a?(Doorkeeper::OAuth::CodeResponse)
+    return unless current_user
+
+    application = pre_auth&.client&.application
+    return unless application&.dynamic?
+    return if application.name.include?(DYNAMIC_APP_AUTHORIZED_BY)
+
+    application.update(name: "#{application.name}#{DYNAMIC_APP_AUTHORIZED_BY}#{sanitized_authorizing_username}")
+  end
+
+  # GitLab usernames are already restricted to a safe character set, but we
+  # defensively strip anything outside it before persisting the value into the
+  # application name, which is later rendered in the admin UI.
+  def sanitized_authorizing_username
+    current_user.username.gsub(/[^A-Za-z0-9_.-]/, '')
   end
 
   # Chrome blocks redirections if the form-action CSP directive is present

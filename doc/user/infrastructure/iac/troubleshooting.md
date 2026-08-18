@@ -98,7 +98,7 @@ your jobs might fail. The failure is caused by the GitLab backend storing a new 
 
 To fix the failing jobs, rename your state names to exclude the period and any characters that follow it.
 
-If your `TF_HTTP_ADDRESS`, `TF_HTTP_LOCK_ADDRESS` and `TF_HTTP_UNLOCK_ADDRESS` are set, be sure
+If your `TF_HTTP_ADDRESS`, `TF_HTTP_LOCK_ADDRESS`, and `TF_HTTP_UNLOCK_ADDRESS` are set, be sure
 to update the state names there.
 
 Alternatively, you can [migrate your OpenTofu state](terraform_state.md#migrate-to-a-gitlab-managed-opentofu-state).

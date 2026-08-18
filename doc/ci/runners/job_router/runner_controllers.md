@@ -31,7 +31,7 @@ Runner controllers enable admission control for CI/CD jobs routed through the
 an admission request to connected runner controllers, which can admit or reject
 the job based on custom policies.
 
-Runner controllers are on the instance-level and are applicable to jobs depending
+Runner controllers are configured for the instance, and are applicable to jobs depending
 on their [scoping](#scoping).
 
 Use runner controllers to:
@@ -75,7 +75,7 @@ Runner controllers can be in one of three states:
 
 | State | Description |
 |-------|-------------|
-| `disabled` | The runner controller does not receive admission requests. This is the default state. |
+| `disabled` | Default state. The runner controller does not receive admission requests. |
 | `enabled` | The runner controller receives admission requests and its decisions affect job execution. |
 | `dry_run` | The runner controller receives admission requests. Job router logs the decisions, but decisions are not enforced. Use this state for strategic rollouts to validate controller behavior and de-risk deployments before you enable enforcement. |
 

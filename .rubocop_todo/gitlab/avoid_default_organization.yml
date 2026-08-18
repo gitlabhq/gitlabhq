@@ -6,7 +6,6 @@ Gitlab/AvoidDefaultOrganization:
     - 'ee/app/presenters/admin/ai_configuration_presenter.rb'
     - 'ee/app/services/ee/application_settings/update_service.rb'
     - 'ee/lib/api/admin/security/compliance_policy_settings.rb'
-    - 'ee/lib/security/security_orchestration_policies/policy_sync_state.rb'
     - 'lib/gitlab/current/organization.rb'
     - 'lib/gitlab/database_importers/default_organization_importer.rb'
     - 'spec/models/personal_access_token_spec.rb'

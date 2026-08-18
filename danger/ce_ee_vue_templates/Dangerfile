@@ -1,22 +1,16 @@
 # frozen_string_literal: true
-require 'cgi'
 
 def get_vue_files_with_ce_and_ee_versions(files)
   files.select do |file|
-    if file.end_with?('.vue')
-      counterpart_path = if file.start_with?('ee/')
-                           file.delete_prefix('ee/')
-                         else
-                           "ee/#{file}"
-                         end
+    next false unless file.end_with?('.vue')
 
-      escaped_path = CGI.escape(counterpart_path)
-      api_endpoint = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-ee/repository/files/#{escaped_path}?ref=master"
-      response = HTTParty.get(api_endpoint) # rubocop:disable Gitlab/HTTParty
-      response.code != 404
-    else
-      false
-    end
+    counterpart_path = if file.start_with?('ee/')
+                         file.delete_prefix('ee/')
+                       else
+                         "ee/#{file}"
+                       end
+
+    File.exist?(counterpart_path)
   end
 end
 

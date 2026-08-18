@@ -101,6 +101,12 @@ RSpec.describe Gitlab::Git::Blob do
       it { expect(blob.mode).to eq("100644") }
     end
 
+    context 'file with a trailing slash' do
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], '.gitignore/') }
+
+      it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
+    end
+
     context 'non-exist file' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "missing.rb") }
 

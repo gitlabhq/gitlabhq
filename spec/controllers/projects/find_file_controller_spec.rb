@@ -3,13 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Projects::FindFileController, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
-  let(:user)    { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :small_repo, maintainers: user) }
 
   before do
     sign_in(user)
-
-    project.add_maintainer(user)
     controller.instance_variable_set(:@project, project)
   end
 

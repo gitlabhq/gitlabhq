@@ -16,10 +16,10 @@
 
       .row
         .form-group.gl-col-md-6
-          = f.label :group_id, s_('Observability|Group ID'), class: 'label-bold'
+          = f.label :group_id, s_('Observability|Namespace ID'), class: 'label-bold'
           = f.text_field :group_id, class: 'form-control', placeholder: '12345'
           %span.form-text.gl-text-subtle
-            = s_('Observability|The ID of the group for this o11y service configuration.')
+            = s_('Observability|The ID of the namespace for this o11y service configuration.')
 
       = render 'groups/observability/o11y_service_settings/form_fields', f: f
 

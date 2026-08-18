@@ -1,0 +1,9 @@
+---
+name: update_ai_agent_session
+description: Grants the ability to update AI agent sessions
+available_for:
+  - granular_access_token
+permissions:
+  - update_ai_agent_session
+boundaries:
+  - project

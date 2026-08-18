@@ -29,12 +29,14 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'creates a release with existing tag',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/514352' do
+      it 'creates a release with existing tag' do
         setup_component(project, gitlab_ci_yaml_for_create_release_with_existing_tag)
         project.create_repository_tag('1.0.0')
 
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_pipeline_to_have_status_by_source_branch(
+          project: project, source_branch: '1.0.0', status: 'success'
+        )
         project.visit_job('create-release-with-existing-tag')
 
         Page::Project::Job::Show.perform do |show|
@@ -82,12 +84,14 @@ module QA
         end
       end
 
-      it 'creates a release with new tag filled with information',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/514353' do
+      it 'creates a release with new tag filled with information' do
         setup_component(project, gitlab_ci_yaml_for_create_release_with_new_tag_filled_with_information)
         project.create_repository_tag('1.0.0')
 
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_pipeline_to_have_status_by_source_branch(
+          project: project, source_branch: '1.0.0', status: 'success'
+        )
         project.visit_job('create-release-with-new-tag-filled-with-information')
 
         Page::Project::Job::Show.perform do |show|

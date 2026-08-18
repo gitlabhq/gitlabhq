@@ -21,10 +21,9 @@ module Users
 
     # Asynchronously destroys +user+
     # Migrating the associated user records, and post-migration cleanup is
-    # handled by the Users::MigrateHumanRecordsToGhostUserInBatchesWorker and
-    # Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker cron workers when
-    # split_ghost_user_migration_queue_into_human_and_non_human FF is enabled,
-    # otherwise the Users::MigrateRecordsToGhostUserInBatchesWorker cron worker.
+    # handled by the Users::MigrateRecordsToGhostUserInBatchesWorker cron worker and
+    # inherited from that worker cron workers when
+    # split_ghost_user_migration_queue_into_human_and_non_human FF is enabled.
     #
     # The operation will fail if the user is the sole owner of any groups. To
     # force the groups to be destroyed, pass `delete_solo_owned_groups: true` in
@@ -64,7 +63,7 @@ module Users
       # Load the project_bot user resource. It is unavailable after membership is destroyed.
       options[:project_bot_resource] ||= user.resource_bot_resource
 
-      user.members.each_batch { |batch| batch.destroy_all } # rubocop:disable Cop/DestroyAll
+      destroy_memberships(user)
 
       solo_owned_groups.each do |group|
         Groups::DestroyService.new(group, current_user).unsafe_execute
@@ -85,6 +84,24 @@ module Users
     private
 
     attr_reader :scheduled_records_gauge, :lag_gauge
+
+    def destroy_memberships(user)
+      refresh_priority = authorized_projects_refresh_priority_for(user)
+
+      user.members.each_batch do |batch|
+        batch.each do |member|
+          member.authorized_projects_refresh_priority = refresh_priority
+          member.destroy
+        end
+      end
+    end
+
+    def authorized_projects_refresh_priority_for(user)
+      return unless user.project_bot?
+      return unless Feature.enabled?(:deprioritize_destroyed_project_bot_user_project_authorizations_refresh, user)
+
+      UserProjectAccessChangedService::MEDIUM_PRIORITY
+    end
 
     def create_ghost_user(user, options)
       hard_delete = options.fetch(:hard_delete, false)

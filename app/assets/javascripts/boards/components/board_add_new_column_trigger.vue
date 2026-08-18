@@ -15,10 +15,10 @@ export default {
       required: true,
     },
   },
-  emits: ['setAddColumnFormVisibility'],
+  emits: ['set-add-column-form-visibility'],
   methods: {
     handleClick() {
-      this.$emit('setAddColumnFormVisibility', true);
+      this.$emit('set-add-column-form-visibility', true);
       this.track('click_button', { label: 'create_list' });
     },
   },

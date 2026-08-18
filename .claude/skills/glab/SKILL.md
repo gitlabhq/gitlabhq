@@ -1,7 +1,7 @@
 ---
 name: glab
-description: GitLab workflow automation using glab CLI
-version: 1.11.0
+description: GitLab workflow automation using the glab CLI. Use when the user asks to create, update, close, label, or comment on a GitLab issue, merge request, work item, or epic; to post a note, review comment, or discussion reply; to call the GitLab REST or GraphQL API through "glab api"; to inspect or retry pipelines and jobs; or to configure glab auth against gitlab.com, a self-managed instance, or a local GDK. Read it before any glab write operation, because several field flags fail silently - they exit 0 while posting the wrong content.
+version: 1.12.2
 category: Development Workflow
 license: MIT
 metadata:
@@ -175,10 +175,10 @@ GitLab is migrating issues to work items. The URL shows `/work_items/<iid>` but 
 
 ```bash
 # ✅ Use the issues API — same IID, same endpoints
-glab api "projects/org%2Fproject/issues/<iid>"
+glab api --method GET "projects/org%2Fproject/issues/<iid>"
 
 # ❌ /work_items/ REST endpoint does not exist
-glab api "projects/org%2Fproject/work_items/<iid>"   # → 404
+glab api --method GET "projects/org%2Fproject/work_items/<iid>"   # → 404
 ```
 
 URL parsing: `https://gitlab.com/org/project/-/work_items/539076`
@@ -199,7 +199,7 @@ glab mr note create 123 --reply abc12345 -m "..."                   # reply
 glab mr note resolve 123 abc12345                                   # resolve thread
 
 # ❌ Do NOT use glab api .../discussions for these operations
-glab api "projects/<id>/merge_requests/123/discussions"             # use mr note list
+glab api --method GET "projects/<id>/merge_requests/123/discussions"             # use mr note list
 glab api --method PUT ".../discussions/<id>" -f resolved=true       # use mr note resolve
 ```
 
@@ -235,9 +235,9 @@ For full search examples (instance / group / project, scope table, pagination): 
 Quick reference:
 
 ```bash
-glab api "search?scope=issues&search=<query>" | jq '.[] | {iid, title}'
-glab api "groups/<group>/search?scope=merge_requests&search=<query>" | jq '.[]'
-glab api "projects/<org>%2F<repo>/search?scope=issues&search=<query>" | jq '.[]'
+glab api --method GET "search?scope=issues&search=<query>" | jq '.[] | {iid, title}'
+glab api --method GET "groups/<group>/search?scope=merge_requests&search=<query>" | jq '.[]'
+glab api --method GET "projects/<org>%2F<repo>/search?scope=issues&search=<query>" | jq '.[]'
 ```
 
 ## Git and Commit Conventions
@@ -277,7 +277,8 @@ API quirks that are easy to get wrong and not discoverable from `glab <cmd> --he
 14. **Non-origin remotes → `remote_alias`** — if `origin` points at one instance but you want glab to target another remote (e.g. a local GDK added as `gdk`), run `glab config set remote_alias gdk` rather than setting `GITLAB_HOST` per command. See [references/multi-host.md](references/multi-host.md)
 15. **Backticks in messages → write to a file first** — never inline `` ` ``/`$` in `-m "..."` or `--description "..."`; write to a file you name (unique per invocation) using `<< 'EOF'` (single-quoted delimiter, critical), then pass via `$(cat "$FILE")`. See the Message Escaping section above.
 16. **Second same-family remote misroutes `mr create`** — with a `security` mirror alongside `origin`, non-interactive `mr create` (no TTY) silently picks the fork as the head. Fix once per checkout: `git config remote.origin.glab-resolved-head head`; per-command fallback: `-H <owner/repo>` (`-R` does not fix it). See the "Creating Merge Requests" section.
-17. **`glab api -f` serializes bracket keys as flat JSON, not nested objects** — `-f "position[new_line]=72"` sends `{"position[new_line]":"72"}` (literal key); the API ignores it and silently creates a *general* note (HTTP 201, `new_line: null`). Write the nested JSON body to a `/tmp/` file with a single-quoted `<< 'EOF'` heredoc (prevents shell interpolation of backticks/`$` in review bodies) and pass via `--input <file>` with `-H "Content-Type: application/json"` (omitting the header → HTTP 415). Verify inline notes landed before publishing: `GET --paginate .../draft_notes | jq '.[] | {id, new_line: .position.new_line, note: .note[0:40]}'` — a `null` on a note you intended as inline means the position was dropped. See [references/mr-review.md](references/mr-review.md).
+17. **`glab api` note body:** file → `-F "body=@file"`; prose with backticks/`$` → write it literally to a file first. Inline text → `-f`; literal `@here see above` → `-f "body=@here see above"` (never a file). Nested JSON → `--input file -H "Content-Type: application/json"`. Repair: `--method PUT -F "body=@file"`, not `DELETE`. Failures are silent (exit 0, HTTP 201); verify what landed with `| jq '.body | length'`. Details: [references/mr-review.md](references/mr-review.md#5-glab-api-field-flags--f-vs--f).
+18. **Always use full URLs in note/comment bodies** (e.g. `https://gitlab.com/org/project/-/issues/123`) instead of short references (`#123`). This applies to issues, merge requests, epics, and so on. Short refs resolve against project context and render as literal text on group-level items (epics, group work items); full URLs expand everywhere.
 
 ## Contributing Improvements
 

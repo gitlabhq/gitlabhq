@@ -14,7 +14,7 @@ module Experimental
     MAX_PER_PAGE = 100
 
     def index
-      @o11y_service_settings = Observability::GroupO11ySetting.with_group
+      @o11y_service_settings = Observability::GroupO11ySetting.with_namespace
 
       if search_params[:group_id].present?
         @o11y_service_settings = @o11y_service_settings.search_by_group_id(search_params[:group_id])
@@ -28,15 +28,15 @@ module Experimental
     end
 
     def create
-      group = Group.find_by_id(o11y_service_settings_params[:group_id])
-      if group.nil?
-        flash[:alert] = s_('Observability|Group not found')
+      namespace = Namespace.find_by_id(o11y_service_settings_params[:group_id])
+      if namespace.nil?
+        flash[:alert] = s_('Observability|Namespace not found')
         @o11y_service_settings = Observability::GroupO11ySetting.new(o11y_service_settings_params)
         render :new, status: :unprocessable_entity
         return
       end
 
-      o11y_service_settings = group.observability_group_o11y_setting
+      o11y_service_settings = namespace.observability_group_o11y_setting
       if o11y_service_settings.present?
         flash[:alert] = s_('Observability|O11y service settings already exist')
         @o11y_service_settings = Observability::GroupO11ySetting.new(o11y_service_settings_params)
@@ -44,14 +44,14 @@ module Experimental
         return
       end
 
-      @o11y_service_settings = group.build_observability_group_o11y_setting
+      @o11y_service_settings = namespace.build_observability_group_o11y_setting
       result = ::Observability::GroupO11ySettingsUpdateService.new.execute(@o11y_service_settings,
         o11y_service_settings_params.to_h)
 
       if result.success?
         flash[:success] = format(
-          s_('Observability|Observability settings for group %{group_name} created successfully.'),
-          group_name: group.name
+          s_('Observability|Observability settings for namespace %{namespace_name} created successfully.'),
+          namespace_name: namespace.name
         )
         redirect_to new_experimental_o11y_service_setting_url
       else
@@ -74,8 +74,8 @@ module Experimental
 
       if result.success?
         flash[:success] = format(
-          s_('Observability|Observability settings for group %{group_name} updated successfully.'),
-          group_name: @o11y_service_settings.group&.name || s_('Observability|Unknown group')
+          s_('Observability|Observability settings for namespace %{namespace_name} updated successfully.'),
+          namespace_name: @o11y_service_settings.namespace&.name || s_('Observability|Unknown namespace')
         )
         redirect_to experimental_o11y_service_settings_path
       else
@@ -88,11 +88,11 @@ module Experimental
       @o11y_service_settings = find_o11y_service_setting
       return render_404 unless @o11y_service_settings
 
-      group_name = @o11y_service_settings.group&.name || s_('Observability|Unknown group')
+      namespace_name = @o11y_service_settings.namespace&.name || s_('Observability|Unknown namespace')
       if @o11y_service_settings.destroy
         flash[:success] = format(
-          s_('Observability|Observability settings for group %{group_name} deleted successfully.'),
-          group_name: group_name
+          s_('Observability|Observability settings for namespace %{namespace_name} deleted successfully.'),
+          namespace_name: namespace_name
         )
       else
         flash[:alert] = s_('Observability|Failed to delete O11y service settings')
@@ -113,12 +113,12 @@ module Experimental
 
     def o11y_service_settings_params
       params.require(:observability_group_o11y_setting).permit(:group_id, :o11y_service_name, :o11y_service_user_email,
-        :o11y_service_password, :o11y_service_post_message_encryption_key)
+        :o11y_service_password, :o11y_service_post_message_encryption_key, :o11y_otel_url, :o11y_mcp_url)
     end
 
     def o11y_service_settings_update_params
       params.require(:observability_group_o11y_setting).permit(:o11y_service_name, :o11y_service_user_email,
-        :o11y_service_password, :o11y_service_post_message_encryption_key)
+        :o11y_service_password, :o11y_service_post_message_encryption_key, :o11y_otel_url, :o11y_mcp_url)
     end
 
     def search_params

@@ -577,7 +577,7 @@ module Integrations
       link_title   = "Solved by commit #{commit_id}."
       comment      = "Issue solved with [#{commit_id}|#{commit_url}]."
       link_props   = build_remote_link_props(url: commit_url, title: link_title, resolved: true)
-      send_message(issue, comment, link_props)
+      send_message(issue, comment, link_props, update_existing_remote_link: true)
     end
 
     def add_comment(data, issue)
@@ -589,7 +589,7 @@ module Integrations
       link_title   = "#{entity_name.capitalize} - #{entity_title}"
       link_props   = build_remote_link_props(url: entity_url, title: link_title)
 
-      return if comment_exists?(issue, message)
+      return if comment_exists?(issue, entity_url)
 
       send_message(issue, message, link_props)
     end
@@ -630,14 +630,19 @@ module Integrations
       issue.respond_to?(:resolution) && issue.resolution.present?
     end
 
-    def comment_exists?(issue, message)
+    # Matches on the stable entity URL, not the full message, which embeds volatile
+    # context (branch, author) that changes on re-processing. See gitlab-org/gitlab#233159.
+    def comment_exists?(issue, entity_url)
       path = API_ENDPOINTS[:issue_comments] % issue.id
       comments = jira_request(path) { issue.comments }
 
-      comments.present? && comments.any? { |comment| comment.body.include?(message) }
+      # Fail closed: a failed lookup (nil) would otherwise be read as "no comment" and duplicate.
+      return true if comments.nil?
+
+      comments.any? { |comment| comment.body.include?("|#{entity_url}]") }
     end
 
-    def send_message(issue, message, remote_link_props)
+    def send_message(issue, message, remote_link_props, update_existing_remote_link: false)
       return unless client_url.present?
 
       path = API_ENDPOINTS[:link_remote_issue] % issue.id
@@ -645,12 +650,32 @@ module Integrations
       jira_request(path) do
         remote_link = find_remote_link(issue, remote_link_props[:object][:url])
 
+        # Re-saving an existing link resets its resolved status and reopens the Jira issue,
+        # so mentions leave it untouched; only the close-issue path may update it.
+        if remote_link && !update_existing_remote_link
+          log_info("Skipping duplicate remote link and comment", client_url: client_url, client_path: path)
+          next
+        end
+
         create_issue_comment(issue, message) unless remote_link
         remote_link ||= issue.remotelink.build
-        remote_link.save!(remote_link_props)
 
-        log_info("Successfully posted", client_url: client_url, client_path: path)
-        "SUCCESS: Successfully posted to #{client_url}."
+        begin
+          remote_link.save!(remote_link_props)
+
+          log_info("Successfully posted", client_url: client_url, client_path: path)
+          "SUCCESS: Successfully posted to #{client_url}."
+        rescue JIRA::HTTPError => e
+          # https://developer.atlassian.com/changelog/#CHANGE-1133
+          remote_link_limit_exceeded = e.code.to_i == 413 &&
+            e.response.body.to_s.include?('REMOTE_ISSUE_LINKS_PER_ISSUE_LIMIT_EXCEEDED')
+
+          raise unless remote_link_limit_exceeded
+
+          log_error("Skipped creating remote link: per-issue remote link limit exceeded",
+            client_url: client_url, client_path: path, client_status: e.code)
+          nil
+        end
       end
     end
 
@@ -660,9 +685,10 @@ module Integrations
       issue.comments.build.save!(body: message)
     end
 
+    # Call only within a `jira_request` block: a failed lookup raises to abort the send
+    # (fail closed) rather than looking like "no link exists" and duplicating.
     def find_remote_link(issue, url)
-      path = API_ENDPOINTS[:link_remote_issue] % issue.id
-      links = jira_request(path) { issue.remotelink.all }
+      links = issue.remotelink.all
       return unless links
 
       links.find { |link| link.object["url"] == url }

@@ -388,7 +388,7 @@ To create an inbound PrivateLink connection:
    }
    ```
 
-1. Recommended. To configure a secondary region, select **Secondary region** under **Regions**. This will create endpoint services in the both regions with the specified IAM principals.
+1. Recommended. To configure a secondary region, select **Secondary region** under **Regions**. This will create endpoint services in both regions with the specified IAM principals.
 1. Select **Save**. GitLab creates the endpoint services and the service endpoint names
    become available on the **Configuration** page.
 
@@ -464,6 +464,174 @@ To configure DNS for GitLab Pages:
    1. Create an apex `A` alias record for the VPC endpoint.
    1. Create a wildcard `CNAME` for `*.<tenant_name>.gitlab-dedicated.site` that points
       to `<tenant_name>.gitlab-dedicated.site`.
+
+### Private S3 access for object storage
+
+GitLab Dedicated stores object storage data in S3 buckets, including container images,
+CI/CD job artifacts, LFS objects, packages, and user uploads. When a client downloads one
+of these objects, GitLab returns a pre-signed S3 URL and the client connects directly to
+S3. Because
+[proxied downloads](../../../subscriptions/gitlab_dedicated/_index.md#object-storage-downloads)
+are not supported, this connection goes over the public internet by default.
+
+To keep object storage traffic on the AWS network, connect to S3 privately by creating S3
+VPC endpoints in the VPC that hosts your inbound PrivateLink connection. You can attach
+[VPC endpoint policies](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-access.html)
+to control and audit this traffic. No configuration changes are required on your GitLab
+Dedicated instance.
+
+The endpoints you need depend on where your clients run:
+
+| Client location | Endpoints to create |
+|-----------------|---------------------|
+| In the VPC, for example, EC2 or EKS runners | S3 gateway endpoint |
+| On premises, through Direct Connect or Site-to-Site VPN | S3 interface endpoint and Route 53 Resolver inbound endpoint, with an S3 gateway endpoint in the same VPC |
+
+A gateway endpoint is a target in a VPC route table, so only clients inside the VPC can
+use it. Clients that reach your VPC through Direct Connect, Site-to-Site VPN, or VPC
+peering must use an interface endpoint, which has private IP addresses in your subnets.
+Gateway endpoints have no additional charge. Interface and resolver endpoints have hourly
+and data processing charges.
+
+Both types of endpoint can coexist in the same VPC. Because this configuration uses
+**Enable private DNS only for inbound endpoint**, AWS requires an S3 gateway endpoint in the
+VPC, and clients inside the VPC continue to use it. For more information, see
+[private DNS](https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html#private-dns)
+in the AWS documentation.
+
+Repeat this configuration for each VPC that needs private S3 access. To keep private S3
+access available during regional failover, also configure it in your secondary region.
+
+To automate the AWS setup for both scenarios, you can use the
+[`object-storage-private-access`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/object-storage-private-access)
+Terraform module. The module creates the endpoints described in the following sections and
+outputs the DNS forwarding configuration for your on-premises DNS servers.
+
+#### Configure private S3 access from your VPC
+
+Prerequisites:
+
+- You have configured inbound PrivateLink connections.
+- You have permission to create VPC endpoints and modify route tables in your AWS account.
+
+To configure private S3 access for clients in your VPC:
+
+1. In the AWS VPC console, create a
+   [gateway endpoint for Amazon S3](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html)
+   in the VPC that contains your inbound PrivateLink connection,
+   and associate the endpoint with your route tables.
+1. Recommended. To confirm S3 traffic uses the gateway endpoint, verify each route table has
+   a route to the S3 prefix list (`pl-xxxxxxxx`) through the gateway endpoint (`vpce-xxxxxxxx`),
+   or check [VPC Flow Logs](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html),
+   S3 access logs, or CloudTrail for the `vpcEndpointId` field.
+1. To verify connectivity, from a resource in your VPC, run these commands:
+
+   ```shell
+   # To authenticate to the registry
+   docker login registry.example.gitlab-dedicated.com
+
+   # To test a download
+   docker pull registry.example.gitlab-dedicated.com/<group>/<project>/<image>:<tag>
+   ```
+
+#### Configure private S3 access from your on-premises network
+
+On-premises clients cannot use a gateway endpoint. Create an interface endpoint so that S3
+has private IP addresses in your VPC, and a Route 53 Resolver inbound endpoint so that your
+on-premises DNS servers can resolve S3 hostnames to those addresses. Because the interface
+endpoint addresses are inside your VPC CIDR range, traffic reaches them over your existing
+Direct Connect or VPN connection, without new routes or BGP changes.
+
+GitLab generates the pre-signed URL, so your clients cannot use the endpoint-specific DNS
+names of the interface endpoint. Private DNS and DNS forwarding make the standard S3
+hostnames resolve to the interface endpoint instead.
+
+Prerequisites:
+
+- You have configured private S3 access from your VPC, which creates the gateway endpoint
+  that AWS requires for this configuration.
+- You have at least two subnets in different availability zones.
+- You have the CIDR ranges of your on-premises networks.
+
+To configure private S3 access for on-premises clients:
+
+1. In the AWS VPC console, create an [interface endpoint for Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html).
+1. For **Subnets**, select at least two subnets in different availability zones.
+1. Select **Enable DNS name**.
+1. Select **Enable private DNS only for inbound endpoint**.
+1. For **Security groups**, allow inbound TCP port 443 from your VPC CIDR range and from your on-premises CIDR ranges.
+1. In the same VPC, create a
+   [Route 53 Resolver inbound endpoint](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-forwarding-inbound-queries.html)
+   with a security group that allows inbound TCP and UDP port 53 from your on-premises
+   CIDR ranges.
+1. Record the IP addresses assigned to the resolver inbound endpoint. Your on-premises DNS
+   servers forward S3 queries to these addresses.
+
+#### Configure DNS forwarding for S3 hostnames
+
+After you create the interface endpoint and the resolver inbound endpoint, configure your
+on-premises DNS servers to forward S3 queries to the resolver.
+
+Prerequisites:
+
+- You have the IP addresses of your resolver inbound endpoint.
+- You have permission to add conditional forwarders on your on-premises DNS servers.
+
+To configure DNS forwarding:
+
+1. On your on-premises DNS servers, add a forward-only conditional forwarder for the
+   `s3.<region>.amazonaws.com` zone, where `<region>` is the AWS region of your GitLab
+   Dedicated instance. If you have a Secondary region for failover, also add a forwarder for that region's S3 domain. Set the forwarders to the IP addresses of your resolver inbound
+   endpoint. Forwarding applies to the entire zone, so queries for bucket hostnames such as
+   `<bucket>.s3.<region>.amazonaws.com` are also forwarded.
+
+   For Windows Server DNS:
+
+   ```powershell
+   Add-DnsServerConditionalForwarderZone `
+     -Name "s3.eu-central-1.amazonaws.com" `
+     -MasterServers 10.0.1.90, 10.0.1.91
+   ```
+
+   For BIND, in `named.conf`:
+
+   ```plaintext
+   zone "s3.eu-central-1.amazonaws.com" {
+       type forward;
+       forward only;
+       forwarders { 10.0.1.90; 10.0.1.91; };
+   };
+   ```
+
+   For other DNS servers, such as Infoblox, create a forward-only zone with the same name
+   and the same targets.
+
+1. To verify resolution, from an on-premises client, run this command against your
+   container registry FQDN:
+
+   ```shell
+   dig <container_registry_fqdn>
+   ```
+
+   The command should return a private IP address from your VPC CIDR range. To find this
+   value, see [view your container registry FQDN](#view-your-container-registry-fqdn).
+
+1. To verify connectivity, from an on-premises client, run these commands:
+
+   ```shell
+   # To authenticate to the registry
+   docker login registry.example.gitlab-dedicated.com
+
+   # To test a download
+   docker pull registry.example.gitlab-dedicated.com/<group>/<project>/<image>:<tag>
+   ```
+
+If S3 hostnames still resolve publicly, check that the forwarder zone matches your instance's
+region and that your DNS servers can reach port 53 on the resolver endpoint. If they resolve
+privately but downloads time out, check that the interface endpoint security group allows
+port 443 from your on-premises CIDR ranges.
+
+For AWS connectivity issues, contact AWS Support.
 
 ### Outbound PrivateLink connections
 

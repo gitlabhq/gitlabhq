@@ -70,9 +70,9 @@ describe('Packages Forwarding Settings', () => {
   const findForm = () => wrapper.find('form');
   const findSubmitButton = () => findForm().findComponent(GlButton);
   const findDescription = () => wrapper.findByTestId('description');
-  const findMavenForwardingSettings = () => wrapper.findByTestId('maven');
-  const findNpmForwardingSettings = () => wrapper.findByTestId('npm');
-  const findPyPiForwardingSettings = () => wrapper.findByTestId('pypi');
+  const findMavenForwardingSettings = () => wrapper.findComponentByTestId('maven');
+  const findNpmForwardingSettings = () => wrapper.findComponentByTestId('npm');
+  const findPyPiForwardingSettings = () => wrapper.findComponentByTestId('pypi');
   const findRequestForwardingDocsLink = () => wrapper.findComponent(GlLink);
 
   const fillApolloCache = () => {

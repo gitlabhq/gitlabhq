@@ -10,7 +10,7 @@ level: primary
 weight: 10
 ---
 
-GitLab Duo CLI brings the GitLab Duo Agent Platform directly to your terminal. 
+GitLab Duo CLI brings the GitLab Duo Agent Platform directly to your terminal.
 
 Use the CLI to ask complex questions about your codebase and to autonomously perform actions on your
 behalf.

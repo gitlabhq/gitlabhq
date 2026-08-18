@@ -97,7 +97,7 @@ module RapidDiffs
         def line_content_cell(line, change, position)
           css = line ? 'rd-line-content' : 'rd-line-content rd-line-number-empty'
           content = if line
-                      indicators = [line_coverage(line, position), line_codequality(line, position)].compact
+                      indicators = [line_coverage(line, position), line_inline_findings(line, position)].compact
                       pre = tag.pre(line.text_content, class: 'rd-line-text')
                       safe_join([*indicators, pre])
                     end
@@ -111,10 +111,10 @@ module RapidDiffs
           tag.span('', class: 'has-tooltip', data: { line_coverage: line.new_pos, gfm_ignore: true })
         end
 
-        def line_codequality(line, position)
+        def line_inline_findings(line, position)
           return unless line_indicator_visible?(line, position)
 
-          tag.div('', data: { line_codequality: line.new_pos, gfm_ignore: true })
+          tag.div('', data: { line_inline_findings: line.new_pos, gfm_ignore: true })
         end
 
         def line_indicator_visible?(line, position)

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedIssuesRoot from './components/related_issues_root.vue';
@@ -10,32 +10,18 @@ export function initRelatedIssues() {
     return null;
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'RelatedIssuesAppRoot',
     apolloProvider,
-    provide: {
-      fullPath: el.dataset.fullPath,
-      hasIssueWeightsFeature: parseBoolean(el.dataset.hasIssueWeightsFeature),
-      hasIterationsFeature: parseBoolean(el.dataset.hasIterationsFeature),
-      isGroup: parseBoolean(el.dataset.isGroup),
-      // for work item modal
-      canAdminLabel: el.dataset.wiCanAdminLabel,
-      groupPath: el.dataset.wiGroupPath,
-      issuesListPath: el.dataset.wiIssuesListPath,
-      labelsManagePath: el.dataset.wiLabelsManagePath,
-      reportAbusePath: el.dataset.wiReportAbusePath,
+    component: RelatedIssuesRoot,
+    props: {
+      endpoint: el.dataset.endpoint,
+      canAdmin: parseBoolean(el.dataset.canAddRelatedIssues),
+      helpPath: el.dataset.helpPath,
+      showCategorizedIssues: parseBoolean(el.dataset.showCategorizedIssues),
+      issuableType: el.dataset.issuableType,
+      autoCompleteEpics: false,
     },
-    render: (createElement) =>
-      createElement(RelatedIssuesRoot, {
-        props: {
-          endpoint: el.dataset.endpoint,
-          canAdmin: parseBoolean(el.dataset.canAddRelatedIssues),
-          helpPath: el.dataset.helpPath,
-          showCategorizedIssues: parseBoolean(el.dataset.showCategorizedIssues),
-          issuableType: el.dataset.issuableType,
-          autoCompleteEpics: false,
-        },
-      }),
   });
 }

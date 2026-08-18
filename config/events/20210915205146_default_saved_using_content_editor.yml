@@ -4,6 +4,9 @@ action: saved_using_content_editor
 extra_properties:
 identifiers:
 product_group: remote_development
+product_categories:
+- wiki
+- text_editors
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62919
 tiers:

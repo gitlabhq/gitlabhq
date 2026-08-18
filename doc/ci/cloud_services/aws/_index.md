@@ -27,7 +27,7 @@ To complete this tutorial:
 
 ## Add the identity provider
 
-Create GitLab as a IAM OIDC provider in AWS following these [instructions](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html).
+Create GitLab as an IAM OIDC provider in AWS following these [instructions](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html).
 
 Include the following information:
 
@@ -44,7 +44,7 @@ Include the following information:
 
 ## Configure a role and trust
 
-After you create the identity provider, configure a [web identity role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) with conditions for limiting access to GitLab resources. Temporary credentials are obtained using [AWS Security Token Service](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), so set the `Action` to [`sts:AssumeRoleWithWebIdentity`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html).
+After you create the identity provider, configure a [web identity role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) with conditions for limiting access to GitLab resources. Temporary credentials are obtained using [AWS Security Token Service](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html), so set the `Action` to [`sts:AssumeRoleWithWebIdentity`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html).
 
 You can create a [custom trust policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-custom.html)
 for the role to limit authorization to a specific group, project, branch, or tag.
@@ -52,7 +52,7 @@ For the full list of supported filtering types, see [Connect to cloud services](
 
 On GitLab.com, AWS supports [additional condition keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#condition-keys-wif) for the `gitlab.com` OIDC identity provider, including `namespace_id` and `project_id`. Include conditions on these stable, unique identifiers in your role trust policies. Because these identifiers are independent of paths, trust policies that reference them are not affected by changes to paths, such as group or project renames.
 
-These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` and `aud` claims are currently supported as AWS condition keys. For those deployments, scope your trust policy using `sub` (for example, `gitlab.example.com:sub`), optionally combined with `aud`.
+These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` and `aud` claims are supported as AWS condition keys. For those deployments, scope your trust policy using `sub` (for example, `gitlab.example.com:sub`), optionally combined with `aud`.
 
 AWS supports the following claims as condition keys:
 
@@ -103,7 +103,7 @@ After the role is created, attach a policy defining permissions to an AWS servic
 
 ## Retrieve temporary credentials
 
-After you configure the OIDC and role, the GitLab CI/CD job can retrieve a temporary credential from [AWS Security Token Service (STS)](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html).
+After you configure the OIDC and role, the GitLab CI/CD job can retrieve a temporary credential from [AWS Security Token Service (STS)](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html).
 
 ```yaml
 assume role:
@@ -167,7 +167,7 @@ accessible, enabling OpenID Connect configuration for the instance:
    - Host the OpenID configuration for your instance in an S3 file. The configuration is available at
      `/.well-known/openid-configuration`, like `http://gitlab.example.com/.well-known/openid-configuration`.
      Update the `issuer:` and `jwks_uri:` values in the configuration file to point to the publicly available locations.
-   - Host the public keys for your instance URL in an S3 file. The keys are available at available at
+   - Host the public keys for your instance URL in an S3 file. The keys are available at
      `/oauth/discovery/keys`, like `http://gitlab.example.com/oauth/discovery/keys`.
 
    For example:

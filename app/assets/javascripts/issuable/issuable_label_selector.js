@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
@@ -30,7 +31,7 @@ export default () => {
     supportsLockOnMerge,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'IssuableLabelSelectorRoot',
     apolloProvider,
@@ -52,8 +53,6 @@ export default () => {
       workspaceType: NAMESPACE_PROJECT,
       toggleAttrs: { 'data-testid': 'issuable-label-dropdown' },
     },
-    render(createElement) {
-      return createElement(IssuableLabelSelector);
-    },
+    component: IssuableLabelSelector,
   });
 };

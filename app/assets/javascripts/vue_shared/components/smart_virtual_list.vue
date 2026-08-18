@@ -1,9 +1,11 @@
 <script>
 import VirtualList from 'vue-virtual-scroll-list';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'SmartVirtualList',
   components: { VirtualList },
+  mixins: [glSlotsMixin],
   props: {
     length: { type: Number, required: true },
     remain: { type: Number, required: true },
@@ -24,7 +26,7 @@ export default {
     :wclass="wclass"
     class="js-virtual-list"
   >
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </virtual-list>
   <component :is="rtag" v-else class="js-plain-element">
     <component :is="wtag" :class="wclass"> <slot></slot> </component>

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:current_user) { project.first_owner }
 
   let(:fields) do

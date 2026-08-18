@@ -60,6 +60,29 @@ module Gitlab
 
           Stub = Service.rpc_stub_class
         end
+        module InternalOAuthClientsService
+          # Used to mirror OAuth client records from gitlab-rails cells.
+          class Service
+
+            include ::GRPC::GenericService
+
+            self.marshal_class_method = :encode
+            self.unmarshal_class_method = :decode
+            self.service_name = 'gitlab.iam.auth.v1.InternalOAuthClientsService'
+
+            # CreateClient stores a new client. Returns INVALID_ARGUMENT when client_id
+            # is empty and ALREADY_EXISTS when a client with that ID already exists.
+            rpc :CreateClient, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse
+            # GetClient returns a client by ID. Returns INVALID_ARGUMENT when client_id
+            # is empty and NOT_FOUND when no client matches.
+            rpc :GetClient, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientResponse
+            # DeleteClient removes a client by ID. Returns INVALID_ARGUMENT when
+            # client_id is empty and NOT_FOUND when no client matches.
+            rpc :DeleteClient, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientResponse
+          end
+
+          Stub = Service.rpc_stub_class
+        end
         module InternalOAuthSessionsService
           # All RPCs require a valid service-to-service token.
           class Service

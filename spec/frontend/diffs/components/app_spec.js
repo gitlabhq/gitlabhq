@@ -532,31 +532,31 @@ describe('diffs/components/app', () => {
 
     it('collapses all files', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('collapseAllFiles');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('collapse-all-files');
       expect(store.collapseAllFiles).toHaveBeenCalled();
     });
 
     it('expands all files', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('expandAllFiles');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('expand-all-files');
       expect(store.expandAllFiles).toHaveBeenCalled();
     });
 
     it('switches whitespace mode', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('toggleWhitespace', false);
+      await wrapper.findComponent(DiffAppControls).vm.$emit('toggle-whitespace', false);
       expect(store.setShowWhitespace).toHaveBeenCalledWith({ showWhitespace: false });
     });
 
     it('switches view mode', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('updateDiffViewType', 'parallel');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('update-diff-view-type', 'parallel');
       expect(store.setDiffViewType).toHaveBeenCalledWith('parallel');
     });
 
     it('enables file by file mode', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('toggleFileByFile');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('toggle-file-by-file');
       expect(store.setFileByFile).toHaveBeenCalledWith({ fileByFile: true });
     });
 
@@ -653,20 +653,20 @@ describe('diffs/components/app', () => {
         expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(false);
       });
 
-      it('should handle clickFile events', () => {
+      it('should handle click-file events', () => {
         const file = { path: '111.js', fileHash: '111' };
         useFileBrowser().tree = [{ type: 'blob', fileHash: '111', path: '111.js' }];
         createComponent();
-        wrapper.findComponent(DiffsFileTree).vm.$emit('clickFile', file);
+        wrapper.findComponent(DiffsFileTree).vm.$emit('click-file', file);
         expect(store[types.SET_CURRENT_DIFF_FILE]).toHaveBeenLastCalledWith(file.fileHash);
         expect(store.goToFile).toHaveBeenCalledWith({ path: file.path });
       });
 
-      it('should handle toggleFolder events', () => {
+      it('should handle toggle-folder events', () => {
         const file = { path: '111.js' };
         useFileBrowser().tree = [{ type: 'blob', fileHash: '111', path: '111.js' }];
         createComponent();
-        wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', file);
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggle-folder', file);
         expect(useFileBrowser().toggleTreeOpen).toHaveBeenCalledWith(file);
       });
     });
@@ -1117,10 +1117,10 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('sets diff file active when eventHub receives setFileActive', () => {
+  it('sets diff file active when eventHub receives set-file-active', () => {
     createComponent();
 
-    eventHub.$emit('setFileActive', '111');
+    eventHub.$emit('set-file-active', '111');
 
     expect(useLegacyDiffs().setCurrentFileHash).toHaveBeenCalledWith('111');
   });

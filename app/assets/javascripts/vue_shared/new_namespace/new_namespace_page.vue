@@ -3,6 +3,7 @@ import { MountingPortal } from 'portal-vue';
 import { GlBreadcrumb, GlIcon, GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
@@ -19,6 +20,7 @@ export default {
     LegacyContainer,
     MountingPortal,
   },
+  mixins: [glSlotsMixin],
 
   inject: {
     identityVerificationRequired: { default: false },
@@ -179,7 +181,7 @@ export default {
     </template>
 
     <welcome-page v-else :panels="panels" :title="title">
-      <template #footer>
+      <template v-if="glSlots()['welcome-footer']" #footer>
         <slot name="welcome-footer"></slot>
       </template>
     </welcome-page>

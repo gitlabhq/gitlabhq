@@ -110,18 +110,10 @@ Change the behavior of pipeline secret detection by defining available CI/CD var
 
 | CI/CD variable                    | Default value | Description |
 |-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. The paths are a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. Detected secrets previously added to the vulnerability report are not removed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
+| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. The paths are a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. Detected secrets previously added to the vulnerability report are not removed. |
 | `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
-| `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [Use FIPS-enabled images](_index.md#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
-| `SECRET_DETECTION_LOG_OPTIONS`  | ""        | Flag to specify a commit range to scan. Gitleaks uses [`git log`](https://git-scm.com/docs/git-log) to determine the commit range. When defined, pipeline secret detection attempts to fetch all commits in the branch. If the analyzer can't access every commit, it continues with the already checked out repository. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350660) in GitLab 15.1. |
-
-In previous GitLab versions, the following variables were also available:
-
-| CI/CD variable                    | Default value | Description |
-|-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_COMMIT_FROM`    | -             | The commit a Gitleaks scan starts at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
-| `SECRET_DETECTION_COMMIT_TO`      | -             | The commit a Gitleaks scan ends at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
-| `SECRET_DETECTION_COMMITS`        | -             | The list of commits that Gitleaks should scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352565) in GitLab 15.0. |
+| `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [Use FIPS-enabled images](_index.md#fips-enabled-images) for more details. |
+| `SECRET_DETECTION_LOG_OPTIONS`  | ""        | Flag to specify a commit range to scan. Gitleaks uses [`git log`](https://git-scm.com/docs/git-log) to determine the commit range. When defined, pipeline secret detection attempts to fetch all commits in the branch. If the analyzer can't access every commit, it continues with the already checked out repository. |
 
 ## Customize analyzer rulesets
 
@@ -133,9 +125,6 @@ In previous GitLab versions, the following variables were also available:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
-- Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
-- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/336395) support for passthrough chains and included additional passthrough types of `git` and `url` in GitLab 17.2.
 
 {{< /history >}}
@@ -169,12 +158,6 @@ You can also use a ruleset configuration file stored remotely (that is, a remote
 
 #### Disable a rule
 
-{{< history >}}
-
-- Ability to disable a rule with a remote ruleset was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
-
-{{< /history >}}
-
 You can disable rules that you don't want active. To disable rules from the analyzer default ruleset:
 
 1. [Create a ruleset configuration file](#create-a-ruleset-configuration-file), if one doesn't exist already.
@@ -196,12 +179,6 @@ In the following example `secret-detection-ruleset.toml` file, the disabled rule
 ```
 
 #### Override a rule
-
-{{< history >}}
-
-- Ability to override a rule with a remote ruleset was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
-
-{{< /history >}}
 
 If there are specific rules to customize, you can override them. For example, you might increase the severity of a specific type of secret because leaking it would have a higher impact on your workflow.
 

@@ -19,6 +19,7 @@ title: プロジェクトアクセストークンAPI
 {{< history >}}
 
 - `state`属性は、GitLab 17.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/462217)されました。
+- `last_used_ips`属性がGitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/600347)されました。
 
 {{< /history >}}
 
@@ -63,6 +64,7 @@ curl --request GET \
       "created_at" : "2021-01-20T22:11:48.151Z",
       "description": "Test Token description",
       "last_used_at" : null,
+      "last_used_ips" : [],
       "revoked" : false,
       "access_level" : 40
    },
@@ -79,10 +81,14 @@ curl --request GET \
       "description": "Test Token description",
       "revoked" : true,
       "last_used_at" : "2021-02-13T10:34:57.178Z",
+      "last_used_ips" : ["192.0.2.10"],
       "access_level" : 40
    }
 ]
 ```
+
+> [!note]
+> `last_used_ips`属性は、このトークンで認証した最大5つの一意のIPアドレスをリストします。制限に達すると、最も古いIPアドレスが削除されます。リストはトークンごとに1分に1回更新されます。
 
 ## プロジェクトアクセストークンの詳細を取得する {#retrieve-details-on-a-project-access-token}
 
@@ -117,7 +123,8 @@ curl --request GET \
    "description": "Test Token description",
    "revoked" : false,
    "access_level": 40,
-   "last_used_at": "2022-03-15T11:05:42.437Z"
+   "last_used_at": "2022-03-15T11:05:42.437Z",
+   "last_used_ips": ["192.0.2.10"]
 }
 ```
 
@@ -142,7 +149,7 @@ POST projects/:id/access_tokens
 | `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`         | 文字列            | はい      | トークンの名前。 |
 | `description`  | 文字列            | いいえ       | プロジェクトアクセストークンの説明。最大: 255文字。 |
-| `scopes`       | `Array[String]`   | はい      | トークンで使用可能な[スコープ](../user/project/settings/project_access_tokens.md#project-access-token-scopes)のリスト。 |
+| `scopes`       | `Array[String]`   | はい      | トークンで使用可能な[スコープ](../security/tokens/access_token_scopes.md)のリスト。 |
 | `access_level` | 整数           | いいえ       | トークンのロール。使用可能な値: `10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`25` (セキュリティマネージャー)、`30` (デベロッパー)、`40` (メンテナー)、および`50` (オーナー)。デフォルト値: `40`。 |
 | `expires_at`   | 日付              | はい      | ISO形式（`YYYY-MM-DD`）のトークンの有効期限。未定義の場合、日付は[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)に設定されます。 |
 
@@ -219,6 +226,7 @@ curl --request POST \
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
+    "last_used_ips": [],
     "active": true,
     "expires_at": "2023-08-15",
     "access_level": 30,

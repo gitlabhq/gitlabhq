@@ -133,6 +133,23 @@ RSpec.describe API::Wikis, feature_category: :wiki do
       let!(:project_setup) { group_project.add_developer(user) }
       let(:request) { get api(url, personal_access_token: pat) }
     end
+
+    context 'when the wiki has pages across multiple directories' do
+      let(:project) { create(:project, :wiki_repo) }
+
+      before do
+        project.add_developer(user)
+        create(:wiki_page, wiki: wiki, title: 'home', content: 'root page')
+        create(:wiki_page, wiki: wiki, title: 'docs/setup', content: 'nested page')
+      end
+
+      it 'returns all pages across directories' do
+        get api(url, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |page| page['slug'] }).to contain_exactly('home', 'docs/setup')
+      end
+    end
   end
 
   describe 'GET /projects/:id/wikis/:slug' do

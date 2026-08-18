@@ -2,6 +2,7 @@
 import { SIDES, MAX_COMMIT_COUNT } from '../constants';
 
 export default {
+  name: 'GraphBar',
   props: {
     position: {
       type: String,

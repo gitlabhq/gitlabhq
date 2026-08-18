@@ -6,8 +6,7 @@ module QA
       let(:project_access_token) { QA::Resource::ProjectAccessToken.fabricate_via_browser_ui! }
 
       it(
-        'can be created and revoked via the UI',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347688'
+        'can be created and revoked via the UI'
       ) do
         expect(project_access_token.token).not_to be_nil
 

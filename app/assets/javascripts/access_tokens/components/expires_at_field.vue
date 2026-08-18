@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlDatepicker, GlFormGroup } from '@gitlab/ui';
 
 import { __ } from '~/locale';
@@ -12,8 +13,10 @@ export default {
   components: {
     GlDatepicker,
     GlFormGroup,
-    MaxExpirationDateMessage: () =>
-      import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
+    MaxExpirationDateMessage: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
+    ),
   },
   props: {
     defaultDateOffset: {

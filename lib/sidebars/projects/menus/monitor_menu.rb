@@ -4,15 +4,10 @@ module Sidebars
   module Projects
     module Menus
       class MonitorMenu < ::Sidebars::Menu
-        include Gitlab::Utils::StrongMemoize
-
         override :configure_menu_items
         def configure_menu_items
           return false unless feature_enabled?
 
-          add_item(traces_explorer_menu_item)
-          add_item(metrics_explorer_menu_item)
-          add_item(logs_explorer_menu_item)
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
@@ -101,62 +96,6 @@ module Sidebars
             item_id: :incidents,
             description: _('Manage incident response and resolution'),
             library_icon: 'work-item-incident'
-          )
-        end
-
-        def observability_portal_allowed?
-          return false unless context.project.group
-
-          ::Feature.enabled?(:observability_sass_features, context.project.group) &&
-            Ability.allowed?(context.current_user, :read_observability_portal, context.project.group)
-        end
-        strong_memoize_attr :observability_portal_allowed?
-
-        def traces_explorer_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :traces_explorer) unless observability_portal_allowed?
-
-          link = project_observability_path(context.project, 'traces-explorer')
-          ::Sidebars::MenuItem.new(
-            title: s_('Observability|Traces'),
-            link: link,
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
-            active_routes: { page: link },
-            item_id: :traces_explorer,
-            container_html_options: { class: 'shortcuts-traces js-observability-nav' },
-            description: _('Explore and analyze distributed traces'),
-            library_icon: 'traces'
-          )
-        end
-
-        def metrics_explorer_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :metrics_explorer) unless observability_portal_allowed?
-
-          link = project_observability_sub_path_path(context.project, 'metrics-explorer/summary')
-          ::Sidebars::MenuItem.new(
-            title: s_('Observability|Metrics'),
-            link: link,
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
-            active_routes: { page: link },
-            item_id: :metrics_explorer,
-            container_html_options: { class: 'shortcuts-metrics js-observability-nav' },
-            description: _('Visualize and monitor application and infrastructure metrics'),
-            library_icon: 'metrics'
-          )
-        end
-
-        def logs_explorer_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :logs_explorer) unless observability_portal_allowed?
-
-          link = project_observability_sub_path_path(context.project, 'logs/logs-explorer')
-          ::Sidebars::MenuItem.new(
-            title: s_('Observability|Logs'),
-            link: link,
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
-            active_routes: { page: link },
-            item_id: :logs_explorer,
-            container_html_options: { class: 'shortcuts-logs js-observability-nav' },
-            description: _('Search and analyze application logs'),
-            library_icon: 'log'
           )
         end
       end

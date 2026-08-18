@@ -72,7 +72,7 @@ describe('LabelsSelectRoot', () => {
   const findEmbeddedLabelsList = () => wrapper.findComponent(EmbeddedLabelsList);
   const findDropdownContents = () => wrapper.findComponent(DropdownContents);
   const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
-  const findCreateLabelButton = () => wrapper.findByTestId('create-label');
+  const findCreateLabelButton = () => wrapper.findComponentByTestId('create-label');
 
   const createComponent = ({
     config = mockConfig,
@@ -160,10 +160,15 @@ describe('LabelsSelectRoot', () => {
         ]);
       });
 
-      it('emits `onLabelRemove` event on dropdown value label remove event', () => {
+      it('emits `label-removed` event on dropdown value label remove event', () => {
         const label = { id: 'gid://gitlab/ProjectLabel/1' };
-        findDropdownValue().vm.$emit('onLabelRemove', label);
-        expect(wrapper.emitted('onLabelRemove')).toEqual([[label]]);
+        findDropdownValue().vm.$emit('label-removed', label);
+        expect(wrapper.emitted('label-removed')).toEqual([[label]]);
+      });
+
+      it('emits `toggle-collapse` when the dropdown value emits `on-collapsed-value-click`', () => {
+        findDropdownValue().vm.$emit('on-collapsed-value-click');
+        expect(wrapper.emitted('toggle-collapse')).toEqual([[]]);
       });
     });
 
@@ -294,7 +299,7 @@ describe('LabelsSelectRoot', () => {
       expect(findDropdownContents().props('selectedLabels')).toStrictEqual(mockLabels);
     });
 
-    it('emits the `onLabelRemove` when the embedded list triggers a removal', () => {
+    it('emits the `label-removed` when the embedded list triggers a removal', () => {
       createComponent({
         config: {
           ...mockConfig,
@@ -305,12 +310,12 @@ describe('LabelsSelectRoot', () => {
         },
       });
 
-      findEmbeddedLabelsList().vm.$emit('onLabelRemove', [mockRegularLabel.id]);
-      expect(wrapper.emitted('onLabelRemove')).toStrictEqual([[[mockRegularLabel.id]]]);
+      findEmbeddedLabelsList().vm.$emit('label-removed', [mockRegularLabel.id]);
+      expect(wrapper.emitted('label-removed')).toStrictEqual([[[mockRegularLabel.id]]]);
     });
   });
 
-  it('emits `updateSelectedLabels` when the listbox closes with a selection and iid is not set', async () => {
+  it('emits `update-selected-labels` when the listbox closes with a selection and iid is not set', async () => {
     createComponent({ config: { ...mockConfig, iid: undefined } });
 
     const id = 'gid://gitlab/ProjectLabel/1';
@@ -318,7 +323,7 @@ describe('LabelsSelectRoot', () => {
     findListbox().vm.$emit('hidden');
     await nextTick();
 
-    expect(wrapper.emitted('updateSelectedLabels')).toEqual([[{ labels: [{ id }] }]]);
+    expect(wrapper.emitted('update-selected-labels')).toEqual([[{ labels: [{ id }] }]]);
   });
 
   describe.each`
@@ -366,11 +371,11 @@ describe('LabelsSelectRoot', () => {
       });
     });
 
-    it('emits `updateSelectedLabels` event when the subscription is triggered', async () => {
+    it('emits `update-selected-labels` event when the subscription is triggered', async () => {
       createComponent();
       await waitForPromises();
 
-      expect(wrapper.emitted('updateSelectedLabels')).toEqual([
+      expect(wrapper.emitted('update-selected-labels')).toEqual([
         [
           {
             id: '1',

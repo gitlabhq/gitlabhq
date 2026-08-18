@@ -13,4 +13,4 @@ require 'gitlab/principles_distiller/sync'
 $stdout.sync = true
 $stderr.sync = true
 
-Gitlab::PrinciplesDistiller::Sync.run
+Gitlab::PrinciplesDistiller::Sync::CLI.run

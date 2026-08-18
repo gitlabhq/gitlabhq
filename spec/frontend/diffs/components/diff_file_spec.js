@@ -50,9 +50,9 @@ const findDiffHeader = (wrapper) => wrapper.findComponent(DiffFileHeaderComponen
 const findDiffContentArea = (wrapper) => wrapper.findByTestId('content-area');
 const findLoader = (wrapper) => wrapper.findByTestId('loader-icon');
 const findToggleButton = (wrapper) => wrapper.findByTestId('expand-button');
-const findNoteForm = (wrapper) => wrapper.findByTestId('file-note-form');
+const findNoteForm = (wrapper) => wrapper.findComponentByTestId('file-note-form');
 
-const toggleFile = (wrapper) => findDiffHeader(wrapper).vm.$emit('toggleFile');
+const toggleFile = (wrapper) => findDiffHeader(wrapper).vm.$emit('toggle-file');
 const getReadableFile = () => getDiffFileMock();
 const getUnreadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataUnreadable));
 
@@ -907,11 +907,11 @@ describe('DiffFile', () => {
       expect(findNoteForm(wrapper).props('autosaveKey')).toBe('');
     });
 
-    it('clears the autosave value when the note-form emits `cancelForm`', async () => {
+    it('clears the autosave value when the note-form emits `cancel-form`', async () => {
       createComponent({
         options: { provide: { glFeatures: { commentOnFiles: true } } },
       });
-      findNoteForm(wrapper).vm.$emit('cancelForm');
+      findNoteForm(wrapper).vm.$emit('cancel-form');
 
       await nextTick();
 
@@ -943,7 +943,7 @@ describe('DiffFile', () => {
       });
 
       it('clears the autosaved value with the correct key', async () => {
-        findNoteForm(wrapper).vm.$emit('cancelForm');
+        findNoteForm(wrapper).vm.$emit('cancel-form');
 
         await nextTick();
 

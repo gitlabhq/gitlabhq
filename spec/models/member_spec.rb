@@ -1111,11 +1111,11 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
   describe '.valid_email?' do
     it 'is a valid email format' do
-      expect(described_class.valid_email?('foo')).to eq(false)
+      expect(described_class.valid_email?('foo')).to be(false)
     end
 
     it 'is not a valid email format' do
-      expect(described_class.valid_email?('foo@example.com')).to eq(true)
+      expect(described_class.valid_email?('foo@example.com')).to be(true)
     end
   end
 
@@ -1132,7 +1132,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
     context 'when the user type is invalid' do
       it 'returns nil' do
-        expect(described_class.filter_by_user_type('invalid_type')).to eq(nil)
+        expect(described_class.filter_by_user_type('invalid_type')).to be_nil
       end
     end
   end
@@ -1392,13 +1392,13 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     context 'when the member does not have an associated user' do
       it 'returns false' do
         member.update_column(:user_id, nil)
-        expect(member.reload.hook_prerequisites_met?).to eq(false)
+        expect(member.reload.hook_prerequisites_met?).to be(false)
       end
     end
 
     context 'when the member has an associated user' do
       it 'returns true' do
-        expect(member.hook_prerequisites_met?).to eq(true)
+        expect(member.hook_prerequisites_met?).to be(true)
       end
     end
   end
@@ -1612,13 +1612,68 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     context 'when user is nil' do
       let(:user) { nil }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when user is set' do
       let(:user) { build(:user) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#authorized_projects_refresh_priority' do
+    # Not let_it_be: the priority is a transient attribute, so a shared instance
+    # would leak it between examples.
+    let(:member) { build(:group_member) }
+
+    subject(:priority) { member.send(:authorized_projects_refresh_priority) }
+
+    context 'when no priority has been set' do
+      it { is_expected.to eq(UserProjectAccessChangedService::HIGH_PRIORITY) }
+    end
+
+    context 'when a priority has been set' do
+      before do
+        member.authorized_projects_refresh_priority = UserProjectAccessChangedService::MEDIUM_PRIORITY
+      end
+
+      it { is_expected.to eq(UserProjectAccessChangedService::MEDIUM_PRIORITY) }
+    end
+  end
+
+  describe '#refresh_member_authorized_projects' do
+    let_it_be(:member) { create(:group_member) }
+
+    let(:service) { instance_double(UserProjectAccessChangedService) }
+
+    # StubbedMember::Member is prepended to Member for the whole suite (see
+    # spec/spec_helper.rb) and replaces this method so that the refresh runs
+    # inline, without calling super. Walk past it to Member's own definition, so
+    # that the real implementation runs and the priority it passes on is
+    # observable. The loop terminates immediately if the stub is ever removed.
+    subject(:refresh) do
+      method = described_class.instance_method(:refresh_member_authorized_projects)
+      method = method.super_method until method.owner == described_class
+      method.bind_call(member)
+    end
+
+    before do
+      allow(UserProjectAccessChangedService).to receive(:new).with(member.user_id).and_return(service)
+    end
+
+    it 'refreshes with high priority by default' do
+      expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+
+      refresh
+    end
+
+    it 'refreshes with the priority set on the member' do
+      member.authorized_projects_refresh_priority = UserProjectAccessChangedService::MEDIUM_PRIORITY
+
+      expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+
+      refresh
     end
   end
 

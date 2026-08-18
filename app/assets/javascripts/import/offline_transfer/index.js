@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import OfflineTransferApp from '~/import/offline_transfer/app.vue';
 
 export const initOfflineTransfer = () => {
@@ -8,16 +8,13 @@ export const initOfflineTransfer = () => {
 
   const { exportPath, importPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OfflineTransferRoot',
-    render(createElement) {
-      return createElement(OfflineTransferApp, {
-        props: {
-          exportPath,
-          importPath,
-        },
-      });
+    component: OfflineTransferApp,
+    props: {
+      exportPath,
+      importPath,
     },
   });
 };

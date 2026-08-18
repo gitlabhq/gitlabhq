@@ -340,6 +340,25 @@ describe('WorkItemChangeTypeModal component', () => {
     });
   });
 
+  describe('when the selected type is Epic', () => {
+    it('emits promote-to-epic instead of converting', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      findGlFormSelect().vm.$emit('change', epicTypeId);
+
+      await nextTick();
+
+      findChangeTypeModal().vm.$emit('primary');
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('promote-to-epic')).toHaveLength(1);
+      expect(convertWorkItemMutationSuccessHandler).not.toHaveBeenCalled();
+    });
+  });
+
   describe('convert work item mutation', () => {
     it('successfully changes a work item type when conditions are met', async () => {
       createComponent();

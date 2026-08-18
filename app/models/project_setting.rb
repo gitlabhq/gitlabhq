@@ -8,6 +8,14 @@ class ProjectSetting < ApplicationRecord
   include Gitlab::EncryptedAttribute
   include AfterCommitQueue
   include SafelyChangeColumnDefault
+  include Cells::Claimable
+
+  cells_claims_scope { where.not(pages_unique_domain: nil) }
+
+  cells_claims_attribute :pages_unique_domain, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PAGES_UNIQUE_DOMAIN,
+    feature_flag: :cells_claims_project_settings_pages_unique_domains
+
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 
   columns_changing_default :auto_duo_code_review_enabled, :duo_remote_flows_enabled
 
@@ -18,6 +26,29 @@ class ProjectSetting < ApplicationRecord
   }.freeze
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
+
+  # Minimum role allowed to create, update, toggle, and delete feature flags.
+  # `developer` (the default) preserves the historical behavior where all
+  # Developers can manage feature flags. `no_one_allowed` freezes management for
+  # everyone, including instance admins. This is an intentional change-control
+  # guardrail, not an oversight: admins do not bypass it. Lifting the freeze is
+  # gated separately via the `update_feature_flags_minimum_role_setting` ability.
+  FEATURE_FLAGS_MANAGEMENT_ROLES = {
+    no_one_allowed: 1,
+    developer: 2,
+    maintainer: 3,
+    owner: 4
+  }.freeze
+
+  FEATURE_FLAGS_MANAGEMENT_ACCESS_LEVELS = {
+    FEATURE_FLAGS_MANAGEMENT_ROLES[:developer] => Gitlab::Access::DEVELOPER,
+    FEATURE_FLAGS_MANAGEMENT_ROLES[:maintainer] => Gitlab::Access::MAINTAINER,
+    FEATURE_FLAGS_MANAGEMENT_ROLES[:owner] => Gitlab::Access::OWNER
+  }.freeze
+
+  # Roles that represent a stricter security posture. Loosening the setting away
+  # from one of these requires elevated authority (see ProjectPolicy).
+  PRIVILEGED_FEATURE_FLAGS_MANAGEMENT_ROLES = %w[owner no_one_allowed].freeze
 
   HUMANIZED_ATTRIBUTES = {
     mr_default_title_template: 'Merge request default title template'
@@ -35,6 +66,7 @@ class ProjectSetting < ApplicationRecord
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
+  scope :with_pages_namespace_domain, -> { where(pages_unique_domain_enabled: false) }
 
   cascading_attr :web_based_commit_signing_enabled
 
@@ -59,6 +91,9 @@ class ProjectSetting < ApplicationRecord
 
   enum :reviewer_assignment_strategy, REVIEWER_ASSIGNMENT_STRATEGIES,
     prefix: :reviewer_assignment
+
+  enum :feature_flags_minimum_role, FEATURE_FLAGS_MANAGEMENT_ROLES,
+    prefix: :feature_flags_minimum_role
 
   validates :merge_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
   validates :squash_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
@@ -87,6 +122,24 @@ class ProjectSetting < ApplicationRecord
   # Checks if a given domain is already assigned to any existing project
   def self.unique_domain_exists?(domain)
     where(pages_unique_domain: domain).exists?
+  end
+
+  # Returns true when a member with `access_level` is allowed to manage feature
+  # flags, given the configured minimum role. When the minimum role is
+  # `no_one_allowed` this always returns false (even for admins). For all other
+  # minimum roles, admins bypass the role threshold via `can_admin_all_resources?`.
+  def feature_flags_management_allowed?(access_level, user)
+    minimum_role = FEATURE_FLAGS_MANAGEMENT_ROLES[feature_flags_minimum_role.to_sym]
+
+    return false if minimum_role == FEATURE_FLAGS_MANAGEMENT_ROLES[:no_one_allowed]
+
+    required_access_level = FEATURE_FLAGS_MANAGEMENT_ACCESS_LEVELS[minimum_role]
+
+    access_level >= required_access_level || !!user&.can_admin_all_resources?
+  end
+
+  def feature_flags_minimum_role_privileged?
+    PRIVILEGED_FEATURE_FLAGS_MANAGEMENT_ROLES.include?(feature_flags_minimum_role)
   end
 
   def target_platforms=(val)

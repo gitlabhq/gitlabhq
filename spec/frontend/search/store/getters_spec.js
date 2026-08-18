@@ -69,6 +69,16 @@ describe('Global Search Store Getters', () => {
       state.query.language = Object.keys(TEST_FILTER_DATA.filters);
       expect(getters.queryLanguageFilters(state)).toStrictEqual(state.query.language);
     });
+
+    it('wraps a single value in an array', () => {
+      state.query.language = 'Ruby';
+      expect(getters.queryLanguageFilters(state)).toStrictEqual(['Ruby']);
+    });
+
+    it('returns an empty array when unset', () => {
+      state.query.language = undefined;
+      expect(getters.queryLanguageFilters(state)).toStrictEqual([]);
+    });
   });
 
   describe('currentScope', () => {

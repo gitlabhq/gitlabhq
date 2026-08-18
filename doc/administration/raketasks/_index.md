@@ -30,7 +30,7 @@ The following Rake tasks are available for use with GitLab:
 | Tasks                                                                                                 | Description |
 |:------------------------------------------------------------------------------------------------------|:------------|
 | [Access token expiration tasks](tokens/_index.md)                                                     | Bulk extend or remove expiration dates for access tokens. |
-| [AI Catalog external agents](ai_catalog.md)                                                           | Seed AI Catalog external agents. |
+| [AI Catalog external agents](ai_catalog.md)                                                           | Import AI Catalog external agents. |
 | [Back up and restore](../backup_restore/_index.md)                                                    | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                                                                | Clean up unneeded items from GitLab instances. |
 | Development                                                                                           | Tasks for GitLab contributors. For more information, see the development documentation. |
@@ -46,6 +46,7 @@ The following Rake tasks are available for use with GitLab:
 | [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect/_index.md)-related tasks. |
 | [Project import/export](project_import_export.md)                                                     | Prepare for [project exports and imports](../../user/project/settings/import_export.md). |
 | [Sidekiq job migration](../sidekiq/sidekiq_job_migration.md)                                          | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
+| [Secrets Manager maintenance](../secrets_manager/maintenance.md#enable-secrets-access-from-external-requests) | Enable API authentication from external requests to existing secrets managers. |
 | [Service Desk email](service_desk_email.md)                                                           | Service Desk email-related tasks. |
 | [SMTP maintenance](smtp.md)                                                                           | SMTP-related tasks. |
 | [SPDX license list import](spdx.md)                                                                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License approval policies](../../user/compliance/license_approval_policies.md). |

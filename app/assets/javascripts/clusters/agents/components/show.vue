@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import {
   GlAlert,
@@ -22,6 +21,7 @@ import ActivityEvents from './activity_events_list.vue';
 import IntegrationStatus from './integration_status.vue';
 
 export default {
+  name: 'AgentsShow',
   i18n: {
     installedInfo: s__('ClusterAgents|Created by %{name} %{time}'),
     loadingError: s__('ClusterAgents|An error occurred while loading your agent'),

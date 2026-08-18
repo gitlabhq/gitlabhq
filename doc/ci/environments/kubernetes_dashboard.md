@@ -14,7 +14,7 @@ title: Dashboard for Kubernetes
 {{< /details >}}
 
 Use the dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
-The dashboard works with every connected Kubernetes cluster, whether you deployed them
+The dashboard works with every connected Kubernetes cluster, whether you deployed it
 with CI/CD or GitOps.
 
 ![Dashboard showing the status of Kubernetes pods and services.](img/kubernetes_summary_ui_v17_2.png)
@@ -111,7 +111,7 @@ A list of pods is displayed. Select a pod to view its details.
 ### Flux sync status
 
 You can review the sync status of your Flux deployments from a dashboard.
-To display the deployment status, your dashboard must be able to retrieve the `Kustomization` and `HelmRelease` resources,
+To display the deployment status, your dashboard must retrieve the `Kustomization` and `HelmRelease` resources,
 which requires a namespace to be configured for the environment.
 
 GitLab searches the `Kustomization` and `HelmRelease` resources specified by the **Flux resource** dropdown list in the environment settings.

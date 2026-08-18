@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GitlabDuoSettings from '~/pages/projects/shared/permissions/components/gitlab_duo_settings.vue';
 import ExclusionSettings from '~/pages/projects/shared/permissions/components/exclusion_settings.vue';
+import DuoLocalSetupSection from '~/pages/projects/shared/permissions/components/duo_local_setup_section.vue';
 import { ALL_SETTINGS } from '~/pages/projects/shared/permissions/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -9,6 +10,8 @@ const defaultProps = {
   projectId: 123,
   projectFullPath: 'namespace/project',
   duoFeaturesEnabled: true,
+  duoReadinessAvailable: true,
+  duoReadiness: { platformEnabled: true },
   amazonQAvailable: false,
   amazonQAutoReviewEnabled: false,
   duoFeaturesLocked: false,
@@ -19,7 +22,7 @@ const defaultProps = {
   },
   initialDuoRemoteFlowsAvailability: false,
   initialDuoFoundationalFlowsAvailability: false,
-  initialDuoSastFpDetectionEnabled: false,
+  initialDuoSastFalsePositiveDetectionEnabled: false,
   initialDuoSecretDetectionFpEnabled: false,
   initialDuoDependencyBumpBreakingChangesEnabled: false,
   initialDuoSastVrWorkflowEnabled: false,
@@ -47,11 +50,17 @@ describe('GitlabDuoSettings', () => {
   };
 
   const findCard = () => wrapper.findByTestId('gitlab-duo-settings');
-  const findSaveButton = () => wrapper.findByTestId('gitlab-duo-save-button');
-  const findDuoSettings = () => wrapper.findByTestId('duo-settings');
+  const findSaveButton = () => wrapper.findComponentByTestId('gitlab-duo-save-button');
+  const findDuoSettings = () => wrapper.findComponentByTestId('duo-settings');
+  const findReadinessBlock = () => wrapper.findByTestId('duo-readiness-block');
+  const findLocalSetupSection = () => wrapper.findComponent(DuoLocalSetupSection);
+  const findDuoRow = () => wrapper.findComponentByTestId('duo-row');
+  const findFlowExecutionRow = () => wrapper.findComponentByTestId('flow-execution-row');
+  const findFoundationalFlowsRow = () => wrapper.findComponentByTestId('foundational-flows-row');
   const findDuoEnabledToggle = () => wrapper.findByTestId('duo_features_enabled_toggle');
-  const findDuoCascadingLockIcon = () => wrapper.findByTestId('duo-cascading-lock-icon');
-  const findDuoFeaturesEnabledToggle = () => wrapper.findByTestId('duo_features_enabled_toggle');
+  const findDuoCascadingLockIcon = () => wrapper.findComponentByTestId('duo-cascading-lock-icon');
+  const findDuoFeaturesEnabledToggle = () =>
+    wrapper.findComponentByTestId('duo_features_enabled_toggle');
   const findExclusionSettings = () => wrapper.findComponent(ExclusionSettings);
   const findExclusionRulesHiddenInputs = () =>
     wrapper.findAll(
@@ -63,24 +72,30 @@ describe('GitlabDuoSettings', () => {
     wrapper.find(
       'input[name="project[project_setting_attributes][duo_foundational_flows_enabled]"]',
     );
-  const findDuoRemoteFlowsToggle = () => wrapper.findByTestId('duo-remote-flows-enabled');
+  const findDuoRemoteFlowsToggle = () => wrapper.findComponentByTestId('duo-remote-flows-enabled');
   const findDuoFoundationalFlowsToggle = () =>
-    wrapper.findByTestId('duo-foundational-flows-enabled');
+    wrapper.findComponentByTestId('duo-foundational-flows-enabled');
   const findDuoFoundationalFlowsCascadingLockIcon = () =>
     wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
-  const findDuoSastFpDetectionToggle = () => wrapper.findByTestId('duo-sast-fp-detection-enabled');
+  const findDuoSastFpDetectionToggle = () =>
+    wrapper.findComponentByTestId('duo-sast-fp-detection-enabled');
   const findDuoSecretDetectionFpToggle = () =>
-    wrapper.findByTestId('duo-secret-detection-fp-enabled');
+    wrapper.findComponentByTestId('duo-secret-detection-fp-enabled');
   const findDuoDependencyBumpToggle = () =>
     wrapper.findByTestId('duo-dependency-bump-breaking-changes-enabled');
-  const findDuoSastVrWorkflowToggle = () => wrapper.findByTestId('duo-sast-vr-workflow-enabled');
-  const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
-  const findToolApprovalToggle = () => wrapper.findByTestId('tool-approval-for-session-enabled');
+  const findDuoSastVrWorkflowToggle = () =>
+    wrapper.findComponentByTestId('duo-sast-vr-workflow-enabled');
+  const findDuoVulnerabilityContextAnalysisToggle = () =>
+    wrapper.findComponentByTestId('duo-vulnerability-context-analysis-enabled');
+  const findAutoReviewToggle = () => wrapper.findComponentByTestId('amazon-q-auto-review-enabled');
+  const findToolApprovalToggle = () =>
+    wrapper.findComponentByTestId('tool-approval-for-session-enabled');
   const findToolApprovalCascadingLockIcon = () =>
     wrapper.findByTestId('tool-approval-cascading-lock-icon');
-  const findDapSessionTrackingToggle = () => wrapper.findByTestId('dap-session-tracking-enabled');
+  const findDapSessionTrackingToggle = () =>
+    wrapper.findComponentByTestId('dap-session-tracking-enabled');
   const findAuditEventsStorageToggle = () =>
-    wrapper.findByTestId('ai-audit-events-storage-enabled');
+    wrapper.findComponentByTestId('ai-audit-events-storage-enabled');
   const findAuditEventsStorageHiddenInput = () =>
     wrapper.find(
       'input[name="project[project_setting_attributes][ai_audit_events_storage_enabled]"]',
@@ -99,8 +114,73 @@ describe('GitlabDuoSettings', () => {
     expect(findSaveButton().exists()).toBe(true);
   });
 
+  // The toggles moved into the card, so the flag-off path has to keep rendering them where
+  // they were. Losing them would silently remove two settings from every project.
+  describe('when the readiness card is off', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ duoReadinessAvailable: false });
+    });
+
+    it('hides the card and keeps the original Duo row', () => {
+      expect(findReadinessBlock().exists()).toBe(false);
+      expect(findDuoSettings().exists()).toBe(true);
+    });
+
+    it('still renders the flow toggles in the flat list', () => {
+      expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
+      expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
+      expect(findDuoRemoteFlowsHiddenInput().exists()).toBe(true);
+    });
+
+    it('does not group the remaining settings under a heading', () => {
+      expect(wrapper.text()).not.toContain('Other Duo settings');
+    });
+
+    it('hides the local setup section', () => {
+      expect(findLocalSetupSection().exists()).toBe(false);
+    });
+  });
+
+  describe('when the readiness card is on', () => {
+    it('groups the remaining settings under a heading', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(wrapper.text()).toContain('Other Duo settings');
+    });
+  });
+
+  // The design's blocked state: the platform switch lives above the project, so the card
+  // stays, the platform row carries the warning, and every row below is blocked and disabled.
+  describe('when the Agent Platform is off above the project', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ duoReadiness: { platformEnabled: false } });
+    });
+
+    it('keeps the card rendered', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+    });
+
+    it('blocks every row below the platform row', () => {
+      expect(findDuoRow().props('status')).toBe('blocked');
+      expect(findFlowExecutionRow().props('status')).toBe('blocked');
+      expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
+    });
+
+    it('disables every toggle below the platform row', () => {
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(true);
+      expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+      expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('local setup section', () => {
+    it('renders inside the readiness card', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findLocalSetupSection().exists()).toBe(true);
+    });
+  });
+
   it('displays the correct header text', () => {
-    expect(findDuoSettings().props('label')).toContain('GitLab Duo');
+    expect(findDuoRow().props('title')).toContain('GitLab Duo');
   });
 
   it('has the correct save button properties', () => {
@@ -111,17 +191,27 @@ describe('GitlabDuoSettings', () => {
   });
 
   describe('Duo', () => {
-    it('shows duo toggle', () => {
+    it('shows duo toggle inside the readiness card', () => {
       wrapper = createWrapper({});
 
-      expect(findDuoSettings().exists()).toBe(true);
-      expect(findDuoSettings().props()).toEqual({
-        helpPath: '/help/user/gitlab_duo/_index',
-        helpText: 'Use AI-native features in this project.',
-        label: 'GitLab Duo',
-        labelFor: null,
-        locked: false,
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findDuoRow().props()).toMatchObject({
+        title: 'GitLab Duo',
+        description: 'Use AI-native features in this project.',
+        status: 'done',
       });
+      expect(findDuoEnabledToggle().exists()).toBe(true);
+    });
+
+    // Duo being off is the state the card exists to fix, so it has to survive a reload: the
+    // toggle that turns Duo back on lives inside the card.
+    it('keeps the card, and marks the rows below as blocked, when Duo is off', () => {
+      wrapper = createWrapper({ duoFeaturesEnabled: false });
+
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findDuoRow().props('status')).toBe('todo');
+      expect(findFlowExecutionRow().props('status')).toBe('blocked');
+      expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
     });
 
     describe('Auto review settings', () => {
@@ -189,7 +279,7 @@ describe('GitlabDuoSettings', () => {
       describe.each`
         amazonQAvailable | duoFeaturesEnabled | shouldRender | scenario
         ${true}          | ${true}            | ${false}     | ${'Amazon Q is enabled'}
-        ${false}         | ${false}           | ${false}     | ${'Duo features are not enabled'}
+        ${false}         | ${false}           | ${true}      | ${'Duo features are not enabled'}
         ${false}         | ${true}            | ${true}      | ${'all conditions are met'}
       `('when $scenario', ({ amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
         beforeEach(() => {
@@ -205,6 +295,19 @@ describe('GitlabDuoSettings', () => {
 
         it(`${shouldRender ? 'renders' : 'does not render'} the Duo foundational flows toggle`, () => {
           expect(findDuoFoundationalFlowsToggle().exists()).toBe(shouldRender);
+        });
+      });
+
+      // The card lists every requirement, so a prerequisite that is off leaves the row visible
+      // and disabled rather than removing it.
+      describe('when GitLab Duo is off', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({ amazonQAvailable: false, duoFeaturesEnabled: false });
+        });
+
+        it('keeps the flow toggles visible but disabled', () => {
+          expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
         });
       });
 
@@ -365,7 +468,7 @@ describe('GitlabDuoSettings', () => {
           wrapper = createWrapper({
             duoFeaturesEnabled: true,
             amazonQAvailable: false,
-            initialDuoSastFpDetectionEnabled: true,
+            initialDuoSastFalsePositiveDetectionEnabled: true,
           });
 
           const findHiddenInput = () =>
@@ -690,6 +793,63 @@ describe('GitlabDuoSettings', () => {
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
         });
       });
+
+      describe('Duo Vulnerability Context Analysis settings', () => {
+        it('shows Vulnerability Context Analysis toggle', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(true);
+          expect(findDuoVulnerabilityContextAnalysisToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show Vulnerability Context Analysis toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        });
+
+        it('does not disable Vulnerability Context Analysis toggle when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render Vulnerability Context Analysis toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: false,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoVulnerabilityContextAnalysisEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_vulnerability_context_analysis_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoVulnerabilityContextAnalysisToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
     });
   });
 
@@ -914,6 +1074,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoDependencyBumpToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -924,7 +1085,7 @@ describe('GitlabDuoSettings', () => {
           {
             duoFeaturesEnabled: true,
             amazonQAvailable: false,
-            visibleSettings: ['duoSastFpDetectionEnabled'],
+            visibleSettings: ['duoSastFalsePositiveDetectionEnabled'],
           },
           { enableVulnerabilityResolution: true },
         );
@@ -941,6 +1102,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -968,6 +1130,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -978,7 +1141,7 @@ describe('GitlabDuoSettings', () => {
           {
             duoFeaturesEnabled: true,
             amazonQAvailable: false,
-            visibleSettings: ['duoSastVrWorkflowEnabled', 'duoSastFpDetectionEnabled'],
+            visibleSettings: ['duoSastVrWorkflowEnabled', 'duoSastFalsePositiveDetectionEnabled'],
           },
           { enableVulnerabilityResolution: true },
         );
@@ -995,6 +1158,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -1005,7 +1169,10 @@ describe('GitlabDuoSettings', () => {
           {
             duoFeaturesEnabled: true,
             amazonQAvailable: false,
-            visibleSettings: ['duoSastFpDetectionEnabled', 'duoSecretDetectionFpEnabled'],
+            visibleSettings: [
+              'duoSastFalsePositiveDetectionEnabled',
+              'duoSecretDetectionFpEnabled',
+            ],
           },
           { duoSecretDetectionFalsePositive: true },
         );
@@ -1022,6 +1189,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });

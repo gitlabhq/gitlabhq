@@ -3,7 +3,7 @@ title: "Exclude merge requests from automatic code reviews (Beta)"
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 tier: [ Free, Premium, Ultimate ]
 stage: ai_coding
-documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/code_review/#exclude-merge-requests-from-automatic-reviews"
+documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/code_review/#exclude-merge-requests-for-a-project"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21585
 categories: [ DAP Code Review ]
 ---

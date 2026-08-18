@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import ForkInfo from '~/repository/components/fork_info.vue';
@@ -20,25 +20,22 @@ export default function initForkInfoApp() {
     viewMrPath,
   } = forkEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: forkEl,
     name: 'BlobForkInfoRoot',
     apolloProvider,
-    render(h) {
-      return h(ForkInfo, {
-        props: {
-          canSyncBranch: parseBoolean(canSyncBranch),
-          projectPath,
-          selectedBranch,
-          sourceName,
-          sourcePath,
-          sourceDefaultBranch,
-          aheadComparePath,
-          behindComparePath,
-          createMrPath,
-          viewMrPath,
-        },
-      });
+    component: ForkInfo,
+    props: {
+      canSyncBranch: parseBoolean(canSyncBranch),
+      projectPath,
+      selectedBranch,
+      sourceName,
+      sourcePath,
+      sourceDefaultBranch,
+      aheadComparePath,
+      behindComparePath,
+      createMrPath,
+      viewMrPath,
     },
   });
 }

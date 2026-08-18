@@ -4,6 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'NewCluster',
   i18n: {
     title: s__('ClusterIntegration|Enter your Kubernetes cluster certificate details'),
     information: s__(

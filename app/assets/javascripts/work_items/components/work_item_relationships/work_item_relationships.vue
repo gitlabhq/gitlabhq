@@ -1,6 +1,6 @@
 <script>
 import { produce } from 'immer';
-import { GlAlert, GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlAlert, GlButton, GlBadge, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import { cloneDeep } from 'lodash-es';
 
 import { s__, n__, sprintf } from '~/locale';
@@ -48,7 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   provide() {
     return {
       preventRouterNav: true,
@@ -103,7 +103,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showModal'],
+  emits: ['show-modal'],
   apollo: {
     linkedWorkItems: {
       query: workItemLinkedItemsQuery,
@@ -381,6 +381,7 @@ export default {
     :is-loading="isLoading"
     is-collapsible
     persist-collapsed-state
+    :collapsed="isEmptyRelatedWorkItems && !isLoading && !isFormVisible"
     data-testid="work-item-relationships"
     @click-collapsed="handleCrudCollapsed(true)"
     @click-expanded="handleCrudCollapsed(false)"
@@ -388,7 +389,7 @@ export default {
     <template #count>
       <gl-badge
         :aria-label="countBadgeAriaLabel"
-        data-testid="linked-items-count-bage"
+        data-testid="linked-items-count-badge"
         variant="neutral"
       >
         {{ linkedWorkItemsCount }}
@@ -455,15 +456,15 @@ export default {
         :active-child-item-id="activeChildItemId"
         :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
-        @showModal="
-          $emit('showModal', {
+        @show-modal="
+          $emit('show-modal', {
             event: $event.event,
-            modalWorkItem: $event.child,
+            child: $event.child,
             context: widgetName,
           })
         "
-        @removeLinkedItem="removeLinkedItem"
-        @updateLinkedItem="updateLinkedItem"
+        @remove-linked-item="removeLinkedItem"
+        @update-linked-item="updateLinkedItem"
       />
       <work-item-relationship-list
         v-if="openIsBlockedByLinks.length"
@@ -478,15 +479,15 @@ export default {
         :active-child-item-id="activeChildItemId"
         :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
-        @showModal="
-          $emit('showModal', {
+        @show-modal="
+          $emit('show-modal', {
             event: $event.event,
-            modalWorkItem: $event.child,
+            child: $event.child,
             context: widgetName,
           })
         "
-        @removeLinkedItem="removeLinkedItem"
-        @updateLinkedItem="updateLinkedItem"
+        @remove-linked-item="removeLinkedItem"
+        @update-linked-item="updateLinkedItem"
       />
       <work-item-relationship-list
         v-if="openRelatesToLinks.length"
@@ -501,15 +502,15 @@ export default {
         :active-child-item-id="activeChildItemId"
         :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
-        @showModal="
-          $emit('showModal', {
+        @show-modal="
+          $emit('show-modal', {
             event: $event.event,
-            modalWorkItem: $event.child,
+            child: $event.child,
             context: widgetName,
           })
         "
-        @removeLinkedItem="removeLinkedItem"
-        @updateLinkedItem="updateLinkedItem"
+        @remove-linked-item="removeLinkedItem"
+        @update-linked-item="updateLinkedItem"
       />
 
       <div

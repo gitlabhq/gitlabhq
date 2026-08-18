@@ -38,7 +38,7 @@ module API
         end
 
         desc 'List all active integrations' do
-          detail "Get a list of all active integrations."
+          detail 'Lists all active integrations.'
           success Entities::IntegrationBasic
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -57,8 +57,8 @@ module API
         end
 
         INTEGRATIONS.each do |slug, settings|
-          desc "Create/Edit #{slug.titleize} integration" do
-            detail "Set #{slug.titleize} integration."
+          desc "Create or update the #{slug.titleize} integration" do
+            detail "Creates or updates the #{slug.titleize} integration."
             success Entities::IntegrationBasic
             failure [
               { code: 400, message: 'Bad request' },
@@ -71,9 +71,13 @@ module API
           params do
             settings.each do |setting|
               if setting[:required]
+                # rubocop:disable API/ParameterType -- `setting[:type]` is a dynamic value, cop does not recognise this pattern
                 requires setting[:name], type: setting[:type], desc: setting[:desc]
+                # rubocop:enable API/ParameterType
               else
+                # rubocop:disable API/ParameterType -- `setting[:type]` is a dynamic value, cop does not recognise this pattern
                 optional setting[:name], type: setting[:type], desc: setting[:desc]
+                # rubocop:enable API/ParameterType
               end
             end
           end
@@ -109,8 +113,8 @@ module API
           end
         end
 
-        desc "Disable an integration" do
-          detail "Disable the integration. Integration settings are preserved."
+        desc 'Disable an integration' do
+          detail 'Disables a specified integration. Integration settings are preserved.'
           success code: 204
           failure [
             { code: 400, message: 'Bad request' },
@@ -154,8 +158,8 @@ module API
           end
         end
 
-        desc "Get an integration settings" do
-          detail "Get the integration settings."
+        desc 'Retrieve integration settings' do
+          detail 'Retrieves the settings for a specified integration.'
           success Entities::Integration
           failure [
             { code: 400, message: 'Bad request' },

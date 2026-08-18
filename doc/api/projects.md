@@ -117,6 +117,8 @@ Use the alternative attributes instead.
 
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
@@ -138,6 +140,8 @@ Supported attributes:
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
+
+<!-- markdownlint-disable MD055 MD056 -->
 
 | Attribute                | Type              | Description |
 |:-------------------------|:------------------|:------------|
@@ -266,6 +270,7 @@ following response attributes:
 | `auto_devops_enabled` | boolean | Whether Auto DevOps is enabled for the project. Only visible if you have administrator access or the Owner role for the project. |
 | `auto_devops_deploy_strategy` | string | Deployment strategy for Auto DevOps. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_push_repository_for_job_token_allowed` | boolean | Whether pushing to the repository is allowed using a job token. |
+| `cicd_catalog_enabled` | boolean | Whether the project is published to the [CI/CD Catalog](../ci/components/_index.md#cicd-catalog). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3. |
 | `runners_token` | string | Token for registering runners with the project. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_config_path` | string | Path to the CI/CD configuration file. |
 | `public_jobs` | boolean | Whether job logs are publicly accessible. |
@@ -309,6 +314,7 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `merge_train_enforcement` | string | Merge train enforcement level. One of `allow_bypass`, `enforce_for_all_users`, or `enforce_with_owner_override`. Has no effect unless merge trains are enabled for the project. |
 | `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
@@ -348,11 +354,12 @@ following response attributes:
 | `statistics.packages_size` | integer | Packages storage size in bytes. |
 | `statistics.snippets_size` | integer | Snippets storage size in bytes. |
 | `statistics.uploads_size` | integer | Uploads storage size in bytes. |
-| `statistics.container_registry_size` | integer | Container registry storage size in bytes. <sup>1</sup> |
+| `statistics.container_registry_size` | integer | Total container registry storage size in bytes used by all container repositories in the project. Updates when container images are pushed or deleted. For GitLab Self-Managed instances, requires the container registry metadata database to be enabled. |
 | `forked_from_project` | object | The upstream project this project was forked from. If the upstream project is private, an authentication token is required to view this field. |
 | `mr_default_target_self` | boolean | Whether merge requests target this project by default. If `false`, merge requests target the upstream project. Appears only if the project is a fork. |
-<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
+
+<!-- markdownlint-enable MD055 MD056 -->
 
 Example request:
 
@@ -465,6 +472,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [
@@ -557,12 +565,12 @@ List projects and project attributes.
 - `web_based_commit_signing_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542975) in GitLab 19.1. Feature flag `use_web_based_commit_signing_enabled` removed.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
 Lists all projects on the instance accessible to the authenticated user. Unauthenticated requests return only public projects with a limited subset of attributes.
-
-You can filter responses by [custom attributes](custom_attributes.md).
 
 This endpoint supports pagination:
 
@@ -577,9 +585,12 @@ GET /projects
 
 Supported attributes:
 
+<!-- markdownlint-disable MD055 MD056 -->
+
 | Attribute                     | Type     | Required | Description |
 |:------------------------------|:---------|:---------|:------------|
 | `archived`                    | boolean  | No       | Limit by archived status. |
+| `custom_attributes`           | hash     | No       | Limit by [custom attributes](custom_attributes.md) that match all of the specified key and value pairs. _(administrators only)_ |
 | `id_after`                    | integer  | No       | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                   | integer  | No       | Limit results to projects with IDs less than the specified ID. |
 | `imported`                    | boolean  | No       | Limit results to projects which were imported from external systems by current user. |
@@ -589,7 +600,7 @@ Supported attributes:
 | `last_activity_before`        | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
 | `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
-| `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
+| `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size`, or `wiki_size` fields are only allowed for administrators. `similarity` is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
 | `repository_storage`          | string   | No       | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
@@ -601,8 +612,8 @@ Supported attributes:
 | `statistics`                  | boolean  | No       | Include project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role. |
 | `topic_id`                    | integer  | No       | Limit results to projects with the assigned topic given by the topic ID. |
 | `topic`                       | string   | No       | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
-| `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
-| `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
+| `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
+| `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
 | `visibility`                  | string   | No       | Limit by visibility `public`, `internal`, or `private`. |
 | `wiki_checksum_failed`        | boolean  | No       | Limit projects where the wiki checksum calculation has failed. Premium and Ultimate only. |
 | `with_custom_attributes`      | boolean  | No       | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
@@ -611,11 +622,20 @@ Supported attributes:
 | `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
 | `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
 | `active`                      | boolean  | No       | Limit by projects that are not archived and not marked for deletion. |
-<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
+
+<!-- markdownlint-enable MD055 MD056 -->
+
+To filter by custom attributes, specify the key and value of each attribute:
+
+```plaintext
+GET /projects?custom_attributes[<key>]=<value>&custom_attributes[<other_key>]=<other_value>
+```
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
+
+<!-- markdownlint-disable MD055 MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -743,6 +763,7 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `merge_train_enforcement` | string | Merge train enforcement level. One of `allow_bypass`, `enforce_for_all_users`, or `enforce_with_owner_override`. Has no effect unless merge trains are enabled for the project. |
 | `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
@@ -756,8 +777,9 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
-<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
+
+<!-- markdownlint-enable MD055 MD056 -->
 
 Example request:
 
@@ -933,6 +955,8 @@ Example response:
 
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
@@ -980,6 +1004,8 @@ Supported attributes:
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
+
+<!-- markdownlint-disable MD055 MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -1122,6 +1148,7 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `merge_train_enforcement` | string | Merge train enforcement level. One of `allow_bypass`, `enforce_for_all_users`, or `enforce_with_owner_override`. Has no effect unless merge trains are enabled for the project. |
 | `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
@@ -1135,8 +1162,9 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
-<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
+
+<!-- markdownlint-enable MD055 MD056 -->
 
 Example request:
 
@@ -1419,6 +1447,8 @@ Example response:
 
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
@@ -1441,6 +1471,8 @@ Supported attributes:
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
+
+<!-- markdownlint-disable MD055 MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -1583,6 +1615,7 @@ following response attributes:
 | `merge_pipelines_enabled` | boolean | Indicates if merge pipelines are enabled. |
 | `merge_trains_enabled` | boolean | Indicates if merge trains are enabled. |
 | `merge_trains_skip_train_allowed` | boolean | Indicates if skipping the merge train is allowed. |
+| `merge_train_enforcement` | string | Merge train enforcement level. One of `allow_bypass`, `enforce_for_all_users`, or `enforce_with_owner_override`. Has no effect unless merge trains are enabled for the project. |
 | `max_pipelines_per_merge_train` | integer | Maximum number of parallel pipelines per merge train. |
 | `only_allow_merge_if_all_status_checks_passed` | boolean | Whether merges are allowed only if all status checks have passed. Ultimate only. |
 | `allow_pipeline_trigger_approve_deployment` | boolean | Whether pipeline triggers can approve deployments. |
@@ -1596,8 +1629,9 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
-<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
+
+<!-- markdownlint-enable MD055 MD056 -->
 
 Example request:
 
@@ -2125,10 +2159,10 @@ Manage a project, including creation, deletion, and archival.
 
 {{< history >}}
 
-- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
+- `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
@@ -2156,14 +2190,15 @@ Supported general project attributes:
 | `allow_merge_on_skipped_pipeline`                  | boolean | No                             | Set whether or not merge requests can be merged with skipped jobs. |
 | `approvals_before_merge`                           | integer | No                             | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
 | `auto_cancel_pending_pipelines`                    | string  | No                             | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
-| `auto_devops_deploy_strategy`                      | string  | No                             | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
+| `auto_devops_deploy_strategy`                      | string  | No                             | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                              | boolean | No                             | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                      | boolean | No                             | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                           | mixed   | No                             | Image file for avatar of the project. |
 | `build_git_strategy`                               | string  | No                             | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                    | integer | No                             | The maximum amount of time, in seconds, that a job can run. |
 | `ci_config_path`                                   | string  | No                             | The path to CI configuration file. |
-| `container_expiration_policy_attributes`           | hash    | No                             | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [container registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n` and `older_than` values. |
+| `cicd_catalog_enabled`                             | boolean | No                             | Set whether the project is published to the [CI/CD Catalog](../ci/components/_index.md#cicd-catalog). Requires the Owner role for the project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3. |
+| `container_expiration_policy_attributes`           | hash    | No                             | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [container registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n`, and `older_than` values. |
 | `container_registry_enabled`                       | boolean | No                             | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string  | No                             | The [default branch](../user/project/repository/branches/default.md) name. Accepts a branch name (for example, `main`) or a fully qualified reference (for example, `refs/heads/main`). If a fully qualified reference is provided, the API strips the `refs/heads/` prefix. Requires `initialize_with_readme` to be `true`. |
 | `description`                                      | string  | No                             | Short project description. |
@@ -2182,24 +2217,25 @@ Supported general project attributes:
 | `merge_requests_enabled`                           | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                             | boolean | No                             | Enable or disable merge trains. |
 | `merge_trains_skip_train_allowed`                  | boolean | No                             | Allows merge train merge requests to be merged without waiting for pipelines to finish. |
+| `merge_train_enforcement`                          | string  | No                             | Merge train enforcement level. One of `allow_bypass`, `enforce_for_all_users`, or `enforce_with_owner_override`. Has no effect unless merge trains are enabled for the project. |
 | `max_pipelines_per_merge_train`                    | integer | No                             | Maximum number of parallel pipelines per merge train. |
 | `mirror_trigger_builds`                            | boolean | No                             | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror`                                           | boolean | No                             | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `namespace_id`                                     | integer | No                             | Namespace for the new project. Specify a group ID or subgroup ID. If not provided, defaults to the current user's personal namespace. |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | No                             | Set whether merge requests can only be merged when all the discussions are resolved. |
-| `only_allow_merge_if_all_status_checks_passed`     | boolean | No                             | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. Ultimate only. |
+| `only_allow_merge_if_all_status_checks_passed`     | boolean | No                             | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No                             | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) in the project settings. |
 | `packages_enabled`                                 | boolean | No                             | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
 | `package_registry_access_level`                    | string  | No                             | Enable or disable packages repository feature. |
 | `printing_merge_request_link_enabled`              | boolean | No                             | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No                             | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
-| `repository_object_format`                         | string  | No                             | Repository object format. Defaults to `sha1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419887) in GitLab 16.9. |
+| `repository_object_format`                         | string  | No                             | Repository object format. Defaults to `sha1`. |
 | `remove_source_branch_after_merge`                 | boolean | No                             | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_storage`                               | string  | No                             | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                           | boolean | No                             | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean | No                             | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1. Premium and Ultimate only. |
+| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2. Premium and Ultimate only. |
 | `shared_runners_enabled`                           | boolean | No                             | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean | No                             | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
@@ -2230,8 +2266,6 @@ see [Project feature visibility level](#project-feature-visibility-level).
 
 {{< history >}}
 
-- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
@@ -2262,13 +2296,14 @@ Supported general project attributes:
 | `allow_merge_on_skipped_pipeline`                  | boolean | No       | Set whether or not merge requests can be merged with skipped jobs. |
 | `approvals_before_merge`                           | integer | No       | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate only. |
 | `auto_cancel_pending_pipelines`                    | string  | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
-| `auto_devops_deploy_strategy`                      | string  | No       | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
+| `auto_devops_deploy_strategy`                      | string  | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                              | boolean | No       | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                      | boolean | No       | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                           | mixed   | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string  | No       | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                    | integer | No       | The maximum amount of time, in seconds, that a job can run. |
 | `ci_config_path`                                   | string  | No       | The path to CI configuration file. |
+| `cicd_catalog_enabled`                             | boolean | No       | Set whether the project is published to the [CI/CD Catalog](../ci/components/_index.md#cicd-catalog). Requires the Owner role for the project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3. |
 | `container_registry_enabled`                       | boolean | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string  | No       | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                      | string  | No       | Short project description. |
@@ -2280,7 +2315,7 @@ Supported general project attributes:
 | `group_with_project_templates_id`                  | integer | No       | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. Premium and Ultimate only. |
 | `import_url`                                       | string  | No       | URL to import repository from. |
 | `initialize_with_readme`                           | boolean | No       | `false` by default. |
-| `issue_branch_template`                            | string  | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
+| `issue_branch_template`                            | string  | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). |
 | `issues_enabled`                                   | boolean | No       | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                     | boolean | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No       | Enable LFS. |
@@ -2292,7 +2327,7 @@ Supported general project attributes:
 | `mirror`                                           | boolean | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `namespace_id`                                     | integer | No       | Namespace for the new project (defaults to the current user's namespace). |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | No       | Set whether merge requests can only be merged when all the discussions are resolved. |
-| `only_allow_merge_if_all_status_checks_passed`     | boolean | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. Ultimate only. |
+| `only_allow_merge_if_all_status_checks_passed`     | boolean | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No       | Set whether merge requests can only be merged with successful jobs. |
 | `packages_enabled`                                 | boolean | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
 | `package_registry_access_level`                    | string  | No       | Enable or disable packages repository feature. |
@@ -2300,7 +2335,7 @@ Supported general project attributes:
 | `printing_merge_request_link_enabled`              | boolean | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean | No       | If `true`, jobs can be viewed by non-project members. |
-| `repository_object_format`                         | string  | No       | Repository object format. Defaults to `sha1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419887) in GitLab 16.9. |
+| `repository_object_format`                         | string  | No       | Repository object format. Defaults to `sha1`. |
 | `remove_source_branch_after_merge`                 | boolean | No       | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_storage`                               | string  | No       | Which storage shard the repository is on. _(administrators only)_ |
 | `request_access_enabled`                           | boolean | No       | Allow users to request member access. |
@@ -2326,13 +2361,14 @@ see [Project feature visibility level](#project-feature-visibility-level).
 
 {{< history >}}
 
-- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
 - `protect_merge_request_pipelines` and `ci_display_pipeline_variables` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584488) in GitLab 18.10.
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1.
+- `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
+- `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
 
 {{< /history >}}
 
@@ -2353,7 +2389,7 @@ Supported general project attributes:
 | `id`                                               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `allow_merge_on_skipped_pipeline`                  | boolean           | No       | Set whether or not merge requests can be merged with skipped jobs. |
 | `allow_pipeline_trigger_approve_deployment`        | boolean           | No       | Set whether or not a pipeline triggerer is allowed to approve deployments. Premium and Ultimate only. |
-| `only_allow_merge_if_all_status_checks_passed`     | boolean           | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. Ultimate only. |
+| `only_allow_merge_if_all_status_checks_passed`     | boolean           | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `approvals_before_merge`                           | integer           | No       | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate only. |
 | `auto_cancel_pending_pipelines`                    | string            | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                      | string            | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
@@ -2369,12 +2405,13 @@ Supported general project attributes:
 | `ci_display_pipeline_variables`                    | boolean           | No       | Display all manually-defined variables in the pipeline details page after running a pipeline manually. |
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). |
 | `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path` or `project_id`. The array might also include `ref_type`, `ref`, `ref_protected`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. Support for `project_id` as the first component [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/600358) in GitLab 19.1. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
-| `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
-| `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
+| `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. Premium and Ultimate only. |
+| `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer`, or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
 | `ci_push_repository_for_job_token_allowed`         | boolean           | No       | Enable or disable the ability to push to the project repository using job token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. |
+| `cicd_catalog_enabled`                             | boolean           | No       | Set whether the project is published to the [CI/CD Catalog](../ci/components/_index.md#cicd-catalog). Requires the Owner role for the project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3. |
 | `container_expiration_policy_attributes`           | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
@@ -2403,6 +2440,7 @@ Supported general project attributes:
 | `mr_default_title_template`                        | string            | No       | [Template](../user/project/merge_requests/title_templates.md) used to set default merge request title. |
 | `merge_trains_enabled`                             | boolean           | No       | Enable or disable merge trains. |
 | `merge_trains_skip_train_allowed`                  | boolean           | No       | Allows merge train merge requests to be merged without waiting for pipelines to finish. |
+| `merge_train_enforcement`                          | string            | No       | Merge train enforcement level. One of `allow_bypass`, `enforce_for_all_users`, or `enforce_with_owner_override`. Has no effect unless merge trains are enabled for the project. |
 | `max_pipelines_per_merge_train`                    | integer           | No       | Maximum number of parallel pipelines per merge train. |
 | `mirror_overwrites_diverged_branches`              | boolean           | No       | Pull mirror overwrites diverged branches. Premium and Ultimate only. |
 | `mirror_trigger_builds`                            | boolean           | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
@@ -2426,11 +2464,12 @@ Supported general project attributes:
 | `request_access_enabled`                           | boolean           | No       | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean           | No       | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `restrict_user_defined_variables`                  | boolean           | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7 in favour of `ci_pipeline_variables_minimum_override_role`)_ Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
+| `reviewer_assignment_strategy`                     | string            | No       | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. Premium and Ultimate only. |
 | `service_desk_enabled`                             | boolean           | No       | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                           | boolean           | No       | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean           | No       | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
-| `issue_branch_template`                            | string            | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
+| `issue_branch_template`                            | string            | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). |
 | `spp_repository_pipeline_access`                   | boolean           | No       | Allow users and tokens read-only access to fetch security policy configurations from this project. Required for enforcing security policies in projects that use this project as their security policy source. Ultimate only. |
 | `squash_commit_template`                           | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. |
 | `squash_option`                                    | string            | No       | One of `never`, `always`, `default_on`, or `default_off`. |
@@ -2667,6 +2706,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [],
@@ -2824,6 +2864,7 @@ Example response:
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
   "ci_display_pipeline_variables": false,
+  "cicd_catalog_enabled": false,
   "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [],
@@ -2860,8 +2901,7 @@ Example response:
 
 {{< history >}}
 
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
@@ -2890,8 +2930,8 @@ Supported attributes:
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#retrieve-a-project). |
-| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. Disabled on GitLab.com and Dedicated. |
+| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. Moved to GitLab Free in GitLab 18.0. To find the project path, use `path_with_namespace` from [get single project](#retrieve-a-project). |
+| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. Moved to GitLab Free in GitLab 18.0. Disabled on GitLab.com and Dedicated. |
 
 ### Restore a project marked for deletion
 
@@ -2930,7 +2970,7 @@ Supported attributes:
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer to project to. |
+| `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer the project to. |
 
 Example request:
 
@@ -3151,12 +3191,6 @@ Example response:
 ```
 
 ### Download a project avatar
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
-
-{{< /history >}}
 
 Downloads a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
 
@@ -3415,5 +3449,5 @@ For example, if you:
   the response returns `restrict_user_defined_variables: false`. Setting `ci_pipeline_variables_minimum_override_role`
   to `developer` takes precedence and variables are not restricted.
 - Set `restrict_user_defined_variables` to `false` and `ci_pipeline_variables_minimum_override_role` to `maintainer`,
-  The response returns `restrict_user_defined_variables: true` because setting `ci_pipeline_variables_minimum_override_role`
+  the response returns `restrict_user_defined_variables: true` because setting `ci_pipeline_variables_minimum_override_role`
   to `maintainer` takes precedence and variables are restricted.

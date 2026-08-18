@@ -35,6 +35,19 @@ RSpec.shared_examples 'streaming audit event model' do
       end
     end
 
+    context 'with namespace logging context' do
+      it 'enqueues the worker within the streamable_namespace context' do
+        captured = nil
+        allow(AuditEvents::AuditEventStreamingWorker).to receive(:perform_async) do
+          captured = ::Gitlab::ApplicationContext.current_context_attribute(:root_namespace)
+        end
+
+        audit_event.stream_to_external_destinations(event_name: event_name, use_json: true)
+
+        expect(captured).to eq(audit_event.streamable_namespace&.full_path_components&.first)
+      end
+    end
+
     context 'when not streamable' do
       before do
         allow(streamer).to receive(:streamable?).and_return(false)

@@ -1,0 +1,15 @@
+# @feature_category: mcp_server
+mutation createPipeline($input: PipelineCreateInput!) {
+  pipelineCreate(input: $input) {
+    pipeline {
+      id
+      status
+      ref
+      project {
+        id
+        webUrl
+      }
+    }
+    errors
+  }
+}

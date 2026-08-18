@@ -580,6 +580,74 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
         expect(batched_migration.status_name).to be :active
       end
     end
+
+    context 'when the failed job is still retryable' do
+      let!(:retryable_job) do
+        create(:batched_background_migration_job, :failed,
+          batched_migration: batched_migration, attempts: 2)
+      end
+
+      it 'does not split the job or reset its attempts' do
+        expect { retry_failed_jobs }
+          .to not_change { retryable_job.reload.attempts }
+          .and not_change { batched_migration.batched_jobs.count }
+      end
+
+      it 'moves the status of the migration to active' do
+        retry_failed_jobs
+
+        expect(batched_migration.status_name).to be :active
+      end
+    end
+
+    context 'when the migration is cursor based' do
+      let(:cursor_job_class) do
+        stub_const('Gitlab::BackgroundMigration::TestCursorJob',
+          Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+            cursor :id
+          end
+        )
+      end
+
+      let(:batched_migration) do
+        create(:batched_background_migration, :failed,
+          job_class_name: cursor_job_class.name.demodulize)
+      end
+
+      let!(:failed_job) do
+        create(:batched_background_migration_job, :failed,
+          batched_migration: batched_migration,
+          min_cursor: [1],
+          max_cursor: [100],
+          attempts: 3)
+      end
+
+      it 'resets attempts to 0 for failed jobs' do
+        retry_failed_jobs
+
+        expect(failed_job.reload.attempts).to be_zero
+      end
+
+      it 'moves the status of the migration to active' do
+        retry_failed_jobs
+
+        expect(batched_migration.status_name).to be :active
+      end
+
+      context 'when the failed job is still retryable' do
+        let!(:retryable_job) do
+          create(:batched_background_migration_job, :failed,
+            batched_migration: batched_migration,
+            min_cursor: [101],
+            max_cursor: [200],
+            attempts: 2)
+        end
+
+        it 'does not reset its attempts' do
+          expect { retry_failed_jobs }.not_to change { retryable_job.reload.attempts }
+        end
+      end
+    end
   end
 
   describe '#should_stop?' do
@@ -749,14 +817,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'with preloaded batched migration' do
-      it 'avoids N+1' do
-        create_list(:batched_background_migration_job, 11, **common_attrs.merge(started_at: end_time - 10.seconds))
+      before do
+        create_list(:batched_background_migration_job, 3, **common_attrs.merge(started_at: end_time - 10.seconds))
+      end
 
+      it 'avoids N+1' do
         control = ActiveRecord::QueryRecorder.new do
-          migration.smoothed_time_efficiency(number_of_jobs: 10)
+          migration.smoothed_time_efficiency(number_of_jobs: 2)
         end
 
-        expect { migration.smoothed_time_efficiency(number_of_jobs: 11) }.not_to exceed_query_limit(control)
+        expect { migration.smoothed_time_efficiency(number_of_jobs: 3) }.not_to exceed_query_limit(control)
       end
     end
   end
@@ -1205,7 +1275,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
     let(:batched_migration) { create(:batched_background_migration, table_name: :users, job_class_name: job_class_name) }
 
-    context 'when tables to check for vacuum are not specifed' do
+    context 'when tables to check for vacuum are not specified' do
       it 'defaults to [table_name]' do
         expect(batched_migration.health_context_tables).to match_array(['users'])
       end

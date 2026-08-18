@@ -499,7 +499,7 @@ like this example:
 
 {{< history >}}
 
-- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 
 {{< /history >}}
 
@@ -580,16 +580,12 @@ and as follows.
 
 ### `sidekiq.log`
 
-{{< history >}}
-
-- The default log format for Helm chart installations [changed from `text` to `json`](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169) in GitLab 16.0 and later.
-
-{{< /history >}}
-
 This log is located:
 
 - In the `/var/log/gitlab/sidekiq/current` file on Linux package installations.
 - In the `/home/git/gitlab/log/sidekiq.log` file on self-compiled installations.
+
+The default log format for GitLab Helm chart installations is `json`.
 
 GitLab uses background jobs for processing tasks which can take a long
 time. All information about processing these jobs are written to this
@@ -813,12 +809,6 @@ are recorded in this file. For example:
 
 ## `ci_resource_groups_json.log`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
-
-{{< /history >}}
-
 This log is located:
 
 - In the `/var/log/gitlab/gitlab-rails/ci_resource_groups_json.log` file on Linux package installations.
@@ -886,12 +876,6 @@ GraphQL queries are recorded in the file. For example:
 
 ## `clickhouse.log`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
-
-{{< /history >}}
-
 This log is located:
 
 - In the `/var/log/gitlab/gitlab-rails/clickhouse.log` file on Linux package installations.
@@ -922,12 +906,6 @@ Its name and path are configurable, so the name and path may not match this one
 documented previously.
 
 ## `web_hooks.log`
-
-{{< history >}}
-
-- Introduced in GitLab 16.3.
-
-{{< /history >}}
 
 This log is located:
 
@@ -999,12 +977,6 @@ This log is located:
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
-
-{{< /history >}}
 
 This file logs information related to [exact code search](../../user/search/exact_code_search.md).
 
@@ -1199,12 +1171,6 @@ can be used.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
-
-{{< /history >}}
-
 The `llm.log` file logs information related to
 [AI features](../../user/gitlab_duo/_index.md). Logging includes information about AI events.
 
@@ -1212,7 +1178,7 @@ The `llm.log` file logs information related to
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a feature flag](../feature_flags/_index.md) named `expanded_ai_logging`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13401) in GitLab 17.2 [with a feature flag](../feature_flags/_index.md) named `expanded_ai_logging`. Disabled by default.
 
 {{< /history >}}
 
@@ -1264,12 +1230,6 @@ The log file is located at:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
-
-{{< /history >}}
-
 The `epic_work_item_sync.log` file logs information related to syncing and migrating epics as work items.
 
 This log is located:
@@ -1286,12 +1246,6 @@ This log is located:
 - Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812) in GitLab 16.7.
-
-{{< /history >}}
 
 The `secret_push_protection.log` file logs information related to [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
 

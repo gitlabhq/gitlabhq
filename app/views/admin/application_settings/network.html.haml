@@ -129,6 +129,8 @@
 
 = render 'members_api_limits'
 
+= render 'web_hook_limits'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Import and export rate limits'),
   id: 'js-import-export-limits-settings',
   expanded: expanded_by_default?) do |c|

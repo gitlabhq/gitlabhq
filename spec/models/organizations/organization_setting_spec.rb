@@ -142,7 +142,7 @@ RSpec.describe Organizations::OrganizationSetting, type: :model, feature_categor
         new_settings = settings
 
         expect(new_settings.organization).to eq(organization)
-        expect(new_settings.new_record?).to eq(true)
+        expect(new_settings.new_record?).to be(true)
       end
     end
   end

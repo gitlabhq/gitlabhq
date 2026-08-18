@@ -172,18 +172,18 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     end
 
     context 'on searching with exact_matches_first' do
-      let(:search_arguments) { { exact_matches_first: true, search: private_maintainer_group.path } }
+      let(:search_arguments) { { exact_matches_first: true, search: private_maintainer_group.full_path } }
       let(:other_groups) { [] }
 
       before do
         2.times do
-          new_group = create(:group, :private, path: "1-#{SecureRandom.hex}-#{private_maintainer_group.path}", parent: root_group)
+          new_group = create(:group, :private, path: "1-#{SecureRandom.hex}-#{private_maintainer_group.path}", parent: private_maintainer_group)
           new_group.add_owner(current_user)
           other_groups << new_group
         end
       end
 
-      it 'prioritizes exact matches first', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4002' do
+      it 'prioritizes exact matches first' do
         expect(result.first).to eq(private_maintainer_group)
         expect(result[1..]).to match_array(other_groups)
       end

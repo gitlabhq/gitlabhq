@@ -464,7 +464,7 @@ title: Application Settings analysis
 | `spp_repository_pipeline_access` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `static_objects_external_storage_auth_token` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `static_objects_external_storage_url` | `false` | `character` | `string` | `false` | `null` | `true` | `false`| `true` |
-| `suggest_pipeline_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `suggest_pipeline_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `telesign_api_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `telesign_customer_xid` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `terminal_max_session_time` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |

@@ -7,6 +7,9 @@ module Mutations
 
       description 'Toggles the resolved state of a discussion'
 
+      authorize_granular_token permissions: :update_note,
+        boundary_argument: :id, boundary: :resource_parent, boundary_type: :project
+
       argument :id,
         Types::GlobalIDType[Discussion],
         required: true,

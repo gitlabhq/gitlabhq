@@ -48,18 +48,15 @@ module QA
           {
             'using docker:24.0.1 and a personal access token' => {
               authentication_token_type: :personal_access_token,
-              token_name: 'Personal access token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412817'
+              token_name: 'Personal access token'
             },
             'using docker:24.0.1 and a project deploy token' => {
               authentication_token_type: :project_deploy_token,
-              token_name: 'Deploy Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412818'
+              token_name: 'Deploy Token'
             },
             'using docker:24.0.1 and a ci job token' => {
               authentication_token_type: :ci_job_token,
-              token_name: 'Job Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412819'
+              token_name: 'Job Token'
             }
           }
         end
@@ -87,7 +84,7 @@ module QA
             end
           end
 
-          it "pushes image and deletes tag", :registry, testcase: params[:testcase] do
+          it "pushes image and deletes tag", :registry do
             create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
               {
                 action: 'create',
@@ -136,11 +133,7 @@ module QA
       end
 
       context 'when tls is enabled' do
-        it(
-          'pushes image and deletes tag',
-          :registry_tls,
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347591'
-        ) do
+        it 'pushes image and deletes tag', :registry_tls do
           create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
             {
               action: 'create',

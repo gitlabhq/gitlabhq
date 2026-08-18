@@ -21,15 +21,15 @@ GitLab includes reports from any job in any stage in the pipeline.
 Coverage visualization uses the [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report)
 keyword. It does not display a coverage percentage in the MR widget or populate coverage history graphs.
 To display a coverage percentage, configure the
-[`coverage`](../../../ci/yaml/_index.md#coverage) keyword separately.
+[`coverage`](../../yaml/_index.md#coverage) keyword separately.
 
 The [Cobertura XML](https://cobertura.github.io/cobertura/) format was originally
 developed for Java, but most coverage frameworks support it through plugins or built-in
 exporters:
 
-- [simplecov-cobertura](https://rubygems.org/gems/simplecov-cobertura) (Ruby)
-- [gocover-cobertura](https://github.com/boumenot/gocover-cobertura) (Go)
-- [cobertura](https://www.npmjs.com/package/cobertura) (Node.js)
+- [`simplecov-cobertura`](https://rubygems.org/gems/simplecov-cobertura) (Ruby)
+- [`gocover-cobertura`](https://github.com/boumenot/gocover-cobertura) (Go)
+- [`cobertura`](https://www.npmjs.com/package/cobertura) (Node.js)
 - [Istanbul](https://istanbul.js.org/docs/advanced/alternative-reporters/#cobertura) (JavaScript)
 - [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.0.4/cmd.html#xml-reporting) (Python)
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit-documentation-english/blob/master/src/textui.rst#command-line-options) (PHP)
@@ -252,7 +252,7 @@ The following `.gitlab-ci.yml` example uses:
 
 - [`rspec`](https://rspec.info/) to run tests.
 - [`simplecov`](https://github.com/simplecov-ruby/simplecov) and
-  [`simplecov-cobertura`](https://github.com/dashingrocket/simplecov-cobertura) to record
+  [`simplecov-cobertura`](https://github.com/jessebs/simplecov-cobertura) to record
   the coverage profile and create a report in Cobertura XML format.
 
 This example assumes:

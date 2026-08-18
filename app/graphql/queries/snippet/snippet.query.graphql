@@ -5,6 +5,7 @@ query GetSnippetQuery($ids: [SnippetID!], $projectId: ProjectID) {
       __typename
       id
       title
+      titleHtml
       description
       descriptionHtml
       createdAt

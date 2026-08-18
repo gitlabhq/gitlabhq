@@ -62,5 +62,12 @@ RSpec.describe Resolvers::MergeRequestPipelinesResolver, feature_category: :cont
       expect(pipelines.first).to eq(mr_pipeline)
       expect(pipelines.index(mr_pipeline)).to be < pipelines.index(branch_pipeline)
     end
+
+    it 'generates the merge_request_event_first ORDER BY clause only once' do
+      resolver = described_class.new(object: merge_request, context: query_context, field: nil)
+      relation = resolver.query_for([merge_request, {}])
+
+      expect(relation.to_sql.scan('CASE').size).to eq(1)
+    end
   end
 end

@@ -42,6 +42,7 @@ RSpec.describe MergeRequests::PipelineEntity, feature_category: :continuous_inte
       expect(subject[:flags]).to include(:merge_request_pipeline, :merged_result_pipeline, :merge_train_pipeline)
 
       expect(subject[:details][:event_type_name]).to eq('Merged results pipeline')
+      expect(subject[:project_full_path]).to eq(project.full_path)
     end
 
     it 'returns presented coverage' do

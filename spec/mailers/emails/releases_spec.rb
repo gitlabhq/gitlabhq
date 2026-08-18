@@ -35,20 +35,26 @@ RSpec.describe Emails::Releases do
       end
     end
 
-    it 'contains a message with the new release tag' do
-      message = "A new Release #{release.tag} for #{release.project.name} was published."
-      is_expected.to have_body_text(message)
+    it 'contains a message linking the project', :aggregate_failures do
+      is_expected.to have_body_text('A new release for')
+      is_expected.to have_body_text(release.project.name)
+      is_expected.to have_body_text('was published.')
     end
 
-    it 'contains the release assets' do
-      is_expected.to have_body_text('Assets:')
-      release.sources do |source|
+    it 'links to the releases page', :aggregate_failures do
+      is_expected.to have_body_text('Releases page')
+      is_expected.to have_body_text(project_releases_url(release.project))
+    end
+
+    it 'contains the release assets', :aggregate_failures do
+      is_expected.to have_body_text('Assets')
+      release.sources.each do |source|
         is_expected.to have_body_text("Download #{source.format}")
       end
     end
 
     it 'contains the release notes' do
-      is_expected.to have_body_text('Release notes:')
+      is_expected.to have_body_text('Release notes')
       is_expected.to have_body_text(release.description)
     end
 

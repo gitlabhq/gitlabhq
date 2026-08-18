@@ -12,14 +12,6 @@ title: Emoji reactions
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
-- Reacting with emoji on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
-- Reacting with emoji on design discussion comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29756) in GitLab 16.2.
-
-{{< /history >}}
-
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. React with emoji on:
 
@@ -55,16 +47,6 @@ To remove an emoji reaction, select the emoji again.
 
 ## Custom emoji
 
-{{< history >}}
-
-- [Introduced for GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 13.6 [with a feature flag](../administration/feature_flags/_index.md) named `custom_emoji`. Disabled by default.
-- Enabled on GitLab.com in GitLab 14.0.
-- UI to add emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333095) in GitLab 16.2.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138969) in GitLab 16.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/231317) in GitLab 16.9. Feature flag `custom_emoji` removed.
-
-{{< /history >}}
-
 Custom emoji show in the emoji picker everywhere you can react with emoji.
 
 To add an emoji reaction to a comment or description:
@@ -79,12 +61,6 @@ To use them in a text box, type the filename between two colons.
 For example, `:thank-you:`.
 
 ### Upload custom emoji to a group
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128355) in GitLab 16.5.
-
-{{< /history >}}
 
 Upload your custom emoji to a group to use them in all its subgroups and projects.
 

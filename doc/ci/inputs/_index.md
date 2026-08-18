@@ -33,13 +33,13 @@ can be used in similar ways, but have different benefits:
 
 Inputs:
 
-- **Purpose**: Defined in CI configurations (templates, components or `.gitlab-ci.yml`) and assigned values
+- **Purpose**: Defined in CI/CD configurations (templates, components, or `.gitlab-ci.yml`) and assigned values
   when a pipeline is triggered, allowing consumers to customize reusable CI configurations.
 - **Modification**: Once passed at pipeline initialization, input values are interpolated in the CI/CD
   configuration and remain fixed for the entire pipeline run.
-- **Scope**: Available only in the file they are defined, whether in the `.gitlab-ci.yml` or a file
-  being `include`d. You can pass them explicitly to other files - using `include:inputs` - or pipeline
-  using `trigger:inputs`.
+- **Scope**: Available only in the file where they are defined, whether in the `.gitlab-ci.yml` or a file
+  being `include`d. You can pass them explicitly to other files by using `include:inputs`,
+  or to a pipeline by using `trigger:inputs`.
 - **Validation**: Provide robust validation capabilities including type checking, regex patterns,
   predefined option lists, and helpful descriptions for users.
 
@@ -51,7 +51,7 @@ CI/CD Variables:
   conditional rules, or directly in job scripts.
 - **Scope**: Can be defined globally (affecting all jobs), at the job level (affecting only specific jobs),
   or for the entire project or group through the GitLab UI.
-- **Validation**: Simple key-value pairs with minimal built-in validation, though you can add some controls through
+- **Validation**: Key-value pairs with minimal built-in validation, though you can add some controls through
   the GitLab UI for project variables.
 
 ## Define input parameters with `spec:inputs`
@@ -216,10 +216,15 @@ test_job:
 #### Array type
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
-like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. When using the value of an array
-input in a string (for example `echo "My rules: $[[ inputs.rules-config ]]"` in your `script:` section), you might
-see unexpected results. The array input is converted to its string representation, which might not match your
-expectations for complex YAML structures such as maps.
+like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. To reuse a list across
+configuration files, define it as an array input in an
+[external file](#define-pipeline-inputs-in-external-files), which also lets you
+[extend it with additional items](#extend-an-array-input-with-additional-items).
+
+When using the value of an array input in a string (for example
+`echo "My rules: $[[ inputs.rules-config ]]"` in your `script:` section), you might see unexpected results.
+The array input is converted to its string representation, which might not match your expectations for
+complex YAML structures such as maps.
 
 ```yaml
 spec:
@@ -246,6 +251,33 @@ when manually passing inputs for:
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
 - [Pipeline schedules](../pipelines/schedules.md#create-a-pipeline-schedule)
 
+##### Extend an array input with additional items
+
+When an array input is an entire item in an array, its items are added to the surrounding
+array rather than nested inside it. Use this to extend a shared list with additional items:
+
+```yaml
+spec:
+  inputs:
+    tags:
+      type: array
+---
+
+test_job:
+  tags:
+    - $[[ inputs.tags ]]
+    - additional-tag
+  script: ls
+```
+
+With an input value of `[shared-tag-1, shared-tag-2]`, `test_job` uses
+`[shared-tag-1, shared-tag-2, additional-tag]`.
+
+The input must be the entire array item. When an array item combines the input with other
+text, for example `- prefix-$[[ inputs.tags ]]`, the input is
+[interpolated as a string](#input-types) instead, and the item becomes a single string
+containing the string representation of the array.
+
 ##### Array inputs with options
 
 {{< history >}}
@@ -255,7 +287,7 @@ when manually passing inputs for:
 {{< /history >}}
 
 You can define a list of options to restrict the allowed values for array inputs.
-When you run a pipeline manually, the UI displays a multi-select dropdown
+When you run a pipeline manually, the UI displays a multi-select dropdown list
 instead of a text field. For example:
 
 ```yaml
@@ -462,7 +494,7 @@ deploy:
 ```
 
 In this example, the `requires_approval` input is set to `true` when `deployment_type` is either
-`canary` or `blue-green`. In all other cases, the default is `false` and both `true` or `false` are allowed options.
+`canary` or `blue-green`. In all other cases, the default is `false` and both `true` and `false` are allowed options.
 
 ### Allow user-entered values with `default: null`
 
@@ -472,9 +504,8 @@ In this example, the `requires_approval` input is set to `true` when `deployment
 
 {{< /history >}}
 
-Use `spec:inputs:rules` with `default: null` and without `options` to allow users to enter
-their own value for an input. This is useful for workflow-specific values like environment names
-or test configurations.
+Use `spec:inputs:rules` with `default: null` and without `options`
+so users can enter their own value, such as environment names or test configurations.
 
 For example:
 
@@ -496,8 +527,8 @@ deploy:
   script: echo "Config: $[[ inputs.custom_config ]]"
 ```
 
-In this example, when `deployment_type` is `custom`, the `custom_config` input is listed on the run pipeline page
-and users must enter a value for the input.
+In this example, when `deployment_type` is `custom`, the `custom_config` input appears on
+the **Run new pipeline** page and users must enter a value for it.
 
 ### Use boolean inputs with `spec:inputs:rules`
 
@@ -592,7 +623,7 @@ include:
 
 {{< /history >}}
 
-Inputs provide advantages over variables including type checking, validation and a clear contract.
+Inputs provide advantages over variables including type checking, validation, and a clear contract.
 Unexpected inputs are rejected.
 Inputs for pipelines must be defined in the [`spec:inputs` header](#define-input-parameters-with-specinputs)
 of the main `.gitlab-ci.yml` file. You cannot use inputs defined in included files for pipeline-level configuration.
@@ -702,7 +733,7 @@ If the file is stored outside your project, you can use:
 
 - `project` for files in another GitLab project. Use the full project path and define the filename with `file`.
   You can optionally also define the `ref` to fetch the file from.
-- `remote` for file on another server. Use the full URL to the file.
+- `remote` for a file on another server. Use the full URL to the file.
 
 You can also include multiple input files at the same time, for example:
 
@@ -893,12 +924,10 @@ test-job:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19368) in GitLab 19.2
   [with a feature flag](../../administration/feature_flags/_index.md) named `ci_interpolation_split_function`.
   Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603990) in GitLab 19.2.
+  Feature flag `ci_interpolation_split_function` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use `split` to divide a string input into an array of substrings on a separator. For example:
 

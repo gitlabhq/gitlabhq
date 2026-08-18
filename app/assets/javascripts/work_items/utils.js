@@ -393,6 +393,27 @@ export const makeDetailPanelUrlParam = (activeItem, fullPath, issuableType = TYP
   );
 };
 
+/**
+ * Decodes the `show` detail panel query param and finds the matching item in `items` by id.
+ * Returns a null `item` when there's no id, the item is already active, or it isn't in `items`
+ * (callers can use `notFound` to tell the last case apart from the other two, e.g. to clean up
+ * a stale param).
+ * @param {string} queryParam - the raw (still base64-encoded) `show` query param value
+ * @param {Object[]} items
+ * @param {{id?: string}} activeItem
+ * @returns {{item: Object|null, notFound: boolean}}
+ */
+export const findDetailPanelWorkItem = (queryParam, items, activeItem) => {
+  const { id, full_path: fullPath } = JSON.parse(atob(queryParam));
+
+  if (!id || getIdFromGraphQLId(activeItem?.id) === id) {
+    return { item: null, notFound: false };
+  }
+
+  const item = items.find((i) => getIdFromGraphQLId(i.id) === id);
+  return item ? { item: { ...item, fullPath }, notFound: false } : { item: null, notFound: true };
+};
+
 export const getAutosaveKeyQueryParamString = () => {
   const allowedKeysInQueryParamString = [
     'vulnerability_id',

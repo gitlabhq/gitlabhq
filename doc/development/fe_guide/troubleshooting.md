@@ -21,7 +21,7 @@ This issue can happen in Vue component tests, when an expectation fails, but the
 Jest tries to pretty print the diff in the console. It's been noted that using `toEqual` with an array as a
 property might also be a contributing factor.
 
-See [this video](https://youtu.be/-BkEhghP-kM) for an in-depth overview and investigation.
+See [this video](https://www.youtube.com/watch?v=-BkEhghP-kM) for an in-depth overview and investigation.
 
 **Remedy - Try cloning the object that has Vue watchers**
 

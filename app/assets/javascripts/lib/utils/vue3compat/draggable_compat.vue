@@ -1,9 +1,12 @@
 <script>
 import Draggable from 'vuedraggable';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'DraggableCompat',
   components: { Draggable },
+  mixins: [glSlotsMixin, glListenersMixin],
   props: {
     modelValue: {
       type: Array,
@@ -45,7 +48,7 @@ export default {
     itemSlot(element) {
       if (!this.isVue3) return null;
 
-      const slotContent = this.$scopedSlots.default?.();
+      const slotContent = this.glSlots().default?.();
       if (!slotContent?.length) return null;
 
       const firstNode = slotContent[0];
@@ -71,11 +74,11 @@ export default {
 
 <template>
   <!-- Vue 2 mode: render default slot (user v-for) -->
-  <draggable v-if="!isVue3" v-bind="props" v-on="$listeners">
-    <template #default>
+  <draggable v-if="!isVue3" v-bind="props" v-on="glListeners()">
+    <template v-if="glSlots().default" #default>
       <slot></slot>
     </template>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </draggable>
@@ -95,7 +98,7 @@ export default {
     <template #item="slotProps">
       <component :is="itemSlot(slotProps.element)" v-bind="slotProps" />
     </template>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </draggable>

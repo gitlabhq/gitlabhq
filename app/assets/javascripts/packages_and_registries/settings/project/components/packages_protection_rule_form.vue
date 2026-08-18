@@ -59,10 +59,10 @@ export default {
         packageNamePattern: this.rule?.packageNamePattern ?? '',
         packageType: this.rule?.packageType ?? 'NPM',
         minimumAccessLevelForPush: this.isExistingRule()
-          ? this.rule.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL
+          ? (this.rule.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL)
           : GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
         minimumAccessLevelForDelete: this.isExistingRule()
-          ? this.rule.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL
+          ? (this.rule.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL)
           : GRAPHQL_ACCESS_LEVEL_VALUE_OWNER,
       },
       updateInProgress: false,

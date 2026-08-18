@@ -702,7 +702,7 @@ RSpec.shared_examples 'finished builds finder execution' do
     it 'redacts sensitive values' do
       sql = instance.for_project(123).to_redacted_sql
 
-      expect(sql).to include('$1')
+      expect(sql).to include('?')
       expect(sql).not_to include('123')
     end
   end

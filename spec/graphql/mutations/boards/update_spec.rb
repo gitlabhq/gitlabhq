@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Boards::Update, feature_category: :api do
+RSpec.describe Mutations::Boards::Update, feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

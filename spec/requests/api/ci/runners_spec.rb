@@ -266,7 +266,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
               perform_request
 
               expect(json_response).to all(include('job_execution_status'))
-            end.not_to exceed_query_limit(control)
+            end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
           end
         end
       end
@@ -371,7 +371,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
                 perform_request
 
                 expect(json_response).to all(include('job_execution_status'))
-              end.not_to exceed_query_limit(control)
+              end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
             end
           end
         end
@@ -462,7 +462,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
             expect do
               perform_request
-            end.not_to exceed_query_limit(control)
+            end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
           end
         end
 
@@ -1621,7 +1621,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
               expect do
                 get api(path, current_user)
-              end.not_to exceed_query_limit(control)
+              end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
             end
           end
         end
@@ -2283,7 +2283,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         end
 
         it 'batches loading of commits' do
-          project_with_repo = create(:project, :repository)
+          project_with_repo = create(:project, :small_repo)
           shared_runner_manager1 = create(:ci_runner_machine, runner: shared_runner, system_xid: 'id1')
 
           pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b')

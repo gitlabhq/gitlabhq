@@ -24,7 +24,7 @@ module Users
       active_user_count_threshold: 18,           # EE-only
       buy_pipeline_minutes_notification_dot: 19, # EE-only
       personal_access_token_expiry: 21,          # EE-only
-      suggest_pipeline: 22,
+      suggest_pipeline: 22,                      # no longer in use
       feature_flags_new_version: 24,
       registration_enabled_callout: 25,
       new_user_signups_cap_reached: 26,          # EE-only
@@ -128,11 +128,12 @@ module Users
       single_origin_fallback_callout: 124,
       duo_panel_auto_expanded: 125, # EE-only
       # 126 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227807
-      work_items_onboarding_modal: 127,
+      # 127 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242625
       duo_panel_empty_state_auto_expanded: 128, # EE-only
       inline_blame_popover: 129,
-      security_manager_role: 130,
-      secrets_manager_nav_badge: 131 # EE-only
+      # 130 removed in revert of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237413
+      secrets_manager_nav_badge: 131, # EE-only
+      feature_library_shimmer_seen: 132
     }
 
     validates :feature_name,

@@ -1,8 +1,8 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash-es';
 import { nextTick } from 'vue';
 import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import ReleaseBlockDetails from '~/releases/components/release_block_details.vue';
 
@@ -13,7 +13,7 @@ describe('Release block details', () => {
   let release;
 
   const factory = async (props = {}) => {
-    wrapper = mount(ReleaseBlockDetails, {
+    wrapper = mountExtended(ReleaseBlockDetails, {
       propsData: {
         author: originalRelease.author,
         commit: originalRelease.commit,
@@ -36,6 +36,7 @@ describe('Release block details', () => {
     release = cloneDeep(originalRelease);
   });
 
+  const authorName = () => wrapper.findByTestId('user-avatar-link-username');
   const commitInfoSection = () => wrapper.find('.js-commit-info');
   const commitInfoSectionLink = () => {
     const section = commitInfoSection();
@@ -82,6 +83,18 @@ describe('Release block details', () => {
       expect(commitLink.exists()).toBe(true);
       expect(commitLink.text()).toBe(release.tagName);
       expect(commitLink.attributes('href')).toBe(release.tagPath);
+    });
+  });
+
+  describe('with a very long author display name', () => {
+    const longName =
+      'Aaaaaaaaaa Bbbbbbbbbb Cccccccccc (Distributed Platform Engineering, Region 1234567890)';
+
+    beforeEach(() => factory({ author: { ...originalRelease.author, name: longName } }));
+
+    it('renders the full name as text (reachable via popover) and truncates it', () => {
+      expect(authorName().text()).toBe(longName);
+      expect(authorName().classes()).toContain('gl-truncate');
     });
   });
 

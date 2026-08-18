@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Pipeline::PostProcessPipeline, feature_category: :markdown do
   subject { described_class.call(doc, context) }
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
 
   let(:context) { { project: project, ref: 'master' } }
 

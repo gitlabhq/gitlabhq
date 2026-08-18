@@ -59,7 +59,7 @@ For more information, see [scopes](_index.md#scopes).
 {{< history >}}
 
 - Alias `assignees` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
-- Support for querying epics by assignees [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Support for querying epics by assignees [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -115,7 +115,7 @@ For more information, see [scopes](_index.md#scopes).
 
 - Alias `closedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
-- Support for querying epics by closed date [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Support for querying epics by closed date [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -130,7 +130,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Confidential {#workitem-confidential}
 
@@ -171,7 +170,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Custom field {#workitem-custom-field}
 
@@ -183,7 +181,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/233) in GitLab 18.3.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/233) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -204,7 +202,7 @@ For more information, see [scopes](_index.md#scopes).
 
 - Alias `dueDate` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
-- Support for querying epics by due date [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Support for querying epics by due date [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -219,7 +217,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Epic {#workitem-epic}
 
@@ -254,7 +251,7 @@ For more information, see [scopes](_index.md#scopes).
 {{< history >}}
 
 - Alias `healthStatus` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
-- Support for querying epics by health status [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Support for querying epics by health status [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -269,7 +266,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/92) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/92) in GitLab 17.8.
 - Support for querying epics by ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
 {{< /history >}}
@@ -285,7 +282,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/106) in GitLab 17.10.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/106) in GitLab 17.10.
 - Support for this field to be used with epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
 {{< /history >}}
@@ -312,7 +309,7 @@ For more information, see [scopes](_index.md#scopes).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
-- Support for iteration value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/79) in GitLab 17.8.
+- Support for iteration value types [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/79) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -334,7 +331,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- Support for label value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/79) in GitLab 17.8.
+- Support for label value types [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/79) in GitLab 17.8.
 - Alias `labels` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Support for querying epics by labels [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
@@ -357,7 +354,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- Support for milestone value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/77) in GitLab 17.8.
+- Support for milestone value types [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/77) in GitLab 17.8.
 - Support for querying epics by milestone [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
 {{< /history >}}
@@ -381,7 +378,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/223) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -404,7 +401,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/96) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/96) in GitLab 17.8.
 - Support for querying epics by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
 {{< /history >}}
@@ -441,7 +438,7 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/223) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -471,7 +468,6 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
-- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 ### Weight {#workitem-weight}
 
@@ -500,7 +496,7 @@ For more information, see [scopes](_index.md#scopes).
 - Field `lastComment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
 - Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 - Field `status` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
-- Fields `health` and `type` in epics [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Fields `health` and `type` in epics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -522,7 +518,7 @@ For more information, see [scopes](_index.md#scopes).
 | Last comment     | `lastComment`                         | All             | Display the last comment made on the object |
 | Milestone        | `milestone`                           | All             | Display the milestone associated with the object |
 | Parent           | `parent`                              | All             | Display a link to the parent work item or epic |
-| Progress         | `progress`                            | Objective and Key Result only | Display the progress percentage (0–100) of the work item |
+| Progress         | `progress`                            | Objective and Key Result only | Display the progress percentage (0-100) of the work item |
 | Project          | `project`                             | All except Epic | Display the project the work item belongs to |
 | Start date       | `start`, `startDate`                  | Epic only       | Display the start date of the epic |
 | State            | `state`                               | All             | Display a badge indicating the state. Values are `Open` or `Closed` |
@@ -539,8 +535,8 @@ For more information, see [scopes](_index.md#scopes).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/178) in GitLab 18.2.
-- Support for sorting epics by health status [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/178) in GitLab 18.2.
+- Support for sorting epics by health status [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/222) in GitLab 18.3.
 
 {{< /history >}}
 

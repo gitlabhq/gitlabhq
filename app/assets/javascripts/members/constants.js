@@ -216,11 +216,6 @@ export const SORT_QUERY_PARAM_NAME = 'sort';
 export const ACTIVE_TAB_QUERY_PARAM_NAME = 'tab';
 export const ACTIVE_SUBTAB_QUERY_PARAM = 'subtab';
 
-// The Direct members tab must always include this page param so the backend
-// loads direct members via the dedicated finder (correct, complete pagination)
-// instead of deriving them in-memory from the combined members page.
-export const DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME = 'direct_members_page';
-
 export const MEMBER_ACCESS_LEVEL_PROPERTY_NAME = 'access_level';
 
 export const GROUP_LINK_BASE_PROPERTY_NAME = 'group_link';

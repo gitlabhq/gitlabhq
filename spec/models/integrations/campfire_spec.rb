@@ -43,7 +43,7 @@ RSpec.describe Integrations::Campfire, feature_category: :integrations do
 
   describe "#execute" do
     let(:user)    { build_stubbed(:user) }
-    let(:project) { build_stubbed(:project, :repository) }
+    let(:project) { build_stubbed(:project) }
 
     before do
       @campfire_integration = described_class.new

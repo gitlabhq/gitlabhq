@@ -220,7 +220,7 @@ The Auto dependency scanning stage is skipped on licenses other than
 [Ultimate](https://about.gitlab.com/pricing/).
 
 After creating the report, it's uploaded as an artifact which you can later download and
-check out. The merge request widget displays any security warnings detected,
+check out. The merge request widget displays any security warnings detected.
 
 For more information, see
 [dependency scanning](../../user/application_security/dependency_scanning/_index.md).
@@ -435,8 +435,8 @@ including support for `Deployment` in the `extensions/v1beta1` version.
 
 To use Auto Deploy on a Kubernetes 1.16+ cluster:
 
-1. If you are deploying your application for the first time in GitLab 13.0 or
-   later, no configuration should be required.
+1. If you are deploying your application for the first time,
+   no configuration should be required.
 1. If you have an in-cluster PostgreSQL database installed with
    `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the
    [guide to upgrade PostgreSQL](upgrading_postgresql.md).
@@ -490,7 +490,7 @@ used in Auto Deploy
 
 To run a worker, you must ensure the worker can respond to
 the standard health checks, which expect a successful HTTP response on port
-`5000`. For [Sidekiq](https://github.com/mperham/sidekiq), you can use
+`5000`. For [Sidekiq](https://github.com/sidekiq/sidekiq), you can use
 the [`sidekiq_alive` gem](https://rubygems.org/gems/sidekiq_alive).
 
 To work with Sidekiq, you must also ensure your deployments have
@@ -542,11 +542,11 @@ For example, to start a Rails console from the application root directory, run:
 ## Auto Code Intelligence
 
 [GitLab code intelligence](../../user/project/code_intelligence.md) adds
-code navigation features common to interactive development environments (IDE),
+code navigation features common to integrated development environments (IDEs),
 including type signatures, symbol documentation, and go-to definition. It's powered by
 [LSIF](https://lsif.dev/) and available for Auto DevOps projects using Go language only.
 GitLab plans to add support for more languages as more LSIF indexers become available.
-You can follow the [code intelligence epic](https://gitlab.com/groups/gitlab-org/-/epics/4212)
+You can follow the [code intelligence epic](https://gitlab.com/groups/gitlab-org/-/work_items/4212)
 for updates.
 
 This stage is enabled by default. You can disable it by adding the

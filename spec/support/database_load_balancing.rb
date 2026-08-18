@@ -5,14 +5,14 @@ RSpec.configure do |config|
     old_proxies = {}
 
     Gitlab::Database::LoadBalancing.base_models.each do |model|
-      old_proxies[model] = [model.load_balancer, model.connection, model.sticking]
+      old_proxies[model] = [model.load_balancer, model.connection_proxy, model.sticking]
 
       config = Gitlab::Database::LoadBalancing::Configuration
         .new(model, [model.connection_db_config.configuration_hash[:host]])
 
       model.load_balancer = Gitlab::Database::LoadBalancing::LoadBalancer.new(config)
       model.sticking = Gitlab::Database::LoadBalancing::Sticking.new(model.load_balancer)
-      model.connection = Gitlab::Database::LoadBalancing::ConnectionProxy.new(model.load_balancer)
+      model.connection_proxy = Gitlab::Database::LoadBalancing::ConnectionProxy.new(model.load_balancer)
     end
 
     Gitlab::Database::LoadBalancing::SessionMap.clear_session
@@ -28,7 +28,7 @@ RSpec.configure do |config|
     redis_shared_state_cleanup!
 
     old_proxies.each do |model, proxy|
-      model.load_balancer, model.connection, model.sticking = proxy
+      model.load_balancer, model.connection_proxy, model.sticking = proxy
     end
   end
 end

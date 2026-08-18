@@ -52,7 +52,7 @@ The child pipeline consists of several stages that support E2E test execution.
 
 #### prepare
 
-- `dotenv-vars` job is responsible to create an artifact out of the `qa/performance_test` folder which consists of all the k6 performance test. This artifact will be downloaded by downstream pipeline jobs to run the tests. It also stores some env vars like `CI_JOB_NAME`, `CI_JOB_ID` and `GITLAB_HELM_CHART_REF` as can be seen in the [job definition](https://gitlab.com/gitlab-org/gitlab/-/blob/andywh/perf_testing_in_mr/.gitlab/ci/performance-on-cng/main.gitlab-ci.yml#L52-54), which will be used by `run-performance-tests` job
+- `dotenv-vars` job is responsible to create an artifact out of the `qa/performance_test` folder which consists of all the k6 performance test. This artifact will be downloaded by downstream pipeline jobs to run the tests. It also stores some env vars like `CI_JOB_NAME`, `CI_JOB_ID`, and `GITLAB_HELM_CHART_REF` as can be seen in the [job definition](https://gitlab.com/gitlab-org/gitlab/-/blob/andywh/perf_testing_in_mr/.gitlab/ci/performance-on-cng/main.gitlab-ci.yml#L52-54), which will be used by `run-performance-tests` job
 
 #### test
 
@@ -127,10 +127,10 @@ You can currently give any value for `TTFB_THRESHOLD` and `RPS_THRESHOLD` as the
 
 You can refer to other test present in [`qa/performance_test/k6_test`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/performance_test/k6_test?ref_type=heads) to write your tests.
 
-If you tests required data in the environment you can update the [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads) file to add the resources you need to create.
+If your tests require data in the environment, you can update the [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads) file to add the resources you need to create.
 
 > [!note]
-> Do not remove any existing resources being created form [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads).
+> Do not remove any existing resources being created from [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads).
 
 [Component Performance testing](https://gitlab.com/gitlab-org/quality/component-performance-testing) currently doesn't support multiple seed files but this will be addressed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/76>
 
@@ -192,6 +192,7 @@ Jobs in `test` stage:
 - `cng-relative-url` runs the smoke suite, `Test::Instance::Smoke`, but with a relative URL set for CNG
 - `cng-oauth` runs e2e spec for authentication between GitHub and GitLab with OmniAuth enabled.
 - `cng-secrets-manager` runs the Secrets Manager scenario `Test::Integration::SecretsManager` against CNG deployed with OpenBao enabled
+- `cng-vue3-rollout` runs the Vue 3 rollout scenario `Test::Instance::Vue3Rollout` against CNG deployed with the `vue3_migrate_jobs` feature flag enabled
 
 ##### report
 
@@ -243,16 +244,14 @@ This stage is responsible for [allure test report](_index.md#allure-report) gene
 
 ## `e2e:test-on-gdk`
 
-The `e2e:test-on-gdk` child pipeline supports development of the GitLab platform by providing feedback to engineers on
-end-to-end test execution faster than via `e2e:test-on-omnibus-ee`.
+The `e2e:test-on-gdk` child pipeline runs end-to-end tests against the
+[GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK).
+It runs only on the scheduled `master` pipeline and does not run on merge request pipelines,
+where end-to-end coverage is provided by [`e2e:test-on-cng`](#e2etest-on-cng).
 
-This is achieved by running tests against the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK),
-which can be built and installed in less time than when testing against [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
-The trade-off is that Omnibus GitLab can be used to deploy a production installation, whereas the GDK is a development
-environment. Tests that run against the GDK might not catch bugs that depend on part of the process of preparing GitLab
-to run in a production environment, including pre-compiling assets, assigning configuration defaults as part of an official
-installation package, deploying GitLab services to multiple servers, and more. On the other hand, engineers who use the
-GDK day-to-day can benefit from automated tests catching bugs that only appear on the GDK.
+`e2e:test-on-cng` and `e2e:test-on-omnibus-ee` are the preferred pipelines because they run against
+production-like environments. `e2e:test-on-gdk` is being deprecated in favor of these pipelines. For more
+information, see [Stop running E2E tests against GDK](https://gitlab.com/groups/gitlab-org/quality/test-governance/-/work_items/5).
 
 ### Setup
 
@@ -262,12 +261,10 @@ CI/CD job. The CI/CD YAML file is generated by using a [template](https://gitlab
 #### `build-gdk-image`
 
 [The `build-gdk-image` job](https://gitlab.com/gitlab-org/gitlab/-/blob/07504c34b28ac656537cd60810992aa15e9e91b8/.gitlab/ci/build-images.gitlab-ci.yml#L32)
-uses the code from the merge request to build a Docker image that can be used in test jobs to launch a GDK instance in a container. The image is pushed to the container registry.
+builds a Docker image that test jobs use to launch a GDK instance in a container. The image is pushed to the container registry.
 
-The job also runs in pipelines on the default branch to build a base image that includes the GDK and GitLab components.
-This avoids building the entire image from scratch in merge requests. However, if the merge request includes changes to
-[certain GitLab components or code](https://gitlab.com/gitlab-org/gitlab/-/blob/24109c1a7ae1f29d4f6f1aeba3a13cbd8ea0e8e6/.gitlab/ci/rules.gitlab-ci.yml#L911)
-the job will rebuild the base image before building the image that will be used in the test jobs.
+The job runs only on the scheduled `master` pipeline, where it builds an image that includes the GDK and GitLab components.
+It does not run on merge request pipelines.
 
 #### child pipeline jobs
 
@@ -305,7 +302,7 @@ my-new-test-job:
 In this example:
 
 - `QA_SCENARIO: Test::Integration::MyNewTestScenario`: name of the scenario class that is passed to the `qa/bin/qa` test execution script. While the full class
-  name would be `QA::Scenario::Test:Integration::MyNewTestScenario`, `QA::Scenario` is omitted to have shorted definitions.
+  name would be `QA::Scenario::Test:Integration::MyNewTestScenario`, `QA::Scenario` is omitted to have shorter definitions.
 
 Considering example above, perform the following steps to create a new job:
 

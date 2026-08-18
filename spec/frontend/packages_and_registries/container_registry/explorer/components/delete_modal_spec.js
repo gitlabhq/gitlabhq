@@ -42,7 +42,7 @@ describe('Delete Modal', () => {
   describe('events', () => {
     it.each`
       glEvent      | localEvent
-      ${'primary'} | ${'confirmDelete'}
+      ${'primary'} | ${'confirm-delete'}
       ${'cancel'}  | ${'cancel-delete'}
     `('GlModal $glEvent emits $localEvent', ({ glEvent, localEvent }) => {
       mountComponent();

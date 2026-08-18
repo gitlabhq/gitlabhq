@@ -82,27 +82,11 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu, feature_category: 
     describe 'Achievements' do
       let(:item_id) { :achievements }
 
-      before do
-        stub_feature_flags(achievements: true)
-      end
-
       it_behaves_like 'menu access rights'
-
-      context 'when achievements feature flag is disabled' do
-        before do
-          stub_feature_flags(achievements: false)
-        end
-
-        it { is_expected.to be_nil }
-      end
     end
   end
 
   describe 'Feature Library metadata' do
-    before do
-      stub_feature_flags(achievements: true)
-    end
-
     it 'gives every item a description and a unique library_icon', :aggregate_failures do
       serialized = described_class.new(context).renderable_items.map(&:serialize_for_super_sidebar)
 

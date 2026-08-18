@@ -99,7 +99,7 @@ If GitLab attempts to trigger:
   can be triggered by a push to a branch with an associated open merge request.
 - A branch pipeline, but a merge request is open for that branch, do not run the branch pipeline.
   For example, a branch pipeline can be triggered by a change to a branch, an API call,
-  a scheduled pipeline, and so on.
+  or a scheduled pipeline.
 - A branch pipeline, but there is no merge request open for the branch, run the branch pipeline.
 
 You can also add a rule to an existing `workflow` section to switch from branch pipelines

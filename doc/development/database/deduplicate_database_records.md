@@ -5,15 +5,15 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Deduplicate database records in a database table
 ---
 
-This guide describes a strategy for introducing database-level uniqueness constraint (unique index) to existing database tables with data.
+This guide describes a strategy for introducing a database-level uniqueness constraint (unique index) to existing database tables with data.
 
 Requirements:
 
 - Attribute modifications (`INSERT`, `UPDATE`) related to the columns happen only via ActiveRecord (the technique depends on AR callbacks).
 - Duplications are rare and mostly happen due to concurrent record creation. This can be verified by checking the production database table via teleport (reach out to a database maintainer for help).
 
-The total runtime mainly depends on the number of records in the database table. The migration will require scanning all records; to fit into the
-post-deployment migration runtime limit (about 10 minutes), database table with less than 10 million rows can be considered a small table.
+The total runtime mainly depends on the number of records in the database table. The migration will require scanning all records. To fit into the
+post-deployment migration runtime limit (about 10 minutes), a database table with less than 10 million rows can be considered a small table.
 
 ## Deduplication strategy for small tables
 

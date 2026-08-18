@@ -161,11 +161,18 @@ export function findCustomEmoji(name) {
 }
 
 function getAliasesMatchingQuery(query) {
+  const queryHasNoUnderscores = query.length > 0 && !query.includes('_');
   return Object.keys(emojiAliases)
-    .filter((alias) => alias.includes(query))
+    .filter((alias) => {
+      if (alias.includes(query)) return true;
+      if (queryHasNoUnderscores) return alias.replace(/_/g, '').includes(query);
+      return false;
+    })
     .reduce((map, alias) => {
       const emojiName = emojiAliases[alias];
-      const score = alias.indexOf(query);
+      const score = alias.includes(query)
+        ? alias.indexOf(query)
+        : alias.replace(/_/g, '').indexOf(query) + 0.5;
 
       const prev = map.get(emojiName);
       // overwrite if we beat the previous score or we're more alphabetical
@@ -216,6 +223,18 @@ function getNameMatch(emoji, query) {
       fieldValue: emoji.name,
       emoji,
     };
+  }
+
+  if (query.length > 0 && !query.includes('_')) {
+    const nameNoUnderscores = emoji.name.replace(/_/g, '');
+    if (nameNoUnderscores.includes(query)) {
+      return {
+        score: nameNoUnderscores.indexOf(query) + 0.5,
+        field: 'name',
+        fieldValue: emoji.name,
+        emoji,
+      };
+    }
   }
 
   return null;
@@ -338,35 +357,3 @@ export const getEmojisForCategory = async (category) => {
 
   return Object.values(state.emojiMap).filter((e) => e.c === category);
 };
-
-/**
- * Regex pattern to match emoji shortcodes that are properly delimited.
- *
- * Matches :emoji_name: only when:
- * - Preceded by start of string (^), whitespace (\s), parenthesis (()), or bracket ([])
- * - Followed by whitespace (\s), end of string ($), parenthesis (()), or bracket ([])
- *
- * This prevents rendering emojis embedded in code/class names like:
- * - service::heart::utils (no match)
- * - namespace::rocket::method (no match)
- *
- * But allows:
- * - "Fix :bug: in code" (matches)
- * - ":rocket: Deploy" (matches)
- * - "Done (:tada:)" (matches)
- *
- * @type {RegExp}
- */
-const EMOJI_SHORTCODE_PATTERN = /(^|\s|[[(]):([a-zA-Z0-9_+-]+):(?=\s|$|[\])])/g;
-
-/**
- * Processes title string and converts emoji shortcodes to HTML
- * @param {string} title - The title containing emoji shortcodes like :rocket:
- * @returns {string} - HTML string with emoji images
- */
-export function processEmojiInTitle(title) {
-  if (!title) return '';
-  return escape(title).replace(EMOJI_SHORTCODE_PATTERN, (match, prefix, emojiName) => {
-    return prefix + glEmojiTag(emojiName);
-  });
-}

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlSprintf, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import safeDisablePipelineVariables from './graphql/mutations/safe_disable_pipeline_variables.mutation.graphql';
@@ -7,6 +7,7 @@ import safeDisablePipelineVariables from './graphql/mutations/safe_disable_pipel
 export default {
   name: 'PipelineVariablesMigration',
   components: { GlButton, GlFormGroup, GlSprintf },
+  mixins: [GlToastMixin],
   inject: ['fullPath'],
   data() {
     return {

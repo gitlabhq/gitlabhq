@@ -60,6 +60,7 @@ Gitlab/EventStoreCloudEventInheritance:
     - 'ee/app/events/ai/active_context/code/mark_repository_as_ready_event.rb'
     - 'ee/app/events/ai/active_context/code/process_invalid_enabled_namespace_event.rb'
     - 'ee/app/events/ai/active_context/code/process_pending_enabled_namespace_event.rb'
+    - 'ee/app/events/ai/duo_workflows/workflow_finished_event.rb'
     - 'ee/app/events/ai/duo_workflows/workflow_started_event.rb'
     - 'ee/app/events/analytics/click_house_for_analytics_enabled_event.rb'
     - 'ee/app/events/ci/job_security_scan_completed_event.rb'

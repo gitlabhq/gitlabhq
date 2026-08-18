@@ -121,20 +121,40 @@ RSpec.describe RuboCop::Cop::Gitlab::EventStoreDocRequired, feature_category: :t
     end
   end
 
-  context 'with a class that does not inherit from Gitlab::EventStore::Event' do
-    let(:source_path) { File.join(rails_root, 'app/events/foo/bar_event.rb') }
+  context 'with a file listed in .nodoc' do
+    let(:source_path) { File.join(rails_root, 'app/events/foo/base_cloud_event.rb') }
     let(:doc_exists) { false }
     let(:doc_contents) { nil }
+
+    before do
+      allow(Docs::EventNodoc).to receive(:excluded?).and_call_original
+      allow(Docs::EventNodoc).to receive(:excluded?)
+        .with(source_path, anything).and_return(true)
+    end
 
     it 'does not register an offense' do
       source = <<~RUBY
         module Foo
-          class BarEvent < ApplicationRecord
+          class BaseCloudEvent < Gitlab::EventStore::CloudEvent
           end
         end
       RUBY
 
       expect(offense_messages(source)).to be_empty
     end
+  end
+
+  context 'with a class that does not inherit from Gitlab::EventStore::Event' do
+    let(:source_path) { File.join(rails_root, 'app/events/foo/bar_event.rb') }
+    let(:event_class_source) do
+      <<~RUBY
+        module Foo
+          class BarEvent < ApplicationRecord
+          end
+        end
+      RUBY
+    end
+
+    it_behaves_like 'requires a documentation file'
   end
 end

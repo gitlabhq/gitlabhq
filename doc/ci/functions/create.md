@@ -333,7 +333,6 @@ In the following example, `function-image.tar` is a function OCI image that supp
 `linux/arm64`. Each platform image has three files: `func.yml`, `my-script.sh`, and `bin/my-binary`. Using the same filename
 for platform binaries keeps `func.yml` platform-independent.
 
-<!-- vale gitlab_base.Substitutions = NO -->
 ```yaml
 build_function:
   artifacts:
@@ -356,7 +355,6 @@ build_function:
             files:
               bin/my-binary: bin/linux-arm64/my-binary
 ```
-<!-- vale gitlab_base.Substitutions = YES -->
 
 ### Release
 

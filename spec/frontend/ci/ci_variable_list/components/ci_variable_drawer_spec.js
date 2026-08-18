@@ -88,19 +88,22 @@ describe('CI Variable Drawer', () => {
     });
   };
 
-  const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-button');
+  const findConfirmBtn = () => wrapper.findComponentByTestId('ci-variable-confirm-button');
   const findConfirmDeleteModal = () => wrapper.findComponent(GlModal);
-  const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-button');
-  const findDescriptionField = () => wrapper.findByTestId('ci-variable-description');
+  const findDeleteBtn = () => wrapper.findComponentByTestId('ci-variable-delete-button');
+  const findDescriptionField = () => wrapper.findComponentByTestId('ci-variable-description');
   const findDisabledEnvironmentScopeDropdown = () => wrapper.findComponent(GlFormInput);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
   const findExpandedCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
+  const findExpandedCheckboxComponent = () =>
+    wrapper.findComponentByTestId('ci-variable-expanded-checkbox');
   const findKeyField = () => wrapper.findComponent(GlFormCombobox);
   const findVisibilityRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findVisibilityRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
-  const findProtectedCheckbox = () => wrapper.findByTestId('ci-variable-protected-checkbox');
-  const findValueField = () => wrapper.findByTestId('ci-variable-value');
+  const findProtectedCheckbox = () =>
+    wrapper.findComponentByTestId('ci-variable-protected-checkbox');
+  const findValueField = () => wrapper.findComponentByTestId('ci-variable-value');
   const findInvalidMaskedValueErrorsWrapper = () => wrapper.find('.invalid-feedback');
   const findInvalidMaskedValueErrorList = () => findInvalidMaskedValueErrorsWrapper().find('ul');
   const findHiddenVariableTip = () => wrapper.findByTestId('hidden-variable-tip');
@@ -118,7 +121,8 @@ describe('CI Variable Drawer', () => {
     wrapper.findByTestId('environments-popover-container');
   const findEnvironmentsLabelHelpPopover = () =>
     findEnvironmentsLabelHelpContainer().findComponent(GlPopover);
-  const findFullScreenToggleButton = () => wrapper.findByTestId('ci-variable-fullscreen-toggle');
+  const findFullScreenToggleButton = () =>
+    wrapper.findComponentByTestId('ci-variable-fullscreen-toggle');
 
   describe('template', () => {
     beforeEach(() => {
@@ -499,7 +503,7 @@ describe('CI Variable Drawer', () => {
 
       it("sets the variable's raw value", async () => {
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-        findExpandedCheckbox().vm.$emit('change', true);
+        findExpandedCheckboxComponent().vm.$emit('change', true);
         findConfirmBtn().vm.$emit('click');
 
         await nextTick();
@@ -512,7 +516,7 @@ describe('CI Variable Drawer', () => {
         expect(findExpandedCheckbox().attributes('checked')).toBeUndefined();
         expect(findDrawer().text()).toContain('Variable value will be evaluated as raw string.');
 
-        findExpandedCheckbox().vm.$emit('change', true);
+        findExpandedCheckboxComponent().vm.$emit('change', true);
 
         await nextTick();
 
@@ -523,7 +527,7 @@ describe('CI Variable Drawer', () => {
       });
 
       it('shows help text when variable is expanded and contains the $ character', async () => {
-        findExpandedCheckbox().vm.$emit('change', true);
+        findExpandedCheckboxComponent().vm.$emit('change', true);
         await nextTick();
 
         expect(findDrawer().text()).not.toContain(
@@ -695,7 +699,7 @@ describe('CI Variable Drawer', () => {
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
-        findExpandedCheckbox().vm.$emit('change', true);
+        findExpandedCheckboxComponent().vm.$emit('change', true);
 
         await nextTick();
 
@@ -830,7 +834,7 @@ describe('CI Variable Drawer', () => {
         findDescriptionField().vm.$emit('input', 'NEW_DESCRIPTION');
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findProtectedCheckbox().vm.$emit('input', false);
-        findExpandedCheckbox().vm.$emit('change', true);
+        findExpandedCheckboxComponent().vm.$emit('change', true);
         findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
         findValueField().vm.$emit('input', 'NEW_VALUE');
         findConfirmBtn().vm.$emit('click');

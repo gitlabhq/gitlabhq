@@ -38,10 +38,6 @@ describe('CiResourceDetailsPage', () => {
 
   const defaultProps = {};
 
-  const defaultProvide = {
-    ciCatalogPath: '/ci/catalog/resources',
-  };
-
   const findDetailsComponent = () => wrapper.findComponent(CiResourceDetails);
   const findHeaderComponent = () => wrapper.findComponent(CiResourceHeader);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -58,9 +54,6 @@ describe('CiResourceDetailsPage', () => {
     wrapper = shallowMount(CiResourceDetailsPage, {
       router,
       apolloProvider: mockApollo,
-      provide: {
-        ...defaultProvide,
-      },
       propsData: {
         ...defaultProps,
         ...props,
@@ -107,10 +100,10 @@ describe('CiResourceDetailsPage', () => {
       await waitForPromises();
     });
 
-    it('renders the empty state', () => {
+    it('renders the empty state linking back to the catalog', () => {
       expect(findDetailsComponent().exists()).toBe(false);
       expect(findEmptyState().exists()).toBe(true);
-      expect(findEmptyState().props('primaryButtonLink')).toBe(defaultProvide.ciCatalogPath);
+      expect(findEmptyState().props('primaryButtonLink')).toBe('/explore/catalog');
     });
   });
 

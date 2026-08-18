@@ -164,19 +164,19 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     context 'when candidate is not for a model experiment' do
       let(:tested_candidate) { candidate }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when candidate belongs to model version' do
       let(:tested_candidate) { candidate2 }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when candidate belongs to model but not to model version' do
       let(:tested_candidate) { candidate_for_model }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

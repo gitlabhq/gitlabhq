@@ -14,7 +14,7 @@ title: Feature flags
 {{< /details >}}
 
 With feature flags, you can deploy your application's new features to production in smaller batches.
-You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
+You can toggle a feature on and off for subsets of users, helping you achieve Continuous Delivery.
 Feature flags help reduce risk, allowing you to do controlled testing, and separate feature
 delivery from customer launch.
 
@@ -105,7 +105,7 @@ You can configure the consistency to be based on:
   - If the user is logged in, make behavior consistent based on user ID.
   - If the user is anonymous, make the behavior consistent based on the session ID.
   - If there is no user ID or session ID, then the feature is enabled for the selected
-    percentage of page view randomly.
+    percentage of page views randomly.
 
 For example, set a value of 15% based on **Available ID** to enable the feature for 15% of page views. For
 authenticated users this is based on their user ID. For anonymous users with a session ID it would be based on their
@@ -131,7 +131,7 @@ Stickiness (consistent application behavior for the same user) is guaranteed for
 but not anonymous users.
 
 [Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
-behavior. You should use percent rollout because it's more flexible than percent of users
+behavior. You should use percent rollout because it's more flexible than percent of users.
 
 > [!warning]
 > If the percent of users strategy is selected, then the Unleash client **must** be given a user
@@ -254,7 +254,7 @@ To get the access credentials that your application needs to communicate with Gi
    - **Application name**: The name of the environment the application runs in
      (not the name of the application itself).
 
-     For example, if the application runs for a production server, the **Application name**
+     For example, if the application runs on a production server, the **Application name**
      could be `production` or similar. This value is used for the environment spec evaluation.
 
 The meaning of these fields might change over time. For example, **Instance ID** might be a
@@ -399,14 +399,14 @@ This feature is similar to the [linked issues](../user/project/issues/related_is
 
 ## Performance factors
 
-GitLab feature flags can be used in any application. Large applications might require advance configuration.
+GitLab feature flags can be used in any application. Large applications might require advanced configuration.
 This section explains the performance factors to help your organization to identify
 what's needed to be done before using the feature.
 For more information, see [using feature flags](#using-feature-flags).
 
 ### Maximum supported clients in application nodes
 
-GitLab accepts as many client requests as possible until it hits the [rate limit](../security/rate_limits.md).
+GitLab accepts as many client requests as possible until it hits the [rate limit](../rate_limits/_index.md).
 The feature flag API is considered **Unauthenticated traffic (from a given IP address)**. For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/_index.md).
 
 The polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
@@ -414,7 +414,7 @@ The polling rate is configurable in SDKs. Provided that all clients are requesti
 - At one request per minute, supports approximately 500 clients (8 RPS).
 - At one request per 15 sec, supports approximately 125 clients.
 
-For applications looking for more scalable solution, you should use [Unleash Proxy](#unleash-proxy-example).
+For applications looking for a more scalable solution, you should use [Unleash Proxy](#unleash-proxy-example).
 On GitLab.com, you should use Unleash Proxy to reduce the chance of being rate limited across endpoints.
 This proxy server sits between the server and clients. It makes requests to the server on behalf of the client groups,
 so the number of outbound requests can be greatly reduced. If you still get `429` responses, increase the `UNLEASH_FETCH_INTERVAL` value in the Unleash Proxy.
@@ -427,9 +427,9 @@ capacity to the current rate limit.
 In general, [Unleash clients](https://github.com/Unleash/unleash#unleash-sdks) have
 a fall-back mechanism when the server returns an error code.
 For example, `unleash-ruby-client` reads flag data from the local backup so that
-application can keep running in the current state.
+the application can keep running in the current state.
 
-Read the documentation in a SDK project for more information.
+Read the documentation in an SDK project for more information.
 
 ### GitLab Self-Managed
 

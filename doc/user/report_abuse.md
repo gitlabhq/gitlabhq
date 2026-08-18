@@ -35,14 +35,6 @@ You can also report abuse from an agent or a flow.
 
 ## Report abuse from the user's profile page
 
-{{< history >}}
-
-- Report abuse from overflow menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4 [with a feature flag](../administration/feature_flags/_index.md) named `user_profile_overflow_menu_vue`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.6. Feature flag `user_profile_overflow_menu_vue` removed.
-
-{{< /history >}}
-
 To report abuse from a user's profile page:
 
 1. Anywhere in GitLab, select the name of the user.
@@ -52,12 +44,6 @@ To report abuse from a user's profile page:
 1. Select **Send report**.
 
 ## Report abuse from a user's comment
-
-{{< history >}}
-
-- Reporting abuse from comments in epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389992) in GitLab 15.10.
-
-{{< /history >}}
 
 To report abuse from a user's comment:
 

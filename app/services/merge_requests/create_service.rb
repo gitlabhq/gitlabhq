@@ -76,7 +76,7 @@ module MergeRequests
     end
 
     def set_default_attributes!
-      set_default_squash! unless params.key?(:squash) || params.key?('squash')
+      set_default_squash!
       set_default_force_remove_source_branch! if params[:force_remove_source_branch].nil?
     end
 
@@ -85,7 +85,11 @@ module MergeRequests
     end
 
     def set_default_squash!
-      params[:squash] = @project.squash_enabled_by_default?
+      if @project.squash_always?
+        params[:squash] = true
+      elsif !params.key?(:squash) && !params.key?('squash')
+        params[:squash] = @project.squash_enabled_by_default?
+      end
     end
   end
 end

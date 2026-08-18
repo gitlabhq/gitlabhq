@@ -30,7 +30,7 @@ repositories.
 1. Check for any branch/references lock files in `refs/heads`.
 
 The existence of `config.lock` or reference locks
-alone do not necessarily indicate a problem. Lock files are routinely created
+alone does not necessarily indicate a problem. Lock files are routinely created
 and removed as Git and GitLab perform operations on the repository. They serve
 to prevent data integrity issues. However, if a Git operation is interrupted these
 locks may not be cleaned up properly.
@@ -180,7 +180,7 @@ Integrity checks are supported for the following types of file:
 
 - CI artifacts
 - LFS objects
-- Project-level Secure Files (introduced in GitLab 16.1.0)
+- Project-level Secure Files
 - User uploads
 
 To check the integrity of uploaded files:
@@ -371,12 +371,6 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 <!-- vale gitlab_base.SentenceSpacing = YES -->
 
 ## Reset encrypted tokens when they can't be recovered
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
-
-{{< /history >}}
 
 > [!warning]
 > This operation is dangerous and can result in data-loss. Proceed with extreme caution.
@@ -574,7 +568,7 @@ W, [2022-11-28T13:14:09.283833 #10025]  WARN -- : Failed to transfer Ci::JobArti
 W, [2022-11-28T13:14:09.296911 #10025]  WARN -- : Failed to transfer Ci::JobArtifact ID 12 with error: undefined method `body' for nil:NilClass
 ```
 
-Attempting to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) after you have disabled object storage, results in the following error:
+Attempting to [delete references to missing artifacts](#delete-references-to-missing-artifacts) after you have disabled object storage, results in the following error:
 
 ```plaintext
 RuntimeError (Object Storage is not enabled for JobArtifactUploader)
@@ -595,7 +589,7 @@ To update these references to point to local storage:
    puts "Updated file_store count: #{artifacts_updated}"
    ```
 
-The script to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) now functions correctly and cleans up the database.
+The script to [delete references to missing artifacts](#delete-references-to-missing-artifacts) now functions correctly and cleans up the database.
 
 ### Delete references to missing secure files
 

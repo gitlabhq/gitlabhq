@@ -20,7 +20,7 @@ RSpec.describe MergeRequestAssignee, feature_category: :code_review_workflow do
 
   describe 'scopes' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:project_merge_request) { create(:merge_request, target_project: project, source_project: project, assignee_ids: [user.id]) }
 
     before do

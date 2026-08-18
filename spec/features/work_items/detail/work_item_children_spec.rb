@@ -118,4 +118,33 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       end
     end
   end
+
+  context 'when creating more than one child in a row' do
+    before do
+      stub_feature_flags(accessible_disabled_button: true)
+
+      sign_in(user)
+
+      visit project_issue_path(project, issue)
+
+      wait_for_requests
+    end
+
+    it 'keeps the create button usable after the first child is created', :aggregate_failures do
+      within_testid('work-item-tree') do
+        find_by_testid('add-tree-child-button').click
+        click_button 'New Task'
+
+        fill_in 'Add a title', with: 'First task'
+        click_button 'Create Task'
+
+        expect(page).to have_link 'First task'
+
+        fill_in 'Add a title', with: 'Second task'
+        click_button 'Create Task'
+
+        expect(page).to have_link 'Second task'
+      end
+    end
+  end
 end

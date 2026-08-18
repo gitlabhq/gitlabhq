@@ -1,9 +1,9 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 依存プロキシAPI
-description: GitLab依存プロキシのREST APIのドキュメント。
+description: GitLabの依存プロキシ用REST APIに関するドキュメントです。
 ---
 
 {{< details >}}
@@ -12,6 +12,8 @@ description: GitLab依存プロキシのREST APIのドキュメント。
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
+
+このAPIを使用して、[依存プロキシ](../user/packages/dependency_proxy/_index.md)を管理します。
 
 ## グループの依存プロキシをパージ {#purge-the-dependency-proxy-for-a-group}
 
@@ -25,7 +27,7 @@ DELETE /groups/:id/dependency_proxy/cache
 | --------- | ---- | -------- | ----------- |
 | `id`      | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \

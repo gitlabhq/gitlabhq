@@ -1,0 +1,11 @@
+---
+name: http_io_previous_chunk_cache
+description: Retain the previously read 128KB chunk in Gitlab::HttpIO so reads that
+  walk backwards over a chunk boundary do not re-request chunks they just evicted
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605350
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248610
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/608094
+milestone: '19.3'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

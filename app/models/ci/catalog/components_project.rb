@@ -6,7 +6,8 @@ module Ci
     # It is responsible for resolving component paths and retrieving catalog component data.
     class ComponentsProject
       TEMPLATES_DIR = 'templates'
-      TEMPLATE_PATH_REGEX = '^templates\/[\w.-]+(?:\/template)?\.yml$'
+      NAME_PATTERN = '[\w.-]+'
+      TEMPLATE_PATH_REGEX = "^templates\\/#{NAME_PATTERN}(?:\\/template)?\\.yml$".freeze
       COMPONENTS_LIMIT = 100
 
       ComponentData = Struct.new(:content, :path, keyword_init: true)

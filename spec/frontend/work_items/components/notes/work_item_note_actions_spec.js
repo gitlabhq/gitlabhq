@@ -22,13 +22,13 @@ describe('Work Item Note Actions', () => {
   const showSpy = jest.fn();
 
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
-  const findEditButton = () => wrapper.findByTestId('note-edit-button');
-  const findEmojiButton = () => wrapper.findByTestId('note-emoji-button');
+  const findEditButton = () => wrapper.findComponentByTestId('note-edit-button');
+  const findEmojiButton = () => wrapper.findComponentByTestId('note-emoji-button');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDeleteNoteButton = () => wrapper.findByTestId('delete-note-action');
-  const findCopyLinkButton = () => wrapper.findByTestId('copy-link-action');
-  const findAssignUnassignButton = () => wrapper.findByTestId('assign-note-action');
-  const findReportAbuseToAdminButton = () => wrapper.findByTestId('abuse-note-action');
+  const findDeleteNoteButton = () => wrapper.findComponentByTestId('delete-note-action');
+  const findCopyLinkButton = () => wrapper.findComponentByTestId('copy-link-action');
+  const findAssignUnassignButton = () => wrapper.findComponentByTestId('assign-note-action');
+  const findReportAbuseToAdminButton = () => wrapper.findComponentByTestId('abuse-note-action');
   const findAuthorBadge = () => wrapper.findByTestId('author-badge');
   const findMaxAccessLevelBadge = () => wrapper.findByTestId('max-access-level-badge');
   const findContributorBadge = () => wrapper.findByTestId('contributor-badge');

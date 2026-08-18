@@ -1004,6 +1004,16 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
           expect(bridge.downstream_project_path).to eq('my/cross/project')
         end
       end
+
+      context 'when the path cannot reference a variable' do
+        let(:options) { { trigger: { project: 'my/project' } } }
+
+        it 'returns the path without building the variables collection' do
+          expect(bridge).not_to receive(:scoped_variables)
+
+          expect(bridge.downstream_project_path).to eq('my/project')
+        end
+      end
     end
   end
 
@@ -1018,6 +1028,14 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         it 'correctly expands variables' do
           expect(bridge.target_ref).to eq('cross-master')
+        end
+      end
+
+      context 'when the ref cannot reference a variable' do
+        it 'returns the ref without building the variables collection' do
+          expect(bridge).not_to receive(:scoped_variables)
+
+          expect(bridge.target_ref).to eq('master')
         end
       end
     end

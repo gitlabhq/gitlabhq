@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - diagrams' do
   include RichTextEditorHelpers
 
-  describe 'mermaid diagram' do
+  describe 'mermaid diagram', feature_category: :markdown do
     before do
       switch_to_content_editor
 
@@ -53,7 +53,7 @@ RSpec.shared_examples 'rich text editor - diagrams' do
     end
   end
 
-  describe 'drawio diagram' do
+  describe 'drawio diagram', feature_category: :markdown do
     before do
       switch_to_content_editor
 

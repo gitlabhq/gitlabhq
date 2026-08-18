@@ -70,7 +70,6 @@ export default {
       'commitId',
       'fileLineCoverage',
       'highlightedRow',
-      'coverageLoaded',
       'selectedCommentPosition',
     ]),
     ...mapState(useNotes, [
@@ -225,7 +224,6 @@ export default {
       <diff-row
         v-if="!line.isMatchLineLeft && !line.isMatchLineRight"
         :key="line.lineCode"
-        :file-hash="diffFile.file_hash"
         :file-path="diffFile.file_path"
         :line="line"
         :is-bottom="index + 1 === diffLinesLength"
@@ -238,7 +236,6 @@ export default {
         :inline="inline"
         :index="index"
         :file-line-coverage="fileLineCoverage"
-        :coverage-loaded="coverageLoaded"
         :user-can-reply="userCanReply"
         @show-comment-form="(code) => singleLineComment(code, line)"
         @set-highlighted-row="setHighlightedRow"

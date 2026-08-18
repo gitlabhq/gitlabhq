@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { CANARY_UPDATE_MODAL } from '../constants';
 
@@ -59,11 +60,11 @@ export default {
   },
   methods: {
     changeCanary(weight) {
-      this.$root.$emit('bv::show::modal', CANARY_UPDATE_MODAL);
+      this.$root.$emit(BV_SHOW_MODAL, CANARY_UPDATE_MODAL);
       this.$emit('change', weight);
     },
     changeStable(weight) {
-      this.$root.$emit('bv::show::modal', CANARY_UPDATE_MODAL);
+      this.$root.$emit(BV_SHOW_MODAL, CANARY_UPDATE_MODAL);
       this.$emit('change', 100 - weight);
     },
   },

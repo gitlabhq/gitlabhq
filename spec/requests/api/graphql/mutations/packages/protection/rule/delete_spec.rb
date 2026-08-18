@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Deleting a package protection rule', :aggregate_failures, feature_category: :package_registry do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:package_protection_rule) { create(:package_protection_rule, project: project) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 

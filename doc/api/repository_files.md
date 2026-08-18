@@ -276,7 +276,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 > [!note]
-> Similar to [retrieving a file from a repository](repository_files.md#retrieve-a-file-from-a-repository),
+> Similar to [retrieving a file from a repository](#retrieve-a-file-from-a-repository),
 > you can use `HEAD` to get just file metadata.
 
 ## Create a file in a repository

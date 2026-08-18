@@ -30,12 +30,6 @@ to automatically manage your container registry usage.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
-
-{{< /history >}}
-
 View storage usage data for your container registry repositories.
 
 ### For a project
@@ -142,12 +136,6 @@ the size value only changes when:
   but [issue 386468](https://gitlab.com/gitlab-org/gitlab/-/issues/386468) proposes to improve this.
 
 ## Cleanup policy
-
-{{< history >}}
-
-- [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
-
-{{< /history >}}
 
 The cleanup policy is a scheduled job you can use to remove tags from the container registry.
 For the project where it's defined, tags matching the regex pattern are removed.
@@ -440,7 +428,7 @@ There can be different reasons behind this:
 
   To fix this, there are two workarounds:
 
-  - You can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
+  - You can [set limits for the cleanup policy](#set-cleanup-limits-to-conserve-resources).
     This limits the cleanup execution in time, and avoids the expired token error.
 
   - [Extend the expiration delay](../../../administration/packages/container_registry.md#increase-token-duration)

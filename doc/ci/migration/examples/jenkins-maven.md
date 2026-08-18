@@ -88,7 +88,7 @@ pipeline {
 This example uses shell execution commands instead of plugins.
 
 By default, a declarative pipeline configuration is stored either in the Jenkins
-pipeline configuration or directly in the Git repository in a `Jenksinfile`.
+pipeline configuration or directly in the Git repository in a `Jenkinsfile`.
 
 ## Convert Jenkins configuration to GitLab CI/CD
 

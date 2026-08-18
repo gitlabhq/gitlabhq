@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Operate
+group: Release and Deploy
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab release and maintenance policy
 description: Version support, release cadence, and backporting policies.
@@ -99,7 +99,7 @@ These policies are in place because:
    necessary to test/release the software.
 1. Backporting to older releases creates a high development, quality assurance,
    and support cost.
-1. Supporting parallel version discourages incremental upgrades which over time accumulate in
+1. Supporting parallel versions discourages incremental upgrades which over time accumulate in
    complexity and create upgrade challenges for all users. GitLab has a dedicated team ensuring that
    incremental upgrades (and installations) are as simple as possible.
 1. The number of changes created in the GitLab application is high, which contributes to backporting complexity to older releases. In several cases, backporting has to go through the same

@@ -1,0 +1,9 @@
+---
+name: rewrite_repository_history
+description: Grants the ability to rewrite repository history
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - rewrite_repository_history

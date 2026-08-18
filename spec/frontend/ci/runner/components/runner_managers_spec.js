@@ -18,7 +18,7 @@ describe('RunnerJobs', () => {
   let wrapper;
 
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
-  const findCrudExpandToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCrudExpandToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findRunnerManagersTable = () => wrapper.findComponent(RunnerManagersTable);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 

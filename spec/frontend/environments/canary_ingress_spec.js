@@ -1,4 +1,4 @@
-import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import { rolloutStatus } from './graphql/mock_data';
@@ -35,7 +35,7 @@ describe('/environments/components/canary_ingress.vue', () => {
     let stableWeightDropdown;
 
     beforeEach(() => {
-      stableWeightDropdown = extendedWrapper(wrapper.find('#stable-weight-'));
+      stableWeightDropdown = wrapper.findComponent('#stable-weight-');
     });
 
     it('displays the current stable weight', () => {
@@ -59,7 +59,7 @@ describe('/environments/components/canary_ingress.vue', () => {
     let canaryWeightDropdown;
 
     beforeEach(() => {
-      canaryWeightDropdown = wrapper.find('#canary-weight-');
+      canaryWeightDropdown = wrapper.findComponent('#canary-weight-');
     });
 
     it('displays the current canary weight', () => {
@@ -87,7 +87,7 @@ describe('/environments/components/canary_ingress.vue', () => {
     });
 
     it('shows the correct weight', () => {
-      const canaryWeightDropdown = wrapper.find('#canary-weight-');
+      const canaryWeightDropdown = wrapper.findComponent('#canary-weight-');
       expect(canaryWeightDropdown.props('selected')).toBe(50);
     });
   });

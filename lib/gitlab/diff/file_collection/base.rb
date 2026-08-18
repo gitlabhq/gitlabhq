@@ -121,7 +121,7 @@ module Gitlab
             diff_refs: diff_refs,
             fallback_diff_refs: fallback_diff_refs,
             stats: stats,
-            max_blob_size: self.class.max_blob_size(project))
+            max_blob_size: self.class.max_blob_size)
 
           if @use_extra_viewer_as_main && diff_file.has_renderable?
             diff_file.rendered
@@ -158,7 +158,7 @@ module Gitlab
           )
         end
 
-        def self.max_blob_size(_) = nil
+        def self.max_blob_size = nil
       end
     end
   end

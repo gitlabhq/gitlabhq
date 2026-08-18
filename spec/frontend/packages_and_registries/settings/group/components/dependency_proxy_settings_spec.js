@@ -86,9 +86,10 @@ describe('DependencyProxySettings', () => {
   const findSettingsSection = () => wrapper.findComponent(SettingsSection);
   const findDockerHubAuthenticationSection = () =>
     wrapper.findComponent(DockerHubAuthenticationSection);
-  const findEnableProxyToggle = () => wrapper.findByTestId('dependency-proxy-setting-toggle');
+  const findEnableProxyToggle = () =>
+    wrapper.findComponentByTestId('dependency-proxy-setting-toggle');
   const findEnableTtlPoliciesToggle = () =>
-    wrapper.findByTestId('dependency-proxy-ttl-policies-toggle');
+    wrapper.findComponentByTestId('dependency-proxy-ttl-policies-toggle');
   const findToggleHelpLink = () => wrapper.findByTestId('toggle-help-link');
 
   const fillApolloCache = () => {

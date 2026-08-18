@@ -7,6 +7,57 @@ title: Troubleshooting GitLab tokens
 
 When working with GitLab tokens, you might encounter the following issues.
 
+## Token appears active but requests fail
+
+A token that is listed as active can still return `401 Unauthorized`, `403 Forbidden`, or
+`404 Not Found` responses. The active status indicates only that the token exists and has not expired or been
+revoked. This status does not mean the token can make a given request.
+
+A token's permissions depend on its scopes and its role. A request can also fail for reasons outside
+the token: where the request comes from, the resource the request targets, and whether an administrator has
+turned off access tokens. None of these factors are apparent from the token itself. Personal, project, and
+group access tokens all use the same `glpat-` prefix. Two tokens that look identical can therefore
+behave differently.
+
+An active token can fail for any of the following reasons:
+
+| Cause | Resolution |
+|-------|------------|
+| The token is missing a scope that the request requires. | Create a token with the necessary [access token scopes](access_token_scopes.md). Rotation keeps the original scopes and cannot add missing scopes.  |
+| A group or project access token doesn't have the required role. | Create a token with a higher role. A token's permissions are limited by both its role and its scopes. |
+| The token expired. | Access tokens [expire at midnight UTC](#expired-access-tokens) on their expiration date. Create a token, then update every place that used the old token. |
+| The token was revoked, or was rotated and the original value is still in use. | Rotation makes the original token inactive immediately. Use the token that the rotation created, or create a token. On GitLab Self-Managed and GitLab Dedicated, an administrator can [restore a personal access token](#restore-a-personal-access-token) that was revoked by accident. |
+| The token type cannot access the resource. | Use a token type that can access the resource. A personal access token accesses the groups and projects available to its user. A group access token accesses the subgroups and projects in its group. A project access token accesses only its own project. |
+| [IP address restrictions](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) block the request. | These restrictions apply to group and project access tokens, and blocked requests return `404 Not Found`. Send the request from an allowed address, or ask a user with the Owner role for the top-level group to add the address to the allowed ranges. |
+| [External authorization](../../administration/settings/external_authorization.md) is turned on. | Personal and project access tokens cannot access the container registry or the package registry. To restore access to the registries, turn off external authorization. |
+| An administrator [turned off access tokens](../../user/profile/personal_access_tokens.md#disable-access-tokens) for the instance. | Ask an administrator or a user with the Owner role to turn access tokens back on. |
+
+To identify which cause applies, compare the details of the failing token with a token that works:
+
+- [Personal access tokens](../../user/profile/personal_access_tokens.md#view-token-usage-information)
+- [Group access tokens](../../user/group/settings/group_access_tokens.md#view-your-access-tokens)
+- [Project access tokens](../../user/project/settings/project_access_tokens.md#view-your-access-tokens)
+
+The details include each token's scopes, expiration date, and usage information. Group and project
+access tokens also show the assigned role.
+
+If the token's usage information does not update after you make a request, the request might not be
+reaching GitLab. GitLab updates usage times every 10 minutes and usage IP addresses every minute.
+If GitLab isn't recording the usage after those intervals elapse, your request did not reach GitLab.
+
+## Token does not work in an editor extension or command-line tool
+
+A token that authenticates in the GitLab UI or API can still fail in an editor extension or a
+command-line tool. Scope requirements differ between tools.
+
+Valid tokens can fail in a tool for the following reasons:
+
+| Cause | Resolution |
+|-------|------------|
+| The token requires different scopes. | Compare the [tool's required scopes](../../user/profile/personal_access_tokens.md#use-third-party-tools-and-ide-extensions) with the [scopes](access_token_scopes.md) added to the token. Create a token with the required scopes. Rotation keeps the original scopes and cannot add missing scopes. |
+| The tool is not using the correct token. | Check which token the tool authenticates with, then update or remove the incorrect token. The GitLab for VS Code extension uses a token in the `GITLAB_WORKFLOW_TOKEN` [environment variable](../../editor_extensions/visual_studio_code/setup.md#store-tokens-in-environment-variables) only when no token is configured for that instance. This variable persists after you delete your VS Code storage. To override it, configure a token for the instance in the extension. |
+| The tool cannot connect to GitLab. | If the token has the required scopes and the tool is using it, verify the tool can reach GitLab over your network. For the GitLab for VS Code extension, see [authentication troubleshooting](../../editor_extensions/visual_studio_code/troubleshooting.md#authentication). |
+
 ## Expired access tokens
 
 If an existing access token is in use and reaches the `expires_at` value, the token
@@ -39,10 +90,13 @@ You must:
 To identify which `401 Unauthorized` requests are failing due to
 expired access tokens, use the following fields in the `api_json.log` file:
 
-| Field name                | Description |
-|---------------------------|-------------|
-| `meta.auth_fail_reason`   | The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`. |
-| `meta.auth_fail_token_id` | A string describing the type and ID of the attempted token. |
+| Field name                        | Description |
+|-----------------------------------|-------------|
+| `meta.auth_fail_reason`           | The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`. |
+| `meta.auth_fail_token_id`         | A string describing the type and ID of the attempted token. |
+| `meta.auth_fail_requested_scopes` | The OAuth scopes the request required, space-separated. |
+| `meta.auth_fail_token_type`       | The type of token used. Possible values: `PersonalAccessToken`, `CiJobToken`, and `unknown`. |
+| `meta.auth_fail_auth_header_type` | How the token was passed in the request. Possible values: `private_token_header`, `private_token_param`, `bearer`, and `other`. |
 
 When a user attempts to use an expired token, the `meta.auth_fail_reason`
 is `token_expired`. The following shows an excerpt from a log
@@ -59,6 +113,16 @@ entry:
 }
 ```
 
+> [!note]
+> In some cases, `meta.auth_fail_*` fields may appear on non-401 responses. Known cases include:
+>
+> - Git HTTP requests to public projects, where Rack::Attack records the token failure but
+>   the project's public visibility allows the request to succeed.
+> - The Unleash feature flags endpoint, which authorizes by `HTTP_UNLEASH_INSTANCEID` rather
+>   than the token.
+> - Workhorse pre-authorization (`/authorize`) endpoints, which perform their own authorization
+>   after the token probe.
+
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
 From GitLab 18.9, `meta.user` will also be populated with any username associated with the token used for the failed request.
 
@@ -70,7 +134,7 @@ You can also use the API to [rotate the token](../../api/personal_access_tokens.
 To replace the token:
 
 1. Check where this token may have been used previously, and remove it from any
-   automation might still use the token.
+   automation that might still use the token.
    - For personal access tokens, use the [API](../../api/personal_access_tokens.md#list-all-personal-access-tokens)
      to list tokens that have expired recently. For example, go to `https://gitlab.com/api/v4/personal_access_tokens`,
      and locate tokens with a specific `expires_at` date.
@@ -91,75 +155,6 @@ To replace the token:
    depending on how you use the token, for example if configured as a secret or
    embedded in an application. Requests made from this token should no longer
    return `401` responses.
-
-### Extend token lifetime
-
-Delay the expiration of certain tokens with this script.
-
-From GitLab 16.0, all access tokens have an expiration date. After you deploy at least GitLab 16.0,
-any non-expiring access tokens expire one year from the date of deployment.
-
-If this date is approaching and there are tokens that have not yet
-been rotated, you can use this script to delay expiration and give
-users more time to rotate their tokens.
-
-#### Extend lifetime for specific tokens
-
-This script extends the lifetime of all tokens which expire on a specified date, including:
-
-- Personal access tokens
-- Group access tokens
-- Project access tokens
-
-For group and project access tokens, this script only extends the lifetime of these tokens if they were given an expiration date automatically when upgrading to GitLab 16.0 or later. If a group or project access token was generated with an expiration date, or was rotated, the validity of that token is dependent on a valid membership to a resource, and therefore the token lifetime cannot be extended using this script.
-
-To use the script:
-
-{{< tabs >}}
-
-{{< tab title="Rails console session" >}}
-
-1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `extend_expiring_tokens.rb` script from the following section.
-   If desired, change the `expiring_date` to a different date.
-1. Press <kbd>Enter</kbd>.
-
-{{< /tab >}}
-
-{{< tab title="Rails Runner" >}}
-
-1. In your terminal window, connect to your instance.
-1. Copy the entire `extend_expiring_tokens.rb` script from the following section, and save it as a file on your instance:
-   - Name it `extend_expiring_tokens.rb`.
-   - If desired, change the `expiring_date` to a different date.
-   - The file must be accessible to `git:git`.
-1. Run this command, changing `/path/to/extend_expiring_tokens.rb`
-   to the full path to your `extend_expiring_tokens.rb` file:
-
-   ```shell
-   sudo gitlab-rails runner /path/to/extend_expiring_tokens.rb
-   ```
-
-For more information, see the [Rails Runner troubleshooting section](../../administration/operations/rails_console.md#troubleshooting).
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-##### `extend_expiring_tokens.rb`
-
-```ruby
-expiring_date = Date.new(2024, 5, 30)
-new_expires_at = 6.months.from_now
-
-total_updated = PersonalAccessToken
-                  .not_revoked
-                  .without_impersonation
-                  .where(expires_at: expiring_date.to_date)
-                  .update_all(expires_at: new_expires_at.to_date)
-
-puts "Updated #{total_updated} tokens with new expiry date #{new_expires_at}"
-```
 
 ## Restore a personal access token
 
@@ -193,313 +188,23 @@ that were revoked accidentally. Restoration is not available on GitLab.com.
    token.update!(revoked:false)
    ```
 
-## Identify personal, project, and group access tokens expiring on a certain date
+## Tokens expire unexpectedly after an upgrade
 
-Access tokens that have no expiration date are valid indefinitely, which is a
-security risk if the access token is divulged.
+Access tokens that have no expiration date are valid indefinitely, which is a security risk if the
+token is divulged.
 
-To manage this risk, when you upgrade to GitLab 16.0 and later, any
-[personal](../../user/profile/personal_access_tokens.md),
-[project](../../user/project/settings/project_access_tokens.md), or
-[group](../../user/group/settings/group_access_tokens.md) access
-token that does not have an expiration date automatically has an expiration
-date set at one year from the date of upgrade.
+Depending on your GitLab version and offering, your existing access tokens might have an expiration
+date automatically applied when you upgrade. For more information, see
+[non-expiring access tokens](../../update/deprecations.md#non-expiring-access-tokens).
+If you're not aware these dates changed, authentication can fail without warning.
 
-In GitLab 17.3 and later, this automatic setting of expiry on existing tokens has been reverted, and you can [disable expiration date enforcement for new access tokens](../../administration/settings/account_and_limit_settings.md#require-expiration-dates-for-new-access-tokens).
+In GitLab 17.3 and later, GitLab does not automatically set expiration dates on existing tokens.
+Administrators can also [turn off expiration date enforcement for new access tokens](../../administration/settings/account_and_limit_settings.md#require-expiration-dates-for-new-access-tokens).
 
-If you are not aware of when your tokens expire because the dates have changed,
-you might have unexpected authentication failures when trying to sign into GitLab
-on that date.
+To analyze, extend, or remove token expiration dates, use the
+[access token Rake tasks](../../administration/raketasks/tokens/_index.md).
 
-To manage this issue, you should upgrade to GitLab 17.2 or later, because these versions
-contain a [tool that assists with analyzing, extending, or remove token expiration dates](../../administration/raketasks/tokens/_index.md).
+## Related topics
 
-If you cannot run the tool, you can also run scripts in GitLab Self-Managed instances to identify
-tokens that either:
-
-- Expire on a specific date.
-- Have no expiration date.
-
-You run these scripts from your terminal window in either:
-
-- A [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-- Using the [Rails Runner](../../administration/operations/rails_console.md#using-the-rails-runner).
-
-The specific scripts you run differ depending on if you have upgraded to GitLab 16.0
-and later, or not:
-
-- If you have not yet upgraded to GitLab 16.0 or later, identify tokens that do not have an expiration date.
-- If you have upgraded to GitLab 16.0 or later, use scripts to identify any of
-  the following:
-  - [Tokens expiring on a specific date](#find-all-tokens-expiring-on-a-specific-date).
-  - [Tokens expiring in a specific month](#find-tokens-expiring-in-a-given-month).
-  - [Dates when many tokens expire](#identify-dates-when-many-tokens-expire).
-
-After you have identified tokens affected by this issue, you can run a final script
-to extend the lifetime of specific tokens if needed.
-
-These scripts return results in the following format:
-
-```plaintext
-Expired group access token in Group ID 25, Token ID: 8, Name: Example Token, Scopes: ["read_api", "create_runner"], Last used:
-Expired project access token in Project ID 2, Token ID: 9, Name: Test Token, Scopes: ["api", "read_registry", "write_registry"], Last used: 2022-02-11 13:22:14 UTC
-```
-
-For more information on this, see [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
-
-### Find all tokens expiring on a specific date
-
-This script finds tokens that expire on a specific date.
-
-Prerequisites:
-
-- You must know the exact date your instance was upgraded to GitLab 16.0.
-
-To use it:
-
-{{< tabs >}}
-
-{{< tab title="Rails console session" >}}
-
-1. In your terminal window, connect to your instance.
-1. Start a Rails console session with `sudo gitlab-rails console`.
-1. Depending on your needs, copy either the entire `expired_tokens.rb` from the following section
-   or `expired_tokens_date_range.rb` script from the section after that, and paste it into the console.
-   Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
-1. Press <kbd>Enter</kbd>.
-
-{{< /tab >}}
-
-{{< tab title="Rails Runner" >}}
-
-1. In your terminal window, connect to your instance.
-1. Depending on your needs, copy either the entire `expired_tokens.rb` from the following section
-   or `expired_tokens_date_range.rb` script from the section after that, and save it
-   as a file on your instance:
-   - Name it `expired_tokens.rb`.
-   - Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
-   - The file must be accessible to `git:git`.
-1. Run this command, changing the path to the full path to your `expired_tokens.rb` file:
-
-   ```shell
-   sudo gitlab-rails runner /path/to/expired_tokens.rb
-   ```
-
-For more information, see the [Rails Runner troubleshooting section](../../administration/operations/rails_console.md#troubleshooting).
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### `expired_tokens.rb`
-
-This script requires you to know the exact date your GitLab instance
-was upgraded to GitLab 16.0.
-
-```ruby
-# Change this value to the date one year after your GitLab instance was upgraded.
-
-expires_at_date = "2024-05-22"
-
-# Check for expiring personal access tokens
-PersonalAccessToken.for_user_types(:human).where(expires_at: expires_at_date).find_each do |token|
-  if token.user.blocked?
-    next
-    # Hide unusable, blocked PATs from output
-  end
-
-  puts "Expired personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
-end
-
-# Check for expiring project and group access tokens
-PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find_each do |token|
-  token.user.members.each do |member|
-    type = member.is_a?(GroupMember) ? 'Group' : 'Project'
-
-    puts "Expired #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
-  end
-end
-```
-
-> [!note]
-> To hide and also remove tokens belonging to blocked users, add `token.destroy!` directly below
-> `if token.user.blocked?`. However, this action does not leave an audit event,
-> unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
-
-### Find tokens expiring in a given month
-
-This script finds tokens that expire in a particular month. You don't need to know
-the exact date your instance was upgraded to GitLab 16.0. To use it:
-
-{{< tabs >}}
-
-{{< tab title="Rails console session" >}}
-
-1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `expired_tokens_date_range.rb` script from the next section.
-   If desired, change the `date_range` to a different range.
-1. Press <kbd>Enter</kbd>.
-
-{{< /tab >}}
-
-{{< tab title="Rails Runner" >}}
-
-1. In your terminal window, connect to your instance.
-1. Copy the entire `expired_tokens_date_range.rb` script from the next section, and save it as a file on your instance:
-   - Name it `expired_tokens_date_range.rb`.
-   - If desired, change the `date_range` to a different range.
-   - The file must be accessible to `git:git`.
-1. Run this command, changing `/path/to/expired_tokens_date_range.rb`
-   to the full path to your `expired_tokens_date_range.rb` file:
-
-   ```shell
-   sudo gitlab-rails runner /path/to/expired_tokens_date_range.rb
-   ```
-
-For more information, see the [Rails Runner troubleshooting section](../../administration/operations/rails_console.md#troubleshooting).
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### `expired_tokens_date_range.rb`
-
-```ruby
-# This script enables you to search for tokens that expire within a
-# certain date range (like 1.month) from the current date. Use it if
-# you're unsure when exactly your GitLab 16.0 upgrade completed.
-
-date_range = 1.month
-
-# Check for personal access tokens
-PersonalAccessToken.for_user_types(:human).where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
-  puts "Expired personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
-end
-
-# Check for expiring project and group access tokens
-PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
-  token.user.members.each do |member|
-    type = member.is_a?(GroupMember) ? 'Group' : 'Project'
-
-    puts "Expired #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
-  end
-end
-```
-
-### Identify dates when many tokens expire
-
-This script identifies dates when most of tokens expire. You can use it in combination with other scripts on this page to identify and extend large batches of tokens that may be approaching their expiration date, in case your team has not yet set up token rotation.
-
-The script returns results in this format:
-
-```plaintext
-42 Personal access tokens will expire at 2024-06-27
-17 Personal access tokens will expire at 2024-09-23
-3 Personal access tokens will expire at 2024-08-13
-```
-
-To use it:
-
-{{< tabs >}}
-
-{{< tab title="Rails console session" >}}
-
-1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `dates_when_most_of_tokens_expire.rb` script.
-1. Press <kbd>Enter</kbd>.
-
-{{< /tab >}}
-
-{{< tab title="Rails Runner" >}}
-
-1. In your terminal window, connect to your instance.
-1. Copy this entire `dates_when_most_of_tokens_expire.rb`
-   script, and save it as a file on your instance:
-   - Name it `dates_when_most_of_tokens_expire.rb`.
-   - The file must be accessible to `git:git`.
-1. Run this command, changing `/path/to/dates_when_most_of_tokens_expire.rb`
-   to the full path to your `dates_when_most_of_tokens_expire.rb` file:
-
-   ```shell
-   sudo gitlab-rails runner /path/to/dates_when_most_of_tokens_expire.rb
-   ```
-
-For more information, see the [Rails Runner troubleshooting section](../../administration/operations/rails_console.md#troubleshooting).
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### `dates_when_most_of_tokens_expire.rb`
-
-```ruby
-PersonalAccessToken
-  .select(:expires_at, Arel.sql('count(*)'))
-  .where('expires_at >= NOW()')
-  .group(:expires_at)
-  .order(Arel.sql('count(*) DESC'))
-  .limit(10)
-  .each do |token|
-    puts "#{token.count} Personal access tokens will expire at #{token.expires_at}"
-  end
-```
-
-### Find tokens with no expiration date
-
-This script finds tokens that lack an expiration date: `expires_at` is `NULL`. For users
-who have not yet upgraded to GitLab version 16.0 or later, the token `expires_at`
-value is `NULL`, and can be used to identify tokens to add an expiration date to.
-
-You can use this script in either the [Rails console](../../administration/operations/rails_console.md)
-or the [Rails Runner](../../administration/operations/rails_console.md#using-the-rails-runner):
-
-{{< tabs >}}
-
-{{< tab title="Rails console session" >}}
-
-1. In your terminal window, connect to your instance.
-1. Start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `tokens_with_no_expiry.rb` script from the following section.
-1. Press <kbd>Enter</kbd>.
-
-{{< /tab >}}
-
-{{< tab title="Rails Runner" >}}
-
-1. In your terminal window, connect to your instance.
-1. Copy this entire `tokens_with_no_expiry.rb` script from the following section, and save it as a file on your instance:
-   - Name it `tokens_with_no_expiry.rb`.
-   - The file must be accessible to `git:git`.
-1. Run this command, changing the path to the full path to your `tokens_with_no_expiry.rb` file:
-
-   ```shell
-   sudo gitlab-rails runner /path/to/tokens_with_no_expiry.rb
-   ```
-
-For more information, see the [Rails Runner troubleshooting section](../../administration/operations/rails_console.md#troubleshooting).
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-#### `tokens_with_no_expiry.rb`
-
-This script finds tokens without a value set for `expires_at`.
-
-   ```ruby
-   # This script finds tokens which do not have an expires_at value set.
-
-   # Check for expiring personal access tokens
-   PersonalAccessToken.for_user_types(:human).where(expires_at: nil).find_each do |token|
-     puts "Expires_at is nil for personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
-   end
-
-   # Check for expiring project and group access tokens
-   PersonalAccessToken.project_access_token.where(expires_at: nil).find_each do |token|
-     token.user.members.each do |member|
-       type = member.is_a?(GroupMember) ? 'Group' : 'Project'
-
-       puts "Expires_at is nil for #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
-     end
-   end
-   ```
+- [Container registry authentication](../../user/packages/container_registry/authenticate_with_container_registry.md#troubleshooting)
+- [CI/CD job token authentication](../../ci/jobs/ci_job_token.md#troubleshooting)

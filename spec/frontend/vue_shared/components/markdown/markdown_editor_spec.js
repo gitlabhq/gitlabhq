@@ -84,7 +84,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     window.gon = { text_editor: 'rich_text_editor' };
     return new Promise((resolve) => {
       markdownEditorEventHub.$once(CONTENT_EDITOR_READY_EVENT, resolve);
-      findMarkdownField().vm.$emit('enableContentEditor');
+      findMarkdownField().vm.$emit('enable-content-editor');
     });
   };
 
@@ -92,7 +92,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     window.gon = { text_editor: 'plain_text_editor' };
     return new Promise((resolve) => {
       markdownEditorEventHub.$once(MARKDOWN_EDITOR_READY_EVENT, resolve);
-      findContentEditor().vm.$emit('enableMarkdownEditor');
+      findContentEditor().vm.$emit('enable-markdown-editor');
     });
   };
 
@@ -445,7 +445,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findTextarea().attributes('data-can-suggest')).toBe('true');
   });
 
-  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {
+  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enable-content-editor emitted from markdown editor`, async () => {
     buildWrapper();
 
     await enableContentEditor();
@@ -453,7 +453,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toHaveLength(1);
   });
 
-  it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when enableMarkdownEditor emitted from content editor`, async () => {
+  it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when \`enable-markdown-editor\` emitted from content editor`, async () => {
     buildWrapper();
 
     await enableContentEditor();
@@ -511,7 +511,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.emitted('keydown')).toHaveLength(1);
     });
 
-    describe(`when markdown field triggers enableContentEditor event`, () => {
+    describe(`when markdown field triggers enable-content-editor event`, () => {
       beforeEach(async () => {
         buildWrapper();
         await enableContentEditor();
@@ -651,7 +651,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       });
     });
 
-    describe(`when richText editor triggers enableMarkdownEditor event`, () => {
+    describe('when richText editor triggers `enable-markdown-editor` event', () => {
       beforeEach(enableMarkdownEditor);
 
       it('hides the content editor', () => {
@@ -791,7 +791,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
 
     it('removes the focus outline on the textarea', () => {
-      expect(findTextarea().classes()).toContain('focus:gl-outline-none');
+      expect(findTextarea().classes()).toContain('focus-visible:gl-outline-none');
     });
   });
 });

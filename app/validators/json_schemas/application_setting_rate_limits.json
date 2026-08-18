@@ -39,6 +39,16 @@
       "minimum": 0,
       "description": "Number of requests allowed to the POST /api/v4/organizations endpoint."
     },
+    "project_create_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the POST /api/v4/projects endpoint per user per day."
+    },
+    "group_create_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the POST /api/v4/groups endpoint per user per day."
+    },
     "dependency_scanning_sbom_scan_api_upload_limit": {
       "type": "integer",
       "minimum": 0,
@@ -88,6 +98,11 @@
       "type": "integer",
       "minimum": 0,
       "description": "Number of requests allowed to the GET /api/v4/projects/:id/invited_groups endpoint."
+    },
+    "project_repositories_blobs_batch_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the POST /api/v4/projects/:id/repository/blobs/batch endpoint per user and project."
     },
     "projects_api_limit": {
       "type": "integer",
@@ -207,6 +222,16 @@
       "type": "integer",
       "minimum": 0,
       "description": "Maximum number of unauthenticated requests per minute across all raw paths in a project (default is 800). Set to 0 to disable throttling."
+    },
+    "web_hook_event_resend_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of webhook event resend requests a user can make per minute for a given project or group. Set to 0 to disable the limit."
+    },
+    "web_hook_test_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of webhook test requests a user can make per minute for a given project or group. Set to 0 to disable the limit."
     }
   }
 }

@@ -3,8 +3,8 @@
 module API
   class GenericPackages < ::API::Base
     GENERIC_PACKAGES_REQUIREMENTS = {
-      package_name: API::NO_SLASH_URL_PART_REGEX,
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      package_name: ::API::NO_SLASH_URL_PART_REGEX,
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     ALLOWED_STATUSES = %w[default hidden].freeze
@@ -23,7 +23,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
 
       namespace ':id/packages/generic' do

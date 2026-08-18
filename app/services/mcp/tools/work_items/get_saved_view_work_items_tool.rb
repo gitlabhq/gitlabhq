@@ -191,7 +191,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 
@@ -202,10 +202,10 @@ module Mcp
           return processed if processed[:isError]
 
           work_items_data = processed[:structuredContent]['workItems']
-          return ::Mcp::Tools::Response.error("The work items are inaccessible") unless work_items_data
+          return ::Mcp::Tools::Base::Response.error("The work items are inaccessible") unless work_items_data
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(work_items_data) }]
-          ::Mcp::Tools::Response.success(formatted_content, work_items_data)
+          ::Mcp::Tools::Base::Response.success(formatted_content, work_items_data)
         end
 
         def build_work_items_variables(full_path, filters, sort)

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
@@ -8,7 +9,9 @@ import { COMPONENT_NAME } from './constants';
 export default {
   name: COMPONENT_NAME,
   components: {
-    NestedGroupsProjectsListItem: () => import('./nested_groups_projects_list_item.vue'),
+    NestedGroupsProjectsListItem: defineAsyncComponent(
+      () => import('./nested_groups_projects_list_item.vue'),
+    ),
   },
   props: {
     items: {

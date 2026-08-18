@@ -24,9 +24,9 @@ describe('PackageTitle', () => {
   }
 
   const findTitleArea = () => wrapper.findComponent(TitleArea);
-  const packageSize = () => wrapper.find('[data-testid="package-size"]');
-  const pipelineProject = () => wrapper.find('[data-testid="pipeline-project"]');
-  const packageRef = () => wrapper.find('[data-testid="package-ref"]');
+  const packageSize = () => wrapper.findComponent('[data-testid="package-size"]');
+  const pipelineProject = () => wrapper.findComponent('[data-testid="pipeline-project"]');
+  const packageRef = () => wrapper.findComponent('[data-testid="package-ref"]');
 
   describe('module title', () => {
     it('is correctly bound', () => {

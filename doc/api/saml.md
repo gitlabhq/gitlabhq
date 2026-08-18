@@ -12,12 +12,6 @@ title: SAML API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
-
-{{< /history >}}
-
 Use this API to interact with SAML features.
 
 ## GitLab.com endpoints
@@ -64,12 +58,6 @@ Example response:
 ```
 
 ### Retrieve a single SAML identity
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
-
-{{< /history >}}
 
 Retrieves a single SAML identity.
 
@@ -140,12 +128,6 @@ curl --request PATCH \
 
 ### Delete a single SAML identity
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
-
-{{< /history >}}
-
 ```plaintext
 DELETE /groups/:id/saml/:uid
 ```
@@ -191,10 +173,6 @@ Uses the Users API to [delete a single identity of a user](users.md#delete-authe
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
-- `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
-- `member_role_id` type [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.7 [with a feature flag](../administration/feature_flags/_index.md) named `custom_roles_for_saml_group_links`. Disabled by default.
-- `member_role_id` type [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.8. Feature flag `custom_roles_for_saml_group_links` removed.
 - `provider` parameter [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548725) in GitLab 18.2.
 
 {{< /history >}}

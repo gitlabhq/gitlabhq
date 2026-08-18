@@ -26,6 +26,11 @@ FactoryBot.define do
       }
     end
 
+    trait :composite_identity_author do
+      author_name { 'Service Account on behalf of @human' }
+      details { { author_class: ::Gitlab::Audit::CompositeIdentityAuthor.name } }
+    end
+
     trait :project_event do
       transient { target_project { association(:project) } }
 

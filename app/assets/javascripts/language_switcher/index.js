@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { getCookie } from '~/lib/utils/common_utils';
 import LanguageSwitcher from './components/app.vue';
 import { PREFERRED_LANGUAGE_COOKIE_KEY } from './constants';
@@ -15,12 +15,5 @@ export const initLanguageSwitcher = () => {
     provide.preferredLocale = preferredLocale;
   }
 
-  return new Vue({
-    el,
-    name: 'LanguageSwitcherRoot',
-    provide,
-    render(createElement) {
-      return createElement(LanguageSwitcher);
-    },
-  });
+  return initVueApp({ el, name: 'LanguageSwitcherRoot', provide, component: LanguageSwitcher });
 };

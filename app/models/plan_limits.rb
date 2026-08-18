@@ -10,7 +10,7 @@ class PlanLimits < ApplicationRecord
 
   ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
   ignore_column :ci_max_artifact_size_environment_key, remove_with: '19.3', remove_after: '2026-07-10' # https://gitlab.com/gitlab-org/gitlab/-/work_items/602166
-  ignore_column :ci_max_artifact_size_scip, remove_with: '19.2', remove_after: '2026-07-01'
+  ignore_column :ci_max_artifact_size_scip, remove_with: '19.4', remove_after: '2026-07-01'
 
   attribute :limits_history, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :limits_history, json_schema: { filename: 'plan_limits_history' }

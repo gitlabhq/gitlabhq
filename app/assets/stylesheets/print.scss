@@ -31,6 +31,19 @@
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
 
+    // Sticky table headers (editor_sticky_table_headers) fake their top and
+    // bottom borders with inset box-shadows, which browsers omit in print.
+    // Restore real borders and remove the shadow.
+    // See framework/typography.scss for the non-print declaration.
+    [data-sticky-header] > table:not(.code) {
+      > thead th,
+      > tbody > tr:first-child > th {
+        border-top: 1px solid var(--gl-border-color-default);
+        border-bottom: 1px solid var(--gl-border-color-default);
+        box-shadow: none;
+      }
+    }
+
     // fix blockquote style in print
     blockquote {
       &::before {

@@ -14,6 +14,7 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
+  ignore_column :suggest_pipeline_enabled, remove_with: '19.4', remove_after: '2026-08-21' # https://gitlab.com/groups/gitlab-org/-/work_items/20607
 
   INSTANCE_REVIEW_MIN_USERS = 50
 
@@ -72,6 +73,7 @@ class ApplicationSetting < ApplicationRecord
 
   belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
+  belongs_to :o11y_oauth_application, class_name: 'Authn::OauthApplication', optional: true
 
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 
@@ -260,6 +262,11 @@ class ApplicationSetting < ApplicationRecord
     allow_blank: true,
     hostname: true,
     length: { maximum: 255 }
+
+  validates :sidekiq_timezone_override,
+    length: { maximum: 255 },
+    allow_blank: true
+  validate :sidekiq_timezone_override_is_valid_iana, if: -> { sidekiq_timezone_override.present? }
 
   validates :max_pages_size,
     presence: true,
@@ -658,6 +665,7 @@ class ApplicationSetting < ApplicationRecord
       :concurrent_relation_batch_export_limit,
       :container_registry_token_expire_delay,
       :housekeeping_optimize_repository_period,
+      :import_jobs_concurrency_limit,
       :inactive_projects_delete_after_months,
       :max_artifacts_content_include_size,
       :max_artifacts_size,
@@ -714,6 +722,7 @@ class ApplicationSetting < ApplicationRecord
       :downstream_pipeline_trigger_limit_per_project_user_sha,
       :gitlab_shell_operation_limit,
       :group_api_limit,
+      :group_create_limit,
       :group_archive_unarchive_api_limit,
       :group_invited_groups_api_limit,
       :group_projects_api_limit,
@@ -745,7 +754,9 @@ class ApplicationSetting < ApplicationRecord
       :pipeline_limit_per_project_user_sha,
       :pipeline_limit_per_user,
       :project_api_limit,
+      :project_create_limit,
       :project_invited_groups_api_limit,
+      :project_repositories_blobs_batch_limit,
       :projects_api_limit,
       :projects_api_rate_limit_unauthenticated,
       :raw_blob_request_limit,
@@ -769,7 +780,9 @@ class ApplicationSetting < ApplicationRecord
       :users_api_limit_ssh_key,
       :users_api_limit_gpg_keys,
       :users_api_limit_gpg_key,
-      :git_push_pipeline_limit
+      :git_push_pipeline_limit,
+      :web_hook_event_resend_limit,
+      :web_hook_test_limit
   end
 
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
@@ -796,13 +809,17 @@ class ApplicationSetting < ApplicationRecord
     if: :granular_tokens_enforced_after_changed?
 
   jsonb_accessor :diff_limits,
+    diff_max_patch_bytes: [:integer, { default: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES }],
+    diff_max_files: [:integer, { default: Commit::DEFAULT_MAX_DIFF_FILES_SETTING }],
+    diff_max_lines: [:integer, { default: Commit::DEFAULT_MAX_DIFF_LINES_SETTING }],
     diff_max_versions: [:integer, { default: 1_000 }],
     diff_max_commits: [:integer, { default: 1_000_000 }]
 
   validates :diff_limits, json_schema: { filename: "application_setting_diff_limits" }
 
   jsonb_accessor :oauth_settings,
-    oauth_access_token_expires_in: [:integer, { default: DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN }]
+    oauth_access_token_expires_in: [:integer, { default: DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN }],
+    dynamic_client_registration_enabled: [:boolean, { default: true }]
 
   validates :oauth_settings,
     json_schema: { filename: "application_setting_oauth_settings" }
@@ -865,11 +882,15 @@ class ApplicationSetting < ApplicationRecord
     throttle_unauthenticated_git_http_period_in_seconds: [:integer, { default: 3600 }]
 
   jsonb_accessor :importers,
+    import_jobs_concurrency_limit: [:integer, { default: 100 }],
     silent_admin_exports_enabled: [:boolean, { default: false }],
     allow_contribution_mapping_to_admins: [:boolean, { default: false }],
     allow_bypass_placeholder_confirmation: [:boolean, { default: false }],
     relation_export_batch_size: [:integer, { default: 50 }],
-    allow_s3_compatible_storage_for_offline_transfer: [:boolean, { default: false }]
+    allow_s3_compatible_storage_for_offline_transfer: [:boolean, { default: false }],
+    allow_application_default_credentials_for_offline_transfer: [:boolean, { default: false }],
+    offline_transfer_exports_enabled: [:boolean, { default: false }],
+    offline_transfer_imports_enabled: [:boolean, { default: false }]
 
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
@@ -929,7 +950,9 @@ class ApplicationSetting < ApplicationRecord
     maven_package_requests_forwarding: [:boolean, { default: true }],
     lock_maven_package_requests_forwarding: [:boolean, { default: false }],
     pypi_package_requests_forwarding: [:boolean, { default: true }],
-    lock_pypi_package_requests_forwarding: [:boolean, { default: false }]
+    lock_pypi_package_requests_forwarding: [:boolean, { default: false }],
+    rubygems_package_requests_forwarding: [:boolean, { default: false }],
+    lock_rubygems_package_requests_forwarding: [:boolean, { default: false }]
 
   validates :helm_max_packages_count,
     presence: true,
@@ -1026,6 +1049,8 @@ class ApplicationSetting < ApplicationRecord
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
       :lock_maven_package_requests_forwarding,
+      :rubygems_package_requests_forwarding,
+      :lock_rubygems_package_requests_forwarding,
       :pages_unique_domain_default_enabled
     )
   end
@@ -1266,6 +1291,15 @@ class ApplicationSetting < ApplicationRecord
     validate_url(parsed_kroki_url, :kroki_url, KROKI_URL_ERROR_MESSAGE)
   end
 
+  # Validates that the configured value is a genuine IANA timezone identifier.
+  # Uses TZInfo directly so ActiveSupport aliases (for example, "Pacific Time (US & Canada)")
+  # are rejected, since sidekiq-cron's Fugit parser only accepts IANA identifiers.
+  def sidekiq_timezone_override_is_valid_iana
+    TZInfo::Timezone.get(sidekiq_timezone_override)
+  rescue TZInfo::InvalidTimezoneIdentifier
+    errors.add(:sidekiq_timezone_override, _('must be a valid IANA timezone identifier'))
+  end
+
   def sourcegraph_url_is_com?
     !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
   end
@@ -1359,9 +1393,12 @@ class ApplicationSetting < ApplicationRecord
       groups_api_limit: [:integer, { default: 200 }],
       members_delete_limit: [:integer, { default: 60 }],
       create_organization_api_limit: [:integer, { default: 10 }],
+      project_create_limit: [:integer, { default: 200 }],
+      group_create_limit: [:integer, { default: 200 }],
       project_api_limit: [:integer, { default: 400 }],
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
+      project_repositories_blobs_batch_limit: [:integer, { default: 5 }],
       projects_api_limit: [:integer, { default: 2000 }],
       project_members_api_limit: [:integer, { default: 200 }],
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
@@ -1383,7 +1420,9 @@ class ApplicationSetting < ApplicationRecord
       users_api_limit_gpg_keys: [:integer, { default: 120 }],
       users_api_limit_gpg_key: [:integer, { default: 120 }],
       pipeline_limit_per_user: [:integer, { default: 0 }],
-      raw_blob_request_limit_unauthenticated: [:integer, { default: DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT }]
+      raw_blob_request_limit_unauthenticated: [:integer, { default: DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT }],
+      web_hook_event_resend_limit: [:integer, { default: 5 }],
+      web_hook_test_limit: [:integer, { default: 5 }]
     }
   end
 

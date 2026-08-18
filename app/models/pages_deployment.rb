@@ -33,6 +33,13 @@ class PagesDeployment < ApplicationRecord
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
   scope :versioned, -> { where.not(path_prefix: [nil, '']) }
   scope :unversioned, -> { where(path_prefix: [nil, '']) }
+  scope :for_namespace_domain_projects, -> do
+    where_exists(
+      ProjectSetting
+        .with_pages_namespace_domain
+        .where(ProjectSetting.arel_table[:project_id].eq(PagesDeployment.arel_table[:project_id]))
+    )
+  end
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -75,8 +82,9 @@ class PagesDeployment < ApplicationRecord
     update(deleted_at: Time.now.utc)
   end
 
-  def self.count_versioned_deployments_for(projects, limit, group_by_project: false)
+  def self.count_versioned_deployments_for(projects, limit, group_by_project: false, namespace_domain_only: false)
     query = project_id_in(projects).active.versioned
+    query = query.for_namespace_domain_projects if namespace_domain_only
     query = query.group(:project_id) if group_by_project
     query.limit(limit).count
   end

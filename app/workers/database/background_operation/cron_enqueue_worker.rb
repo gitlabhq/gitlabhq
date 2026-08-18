@@ -23,6 +23,7 @@ module Database
           args['table_name'],
           args['column_name'],
           job_arguments: args['job_arguments'] || [],
+          enqueued_by: self.class.name,
           **options
         )
       end

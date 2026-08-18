@@ -117,6 +117,72 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTrack
     end
   end
 
+  describe 'pending resumed jobs tracking' do
+    let(:pending_key) { "#{redis_key_prefix}:{#{worker_class_name.underscore}}:pending_resumed" }
+
+    describe '#track_pending_resumed_jobs' do
+      it 'increments the counter and sets a TTL' do
+        service.track_pending_resumed_jobs(3)
+
+        Gitlab::Redis::QueuesMetadata.with do |c|
+          expect(c.get(pending_key).to_i).to eq(3)
+          expect(c.ttl(pending_key)).to be_within(5).of(described_class::TRACKING_KEY_TTL.to_i)
+        end
+
+        expect { service.track_pending_resumed_jobs(2) }
+          .to change { service.pending_resumed_jobs_count }.from(3).to(5)
+      end
+
+      it 'does nothing for a non-positive count' do
+        expect { service.track_pending_resumed_jobs(0) }
+          .not_to change { service.pending_resumed_jobs_count }
+        expect { service.track_pending_resumed_jobs(-1) }
+          .not_to change { service.pending_resumed_jobs_count }
+      end
+    end
+
+    describe '#untrack_pending_resumed_job' do
+      it 'decrements the counter' do
+        service.track_pending_resumed_jobs(2)
+
+        expect { service.untrack_pending_resumed_job }
+          .to change { service.pending_resumed_jobs_count }.from(2).to(1)
+      end
+
+      it 'floors the counter at zero to absorb drift' do
+        expect { service.untrack_pending_resumed_job }
+          .not_to change { service.pending_resumed_jobs_count }.from(0)
+      end
+
+      it 'decrements by the given count' do
+        service.track_pending_resumed_jobs(5)
+
+        expect { service.untrack_pending_resumed_job(3) }
+          .to change { service.pending_resumed_jobs_count }.from(5).to(2)
+      end
+
+      it 'floors at zero when the count exceeds the counter' do
+        service.track_pending_resumed_jobs(2)
+
+        expect { service.untrack_pending_resumed_job(5) }
+          .to change { service.pending_resumed_jobs_count }.from(2).to(0)
+      end
+
+      it 'does nothing for a non-positive count' do
+        service.track_pending_resumed_jobs(2)
+
+        expect { service.untrack_pending_resumed_job(0) }
+          .not_to change { service.pending_resumed_jobs_count }
+      end
+    end
+
+    describe '#pending_resumed_jobs_count' do
+      it 'returns zero when nothing is tracked' do
+        expect(service.pending_resumed_jobs_count).to eq(0)
+      end
+    end
+  end
+
   describe '#cleanup_stale_trackers' do
     let(:dangling_tid) { 4567 }
     let(:long_running_tid) { 5678 }

@@ -140,7 +140,7 @@ RSpec.describe MergeRequestPresenter do
     before do
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
-      resource.cache_merge_request_closes_issues!
+      resource.persist_merge_request_issues!
     end
 
     describe '#issues_sentence' do
@@ -625,7 +625,7 @@ RSpec.describe MergeRequestPresenter do
       let(:can_push_to_branch) { true }
 
       it 'returns true' do
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
 
@@ -634,7 +634,7 @@ RSpec.describe MergeRequestPresenter do
       let(:can_push_to_branch) { true }
 
       it 'returns false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
 
@@ -643,7 +643,7 @@ RSpec.describe MergeRequestPresenter do
       let(:can_push_to_branch) { false }
 
       it 'returns false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end
@@ -700,7 +700,7 @@ RSpec.describe MergeRequestPresenter do
       it 'returns true' do
         allow(resource.source_project).to receive(:jenkins_integration_active?).and_return(true)
 
-        is_expected.to eq(true)
+        is_expected.to be(true)
       end
     end
 
@@ -708,7 +708,7 @@ RSpec.describe MergeRequestPresenter do
       it 'returns false' do
         allow(resource.source_project).to receive(:jenkins_integration_active?).and_return(false)
 
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end

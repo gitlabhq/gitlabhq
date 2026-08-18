@@ -5,6 +5,9 @@ module Mutations
     class CreateAlertIssue < Base
       graphql_name 'CreateAlertIssue'
 
+      authorize_granular_token permissions: [:create_issue, :update_alert],
+        boundary_argument: :project_path, boundary_type: :project
+
       def resolve(args)
         alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])
         if Feature.enabled?(:hide_incident_management_features, alert.project)

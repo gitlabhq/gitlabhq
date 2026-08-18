@@ -16,8 +16,8 @@ describe('Sidebar Confidentiality Form', () => {
   let wrapper;
 
   const findWarningMessage = () => wrapper.find(`[data-testid="warning-message"]`);
-  const findConfidentialToggle = () => wrapper.find(`[data-testid="confidential-toggle"]`);
-  const findCancelButton = () => wrapper.find(`[data-testid="confidential-cancel"]`);
+  const findConfidentialToggle = () => wrapper.findComponent(`[data-testid="confidential-toggle"]`);
+  const findCancelButton = () => wrapper.findComponent(`[data-testid="confidential-cancel"]`);
 
   let mutationHandler;
 
@@ -56,11 +56,11 @@ describe('Sidebar Confidentiality Form', () => {
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
   };
 
-  it('emits a `closeForm` event when Cancel button is clicked', () => {
+  it('emits a `close-form` event when Cancel button is clicked', () => {
     createComponent();
     findCancelButton().vm.$emit('click');
 
-    expect(wrapper.emitted().closeForm).toHaveLength(1);
+    expect(wrapper.emitted()['close-form']).toHaveLength(1);
   });
 
   it('renders a loading state after clicking on turn on/off button', async () => {

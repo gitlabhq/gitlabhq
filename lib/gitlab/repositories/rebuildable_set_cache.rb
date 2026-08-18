@@ -53,6 +53,8 @@ module Gitlab
         end
         return -1
       LUA
+      # Returned by SADD_IF_EXISTS_SCRIPT when the set key is absent, so the add could not be applied.
+      SET_ABSENT = -1
 
       # Lua script for atomic SREM only if key exists.
       # Prevents race condition where key expires between EXISTS check and SREM.
@@ -172,8 +174,6 @@ module Gitlab
       # @param value [Array<String>] Canonical values from source (e.g., Gitaly)
       # @return [Array<String>] Final cache contents after reconciliation
       def write(key, value)
-        full_key = cache_key(key)
-
         # 1. Acquire rebuild lock (prevents concurrent rebuilds)
         unless mark_rebuild_in_progress(key)
           log_event(:rebuild_skipped, key, reason: 'another rebuild in progress')
@@ -193,55 +193,7 @@ module Gitlab
             return smembers
           end
 
-          with do |redis|
-            log_event(:rebuild_started, key, canonical_count: value.size)
-
-            # 2. Pre-drain: collect pending events before overwrite
-            pre_drain_additions, pre_drain_deletions = drain_pending_events(key)
-
-            if pre_drain_additions.any? || pre_drain_deletions.any?
-              log_event(:pre_drain_completed, key,
-                additions: pre_drain_additions.size,
-                deletions: pre_drain_deletions.size)
-            end
-
-            # 3. Build final set: canonical + pending events
-            final_set = Set.new(value)
-            final_set.merge(pre_drain_additions)
-            final_set.subtract(pre_drain_deletions)
-
-            # 4. Atomic cache overwrite
-            redis.multi do |multi|
-              multi.unlink(full_key)
-
-              # Splitting into groups of 1000 prevents us from creating a too-long
-              # Redis command
-              final_set.each_slice(DRAIN_BATCH_SIZE) { |subset| multi.sadd(full_key, subset) }
-
-              multi.expire(full_key, expires_in)
-            end
-
-            # 5. Post-drain: repair events that arrived during overwrite
-            post_drain_additions, post_drain_deletions = drain_pending_events(key)
-
-            if post_drain_additions.any? || post_drain_deletions.any?
-              log_event(:post_drain_completed, key,
-                additions: post_drain_additions.size,
-                deletions: post_drain_deletions.size)
-              apply_pending_events(key, post_drain_additions, post_drain_deletions)
-            end
-
-            # Reconcile before deciding trust so final_set.empty? matches Redis.
-            final_set.merge(post_drain_additions)
-            final_set.subtract(post_drain_deletions)
-
-            # 6. Grant trust
-            grant_trust(key, final_set)
-
-            log_event(:rebuild_completed, key, final_count: final_set.size)
-
-            final_set.to_a
-          end
+          perform_rebuild(key, value)
         ensure
           # 7. Release rebuild lock
           mark_rebuild_complete(key)
@@ -304,6 +256,64 @@ module Gitlab
       end
 
       private
+
+      # Rebuild the cache while the caller holds the rebuild lock.
+      # @param key [String] Cache key
+      # @param value [Array<String>] Canonical values from source (e.g., Gitaly)
+      # @return [Array<String>] Final cache contents after reconciliation
+      def perform_rebuild(key, value)
+        full_key = cache_key(key)
+
+        with do |redis|
+          log_event(:rebuild_started, key, canonical_count: value.size)
+
+          # 2. Pre-drain: collect pending events before overwrite
+          pre_drain_additions, pre_drain_deletions = drain_pending_events(key)
+
+          if pre_drain_additions.any? || pre_drain_deletions.any?
+            log_event(:pre_drain_completed, key,
+              additions: pre_drain_additions.size,
+              deletions: pre_drain_deletions.size)
+          end
+
+          # 3. Build final set: canonical + pending events
+          final_set = Set.new(value)
+          final_set.merge(pre_drain_additions)
+          final_set.subtract(pre_drain_deletions)
+
+          # 4. Atomic cache overwrite
+          redis.multi do |multi|
+            multi.unlink(full_key)
+
+            # Splitting into groups of 1000 prevents us from creating a too-long
+            # Redis command
+            final_set.each_slice(DRAIN_BATCH_SIZE) { |subset| multi.sadd(full_key, subset) }
+
+            multi.expire(full_key, expires_in)
+          end
+
+          # 5. Post-drain: repair events that arrived during overwrite
+          post_drain_additions, post_drain_deletions = drain_pending_events(key)
+
+          if post_drain_additions.any? || post_drain_deletions.any?
+            log_event(:post_drain_completed, key,
+              additions: post_drain_additions.size,
+              deletions: post_drain_deletions.size)
+            apply_pending_events(key, post_drain_additions, post_drain_deletions)
+          end
+
+          # Reconcile before deciding trust so final_set.empty? matches Redis.
+          final_set.merge(post_drain_additions)
+          final_set.subtract(post_drain_deletions)
+
+          # 6. Grant trust
+          grant_trust(key, final_set)
+
+          log_event(:rebuild_completed, key, final_count: final_set.size)
+
+          final_set.to_a
+        end
+      end
 
       # Update cache by adding or removing a single ref (no rebuild in progress)
       # Uses Lua scripts to ensure atomic check-and-update operations.
@@ -369,9 +379,11 @@ module Gitlab
       # @param key [String] Cache key (e.g., :branch_names)
       # @param full_key [String] Full Redis key for the set
       # @param ref_name [String] Short ref name (e.g., "main")
+      # @return [Integer] -1 if the key is absent, 0 for a no-op, or 1 when added
       def add_if_cache_exists(redis, key, full_key, ref_name)
         result = redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
-        mark_untrusted(key) if result == -1
+        mark_untrusted(key) if result == SET_ABSENT
+        result
       end
 
       # Atomically remove ref from the cache set only if the set key exists.

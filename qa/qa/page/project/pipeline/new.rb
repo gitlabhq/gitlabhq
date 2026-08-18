@@ -5,6 +5,10 @@ module QA
     module Project
       module Pipeline
         class New < QA::Page::Base
+          # The frontend polls for up to 15s before rendering the form,
+          # so we wait a bit longer than that.
+          VARIABLES_FORM_LOAD_TIMEOUT = 20
+
           view 'app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue' do
             element 'run-pipeline-button', required: true
           end
@@ -27,10 +31,16 @@ module QA
           end
 
           def configure_variable(key: nil, value: 'foo', row_index: 0)
+            wait_for_variables_form
+
             within_element_by_index('ci-variable-row-container', row_index) do
               fill_element('pipeline-form-ci-variable-key-field', key) unless key.nil?
               fill_element('pipeline-form-ci-variable-value-field', value)
             end
+          end
+
+          def wait_for_variables_form
+            has_element?('ci-variable-row-container', wait: VARIABLES_FORM_LOAD_TIMEOUT)
           end
 
           def has_variable_dropdown?

@@ -33,6 +33,21 @@ RSpec.describe Gitlab::Highlight do
       )
     end
 
+    it 'includes line IDs by default' do
+      html = Nokogiri::HTML5(described_class.highlight(file_name, content))
+      lines = html.search('.line')
+
+      expect(lines.map { |line| line['id'] }).to eq(%w[LC1 LC2])
+    end
+
+    it 'omits line IDs when suppress_line_ids is true', :aggregate_failures do
+      html = Nokogiri::HTML5(described_class.highlight(file_name, content, suppress_line_ids: true))
+      lines = html.search('.line')
+
+      expect(lines).to be_present
+      expect(lines.map { |line| line['id'] }).to all(be_nil)
+    end
+
     it 'highlights' do
       expected = %[<span id="LC1" class="line" data-lang="common_lisp"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
 <span id="LC2" class="line" data-lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">)</span></span>]
@@ -51,6 +66,14 @@ RSpec.describe Gitlab::Highlight do
 <span class="line" data-lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">)</span></span>]
 
       expect(described_class.highlight(file_name, content, used_on: :diff)).to eq(expected)
+    end
+
+    it 'includes line IDs when suppress_line_ids: false overrides used_on: :diff' do
+      result = described_class.highlight(file_name, content, used_on: :diff, suppress_line_ids: false)
+      html = Nokogiri::HTML(result)
+      lines = html.search('.line')
+
+      expect(lines.map { |line| line['id'] }).to eq(%w[LC1 LC2])
     end
 
     context 'when content is too long to be highlighted' do
@@ -142,6 +165,15 @@ RSpec.describe Gitlab::Highlight do
         highlight
       end
 
+      it 'preserves suppress_line_ids in the fallback' do
+        highlighter = described_class.new('file.rb', 'begin', language: 'ruby')
+
+        expect(highlighter).to receive(:highlight_plain)
+          .with('Content', suppress_line_ids: true).and_call_original
+
+        highlighter.highlight('Content', used_on: :diff)
+      end
+
       it 'logs a warning with timeout message' do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(Timeout::Error),
@@ -153,6 +185,23 @@ RSpec.describe Gitlab::Highlight do
         )
 
         highlight
+      end
+    end
+
+    context 'when highlighting raises an error' do
+      before do
+        allow(Rouge::Formatters::HTMLGitlab).to receive(:format).and_call_original
+        allow(Rouge::Formatters::HTMLGitlab).to receive(:format)
+          .with(anything, hash_including(:tag)).and_raise(StandardError)
+      end
+
+      it 'preserves suppress_line_ids in the fallback' do
+        highlighter = described_class.new('file.rb', 'begin', language: 'ruby')
+
+        expect(highlighter).to receive(:highlight_plain)
+          .with('Content', suppress_line_ids: true).and_call_original
+
+        highlighter.highlight('Content', used_on: :diff)
       end
     end
 

@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
-import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 
 const projectId = '8';
 const refShortName = 'main';

@@ -70,8 +70,12 @@ FactoryBot.define do
       feature_flags_access_level { ProjectFeature::ENABLED }
       releases_access_level { ProjectFeature::ENABLED }
       infrastructure_access_level { ProjectFeature::ENABLED }
-      model_experiments_access_level { ProjectFeature::ENABLED }
-      model_registry_access_level { ProjectFeature::ENABLED }
+      model_experiments_access_level do
+        visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
+      end
+      model_registry_access_level do
+        visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
+      end
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -125,7 +129,9 @@ FactoryBot.define do
         operations_access_level: evaluator.operations_access_level,
         analytics_access_level: evaluator.analytics_access_level,
         container_registry_access_level: evaluator.container_registry_access_level,
-        security_and_compliance_access_level: evaluator.security_and_compliance_access_level
+        security_and_compliance_access_level: evaluator.security_and_compliance_access_level,
+        model_experiments_access_level: evaluator.model_experiments_access_level,
+        model_registry_access_level: evaluator.model_registry_access_level
       }
 
       project_ci_cd_settings_hash = {}

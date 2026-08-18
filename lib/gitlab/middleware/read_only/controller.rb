@@ -81,12 +81,18 @@ module Gitlab
         def route_hash
           @route_hash ||= begin
             Rails.application.routes.recognize_path(
-              request_url,
+              request_url_without_relative_root,
               { method: request.request_method }
             )
           rescue StandardError
             {}
           end
+        end
+
+        def request_url_without_relative_root
+          uri = URI.parse(request_url)
+          uri.path = uri.path.delete_prefix(relative_url)
+          uri.to_s
         end
 
         def request_url

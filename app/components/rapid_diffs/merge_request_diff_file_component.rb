@@ -6,9 +6,13 @@ module RapidDiffs
 
     attr_reader :diff_file
 
-    def initialize(diff_file:, merge_request:, parallel_view: false, plain_view: false, extra_file_data: {})
+    def initialize(
+      diff_file:, merge_request:, conflict_resolution_path: nil, can_merge: false,
+      parallel_view: false, plain_view: false, extra_file_data: {})
       @diff_file = diff_file
       @merge_request = merge_request
+      @conflict_resolution_path = conflict_resolution_path
+      @can_merge = can_merge
       @parallel_view = parallel_view
       @plain_view = plain_view
       @extra_file_data = extra_file_data
@@ -102,6 +106,38 @@ module RapidDiffs
       else
         _('Unknown conflict')
       end
+    end
+
+    def conflict_resolution_message
+      return _('Ask someone with write access to resolve it.') unless @can_merge
+
+      if @conflict_resolution_path
+        helpers.safe_format(
+          _('You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or ' \
+            '%{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.'),
+          helpers.tag_pair(resolve_on_gitlab_link, :gitlabLinkStart, :gitlabLinkEnd),
+          helpers.tag_pair(resolve_locally_button, :resolveLocallyStart, :resolveLocallyEnd)
+        )
+      else
+        helpers.safe_format(
+          _('You can %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.'),
+          helpers.tag_pair(resolve_locally_button, :resolveLocallyStart, :resolveLocallyEnd)
+        )
+      end
+    end
+
+    def resolve_on_gitlab_link
+      helpers.link_to('', @conflict_resolution_path)
+    end
+
+    def resolve_locally_button
+      helpers.render(
+        Pajamas::ButtonComponent.new(
+          category: :tertiary,
+          variant: :link,
+          button_options: { type: 'button', data: { click: 'resolveConflictsLocally' } }
+        )
+      )
     end
   end
 end

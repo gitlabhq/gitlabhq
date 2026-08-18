@@ -31,7 +31,7 @@ instead of:
 - A repository-specific token.
 
 As a result, these requests can have broader access than intended, including access to everything running on the server
-that hosts the webhook including:
+that hosts the webhook:
 
 - The GitLab server.
 - The API itself.
@@ -88,12 +88,6 @@ Prerequisites:
 
 ## Filter requests
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have administrator access to the GitLab instance.
@@ -119,7 +113,7 @@ To resolve this issue, add the hostname to the
 even if GitLab never needs to make an outbound connection to that host.
 
 This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
-Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
+Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/work_items/8029) do not respect outbound filtering
 rules.
 
 ## Allow outbound requests to certain IP addresses and domains
@@ -194,7 +188,7 @@ When you [filter requests](#filter-requests), you might get an error that states
 To work around this error:
 
 1. Revert the change so the error message `Help page documentation base url is blocked` does not appear anymore.
-1. Add `docs.gitlab.com` , or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Add `docs.gitlab.com`, or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
 
 ### GitLab Duo functionality is blocked

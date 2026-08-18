@@ -6,6 +6,7 @@ import testAction from 'helpers/vuex_action_helper';
 import { members, group, modalData } from 'jest/members/mock_data';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
+  fetchMembers,
   updateMemberRole,
   showRemoveGroupLinkModal,
   hideRemoveGroupLinkModal,
@@ -18,6 +19,60 @@ import * as types from '~/members/store/mutation_types';
 const mockedRequestFormatter = jest.fn().mockImplementation(noop);
 
 describe('Vuex members actions', () => {
+  describe('fetchMembers', () => {
+    let mock;
+    const membersPath = '/foo-bar/-/project_members.json';
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('does nothing when membersPath is not set', async () => {
+      await testAction(fetchMembers, {}, { membersPath: undefined }, []);
+      expect(mock.history.get).toHaveLength(0);
+    });
+
+    describe('successful request', () => {
+      it(`commits ${types.REQUEST_MEMBERS} then ${types.RECEIVE_MEMBERS_SUCCESS} with camelCased payload`, async () => {
+        const response = {
+          members: [{ id: 1, is_direct_member: true }],
+          pagination: { current_page: 1, param_name: 'direct_members_page' },
+        };
+        mock.onGet(membersPath).replyOnce(HTTP_STATUS_OK, response);
+
+        await testAction(fetchMembers, { direct_members_page: 2 }, { membersPath }, [
+          { type: types.REQUEST_MEMBERS },
+          {
+            type: types.RECEIVE_MEMBERS_SUCCESS,
+            payload: {
+              members: [{ id: 1, isDirectMember: true }],
+              pagination: { currentPage: 1, paramName: 'direct_members_page' },
+            },
+          },
+        ]);
+
+        expect(mock.history.get[0].url).toBe(membersPath);
+        expect(mock.history.get[0].params).toEqual({ direct_members_page: 2 });
+      });
+    });
+
+    describe('unsuccessful request', () => {
+      it(`commits ${types.REQUEST_MEMBERS} then ${types.RECEIVE_MEMBERS_ERROR}`, async () => {
+        const error = new Error('Network Error');
+        mock.onGet(membersPath).reply(() => Promise.reject(error));
+
+        await testAction(fetchMembers, {}, { membersPath }, [
+          { type: types.REQUEST_MEMBERS },
+          { type: types.RECEIVE_MEMBERS_ERROR, payload: { error } },
+        ]);
+      });
+    });
+  });
+
   describe('update member actions', () => {
     let mock;
 

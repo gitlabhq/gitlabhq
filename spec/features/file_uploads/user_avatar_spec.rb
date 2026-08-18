@@ -21,7 +21,7 @@ RSpec.describe 'Upload a user avatar', :js, feature_category: :user_profile do
 
   RSpec.shared_examples 'for a user avatar' do
     it 'uploads successfully' do
-      expect(user.avatar.file).to eq nil
+      expect(user.avatar.file).to be_nil
       subject
 
       expect(page).to have_content 'Profile was successfully updated'

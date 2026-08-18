@@ -21,7 +21,7 @@ describe('Confirm Danger Modal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfirmationPhrase = () => wrapper.findByTestId('confirm-danger-phrase');
-  const findConfirmationInput = () => wrapper.findByTestId('confirm-danger-field');
+  const findConfirmationInput = () => wrapper.findComponentByTestId('confirm-danger-field');
   const findAdditionalMessage = () => wrapper.findByTestId('confirm-danger-message');
   const findPrimaryAction = () => findModal().props('actionPrimary');
   const findCancelAction = () => findModal().props('actionCancel');
@@ -49,7 +49,7 @@ describe('Confirm Danger Modal', () => {
     });
 
     it('renders the correct confirmation phrase', () => {
-      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm:`);
+      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm: ${phrase}`);
     });
 
     it('preserves whitespace in the confirmation phrase', () => {
@@ -87,6 +87,24 @@ describe('Confirm Danger Modal', () => {
     it('renders the default cancel button', () => {
       expect(findCancelAction().text).toBe(CONFIRM_DANGER_MODAL_CANCEL);
     });
+
+    it('labels the confirmation input with the default phrase text', () => {
+      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm: ${phrase}`);
+    });
+  });
+
+  describe('with a custom phrase label', () => {
+    beforeEach(() => {
+      createComponent({ props: { phraseLabel: 'Type the name below to confirm: %{phrase}' } });
+    });
+
+    it('labels the confirmation input with the given text', () => {
+      expect(findConfirmationPhrase().text()).toBe(`Type the name below to confirm: ${phrase}`);
+    });
+
+    it('still interpolates the phrase into a code element', () => {
+      expect(findConfirmationPhrase().find('code').text()).toBe(phrase);
+    });
   });
 
   describe('with a valid confirmation phrase', () => {
@@ -110,6 +128,20 @@ describe('Confirm Danger Modal', () => {
       await findModal().vm.$emit('primary', MOCK_EVENT);
 
       expect(wrapper.emitted('confirm')).toEqual([[MOCK_EVENT]]);
+    });
+  });
+
+  describe('when the modal closes', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await findConfirmationInput().vm.$emit('input', phrase);
+      await findModal().vm.$emit('hidden');
+    });
+
+    it('clears the confirmation phrase, so a reopened modal asks for it again', () => {
+      expect(findConfirmationInput().attributes('value')).toBe('');
+      expect(findPrimaryActionAttributes('disabled')).toBe(true);
     });
   });
 

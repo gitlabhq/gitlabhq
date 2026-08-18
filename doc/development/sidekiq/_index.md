@@ -57,7 +57,7 @@ end
 
 Unrouted Sidekiq calls are caught by the validator in all API requests, Sidekiq jobs on the server-side and in tests.
 We recommend writing application logic with the use of the `Gitlab::SidekiqSharding::Router`. However, since sharding is an
-unreleased feature, if the component does not affect GitLab.com, it is acceptable run it within a `.allow_unrouted_sidekiq_calls` scope like so:
+unreleased feature, if the component does not affect GitLab.com, it is acceptable to run it within a `.allow_unrouted_sidekiq_calls` scope like so:
 
 ```ruby
 # Add a comment explaining why it is safe to allow unrouted Sidekiq calls in this case
@@ -67,7 +67,7 @@ end
 ```
 
 A past example is the use of `allow_unrouted_sidekiq_calls` in [Geo Rake tasks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149958#note_1906072228)
-as it does not affect GitLab.com. However, developer should write shard-aware code where possible since
+as it does not affect GitLab.com. However, developers should write shard-aware code where possible since
 that is a pre-requisite for sharding to be [released as a feature to users on GitLab Self-Managed](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3430).
 
 ## Retries
@@ -219,7 +219,7 @@ To determine an appropriate limit, you can use the `sidekiq: Worker Concurrency 
 
 ## Deferring Sidekiq workers
 
-Sidekiq workers are deferred by two ways,
+Sidekiq workers are deferred in two ways:
 
 1. Manual: Feature flags can be used to explicitly defer a particular worker, more details can be found in [deferring Sidekiq jobs](../feature_flags/_index.md#deferring-sidekiq-jobs).
 1. Automatic: Similar to the [throttling mechanism](../database/batched_background_migrations.md#throttling-batched-migrations) in batched migrations, database health indicators are used to defer a Sidekiq worker.
@@ -227,6 +227,14 @@ Sidekiq workers are deferred by two ways,
    To use the automatic deferring mechanism, the worker has to opt in by calling `defer_on_database_health_signal`
    with `gitlab_schema`, `tables` (used by the autovacuum database indicator), and `delay_by`
    (time to delay, 5 seconds by default) as its parameters.
+
+   The first deferral delays the job by `delay_by`.
+   While the stop signal persists, each consecutive deferral doubles the delay,
+   up to a hard maximum of 30 minutes.
+   A small random jitter (up to 10%) is subtracted from the doubled delay
+   so that jobs deferred together do not retry at the same time.
+   The incremental delay is behind the `incremental_database_health_defer_delay` feature flag
+   (disabled by default).
 
    **Example**:
 
@@ -280,6 +288,7 @@ For deferred jobs, logs contain the following to indicate the source:
 
 - `job_status`: `deferred`
 - `job_deferred_by`: `feature_flag` or `database_health_check`
+- `deferred_count`: the number of times the job has been deferred
 
 ## Sidekiq Queues
 
@@ -298,7 +307,7 @@ to regenerate `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so
 it can be picked up by
 [`sidekiq-cluster`](../../administration/sidekiq/extra_sidekiq_processes.md)
 in installations that don't use routing rules. For more information about potential changes,
-see [epic 596](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/596).
+see [epic 596](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/596).
 
 Additionally, run
 `bin/rake gitlab:sidekiq:sidekiq_queues_yml:generate` to regenerate
@@ -503,7 +512,7 @@ tests should be placed in `spec/workers`.
 
 ## Interacting with Sidekiq Redis and APIs
 
-The application should minimise interaction with of any `Sidekiq.redis` and Sidekiq [APIs](https://github.com/mperham/sidekiq/blob/main/lib/sidekiq/api.rb). Such interactions in generic application logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. By decoupling application logic from Sidekiq datastore, it allows for greater freedom when horizontally scaling the GitLab background processing setup.
+The application should minimize interaction with any `Sidekiq.redis` and Sidekiq [APIs](https://github.com/mperham/sidekiq/blob/main/lib/sidekiq/api.rb). Such interactions in generic application logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. Decoupling application logic from the Sidekiq datastore allows for greater freedom when horizontally scaling the GitLab background processing setup.
 
 Some exceptions to this rule would be migration-related logic or administration operations.
 

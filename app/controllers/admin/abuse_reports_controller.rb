@@ -7,7 +7,10 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   before_action :find_abuse_report, only: [:show, :moderate_user, :update, :destroy]
 
   def index
-    @abuse_reports = AbuseReportsFinder.new(permitted_index_params).execute
+    @abuse_reports = AbuseReportsFinder.new(
+      permitted_index_params,
+      organization: admin_current_organization
+    ).execute
   end
 
   def show; end
@@ -42,7 +45,7 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   private
 
   def find_abuse_report
-    @abuse_report = AbuseReport.find(params.permit(:id)[:id])
+    @abuse_report = AbuseReport.in_organization(admin_current_organization).find(params.permit(:id)[:id])
   end
 
   def set_status_param

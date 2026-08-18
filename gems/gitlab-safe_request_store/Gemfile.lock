@@ -8,24 +8,42 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.8.7)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
+    activesupport (7.2.3.1)
+      base64
+      benchmark (>= 0.3)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.3.1)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
-      minitest (>= 5.1)
-      tzinfo (~> 2.0)
+      logger (>= 1.4.2)
+      minitest (>= 5.1, < 6)
+      securerandom (>= 0.3)
+      tzinfo (~> 2.0, >= 2.0.5)
     ast (2.4.3)
+    base64 (0.3.0)
+    benchmark (0.5.0)
+    bigdecimal (4.1.2)
     coderay (1.1.3)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.3.7)
+    connection_pool (3.0.2)
     diff-lcs (1.5.0)
-    gitlab-styles (10.1.0)
-      rubocop (~> 1.50.2)
-      rubocop-graphql (~> 0.18)
-      rubocop-performance (~> 1.15)
-      rubocop-rails (~> 2.17)
-      rubocop-rspec (~> 2.22)
+    drb (2.2.3)
+    gitlab-styles (14.1.0)
+      rubocop (= 1.81.7)
+      rubocop-capybara (= 2.21.0)
+      rubocop-factory_bot (= 2.26.1)
+      rubocop-graphql (= 1.5.4)
+      rubocop-performance (= 1.23.1)
+      rubocop-rails (= 2.29.1)
+      rubocop-rspec (= 3.4.0)
+      rubocop-rspec_rails (= 2.30.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
+    language_server-protocol (3.17.0.6)
+    lint_roller (1.1.0)
+    logger (1.7.0)
     method_source (1.0.0)
     minitest (5.17.0)
     parallel (1.22.1)
@@ -39,10 +57,9 @@ GEM
     racc (1.8.1)
     rack (2.2.17)
     rainbow (3.1.1)
-    regexp_parser (2.7.0)
+    regexp_parser (2.12.0)
     request_store (1.5.1)
       rack (>= 1.4)
-    rexml (3.3.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -56,37 +73,41 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.0)
-    rubocop (1.50.2)
+    rubocop (1.81.7)
       json (~> 2.3)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
       parallel (~> 1.10)
-      parser (>= 3.2.0.0)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8, < 3.0)
-      rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.28.0, < 2.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.47.1, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 3.0)
+      unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.49.1)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
-    rubocop-capybara (2.18.0)
+    rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
-    rubocop-factory_bot (2.23.1)
-      rubocop (~> 1.33)
-    rubocop-graphql (0.19.0)
-      rubocop (>= 0.87, < 2)
-    rubocop-performance (1.18.0)
-      rubocop (>= 1.7.0, < 2.0)
-      rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.20.2)
+    rubocop-factory_bot (2.26.1)
+      rubocop (~> 1.61)
+    rubocop-graphql (1.5.4)
+      rubocop (>= 1.50, < 2)
+    rubocop-performance (1.23.1)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
+    rubocop-rails (2.29.1)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
-      rubocop (>= 1.33.0, < 2.0)
-    rubocop-rspec (2.22.0)
-      rubocop (~> 1.33)
-      rubocop-capybara (~> 2.17)
-      rubocop-factory_bot (~> 2.22)
+      rubocop (>= 1.52.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
+    rubocop-rspec (3.4.0)
+      rubocop (~> 1.61)
+    rubocop-rspec_rails (2.30.0)
+      rubocop (~> 1.61)
+      rubocop-rspec (~> 3, >= 3.0.1)
     ruby-progressbar (1.11.0)
+    securerandom (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
@@ -96,22 +117,30 @@ PLATFORMS
 
 DEPENDENCIES
   gitlab-safe_request_store!
-  gitlab-styles (~> 10.1.0)
+  gitlab-styles (~> 14.0)
   pry
   rspec (~> 3.0)
   rubocop (~> 1.50)
-  rubocop-rspec (~> 2.22)
+  rubocop-rspec (~> 3.0)
 
 CHECKSUMS
-  activesupport (7.0.8.7) sha256=df4702375de924aae81709c831605317c5417f0bd9e502a0373ff84a067204ff
+  activesupport (7.2.3.1) sha256=11ebed516a43a0bb47346227a35ebae4d9427465a7c9eb197a03d5c8d283cb34
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
+  bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
-  concurrent-ruby (1.2.2) sha256=3879119b8b75e3b62616acc256c64a134d0b0a7a9a3fcba5a233025bcde22c4f
+  concurrent-ruby (1.3.7) sha256=4412caec3a5ea2e5fdc52076724c071a81f2c0593d83b2ac8cbb8ca63b3151b0
+  connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   diff-lcs (1.5.0) sha256=49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
+  drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   gitlab-safe_request_store (0.1.0)
-  gitlab-styles (10.1.0) sha256=f42745f5397d042fe24cf2d0eb56c995b37f9f43d8fb79b834d197a1cafdc84a
+  gitlab-styles (14.1.0) sha256=f39bc5619636bad3690d574438d70b865f48e38d57a38d7823bdeff2a90d2d5a
   i18n (1.12.0) sha256=91e3cc1b97616d308707eedee413d82ee021d751c918661fb82152793e64aced
   json (2.6.3) sha256=86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459
+  language_server-protocol (3.17.0.6) sha256=5ef2c0c138f8267e1bc631d3328347d354f96724b0af22f2c79516120443b7f0
+  lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   method_source (1.0.0) sha256=d779455a2b5666a079ce58577bfad8534f571af7cec8107f4dce328f0981dede
   minitest (5.17.0) sha256=c0dfaa3e99ed5ee3500c92bb114cf9d0d3c1e6995e162dd7b49970a9f0315ece
   parallel (1.22.1) sha256=ebdf1f0c51f182df38522f70ba770214940bef998cdb6e00f36492b29699761f
@@ -121,25 +150,26 @@ CHECKSUMS
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (2.2.17) sha256=5fe02a1ca80d6fb2271dba00985ee2962d6f5620b6f46dfed89f5301ac4699dd
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
-  regexp_parser (2.7.0) sha256=f8b8b7f34cc53c907fad6aec2b9da996a4311a0ddd92f3bfd3b999de5420c234
+  regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   request_store (1.5.1) sha256=07a204d161590789f2b1d27f9f0eadcdecd6d868cb2f03240250e1bc747df78e
-  rexml (3.3.9) sha256=d71875b85299f341edf47d44df0212e7658cbdf35aeb69cefdb63f57af3137c9
   rspec (3.12.0) sha256=ccc41799a43509dc0be84070e3f0410ac95cbd480ae7b6c245543eb64162399c
   rspec-core (3.12.1) sha256=2e40c265f71eeb7caa4cac57106a715d2cd9caddc550bd9a4e632f4a372b4435
   rspec-expectations (3.12.2) sha256=8652db70b25ae3378b7274477a906b6ad1833a7b7cfbb001a03f49dd1c1d6a0d
   rspec-mocks (3.12.3) sha256=cc0a1176707e641a2c66c71fe769486fec57d7df8ec7e34320f8957a1363026b
   rspec-support (3.12.0) sha256=dd4d44b247ff679b95b5607ac5641d197a5f9b1d33f916123cb98fc5f917c58b
-  rubocop (1.50.2) sha256=7cfeb0616f686ac61d049beae89f31446792d7e9f5728152657548f70aa78650
+  rubocop (1.81.7) sha256=6fb5cc298c731691e2a414fe0041a13eb1beed7bab23aec131da1bcc527af094
   rubocop-ast (1.49.1) sha256=4412f3ee70f6fe4546cc489548e0f6fcf76cafcfa80fa03af67098ffed755035
-  rubocop-capybara (2.18.0) sha256=66b256755101f76dc455ba9694e2414bc957db5200401d204b00bc835401d605
-  rubocop-factory_bot (2.23.1) sha256=c19ee30c02e591f4293c07e943e22b7999c545d5010aac4d79621ee310850c4f
-  rubocop-graphql (0.19.0) sha256=ba4b2fc91c9f0fda47e0870a6ae15a1e5525d6caffcb150dc88b00caaacc3e43
-  rubocop-performance (1.18.0) sha256=4c9d74f1b5bfaffb5b1cdb843279364198ac804e2644ae194615834dd011e02e
-  rubocop-rails (2.20.2) sha256=d20cbd613900fa22bcf85a7fba78ab68b21fc4f90b1e73c97284d40674332417
-  rubocop-rspec (2.22.0) sha256=2d7493222c81c78ad304ddd81aaf64b3543bcfac6d3d8706c220331921753a03
+  rubocop-capybara (2.21.0) sha256=5d264efdd8b6c7081a3d4889decf1451a1cfaaec204d81534e236bc825b280ab
+  rubocop-factory_bot (2.26.1) sha256=8de13cd4edcee5ca800f255188167ecef8dbfc3d1fae9f15734e9d2e755392aa
+  rubocop-graphql (1.5.4) sha256=2d888d40b08577daf1e74ca4623be1e3058c1a93543d5a7220818f561a254192
+  rubocop-performance (1.23.1) sha256=f22f86a795f5e6a6180aac2c6fc172534b173a068d6ed3396d6460523e051b82
+  rubocop-rails (2.29.1) sha256=41c2fcf48d5d62f4a5f574d5f1c97bbaf4cba88ee367936c98b3422d047b17aa
+  rubocop-rspec (3.4.0) sha256=8721c13b6a8c9530a7ac481cea9423022f946fcf72428bda8289f8b57e4d4885
+  rubocop-rspec_rails (2.30.0) sha256=888112e83f9d7ef7ad2397e9d69a0b9614a4bae24f072c399804a180f80c4c46
   ruby-progressbar (1.11.0) sha256=cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a
+  securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
   unicode-display_width (2.4.2) sha256=6a10205d1a19ca790c4e53064ba93f09d9eb234bf6bd135d9deb6001c21428be
 
 BUNDLED WITH
-   2.6.5
+  4.0.10

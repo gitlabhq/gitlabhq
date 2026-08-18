@@ -30,7 +30,7 @@ GitLab administrators can configure automatic GitLab Duo add-on seat assignment 
 1. **Seat assignment**:
    - If the user belongs to any group listed in `duo_add_on_groups`, they are assigned an add-on seat (if not already assigned).
    - If the user doesn't belong to any listed group, their add-on seat is removed (if previously assigned).
-1. **Async processing**: The seat assignment and removal is handled async to ensure the main sign-in flow is not interrupted.
+1. **Async processing**: The seat assignment and removal are handled async to ensure the main sign-in flow is not interrupted.
 
 The following diagram illustrates the workflow:
 

@@ -45,7 +45,7 @@ describe('Import from Manifest file app', () => {
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const findBackButton = () => wrapper.findByTestId('back-button');
-  const findNextButton = () => wrapper.findByTestId('next-button');
+  const findNextButton = () => wrapper.findComponentByTestId('next-button');
   const findUploadError = () => wrapper.findByTestId('upload-error');
 
   it('renders the multi step form correctly', () => {

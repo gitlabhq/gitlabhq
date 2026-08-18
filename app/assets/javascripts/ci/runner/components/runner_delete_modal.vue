@@ -1,6 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __, s__, n__, sprintf } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 const I18N_TITLE = s__('Runners|Delete runner %{name}?');
 const I18N_TITLE_PLURAL = s__('Runners|Delete %{count} runners?');
@@ -11,6 +12,7 @@ export default {
   components: {
     GlModal,
   },
+  mixins: [glListenersMixin],
   props: {
     runnerName: {
       type: String,
@@ -74,7 +76,7 @@ export default {
     :action-primary="actionPrimary"
     :action-cancel="$options.ACTION_CANCEL"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @primary="onPrimary"
   >
     {{ body }}

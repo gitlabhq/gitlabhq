@@ -3,7 +3,6 @@
 require 'tmpdir'
 
 module TmpdirHelper
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables -- intentional helper mixin pattern; ivars live on the spec example instance
   def mktmpdir
     @tmpdir_helper_dirs ||= []
     @tmpdir_helper_dirs << Dir.mktmpdir
@@ -18,5 +17,4 @@ module TmpdirHelper
       end
     end
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

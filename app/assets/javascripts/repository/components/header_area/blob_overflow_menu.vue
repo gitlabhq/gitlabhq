@@ -86,7 +86,7 @@ export default {
       default: false,
     },
   },
-  emits: ['copy', 'showForkSuggestion'],
+  emits: ['copy', 'show-fork-suggestion'],
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     projectInfo: {
@@ -185,7 +185,7 @@ export default {
       }
     },
     onShowForkSuggestion() {
-      this.$emit('showForkSuggestion');
+      this.$emit('show-fork-suggestion');
     },
   },
 };
@@ -215,7 +215,7 @@ export default {
       :can-destroy-lock="eeCanDestroyLock"
       :is-replace-disabled="!canModifyFile && isLocked"
       :is-locked="isLocked"
-      @showForkSuggestion="onShowForkSuggestion"
+      @show-fork-suggestion="onShowForkSuggestion"
     />
     <blob-default-actions-group
       :active-viewer-type="activeViewerType"
@@ -233,7 +233,7 @@ export default {
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
       :disabled="!canModifyFile && isLocked"
-      @showForkSuggestion="onShowForkSuggestion"
+      @show-fork-suggestion="onShowForkSuggestion"
     />
   </gl-disclosure-dropdown>
 </template>

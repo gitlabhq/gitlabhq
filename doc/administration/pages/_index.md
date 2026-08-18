@@ -236,7 +236,7 @@ To configure GitLab Pages to use wildcard domains:
 The resulting URL scheme is `http://<namespace>.example.io/<project_slug>`.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s) video.
+For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://www.youtube.com/watch?v=dD8c7WNcc6s) video.
 <!-- Video published on 2017-02-22 -->
 
 ### Single-domain sites
@@ -433,7 +433,7 @@ control over how the Pages daemon runs and serves content in your environment.
 |-----------------------------------------|-------------------------------------------------------|-------------|
 | `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
 | **`gitlab_pages[]`**                    | Not applicable                                        |             |
-| `access_control`                        | Not applicable                                        | Whether to enable [access control](_index.md#access-control). |
+| `access_control`                        | Not applicable                                        | Whether to enable [access control](#access-control). |
 | `api_secret_key`                        | Auto-generated                                        | Full path to file with secret key used to authenticate with the GitLab API. |
 | `artifacts_server`                      | Not applicable                                        | Enable viewing [job artifacts](../cicd/job_artifacts.md) in GitLab Pages. |
 | `artifacts_server_timeout`              | Not applicable                                        | Timeout (in seconds) for a proxied request to the artifacts server. |
@@ -495,7 +495,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `pages_domain_removal_cron_worker`      | Not applicable                                        | Schedule for removing unverified custom GitLab Pages domains. |
 | `pages_path`                            | `GITLAB-RAILS/shared/pages`                           | The directory on disk where pages are stored. |
 | **`pages_nginx[]`**                     | Not applicable                                        |             |
-| `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](_index.md#custom-domains). |
+| `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](#custom-domains). |
 | `FF_CONFIGURABLE_ROOT_DIR`              | Not applicable                                        | Feature flag to [customize the default folder](../../user/project/pages/introduction.md#customize-the-default-folder) (enabled by default). |
 | `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (enabled by default). For more information, see [rewrites](../../user/project/pages/redirects.md#rewrites). |
 | `rate_limit_source_ip`                  | Not applicable                                        | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
@@ -506,7 +506,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `rate_limit_tls_source_ip_burst`        | Not applicable                                        | Rate limit per source IP maximum TLS connections burst allowed per second. |
 | `rate_limit_tls_domain`                 | Not applicable                                        | Rate limit per domain in number of TLS connections per second. Set to `0` to disable this feature. |
 | `rate_limit_tls_domain_burst`           | Not applicable                                        | Rate limit per domain maximum TLS connections burst allowed per second. |
-| `rate_limit_subnets_allow_list`         | Not applicable                                        | Allow list with the IP ranges (subnets) that should bypass all rate limits. For example, `['1.2.3.4/24', '2001:db8::1/32']`. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14653) in GitLab 17.3. |
+| `rate_limit_subnets_allow_list`         | Not applicable                                        | Allow list with the IP ranges (subnets) that should bypass all rate limits. For example, `['1.2.3.4/24', '2001:db8::1/32']`. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14653) in GitLab 17.3. |
 | `server_read_timeout`                   | `5s`                                                  | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. |
 | `server_read_header_timeout`            | `1s`                                                  | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. |
 | `server_write_timeout`                  | `0`                                                   | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. |
@@ -1356,7 +1356,7 @@ than GitLab to prevent XSS attacks.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14653) in GitLab 17.3: You can exclude subnets from Pages rate limits.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/14653) in GitLab 17.3: You can exclude subnets from Pages rate limits.
 
 {{< /history >}}
 

@@ -364,7 +364,7 @@ export const savedViewFiltersObject = {
   },
   fullPath: 'flightjs/Flight',
   customField: [],
-  iterationId: ['1'],
+  iterationWildcardId: 'CURRENT',
   iterationCadenceId: ['gid://gitlab/Iterations::Cadence/1'],
   status: {
     name: "Won't do",
@@ -453,11 +453,7 @@ export const savedViewFilterTokens = [
   { type: 'milestone', value: { data: 'v0.0', operator: '=' } },
   { type: TOKEN_TYPE_PARENT, value: { data: '456', operator: '=' } },
   { type: 'group', value: { data: 'flightjs/Flight', operator: '=' } },
-  { type: 'iteration', value: { data: '1', operator: '=' } },
-  {
-    type: 'iteration',
-    value: { data: 'gid://gitlab/Iterations::Cadence/1', operator: '=' },
-  },
+  { type: 'iteration', value: { data: 'Current&1', operator: '=' } },
   { type: 'status', value: { data: "Won't do", operator: '=' } },
 ];
 
@@ -794,6 +790,33 @@ export const savedViewFilterTokensWithWildcards = [
   { type: TOKEN_TYPE_MILESTONE, value: { data: 'None', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'Any', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ITERATION, value: { data: 'Current', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithIterationCadence = {
+  iterationWildcardId: 'CURRENT',
+  iterationCadenceId: ['gid://gitlab/Iterations::Cadence/5'],
+};
+
+export const savedViewFilterTokensWithIterationCadence = [
+  { type: TOKEN_TYPE_ITERATION, value: { data: 'Current&5', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithIterationCadenceOnly = {
+  iterationCadenceId: ['gid://gitlab/Iterations::Cadence/5'],
+};
+
+export const savedViewFilterTokensWithIterationCadenceOnly = [
+  { type: TOKEN_TYPE_ITERATION, value: { data: 'Any&5', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithMultipleIterationCadences = {
+  iterationWildcardId: 'CURRENT',
+  iterationCadenceId: ['gid://gitlab/Iterations::Cadence/5', 'gid://gitlab/Iterations::Cadence/6'],
+};
+
+export const savedViewFilterTokensWithMultipleIterationCadences = [
+  { type: TOKEN_TYPE_ITERATION, value: { data: 'Current&5', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_ITERATION, value: { data: 'Current&6', operator: OPERATOR_IS } },
 ];
 
 export const savedViewFiltersWithNotParent = {

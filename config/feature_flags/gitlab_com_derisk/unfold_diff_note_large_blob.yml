@@ -1,0 +1,10 @@
+---
+name: unfold_diff_note_large_blob
+description: Resolve diff note line codes by unfolding from raw blob data (byte count, capped at the 1 MB viewable size) instead of Gitlab::BlobHelper#lines, so comments on files larger than 1 MB no longer fail with a 400.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604785
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244076
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605432
+milestone: '19.2'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

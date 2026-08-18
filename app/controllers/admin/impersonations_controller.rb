@@ -4,7 +4,7 @@ class Admin::ImpersonationsController < Admin::ApplicationController
   skip_before_action :authenticate_admin!
   before_action :authenticate_impersonator!
 
-  feature_category :user_management
+  feature_category :system_access
 
   def destroy
     original_user = stop_impersonation

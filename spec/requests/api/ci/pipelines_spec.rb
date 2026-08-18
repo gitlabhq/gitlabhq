@@ -31,7 +31,8 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       subject { get api("/projects/#{project.id}/pipelines", user) }
 
       it_behaves_like 'an endpoint with mcp route setting', :list_pipelines,
-        expected_params: [:id, :ref, :page, :per_page]
+        expected_params: [:id, :ref, :status, :source, :created_after, :created_before, :order_by, :sort, :page,
+          :per_page]
     end
 
     it_behaves_like 'pipelines visibility table'
@@ -833,17 +834,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
     end
 
-    describe 'mcp route setting' do
-      before do
-        stub_ci_pipeline_to_return_yaml_file
-      end
-
-      subject { post api("/projects/#{project.id}/pipeline", user), params: { ref: project.default_branch } }
-
-      it_behaves_like 'an endpoint with mcp route setting', :create_pipeline,
-        expected_params: [:id, :ref, :variables, :inputs], status: :created
-    end
-
     context 'authorized user' do
       context 'with gitlab-ci.yml' do
         before do
@@ -1376,7 +1366,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       it 'does not log an audit event' do
-        expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.not_to change { AuditEvent.count }
+        expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.not_to change { AuditEventReader.count }
       end
 
       context 'when the pipeline has jobs' do
@@ -1542,13 +1532,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
-      describe 'mcp route setting' do
-        subject { post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user) }
-
-        it_behaves_like 'an endpoint with mcp route setting', :retry_pipeline,
-          expected_params: [:id, :pipeline_id], status: :created
-      end
-
       it 'retries failed builds', :aggregate_failures do
         expect do
           post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
@@ -1600,13 +1583,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     let_it_be_with_reload(:job) { create(:ci_build, :running, pipeline: pipeline) }
-
-    describe 'mcp route setting' do
-      subject { post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user) }
-
-      it_behaves_like 'an endpoint with mcp route setting', :cancel_pipeline,
-        expected_params: [:id, :pipeline_id]
-    end
 
     context 'authorized user', :aggregate_failures do
       context 'when supports canceling is true' do

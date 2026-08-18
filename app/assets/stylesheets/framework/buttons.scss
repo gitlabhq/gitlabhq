@@ -4,7 +4,7 @@
   font-weight: $gl-font-weight-normal;
   padding: $gl-vert-padding $gl-btn-padding;
 
-  &:focus,
+  &:focus-visible,
   &:active {
     background-color: $btn-active-gray;
   }
@@ -23,7 +23,7 @@
   white-space: nowrap;
   @include btn-default;
 
-  &:focus:active {
+  &:focus-visible:active {
     outline: 0;
   }
 

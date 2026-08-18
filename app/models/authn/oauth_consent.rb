@@ -22,9 +22,10 @@ module Authn
     validates :requested_scopes, presence: true
     validate :cannot_update_terminal_consent, on: :update
 
-    def self.revoke_authorized_for(user:, client_id:)
-      authorized.where(user: user, client_id: client_id)
-        .update_all(status: statuses[:revoked], updated_at: Time.current)
+    def self.revoke_authorized_for(client_id:, user: nil)
+      scope = authorized.where(client_id: client_id)
+      scope = scope.where(user: user) if user
+      scope.update_all(status: statuses[:revoked], updated_at: Time.current)
     end
 
     private

@@ -87,10 +87,10 @@ describe('BoardApp', () => {
     expect(classes).not.toContain('min-[1440px]:gl-w-[calc(100%-912px)]');
   });
 
-  it('refetches lists when top bar emits updateBoard event', async () => {
+  it('refetches lists when top bar emits update-board event', async () => {
     createComponent();
     await resolveQuery(boardListsQuery);
-    findBoardTopBar().vm.$emit('updateBoard');
+    findBoardTopBar().vm.$emit('update-board');
 
     expect(boardListQueryHandler).toHaveBeenCalled();
   });

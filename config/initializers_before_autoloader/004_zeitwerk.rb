@@ -17,6 +17,7 @@ Rails.autoloaders.each do |autoloader|
     'api_guard' => 'APIGuard',
     'group_api_compatibility' => 'GroupAPICompatibility',
     'project_api_compatibility' => 'ProjectAPICompatibility',
+    'track_api_request_from_personal_access_token' => 'TrackAPIRequestFromPersonalAccessToken',
     'ast' => 'AST',
     'cte' => 'CTE',
     'recursive_cte' => 'RecursiveCTE',

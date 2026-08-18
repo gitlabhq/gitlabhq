@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { logError } from '~/lib/logger';
 import WebIdeError from '~/ide/components/web_ide_error.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -14,11 +14,10 @@ export function renderWebIdeError({ error, signOutPath }) {
   const el = document.createElement('div');
   alertContainer.appendChild(el);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WebIdeErrorRoot',
-    render(createElement) {
-      return createElement(WebIdeError, { props: { signOutPath } });
-    },
+    component: WebIdeError,
+    props: { signOutPath },
   });
 }

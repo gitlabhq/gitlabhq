@@ -1,6 +1,7 @@
 import { s__ } from '~/locale';
 
 export const CI_RESOURCES_PAGE_NAME = 'ci_resources';
+export const CI_RESOURCES_CELLS_PAGE_NAME = 'ci_resources_cells';
 export const CI_RESOURCE_DETAILS_PAGE_NAME = 'ci_resources_details';
 
 export const CI_RESOURCE_DETAILS_USAGE_TAB = 'usage';

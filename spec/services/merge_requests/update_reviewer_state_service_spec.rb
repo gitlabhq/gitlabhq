@@ -159,6 +159,125 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
           expect(result[:status]).to eq :success
         end
       end
+
+      describe 'webhooks' do
+        before do
+          reviewer.update!(state: 'unreviewed')
+        end
+
+        it 'executes hooks with the old reviewer hook attributes' do
+          expect(service).to receive(:execute_hooks).with(
+            merge_request,
+            'update',
+            hash_including(old_associations: hash_including(:reviewers_hook_attrs))
+          ).and_call_original
+
+          expect(result[:status]).to eq :success
+        end
+
+        it 'captures the old reviewer state before the update' do
+          old_associations_data = nil
+
+          allow(service).to receive(:execute_hooks) do |_mr, _action, options|
+            old_associations_data = options[:old_associations]
+          end
+
+          expect(result[:status]).to eq :success
+
+          old_reviewer_data = old_associations_data[:reviewers_hook_attrs].find { |r| r[:id] == current_user.id }
+          expect(old_reviewer_data[:state]).to eq('unreviewed')
+        end
+
+        it 'includes the new reviewer state in the webhook payload changes' do
+          changes = nil
+
+          allow(service).to receive(:execute_hooks) do |mr, _action, options|
+            changes = mr.hook_reviewer_changes(options[:old_associations])
+          end
+
+          expect(result[:status]).to eq :success
+
+          expect(changes).to have_key(:reviewers)
+
+          old_reviewer = changes[:reviewers].first.find { |r| r[:id] == current_user.id }
+          current_reviewer = changes[:reviewers].last.find { |r| r[:id] == current_user.id }
+
+          expect(old_reviewer[:state]).to eq('unreviewed')
+          expect(current_reviewer[:state]).to eq('requested_changes')
+        end
+
+        context 'when reviewer state is "reviewed"' do
+          let(:state) { 'reviewed' }
+
+          it 'executes hooks reflecting the reviewed state' do
+            changes = nil
+
+            allow(service).to receive(:execute_hooks) do |mr, _action, options|
+              changes = mr.hook_reviewer_changes(options[:old_associations])
+            end
+
+            expect(result[:status]).to eq :success
+
+            current_reviewer = changes[:reviewers].last.find { |r| r[:id] == current_user.id }
+            expect(current_reviewer[:state]).to eq('reviewed')
+          end
+        end
+
+        context 'when the reviewer state does not change' do
+          before do
+            reviewer.update!(state: 'requested_changes')
+          end
+
+          it 'does not include a reviewer change in the webhook payload' do
+            changes = nil
+
+            allow(service).to receive(:execute_hooks) do |mr, _action, options|
+              changes = mr.hook_reviewer_changes(options[:old_associations])
+            end
+
+            expect(result[:status]).to eq :success
+
+            expect(changes).not_to have_key(:reviewers)
+          end
+        end
+
+        # Approving and unapproving are review submissions too, so they fire this webhook
+        # even though they also emit their own dedicated approved/unapproved webhooks.
+        context 'when submitting an approval or unapproval' do
+          where(:submitted_state) do
+            %w[approved unapproved].map { |reviewer_state| [reviewer_state] }
+          end
+
+          with_them do
+            it 'executes the reviewer-state webhook' do
+              expect(service).to receive(:execute_hooks).with(
+                merge_request,
+                'update',
+                hash_including(old_associations: hash_including(:reviewers_hook_attrs))
+              ).and_call_original
+
+              expect(service.execute(merge_request, submitted_state)[:status]).to eq :success
+            end
+          end
+        end
+
+        # review_started (set when a draft note is created) and unreviewed (set when the last
+        # draft note is destroyed or reviewers are reset on push) are automatic transitions,
+        # not a review the user submitted, so they must not fire this webhook.
+        context 'when the state is an automatic transition' do
+          where(:automatic_state) do
+            %w[review_started unreviewed].map { |reviewer_state| [reviewer_state] }
+          end
+
+          with_them do
+            it 'does not execute the reviewer-state webhook' do
+              expect(service).not_to receive(:execute_hooks)
+
+              expect(service.execute(merge_request, automatic_state)[:status]).to eq :success
+            end
+          end
+        end
+      end
     end
   end
 end

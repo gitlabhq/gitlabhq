@@ -7,7 +7,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download a project avatar' do
         detail 'Downloads a project avatar. You can access this endpoint without authentication if the project is ' \
           'publicly accessible. This feature was introduced in GitLab 16.9.'

@@ -60,7 +60,7 @@
     padding: 0;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       background-color: inherit;
       color: inherit;
     }
@@ -232,7 +232,7 @@
     line-height: inherit;
 
     &,
-    &:focus,
+    &:focus-visible,
     &:hover {
       outline: none;
       border-color: transparent;

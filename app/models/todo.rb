@@ -30,6 +30,7 @@ class Todo < ApplicationRecord
   DUO_ENTERPRISE_ACCESS_GRANTED = 17 # This is an EE-only feature
   DUO_CORE_ACCESS_GRANTED = 18 # This is an EE-only feature
   DUO_WORKFLOW_INPUT_REQUIRED = 19 # This is an EE-only feature
+  TRANSFER_FAILED = 20
 
   # EE Action names should be defined in EE_ACTION_NAMES in ee/app/models/ee/todo.rb
   ACTION_NAMES = {
@@ -44,7 +45,8 @@ class Todo < ApplicationRecord
     MEMBER_ACCESS_REQUESTED => :member_access_requested,
     REVIEW_SUBMITTED => :review_submitted,
     SSH_KEY_EXPIRED => :ssh_key_expired,
-    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon
+    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon,
+    TRANSFER_FAILED => :transfer_failed
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
@@ -110,6 +112,16 @@ class Todo < ApplicationRecord
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
   scope :for_internal_notes, -> { joins(:note).where(note: { internal: true }) }
   scope :with_preloaded_user, -> { preload(:user) }
+  scope :with_preloaded_user_and_push_subscriptions, -> do
+    preload(
+      :author,
+      :note,
+      :target,
+      project: [:route, { namespace: :route }],
+      group: :route,
+      user: :mobile_device_push_subscriptions
+    )
+  end
   scope :without_banned_user, -> { joins("LEFT JOIN banned_users ON todos.author_id = banned_users.user_id").where(banned_users: { user_id: nil }) }
   scope :pending_without_hidden, -> { pending.without_banned_user }
   scope :all_without_hidden, -> { without_banned_user.or(where.not(state: :pending)) }
@@ -153,6 +165,13 @@ class Todo < ApplicationRecord
         action: ::Todo::SSH_KEY_EXPIRING_SOON,
         state: :pending
       )
+    end
+
+    def pending_transfer_failed_for(user:, target:)
+      pending
+        .for_user(user)
+        .for_action(Todo::TRANSFER_FAILED)
+        .find_by(target: target)
     end
 
     # Returns `true` if the current user has any todos for the given target with the optional given state.
@@ -289,6 +308,17 @@ class Todo < ApplicationRecord
     end
   end
 
+  def transfer_failed_retry_url
+    return unless transfer_failed? && target
+
+    case target
+    when Project
+      build_project_transfer_retry_url
+    when Group
+      build_group_transfer_retry_url
+    end
+  end
+
   def resource_parent
     project || group
   end
@@ -303,6 +333,10 @@ class Todo < ApplicationRecord
 
   def member_access_requested?
     action == MEMBER_ACCESS_REQUESTED
+  end
+
+  def transfer_failed?
+    action == TRANSFER_FAILED
   end
 
   def member_access_type
@@ -322,6 +356,8 @@ class Todo < ApplicationRecord
       note.note
     elsif member_access_requested?
       target.full_path
+    elsif transfer_failed?
+      transfer_failed_destination_path || target.full_path
     else
       target.title
     end
@@ -388,6 +424,55 @@ class Todo < ApplicationRecord
   end
 
   private
+
+  def transfer_failed_destination_path
+    return unless target
+
+    case target
+    when Group
+      transfer_failed_group_destination_path
+    when Project
+      transfer_failed_project_destination_path
+    end
+  end
+
+  def transfer_failed_group_destination_path
+    new_parent_group_id = resolved_transfer_parent_id(target, target.parent_id)
+
+    return target.path unless new_parent_group_id
+
+    new_parent_group = Group.find_by_id(new_parent_group_id)
+    return unless new_parent_group
+
+    File.join(new_parent_group.full_path, target.path)
+  end
+
+  def transfer_failed_project_destination_path
+    new_namespace_id = resolved_transfer_parent_id(target.project_namespace, target.namespace_id)
+
+    new_namespace = Namespace.find_by_id(new_namespace_id)
+    return unless new_namespace
+
+    File.join(new_namespace.full_path, target.path)
+  end
+
+  # Resolves the parent/namespace id a transfer was moving `namespace` into: prefers the id
+  # recorded in its transfer `state_metadata` (so a failed/cancelled transfer can still be
+  # retried against the intended destination), falling back to the namespace's current parent id.
+  def resolved_transfer_parent_id(namespace, fallback_id)
+    parent_id = transfer_target_parent_id_from_metadata(namespace&.state_metadata)
+    parent_id.nil? ? fallback_id : parent_id
+  end
+
+  def transfer_target_parent_id_from_metadata(metadata)
+    return unless metadata
+
+    if metadata.key?('transfer_target_parent_id')
+      metadata['transfer_target_parent_id']
+    elsif metadata.key?(:transfer_target_parent_id)
+      metadata[:transfer_target_parent_id]
+    end
+  end
 
   def set_sharding_key
     # NOTE: Records can be instantiated or created by providing
@@ -466,6 +551,8 @@ class Todo < ApplicationRecord
   end
 
   def build_project_target_url
+    return ::Gitlab::UrlBuilder.build(target) if transfer_failed?
+
     return unless member_access_requested?
 
     ::Gitlab::Routing.url_helpers.project_project_members_url(
@@ -475,11 +562,30 @@ class Todo < ApplicationRecord
   end
 
   def build_group_target_url
+    return ::Gitlab::UrlBuilder.build(target) if transfer_failed?
     return unless member_access_requested?
 
     ::Gitlab::Routing.url_helpers.group_group_members_url(
       target,
       tab: 'access_requests'
+    )
+  end
+
+  def build_group_transfer_retry_url
+    new_parent_group_id = resolved_transfer_parent_id(target, target.parent_id)
+
+    ::Gitlab::Routing.url_helpers.transfer_group_url(
+      target,
+      new_parent_group_id: new_parent_group_id
+    )
+  end
+
+  def build_project_transfer_retry_url
+    new_namespace_id = resolved_transfer_parent_id(target.project_namespace, target.namespace_id)
+
+    ::Gitlab::Routing.url_helpers.transfer_project_url(
+      target,
+      new_namespace_id: new_namespace_id
     )
   end
 

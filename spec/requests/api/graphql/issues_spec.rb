@@ -11,19 +11,19 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   let_it_be(:current_user) { developer }
   let_it_be(:group1) { create(:group, developers: developer) }
   let_it_be(:group2) { create(:group, developers: developer, reporters: reporter) }
-  let_it_be(:project_a, freeze: false) { create(:project, :repository, :public, group: group1) }
-  let_it_be(:project_b) { create(:project, :repository, :private, group: group1) }
-  let_it_be(:project_c, freeze: false) { create(:project, :repository, :public, group: group2) }
-  let_it_be(:project_d) { create(:project, :repository, :private, group: group2) }
-  let_it_be(:archived_project) { create(:project, :repository, :archived, group: group2) }
+  let_it_be_with_reload(:project_a) { create(:project, :public, group: group1) }
+  let_it_be(:project_b) { create(:project, :private, group: group1) }
+  let_it_be_with_reload(:project_c) { create(:project, :public, group: group2) }
+  let_it_be(:project_d) { create(:project, :private, group: group2) }
+  let_it_be(:archived_project) { create(:project, :archived, group: group2) }
   let_it_be(:milestone1) { create(:milestone, project: project_c, due_date: 10.days.from_now) }
   let_it_be(:milestone2) { create(:milestone, project: project_d, due_date: 20.days.from_now) }
   let_it_be(:milestone3) { create(:milestone, project: project_d, due_date: 30.days.from_now) }
   let_it_be(:milestone4) { create(:milestone, project: project_a, due_date: 40.days.from_now) }
-  let_it_be(:priority1, freeze: false) { create(:label, project: project_c, priority: 1) }
-  let_it_be(:priority2, freeze: false) { create(:label, project: project_d, priority: 5) }
-  let_it_be(:priority3, freeze: false) { create(:label, project: project_a, priority: 10) }
-  let_it_be(:priority4, freeze: false) { create(:label, project: project_d, priority: 15) }
+  let_it_be_with_reload(:priority1) { create(:label, project: project_c, priority: 1) }
+  let_it_be_with_reload(:priority2) { create(:label, project: project_d, priority: 5) }
+  let_it_be_with_reload(:priority3) { create(:label, project: project_a, priority: 10) }
+  let_it_be_with_reload(:priority4) { create(:label, project: project_d, priority: 15) }
 
   let_it_be(:issue_a, freeze: false) do
     create(
@@ -154,6 +154,21 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     let(:all_query_params) { { sort: :SEVERITY_ASC } }
 
     it_behaves_like 'query that requires at least one filter'
+  end
+
+  context 'when the only filter provided is a boolean set to false' do
+    let(:all_query_params) { { confidential: false } }
+
+    it 'accepts the filter and applies it' do
+      post_query
+
+      expect_graphql_errors_to_be_empty
+
+      issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
+
+      expect(issue_ids).to include(issue_a.to_gid.to_s)
+      expect(issue_ids).not_to include(issue_c.to_gid.to_s, issue_e.to_gid.to_s)
+    end
   end
 
   # All new specs should be added to the shared example if the change also

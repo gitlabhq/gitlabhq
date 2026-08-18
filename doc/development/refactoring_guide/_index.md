@@ -15,10 +15,10 @@ Pinning tests help you ensure that you don't unintentionally change the output o
 
 1. Identify all the possible inputs to the refactor subject (for example, anything that's injected into the template or used in a conditional).
 1. For each possible input, identify the significant possible values.
-1. Create a test to save a full detailed snapshot for each helpful combination values per input. This should guarantee that we have "pinned down" the current behavior. The snapshot could be literally a screenshot, a dump of HTML, or even an ordered list of debugging statements.
+1. Create a test to save a full detailed snapshot for each helpful combination of values per input. This should guarantee that we have "pinned down" the current behavior. The snapshot could be literally a screenshot, a dump of HTML, or even an ordered list of debugging statements.
 1. Run all the pinning tests against the code, before you start refactoring (Oracle)
 1. Perform the refactor (or check out the commit with the work done)
-1. Run again all the pinning test against the post refactor code (Pin)
+1. Run again all the pinning tests against the post refactor code (Pin)
 1. Compare the Oracle with the Pin. If the Pin is different, you know the refactoring doesn't preserve existing behavior.
 1. Repeat the previous three steps as necessary until the refactoring is complete.
 

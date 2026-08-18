@@ -5,7 +5,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { InternalEvents } from '~/tracking';
 import { PLACES } from '~/vue_shared/global_search/constants';
 import { TRACKING_UNKNOWN_ID, TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
-import { adminRootPath } from '~/lib/utils/path_helpers/admin';
+import { adminRootPath } from '~/lib/utils/path_helpers/instance_admin';
 import { exploreRootPath } from '~/lib/utils/path_helpers/explore';
 import { profilePreferencesPath } from '~/lib/utils/path_helpers/profile';
 import { rootPath } from '~/lib/utils/path_helpers/routes';

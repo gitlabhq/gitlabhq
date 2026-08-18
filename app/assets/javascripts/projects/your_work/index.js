@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import routes from './routes';
@@ -34,19 +35,16 @@ export const initYourWorkProjects = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     router: createRouter(basePath),
     apolloProvider,
     name: 'YourWorkProjectsRoot',
-    render(createElement) {
-      return createElement(YourWorkProjectsApp, {
-        props: {
-          initialSort,
-          programmingLanguages,
-          canCreateProject,
-        },
-      });
+    component: YourWorkProjectsApp,
+    props: {
+      initialSort,
+      programmingLanguages,
+      canCreateProject,
     },
   });
 };

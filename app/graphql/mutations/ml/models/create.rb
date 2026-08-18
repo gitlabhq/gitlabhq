@@ -8,6 +8,9 @@ module Mutations
 
         include FindsProject
 
+        authorize_granular_token permissions: :create_ml_model,
+          boundary_argument: :project_path, boundary_type: :project
+
         argument :name, GraphQL::Types::String,
           required: true,
           description: 'Name of the model.'

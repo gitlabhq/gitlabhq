@@ -57,24 +57,24 @@ describe('DiffAppControls', () => {
       expect(findButtonByIcon('collapse').exists()).toBe(true);
     });
 
-    it('emits expandAllFiles', () => {
+    it('emits expand-all-files', () => {
       findButtonByIcon('expand').vm.$emit('click');
-      expect(wrapper.emitted('expandAllFiles')).toStrictEqual([[]]);
+      expect(wrapper.emitted('expand-all-files')).toStrictEqual([[]]);
     });
 
-    it('emits expandAllFiles on hotkey', () => {
+    it('emits expand-all-files on hotkey', () => {
       Mousetrap.trigger(keysFor(MR_EXPAND_ALL_FILES)[0]);
-      expect(wrapper.emitted('expandAllFiles')).toStrictEqual([[]]);
+      expect(wrapper.emitted('expand-all-files')).toStrictEqual([[]]);
     });
 
-    it('emits collapseAllFiles', () => {
+    it('emits collapse-all-files', () => {
       findButtonByIcon('collapse').vm.$emit('click');
-      expect(wrapper.emitted('collapseAllFiles')).toStrictEqual([[]]);
+      expect(wrapper.emitted('collapse-all-files')).toStrictEqual([[]]);
     });
 
-    it('emits collapseAllFiles on hotkey', () => {
+    it('emits collapse-all-files on hotkey', () => {
       Mousetrap.trigger(keysFor(MR_COLLAPSE_ALL_FILES)[0]);
-      expect(wrapper.emitted('collapseAllFiles')).toStrictEqual([[]]);
+      expect(wrapper.emitted('collapse-all-files')).toStrictEqual([[]]);
     });
 
     it('renders settings', () => {
@@ -103,12 +103,12 @@ describe('DiffAppControls', () => {
     });
 
     it('emits events', () => {
-      wrapper.findComponent(SettingsDropdown).vm.$emit('updateDiffViewType');
-      wrapper.findComponent(SettingsDropdown).vm.$emit('toggleWhitespace');
-      wrapper.findComponent(SettingsDropdown).vm.$emit('toggleFileByFile');
-      expect(wrapper.emitted('updateDiffViewType')).toStrictEqual([[undefined]]);
-      expect(wrapper.emitted('toggleWhitespace')).toStrictEqual([[undefined]]);
-      expect(wrapper.emitted('toggleFileByFile')).toStrictEqual([[undefined]]);
+      wrapper.findComponent(SettingsDropdown).vm.$emit('update-diff-view-type');
+      wrapper.findComponent(SettingsDropdown).vm.$emit('toggle-whitespace');
+      wrapper.findComponent(SettingsDropdown).vm.$emit('toggle-file-by-file');
+      expect(wrapper.emitted('update-diff-view-type')).toStrictEqual([[undefined]]);
+      expect(wrapper.emitted('toggle-whitespace')).toStrictEqual([[undefined]]);
+      expect(wrapper.emitted('toggle-file-by-file')).toStrictEqual([[undefined]]);
     });
   });
 
@@ -121,16 +121,16 @@ describe('DiffAppControls', () => {
     expect(findButtonByIcon('collapse').props('disabled')).toBe(true);
   });
 
-  it('disables collapseAllFiles hotkey when loading', () => {
+  it('disables collapse-all-files hotkey when loading', () => {
     createComponent({ isLoading: true });
     Mousetrap.trigger(keysFor(MR_COLLAPSE_ALL_FILES)[0]);
-    expect(wrapper.emitted('collapseAllFiles')).toBe(undefined);
+    expect(wrapper.emitted('collapse-all-files')).toBe(undefined);
   });
 
-  it('disables expandAllFiles hotkey when loading', () => {
+  it('disables expand-all-files hotkey when loading', () => {
     createComponent({ isLoading: true });
     Mousetrap.trigger(keysFor(MR_EXPAND_ALL_FILES)[0]);
-    expect(wrapper.emitted('expandAllFiles')).toBe(undefined);
+    expect(wrapper.emitted('expand-all-files')).toBe(undefined);
   });
 
   it('hides non-existent diff stats', () => {

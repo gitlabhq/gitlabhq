@@ -5,6 +5,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -34,6 +35,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['containerName', 'containerType', 'pageAuthorEmail'],
   props: {
     authorId: {

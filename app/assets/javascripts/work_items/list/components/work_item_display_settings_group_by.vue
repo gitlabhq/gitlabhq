@@ -9,11 +9,18 @@ import {
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import {
+  DEFAULT_GROUP_BY,
   groupingStrategyFor,
   hasDecorationIcon,
   decorationIconStyle,
 } from '~/work_items/board/grouping';
-import { getGroupId } from '~/work_items/board/utils';
+import {
+  SHOW_ALL_GROUPS,
+  isGroupVisible as computeGroupVisible,
+  toggleGroupVisibility as computeToggleGroupVisibility,
+} from '~/work_items/board/grouping/visibility';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
+import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { persistMetadataPreference, alertPreferenceError } from '../display_settings_preferences';
 
 export default {
@@ -33,6 +40,7 @@ export default {
     searchPlaceholder: s__('WorkItems|Search groups'),
     shown: s__('WorkItems|Shown'),
     hideAll: s__('WorkItems|Hide all'),
+    noGroupsFound: s__('WorkItems|No groups match your search.'),
   },
   props: {
     fullPath: {
@@ -60,20 +68,61 @@ export default {
     },
   },
   emits: ['update-settings'],
-  // Status is the only supported grouping today, so the identifier scheme is
-  // scoped to it. Kept generic so future groupings can reuse the same shape.
-  groupBy: { property: 'status' },
   GROUP_BY_LABEL_ID: 'work-item-display-settings-group-by-label',
   SORT_LABEL_ID: 'work-item-display-settings-sort-label',
   data() {
     return {
+      searchQuery: '',
       groupByValues: [],
+      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
     };
+  },
+  computed: {
+    groupBy() {
+      return DEFAULT_GROUP_BY;
+    },
+    strategy() {
+      return groupingStrategyFor(this.groupBy.property);
+    },
+    isLoading() {
+      return this.$apollo.queries.groupByValues.loading;
+    },
+    groupByOptions() {
+      return [{ text: this.strategy.label, value: this.strategy.property }];
+    },
+    sortByOptions() {
+      return [{ text: this.$options.i18n.ascending, value: 'asc' }];
+    },
+    isSearching() {
+      return Boolean(this.searchQuery.trim());
+    },
+    filteredGroupByValues() {
+      const query = this.searchQuery.trim().toLowerCase();
+      if (!query) return this.groupByValues;
+      return this.groupByValues.filter((value) => value.name.toLowerCase().includes(query));
+    },
+    decoratedGroupByValues() {
+      return this.filteredGroupByValues.map((value) => {
+        const decoration = this.strategy.headerDecoration(value);
+        return {
+          value,
+          showIcon: hasDecorationIcon(decoration),
+          iconName: decoration.name,
+          iconStyle: decorationIconStyle(decoration),
+        };
+      });
+    },
+    noGroupsAvailable() {
+      return this.isSearching && this.filteredGroupByValues.length === 0;
+    },
   },
   apollo: {
     groupByValues() {
       return {
         query: this.strategy.valuesQuery,
+        skip() {
+          return !this.strategy;
+        },
         variables() {
           return { fullPath: this.fullPath };
         },
@@ -87,64 +136,34 @@ export default {
         },
       };
     },
-  },
-  computed: {
-    strategy() {
-      return groupingStrategyFor('status');
-    },
-    isLoading() {
-      return this.$apollo.queries.groupByValues.loading;
-    },
-    groupByOptions() {
-      return [{ text: this.strategy.label, value: this.strategy.property }];
-    },
-    sortByOptions() {
-      return [{ text: this.$options.i18n.ascending, value: 'asc' }];
-    },
-    decoratedGroupByValues() {
-      return this.groupByValues.map((value) => {
-        const decoration = this.strategy.headerDecoration(value);
-        return {
-          value,
-          showIcon: hasDecorationIcon(decoration),
-          iconName: decoration.name,
-          iconStyle: decorationIconStyle(decoration),
-        };
-      });
-    },
-    // null means every group is visible; otherwise it holds the ids of the
-    // groups to render.
-    visibleGroups() {
-      return this.namespacePreferences?.visibleGroups ?? null;
-    },
-    allGroupIds() {
-      return this.groupByValues.map((value) => this.groupId(value));
+    workItemsGroupByVisibleGroups: {
+      query: workItemsGroupByVisibleGroupsQuery,
     },
   },
   methods: {
-    groupId(value) {
-      return getGroupId({ groupBy: this.$options.groupBy, value });
-    },
     isGroupVisible(value) {
-      return this.visibleGroups === null || this.visibleGroups.includes(this.groupId(value));
+      return computeGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value);
     },
-    toggleGroupVisibility(value) {
-      const id = this.groupId(value);
-      const current = this.visibleGroups ?? this.allGroupIds;
-      const nextVisible = current.includes(id)
-        ? current.filter((groupId) => groupId !== id)
-        : [...current, id];
-
-      // Collapse back to null once every group is shown again so the "all
-      // visible" default stays represented consistently.
-      const normalized = this.allGroupIds.every((groupId) => nextVisible.includes(groupId))
-        ? null
-        : nextVisible;
-
-      this.persist(normalized);
+    async toggleGroupVisibility(value) {
+      const next = computeToggleGroupVisibility({
+        visibleGroups: this.workItemsGroupByVisibleGroups,
+        groupBy: this.groupBy,
+        value,
+        allValues: this.groupByValues,
+      });
+      await this.$apollo.mutate({
+        mutation: updateVisibleGroupsMutation,
+        variables: { visibleGroups: next },
+      });
+      this.persist(next);
     },
-    hideAll() {
-      if (this.visibleGroups?.length === 0) return;
+    async hideAll() {
+      // Everything is already hidden, so skip the redundant preference write.
+      if (this.workItemsGroupByVisibleGroups?.length === 0) return;
+      await this.$apollo.mutate({
+        mutation: updateVisibleGroupsMutation,
+        variables: { visibleGroups: [] },
+      });
       this.persist([]);
     },
     async persist(visibleGroups) {
@@ -205,12 +224,19 @@ export default {
     <div class="gl-border-t gl-pt-4">
       <span>{{ $options.i18n.groups }}</span>
       <gl-search-box-by-type
-        disabled
+        v-model="searchQuery"
         :placeholder="$options.i18n.searchPlaceholder"
         class="gl-mt-3"
         data-testid="group-by-search"
       />
       <gl-loading-icon v-if="isLoading" class="gl-mt-4" />
+      <p
+        v-else-if="noGroupsAvailable"
+        data-testid="no-groups-found"
+        class="gl-mb-0 gl-mt-4 gl-text-sm gl-text-subtle"
+      >
+        {{ $options.i18n.noGroupsFound }}
+      </p>
       <template v-else>
         <div class="gl-mt-4 gl-flex gl-items-center gl-justify-between">
           <span class="gl-text-sm gl-font-bold">{{ $options.i18n.shown }}</span>

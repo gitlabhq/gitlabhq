@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
 
       route_config_map = middleware.instance_variable_get(:@route_config_map)
       # Should include default route configs (10) plus custom route limits (2)
-      expect(route_config_map.size).to eq(12)
+      expect(route_config_map.size).to eq(13)
       expect(route_config_map.first).to be_a(Hash)
       expect(route_config_map.first).to have_key(:regex)
       expect(route_config_map.first).to have_key(:methods)

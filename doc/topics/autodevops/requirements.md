@@ -40,7 +40,7 @@ that works best for your needs:
 | Deployment strategy                                                     | Setup | Methodology |
 |-------------------------------------------------------------------------|-------|-------------|
 | **Continuous deployment to production**                                 | Enables [Auto Deploy](stages.md#auto-deploy) with the default branch continuously deployed to production. | Continuous deployment to production.|
-| **Continuous deployment to production using timed incremental rollout** | Sets the [`INCREMENTAL_ROLLOUT_MODE`](cicd_variables.md#timed-incremental-rollout-to-production) variable to `timed`. | Continuously deploy to production with a 5 minutes delay between rollouts. |
+| **Continuous deployment to production using timed incremental rollout** | Sets the [`INCREMENTAL_ROLLOUT_MODE`](cicd_variables.md#timed-incremental-rollout-to-production) variable to `timed`. | Continuously deploy to production with a 5-minute delay between rollouts. |
 | **Automatic deployment to staging, manual deployment to production**    | Sets [`STAGING_ENABLED`](cicd_variables.md#deploy-policy-for-staging-and-production-environments) to `1` and [`INCREMENTAL_ROLLOUT_MODE`](cicd_variables.md#incremental-rollout-to-production) to `manual`. | The default branch is continuously deployed to staging and continuously delivered to production. |
 
 You can choose the deployment method when enabling Auto DevOps or later:
@@ -62,9 +62,9 @@ The Auto DevOps base domain is required to use
 
 To define the base domain, either:
 
-- In the project, group, or instance level: go to your cluster settings and add it there.
-- In the project or group level: add it as an environment variable: `KUBE_INGRESS_BASE_DOMAIN`.
-- In the instance level: go to the **Admin** area, then **Settings** > **CI/CD** > **Continuous Integration and Delivery** and add it there.
+- At the project, group, or instance level: go to your cluster settings and add it there.
+- At the project or group level: add it as an environment variable: `KUBE_INGRESS_BASE_DOMAIN`.
+- At the instance level: go to the **Admin** area, then **Settings** > **CI/CD** > **Continuous Integration and Delivery** and add it there.
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of
 [precedence as other environment variables](../../ci/variables/_index.md#cicd-variable-precedence).
@@ -79,7 +79,7 @@ a base domain of `example.com`, you'd need a DNS entry like:
 ```
 
 In this case, the deployed applications are served from `example.com`, and `10.0.2.2`
-is the IP address of your load balancer, generally NGINX ([see requirements](requirements.md)).
+is the IP address of your load balancer, generally NGINX (see requirements).
 Setting up the DNS record is beyond the scope of this document; check with your
 DNS provider for information.
 
@@ -104,7 +104,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
      For Kubernetes 1.16+ clusters, you must perform additional configuration for
      [Auto Deploy for Kubernetes 1.16+](stages.md#kubernetes-116).
   1. For external HTTP traffic, an Ingress controller is required. For regular
-     deployments, any Ingress controller should work, but as of GitLab 14.0,
+     deployments, any Ingress controller should work, but
      [canary deployments](../../user/project/canary_deployments.md) require
      NGINX Ingress. You can deploy the NGINX Ingress controller to your
      Kubernetes cluster either through the GitLab [Cluster management project template](../../user/clusters/management_project_template.md)
@@ -168,4 +168,4 @@ According to the [Kubernetes Ingress-NGINX docs](https://kubernetes.github.io/in
 The documentation linked previously explains the issue and provides possible solutions, for example:
 
 - Through [MetalLB](https://github.com/metallb/metallb).
-- Through [PorterLB](https://github.com/kubesphere/porterlb).
+- Through [OpenELB (formerly PorterLB)](https://github.com/openelb/openelb).

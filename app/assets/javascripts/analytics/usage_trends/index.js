@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import UsageTrendsApp from './components/app.vue';
 
@@ -14,12 +15,5 @@ export default () => {
 
   if (!el) return false;
 
-  return new Vue({
-    el,
-    name: 'UsageTrendsAppRoot',
-    apolloProvider,
-    render(h) {
-      return h(UsageTrendsApp);
-    },
-  });
+  return initVueApp({ el, name: 'UsageTrendsAppRoot', apolloProvider, component: UsageTrendsApp });
 };

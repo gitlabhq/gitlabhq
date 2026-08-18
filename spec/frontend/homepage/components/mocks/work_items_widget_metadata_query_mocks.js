@@ -28,22 +28,3 @@ export const workItemsDataWithItems = {
     },
   },
 };
-
-export const workItemsDataWithoutItems = {
-  data: {
-    currentUser: {
-      id: 'gid://gitlab/User/1',
-      assigned: {
-        count: 0,
-        nodes: [],
-        __typename: 'WorkItemConnection',
-      },
-      authored: {
-        count: 0,
-        nodes: [],
-        __typename: 'WorkItemConnection',
-      },
-      __typename: 'CurrentUser',
-    },
-  },
-};

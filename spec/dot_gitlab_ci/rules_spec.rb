@@ -277,5 +277,16 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         expect(all_files - all_matching_files.to_a).to be_empty
       end
     end
+
+    describe '.jest-relevant-patterns' do
+      # The jest jobs need jobs that only run for `.code-backstage-spec-patterns`,
+      # so a file matched by the jest list alone would fail the pipeline.
+      it 'is a subset of .code-backstage-spec-patterns' do
+        jest_files = config['.jest-relevant-patterns'].flat_map { |pattern| Dir.glob(pattern) }
+        backstage_files = config['.code-backstage-spec-patterns'].flat_map { |pattern| Dir.glob(pattern) }
+
+        expect(jest_files - backstage_files).to be_empty
+      end
+    end
   end
 end

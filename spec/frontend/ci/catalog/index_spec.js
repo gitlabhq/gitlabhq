@@ -10,12 +10,12 @@ describe('~/ci/catalog/index', () => {
 
     let el;
     let wrapper;
+
     const baseRoute = '/explore/catalog';
 
     const createElement = () => {
       el = document.createElement('div');
       el.id = SELECTOR;
-      el.dataset.ciCatalogPath = baseRoute;
       document.body.appendChild(el);
     };
 
@@ -36,7 +36,7 @@ describe('~/ci/catalog/index', () => {
         expect(findGlobalCatalog().exists()).toBe(true);
       });
 
-      it('creates a router with the received base path and component', () => {
+      it('creates a router with the catalog path from the path helper', () => {
         expect(Router.createRouter).toHaveBeenCalledTimes(1);
         expect(Router.createRouter).toHaveBeenCalledWith(baseRoute, CiResourcesPage);
       });

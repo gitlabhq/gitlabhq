@@ -43,7 +43,7 @@ export default {
       default: false,
     },
   },
-  emits: ['addToBatch', 'apply', 'applyBatch', 'removeFromBatch'],
+  emits: ['add-to-batch', 'apply', 'apply-batch', 'remove-from-batch'],
   computed: {
     batchSuggestionsCount() {
       return this.batchSuggestionsInfo.length;
@@ -62,13 +62,13 @@ export default {
       this.$emit('apply', { suggestionId: this.suggestion.id, callback, message });
     },
     applySuggestionBatch(message) {
-      this.$emit('applyBatch', message);
+      this.$emit('apply-batch', message);
     },
     addSuggestionToBatch() {
-      this.$emit('addToBatch', this.suggestion.id);
+      this.$emit('add-to-batch', this.suggestion.id);
     },
     removeSuggestionFromBatch() {
-      this.$emit('removeFromBatch', this.suggestion.id);
+      this.$emit('remove-from-batch', this.suggestion.id);
     },
   },
 };
@@ -89,9 +89,9 @@ export default {
       :inapplicable-reason="suggestion.inapplicable_reason"
       :failed-to-load-metadata="failedToLoadMetadata"
       @apply="applySuggestion"
-      @applyBatch="applySuggestionBatch"
-      @addToBatch="addSuggestionToBatch"
-      @removeFromBatch="removeSuggestionFromBatch"
+      @apply-batch="applySuggestionBatch"
+      @add-to-batch="addSuggestionToBatch"
+      @remove-from-batch="removeSuggestionFromBatch"
     />
     <table class="md-suggestion-diff code code-syntax-highlight-theme !gl-mb-5">
       <tbody>

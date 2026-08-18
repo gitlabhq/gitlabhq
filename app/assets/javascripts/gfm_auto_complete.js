@@ -2,7 +2,14 @@ import { GlBadge } from '@gitlab/ui';
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import '~/lib/utils/jquery_at_who';
-import { escape as lodashEscape, sortBy, template, escapeRegExp, memoize } from 'lodash-es';
+import {
+  escape as lodashEscape,
+  sortBy,
+  template,
+  escapeRegExp,
+  memoize,
+  isEqual,
+} from 'lodash-es';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -24,6 +31,10 @@ import {
   recordFrequentCommandUsage,
 } from '~/editor/quick_action_suggestions';
 import { isCurrentViewWorkItem } from '~/work_items/utils';
+import {
+  extractMentionedUsernames,
+  prioritizeMentionedMembers,
+} from '~/lib/utils/autocomplete_mentions';
 import { userIsDisabled } from '~/ai/agents_utils';
 import { FLOW_TRIGGER_EVENTS } from '~/vue_shared/constants';
 import AjaxCache from './lib/utils/ajax_cache';
@@ -184,8 +195,15 @@ export const highlighter = (li, query) => {
   if (!query) {
     return li;
   }
-  const escapedQuery = escapeRegExp(query);
-  const regexp = new RegExp(`>\\s*([^<]*?)(${escapedQuery})([^<]*)\\s*<`, 'ig');
+  let escapedQuery = escapeRegExp(query);
+  const buildHighlightRegex = (q, flags) => new RegExp(`>\\s*([^<]*?)(${q})([^<]*)\\s*<`, flags);
+  if (!buildHighlightRegex(escapedQuery, 'i').test(li) && !query.includes('_')) {
+    escapedQuery = query
+      .split('')
+      .map((c) => escapeRegExp(c))
+      .join('_*');
+  }
+  const regexp = buildHighlightRegex(escapedQuery, 'ig');
   // eslint-disable-next-line max-params
   return li.replace(regexp, (str, $1, $2, $3) => `> ${$1}<strong>${$2}</strong>${$3} <`);
 };
@@ -246,6 +264,7 @@ class GfmAutoComplete {
 
     this.dataSources = dataSources;
     this.cachedData = {};
+    this.cachedMentioned = {};
     this.isLoadingData = {};
     this.previousQuery = undefined;
     this.currentBackendFilterRequestController = null;
@@ -427,6 +446,10 @@ class GfmAutoComplete {
             if (c.aliases.length > 0) {
               search = `${search} ${c.aliases.join(' ')}`;
             }
+            const searchNoUnderscores = search.replace(/_/g, '');
+            if (searchNoUnderscores !== search) {
+              search = `${search} ${searchNoUnderscores}`;
+            }
             return {
               name: c.name,
               aliases: c.aliases,
@@ -477,7 +500,7 @@ class GfmAutoComplete {
     $input.off('keyup.frequentCommands', frequentCommandsHandler);
     $input.on('keyup.frequentCommands', frequentCommandsHandler);
 
-    attachAtWhoContainerToInputParent($input);
+    attachAtWhoContainerToInputParent($input.filter('[data-supports-quick-actions="true"]'));
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -560,6 +583,7 @@ class GfmAutoComplete {
       ASSIGN_REVIEWER: '/assign_reviewer',
       UNASSIGN_REVIEWER: '/unassign_reviewer',
       REASSIGN: '/reassign',
+      REASSIGN_REVIEWER: '/reassign_reviewer',
       REQUEST_REVIEW: '/request_review',
     };
     /* eslint-enable @gitlab/no-hardcoded-urls */
@@ -693,11 +717,16 @@ class GfmAutoComplete {
             return items;
           }
 
-          if (!query) {
-            return items;
+          const sorted = query ? GfmAutoComplete.Members.sort(query, items) : items;
+
+          // For member quick actions, float users already mentioned in the
+          // editor to the top of the (already filtered) suggestion list.
+          if (!Object.values(MEMBER_COMMAND).includes(command)) {
+            return sorted;
           }
 
-          return GfmAutoComplete.Members.sort(query, items);
+          const mentioned = extractMentionedUsernames(this.$inputor.val());
+          return prioritizeMentionedMembers(sorted, mentioned);
         },
       },
     });
@@ -1417,6 +1446,19 @@ class GfmAutoComplete {
     }
 
     if (GfmAutoComplete.isTypeWithBackendFiltering(at)) {
+      // Include users already @-mentioned in the editor so the backend returns
+      // them even when they fall outside the search-limited default set. A
+      // fetched payload folds the mentioned users in, so cached entries are
+      // only valid while the mentioned set is unchanged. When it changes we
+      // drop this trigger's cache so stale entries are not reused; otherwise we
+      // serve from cache as usual rather than refetching on every keystroke.
+      const mentioned = at === '@' ? extractMentionedUsernames($input.val()) : [];
+
+      if (at === '@' && !isEqual(mentioned, this.cachedMentioned[at] ?? [])) {
+        this.cachedMentioned[at] = mentioned;
+        delete this.cachedData[at];
+      }
+
       if (this.cachedData[at]?.[search]) {
         this.loadData($input, at, this.cachedData[at][search], { search });
       } else {
@@ -1428,7 +1470,7 @@ class GfmAutoComplete {
 
         axios
           .get(dataSource, {
-            params: { search },
+            params: mentioned.length ? { search, mentioned } : { search },
             signal: this.currentBackendFilterRequestController.signal,
           })
           .then(({ data }) => {
@@ -1500,6 +1542,7 @@ class GfmAutoComplete {
 
   clearCache() {
     this.cachedData = {};
+    this.cachedMentioned = {};
   }
 
   destroy() {

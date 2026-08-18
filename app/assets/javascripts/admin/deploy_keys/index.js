@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeployKeysTable from './components/table.vue';
 
 export const initAdminDeployKeysTable = () => {
@@ -6,19 +6,9 @@ export const initAdminDeployKeysTable = () => {
 
   if (!el) return false;
 
-  const { editPath, deletePath, createPath, emptyStateSvgPath } = el.dataset;
-
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DeployKeysTableRoot',
-    provide: {
-      editPath,
-      deletePath,
-      createPath,
-      emptyStateSvgPath,
-    },
-    render(createElement) {
-      return createElement(DeployKeysTable);
-    },
+    component: DeployKeysTable,
   });
 };

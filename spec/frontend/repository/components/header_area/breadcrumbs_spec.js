@@ -36,7 +36,6 @@ describe('Repository breadcrumbs component', () => {
       apolloProvider,
       provide: {
         projectRootPath,
-        isBlobView: extraProps.isBlobView,
       },
       propsData: {
         currentPath,

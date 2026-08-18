@@ -4,12 +4,7 @@
 
 .branch
   = merge_path_description(@merge_request)
-.author
-  Author: #{@merge_request.author_name}
-.assignee
-  = assignees_label(@merge_request)
-.reviewer
-  = reviewers_label(@merge_request)
+= render 'merge_request_participants', merge_request: @merge_request
 
 - if @merge_request.description
   .md.gl-mt-5

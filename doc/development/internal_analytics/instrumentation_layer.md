@@ -7,12 +7,12 @@ title: Single Instrumentation Layer
 
 ## Single Instrumentation Layer
 
-The Single Instrumentation Layer is an event tracking abstraction that allows to track any events in GitLab using a single interface. It
+The Single Instrumentation Layer is an event tracking abstraction you can use to track any events in GitLab using a single interface. It
 uses events definitions from [Internal Event framework](internal_event_instrumentation/event_definition_guide.md) to declare event processing logic.
 
 ## Why a Single Instrumentation Layer?
 
-The Single Instrumentation Layer allows to:
+Use the Single Instrumentation Layer to:
 
 - Instrument events and processing logic in a single place
 - Use the same event definitions for both instrumentation and processing
@@ -84,12 +84,12 @@ To implement it for your tracking system, you need to:
 
 `**kwargs` is used to pass additional parameters to the tracking class from the Internal Events framework.
 The actual parameters depend on the tracking parameters passed to the event invocation above.
-Usually, it includes `user`, `namespace` and `project` along with `protected_properties` that can be used to pass any additional data.
+Usually, it includes `user`, `namespace`, and `project` along with `protected_properties` that can be used to pass any additional data.
 
 The tracking systems are triggered by the order of the `extra_trackers:` property.
 
 ## Systems that use the Single Instrumentation Layer
 
-1. [Internal Event](internal_event_instrumentation/quick_start.md). Is the main system that implements the tracking layer.
+1. [Internal Event](internal_event_instrumentation/quick_start.md). It is the main system that implements the tracking layer.
 1. [AiTracking](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/ai_tracking.rb?ref_type=heads).
 1. [Contribution Analytics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/contribution_analytics_tracking.rb?ref_type=heads).

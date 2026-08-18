@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlResizeObserverDirective, GlToastMixin } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { s__, n__ } from '~/locale';
@@ -25,6 +25,7 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  mixins: [GlToastMixin],
   i18n: {
     defaultViewTitle: s__('WorkItem|All items'),
   },
@@ -386,7 +387,7 @@ export default {
       <button
         ref="defaultButton"
         category="tertiary"
-        class="default-selector gl-h-8 !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
+        class="default-selector gl-h-8 !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus-visible:gl-bg-gray-50"
         :class="{ 'default-selector-active gl-font-bold': isDefaultButtonActive }"
         data-testid="saved-views-default-view-selector"
         @click="$emit('navigate-to-all-items')"

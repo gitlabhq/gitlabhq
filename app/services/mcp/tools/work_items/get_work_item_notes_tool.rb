@@ -23,7 +23,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 
@@ -35,10 +35,10 @@ module Mcp
           return processed_result if processed_result[:isError]
 
           notes = extract_notes(processed_result[:structuredContent])
-          return ::Mcp::Tools::Response.error("Operation returned no data") unless notes
+          return ::Mcp::Tools::Base::Response.error("Operation returned no data") unless notes
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(notes) }]
-          ::Mcp::Tools::Response.success(formatted_content, notes)
+          ::Mcp::Tools::Base::Response.success(formatted_content, notes)
         end
 
         def extract_notes(structured_content)

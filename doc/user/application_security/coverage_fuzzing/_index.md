@@ -82,7 +82,7 @@ my_fuzz_target:
 The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/_index.md#hide-a-job)
 `.fuzz_base`, which you must [extend](../../../ci/yaml/_index.md#extends) for each of your fuzzing
 targets. Each fuzzing target **must** have a separate job. For example, the
-[go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)
+[go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)
 contains one job that extends `.fuzz_base` for its single fuzzing target.
 
 The hidden job `.fuzz_base` uses several YAML keys that you must not override in your own
@@ -296,7 +296,7 @@ You can use the following fuzzing engines to test the specified languages.
 |---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
 | Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
-| Swift                                       | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
+| Swift                                       | [libFuzzer](https://github.com/swiftlang/swift/blob/main/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
 | Rust                                        | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz)                            | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example)             |
 | Java (Maven only)<sup>1</sup>               | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
 | Java                                        | [JQF](https://github.com/rohanpadhye/JQF) (not preferred)                                            | [jqf-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example)              |
@@ -363,7 +363,7 @@ The `covfuzz-ci.yml` is the same as that in the [original synchronous example](h
 
 ### FIPS-enabled binary
 
-[Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549) the coverage fuzzing binary is compiled with `golang-fips` on Linux x86 and uses OpenSSL as the cryptographic backend. For more details, see FIPS compliance at GitLab with Go.
+The coverage fuzzing binary is compiled with `golang-fips` on Linux x86 and uses OpenSSL as the cryptographic backend. For more details, see FIPS compliance at GitLab with Go.
 
 ### Offline environment
 

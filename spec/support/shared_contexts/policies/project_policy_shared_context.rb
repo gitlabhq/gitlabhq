@@ -149,6 +149,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       destroy_container_image_tag
       destroy_release
       push_code
+      read_observability_portal
       read_pod_logs
       read_resource_group
       read_terraform_state

@@ -5,10 +5,10 @@ import { JOB_TEMPLATE } from '~/ci/pipeline_editor/components/job_assistant_draw
 describe('Job setup item', () => {
   let wrapper;
 
-  const findJobNameInput = () => wrapper.findByTestId('job-name-input');
-  const findJobScriptInput = () => wrapper.findByTestId('job-script-input');
-  const findJobTagsInput = () => wrapper.findByTestId('job-tags-input');
-  const findJobStageInput = () => wrapper.findByTestId('job-stage-input');
+  const findJobNameInput = () => wrapper.findComponentByTestId('job-name-input');
+  const findJobScriptInput = () => wrapper.findComponentByTestId('job-script-input');
+  const findJobTagsInput = () => wrapper.findComponentByTestId('job-tags-input');
+  const findJobStageInput = () => wrapper.findComponentByTestId('job-stage-input');
 
   const dummyJobName = 'dummyJobName';
   const dummyJobScript = 'dummyJobScript';

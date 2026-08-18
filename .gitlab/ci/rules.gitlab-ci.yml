@@ -121,6 +121,9 @@
 .if-merge-request-labels-run-rspec-vue3: &if-merge-request-labels-run-rspec-vue3
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-rspec-vue3/'
 
+.if-merge-request-labels-run-gitaly-mvcc: &if-merge-request-labels-run-gitaly-mvcc
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-gitaly-mvcc/'
+
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
@@ -151,6 +154,9 @@
 .if-merge-request-labels-skip-release-note-categories: &if-merge-request-labels-skip-release-note-categories
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-release-note-categories/'
 
+.if-merge-request-labels-skip-check-ci-partition-pruning: &if-merge-request-labels-skip-check-ci-partition-pruning
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-check-ci-partition-pruning/'
+
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
@@ -168,9 +174,6 @@
 
 .if-merge-request-labels-run-praefect-with-db: &if-merge-request-labels-run-praefect-with-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
-
-.if-merge-request-labels-run-without-gitaly-transactions: &if-merge-request-labels-run-without-gitaly-transactions
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
 
 .if-merge-request-labels-skip-ci-validation: &if-merge-request-labels-skip-ci-validation
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-ci-validation/'
@@ -213,6 +216,9 @@
 
 .if-missing-clickhouse-coverage-credentials: &if-missing-clickhouse-coverage-credentials
   if: '$GLCI_DA_CLICKHOUSE_URL == null || $GLCI_CLICKHOUSE_CODE_COVERAGE_DB == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null'
+
+.if-missing-clickhouse-diff-stats-credentials: &if-missing-clickhouse-diff-stats-credentials
+  if: '$GLCI_DA_CLICKHOUSE_URL == null || $GLCI_CLICKHOUSE_METRICS_USERNAME == null || $GLCI_CLICKHOUSE_METRICS_PASSWORD == null || $GLCI_CLICKHOUSE_WORK_ITEM_DB == null || $GLCI_DIFF_STATS_CLICKHOUSE_TABLE == null'
 
 .if-coverband-enabled: &if-coverband-enabled
   if: '$COVERBAND_ENABLED == "true"'
@@ -380,6 +386,7 @@
   - ".gitlab/route-map.yml"
   - ".markdownlint-cli2.yaml"
   - "doc/**/*"
+  - "tooling/docs/api/tags/**/*"
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"
   - "rubocop/cop/gitlab/documentation_links/**/*"
@@ -473,7 +480,7 @@
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
   - "lib/tasks/gitlab/docs/compile_windows.rake"
   # event store index
-  - "doc/development/events/_index.md"
+  - "doc/development/eventstore/events.md"
   - "data/events/**/*"
   - "lib/tasks/gitlab/docs/compile_events.rake"
   # organizations release status table
@@ -541,9 +548,9 @@
   - ".browserslistrc"
   - "babel.config.js"
   - "vite.config.js"
-  - "config/webpack.config.js"
   - "*.js"
   - "config/**/*.js"
+  - "config/**/*.mjs"
   - "locale/**/gitlab.po"
   - "{,ee/,jh/}app/assets/**/*"
   - "fixtures/emojis/**/*"
@@ -613,7 +620,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
 
 .siphon-tables-patterns: &siphon-tables-patterns
   - "db/siphon/tables/**/*"
@@ -640,7 +647,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
 
   # Backend patterns  - .ci-patterns
 .backend-only-patterns: &backend-only-patterns
@@ -792,7 +799,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
   - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
@@ -829,7 +836,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -875,7 +882,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -884,6 +891,46 @@
   - "{,ee/,jh/}spec/**/*"
   - "scripts/**/*"
   - "{,spec/}tooling/**/*"
+  # FE island changes
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
+
+# A subset of .code-backstage-spec-patterns, minus the backend-only RSpec trees Jest never reads. It must stay a subset: the jest jobs wait on fixture and schema-dump jobs, and those only run for files in that list.
+.jest-relevant-patterns: &jest-relevant-patterns
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
+  - ".eslint_todo/*.mjs"
+  - ".browserslistrc"
+  - ".stylelintrc"
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
+  - "{package.json,yarn.lock}"
+  - "*_VERSION"
+  - "babel.config.js"
+  - "vite.config.js"
+  - "config.ru"
+  - "Dockerfile.assets"
+  - "jest.config.{base,integration,unit}.js"
+  - "keeps/**/*"
+  - "Rakefile"
+  - "tests.yml"
+  - "vendor/assets/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  # CI changes
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
+  # Backstage changes
+  - "{,ee/,jh/}fixtures/**/*"
+  - "scripts/**/*"
+  - "{,spec/}tooling/**/*"
+  - "{,ee/,jh/}spec/{frontend,frontend_integration,support,factories,fixtures}/**/*"
+  # spec_helper.rb and the files it requires (simplecov_env.rb, knapsack_env.rb, ...)
+  - "{,ee/,jh/}spec/*.rb"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
   - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
@@ -919,7 +966,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
@@ -935,7 +982,6 @@
   - "{,ee/,jh/}app/policies/**/*"
   - "{,ee/,jh/}app/serializers/**/*"
   # Auto-generated files
-  - "doc/api/openapi/openapi_v2.yaml"
   - "doc/api/openapi/openapi_v3.yaml"
 
 # .code-patterns + .backstage-patterns + .qa-patterns
@@ -943,6 +989,7 @@
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "eslint.config.mjs"
   - ".eslint_todo/*.mjs"
+  - ".dependency_cruiser_todo/*.mjs"
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
@@ -961,7 +1008,6 @@
   - "vendor/assets/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/api/openapi/openapi_v2.yaml"
   - "doc/api/openapi/openapi_v3.yaml"
   - "doc/user/application_security/dast/browser/configuration/variables.md"
   # CI changes
@@ -982,7 +1028,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
   - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
@@ -1022,7 +1068,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # Backstage and spec changes
   - "Dangerfile"
   - "danger/**/*"
@@ -1141,11 +1187,14 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .permissions-patterns: &permissions-patterns
-  - "config/authz/**/*"
-  - "lib/tasks/gitlab/permissions/**/*.rb"
-  - "{,ee/}app/policies/**/*.rb"
-  - "{,ee/}app/graphql/**/*.rb"
-  - "{,ee/}lib/api/**/*.rb"
+  - "config/authz/{,**/}*"
+  - "lib/tasks/gitlab/permissions/{,**/}*.rb"
+  - "{,ee/}app/policies/{,**/}*.rb"
+  - "{,ee/}app/graphql/{,**/}*.rb"
+  - "{,ee/}lib/{,**/}api/{,**/}*.rb"
+  - "doc/api/graphql/reference/_index.md"
+  - "doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md"
+  - "tooling/authz/permissions/docs/templates/*"
 
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
   - "{,ee/}lib/api/*.rb"
@@ -1168,10 +1217,8 @@
 .gem-change-patterns: &gem-change-patterns
   - Gemfile
   - Gemfile.lock
-  - Gemfile.checksum
   - Gemfile.next
   - Gemfile.next.lock
-  - Gemfile.next.checksum
 
 # Keep in sync with doctor runtime dependencies:
 #   - scripts/ai_harness/doctor (entrypoint + helper scripts)
@@ -1508,7 +1555,8 @@
 # this rule is combination of rules for jobs that use cached frontend assets:
 #  * .frontend:rules:compile-test-assets
 #  * .frontend:rules:compile-production-assets
-#  * .qa:rules:e2e:test-on-gdk
+#  * .qa:rules:e2e:test-on-gdk - now scheduled-pipeline only, keeping the assets
+#    hash available for the scheduled GDK image build; it no longer triggers on MRs
 .caching:rules:frontend-asset-hash:
   rules:
     - <<: *if-tag
@@ -1913,11 +1961,12 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
-        - 'storybook/'
+        - 'storybook/**/*'
     - <<: *if-default-refs
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
+        - 'storybook/**/*'
 
 .frontend:rules:fe-islands:test:
   rules:
@@ -1960,6 +2009,10 @@
     - <<: *if-merge-request
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-merge-request-tier-1-or-no-tier
+      when: never
+    - <<: *if-merge-request-tier-2-or-above
+      changes: *jest-relevant-patterns
+    - <<: *if-merge-request-tier-2-or-above
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
@@ -2011,6 +2064,10 @@
 
 .frontend:rules:jest-msw-integration:
   rules:
+    # MSW integration tests are EE-only; the harness and fixtures do not exist in
+    # FOSS, so never run this job in a FOSS (including as-if-foss) pipeline.
+    - <<: *if-not-ee
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_JEST_MSW_INTEGRATION == "true"'
@@ -2020,17 +2077,14 @@
     # Tier-1: only run when the MSW integration tests themselves change
     - <<: *if-merge-request-tier-1-or-no-tier
       changes:
-        - "{,ee/,jh/}spec/frontend/msw_integration/**/*"
+        - "{ee,jh}/spec/frontend/msw_integration/**/*"
     - <<: *if-merge-request-tier-1-or-no-tier
       when: never
-    # Tier-2+: run on frontend, MSW integration test, GraphQL, or fixture generator changes
+    # Tier-2+: same scope as the full Jest jobs, since this suite also runs on the frontend fixtures
     - <<: *if-merge-request-tier-2-or-above
-      changes:
-        - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
-        - "{,ee/,jh/}spec/frontend/msw_integration/**/*"
-        - "{,ee/,jh/}app/graphql/**/*"
-        - "{,ee/}spec/frontend/fixtures/**/*"
-        - "ee/frontend_islands/apps/**/*"
+      changes: *jest-relevant-patterns
+    - <<: *if-merge-request-tier-2-or-above
+      when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
@@ -2236,6 +2290,8 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         E2E_RUNTIME_COEFFICIENT_GDK: "1.2"
+        # Serial cng runs need more jobs to hold wall clock
+        E2E_RUNTIME_COEFFICIENT_CNG: "1.2"
         # calculate_parallel_jobs_count method in qa/qa/tools/ci/pipeline_creator.rb
         # uses this coefficient to determine the number of parallel job instances
     - *if-default-branch-schedule-nightly
@@ -2379,20 +2435,15 @@
 
 .qa:rules:e2e:test-on-gdk:
   rules:
-    # Full suite is already executed against cng deployment which is a proper release environment
+    # test-on-gdk no longer runs on merge request pipelines - E2E coverage for MRs
+    # is provided by test-on-cng. It still runs on the scheduled pipeline so the
+    # E2E code-paths mapping / coverage collection is preserved.
+    # See https://gitlab.com/groups/gitlab-org/quality/test-governance/-/work_items/5
+    - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - <<: *if-security-merge-request
       when: never
-    - !reference [".qa:rules:e2e-blocking-base-before", rules]
-    # Run tests automatically for MRs that touch Ruby version files
-    - <<: *if-merge-request
-      changes: *ruby-version-patterns
-    # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
-    - <<: *if-merge-request
-      changes: *gdk-component-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
-    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables
@@ -2419,7 +2470,12 @@
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - <<: *if-dot-com-gitlab-org-schedule
-      variables: *qa-e2e-test-schedule-variables
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        # Only the scheduled run needs the code paths mapping
+        COVERBAND_ENABLED: "true"
+        # Parallel processes share one coverage counter and corrupt it
+        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:e2e:perf-on-cng:
   rules:
@@ -2443,6 +2499,8 @@
     # Automatically run for MRs with group::code review label or maintenance::dependency label and backend changes
     - <<: *if-group-code-review-label-or-maintenance-label-on-mr
       changes: *backend-only-patterns
+    # Run only on the canonical gitlab-org/gitlab 2-hourly maintenance schedule so CPT stores baselines
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     # Allow manual triggering for CNG dependency changes
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
@@ -2626,17 +2684,6 @@
       allow_failure: true
     - <<: *if-merge-request-labels-run-praefect-with-db
       allow_failure: true
-
-.rails:rules:gitaly-without-transactions:
-  rules:
-    - <<: *if-schedule-maintenance
-    - <<: *if-merge-request-labels-run-without-gitaly-transactions
-
-.rails:rules:ee-only-gitaly-without-transactions:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - !reference [".rails:rules:gitaly-without-transactions", rules]
 
 .rails:rules:ee-and-foss-migration:
   rules:
@@ -2873,6 +2920,34 @@
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-merge-request-labels-run-rspec-vue3
+
+# Gitaly MVCC backend jobs only run when the pipeline:run-gitaly-mvcc label is
+# set, since the backend is still under development. The -ee variants add the
+# if-not-ee guard so the rspec-ee jobs stay excluded in FOSS contexts.
+.rails:rules:gitaly-mvcc:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-gitaly-mvcc
+
+.rails:rules:gitaly-mvcc-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:gitaly-mvcc", rules]
+
+.rails:rules:gitaly-mvcc-system:
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-gitaly-mvcc
+
+.rails:rules:gitaly-mvcc-ee-system:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:gitaly-mvcc-system", rules]
 
 .rails:rules:ee-and-foss-system:
   rules:
@@ -3142,6 +3217,23 @@
     - <<: *if-default-branch-refs
       changes: *code-patterns
 
+.rails:rules:check-ci-partition-pruning:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-skip-check-ci-partition-pruning
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+    # Same condition under which the merge_request_query_differ.rb dependency runs
+    # except narrows changes to BE-only instead of *code-backstage-patterns.
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *backend-patterns
+    # FE GraphQL changes can modify the queries that the BE resolves in specs
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-graphql-patterns
+
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:
     - <<: *if-default-branch-schedule-nightly
@@ -3391,6 +3483,24 @@
         - '**/*.cs'
         - '**/*.rb'
         - '**/*.php'
+
+.reports:rules:gitlab-advanced-sast-ext:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast-ext/
+      when: never
+    # Same tier-3 gating as .reports:rules:gitlab-advanced-sast above.
+    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-default-refs
+      changes:
+        # this list should match the `exists` rule for gitlab-advanced-sast-ext in
+        # lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.mm'
 
 .reports:rules:semgrep-sast:
   rules:
@@ -3874,15 +3984,6 @@
       when: never
     - <<: *if-default-branch-schedule-ai-principles
 
-.ai-principles-sync:rules:scheduled-on-failure:
-  rules:
-    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
-      when: never
-    - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
-      when: never
-    - <<: *if-default-branch-schedule-ai-principles
-      when: on_failure
-
 .ai-principles-reconcile:rules:scheduled:
   rules:
     - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
@@ -4036,6 +4137,8 @@
 
 .test-metadata:rules:export-diff-stats:
   rules:
+    - <<: *if-missing-clickhouse-diff-stats-credentials
+      when: never
     - *if-merge-request
 
 ###############################

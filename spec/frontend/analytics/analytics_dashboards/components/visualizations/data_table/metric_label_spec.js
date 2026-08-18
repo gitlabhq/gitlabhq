@@ -21,6 +21,7 @@ describe('Metric label', () => {
   };
 
   const findMetricLabel = () => wrapper.findByTestId('metric_label');
+  const findMetricLabelComponent = () => wrapper.findComponentByTestId('metric_label');
   const findInfoIcon = () => wrapper.findByTestId('info_icon');
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findPopoverLink = () => wrapper.findComponent(GlPopover).findComponent(GlLink);
@@ -59,7 +60,7 @@ describe('Metric label', () => {
       const trackingProperty = 'trackingProperty';
       createWrapper({ link, trackingProperty });
 
-      findMetricLabel().vm.$emit('click');
+      findMetricLabelComponent().vm.$emit('click');
 
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       expect(trackEventSpy).toHaveBeenCalledWith(
@@ -75,7 +76,7 @@ describe('Metric label', () => {
     it('does not track the click event when trackingProperty is blank', () => {
       createWrapper({ link });
 
-      findMetricLabel().vm.$emit('click');
+      findMetricLabelComponent().vm.$emit('click');
 
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       expect(trackEventSpy).not.toHaveBeenCalled();

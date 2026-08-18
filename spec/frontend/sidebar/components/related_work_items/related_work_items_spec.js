@@ -5,10 +5,13 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import MRRelatedWorkItems from '~/sidebar/components/related_work_items/related_work_items.vue';
 import RelatedWorkItemsAddForm from '~/sidebar/components/related_work_items/related_work_items_add_form.vue';
 import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
+import createMergeRequestWorkItemRelationMutation from '~/sidebar/queries/create_merge_request_work_item_relation.mutation.graphql';
+import destroyMergeRequestWorkItemRelationMutation from '~/sidebar/queries/destroy_merge_request_work_item_relation.mutation.graphql';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 
 jest.mock('~/alert');
@@ -40,17 +43,33 @@ const mockLinkedItem = ({ title, linkType }) => {
   };
 };
 
+const mockRelationItem = ({ title, linkType, fromMrDescription = true }) => {
+  const { workItem } = mockLinkedItem({ title, linkType });
+  return {
+    id: `gid://gitlab/MergeRequestsClosingIssues/${workItemCounter}`,
+    linkType,
+    fromMrDescription,
+    workItem,
+    __typename: 'MergeRequestWorkItemRelation',
+  };
+};
+
 const closingItem1 = mockLinkedItem({ title: 'Fix bug', linkType: 'CLOSES' });
 const closingItem2 = mockLinkedItem({ title: 'Update docs', linkType: 'CLOSES' });
 const mentionedItem = mockLinkedItem({ title: 'Refactor code', linkType: 'MENTIONED' });
 
+const MOCK_MERGE_REQUEST_IID = '1';
+
 const buildQueryResponse = (
   linkedWorkItems = [],
-  { adminMergeRequest = true, includePermissions = true } = {},
+  { adminMergeRequest = true, includePermissions = true, workItemRelations = [] } = {},
 ) => ({
   data: {
     mergeRequest: {
       id: MOCK_MERGE_REQUEST_ID,
+      iid: MOCK_MERGE_REQUEST_IID,
+      title: 'Fix the bug',
+      reference: 'group/project!1',
       ...(includePermissions
         ? {
             userPermissions: {
@@ -59,14 +78,42 @@ const buildQueryResponse = (
             },
           }
         : {}),
+      workItemRelations: {
+        nodes: workItemRelations,
+        __typename: 'MergeRequestWorkItemRelationConnection',
+      },
       linkedWorkItems,
       __typename: 'MergeRequest',
     },
   },
 });
 
+const buildRelationsResponse = (nodes = [], options = {}) =>
+  buildQueryResponse([], { ...options, workItemRelations: nodes });
+
+const buildCreateMutationResponse = (workItemRelations = [], errors = []) => ({
+  data: {
+    mergeRequestCreateWorkItemRelations: {
+      errors,
+      workItemRelations,
+      __typename: 'MergeRequestCreateWorkItemRelationsPayload',
+    },
+  },
+});
+
+const buildDestroyMutationResponse = (removedRelationIds = [], errors = []) => ({
+  data: {
+    mergeRequestDestroyWorkItemRelations: {
+      errors,
+      removedRelationIds,
+      __typename: 'MergeRequestDestroyWorkItemRelationsPayload',
+    },
+  },
+});
+
 describe('MRRelatedWorkItems', () => {
   let wrapper;
+  const showToast = jest.fn();
 
   const findCollapseButton = () => wrapper.findComponent(GlButton);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
@@ -76,8 +123,14 @@ describe('MRRelatedWorkItems', () => {
   const findAllLinks = () => wrapper.findAllComponents(GlLink);
   const findNoneText = () => wrapper.find('.hide-collapsed.gl-text-subtle');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAddButton = () => wrapper.findByTestId('add-work-item-button');
+  const findAddButton = () => wrapper.findComponentByTestId('add-work-item-button');
   const findAddForm = () => wrapper.findComponent(RelatedWorkItemsAddForm);
+  const findRemoveButton = (workItem) =>
+    wrapper.findComponentByTestId(`remove-work-item-${getIdFromGraphQLId(workItem.id)}`);
+  const findFromDescriptionIndicator = (workItem) =>
+    wrapper.findByTestId(`from-description-indicator-${getIdFromGraphQLId(workItem.id)}`);
+  const findActionSlots = () => wrapper.findAllByTestId('relation-action-slot');
+  const findRelationRows = () => wrapper.findAll('li');
 
   const createComponent = ({
     queryHandler = jest.fn().mockResolvedValue(buildQueryResponse()),
@@ -89,6 +142,9 @@ describe('MRRelatedWorkItems', () => {
         fullPath: 'group/project',
         id: '1',
         ...provide,
+      },
+      mocks: {
+        $toast: { show: showToast },
       },
       stubs: {
         GlCollapse,
@@ -409,6 +465,11 @@ describe('MRRelatedWorkItems', () => {
       expect(findAddForm().props('visible')).toBe(false);
     });
 
+    it('passes the merge request title and reference to the add form', () => {
+      expect(findAddForm().props('mergeRequestTitle')).toBe('Fix the bug');
+      expect(findAddForm().props('mergeRequestReference')).toBe('group/project!1');
+    });
+
     it('shows the add form when the add button is clicked', async () => {
       findAddButton().vm.$emit('click');
       await nextTick();
@@ -484,6 +545,444 @@ describe('MRRelatedWorkItems', () => {
 
       expect(findAddButton().exists()).toBe(false);
       expect(findAddForm().exists()).toBe(false);
+    });
+  });
+
+  describe('when the feature flag is enabled and relations are present', () => {
+    const closingRelation = mockRelationItem({ title: 'Fix bug', linkType: 'CLOSES' });
+    const relatedRelation = mockRelationItem({ title: 'Investigate flake', linkType: 'RELATED' });
+    const mentionedRelation = mockRelationItem({ title: 'Refactor code', linkType: 'MENTIONED' });
+
+    const createWithRelations = (nodes) =>
+      createComponent({
+        queryHandler: jest.fn().mockResolvedValue(buildRelationsResponse(nodes)),
+        provide: { glFeatures: { explicitMrWorkItemRelations: true } },
+      });
+
+    it('consumes workItemRelations instead of linkedWorkItems', async () => {
+      createWithRelations([closingRelation]);
+      await waitForPromises();
+
+      expect(findNoneText().exists()).toBe(false);
+      expect(findAllLinks().at(0).text()).toBe('Fix bug');
+    });
+
+    it('renders closing, related, and mentioned section labels', async () => {
+      createWithRelations([closingRelation, relatedRelation, mentionedRelation]);
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Closing');
+      expect(wrapper.text()).toContain('Related');
+      expect(wrapper.text()).toContain('Mentioned');
+    });
+
+    it('renders a collapsed summary covering all three relationship types', async () => {
+      createWithRelations([closingRelation, relatedRelation, mentionedRelation]);
+      await waitForPromises();
+
+      expect(findAllLinks().at(0).text()).toBe('Closing 1, Related 1, Mentioned 1');
+    });
+  });
+
+  describe('creating a related work item', () => {
+    const newRelation = mockRelationItem({ title: 'New related item', linkType: 'RELATED' });
+    let mutationHandler;
+
+    const createWithMutation = ({
+      mutationResponse = buildCreateMutationResponse([newRelation]),
+    } = {}) => {
+      mutationHandler = jest.fn().mockResolvedValue(mutationResponse);
+      wrapper = shallowMountExtended(MRRelatedWorkItems, {
+        apolloProvider: createMockApollo([
+          [
+            mergeRequestRelatedWorkItemsQuery,
+            jest.fn().mockResolvedValue(buildRelationsResponse([])),
+          ],
+          [createMergeRequestWorkItemRelationMutation, mutationHandler],
+        ]),
+        provide: {
+          fullPath: 'group/project',
+          id: '1',
+          glFeatures: { explicitMrWorkItemRelations: true },
+        },
+        mocks: {
+          $toast: { show: showToast },
+        },
+        stubs: { GlCollapse },
+      });
+    };
+
+    beforeEach(async () => {
+      createWithMutation();
+      await waitForPromises();
+    });
+
+    it('calls the create mutation with the selected work items and link type', async () => {
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(mutationHandler).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        iid: MOCK_MERGE_REQUEST_IID,
+        workItemIds: [newRelation.workItem.id],
+        linkType: 'RELATED',
+      });
+    });
+
+    it('adds the created relation to the rendered list', async () => {
+      expect(findNoneText().exists()).toBe(true);
+
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Related');
+      expect(findAllLinks().at(0).text()).toBe('New related item');
+    });
+
+    it('hides the add form after linking', async () => {
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(findAddForm().props('visible')).toBe(false);
+    });
+
+    it('shows a toast after linking succeeds', async () => {
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(showToast).toHaveBeenCalledWith('Linked item added');
+    });
+
+    it('shows a pluralized toast when multiple items are linked', async () => {
+      findAddForm().vm.$emit('link', {
+        workItems: [
+          newRelation.workItem,
+          { ...newRelation.workItem, id: 'gid://gitlab/WorkItem/999' },
+        ],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(showToast).toHaveBeenCalledWith('Linked items added');
+    });
+
+    it('shows a toast when a new work item is created and linked', async () => {
+      findAddForm().vm.$emit('created', {
+        workItem: newRelation.workItem,
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(showToast).toHaveBeenCalledWith('Linked item added');
+    });
+
+    it('shows an alert and captures the error when the mutation request fails', async () => {
+      const error = new Error('Network error');
+      mutationHandler.mockRejectedValueOnce(error);
+
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while linking the work item.',
+        error,
+        captureError: true,
+      });
+      expect(showToast).not.toHaveBeenCalled();
+    });
+
+    it('keeps the add form open when linking fails so the user can retry', async () => {
+      mutationHandler.mockRejectedValueOnce(new Error('Network error'));
+
+      findAddButton().vm.$emit('click');
+      await nextTick();
+      expect(findAddForm().props('visible')).toBe(true);
+
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(findAddForm().props('visible')).toBe(true);
+    });
+
+    it('shows an alert and does not link when the mutation returns errors', async () => {
+      createWithMutation({
+        mutationResponse: buildCreateMutationResponse([], ['Work item could not be linked.']),
+      });
+      await waitForPromises();
+
+      findAddForm().vm.$emit('link', {
+        workItems: [newRelation.workItem],
+        linkType: 'RELATED',
+      });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Work item could not be linked.',
+      });
+      expect(showToast).not.toHaveBeenCalled();
+      expect(findNoneText().exists()).toBe(true);
+    });
+
+    it('does not call the mutation when no work items are selected', async () => {
+      findAddForm().vm.$emit('link', { workItems: [], linkType: 'RELATED' });
+      await waitForPromises();
+
+      expect(mutationHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('removing a related work item', () => {
+    const removableRelation = mockRelationItem({
+      title: 'Manually linked item',
+      linkType: 'RELATED',
+      fromMrDescription: false,
+    });
+    let destroyHandler;
+
+    const createWithDestroy = ({
+      relations = [removableRelation],
+      linkedWorkItems = [],
+      destroyResponse = buildDestroyMutationResponse([removableRelation.id]),
+      adminMergeRequest = true,
+      glFeatures = { explicitMrWorkItemRelations: true },
+    } = {}) => {
+      destroyHandler = jest.fn().mockResolvedValue(destroyResponse);
+      wrapper = shallowMountExtended(MRRelatedWorkItems, {
+        apolloProvider: createMockApollo([
+          [
+            mergeRequestRelatedWorkItemsQuery,
+            jest.fn().mockResolvedValue(
+              buildQueryResponse(linkedWorkItems, {
+                adminMergeRequest,
+                workItemRelations: relations,
+              }),
+            ),
+          ],
+          [destroyMergeRequestWorkItemRelationMutation, destroyHandler],
+        ]),
+        provide: {
+          fullPath: 'group/project',
+          id: '1',
+          glFeatures,
+        },
+        mocks: {
+          $toast: { show: showToast },
+        },
+        stubs: { GlCollapse },
+      });
+    };
+
+    it('renders a remove button for user-created relations', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(true);
+    });
+
+    it('does not render a remove button for relations derived from the MR description', async () => {
+      const fromDescription = mockRelationItem({
+        title: 'Closes #1',
+        linkType: 'CLOSES',
+        fromMrDescription: true,
+      });
+      createWithDestroy({ relations: [fromDescription] });
+      await waitForPromises();
+
+      expect(findRemoveButton(fromDescription.workItem).exists()).toBe(false);
+    });
+
+    it('does not render a remove button when the user cannot administer the merge request', async () => {
+      createWithDestroy({ adminMergeRequest: false });
+      await waitForPromises();
+
+      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(false);
+    });
+
+    it('does not render a remove button when the feature flag is disabled', async () => {
+      createWithDestroy({
+        relations: [],
+        linkedWorkItems: [{ linkType: 'RELATED', workItem: removableRelation.workItem }],
+        glFeatures: { explicitMrWorkItemRelations: false },
+      });
+      await waitForPromises();
+
+      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
+      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(false);
+    });
+
+    it('reserves one action slot per row so the indicator and remove button share a column', async () => {
+      const fromDescription = mockRelationItem({
+        title: 'Closes #1',
+        linkType: 'CLOSES',
+        fromMrDescription: true,
+      });
+      createWithDestroy({ relations: [removableRelation, fromDescription] });
+      await waitForPromises();
+
+      expect(findActionSlots()).toHaveLength(2);
+    });
+
+    it('reveals the action slot on row hover and on focus, without dropping it from the tab order', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      const slotClasses = findActionSlots().at(0).classes();
+
+      // Faded rather than hidden, so the button stays focusable.
+      expect(slotClasses).toContain('gl-opacity-0');
+      expect(slotClasses).toContain('group-hover:gl-opacity-10');
+      expect(slotClasses).toContain('focus-within:gl-opacity-10');
+      expect(findRelationRows().at(0).classes()).toContain('gl-group');
+    });
+
+    it('does not reserve action slots when the user cannot remove anything', async () => {
+      createWithDestroy({ adminMergeRequest: false });
+      await waitForPromises();
+
+      expect(findActionSlots()).toHaveLength(0);
+    });
+
+    it('calls the destroy mutation with the relation id as soon as remove is clicked', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(destroyHandler).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        iid: MOCK_MERGE_REQUEST_IID,
+        ids: [removableRelation.id],
+      });
+    });
+
+    it('removes the relation from the rendered list on success', async () => {
+      createWithDestroy();
+      await waitForPromises();
+      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(findNoneText().exists()).toBe(true);
+    });
+
+    it('shows a toast after a successful removal', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(showToast).toHaveBeenCalledWith('Linked item removed');
+    });
+
+    it('shows an alert and keeps the item when the mutation returns errors', async () => {
+      createWithDestroy({
+        destroyResponse: buildDestroyMutationResponse([], ['Relation could not be removed.']),
+      });
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Relation could not be removed.',
+      });
+      expect(showToast).not.toHaveBeenCalled();
+      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
+    });
+
+    it('shows an alert when the mutation request fails', async () => {
+      createWithDestroy();
+      destroyHandler.mockRejectedValueOnce(new Error('Network error'));
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while removing the work item.',
+        error: expect.any(Error),
+        captureError: true,
+      });
+    });
+
+    describe('relations derived from the MR description', () => {
+      const fromDescription = mockRelationItem({
+        title: 'Closes #1',
+        linkType: 'CLOSES',
+        fromMrDescription: true,
+      });
+
+      it('explains why the relation cannot be removed', async () => {
+        createWithDestroy({ relations: [fromDescription] });
+        await waitForPromises();
+
+        const indicator = findFromDescriptionIndicator(fromDescription.workItem);
+
+        expect(indicator.exists()).toBe(true);
+        expect(indicator.attributes('title')).toBe(
+          'This link comes from the merge request description. Edit the description to remove it.',
+        );
+        expect(indicator.attributes('aria-label')).toBe(
+          'This link comes from the merge request description. Edit the description to remove it.',
+        );
+      });
+
+      it('renders as a button so it is reachable by keyboard and the tooltip can be read', async () => {
+        createWithDestroy({ relations: [fromDescription] });
+        await waitForPromises();
+
+        const indicator = findFromDescriptionIndicator(fromDescription.workItem);
+
+        expect(indicator.attributes('icon')).toBe('information-o');
+        expect(indicator.attributes('category')).toBe('tertiary');
+      });
+
+      it('does not explain anything for user-created relations', async () => {
+        createWithDestroy();
+        await waitForPromises();
+
+        expect(findFromDescriptionIndicator(removableRelation.workItem).exists()).toBe(false);
+      });
+
+      it('does not explain anything when the user cannot administer the merge request', async () => {
+        createWithDestroy({ relations: [fromDescription], adminMergeRequest: false });
+        await waitForPromises();
+
+        expect(findFromDescriptionIndicator(fromDescription.workItem).exists()).toBe(false);
+      });
+
+      it('does not explain anything when the feature flag is disabled', async () => {
+        createWithDestroy({
+          relations: [],
+          linkedWorkItems: [{ linkType: 'CLOSES', workItem: fromDescription.workItem }],
+          glFeatures: { explicitMrWorkItemRelations: false },
+        });
+        await waitForPromises();
+
+        expect(findAllLinks().at(0).text()).toBe('Closes #1');
+        expect(findFromDescriptionIndicator(fromDescription.workItem).exists()).toBe(false);
+      });
     });
   });
 });

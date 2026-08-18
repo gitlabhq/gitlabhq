@@ -40,8 +40,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'publishes a module',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371583' do
+      it 'publishes a module' do
         terraform_module_yaml = ERB.new(
           read_fixture('package_managers/terraform', 'module_upload.yaml.erb')
         ).result(binding)

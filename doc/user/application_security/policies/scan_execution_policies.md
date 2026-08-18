@@ -14,8 +14,6 @@ title: Scan execution policies
 
 {{< history >}}
 
-- Support for custom CI/CD variables in the scan execution policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
-- Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
 - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
 
 {{< /history >}}
@@ -210,12 +208,6 @@ from bypassing the pipeline execution policies.
 
 {{< history >}}
 
-- The `branch_type` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
-  - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
-- The `branch_exceptions` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
-  - Generally available in GitLab 16.5. Feature flag `security_policies_branch_exceptions` removed.
 - The `pipeline_sources` field and the `branch_type` options `target_default` and `target_protected`:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.3.
@@ -241,12 +233,6 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 {{< history >}}
 
-- New `branch_type` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
-  - Generally available in GitLab 16.2. Feature flag removed.
-- New `branch_exceptions` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
-  - Generally available in GitLab 16.5. Feature flag removed.
 - New `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) in GitLab 16.11 [with a feature flag](../../../administration/feature_flags/_index.md).
   - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) on GitLab.com in GitLab 17.5.
@@ -259,9 +245,6 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) in GitLab 17.9. Feature flag `scan_execution_pipeline_concurrency_control` removed.
 
 {{< /history >}}
-
-> [!warning]
-> In GitLab 16.1 and earlier, you should not use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If you must use direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 Use the `schedule` rule type to run security scanners on a schedule.
 
@@ -280,12 +263,12 @@ A scheduled pipeline:
 |------------|------|----------|-----------------|-------------|
 | `type`     | `string` | true | `schedule` | The rule's type. |
 | `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
-| `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected`, or `all` | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `cadence`  | `string` | true | Cron expression with limited options. For example, `0 0 * * *` creates a schedule to run every day at midnight (12:00 AM). | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `time_window` | `object` | false |  | Distribution and duration settings for scheduled security scans. |
-| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents for Kubernetes](../../clusters/agent/_index.md) where [Operational container scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
+| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exist   |  | The name of the [GitLab agents for Kubernetes](../../clusters/agent/_index.md) where [Operational container scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
 
@@ -442,9 +425,6 @@ The concurrency control distributes the scheduled pipelines according to the [`t
 
 {{< history >}}
 
-- Scan Execution Policies variable precedence:
-  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default.
-  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435727) in GitLab 16.8. Feature flag `security_policies_variables_precedence` removed.
 - Selection of security templates for given action:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) for projects in GitLab 17.1 [with feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policies_with_latest_templates`. Disabled by default.
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468981) for groups in GitLab 17.2 [with feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policies_with_latest_templates_group`. Disabled by default.
@@ -462,10 +442,10 @@ rule in the defined policy are met.
 |-------|------|-----------------|-------------|
 | `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/profiles.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/profiles.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/profiles.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `variables` | `object` | | A set of CI/CD variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI/CD job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
-| `template` | `string` | `default`, `latest`, or a scanner-specific version | CI/CD template version to enforce. `default` uses the stable template. `latest` uses the experimental template, which may include breaking changes — it is not the most current recommended version. Some scanners also support versioned templates that represent the recommended configuration. The `latest` template supports only `pipeline_sources` related to merge requests. For available versions per scanner, see [Scanner template versions](#scanner-template-versions). |
+| `template` | `string` | `default`, `latest`, or a scanner-specific version | CI/CD template version to enforce. `default` uses the stable template. `latest` uses the experimental template, which may include breaking changes - it is not the most current recommended version. Some scanners also support versioned templates that represent the recommended configuration. The `latest` template supports only `pipeline_sources` related to merge requests. For available versions per scanner, see [Scanner template versions](#scanner-template-versions). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 > [!note]
@@ -474,7 +454,7 @@ rule in the defined policy are met.
 ### Scanner template versions
 
 The `template` field accepts `default` and `latest` for all scanner types. Some scanners support
-additional versioned templates. The recommended default varies by scanner — check the scanner
+additional versioned templates. The recommended default varies by scanner - check the scanner
 documentation before setting this field.
 
 | Scanner | Supported templates | Documentation |
@@ -553,13 +533,6 @@ DEFAULT_SAST_EXCLUDED_PATHS: spec, test, tests, tmp
 DS_EXCLUDED_ANALYZERS: ''
 SECURE_ENABLE_LOCAL_CONFIGURATION: true
 ```
-
-In GitLab 16.9 and earlier:
-
-- If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values could
-  be overridden by a group or project's CI/CD variables.
-- If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
-  ignored, regardless of where they were defined: policy, group, or project.
 
 ## Policy scope schema
 

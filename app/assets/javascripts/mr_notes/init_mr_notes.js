@@ -75,8 +75,7 @@ export default function initMrNotes(createRapidDiffsApp) {
   }
 
   const mrShowNode = document.querySelector('.merge-request');
-  // eslint-disable-next-line no-new
-  new MergeRequest({
+  const mergeRequest = new MergeRequest({
     action: mrShowNode.dataset.mrAction,
     createRapidDiffsApp,
   });
@@ -87,4 +86,6 @@ export default function initMrNotes(createRapidDiffsApp) {
     initRevertCommitModal('i_code_review_post_merge_submit_revert_modal');
     initCherryPickCommitModal('i_code_review_post_merge_submit_cherry_pick_modal');
   });
+
+  return mergeRequest;
 }

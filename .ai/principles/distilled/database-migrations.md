@@ -1,6 +1,6 @@
 ---
-source_checksum: e0fc1e17498d3165
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 5af32b07ba97daf7
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -78,7 +78,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 - Remove all application code referencing a table before dropping it
 - Drop tables with no foreign keys using a post-deployment migration
-- When a table has foreign keys, remove each FK in a separate post-deployment migration before dropping the table
+- When a table has foreign keys, remove each FK in its own post-deployment migration before dropping the table; when the FK references a high-traffic table, wrap the removal in `with_lock_retries` using `remove_foreign_key_if_exists` (which defaults to `reverse_lock_order: true` to prevent deadlocks)
 - Add dropped tables to `db/docs/deleted_tables` per the database dictionary guide
 
 ### Renaming Tables

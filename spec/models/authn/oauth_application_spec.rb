@@ -50,6 +50,18 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     expect(application).to be_valid
   end
 
+  describe '.dynamic' do
+    let_it_be(:dynamic_app) { create(:oauth_application, :dynamic) }
+
+    it 'returns only dynamic applications' do
+      expect(described_class.dynamic).to include(dynamic_app)
+    end
+
+    it 'excludes non-dynamic applications' do
+      expect(described_class.dynamic).not_to include(application)
+    end
+  end
+
   describe '#secret_matches?' do
     let_it_be(:plaintext_secret) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
     let_it_be_with_reload(:application) { create(:oauth_application, secret: plaintext_secret) }
@@ -249,6 +261,77 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
       result = described_class.encode(raw_token)
 
       expect(result).to eq('encoded_token_hash')
+    end
+  end
+
+  describe 'IAM outbox replication' do
+    it 'declares its IAM entity type' do
+      expect(described_class.iam_outbox_entity_type).to eq('oauth_application')
+    end
+
+    context 'when IAM replication is enabled' do
+      before do
+        stub_feature_flags(iam_data_replication: true)
+      end
+
+      context 'on create' do
+        it 'records an upsert row with an empty payload and the sharding key' do
+          app = create(:oauth_application)
+
+          row = Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).sole
+
+          expect(row.payload).to eq({})
+          expect(row.entity_type).to eq('oauth_application')
+          expect(row.organization_id).to eq(app.organization_id)
+        end
+      end
+
+      context 'on update' do
+        it 'records an upsert row' do
+          app = create(:oauth_application)
+
+          expect { app.update!(redirect_uri: 'https://example.com/new') }
+            .to change { Authn::IamOutbox.where(event_type: :upsert, entity_id: app.id).count }.by(1)
+        end
+      end
+
+      context 'on destroy' do
+        it 'records a delete row carrying the uid' do
+          app = create(:oauth_application)
+          uid = app.uid
+
+          app.destroy!
+
+          row = Authn::IamOutbox.where(event_type: :delete, entity_id: app.id).sole
+
+          expect(row.payload).to eq({ 'uid' => uid })
+          expect(row.entity_type).to eq('oauth_application')
+          expect(row.organization_id).to eq(app.organization_id)
+        end
+      end
+
+      context 'when the surrounding transaction rolls back' do
+        it 'records no outbox row' do
+          expect do
+            ApplicationRecord.transaction do
+              create(:oauth_application)
+              raise ActiveRecord::Rollback
+            end
+          end.not_to change { Authn::IamOutbox.count }
+        end
+      end
+    end
+
+    context 'when IAM replication is disabled' do
+      before do
+        stub_feature_flags(iam_data_replication: false)
+      end
+
+      it 'records no outbox row' do
+        app = create(:oauth_application)
+
+        expect { app.destroy! }.not_to change { Authn::IamOutbox.count }
+      end
     end
   end
 end

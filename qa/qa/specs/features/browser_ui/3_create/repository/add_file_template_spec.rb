@@ -20,8 +20,7 @@ module QA
         project.visit!
       end
 
-      it "user adds .gitlab-ci.yml via file template Julia",
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347658' do
+      it "user adds .gitlab-ci.yml via file template Julia" do
         content = fetch_template_from_api('gitlab_ci_ymls', 'Julia')
 
         Page::Project::Show.perform(&:create_new_file!)

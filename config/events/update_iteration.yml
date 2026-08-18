@@ -1,7 +1,7 @@
 ---
 description: Tracks when a user attempts to update the iteration for a work item.
 action: update_iteration
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '16.8'

@@ -30,10 +30,10 @@ RSpec.describe 'viewing an issue with cross project references', :js, feature_ca
   end
 
   let_it_be(:issue) do
-    description_referencing_other_issue = "Referencing: #{other_issue.to_reference(project)}, "\
-                                          "a confidential issue #{confidential_issue.to_reference}, "\
-                                          "a cross project confidential issue #{other_confidential_issue.to_reference(project)}, and "\
-                                          "a cross project merge request #{other_merge_request.to_reference(project)}"
+    description_referencing_other_issue = "Referencing: #{other_issue.to_reference(project)}, " \
+      "a confidential issue #{confidential_issue.to_reference}, " \
+      "a cross project confidential issue #{other_confidential_issue.to_reference(project)}, and " \
+      "a cross project merge request #{other_merge_request.to_reference(project)}"
     create(:issue, project: project, description: description_referencing_other_issue)
   end
 

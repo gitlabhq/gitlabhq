@@ -74,12 +74,12 @@ export default {
         :toggle-resolve-note="store.toggleResolveNote"
         :timeline-layout="timelineLayout"
         :is-last-discussion="index === discussions.length - 1"
-        @toggleDiscussionReplies="store.toggleDiscussionReplies(discussion)"
-        @noteEdited="store.editNote"
+        @toggle-discussion-replies="store.toggleDiscussionReplies(discussion)"
+        @note-edited="store.editNote"
         @start-editing="store.setEditingMode($event, true)"
         @cancel-editing="store.setEditingMode($event, false)"
-        @startReplying="store.startReplying(discussion)"
-        @stopReplying="store.stopReplying(discussion)"
+        @start-replying="store.startReplying(discussion)"
+        @stop-replying="store.stopReplying(discussion)"
       >
         <template v-if="counterBadgeVisible" #avatar-badge>
           <design-note-pin

@@ -1,0 +1,4 @@
+---
+name: update_feature_flags_minimum_role_setting
+description: Grants the ability to update the project setting that controls
+  the minimum role required to manage feature flags.

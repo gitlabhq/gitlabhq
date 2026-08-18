@@ -1,0 +1,3 @@
+---
+name: update_user_achievement_show_on_profile
+description: Grants the ability to update the show_on_profile field of a user achievement

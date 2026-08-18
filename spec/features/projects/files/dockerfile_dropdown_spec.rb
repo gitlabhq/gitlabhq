@@ -19,8 +19,6 @@ RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', :js, fe
       find('.gl-new-dropdown-contents li', text: 'HTTPd').click
     end
 
-    wait_for_requests
-
     expect(page).to have_css('.gl-new-dropdown-button-text', text: 'HTTPd')
     expect(find('.monaco-editor')).to have_content('COPY ./ /usr/local/apache2/htdocs/')
   end

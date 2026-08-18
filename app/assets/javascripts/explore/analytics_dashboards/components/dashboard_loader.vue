@@ -40,13 +40,13 @@ export default {
     config() {
       if (!this.dashboard?.config) return {};
       // Each panel needs a uniqueId or the prop validator for GlDashboardLayout will fail
-      const { panels, ...rest } = this.dashboard.config;
+      const { panels = [], views, ...rest } = this.dashboard.config;
       return {
         ...rest,
-        panels: panels.map(({ id, ...panel }) => ({
-          ...panel,
-          id: getUniquePanelId(),
-        })),
+        panels: this.assignPanelIds(panels),
+        ...(views
+          ? { views: views.map((view) => ({ ...view, panels: this.assignPanelIds(view.panels) })) }
+          : {}),
       };
     },
     cellHeight() {
@@ -66,6 +66,14 @@ export default {
       // Emit the processed config so consumers receive panels with unique ids,
       // matching what the slot-scoped config renders.
       this.$emit('loaded', JSON.parse(JSON.stringify({ ...this.dashboard, config: this.config })));
+    },
+  },
+  methods: {
+    assignPanelIds(panels = []) {
+      return panels.map(({ id, ...panel }) => ({
+        ...panel,
+        id: getUniquePanelId(),
+      }));
     },
   },
   apollo: {

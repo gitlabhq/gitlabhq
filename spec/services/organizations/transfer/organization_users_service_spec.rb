@@ -113,6 +113,35 @@ RSpec.describe Organizations::Transfer::OrganizationUsersService, feature_catego
       end
     end
 
+    context 'when batching updates' do
+      include_context 'with transfer batch size of 1'
+
+      let_it_be(:batch_org) { create(:organization, :confirmed) }
+      let_it_be(:batch_user1) { create(:user) }
+      let_it_be(:batch_user2) { create(:user) }
+      let_it_be(:batch_user3) { create(:user) }
+      let_it_be(:batch_tlg) do
+        create(:group, organization: batch_org, owners: batch_user1, developers: [batch_user2, batch_user3])
+      end
+
+      let(:execute_service) { service.execute }
+      let(:expected_upsert_queries) do
+        { 'organization_users' => 3 }
+      end
+
+      subject(:service) { described_class.new(organization: batch_org) }
+
+      it 'processes all members across multiple batches' do
+        service.execute
+
+        expect(batch_org.organization_users.pluck(:user_id)).to include(
+          batch_user1.id, batch_user2.id, batch_user3.id
+        )
+      end
+
+      it_behaves_like 'generates batched upsert queries'
+    end
+
     context 'when TLG has access requests' do
       let_it_be(:request_org) { create(:organization, :confirmed) }
       let_it_be(:tlg_owner) { create(:user) }

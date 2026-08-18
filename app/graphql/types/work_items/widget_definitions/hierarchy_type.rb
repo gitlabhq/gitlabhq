@@ -4,7 +4,7 @@ module Types
   module WorkItems
     module WidgetDefinitions
       # rubocop:disable Graphql/AuthorizeTypes -- authorized in work item type entity
-      # rubocop:disable GraphQL/ExtractType -- no need to extra allowed types into a seperate field
+      # rubocop:disable GraphQL/ExtractType -- no need to extract allowed types into a separate field
       class HierarchyType < BaseObject
         graphql_name 'WorkItemWidgetDefinitionHierarchy'
         description 'Represents a hierarchy widget definition'

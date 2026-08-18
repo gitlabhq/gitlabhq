@@ -25,7 +25,8 @@ module Search
         { text: _('Naming, description, visibility'), href: edit_group_path(group, anchor: 'js-general-settings') },
         { text: _('Permissions and group features'), href: edit_group_path(group, anchor: 'js-permissions-settings') },
         { text: _('Badges'), href: edit_group_path(group, anchor: 'js-badge-settings') },
-        { text: _('Advanced'), href: edit_group_path(group, anchor: 'js-advanced-settings') }
+        { text: _('Advanced'), href: edit_group_path(group, anchor: 'js-advanced-settings') },
+        { text: _('Merge requests'), href: edit_group_path(group, anchor: 'js-merge-requests-settings') }
       ]
     end
 

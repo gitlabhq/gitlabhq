@@ -14,13 +14,14 @@ describe('Form component', () => {
   const findDeleteAfterMonthsGroup = () => wrapper.findByTestId('delete-after-months-group');
   const findDeleteAfterMonthsInputGroupText = () =>
     wrapper.findByTestId('delete-after-months-input-group-text');
-  const findDeleteAfterMonthsInput = () => wrapper.findByTestId('delete-after-months-input');
+  const findDeleteAfterMonthsInput = () =>
+    wrapper.findComponentByTestId('delete-after-months-input');
   const findSendWarningEmailAfterMonthsGroup = () =>
     wrapper.findByTestId('send-warning-email-after-months-group');
   const findSendWarningEmailAfterMonthsInputGroupText = () =>
     wrapper.findByTestId('send-warning-email-after-months-input-group-text');
   const findSendWarningEmailAfterMonthsInput = () =>
-    wrapper.findByTestId('send-warning-email-after-months-input');
+    wrapper.findComponentByTestId('send-warning-email-after-months-input');
 
   const createComponent = (
     mountFn = shallowMountExtended,

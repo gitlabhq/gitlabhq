@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
 import GlobalSearchSidebar from './components/app.vue';
@@ -16,13 +17,11 @@ export const initSidebar = (store) => {
 
   if (!el) return false;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GlobalSearchSidebar',
     store,
     apolloProvider,
-    render(createElement) {
-      return createElement(GlobalSearchSidebar);
-    },
+    component: GlobalSearchSidebar,
   });
 };

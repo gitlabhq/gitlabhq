@@ -685,6 +685,47 @@ describe('URL utility', () => {
     });
   });
 
+  describe('refreshCurrentPageWithAlerts', () => {
+    let originalLocation;
+
+    beforeEach(() => {
+      originalLocation = window.location;
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          assign: jest.fn(),
+          reload: jest.fn(),
+        },
+      });
+    });
+
+    afterEach(() => {
+      window.location = originalLocation;
+    });
+
+    it('sets alerts and then reloads without navigating', () => {
+      const alert = {
+        id: 'bar',
+        message: 'Bar',
+        variant: 'danger',
+      };
+
+      urlUtils.refreshCurrentPageWithAlerts([alert]);
+
+      expect(setGlobalAlerts).toHaveBeenCalledWith([
+        {
+          id: 'foo',
+          message: 'Foo',
+          variant: 'success',
+        },
+        alert,
+      ]);
+      expect(window.location.reload).toHaveBeenCalled();
+      expect(window.location.assign).not.toHaveBeenCalled();
+    });
+  });
+
   describe('refreshCurrentPage', () => {
     let originalLocation;
 

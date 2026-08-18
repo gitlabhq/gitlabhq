@@ -2,9 +2,9 @@
 title: Automatic code review for new GitLab customers
 offering: [ gitlab_com ]
 tier: [ Free, Premium, Ultimate ]
-documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/code_review#automatic-reviews-from-gitlab-duo-for-groups-and-applications"
+documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/code_review#automatic-reviews"
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/592822
-categories: [ Duo Agent Platform, Duo Code Review ]
+categories: [ DAP Code Review ]
 level: secondary
 stage: ai-powered
 ---

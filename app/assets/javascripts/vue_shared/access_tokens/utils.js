@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import {
   getDateInFuture,
   nDaysAfter,
@@ -56,7 +57,7 @@ export function fifteenDaysFromNow() {
  * Replace the 'DATE_HOLDER' string with a date 15 days in the future based on current time.
  */
 export function update15DaysFromNow(stats = STATISTICS_CONFIG) {
-  const clonedStats = structuredClone(stats);
+  const clonedStats = cloneDeep(stats);
   clonedStats.forEach((stat) => {
     const filter = stat.filters.find((item) => item.value.data === 'DATE_HOLDER');
     if (filter) {

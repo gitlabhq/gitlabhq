@@ -1,0 +1,9 @@
+---
+name: read_catalog_bundled_resource
+description: Grants the ability to read a bundled CI catalog resource
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_catalog_bundled_resource

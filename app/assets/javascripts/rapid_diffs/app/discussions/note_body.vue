@@ -102,6 +102,9 @@ export default {
         false,
       );
     },
+    defaultAwardsList() {
+      return this.isDuoFirstReviewComment ? ['thumbsup', 'thumbsdown'] : [];
+    },
   },
   safeHtmlConfig: {
     ADD_TAGS: ['gl-emoji'],
@@ -151,11 +154,15 @@ export default {
       class="gl-mt-4 gl-text-md gl-text-subtle"
       data-testid="duo-review-feedback"
     ></div>
-    <div v-if="note.award_emoji && note.award_emoji.length" class="gl-mt-3">
+    <div
+      v-if="defaultAwardsList.length || (note.award_emoji && note.award_emoji.length)"
+      class="gl-mt-3"
+    >
       <awards-list
         :awards="note.award_emoji"
         :can-award-emoji="note.current_user.can_award_emoji"
         :current-user-id="currentUserId"
+        :default-awards="defaultAwardsList"
         @award="$emit('award', $event)"
       />
     </div>

@@ -110,8 +110,8 @@ Enable long polling with the `gitlab.webservice.workhorse.extraArgs` setting.
 When long polling is enabled, GitLab Workhorse subscribes to Redis
 PubSub channels and awaits notifications. A job request is released
 from a long poll when its runner key is changed, or when
-`apiCiLongPollingDuration` has been reached. There are a number of
-Prometheus metrics that you can monitor:
+`apiCiLongPollingDuration` has been reached. You can monitor the following
+Prometheus metrics:
 
 | Metric | Type | Description | Labels |
 | -----  | ---- | ----------- | ------ |
@@ -180,9 +180,9 @@ has changed. If it has not, Workhorse holds onto the request for up to
 the duration specified by `apiCiLongPollingDuration`.
 
 If a user triggers a new pipeline or job to run, a background task in
-Sidekiq will update the `last_update` value for all runners available to
-the job. Runners can be registered for the project, group, and/or
-instance.
+Sidekiq updates the `last_update` value for all runners available to
+the job. Runners can be registered for the project, group, instance, or
+any combination of these.
 
 This "tick" in steps 10 and 11 releases the job request from the
 Workhorse long poll queue, and the request gets sent to Rails (step
@@ -190,7 +190,7 @@ Workhorse long poll queue, and the request gets sent to Rails (step
 job (steps 13 and 14).
 
 With long polling, the runner gets notified immediately after a new job
-is available. This not only helps improve reduce job queueing time, but
+is available. This not only helps reduce job queueing time, but
 it also reduces server overhead because the job requests reach
 Rails only when there is new work.
 
@@ -206,7 +206,7 @@ See [issue 27709](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27709).
 
 This can happen if the `concurrent` setting in the runner `config.toml`
 is set to a value lower than the number of runners defined. To resolve
-this issue, ensure the value of `concurrent` is at equal or greater than the
+this issue, ensure the value of `concurrent` is equal to or greater than the
 number of runners.
 
 For example, if you have three `[[runners]]` entries in `config.toml`, make

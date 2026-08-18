@@ -28,7 +28,7 @@ describe('CRUD Component', () => {
   const findDescription = () => wrapper.findByTestId('crud-description');
   const findCount = () => wrapper.findByTestId('crud-count');
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findFormToggle = () => wrapper.findByTestId('crud-form-toggle');
+  const findFormToggle = () => wrapper.findComponentByTestId('crud-form-toggle');
   const findActions = () => wrapper.findByTestId('crud-actions');
   const findForm = () => wrapper.findByTestId('crud-form');
   const findSkeletonLoader = () => wrapper.findByTestId('crud-loading');
@@ -36,7 +36,7 @@ describe('CRUD Component', () => {
   const findBody = () => wrapper.findByTestId('crud-body');
   const findFooter = () => wrapper.findByTestId('crud-footer');
   const findPagination = () => wrapper.findByTestId('crud-pagination');
-  const findCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCollapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findChevronIcon = () => wrapper.findComponent(GlAnimatedChevronLgDownUpIcon);
 
   afterEach(() => {
@@ -351,23 +351,9 @@ describe('CRUD Component', () => {
     });
   });
 
-  describe('keepAliveCollapsedContent', () => {
-    it('removes content from DOM when collapsed and keepAliveCollapsedContent is false', async () => {
-      createComponent(
-        { isCollapsible: true, keepAliveCollapsedContent: false },
-        { default: '<p>Body slot</p>' },
-      );
-
-      await findCollapseToggle().vm.$emit('click');
-
-      expect(findBody().exists()).toBe(false);
-    });
-
-    it('keeps content in DOM when collapsed and keepAliveCollapsedContent is true', async () => {
-      createComponent(
-        { isCollapsible: true, keepAliveCollapsedContent: true },
-        { default: '<p>Body slot</p>' },
-      );
+  describe('collapsed content', () => {
+    it('keeps content in DOM when collapsed', async () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
 
       await findCollapseToggle().vm.$emit('click');
 
@@ -375,21 +361,15 @@ describe('CRUD Component', () => {
       expect(findBody().isVisible()).toBe(false);
     });
 
-    it('keeps content in DOM when initially collapsed with keepAliveCollapsedContent is true', () => {
-      createComponent(
-        { isCollapsible: true, collapsed: true, keepAliveCollapsedContent: true },
-        { default: '<p>Body slot</p>' },
-      );
+    it('keeps content in DOM when initially collapsed', () => {
+      createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
 
       expect(findBody().exists()).toBe(true);
       expect(findBody().isVisible()).toBe(false);
     });
 
-    it('shows content when expanded with keepAliveCollapsedContent is true', async () => {
-      createComponent(
-        { isCollapsible: true, collapsed: true, keepAliveCollapsedContent: true },
-        { default: '<p>Body slot</p>' },
-      );
+    it('shows content when expanded', async () => {
+      createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
 
       await findCollapseToggle().vm.$emit('click');
 

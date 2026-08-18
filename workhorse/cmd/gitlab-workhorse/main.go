@@ -250,11 +250,12 @@ func gracefulShutdown(
 	shutdownCh chan struct{},
 	upgradedConnsManager *upstream.UpgradedConnsManager,
 ) error {
+	// Signal upstream to stop accepting long polling requests because requests can
+	// arrive during the graceful shutdown time.
+	close(shutdownCh)
+
 	if healthCheckServer != nil {
 		healthCheckServer.InitiateShutdown()
-		// Signal upstream to stop accepting long polling requests because
-		// requests can arrive during the graceful shutdown time.
-		close(shutdownCh)
 		// Kick out any long poll requests
 		redisKeyWatcher.Shutdown()
 

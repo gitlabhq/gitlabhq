@@ -54,44 +54,39 @@ These three settings interact in the following ways:
 
 ## Registration Features Program
 
-In GitLab versions 14.1 and later, GitLab Free customers with a GitLab Self-Managed instance running
+GitLab Free customers with a GitLab Self-Managed instance running
 GitLab Enterprise Edition can receive paid features by [enabling registration features](#enable-registration-features) and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
 tier. Instances on a paid tier are subject to the [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
 ### Available features
 
-In the following table, you can see:
+The following features are available with the Registration Features Program:
 
-- The features that are available with the Registration Features Program
-- The GitLab version the features are available from
-
-| Feature | Available in |
-| ------ | ------ |
-| [Email from GitLab](../email_from_gitlab.md)       |   GitLab 14.1 and later     |
-| [Repository size limit](account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
-| [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) | GitLab 14.4 and later |
-| [View description change history](../../user/discussions/_index.md#view-description-change-history) | GitLab 16.0 and later |
-| [Maintenance mode](../maintenance_mode/_index.md) | GitLab 16.0 and later |
-| [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
-| [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md) | GitLab 16.0 and later |
-| [Modify password complexity requirements](sign_up_restrictions.md#modify-password-complexity-requirements) | GitLab 16.0 and later |
-| [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
-| [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |
-| [Custom Text in Emails](email.md#custom-additional-text) | GitLab 16.5 and later |
-| [Contribution analytics](../../user/group/contribution_analytics/_index.md) | GitLab 16.5 and later |
-| [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
-| [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
-| [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) | GitLab 16.6 and later |
-| [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
-| [Users and permissions report](../admin_area.md#user-permission-export) | GitLab 16.6 and later |
-| [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
-| [DevOps Adoption](../../user/group/devops_adoption/_index.md) | GitLab 16.6 and later |
-| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/_index.md#needsproject) | GitLab 16.7 and later |
-| [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
-| [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md) | GitLab 16.7 and later |
-| [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/_index.md) | GitLab 16.7 and later |
-| [CI/CD for GitHub](../../ci/ci_cd_for_external_repos/github_integration.md) | GitLab 16.7 and later |
+- [Email from GitLab](../email_from_gitlab.md)
+- [Repository size limit](account_and_limit_settings.md#repository-size-limit)
+- [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address)
+- [View description change history](../../user/discussions/_index.md#view-description-change-history)
+- [Maintenance mode](../maintenance_mode/_index.md)
+- [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards)
+- [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md)
+- [Modify password complexity requirements](sign_up_restrictions.md#modify-password-complexity-requirements)
+- [Group wikis](../../user/project/wiki/group.md)
+- [Issue analytics](../../user/group/issues_analytics/_index.md)
+- [Custom Text in Emails](email.md#custom-additional-text)
+- [Contribution analytics](../../user/group/contribution_analytics/_index.md)
+- [Group file templates](../../user/group/manage.md#group-file-templates)
+- [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks)
+- [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer)
+- [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group)
+- [Users and permissions report](../admin_area.md#user-permission-export)
+- [Advanced search](../../user/search/advanced_search.md)
+- [DevOps Adoption](../../user/group/devops_adoption/_index.md)
+- [Cross-project pipelines with artifacts dependencies](../../ci/yaml/_index.md#needsproject)
+- [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues)
+- [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md)
+- [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/_index.md)
+- [CI/CD for GitHub](../../ci/ci_cd_for_external_repos/github_integration.md)
 
 ### Enable registration features
 

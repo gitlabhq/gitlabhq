@@ -80,4 +80,23 @@ RSpec.describe Gitlab::UUID do
       it { is_expected.to be(is_uuid?) }
     end
   end
+
+  describe '.v7?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:test_string, :is_v7?) do
+      'not even a uuid'                      | false
+      '9f470438-db0f-47b7-9ca9-1d47104c339a' | false # v4
+      '9f470438-db0f-57b7-9ca9-1d47104c339a' | false # v5
+      '019c4759-9291-7a11-a54f-5db40b252b38' | true  # v7
+      '019C4759-9291-7A11-A54F-5DB40B252B38' | false # v7, but not canonical lowercase
+      nil                                    | false
+    end
+
+    with_them do
+      subject { described_class.v7?(test_string) }
+
+      it { is_expected.to be(is_v7?) }
+    end
+  end
 end

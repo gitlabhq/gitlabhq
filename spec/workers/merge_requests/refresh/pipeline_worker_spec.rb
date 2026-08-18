@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::Refresh::PipelineWorker, feature_category: :code_review_workflow do
   describe '#perform' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let(:worker) { described_class.new }
     let(:oldrev) { 'old_sha' }

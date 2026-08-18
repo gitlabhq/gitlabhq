@@ -54,12 +54,6 @@ To change the navigation theme:
 
 ## Change the syntax highlighting theme
 
-{{< history >}}
-
-- Changing the default syntax highlighting theme for authenticated and unauthenticated users [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.1.
-
-{{< /history >}}
-
 Syntax highlighting is a feature in code editors and IDEs. The highlighter assigns a color to each type of code, such as strings and comments.
 
 To change the syntax highlighting theme:
@@ -132,11 +126,11 @@ You can change the default editor for editing content in GitLab.
 
 {{< history >}}
 
-- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/work_items/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Homepage option changes generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 - [Personal homepage introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546151) in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `personal_homepage`. Disabled by default.
 - [Personal homepage enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/554048) in GitLab 18.4 for a subset of users.
-- [Personal homepage enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/17932) in GitLab 18.5.
+- [Personal homepage enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/work_items/17932) in GitLab 18.5.
 
 {{< /history >}}
 
@@ -406,12 +400,6 @@ To use exact times on the GitLab UI:
 
 ### Customize time format
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
-
-{{< /history >}}
-
 You can customize the format used to display times of activities on your group and project overview pages and user
 profiles. You can display times as:
 
@@ -430,12 +418,6 @@ To customize the time format:
 
 ## User identities in CI job JSON web tokens
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.
-
-{{< /history >}}
-
 CI/CD jobs generate JSON web tokens, which can include a list of your external identities.
 Instead of making separate API calls to get individual accounts, you can find your user identities in a single authentication token.
 
@@ -443,12 +425,6 @@ External identities are not included by default.
 To enable including external identities, see [Token payload](../../ci/secrets/id_token_authentication.md#token-payload).
 
 ## Control follower engagement
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
-
-{{< /history >}}
 
 Turn off the ability to follow or be followed by other GitLab users. By default, your user profile, including your name and profile photo, is public in the **Following** tabs of other users. When you deactivate this setting:
 

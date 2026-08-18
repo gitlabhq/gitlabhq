@@ -126,12 +126,6 @@ curl --request DELETE \
 
 ## Renew an application secret
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422420) in GitLab 16.11.
-
-{{< /history >}}
-
 Renews the secret for a specified application. Returns `200` if the request succeeds.
 
 ```plaintext

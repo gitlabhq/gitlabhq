@@ -8,8 +8,8 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
   let(:fake_deadline) { 'fake-deadline' }
   let(:timeout) { 1.minute }
   let(:service) { described_class.new(User, timeout: timeout) }
-  let(:user_id_bucket_type) { Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type::USER_IDS }
-  let(:username_bucket_type) { Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type::USERNAMES }
+  let(:user_id_claim_type) { Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID }
+  let(:username_claim_type) { Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME }
   let(:begin_update_response) do
     Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateResponse.new(
       lease_uuid: Gitlab::Cells::TopologyService::Types::V1::UUID.new(value: lease_uuid)
@@ -152,7 +152,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       it 'tracks drift to Sentry as missing_record_in_local' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           have_attributes(message: 'Claims drift detected: missing_record_in_local'),
-          hash_including(model: 'User', ts_value: (user.id + 9999).to_s)
+          hash_including(model: 'User', ts_value: user.id + 9999)
         )
 
         service.execute
@@ -184,7 +184,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         records = build_ts_records_for(user)
         # Override the username record with a stale value
         records[1] = build_ts_record(user.id, subject_id: user.organization_id,
-          bucket_type: username_bucket_type, bucket_value: "old_username")
+          claim_type: username_claim_type, claim_value: "old_username")
         records
       end
 
@@ -213,12 +213,10 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         expect(mock_claim_service).to receive(:begin_update).with(
           hash_including(
             create_records: match_array([hash_including(
-              bucket: { type: Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type::USERNAMES,
-                        value: user.username }
+              claim: { username: user.username }
             )]),
             destroy_records: match_array([hash_including(
-              bucket: { type: Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type::USERNAMES,
-                        value: "old_username" }
+              claim: { username: "old_username" }
             )])
           )
         ).and_return(begin_update_response)
@@ -236,7 +234,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       let(:ts_records) do
         # TS only has USER_IDS, missing USERNAMES (as if a new claim attribute was added locally)
         [build_ts_record(user.id, subject_id: user.organization_id,
-          bucket_type: user_id_bucket_type, bucket_value: user.id.to_s)]
+          claim_type: user_id_claim_type, claim_value: user.id.to_s)]
       end
 
       before do
@@ -248,7 +246,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         expect(mock_claim_service).to receive(:begin_update).with(
           hash_including(
             create_records: [hash_including(
-              bucket: { type: username_bucket_type, value: user.username }
+              claim: { username: user.username }
             )],
             destroy_records: []
           )
@@ -262,13 +260,13 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       end
     end
 
-    context 'when Topology Service has an extra bucket type not in local' do
+    context 'when Topology Service has an extra claim type not in local' do
       let_it_be(:user) { create(:user) }
-      let(:extra_bucket_type) { Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type::EMAILS }
+      let(:extra_claim_type) { Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_EMAIL }
       let(:ts_records) do
         build_ts_records_for(user) + [
           build_ts_record(user.id, subject_id: user.organization_id,
-            bucket_type: extra_bucket_type, bucket_value: "stale@example.com")
+            claim_type: extra_claim_type, claim_value: "stale@example.com")
         ]
       end
 
@@ -281,7 +279,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
       it 'destroys the extra TS record' do
         expect(mock_claim_service).to receive(:begin_update).with(
           hash_including(destroy_records: [hash_including(
-            bucket: hash_including(value: "stale@example.com")
+            claim: { email: "stale@example.com" }
           )])
         ).and_return(begin_update_response)
 
@@ -537,7 +535,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         stub_list_records([])
         stub_commit
         allow_any_instance_of(User).to receive(:cells_claims_metadata).and_return([ # rubocop:disable RSpec/AnyInstanceOf -- need to stub on DB-loaded instances
-          { bucket: { type: :user_ids, value: user.id.to_s }, subject: { type: :user, id: 1 },
+          { claim: { user_id: user.id }, subject: { type: :user, id: 1 },
             source: { type: :rails_table_users, rails_primary_key_id: Cells::Serialization.to_bytes(user.id) } }
         ])
       end
@@ -570,7 +568,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
 
       before do
         # Bypass validations to leave a claimable attribute (username) blank on the row, mirroring
-        # the production data that triggered an invalid empty bucket value in the Topology Service.
+        # the production data that triggered an invalid empty claim value in the Topology Service.
         # The service loads its own instances from the database, so update at the DB level.
         User.where(id: user.id).update_all(username: '')
         stub_list_records([])
@@ -579,10 +577,10 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
 
       it 'excludes the blank attribute from the created records', :aggregate_failures do
         expect(mock_claim_service).to receive(:begin_update) do |args|
-          bucket_types = args[:create_records].map { |record| record[:bucket][:type] }
+          claim_fields = args[:create_records].map { |record| record[:claim].each_key.first }
 
-          expect(bucket_types).to include(user_id_bucket_type)
-          expect(bucket_types).not_to include(username_bucket_type)
+          expect(claim_fields).to include(:user_id)
+          expect(claim_fields).not_to include(:username)
 
           begin_update_response
         end
@@ -684,7 +682,7 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
         stub_list_records([])
         stub_commit
         allow_any_instance_of(User).to receive(:cells_claims_metadata).and_return([ # rubocop:disable RSpec/AnyInstanceOf -- need to stub on DB-loaded instances
-          { bucket: { type: :user_ids, value: large_value }, subject: { type: :user, id: 1 },
+          { claim: { username: large_value }, subject: { type: :user, id: 1 },
             source: { type: :rails_table_users, rails_primary_key_id: Cells::Serialization.to_bytes(1) } }
         ])
       end
@@ -746,8 +744,8 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
             build_ts_record(
               user.id,
               subject_id: user.organization_id,
-              bucket_type: r.metadata.bucket.type,
-              bucket_value: "stale_value",
+              claim_type: Cells::Claimable::CLAIMS_CLAIM.descriptor.lookup(r.metadata.claim.claim.to_s).number,
+              claim_value: "stale_value",
               updated_at: 30.minutes.ago
             )
           end
@@ -824,14 +822,13 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
 
   # Builds a single TS claim record. Use build_ts_records_for to build all claims for a user.
   def build_ts_record(
-    user_id, subject_id:, bucket_type: user_id_bucket_type, bucket_value: user_id.to_s,
+    user_id, subject_id:, claim_type: user_id_claim_type, claim_value: user_id.to_s,
     updated_at: nil
   )
     attrs = {
       metadata: Gitlab::Cells::TopologyService::Claims::V1::Metadata.new(
-        bucket: Gitlab::Cells::TopologyService::Claims::V1::Bucket.new(
-          type: bucket_type,
-          value: bucket_value
+        claim: Cells::Claimable::CLAIMS_CLAIM.new(
+          **User.cells_claims_claim_hash(claim_type, claim_value)
         ),
         subject: Gitlab::Cells::TopologyService::Claims::V1::Subject.new(
           type: Gitlab::Cells::TopologyService::Claims::V1::Subject::Type::ORGANIZATION,
@@ -848,13 +845,13 @@ RSpec.describe Cells::Claims::VerificationService, feature_category: :cell do
     Gitlab::Cells::TopologyService::Claims::V1::Record.new(**attrs)
   end
 
-  # Builds TS records for all claim attributes (USER_IDS + USERNAMES) matching a local user.
+  # Builds TS records for all claim attributes (user_id + username) matching a local user.
   def build_ts_records_for(user)
     [
       build_ts_record(user.id, subject_id: user.organization_id,
-        bucket_type: user_id_bucket_type, bucket_value: user.id.to_s),
+        claim_type: user_id_claim_type, claim_value: user.id.to_s),
       build_ts_record(user.id, subject_id: user.organization_id,
-        bucket_type: username_bucket_type, bucket_value: user.username)
+        claim_type: username_claim_type, claim_value: user.username)
     ]
   end
 

@@ -1,5 +1,24 @@
 import { convertToCamelCase } from '~/lib/utils/text_utility';
 
+/**
+ * Each password manager's documented per-field opt-out, for fields where the manager has
+ * nothing useful to offer.
+ *
+ * `autocomplete` has a single `one-time-code` token and no way to distinguish a code we
+ * delivered from an authenticator's TOTP, so managers holding a TOTP for the site offer it
+ * for any such field. On a field that cannot accept a TOTP the fill always fails, and an
+ * autosubmitting manager spends a verification attempt the user never made.
+ *
+ * These attributes are read only by the extensions that define them, so the field keeps
+ * declaring its real `autocomplete` value and the browser's own autofill is unaffected.
+ */
+export const PASSWORD_MANAGER_IGNORE_ATTRS = {
+  'data-1p-ignore': 'true',
+  'data-bwignore': 'true',
+  'data-form-type': 'other',
+  'data-lpignore': 'true',
+};
+
 export const serializeFormEntries = (entries) =>
   entries.reduce((acc, { name, value }) => Object.assign(acc, { [name]: value }), {});
 

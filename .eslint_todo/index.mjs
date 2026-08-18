@@ -1,5 +1,3 @@
-export { default as vueNoUnusedProperties } from './vue-no-unused-properties.mjs';
-
 export { default as vueRequireNameProperty } from './vue-require-name-property.mjs';
 
 export { default as vueVOnEventHyphenation } from './vue-v-on-event-hyphenation.mjs';
@@ -16,8 +14,6 @@ export { default as gitlabVueNoHardcodedUrls } from './gitlab-vue-no-hardcoded-u
 
 export { default as localRulesGraphqlRequireFeatureCategory } from './local-rules-graphql-require-feature-category.mjs';
 
-export { default as localRulesVueRequireVueConstructorName } from './local-rules-vue-require-vue-constructor-name.mjs';
-
 export { default as localRulesNoOrphanedFeatureFlagReferences } from './local-rules-no-orphaned-feature-flag-references.mjs';
 
 export { default as localRulesNoWebUrl } from './local-rules-no-web-url.mjs';
@@ -26,6 +22,6 @@ export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.m
 
 export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitrary-value.mjs';
 
-export { default as localRulesNoApolloMock } from './local-rules-no-apollo-mock.mjs';
-
 export { default as localRulesVueNoUnusedInjects } from './local-rules-vue-no-unused-injects.mjs';
+
+export { default as vueNoDeprecatedDollarListenersApi } from './vue-no-deprecated-dollar-listeners-api.mjs';

@@ -12,6 +12,7 @@ import {
   mockCustomDashboard,
   mockDashboardResponse,
   mockDashboardCompactGridResponse,
+  mockDashboardWithViewsResponse,
   mockSystemDashboardResponse,
 } from '../mock_data';
 
@@ -141,6 +142,29 @@ describe('DashboardLoader', () => {
 
     it('emits the loaded event with a copy of the dashboard, not the original object', () => {
       expect(wrapper.emitted('loaded')[0][0]).not.toBe(wrapper.vm.dashboard);
+    });
+  });
+
+  describe('with a dashboard that defines views', () => {
+    beforeEach(async () => {
+      createComponent({ requestHandlers: mockResolvedQuery(mockDashboardWithViewsResponse) });
+      await waitForPromises();
+    });
+
+    it('replaces panel ids with unique ids within each view', () => {
+      const { views } = getSlotProp('config');
+      const ids = views.flatMap((view) => view.panels.map((panel) => panel.id));
+
+      ids.forEach((id) => {
+        expect(id).toMatch(/^panel-\d+$/);
+      });
+      expect(new Set(ids).size).toBe(ids.length);
+    });
+
+    it('preserves each view title', () => {
+      const { views } = getSlotProp('config');
+
+      expect(views.map((view) => view.title)).toEqual(['Overview', 'Details']);
     });
   });
 

@@ -1853,6 +1853,211 @@ RSpec.shared_examples 'a container registry auth service' do
     end
   end
 
+  context 'with organization read-only mode enforcement' do
+    let_it_be(:organization, freeze: false) { create(:organization) }
+    let_it_be(:project, freeze: false) { create(:project, organization: organization) }
+    let_it_be(:current_user, freeze: false) { create(:user, maintainer_of: project) }
+
+    let(:current_params) { { scopes: ["repository:#{project.full_path}:push,pull"] } }
+
+    context 'when the organization_read_only_enforcement feature flag is disabled' do
+      before do
+        stub_feature_flags(organization_read_only_enforcement: false)
+        organization.reload.start_read_only(read_only_reason: 'migration')
+        organization.confirm_read_only
+      end
+
+      it 'allows write actions even when the organization is read-only' do
+        is_expected.to include(:token)
+        expect(payload['access']).to contain_exactly(
+          include('actions' => contain_exactly('pull', 'push'))
+        )
+      end
+    end
+
+    context 'when the organization_read_only_enforcement feature flag is enabled' do
+      before do
+        stub_feature_flags(organization_read_only_enforcement: true)
+      end
+
+      context 'when the organization is active' do
+        it 'allows both pull and push' do
+          is_expected.to include(:token)
+          expect(payload['access']).to contain_exactly(
+            include('actions' => contain_exactly('pull', 'push'))
+          )
+        end
+      end
+
+      context 'when the organization is in read_only state' do
+        before do
+          organization.reload.start_read_only(read_only_reason: 'migration')
+          organization.confirm_read_only
+        end
+
+        it 'allows pull but denies push' do
+          is_expected.to include(:token)
+          expect(payload['access']).to contain_exactly(
+            include('actions' => ['pull'])
+          )
+        end
+
+        context 'when requesting push only' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['push']
+        end
+
+        context 'when requesting delete' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['delete']
+        end
+
+        context 'when requesting wildcard (*)' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['*']
+        end
+
+        context 'when requesting pull only' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
+
+          it_behaves_like 'a pullable'
+          it_behaves_like 'not a container repository factory'
+        end
+      end
+
+      context 'when the organization is in read_only_initialization state' do
+        before do
+          organization.reload.start_read_only(read_only_reason: 'migration')
+        end
+
+        it 'allows pull but denies push' do
+          is_expected.to include(:token)
+          expect(payload['access']).to contain_exactly(
+            include('actions' => ['pull'])
+          )
+        end
+
+        context 'when requesting push only' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['push']
+        end
+
+        context 'when requesting delete' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['delete']
+        end
+
+        context 'when requesting wildcard (*)' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['*']
+        end
+
+        context 'when requesting pull only' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
+
+          it_behaves_like 'a pullable'
+          it_behaves_like 'not a container repository factory'
+        end
+      end
+
+      context 'when the project belongs to the default organization' do
+        let_it_be(:default_org) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to test default organization is never read-only
+        let_it_be(:default_project, freeze: false) { create(:project, organization: default_org) }
+        let_it_be(:default_user, freeze: false) { create(:user, maintainer_of: default_project) }
+
+        let(:current_user) { default_user }
+        let(:current_params) { { scopes: ["repository:#{default_project.full_path}:push,pull"] } }
+
+        it 'allows both pull and push (default org is never read-only)' do
+          is_expected.to include(:token)
+          expect(payload['access']).to contain_exactly(
+            include('actions' => contain_exactly('pull', 'push'))
+          )
+        end
+      end
+
+      context 'when the project has no organization' do
+        before do
+          allow_next_found_instance_of(Project) do |found_project|
+            allow(found_project).to receive(:organization).and_return(nil)
+          end
+        end
+
+        it 'allows pull but denies push (fails closed on unresolvable organization)' do
+          is_expected.to include(:token)
+          expect(payload['access']).to contain_exactly(
+            include('actions' => ['pull'])
+          )
+        end
+
+        context 'when requesting push only' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['push']
+        end
+
+        context 'when requesting delete' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['delete']
+        end
+
+        context 'when requesting wildcard (*)' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['*']
+        end
+
+        context 'when requesting pull only' do
+          let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
+
+          it_behaves_like 'a pullable'
+          it_behaves_like 'not a container repository factory'
+        end
+      end
+    end
+
+    context 'when the project has no organization and the feature flag is disabled' do
+      before do
+        stub_feature_flags(organization_read_only_enforcement: false)
+        allow_next_found_instance_of(Project) do |found_project|
+          allow(found_project).to receive(:organization).and_return(nil)
+        end
+      end
+
+      it 'allows both pull and push (enforcement is a no-op)' do
+        is_expected.to include(:token)
+        expect(payload['access']).to contain_exactly(
+          include('actions' => contain_exactly('pull', 'push'))
+        )
+      end
+    end
+  end
+
   def decode_user_info_from_payload(payload)
     JWT.decode(payload["user"], nil, false)[0]["user_info"]
   end

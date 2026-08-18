@@ -15,7 +15,7 @@ in some unfortunate cases, so we might end up with inconsistent data in the tabl
 older tables, where we didn't have the framework support to ensure consistency on the database level.
 These data inconsistencies can cause unexpected application behavior or bugs.
 
-When creating tables that reference records from other tables, a FK should be added to maintain data integrity.
+When creating tables that reference records from other tables, an FK should be added to maintain data integrity.
 And when adding an association to a model you must also add a foreign key. Also on
 adding a foreign key you must always add an [index](#indexes) first.
 
@@ -39,7 +39,7 @@ Adding a foreign key has two parts to it
 1. Adding the FK column and the constraint.
 1. Validating the added constraint to maintain data integrity.
 
-(1) uses ALTER TABLE statements which takes the most strict lock (ACCESS EXCLUSIVE) and validating the constraint has to
+(1) uses ALTER TABLE statements which take the most strict lock (ACCESS EXCLUSIVE) and validating the constraint has to
 traverse the entire table which will be time consuming for large/high-traffic tables.
 
 So in almost all cases we have to run them in separate transactions to avoid holding the
@@ -48,17 +48,17 @@ stricter lock and blocking other operations on the tables for a longer time.
 ### On a new table
 
 1. If the new table is referencing only one other table, it is straightforward. `create_table (t.references, ..., foreign_key: true)` can be used regardless of the referenced table.
-1. If the new table is referencing two other different tables. Please refer to [creating a new table when we have two foreign keys](../migration_style_guide.md#creating-a-new-table-when-we-have-two-foreign-keys).
+1. If the new table is referencing two other different tables, refer to [creating a new table when we have two foreign keys](../migration_style_guide.md#creating-a-new-table-when-we-have-two-foreign-keys).
 
 ### On a new column
 
-If you have a new (without many records) table, either of below approaches can be used. If you need
+If you have a new (without many records) table, either of the following approaches can be used. If you need
 to add two foreign keys, please split them in different migrations, to avoid locking more than one table in the same migration.
 
 1. add_reference(... foreign_key: true)
 1. add_column(...) and add_foreign_key(...) in the same transaction.
 
-For all other cases, adding the column, adding FK constraint and validating the constraint should be done in
+For all other cases, adding the column, adding an FK constraint and validating the constraint should be done in
 separate transactions.
 
 ### On an existing column
@@ -68,16 +68,16 @@ Adding a foreign key to an existing database column requires database structure 
 > [!note]
 > In case the table is in use, we should always assume that there is inconsistent data.
 
-Adding a FK constraint to an existing column is a multi-milestone process:
+Adding an FK constraint to an existing column is a multi-milestone process:
 
 1. `N.M`: Add a `NOT VALID` FK constraint to the column, it will also ensure there are no inconsistent records created or updated.
 1. `N.M`: Add a data migration, to fix or clean up existing records.
-   2. This can be a regular or post deployment migration if the migration queries lie within the [timing guidelines](query_performance.md).
-   3. If not, this has to be done in a [batched background migration](batched_background_migrations.md).
+   1. This can be a regular or post deployment migration if the migration queries lie within the [timing guidelines](query_performance.md).
+   1. If not, this has to be done in a [batched background migration](batched_background_migrations.md).
 1. Validate the FK constraint
-   2. If the data migration was a regular or a post deployment migration, the constraint can be validated in the same milestone.
-   3. If it was a background migration, then the FK can be validated only after the BBM is finalized.
-      This is required so that the FK validation won't happen while the data migration is still running in background.
+   1. If the data migration was a regular or a post deployment migration, the constraint can be validated in the same milestone.
+   1. If it was a background migration, then the FK can be validated only after the BBM is finalized.
+      This is required so that the FK validation won't happen while the data migration is still running in the background.
 
 > [!note]
 > Adding a foreign-key constraint to either an existing or a new column
@@ -119,7 +119,7 @@ class Email < ActiveRecord::Base
 end
 ```
 
-Problem: when the user is removed, the email records related to the removed user stays in the `emails` table:
+Problem: when the user is removed, the email records related to the removed user stay in the `emails` table:
 
 ```ruby
 user = User.find(1)
@@ -132,7 +132,7 @@ emails = Email.where(user_id: 1) # returns emails for the deleted user
 
 Add a `NOT VALID` foreign key constraint to the table, which enforces consistency on adding or updating records.
 
-In the example above, you will still be able to update records in the `emails` table. However, when you try to update `user_id` with non-existent value, the constraint will throw an error.
+In the example above, you will still be able to update records in the `emails` table. However, when you try to update `user_id` with a non-existent value, the constraint will throw an error.
 
 Migration file for adding `NOT VALID` foreign key:
 
@@ -174,7 +174,7 @@ Also `add_concurrent_foreign_key` will add the constraint only if it's not exist
 
 The approach here depends on the data volume and the cleanup strategy. If we can find "invalid"
 records by doing a database query and the record count is not high, then the data migration can
-be executed in regular or post deployment rails migration.
+be executed in a regular or post deployment Rails migration.
 
 In case the data volume is higher (>1000 records), it's better to create a background migration. If unsure, refer to our [query guidelines](query_performance.md) or contact the database frameworks team for advice.
 
@@ -552,9 +552,9 @@ reference an ID on a third party platform the `_xid` suffix is recommended.
 
 The spec `spec/db/schema_spec.rb` tests if all columns with the `_id` suffix
 have a foreign key constraint. If that spec fails, add the column to
-`ignored_fk_columns_map` if the column fits any of the two criteria:
+`ignored_fk_columns_map` if the column fits any of the following criteria:
 
-1. The column references another table, such as the two tables belong to
+1. The column references another table, such as when the two tables belong to
    [GitLab schemas](multiple_databases.md#gitlab-schema) that don't
    allow Foreign Keys between them.
 1. The foreign key is replaced by a [Loose Foreign Key](loose_foreign_keys.md) for performance reasons.
@@ -583,7 +583,7 @@ specialist first.
 You should also not define any `before_destroy` or `after_destroy` callbacks on
 your models unless absolutely required and only when approved by database
 specialists. For example, if each row in a table has a corresponding file on a
-file system it may be tempting to add a `after_destroy` hook. This however
+file system it may be tempting to add an `after_destroy` hook. This however
 introduces non database logic to a model, and means we can no longer rely on
 foreign keys to remove the data as this would result in the file system data
 being left behind. In such a case you should use a service class instead that
@@ -632,6 +632,6 @@ class UserConfig < ActiveRecord::Base
 end
 ```
 
-Using a foreign key as primary key saves space but can make
+Using a foreign key as a primary key saves space but can make
 [batch counting](../internal_analytics/metrics/metrics_instrumentation.md#batch-counters-example) in [Service Ping](../internal_analytics/service_ping/_index.md) less efficient.
 Consider using a regular `id` column if the table is relevant for Service Ping.

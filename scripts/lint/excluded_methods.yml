@@ -9,6 +9,9 @@ ee/app/models/cloud_connector/keys.rb:
 ee/app/helpers/secrets_management/enrollment_helper.rb:
   - allow_secrets_manager_namespace_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
   - allow_secrets_manager_instance_enrollment?: Called from HAML views and controllers via EE::ApplicationHelper
+app/models/chat_name.rb:
+  - duo_privacy_notice_acknowledged?: Will be used in follow-up MR for the Duo privacy notice in non-public Slack conversations
+  - acknowledge_duo_privacy_notice!: Will be used in follow-up MR for the Duo privacy notice in non-public Slack conversations
 app/models/ci/catalog/components_project.rb:
   - fetch_component: Public API method for fetching component data by name; part of the model's interface
 app/models/concerns/organizations/isolatable.rb:
@@ -22,6 +25,8 @@ app/models/concerns/transactions.rb:
   - reset_open_transactions_baseline: Used in spec_helper.rb to configure transaction behavior
 app/models/event.rb:
   - find_sti_class: Override of an ActiveRecord internal method
+app/models/observability/group_o11y_setting.rb:
+  - read_attribute_for_validation: Override of an ActiveModel internal method called by validators
 app/models/jira_import_state.rb:
   - owner_class_attribute_default: Used internally by state_machine
 app/models/merge_request_diff.rb:
@@ -39,6 +44,8 @@ app/models/project_team.rb:
   - planner?: Used to surface access rights; referenced by specs and treated as a false positive by `scripts/lint/unused_methods.rb`.
 app/models/service_desk/custom_email_verification.rb:
   - owner_class_attribute_default: Used internally by state_machine
+app/models/concerns/forced_email_confirmation.rb:
+  - confirmation_period_expired?: Override of Devise::Models::Confirmable method; called internally by Devise during confirmation
 app/models/user.rb:
   - inactive_message: Override of Devise method
   - owner_class_attribute_default: Used internally by state_machine
@@ -101,5 +108,8 @@ ee/app/models/ee/organizations/organization_setting.rb:
   - security_tracked_context_quota_explicitly_set?: Will be used in #598087 for quota enforcement service
 ee/app/models/cd/application_flow_definition.rb:
   - revert_to_previous_version: Will be called from the CD application flow definition revert API/mutation in a follow-up MR
-ee/app/models/ee/group.rb:
-  - policy_store_experiment_active?: Called from the Policy Store navigation and GraphQL in a follow-up MR
+ee/app/models/ai/duo_workflows/workflow.rb:
+  - reconstruct_from_blobs?: Called from the by_thread_ts endpoint and trace path in stacked follow-up MRs (gitlab-org/gitlab!247134, !247135)
+  - checkpoint_header_for: Called from the by_thread_ts endpoint in stacked follow-up MR (gitlab-org/gitlab!247134)
+  - latest_checkpoint_header: Called from the trace path in stacked follow-up MR (gitlab-org/gitlab!247135)
+  - reconstructed_channel_values: Called from the by_thread_ts endpoint and trace path in stacked follow-up MRs (gitlab-org/gitlab!247134, !247135)

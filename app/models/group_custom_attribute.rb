@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GroupCustomAttribute < ApplicationRecord
+  include Gitlab::CustomAttributes::KeyLookup
+
   belongs_to :group
 
   validates :group, :key, :value, presence: true

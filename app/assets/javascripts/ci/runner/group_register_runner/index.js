@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import GroupRegisterRunnerApp from './group_register_runner_app.vue';
@@ -21,18 +22,15 @@ export const initGroupRegisterRunner = (selector = '#js-group-register-runner') 
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupRegisterRunnerAppRoot',
     apolloProvider,
-    render(h) {
-      return h(GroupRegisterRunnerApp, {
-        props: {
-          runnerId,
-          runnersPath,
-          groupPath,
-        },
-      });
+    component: GroupRegisterRunnerApp,
+    props: {
+      runnerId,
+      runnersPath,
+      groupPath,
     },
   });
 };

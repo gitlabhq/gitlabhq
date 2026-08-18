@@ -51,7 +51,7 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const findTokenMessage = () => wrapper.findByTestId('runner-token-message');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
+  const findInstructionsButton = () => wrapper.findComponentByTestId('show-instructions-button');
 
   const findGoogleCloudInstructionsModal = () =>
     wrapper.findComponent(GoogleCloudRegistrationInstructionsModal);

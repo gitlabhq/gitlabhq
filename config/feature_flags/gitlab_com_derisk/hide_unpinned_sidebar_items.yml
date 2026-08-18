@@ -1,0 +1,10 @@
+---
+name: hide_unpinned_sidebar_items
+description: Hides unpinned navigation items from the left sidebar in project and group contexts, showing only pinned items and the "More features" entry point.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601398
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243707
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604888
+milestone: '19.3'
+group: group::engagement
+type: gitlab_com_derisk
+default_enabled: false

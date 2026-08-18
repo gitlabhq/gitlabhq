@@ -157,6 +157,44 @@ RSpec.describe Gitlab::Sanitizers::Exif do
         expect { subject }.to raise_exception(RuntimeError, "exiftool return code is 1: error_message")
       end
 
+      context 'when the first call to exiftool fails' do
+        let(:stubbed_error_message) { 'Error: Error reading OtherImageStart data in IFD0' }
+
+        before do
+          allow(Gitlab::Popen).to receive(:popen).with(["exiftool", "-IPTC=", "-XMP=", kind_of(String)])
+            .and_return([stubbed_error_message, 1])
+        end
+
+        it "falls back to a full strip" do
+          expect(sanitizer).to receive(:exec_remove_exif!).once.and_call_original
+          expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-all=", kind_of(String)]) do |args|
+            File.write("#{args.last}_original", "foo") if args.last.start_with?(Dir.tmpdir)
+
+            [args, 0]
+          end
+          expect(sanitizer.logger).to receive(:warn).with(
+            Labkit::Fields::ERROR_MESSAGE => stubbed_error_message,
+            Labkit::Fields::LOG_MESSAGE => 'exif prestrip failed, falling back to full strip'
+          )
+
+          subject
+        end
+
+        it "raises an error when the full strip fallback also fails" do
+          expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-all=", kind_of(String)])
+            .and_return(["fallback failed", 1])
+
+          expect { subject }.to raise_exception(RuntimeError, "exiftool return code is 1: fallback failed")
+        end
+      end
+
+      it "raises the original error when the prestrip fails for any other reason" do
+        expect(Gitlab::Popen).to receive(:popen).with(["exiftool", "-IPTC=", "-XMP=", kind_of(String)])
+          .and_return(["some other error", 1])
+
+        expect { subject }.to raise_exception(RuntimeError, "exiftool return code is 1: some other error")
+      end
+
       context 'for files that do not have the correct MIME type from file' do
         let(:mime_type) { 'text/plain' }
 

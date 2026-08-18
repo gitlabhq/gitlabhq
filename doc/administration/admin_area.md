@@ -21,8 +21,6 @@ GitLab Self-Managed instance. If you are an administrator, to access the **Admin
   - In the top bar, select **Search or go to**, then select **Admin area**.
 - In GitLab 17.3 and later: in the left sidebar, at the bottom, select **Admin**.
 - In GitLab 16.7 and later: in the left sidebar, at the bottom, select **Admin area**.
-- In GitLab 16.1 and later: in the left sidebar, select **Search or go to**, then select **Admin**.
-- In GitLab 16.0 and earlier: in the top bar, select **Main menu** > **Admin**.
 
 If the GitLab instance uses Admin Mode, you must
 [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
@@ -36,7 +34,7 @@ If the GitLab instance uses Admin Mode, you must
 
 {{< history >}}
 
-- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17782) in GitLab 18.2 [with a feature flag](feature_flags/_index.md) named `admin_projects_vue`. Disabled by default.
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17782) in GitLab 18.2 [with a feature flag](feature_flags/_index.md) named `admin_projects_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/549452) in GitLab 18.3. Feature flag `admin_projects_vue` removed.
 
 {{< /history >}}
@@ -96,7 +94,7 @@ To delete a project:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Projects**.
-1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. Find the project you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. On the confirmation dialog, select **Yes, delete project**.
 
 ## Administering users
@@ -172,12 +170,6 @@ By default, impersonation is enabled. GitLab can be configured to
 - Tier: Premium, Ultimate
 
 {{< /details >}}
-
-{{< history >}}
-
-- Viewing a user's SCIM identity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
-
-{{< /history >}}
 
 When using authentication providers, administrators can see the identities for a user. This page
 shows the user's identities, including SCIM identities. Use this information to troubleshoot
@@ -269,7 +261,7 @@ After you turn off this setting:
 
 {{< history >}}
 
-- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17783) in GitLab 18.2 [with a feature flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17783) in GitLab 18.2 [with a feature flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/553229) in GitLab 18.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/574017) in GitLab 18.6. Feature flag `admin_groups_vue` removed.
 
@@ -326,7 +318,7 @@ To delete a group:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Groups**.
-1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. Find the group you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. On the confirmation dialog, select **Confirm**.
 
 ## Administering topics
@@ -458,12 +450,6 @@ To administer all organizations in the GitLab instance from this page:
 
 ### Administering runners
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview** > **Runners** to **CI/CD** > **Runners** in GitLab 15.8.
-
-{{< /history >}}
-
 To administer all runners in the GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
@@ -473,7 +459,7 @@ This information is shown for each runner:
 
 | Attribute    | Description |
 |--------------|-------------|
-| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the Ultimate tier, the upgrade status is available. |
+| Status       | The status of the runner. For the Ultimate tier, the upgrade status is available. |
 | Runner details | Information about the runner, including partial token and details about the computer the runner was registered from. |
 | Version      | GitLab Runner version. |
 | Jobs         | Total number of jobs run by the runner. |
@@ -502,13 +488,6 @@ To filter runners by status, type, and tag:
 
 #### Bulk delete runners
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370241) in GitLab 15.4.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353981) in GitLab 15.5.
-
-{{< /history >}}
-
 To delete multiple runners at the same time:
 
 1. In the upper-right corner, select **Admin**.
@@ -519,12 +498,6 @@ To delete multiple runners at the same time:
 1. Select **Delete selected**.
 
 ### Administering jobs
-
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview** > **Jobs** to **CI/CD** > **Jobs** in GitLab 15.8.
-
-{{< /history >}}
 
 To administer all jobs in the GitLab instance:
 
@@ -553,12 +526,6 @@ The following topics document the **Monitoring** section of the **Admin** area.
 
 ### System information
 
-{{< history >}}
-
-- Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
-
-{{< /history >}}
-
 The **System information** page provides the following statistics:
 
 | Field          | Description                                       |
@@ -566,7 +533,7 @@ The **System information** page provides the following statistics:
 | CPU            | Number of CPU cores available                     |
 | Memory Usage   | Memory in use, and total memory available         |
 | Disk Usage     | Disk space in use, and total disk space available |
-| System started | When the system hosting GitLab was started. In GitLab 15.1 and earlier, this was an uptime statistic. |
+| System started | When the system hosting GitLab was started. |
 
 These statistics are updated only when you go to the **System information** page, or you refresh the
 page in your browser.
@@ -581,7 +548,7 @@ The Sidekiq dashboard contains:
 - A tab for each [job's lifecycle status](https://github.com/sidekiq/sidekiq/wiki/Job-Lifecycle).
 - A breakdown of background job statistics.
 - A live graph of **Processed** and **Failed** jobs, with a selectable polling interval.
-- An historical graph of **Processed** and **Failed** jobs, with a selectable time span.
+- A historical graph of **Processed** and **Failed** jobs, with a selectable time span.
 - Redis statistics, including:
   - Version number
   - Uptime, measured in days
@@ -642,8 +609,8 @@ The list view displays verification status for a selected component.
 The database diagnostics page consists of a number of checks that
 attempt to flag common problems with the database:
 
-- Index corruption caused by [change in PostgreSQL collations](https://gitlab.com/groups/gitlab-org/-/epics/8573)
-- [Schema discrepancies](https://gitlab.com/groups/gitlab-org/-/epics/3928)
+- Index corruption caused by [change in PostgreSQL collations](https://gitlab.com/groups/gitlab-org/-/work_items/8573)
+- [Schema discrepancies](https://gitlab.com/groups/gitlab-org/-/work_items/3928)
 
 To run each check, select the run button for the check. Selecting the run button
 schedules a background job that will report information from the check to the page.

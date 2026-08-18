@@ -21,7 +21,7 @@ describe('Password prompt modal', () => {
   const mockPassword = 'not+fake+shady+password';
   const mockEvent = { preventDefault: jest.fn() };
 
-  const findField = () => wrapper.findByTestId('password-prompt-field');
+  const findField = () => wrapper.findComponentByTestId('password-prompt-field');
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfirmBtn = () => findModal().props('actionPrimary');
   const findConfirmBtnDisabledState = () => findModal().props('actionPrimary').attributes.disabled;

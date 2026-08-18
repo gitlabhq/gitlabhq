@@ -214,6 +214,7 @@ export default {
     'data-testid': 'pipeline-table-row',
   },
   FIX_PIPELINE_AGENT_PRIVILEGES,
+  SOURCE: 'fix_pipeline',
 };
 </script>
 <template>
@@ -293,6 +294,7 @@ export default {
               :goal="getPipelinePath(item)"
               :hover-message="__('Fix pipeline with Duo')"
               :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
+              :source="$options.SOURCE"
               :source-branch="currentBranch(item)"
               :additional-context="getAdditionalContext(item)"
               workflow-definition="fix_pipeline/v1"

@@ -3,8 +3,8 @@ title: Non default branch tracking (beta)
 tier: [ Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 stage: security_risk_management
-documentation_link: "../../../user/application_security/remediate/dependency_scanning_auto_remediation/"
-work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/604799
+documentation_link: "../../../user/application_security/vulnerability_report/"
+work_item: https://gitlab.com/groups/gitlab-org/-/work_items/3430
 categories: [ Vulnerability Management ]
 level: primary
 weight: 50

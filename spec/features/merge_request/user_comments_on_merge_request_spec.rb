@@ -84,16 +84,13 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
       click_button('Comment')
     end
 
-    wait_for_requests
-
     page.within('.note') do
       click_button('Reply to comment')
       fill_in('note[note]', with: 'comment 2')
       send_keys :escape
     end
 
-    wait_for_requests
-    expect(page.html).to include('Are you sure you want to cancel creating this comment?')
+    expect(page).to have_content('Are you sure you want to cancel creating this comment?')
   end
 
   it 'loads new comment' do

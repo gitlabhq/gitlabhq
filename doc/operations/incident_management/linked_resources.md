@@ -13,18 +13,10 @@ title: Linked resources in incidents
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a feature flag](../../administration/feature_flags/_index.md) named `incident_resource_links_widget`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.5. Feature flag `incident_resource_links_widget` removed.
-
-{{< /history >}}
-
 To help your team members find the important links without having to search through many comments,
 you can add linked resources to an incident issue.
 
-Resources you might want link to:
+Resources you might want to link to:
 
 - The incident Slack channel
 - Zoom meeting
@@ -61,12 +53,6 @@ To add a linked resource:
 
 ### Using a quick action
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
-
-{{< /history >}}
-
 To add multiple links to an incident, use the [`/link` quick action](../../user/project/quick_actions.md#link):
 
 ```plaintext
@@ -81,12 +67,6 @@ The description shows instead of the URL in the **Linked resources** section of 
 ```
 
 ### Link Zoom meetings from an incident
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
-
-{{< /history >}}
 
 Use the [`/zoom` quick action](../../user/project/quick_actions.md#zoom) to add multiple Zoom links to an incident:
 

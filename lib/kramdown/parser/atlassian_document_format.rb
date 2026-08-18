@@ -159,8 +159,11 @@ module Kramdown
           element.children << wrap_element(new_element, :a, nil, { 'href' => url })
         elsif data
           # data is JSONLD (https://json-ld.org/), so for now output
-          # as a codespan of text, with `adf-inlineCard: ` at the start
-          text = "adf-inlineCard: #{data}"
+          # as a codespan of text, with `adf-inlineCard: ` at the start.
+          # Serialize as JSON (rather than Hash#to_s) so the output is stable
+          # across Ruby versions (Ruby 3.4 changed Hash#to_s formatting).
+          serialized_data = Gitlab::Json.dump(data)
+          text = "adf-inlineCard: #{serialized_data}"
           element.children << Element.new(:codespan, text, nil, { lang: 'adf-inlinecard' })
         end
       end

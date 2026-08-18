@@ -13,7 +13,7 @@ describe('SchemaCheckerApp component', () => {
   let mockAxios;
 
   const findTitle = () => wrapper.findByTestId('title');
-  const findRunButton = () => wrapper.findByTestId('run-diagnostics-button');
+  const findRunButton = () => wrapper.findComponentByTestId('run-diagnostics-button');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findByTestId('error-alert');
   const findLastRun = () => wrapper.findByTestId('last-run');

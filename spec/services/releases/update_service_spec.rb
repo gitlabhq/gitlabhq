@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Releases::UpdateService, feature_category: :continuous_integration do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:new_name) { 'A new name' }
   let(:new_description) { 'The best release!' }
   let(:params) { { name: new_name, description: new_description, tag: tag_name } }
@@ -12,7 +12,7 @@ RSpec.describe Releases::UpdateService, feature_category: :continuous_integratio
   let!(:release) { create(:release, project: project, author: user, tag: tag_name) }
   let(:tag_name) { 'v1.1.0' }
 
-  before do
+  before_all do
     project.add_developer(user)
   end
 

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display label for the tag, rendered as x-displayName in the OpenAPI document"
+    },
+    "external_docs": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Absolute URL of the documentation page for the tag, rendered as externalDocs.url in the OpenAPI document"
+    },
+    "x-displayName": {
+      "not": {},
+      "description": "Not allowed. Set the display label with the name key instead, which is rendered as x-displayName"
+    }
+  },
+  "patternProperties": {
+    "^x-": {
+      "description": "OpenAPI specification extension, passed through to the tag entry unchanged"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -67,7 +67,7 @@ function createComponent({ apolloLoading = false } = {}) {
   });
 }
 
-const findToggleButton = () => wrapper.findByTestId('comment-templates-dropdown-toggle');
+const findToggleButton = () => wrapper.findComponentByTestId('comment-templates-dropdown-toggle');
 const findModalComponent = () => wrapper.findComponent(GlModal);
 const findActionButton = () =>
   findModalComponent().findComponent(GlDisclosureDropdownItem).find('button');
@@ -98,7 +98,7 @@ describe('Comment templates dropdown', () => {
 
     findToggleButton().vm.$emit('click');
 
-    const manageDropdown = wrapper.findByTestId('manage-dropdown');
+    const manageDropdown = wrapper.findComponentByTestId('manage-dropdown');
     const links = manageDropdown.props('items');
 
     expect(links).toHaveLength(newCommentTemplatePaths.length);

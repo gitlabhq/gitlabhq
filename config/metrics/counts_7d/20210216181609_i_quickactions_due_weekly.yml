@@ -3,7 +3,7 @@ data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_due_weekly
 description: Count of WAU using the `/due` quick action to change the due date on
   an issuable
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 value_type: number

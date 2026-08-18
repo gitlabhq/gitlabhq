@@ -132,7 +132,7 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
 
     context 'when project is active' do
       it 'returns archived false' do
-        expect(subject[:is_project_archived]).to eq(false)
+        expect(subject[:is_project_archived]).to be(false)
       end
 
       it 'returns nil for archived project doc' do
@@ -148,7 +148,7 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
       end
 
       it 'returns archived true' do
-        expect(subject[:is_project_archived]).to eq(true)
+        expect(subject[:is_project_archived]).to be(true)
       end
 
       it 'returns archived project doc' do
@@ -164,7 +164,7 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
       end
 
       it 'returns archived true' do
-        expect(subject[:is_project_archived]).to eq(true)
+        expect(subject[:is_project_archived]).to be(true)
       end
 
       it 'returns archived project doc' do

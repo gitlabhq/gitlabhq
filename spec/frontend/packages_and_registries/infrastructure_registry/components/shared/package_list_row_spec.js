@@ -21,10 +21,10 @@ describe('packages_list_row', () => {
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackagePath = () => wrapper.findComponent(PackagePath);
-  const findDeleteButton = () => wrapper.findByTestId('action-delete');
+  const findDeleteButton = () => wrapper.findComponentByTestId('action-delete');
   const findInfrastructureIconAndName = () => wrapper.findComponent(InfrastructureIconAndName);
   const findPackageLink = () => wrapper.findComponent(GlLink);
-  const findWarningIcon = () => wrapper.findByTestId('warning-icon');
+  const findWarningIcon = () => wrapper.findComponentByTestId('warning-icon');
 
   const mountComponent = ({
     isGroup = false,
@@ -135,14 +135,14 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('emits the packageToDelete event when the delete button is clicked', async () => {
+    it('emits the package-to-delete event when the delete button is clicked', async () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
       findDeleteButton().vm.$emit('click');
 
       await nextTick();
-      expect(wrapper.emitted('packageToDelete')).toHaveLength(1);
-      expect(wrapper.emitted('packageToDelete')[0]).toEqual([packageWithoutTags]);
+      expect(wrapper.emitted('package-to-delete')).toHaveLength(1);
+      expect(wrapper.emitted('package-to-delete')[0]).toEqual([packageWithoutTags]);
     });
   });
 

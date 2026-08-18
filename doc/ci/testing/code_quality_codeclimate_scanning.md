@@ -124,7 +124,7 @@ Code Quality can be customized by defining available CI/CD variables:
 |---------------------------------|-------------|
 | `CODECLIMATE_DEBUG`             | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables). |
 | `CODECLIMATE_DEV`               | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
-| `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [Use a private container registry](#use-a-private-container-image-registry). |
+| `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Use this variable for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [use a private container image registry](#use-a-private-container-image-registry). |
 | `CODECLIMATE_REGISTRY_USERNAME` | Set to specify the username for the registry domain parsed from `CODECLIMATE_PREFIX`. |
 | `CODECLIMATE_REGISTRY_PASSWORD` | Set to specify the password for the registry domain parsed from `CODECLIMATE_PREFIX`. |
 | `CODE_QUALITY_DISABLED`         | Prevents the Code Quality job from running. |
@@ -479,7 +479,7 @@ You must set up Docker in a Docker container (Docker-in-Docker) to use Code Qual
 To ensure Code Quality jobs can run on a Kubernetes executor:
 
 - If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/docker_in_docker.md#docker-in-docker-with-tls-enabled-in-kubernetes-recommended).
-- It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
+- It is possible that the DinD service doesn't start up fully before the Code Quality job starts. For more information, see
   [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting/#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file described in the following section.
 
 #### Kubernetes
@@ -551,7 +551,7 @@ To give the Docker daemon in the service container permissions to initialize its
 you must mount the `/var/lib` directory as a volume mount.
 
 > [!note]
-> If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
+> If you cannot mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
 > If you opt for the `vfs` value, it might have a negative
 > impact on [performance](https://docs.docker.com/engine/storage/drivers/select-storage-driver/).
 
@@ -600,7 +600,7 @@ name = "docker:29.1.4-dind"
    ```
 
 1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings).
-1. Set the job definition stays the same as in Kubernetes case:
+1. The job definition stays the same as in the Kubernetes case:
 
    ```yaml
    include:

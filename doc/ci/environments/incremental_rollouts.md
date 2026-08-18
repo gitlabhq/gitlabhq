@@ -44,7 +44,7 @@ examples to build your own:
 ## Manual Rollouts
 
 It is possible to configure GitLab to do incremental rollouts manually through `.gitlab-ci.yml`. Manual configuration
-allows more control over the this feature. The steps in an incremental rollout depend on the
+allows more control over this feature. The steps in an incremental rollout depend on the
 number of pods that are defined for the deployment, which are configured when the Kubernetes
 cluster is created.
 
@@ -70,7 +70,7 @@ rollout 10%:
 ```
 
 After the jobs are built, select **Run** ({{< icon name="play" >}}) next to the job's name
-to release each stage of pods. You can also rollback by running a lower percentage job. Once 100%
+to release each stage of pods. You can also roll back by running a lower percentage job. After 100%
 is reached, you cannot roll back using this method. To roll back a deployment, see [retry or roll back a deployment](deployments.md#retry-or-roll-back-a-deployment).
 
 A [deployable application](https://gitlab.com/gl-release/incremental-rollout-example) is
@@ -130,7 +130,7 @@ Only one of these deployments is live at any given time, except during an increm
 For example, your blue deployment can be active on production, while the
 green deployment is "live" for testing, but not deployed to production. If issues
 are found, the green deployment can be updated without affecting the production
-deployment (currently blue). If testing finds no issues, you switch production to the green
+deployment (blue). If testing finds no issues, you switch production to the green
 deployment, and blue is now available to test the next release.
 
 This process reduces downtime as there is no need to take down the production deployment

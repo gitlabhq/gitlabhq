@@ -1,0 +1,18 @@
+---
+description: Tracks when an offline transfer export is started
+internal_events: true
+action: start_offline_transfer_export
+identifiers:
+- user
+additional_properties:
+  label:
+    description: the object storage provider of the export destination e.g. aws, google, s3_compatible
+product_group: import
+product_categories:
+- importers
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245668
+tiers:
+- free
+- premium
+- ultimate

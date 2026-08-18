@@ -54,7 +54,6 @@ To sort the To-Do List:
 {{< history >}}
 
 - Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a feature flag](../administration/feature_flags/_index.md) named `multiple_todos`. Disabled by default.
-- Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
 - Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
 - Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
 
@@ -91,12 +90,6 @@ The only exception: If your notification setting is set to **Custom** and **Merg
 selected, you get a to-do item when you are eligible to approve a merge request.
 
 ## Create a to-do item
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
-
-{{< /history >}}
 
 You can manually add an item to your To-Do List.
 
@@ -161,7 +154,7 @@ If someone else closes or takes action on an issue or epic, your to-do item
 remains pending.
 
 When a merge request is merged or closed, to-do items for all users that were
-assigned, requested to review, required to approve, or added as approvers are marked as done.
+assigned, added as reviewers or approvers, or required to approve are marked as done. This includes to do items related to failed pipelines.
 
 ## Mark a to-do item as done
 

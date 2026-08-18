@@ -37,8 +37,6 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
     end
     click_on 'Continue import'
 
-    wait_for_requests
-
     page.within(second_row) do
       expect(page).to have_content('Complete'),
         "Expected 'Complete' but page contained: #{page.text}"

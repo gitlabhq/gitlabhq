@@ -185,8 +185,10 @@ RSpec.describe AuthenticatesWithTwoFactor, :aggregate_failures, feature_category
               }
             )
           )
-          allow(controller).to receive(:render).with('devise/sessions/two_factor', status: :ok)
-          allow(controller).to receive(:render).with('devise/sessions/two_factor', status: :unauthorized)
+          allow(controller).to receive(:render)
+            .with('devise/sessions/two_factor', layout: 'devise_empty', status: :ok)
+          allow(controller).to receive(:render)
+            .with('devise/sessions/two_factor', layout: 'devise_empty', status: :unauthorized)
         end
 
         let(:user) { create(:user, :two_factor_via_webauthn) }

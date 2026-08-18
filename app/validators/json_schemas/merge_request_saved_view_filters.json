@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Filters for a merge request saved view",
+  "type": "object",
+  "properties": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "opened",
+        "closed",
+        "locked",
+        "merged",
+        "all"
+      ]
+    },
+    "sort": {
+      "type": "string",
+      "enum": [
+        "created_asc",
+        "created_desc",
+        "updated_asc",
+        "updated_desc",
+        "merged_at_asc",
+        "merged_at_desc",
+        "closed_at_asc",
+        "closed_at_desc",
+        "title_asc",
+        "title_desc",
+        "popularity_asc",
+        "popularity_desc",
+        "priority_asc",
+        "priority_desc",
+        "label_priority_asc",
+        "label_priority_desc",
+        "milestone_due_asc",
+        "milestone_due_desc"
+      ]
+    },
+    "draft": {
+      "type": "boolean"
+    },
+    "author_username": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assignee_usernames": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "reviewer_username": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_by": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "maxItems": 5
+    },
+    "label_name": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "maxItems": 25
+    },
+    "milestone_title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_branches": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "target_branches": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "merged_after": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "merged_before": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "not": {
+      "type": "object",
+      "properties": {
+        "author_username": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignee_usernames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reviewer_username": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approved_by": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 5
+        },
+        "label_name": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 25
+        },
+        "milestone_title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_branches": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "target_branches": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

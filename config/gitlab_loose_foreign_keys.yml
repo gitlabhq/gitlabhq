@@ -504,6 +504,17 @@ geo_node_organization_links:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+govern_policies:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
+govern_policy_enforcements:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 group_push_rules:
   - table: namespaces
     column: group_id
@@ -635,10 +646,6 @@ p_ci_build_sources:
   - table: projects
     column: project_id
     on_delete: async_delete
-p_ci_build_tags:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 p_ci_builds:
   - table: users
     column: user_id
@@ -649,14 +656,6 @@ p_ci_builds:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
-p_ci_builds_execution_configs:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
-p_ci_builds_metadata:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 p_ci_builds_partition_overrides:
   - table: projects
     column: project_id
@@ -677,6 +676,7 @@ p_ci_job_artifacts:
   - table: projects
     column: project_id
     on_delete: async_delete
+    cleaner_class: Ci::JobArtifacts::LooseForeignKeyCleanerService
 p_ci_job_definition_instances:
   - table: projects
     column: project_id
@@ -690,6 +690,17 @@ p_ci_job_inputs:
     column: project_id
     on_delete: async_delete
 p_ci_job_messages:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+p_ci_job_runtime_environments:
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
+  - table: ci_runner_machines
+    column: runner_machine_id
+    on_delete: async_nullify
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -931,6 +942,10 @@ security_policy_schedule_pipelines:
 security_project_tracked_contexts:
   - table: projects
     column: project_id
+    on_delete: async_delete
+security_scan_profile_configurations:
+  - table: namespaces
+    column: namespace_id
     on_delete: async_delete
 security_scan_profile_project_statuses:
   - table: projects

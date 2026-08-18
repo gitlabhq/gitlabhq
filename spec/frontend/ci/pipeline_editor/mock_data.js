@@ -1,7 +1,7 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 import { DOCS_URL } from '~/constants';
 
-export const commonOptions = {
+const commonOptions = {
   ciConfigPath: '/ci/config',
   ciExamplesHelpPagePath: 'help/ci/examples',
   ciHelpPagePath: 'help/ci/',
@@ -35,13 +35,11 @@ export const mockProjectNamespace = 'user1';
 export const mockProjectPath = 'project1';
 export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;
 export const mockDefaultBranch = 'main';
-export const mockNewBranch = 'new-branch';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCiLintPath = '/-/ci/lint';
 export const mockCommitSha = 'aabbccdd';
-export const mockCommitNextSha = 'eeffgghh';
+const mockCommitNextSha = 'eeffgghh';
 export const mockIncludesHelpPagePath = '/-/includes/help';
-export const mockLintHelpPagePath = '/-/lint-help';
 export const mockCiTroubleshootingPath = '/-/pipeline-editor/troubleshoot';
 export const mockSimulatePipelineHelpPagePath = '/-/simulate-pipeline-help';
 export const mockYmlHelpPagePath = '/-/yml-help';
@@ -96,12 +94,6 @@ export const mockBlobContentQueryResponseNoCiFile = {
   },
 };
 
-export const mockBlobContentQueryResponseEmptyCiFile = {
-  data: {
-    project: { id: 'gid://gitlab/Project/1', repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
-  },
-};
-
 const mockJobFields = {
   beforeScript: [],
   afterScript: [],
@@ -131,7 +123,7 @@ export const mockDefaultIncludes = {
   __typename: 'CiConfigInclude',
 };
 
-export const mockSpecIncludeLocal = {
+const mockSpecIncludeLocal = {
   location: 'ci/inputs.yml',
   type: 'local',
   blob: 'http://gdk.test:3000/root/project/-/blob/main/ci/inputs.yml',
@@ -141,7 +133,7 @@ export const mockSpecIncludeLocal = {
   __typename: 'CiConfigInclude',
 };
 
-export const mockSpecIncludeRemote = {
+const mockSpecIncludeRemote = {
   location:
     'http://gdk.test:3000/flightjs/ci-commit-ref-name/-/raw/test-external-file-inputs/ci/sample.yml',
   type: 'remote',
@@ -152,7 +144,7 @@ export const mockSpecIncludeRemote = {
   __typename: 'CiConfigInclude',
 };
 
-export const mockSpecIncludeProject = {
+const mockSpecIncludeProject = {
   location: 'ci/sample.yml',
   type: 'file',
   blob: 'http://gdk.test:3000/flightjs/ci-commit-ref-name/-/blob/test-external-file-inputs/ci/sample.yml',
@@ -182,7 +174,7 @@ export const mockIncludes = [
 
 // Mock result of the graphql mutation at:
 // app/assets/javascripts/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql
-export const mockCiLintMutationResponse = {
+const mockCiLintMutationResponse = {
   data: {
     ciLint: {
       config: {

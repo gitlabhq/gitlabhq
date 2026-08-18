@@ -1,7 +1,7 @@
 ---
 key_path: settings.mcp_server_enabled
 description: Tracks whether the MCP server is enabled at the instance level on a Self-Managed instance
-product_group: ai_framework
+product_group: ai_model_services
 product_categories:
   - mcp_server
 value_type: boolean

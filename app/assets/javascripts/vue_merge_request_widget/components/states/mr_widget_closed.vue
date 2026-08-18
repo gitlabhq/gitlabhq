@@ -82,8 +82,13 @@ export default {
 
           window.location.reload();
         })
-        .catch(() => {
-          showGlobalToast(MR_WIDGET_CLOSED_REOPEN_FAILURE);
+        .catch((error) => {
+          const responseMessage = error?.response?.data?.message;
+          const message = Array.isArray(responseMessage)
+            ? responseMessage.join(' ')
+            : responseMessage;
+
+          showGlobalToast(message || MR_WIDGET_CLOSED_REOPEN_FAILURE);
         })
         .finally(() => {
           this.isPending = false;

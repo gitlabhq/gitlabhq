@@ -13,7 +13,7 @@ To use GitLab Duo Features, you need to:
 - Have either Premium or Ultimate Subscription License plan
 - Have one of the GitLab Duo add-ons in addition to your license plan (GitLab Duo Core, GitLab Duo Pro, or GitLab Duo Enterprise)
 
-This document walks you through how to get ensure these requirements are met for your GDK.
+This document walks you through how to ensure these requirements are met for your GDK.
 
 ## Set up GitLab Team Member License for GDK
 
@@ -48,7 +48,7 @@ Developers may also choose to connect their local GitLab instance to the staging
 To connect to the staging AI Gateway:
 
 - Set the `DEVELOPMENT_AI_GATEWAY_URL` environment variable to `https://cloud.staging.gitlab.com`
-- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil`
+- `AI_GATEWAY_URL` is unset and `ApplicationSetting.current.ai_gateway_url` is `nil`
 - Restart your GDK.
 
 ## Troubleshooting

@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   label:
     description: Work item base type (e.g., `issue`, `epic`, `task`)
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '18.1'

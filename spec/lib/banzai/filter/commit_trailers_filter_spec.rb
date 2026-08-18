@@ -176,10 +176,32 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
   end
 
   context "structure" do
-    it 'starts with two newlines to separate with actual commit message' do
+    it 'does not prepend newlines to the commit message' do
       doc = filter(commit_message_html)
 
-      expect(doc.xpath('pre').text).to start_with("\n\n")
+      expect(doc.xpath('pre').text).not_to start_with("\n")
+    end
+
+    it 'does not inject blank lines around a trailer in the message body', :aggregate_failures do
+      message = commit_html("Body line.\n\n#{commit_message}")
+
+      text = filter(message).xpath('pre').text
+
+      expect(text).to start_with('Body line.')
+      expect(text).not_to include("\n\n\n")
+    end
+
+    # A link immediately preceding a trailer must stay separated from it, using the message's own
+    # blank line. Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/26522.
+    it 'keeps a preceding link separated from the trailer', :aggregate_failures do
+      message = %(<pre>\n<a href="https://example.com">https://example.com</a>\n\n#{CGI.escape_html(commit_message)}</pre>)
+
+      doc = filter(message)
+      text = doc.xpath('pre').text
+
+      expect(text).to include("https://example.com\n\n")
+      expect(text).not_to match(/example\.com\S/)
+      expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
     end
 
     it 'preserves the commit trailer structure' do

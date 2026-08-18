@@ -67,7 +67,7 @@ $ vault write auth/jwt/config \
 
 After you make this change, jobs that use `CI_JOB_JWT` start to fail.
 
-You can create multiple authentication paths in Vault, which enable you to transition to ID Tokens on a project by job basis without disruption.
+You can create multiple authentication paths in Vault, which enable you to transition to ID Tokens on a per-project or per-job basis without disruption.
 
 1. Configure a new authentication path with the name `jwt_v2`, run:
 
@@ -144,7 +144,7 @@ directive on this level only accepts a single value. However, multiple claims ca
 on the role level by using the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
 map configuration directive.
 
-With this method you can provide Vault with multiple options for the `iss` claim validation. This supports the `https://` prefixed GitLab instance hostname claim that comes with the `id_tokens`, as well as the old non-prefixed claim.
+With this method you can provide Vault with multiple options for the `iss` claim validation. This supports the `https://` prefixed GitLab instance hostname claim that comes with the `id_tokens` and the old non-prefixed claim.
 
 To add the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims) configuration to the required roles, run:
 
@@ -240,7 +240,7 @@ if preferred.
 
 ### KV Secrets Engine v2
 
-There are two formats you can use for the v2 engine.
+You can use two formats for the v2 engine.
 
 Long format:
 
@@ -264,7 +264,7 @@ job:
       file: false
 ```
 
-This is the same as the example for the v1 engine but `secrets:vault:engine:name:` is set to `kv-v2` to match the engine.
+This long format is the same as the example for the v1 engine, but `secrets:vault:engine:name:` is set to `kv-v2` to match the engine.
 
 You can also use a short format:
 
@@ -283,6 +283,6 @@ job:
         file: false
 ```
 
-After you commit the updated CI/CD configuration, your jobs will be fetching secrets with ID Tokens, congratulations!
+After you commit the updated CI/CD configuration, your jobs fetch secrets with ID Tokens, congratulations!
 
 If you have migrated all projects to fetch secrets with ID Tokens and used method B for the migration, it is now possible to move the `iss` claim validation back to the auth method configuration if you desire.

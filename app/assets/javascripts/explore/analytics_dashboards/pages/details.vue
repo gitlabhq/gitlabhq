@@ -1,7 +1,9 @@
 <script>
 import { computed } from 'vue';
-import { GlDashboardLayout } from '@gitlab/ui';
+import { GlDashboardLayout, GlTabs, GlTab } from '@gitlab/ui';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 
@@ -9,10 +11,13 @@ export default {
   name: 'ExploreAnalyticsDashboardDetails',
   components: {
     GlDashboardLayout,
+    GlTabs,
+    GlTab,
     AnalyticsDashboardPanel,
     DashboardFilters,
     DashboardLoader,
   },
+  mixins: [glSlotsMixin],
   // Provided as computed refs — options-API inject captures the value once
   // at setup, so plain values/getters won't propagate filter changes to panels.
   provide() {
@@ -37,9 +42,28 @@ export default {
       filters: {},
       selectedGroup: null,
       selectedProject: null,
+      activeViewIndex: 0,
     };
   },
   methods: {
+    // Set the active tab from the `view` query param on load. Default to the
+    // first view if the query param wasn't included, or has an invalid index.
+    onDashboardLoaded({ config }) {
+      const viewParam = getParameterByName('view');
+      const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
+
+      this.activeViewIndex = viewIndex === -1 ? 0 : viewIndex;
+    },
+    hasViews(config) {
+      return Boolean(config.views?.length);
+    },
+    // When a dashboard defines views, feed the active view's panels to the layout
+    // so the shared grid re-renders as the user switches views.
+    layoutConfig(config) {
+      if (!this.hasViews(config)) return config;
+
+      return { ...config, panels: config.views[this.activeViewIndex]?.panels || [] };
+    },
     panelTestId({ visualization: { slug = '' } }) {
       return `panel-${slug.replaceAll('_', '-')}`;
     },
@@ -76,19 +100,37 @@ export default {
 };
 </script>
 <template>
-  <dashboard-loader>
+  <dashboard-loader @loaded="onDashboardLoaded">
     <template #dashboard="{ config, cellHeight, minCellHeight, isSystemDashboard }">
+      <!--
+        Keying the layout by the active view forces a clean remount of the grid on
+        view change. This routes panel rendering through GlDashboardLayout's initial
+        load (which does not scroll) instead of Gridstack's incremental "added" event,
+        which smooth-scrolls to the last panel and jumps the page to the bottom.
+      -->
       <gl-dashboard-layout
-        :config="config"
+        :key="activeViewIndex"
+        :config="layoutConfig(config)"
         :cell-height="cellHeight"
         :min-cell-height="minCellHeight"
         :filters="filters"
       >
-        <template #actions>
+        <template v-if="glSlots().actions" #actions>
           <slot name="actions" :is-system-dashboard="isSystemDashboard"></slot>
         </template>
 
         <template #filters>
+          <gl-tabs
+            v-if="hasViews(config)"
+            v-model="activeViewIndex"
+            class="gl-basis-full"
+            content-class="gl-hidden"
+            sync-active-tab-with-query-params
+            query-param-name="view"
+            data-testid="dashboard-views"
+          >
+            <gl-tab v-for="(view, index) in config.views" :key="index" :title="view.title" />
+          </gl-tabs>
           <dashboard-filters
             :group-namespace="selectedGroup?.fullPath || ''"
             :dashboard-filters="config.filters"

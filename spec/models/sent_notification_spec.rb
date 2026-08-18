@@ -28,9 +28,9 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
       end
 
       context "when the noteable project and discussion project match" do
-        let(:project) { create(:project, :repository) }
-        let(:issue) { create(:issue, project: project) }
-        let(:discussion_id) { create(:note, project: project, noteable: issue).discussion_id }
+        let_it_be(:project) { create(:project, :small_repo) }
+        let_it_be(:issue) { create(:issue, project: project) }
+        let_it_be(:discussion_id) { create(:note, project: project, noteable: issue).discussion_id }
 
         subject { build(:sent_notification, project: project, noteable: issue, in_reply_to_discussion_id: discussion_id) }
 
@@ -408,7 +408,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
     end
 
     it_behaves_like 'a non-unsubscribable notification', 'commit' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let(:noteable) { project.commit }
     end
 
@@ -443,7 +443,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
     end
 
     it_behaves_like 'a commit notification', 'commit' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let(:noteable) { project.commit }
     end
 
@@ -478,7 +478,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
     end
 
     it_behaves_like 'a non-snippet notification', 'commit' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let(:noteable) { project.commit }
     end
 
@@ -571,7 +571,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
     end
 
     context 'for commit' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let(:commit) { project.commit }
 
       subject { described_class.record(commit, project.creator.id) }

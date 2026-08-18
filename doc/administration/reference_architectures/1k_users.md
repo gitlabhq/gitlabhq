@@ -95,7 +95,7 @@ The 20 RPS / 1k user reference architecture is designed to accommodate most comm
 | Git (Pull)    | 2 RPS             |
 | Git (Push)    | 1 RPS             |
 
-These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
 For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
@@ -129,7 +129,7 @@ or [external object storage service](../object_storage.md). It improves performa
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
-Elasticsearch cluster design and requirements depends on your
+Elasticsearch cluster design and requirements depend on your
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, see
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).

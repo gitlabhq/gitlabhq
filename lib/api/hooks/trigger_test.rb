@@ -12,8 +12,8 @@ module API
       end
       desc 'Trigger a test webhook' do
         detail 'Triggers a test webhook. This endpoint has a rate limit of five requests per minute for each ' \
-          'webhook and authenticated user. To disable this limit on GitLab Self-Managed and GitLab Dedicated, an ' \
-          'administrator can disable the feature flag named web_hook_test_api_endpoint_rate_limit.'
+          'authenticated user for a given project or group. On GitLab Self-Managed and GitLab Dedicated, an ' \
+          'administrator can change this limit in the application settings.'
         success code: 201
         failure [
           { code: 400, message: 'Bad request' },
@@ -35,9 +35,7 @@ module API
       post ":hook_id/test/:trigger" do
         hook = find_hook
 
-        if Feature.enabled?(:web_hook_test_api_endpoint_rate_limit, Feature.current_request)
-          check_rate_limit!(:web_hook_test, scope: [hook.parent, current_user])
-        end
+        check_rate_limit!(:web_hook_test, scope: [hook.parent, current_user])
 
         service = hook_test_service(hook, configuration[:entity])
         result = service.execute

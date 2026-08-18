@@ -1,6 +1,6 @@
 ---
-source_checksum: f656b261cb58247d
-distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
+source_checksum: 312e3df0c59cb322
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -37,6 +37,7 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 - Assign at least one tag per endpoint; use plural entity names (for example, `audit_events`, `users`); DO NOT use singular or product-category-coupled names
 - Declare at least one `failure` response (4xx/5xx) in every endpoint's `desc` block using an array of hashes with `code` and optional `message` (enforced by the `API/DescriptionFailureResponse` RuboCop cop)
 - Constrain every `String` parameter with `values:`, `limit:`, or `regexp:` to prevent unbounded payloads
+- Reference route requirement constants (e.g., `NAMESPACE_OR_PROJECT_REQUIREMENTS`) with a leading `::` (e.g., `::API::NAMESPACE_OR_PROJECT_REQUIREMENTS`) to avoid `NameError` from autoloading the entire API surface
 
 ### Endpoint Success Definition
 

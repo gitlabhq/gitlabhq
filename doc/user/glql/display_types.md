@@ -14,7 +14,7 @@ title: GLQL display types
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
 
 {{< /history >}}
@@ -43,6 +43,7 @@ The following display types are available only in analytics mode:
 | Column chart | `columnChart`   | A chart that compares metrics across the categories defined by your dimensions. |
 | Bar chart | `barChart` | A horizontal chart that compares metrics across the categories defined by your dimensions. |
 | Line chart     | `lineChart`     | A chart that plots one or more metrics as lines over a dimension, to show trends. |
+| Area chart     | `areaChart`     | A chart that plots one or more metrics as filled areas over a dimension, to show trends and volume. |
 
 ## Table
 
@@ -145,7 +146,7 @@ metrics: totalCount
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 
 {{< /history >}}
 
@@ -197,7 +198,7 @@ metrics: acceptedCount, rejectedCount
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -275,6 +276,60 @@ mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: language
 metrics: totalCount, acceptedCount
+```
+````
+
+## Area chart
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/work_items/103) in GitLab 19.3.
+
+{{< /history >}}
+
+An area chart visualizes aggregated data from [analytics mode](_index.md#analytics-mode) as one or
+more filled areas. Use an area chart to show how metrics change across a dimension, such as over
+time, and to emphasize the volume behind the trend.
+
+An area chart requires:
+
+- Analytics mode, set with `mode: analytics`.
+- One or two `dimensions` to group results by.
+- At least one metric to plot (using the `metrics` parameter).
+
+The number of dimensions and metrics determines how the chart renders:
+
+- One dimension with one or more metrics plots an area for each metric. Areas overlap with
+  semi-transparent fills. To stack the areas cumulatively instead, set `stacked: true` under
+  `displayConfig`. With a single metric, `stacked` has no visible effect.
+- Two dimensions with one metric plots a stacked area chart grouped by the second dimension.
+  With two dimensions, you can use only one metric, and GitLab ignores `displayConfig.stacked`.
+
+### Example
+
+To display shown and accepted Code Suggestions over the last 30 days as overlapping areas:
+
+````yaml
+```glql
+display: areaChart
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: timestamp
+metrics: shownCount, acceptedCount
+```
+````
+
+To stack the metrics cumulatively instead:
+
+````yaml
+```glql
+display: areaChart
+displayConfig:
+  stacked: true
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: timestamp
+metrics: shownCount, acceptedCount
 ```
 ````
 

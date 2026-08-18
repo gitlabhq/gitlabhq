@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::ServerService, feature_category: :gitaly do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:storage_name) { project.repository_storage }
   let(:client) { described_class.new(storage_name) }
 

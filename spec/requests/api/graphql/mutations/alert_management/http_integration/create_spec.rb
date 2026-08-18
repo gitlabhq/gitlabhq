@@ -36,6 +36,12 @@ RSpec.describe 'Creating a new HTTP Integration', feature_category: :incident_ma
 
   let(:mutation_response) { graphql_mutation_response(:http_integration_create) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_http_integration do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it_behaves_like 'creating a new HTTP integration'
 
   context 'with type argument' do

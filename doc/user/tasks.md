@@ -14,18 +14,6 @@ description: Task labels, confidential tasks, linked items, and task weights.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a feature flag](../administration/feature_flags/_index.md) named `work_items`. Disabled by default.
-- Creating, editing, and deleting tasks [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7169) in GitLab 15.0.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.3.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
 A task in GitLab is a planning item that can be created in an issue.
 Use tasks to break down user stories captured in [issues](project/issues/_index.md) into
 smaller, trackable items.
@@ -40,7 +28,7 @@ Tasks are a type of work item, a step towards [default issue types](https://gitl
 in GitLab.
 For the roadmap of migrating issues and [epics](group/epics/_index.md)
 to work items and adding custom work item types, see
-[epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
+[epic 6033](https://gitlab.com/groups/gitlab-org/-/work_items/6033).
 
 ## View tasks
 
@@ -85,12 +73,6 @@ To create a task:
 
 ### From a task list item
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
@@ -109,12 +91,6 @@ The task list item is removed from the issue description and added to the **Chil
 Any nested task list items are moved up a nested level.
 
 ## Add existing tasks to an issue
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381868) in GitLab 15.6.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -156,9 +132,6 @@ To edit a task:
 
 {{< history >}}
 
-- Rich text editing in the dialog view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363007) in GitLab 15.6 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_mvc`. Disabled by default.
-- Rich text editing in the full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104533) in GitLab 15.7.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10378) in GitLab 16.2. Feature flag `work_items_mvc` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -182,7 +155,6 @@ To edit the description of a task:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -241,7 +213,7 @@ To convert a task into another item type:
 1. If all conditions are met, select **Change type**.
 
 Alternatively, you can use the [`/type` quick action](project/quick_actions.md#type), followed
-by `issue`, `objective` or `key result` in a comment.
+by `issue`, `objective`, or `key result` in a comment.
 
 ## Remove a task from an issue
 
@@ -298,7 +270,6 @@ To delete a task:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -399,7 +370,6 @@ To change the assignee on a task:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -420,8 +390,6 @@ To add [labels](project/labels.md) to a task:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.5. Feature flag `work_items_mvc_2` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -448,9 +416,6 @@ To set a start or due date:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.5 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7. Feature flag `work_items_mvc` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -481,13 +446,6 @@ To add a task to a milestone:
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
-- Edit button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429137) in GitLab 16.7.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -550,14 +508,6 @@ not have permission to view.
 - Tier: Premium, Ultimate
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.5 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.7. Feature flag `work_items_mvc` removed.
-
-{{< /history >}}
 
 You can add a task to an [iteration](group/iterations/_index.md).
 You can see the iteration title and period only when you view a task.
@@ -627,16 +577,6 @@ To show the sidebar again:
 
 ## View task system notes
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a feature flag](../administration/feature_flags/_index.md) named `work_items_mvc_2`. Disabled by default.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) to feature flag named `work_items_mvc` in GitLab 15.8. Disabled by default.
-- Changing activity sort order [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.8.
-- Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10. Feature flag `work_items_mvc` removed.
-
-{{< /history >}}
-
 You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
 You can always change the sorting order to **Newest first**, which is remembered across sessions.
 You can also filter activity by **Comments only** and **History only** in addition to the default **All activity** which is remembered across sessions.
@@ -646,12 +586,6 @@ You can also filter activity by **Comments only** and **History only** in additi
 You can add [comments](discussions/_index.md) and reply to threads in tasks.
 
 ## Copy task reference
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
-
-{{< /history >}}
 
 To refer to a task elsewhere in GitLab, you can use its full URL or a short reference like
 `namespace/project-name#123`, where `namespace` is a group or username.
@@ -668,12 +602,6 @@ For more information about task references, see [GitLab-Flavored Markdown](markd
 
 ## Copy task email address
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
-
-{{< /history >}}
-
 You can create a comment in a task by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
@@ -687,12 +615,6 @@ To copy the task's email address:
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Copy task email address**.
 
 ## Set an issue as a parent
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.5.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -719,12 +641,6 @@ Participants are users who interacted with a task.
 For information about viewing participants, see [participants](participants.md).
 
 ## Confidential tasks
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
-
-{{< /history >}}
 
 Confidential tasks are tasks visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-tasks).
@@ -822,9 +738,8 @@ If a task is closed with a locked discussion, then you cannot reopen it until th
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a feature flag](../administration/feature_flags/_index.md) named `linked_work_items`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
-- Adding related items by entering their URLs and IDs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427594) in GitLab 16.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150148) in GitLab 17.0. Feature flag `linked_work_items` removed.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
 
 {{< /history >}}
 
@@ -854,7 +769,7 @@ To link an item to a task:
 When you have finished adding all linked items, you can see
 them categorized so their relationships can be better understood visually.
 
-![Linked items block](img/linked_items_list_v16_5.png)
+![Linked work items grouped as Blocking, Blocked by, and Related to in the Linked items section.](img/linked_items_list_v16_5.png)
 
 ### Remove a linked item
 

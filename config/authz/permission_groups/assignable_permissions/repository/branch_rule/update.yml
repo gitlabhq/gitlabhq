@@ -7,3 +7,4 @@ available_for:
   - granular_access_token
 permissions:
   - update_branch_rule
+  - update_squash_option

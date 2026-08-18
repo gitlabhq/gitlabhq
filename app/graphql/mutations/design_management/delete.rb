@@ -5,6 +5,9 @@ module Mutations
     class Delete < Base
       graphql_name "DesignManagementDelete"
 
+      authorize_granular_token permissions: :delete_design,
+        boundary_argument: :project_path, boundary_type: :project
+
       Errors = ::Gitlab::Graphql::Errors
 
       argument :filenames, [GraphQL::Types::String],

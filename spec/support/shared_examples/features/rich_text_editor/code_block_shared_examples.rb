@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - code blocks' do
   include RichTextEditorHelpers
 
-  describe 'code block' do
+  describe 'code block', feature_category: :markdown do
     before do
       visit(profile_preferences_path)
 
@@ -29,7 +29,7 @@ RSpec.shared_examples 'rich text editor - code blocks' do
     end
   end
 
-  describe 'code block bubble menu' do
+  describe 'code block bubble menu', feature_category: :markdown do
     before do
       switch_to_content_editor
     end

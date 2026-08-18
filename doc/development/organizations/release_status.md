@@ -3,7 +3,7 @@ title: Organizations platform release status
 ---
 
 <!-- This file is generated from config/organizations_release.yml. Do not edit it manually. -->
-<!-- Regenerate it with: bin/rake gitlab:organizations:release:docs -->
+<!-- Regenerate it with: `bin/rake gitlab:organizations:release:docs` -->
 
 Every organization flag and its current stage are listed below.
 The stage determines who can use a flag and whether it can be disabled.
@@ -24,4 +24,6 @@ The stage determines who can use a flag and whether it can be disabled.
 
 | Flag | Stage | Description |
 |------|-------|-------------|
+| `create_org_from_group_settings` | Experimental | Create organization from group settings. |
 | `org_admin_area` | Experimental | Organization admin area for organization owners. |
+| `org_switcher` | Experimental | The organization switcher dropdown component. |

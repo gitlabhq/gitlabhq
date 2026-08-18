@@ -205,7 +205,7 @@ In order of highest priority first, the component version can be:
   must be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest` or a partial semantic version, which selects the latest version within the specified pattern
+- `~latest` or a partial semantic version, which selects the latest version in the specified pattern
   published in the CI/CD Catalog. Use `~latest` only if you want to use the absolute
   latest version at all times, which could include breaking changes. `~latest`
   does not include pre-releases, for example `1.0.1-rc`, which are not considered
@@ -442,7 +442,7 @@ Ensure that the component and its testing pipeline work also [on GitLab Self-Man
 While some API resources of public projects on GitLab.com could be accessed with unauthenticated requests,
 on a GitLab Self-Managed instance a component project could be mirrored as private or internal project.
 
-It's important that an access token can optionally be provided via inputs or variables to
+It's important that an access token can optionally be provided through inputs or variables to
 authenticate requests on GitLab Self-Managed instances.
 
 ### Avoid using global keywords
@@ -632,7 +632,7 @@ In other cases, CI/CD variables might still be preferred. For example:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.1.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.7.
-- [Made Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
+- [Made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
 
 {{< /history >}}
 
@@ -1010,7 +1010,7 @@ you deliver to users, follow these best practices:
   - Use [protected branches](../../user/project/repository/branches/protected.md)
     for component project releases.
   - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#use-wildcard-rules).
-  - Require everyone submit merge requests for changes to protected branches. Set the
+  - Require everyone to submit merge requests for changes to protected branches. Set the
     **Allowed to push and merge** option to `No one` for protected branches.
   - Block force pushes to protected branches.
 - **Sign all commits**: [Sign all commits](../../user/project/repository/signed_commits/_index.md) to the component project.
@@ -1040,8 +1040,8 @@ To resolve this issue, [create a new release](#publish-a-new-release).
 
 ### Error: `Build component error: Spec must be a valid json schema`
 
-If a component has invalid formatting, you might not be able to create a release
-and could receive an error like `Build component error: Spec must be a valid json schema`.
+If a component has invalid formatting, you might get an error like
+`Build component error: Spec must be a valid json schema` when you create a release.
 
 This error can be caused by an empty `spec:inputs` section. If your configuration
 does not use any inputs, you can make the `spec` section empty instead. For example:

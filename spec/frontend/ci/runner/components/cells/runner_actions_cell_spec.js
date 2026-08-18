@@ -124,14 +124,14 @@ describe('RunnerActionsCell', () => {
       expect(findDeleteBtn().props('runner')).toEqual(mockRunner);
     });
 
-    it('Emits toggledPaused events', () => {
+    it('Emits toggled-paused events', () => {
       createComponent();
 
-      expect(wrapper.emitted('toggledPaused')).toBe(undefined);
+      expect(wrapper.emitted('toggled-paused')).toBe(undefined);
 
-      findRunnerPauseBtn().vm.$emit('toggledPaused');
+      findRunnerPauseBtn().vm.$emit('toggled-paused');
 
-      expect(wrapper.emitted('toggledPaused')).toHaveLength(1);
+      expect(wrapper.emitted('toggled-paused')).toHaveLength(1);
     });
 
     it('Emits delete events', () => {

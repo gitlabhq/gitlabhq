@@ -50,6 +50,11 @@ export const deployKeysMock = [
   },
 ];
 
+export const memberRolesMock = [
+  { id: 'gid://gitlab/MemberRole/1', name: 'Custom Developer' },
+  { id: 'gid://gitlab/MemberRole/2', name: 'Custom Maintainer' },
+];
+
 const accessLevelsMock = [30, 40];
 
 const approvalsRequired = 3;
@@ -132,6 +137,9 @@ const mergeAccessLevelEdges = [
     },
   },
 ];
+
+export const pushAccessLevelsCount = pushAccessLevelEdges.length;
+export const mergeAccessLevelsCount = mergeAccessLevelEdges.length;
 
 export const matchingBranchesCount = 3;
 

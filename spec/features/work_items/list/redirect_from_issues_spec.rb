@@ -2,14 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Redirect from issues', :js, feature_category: :team_planning do
+RSpec.describe 'Redirect from issues', :js, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, group: group, developers: [user]) }
 
   context 'for signed in user' do
     before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
     end
 

@@ -47,8 +47,8 @@ describe('ModelEdit', () => {
     });
   };
 
-  const findPrimaryButton = () => wrapper.findByTestId('primary-button');
-  const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
+  const findPrimaryButton = () => wrapper.findComponentByTestId('primary-button');
+  const findSecondaryButton = () => wrapper.findComponentByTestId('secondary-button');
   const findModelName = () => wrapper.findByTestId('nameId');
   const findModelDescription = () => wrapper.findByTestId('descriptionId');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);

@@ -12,7 +12,7 @@ module API
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
       allow_mcp_access_read
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
 
         params do

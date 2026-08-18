@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Topic do
+RSpec.describe Projects::Topic, feature_category: :groups_and_projects do
   let_it_be(:organization) { create(:organization) }
   let_it_be_with_reload(:topic) { create(:topic, name: 'topic', organization: organization) }
 

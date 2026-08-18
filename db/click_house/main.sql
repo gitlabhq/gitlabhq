@@ -805,6 +805,7 @@ CREATE TABLE siphon_ci_pipeline_metadata
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `security_policy_protected_branch_bypassed` Bool DEFAULT false CODEC(ZSTD(1)),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
@@ -1055,6 +1056,14 @@ CREATE TABLE siphon_duo_workflows_workflows
     `title` Nullable(String),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `incremental_checkpoints_enabled` Nullable(Bool),
+    `agent_type` Nullable(String),
+    `jsonl_sha256` Nullable(String),
+    `idempotency_key` Nullable(String),
+    `sync_type` Nullable(Int16),
+    `agent_identity_id` Nullable(Int64),
+    `web_search_enabled` Bool DEFAULT false,
+    `trigger_source` Int16 DEFAULT 0,
+    `trigger_flow_trigger_id` Nullable(Int64),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered
     (
@@ -1163,6 +1172,30 @@ CREATE TABLE siphon_group_audit_events
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
 ORDER BY id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_internal_events
+(
+    `uuid` UUID,
+    `stream_identifier` LowCardinality(String),
+    `producer_application_identifier` LowCardinality(String),
+    `consumer_application_identifier` LowCardinality(String),
+    `postgresql_schema` LowCardinality(String),
+    `postgresql_table` LowCardinality(String),
+    `timestamp` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `produced_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `consumed_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `package_events_count` UInt64,
+    `package_size_in_bytes` UInt64,
+    `event_type` UInt8,
+    `version` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PARTITION BY toYYYYMM(timestamp)
+PRIMARY KEY (postgresql_schema, postgresql_table, timestamp, uuid)
+ORDER BY (postgresql_schema, postgresql_table, timestamp, uuid)
+TTL timestamp + toIntervalMonth(12)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE siphon_issue_assignees
@@ -1893,7 +1926,6 @@ CREATE TABLE siphon_p_ci_builds
     `runner_id` Nullable(Int64),
     `upstream_pipeline_id` Nullable(Int64),
     `user_id` Nullable(Int64),
-    `execution_config_id` Nullable(Int64),
     `upstream_pipeline_partition_id` Nullable(Int64),
     `scoped_user_id` Nullable(Int64),
     `timeout` Nullable(Int64),
@@ -2039,7 +2071,24 @@ CREATE TABLE siphon_p_ci_stages
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
-    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
+    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
+    PROJECTION by_traversal_path_pipeline_id
+    (
+        SELECT
+            id,
+            partition_id,
+            traversal_path,
+            pipeline_id,
+            name,
+            status,
+            _siphon_replicated_at,
+            _siphon_deleted
+        ORDER BY
+            traversal_path,
+            pipeline_id,
+            id,
+            partition_id
+    )
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id, partition_id)
@@ -2661,6 +2710,48 @@ PRIMARY KEY (id, traversal_path)
 ORDER BY (id, traversal_path)
 SETTINGS index_granularity = 1024;
 
+CREATE TABLE siphon_todos
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `user_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `project_id` Nullable(Int64),
+    `target_id` Nullable(Int64),
+    `target_type` LowCardinality(String),
+    `author_id` Int64,
+    `action` Int64,
+    `state` LowCardinality(String),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `commit_id` Nullable(String),
+    `group_id` Nullable(Int64),
+    `resolved_by_action` Nullable(Int16),
+    `note_id` Nullable(Int64),
+    `snoozed_until` Nullable(DateTime64(6, 'UTC')),
+    `organization_id` Nullable(Int64),
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', group_id, '0/'), coalesce(organization_id, 0) != 0, dictGetOrDefault('organization_traversal_paths_dict', 'traversal_path', organization_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, user_id, id)
+ORDER BY (traversal_path, user_id, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_todos_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `user_id` Int64,
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, user_id, traversal_path)
+ORDER BY (id, user_id, traversal_path)
+SETTINGS index_granularity = 1024;
+
 CREATE TABLE siphon_users
 (
     `id` Int64,
@@ -2949,6 +3040,30 @@ ORDER BY (traversal_path, work_item_id, id)
 SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
 CREATE TABLE siphon_work_item_parent_links
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `work_item_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `work_item_parent_id` Int64,
+    `relative_position` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `namespace_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', namespace_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, work_item_id, id)
+ORDER BY (traversal_path, work_item_id, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_work_item_parent_links_tmp
 (
     `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `work_item_id` Int64,
@@ -4551,6 +4666,22 @@ AS SELECT
     _siphon_replicated_at,
     _siphon_deleted
 FROM siphon_system_note_metadata;
+
+CREATE MATERIALIZED VIEW siphon_todos_pg_pkey_ordered_mv TO siphon_todos_pg_pkey_ordered
+(
+    `id` Int64,
+    `user_id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    user_id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_todos;
 
 CREATE MATERIALIZED VIEW user_addon_assignments_history_mv TO user_addon_assignments_history
 (

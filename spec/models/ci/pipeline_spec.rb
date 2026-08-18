@@ -695,22 +695,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           }
       end
     end
-
-    context 'when ci_observe_pipelines_finished is disabled' do
-      before do
-        stub_feature_flags(ci_observe_pipelines_finished: false)
-      end
-
-      it 'does not emit the metrics' do
-        expect(time_to_finished_histogram).not_to receive(:observe)
-        expect(Labkit::UserExperienceSli).not_to receive(:observed)
-
-        expect { pipeline.succeed }
-          .not_to change {
-            finished_counter.get(source: pipeline.source, status: 'success', partition_id: pipeline.partition_id)
-          }
-      end
-    end
   end
 
   describe '#set_status' do
@@ -1317,6 +1301,47 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     it 'only returns the pipelines ordered by id' do
       expect(pipelines_ordered_by_id).to eq([newest_pipeline, older_pipeline])
+    end
+  end
+
+  describe '.merge_request_event_first' do
+    let_it_be(:push_pipeline_old) { create(:ci_pipeline, project: project, source: :push) }
+    let_it_be(:mr_pipeline_old)   { create(:ci_pipeline, project: project, source: :merge_request_event) }
+    let_it_be(:push_pipeline_new) { create(:ci_pipeline, project: project, source: :push) }
+    let_it_be(:mr_pipeline_new)   { create(:ci_pipeline, project: project, source: :merge_request_event) }
+
+    it 'orders merge_request_event pipelines first, then by id desc by default' do
+      expect(described_class.merge_request_event_first)
+        .to eq([mr_pipeline_new, mr_pipeline_old, push_pipeline_new, push_pipeline_old])
+    end
+
+    it 'applies the given secondary order within each source bucket' do
+      expect(described_class.merge_request_event_first(order_by: :id, sort: :asc))
+        .to eq([mr_pipeline_old, mr_pipeline_new, push_pipeline_old, push_pipeline_new])
+    end
+
+    context 'with a non-id secondary column' do
+      # `updated_at` is intentionally inverted relative to `id` so the ordering
+      # only matches when the scope sorts by the requested column rather than
+      # defaulting to id.
+      let_it_be(:mr_recent)   { create(:ci_pipeline, project: project, source: :merge_request_event, updated_at: 1.hour.ago) }
+      let_it_be(:mr_stale)    { create(:ci_pipeline, project: project, source: :merge_request_event, updated_at: 2.hours.ago) }
+      let_it_be(:push_recent) { create(:ci_pipeline, project: project, source: :push, updated_at: 3.hours.ago) }
+      let_it_be(:push_stale)  { create(:ci_pipeline, project: project, source: :push, updated_at: 4.hours.ago) }
+
+      it 'orders by the given column within each source bucket' do
+        result = described_class
+          .where(id: [mr_recent, mr_stale, push_recent, push_stale])
+          .merge_request_event_first(order_by: :updated_at, sort: :desc)
+
+        expect(result).to eq([mr_recent, mr_stale, push_recent, push_stale])
+      end
+    end
+
+    it 'de-duplicates the ORDER BY clause when merged with itself' do
+      merged = described_class.merge_request_event_first.merge(described_class.merge_request_event_first)
+
+      expect(merged.to_sql.scan('CASE').size).to eq(1)
     end
   end
 
@@ -5242,15 +5267,84 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-      let(:pipeline_project) { project }
-    end
-
-    context 'for a fork' do
-      let(:fork) { fork_project(project) }
+    context 'when ci_skip_fork_mr_lookup_for_non_forks is disabled' do
+      before do
+        stub_feature_flags(ci_skip_fork_mr_lookup_for_non_forks: false)
+      end
 
       it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-        let(:pipeline_project) { fork }
+        let(:pipeline_project) { project }
+      end
+
+      context 'for a fork' do
+        let(:fork) { fork_project(project) }
+
+        it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+          let(:pipeline_project) { fork }
+        end
+      end
+    end
+
+    context 'when ci_skip_fork_mr_lookup_for_non_forks is enabled' do
+      # The flag is enabled by default in the test environment.
+      let(:fork) { fork_project(project) }
+      let(:branch_pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
+      let(:fork_pipeline) { create(:ci_empty_pipeline, status: 'created', project: fork, ref: 'master') }
+
+      it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+        let(:pipeline_project) { project }
+      end
+
+      context 'for a fork' do
+        it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+          let(:pipeline_project) { fork }
+        end
+      end
+
+      it 'does not issue a from_fork pluck query for a non-fork project' do
+        expect do
+          branch_pipeline.all_merge_requests.to_a
+        end.not_to make_queries_matching(/source_project_id <> target_project_id/)
+      end
+
+      it 'still issues the fork target lookup for a fork project' do
+        expect do
+          fork_pipeline.all_merge_requests.to_a
+        end.to make_queries_matching(/SELECT DISTINCT "merge_requests"\."target_project_id"/)
+      end
+
+      context 'for a project unlinked from its fork network' do
+        let(:unlinked_fork) { fork_project(project) }
+        let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
+
+        let(:historical_merge_request) do
+          create(:merge_request, source_project: unlinked_fork, target_project: project, source_branch: 'master')
+        end
+
+        before do
+          create(
+            :merge_request_diff_commit,
+            merge_request_diff: historical_merge_request.merge_request_diff,
+            sha: pipeline.sha
+          )
+
+          Projects::UnlinkForkService.new(unlinked_fork, project.first_owner).execute
+          unlinked_fork.reload
+        end
+
+        it 'no longer returns the historical cross-project merge request' do
+          expect(pipeline.all_merge_requests).to be_empty
+        end
+
+        context 'when the flag is disabled' do
+          before do
+            stub_feature_flags(ci_skip_fork_mr_lookup_for_non_forks: false)
+          end
+
+          it 'returns the historical cross-project merge request' do
+            expect(pipeline.all_merge_requests).to eq([historical_merge_request])
+          end
+        end
       end
     end
   end
@@ -6278,6 +6372,35 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
     end
 
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
+
+    it 'checks artifacts using a build subquery with partition pruning' do
+      create(:ci_build, pipeline: pipeline)
+      child_pipeline = create(:ci_pipeline, :success, partition_id: 101, child_of: pipeline)
+      create(:ci_build, :test_reports, pipeline: child_pipeline)
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        complete_and_has_self_or_descendant_reports?
+      end
+
+      artifact_existence_query = recorder.log.find do |query|
+        query.include?('SELECT 1 AS one FROM "p_ci_job_artifacts"')
+      end
+
+      expect(artifact_existence_query).to be_present
+
+      aggregate_failures do
+        expect(recorder.log).not_to include(
+          a_string_matching(/SELECT "p_ci_builds"."id", "p_ci_builds"."partition_id"/)
+        )
+        expect(artifact_existence_query).to include(
+          '"p_ci_job_artifacts"."job_id" IN (SELECT "p_ci_builds"."id"'
+        )
+          .and include('"p_ci_job_artifacts"."partition_id"')
+          .and include('"p_ci_builds"."partition_id"')
+      end
+    end
+
     context 'when the pipeline has reports' do
       let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :with_test_reports, :success) }
 
@@ -6319,6 +6442,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'with a nested child pipeline that has reports' do
         let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
         let_it_be(:nested_child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: child_pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the child pipeline is in another partition' do
+        let_it_be(:child_pipeline) do
+          create(:ci_pipeline, :with_test_reports, :success, partition_id: 101, child_of: pipeline)
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -8428,45 +8559,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#has_erasable_artifacts?' do
-    subject { pipeline.has_erasable_artifacts? }
-
-    context 'when pipeline is not complete' do
-      let(:pipeline) { create(:ci_pipeline, :running, :with_job) }
-
-      context 'and has erasable artifacts' do
-        before do
-          create(:ci_job_artifact, :archive, job: pipeline.builds.first)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'when pipeline is complete' do
-      let(:pipeline) { create(:ci_pipeline, :success, :with_job) }
-
-      context 'and has no artifacts' do
-        it { is_expected.to be_falsey }
-      end
-
-      Ci::JobArtifact.erasable_file_types.each do |type|
-        context "and has an artifact of type #{type}" do
-          before do
-            create(
-              :ci_job_artifact,
-              file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
-              file_type: type,
-              job: pipeline.builds.first
-            )
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-    end
-  end
-
   describe '#auto_cancel_on_new_commit' do
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -8608,26 +8700,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when logging is requested' do
         it 'calls access logger' do
-          expect(::Gitlab::Ci::Pipeline::AccessLogger)
-            .to receive(:new)
-            .with(pipeline: pipeline, archived: false)
-            .and_call_original
-
-          expect(pipeline.archived?(log: true)).to be_falsey
-        end
-      end
-    end
-
-    context 'when ci_pipeline_archival_setting feature flag is disabled for the project' do
-      before do
-        stub_feature_flags(ci_pipeline_archival_setting: false)
-        stub_application_setting(archive_builds_in_seconds: 3600)
-      end
-
-      it { is_expected.not_to be_archived }
-
-      context 'when logging is requested' do
-        it 'still calls access logger with archived: false' do
           expect(::Gitlab::Ci::Pipeline::AccessLogger)
             .to receive(:new)
             .with(pipeline: pipeline, archived: false)

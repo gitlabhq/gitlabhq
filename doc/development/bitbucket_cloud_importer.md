@@ -34,7 +34,7 @@ called `Gitlab::BitbucketImport::AdvanceStageWorker`.
 
 ### 1. Stage::ImportRepositoryWorker
 
-This worker imports the repository, wiki and labels, scheduling the next stage when
+This worker imports the repository, wiki, and labels, scheduling the next stage when
 done.
 
 ### 2. Stage::ImportUsersWorker

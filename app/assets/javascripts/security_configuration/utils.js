@@ -7,7 +7,7 @@ import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
  * features is dynamic and coming from the backend.
  * securityFeatures is nested in features and are static arrays living in backend constants
  * This function takes the nested securityFeatures config and flattens it to the top level object.
- * It then filters out any scanner features that lack a security config for rednering in the UI
+ * It then filters out any scanner features that lack a security config for rendering in the UI
  * @param [{}] features
  * @param {Object} securityFeatures Object containing client side UI options
  * @returns {Object} Object with enriched features from constants divided into Security and compliance Features
@@ -21,7 +21,7 @@ export const augmentFeatures = (features = []) => {
 
   /**
    * Track feature configs that are used as nested elements in the UI
-   * so they aren't rendered at the top level as a seperate card
+   * so they aren't rendered at the top level as a separate card
    */
   const secondaryFeatures = [];
 

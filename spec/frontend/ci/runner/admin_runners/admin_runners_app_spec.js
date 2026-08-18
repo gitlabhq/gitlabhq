@@ -64,6 +64,7 @@ import {
   allRunnersDataPaginated,
   mockRegistrationToken,
   newRunnerPath,
+  runnerSettingsPath,
   emptyPageInfo,
   usersData,
 } from '../mock_data';
@@ -95,6 +96,7 @@ describe('AdminRunnersApp', () => {
 
   const defaultProps = {
     newRunnerPath,
+    runnerSettingsPath,
     canAdminRunners: true,
   };
 
@@ -108,6 +110,7 @@ describe('AdminRunnersApp', () => {
   const findRunnerPaginationNext = () => findRunnerPagination().findByText('Next');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findNewInstanceRunnerButton = () => wrapper.findByText('Create instance runner');
+  const findRunnerSettingsButton = () => wrapper.findByTestId('runner-settings-button');
 
   const createComponent = ({
     props = {},
@@ -203,6 +206,27 @@ describe('AdminRunnersApp', () => {
         createComponent({ props: { canAdminRunners: false } });
 
         expect(findNewInstanceRunnerButton().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('runner settings button', () => {
+    it('links to runner settings with a tracked, labelled button', () => {
+      createComponent();
+
+      expect(findRunnerSettingsButton().attributes()).toMatchObject({
+        href: runnerSettingsPath,
+        title: 'Manage access and security settings',
+        'aria-label': 'Manage access and security settings',
+        'data-event-tracking': 'click_runner_settings_button_in_admin_runners',
+      });
+    });
+
+    describe('when canAdminRunners prop is false', () => {
+      it('is not shown', () => {
+        createComponent({ props: { canAdminRunners: false } });
+
+        expect(findRunnerSettingsButton().exists()).toBe(false);
       });
     });
   });
@@ -507,7 +531,7 @@ describe('AdminRunnersApp', () => {
     it('When runner is paused or unpaused, some data is refetched', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
-      findRunnerActionsCell().vm.$emit('toggledPaused');
+      findRunnerActionsCell().vm.$emit('toggled-paused');
 
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
       expect(showToast).toHaveBeenCalledTimes(0);
@@ -614,7 +638,7 @@ describe('AdminRunnersApp', () => {
       it('toast is shown', () => {
         expect(showToast).toHaveBeenCalledTimes(0);
 
-        findRunnerList().vm.$emit('toggledPaused', { message: 'runners paused' });
+        findRunnerList().vm.$emit('toggled-paused', { message: 'runners paused' });
 
         expect(showToast).toHaveBeenCalledTimes(1);
         expect(showToast).toHaveBeenCalledWith('runners paused');

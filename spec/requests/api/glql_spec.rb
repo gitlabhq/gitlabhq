@@ -301,7 +301,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
 
     context 'with pagination' do
       before do
-        create_list(:issue, 10, :opened, project: project)
+        create_list(:issue, 6, :opened, project: project)
       end
 
       it 'returns first page with pageInfo' do
@@ -448,6 +448,83 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
         glql_request
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+
+  describe 'GET /glql/schema' do
+    let(:schema_endpoint) { '/glql/schema' }
+
+    subject(:schema_request) { get api(schema_endpoint, user) }
+
+    # A token narrower than the route must not fare worse than presenting none,
+    # in either the granular or the legacy scope check.
+    it 'serves a granular token scoped to something else' do
+      pat = create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+        permissions: ['read_notification_setting'])
+
+      get api(schema_endpoint, personal_access_token: pat)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'serves a token whose scope does not cover the API' do
+      token = create(:oauth_access_token, user: user, scopes: [:read_user])
+
+      get api(schema_endpoint, oauth_access_token: token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    # Built here, not compared against `Schema.document`, which would pass for
+    # whatever that method returned.
+    it 'returns the gem document with the display types added', :aggregate_failures do
+      schema_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(
+        ::Glql.schema.merge('display_types' => Analytics::Glql::Schema::DISPLAY_TYPES)
+      )
+    end
+
+    it 'includes the detail a consumer needs to build a query', :aggregate_failures do
+      schema_request
+
+      mode = json_response['sources'].first['modes'].first
+      expect(mode['filter_fields'].first['value_types']).to be_present
+      expect(json_response['display_types'].pluck('name')).to include('list')
+      expect(json_response['functions'].pluck('name')).to include('today')
+      expect(json_response['version']).to eq(Glql::VERSION)
+    end
+
+    it 'returns the same document regardless of who asks' do
+      get api(schema_endpoint, user)
+      first = json_response
+
+      get api(schema_endpoint, create(:user))
+
+      expect(json_response).to eq(first)
+    end
+
+    # `Rack::ETag` gives us this for free, so pin it.
+    it 'lets a client revalidate instead of refetching', :aggregate_failures do
+      schema_request
+
+      etag = response.headers['ETag']
+      expect(etag).to be_present
+
+      get api(schema_endpoint, user), headers: { 'If-None-Match' => etag }
+
+      expect(response).to have_gitlab_http_status(:not_modified)
+      expect(response.body).to be_empty
+    end
+
+    context 'when unauthenticated' do
+      it 'serves the document anyway', :aggregate_failures do
+        get api(schema_endpoint)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['sources']).to be_present
       end
     end
   end

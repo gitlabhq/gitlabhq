@@ -121,6 +121,12 @@ When this setting is enabled:
   that is the source branch of a merge request. GitLab only tries to create a merge request pipeline.
 - If the branch is not the source branch of an open or previously closed merge request,
   then GitLab does try to create a branch pipeline.
+- On the first push that creates a merge request, a branch pipeline is still created
+  because the pipeline starts before the merge request is created.
+  Starting from the next push, branch pipelines are skipped.
+- Mergeability checks, like [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge),
+  only consider merge request pipelines. Branch pipelines
+  do not affect merge readiness.
 - Jobs without explicit `rules`, `only`, or `except` sections are automatically
   included in merge request pipelines. The implicit `only: [branches, tags]` default is removed for these jobs.
 - Only push-triggered pipelines are affected. All other pipeline types, including
@@ -219,8 +225,7 @@ If the configuration file is in a separate project, you can set more granular pe
 - Create a public project to host the configuration file.
 - Give write permissions on the project only to users who are allowed to edit the file.
 
-Then other users and projects can access the configuration file without being
-able to edit it.
+Then other users and projects can access, but not edit, the configuration file.
 
 ## Choose the default Git strategy
 
@@ -233,7 +238,7 @@ You can choose how your repository is fetched from GitLab when a job runs.
    - `git clone` is slower because it clones the repository from scratch
      for every job. However, the local working copy is always pristine.
    - `git fetch` is faster because it re-uses the local working copy (and falls
-     back to clone if it doesn't exist). This is recommended, especially for
+     back to clone if it doesn't exist). Use this command, especially for
      [large repositories](../../user/project/repository/monorepos/_index.md#use-git-fetch-in-cicd-operations).
 
 The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)

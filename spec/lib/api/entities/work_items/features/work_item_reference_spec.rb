@@ -13,6 +13,7 @@ RSpec.describe API::Entities::WorkItems::Features::WorkItemReference, feature_ca
       global_id: work_item.to_gid.to_s,
       iid: work_item.iid,
       title: work_item.title,
+      title_html: MarkupHelper.markdown_field(work_item, :title, current_user: nil),
       state: work_item.state,
       confidential: work_item.confidential,
       reference: work_item.to_reference(full: true),

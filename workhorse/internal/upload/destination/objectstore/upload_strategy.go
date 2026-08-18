@@ -25,13 +25,11 @@ func deleteURL(url string) {
 		return
 	}
 
+	logger := slog.With(slog.String("object", mask.URL(url)))
+
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		slog.Warn(
-			"Delete failed",
-			slog.String("object", mask.URL(url)),
-			log.Error(err),
-		)
+		logger.Warn("Delete failed", log.Error(err))
 		return
 	}
 	// TODO: consider adding the context to the outgoing request for better instrumentation
@@ -39,20 +37,13 @@ func deleteURL(url string) {
 	// here we are not using u.ctx because we must perform cleanup regardless of parent context
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		slog.Warn(
-			"Delete failed",
-			slog.String("object", mask.URL(url)),
-			log.Error(err),
-		)
+		logger.Warn("Delete failed", log.Error(err))
 		return
 	}
+
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			slog.Warn(
-				"Failed to close response body",
-				slog.String("object", mask.URL(url)),
-				log.Error(err),
-			)
+			logger.Warn("Failed to close response body", log.Error(err))
 		}
 	}()
 }

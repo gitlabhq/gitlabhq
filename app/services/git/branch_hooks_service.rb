@@ -178,6 +178,7 @@ module Git
         # mentionables referenced by a commit that is pushed to the upstream,
         # that is then also pushed to forks when these get synced by users.
         next if upstream_commit_ids.include?(commit.id)
+        next unless try_schedule_commit(commit.id)
 
         ProcessCommitWorker.perform_in(
           process_commit_worker_delay,
@@ -329,7 +330,17 @@ module Git
     end
 
     def process_commit_worker_delay
-      params[:process_commit_worker_pool]&.get_and_increment_delay || 0
+      process_commit_worker_pool&.get_and_increment_delay || 0
+    end
+
+    def try_schedule_commit(sha)
+      return true unless process_commit_worker_pool
+
+      process_commit_worker_pool.try_schedule_commit(sha, default: default_branch?)
+    end
+
+    def process_commit_worker_pool
+      params[:process_commit_worker_pool]
     end
   end
 end

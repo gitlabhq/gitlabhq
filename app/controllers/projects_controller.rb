@@ -17,6 +17,7 @@ class ProjectsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   before_action :disable_query_limiting, only: [:show, :create]
+  before_action :disable_transfer_query_limiting, only: :transfer
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :unfoldered_environment_names]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
@@ -47,6 +48,7 @@ class ProjectsController < Projects::ApplicationController
 
   # Project Export Rate Limit
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
+  before_action :check_create_rate_limit!, only: [:create]
 
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
@@ -54,6 +56,9 @@ class ProjectsController < Projects::ApplicationController
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
+    # This page cannot be migrated as a whole, it is migrated partially with
+    # `?vue3` imports, so it cannot use `vue3_migration.yml`. See:
+    # https://docs.gitlab.com/development/fe_guide/vue3_migration/#option-2-migrate-your-page-partially-using-vue3
     push_frontend_feature_flag(:vue3_migrate_repository, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
@@ -417,6 +422,12 @@ class ProjectsController < Projects::ApplicationController
 
   private
 
+  def disable_transfer_query_limiting
+    return if Feature.enabled?(:groups_and_projects_async_transfer, project.root_ancestor)
+
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/work_items/606043', new_threshold: 110)
+  end
+
   def enqueue_async_transfer(namespace)
     service = ::Projects::TransferService.new(@project, current_user)
     result = service.schedule_async_transfer(namespace)
@@ -671,6 +682,12 @@ class ProjectsController < Projects::ApplicationController
     check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
   end
 
+  def check_create_rate_limit!
+    return unless Feature.enabled?(:namespace_create_rate_limit, current_user)
+
+    check_rate_limit!(:projects_create, scope: [current_user])
+  end
+
   def render_edit
     render 'edit'
   end
@@ -681,4 +698,4 @@ class ProjectsController < Projects::ApplicationController
   end
 end
 
-ProjectsController.prepend_mod_with('ProjectsController')
+ProjectsController.prepend_mod

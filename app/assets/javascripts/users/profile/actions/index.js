@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import UserActionsApp from './components/user_actions_app.vue';
 
 export const initUserActionsApp = () => {
@@ -12,21 +13,18 @@ export const initUserActionsApp = () => {
 
   Vue.use(GlToast);
 
-  return new Vue({
+  return initVueApp({
     el: mountingEl,
     name: 'UserActionsRoot',
     provide: {
       reportAbusePath,
     },
-    render(createElement) {
-      return createElement(UserActionsApp, {
-        props: {
-          userId,
-          rssSubscriptionPath,
-          reportedUserId: reportedUserId ? parseInt(reportedUserId, 10) : null,
-          reportedFromUrl,
-        },
-      });
+    component: UserActionsApp,
+    props: {
+      userId,
+      rssSubscriptionPath,
+      reportedUserId: reportedUserId ? parseInt(reportedUserId, 10) : null,
+      reportedFromUrl,
     },
   });
 };

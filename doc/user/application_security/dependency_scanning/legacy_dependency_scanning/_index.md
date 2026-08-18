@@ -562,7 +562,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise dependency scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
-| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, Maven, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
+| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, Maven, npm, pnpm, Pipenv, or Poetry are supported. |
 | `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
 | `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
 | `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
@@ -1000,7 +1000,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     </tr>
     <tr>
       <td>NuGet</td>
-      <td>v1, v2<sup>1</sup></td>
+      <td>v1, v2</td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2">4.9</a>
       </td>
@@ -1025,7 +1025,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     </tr>
     <tr>
       <td>yarn</td>
-      <td>versions 1, 2, 3, 4<sup>2</sup></td>
+      <td>versions 1, 2, 3, 4<sup>1</sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/classic/default/yarn.lock#L2">1.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v2/default/yarn.lock">2.x</a>,
@@ -1051,10 +1051,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 
 **Footnotes**:
 
-1. Support for NuGet version 2 lockfiles was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398680) in GitLab 16.2.
-1. Support for Yarn version 4 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431752) in GitLab 16.11.
-
-   The following features are not supported for Yarn Berry:
+1. The following features are not supported for Yarn Berry:
 
    - Workspaces
    - `yarn patch`

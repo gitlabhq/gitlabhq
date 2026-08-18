@@ -2,6 +2,8 @@
 description: Tracks submit on registration clicked.
 action: register
 product_group: acquisition
+product_categories:
+- acquisition
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149054
 tiers:

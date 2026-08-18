@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton } from '@gitlab/ui';
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
@@ -7,9 +6,7 @@ import { TYPE_ISSUE } from '~/issues/constants';
 import UncollapsedReviewerList from './uncollapsed_reviewer_list.vue';
 
 export default {
-  // name: 'Reviewers' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  name: 'Reviewers',
+  name: 'ReviewersList',
   components: {
     GlButton,
     UncollapsedReviewerList,

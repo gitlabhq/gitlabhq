@@ -143,14 +143,20 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
       it_renders_correctly
     end
 
-    it 'can paginate logs' do
-      create_list(:web_hook_log, 21, web_hook: hook)
+    context 'when there are more logs than fit on one page' do
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+      end
 
-      get :edit, params: params.merge(page: 2)
+      it 'can paginate logs' do
+        create_list(:web_hook_log, 3, web_hook: hook)
 
-      expect(assigns[:hook]).to be_present
-      expect(assigns[:hook_logs].count).to eq 1
-      it_renders_correctly
+        get :edit, params: params.merge(page: 2)
+
+        expect(assigns[:hook]).to be_present
+        expect(assigns[:hook_logs].count).to eq 1
+        it_renders_correctly
+      end
     end
 
     def it_renders_correctly
@@ -284,8 +290,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
 
     context 'when the endpoint receives requests above the limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:web_hook_test).and_return(1)
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, true)
       end
 
       it 'prevents making test requests' do

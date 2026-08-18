@@ -18,7 +18,7 @@ module Resolvers
       end
 
       def finder_params(args)
-        args.merge(organization: organization)
+        unpack_negated_args(args).merge(organization: organization)
       end
     end
   end

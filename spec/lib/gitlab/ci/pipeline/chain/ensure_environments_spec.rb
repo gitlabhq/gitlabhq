@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failures do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let(:ref) { 'master' }
   let(:stage) { build(:ci_stage, project: project, statuses: [job]) }

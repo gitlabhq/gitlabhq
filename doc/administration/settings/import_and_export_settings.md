@@ -59,13 +59,9 @@ To enable the export of
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461326) in GitLab 18.3.
 
 {{< /history >}}
-
-> [!warning]
-> In GitLab 16.1 and earlier, you should not use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:
@@ -81,6 +77,102 @@ To enable migration of groups and projects by direct transfer:
 The same setting
 [is available](../../api/settings.md#available-settings) in the API as the
 `bulk_import_enabled` attribute.
+
+## Allow S3-compatible object storage for offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579705) in GitLab 18.9
+  [with a feature flag](../../administration/feature_flags/_index.md) named `offline_transfer_exports`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be an administrator.
+
+By default, [offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) supports
+only AWS S3 and Google Cloud Storage. Turn on this setting to also allow S3-compatible providers,
+such as MinIO.
+
+> [!warning]
+> When you enable this setting, users who can perform offline transfers can supply an arbitrary
+> `endpoint` URL in the offline transfer object storage configuration. GitLab then sends requests
+> to that endpoint. Enable this setting only if you trust the users who can perform offline transfers.
+
+To allow S3-compatible object storage for offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow S3 compatible object storage for offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+## Allow application default credentials for offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8985) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 19.3 [with feature flags](../../administration/feature_flags/_index.md) named `offline_transfer_exports`, `offline_transfer_imports`, and `offline_transfer_ui`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Turn on this setting to allow [offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md)
+to authenticate with Google Cloud Storage by using
+[Application Default Credentials](../object_storage.md#google-cloud-application-default-credentials) (ADC).
+
+With every other object storage provider, the user who creates an export or an import supplies the
+credentials. With ADC, no user supplies credentials. GitLab stores only the Google Cloud project ID
+and resolves the credentials for each request from the environment of the instance, either from the
+Compute Engine metadata server or from the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
+
+Prerequisites:
+
+- You must be an administrator.
+
+> [!warning]
+> An offline transfer that uses ADC acts with every Cloud Storage permission that the service account
+> of the instance holds. That service account is usually more privileged than any individual user, so
+> a user who creates an ADC transfer can reach buckets they hold no credentials for.
+
+To limit this risk, GitLab applies the following restrictions, which you cannot turn off:
+
+- Only users with administrator access can create an offline transfer export or import that uses
+  ADC. Other users receive the error
+  `Only administrators can use Application Default Credentials for offline transfer.`
+- The bucket name must start with `gitlab-offline-transfer-`. This prefix keeps ADC transfers away
+  from the buckets that the instance uses for its own object storage, such as uploads, job artifacts,
+  and LFS objects.
+- ADC is not available on GitLab.com.
+
+The Google Cloud project ID that you provide for a transfer does not limit which buckets that
+transfer can reach. Bucket names are globally unique in Cloud Storage, so an ADC transfer can use any
+bucket that the service account can access and whose name starts with `gitlab-offline-transfer-`,
+in any Google Cloud project.
+
+GitLab checks these restrictions when a user creates a transfer. If you turn off this setting, users
+can no longer create ADC transfers, but transfers that already started continue to run.
+
+To allow Application Default Credentials for offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow Google Cloud Application Default Credentials for offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+The same setting
+[is available](../../api/settings.md#available-settings) in the API as the
+`allow_application_default_credentials_for_offline_transfer` attribute.
 
 ## Enable silent admin exports
 
@@ -152,12 +244,6 @@ to non-bot users with any of the following states:
 
 ## Max export size
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.
-
-{{< /history >}}
-
 To modify the maximum file size for exports in GitLab:
 
 1. In the upper-right corner, select **Admin**.
@@ -184,12 +270,6 @@ For GitLab.com repository size limits, read [accounts and limit settings](../../
 
 ## Maximum remote file size for imports
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
-
-{{< /history >}}
-
 By default, the maximum remote file size for imports from external object storages (for example, AWS) is 10 GiB.
 
 To modify this setting:
@@ -201,12 +281,6 @@ To modify this setting:
 
 ## Maximum download file size for imports by direct transfer
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
-
-{{< /history >}}
-
 By default, the maximum download file size for imports by direct transfer is 5 GiB.
 
 To modify this setting:
@@ -217,13 +291,6 @@ To modify this setting:
 1. In **Maximum download file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
 ## Maximum decompressed file size for imported archives
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.3.
-- **Maximum decompressed file size for archives from imports** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130081) from **Maximum decompressed size** in GitLab 16.4.
-
-{{< /history >}}
 
 When you import a project using [file exports](../../user/project/settings/import_export.md) or
 [direct transfer](../../user/group/import/_index.md), you can specify the
@@ -245,12 +312,6 @@ To modify this setting:
 
 ## Timeout for decompressing archived files
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.4.
-
-{{< /history >}}
-
 When you [import a project](../../user/project/settings/import_export.md), you can specify the maximum time out for decompressing imported archives. The default value is 210 seconds.
 
 To modify the maximum decompressed file size for imports in GitLab:
@@ -261,12 +322,6 @@ To modify the maximum decompressed file size for imports in GitLab:
 1. Set another value for **Timeout for decompressing archived files (seconds)**.
 
 ## Maximum number of simultaneous import jobs
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11.
-
-{{< /history >}}
 
 You can specify the maximum number of import jobs that are executed simultaneously for:
 

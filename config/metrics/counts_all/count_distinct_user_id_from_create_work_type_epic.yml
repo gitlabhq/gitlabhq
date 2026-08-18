@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_create_work_type_epic
 description: Count of unique users who create a work item of type epic
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 performance_indicator_type: []

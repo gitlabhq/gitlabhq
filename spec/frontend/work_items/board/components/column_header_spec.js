@@ -15,7 +15,12 @@ describe('ColumnHeader', () => {
   const findIconByName = (name) => findIcons().wrappers.find((icon) => icon.props('name') === name);
   const findHeading = () => wrapper.findByTestId('column-header-name');
   const findCount = () => wrapper.findByTestId('column-header-count');
-  const findCollapseToggle = () => wrapper.findByTestId('column-collapse-toggle');
+  const findCollapseToggle = () => wrapper.findComponentByTestId('column-collapse-toggle');
+  const findHeaderBar = () => wrapper.findByTestId('column-header');
+  const findActionsMenu = () => wrapper.findComponentByTestId('column-actions-menu');
+  const findActionItem = (index) => findActionsMenu().props('items')[index];
+  const DRAG_HANDLE_CLASS = 'js-board-column-drag-handle';
+  const findCreateButton = () => wrapper.findComponentByTestId('column-create-item');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(ColumnHeader, {
@@ -74,6 +79,92 @@ describe('ColumnHeader', () => {
       createComponent({ props: { controlsId: 'board-column-body-42' } });
 
       expect(findCollapseToggle().attributes('aria-controls')).toBe('board-column-body-42');
+    });
+  });
+
+  describe('drag handle', () => {
+    it('does not make the header bar a drag handle by default', () => {
+      createComponent();
+
+      expect(findHeaderBar().classes()).not.toContain(DRAG_HANDLE_CLASS);
+      expect(findHeaderBar().classes()).not.toContain('gl-cursor-grab');
+    });
+
+    it('turns the whole header bar into the drag handle when reorderable', () => {
+      createComponent({ props: { reorderable: true } });
+
+      expect(findHeaderBar().classes()).toContain(DRAG_HANDLE_CLASS);
+      expect(findHeaderBar().classes()).toContain('gl-cursor-grab');
+    });
+
+    it('keeps the header bar as the drag handle while collapsed', () => {
+      createComponent({ props: { reorderable: true, collapsed: true } });
+
+      expect(findHeaderBar().classes()).toContain(DRAG_HANDLE_CLASS);
+    });
+  });
+
+  describe('actions menu', () => {
+    it('is not rendered when the column is not reorderable', () => {
+      createComponent();
+
+      expect(findActionsMenu().exists()).toBe(false);
+    });
+
+    it('is not rendered while the column is collapsed', () => {
+      createComponent({ props: { reorderable: true, collapsed: true } });
+
+      expect(findActionsMenu().exists()).toBe(false);
+    });
+
+    it('renders Move left and Move right items on a reorderable expanded column', () => {
+      createComponent({ props: { reorderable: true } });
+
+      expect(findActionsMenu().exists()).toBe(true);
+      expect(
+        findActionsMenu()
+          .props('items')
+          .map((item) => item.text),
+      ).toEqual(['Move left', 'Move right']);
+    });
+
+    it('disables Move left on the first column and Move right on the last', () => {
+      createComponent({ props: { reorderable: true, canMoveLeft: false, canMoveRight: true } });
+
+      expect(findActionItem(0).extraAttrs.disabled).toBe(true);
+      expect(findActionItem(1).extraAttrs.disabled).toBe(false);
+    });
+
+    it('emits move-column with a -1/+1 delta when an item is actioned', () => {
+      createComponent({ props: { reorderable: true, canMoveLeft: true, canMoveRight: true } });
+
+      findActionItem(0).action();
+      findActionItem(1).action();
+
+      expect(wrapper.emitted('move-column')).toEqual([[-1], [1]]);
+    });
+  });
+
+  describe('create item button', () => {
+    it('renders a plus button when canCreateWorkItem is true and the column is expanded', () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+
+      expect(findCreateButton().exists()).toBe(true);
+      expect(findCreateButton().props('icon')).toBe('plus');
+    });
+
+    it('is hidden when the column is collapsed', () => {
+      createComponent({ props: { canCreateWorkItem: true, collapsed: true } });
+
+      expect(findCreateButton().exists()).toBe(false);
+    });
+
+    it('emits create-item when clicked', () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+
+      findCreateButton().vm.$emit('click');
+
+      expect(wrapper.emitted('create-item')).toHaveLength(1);
     });
   });
 

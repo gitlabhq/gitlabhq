@@ -15,7 +15,7 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
         description: 'First version of test tool',
         input_schema: {
           type: 'object',
-          properties: { name: { type: 'string' } },
+          properties: { name: { type: 'string' }, project_id: { type: 'string' } },
           required: ['name']
         }
       }
@@ -27,7 +27,8 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           type: 'object',
           properties: {
             name: { type: 'string' },
-            age: { type: 'integer' }
+            age: { type: 'integer' },
+            project_id: { type: 'string' }
           },
           required: ['name']
         }
@@ -40,7 +41,8 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           type: 'object',
           properties: {
             full_name: { type: 'string' },
-            metadata: { type: 'object' }
+            metadata: { type: 'object' },
+            project_id: { type: 'string' }
           },
           required: ['full_name']
         }
@@ -52,38 +54,38 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
 
       def auth_target(params)
         project_id = params.dig(:arguments, :project_id)
-        find_project(project_id)
+        find_project!(project_id)
       end
 
       protected
 
-      def perform_1_0_0(arguments = {})
-        ::Mcp::Tools::Response.success(
+      def perform_v1_0_0(arguments = {})
+        ::Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: "Hello #{arguments[:name]} (v1.0.0)" }],
           { version: '1.0.0', name: arguments[:name] }
         )
       end
 
-      def perform_1_1_0(arguments = {})
+      def perform_v1_1_0(arguments = {})
         text = "Hello #{arguments[:name]}"
         text += ", age #{arguments[:age]}" if arguments[:age]
         text += " (v1.1.0)"
 
-        ::Mcp::Tools::Response.success(
+        ::Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: text }],
           { version: '1.1.0', name: arguments[:name], age: arguments[:age] }
         )
       end
 
-      def perform_2_0_0(arguments = {})
-        ::Mcp::Tools::Response.success(
+      def perform_v2_0_0(arguments = {})
+        ::Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: "Hello #{arguments[:full_name]} (v2.0.0)" }],
           { version: '2.0.0', full_name: arguments[:full_name], metadata: arguments[:metadata] }
         )
       end
 
       def perform_default(arguments = {})
-        ::Mcp::Tools::Response.success(
+        ::Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: "Default implementation with #{arguments}" }],
           { version: 'default' }
         )

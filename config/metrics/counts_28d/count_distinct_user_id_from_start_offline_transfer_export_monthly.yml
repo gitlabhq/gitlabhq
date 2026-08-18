@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_start_offline_transfer_export_monthly
+description: Monthly count of unique users who started an offline transfer export
+product_group: import
+product_categories:
+- importers
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245668
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: start_offline_transfer_export
+  unique: user.id

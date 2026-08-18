@@ -16,6 +16,11 @@ RSpec.describe HtmlSafetyValidator do
     expect(group.errors[:name]).to eq([described_class.error_message])
   end
 
+  it 'renders actual angle bracket characters in the error message', :aggregate_failures do
+    expect(described_class.error_message).to include('<', '>')
+    expect(described_class.error_message).not_to include('&lt;', '&gt;')
+  end
+
   it 'does not add an error when an ampersand is included in the name' do
     validate('Group with 1 & 2')
 

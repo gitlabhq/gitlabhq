@@ -5,6 +5,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
 import ListSelector from '~/vue_shared/components/list_selector/index.vue';
 import { GROUPS_TYPE, PROJECTS_TYPE } from '~/vue_shared/components/list_selector/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'AddExclusionsDrawer',
@@ -16,6 +17,7 @@ export default {
     GlButton,
     ListSelector,
   },
+  mixins: [glListenersMixin],
   props: {
     isOpen: {
       type: Boolean,
@@ -66,7 +68,7 @@ export default {
     :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     :open="isOpen"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #title>
       <h2 class="gl-mt-0 gl-text-size-h2" data-testid="title">{{ $options.i18n.addExclusions }}</h2>

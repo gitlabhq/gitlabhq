@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BulkImportHistoryApp from './components/bulk_imports_history_app.vue';
 
 export function initBulkImportHistory() {
@@ -10,19 +10,16 @@ export function initBulkImportHistory() {
 
   const { id, realtimeChangesPath, detailsPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'BulkImportHistoryRoot',
     provide: {
       realtimeChangesPath,
       detailsPath,
     },
-    render(createElement) {
-      return createElement(BulkImportHistoryApp, {
-        props: {
-          id,
-        },
-      });
+    component: BulkImportHistoryApp,
+    props: {
+      id,
     },
   });
 }

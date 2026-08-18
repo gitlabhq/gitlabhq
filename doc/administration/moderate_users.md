@@ -89,7 +89,7 @@ To trigger a manual update of the daily and historical billable users in your Gi
 
 ## Users pending approval
 
-A user in a pending approval state requires action by an administrator. A user sign up can be in a
+A user in a pending approval state requires action by an administrator. A new user account can be in a
 pending approval state because an administrator has enabled any of the following options:
 
 - [Require administrator approval for new user account creation](settings/sign_up_restrictions.md#require-administrator-approval-for-new-user-accounts) setting.
@@ -111,10 +111,10 @@ A user pending approval:
 - Does not receive any notifications from GitLab.
 - Does not consume a [seat](../subscriptions/manage_seats.md#billable-users).
 
-An administrator must [approve their sign up](#approve-or-reject-a-new-user-account) to allow them to
+An administrator must [approve the new user account](#approve-or-reject-a-new-user-account) to allow them to
 sign in.
 
-### View user sign ups pending approval
+### View new user accounts pending approval
 
 {{< history >}}
 
@@ -122,7 +122,7 @@ sign in.
 
 {{< /history >}}
 
-To view user sign ups pending approval:
+To view new user accounts pending approval:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Users**.
@@ -136,14 +136,14 @@ To view user sign ups pending approval:
 
 {{< /history >}}
 
-A user sign up pending approval can be approved or rejected from the **Admin** area.
+A new user account pending approval can be approved or rejected from the **Admin** area.
 
-To approve or reject a user sign up:
+To approve or reject a new user account:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Users**.
 1. In the search box, filter by **State=Pending approval** and press <kbd>Enter</kbd>.
-1. For the user sign up you want to approve or reject, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Approve** or **Reject**.
+1. For the new user account you want to approve or reject, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Approve** or **Reject**.
 
 Approving a user:
 
@@ -275,13 +275,6 @@ To remove a user from a GitLab.com subscription, see
 
 ### Automatically deactivate dormant users
 
-{{< history >}}
-
-- Customizable time period [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747) in GitLab 15.4
-- The lower limit for inactive period set to 90 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100793) in GitLab 15.5
-
-{{< /history >}}
-
 Administrators can enable automatic deactivation of users who either:
 
 - Were created more than a week ago and have not signed in.
@@ -315,13 +308,6 @@ You can disable [user deactivation emails](settings/email.md#user-deactivation-e
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a feature flag](feature_flags/_index.md) named `delete_unconfirmed_users_setting`. Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124982) in GitLab 16.2.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must be an administrator.
@@ -344,6 +330,8 @@ The job only deletes users who signed up more than `unconfirmed_users_delete_aft
 This job only runs when the `email_confirmation_setting` is set to `soft` or `hard`.
 
 A maximum of 240,000 users can be deleted per day.
+
+This job also deletes users with unconfirmed email addresses provisioned through SAML or SCIM.
 
 ### Reactivate a user
 
@@ -376,8 +364,6 @@ The user's state is set to active and they consume a
 {{< history >}}
 
 - Hiding merge requests of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836) in GitLab 15.8 [with a feature flag](feature_flags/_index.md) named `hide_merge_requests_from_banned_users`. Disabled by default.
-- Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a feature flag](feature_flags/_index.md) named `hidden_notes`. Disabled by default.
-- Hiding projects of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121488) in GitLab 16.2 [with a feature flag](feature_flags/_index.md) named `hide_projects_of_banned_users`. Disabled by default.
 - Hiding merge requests of banned users [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188770) in GitLab 18.0. Feature flag `hide_merge_requests_from_banned_users` removed.
 
 {{< /history >}}
@@ -441,7 +427,6 @@ To delete a user:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
 - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 {{< /history >}}

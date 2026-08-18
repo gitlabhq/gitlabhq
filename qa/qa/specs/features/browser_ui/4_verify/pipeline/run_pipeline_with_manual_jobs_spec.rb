@@ -68,8 +68,7 @@ module QA
       end
 
       it(
-        'does not leave any job in skipped state',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349158'
+        'does not leave any job in skipped state'
       ) do
         Page::Project::Pipeline::Show.perform do |show|
           show.click_job_action('Prep') # Trigger pipeline manually

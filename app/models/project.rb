@@ -51,13 +51,14 @@ class Project < ApplicationRecord
   include Namespaces::AdjournedDeletable
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::PROJECT_IDS, feature_flag: :cells_claims_projects
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_PROJECT_ID, feature_flag: :cells_claims_projects
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
+  ignore_column :ci_id, remove_with: '19.4', remove_after: '2026-09-17'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -97,6 +98,7 @@ class Project < ApplicationRecord
   MAX_MR_TITLE_TEMPLATE_LENGTH = 100
   MAX_MERGE_REQUEST_TITLE_REGEX = 255
   MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION = 255
+  MAX_DESCRIPTION_LENGTH = 2000
 
   INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
@@ -164,6 +166,12 @@ class Project < ApplicationRecord
   after_update :enqueue_catalog_resource_sync_event_worker,
     if: -> { catalog_resource && (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) }
 
+  # The service desk project_key_address_slug is derived from the project full
+  # path, so it must be recomputed whenever the path changes (rename or
+  # transfer). Runs in the same transaction as the path change.
+  after_update :refresh_service_desk_project_key_address_slug,
+    if: -> { saved_change_to_path? || saved_change_to_namespace_id? }
+
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
 
@@ -174,6 +182,11 @@ class Project < ApplicationRecord
   after_save :create_import_state, if: ->(project) do
     project.import? && project.import_state.nil? && (!project.transfer_import? || project.mirror?)
   end
+
+  # Block a rename or transfer that would make the service desk address collide
+  # with another project's, before the write happens, so the operation fails
+  # with a clear error instead of leaving an unclaimable slug.
+  validate :service_desk_project_key_available, if: -> { persisted? && full_path_changed? }
 
   after_save :save_topics
 
@@ -581,7 +594,8 @@ class Project < ApplicationRecord
 
   with_options to: :namespace do
     delegate :actual_limits, :actual_plan_name, :actual_plan, :root_ancestor, allow_nil: true
-    delegate :maven_package_requests_forwarding, :pypi_package_requests_forwarding, :npm_package_requests_forwarding
+    delegate :maven_package_requests_forwarding, :pypi_package_requests_forwarding, :npm_package_requests_forwarding,
+      :rubygems_package_requests_forwarding
   end
 
   with_options to: :ci_cd_settings, allow_nil: true do
@@ -643,7 +657,7 @@ class Project < ApplicationRecord
 
   # Validations
   validates :creator, presence: true, on: :create
-  validates :description, length: { maximum: 2000 }, allow_blank: true
+  validates :description, length: { maximum: MAX_DESCRIPTION_LENGTH }, allow_blank: true
   validates :ci_config_path,
     format: { without: %r{(\.{2}|\A/)},
               message: N_('cannot include leading slash or directory traversal.') },
@@ -963,11 +977,6 @@ class Project < ApplicationRecord
         .where(repository_languages: { programming_language_id: lang_id_query })
   end
 
-  scope :with_programming_language_id, ->(language_id) do
-    joins(:repository_languages)
-        .where(repository_languages: { programming_language_id: language_id })
-  end
-
   scope :service_desk_enabled, -> { where(service_desk_enabled: true) }
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
@@ -1004,7 +1013,7 @@ class Project < ApplicationRecord
 
   scope :with_namespace_domain_pages, -> do
     joins(:project_setting)
-      .where(project_setting: { pages_unique_domain_enabled: false })
+      .merge(ProjectSetting.with_pages_namespace_domain)
   end
 
   scope :with_group_child_entity_associations, -> {
@@ -1403,6 +1412,19 @@ class Project < ApplicationRecord
         .pluck(:id, 'namespaces.traversal_ids')
         .group_by(&:last)
         .transform_values { |projects| projects.map(&:first) }
+    end
+
+    def root_namespace_ids_by_project_ids(project_ids)
+      return {} if project_ids.blank?
+
+      project_ids.each_slice(Project::MAX_PLUCK).each_with_object({}) do |ids_batch, result|
+        result.merge!(
+          id_in(ids_batch)
+            .joins(:namespace)
+            .pluck(:id, Arel.sql('namespaces.traversal_ids[1]'))
+            .to_h
+        )
+      end
     end
 
     def root_ids_for(project_ids)
@@ -2334,10 +2356,6 @@ class Project < ApplicationRecord
         integration.async_execute(data)
       end
     end
-  end
-
-  def execute_flow_triggers(_, _)
-    # noop in CE
   end
 
   def has_active_hooks?(hooks_scope = :push_hooks)
@@ -3537,6 +3555,14 @@ class Project < ApplicationRecord
     ci_cd_settings.override_pipeline_variables_allowed?(access_level, user)
   end
 
+  def feature_flags_management_allowed?(access_level, user)
+    project_setting.feature_flags_management_allowed?(access_level, user)
+  end
+
+  def feature_flags_minimum_role_privileged?
+    project_setting.feature_flags_minimum_role_privileged?
+  end
+
   def ci_push_repository_for_job_token_allowed?
     return false unless ci_cd_settings
 
@@ -3737,6 +3763,17 @@ class Project < ApplicationRecord
     return unless ProjectSetting.where(pages_unique_domain: base).exists?
 
     errors.add(:path, s_('Project|already in use'))
+  end
+
+  def service_desk_project_key_available
+    return unless service_desk_setting&.project_key_address_slug_conflict?
+
+    errors.add(:base,
+      s_('Project|Service Desk address is already in use. Change the Service Desk project key before moving or renaming this project.'))
+  end
+
+  def refresh_service_desk_project_key_address_slug
+    service_desk_setting&.refresh_project_key_address_slug!
   end
 
   def repository_object_format

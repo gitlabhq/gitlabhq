@@ -16,8 +16,9 @@ module Mutations
 
         argument :link_type, ::Types::MergeRequests::WorkItemLinkTypeEnum,
           required: false,
-          default_value: ::Types::MergeRequests::WorkItemLinkTypeEnum.enum[:mentioned],
-          description: 'Type of relationship to create. Defaults to MENTIONED.'
+          default_value: ::Types::MergeRequests::WorkItemLinkTypeEnum.enum[:related],
+          description: 'Type of relationship to create. Defaults to RELATED. ' \
+            'MENTIONED relations are managed automatically and cannot be created.'
 
         field :work_item_relations, [::Types::MergeRequests::WorkItemRelationType],
           null: true,

@@ -3,6 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import JobAssistantDrawer from 'jh_else_ce/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue';
 import PipelineEditorFileNav from './components/file_nav/pipeline_editor_file_nav.vue';
@@ -47,6 +48,7 @@ export default {
     PipelineEditorHeader,
     PipelineEditorTabs,
   },
+  mixins: [glListenersMixin],
   props: {
     ciConfigData: {
       type: Object,
@@ -154,7 +156,7 @@ export default {
       :should-load-new-branch="shouldLoadNewBranch"
       @select-branch="handleConfirmSwitchBranch"
       @toggle-file-tree="toggleFileTree"
-      v-on="$listeners"
+      v-on="glListeners()"
     />
     <div class="gl-flex gl-w-full gl-flex-col @md/panel:gl-flex-row">
       <pipeline-editor-file-tree
@@ -167,7 +169,7 @@ export default {
           :ci-config-data="ciConfigData"
           :commit-sha="commitSha"
           :is-new-ci-config-file="isNewCiConfigFile"
-          v-on="$listeners"
+          v-on="glListeners()"
         />
         <pipeline-editor-tabs
           :ci-config-data="ciConfigData"
@@ -175,7 +177,7 @@ export default {
           :commit-sha="commitSha"
           :show-help-drawer="showHelpDrawer"
           :show-job-assistant-drawer="showJobAssistantDrawer"
-          v-on="$listeners"
+          v-on="glListeners()"
           @switch-drawer="switchDrawer"
           @set-current-tab="setCurrentTab"
         />
@@ -188,12 +190,12 @@ export default {
       :commit-sha="commitSha"
       :has-unsaved-changes="hasUnsavedChanges"
       :is-new-ci-config-file="isNewCiConfigFile"
-      v-on="$listeners"
+      v-on="glListeners()"
     />
     <pipeline-editor-drawer
       :is-visible="showHelpDrawer"
       :z-index="drawerIndex[$options.EDITOR_APP_DRAWER_HELP]"
-      v-on="$listeners"
+      v-on="glListeners()"
       @switch-drawer="switchDrawer"
     />
     <job-assistant-drawer
@@ -201,7 +203,7 @@ export default {
       :ci-file-content="ciFileContent"
       :is-visible="showJobAssistantDrawer"
       :z-index="drawerIndex[$options.EDITOR_APP_DRAWER_JOB_ASSISTANT]"
-      v-on="$listeners"
+      v-on="glListeners()"
       @switch-drawer="switchDrawer"
     />
   </div>

@@ -8,7 +8,7 @@ title: Manage subscription
 
 ## Buy a subscription
 
-After you [sign up](https://gitlab.com/users/sign_up) for GitLab,
+After you [create a user account](https://gitlab.com/users/sign_up) for GitLab,
 you can buy a subscription for GitLab.com or GitLab Self-Managed.
 The subscription determines which features are available for your private projects.
 
@@ -27,8 +27,8 @@ Organizations with public open source projects can apply to the [GitLab for Open
 {{< /details >}}
 
 GitLab.com is the GitLab multi-tenant software-as-a-service (SaaS) offering.
-You don't need to install anything to use GitLab.com, you only need to [sign up](https://gitlab.com/users/sign_up).
-When you sign up, you choose:
+You don't need to install anything to use GitLab.com, you only need to [create a user account](https://gitlab.com/users/sign_up).
+When you create your account, you choose:
 
 - [A subscription](https://about.gitlab.com/pricing/).
   View the [GitLab.com feature comparison](https://about.gitlab.com/pricing/feature-comparison/) and decide which tier you want.
@@ -70,14 +70,31 @@ To subscribe to GitLab.com:
 
 To subscribe to GitLab for a GitLab Self-Managed instance:
 
-1. Go to the [Pricing page](https://about.gitlab.com/pricing/) and select a self-managed plan. You are redirected to the [Customers Portal](https://customers.gitlab.com/) to complete your purchase.
-1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
-   You must [add this code to your GitLab instance](../administration/license.md).
+- Go to the [Pricing page](https://about.gitlab.com/pricing/) and select a self-managed plan.
+  You are redirected to the [Customers Portal](https://customers.gitlab.com/) to complete your purchase.
 
 > [!note]
 > If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
 > instance, ensure you're purchasing enough seats to
 > [cover your users](../administration/admin_area.md#administering-users).
+
+## Activate subscription
+
+After you buy a subscription:
+
+- On GitLab.com, your subscription applies to your top-level group automatically.
+  You do not need an activation code.
+  If you bought the subscription through an account representative or a GitLab partner, you must first link the subscription to your top-level group.
+- On GitLab Self-Managed, you receive an activation code to the email address on your Customers Portal account.
+
+To get started using your subscription:
+
+1. For GitLab Self-Managed, [activate your license](../administration/license.md) with the activation code.
+1. View your subscription to confirm the tier, seat count, and start and end dates.
+1. For GitLab.com, if the subscription is not applied to the correct top-level group, link the subscription to a group.
+1. Review your account to verify your payment method, and billing and subscription contacts.
+1. Add or change subscription contacts so the right people receive subscription notifications.
+1. Add users, manage seats, and assign add-ons for your team.
 
 ## View subscription
 
@@ -543,13 +560,13 @@ and [add another billing account manager](billing_account.md#add-a-billing-accou
 
 ### Transfer restrictions
 
-You can change the linked namespace, however this is not supported for all subscription types.
+You can change the linked namespace. However, this is not supported for all subscription types.
 
 You cannot transfer:
 
 - An expired or trial subscription.
 - A subscription with compute minutes which is already linked to a namespace.
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
-- A subscription with a GitLab Duo add-on to a namespace which already has a subscriptions with a GitLab Duo add-on.
+- A subscription with a GitLab Duo add-on to a namespace which already has a subscription with a GitLab Duo add-on.
 - A subscription with a Premium or Ultimate plan to a personal namespace.
 - A subscription purchased using a discount code.

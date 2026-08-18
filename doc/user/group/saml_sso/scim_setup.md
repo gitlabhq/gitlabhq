@@ -87,12 +87,6 @@ To configure Okta for SCIM:
 
 ### Configure Microsoft Entra ID
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143146) to Microsoft Entra ID terminology in GitLab 16.10.
-
-{{< /history >}}
-
 Prerequisites:
 
 - [GitLab is configured](#configure-gitlab).
@@ -296,14 +290,13 @@ After the identity provider performs a sync based on its configured schedule,
 the user's membership is revoked and they lose access.
 The user's GitLab account is not deleted, it continues to exist on GitLab.com.
 
-If you have configured [Enterprise users](../../../user/enterprise_user/_index.md),
-you can [delete the user](../../../user/enterprise_user/_index.md#delete-an-enterprise-user).
+Deprovisioning a user through SCIM does not remove the linked SAML identity.
+
+If you have configured [Enterprise users](../../enterprise_user/_index.md),
+you can [delete the user](../../enterprise_user/_index.md#delete-an-enterprise-user).
 
 When you enable SCIM, this does not automatically remove existing users who do
 not have a SAML identity.
-
-> [!note]
-> Deprovisioning does not delete the GitLab user account.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -318,15 +311,9 @@ accDescr: How removing users from your SCIM app removes them from GitLab groups.
 
 ### Reactivate access
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a feature flag](../../../administration/feature_flags/list.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
-
-{{< /history >}}
-
 After a user is removed or deactivated through SCIM, you can reactivate that user by
 adding them to the SCIM identity provider.
 
 After the identity provider performs a sync based on its configured schedule,
 the user's SCIM identity is reactivated and their group memberships are restored.
+Because the linked SAML identity is retained during deprovisioning, users can immediately sign in using SSO.

@@ -29,6 +29,7 @@ module Routes
     def execute(changes)
       process_changes(changes)
       update_routes_for_descendants
+      refresh_service_desk_address_slugs
       burn_descendant_project_paths
       create_redirect_routes_for_descendants
     end
@@ -40,6 +41,7 @@ module Routes
 
       saved_change_to_parent_path = changes.saved_change_to_parent_path
       saved_change_to_parent_name = changes.saved_change_to_parent_name
+      @parent_path_changed = saved_change_to_parent_path
 
       return unless saved_change_to_parent_path || saved_change_to_parent_name
 
@@ -71,6 +73,16 @@ module Routes
           push_to_burn_data(descendant_route, attributes_to_update)
         end
       end
+    end
+
+    # Runs after update_routes_for_descendants so full_path_slug reflects the new path.
+    def refresh_service_desk_address_slugs
+      return unless @parent_path_changed
+      return if @routes_to_update.blank?
+
+      ServiceDesk::RefreshProjectKeyAddressSlugsService
+        .new(current_path_of_parent)
+        .execute
     end
 
     def push_to_burn_data(descendant_route, attributes_to_update)

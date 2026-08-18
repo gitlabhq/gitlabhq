@@ -5,6 +5,7 @@ module Import
     class Configuration < ApplicationRecord
       self.table_name = 'import_offline_configurations'
 
+      KNOWN_IMPORT_HOSTS = %w[github.com bitbucket.org gitea.com].freeze
       S3_BUCKET_REGEXP = %r{\A[a-z0-9.\-]*\z}
 
       # The only fields fog-google needs to authenticate with a service account
@@ -20,13 +21,19 @@ module Import
       #     integration only ever targets commercial Google Cloud.
       GCS_JSON_KEY_REQUIRED_FIELDS = %w[type project_id private_key client_email].freeze
 
+      # Application Default Credentials resolve to the instance's own service
+      # account, so they may only target buckets carrying this prefix. This keeps
+      # ADC away from the instance's own object storage buckets (uploads,
+      # artifacts, and so on), which do not use it.
+      ADC_REQUIRED_BUCKET_PREFIX = 'gitlab-offline-transfer-'
+
       belongs_to :organization, class_name: 'Organizations::Organization'
       belongs_to :offline_export, class_name: 'Import::Offline::Export', optional: true
       belongs_to :bulk_import, inverse_of: :offline_configuration, optional: true
 
       encrypts :object_storage_credentials
 
-      validates :provider, :bucket, :export_prefix, :object_storage_credentials, presence: true
+      validates :provider, :bucket, :export_prefix, presence: true
       validates :provider, inclusion: { in: :supported_providers }
       validates :bucket, length: { minimum: 3, maximum: 63 }, format: { with: S3_BUCKET_REGEXP }
       validates :object_storage_credentials, json_schema: {
@@ -41,7 +48,11 @@ module Import
       validates :object_storage_credentials, json_schema: {
         filename: 'import_offline_configuration_gcs_credentials', size_limit: 64.kilobytes
       }, if: :gcs?
-      validates :endpoint, addressable_url: true, length: { maximum: 255 }, if: :s3_compatible?
+      validates :object_storage_credentials, json_schema: {
+        filename: 'import_offline_configuration_gcs_application_default_credentials', size_limit: 64.kilobytes
+      }, if: :gcs_application_default?
+      validate :application_default_credentials_bucket_prefix, if: :gcs_application_default?
+      validates :endpoint, addressable_url: true, length: { maximum: 255 }, allow_nil: true, if: :s3_compatible?
       validates :entity_prefix_mapping, json_schema: {
         filename: 'import_offline_configuration_entity_prefix_mapping', size_limit: 64.kilobytes
       }
@@ -53,11 +64,15 @@ module Import
         aws: 0,
         s3_compatible: 1,
         gcs_hmac: 2,
-        gcs: 3
+        gcs: 3,
+        gcs_application_default: 4
       }
 
       after_initialize :generate_export_prefix
       before_validation :flatten_gcs_json_key
+
+      before_validation :sanitize_source_hostname
+      validate :validate_source_hostname
 
       def entity_prefix_for_path(source_full_path)
         entity_prefix_mapping[source_full_path]
@@ -84,6 +99,39 @@ module Import
       end
 
       private
+
+      def offline_export_configuration?
+        offline_export_id.present?
+      end
+
+      def validate_source_hostname
+        if source_hostname.nil?
+          return errors.add(:source_hostname, :blank) if offline_export_configuration?
+
+          return
+        end
+
+        return errors.add(:source_hostname, :blank) if source_hostname.blank? && offline_export_configuration?
+        return errors.add(:source_hostname, :too_long, count: 255) if source_hostname.length > 255
+
+        uri = Gitlab::Utils.parse_url(source_hostname)
+
+        if KNOWN_IMPORT_HOSTS.include?(uri&.domain)
+          return errors.add(:source_hostname, :invalid, message: 'must not be a known import source domain')
+        end
+
+        return if uri && uri.scheme && uri.host && uri.path.blank? && uri.query.blank?
+
+        errors.add(:source_hostname, :invalid, message: 'must contain only scheme and host')
+      end
+
+      def sanitize_source_hostname
+        return if source_hostname.nil?
+
+        self.source_hostname = Gitlab::UrlSanitizer.new(source_hostname).sanitized_url
+      rescue Addressable::URI::InvalidURIError
+        # Leave source_hostname as-is; validate_source_hostname will reject it
+      end
 
       def generate_export_prefix
         return if export_prefix.present?
@@ -129,6 +177,20 @@ module Import
         s_('OfflineTransfer|The Google Cloud service account key must be a valid JSON object.')
       end
 
+      # ADC resolves to the instance's own service account, so it may only target
+      # buckets carrying ADC_REQUIRED_BUCKET_PREFIX. This keeps ADC away from the
+      # instance's own object storage buckets (uploads, artifacts, and so on),
+      # which do not use it.
+      def application_default_credentials_bucket_prefix
+        return if bucket.to_s.start_with?(ADC_REQUIRED_BUCKET_PREFIX)
+
+        errors.add(:base, format(
+          s_('OfflineTransfer|Application Default Credentials can only be used with object storage buckets ' \
+            'whose name starts with "%{prefix}".'),
+          prefix: ADC_REQUIRED_BUCKET_PREFIX
+        ))
+      end
+
       def supported_providers
         providers = self.class.providers
 
@@ -136,7 +198,21 @@ module Import
           providers = providers.except(:s3_compatible)
         end
 
+        providers = providers.except(:gcs_application_default) unless application_default_credentials_allowed?
+
         providers.keys.map(&:to_s)
+      end
+
+      # Application Default Credentials resolve to the service account of the
+      # instance running GitLab, so their use is restricted:
+      #   - never on GitLab.com (Gitlab.com? is also true on JiHu's SaaS), where
+      #     they would resolve to the hosting platform's own infra service
+      #     account;
+      #   - only when an administrator has explicitly enabled them.
+      def application_default_credentials_allowed?
+        return false if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- ADC resolves to the hosting platform's own service account and must be rejected on SaaS
+
+        Gitlab::CurrentSettings.allow_application_default_credentials_for_offline_transfer?
       end
 
       def child_paths_for(parent_source_full_path, entity_type_prefix)

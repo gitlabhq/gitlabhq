@@ -79,10 +79,10 @@ describe('Transfer project form', () => {
       expect(findTransferLocations().props('value')).toEqual(selectedItem);
     });
 
-    it('emits the `selectTransferLocation` event when a namespace is selected', () => {
+    it('emits the `select-transfer-location` event when a namespace is selected', () => {
       const args = [selectedItem.id];
 
-      expect(wrapper.emitted('selectTransferLocation')).toEqual([args]);
+      expect(wrapper.emitted('select-transfer-location')).toEqual([args]);
     });
 
     it('enables the confirm button', () => {

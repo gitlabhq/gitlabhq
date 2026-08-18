@@ -76,7 +76,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Retrieve notification settings for a #{source_type}" do
           detail "Retrieves the notification level for a specified #{source_type}."
           success Entities::NotificationSetting

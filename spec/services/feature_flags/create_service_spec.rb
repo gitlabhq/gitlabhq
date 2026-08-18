@@ -28,7 +28,7 @@ RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
       end
 
       it 'does not create audit log' do
-        expect { subject }.not_to change { AuditEvent.count }
+        expect { subject }.not_to change { AuditEventReader.count }
       end
 
       it 'does not sync the feature flag to Jira' do
@@ -41,7 +41,7 @@ RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
     end
 
     context 'when feature flag is saved correctly' do
-      let(:audit_event_details) { AuditEvent.last.details }
+      let(:audit_event_details) { AuditEventReader.last.details }
       let(:audit_event_message) { audit_event_details[:custom_message] }
       let(:params) do
         {
@@ -85,7 +85,7 @@ RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
 
       it 'creates audit event', :with_license,
         quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17039' do
-        expect { subject }.to change { AuditEvent.count }.by(1)
+        expect { subject }.to change { AuditEventReader.count }.by(1)
         expect(audit_event_message).to start_with('Created feature flag feature_flag with description "description".')
         expect(audit_event_message).to include('Created strategy "default" with scopes "*".')
         expect(audit_event_message).to include('Created strategy "default" with scopes "production".')

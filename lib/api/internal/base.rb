@@ -134,6 +134,10 @@ module API
                 audit_message[:ip_address] = Gitlab::IpAddressState.current
               end
 
+              # Surface the SSH credential (user key or deploy key) used for the
+              # operation so that owners can correlate Git-over-SSH activity with it.
+              audit_message.merge!(actor.key_details)
+
               send_git_audit_streaming_event(audit_message)
             end
 

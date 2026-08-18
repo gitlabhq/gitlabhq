@@ -82,13 +82,15 @@ describe('~/security_configuration/components/app', () => {
   const findTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findByTestId = (id) => wrapper.findByTestId(id);
+  const findTabByTestId = (tabName) => wrapper.findComponentByTestId(`${tabName}-tab`);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
   const findSecretPushProtection = () => wrapper.findComponent(SecretPushProtectionFeatureCard);
   const findPipelineSecretDetectionCard = () =>
     wrapper.findComponent(PipelineSecretDetectionFeatureCard);
-  const findRefsTrackingSection = () => wrapper.findByTestId('refs-tracking-section');
+  const findRefsTrackingSection = () => wrapper.findComponentByTestId('refs-tracking-section');
   const findTrainingSection = () => wrapper.findComponent(TrainingSection);
-  const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
+  const findManageViaMRErrorAlert = () =>
+    wrapper.findComponentByTestId('manage-via-mr-error-alert');
   const findSecurityViewHistoryLink = () => wrapper.findByTestId('security-view-history-link');
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
@@ -127,11 +129,11 @@ describe('~/security_configuration/components/app', () => {
       });
 
       it.each(expectedTabs)('renders the %s tab', (tabName) => {
-        expect(findByTestId(`${tabName}-tab`).exists()).toBe(true);
+        expect(findTabByTestId(tabName).exists()).toBe(true);
       });
 
       it.each(expectedTabs)('has the %s query-param-value', (tabName) => {
-        expect(findByTestId(`${tabName}-tab`).props('queryParamValue')).toBe(tabName);
+        expect(findTabByTestId(tabName).props('queryParamValue')).toBe(tabName);
       });
     });
 

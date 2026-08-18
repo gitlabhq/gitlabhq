@@ -1244,25 +1244,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
       pipeline.update!(status: :success)
     end
 
-    context 'when workhorse_download_etag_caching is disabled' do
-      let(:url) { "/projects/#{project.id}/jobs/#{job.id}/artifacts" }
-
-      before do
-        stub_feature_flags(workhorse_download_etag_caching: false)
-      end
-
-      # Production Rack middleware would emit the bogus W/"12ae32cb..." here;
-      # the test environment does not run it. We assert only that our helper
-      # did not act: neither ETag nor Last-Modified is set by our code.
-      it 'does not set our content-derived ETag or Last-Modified suppression header' do
-        get api(url, developer)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['ETag']).to be_nil
-        expect(response.headers['Last-Modified']).to be_nil
-      end
-    end
-
     context 'GET /projects/:id/jobs/:job_id/artifacts' do
       let(:url) { "/projects/#{project.id}/jobs/#{job.id}/artifacts" }
 

@@ -11,6 +11,7 @@ import {
 import AgentIntegrationStatusRow from './agent_integration_status_row.vue';
 
 export default {
+  name: 'IntegrationStatus',
   components: {
     GlCollapse,
     GlButton,

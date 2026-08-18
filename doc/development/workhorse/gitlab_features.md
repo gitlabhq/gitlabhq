@@ -17,7 +17,7 @@ Examples of features that rely on Workhorse:
 
 ## 1. `git clone` and `git push` over HTTP
 
-Git clone, pull and push are slow because they transfer large amounts
+Git clone, pull, and push are slow because they transfer large amounts
 of data and because each is CPU intensive on the GitLab side. Without
 Workhorse, HTTP access to Git repositories would compete with regular
 web access to the application, requiring us to run way more Rails
@@ -84,7 +84,7 @@ For detailed architecture information, see [AI-assisted features architecture](a
   from disk.
 - Workhorse can modify responses sent by Rails: for example if you use
   `send_file` in Rails then GitLab Workhorse opens the file on
-  disk and send its contents as the response body to the client.
+  disk and sends its contents as the response body to the client.
 - Workhorse can take over requests after asking permission from Rails.
   Example: handling `git clone`.
 - Workhorse can modify requests before passing them to Rails. Example:

@@ -5,10 +5,11 @@ module Ci
     class BuildQueueService
       include ::Gitlab::Utils::StrongMemoize
 
-      attr_reader :runner
+      attr_reader :runner, :runner_manager
 
-      def initialize(runner)
+      def initialize(runner, runner_manager = nil)
         @runner = runner
+        @runner_manager = runner_manager
       end
 
       def new_builds
@@ -26,6 +27,10 @@ module Ci
           end
 
         candidates = builds_for_protected_runner(candidates) if runner.ref_protected?
+
+        if ::Feature.enabled?(:ci_pending_builds_runner_machine_id_filter, runner, type: :gitlab_com_derisk)
+          candidates = builds_for_runner_manager(candidates)
+        end
 
         # pick builds that does not have other tags than runner's one
         candidates = builds_matching_tag_ids(candidates, runner.tagging_tag_ids)
@@ -59,6 +64,10 @@ module Ci
         relation.ref_protected
       end
 
+      def builds_for_runner_manager(relation)
+        strategy.builds_for_runner_manager(relation, runner_manager)
+      end
+
       def builds_matching_tag_ids(relation, ids)
         strategy.builds_matching_tag_ids(relation, ids)
       end
@@ -72,7 +81,11 @@ module Ci
       end
 
       def execute(relation)
-        strategy.build_and_partition_ids(relation)
+        if ::Feature.enabled?(:ci_pending_builds_runner_machine_id_filter, runner, type: :gitlab_com_derisk)
+          strategy.build_partition_and_project_ids(relation)
+        else
+          strategy.build_and_partition_ids(relation)
+        end
       end
 
       private

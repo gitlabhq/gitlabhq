@@ -27,7 +27,7 @@
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
             = form.gitlab_ui_checkbox_component :skip_branch_pipelines_for_mrs,
               safe_join([s_("CICD|Skip branch pipelines for merge requests"), ' ', beta_badge]),
-              help_text: (s_("CICD|When enabled, pushing to a branch with an open merge request creates only a merge request pipeline. The branch pipeline is skipped.") + ' ' + help_link_skip_branch_pipelines_for_mrs).html_safe
+              help_text: (s_("CICD|When enabled, pushing to a branch with an open merge request creates only a merge request pipeline. The branch pipeline is skipped. Merge readiness checks, like pipelines must succeed, only consider merge request pipelines.") + ' ' + help_link_skip_branch_pipelines_for_mrs).html_safe
 
         .form-group
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|

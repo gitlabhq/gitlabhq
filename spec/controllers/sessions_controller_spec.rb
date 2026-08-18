@@ -37,6 +37,147 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
     end
 
+    context 'with the ChatGPT connector installation flow' do
+      let(:provider_session) { { Authn::ProviderSignInRedirect::SESSION_KEY => 'chatgpt' } }
+
+      context 'when the session carries the ChatGPT provider and the provider is enabled' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+          allow(controller).to receive(:omniauth_authorize_path).with(:user, 'chatgpt')
+            .and_return('/users/auth/chatgpt')
+        end
+
+        it 'renders the auto-submitting redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).to render_template('devise/sessions/redirect_to_provider', layout: false)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:provider_path)).to eq('/users/auth/chatgpt')
+        end
+
+        it 'clears the provider from the session so it is single-use' do
+          get(:new, session: provider_session)
+
+          expect(session).not_to have_key(Authn::ProviderSignInRedirect::SESSION_KEY)
+        end
+      end
+
+      context 'when the chatgpt_siwc_login_redirect feature flag is disabled' do
+        before do
+          stub_feature_flags(chatgpt_siwc_login_redirect: false)
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the chatgpt_oauth_sign_in feature flag is disabled' do
+        before do
+          stub_feature_flags(chatgpt_oauth_sign_in: false)
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when a blocking alert is already registered' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+          allow(controller).to receive(:omniauth_authorize_path).with(:user, 'chatgpt')
+            .and_return('/users/auth/chatgpt')
+
+          flash_hash = ActionDispatch::Flash::FlashHash.new
+          flash_hash[:alert] = 'Your account is blocked.'
+          allow(controller).to receive(:flash).and_return(flash_hash)
+        end
+
+        it 'does not render the redirect_to_provider template to prevent a redirection loop' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the unauthenticated failure alert is already registered' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+          allow(controller).to receive(:omniauth_authorize_path).with(:user, 'chatgpt')
+            .and_return('/users/auth/chatgpt')
+
+          flash_hash = ActionDispatch::Flash::FlashHash.new
+          flash_hash[:alert] = I18n.t('devise.failure.unauthenticated')
+          allow(controller).to receive(:flash).and_return(flash_hash)
+        end
+
+        it 'renders the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).to render_template('devise/sessions/redirect_to_provider', layout: false)
+        end
+      end
+
+      context 'when OmniAuth is disabled' do
+        before do
+          allow(Gitlab::Auth).to receive(:omniauth_enabled?).and_return(false)
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the ChatGPT provider is not enabled' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(false)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the session carries a different provider value' do
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: { Authn::ProviderSignInRedirect::SESSION_KEY => 'something_else' })
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the provider is passed as a request parameter instead of the session' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, params: { redirect_to_provider: 'chatgpt' })
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+    end
+
     context 'with LDAP enabled' do
       before do
         stub_ldap_setting(enabled: true)
@@ -369,10 +510,10 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
 
         it 'creates audit event records' do
-          expect { post(:create, params: { user: user_params }) }.to change { AuditEvent.count }.by(1)
+          expect { post(:create, params: { user: user_params }) }.to change { AuditEventReader.count }.by(1)
           .and change { AuditEvents::UserAuditEvent.count }.by(1)
 
-          audit_event = AuditEvent.last
+          audit_event = AuditEventReader.last
           expect(audit_event.details[:with]).to eq('standard')
           expect(audit_event.details[:event_name]).to eq('authenticated_with_password')
 
@@ -445,7 +586,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
       context 'with reCAPTCHA' do
         def unsuccessful_login(user_params, sesion_params: {})
           # Without this, `verify_recaptcha` arbitrarily returns true in test env
-          Recaptcha.configuration.skip_verify_env.delete('test')
+          allow(Recaptcha.configuration).to receive(:skip_verify_env).and_return([])
           counter = double(:counter)
 
           expect(counter).to receive(:increment)
@@ -458,7 +599,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
         def successful_login(user_params, sesion_params: {})
           # Avoid test ordering issue and ensure `verify_recaptcha` returns true
-          Recaptcha.configuration.skip_verify_env << 'test'
+          allow(Recaptcha.configuration).to receive(:skip_verify_env).and_return(['test'])
           counter = double(:counter)
 
           expect(counter).to receive(:increment)
@@ -803,10 +944,10 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       it 'creates audit event records' do
-        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuditEvent.count }.by(1)
+        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuditEventReader.count }.by(1)
         .and change { AuditEvents::UserAuditEvent.count }.by(1)
 
-        audit_event = AuditEvent.last
+        audit_event = AuditEventReader.last
         expect(audit_event.details[:with]).to eq('two-factor')
         expect(audit_event.details[:event_name]).to eq('authenticated_with_two_factor')
 
@@ -833,6 +974,33 @@ RSpec.describe SessionsController, feature_category: :system_access do
           expect(response).to render_template('devise/sessions/two_factor')
           expect(Gon.all_variables).not_to be_empty
           expect(response.body).to match('gon.api_version')
+        end
+      end
+
+      context 'when rendering the two-factor layout' do
+        before do
+          # Scope the flag to the user rather than enabling it globally. Flags are enabled by
+          # default in specs, so a global stub passes even when the layout is chosen from an
+          # actor that is nil during the two-factor prompt.
+          stub_feature_flags(two_factor_vue: user)
+        end
+
+        it 'renders the devise_empty layout' do
+          authenticate_2fa(login: user.username, password: user.password)
+
+          expect(response).to render_template(layout: 'layouts/devise_empty')
+        end
+
+        context 'when two_factor_vue is disabled' do
+          before do
+            stub_feature_flags(two_factor_vue: false)
+          end
+
+          it 'renders the devise layout' do
+            authenticate_2fa(login: user.username, password: user.password)
+
+            expect(response).to render_template(layout: 'layouts/devise')
+          end
         end
       end
 
@@ -885,10 +1053,10 @@ RSpec.describe SessionsController, feature_category: :system_access do
           )
         end
 
-        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to change { AuditEvent.count }.by(1)
+        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to change { AuditEventReader.count }.by(1)
         .and change { AuditEvents::UserAuditEvent.count }.by(1)
 
-        audit_event = AuditEvent.last
+        audit_event = AuditEventReader.last
         expect(audit_event.details[:with]).to eq('two-factor-via-webauthn-device')
         expect(audit_event.details[:event_name]).to eq('authenticated_with_webauthn')
 
@@ -953,7 +1121,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
         it 'does not log the user in' do
           post_action
 
-          expect(subject.current_user).to eq nil
+          expect(subject.current_user).to be_nil
         end
       end
 
@@ -963,7 +1131,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
         it 'does not log the user in' do
           post_action
 
-          expect(subject.current_user).to eq nil
+          expect(subject.current_user).to be_nil
         end
       end
     end

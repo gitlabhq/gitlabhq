@@ -386,12 +386,6 @@ curl --request GET \
 
 ## List failed import records for a migration entity
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
-
-{{< /history >}}
-
 Lists failed import records for a group or project migration entity.
 
 ```plaintext

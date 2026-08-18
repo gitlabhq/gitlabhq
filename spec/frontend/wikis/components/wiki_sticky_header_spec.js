@@ -28,8 +28,8 @@ describe('wikis/components/wiki_sticky_header', () => {
     });
   }
   const findStickyHeader = () => wrapper.findByTestId('wiki-sticky-header');
-  const findEditButton = () => wrapper.findByTestId('wiki-sticky-edit-button');
-  const findSubscribeButton = () => wrapper.findByTestId('wiki-sticky-subscribe-button');
+  const findEditButton = () => wrapper.findComponentByTestId('wiki-sticky-edit-button');
+  const findSubscribeButton = () => wrapper.findComponentByTestId('wiki-sticky-subscribe-button');
   const findSubscribeIcon = () => findSubscribeButton().findComponent(GlIcon);
   const findSidebarToggle = () => wrapper.findComponent(WikiSidebarToggle);
 

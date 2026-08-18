@@ -9,8 +9,8 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_tr
   const name = 'my-kustomization';
   const statusReconciled = 'reconciled';
 
-  const findKindIcon = () => wrapper.findByTestId('resource-kind-icon');
-  const findStatusIcon = () => wrapper.findByTestId('resource-status-icon');
+  const findKindIcon = () => wrapper.findComponentByTestId('resource-kind-icon');
+  const findStatusIcon = () => wrapper.findComponentByTestId('resource-status-icon');
 
   const createWrapper = ({ status = statusReconciled } = {}) => {
     wrapper = shallowMountExtended(KubernetesTreeItem, {

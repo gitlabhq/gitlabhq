@@ -35,6 +35,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     { 'args' => [1, 2], 'jid' => 'def456', 'wal_locations' => { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
   end
 
+  let(:concurrency_service) { Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService }
+
   subject(:service) { described_class.new(worker_name: worker_class_name, prefix: 'some_prefix') }
 
   before do
@@ -78,6 +80,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
+    it 'stores no size-limiter compression markers for an uncompressed job' do
+      add_to_queue!
+
+      Gitlab::Redis::SharedState.with do |r|
+        stored_job = service.send(:deserialize, r.lrange(service.redis_key, 0, -1).first)
+
+        # `Compressor.compressed?` keys off `has_key?`, so a nil-valued marker looks compressed.
+        expect(Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).not_to be_compressed(stored_job)
+      end
+    end
+
     context 'with wal locations' do
       subject(:add_to_queue!) { service.add_to_queue!(job_with_wal_locations, worker_context) }
 
@@ -90,6 +103,139 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
 
           expect(stored_job['wal_locations']).to eq(job_with_wal_locations['wal_locations'])
         end
+      end
+    end
+  end
+
+  describe '#drop_jobs!' do
+    let(:matching_context) { { 'meta.user' => 'target_user' } }
+    let(:other_context) { { 'meta.user' => 'other_user' } }
+
+    before do
+      service.add_to_queue!(job, matching_context)
+      service.add_to_queue!(job.merge('jid' => 'other_jid'), other_context)
+    end
+
+    it 'removes matching jobs and returns completed result' do
+      result = service.drop_jobs!(matching_context, timeout: 10)
+
+      expect(result).to eq(completed: true, deleted_jobs: 1)
+      expect(service.queue_size).to eq(1)
+    end
+
+    it 'leaves non-matching jobs intact' do
+      service.drop_jobs!(matching_context, timeout: 10)
+
+      Gitlab::Redis::SharedState.with do |redis|
+        remaining = redis.lrange(service.redis_key, 0, -1).map { |j| service.send(:deserialize, j) }
+        expect(remaining.map { |j| j['context']['meta.user'] }).to contain_exactly('other_user')
+      end
+    end
+
+    it 'returns 0 deleted_jobs when nothing matches' do
+      result = service.drop_jobs!({ 'meta.user' => 'unknown' }, timeout: 10)
+
+      expect(result).to eq(completed: true, deleted_jobs: 0)
+      expect(service.queue_size).to eq(2)
+    end
+
+    it 'does not remove any job when metadata is empty' do
+      result = service.drop_jobs!({}, timeout: 10)
+
+      expect(result).to eq(completed: true, deleted_jobs: 0)
+      expect(service.queue_size).to eq(2)
+    end
+
+    it 'removes every job when metadata matches the worker class' do
+      result = service.drop_jobs!({ 'class' => worker_class_name }, timeout: 10)
+
+      expect(result).to eq(completed: true, deleted_jobs: 2)
+      expect(service.queue_size).to eq(0)
+    end
+
+    it 'does not remove any job when metadata targets another worker class' do
+      result = service.drop_jobs!({ 'class' => 'OtherWorker' }, timeout: 10)
+
+      expect(result).to eq(completed: true, deleted_jobs: 0)
+      expect(service.queue_size).to eq(2)
+    end
+
+    context 'when timeout is exceeded' do
+      before do
+        allow(service).to receive(:monotonic_time).and_return(0, 0, 100)
+      end
+
+      it 'stops early and returns completed: false' do
+        result = service.drop_jobs!(matching_context, timeout: 10)
+
+        expect(result[:completed]).to be(false)
+      end
+    end
+
+    it 'clears the drop-requested flag once finished' do
+      service.drop_jobs!(matching_context, timeout: 10)
+
+      expect(service.send(:drop_requested?)).to be_falsey
+    end
+
+    it 'sets the drop-requested flag with a TTL matching the operation budget', :aggregate_failures do
+      service.send(:request_drop!, 15)
+
+      drop_key = service.instance_variable_get(:@drop_request_key)
+      ttl = Gitlab::Redis::SharedState.with { |redis| redis.ttl(drop_key) }
+
+      expect(service.send(:drop_requested?)).to be_truthy
+      expect(ttl).to be_between(1, 15)
+    end
+
+    context 'when the resume lease cannot be obtained' do
+      before do
+        stub_const("#{described_class}::DROP_LOCK_RETRIES", 1)
+        stub_const("#{described_class}::DROP_LOCK_SLEEP", 0)
+        # Resume is actively holding the shared lease.
+        Gitlab::ExclusiveLease.new(service.send(:lease_key), timeout: 1.minute).try_obtain
+      end
+
+      it 'does not process the queue and reports completed: false', :aggregate_failures do
+        result = service.drop_jobs!(matching_context, timeout: 10)
+
+        expect(result).to eq(completed: false, deleted_jobs: 0)
+        expect(service.queue_size).to eq(2)
+      end
+
+      it 'still clears the drop-requested flag' do
+        service.drop_jobs!(matching_context, timeout: 10)
+
+        expect(service.send(:drop_requested?)).to be_falsey
+      end
+    end
+
+    context 'when the queue is empty' do
+      before do
+        Gitlab::Redis::SharedState.with { |redis| redis.del(service.redis_key) }
+      end
+
+      it 'skips the drop-request/lock handshake and reports completed', :aggregate_failures do
+        expect(service).not_to receive(:request_drop!)
+
+        expect(service.drop_jobs!(matching_context, timeout: 10)).to eq(completed: true, deleted_jobs: 0)
+      end
+    end
+
+    context 'when the queue spans multiple read batches' do
+      before do
+        stub_const("#{described_class}::MAX_BATCH_SIZE", 1)
+
+        service.add_to_queue!(job.merge('jid' => 'match_2'), matching_context)
+        service.add_to_queue!(job.merge('jid' => 'noise_2'), other_context)
+        service.add_to_queue!(job.merge('jid' => 'match_3'), matching_context)
+      end
+
+      it 'removes every matching job across batches', :aggregate_failures do
+        result = service.drop_jobs!(matching_context, timeout: 10)
+
+        expect(result).to eq(completed: true, deleted_jobs: 3)
+        expect(service.queue_size).to eq(2)
       end
     end
   end
@@ -131,17 +277,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     end
 
     shared_examples 'resumes jobs respecting concurrency limit' do
-      it 'puts jobs back into the queue and respects order' do
+      it 'resumes jobs up to the available capacity and keeps the rest queued', :aggregate_failures do
         expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
           expect(el).to receive(:try_obtain).and_call_original
         end
 
         expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
           .to receive(:batch_resumed_log)
-                .with(worker_class_name, 2).ordered
-        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
-          .to receive(:batch_resumed_log)
-                .with(worker_class_name, 1).ordered
+                .with(worker_class_name, 2)
         expect(Gitlab::SafeRequestStore).to receive(:write).with(
           metadata_key,
           kind_of(Queue)
@@ -152,34 +295,63 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
           expect(job2).to match(expected_metadata.merge({ "index" => 2 }))
         end
 
-        expect(Gitlab::SafeRequestStore).to receive(:write).with(
-          metadata_key,
-          kind_of(Queue)
-        ) do |_key, queue|
-          job3 = queue.pop
-          expect(job3).to match(expected_metadata.merge({ "index" => 3 }))
-        end
-
         expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-        expect(worker_class).to receive(:bulk_perform_async).with([[3]])
 
         resumed = service.resume_processing!
 
-        expect(resumed).to eq(3)
+        # The two resumed jobs have not started executing yet, so they occupy the whole
+        # limit as pending. The third job stays queued until one of them begins executing.
+        expect(resumed).to eq(2)
+        expect(service.queue_size).to eq(1)
       end
     end
 
     it_behaves_like 'resumes jobs respecting concurrency limit'
 
-    it 'drops a set after execution' do
+    context 'when a drop is requested' do
+      before do
+        service.send(:request_drop!, 30)
+      end
+
+      it 'yields the lease without processing the queue', :aggregate_failures do
+        expect(worker_class).not_to receive(:bulk_perform_async)
+
+        expect(service.resume_processing!).to eq(0)
+        expect(service.queue_size).to eq(3)
+      end
+    end
+
+    it 'drops resumed jobs from the queue' do
       expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
         expect(el).to receive(:try_obtain).and_call_original
       end
 
       expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-      expect(worker_class).to receive(:bulk_perform_async).with([[3]])
+
       expect { service.resume_processing! }
-        .to change { service.has_jobs_in_queue? }.from(true).to(false)
+        .to change { service.queue_size }.from(3).to(1)
+    end
+
+    it 'resumes further jobs once pending resumed jobs start executing, preserving order', :aggregate_failures do
+      expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]]).ordered
+      expect(worker_class).to receive(:bulk_perform_async).with([[3]]).ordered
+
+      expect(service.resume_processing!).to eq(2)
+      expect(service.queue_size).to eq(1)
+
+      # Simulate the two resumed jobs starting execution: they leave the pending counter
+      # but now count towards concurrent_worker_count, so still no capacity to resume.
+      2.times { concurrency_service.untrack_pending_resumed_job(worker_class_name) }
+      allow(concurrency_service).to receive(:concurrent_worker_count).with(worker_class_name).and_return(2)
+
+      expect(service.resume_processing!).to eq(0)
+      expect(service.queue_size).to eq(1)
+
+      # Once one of them finishes, a slot frees up and the last job is resumed.
+      allow(concurrency_service).to receive(:concurrent_worker_count).with(worker_class_name).and_return(1)
+
+      expect(service.resume_processing!).to eq(1)
+      expect(service.queue_size).to eq(0)
     end
 
     context 'when processing longer than deadline' do
@@ -285,6 +457,19 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
           expect(service.queue_size).to eq(0)
         end
 
+        it 'counts only the enqueued jobs as pending, not the dropped or retried ones' do
+          expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+            expect(el).to receive(:try_obtain).and_call_original
+          end
+
+          service.resume_processing!
+
+          # Jobs [1] and [3] were enqueued (one pending slot each); the poison job [2] was
+          # rolled back and dropped. Anything other than 2 means the batch-level rollback and
+          # the per-job re-tracking did not net out (double-count or a counted dropped job).
+          expect(concurrency_service.pending_resumed_jobs_count(worker_class_name)).to eq(2)
+        end
+
         it 'increments the dropped_jobs metric for poison jobs', :aggregate_failures do
           expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
             expect(el).to receive(:try_obtain).and_call_original
@@ -332,6 +517,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         expect { service.resume_processing! }.to raise_error(Redis::ConnectionError)
 
         expect(service.queue_size).to eq(3)
+        # The batch was never enqueued, so the slots reserved before bulk_perform_async must
+        # be rolled back rather than left inflating the counter until the TTL expires.
+        expect(concurrency_service.pending_resumed_jobs_count(worker_class_name)).to eq(0)
       end
     end
 
@@ -346,15 +534,52 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         allow(Gitlab::ExclusiveLease).to receive(:new).and_return(lease_instance)
 
         expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-        expect(worker_class).to receive(:bulk_perform_async).with([[3]])
 
-        # Verify that renew is called before each iteration of the loop
-        # With 3 jobs and concurrency limit of 2: first iteration resumes 2 jobs,
-        # second iteration resumes 1 job, third iteration finds no jobs and breaks.
-        # So renew is called 3 times (before each iteration).
-        expect(lease_instance).to receive(:renew).exactly(3).times
+        # Verify that renew is called before each iteration of the loop.
+        # With 3 jobs and concurrency limit of 2: the first iteration resumes 2 jobs which
+        # then occupy the limit as pending, so the second iteration finds no capacity and
+        # breaks. So renew is called twice (before each iteration).
+        expect(lease_instance).to receive(:renew).twice
 
         service.resume_processing!
+      end
+    end
+
+    # Sidekiq's scheduler re-pushes already-compressed scheduled/retried jobs
+    # through the client chain, so a buffered job can arrive compressed.
+    context 'when a buffered job carries a size-limiter compressed payload' do
+      let(:compressor) { Gitlab::SidekiqMiddleware::SizeLimiter::Compressor }
+      let(:original_args) { [1, 'a' * 200] }
+      let(:compressed_job) do
+        { 'args' => original_args, 'jid' => 'jid1', 'wal_locations' => wal_locations }.tap do |job|
+          compressor.compress(job, Sidekiq.dump_json(original_args))
+        end
+      end
+
+      let(:jobs) { [compressed_job] }
+
+      it 'resumes a job that decompresses back to the original arguments', :aggregate_failures do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
+        end
+
+        captured_metadata = nil
+        allow(Gitlab::SafeRequestStore).to receive(:write).and_call_original
+        allow(Gitlab::SafeRequestStore).to receive(:write).with(metadata_key, kind_of(Queue)) do |_key, queue|
+          captured_metadata = queue.pop
+        end
+
+        resumed_args = nil
+        expect(worker_class).to receive(:bulk_perform_async) { |args_list| resumed_args = args_list.first }
+
+        service.resume_processing!
+
+        # Rebuild as ConcurrencyLimit::Resume does, then run server-side decompression.
+        resumed_job = { 'class' => worker_class_name, 'args' => resumed_args }.merge(captured_metadata)
+        expect(compressor).to be_compressed(resumed_job)
+
+        compressor.decompress(resumed_job)
+        expect(resumed_job['args']).to eq(original_args)
       end
     end
   end

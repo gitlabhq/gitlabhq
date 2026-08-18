@@ -80,11 +80,13 @@ on demand without starting an unrelated pipeline:
 1. Find the "AI principles distillation" schedule.
 1. Select **Run** (the play icon).
 
-The run fires only the `ai-principles-sync` job. When it detects drift,
-it opens one merge request per affected principle rather than committing
-to your branch. The merge request URLs are printed at the end of the job
-log. This is the supported path for filling in a newly seeded principle
-or fence without a personal Duo Agent Platform seat.
+The run fires the `ai-principles-pipeline-generate` job, which scans for drift and
+triggers a child pipeline with one `distill:<principle>` job per affected
+principle. Those fan back in to `ai-principles-collect`, which opens one
+merge request per affected team rather than committing to your branch. The
+merge request URLs are printed at the end of the collect job's log. This is
+the supported path for filling in a newly seeded principle or fence without
+a personal Duo Agent Platform seat.
 
 ### Required CI variables
 
@@ -210,6 +212,16 @@ schema](#manifest-schema)). The separate tooling MR, which carries only
 the global routing tables (AGENTS.md, CLAUDE.md, SKILL.md), falls back
 to the broad `/.ai/` and `/.claude/` AI-harness owners.
 
+When individual SSOT authors resolve, the distiller mentions and assigns up to
+three of them as reviewers. If no author resolves, it selects one available
+member of the principle's `owner_team`; CODEOWNERS remains the approval route.
+
+For the review checklist and for how to triage the automated review feedback
+these MRs attract, see [Reviewing auto-generated sync merge
+requests](https://docs.gitlab.com/development/ai_instruction_files_review/#reviewing-auto-generated-sync-merge-requests),
+which is the SSOT for reviewing them. This file stays the SSOT for how the
+sync itself works.
+
 ## Running the sync locally
 
 Both binaries operate on the consuming repository's working tree, which they
@@ -239,7 +251,7 @@ AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 # Step 2: dry run (show what would change without writing or pushing)
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" --dry-run
+    --workspace "$(git rev-parse --show-toplevel)" distill --dry-run
 
 # Step 3: distill only specific principles
 GITLAB_TOKEN=<token> \
@@ -247,7 +259,7 @@ CI_DEFAULT_BRANCH=master \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" \
+    --workspace "$(git rev-parse --show-toplevel)" distill \
     --only feature-flags,workers
 
 # Force re-distillation (ignore checksum cache)
@@ -256,7 +268,7 @@ CI_DEFAULT_BRANCH=master \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" --force
+    --workspace "$(git rev-parse --show-toplevel)" distill --force
 
 # End-to-end: distill, branch, commit, push, open MR
 GITLAB_TOKEN=<token> \
@@ -266,7 +278,7 @@ CI_PROJECT_ID=278964 \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" --push
+    --workspace "$(git rev-parse --show-toplevel)" distill --push
 ```
 
 The Workflow API runs the agent server-side from the **pushed** state of
@@ -331,7 +343,10 @@ To change a distilled principle's content:
 - Or update the matching `baselines/<name>.md` file for procedural
   knowledge that has no SSOT home.
 
-Then re-run the sync (`--only <name>`) to regenerate `distilled/<name>.md`.
+Then run `distill --only <name>` to regenerate `distilled/<name>.md` when the
+source or baseline change updates its checksum.
+Use `--force` only when you intentionally need to re-distill despite a matching
+checksum.
 
 To change the **distillation rules themselves**, edit
 `distillation_prompt.md` and re-run
@@ -339,6 +354,43 @@ To change the **distillation rules themselves**, edit
 the catalog flow.
 
 ## Known limitations
+
+### Prompt size budget
+
+`distillation_prompt.md` competes for a hard 64 KiB budget, and the prompt is
+counted **twice** against it.
+
+The AI Catalog validates the stored `definition` JSONB column against 64 KiB
+(`Ai::Catalog::ItemVersion`), but it does not store the YAML the provisioner
+submits. It stores the parsed structure merged with the raw YAML string under
+`yaml_definition`, so the prompt appears once in
+`prompt_template.system` and again in `yaml_definition` — and only the second
+copy carries the YAML block-scalar indentation. With JSON escaping on top, one
+byte of prompt Markdown costs roughly **2.2 stored bytes**.
+
+The practical effect is that ~30 KiB of Markdown exhausts a 64 KiB budget. The
+YAML size the provisioner prints is therefore not the number that matters; a
+definition can look like it has 30 KiB to spare and still be rejected with
+`Latest version definition is too large`.
+
+Two guards enforce this:
+
+- `gitlab-ai-principles-distiller-validate` fails at commit/MR time (lefthook
+  pre-commit and pre-push, plus the `ai-principles-manifest` CI job).
+- The provisioner aborts before mutating the catalog, reporting stored bytes,
+  the overage, and how much Markdown to remove.
+
+When trimming to fit, prefer removing duplicated instructions and shortening
+worked examples over dropping normative rules. Do **not** renumber the rules:
+the prompt cross-references its own rule numbers (`rule 16a`, `rules 8/10`) in
+about 30 places, so a renumber silently invalidates all of them.
+
+The duplicate storage is deliberate upstream (it preserves the original YAML
+for audit and display fidelity). Moving `yaml_definition` to object storage is
+tracked in [issue 591638](https://gitlab.com/gitlab-org/gitlab/-/issues/591638);
+once it ships, this budget roughly doubles. See
+[issue 608440](https://gitlab.com/gitlab-org/gitlab/-/issues/608440)
+for the byte census.
 
 ### Transient Gitaly load failures
 
@@ -363,3 +415,7 @@ Since the weekly schedule fires again the following week, no manual
 intervention is required — the system is self-healing over time. Failed
 runs leave the repository in a consistent state: no partial commits, no
 orphan branches, and the existing distilled files untouched.
+
+To inspect a failed or timed-out principle's agent session directly, check
+the job log: each triggered workflow logs a `session:` link
+(`.../-/automate/agent-sessions/<id>`) once, right after it's created.

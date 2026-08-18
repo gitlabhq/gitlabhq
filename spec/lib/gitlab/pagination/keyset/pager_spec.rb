@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Pager do
   let(:next_page) { double('next page') }
 
   before_all do
-    create_list(:project, 7)
+    create_list(:project, 4)
   end
 
   describe '#paginate' do

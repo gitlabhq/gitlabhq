@@ -42,7 +42,6 @@ Sidekiq memory limits are controlled using [environment variables](https://docs.
   If the Sidekiq process RSS (expressed in kilobytes) exceeds `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`,
   an immediate graceful restart of Sidekiq is triggered. If this value is not set, or set to 0,
   the hard limit is not monitored.
-
 - `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`: defines how often to check the process RSS. Defaults to 3 seconds.
 - `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`: defines the maximum time allowed for all Sidekiq jobs to finish.
   No new jobs are accepted during that time. Defaults to 30 seconds.

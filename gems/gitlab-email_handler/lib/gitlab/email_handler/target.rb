@@ -7,7 +7,8 @@ module Gitlab
     # knowledge of how the target is later resolved or routed.
     #
     # `kind` is one of:
-    #   :project_id, :namespace_id, :route, :service_desk_custom_email
+    #   :project_id, :namespace_id, :route, :service_desk_custom_email,
+    #   :service_desk_project_key_address_slug
     Target = Data.define(:kind, :value) do
       def self.project_id(value)
         new(kind: :project_id, value: value)
@@ -23,6 +24,10 @@ module Gitlab
 
       def self.service_desk_custom_email(value)
         new(kind: :service_desk_custom_email, value: value)
+      end
+
+      def self.service_desk_project_key_address_slug(value)
+        new(kind: :service_desk_project_key_address_slug, value: value)
       end
     end
   end

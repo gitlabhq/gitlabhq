@@ -342,23 +342,6 @@ export const destroyModelResponses = {
   },
 };
 
-export const modelWithVersions = {
-  id: 'gid://gitlab/Ml::Model/1',
-  name: 'model_1',
-  versionCount: 2,
-  createdAt: '2023-12-06T12:41:48Z',
-  latestVersion: {
-    id: 'gid://gitlab/Ml::ModelVersion/1',
-    version: '1.0.0',
-    _links: {
-      showPath: '/my_project/-/ml/models/1/versions/1',
-    },
-  },
-  _links: {
-    showPath: '/my_project/-/ml/models/1',
-  },
-};
-
 export const modelWithOneVersion = {
   id: 'gid://gitlab/Ml::Model/2',
   name: 'model_2',
@@ -471,16 +454,6 @@ export const modelsQuery = (
   },
 });
 
-export const modelVersionQuery = {
-  data: {
-    mlModel: {
-      id: 'gid://gitlab/Ml::Model/1',
-      name: 'blah',
-      version: modelVersionWithCandidate,
-    },
-  },
-};
-
 export const modelVersionQueryWithAuthor = {
   data: {
     mlModel: {
@@ -533,5 +506,3 @@ export const createModelVersionResponses = {
     },
   },
 };
-
-export const graphqlModels = [model];

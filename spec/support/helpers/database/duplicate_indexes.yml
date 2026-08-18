@@ -2,9 +2,6 @@
 approval_merge_request_rules:
   index_approval_rule_name_for_sectional_code_owners_rule_type:
   - index_approval_rules_code_owners_rule_type
-ci_job_artifact_states:
-  index_on_job_artifact_id_partition_id_verification_state:
-  - index_job_artifact_states_on_verification_state
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
   - index_dast_site_tokens_on_project_id
@@ -194,3 +191,6 @@ users:
 emails:
   index_emails_on_user_id_and_confirmation_token:
     - index_emails_on_user_id
+members:
+  tmp_idx_members_on_access_level_source_type_requested_at_id:
+  - index_members_on_access_level

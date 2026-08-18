@@ -101,3 +101,23 @@ columns:
   compression_codec: CODEC(ZSTD(1))
 - name: incremental_checkpoints_enabled
   type: Nullable(Bool)
+- name: agent_type
+  type: Nullable(String)
+- name: jsonl_sha256
+  type: Nullable(String)
+- name: idempotency_key
+  type: Nullable(String)
+- name: sync_type
+  type: Nullable(Int16)
+- name: agent_identity_id
+  type: Nullable(Int64)
+- name: web_search_enabled
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+- name: trigger_source
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: trigger_flow_trigger_id
+  type: Nullable(Int64)

@@ -275,7 +275,10 @@ Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do
 
 ## AI Gateway
 
-Use title case for **AI Gateway**. Do not use **AI Gateway** (lowercase), and do not hyphenate.
+Use title case for **AI Gateway**. Do not use **AI gateway** (lowercase), and do not hyphenate.
+
+Use **AI Gateway for GitLab Dedicated** to refer to the AI Gateway that runs inside a customer's GitLab Dedicated environment.
+Do not use **Dedicated-hosted AI Gateway** or **GitLab Dedicated-hosted AI Gateway**.
 
 ## AI-powered, AI-native
 
@@ -716,7 +719,7 @@ Use **compute minutes** instead of these (or similar) terms:
 - **CI pipeline minutes**
 - **pipeline minutes**
 
-For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
+For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/work_items/2150).
 
 ## configuration
 
@@ -1008,23 +1011,6 @@ Use:
 ## e.g.
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
-
-## ellipsis, ellipses
-
-Avoid ellipses when you can. If you must include them, for example as part of a code block or other CLI response,
-use three periods with no space (`...`) instead of the `&hellip;` HTML entity or the `&#8230;` HTML code.
-
-For more information, see [code blocks](_index.md#code-blocks).
-
-Do not include any ellipses when documenting UI text. For example, use:
-
-- **Search or go to**
-
-Instead of:
-
-- **Search or go to...**
-
-For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 ## email
 
@@ -1443,6 +1429,10 @@ Do not use **the Operator** or **Operator**.
 If you use it in a context of describing the
 [different installation methods](_index.md#how-to-document-different-installation-methods)
 use **GitLab Operator (Kubernetes)**.
+
+## GitLab Orbit
+
+Do not use **Orbit** by itself. Always use **GitLab Orbit**.
 
 ## GitLab Pages
 

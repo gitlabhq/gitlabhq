@@ -14,7 +14,21 @@ RSpec.describe Admin::ApplicationsController, :enable_admin_mode, feature_catego
 
   include_examples 'applications controller - GET #show'
 
-  include_examples 'applications controller - GET #new'
+  context 'on GET #new' do
+    def perform_scopes_action
+      get new_admin_application_path
+    end
+
+    include_examples 'applications controller - scopes include mcp'
+  end
+
+  context 'on GET #edit' do
+    def perform_scopes_action
+      get edit_admin_application_path(application)
+    end
+
+    include_examples 'applications controller - scopes include mcp'
+  end
 
   include_examples 'applications controller - POST #create'
 end

@@ -3,6 +3,9 @@
   "description": "Application settings for importers and exporters",
   "type": "object",
   "properties": {
+    "import_jobs_concurrency_limit": {
+      "type": "integer"
+    },
     "silent_admin_exports_enabled": {
       "type": "boolean"
     },
@@ -16,6 +19,15 @@
       "type": "integer"
     },
     "allow_s3_compatible_storage_for_offline_transfer": {
+      "type": "boolean"
+    },
+    "allow_application_default_credentials_for_offline_transfer": {
+      "type": "boolean"
+    },
+    "offline_transfer_exports_enabled": {
+      "type": "boolean"
+    },
+    "offline_transfer_imports_enabled": {
       "type": "boolean"
     }
   },

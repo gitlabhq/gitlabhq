@@ -60,11 +60,11 @@ You can pre-configure the GitLab Docker image by adding the environment variable
 `GITLAB_OMNIBUS_CONFIG` to the Docker run command. This variable can contain any
 `gitlab.rb` setting and is evaluated before the loading of the container's
 `gitlab.rb` file. This behavior allows you to configure the external GitLab URL,
-and make database configuration or any other option from the
+database configuration, or any other option from the
 [Linux package template](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
 The settings contained in `GITLAB_OMNIBUS_CONFIG` aren't written to the
 `gitlab.rb` configuration file, and are evaluated on load. To provide multiple
-settings, separate them with a colon (`;`).
+settings, separate them with a semicolon (`;`).
 
 The following example sets the external URL, enables LFS, and starts
 the container with a [minimal shm size required for Prometheus](troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container):
@@ -89,7 +89,7 @@ _not_ preserved between subsequent runs.
 
 ### Run GitLab on a public IP address
 
-You can make Docker to use your IP address and forward all traffic to the
+You can make Docker use your IP address and forward all traffic to the
 GitLab container by modifying the `--publish` flag.
 
 To expose GitLab on IP `198.51.100.1`:
@@ -187,7 +187,6 @@ You can see a `docker-compose.yml` example that uses different ports in the
 
 ## Configure multiple database connections
 
-Starting in [GitLab 16.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6850),
 GitLab defaults to using two database connections that point to the same PostgreSQL database.
 
 If, for any reason, you wish to switch back to single database connection:

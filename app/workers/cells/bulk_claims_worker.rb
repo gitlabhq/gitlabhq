@@ -25,7 +25,7 @@ module Cells
       return unless enabled?(model, attribute)
 
       create_metadata = build_create_metadata(model, attribute, payload)
-      destroy_metadata = build_destroy_metadata(payload)
+      destroy_metadata = build_destroy_metadata(model, payload)
       return if create_metadata.empty? && destroy_metadata.empty?
 
       result = Cells::Claims::BulkClaimService.new(
@@ -68,16 +68,15 @@ module Cells
       # rubocop:enable CodeReuse/ActiveRecord
     end
 
-    def build_destroy_metadata(payload)
+    def build_destroy_metadata(model, payload)
       entries = payload['destroy_metadata']
       return [] if entries.blank?
 
       entries.map do |entry|
         {
-          bucket: {
-            type: entry['bucket_type'],
-            value: entry['bucket_value']
-          },
+          # 'bucket_type'/'bucket_value' are opaque payload keys kept for in-flight-job
+          # compatibility; entry['bucket_type'] is a ClaimType int feeding Claim construction.
+          claim: model.cells_claims_claim_hash(entry['bucket_type'], entry['bucket_value']),
           subject: {
             type: entry['subject_type'],
             id: entry['subject_id']

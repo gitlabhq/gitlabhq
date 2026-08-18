@@ -316,15 +316,15 @@ Setting the `GIT_STRATEGY` to `clone` should resolve the issue.
 You might encounter this error when your CI/CD job attempts to clone, fetch, or perform other Git operations with submodules.
 This issue occurs when:
 
-- Running Git commands (like `git fetch`) from within a submodule directory, because the externalized Git configuration may not be automatically inherited for all Git operations.
+- Running Git commands (like `git fetch`) from inside a submodule directory, because the externalized Git configuration may not be automatically inherited for all Git operations.
 - Working with nested submodules, because GitLab Runner 18.6 and later externalizes Git configuration, which may not be automatically inherited by submodules.
 - Using GitLab-hosted runners with submodules that reference `https://gitlab.com`, because the `CI_SERVER_FQDN` differs from `gitlab.com`.
-  GitLab Runner automatically performs Git URL substitution during initial checkout, but this may not apply to subsequent Git operations within submodule directories.
+  GitLab Runner automatically performs Git URL substitution during initial checkout, but this may not apply to subsequent Git operations in submodule directories.
 
 To resolve this issue:
 
 - For nested submodules, see [check out nested submodules](#check-out-nested-submodules).
-- For Git operations within submodule directories, explicitly pass the externalized configuration:
+- For Git operations in submodule directories, explicitly pass the externalized configuration:
 
   ```yaml
     my-job:
@@ -333,7 +333,7 @@ To resolve this issue:
         - git -c "include.path=$(git -C $CI_PROJECT_DIR config include.path)" fetch origin
   ```
 
-- For GitLab-hosted runners or jobs with multiple Git operations within submodules,
+- For GitLab-hosted runners or jobs with multiple Git operations in submodules,
   configure URL substitution with `CI_JOB_TOKEN`:
 
   ```yaml

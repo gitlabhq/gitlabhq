@@ -8,10 +8,11 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let_it_be(:namespace) { project.namespace }
   let(:diff_view) { :inline }
   let(:diff_options) { { ignore_whitespace_changes: true } }
-  let(:diffs_count) { 20 }
+  let(:files_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
   let(:merge_request_diff) do
-    instance_double(MergeRequestDiff, id: 999, merge_head?: false, diff_stats: nil, persisted?: true)
+    instance_double(MergeRequestDiff, id: 999, merge_head?: false, diff_stats: nil, persisted?: true,
+      files_count: files_count)
   end
 
   let(:resolved_diff_id) { merge_request_diff.id }
@@ -28,17 +29,39 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   end
 
   before do
-    allow(merge_request).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
     allow(merge_request).to receive_messages(
       diff_stats: nil,
       merge_request_diff: merge_request_diff,
+      latest_merge_request_diff: merge_request_diff,
       diffable_merge_ref?: false,
       has_no_commits?: false
     )
-    allow_any_instance_of(Gitlab::Diff::CollectionUnfolder).to receive(:unfold!) # rubocop:disable RSpec/AnyInstanceOf -- simplifies global stub
+    # rubocop:disable RSpec/AnyInstanceOf -- simplifies global stub
+    allow_any_instance_of(Gitlab::Diff::CollectionUnfolder).to receive(:unfold!)
+    # rubocop:enable RSpec/AnyInstanceOf
   end
 
-  it_behaves_like 'rapid diffs presenter base diffs_resource'
+  it_behaves_like 'rapid diffs presenter base diffs_resource', include_stats: true
+
+  describe '#conflict_resolution_path' do
+    let(:mr_presenter) { instance_double(MergeRequestPresenter, conflict_resolution_path: "#{base_path}/conflicts") }
+
+    before do
+      allow(resource).to receive(:present).with(current_user: current_user).and_return(mr_presenter)
+    end
+
+    it 'delegates to the merge request presenter' do
+      expect(presenter.conflict_resolution_path).to eq("#{base_path}/conflicts")
+    end
+  end
+
+  describe '#can_merge' do
+    it 'delegates to the merge request' do
+      expect(resource).to receive(:can_be_merged_by?).with(current_user).and_return(true)
+
+      expect(presenter.can_merge).to be(true)
+    end
+  end
 
   shared_examples 'calls write_cache on the collection' do
     it 'calls write_cache on the collection' do
@@ -52,13 +75,14 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     let(:diff_files) { instance_double(Gitlab::Git::DiffCollection) }
     let(:diff_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files) }
     let(:collection) { diff_collection }
+    let(:expected_diff_options) { diff_options.merge(include_stats: true) }
 
     subject { presenter.diffs_slice }
 
     before do
-      presenter.offset = 5
+      presenter.baseline_offset = 5
       allow(diff_collection).to receive(:write_cache)
-      allow(diff_files).to receive(:decorate!).and_return(diff_files)
+      allow(diff_files).to receive_messages(decorate!: diff_files, first: [])
       allow(merge_request).to receive(:first_diffs_slice).and_return(diff_collection)
     end
 
@@ -67,7 +91,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it 'calls first_diffs_slice on the merge_request with the correct arguments' do
       expect(merge_request)
         .to receive(:first_diffs_slice)
-        .with(offset, diff_options.merge(only_context_commits: false))
+        .with(offset, expected_diff_options.merge(only_context_commits: false))
         .and_return(diff_collection)
 
       presenter.diffs_slice
@@ -78,7 +102,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
       it 'calls first_diffs_slice with only_context_commits: true' do
         expect(merge_request).to receive(:first_diffs_slice)
-          .with(offset, diff_options.merge(only_context_commits: true))
+          .with(offset, expected_diff_options.merge(only_context_commits: true))
           .and_return(diff_collection)
 
         presenter.diffs_slice
@@ -158,6 +182,60 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: true
   it_behaves_like 'rapid diffs presenter syntax highlighting'
 
+  describe 'include_stats optimization' do
+    let(:diffs) { instance_double(Gitlab::Diff::FileCollection::Base) }
+
+    context 'when whitespace changes are hidden' do
+      let(:diff_options) { { ignore_whitespace_change: true } }
+
+      it 'fetches diffs without stats' do
+        expect(resource).to receive(:diffs).with(hash_including(include_stats: false)).and_return(diffs)
+
+        presenter.diffs_resource
+      end
+    end
+
+    context 'without a persisted version' do
+      let(:files_count) { nil }
+
+      it 'fetches diffs without stats' do
+        expect(resource).to receive(:diffs).with(hash_including(include_stats: false)).and_return(diffs)
+
+        presenter.diffs_resource
+      end
+    end
+
+    # rubocop:disable RSpec/FactoryBot/AvoidCreate -- a persisted MR diff with pruned too-large files cannot be stubbed
+    context 'with a persisted too-large file', :aggregate_failures do
+      let_it_be(:persisted_project) { create(:project, :repository) }
+
+      let(:persisted_merge_request) do
+        create(:merge_request, source_branch: 'expand-collapse-lines', target_branch: 'master',
+          source_project: persisted_project, target_project: persisted_project)
+      end
+
+      let(:persisted_presenter) do
+        described_class.new(
+          ::MergeRequests::VersionedMergeRequest.from_diff_options(persisted_merge_request, {}),
+          diff_view: :inline, diff_options: {}, current_user: persisted_merge_request.author, request_params: {}
+        ).tap { |presenter| presenter.baseline_offset = 50 }
+      end
+
+      before do
+        stub_application_setting(diff_max_patch_bytes: 200)
+      end
+
+      it 'keeps its line counts through the presenter' do
+        too_large = persisted_merge_request.merge_request_diff.merge_request_diff_files.find(&:too_large?)
+        expect(too_large).to be_present
+
+        file = persisted_presenter.diffs_slice.find { |diff_file| diff_file.new_path == too_large.new_path }
+        expect(file.added_lines).to be > 0
+      end
+    end
+    # rubocop:enable RSpec/FactoryBot/AvoidCreate
+  end
+
   shared_examples_for 'endpoint method with diff version support' do
     context 'when diff_id is set' do
       let(:request_params) { { diff_id: 1 } }
@@ -233,20 +311,25 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       subject(:url) { presenter.diffs_stream_url }
 
       before do
-        presenter.offset = 5
+        presenter.baseline_offset = 5
       end
 
       it { is_expected.to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&offset=5&view=inline") }
 
       context 'when diffs count is the same as streaming offset' do
-        let(:diffs_count) { 5 }
+        let(:files_count) { 5 }
 
         it { is_expected.to be_nil }
       end
 
       context 'when linked file is present and page has more diffs to stream' do
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw, write_cache: nil)
+        end
+
         let(:request_params) { { file_path: 'test.txt' } }
 
         before do
@@ -261,9 +344,14 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       end
 
       context 'when linked file is the only file' do
-        let(:diffs_count) { 1 }
+        let(:files_count) { 1 }
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw, write_cache: nil)
+        end
+
         let(:request_params) { { file_path: 'test.txt' } }
 
         before do
@@ -275,23 +363,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
       context 'when diff_stats is available on the resolved diff' do
         let(:stats) { instance_double(Gitlab::Git::DiffStatsCollection, count: 42) }
-        let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false, diff_stats: stats) }
+        let(:merge_request_diff) do
+          instance_double(MergeRequestDiff, id: 999, merge_head?: false, diff_stats: stats, files_count: files_count)
+        end
 
         it 'uses stats count without calling diffs_for_streaming' do
           expect(merge_request).not_to receive(:diffs_for_streaming)
-
-          expect(url).to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&offset=5&view=inline")
-        end
-      end
-
-      context 'when diff_stats returns nil on the resolved diff' do
-        before do
-          allow(merge_request).to receive_message_chain(:diffs_for_streaming, :diff_files,
-            :count).and_return(diffs_count)
-        end
-
-        it 'falls back to diffs_for_streaming' do
-          expect(merge_request).to receive(:diffs_for_streaming)
 
           expect(url).to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&offset=5&view=inline")
         end
@@ -314,7 +391,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
     context 'when offset is set' do
       before do
-        presenter.offset = 5
+        presenter.baseline_offset = 5
       end
 
       it { is_expected.to be(false) }
@@ -370,6 +447,26 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#sast_report_available' do
+    subject(:available) { presenter.sast_report_available }
+
+    context 'when the versioned merge request has sast reports' do
+      before do
+        allow(presenter.resource).to receive(:has_sast_reports?).and_return(true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the versioned merge request has no sast reports' do
+      before do
+        allow(presenter.resource).to receive(:has_sast_reports?).and_return(false)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 
@@ -542,17 +639,30 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
   describe '#linked_file' do
     let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+    let(:raw_diff_files) { instance_double(Gitlab::Git::DiffCollection) }
+    let(:collection) do
+      instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw_diff_files, write_cache: nil)
+    end
+
     let(:request_params) { { file_path: 'test.txt' } }
 
     before do
-      allow(resource).to receive(:diffs).and_return(diff_files)
+      allow(resource).to receive(:diffs).and_return(collection)
+      allow(raw_diff_files).to receive_messages(first: diff_file, decorate!: raw_diff_files)
     end
 
     it 'returns the linked file' do
       result = presenter.linked_file
       expect(result).to eq(diff_file)
       expect(result.linked).to be(true)
+    end
+
+    it 'unfolds the linked file through the collection, so discussions on expanded lines stay visible' do
+      # rubocop:disable RSpec/AnyInstanceOf -- matches the global CollectionUnfolder stub
+      expect_any_instance_of(Gitlab::Diff::CollectionUnfolder).to receive(:unfold!).with(collection)
+      # rubocop:enable RSpec/AnyInstanceOf
+
+      presenter.linked_file
     end
   end
 
@@ -595,7 +705,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         allow(collection).to receive(:decorate!) do |&block|
           diff_files_array.map!(&block)
         end
-        allow(collection).to receive(:first) { diff_files_array.first }
+        allow(collection).to receive(:first) { |*args| diff_files_array.first(*args) }
       end
     end
 
@@ -656,7 +766,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
     describe '#diffs_slice' do
       before do
-        presenter.offset = 5
+        presenter.baseline_offset = 5
       end
 
       it 'returns diff files wrapped in presenter with conflict info' do
@@ -678,7 +788,18 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
     describe '#linked_file' do
       let(:linked_file) { build(:diff_file) }
-      let(:diff_files_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [linked_file]) }
+      let(:linked_files_array) { [linked_file] }
+      let(:raw_linked_files) do
+        instance_double(Gitlab::Git::DiffCollection).tap do |collection|
+          allow(collection).to receive(:decorate!) { |&block| linked_files_array.map!(&block) }
+          allow(collection).to receive(:first) { linked_files_array.first }
+        end
+      end
+
+      let(:diff_files_collection) do
+        instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw_linked_files, write_cache: nil)
+      end
+
       let(:conflicts) do
         {
           linked_file.file_path => {
@@ -764,13 +885,20 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     end
 
     context 'when the diff is empty and the presenter is not lazy' do
-      let(:diffs_count) { 0 }
-
       before do
-        presenter.offset = 0
+        presenter.baseline_offset = 5
+        allow(merge_request).to receive(:first_diffs_slice).and_return(
+          instance_double(Gitlab::Diff::FileCollection::Base, count: 0)
+        )
       end
 
       it { is_expected.to eq(:no_changes) }
+
+      it 'does not request the diffs for streaming' do
+        expect(merge_request).not_to receive(:diffs_for_streaming)
+
+        expect(type).to eq(:no_changes)
+      end
     end
 
     context 'when there is no empty state and the presenter is lazy' do
@@ -782,7 +910,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     let(:diff_file) { build(:diff_file) }
     let(:diff_files_collection) do
       instance_double(Gitlab::Git::DiffCollection).tap do |collection|
-        allow(collection).to receive(:decorate!).and_return(collection)
+        allow(collection).to receive_messages(decorate!: collection, first: [])
       end
     end
 
@@ -815,7 +943,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     end
 
     it 'unfolds diffs_slice collection' do
-      presenter.offset = 5
+      presenter.baseline_offset = 5
       expect(unfolder).to receive(:unfold!).with(diff_collection)
 
       presenter.diffs_slice
@@ -825,6 +953,69 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       expect(unfolder).to receive(:unfold!).with(diff_collection)
 
       presenter.diff_files_for_streaming
+    end
+  end
+
+  describe 'MergeRequest-specific overflow detection' do
+    let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false, files_count: 10) }
+
+    before do
+      presenter.baseline_offset = 5
+      allow(merge_request).to receive(:latest_merge_request_diff).and_return(merge_request_diff)
+    end
+
+    context 'when there are more files than offset' do
+      it 'returns stream URL' do
+        expect(presenter.diffs_stream_url).not_to be_nil
+      end
+
+      it 'uses files_count without calling first_diffs_slice or diff_stats' do
+        expect(merge_request).not_to receive(:first_diffs_slice)
+        expect(merge_request).not_to receive(:diff_stats)
+
+        presenter.diffs_stream_url
+      end
+    end
+
+    context 'when offset equals files_count' do
+      let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false, files_count: 5) }
+
+      it 'returns nil' do
+        expect(presenter.diffs_stream_url).to be_nil
+      end
+    end
+
+    context 'when offset is greater than files_count' do
+      let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false, files_count: 3) }
+
+      it 'returns nil' do
+        expect(presenter.diffs_stream_url).to be_nil
+      end
+    end
+
+    context 'when whitespace changes are hidden' do
+      let(:diff_options) { { ignore_whitespace_change: true } }
+
+      it 'still uses files_count to detect overflow' do
+        expect(merge_request).not_to receive(:first_diffs_slice)
+
+        expect(presenter.diffs_stream_url).not_to be_nil
+      end
+    end
+
+    context 'when the merge request has no diff' do
+      let(:merge_request_diff) { nil }
+
+      before do
+        # The slice reports overflow, so streaming is required.
+        allow(merge_request).to receive(:first_diffs_slice).and_return(
+          instance_double(Gitlab::Diff::FileCollection::Base, count: 5, overflow?: true)
+        )
+      end
+
+      it 'falls back to slice overflow detection' do
+        expect(presenter.diffs_stream_url).not_to be_nil
+      end
     end
   end
 end

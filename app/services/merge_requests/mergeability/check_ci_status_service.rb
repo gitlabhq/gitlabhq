@@ -6,6 +6,7 @@ module MergeRequests
       include Gitlab::Utils::StrongMemoize
 
       set_identifier :ci_must_pass
+      set_failure_explanation N_('The pipeline must succeed.')
       set_description 'Checks whether CI has passed'
 
       def execute

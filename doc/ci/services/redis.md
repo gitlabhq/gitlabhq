@@ -73,5 +73,5 @@ We have set up an [Example Redis Project](https://gitlab.com/gitlab-examples/red
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [instance runners](../runners/_index.md).
 
-Want to hack on it? Fork it, commit and push your changes. In a few
+Want to hack on it? Fork it, commit, and push your changes. In a few
 moments the changes are picked by a public runner and the job begins.

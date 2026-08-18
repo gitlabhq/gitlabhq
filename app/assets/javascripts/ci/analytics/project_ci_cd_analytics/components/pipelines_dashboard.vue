@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { GlColumnChart, GlChartSeriesLabel } from '@gitlab/ui/src/charts';
+import { GL_COLOR_DATA_GREEN_700 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import { getDateInPast, localeDateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import CiCdAnalyticsCharts from '~/analytics/ci_cd/components/ci_cd_analytics_charts.vue';
@@ -269,7 +270,7 @@ export default {
       }));
     },
   },
-  successColor: '#366800',
+  successColor: GL_COLOR_DATA_GREEN_700,
   chartContainerHeight: CHART_CONTAINER_HEIGHT,
   timesChartOptions: {
     height: INNER_CHART_HEIGHT,

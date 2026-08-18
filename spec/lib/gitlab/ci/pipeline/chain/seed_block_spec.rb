@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::SeedBlock do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:user) { create(:user, developer_of: project) }
   let(:seeds_block) { nil }
 

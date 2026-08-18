@@ -23,6 +23,7 @@ import {
   GROUP_TYPE,
   PROJECT_TYPE,
   I18N_CREATE_ERROR,
+  RUNNER_MAX_TIMEOUT_MIN_SECS,
 } from '../constants';
 
 export default {
@@ -61,7 +62,7 @@ export default {
       required: true,
     },
   },
-  emits: ['back', 'next', 'onGetNewRunnerId'],
+  emits: ['back', 'next', 'on-get-new-runner-id'],
   data() {
     return {
       runner: {
@@ -133,7 +134,7 @@ export default {
           return;
         }
 
-        this.$emit('onGetNewRunnerId', runner.id);
+        this.$emit('on-get-new-runner-id', runner.id);
         this.$emit('next');
         // destroy the alert
         createAlert({ message: null }).dismiss();
@@ -154,6 +155,7 @@ export default {
   HELP_JOB_TIMEOUT_PAGE_PATH: helpPagePath('ci/pipelines/settings', {
     anchor: 'set-a-limit-for-how-long-jobs-can-run',
   }),
+  RUNNER_MAX_TIMEOUT_MIN_SECS,
 };
 </script>
 <template>
@@ -225,10 +227,11 @@ export default {
             <gl-sprintf
               :message="
                 s__(
-                  'Runners|Enter number of seconds. Must be 600 seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}.',
+                  'Runners|Enter number of seconds. Must be %{minValueSecs} seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}.',
                 )
               "
             >
+              <template #minValueSecs>{{ $options.RUNNER_MAX_TIMEOUT_MIN_SECS }}</template>
               <template #link="{ content }">
                 <gl-link :href="$options.HELP_JOB_TIMEOUT_PAGE_PATH" target="_blank">{{
                   content
@@ -241,6 +244,7 @@ export default {
             v-model="runner.maximumTimeout"
             name="max-timeout"
             type="number"
+            :min="$options.RUNNER_MAX_TIMEOUT_MIN_SECS"
             data-testid="max-timeout-input"
           />
         </gl-form-group>

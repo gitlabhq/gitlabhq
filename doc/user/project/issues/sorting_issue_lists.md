@@ -27,10 +27,10 @@ The available sorting options can change based on the context of the list.
 When you sort by **Blocking**, the issue list changes to sort descending by the
 number of issues each issue is [blocking](related_issues.md#blocking-issues).
 
-## Sorting by created, updated or closed date
+## Sorting by created, updated, or closed date
 
-When you sort by **Created**, **Updated** or **Closed date**, the issue list changes to
-sort descending by the respective date and timestamp. Issues created, updated or closed most recently are first.
+When you sort by **Created**, **Updated**, or **Closed date**, the issue list changes to
+sort descending by the respective date and timestamp. Issues created, updated, or closed most recently are first.
 
 ## Sorting by due date
 
@@ -115,12 +115,6 @@ title in this order:
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377841) in GitLab 15.7.
-
-{{< /history >}}
 
 When you sort by **Health**, the issue list changes to sort by the
 [health status](managing_issues.md#health-status) of the issues

@@ -363,6 +363,64 @@ module Gitlab
             expect { result.clear_jobs! }.not_to change { result.stages }
           end
         end
+
+        describe '#only_no_visible_jobs_error?' do
+          # The runtime-composed message prepends the entry location/attribute
+          # ("jobs config") to the message fragment defined on the entry.
+          let(:no_visible_jobs_error) do
+            "jobs config #{Gitlab::Ci::Config::Entry::Jobs::NO_VISIBLE_JOBS_MESSAGE}"
+          end
+
+          context 'when the config is valid' do
+            it 'returns false' do
+              expect(result.only_no_visible_jobs_error?).to be false
+            end
+          end
+
+          context 'when the only error is the no visible jobs error' do
+            let(:result) { described_class.new(errors: [no_visible_jobs_error]) }
+
+            it 'returns true' do
+              expect(result.only_no_visible_jobs_error?).to be true
+            end
+          end
+
+          context 'when there are other errors' do
+            let(:result) { described_class.new(errors: ['some other error']) }
+
+            it 'returns false' do
+              expect(result.only_no_visible_jobs_error?).to be false
+            end
+          end
+
+          context 'when the no visible jobs error appears alongside another error' do
+            let(:result) { described_class.new(errors: [no_visible_jobs_error, 'another error']) }
+
+            it 'returns false' do
+              expect(result.only_no_visible_jobs_error?).to be false
+            end
+          end
+        end
+
+        describe '#any_includes_fully_filtered_by_rules?' do
+          context 'when ci_config is nil' do
+            let(:result) { described_class.new(errors: ['boom']) }
+
+            it 'returns false' do
+              expect(result.any_includes_fully_filtered_by_rules?).to be false
+            end
+          end
+
+          context 'when ci_config reports filtered includes' do
+            before do
+              allow(ci_config).to receive(:any_includes_fully_filtered_by_rules?).and_return(true)
+            end
+
+            it 'delegates to ci_config' do
+              expect(result.any_includes_fully_filtered_by_rules?).to be true
+            end
+          end
+        end
       end
     end
   end

@@ -69,6 +69,8 @@ metadata:
     description: Operations related to Geo
   - name: geo_nodes
     description: Operations related Geo Nodes
+  - name: glql
+    description: Operations related to GitLab Query Language (GLQL)
   - name: go_proxy
     description: Operations related to Go Proxy
   - name: group_export

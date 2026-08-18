@@ -18,10 +18,10 @@ import configureSecretDetectionMutation from './graphql/configure_secret_detecti
  * Translations for Security Configuration Page
  * Make sure to add new scanner translations to the SCANNER_NAMES_MAP below.
  */
-export const SAST_NAME = __('Static Application Security Testing (SAST)');
+export const SAST_NAME = __('Static application security testing (SAST)');
 export const SAST_SHORT_NAME = s__('ciReport|SAST');
 
-export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
+export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) scanning');
 export const SAST_IAC_SHORT_NAME = s__('ciReport|SAST IaC');
 
 export const DAST_NAME = __('Dynamic Application Security Testing (DAST)');
@@ -30,13 +30,13 @@ export const DAST_SHORT_NAME = s__('ciReport|DAST');
 export const DAST_PROFILES_NAME = __('DAST profiles');
 export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/_index');
 
-export const SECRET_DETECTION_NAME = __('Secret Detection');
+export const SECRET_DETECTION_NAME = __('Secret detection');
 
-export const DEPENDENCY_SCANNING_NAME = __('Dependency Scanning');
+export const DEPENDENCY_SCANNING_NAME = __('Dependency scanning');
 
-export const CONTAINER_SCANNING_NAME = __('Container Scanning');
+export const CONTAINER_SCANNING_NAME = __('Container scanning');
 
-export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
+export const CORPUS_MANAGEMENT_NAME = __('Corpus management');
 
 export const SECRET_PUSH_PROTECTION = 'secret_push_protection';
 
@@ -143,7 +143,7 @@ export const i18n = {
        successfully executed and it has generated valid artifacts.`,
   ),
   securityConfiguration: __('Security configuration'),
-  vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
+  vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability management'),
   securityTraining: s__('SecurityConfiguration|Security training'),
   securityTrainingDescription: s__(
     'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability. Please note that security training is not accessible in an environment that is offline.',
@@ -187,7 +187,7 @@ export const SCAN_TRIGGER_DEFINITIONS = {
   DEFAULT_BRANCH_PIPELINE: {
     anchor: 'default-branch-pipeline',
     icon: 'branch',
-    title: s__('ScanProfiles|Branch Pipelines (default only)'),
+    title: s__('ScanProfiles|Branch pipelines (default only)'),
     subtitle: s__('ScanProfiles|Scans commits to the default branch'),
     description: s__(
       "ScanProfiles|A scan is automatically run when changes are merged or pushed to the default branch. All vulnerabilities found are reported, providing a complete picture of your default branch's security posture.",
@@ -200,8 +200,8 @@ export const SCAN_TRIGGER_DEFINITIONS = {
 
 export const SCAN_PROFILE_CATEGORIES = {
   [SCAN_PROFILE_TYPE_SECRET_DETECTION]: {
-    name: s__('SecurityProfiles|Secret Detection'),
-    displayName: s__('SecurityProfiles|Secret Detection'),
+    name: s__('SecurityProfiles|Secret detection'),
+    displayName: s__('SecurityProfiles|Secret detection'),
     label: 'SD',
     helpTitle: s__('SecurityProfiles|What is secret push protection?'),
     helpDescription: s__(
@@ -213,7 +213,7 @@ export const SCAN_PROFILE_CATEGORIES = {
   },
   [SCAN_PROFILE_TYPE_SAST]: {
     name: s__('SecurityProfiles|SAST'),
-    displayName: s__('SecurityProfiles|Static Application Security Testing (SAST)'),
+    displayName: s__('SecurityProfiles|Static application security testing (SAST)'),
     label: 'SAST',
     helpTitle: s__('SecurityProfiles|What is SAST?'),
     helpDescription: s__(
@@ -222,10 +222,10 @@ export const SCAN_PROFILE_CATEGORIES = {
     helpLink: helpPagePath('/user/application_security/sast/_index'),
   },
   [SCAN_PROFILE_TYPE_DEPENDENCY_SCANNING]: {
-    name: s__('SecurityProfiles|Dependency Scanning'),
-    displayName: s__('SecurityProfiles|Dependency Scanning'),
+    name: s__('SecurityProfiles|Dependency scanning'),
+    displayName: s__('SecurityProfiles|Dependency scanning'),
     label: 'DS',
-    helpTitle: s__('SecurityProfiles|What is Dependency Scanning?'),
+    helpTitle: s__('SecurityProfiles|What is dependency scanning?'),
     helpDescription: s__(
       "SecurityProfiles|Scans your project's dependencies for known vulnerabilities to identify security risks introduced by third-party packages. %{linkStart}Learn more%{linkEnd}.",
     ),
@@ -251,7 +251,11 @@ export const SCAN_PROFILE_I18N = {
     'SecurityProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage. %{linkStart}Learn more%{linkEnd}.',
   ),
   applyDefault: s__('SecurityProfiles|Apply default profile'),
+  applyProfile: s__('SecurityProfiles|Apply profile'),
+  applyDefaultToAll: s__('SecurityProfiles|Apply default profile to all'),
+  applyProfileToAll: s__('SecurityProfiles|Apply profile to all'),
   previewDefault: s__('SecurityProfiles|Preview default profile'),
+  previewProfile: s__('SecurityProfiles|Preview profile'),
   disable: s__('SecurityProfiles|Disable'),
   troubleshootFailure: s__('SecurityProfiles|Troubleshoot failure'),
   errorLoadingProfiles: s__('SecurityProfiles|Error loading profiles. Please try again.'),

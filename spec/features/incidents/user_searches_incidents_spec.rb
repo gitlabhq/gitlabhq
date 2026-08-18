@@ -12,7 +12,6 @@ RSpec.describe 'User searches Incident Management incidents', :js, feature_categ
     sign_in(developer)
 
     visit project_incidents_path(project)
-    wait_for_requests
   end
 
   context 'when a developer displays the incident list they can search for an incident' do

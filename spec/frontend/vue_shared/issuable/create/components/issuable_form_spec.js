@@ -55,7 +55,7 @@ describe('IssuableForm', () => {
           },
         ];
 
-        findLabelsSelect().vm.$emit('updateSelectedLabels', labels);
+        findLabelsSelect().vm.$emit('update-selected-labels', labels);
 
         expect(wrapper.vm.issuableMeta.selectedLabels).toStrictEqual(labels);
       });

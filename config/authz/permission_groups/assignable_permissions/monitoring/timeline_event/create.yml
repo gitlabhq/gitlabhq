@@ -1,0 +1,10 @@
+---
+name: create_timeline_event
+description: Grants the ability to create timeline events
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_timeline_event
+  - create_timeline_event_tag

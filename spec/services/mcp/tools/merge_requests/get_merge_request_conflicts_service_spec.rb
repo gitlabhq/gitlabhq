@@ -40,8 +40,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
               description: 'Merge request internal ID'
             }
           },
-          required: %w[project_id merge_request_iid],
-          additionalProperties: false
+          required: %w[project_id merge_request_iid]
         })
       end
     end
@@ -365,7 +364,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
 
         it 'does not perform duplicate database queries for merge_request' do
           # Mock find_merge_request to verify it's only called once
-          # despite being used in both auth_target and perform_0_1_0
+          # despite being used in both auth_target and perform_v0_1_0
           call_count = 0
 
           allow(service).to receive(:find_merge_request).and_wrap_original do |method, *args|

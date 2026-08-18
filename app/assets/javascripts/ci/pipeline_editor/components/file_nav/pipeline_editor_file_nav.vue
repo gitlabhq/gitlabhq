@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import getAppStatus from '~/ci/pipeline_editor/graphql/queries/client/app_status.query.graphql';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { EDITOR_APP_STATUS_EMPTY, EDITOR_APP_STATUS_LOADING } from '../../constants';
 import FileTreePopover from '../popovers/file_tree_popover.vue';
 import BranchSwitcher from './branch_switcher.vue';
@@ -12,6 +13,7 @@ export default {
     FileTreePopover,
     GlButton,
   },
+  mixins: [glListenersMixin],
   props: {
     hasUnsavedChanges: {
       type: Boolean,
@@ -71,7 +73,7 @@ export default {
     <branch-switcher
       :has-unsaved-changes="hasUnsavedChanges"
       :should-load-new-branch="shouldLoadNewBranch"
-      v-on="$listeners"
+      v-on="glListeners()"
     />
   </div>
 </template>

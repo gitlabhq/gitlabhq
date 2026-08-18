@@ -209,23 +209,74 @@ module Features
       )
     end
 
-    # Drives the email-OTP fallback after the user has reached the
-    # 2FA challenge page: clicks "send code to email address", reads
-    # the code from the delivered mail, submits it, and asserts the
-    # post-login content. Requires `include EmailHelpers` in the spec.
+    # Asserts the email-OTP fallback affordances the flag renders on the current 2FA screen.
+    # The Vue screen shows a "Recover your account" link and an "Email code" button; the
+    # legacy HAML screen shows an "Enter recovery code" link and a "send code to email
+    # address" footer button.
+    def expect_email_otp_fallback_available(user)
+      if Feature.enabled?(:two_factor_vue, user)
+        expect(page).to have_testid('recovery-button')
+        expect(page).to have_button(s_('TwoFactorAuth|Email code'))
+      else
+        expect(page).to have_link('Enter recovery code')
+        expect(page).to have_button('send code to email address')
+      end
+    end
+
+    # Asserts the email-OTP fallback is not offered on the current 2FA screen.
+    def expect_email_otp_fallback_absent(user)
+      if Feature.enabled?(:two_factor_vue, user)
+        expect(page).not_to have_button(s_('TwoFactorAuth|Email code'))
+      else
+        expect(page).not_to have_button('send code to email address')
+      end
+    end
+
+    # Retries the WebAuthn prompt and asserts the flag's retry affordances. click_button
+    # matches both the Vue "Try again" and legacy "Try again?" labels (Capybara substring).
+    def expect_webauthn_retry_prompt(user)
+      click_button _('Try again')
+
+      expect(page).to have_content('Trying to communicate with your device')
+
+      if Feature.enabled?(:two_factor_vue, user)
+        expect(page).to have_testid('recovery-button')
+      else
+        expect(page).to have_button(_('Sign in via 2FA code'))
+      end
+    end
+
+    # Drives the email-OTP fallback after the user has reached the 2FA challenge screen: on
+    # the Vue screen it switches to the email step via the "Email code" button (which auto-
+    # sends the code on mount); on the legacy screen it clicks the "send code to email
+    # address" footer. It then reads the code from the delivered mail, submits it, and
+    # asserts the post-login content. Requires `include EmailHelpers` in the spec.
     def verify_email_otp_fallback_workflow(user)
+      vue = Feature.enabled?(:two_factor_vue, user)
+
+      click_button s_('TwoFactorAuth|Email code') if vue
+
       perform_enqueued_jobs do
-        click_button 'send code to email address'
+        # The legacy HAML screen hides the verification-code field behind the "send code to
+        # email address" footer button, so click it first there.
+        unless vue
+          click_button 'send code to email address'
 
-        expect(page).to have_content('Verification code')
+          # WebAuthn UI should be hidden
+          expect(page).not_to have_content('Trying to communicate with your device')
 
-        # WebAuthn UI should be hidden
-        expect(page).not_to have_content('Trying to communicate with your device')
+          # TOTP form should be hidden
+          expect(page).not_to have_content('Enter verification code')
+        end
 
-        # TOTP form should be hidden
-        expect(page).not_to have_content('Enter verification code')
+        expect(page).to have_field(s_('IdentityVerification|Verification code'))
 
-        mail = wait_for('mail found for user') { find_email_for(user) }
+        mail = wait_for('mail found for user') do
+          # The Vue screen auto-sends on mount, enqueuing the mailer job during page render
+          # (before this block). Drain any already-enqueued jobs while polling for the mail.
+          flush_enqueued_jobs if vue
+          find_email_for(user)
+        end
         expect(mail.to).to match_array([user.email])
         expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
 

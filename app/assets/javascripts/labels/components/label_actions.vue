@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -19,6 +19,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   props: {
     labelId: {
       type: String,

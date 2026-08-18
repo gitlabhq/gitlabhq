@@ -107,8 +107,8 @@ CI/CD job tokens can access the following REST API endpoints:
 | ---------- | ------------ | --------------- | ----- |
 | Download a specific file from artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | `READ_JOBS` | Read |
 | Download a specific file from artifacts archive from a ref | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | `READ_JOBS` | Read |
+| Download job artifacts | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
 | Download the artifacts archive from a job | `GET /projects/:id/jobs/:job_id/artifacts` | `READ_JOBS` | Read |
-| Download the artifacts file for job | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
 | List all files in an artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
 | List all jobs by pipeline | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
 | List all jobs for a project | `GET /projects/:id/jobs` | `READ_JOBS` | Read |
@@ -128,17 +128,18 @@ CI/CD job tokens can access the following REST API endpoints:
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
 | Composer package endpoint to download a package archive | `GET /projects/:id/packages/composer/archives/*package_name` | `READ_PACKAGES` | Read |
+| Download a forwarded (proxied) PyPI package file | `GET /projects/:id/packages/pypi/forward/:package_name/*upstream_path` | `READ_PACKAGES` | Read |
 | Download a package file | `GET /projects/:id/packages/:package_id/package_files/:package_file_id/download` | `READ_PACKAGES` | Read |
 | Download module file | `GET /projects/:id/packages/go/*module_name/@v/:module_version.mod` | `READ_PACKAGES` | Read |
 | Download module source | `GET /projects/:id/packages/go/*module_name/@v/:module_version.zip` | `READ_PACKAGES` | Read |
 | Download package file | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `READ_PACKAGES` | Read |
 | Download the NPM tarball | `GET /projects/:id/packages/npm/*package_name/-/*file_name` | `READ_PACKAGES` | Read |
-| Download the maven package file at a group level | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
-| Download the maven package file at a project level | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
-| Download the maven package file at instance level | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
-| Get all tags for a given an NPM package | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
-| Get all tags for a given an NPM package | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
-| Get all tags for a given an NPM package | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
+| Download the maven package file for a group | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
+| Download the maven package file for a project | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
+| Download the maven package file for the instance | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
+| Get all tags for a given NPM package | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
+| Get all tags for a given NPM package | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
+| Get all tags for a given NPM package | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
 | List | `GET /projects/:id/packages/go/*module_name/@v/list` | `READ_PACKAGES` | Read |
 | List all package download URLs | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | Read |
 | List all package download URLs | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | Read |
@@ -236,7 +237,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
 | Download a project release asset file | `GET /projects/:id/releases/:tag_name/downloads/*direct_asset_path` | `READ_RELEASES` | Read |
-| Generates a changelog section for a release and returns it | `GET /projects/:id/repository/changelog` | `READ_RELEASES` | Read |
+| Generate changelog data | `GET /projects/:id/repository/changelog` | `READ_RELEASES` | Read |
 | Get the latest project release | `GET /projects/:id/releases/permalink/latest(/)(*suffix_path)` | `READ_RELEASES` | Read |
 | List all release links | `GET /projects/:id/releases/:tag_name/assets/links` | `READ_RELEASES` | Read |
 | List all releases in a project | `GET /projects/:id/releases` | `READ_RELEASES` | Read |
@@ -255,12 +256,13 @@ CI/CD job tokens can access the following REST API endpoints:
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get a project repository tags | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | Read |
-| Get a single repository tag | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | Read |
-| List all merge requests for a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
+| List all merge requests associated with a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
+| List all project repository tags | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | Read |
 | List all repository branches | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | Read |
 | Retrieve a commit | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
 | Retrieve a raw file from a repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
+| Retrieve a single repository tag | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | Read |
+| Retrieve file archive from a repository | `GET /projects/:id/repository/archive` | `READ_REPOSITORIES` | Read |
 
 ### Secure files endpoints
 
@@ -276,13 +278,13 @@ CI/CD job tokens can access the following REST API endpoints:
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
-| Get a Terraform state by its name | `GET /projects/:id/terraform/state/:name` | `READ_TERRAFORM_STATE` | Read |
-| Get a Terraform state version | `GET /projects/:id/terraform/state/:name/versions/:serial` | `READ_TERRAFORM_STATE` | Read |
-| Add a new Terraform state or update an existing one | `POST /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
-| Delete a Terraform state of a certain name | `DELETE /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Retrieve a Terraform state | `GET /projects/:id/terraform/state/:name` | `READ_TERRAFORM_STATE` | Read |
+| Retrieve a Terraform state version | `GET /projects/:id/terraform/state/:name/versions/:serial` | `READ_TERRAFORM_STATE` | Read |
+| Create or update a Terraform state | `POST /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Delete a Terraform state | `DELETE /projects/:id/terraform/state/:name` | `ADMIN_TERRAFORM_STATE` | Read and write |
 | Delete a Terraform state version | `DELETE /projects/:id/terraform/state/:name/versions/:serial` | `ADMIN_TERRAFORM_STATE` | Read and write |
-| Lock a Terraform state of a certain name | `POST /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
-| Unlock a Terraform state of a certain name | `DELETE /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Lock a Terraform state | `POST /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
+| Unlock a Terraform state | `DELETE /projects/:id/terraform/state/:name/lock` | `ADMIN_TERRAFORM_STATE` | Read and write |
 
 ### Work items endpoints
 
@@ -300,9 +302,9 @@ CI/CD job tokens cannot access the following endpoints:
 | Delete registry repository | `DELETE /projects/:id/registry/repositories/:repository_id` |
 | Delete multiple registry repository tags | `DELETE /projects/:id/registry/repositories/:repository_id/tags` |
 | Delete a registry repository tag | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
-| Composer packages endpoint at group level for package versions metadata | `GET /group/:id/-/packages/composer/*package_name` |
+| Composer packages endpoint for a group's package versions metadata | `GET /group/:id/-/packages/composer/*package_name` |
 | List all packages for a group | `GET /group/:id/-/packages/composer/p/:sha` |
-| Composer v2 packages p2 endpoint at group level for package versions metadata | `GET /group/:id/-/packages/composer/p2/*package_name` |
+| Composer v2 packages p2 endpoint for a group's package versions metadata | `GET /group/:id/-/packages/composer/p2/*package_name` |
 | Retrieve repository URL templates | `GET /group/:id/-/packages/composer/packages` |
 | NPM registry metadata endpoint | `GET /groups/:id/-/packages/npm/*package_name` |
 | Download a package file from a group | `GET /groups/:id/-/packages/pypi/files/:sha256/*file_identifier` |
@@ -325,5 +327,5 @@ CI/CD job tokens cannot access the following endpoints:
 | List all registry repositories for a project | `GET /projects/:id/registry/repositories` |
 | List all registry repository tags for a project | `GET /projects/:id/registry/repositories/:repository_id/tags` |
 | Retrieve details of a registry repository tag | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
-| Transitions a DAST site validation to a new state. | `POST /internal/dast/site_validations/:id/transition` |
+| Transition a DAST site validation to a new state | `POST /internal/dast/site_validations/:id/transition` |
 | Issue a short-lived JWT for a single modular-service audience | `POST /token_exchange` |

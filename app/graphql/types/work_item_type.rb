@@ -5,6 +5,7 @@ module Types
     graphql_name 'WorkItem'
 
     include ::IssuablesHelper
+    include Types::WorkItems::WidgetVisibility
 
     implements Types::TodoableInterface
     connection_type_class Types::CountableConnectionType
@@ -24,6 +25,10 @@ module Types
       scopes: [:api, :read_api, :ai_workflows],
       description: 'User that created the work item.',
       experiment: { milestone: '15.9' }
+    field :available_quick_actions,
+      resolver: Resolvers::Notes::AvailableQuickActionsResolver,
+      null: true,
+      description: 'Quick actions available to the current user on the work item.'
     field :closed_at, Types::TimeType, null: true,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was closed.'
@@ -168,6 +173,12 @@ module Types
       # As we don't have a direct way to check that. We can check if the licensed feature for epics is enabled,
       # which is a premium and ultimate feature.
       !object.namespace.licensed_feature_available?(:epics)
+    end
+
+    def widgets(except_types: nil, only_types: nil)
+      object.widgets(except_types: except_types, only_types: only_types).select do |widget|
+        widget_visible?(widget, object)
+      end
     end
   end
 end

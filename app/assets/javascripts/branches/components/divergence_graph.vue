@@ -4,6 +4,7 @@ import { MAX_COMMIT_COUNT } from '../constants';
 import GraphBar from './graph_bar.vue';
 
 export default {
+  name: 'DivergenceGraph',
   components: {
     GraphBar,
   },

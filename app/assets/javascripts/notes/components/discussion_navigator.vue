@@ -7,7 +7,7 @@ import {
 import { Mousetrap } from '~/lib/mousetrap';
 import eventHub from '~/notes/event_hub';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
   mixins: [discussionNavigation],
@@ -25,7 +25,7 @@ export default normalizeRender({
     eventHub.$off('jumpToFirstUnresolvedDiscussion', this.jumpToFirstUnresolvedDiscussion);
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

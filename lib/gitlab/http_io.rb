@@ -7,6 +7,19 @@ module Gitlab
   class HttpIO
     BUFFER_SIZE = 128.kilobytes
 
+    # Net::HTTP defaults to 2 seconds, short enough that ordinary work between
+    # chunk reads - artifact parsing, trace processing, Sidekiq GVL contention -
+    # forces a reconnect and defeats the point of a persistent session. Object
+    # storage endpoints close idle sockets sooner than this anyway; Net::HTTP
+    # detects that before reusing one and reconnects without spending a retry.
+    KEEP_ALIVE_TIMEOUT = 30
+
+    # Net::HTTP's current default, set explicitly because the reconnect
+    # behavior documented in #persistent_chunk_response depends on it. Not
+    # raised: Net::HTTP retries read timeouts, so each extra retry adds another
+    # read timeout to the worst case for a single chunk.
+    MAX_RETRIES = 1
+
     InvalidURLError = Class.new(StandardError)
     FailedToGetChunkError = Class.new(StandardError)
 
@@ -22,10 +35,16 @@ module Gitlab
       @uri = URI(url)
       @size = size
       @tell = 0
+      @use_persistent_connection = Feature.enabled?(:http_io_persistent_connections, Feature.current_request)
+      @cache_previous_chunk = Feature.enabled?(:http_io_previous_chunk_cache, Feature.current_request)
     end
 
     def close
-      # no-op
+      @http_session&.finish
+    rescue IOError
+      # Raised when the session was never started or is already finished.
+    ensure
+      @http_session = nil
     end
 
     def binmode
@@ -153,10 +172,10 @@ module Gitlab
     end
 
     def get_chunk
-      unless in_range?
-        response = Net::HTTP.start(uri.hostname, uri.port, proxy_from_env: true, use_ssl: uri.scheme == 'https') do |http|
-          http.request(request)
-        end
+      unless in_range? || restore_previous_chunk
+        retain_current_chunk
+
+        response = fetch_chunk_response
 
         raise FailedToGetChunkError, "Unexpected response code: #{response.code}" unless response.code == '200' || response.code == '206'
 
@@ -178,6 +197,85 @@ module Gitlab
       end
 
       @chunk[chunk_offset..BUFFER_SIZE]
+    end
+
+    def fetch_chunk_response
+      if @use_persistent_connection
+        persistent_chunk_response
+      else
+        Net::HTTP.start(uri.hostname, uri.port, proxy_from_env: true, use_ssl: use_ssl?) do |http|
+          http.request(request)
+        end
+      end
+    end
+
+    # Net::HTTP transparently reconnects and retries the (idempotent) GET once
+    # if the server dropped the keep-alive connection between chunks. It also
+    # closes the socket before re-raising a transport error, and reconnects on
+    # finding a closed socket, so the memoized session self-heals rather than
+    # staying wedged after a failed read.
+    def persistent_chunk_response
+      http_session.request(request)
+    rescue EOFError => e
+      # ignore_eof: false (see #http_session) turns a connection that dies
+      # mid-body into an error rather than a silently truncated chunk. Surface
+      # it as the same class as any other failed chunk fetch; the original
+      # EOFError remains available as the exception's cause.
+      raise FailedToGetChunkError, "Connection closed before the chunk was fully received: #{e.message}"
+    end
+
+    def http_session
+      # Without explicit timeouts, Net::HTTP defaults to 60 seconds for each
+      # of open/read/write, which lets a single unresponsive object storage
+      # endpoint stall high-urgency Sidekiq workers for minutes.
+      #
+      # ignore_eof defaults to true, which silently returns a truncated body
+      # when the connection dies mid-response despite a Content-Length header.
+      # Raising EOFError instead lets Net::HTTP retry the idempotent GET once
+      # on a fresh connection, and fails the read only if that retry fails too.
+      #
+      # Net::HTTP.start assigns each option to the same-named setter, and
+      # silently ignores keys that do not match one - the spec asserts on the
+      # options passed here to catch a typo.
+      @http_session ||= Net::HTTP.start(
+        uri.hostname, uri.port,
+        proxy_from_env: true,
+        use_ssl: use_ssl?,
+        ignore_eof: false,
+        keep_alive_timeout: KEEP_ALIVE_TIMEOUT,
+        max_retries: MAX_RETRIES,
+        **::Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS
+      )
+    end
+
+    def use_ssl?
+      uri.scheme == 'https'
+    end
+
+    # Reads that walk backwards step in units much smaller than BUFFER_SIZE
+    # (Gitlab::Ci::Trace::Stream#read_backward uses 4KB), so a step straddling
+    # a chunk boundary asks for the lower chunk, then the upper one to finish
+    # the step, then the lower one again for the next step. With a single
+    # cached chunk each of those is a request, so a backward pass costs three
+    # times the requests and bytes of a forward one. Keeping the chunk we just
+    # moved away from - the one such a pass asks for next - brings a boundary
+    # crossing back to a single request. Forward reads never revisit a chunk,
+    # so they are unaffected either way.
+    def restore_previous_chunk
+      return false unless @cache_previous_chunk
+      return false unless @previous_chunk_range&.include?(tell)
+
+      @chunk, @previous_chunk = @previous_chunk, @chunk
+      @chunk_range, @previous_chunk_range = @previous_chunk_range, @chunk_range
+
+      true
+    end
+
+    def retain_current_chunk
+      return unless @cache_previous_chunk
+
+      @previous_chunk = @chunk
+      @previous_chunk_range = @chunk_range
     end
 
     def request

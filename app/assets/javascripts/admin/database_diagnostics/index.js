@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import CombinedDiagnostics from './components/combined_diagnostics.vue';
 
 export const initDatabaseDiagnosticsApp = () => {
@@ -14,7 +14,7 @@ export const initDatabaseDiagnosticsApp = () => {
     databaseInformation,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DatabaseDiagnosticsView',
     provide: {
@@ -30,8 +30,6 @@ export const initDatabaseDiagnosticsApp = () => {
         }
       })(),
     },
-    render(createElement) {
-      return createElement(CombinedDiagnostics);
-    },
+    component: CombinedDiagnostics,
   });
 };

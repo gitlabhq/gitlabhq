@@ -73,21 +73,26 @@ RSpec.shared_examples 'note entity' do
   end
 
   describe ':outdated_line_change_path' do
-    before do
-      allow(note).to receive(:show_outdated_changes?).and_return(show_outdated_changes)
-    end
-
     context 'when note shows outdated changes' do
-      let(:show_outdated_changes) { true }
+      before do
+        # Only project-scoped merge request diff notes can show outdated
+        # changes; a group-scoped note (no project) never does, so this stub
+        # models an impossible state for it and is scoped to project notes.
+        allow(note).to receive(:show_outdated_changes?).and_return(true)
+      end
 
       it 'returns correct outdated_line_change_namespace_project_note_path' do
+        skip('only applies to project-scoped notes') unless note.project
+
         path = "/#{note.project.namespace.path}/#{note.project.path}/notes/#{note.id}/outdated_line_change"
         expect(subject[:outdated_line_change_path]).to eq(path)
       end
     end
 
     context 'when note does not show outdated changes' do
-      let(:show_outdated_changes) { false }
+      before do
+        allow(note).to receive(:show_outdated_changes?).and_return(false)
+      end
 
       it 'does not expose outdated_line_change_path' do
         expect(subject).not_to include(:outdated_line_change_path)

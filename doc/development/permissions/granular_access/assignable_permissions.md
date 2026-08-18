@@ -48,7 +48,7 @@ The directory structure uses three levels: `<category>/<resource>/<action>.yml`
 | Resource `.metadata.yml` | Optional | Override the generated resource description or titleized resource name |
 
 > [!note]
-> The assignable permission YAML file (at `<category>/<resource>/<action>.yml`) is always required and is not a metadata file—it's the main configuration file that defines the permission bundle.
+> The assignable permission YAML file (at `<category>/<resource>/<action>.yml`) is always required and is not a metadata file - it's the main configuration file that defines the permission bundle.
 
 **Category Level:** The `<category>` subfolder represents the name of the category displayed in the UI where assignable permissions are grouped. The folder name is titleized when displayed (e.g., `project_management` becomes "Project Management"). This category name is displayed in permission selection UIs, helping users organize and find permissions by functional area.
 
@@ -103,7 +103,7 @@ You do not need a metadata file when the directory name titleizes and pluralizes
 
 ### Determining Boundaries
 
-The `boundaries` field specifies which organizational levels support this assignable permission. Choose based on where the bundled raw permissions can be applied. Use the principle of least privilege—only include boundaries where the permissions actually apply.
+The `boundaries` field specifies which organizational levels support this assignable permission. Choose based on where the bundled raw permissions can be applied. Use the principle of least privilege - only include boundaries where the permissions actually apply.
 
 **Boundary Types:**
 
@@ -114,7 +114,7 @@ The `boundaries` field specifies which organizational levels support this assign
 - `user` - Permissions applicable to user-level resources (personal profile, personal settings, user-owned resources)
   - Include this if your raw permissions work on user endpoints like `/users/:id/...` or personal namespace operations
 - `instance` - Permissions applicable at the GitLab instance level (operations like reading snippets, viewing audit logs, or managing system settings)
-  - **Use sparingly** — typically only for admin-facing permissions
+  - **Use sparingly** - typically only for admin-facing permissions
 
 **Selecting Boundaries:**
 Review the endpoint routes in your API file or the GraphQL types and mutations you are protecting. If endpoints follow patterns like `/projects/:id/...`, include `project`. If endpoints follow `/groups/:id/...`, include `group`. For GraphQL, check the `boundary_type` declared in your directives. Only include boundaries that your endpoints actually support.
@@ -279,7 +279,7 @@ This can be mitigated by using the `rename_granular_scope_permission` migration 
 
 Changing the `boundary_type` of a REST API `route_setting` or GraphQL `authorize_granular_token` directive can be a **breaking change** for existing tokens.
 
-The `boundaries` field on an assignable permission must cover the union of all `boundary_type` values declared by its raw permissions' endpoints and directives. You don't change assignable permission boundaries directly — they change as a consequence of endpoints adding or changing their `boundary_type`, or raw permissions being added to or removed from the assignable permission. The Lefthook pre-push validation catches any mismatches.
+The `boundaries` field on an assignable permission must cover the union of all `boundary_type` values declared by its raw permissions' endpoints and directives. You don't change assignable permission boundaries directly - they change as a consequence of endpoints adding or changing their `boundary_type`, or raw permissions being added to or removed from the assignable permission. The Lefthook pre-push validation catches any mismatches.
 
 Tokens store granular scopes as a combination of a boundary (namespace) and assignable permissions. When the `boundary_type` of an endpoint changes, the authorization check evaluates the token's scopes against the new boundary. If a token was created with a scope for the old boundary, it may no longer match.
 

@@ -223,6 +223,8 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
   }
 
   function startLineRangeEditing(discussion) {
+    const previous = lineRangeEditing.value;
+    if (previous) previous.discussion.editingLineRange = false;
     const editing = { discussion, lineRange: discussion.position.line_range };
     editing.discussion.editingLineRange = true;
     lineRangeEditing.value = editing;

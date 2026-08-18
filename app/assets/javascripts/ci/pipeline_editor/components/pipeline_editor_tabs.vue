@@ -3,6 +3,7 @@ import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
@@ -65,6 +66,7 @@ export default {
     PipelineGraph,
     TextEditor,
   },
+  mixins: [glListenersMixin],
   props: {
     ciConfigData: {
       type: Object,
@@ -163,9 +165,9 @@ export default {
       <ci-editor-header
         :show-help-drawer="showHelpDrawer"
         :show-job-assistant-drawer="showJobAssistantDrawer"
-        v-on="$listeners"
+        v-on="glListeners()"
       />
-      <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />
+      <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="glListeners()" />
     </editor-tab>
     <editor-tab
       class="gl-mb-3"
@@ -205,7 +207,7 @@ export default {
       <gl-alert v-else-if="!isMergedYamlAvailable" variant="danger" :dismissible="false">
         {{ $options.errorTexts.loadMergedYaml }}
       </gl-alert>
-      <ci-config-merged-preview v-else :ci-config-data="ciConfigData" v-on="$listeners" />
+      <ci-config-merged-preview v-else :ci-config-data="ciConfigData" v-on="glListeners()" />
     </editor-tab>
   </gl-tabs>
 </template>

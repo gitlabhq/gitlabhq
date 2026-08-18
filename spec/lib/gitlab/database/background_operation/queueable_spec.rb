@@ -13,6 +13,14 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
     end
   end
 
+  shared_examples 'rejects cell-local enqueue' do
+    it 'raises EnqueueNotAllowedError and does not create a worker' do
+      expect { enqueue_background_operation }
+        .to raise_error(Gitlab::Database::BackgroundOperation::Queueable::EnqueueNotAllowedError)
+        .and not_change { worker_klass.count }
+    end
+  end
+
   before do
     stub_current_organization(user.organization)
   end
@@ -73,13 +81,41 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
 
       context 'for background_worker_cell_local' do
         subject(:enqueue_background_operation) do
-          worker_klass.enqueue(job_class_name, table_name, column_name, job_arguments: job_arguments)
+          worker_klass.enqueue(
+            job_class_name,
+            table_name,
+            column_name,
+            job_arguments: job_arguments,
+            enqueued_by: 'Database::BackgroundOperation::CronEnqueueWorker'
+          )
         end
 
         let(:worker_klass) { Gitlab::Database::BackgroundOperation::WorkerCellLocal }
 
         it 'can store without organization_id' do
           expect { enqueue_background_operation }.to change { worker_klass.count }.by(1)
+        end
+
+        context 'when enqueued_by is not provided' do
+          subject(:enqueue_background_operation) do
+            worker_klass.enqueue(job_class_name, table_name, column_name, job_arguments: job_arguments)
+          end
+
+          it_behaves_like 'rejects cell-local enqueue'
+        end
+
+        context 'when enqueued_by is a different class' do
+          subject(:enqueue_background_operation) do
+            worker_klass.enqueue(
+              job_class_name,
+              table_name,
+              column_name,
+              job_arguments: job_arguments,
+              enqueued_by: 'Foo'
+            )
+          end
+
+          it_behaves_like 'rejects cell-local enqueue'
         end
       end
 
@@ -98,7 +134,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
       end
 
       context "for 'gitlab_ci' table" do
-        let(:table_name) { 'p_ci_build_tags' }
+        let(:table_name) { 'p_ci_builds' }
 
         it 'uses gitlab_ci connection' do
           allow(worker_klass).to receive(:table_connection_info).with(table_name).and_call_original

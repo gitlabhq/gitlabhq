@@ -284,7 +284,7 @@ Guardrails:
 - Validate the XML signature on every SAML response and verify the signed
   element is the assertion being trusted. Defends against XML signature
   wrapping. Past incident:
-  [#486565](https://gitlab.com/gitlab-org/gitlab/-/issues/486565) —
+  [#486565](https://gitlab.com/gitlab-org/gitlab/-/issues/486565) -
   unauthenticated SAML sign-in bypass.
 
 ## SCIM
@@ -402,7 +402,7 @@ redirect_to sanitize_redirect(params[:redirect]) || root_path
 - The password reset endpoint must validate that the email parameter is a
   single string value and reject any request where it is provided as an
   array or any other non-string type. Past incident:
-  [#436084](https://gitlab.com/gitlab-org/gitlab/-/issues/436084) —
+  [#436084](https://gitlab.com/gitlab-org/gitlab/-/issues/436084) -
   account takeover via password reset.
 - Sign-in failure and password-reset responses must not differ between
   "user exists, wrong credential" and "user does not exist." Use the same

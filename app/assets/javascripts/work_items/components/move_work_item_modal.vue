@@ -53,7 +53,7 @@ export default {
       default: '',
     },
   },
-  emits: ['hideModal'],
+  emits: ['hide-modal'],
   actionCancel: {
     text: __('Cancel'),
   },
@@ -224,7 +224,7 @@ export default {
     hideModal() {
       this.selectedProjectId = null;
       this.selectedTargetTypeId = null;
-      this.$emit('hideModal');
+      this.$emit('hide-modal');
       this.isModalVisible = false;
       this.showErrorMessage = false;
     },

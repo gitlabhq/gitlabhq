@@ -1,0 +1,10 @@
+---
+name: update_value_stream
+description: Grants the ability to update a value stream.
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_value_stream

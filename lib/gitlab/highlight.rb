@@ -2,9 +2,12 @@
 
 module Gitlab
   class Highlight
-    def self.highlight(blob_name, blob_content, language: nil, plain: false, context: {}, used_on: :blob)
+    def self.highlight(
+      blob_name, blob_content, language: nil, plain: false, context: {}, used_on: :blob,
+      suppress_line_ids: nil)
       new(blob_name, blob_content, language: language)
-        .highlight(blob_content, continue: false, plain: plain, context: context, used_on: used_on)
+        .highlight(blob_content, continue: false, plain: plain, context: context, used_on: used_on,
+          suppress_line_ids: suppress_line_ids)
     end
 
     def self.too_large?(size)
@@ -24,12 +27,13 @@ module Gitlab
       )
     end
 
-    def highlight(text, continue: false, plain: false, context: {}, used_on: :blob)
+    def highlight(text, continue: false, plain: false, context: {}, used_on: :blob, suppress_line_ids: nil)
       @context = context
 
       plain ||= self.class.too_large?(text.length)
 
-      highlighted_text = highlight_text(text, continue: continue, plain: plain, used_on: used_on)
+      highlighted_text = highlight_text(text, continue: continue, plain: plain, used_on: used_on,
+        suppress_line_ids: suppress_line_ids)
       highlighted_text = link_dependencies(text, highlighted_text, used_on: used_on) if blob_name
       highlighted_text
     end
@@ -56,9 +60,10 @@ module Gitlab
       Rouge::Lexer.find_fancy(@language)
     end
 
-    def highlight_text(text, continue: true, plain: false, used_on: :blob)
+    def highlight_text(text, continue: true, plain: false, used_on: :blob, suppress_line_ids: nil)
       @gitlab_highlight_usage_counter.increment(used_on: used_on)
-      suppress_line_ids = used_on == :diff
+      # Line IDs are suppressed for diffs by default; callers may force either way.
+      suppress_line_ids = used_on == :diff if suppress_line_ids.nil?
 
       if plain
         highlight_plain(text, suppress_line_ids:)
@@ -82,9 +87,9 @@ module Gitlab
         lexer_tag: tag,
         text_length: text.length
       )
-      highlight_plain(text)
+      highlight_plain(text, suppress_line_ids:)
     rescue StandardError
-      highlight_plain(text)
+      highlight_plain(text, suppress_line_ids:)
     end
 
     def link_dependencies(text, highlighted_text, used_on: :blob)

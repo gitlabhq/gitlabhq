@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { visitUrl, visitUrlWithAlerts } from '~/lib/utils/url_utility';
@@ -19,7 +20,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     MarkdownEditor,
-    ImportArtifactZone: () => import('./import_artifact_zone.vue'),
+    ImportArtifactZone: defineAsyncComponent(() => import('./import_artifact_zone.vue')),
   },
   inject: ['latestVersion', 'modelGid'],
   props: {

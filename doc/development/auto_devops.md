@@ -9,7 +9,7 @@ This document provides a development guide for contributors to
 [Auto DevOps](../topics/autodevops/_index.md).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-An [Auto DevOps technical walk-through](https://youtu.be/G7RTLeToz9E)
+An [Auto DevOps technical walk-through](https://www.youtube.com/watch?v=G7RTLeToz9E)
 is also available on YouTube.
 
 ## Development

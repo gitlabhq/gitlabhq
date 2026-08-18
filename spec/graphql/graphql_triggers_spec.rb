@@ -148,6 +148,7 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
 
   describe '.work_item_updated' do
     it 'triggers the work_item_updated subscription' do
+      allow(GitlabSchema.subscriptions).to receive(:trigger)
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(
         'workItemUpdated',
         { work_item_id: issuable.to_gid },
@@ -162,6 +163,7 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
         issue = create(:issue, project: project)
         work_item = WorkItem.find(issue.id)
 
+        allow(GitlabSchema.subscriptions).to receive(:trigger)
         expect(GitlabSchema.subscriptions).to receive(:trigger).with(
           'workItemUpdated',
           { work_item_id: work_item.to_gid },
@@ -169,6 +171,49 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
         ).and_call_original
 
         described_class.work_item_updated(issue)
+      end
+    end
+  end
+
+  describe 'namespace work item changes broadcast' do
+    let_it_be_with_refind(:work_item) { create(:work_item, project: project) }
+
+    let(:broadcast_service) { instance_double(::WorkItems::NamespaceChanges::BroadcastService, execute: true) }
+
+    before do
+      allow(GitlabSchema.subscriptions).to receive(:trigger)
+    end
+
+    it 'invokes the broadcast service with a created action' do
+      expect(::WorkItems::NamespaceChanges::BroadcastService).to receive(:new)
+        .with(work_item, action: :created).and_return(broadcast_service)
+
+      described_class.work_item_created(work_item)
+    end
+
+    it 'invokes the broadcast service with a deleted action' do
+      expect(::WorkItems::NamespaceChanges::BroadcastService).to receive(:new)
+        .with(work_item, action: :deleted).and_return(broadcast_service)
+
+      described_class.work_item_deleted(work_item)
+    end
+
+    describe 'on update' do
+      it 'passes the provided updated changes through' do
+        expect(::WorkItems::NamespaceChanges::BroadcastService).to receive(:new)
+          .with(work_item, action: :updated, updated_changes: %w[title]).and_return(broadcast_service)
+
+        described_class.work_item_updated(work_item, updated_changes: %w[title])
+      end
+
+      it 'falls back to the changed model attributes' do
+        work_item.update!(title: 'new title')
+
+        expect(::WorkItems::NamespaceChanges::BroadcastService).to receive(:new)
+          .with(work_item, action: :updated, updated_changes: array_including('title'))
+          .and_return(broadcast_service)
+
+        described_class.work_item_updated(work_item)
       end
     end
   end
@@ -220,42 +265,29 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
   describe '.ci_pipeline_statuses_updated' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
-    context 'when commit_pipelines_tab_graphql is enabled' do
-      it 'also triggers a sha-scoped ci_pipeline_statuses_updated subscription' do
-        expect(GitlabSchema.subscriptions).to receive(:trigger).with(
-          :ci_pipeline_statuses_updated,
-          { project_id: pipeline.project.to_gid },
-          pipeline
-        )
-        expect(GitlabSchema.subscriptions).to receive(:trigger).with(
-          :ci_pipeline_statuses_updated,
-          { project_id: pipeline.project.to_gid, sha: pipeline.sha },
-          pipeline
-        )
+    it 'triggers the project-scoped, full_path-scoped, and sha-scoped subscriptions' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_statuses_updated,
+        { project_id: pipeline.project.to_gid },
+        pipeline
+      )
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_statuses_updated,
+        { project_full_path: pipeline.project.full_path },
+        pipeline
+      )
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_statuses_updated,
+        { project_id: pipeline.project.to_gid, sha: pipeline.sha },
+        pipeline
+      )
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_statuses_updated,
+        { project_full_path: pipeline.project.full_path, sha: pipeline.sha },
+        pipeline
+      )
 
-        described_class.ci_pipeline_statuses_updated(pipeline)
-      end
-    end
-
-    context 'when commit_pipelines_tab_graphql is disabled' do
-      before do
-        stub_feature_flags(commit_pipelines_tab_graphql: false)
-      end
-
-      it 'does not trigger the sha-scoped subscription' do
-        expect(GitlabSchema.subscriptions).to receive(:trigger).with(
-          :ci_pipeline_statuses_updated,
-          { project_id: pipeline.project.to_gid },
-          pipeline
-        )
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_pipeline_statuses_updated,
-          { project_id: pipeline.project.to_gid, sha: pipeline.sha },
-          pipeline
-        )
-
-        described_class.ci_pipeline_statuses_updated(pipeline)
-      end
+      described_class.ci_pipeline_statuses_updated(pipeline)
     end
   end
 

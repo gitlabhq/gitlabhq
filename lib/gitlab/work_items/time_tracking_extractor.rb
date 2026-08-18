@@ -23,7 +23,7 @@ module Gitlab
         return {} unless time_spent
 
         extractor.analyze(message)
-        referenced_issues = (extractor.issues + extractor.work_items).uniq(&:id)
+        referenced_issues = extractor.issues_and_work_items
 
         referenced_issues.index_with do |_issue|
           time_spent

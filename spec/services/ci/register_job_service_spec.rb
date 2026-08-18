@@ -32,6 +32,14 @@ module Ci
           expect(response['job_info']['id']).to eq(pending_job.id)
           expect(response['job_info']['pipeline_id']).to eq(pipeline.id)
         end
+
+        it 'does not schedule an organization isolation status check' do
+          stub_feature_flags(isolation_status_check: true)
+
+          expect(::Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+          expect(execute.build).to eq(pending_job)
+        end
       end
 
       context 'when queue size exceeds MAX_QUEUE_DEPTH' do

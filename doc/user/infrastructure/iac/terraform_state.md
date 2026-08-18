@@ -574,7 +574,6 @@ To reduce exposure of sensitive data:
   > Custom roles are only available on GitLab Ultimate. Customers on Premium or lower tiers do not have access to this mitigation option and should focus on other strategies described previously.
 
 - OpenTofu users: Turn on state and plan encryption to protect sensitive data at rest. GitLab supports this natively through the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu), which provides encryption configuration. Even if unauthorized users access the state file, encrypted content remains protected.
-
 - All users:
   - Restrict project membership to users who require access to the infrastructure state.
   - Use a separate project to store states, adding only necessary users as members.
@@ -585,4 +584,4 @@ To reduce exposure of sensitive data:
 ## Related topics
 
 - [Troubleshooting GitLab-managed Terraform state](troubleshooting.md)
-- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws)
+- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-aws)

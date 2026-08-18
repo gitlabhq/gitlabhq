@@ -39,9 +39,9 @@ RSpec.describe Integrations::Jenkins, feature_category: :continuous_integration 
   end
 
   it 'sets the default values', :aggregate_failures do
-    expect(jenkins_integration.push_events).to eq(true)
-    expect(jenkins_integration.merge_requests_events).to eq(false)
-    expect(jenkins_integration.tag_push_events).to eq(false)
+    expect(jenkins_integration.push_events).to be(true)
+    expect(jenkins_integration.merge_requests_events).to be(false)
+    expect(jenkins_integration.tag_push_events).to be(false)
   end
 
   describe 'Validations' do

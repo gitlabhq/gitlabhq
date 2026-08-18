@@ -63,6 +63,11 @@ module Types
       null: true,
       scopes: [:api, :read_api, :ai_workflows]
 
+    field :transfer_failed_retry_url, GraphQL::Types::String,
+      description: 'URL that retries a transfer-failed to-do item.',
+      null: true,
+      scopes: [:api, :read_api, :ai_workflows]
+
     field :body, GraphQL::Types::String,
       description: 'Body of the to-do item.',
       null: false,

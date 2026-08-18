@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query.project(fullPath).pipelines.jobs.artifacts', feature_category: :build do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:job) { create(:ci_build, pipeline: pipeline) }

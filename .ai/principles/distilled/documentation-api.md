@@ -1,6 +1,6 @@
 ---
-source_checksum: 5278bc6b07a981fb
-distilled_at_sha: 98353ccc8444ff6f7b594c7118283ddc21bb19d5
+source_checksum: 68dd734ecfa7b3dd
+distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -17,8 +17,8 @@ distilled_at_sha: 98353ccc8444ff6f7b594c7118283ddc21bb19d5
 
 ### REST API — OpenAPI Definition
 
-- Run `bin/rake gitlab:openapi:v2:generate` and `bin/rake gitlab:openapi:v3:generate` when modifying API Markdown or code to update the OpenAPI definition (checked by the `openapi-doc-check` CI/CD job).
-- Verify the OpenAPI definition is up to date by running `bin/rake gitlab:openapi:v2:check_docs` and `bin/rake gitlab:openapi:v3:check_docs` before merging.
+- Run `bin/rake gitlab:openapi:v3:generate` when modifying API Markdown or code to update the OpenAPI definition (checked by the `static-analysis` CI/CD job for commits that modify API code or documentation).
+- Verify the OpenAPI definition is up to date by running `bin/rake gitlab:openapi:v3:check_docs` before merging.
 
 ### REST API — History and Deprecations
 

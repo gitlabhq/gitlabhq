@@ -19,6 +19,11 @@ module Gitlab
 
       TREE_ENTRIES_DEFAULT_LIMIT = 100_000
 
+      # Bounds commits fetched per ListCommitsByOid RPC so a single streamed
+      # response cannot exceed gRPC's 4 MiB receive cap on large commit sets.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/362327.
+      LIST_COMMITS_BY_OID_BATCH_SIZE = 250
+
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -105,7 +110,7 @@ module Gitlab
         nil
       end
 
-      def tree_entries(repository, revision, path, recursive, skip_flat_paths, pagination_params)
+      def tree_entries(repository, revision, path, recursive, skip_flat_paths, pagination_params, with_last_commit: false) # rubocop:disable Metrics/CyclomaticComplexity -- existing complexity, adding one parameter and a last_commit guard
         unless pagination_params.nil? && recursive
           pagination_params ||= {}
           pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
@@ -117,7 +122,8 @@ module Gitlab
           path: path.present? ? encode_binary(path) : '.',
           recursive: recursive,
           skip_flat_paths: skip_flat_paths,
-          pagination_params: pagination_params
+          pagination_params: pagination_params,
+          with_last_commit: with_last_commit
         )
         request.sort = Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST if pagination_params
 
@@ -129,7 +135,7 @@ module Gitlab
           cursor = message.pagination_cursor if message.pagination_cursor
 
           message.entries.map do |gitaly_tree_entry|
-            Gitlab::Git::Tree.new(
+            tree_entry = Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_i.to_s(8),
@@ -138,6 +144,12 @@ module Gitlab
               flat_path: encode_binary(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
+
+            if gitaly_tree_entry.last_commit&.id.present?
+              tree_entry.last_commit = Gitlab::Git::Commit.new(@repository, gitaly_tree_entry.last_commit)
+            end
+
+            tree_entry
           end
         end
 
@@ -308,20 +320,7 @@ module Gitlab
         end
       end
 
-      def find_all_commits(opts = {})
-        request = Gitaly::FindAllCommitsRequest.new(
-          repository: @gitaly_repo,
-          revision: opts[:ref].to_s,
-          max_count: opts[:max_count].to_i,
-          skip: opts[:skip].to_i
-        )
-        request.order = opts[:order].upcase if opts[:order].present?
-
-        response = gitaly_client_call(@repository.storage, :commit_service, :find_all_commits, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
-      end
-
-      def list_commits(revisions, params = {})
+      def list_commits(revisions, params = {}) # rubocop:disable Metrics/AbcSize -- request building requires many field assignments
         # We want to include the commit ref in the revisions if present.
         revisions = Array.wrap(params[:ref].presence || []) + Array.wrap(revisions)
 
@@ -336,6 +335,7 @@ module Gitlab
 
         request.order = params[:order].upcase if params[:order].present?
         request.skip = params[:skip].to_i if params[:skip].present?
+        request.first_parent = !!params[:first_parent]
 
         if params[:commit_message_patterns]
           request.commit_message_patterns += Array.wrap(params[:commit_message_patterns])
@@ -411,10 +411,12 @@ module Gitlab
       def list_commits_by_oid(oids)
         return [] if oids.empty?
 
-        request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
+        oids.each_slice(LIST_COMMITS_BY_OID_BATCH_SIZE).flat_map do |oids_batch|
+          request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids_batch)
 
-        response = gitaly_client_call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
+          response = gitaly_client_call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
+          consume_commits_response(response)
+        end
       rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end

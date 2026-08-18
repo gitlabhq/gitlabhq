@@ -80,7 +80,7 @@ is. Can you split the functionality into two smaller MRs? Can you submit only th
 backend/API code? Can you start with a very simple UI? Can you do just a part of the
 refactor?
 
-Small MRs which are more easily reviewed, lead to higher code quality which is
+Small MRs, which are more easily reviewed, lead to higher code quality which is
 more important to GitLab than having a minimal commit log. The smaller an MR is,
 the more likely it will be merged quickly. After that you can send more MRs to
 enhance and expand the feature. The [How to get faster PR reviews](https://github.com/kubernetes/kubernetes/blob/release-1.5/docs/devel/faster_reviews.md)
@@ -115,7 +115,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 #### Why these standards matter
 
 1. Consistent commit messages that follow these guidelines make the history more readable.
-1. Concise standard commit messages helps to identify [breaking changes](../deprecation_guidelines/_index.md) for a deployment or `~"master:broken"` quicker when
+1. Concise standard commit messages help to identify [breaking changes](../deprecation_guidelines/_index.md) for a deployment or `~"master:broken"` quicker when
    reviewing commits between two points in time.
 
 #### Commit message template
@@ -206,7 +206,7 @@ To reach the definition of done, the merge request must create no regressions an
   - No new customer-owned resources exist outside of an organization.
   - Organization data remains migratable to another cell.
 
-  For the more information, see [Cells development principles](../cells/_index.md#cells-development-principles).
+  For more information, see [Cells development principles](../cells/_index.md#cells-development-principles).
 
 If a regression occurs, we prefer you revert the change.
 Your contribution is incomplete until you have made sure it meets all of these

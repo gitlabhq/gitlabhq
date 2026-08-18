@@ -175,6 +175,7 @@ describe('work items graphql resolvers', () => {
             id: 'gid://gitlab/WorkItem/1259',
             iid: '56',
             title: 'PARENT',
+            titleHtml: 'PARENT',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -298,6 +299,7 @@ describe('work items graphql resolvers', () => {
             id: 'gid://gitlab/WorkItem/1259',
             iid: '56',
             title: 'PARENT',
+            titleHtml: 'PARENT',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',

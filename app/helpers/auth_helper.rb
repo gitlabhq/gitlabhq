@@ -381,7 +381,6 @@ module AuthHelper
     scopes = ::Gitlab::Auth.available_scopes_for(user)
     {
       base_path: admin_application_settings_service_accounts_path,
-      is_group: false.to_s,
       service_accounts: {
         enabled: true.to_s,
         path: expose_path(api_v4_service_accounts_path),
@@ -406,7 +405,6 @@ module AuthHelper
     scopes = ::Gitlab::Auth.available_scopes_for(user)
     {
       base_path: group_settings_service_accounts_path(group),
-      is_group: true.to_s,
       service_accounts: {
         enabled: can?(user, :create_service_account, group).to_s,
         path: expose_path(api_v4_groups_service_accounts_path(id: group.id)),
@@ -431,7 +429,6 @@ module AuthHelper
 
     {
       base_path: project_settings_service_accounts_path(project),
-      is_group: 'false',
       service_accounts: {
         enabled: can?(user, :create_service_account, project).to_s,
         path: expose_path(api_v4_projects_service_accounts_path(id: project.id)),

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Group > Settings > Fine-grained personal access token enforcement',
   :js, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, owners: user) }
+  let_it_be(:group, refind: true) { create(:group, owners: user) }
 
   let(:selected_group) { group }
 
@@ -57,7 +57,9 @@ RSpec.describe 'Group > Settings > Fine-grained personal access token enforcemen
         check checkbox_label
         fill_in 'group_granular_tokens_enforced_after', with: Date.current.to_s
 
-        click_button 'Save changes'
+        within_testid("permissions-settings") do
+          click_button 'Save changes'
+        end
 
         expect(page).to have_content("Group '#{group.name}' was successfully updated.")
         expect(group.namespace_settings.reload.enforce_granular_tokens).to be(true)
@@ -96,7 +98,9 @@ RSpec.describe 'Group > Settings > Fine-grained personal access token enforcemen
         it 'saving without changing the date does not raise a validation error' do
           visit_page
 
-          click_button 'Save changes'
+          within_testid("permissions-settings") do
+            click_button 'Save changes'
+          end
 
           expect(page).to have_content("Group '#{group.name}' was successfully updated.")
         end
@@ -105,7 +109,9 @@ RSpec.describe 'Group > Settings > Fine-grained personal access token enforcemen
           visit_page
 
           uncheck checkbox_label
-          click_button 'Save changes'
+          within_testid("permissions-settings") do
+            click_button 'Save changes'
+          end
 
           expect(page).to have_content("Group '#{group.name}' was successfully updated.")
           expect(group.namespace_settings.reload.enforce_granular_tokens).to be(false)

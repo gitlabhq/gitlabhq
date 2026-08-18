@@ -8,4 +8,11 @@ description: Geo verification states for LFS objects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63981
 milestone: '14.6'
 gitlab_schema: gitlab_main_cell_local
+notes: Intentionally kept cell-local, unlike its sibling verification state tables
+  which are being made org-owned. Geo on the target cell can still verify by comparing
+  the source cell's checksum (read from this table over a read-only connection to the
+  source cell DB) against the target cell's checksum (in the target tracking DB), so
+  making this table org-owned was not required and would only add development and review
+  cost. See https://gitlab.com/gitlab-org/gitlab/-/issues/598892. It can be made
+  org-owned later to be consistent with the other verification state tables.
 table_size: small

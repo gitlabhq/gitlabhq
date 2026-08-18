@@ -5,6 +5,10 @@ module Authz
     alias_method :token, :user
     alias_method :boundary, :subject
 
+    condition(:granular_token, score: 0) do
+      token.class.include?(::Authz::GranularTokenInterface) && token.granular?
+    end
+
     condition(:granular_pat, score: 0) do
       token.is_a?(::PersonalAccessToken) && token.granular?
     end
@@ -36,7 +40,7 @@ module Authz
       end
 
       rule { granular_pat & cond(:"anonymous_can_#{permission}") }.enable permission
-      rule { granular_pat & cond(permission) & member }.enable permission
+      rule { granular_token & cond(permission) & member }.enable permission
     end
   end
 end

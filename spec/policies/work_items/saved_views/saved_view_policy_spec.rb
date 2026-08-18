@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfolio_management do
+RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -160,6 +160,53 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
 
         it { expect_disallowed(:read_saved_view) }
       end
+    end
+  end
+
+  describe 'subscribe, unsubscribe and reorder' do
+    context 'with public saved view' do
+      let_it_be(:saved_view) { create(:saved_view, namespace: group, private: false, created_by_id: other_user.id) }
+
+      context 'when user can read the saved view' do
+        before_all do
+          group.add_guest(user)
+        end
+
+        it { expect_allowed(:subscribe_saved_view) }
+        it { expect_allowed(:unsubscribe_saved_view) }
+        it { expect_allowed(:reorder_saved_view) }
+      end
+
+      context 'when user cannot read the namespace' do
+        let_it_be(:private_group) { create(:group, :private) }
+        let_it_be(:saved_view) { create(:saved_view, namespace: private_group, private: false) }
+
+        it { expect_disallowed(:subscribe_saved_view) }
+        it { expect_disallowed(:unsubscribe_saved_view) }
+        it { expect_disallowed(:reorder_saved_view) }
+      end
+    end
+
+    context 'with private saved view when user is not the author' do
+      let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
+
+      before_all do
+        group.add_planner(user)
+      end
+
+      it { expect_disallowed(:subscribe_saved_view) }
+      it { expect_disallowed(:unsubscribe_saved_view) }
+      it { expect_disallowed(:reorder_saved_view) }
+    end
+
+    context 'when user is nil' do
+      subject(:policy) { described_class.new(nil, saved_view) }
+
+      let_it_be(:saved_view) { create(:saved_view, private: false) }
+
+      it { expect_disallowed(:subscribe_saved_view) }
+      it { expect_disallowed(:unsubscribe_saved_view) }
+      it { expect_disallowed(:reorder_saved_view) }
     end
   end
 

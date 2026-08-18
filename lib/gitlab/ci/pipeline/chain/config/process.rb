@@ -20,6 +20,11 @@ module Gitlab
 
               if result.valid?
                 @command.yaml_processor_result = result
+              elsif empty_because_includes_filtered?(result)
+                # include:rules: removed every include, leaving no jobs. That is a
+                # filtering outcome, not a config error, so we must not persist a
+                # failed pipeline for it.
+                error(::Ci::Pipeline.rules_failure_message, failure_reason: :filtered_by_rules)
               else
                 error(result.errors.first, failure_reason: :config_error)
               end
@@ -41,6 +46,12 @@ module Gitlab
             end
 
             private
+
+            def empty_because_includes_filtered?(result)
+              Feature.enabled?(:ci_skip_pipelines_with_fully_filtered_includes, project) &&
+                result.only_no_visible_jobs_error? &&
+                result.any_includes_fully_filtered_by_rules?
+            end
 
             def yaml_processor_opts
               {

@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFormGroup } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'BoardAddNewColumnForm',
@@ -16,6 +17,7 @@ export default {
     GlButton,
     GlFormGroup,
   },
+  mixins: [glSlotsMixin],
   props: {
     searchLabel: {
       type: String,
@@ -27,7 +29,7 @@ export default {
       required: true,
     },
   },
-  emits: ['add-list', 'setAddColumnFormVisibility'],
+  emits: ['add-list', 'set-add-column-form-visibility'],
   methods: {
     onSubmit() {
       this.$emit('add-list');
@@ -66,7 +68,7 @@ export default {
           :state="selectedIdValid"
           :invalid-feedback="$options.i18n.valueRequiredFieldFeedback"
         >
-          <slot name="dropdown"></slot>
+          <template v-if="glSlots().dropdown" #default><slot name="dropdown"></slot></template>
         </gl-form-group>
       </div>
       <div class="gl-mb-4 gl-flex gl-pr-4">
@@ -79,7 +81,7 @@ export default {
         >
         <gl-button
           data-testid="cancelAddNewColumn"
-          @click="$emit('setAddColumnFormVisibility', false)"
+          @click="$emit('set-add-column-form-visibility', false)"
           >{{ $options.i18n.cancel }}</gl-button
         >
       </div>

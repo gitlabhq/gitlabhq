@@ -10,11 +10,6 @@ module Organizations
     desc 'Organization is public'
     condition(:public_organization, scope: :subject, score: 0) { @subject.public? }
 
-    desc 'Organization admin area is enabled'
-    condition(:organization_admin_area_enabled, scope: :subject) do
-      Organizations::Release.enabled?(:org_admin_area, @subject)
-    end
-
     desc "Organization is the default"
     condition(:default_organization, scope: :subject, score: 0) { @subject.default? }
 
@@ -31,6 +26,7 @@ module Organizations
       enable :access_organization_admin_area
       enable :delete_organization
       enable :read_organization_user
+      enable :read_admin_users
       enable :transfer_group
       enable :update_organization
     end
@@ -40,10 +36,6 @@ module Organizations
     rule { blocked | deactivated | inactive }.policy do
       prevent :delete_organization
       prevent :restore_organization
-    end
-
-    rule { ~organization_admin_area_enabled }.policy do
-      prevent :access_organization_admin_area
     end
 
     rule { organization_user }.policy do

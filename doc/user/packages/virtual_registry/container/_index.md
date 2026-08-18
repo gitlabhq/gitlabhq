@@ -96,21 +96,21 @@ To create a container upstream registry:
    - Include both a **username** and **password**, or neither. If not set, a public (anonymous) request is used to access the upstream.
    - If you want to connect the upstream to Docker Hardened Images, use the following as the **Upstream URL**:
 
-      ```plaintext
-      https://dhi.io
-      ```
+     ```plaintext
+     https://dhi.io
+     ```
 
    - If you want to connect the upstream to Docker Hub, use the following as the **Upstream URL**:
 
-      ```plaintext
-      https://registry-1.docker.io
-      ```
+     ```plaintext
+     https://registry-1.docker.io
+     ```
 
-      The Docker Hub registry API is hosted at `registry-1.docker.io`, not `docker.io`.
-      Most container tools rewrite `docker.io` automatically, but the virtual registry
-      proxies to the URL you provide.
+     The Docker Hub registry API is hosted at `registry-1.docker.io`, not `docker.io`.
+     Most container tools rewrite `docker.io` automatically, but the virtual registry
+     proxies to the URL you provide.
 
-      If you use `https://docker.io`, the registry returns HTML instead of OCI responses.
+     If you use `https://docker.io`, the registry returns HTML instead of OCI responses.
 
    - **Artifact caching period** defaults to 24 hours. Set to `0` to disable cache entry checks.
    - If you want to test the upstream connection before you create it, select **Test upstream**.

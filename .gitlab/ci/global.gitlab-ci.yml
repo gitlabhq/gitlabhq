@@ -416,7 +416,6 @@
   key:
     files:
       - Gemfile.lock
-      - Gemfile.checksum
     # Include the Go, Git, and Rust versions here to ensure that the
     # Ruby gem cache will be used by a CI image that has the right
     # version of OpenSSL and other native libraries. We have seen
@@ -436,9 +435,7 @@
   paths:
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/_build/bin/
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml.transactions
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml.transactions
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/internal/
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/Makefile
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/praefect.config.toml

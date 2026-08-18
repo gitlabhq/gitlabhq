@@ -4,6 +4,15 @@ const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = process.env.DEV_SERVER_PORT || '3808';
 const STATIC_MODE = process.env.DEV_SERVER_STATIC && process.env.DEV_SERVER_STATIC !== 'false';
 const DLL_MODE = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
+const USE_RSPACK = process.env.ENABLE_RSPACK === 'true';
+
+const CONFIG_PATH = USE_RSPACK ? 'config/rspack.config.mjs' : 'config/webpack.config.js';
+const BUILD_CMD = USE_RSPACK ? 'yarn run rspack-prod' : 'yarn run webpack';
+const SERVE_CMD = USE_RSPACK
+  ? // @rspack/cli doesn't set WEBPACK_SERVE (webpack-dev-server does); the config
+    // keys HMR, bail, and lazy compilation off it.
+    `WEBPACK_SERVE=true rspack serve --config ${CONFIG_PATH}`
+  : `webpack-dev-server --config ${CONFIG_PATH}`;
 
 const baseConfig = {
   ignoreRoot: ['.git', 'node_modules/*/'],
@@ -12,12 +21,12 @@ const baseConfig = {
   delay: 1000,
 };
 
-// run webpack in compile-once mode and watch for changes
+// run the bundler in compile-once mode and watch for changes
 if (STATIC_MODE) {
   nodemon({
-    exec: `rm -rf public/assets/webpack ; yarn run webpack && exec ruby -run -e httpd public/ -p ${DEV_SERVER_PORT}`,
+    exec: `rm -rf public/assets/webpack ; ${BUILD_CMD} && exec ruby -run -e httpd public/ -p ${DEV_SERVER_PORT}`,
     watch: [
-      'config/webpack.config.js',
+      CONFIG_PATH,
       'app/assets/javascripts',
       'ee/app/assets/javascripts',
       // ensure we refresh when running yarn install
@@ -28,10 +37,10 @@ if (STATIC_MODE) {
   });
 }
 
-// run webpack through webpack-dev-server, optionally compiling a DLL to reduce memory
+// run the bundler's dev server, optionally compiling a DLL to reduce memory
 else {
   const watch = [
-    'config/webpack.config.js',
+    CONFIG_PATH,
     // ensure we refresh when running yarn install
     'node_modules/.yarn-integrity',
   ];
@@ -41,7 +50,7 @@ else {
     watch.push('config/webpack.vendor.config.js', 'package.json', 'yarn.lock');
   }
   nodemon({
-    exec: 'webpack-dev-server --config config/webpack.config.js',
+    exec: SERVE_CMD,
     watch,
     ...baseConfig,
   });

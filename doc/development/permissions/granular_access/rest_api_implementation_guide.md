@@ -36,7 +36,7 @@ Quick reference showing what you create in each step:
 
 | Step | File Type | Location | Quantity | Example |
 |------|-----------|----------|----------|---------|
-| 2 | Planning document | (mental notes) | — | Permission names identified |
+| 2 | Planning document | (mental notes) | - | Permission names identified |
 | 3 | Raw permission YAML | `config/authz/permissions/<resource>/<action>.yml` | 1 per permission | `config/authz/permissions/job/read.yml` |
 | 3 | Raw permission resource metadata | `config/authz/permissions/<resource>/.metadata.yml` | 1 per resource | `config/authz/permissions/job/.metadata.yml` |
 | 4 | Assignable permission YAML | `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml` | 1 per group | `config/authz/permission_groups/assignable_permissions/ci_cd/job/run.yml` |
@@ -148,6 +148,7 @@ end
 | `boundaries` | Alternative to `boundary_type` for endpoints supporting multiple boundaries (see below) |
 | `boundary` | Alternative to `boundary_type` for endpoints where the boundary cannot be determined through standard parameter lookup. A callable object (proc, lambda, or method) that returns the boundary object |
 | `skip_granular_token_authorization` | Optional. A symbol naming the reason why granular PATs can access the endpoint without requiring specific permissions, for example `:public_endpoint` (see below) |
+| `todo` | Optional. A non-empty string (an issue link or a short reason) that defers a decision on granular token authorization. While present, granular PATs are denied access to the endpoint (see below) |
 
 Example with custom `boundary_param`:
 
@@ -211,6 +212,21 @@ The reason must be one of the keys defined in `lib/tasks/gitlab/permissions/rout
 - Endpoints where authentication is optional and the response is the same regardless
 
 Adding this decorator ensures that all endpoints are explicitly covered by the authorization system, even those that don't require permissions.
+
+#### Deferring Granular Token Authorization
+
+Use `todo` when you add an endpoint but have not yet decided how granular token authorization should work for it. Unlike `skip_granular_token_authorization`, which lets granular PATs through without a permission check, `todo` denies granular PATs while keeping the endpoint covered by the validation task. Legacy personal access tokens are unaffected.
+
+```ruby
+route_setting :authorization, todo: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123456'
+post 'assignments' do
+  # endpoint implementation
+end
+```
+
+The value must be a non-empty string, such as an issue link or a short reason. A blank value is treated as missing authorization and the validation task fails.
+
+A granular PAT that calls the endpoint receives a `403 Forbidden` response, because the authorization service finds no permissions to check. Replace `todo` with `permissions` and a `boundary_type` (or `skip_granular_token_authorization`) once you decide how the endpoint should behave.
 
 #### Allowing Access on Publicly Visible Resources
 

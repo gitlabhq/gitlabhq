@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { GlTabs } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 
 import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
@@ -71,9 +72,9 @@ describe('RunnersTabs', () => {
   };
 
   const findTabs = () => wrapper.findComponent(GlTabs);
-  const findRunnerTab = (testid) => wrapper.findByTestId(testid);
+  const findRunnerTab = (testid) => wrapper.findComponentByTestId(testid);
   const findRunnerTabs = () => wrapper.findAllComponents(RunnersTab);
-  const findRunnerToggleAssignButton = (testid) => wrapper.findByTestId(testid);
+  const findRunnerToggleAssignButton = (testid) => wrapper.findComponentByTestId(testid);
 
   beforeEach(() => {
     mockRefresh = jest.fn();
@@ -84,6 +85,29 @@ describe('RunnersTabs', () => {
 
   it('renders tabs container', () => {
     expect(findTabs().exists()).toBe(true);
+  });
+
+  // Tab names are a contract with deep-linking callers.
+  describe('deep linking', () => {
+    it.each`
+      tab            | index
+      ${'assigned'}  | ${0}
+      ${'available'} | ${1}
+      ${'group'}     | ${2}
+      ${'instance'}  | ${3}
+    `('activates the $tab tab for ?tab=$tab', ({ tab, index }) => {
+      setWindowLocation(`?tab=${tab}`);
+      createComponent();
+
+      expect(findTabs().props('value')).toBe(index);
+    });
+
+    it.each(['', '?tab=unknown'])('falls back to the first tab for "%s"', (search) => {
+      setWindowLocation(`/${search}`);
+      createComponent();
+
+      expect(findTabs().props('value')).toBe(0);
+    });
   });
 
   it('renders the correct number of tabs', () => {
@@ -269,6 +293,20 @@ describe('RunnersTabs', () => {
 
       expect(mockRefresh).toHaveBeenCalledTimes(1);
       expect(mockRefresh).toHaveBeenCalledWith('Group');
+      expect(
+        findRunnerTab('group-runners-tab')
+          .findComponent(GroupRunnersTabEmptyState)
+          .props('groupRunnersEnabled'),
+      ).toBe(false);
+    });
+
+    it('updates empty state without refreshing the list when the toggle reports its value', async () => {
+      findRunnerTab('group-runners-tab')
+        .findComponent(GroupRunnersToggle)
+        .vm.$emit('fetched', false);
+      await nextTick();
+
+      expect(mockRefresh).not.toHaveBeenCalled();
       expect(
         findRunnerTab('group-runners-tab')
           .findComponent(GroupRunnersTabEmptyState)

@@ -8,7 +8,7 @@ RSpec.describe 'Sentry', feature_category: :observability do
 
     visit new_user_session_path
 
-    expect(has_requested_sentry).to eq(false)
+    expect(has_requested_sentry).to be(false)
   end
 
   it 'loads sentry if sentry settings are enabled', :js do
@@ -17,7 +17,7 @@ RSpec.describe 'Sentry', feature_category: :observability do
 
     visit new_user_session_path
 
-    expect(has_requested_sentry).to eq(true)
+    expect(has_requested_sentry).to be(true)
     expect(evaluate_script('window._Sentry.SDK_VERSION')).to match(%r{^10\.})
   end
 

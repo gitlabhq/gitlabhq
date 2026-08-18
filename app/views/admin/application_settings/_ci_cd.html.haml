@@ -30,10 +30,11 @@
           = _("The maximum file size for job artifacts.")
           = link_to _('Learn more.'), help_page_path('administration/cicd/limits.md', anchor: 'maximum-artifacts-size')
       .form-group
-        = f.label :max_artifacts_content_include_size, _('Maximum artifacts archive size (bytes)'), class: 'label-bold'
+        = f.label :max_artifacts_content_include_size, _('Maximum artifact size for dynamic child pipelines (bytes)'), class: 'label-bold'
         = f.number_field :max_artifacts_content_include_size, class: 'form-control gl-form-input', min: 0
         .form-text.gl-text-subtle
-          = _("The maximum file size for job artifacts archive.")
+          = _("The maximum size of an artifact used as a CI/CD configuration file in dynamic child pipelines.")
+          = link_to _('Learn more.'), help_page_path('administration/cicd/limits.md', anchor: 'maximum-size-of-the-ci-artifacts-archive')
       .form-group
         = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
         = f.text_field :default_artifacts_expire_in, class: 'form-control gl-form-input'
@@ -78,8 +79,6 @@
           = _("The default CI/CD configuration file and path for new projects.").html_safe
           = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
       .form-group
-        = f.gitlab_ui_checkbox_component :suggest_pipeline_enabled, s_('AdminSettings|Enable pipeline suggestion banner'), help_text: s_('AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file.')
-      .form-group
         = f.gitlab_ui_checkbox_component :show_migrate_from_jenkins_banner, s_('AdminSettings|Show the migrate from Jenkins banner'), help_text: s_('AdminSettings|Show a banner on merge requests in projects with Jenkins pipelines to prompt migration to GitLab CI/CD instead.')
       #js-runner-token-expiration-intervals{ data: runner_token_expiration_interval_attributes }
       .form-group
@@ -105,7 +104,6 @@
             = gitlab_ui_form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-ci-cd-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
               = form_errors(plan)
               %fieldset
-                = f.hidden_field(:plan_id, value: plan.id)
                 = f.hidden_field(:plan_name_uid, value: plan.plan_name_uid_before_type_cast)
                 .form-group
                   = f.label :ci_instance_level_variables, plan_limit_setting_description(:ci_instance_level_variables)
@@ -116,6 +114,10 @@
                 .form-group
                   = f.label :dotenv_variables, plan_limit_setting_description(:dotenv_variables)
                   = f.number_field :dotenv_variables, class: 'form-control gl-form-input', min: 0
+                .form-group
+                  = f.label :ci_max_artifact_size_cyclonedx, plan_limit_setting_description(:ci_max_artifact_size_cyclonedx)
+                  = f.number_field :ci_max_artifact_size_cyclonedx, class: 'form-control gl-form-input', min: 0
+                  .form-text.gl-text-subtle= s_('AdminSettings|Set to 0 to use the maximum artifacts size limit instead.')
                 .form-group
                   = f.label :ci_pipeline_size, plan_limit_setting_description(:ci_pipeline_size)
                   = f.number_field :ci_pipeline_size, class: 'form-control gl-form-input', min: 0

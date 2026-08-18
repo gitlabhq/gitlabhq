@@ -6,7 +6,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
   include JiraIntegrationHelpers
   include AfterNextHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
@@ -224,8 +224,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
 
     context 'when the endpoint receives requests above the rate limit', :freeze_time do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:project_testing_integration).and_return(1)
+        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, true)
       end
 
       it 'prevents making test requests' do
@@ -311,7 +310,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
         let(:integration_params) { { inherit_from_id: '' } }
 
         it 'sets inherit_from_id to nil' do
-          expect(integration.reload.inherit_from_id).to eq(nil)
+          expect(integration.reload.inherit_from_id).to be_nil
         end
       end
 

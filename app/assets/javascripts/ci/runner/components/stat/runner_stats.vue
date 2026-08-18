@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   I18N_STATUS_ONLINE,
   I18N_STATUS_OFFLINE,
@@ -22,10 +23,12 @@ export default {
   components: {
     RunnerCount,
     RunnerSingleStat,
-    RunnerUpgradeStatusStats: () =>
-      import('ee_component/ci/runner/components/stat/runner_upgrade_status_stats.vue'),
-    RunnerPerformanceStat: () =>
-      import('ee_component/ci/runner/components/stat/runner_performance_stat.vue'),
+    RunnerUpgradeStatusStats: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/stat/runner_upgrade_status_stats.vue'),
+    ),
+    RunnerPerformanceStat: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/stat/runner_performance_stat.vue'),
+    ),
   },
   props: {
     scope: {

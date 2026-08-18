@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Internal API
 ---
 
-The internal API is used by different GitLab components, it cannot be
+The internal API is used by different GitLab components. It cannot be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
@@ -26,7 +26,7 @@ internal data that external actors cannot have. For example, in the internal Pag
 a secret token that identifies a request as internal or sign a request with a public key that is
 not available to a wider community.
 
-Another reason to separate something into an internal API is when request to such API endpoint
+Another reason to separate something into an internal API is when a request to such an API endpoint
 should never go through an edge (public) load balancer. This way we can configure different rate
 limiting rules and policies around how the endpoint is being accessed, because we know that only
 internal requests can be made to that endpoint going through an internal load balancer.
@@ -34,8 +34,8 @@ internal requests can be made to that endpoint going through an internal load ba
 ## Authentication
 
 These methods are all authenticated using a shared secret. This secret
-is stored in a file at the path configured in `config/gitlab.yml` by
-default this is in the root of the rails app named
+is stored in a file at the path configured in `config/gitlab.yml`. By
+default, this is in the root of the GitLab Rails app named
 `.gitlab_shell_secret`
 
 To authenticate using that token, clients:
@@ -147,7 +147,7 @@ curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab Shell authorized keys
-check. Which is called by OpenSSH or GitLab SSHD for
+check, which is called by OpenSSH or GitLab SSHD for
 [fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
@@ -425,7 +425,7 @@ Example response:
 
 ## PostReceive
 
-Called from Gitaly after a receiving a push. This triggers the
+Called from Gitaly after receiving a push. This triggers the
 `PostReceive`-worker in Sidekiq, processes the passed push options and
 builds the response including messages that need to be displayed to
 the user.
@@ -465,12 +465,6 @@ Example response:
 ```
 
 ## GitLab agent for Kubernetes endpoints
-
-{{< history >}}
-
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
-
-{{< /history >}}
 
 The following endpoints are used by the GitLab agent server for Kubernetes (`kas`)
 for various purposes.
@@ -995,7 +989,7 @@ This group SCIM API:
 - Is for system use for SCIM provider integration.
 - Implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets a list of SCIM provisioned users for the group.
-- Creates, deletes and updates SCIM provisioned users for the group.
+- Creates, deletes, and updates SCIM provisioned users for the group.
 
 The [instance SCIM API](#instance-scim-api) does the same for instances.
 
@@ -1243,7 +1237,7 @@ Returns an empty response with a `204` status code if successful.
 
 {{< history >}}
 
-- Group sync support [added](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0.
+- Group sync support [added](https://gitlab.com/groups/gitlab-org/-/work_items/15990) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -1327,6 +1321,13 @@ Example response:
           "value": "name@example.com",
           "primary": true
         }
+      ],
+      "groups": [
+        {
+          "value": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+          "display": "Developers",
+          "type": "direct"
+        }
       ]
     }
   ]
@@ -1370,9 +1371,25 @@ Example response:
       "value": "name@example.com",
       "primary": true
     }
+  ],
+  "groups": [
+    {
+      "value": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+      "display": "Developers",
+      "type": "direct"
+    }
   ]
 }
 ```
+
+Each entry in `groups` describes a SCIM group the user belongs to. The attribute is read-only. To
+change group membership, use the [group endpoints](#group-endpoints).
+
+| Attribute | Type   | Description |
+|:----------|:-------|:------------|
+| `value`   | string | SCIM ID of the group, matching the `id` returned by the `Groups` endpoints. |
+| `display` | string | Human-readable name of the group. |
+| `type`    | string | Type of the membership. Always `direct`. |
 
 #### Create a SCIM provisioned user
 

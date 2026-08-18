@@ -16,7 +16,7 @@ RSpec.describe Packages::Event, feature_category: :package_registry do
   describe '.event_allowed?' do
     subject { described_class.event_allowed?(event_type) }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     it_behaves_like 'handle forbidden event type', result: false
   end

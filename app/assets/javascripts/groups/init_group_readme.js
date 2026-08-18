@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import apolloProvider from '~/repository/graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 
@@ -12,16 +13,13 @@ export const initGroupReadme = () => {
 
   const { webPath, name } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupFilePreviewRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(FilePreview, {
-        props: {
-          blob: { webPath, name },
-        },
-      });
+    component: FilePreview,
+    props: {
+      blob: { webPath, name },
     },
   });
 };

@@ -18,7 +18,7 @@
 
   - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user, organization: @organization)
   - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
-  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ class: super_sidebar_loading_state_class, data: { root_path: root_path, sidebar: sidebar_data, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
+  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ class: super_sidebar_loading_state_class, data: { sidebar: sidebar_data, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
 
   = render_if_exists "layouts/session_expire_modal"
 
@@ -63,7 +63,7 @@
           = render_if_exists "shared/footer/global_footer"
 
       #contextual-panel-portal.paneled-view-portal{
-        class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative gl-right-0'
+        class: 'gl-@container/panel !gl-absolute gl-shadow-lg gl-bg-default @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative @xl/content-panels:gl-bg-transparent gl-right-0'
       }
 
   = dispensable_render_if_exists 'layouts/duo_chat_panel'

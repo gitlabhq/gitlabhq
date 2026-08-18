@@ -6,8 +6,8 @@ module API
     class ResendHook < ::Grape::API
       desc 'Resend a webhook event' do
         detail 'Resends a webhook event. This endpoint has a rate limit of five requests per minute for each ' \
-          'webhook and authenticated user. To disable this limit on GitLab Self-Managed and GitLab Dedicated, an ' \
-          'administrator can disable the feature flag named web_hook_event_resend_api_endpoint_rate_limit.'
+          'authenticated user for a given project or group. On GitLab Self-Managed and GitLab Dedicated, an ' \
+          'administrator can change this limit in the application settings.'
         success code: 201
         failure [
           { code: 422, message: 'Unprocessable entity' },
@@ -23,22 +23,9 @@ module API
       route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do
         hook = find_hook
-        if Feature.enabled?(:web_hook_event_resend_api_endpoint_rate_limit, Feature.current_request)
-          check_rate_limit!(:web_hook_event_resend, scope: [hook.parent, current_user])
-        end
+        check_rate_limit!(:web_hook_event_resend, scope: [hook.parent, current_user])
 
         web_hook_log = hook.web_hook_logs.find(params[:hook_log_id])
-
-        if web_hook_log.outside_recent_window?
-          Gitlab::WebHooks::Logger.log_stale_access(
-            hook: hook,
-            web_hook_log: web_hook_log,
-            action: 'retry',
-            interface: 'api',
-            user: current_user
-          )
-        end
-
         result = WebHooks::Events::ResendService.new(web_hook_log, current_user: current_user).execute
 
         if result.success?

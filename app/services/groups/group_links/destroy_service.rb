@@ -16,8 +16,6 @@ module Groups
 
           groups_to_refresh = links.map(&:shared_with_group)
           groups_to_refresh.uniq.each do |group|
-            next if Feature.enabled?(:skip_group_share_unlink_auth_refresh, group.root_ancestor)
-
             AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(group.id,
               { 'priority' => priority_for_refresh.to_s, 'direct_members_only' => true })
           end

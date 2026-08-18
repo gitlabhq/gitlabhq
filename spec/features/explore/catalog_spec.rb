@@ -149,7 +149,8 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
 
       before do
         within_testid('catalog-search-bar') do
-          find('input').set(project_name)
+          find('input').click
+          send_keys(project_name)
           click_button 'Search'
         end
         wait_for_requests

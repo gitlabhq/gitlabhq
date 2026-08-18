@@ -79,6 +79,19 @@ RSpec.shared_examples 'wiki_page' do |container_type|
     end
   end
 
+  describe '#last_version=' do
+    it 'uses the primed commit so no per-page Gitaly lookup is made' do
+      create(:wiki_page, container: container, title: 'home', content: 'content')
+
+      commit = wiki.list_pages.first.last_version
+      primed = wiki.list_pages.first
+      primed.last_version = commit
+
+      expect(primed.wiki.repository).not_to receive(:last_commit_for_path)
+      expect(primed.version_commit_timestamp).to eq(commit.committed_date)
+    end
+  end
+
   describe '#front_matter' do
     let(:wiki_page) { create(:wiki_page, container: container, content: content) }
 
@@ -343,6 +356,9 @@ RSpec.shared_examples 'wiki_page' do |container_type|
       end
 
       context 'for reserved slugs' do
+        it { is_expected.not_to allow_value(nil).for(:title) }
+        it { is_expected.not_to allow_value('').for(:title) }
+
         # Reserved slugs that conflict with wiki routes (see config/routes/wiki.rb)
         # E.g. 'pages', 'templates', 'new', 'git_access', '-'
         WikiPage::RESERVED_SLUGS.each do |reserved_slug|
@@ -350,6 +366,7 @@ RSpec.shared_examples 'wiki_page' do |container_type|
           it { is_expected.not_to allow_value(reserved_slug.upcase).for(:title) }
           it { is_expected.not_to allow_value(reserved_slug.capitalize).for(:title) }
           it { is_expected.not_to allow_value(reserved_slug.downcase).for(:title) }
+          it { is_expected.not_to allow_value("#{reserved_slug}/").for(:title) }
 
           # Subdirectories under reserved slugs are allowed
           it { is_expected.to allow_value("#{reserved_slug}/subpage").for(:title) }

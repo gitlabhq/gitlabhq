@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import UpdateSharedRunnersForm from './components/shared_runners_form.vue';
 
@@ -20,7 +20,7 @@ export default (containerId = 'update-shared-runners-form') => {
     runnerAllowOverrideValue,
   } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'UpdateSharedRunnersFormRoot',
     provide: {
@@ -37,8 +37,6 @@ export default (containerId = 'update-shared-runners-form') => {
       parentSettingsPath,
       parentSharedRunnersSetting,
     },
-    render(createElement) {
-      return createElement(UpdateSharedRunnersForm);
-    },
+    component: UpdateSharedRunnersForm,
   });
 };

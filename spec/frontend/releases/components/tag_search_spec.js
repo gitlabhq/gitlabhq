@@ -9,7 +9,7 @@ import { sprintf } from '~/locale';
 import TagSearch from '~/releases/components/tag_search.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
-import { createRefModule } from '~/ref/stores';
+import { createRefModule } from '~/vue_shared/components/ref/stores';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 const TEST_TAG_NAME = 'test-tag-name';

@@ -2,12 +2,16 @@ PATH
   remote: .
   specs:
     omniauth-gitlab (4.0.0)
+      base64
+      bigdecimal
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    base64 (0.3.0)
+    bigdecimal (4.1.2)
     diff-lcs (1.5.0)
     docile (1.4.0)
     faraday (2.3.0)
@@ -73,6 +77,8 @@ DEPENDENCIES
   simplecov
 
 CHECKSUMS
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
   diff-lcs (1.5.0) sha256=49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
   docile (1.4.0) sha256=5f1734bde23721245c20c3d723e76c104208e1aa01277a69901ce770f0ebb8d3
   faraday (2.3.0) sha256=53382490743a40d6551bfc7d7b4bc681cf21068cf74e8f76319ce5cd53d27de7
@@ -101,4 +107,4 @@ CHECKSUMS
   version_gem (1.0.0) sha256=929c93a4d46482bb3b0359980c7a5fb1b5a833548f1202a480b08a6f0a5f8f2f
 
 BUNDLED WITH
-   2.7.1
+  4.0.10

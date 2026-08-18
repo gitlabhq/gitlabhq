@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { GlTabsBehavior, HISTORY_TYPE_HASH } from '~/tabs';
 import PagesEdit from './components/edit.vue';
@@ -21,7 +22,7 @@ export default function initPages() {
     return false;
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GitlabPagesEditRoot',
     apolloProvider,
@@ -29,8 +30,6 @@ export default function initPages() {
       projectFullPath: el.dataset.fullPath,
       primaryDomain: el.dataset.primaryDomain,
     },
-    render(createElement) {
-      return createElement(PagesEdit, {});
-    },
+    component: PagesEdit,
   });
 }

@@ -41,10 +41,6 @@ RSpec.shared_examples 'User views a wiki page' do
       wait_for_requests
     end
 
-    it 'gives feedback that the page was created' do
-      expect(page).to have_content('Wiki page was successfully created.')
-    end
-
     it 'shows the history of a page that has a path', :js do
       expect(page).to have_current_path(%r{one/two/three-test})
 
@@ -130,7 +126,8 @@ RSpec.shared_examples 'User views a wiki page' do
 
       click_link("Create this page…")
 
-      expect(page).to have_content('New page')
+      expect(page).to have_css('.wiki-form')
+      expect(page).to have_button('Create page')
     end
   end
 
@@ -288,7 +285,8 @@ RSpec.shared_examples 'User views a wiki page' do
 
     click_link "Create your first page"
 
-    expect(page).to have_content('New page')
+    expect(page).to have_css('.wiki-form')
+    expect(page).to have_button('Create page')
   end
 end
 

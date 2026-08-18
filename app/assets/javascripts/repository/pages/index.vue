@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { updateElementsVisibility } from '../utils/dom';
 import TreePage from './tree.vue';

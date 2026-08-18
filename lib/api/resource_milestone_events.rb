@@ -25,7 +25,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{parent_type}"
       end
-      resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all project #{eventable_name} milestone events" do
           detail "Lists all milestone events for a specified #{eventable_name}."
           success Entities::ResourceMilestoneEvent

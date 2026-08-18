@@ -29,7 +29,7 @@ migrate using one of the following options, roughly in order of complexity:
 - Recommended. [Rebuild all indexes](#rebuild-all-indexes).
 - [Rebuild only affected indexes](#rebuild-only-affected-indexes).
 
-Be sure to backup before attempting any migration, and validate the migration process in a
+Be sure to back up before attempting any migration, and validate the migration process in a
 production-like environment. If the length of downtime might be a problem, then consider timing
 different approaches with a copy of production data in a production-like environment.
 
@@ -40,7 +40,7 @@ other changes, especially if those changes do not require downtime, such as upgr
 system of nodes running only Puma or Sidekiq.
 
 For more information about how GitLab plans to address this issue, see
-[epic 8573](https://gitlab.com/groups/gitlab-org/-/epics/8573).
+[epic 8573](https://gitlab.com/groups/gitlab-org/-/work_items/8573).
 
 ## Backup and restore
 
@@ -53,7 +53,7 @@ Backup and restore recreates the entire database, including the indexes.
    gitlab-ctl start postgresql
    ```
 
-1. Backup the PostgreSQL database with `pg_dump` or the
+1. Back up the PostgreSQL database with `pg_dump` or the
    [GitLab backup tool, with all data types except `db` excluded](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)
    (so only the database is backed up).
 1. In all PostgreSQL nodes, upgrade the OS.
@@ -82,7 +82,7 @@ Disadvantages:
    gitlab-ctl start postgresql
    ```
 
-1. In the primary site, backup the PostgreSQL database with `pg_dump` or the
+1. In the primary site, back up the PostgreSQL database with `pg_dump` or the
    [GitLab backup tool, with all data types except `db` excluded](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)
    (so only the database is backed up).
 1. In all PostgreSQL nodes of all sites, upgrade the OS.
@@ -346,7 +346,7 @@ reads against a replica with different locale data.
 
 The upgrade procedures documented previously are not set in stone. With Geo there are potentially more options,
 because there exists redundant infrastructure. You could consider modifications to suit your use-case,
-but be sure to weigh it against the added complexity. Here are some examples:
+but be sure to weigh them against the added complexity. Here are some examples:
 
 To reserve a secondary site as a warm standby in case of disaster during the OS upgrade of the
 primary site and the other secondary site:

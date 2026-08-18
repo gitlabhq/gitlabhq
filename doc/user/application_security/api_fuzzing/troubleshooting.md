@@ -35,8 +35,7 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 
 **Error message**
 
-- In [GitLab 15.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/376078), `Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available`
-- In GitLab 15.5 and earlier, `Error waiting for API Security 'http://127.0.0.1:5000' to become available`.
+`Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available`
 
 ### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
 
@@ -49,23 +48,15 @@ Before proceeding with a solution, it is important to confirm that the error mes
 1. Open the file `gl-api-security-scanner.log` in a text editor.
 1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
 
-- In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
+   ```log
+   Failed to bind to address http://127.0.0.1:5500: address already in use.
+   ```
 
-  ```log
-  Failed to bind to address http://127.0.0.1:5500: address already in use.
-  ```
-
-- In GitLab 15.4 and earlier:
-
-  ```log
-  Failed to bind to address http://[::]:5000: address already in use.
-  ```
-
-The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
+The address in the previous message could be different in your case. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
 
 If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](_index.md#get-support-or-request-an-improvement) through the proper channels.
 
-Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `FUZZAPI_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
+Once you have confirmed the issue was produced because the port was already taken, use the configuration variable `FUZZAPI_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
 
 **Solution**
 
@@ -299,11 +290,11 @@ ERROR: Job failed: failed to pull image "registry.example.com/my-target-app:late
 
 **Error message**
 
-- In GitLab 15.9 and earlier, `ERROR: Job failed: failed to pull image` followed by `Error response from daemon: Get IMAGE: unauthorized`.
+`ERROR: Job failed: failed to pull image` followed by `Error response from daemon: Get IMAGE: unauthorized`.
 
 **Solution**
 
-Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If your using a container registry provided by a third party, such as a cloud provider (Azure, Google Could (GCP), AWS and so on), check the providers documentation for information on how to authenticate to their container registries.
+Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If you're using a container registry provided by a third party, such as a cloud provider (Azure, Google Cloud (GCP), AWS, and so on), check the providers documentation for information on how to authenticate to their container registries.
 
 The following example uses the [statically defined credentials](../../../ci/docker/using_docker_images.md#use-statically-defined-credentials) authentication method. In this example the container registry is `registry.example.com` and image is `my-target-app:latest`.
 

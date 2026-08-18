@@ -13,14 +13,6 @@ description: "Use a direct connection to migrate GitLab data."
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
-- New application setting `bulk_import_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. `bulk_import` feature flag removed.
-- `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
-
-{{< /history >}}
-
 You can migrate GitLab groups:
 
 - From GitLab Self-Managed and GitLab Dedicated to GitLab.com
@@ -32,9 +24,11 @@ Migration by direct transfer creates a new copy of the group. If you want to mov
 can [transfer groups](../manage.md#transfer-a-group) if the groups are in the same GitLab instance. Transferring groups
 instead of migrating them is a faster and more complete option.
 
-You can migrate groups in two ways:
+You can migrate groups in the following ways:
 
 - By direct transfer (recommended).
+- By [offline transfer](../../import/gitlab_instances/offline-transfer-migrations.md) through object storage, when the
+  destination instance has no direct network connection to the source instance.
 - By [uploading an export file](../../project/settings/import_export.md).
 
 If you migrate from GitLab.com to a GitLab Self-Managed or GitLab Dedicated instance, an administrator can create users on the instance.
@@ -73,11 +67,6 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-p
 ## Known issues
 
 - Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.
-- In GitLab 16.1 and earlier, you should not use direct transfer with
-  [scheduled scan execution policies](../../application_security/policies/scan_execution_policies.md).
-- In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
-  `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
-  is missing, but the note and the merge request are still imported.
 - When mapped from the source instance, shared members are mapped as direct members on the destination unless those
   memberships already exist on the destination. This means that importing a top-level group on the source instance to a
   top-level group on the destination instance always maps to direct members in projects, even though the source top-level
@@ -91,12 +80,17 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-p
 - If the destination namespace belongs to a different organization than the source, and either
   organization is marked as isolated, migrations by direct transfer fail. For more information, see
   [issue 595674](https://gitlab.com/gitlab-org/gitlab/-/issues/595674).
-- Because direct transfer migrations map contributions to unbanned users on the destination instance, 
+- Because direct transfer migrations map contributions to unbanned users on the destination instance,
   banned user contributions that were hidden on the source instance appear again on the destination
   instance. To hide these contributions, on the destination instance either:
   - Ban the users.
   - Remove the contributions.
   For more information, see [issue 508111](https://gitlab.com/gitlab-org/gitlab/-/work_items/508111).
+- During migration, URL references in notes, issue descriptions, and merge request descriptions are only
+  rewritten for links that belong to the group or project being migrated (the `source_full_path`).
+  URLs that point to other groups or projects on the source instance are not rewritten, even if those groups
+  or projects are also migrated.
+  After migration, you can manually update any external links that still point to the source instance.
 
 ## Estimating migration duration
 

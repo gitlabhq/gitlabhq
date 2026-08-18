@@ -14,7 +14,7 @@ values from ancestors (parent group on up the group hierarchy) and from
 instance-level application settings. The framework also allows settings values
 to be "locked" (enforced) on groups lower in the hierarchy.
 
-Cascading settings historically have only been defined on `ApplicationSetting`, `NamespaceSetting` and `ProjectSetting`, though
+Cascading settings historically have only been defined on `ApplicationSetting`, `NamespaceSetting`, and `ProjectSetting`, though
 the framework may be extended to other objects in the future.
 
 ## Add a new cascading setting to groups only

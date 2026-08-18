@@ -16,7 +16,7 @@ describe('StarCount', () => {
     show: jest.fn(),
   };
 
-  const findStarButton = () => wrapper.findByTestId('star-button');
+  const findStarButton = () => wrapper.findComponentByTestId('star-button');
   const findStarCount = () => wrapper.findByTestId('star-count');
 
   const initialStarCount = 17;

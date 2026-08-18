@@ -516,14 +516,14 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
-    subject { put :reset_registration_token }
+    subject(:reset_token) { put :reset_registration_token }
 
     it 'resets runner registration token' do
-      expect { subject }.to change { ApplicationSetting.current.runners_registration_token }
+      expect { reset_token }.to change { ApplicationSetting.current.runners_registration_token }
     end
 
     it 'redirects the user to admin runners page' do
-      subject
+      reset_token
 
       expect(response).to redirect_to(admin_runners_path)
     end
@@ -534,14 +534,14 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
-    subject { put :reset_error_tracking_access_token }
+    subject(:reset_token) { put :reset_error_tracking_access_token }
 
     it 'resets error_tracking_access_token' do
-      expect { subject }.to change { ApplicationSetting.current.error_tracking_access_token }
+      expect { reset_token }.to change { ApplicationSetting.current.error_tracking_access_token }
     end
 
     it 'redirects the user to application settings page' do
-      subject
+      reset_token
 
       expect(response).to redirect_to(general_admin_application_settings_path)
     end
@@ -555,20 +555,20 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
-    subject { put :reset_vscode_extension_marketplace_extension_host_domain }
+    subject(:reset_domain) { put :reset_vscode_extension_marketplace_extension_host_domain }
 
     it 'resets vscode_extension_marketplace_extension_host_domain' do
       expect(ApplicationSetting.current.vscode_extension_marketplace_extension_host_domain)
         .not_to eq(::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN)
 
-      subject
+      reset_domain
 
       expect(ApplicationSetting.current.vscode_extension_marketplace_extension_host_domain)
         .to eq(::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN)
     end
 
     it 'redirects the user to application settings page' do
-      subject
+      reset_domain
 
       expect(response).to redirect_to(general_admin_application_settings_path(anchor: 'js-web-ide-settings'))
     end
@@ -583,10 +583,10 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       stub_lets_encrypt_client
     end
 
-    subject { get :lets_encrypt_terms_of_service }
+    subject(:get_terms) { get :lets_encrypt_terms_of_service }
 
     it 'redirects the user to the terms of service page' do
-      subject
+      get_terms
 
       expect(response).to redirect_to("https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf")
     end
@@ -597,13 +597,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
-    subject { get :slack_app_manifest_download }
+    subject(:download_manifest) { get :slack_app_manifest_download }
 
     it 'downloads the GitLab for Slack app manifest' do
       stub_feature_flags(slack_duo_agent: false)
       allow(Slack::Manifest).to receive(:to_h).with(duo_enabled: false).and_return({ foo: 'bar' })
 
-      subject
+      download_manifest
 
       expect(response.body).to eq('{"foo":"bar"}')
       expect(response.headers['Content-Disposition']).to eq(
@@ -619,7 +619,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       it 'passes duo_enabled: false to the manifest' do
         expect(Slack::Manifest).to receive(:to_json).with(duo_enabled: false).and_return('{}')
 
-        subject
+        download_manifest
       end
     end
 
@@ -631,7 +631,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       it 'passes duo_enabled: true to the manifest' do
         expect(Slack::Manifest).to receive(:to_json).with(duo_enabled: true).and_return('{}')
 
-        subject
+        download_manifest
       end
     end
   end
@@ -641,13 +641,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
-    subject { get :slack_app_manifest_share }
+    subject(:share_manifest) { get :slack_app_manifest_share }
 
     it 'redirects the user to the Slack Manifest share URL' do
       stub_feature_flags(slack_duo_agent: false)
       allow(Slack::Manifest).to receive(:to_h).with(duo_enabled: false).and_return({ foo: 'bar' })
 
-      subject
+      share_manifest
 
       expect(response).to redirect_to(
         "https://api.slack.com/apps?new_app=1&manifest_json=%7B%22foo%22%3A%22bar%22%7D"
@@ -662,7 +662,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       it 'passes duo_enabled: false to the manifest' do
         expect(Slack::Manifest).to receive(:share_url).with(duo_enabled: false).and_return('https://api.slack.com/apps')
 
-        subject
+        share_manifest
       end
     end
 
@@ -674,7 +674,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       it 'passes duo_enabled: true to the manifest' do
         expect(Slack::Manifest).to receive(:share_url).with(duo_enabled: true).and_return('https://api.slack.com/apps')
 
-        subject
+        share_manifest
       end
     end
   end

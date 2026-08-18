@@ -12,7 +12,6 @@ RSpec.describe 'Incident Management index', :js, feature_category: :incident_man
     sign_in(developer)
 
     visit project_incidents_path(project)
-    wait_for_requests
   end
 
   context 'when a developer displays the incident list' do

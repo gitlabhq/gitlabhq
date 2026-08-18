@@ -7,9 +7,7 @@ module Gitlab
       # with ee/lib/ee/gitlab/application_rate_limiter/labkit_adapter/
       # supported_rate_limits.rb (EE additions, prepended via prepend_mod).
       #
-      # Per-entry conventions:
-      #   limiter_name:    Redis namespace prefix for the labkit Limiter.
-      #   rule_name:       descriptive label for the labkit Rule.
+      # Per-rule conventions:
       #   characteristics: ordered list of identifier slots; AR-typed
       #                    names (see LabkitAdapter#ar_characteristic_types)
       #                    are populated by class-routing, primitives fill
@@ -19,22 +17,13 @@ module Gitlab
       #                    keeping Redis keys disjoint per real type.
       #   limit:           static threshold (Integer) or a zero-arity callable
       #                    resolved per check against application settings.
-      #                    Mirrors the value previously held in
-      #                    ApplicationRateLimiter.rate_limits[key][:threshold].
       #                    Omitted for entries whose threshold arrives per call
       #                    (see threshold_from_caller and cost_mode below).
       #   period:          window as an Integer (seconds), an ActiveSupport
-      #                    duration, or a callable. Mirrors the previous
-      #                    rate_limits[key][:interval]. Omitted for cost_mode
-      #                    entries (the interval arrives per call).
+      #                    duration, or a callable. Omitted for cost_mode entries
+      #                    (the interval arrives per call).
       #   action:          forwarded to the labkit Rule; the adapter
       #                    returns labkit's boolean decision to the caller.
-      #
-      # limit/period are the migration of the legacy `rate_limits` hash into
-      # this registry. While the rate_limiter_resolve_limits_from_registry
-      # feature flag is disabled the adapter still resolves them from the
-      # rate_limits hash; a parity spec asserts the two sources resolve to
-      # identical values for every key.
       #
       # `web_hook_calls{,_low,_mid}` receive their threshold per call from
       # PlanLimits and so omit `limit:` (it resolves to 0, matching the legacy
@@ -42,210 +31,231 @@ module Gitlab
       # caller's value via rule_context rather than treating it as an override.
       module SupportedRateLimits
         def self.all
-          @all ||= entries.freeze
+          @all ||= limiters.freeze
         end
 
-        def self.entries # rubocop:disable Metrics/AbcSize -- static registry of rate-limit definitions
+        def self.rules
+          @rules ||= rule_definitions.freeze
+        end
+
+        def self.limiter_for(key)
+          all.fetch(key)
+        end
+
+        def self.rule_for(key)
+          rules.fetch(key)
+        end
+
+        def self.limit_for(key, context: nil)
+          resolve_value(rule_for(key).limit, context)
+        end
+
+        def self.period_for(key, context: nil)
+          resolve_value(rule_for(key).period, context)
+        end
+
+        def self.cost_mode?(key)
+          cost_mode_keys.include?(key)
+        end
+
+        # Mirrors labkit's own Evaluator#resolve_value contract (see
+        # gitlab-labkit's lib/labkit/rate_limit/evaluator.rb) so that the
+        # values we resolve here match what labkit will actually enforce.
+        # Variadic callables (negative arity, e.g. ->(*ctx) { ... }) are
+        # intentionally excluded, not by oversight: labkit only forwards
+        # rule_context to callables with exactly one required parameter
+        # (->(ctx) { ... }); passing it to a splat would wrap it in an
+        # array (args == [rule_context]) instead of binding it directly,
+        # which is a worse footgun. Keep this check in lockstep with
+        # labkit's arity >= 1 condition rather than "fixing" it to accept
+        # variadic callables.
+        def self.accepts_context?(value)
+          value.respond_to?(:call) && value.respond_to?(:arity) && value.arity >= 1
+        end
+
+        def self.rule_definitions # rubocop:disable Metrics/AbcSize, -- static registry of rate-limit definitions
           {
-            ai_action: {
-              limiter_name: 'applimiter_ai_action',
-              rule_name: 'limit_ai_actions_by_user',
+            ai_action: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_ai_actions_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.ai_action_api_rate_limit },
               period: 8.hours,
-              action: :block
-            },
-            auto_rollback_deployment: {
-              limiter_name: 'applimiter_auto_rollback_deployment',
-              rule_name: 'limit_auto_rollbacks_by_environment',
+              action: :limit
+            ),
+            auto_rollback_deployment: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_auto_rollbacks_by_environment',
               characteristics: %i[environment],
               limit: 1,
               period: 3.minutes,
-              action: :block
-            },
-            autocomplete_users: {
-              limiter_name: 'applimiter_autocomplete_users',
-              rule_name: 'limit_user_autocompletes_by_user',
+              action: :limit
+            ),
+            autocomplete_users: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_autocompletes_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.autocomplete_users_limit },
               period: 1.minute,
-              action: :block
-            },
-            autocomplete_users_unauthenticated: {
-              limiter_name: 'applimiter_autocomplete_users_unauthenticated',
-              rule_name: 'limit_user_autocompletes_by_ip',
+              action: :limit
+            ),
+            autocomplete_users_unauthenticated: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_autocompletes_by_ip',
               characteristics: %i[ip],
               limit: -> {
                 Gitlab::CurrentSettings.current_application_settings.autocomplete_users_unauthenticated_limit
               },
               period: 1.minute,
-              action: :block
-            },
-            bitbucket_server_import: {
-              limiter_name: 'applimiter_bitbucket_server_import',
-              rule_name: 'limit_bitbucket_server_imports_by_user',
+              action: :limit
+            ),
+            bitbucket_server_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_bitbucket_server_imports_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            bulk_delete_todos: {
-              limiter_name: 'applimiter_bulk_delete_todos',
-              rule_name: 'limit_bulk_todo_deletes_by_user',
+              action: :limit
+            ),
+            bulk_delete_todos: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_bulk_todo_deletes_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            bulk_import: {
-              limiter_name: 'applimiter_bulk_import',
-              rule_name: 'limit_bulk_imports_by_user',
+              action: :limit
+            ),
+            bulk_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_bulk_imports_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            ci_job_processed_subscription: {
-              limiter_name: 'applimiter_ci_job_processed_subscription',
-              rule_name: 'limit_ci_job_processed_subscriptions_by_project',
+              action: :limit
+            ),
+            ci_job_processed_subscription: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_ci_job_processed_subscriptions_by_project',
               characteristics: %i[project],
               limit: 50,
               period: 1.minute,
-              action: :block
-            },
-            ci_lint: {
-              limiter_name: 'applimiter_ci_lint',
-              rule_name: 'limit_ci_lint_by_user',
+              action: :limit
+            ),
+            ci_lint: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_ci_lint_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.ci_lint_limit_per_user },
               period: 1.minute,
-              action: :block
-            },
-            ci_pipeline_statuses_subscription: {
-              limiter_name: 'applimiter_ci_pipeline_statuses_subscription',
-              rule_name: 'limit_ci_pipeline_status_subscriptions_by_project',
+              action: :limit
+            ),
+            ci_pipeline_statuses_subscription: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_ci_pipeline_status_subscriptions_by_project',
               characteristics: %i[project],
               limit: 50,
               period: 1.minute,
-              action: :block
-            },
-            code_suggestions_api_endpoint: {
-              limiter_name: 'applimiter_code_suggestions_api_endpoint',
-              rule_name: 'limit_code_suggestions_by_user',
+              action: :limit
+            ),
+            code_suggestions_api_endpoint: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_code_suggestions_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.code_suggestions_api_rate_limit },
               period: 1.minute,
-              action: :block
-            },
-            create_organization_api: {
-              limiter_name: 'applimiter_create_organization_api',
-              rule_name: 'limit_organization_creates_by_user',
+              action: :limit
+            ),
+            create_organization_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_organization_creates_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.create_organization_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            delete_all_todos: {
-              limiter_name: 'applimiter_delete_all_todos',
-              rule_name: 'limit_todo_bulk_deletes_by_user',
+              action: :limit
+            ),
+            delete_all_todos: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_todo_bulk_deletes_by_user',
               characteristics: %i[user],
               limit: 1,
               period: 5.minutes,
-              action: :block
-            },
-            deployment_delete: {
-              limiter_name: 'applimiter_deployment_delete',
-              rule_name: 'limit_deployment_deletes_by_user',
+              action: :limit
+            ),
+            deployment_delete: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_deployment_deletes_by_user',
               characteristics: %i[user],
               limit: 500,
               period: 1.minute,
-              action: :block
-            },
-            downstream_pipeline_trigger: {
-              limiter_name: 'applimiter_downstream_pipeline_trigger',
-              rule_name: 'limit_downstream_pipeline_triggers_by_project_user_sha',
+              action: :limit
+            ),
+            downstream_pipeline_trigger: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_downstream_pipeline_triggers_by_project_user_sha',
               characteristics: %i[project user sha],
               limit: -> {
                 Gitlab::CurrentSettings.current_application_settings.downstream_pipeline_trigger_limit_per_project_user_sha
               },
               period: 1.minute,
-              action: :block
-            },
-            email_verification: {
-              limiter_name: 'applimiter_email_verification',
-              rule_name: 'limit_email_verifies_by_subject',
+              action: :limit
+            ),
+            email_verification: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_email_verifies_by_subject',
               characteristics: %i[subject],
               limit: 10,
               period: 10.minutes,
-              action: :block
-            },
-            email_verification_code_send: {
-              limiter_name: 'applimiter_email_verification_code_send',
-              rule_name: 'limit_email_verification_sends_by_user',
+              action: :limit
+            ),
+            email_verification_code_send: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_email_verification_sends_by_user',
               characteristics: %i[user],
               limit: 10,
               period: 1.hour,
-              action: :block
-            },
-            expanded_diff_files: {
-              limiter_name: 'applimiter_expanded_diff_files',
-              rule_name: 'limit_expanded_diff_files_by_user_or_ip',
+              action: :limit
+            ),
+            expanded_diff_files: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_expanded_diff_files_by_user_or_ip',
               characteristics: %i[user ip],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            feature_library_search: {
-              limiter_name: 'applimiter_feature_library_search',
-              rule_name: 'limit_feature_library_searches_by_user',
+              action: :limit
+            ),
+            feature_library_search: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_feature_library_searches_by_user',
               characteristics: %i[user],
               limit: 60,
               period: 1.minute,
-              action: :block
-            },
-            fetch_google_ip_list: {
-              limiter_name: 'applimiter_fetch_google_ip_list',
-              rule_name: 'limit_google_ip_list_fetches_by_scope',
+              action: :limit
+            ),
+            feature_library_ai_search: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_feature_library_ai_searches_by_user',
+              characteristics: %i[user],
+              limit: 10,
+              period: 1.minute,
+              action: :limit
+            ),
+            fetch_google_ip_list: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_google_ip_list_fetches_by_scope',
               characteristics: %i[scope],
               limit: 10,
               period: 1.minute,
-              action: :block
-            },
-            fogbugz_import: {
-              limiter_name: 'applimiter_fogbugz_import',
-              rule_name: 'limit_fogbugz_imports_by_user',
+              action: :limit
+            ),
+            fogbugz_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_fogbugz_imports_by_user',
               characteristics: %i[user],
               limit: 1,
               period: 1.minute,
-              action: :block
-            },
-            geo_proxy: {
-              limiter_name: 'applimiter_geo_proxy',
-              rule_name: 'limit_geo_proxy_requests_by_ip',
+              action: :limit
+            ),
+            geo_proxy: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_geo_proxy_requests_by_ip',
               characteristics: %i[ip],
               limit: 60,
               period: 1.minute,
-              action: :block
-            },
-            gitea_import: {
-              limiter_name: 'applimiter_gitea_import',
-              rule_name: 'limit_gitea_imports_by_user',
+              action: :limit
+            ),
+            gitea_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_gitea_imports_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            github_import: {
-              limiter_name: 'applimiter_github_import',
-              rule_name: 'limit_github_imports_by_user',
+              action: :limit
+            ),
+            github_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_github_imports_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            gitlab_shell_operation: {
-              limiter_name: 'applimiter_gitlab_shell_operation',
-              rule_name: 'limit_gitlab_shell_operations_by_action_project_actor',
+              action: :limit
+            ),
+            gitlab_shell_operation: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_gitlab_shell_operations_by_action_project_actor',
               # `:repo_path`, not `:project`: lib/api/internal/base.rb passes
               # params[:project] as a repo-path String (see
               # lib/api/helpers/internal_helpers.rb:173), not a Project AR.
@@ -257,594 +267,570 @@ module Gitlab
               characteristics: %i[action repo_path user key ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.gitlab_shell_operation_limit },
               period: 1.minute,
-              action: :block
-            },
-            glql: {
-              limiter_name: 'applimiter_glql',
-              rule_name: 'limit_glql_queries_by_query_sha',
+              action: :limit
+            ),
+            glql: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_glql_queries_by_query_sha',
               characteristics: %i[query_sha],
               limit: 1,
               period: 15.minutes,
-              action: :block
-            },
-            group_api: {
-              limiter_name: 'applimiter_group_api',
-              rule_name: 'limit_group_api_by_user_or_ip',
+              action: :limit
+            ),
+            group_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_archive_unarchive_api: {
-              limiter_name: 'applimiter_group_archive_unarchive_api',
-              rule_name: 'limit_group_archive_unarchive_api_by_user_or_ip',
+              action: :limit
+            ),
+            group_archive_unarchive_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_archive_unarchive_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_archive_unarchive_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_download_export: {
-              limiter_name: 'applimiter_group_download_export',
-              rule_name: 'limit_group_export_downloads_by_user_group',
+              action: :limit
+            ),
+            group_download_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_export_downloads_by_user_group',
               characteristics: %i[user group],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_download_export_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_export: {
-              limiter_name: 'applimiter_group_export',
-              rule_name: 'limit_group_exports_by_user',
+              action: :limit
+            ),
+            group_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_exports_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_export_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_import: {
-              limiter_name: 'applimiter_group_import',
-              rule_name: 'limit_group_imports_by_user',
+              action: :limit
+            ),
+            group_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_imports_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_import_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_invited_groups_api: {
-              limiter_name: 'applimiter_group_invited_groups_api',
-              rule_name: 'limit_group_invited_groups_api_by_user_or_ip',
+              action: :limit
+            ),
+            group_invited_groups_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_invited_groups_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_invited_groups_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_projects_api: {
-              limiter_name: 'applimiter_group_projects_api',
-              rule_name: 'limit_group_projects_api_by_user_or_ip',
+              action: :limit
+            ),
+            group_projects_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_projects_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_projects_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            group_shared_groups_api: {
-              limiter_name: 'applimiter_group_shared_groups_api',
-              rule_name: 'limit_group_shared_groups_api_by_user_or_ip',
+              action: :limit
+            ),
+            group_shared_groups_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_shared_groups_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_shared_groups_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            groups_api: {
-              limiter_name: 'applimiter_groups_api',
-              rule_name: 'limit_groups_api_by_user_or_ip',
+              action: :limit
+            ),
+            groups_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_groups_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.groups_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            import_source_user_notification: {
-              limiter_name: 'applimiter_import_source_user_notification',
-              rule_name: 'limit_import_source_user_notifications_by_source_user',
+              action: :limit
+            ),
+            groups_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_groups_created_by_user',
+              characteristics: %i[user],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.group_create_limit },
+              period: 1.day,
+              action: :limit
+            ),
+            import_source_user_notification: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_import_source_user_notifications_by_source_user',
               characteristics: %i[import_source_user],
               limit: 1,
               period: 8.hours,
-              action: :block
-            },
-            issues_create: {
-              limiter_name: 'applimiter_issues_create',
-              rule_name: 'limit_issues_by_project_user_external_author',
+              action: :limit
+            ),
+            issues_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_issues_by_project_user_external_author',
               characteristics: %i[project user external_author],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.issues_create_limit },
               period: 1.minute,
-              action: :block
-            },
-            jobs_index: {
-              limiter_name: 'applimiter_jobs_index',
-              rule_name: 'limit_jobs_index_by_user',
+              action: :limit
+            ),
+            jobs_index: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_jobs_index_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_jobs_api_rate_limit },
               period: 1.minute,
-              action: :block
-            },
-            large_blob_download: {
-              limiter_name: 'applimiter_large_blob_download',
-              rule_name: 'limit_large_blob_downloads_by_project',
+              action: :limit
+            ),
+            large_blob_download: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_large_blob_downloads_by_project',
               characteristics: %i[project],
               limit: 5,
               period: 1.minute,
-              action: :block
-            },
-            members_delete: {
-              limiter_name: 'applimiter_members_delete',
-              rule_name: 'limit_member_deletes_by_source_user',
+              action: :limit
+            ),
+            members_delete: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_member_deletes_by_source_user',
               characteristics: %i[project group user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.members_delete_limit },
               period: 1.minute,
-              action: :block
-            },
-            namespace_exists: {
-              limiter_name: 'applimiter_namespace_exists',
-              rule_name: 'limit_namespace_existence_checks_by_user',
+              action: :limit
+            ),
+            mobile_push_notifications: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_mobile_push_notifications_by_user',
+              characteristics: %i[user],
+              limit: 60,
+              period: 1.hour,
+              action: :limit
+            ),
+            namespace_exists: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_namespace_existence_checks_by_user',
               characteristics: %i[user],
               limit: 20,
               period: 1.minute,
-              action: :block
-            },
-            notes_create: {
-              limiter_name: 'applimiter_notes_create',
-              rule_name: 'limit_notes_by_user',
+              action: :limit
+            ),
+            namespace_work_item_changes_broadcast: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_namespace_work_item_change_broadcasts_by_namespace',
+              characteristics: %i[group namespace],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
+            notes_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_notes_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.notes_create_limit },
               period: 1.minute,
-              action: :block
-            },
-            notification_emails: {
-              limiter_name: 'applimiter_notification_emails',
-              rule_name: 'limit_notification_emails_by_parent_user',
+              action: :limit
+            ),
+            notification_emails: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_notification_emails_by_parent_user',
               characteristics: %i[project group user],
               limit: 1000,
               period: 1.day,
-              action: :block
-            },
-            oauth_dynamic_registration: {
-              limiter_name: 'applimiter_oauth_dynamic_registration',
-              rule_name: 'limit_oauth_registrations_by_ip',
+              action: :limit
+            ),
+            oauth_dynamic_registration: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_oauth_registrations_by_ip',
               characteristics: %i[ip],
-              limit: 5,
+              limit: 10,
               period: 1.hour,
-              action: :block
-            },
-            offline_export: {
-              limiter_name: 'applimiter_offline_export',
-              rule_name: 'limit_offline_exports_by_user',
+              action: :limit
+            ),
+            observability_bff_session: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_observability_bff_sessions_by_user',
+              characteristics: %i[user],
+              limit: 20,
+              period: 1.minute,
+              action: :limit
+            ),
+            offline_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_offline_exports_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            offline_import: {
-              limiter_name: 'applimiter_offline_import',
-              rule_name: 'limit_offline_imports_by_user',
+              action: :limit
+            ),
+            offline_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_offline_imports_by_user',
               characteristics: %i[user],
               limit: 6,
               period: 1.minute,
-              action: :block
-            },
-            permanent_email_failure: {
-              limiter_name: 'applimiter_permanent_email_failure',
-              rule_name: 'limit_permanent_email_failures_by_email',
+              action: :limit
+            ),
+            permanent_email_failure: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_permanent_email_failures_by_email',
               characteristics: %i[email],
               limit: 5,
               period: 1.day,
-              action: :block
-            },
-            phone_verification_send_code: {
-              limiter_name: 'applimiter_phone_verification_send_code',
-              rule_name: 'limit_phone_verification_sends_by_user',
+              action: :limit
+            ),
+            phone_verification_send_code: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_phone_verification_sends_by_user',
               characteristics: %i[user],
               limit: 5,
               period: 1.day,
-              action: :block
-            },
-            phone_verification_verify_code: {
-              limiter_name: 'applimiter_phone_verification_verify_code',
-              rule_name: 'limit_phone_verification_verifies_by_user',
+              action: :limit
+            ),
+            phone_verification_verify_code: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_phone_verification_verifies_by_user',
               characteristics: %i[user],
               limit: 5,
               period: 1.day,
-              action: :block
-            },
-            pipelines_create: {
-              limiter_name: 'applimiter_pipelines_create',
-              rule_name: 'limit_pipelines_by_project_user_sha',
+              action: :limit
+            ),
+            pipelines_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipelines_by_project_user_sha',
               characteristics: %i[project user sha],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.pipeline_limit_per_project_user_sha },
               period: 1.minute,
-              action: :block
-            },
-            pipelines_created_per_user: {
-              limiter_name: 'applimiter_pipelines_created_per_user',
-              rule_name: 'limit_pipelines_by_user',
+              action: :limit
+            ),
+            pipelines_created_per_user: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipelines_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.pipeline_limit_per_user },
               period: 1.minute,
-              action: :block
-            },
-            placeholder_reassignment: {
-              limiter_name: 'applimiter_placeholder_reassignment',
-              rule_name: 'limit_placeholder_reassignments_by_user',
+              action: :limit
+            ),
+            placeholder_reassignment: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_placeholder_reassignments_by_user',
               characteristics: %i[user],
               limit: 5,
               period: 1.minute,
-              action: :block
-            },
-            play_pipeline_schedule: {
-              limiter_name: 'applimiter_play_pipeline_schedule',
-              rule_name: 'limit_pipeline_schedule_plays_by_user_schedule',
+              action: :limit
+            ),
+            play_pipeline_schedule: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_schedule_plays_by_user_schedule',
               characteristics: %i[user ci_pipeline_schedule],
               limit: 1,
               period: 1.minute,
-              action: :block
-            },
-            profile_add_new_email: {
-              limiter_name: 'applimiter_profile_add_new_email',
-              rule_name: 'limit_profile_email_adds_by_user',
+              action: :limit
+            ),
+            profile_add_new_email: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_profile_email_adds_by_user',
               characteristics: %i[user],
               limit: 5,
               period: 1.minute,
-              action: :block
-            },
-            profile_resend_email_confirmation: {
-              limiter_name: 'applimiter_profile_resend_email_confirmation',
-              rule_name: 'limit_profile_email_confirm_resends_by_user',
+              action: :limit
+            ),
+            profile_resend_email_confirmation: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_profile_email_confirm_resends_by_user',
               characteristics: %i[user],
               limit: 5,
               period: 1.minute,
-              action: :block
-            },
-            profile_update_username: {
-              limiter_name: 'applimiter_profile_update_username',
-              rule_name: 'limit_profile_username_updates_by_user',
+              action: :limit
+            ),
+            profile_update_username: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_profile_username_updates_by_user',
               characteristics: %i[user],
               limit: 10,
               period: 1.minute,
-              action: :block
-            },
-            project_api: {
-              limiter_name: 'applimiter_project_api',
-              rule_name: 'limit_project_api_by_user_or_ip',
+              action: :limit
+            ),
+            project_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_download_export: {
-              limiter_name: 'applimiter_project_download_export',
-              rule_name: 'limit_project_export_downloads_by_user_project',
+              action: :limit
+            ),
+            project_download_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_export_downloads_by_user_project',
               characteristics: %i[user project],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_download_export_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_export: {
-              limiter_name: 'applimiter_project_export',
-              rule_name: 'limit_project_exports_by_user',
+              action: :limit
+            ),
+            project_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_exports_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_export_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_fork_sync: {
-              limiter_name: 'applimiter_project_fork_sync',
-              rule_name: 'limit_project_fork_syncs_by_project_user',
+              action: :limit
+            ),
+            project_fork_sync: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_fork_syncs_by_project_user',
               characteristics: %i[project user],
               limit: 10,
               period: 30.minutes,
-              action: :block
-            },
-            project_generate_new_export: {
-              limiter_name: 'applimiter_project_generate_new_export',
-              rule_name: 'limit_project_export_generations_by_user',
+              action: :limit
+            ),
+            project_generate_new_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_export_generations_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_export_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_import: {
-              limiter_name: 'applimiter_project_import',
-              rule_name: 'limit_project_imports_by_user_action',
+              action: :limit
+            ),
+            project_import: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_imports_by_user_action',
               characteristics: %i[user action],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_import_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_invited_groups_api: {
-              limiter_name: 'applimiter_project_invited_groups_api',
-              rule_name: 'limit_project_invited_groups_api_by_user_or_ip',
+              action: :limit
+            ),
+            project_invited_groups_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_invited_groups_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_invited_groups_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_members_api: {
-              limiter_name: 'applimiter_project_members_api',
-              rule_name: 'limit_project_members_api_by_user_or_ip',
+              action: :limit
+            ),
+            project_members_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_members_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_members_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            project_repositories_archive: {
-              limiter_name: 'applimiter_project_repositories_archive',
-              rule_name: 'limit_project_repository_archives_by_project_user',
+              action: :limit
+            ),
+            project_repositories_archive: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_archives_by_project_user',
               characteristics: %i[project user],
-              limit: 5,
+              limit: ->(ctx) { ctx&.dig(:threshold) || 5 },
               period: 1.minute,
-              action: :block
-            },
-            project_repositories_changelog: {
-              limiter_name: 'applimiter_project_repositories_changelog',
-              rule_name: 'limit_project_repository_changelogs_by_user_project',
+              action: :limit
+            ),
+            project_repositories_blobs_batch: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_blobs_batch_by_project_user',
+              characteristics: %i[project user],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.project_repositories_blobs_batch_limit },
+              period: 1.minute,
+              action: :limit
+            ),
+            project_repositories_changelog: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_changelogs_by_user_project',
               characteristics: %i[user project],
               limit: 5,
               period: 1.minute,
-              action: :block
-            },
-            project_repositories_health: {
-              limiter_name: 'applimiter_project_repositories_health',
-              rule_name: 'limit_project_repository_health_by_project',
+              action: :limit
+            ),
+            project_repositories_diverging_commits: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_diverging_commits_by_user_project',
+              characteristics: %i[user project],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
+            project_repositories_health: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_health_by_project',
               characteristics: %i[project],
               limit: 5,
               period: 1.hour,
-              action: :block
-            },
-            project_testing_integration: {
-              limiter_name: 'applimiter_project_testing_integration',
-              rule_name: 'limit_integration_tests_by_project_user',
+              action: :limit
+            ),
+            project_testing_integration: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_integration_tests_by_project_user',
               characteristics: %i[project user],
               limit: 5,
               period: 1.minute,
-              action: :block
-            },
-            projects_api: {
-              limiter_name: 'applimiter_projects_api',
-              rule_name: 'limit_projects_api_by_user_or_ip',
+              action: :limit
+            ),
+            projects_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_projects_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.projects_api_limit },
               period: 10.minutes,
-              action: :block
-            },
-            projects_api_rate_limit_unauthenticated: {
-              limiter_name: 'applimiter_projects_api_rate_limit_unauthenticated',
-              rule_name: 'limit_projects_api_by_ip',
+              action: :limit
+            ),
+            projects_api_rate_limit_unauthenticated: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_projects_api_by_ip',
               characteristics: %i[ip],
               limit: -> {
                 Gitlab::CurrentSettings.current_application_settings.projects_api_rate_limit_unauthenticated
               },
               period: 10.minutes,
-              action: :block
-            },
-            raw_blob: {
-              limiter_name: 'applimiter_raw_blob',
-              rule_name: 'limit_raw_blobs_by_project_path',
+              action: :limit
+            ),
+            projects_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_projects_created_by_user',
+              characteristics: %i[user],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.project_create_limit },
+              period: 1.day,
+              action: :limit
+            ),
+            raw_blob: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_raw_blobs_by_project_path',
               characteristics: %i[project path],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.raw_blob_request_limit },
               period: 1.minute,
-              action: :block
-            },
-            raw_blob_unauthenticated: {
-              limiter_name: 'applimiter_raw_blob_unauthenticated',
-              rule_name: 'limit_raw_blobs_by_project',
+              action: :limit
+            ),
+            raw_blob_unauthenticated: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_raw_blobs_by_project',
               characteristics: %i[project],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.raw_blob_request_limit_unauthenticated },
               period: 1.minute,
-              action: :block
-            },
-            runner_jobs_api: {
-              limiter_name: 'applimiter_runner_jobs_api',
-              rule_name: 'limit_runner_jobs_by_job_token',
+              action: :limit
+            ),
+            runner_jobs_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_runner_jobs_by_job_token',
               characteristics: %i[job_token_sha],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.runner_jobs_endpoints_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            runner_jobs_patch_trace_api: {
-              limiter_name: 'applimiter_runner_jobs_patch_trace_api',
-              rule_name: 'limit_runner_job_traces_by_job_token',
+              action: :limit
+            ),
+            runner_jobs_patch_trace_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_runner_job_traces_by_job_token',
               characteristics: %i[job_token_sha],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.runner_jobs_patch_trace_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            runner_jobs_request_api: {
-              limiter_name: 'applimiter_runner_jobs_request_api',
-              rule_name: 'limit_runner_job_requests_by_runner_token',
+              action: :limit
+            ),
+            runner_jobs_request_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_runner_job_requests_by_runner_token',
               characteristics: %i[runner_token_sha],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.runner_jobs_request_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            search_index_integrity: {
-              limiter_name: 'applimiter_search_index_integrity',
-              rule_name: 'limit_search_index_integrity_checks_by_project_or_group',
+              action: :limit
+            ),
+            search_index_integrity: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_search_index_integrity_checks_by_project_or_group',
               characteristics: %i[project group],
               limit: 1,
               period: 30.minutes,
-              action: :block
-            },
-            search_rate_limit: {
-              limiter_name: 'applimiter_search_rate_limit',
-              rule_name: 'limit_searches_by_user_scope',
+              action: :limit
+            ),
+            search_rate_limit: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_searches_by_user_scope',
               characteristics: %i[user search_scope],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.search_rate_limit },
               period: 1.minute,
-              action: :block
-            },
-            search_rate_limit_unauthenticated: {
-              limiter_name: 'applimiter_search_rate_limit_unauthenticated',
-              rule_name: 'limit_searches_by_ip',
+              action: :limit
+            ),
+            search_rate_limit_unauthenticated: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_searches_by_ip',
               characteristics: %i[ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.search_rate_limit_unauthenticated },
               period: 1.minute,
-              action: :block
-            },
-            service_account_creation: {
-              limiter_name: 'applimiter_service_account_creation',
-              rule_name: 'limit_service_account_creates_by_user',
+              action: :limit
+            ),
+            service_account_creation: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_service_account_creates_by_user',
               characteristics: %i[user],
               limit: 10,
               period: 1.minute,
-              action: :block
-            },
-            temporary_email_failure: {
-              limiter_name: 'applimiter_temporary_email_failure',
-              rule_name: 'limit_temporary_email_failures_by_email',
+              action: :limit
+            ),
+            temporary_email_failure: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_temporary_email_failures_by_email',
               characteristics: %i[email],
               limit: 300,
               period: 1.day,
-              action: :block
-            },
-            token_exchange: {
-              limiter_name: 'applimiter_token_exchange',
-              rule_name: 'limit_token_exchanges_by_user',
+              action: :limit
+            ),
+            token_exchange: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_token_exchanges_by_user',
               characteristics: %i[user],
               limit: 60,
               period: 1.minute,
-              action: :block
-            },
-            update_environment_canary_ingress: {
-              limiter_name: 'applimiter_update_environment_canary_ingress',
-              rule_name: 'limit_canary_ingress_updates_by_environment',
+              action: :limit
+            ),
+            update_environment_canary_ingress: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_canary_ingress_updates_by_environment',
               characteristics: %i[environment],
               limit: 1,
               period: 1.minute,
-              action: :block
-            },
-            update_namespace_name: {
-              limiter_name: 'applimiter_update_namespace_name',
-              rule_name: 'limit_namespace_name_updates_by_namespace',
+              action: :limit
+            ),
+            update_namespace_name: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_namespace_name_updates_by_namespace',
               characteristics: %i[namespace],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.update_namespace_name_rate_limit },
               period: 1.hour,
-              action: :block
-            },
-            user_contributed_projects_api: {
-              limiter_name: 'applimiter_user_contributed_projects_api',
-              rule_name: 'limit_user_contributed_projects_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_contributed_projects_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_contributed_projects_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.user_contributed_projects_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            user_followers: {
-              limiter_name: 'applimiter_user_followers',
-              rule_name: 'limit_user_followers_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_followers: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_followers_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_followers },
               period: 1.minute,
-              action: :block
-            },
-            user_following: {
-              limiter_name: 'applimiter_user_following',
-              rule_name: 'limit_user_following_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_following: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_following_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_following },
               period: 1.minute,
-              action: :block
-            },
-            user_gpg_key: {
-              limiter_name: 'applimiter_user_gpg_key',
-              rule_name: 'limit_user_gpg_key_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_gpg_key: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_gpg_key_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_gpg_key },
               period: 1.minute,
-              action: :block
-            },
-            user_gpg_keys: {
-              limiter_name: 'applimiter_user_gpg_keys',
-              rule_name: 'limit_user_gpg_keys_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_gpg_keys: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_gpg_keys_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_gpg_keys },
               period: 1.minute,
-              action: :block
-            },
-            user_large_commit_request: {
-              limiter_name: 'applimiter_user_large_commit_request',
-              rule_name: 'limit_large_commit_requests_by_user',
+              action: :limit
+            ),
+            user_large_commit_request: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_large_commit_requests_by_user',
               characteristics: %i[user],
               limit: 3,
               period: 30.seconds,
-              action: :block
-            },
-            user_projects_api: {
-              limiter_name: 'applimiter_user_projects_api',
-              rule_name: 'limit_user_projects_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_projects_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_projects_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.user_projects_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            user_sign_in: {
-              limiter_name: 'applimiter_user_sign_in',
-              rule_name: 'limit_signins_by_user',
+              action: :limit
+            ),
+            user_sign_in: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_signins_by_user',
               characteristics: %i[user],
               limit: 5,
               period: 10.minutes,
-              action: :block
-            },
-            user_sign_up: {
-              limiter_name: 'applimiter_user_sign_up',
-              rule_name: 'limit_signups_by_ip',
+              action: :limit
+            ),
+            user_sign_up: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_signups_by_ip',
               characteristics: %i[ip],
               limit: 20,
               period: 1.minute,
-              action: :block
-            },
-            user_ssh_key: {
-              limiter_name: 'applimiter_user_ssh_key',
-              rule_name: 'limit_user_ssh_key_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_ssh_key: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_ssh_key_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_ssh_key },
               period: 1.minute,
-              action: :block
-            },
-            user_ssh_keys: {
-              limiter_name: 'applimiter_user_ssh_keys',
-              rule_name: 'limit_user_ssh_keys_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_ssh_keys: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_ssh_keys_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_ssh_keys },
               period: 1.minute,
-              action: :block
-            },
-            user_starred_projects_api: {
-              limiter_name: 'applimiter_user_starred_projects_api',
-              rule_name: 'limit_user_starred_projects_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_starred_projects_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_starred_projects_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.user_starred_projects_api_limit },
               period: 1.minute,
-              action: :block
-            },
-            user_status: {
-              limiter_name: 'applimiter_user_status',
-              rule_name: 'limit_user_status_api_by_user_or_ip',
+              action: :limit
+            ),
+            user_status: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_status_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_api_limit_status },
               period: 1.minute,
-              action: :block
-            },
-            username_exists: {
-              limiter_name: 'applimiter_username_exists',
-              rule_name: 'limit_username_existence_checks_by_ip',
+              action: :limit
+            ),
+            username_exists: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_username_existence_checks_by_ip',
               characteristics: %i[ip],
               limit: 20,
               period: 1.minute,
-              action: :block
-            },
-            users_get_by_id: {
-              limiter_name: 'applimiter_users_get_by_id',
-              rule_name: 'limit_user_lookups_by_user',
+              action: :limit
+            ),
+            users_get_by_id: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_user_lookups_by_user',
               characteristics: %i[user],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.users_get_by_id_limit },
               period: 10.minutes,
-              action: :block
-            },
+              action: :limit
+            ),
             # web_hook_calls{,_low,_mid} carry no static threshold: the limit
             # is looked up per namespace from PlanLimits and passed in via the
             # caller's `threshold:` argument. They therefore omit `limit:` (it
@@ -854,46 +840,41 @@ module Gitlab
             # is forwarded through to labkit's one-arity limit callable via
             # rule_context. The `1.minute` period is the registry value and is
             # not caller-controlled.
-            web_hook_calls: {
-              limiter_name: 'applimiter_web_hook_calls',
-              rule_name: 'limit_web_hook_calls_by_namespace',
+            web_hook_calls: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_web_hook_calls_by_namespace',
               characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
               period: 1.minute,
-              threshold_from_caller: true,
-              action: :block
-            },
-            web_hook_calls_low: {
-              limiter_name: 'applimiter_web_hook_calls_low',
-              rule_name: 'limit_web_hook_calls_low_by_namespace',
+              action: :limit
+            ),
+            web_hook_calls_low: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_web_hook_calls_low_by_namespace',
               characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
               period: 1.minute,
-              threshold_from_caller: true,
-              action: :block
-            },
-            web_hook_calls_mid: {
-              limiter_name: 'applimiter_web_hook_calls_mid',
-              rule_name: 'limit_web_hook_calls_mid_by_namespace',
+              action: :limit
+            ),
+            web_hook_calls_mid: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_web_hook_calls_mid_by_namespace',
               characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
               period: 1.minute,
-              threshold_from_caller: true,
-              action: :block
-            },
-            web_hook_event_resend: {
-              limiter_name: 'applimiter_web_hook_event_resend',
-              rule_name: 'limit_web_hook_event_resends_by_parent_user',
+              action: :limit
+            ),
+            web_hook_event_resend: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_web_hook_event_resends_by_parent_user',
               characteristics: %i[project group user],
-              limit: 5,
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.web_hook_event_resend_limit },
               period: 1.minute,
-              action: :block
-            },
-            web_hook_test: {
-              limiter_name: 'applimiter_web_hook_test',
-              rule_name: 'limit_web_hook_tests_by_parent_user',
+              action: :limit
+            ),
+            web_hook_test: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_web_hook_tests_by_parent_user',
               characteristics: %i[project group user],
-              limit: 5,
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.web_hook_test_limit },
               period: 1.minute,
-              action: :block
-            },
+              action: :limit
+            ),
             # Per-database Sidekiq resource-usage (DB duration) limits,
             # one Limiter per database. Cost-mode (the per-job DB duration is the
             # `check(cost:)` value, not a call count). threshold and interval are
@@ -902,29 +883,74 @@ module Gitlab
             # labkit Rule must use that resolved value (not a static constant).
             # They therefore carry no static limit/period; both arrive per call
             # via rule_context and these keys are absent from rate_limits.
-            main_db_duration_limit_per_worker: {
-              limiter_name: 'applimiter_main_db_duration_limit_per_worker',
-              rule_name: 'limit_main_db_duration_per_worker',
+            main_db_duration_limit_per_worker: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_main_db_duration_per_worker',
               characteristics: %i[worker_name],
-              action: :block,
-              cost_mode: true
-            },
-            ci_db_duration_limit_per_worker: {
-              limiter_name: 'applimiter_ci_db_duration_limit_per_worker',
-              rule_name: 'limit_ci_db_duration_per_worker',
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: ->(ctx) { ctx&.dig(:interval) || 0 },
+              action: :limit
+            ),
+            ci_db_duration_limit_per_worker: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_ci_db_duration_per_worker',
               characteristics: %i[worker_name],
-              action: :block,
-              cost_mode: true
-            },
-            sec_db_duration_limit_per_worker: {
-              limiter_name: 'applimiter_sec_db_duration_limit_per_worker',
-              rule_name: 'limit_sec_db_duration_per_worker',
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: ->(ctx) { ctx&.dig(:interval) || 0 },
+              action: :limit
+            ),
+            sec_db_duration_limit_per_worker: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_sec_db_duration_per_worker',
               characteristics: %i[worker_name],
-              action: :block,
-              cost_mode: true
-            }
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: ->(ctx) { ctx&.dig(:interval) || 0 },
+              action: :limit
+            )
           }
         end
+
+        def self.limiters
+          rules.keys.index_with { |key| build_limiter(key) }
+        end
+
+        def self.build_limiter(key)
+          ::Labkit::RateLimit::Limiter.new(
+            name: "applimiter_#{key}",
+            rules: [bypass_rule_for(key), rule_for(key)],
+            redis: ::Gitlab::Redis::RateLimiting,
+            logger: ::Gitlab::AppLogger
+          )
+        end
+        private_class_method :build_limiter
+
+        # A synthetic :skip rule ahead of the real throttle rule: bypass-header
+        # traffic (identifier[:bypass_header] == '1') terminates here before
+        # touching Redis, so it stays visible via calls_total{action="skip"}
+        # without back-filling the real rule's rate. Named per key so each
+        # limit's bypass volume is distinguishable in Prometheus/Grafana.
+        def self.bypass_rule_for(key)
+          ::Labkit::RateLimit::Rule.new(
+            name: "#{key}_bypass",
+            match: { bypass_header: ::Gitlab::Throttle::BYPASS_HEADER_VALUE },
+            characteristics: [],
+            limit: 0, # unused: action: :skip terminates evaluation before limit/period are consulted
+            period: 60, # unused: action: :skip terminates evaluation before limit/period are consulted
+            action: :skip
+          )
+        end
+        private_class_method :bypass_rule_for
+
+        def self.cost_mode_keys
+          Set.new([:main_db_duration_limit_per_worker, :ci_db_duration_limit_per_worker,
+            :sec_db_duration_limit_per_worker]).freeze
+        end
+        private_class_method :cost_mode_keys
+
+        def self.resolve_value(value, context)
+          return value.to_i unless value.respond_to?(:call)
+
+          value = accepts_context?(value) ? value.call(context) : value.call
+          value.to_i
+        end
+        private_class_method :resolve_value
       end
     end
   end

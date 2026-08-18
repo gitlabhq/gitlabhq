@@ -68,8 +68,8 @@ Unknown Ruby version 2.7 found in `.ruby-version`. (RuboCop::ValidationError)
 Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5
 ```
 
-This is caused by the default version of RuboCop used by the check engine not covering
-support for the Ruby version in use.
+The default RuboCop version in the check engine doesn't support the Ruby version
+in use.
 
 To use a custom version of RuboCop that
 [supports the version of Ruby used by the project](https://docs.rubocop.org/rubocop/compatibility.html#support-matrix),
@@ -133,7 +133,7 @@ by putting the certificate inside of the `/etc/docker/certs.d` directory.
 
 This Docker daemon is exposed to the subsequent Code Quality Docker container in the
 [GitLab Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml#L41)
-and should be to exposed any other containers in which you want to have your certificate
+and should be exposed to any other containers in which you want to have your certificate
 configuration apply.
 
 ### Docker
@@ -222,7 +222,7 @@ To gain insight into the errors, you can execute a GraphQL query using the follo
 ## No report artifact is created
 
 With certain Runner configurations, the Code Quality scanning job may not have access to your source code.
-If this happens, the `gl-code-quality-report.json` artifact won't be created.
+If this happens, the `gl-code-quality-report.json` artifact isn't created.
 
 To resolve this issue, either:
 

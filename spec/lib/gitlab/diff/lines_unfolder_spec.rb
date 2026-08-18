@@ -210,6 +210,80 @@ RSpec.describe Gitlab::Diff::LinesUnfolder, feature_category: :code_review_workf
 
   subject { described_class.new(diff_file, position) }
 
+  context 'when the old blob is larger than 1 MB (BlobHelper#lines is empty)' do
+    let(:old_blob) { Blob.decorate(Gitlab::Git::Blob.new(data: raw_old_blob, size: 2.megabytes)) }
+    let(:position) { build(:text_diff_position, old_line: 43, new_line: 40) }
+
+    it 'unfolds from the raw blob data instead of bailing', :aggregate_failures do
+      expect(old_blob.lines).to be_empty
+      expect(subject.unfold_required?).to be(true)
+      expect(subject.unfolded_diff_lines).to be_present
+    end
+
+    context 'when the unfold_diff_note_large_blob feature flag is disabled' do
+      before do
+        stub_feature_flags(unfold_diff_note_large_blob: false)
+      end
+
+      it 'bails because BlobHelper#lines is empty', :aggregate_failures do
+        expect(old_blob.lines).to be_empty
+        expect(subject.unfold_required?).to be(false)
+        expect(subject.unfolded_diff_lines).to be_nil
+      end
+    end
+  end
+
+  context 'when the blob data exceeds 1 MB with a multibyte character on the 1 MB boundary' do
+    # Blob#data is valid UTF-8. `blob_data` byteslices it at Gitlab::BlobHelper::MEGABYTE,
+    # and here a 3-byte euro sign straddles that offset so the slice keeps only its first
+    # byte, leaving an invalid-UTF-8 string. String#count("\n") in `blob_data_line_count`
+    # raises ArgumentError on such a string, so unfolding must degrade gracefully (bail)
+    # rather than blow up -- otherwise the intended 400 -> 201 fix becomes a 500.
+    let(:oversized_blob_data) do
+      "#{'a' * (Gitlab::BlobHelper::MEGABYTE - 1)}€\n".force_encoding(Encoding::UTF_8)
+    end
+
+    let(:old_blob) do
+      Blob.decorate(Gitlab::Git::Blob.new(data: oversized_blob_data, size: 2.megabytes))
+    end
+
+    let(:position) { build(:text_diff_position, old_line: 43, new_line: 40) }
+
+    it 'does not raise when counting lines in the capped blob data', :aggregate_failures do
+      expect(old_blob.data.byteslice(0, Gitlab::BlobHelper::MEGABYTE)).not_to be_valid_encoding
+      expect { subject.unfold_required? }.not_to raise_error
+    end
+  end
+
+  context 'when the blob has \r bytes (BlobHelper#lines splits on \r, the diff does not)' do
+    # The rows injected into the diff come from #blob_lines, which splits on \n
+    # (String#each_line), so git and the rendered diff both treat "a\rb\rc\n" as
+    # a single line. Gitlab::BlobHelper#lines instead splits on \r\n, \r and \n
+    # (keeping a trailing empty element), reporting four lines
+    # (["a", "b", "c", ""]) that are never displayed. The guard compares against
+    # position.old_line, so it must count by \n like the extraction and the diff
+    # -- otherwise it is on a different scale than the lines it validates. A diff
+    # on this file can only carry old_line 1; old_line 3 is an out-of-range
+    # (e.g. MR import) artifact.
+    let(:old_blob) { Blob.decorate(Gitlab::Git::Blob.new(data: "a\rb\rc\n", size: 10)) }
+    let(:position) { build(:text_diff_position, old_line: 3, new_line: 40) }
+
+    it 'counts lines by \n like the diff, so the out-of-range old_line bails', :aggregate_failures do
+      expect(old_blob.lines.size).to eq(4) # BlobHelper#lines over-counts via \r
+      expect(subject.unfold_required?).to be(false)
+    end
+
+    context 'when the unfold_diff_note_large_blob feature flag is disabled' do
+      before do
+        stub_feature_flags(unfold_diff_note_large_blob: false)
+      end
+
+      it 'falls back to BlobHelper#lines, whose \r over-count keeps old_line 3 in range' do
+        expect(subject.unfold_required?).to be(true)
+      end
+    end
+  end
+
   context 'position requires a middle expansion and new match lines' do
     let(:position) do
       build(:text_diff_position, old_line: 43, new_line: 40)

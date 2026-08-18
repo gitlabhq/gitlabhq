@@ -110,6 +110,11 @@ tests = [
     changed_file: 'config/mail_room.yml',
     expected: ['spec/config/mail_room_spec.rb']
   },
+  {
+    explanation: 'Map loose foreign keys config to its validation spec',
+    changed_file: 'config/gitlab_loose_foreign_keys.yml',
+    expected: ['spec/lib/gitlab/database/loose_foreign_keys_spec.rb']
+  },
 
   {
     explanation: 'Initializers should map to respective spec',
@@ -642,13 +647,6 @@ tests = [
     changed_file: 'ee/app/controllers/registrations/company_controller.rb',
     expected: %w[
       ee/spec/features/registrations/saas/invite_flow_spec.rb
-      ee/spec/features/registrations/saas/sso_signin_standard_flow_company_creating_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_company_creating_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_company_joining_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_just_me_creating_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_just_me_importing_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_just_me_joining_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_with_2fa_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_company_paid_plan_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_just_me_paid_plan_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_spec.rb
@@ -751,6 +749,7 @@ tests = [
       ee/spec/lib/gitlab/database/inclusion_of_tables_with_gitlab_sec_schema_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
       spec/lib/gitlab/organizations/sharding_key_spec.rb
+      spec/lib/gitlab/database/loose_foreign_keys_spec.rb
       spec/db/clickhouse_siphon_tables_spec.rb
     ]
   },
@@ -768,6 +767,11 @@ tests = [
     explanation: 'Verify application settings based on related API doc changes',
     changed_file: 'doc/api/settings.md',
     expected: ['spec/scripts/cells/application_settings_analysis_spec.rb']
+  },
+  {
+    explanation: 'Verify the GLQL API doc against the schema it describes',
+    changed_file: 'doc/api/glql.md',
+    expected: ['spec/lib/analytics/glql/documentation_spec.rb']
   },
   {
     explanation: 'Map any yaml file changes in devfile folder',

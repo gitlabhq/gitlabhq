@@ -120,7 +120,7 @@ describe('Snippet Edit app', () => {
       .join('');
   };
   const setTitle = (val) =>
-    wrapper.findByTestId('snippet-title-input-field').vm.$emit('input', val);
+    wrapper.findComponentByTestId('snippet-title-input-field').vm.$emit('input', val);
   const setDescription = (val) =>
     wrapper.findComponent(SnippetDescriptionEdit).vm.$emit('input', val);
 

@@ -65,12 +65,6 @@ translate between the human-readable project name and the hashed storage path. Y
 
 #### From project name to hashed path
 
-{{< history >}}
-
-- **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
-
-{{< /history >}}
-
 Administrators can look up a project's hashed path from its name or ID using:
 
 - The [**Admin** area](admin_area.md#administering-projects).

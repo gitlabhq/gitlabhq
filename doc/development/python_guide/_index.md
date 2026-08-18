@@ -32,7 +32,7 @@ large codebases.
 
 ## Learning Python
 
-[Resources to get started, examples and tips.](getting_started.md)
+[Resources to get started, examples, and tips.](getting_started.md)
 
 ## Creating a new Python application
 
@@ -48,7 +48,7 @@ large codebases.
 
 ## Deploying a Python codebase
 
-[Deploying libraries, utilities and services.](deployment.md)
+[Deploying libraries, utilities, and services.](deployment.md)
 
 ## Python as part of the Monorepo
 

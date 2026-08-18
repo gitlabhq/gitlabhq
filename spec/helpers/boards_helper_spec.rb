@@ -9,32 +9,6 @@ RSpec.describe BoardsHelper do
   let_it_be(:project_board) { create(:board, project: project) }
   let_it_be(:group_board) { create(:board, group: base_group) }
 
-  describe '#build_issue_link_base' do
-    context 'project board' do
-      it 'returns correct path for project board' do
-        assign(:project, project)
-        assign(:board, project_board)
-
-        expect(helper.build_issue_link_base).to eq("/#{project.namespace.path}/#{project.path}/-/issues")
-      end
-    end
-
-    context 'group board' do
-      it 'returns correct path for base group' do
-        assign(:board, group_board)
-
-        expect(helper.build_issue_link_base).to eq('/:project_path/-/issues')
-      end
-
-      it 'returns correct path for subgroup' do
-        subgroup = create(:group, parent: base_group, path: 'sub')
-        assign(:board, create(:board, group: subgroup))
-
-        expect(helper.build_issue_link_base).to eq('/:project_path/-/issues')
-      end
-    end
-  end
-
   describe '#board_base_url' do
     context 'when group board' do
       it 'generates the correct url' do
@@ -125,12 +99,7 @@ RSpec.describe BoardsHelper do
       end
 
       it 'returns required label endpoints' do
-        expect(helper.board_data[:labels_fetch_path]).to eq("/#{project.full_path}/-/labels.json?include_ancestor_groups=true")
         expect(helper.board_data[:labels_manage_path]).to eq("/#{project.full_path}/-/labels")
-      end
-
-      it 'returns the group id of a project' do
-        expect(helper.board_data[:group_id]).to eq(project.group.id)
       end
 
       context 'can_admin_list' do
@@ -179,17 +148,8 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :admin_project, base_group).and_return(false)
       end
 
-      it 'returns correct path for base group' do
-        expect(helper.build_issue_link_base).to eq("/:project_path/-/issues")
-      end
-
       it 'returns required label endpoints' do
-        expect(helper.board_data[:labels_fetch_path]).to eq("/groups/#{base_group.full_path}/-/labels.json?include_ancestor_groups=true&only_group_labels=true")
         expect(helper.board_data[:labels_manage_path]).to eq("/groups/#{base_group.full_path}/-/labels")
-      end
-
-      it 'returns the group id' do
-        expect(helper.board_data[:group_id]).to eq(base_group.id)
       end
 
       context 'can_admin_list' do

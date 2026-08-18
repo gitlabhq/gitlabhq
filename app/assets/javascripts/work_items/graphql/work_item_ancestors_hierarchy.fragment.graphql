@@ -5,6 +5,7 @@ fragment WorkItemAncestorsHierarchy on WorkItemWidgetHierarchy {
     id
     iid
     title
+    titleHtml
     confidential
     namespace {
       id
@@ -28,6 +29,7 @@ fragment WorkItemAncestorsHierarchy on WorkItemWidgetHierarchy {
         iconName
       }
       title
+      titleHtml
       state
       reference(full: true)
       createdAt

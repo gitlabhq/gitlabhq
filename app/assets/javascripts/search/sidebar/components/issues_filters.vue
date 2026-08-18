@@ -7,6 +7,7 @@ import LabelFilter from './label_filter/index.vue';
 import StatusFilter from './status_filter/index.vue';
 import ArchivedFilter from './archived_filter/index.vue';
 import TypeFilter from './type_filter/index.vue';
+import AuthorFilter from './author_filter/index.vue';
 
 import FiltersTemplate from './filters_template.vue';
 
@@ -19,6 +20,7 @@ export default {
     LabelFilter,
     FiltersTemplate,
     ArchivedFilter,
+    AuthorFilter,
   },
   computed: {
     ...mapGetters(['hasMissingProjectContext', 'currentScope', 'workItemTypes']),
@@ -29,6 +31,9 @@ export default {
     showTypeFilter() {
       return this.currentScope === SCOPE_WORK_ITEMS && this.workItemTypes.length > 0;
     },
+    shouldShowAuthorFilter() {
+      return this.searchType === SEARCH_TYPE_ADVANCED;
+    },
   },
 };
 </script>
@@ -38,6 +43,7 @@ export default {
     <type-filter v-if="showTypeFilter" class="gl-mb-5" />
     <status-filter class="gl-mb-5" />
     <confidentiality-filter class="gl-mb-5" />
+    <author-filter v-if="shouldShowAuthorFilter" class="gl-mb-5" />
     <label-filter v-if="showLabelFilter" class="gl-mb-5" />
     <archived-filter v-if="hasMissingProjectContext" class="gl-mb-5" />
   </filters-template>

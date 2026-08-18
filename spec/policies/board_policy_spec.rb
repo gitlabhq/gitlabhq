@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BoardPolicy, feature_category: :portfolio_management do
+RSpec.describe BoardPolicy, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:group) { create(:group, :private) }

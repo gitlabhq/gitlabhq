@@ -2,29 +2,15 @@
 query recentlyViewedWorkItems {
   currentUser {
     id
-    recentlyViewedItems {
-      viewedAt
-      item {
-        ... on WorkItem {
-          id
-          title
-          webUrl
-          workItemType {
-            id
-            name
-            iconName
-          }
-        }
-        ... on Issue {
-          id
-          title
-          webUrl
-          workItemType {
-            id
-            name
-            iconName
-          }
-        }
+    recentlyViewedIssues {
+      id
+      title
+      webUrl
+      reference(full: true)
+      workItemType {
+        id
+        name
+        iconName
       }
     }
   }

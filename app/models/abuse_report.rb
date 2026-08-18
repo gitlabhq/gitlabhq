@@ -12,8 +12,6 @@ class AbuseReport < ApplicationRecord
   include Gitlab::FileTypeDetection
   include WithUploads
   include Gitlab::Utils::StrongMemoize
-  include Mentionable
-  include Noteable
 
   ignore_column :assignee_id, remove_with: '16.9', remove_after: '2024-01-19'
 
@@ -30,7 +28,6 @@ class AbuseReport < ApplicationRecord
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
   has_many :abuse_events, class_name: 'AntiAbuse::Event', inverse_of: :abuse_report
-  has_many :user_mentions, class_name: 'AntiAbuse::Reports::UserMention'
 
   validates :reporter, presence: true
   validates :user, presence: true, on: :create
@@ -74,6 +71,7 @@ class AbuseReport < ApplicationRecord
   scope :by_reporter_id, ->(reporter_id) { where(reporter_id: reporter_id) }
   scope :by_category, ->(category) { where(category: category) }
   scope :with_users, -> { includes(:reporter, :user) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
 
   enum :category, {
     spam: 1,
@@ -145,11 +143,14 @@ class AbuseReport < ApplicationRecord
     when :issue
       # WorkItems URLs identifiers are iid instead of id.
       issue_id = route_hash[:id] || route_hash[:iid]
-      reported_project.issues.iid_in(issue_id).pick(:description_html)
+      issue = reported_project.issues.iid_in(issue_id).first
+      issue&.updated_cached_html_for(:description)
     when :merge_request
-      reported_project.merge_requests.iid_in(route_hash[:id]).pick(:description_html)
+      merge_request = reported_project.merge_requests.iid_in(route_hash[:id]).first
+      merge_request&.updated_cached_html_for(:description)
     when :comment
-      reported_project.notes.id_in(note_id_from_url).pick(:note_html)
+      note = reported_project.notes.id_in(note_id_from_url).first
+      note&.updated_cached_html_for(:note)
     end
   end
 
@@ -161,12 +162,6 @@ class AbuseReport < ApplicationRecord
     return AbuseReport.none unless open?
 
     user.abuse_reports.open.by_category(category).id_not_in(id).includes(:reporter)
-  end
-
-  # createNote mutation calls noteable.project,
-  # which in case of abuse reports is nil
-  def project
-    nil
   end
 
   def uploads_sharding_key
@@ -261,12 +256,18 @@ class AbuseReport < ApplicationRecord
     )
   end
 
+  # Call this on a relation that already has every filter applied, including the organization
+  # scope: AbuseReport.in_organization(org).open.aggregated_by_user_and_category. Rails passes
+  # that relation into both queries below -- the one that groups the reports, and the one that
+  # reads the grouped rows back -- so the filters apply to both. `all` refers to it. Naming
+  # AbuseReport here would behave the same, but would read as if the filters were dropped.
   def self.aggregated_by_user_and_category(sort_by_count = false)
-    sub_query = self
+    sub_query = all
       .select('user_id, category, COUNT(id) as count', 'MIN(id) as min')
       .group(:user_id, :category)
 
-    reports = AbuseReport.with_users
+    reports = all
+      .with_users
       .open
       .select('aggregated.*, status, id, reporter_id, created_at, updated_at')
       .from(sub_query, :aggregated)

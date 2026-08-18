@@ -6,7 +6,7 @@ RSpec.describe Repositories::RewriteHistoryWorker, feature_category: :source_cod
   describe "#perform" do
     subject(:perform) { described_class.new.perform(params) }
 
-    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :small_repo) }
     let_it_be(:user) { create(:user) }
 
     let(:params) { { project_id: project_id, user_id: user_id, blob_oids: blob_oids } }

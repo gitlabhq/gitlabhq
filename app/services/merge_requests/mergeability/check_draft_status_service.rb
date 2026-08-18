@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckDraftStatusService < CheckBaseService
       set_identifier :draft_status
+      set_failure_explanation N_('The merge request must not be a draft.')
       set_description 'Checks whether the merge request is draft'
 
       def execute

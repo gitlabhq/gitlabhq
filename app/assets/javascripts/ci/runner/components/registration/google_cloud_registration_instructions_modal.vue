@@ -72,7 +72,11 @@ export default {
         )
       }}
     </p>
-    <cli-command :command="setupBashScript" :button-title="s__('Runners|Copy commands')" />
+    <cli-command
+      language="powershell"
+      :command="setupBashScript"
+      :button-title="s__('Runners|Copy commands')"
+    />
 
     <h3 class="gl-heading-4">{{ s__('Runners|2. Install and register GitLab Runner') }}</h3>
     <p>
@@ -103,6 +107,7 @@ export default {
       </gl-sprintf>
     </p>
     <cli-command
+      language="hcl"
       :command="setupTerraformFile"
       :button-title="s__('Runners|Copy Terraform configuration')"
     />
@@ -114,7 +119,11 @@ export default {
         )
       }}
     </p>
-    <cli-command :command="applyTerraformScript" :button-title="s__('Runners|Copy commands')" />
+    <cli-command
+      language="powershell"
+      :command="applyTerraformScript"
+      :button-title="s__('Runners|Copy commands')"
+    />
 
     <p>
       {{

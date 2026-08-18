@@ -59,6 +59,31 @@ RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_inte
       end
     end
 
+    context 'when head pipeline is nil (e.g. diff_head_sha advanced past head_pipeline sha)' do
+      let!(:base_pipeline) { nil }
+      let!(:head_pipeline) { nil }
+
+      # :error rather than :parsing, because the pipeline may never arrive and
+      # :parsing would poll unboundedly. The key is included so the cache
+      # self-heals once a pipeline finally appears.
+      it 'returns an error payload with the cache key instead of raising', :aggregate_failures do
+        expect { comparison }.not_to raise_error
+        expect(comparison[:status]).to eq(:error)
+        expect(comparison[:key]).to eq(service.send(:key, nil, nil))
+        expect(comparison[:status_reason]).to eq(_('This merge request does not have reports to compare.'))
+      end
+    end
+
+    context 'when base pipeline is nil but head pipeline has test reports' do
+      let!(:base_pipeline) { nil }
+      let!(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+
+      it 'defaults the missing base report to an empty TestReport and returns :parsed' do
+        expect(comparison[:status]).to eq(:parsed)
+        expect(comparison[:data]).to match_schema('entities/test_reports_comparer')
+      end
+    end
+
     context 'when head pipeline has corrupted test reports' do
       let!(:base_pipeline) { nil }
       let!(:head_pipeline) { create(:ci_pipeline, project: project) }

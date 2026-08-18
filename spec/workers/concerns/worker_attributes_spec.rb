@@ -154,8 +154,10 @@ RSpec.describe WorkerAttributes, feature_category: :sidekiq do
 
     context 'with invalid data_consistency in overrides' do
       it 'raises exception' do
-        expect { worker.data_consistency(:always, overrides: { ci: :invalid }) }
-          .to raise_error('Invalid data consistency: {:ci=>:invalid}')
+        overrides = { ci: :invalid }
+
+        expect { worker.data_consistency(:always, overrides: overrides) }
+          .to raise_error("Invalid data consistency: #{overrides}")
       end
     end
 

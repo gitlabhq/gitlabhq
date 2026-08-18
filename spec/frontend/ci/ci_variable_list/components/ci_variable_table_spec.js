@@ -42,7 +42,7 @@ describe('Ci variable table', () => {
   };
 
   const findRevealButton = () => wrapper.findByText('Reveal values');
-  const findAddButton = () => wrapper.findByTestId('add-ci-variable-button');
+  const findAddButton = () => wrapper.findComponentByTestId('add-ci-variable-button');
   const findEditButton = () => wrapper.findByLabelText('Edit');
   const findEmptyVariablesPlaceholder = () => wrapper.findByText('There are no variables yet.');
   const findHiddenValues = () => wrapper.findAllByTestId('hiddenValue');

@@ -378,6 +378,31 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
       end
     end
 
+    context 'when a username change would collide with a service desk address' do
+      # After the rename, the user's project lives at "newname/foo-bar"
+      # (slug "newname-foo-bar"). The existing project at "newname-foo/bar"
+      # slugifies to the same value with the same project_key.
+      let_it_be(:existing_group) { create(:group, path: 'newname-foo') }
+      let_it_be(:existing_project) { create(:project, path: 'bar', namespace: existing_group) }
+
+      let!(:project) { create(:project, path: 'foo-bar', namespace: user.namespace) }
+
+      before do
+        create(:service_desk_setting, project: existing_project, project_key: 'key')
+        create(:service_desk_setting, project: project, project_key: 'key')
+      end
+
+      it 'returns an error and does not change the username' do
+        result = {}
+        expect do
+          result = update_user(user, { username: 'newname' })
+        end.not_to change { user.reload.username }
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to include('Service Desk address for project')
+      end
+    end
+
     def update_user(user, opts)
       described_class.new(user, opts.merge(user: user)).execute
     end

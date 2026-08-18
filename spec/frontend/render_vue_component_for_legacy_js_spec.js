@@ -1,13 +1,12 @@
 import { renderVueComponentForLegacyJS } from '~/render_vue_component_for_legacy_js';
 
+// Written as a Vue 2 style render (a template string would need the runtime
+// compiler, which the direct-mount path of the helper does not provide). No
+// slot is read: none of the tests below passes children.
 const DummyComponent = {
   props: ['foo'],
   render(h) {
-    return h(
-      'div',
-      { attrs: { 'data-testid': 'dummy', 'data-foo': this.foo } },
-      this.$scopedSlots.default?.(),
-    );
+    return h('div', { attrs: { 'data-testid': 'dummy', 'data-foo': this.foo } });
   },
 };
 

@@ -55,8 +55,7 @@ module QA
         end
 
         it(
-          'creates a placeholder source user for imported group member',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354416'
+          'creates a placeholder source user for imported group member'
         ) do
           expect_project_import_finished_successfully
 
@@ -77,8 +76,7 @@ module QA
         end
 
         it(
-          'creates a placeholder source user for imported project member',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417'
+          'creates a placeholder source user for imported project member'
         ) do
           expect_project_import_finished_successfully
 

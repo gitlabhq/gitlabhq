@@ -59,8 +59,13 @@ module Banzai
       #   When we disable `uri_encode` for any given replacer, we give a rationale to
       #   help vet the correctness of the decision over time.
       #
+      # - preserve_if_nil describes whether the placeholder should be left untouched
+      #   when the replacement block returns nil. When enabled, a nil result means no
+      #   replacement should occur, preserving the original placeholder. This distinguishes
+      #   an unavailable value from an intentionally empty replacement. This defaults to false.
+      #
       class PlaceholderReplacer
-        def initialize(allowed_uri_context, uri_encode: true, &block)
+        def initialize(allowed_uri_context, uri_encode: true, preserve_if_nil: false, &block)
           case allowed_uri_context
           when ALLOWED_URI_CONTEXT_ALL
             unless uri_encode
@@ -76,6 +81,7 @@ module Banzai
 
           @allowed_uri_context = allowed_uri_context
           @uri_encode = uri_encode
+          @preserve_if_nil = preserve_if_nil
           @block = block
         end
 
@@ -84,18 +90,26 @@ module Banzai
         # The block is evaluated in the scope of `filter` (the PlaceholdersPostFilter
         # instance), so it can use the filter's `project`/`group`/`current_user`/`context` helpers.
         def generate(filter, in_uri_component:)
-          return filter.instance_exec(&block) || '' unless in_uri_component
+          return replacement_value(filter) unless in_uri_component
 
           # Only generate in permissible contexts.
           # If not permitted, we return nil, which signals no replacement is to be made at all
           # (as opposed to '', which replaces with the empty string).
           if allowed_uri_context == ALLOWED_URI_CONTEXT_ALL ||
               (allowed_uri_context == ALLOWED_URI_CONTEXT_ALL_BUT_HOST && in_uri_component != :host)
-            maybe_encode(filter.instance_exec(&block) || '')
+            result = replacement_value(filter)
+            maybe_encode(result) unless result.nil?
           end
         end
 
         private
+
+        def replacement_value(filter)
+          result = filter.instance_exec(&block)
+          return if @preserve_if_nil && result.nil?
+
+          result || ''
+        end
 
         def maybe_encode(result)
           uri_encode ? CGI.escapeURIComponent(result) : result
@@ -126,6 +140,15 @@ module Banzai
         end,
         'project_id' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
           project&.id.to_s if Ability.allowed?(current_user, :read_project, project)
+        end,
+        # The merge request context or IID might be unavailable during previews or before
+        # persistence. Preserve the placeholder until both are available.
+        'merge_request_iid' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST, preserve_if_nil: true) do
+          merge_request = context[:merge_request]
+
+          if merge_request&.iid
+            Ability.allowed?(current_user, :read_merge_request, merge_request) ? merge_request.iid.to_s : ''
+          end
         end,
         'project_namespace' => PlaceholderReplacer.new(ALLOWED_URI_CONTEXT_ALL_BUT_HOST) do
           project&.project_namespace&.to_param if Ability.allowed?(current_user, :read_project, project)
@@ -208,9 +231,11 @@ module Banzai
 
         placeholder_name = match_data[1]
         replacer = PLACEHOLDER_REPLACERS[placeholder_name]
+        replacement = replacer.generate(self, in_uri_component: false)
+        return if replacement.nil?
 
         node['data-placeholder'] = node.content
-        node.content = replacer.generate(self, in_uri_component: false)
+        node.content = replacement
       end
 
       def replace_link_placeholders(node, limit: 0)

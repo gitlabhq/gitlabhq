@@ -111,8 +111,10 @@ If you already have a security policy project but don't have dependency and/or l
    - Maintain the existing YAML structure
    - Place these sections at the same level as other top-level sections
    - Set `user_approvers_ids` and/or `group_approvers_ids` and/or `role_approvers` (only one is needed)
+     <!-- vale gitlab_base.OxfordComma = NO -->
      - Replace `YOUR_USER_ID_HERE` or `YOUR_GROUP_ID_HERE` with appropriate user/group IDs (ensure you paste the user/group IDs, for example, 1234567 and NOT the usernames)
    - Replace `YOUR_PROJECT_ID_HERE` if you'd like to exclude any projects from the policy (ensure you paste the project IDs, for example, 1234 and NOT the project names/paths)
+   <!-- vale gitlab_base.OxfordComma = YES -->
    - Set `approvals_required: 1` to the number of approvals you want to require
    - Modify the `approval_settings` section as needed (anything set to `true` will override project approval settings)
 1. Click **Commit changes**, and commit to a new branch. Select **Create a merge request for this change** so that the policy change can be merged.

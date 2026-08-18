@@ -13,8 +13,7 @@ module QA
         raise e unless e.message.include?('404')
       end
 
-      it 'user unregisters a runner with deprecated registration token',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/510655' do
+      it 'user unregisters a runner with deprecated registration token' do
         Flow::Login.sign_in
 
         runner.group.visit!

@@ -1354,6 +1354,22 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       expect(defn.options[:period]).to eq(60)
     end
 
+    context 'when the unauthenticated web throttle is enabled' do
+      before do
+        settings_to_set[:throttle_unauthenticated_enabled] = true
+        settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period # 1
+        settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds # 10_000
+        stub_application_setting(settings_to_set)
+      end
+
+      it 'does not count collector requests toward the web throttle' do
+        (requests_per_period + 1).times do
+          do_request
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
+        end
+      end
+    end
+
     context 'when rate limited' do
       let(:saved_rack_attack_throttles)    { Rack::Attack.throttles.dup }
       let(:saved_rack_attack_safelists)    { Rack::Attack.safelists.dup }

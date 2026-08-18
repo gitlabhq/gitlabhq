@@ -54,9 +54,9 @@ describe('IssueBoardFilter', () => {
       expect(findBoardsFilteredSearch().exists()).toBe(true);
     });
 
-    it('emits setFilters when setFilters is emitted', () => {
-      findBoardsFilteredSearch().vm.$emit('setFilters');
-      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+    it('emits set-filters when set-filters is emitted', () => {
+      findBoardsFilteredSearch().vm.$emit('set-filters');
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
 
     it.each`

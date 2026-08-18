@@ -49,7 +49,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showForkSuggestion'],
+  emits: ['show-fork-suggestion'],
   computed: {
     deleteFileItem() {
       return {
@@ -77,7 +77,7 @@ export default {
       }
 
       if (this.shouldShowForkSuggestion) {
-        this.$emit('showForkSuggestion');
+        this.$emit('show-fork-suggestion');
         return;
       }
 

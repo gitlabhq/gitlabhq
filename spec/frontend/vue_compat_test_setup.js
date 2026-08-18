@@ -58,6 +58,11 @@ if (global.document) {
       ...actualVTU,
       RouterLinkStub: {
         ...actualVTU.RouterLinkStub,
+        // The zero-arg render below is compat-wrapped (legacy), so
+        // $scopedSlots is the only function-shaped slot map inside it. Keep
+        // the feature enabled per-component (wins over the global key in
+        // compat_config.js).
+        compatConfig: { INSTANCE_SCOPED_SLOTS: 'suppress-warning' },
         render() {
           const { default: defaultSlot } = this.$scopedSlots ?? {};
           const defaultSlotFn =
@@ -107,9 +112,30 @@ if (global.document) {
     const component = unwrapLegacyVueExtendComponent(rawComponent);
     const hyphenatedName = name.replace(/\B([A-Z])/g, '-$1').toLowerCase();
     const stubTag = stubs?.[name] ? name : hyphenatedName;
+    // eslint-disable-next-line no-underscore-dangle
+    const isAsyncWrapper = rawComponent && typeof rawComponent.__asyncLoader === 'function';
 
     const stub = Vue.defineComponent({
-      name: getComponentName(component),
+      // defineAsyncComponent wrappers are all named AsyncComponentWrapper;
+      // the registration key is the meaningful name and lets specs'
+      // findComponent(TheImportedDefinition) name-match the stub before the
+      // loader resolves (legacy `Key: () => import()` factories used to get
+      // the key as their inferred fn.name, giving the same behavior).
+      name: isAsyncWrapper ? name : getComponentName(component),
+      // The render below is already Vue 3 style (zero-arg, uses Vue.h), but
+      // @vue/compat flags any render with fewer than 2 parameters as legacy,
+      // making every stub warn RENDER_FUNCTION once per (anonymous) instance.
+      // 'suppress-warning' rather than `false`: the feature must stay enabled
+      // because compat only exposes the legacy $slots shape (vnode arrays
+      // instead of functions) on instances with a compat-wrapped render, and
+      // some specs inspect stub.vm.$slots. INSTANCE_SCOPED_SLOTS stays
+      // enabled the same way: with the render compat-wrapped, $scopedSlots
+      // is the only function-shaped slot map (and carries the `_ns` marker
+      // read below).
+      compatConfig: {
+        RENDER_FUNCTION: 'suppress-warning',
+        INSTANCE_SCOPED_SLOTS: 'suppress-warning',
+      },
       props: getStubProps(component),
       model: component.model ?? component.mixins?.find((m) => m.model),
       methods: Object.fromEntries(
@@ -154,6 +180,18 @@ if (global.document) {
     if (typeof component === 'function') {
       component()?.then?.((resolvedComponent) => {
         registerStub({ source: resolvedComponent.default, stub });
+      });
+    }
+
+    // defineAsyncComponent wrappers expose their loader as __asyncLoader.
+    // Register the stub for the resolved component too so specs'
+    // findComponent(TheImportedDefinition) matches the stub, exactly like
+    // the legacy factory branch above (the loader already unwraps the
+    // es-module default and dedupes concurrent calls).
+    if (isAsyncWrapper) {
+      // eslint-disable-next-line no-underscore-dangle, promise/catch-or-return
+      rawComponent.__asyncLoader().then((resolvedComponent) => {
+        registerStub({ source: resolvedComponent?.default ?? resolvedComponent, stub });
       });
     }
 

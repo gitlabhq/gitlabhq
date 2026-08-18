@@ -71,13 +71,13 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       context 'without a last_published_at field' do
         let(:response) { { 'foo' => 'bar' } }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
 
       context 'with an invalid value for the last_published_at field' do
         let(:response) { { 'last_published_at' => 'foobar' } }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         expect(repository.gitlab_api_client).not_to receive(:repository_details)
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -548,7 +548,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         return_value[:tags].each_with_index do |tag, index|
           expected_revision = tags_response[index][:config_digest].to_s.split(':')[1].to_s
 
-          expect(tag.is_a?(ContainerRegistry::Tag)).to eq(true)
+          expect(tag.is_a?(ContainerRegistry::Tag)).to be(true)
           expect(tag).to have_attributes(
             repository: repository,
             name: tags_response[index][:name],
@@ -563,7 +563,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
           )
 
           Array(tag.referrers).each_with_index do |ref, ref_index|
-            expect(ref.is_a?(ContainerRegistry::Referrer)).to eq(true)
+            expect(ref.is_a?(ContainerRegistry::Referrer)).to be(true)
             expect(ref).to have_attributes(
               artifact_type: tags_response[index][:referrers][ref_index][:artifactType],
               digest: tags_response[index][:referrers][ref_index][:digest]
@@ -780,7 +780,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       context 'without a size_bytes field' do
         let(:response) { { 'foo' => 'bar' } }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -790,7 +790,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         expect(repository.gitlab_api_client).not_to receive(:repository_details)
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

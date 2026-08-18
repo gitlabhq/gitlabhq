@@ -43,7 +43,7 @@ gl-emoji {
 
 .emoji-picker-category-header {
   position: sticky;
-  background: linear-gradient(to bottom, $white 50%, transparent 100%);
+  background: linear-gradient(to bottom, var(--gl-background-color-overlap) 50%, transparent 100%);
 }
 
 .emoji-picker-emoji {
@@ -81,7 +81,7 @@ gl-emoji {
     }
   }
 
-  &:focus {
+  &:focus-visible {
     z-index: 2;
   }
 }

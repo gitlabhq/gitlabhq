@@ -12,7 +12,7 @@ title: Testing PHP projects
 
 {{< /details >}}
 
-This guide covers basic building instructions for PHP projects.
+Build PHP projects with GitLab CI/CD using these basic instructions.
 
 Two testing scenarios are covered: using the Docker executor and
 using the Shell executor.
@@ -30,8 +30,8 @@ As with every job, you need to create a valid `.gitlab-ci.yml` describing the
 build environment.
 
 First, specify the PHP image that is used for the job process.
-(You can read more about what an image means in the runner's lingo reading
-about [Using Docker images](../docker/using_docker_images.md#what-is-an-image).)
+For more information about what an image is, see
+[Using Docker images](../docker/using_docker_images.md#what-is-an-image).
 
 Start by adding the image to your `.gitlab-ci.yml`:
 
@@ -107,8 +107,8 @@ test:app:
 
 ### Test against different PHP versions in Docker builds
 
-Testing against multiple versions of PHP is super easy. Just add another job
-with a different Docker image version and the runner does the rest:
+To test against multiple versions of PHP, add another job
+with a different Docker image version. The runner does the rest:
 
 ```yaml
 default:
@@ -131,16 +131,14 @@ test:7.0:
 
 ### Custom PHP configuration in Docker builds
 
-There are times where you need to customize your PHP environment by
-putting your `.ini` file into `/usr/local/etc/php/conf.d/`. For that purpose
-add a `before_script` action:
+To customize your PHP environment, copy your `.ini` file into `/usr/local/etc/php/conf.d/`
+with a `before_script` action. The `.ini` file (`my_php.ini` in this example) must be in the
+root directory of your repository:
 
 ```yaml
 before_script:
   - cp my_php.ini /usr/local/etc/php/conf.d/test.ini
 ```
-
-Of course, `my_php.ini` must be present in the root directory of your repository.
 
 ## Test PHP projects using the Shell executor
 
@@ -168,7 +166,7 @@ Finally, push to GitLab and let the tests begin!
 ### Test against different PHP versions in Shell builds
 
 The [phpenv](https://github.com/phpenv/phpenv) project allows you to manage different versions of PHP
-each with its own configuration. This is especially useful when testing PHP projects
+each with its own configuration. Use phpenv when testing PHP projects
 with the Shell executor.
 
 You have to install it on your build machine under the `gitlab-runner`
@@ -191,7 +189,7 @@ phpenv config-add my_config.ini
 ### Install custom extensions
 
 Because this is a pretty bare installation of the PHP environment, you may need
-some extensions that are not currently present on the build machine.
+some extensions that are not present on the build machine.
 
 To install additional extensions, execute:
 
@@ -244,11 +242,11 @@ default:
 ## Access private packages or dependencies
 
 If your test suite needs to access a private repository, you need to configure
-the [SSH keys](../jobs/ssh_keys.md) to be able to clone it.
+the [SSH keys](../jobs/ssh_keys.md) to clone it.
 
 ## Use databases or other services
 
-Most of the time, you need a running database for your tests to be able to
+Most of the time, you need a running database for your tests to
 run. If you're using the Docker executor, you can leverage Docker to
 link to other containers. With GitLab Runner, this can be achieved by defining
 a `service`.

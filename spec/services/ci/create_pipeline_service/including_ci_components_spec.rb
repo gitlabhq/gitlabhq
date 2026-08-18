@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'Creating a pipeline that includes CI components', feature_category: :pipeline_composition do
-  let_it_be_with_refind(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :small_repo) }
   let_it_be_with_reload(:user) { project.first_owner }
 
   let(:components_project) do
-    create(:project, :repository, creator: user, namespace: user.namespace)
+    create(:project, :small_repo, creator: user, namespace: user.namespace)
   end
 
   let(:component_path) do

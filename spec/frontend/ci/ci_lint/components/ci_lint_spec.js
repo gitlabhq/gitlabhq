@@ -41,9 +41,9 @@ describe('CI Lint', () => {
   const findEditor = () => wrapper.findComponent(SourceEditor);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCiLintResults = () => wrapper.findComponent(CiLintResults);
-  const findValidateBtn = () => wrapper.find('[data-testid="ci-lint-validate"]');
-  const findClearBtn = () => wrapper.find('[data-testid="ci-lint-clear"]');
-  const findDryRunToggle = () => wrapper.find('[data-testid="ci-lint-dryrun"]');
+  const findValidateBtn = () => wrapper.findComponent('[data-testid="ci-lint-validate"]');
+  const findClearBtn = () => wrapper.findComponent('[data-testid="ci-lint-clear"]');
+  const findDryRunToggle = () => wrapper.findComponent('[data-testid="ci-lint-dryrun"]');
 
   beforeEach(() => {
     mockCiLintData = jest.fn();

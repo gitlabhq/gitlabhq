@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import Sortable from 'sortablejs';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { destroyImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
@@ -15,8 +15,10 @@ import {
   enableTaskListItem,
   extractTaskTitleAndDescription,
   insertNextToTaskListItemText,
+  taskListSortableOptions,
 } from '~/issues/show/utils';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
+import { installRevertOnEscapePlugin } from '~/sortable/plugins/revert_on_escape';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -42,7 +44,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
+    CreateWorkItemModal: defineAsyncComponent(
+      () => import('~/work_items/components/create_work_item_modal.vue'),
+    ),
     GlButton,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
@@ -131,12 +135,19 @@ export default {
     },
     isUpdating: {
       handler(isUpdating) {
-        this.sortable?.option('disabled', isUpdating);
+        this.sortables.forEach((sortable) => {
+          sortable.option('disabled', isUpdating);
+        });
         this.disableCheckboxes(isUpdating);
       },
     },
   },
+  created() {
+    // This property is intentionally not reactive.
+    this.sortables = [];
+  },
   async mounted() {
+    installRevertOnEscapePlugin();
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
     eventHub.$on('disable-task-list-item', this.disableTaskListItem);
@@ -152,6 +163,7 @@ export default {
     eventHub.$off('disable-task-list-item', this.disableTaskListItem);
     eventHub.$off('enable-task-list-item', this.enableTaskListItem);
     window.removeEventListener('hashchange', this.truncateOrScrollToAnchor);
+    this.destroySortableLists();
     this.removeAllPointerEventListeners();
 
     if (this.$refs['gfm-content']) {
@@ -168,6 +180,7 @@ export default {
       if (this.canEdit) {
         this.initCheckboxes();
         this.removeAllPointerEventListeners();
+        this.destroySortableLists();
         this.renderSortableLists();
         this.renderTaskListItemActions();
       }
@@ -198,6 +211,11 @@ export default {
         this.truncateLongDescription();
       }
     },
+    destroySortableLists() {
+      while (this.sortables.length > 0) {
+        this.sortables.pop().destroy();
+      }
+    },
     renderSortableLists() {
       // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
       // We also exclude footnotes, which are in an `ol` inside a `section.footnotes`.
@@ -215,16 +233,20 @@ export default {
           this.addPointerEventListeners(listItem, '.drag-icon');
         });
 
-        this.sortable = Sortable.create(
-          list,
-          getSortableDefaultOptions({
-            forceFallback: true,
-            handle: '.drag-icon',
-            onUpdate: (event) => {
-              const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
-              this.$emit('descriptionUpdated', description);
-            },
-          }),
+        this.sortables.push(
+          Sortable.create(
+            list,
+            getSortableDefaultOptions({
+              forceFallback: true,
+              revertOnEscape: true,
+              handle: '.drag-icon',
+              ...taskListSortableOptions,
+              onUpdate: (event) => {
+                const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
+                this.$emit('descriptionUpdated', description);
+              },
+            }),
+          ),
         );
       });
     },
@@ -427,7 +449,7 @@ export default {
       :title="childTitle"
       :visible="visible"
       :preselected-work-item-type="childItemType"
-      @hideModal="visible = false"
+      @hide-modal="visible = false"
       @work-item-created="handleWorkItemCreated"
     />
   </div>

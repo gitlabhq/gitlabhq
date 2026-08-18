@@ -1,0 +1,10 @@
+---
+name: create_add_on_assignment
+description: Grants the ability to assign add-on seats to users.
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_add_on_assignment

@@ -6,8 +6,8 @@ module Observability
     DEFAULT_API_KEY = 'use-this-key-for-testing-api-key'
     PROVISIONER_API = 'https://provisioner.gitlab-o11y.com/api/v1/provision_requests'
 
-    def provision_group(group, user)
-      api_request_data = build_api_request_data(group, user)
+    def provision_namespace(namespace, user)
+      api_request_data = build_api_request_data(namespace, user)
       api_success = make_api_request(api_request_data)
 
       if api_success
@@ -25,14 +25,15 @@ module Observability
 
     private
 
-    def build_api_request_data(group, user)
+    def build_api_request_data(namespace, user)
       {
-        group_id: group.id,
+        group_id: namespace.id,
         email: user.email,
         password: SecureRandom.hex(16),
         encryption_key: SecureRandom.hex(32),
         user_name: user.name,
-        group_path: group.full_path
+        group_path: namespace.full_path,
+        is_user: namespace.user_namespace?
       }
     end
 

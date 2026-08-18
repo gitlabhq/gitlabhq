@@ -114,6 +114,38 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
         expect(request.env['warden'].user).to eq user
       end
 
+      context 'when a return location is stored in the :redirect scope' do
+        let(:stored_redirect_path) { '/oauth/authorize?client_id=abc&response_type=code' }
+
+        before do
+          stub_session(session_data: { challenge: challenge, 'redirect_return_to' => stored_redirect_path })
+        end
+
+        it 'redirects to the stored location instead of the root path', :aggregate_failures do
+          perform_request(params: params)
+
+          expect(response).to redirect_to(stored_redirect_path)
+          expect(request.env['warden']).to be_authenticated
+          expect(request.env['warden'].user).to eq user
+        end
+      end
+
+      context 'when a return location is stored in the :user scope' do
+        let(:stored_return_path) { '/oauth/authorize?client_id=abc&response_type=code' }
+
+        before do
+          stub_session(session_data: { challenge: challenge, 'user_return_to' => stored_return_path })
+        end
+
+        it 'redirects to the stored location instead of the root path', :aggregate_failures do
+          perform_request(params: params)
+
+          expect(response).to redirect_to(stored_return_path)
+          expect(request.env['warden']).to be_authenticated
+          expect(request.env['warden'].user).to eq user
+        end
+      end
+
       context 'when passkey authentication is disabled for user' do
         before do
           allow_next_found_instance_of(User) do |instance|

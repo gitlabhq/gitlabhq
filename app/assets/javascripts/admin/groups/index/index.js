@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { adminGroupsPath } from '~/lib/utils/path_helpers/instance_admin';
 import routes from './routes';
 import AdminGroupsApp from './components/app.vue';
 
@@ -23,23 +24,15 @@ export const initAdminGroups = () => {
 
   if (!el) return false;
 
-  const {
-    dataset: { appData },
-  } = el;
-
-  const { basePath } = convertObjectPropsToCamelCase(JSON.parse(appData));
-
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
-    router: createRouter(basePath),
+    router: createRouter(adminGroupsPath()),
     apolloProvider,
     name: 'AdminGroupsRoot',
-    render(createElement) {
-      return createElement(AdminGroupsApp);
-    },
+    component: AdminGroupsApp,
   });
 };

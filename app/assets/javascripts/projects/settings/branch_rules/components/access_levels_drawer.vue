@@ -16,6 +16,7 @@ import {
   ACCESS_LEVEL_ADMIN_INTEGER,
   ACCESS_LEVEL_NO_ACCESS_INTEGER,
 } from '~/access_level/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import ItemsSelector from './items_selector.vue';
 import { projectUsersOptions, accessLevelsConfig } from './constants';
 
@@ -42,6 +43,7 @@ export default {
     GlFormCheckbox,
     ItemsSelector,
   },
+  mixins: [glListenersMixin],
   inject: {
     showEnterpriseAccessLevels: { default: false },
   },
@@ -99,7 +101,7 @@ export default {
       default: false,
     },
   },
-  emits: ['close', 'editRule'],
+  emits: ['close', 'edit-rule'],
   data() {
     return {
       updatedGroups: this.groups,
@@ -187,7 +189,7 @@ export default {
       return items.map((item) => ({ ...item, id: getIdFromGraphQLId(item.id) }));
     },
     editRule() {
-      this.$emit('editRule', this.getRuleEditData());
+      this.$emit('edit-rule', this.getRuleEditData());
     },
   },
 };
@@ -198,8 +200,7 @@ export default {
     :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     :open="isOpen"
-    @ok="editRule()"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #title>
       <h2 class="gl-my-0 gl-text-size-h2">{{ title }}</h2>

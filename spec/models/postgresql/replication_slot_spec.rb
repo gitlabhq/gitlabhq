@@ -35,7 +35,7 @@ RSpec.describe Postgresql::ReplicationSlot do
         .to receive(:pluck)
         .and_return([125.megabytes])
 
-      expect(described_class.lag_too_great?).to eq(true)
+      expect(described_class.lag_too_great?).to be(true)
     end
 
     it 'returns false when more than one replicas is up to date enough' do
@@ -43,7 +43,7 @@ RSpec.describe Postgresql::ReplicationSlot do
         .to receive(:pluck)
         .and_return([125.megabytes, 0.megabytes, 0.megabytes])
 
-      expect(described_class.lag_too_great?).to eq(false)
+      expect(described_class.lag_too_great?).to be(false)
     end
 
     it 'returns false when replication lag is not too great' do
@@ -51,7 +51,7 @@ RSpec.describe Postgresql::ReplicationSlot do
         .to receive(:pluck)
         .and_return([0.megabytes])
 
-      expect(described_class.lag_too_great?).to eq(false)
+      expect(described_class.lag_too_great?).to be(false)
     end
 
     it 'returns false when there is a nil replication lag' do
@@ -59,7 +59,7 @@ RSpec.describe Postgresql::ReplicationSlot do
         .to receive(:pluck)
         .and_return([0.megabytes, nil])
 
-      expect(described_class.lag_too_great?).to eq(false)
+      expect(described_class.lag_too_great?).to be(false)
     end
   end
 

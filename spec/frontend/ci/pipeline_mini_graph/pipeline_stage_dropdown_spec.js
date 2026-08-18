@@ -60,7 +60,7 @@ describe('PipelineStageDropdown', () => {
 
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdownButton = () => wrapper.findComponent(GlButton);
-  const findDropdownGroupJobs = () => wrapper.findByTestId('passed-jobs');
+  const findDropdownGroupJobs = () => wrapper.findComponentByTestId('passed-jobs');
   const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findStageDropdown = () => wrapper.findComponent(GlDisclosureDropdown);

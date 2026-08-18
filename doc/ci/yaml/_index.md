@@ -17,7 +17,7 @@ This document lists the configuration options for the GitLab `.gitlab-ci.yml` fi
 This file is where you define the CI/CD jobs that make up your pipeline.
 
 - If you are already familiar with [basic CI/CD concepts](../_index.md), try creating
-  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [simple](../quick_start/_index.md)
+  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [basic](../quick_start/_index.md)
   or [complex](../quick_start/tutorial.md) pipeline.
 - For a collection of examples, see [GitLab CI/CD examples](../examples/_index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
@@ -198,7 +198,7 @@ And optionally:
 
 - Only [certain CI/CD variables](includes.md#use-variables-with-include) can be used
   with `include` keywords.
-- Use merging to customize and override included CI/CD configurations with local
+- Use merging to customize and override included CI/CD configurations with local configuration.
 - You can override included configuration by having the same job name or global keyword
   in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
   configuration in the `.gitlab-ci.yml` file takes precedence over the included configuration.
@@ -235,7 +235,7 @@ include:
 
 **Additional details**:
 
-- If the component's source project is private, the user running the pipeline must have at least the Reporter role
+- If the component's source project is private, the user running the pipeline must have at least the Reporter role.
   For internal projects, any authenticated non-external user can access the component.
   For public projects, no membership is required.
 
@@ -740,7 +740,7 @@ All pipelines are assigned the defined name. Any leading or trailing spaces in t
 
 **Examples of `workflow:name`**:
 
-A simple pipeline name with a predefined variable:
+A pipeline name with a predefined variable:
 
 ```yaml
 workflow:
@@ -1429,7 +1429,7 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 {{< history >}}
 
-- Running `after_script` commands for canceled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
+- Running `after_script` commands for canceled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10158) in GitLab 17.0.
 
 {{< /history >}}
 
@@ -1475,9 +1475,8 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   - Command aliases and variables exported in `script` scripts.
   - Changes outside of the working tree (depending on the runner executor), like
     software installed by a `before_script` or `script` script.
-- Have a separate timeout. For GitLab Runner 16.4 and later, this defaults to 5 minutes, and can be configured with the
+- Have a separate timeout. This defaults to 5 minutes, and can be configured with the
   [`RUNNER_AFTER_SCRIPT_TIMEOUT`](../runners/configure_runners.md#set-script-and-after_script-timeouts) variable.
-  In GitLab 16.3 and earlier, the timeout is hard-coded to 5 minutes.
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 - For jobs that time out:
@@ -1680,7 +1679,7 @@ link outside it.
 **Supported values**:
 
 - An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
+- You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
 - For [GitLab Pages job](#pages):
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
     the [`pages.publish`](#pagespublish) path is automatically appended to `artifacts:paths`,
@@ -1725,7 +1724,7 @@ Use `artifacts:exclude` to prevent files from being added to an artifacts archiv
 **Supported values**:
 
 - An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
+- You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
   [`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#PathMatch) patterns.
 
 **Example of `artifacts:exclude`**:
@@ -1759,7 +1758,7 @@ Use `expire_in` to specify how long [job artifacts](../jobs/job_artifacts.md) ar
 they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
-  [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
+  [for the project](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   or [instance-wide](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
@@ -1988,7 +1987,7 @@ rspec:
 
 - Combining reports in parent pipelines using [artifacts from child pipelines](#needspipelinejob)
   is not supported. For more information, see [epic 8205](https://gitlab.com/groups/gitlab-org/-/work_items/8205).
-- To be able to browse and download the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This uploads and stores the artifact twice.
+- To browse and download the report output files, include the [`artifacts:paths`](#artifactspaths) keyword. This uploads and stores the artifact twice.
 - Artifacts created for `artifacts: reports` are always uploaded, regardless of the job results (success or failure).
   You can use [`artifacts:expire_in`](#artifactsexpire_in) to set an expiration
   date for the artifacts.
@@ -2384,7 +2383,7 @@ rspec:
 
 **Additional details**:
 
-- You can combine `cache:untracked` with `cache:paths` to cache all untracked files, as well as files in the configured paths.
+- You can combine `cache:untracked` with `cache:paths` to cache all untracked files and files in the configured paths.
   Use `cache:paths` to cache any specific files, including tracked files, or files that are outside of the working directory,
   and use `cache: untracked` to also cache all untracked files. For example:
 
@@ -2397,7 +2396,7 @@ rspec:
         - binaries/
   ```
 
-  In this example, the job caches all untracked files in the repository, as well as all the files in `binaries/`.
+  In this example, the job caches all untracked files in the repository and all the files in `binaries/`.
   If there are untracked files in `binaries/`, they are covered by both keywords.
 
 ---
@@ -2853,7 +2852,7 @@ stop_review_app:
 
 {{< history >}}
 
-- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to support `prepare`, `access` and `verify` environment actions in GitLab 17.7.
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to support `prepare`, `access`, and `verify` environment actions in GitLab 17.7.
 
 {{< /history >}}
 
@@ -3011,7 +3010,7 @@ deploy:
 **Additional details**:
 
 - Environments created from this job definition are assigned a [tier](../environments/_index.md#deployment-tier-of-environments) based on this value.
-- Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
+- Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated by using the [Environments API](../../api/environments.md#update-an-existing-environment).
 
 **Related topics**:
 
@@ -3389,6 +3388,13 @@ arm-sql-job:
 
 - `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+- With the Docker executor, to run an image built for a different architecture than
+  the runner host, the host must have emulation support registered with `binfmt_misc`.
+  For example, to [install QEMU emulators](https://docs.docker.com/build/building/multi-platform/#install-qemu-manually),
+  run `docker run --privileged --rm tonistiigi/binfmt --install all` on the host.
+  Without emulation support, the job fails with an `exec format error` message.
+  In GitLab Runner 19.1 and earlier, a `platform` value that did not match the host could
+  be silently ignored, and the container ran with the host architecture instead.
 
 ---
 
@@ -3440,7 +3446,7 @@ arm-sql-job:
 
 #### `image:pull_policy`
 
-The pull policy that the runner uses to fetch the Docker image. Requires GitLab Runner 15.1 or later.
+The pull policy that the runner uses to fetch the Docker image.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
@@ -4309,12 +4315,12 @@ uploads static content to GitLab. The content is then published as a website.
 You must:
 
 - Define `pages: true` to publish a directory named `public`
-- Alternatively, define [`pages.publish`](#pagespublish) if want to use a different content directory.
+- Alternatively, define [`pages.publish`](#pagespublish) if you want to use a different content directory.
 - Have a non-empty `index.html` file in the root of the content directory.
 
 **Keyword type**: Job keyword or Job name (deprecated). You can use it only as part of a job.
 
-**Supported Values**:
+**Supported values**:
 
 - A boolean. Uses the default configuration when set to `true`
 - A hash of configuration options, see the following sections for details.
@@ -4394,7 +4400,7 @@ create-pages:
 ```
 
 This example uses [Eleventy](https://www.11ty.dev) to generate a static website and
-output the generated HTML files into a the `dist/` directory. This directory is exported
+output the generated HTML files into the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
 
 It is also possible to use variables in the `pages.publish` field. For example:
@@ -4970,7 +4976,7 @@ test_advanced:
     exit_codes: 137
 ```
 
-`test_advanced` will be retried up to 2 times if the exit code is `137` or if it had
+`test_advanced` is retried up to 2 times if the exit code is `137` or if it had
 a runner system failure.
 
 ---
@@ -5151,6 +5157,9 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
   with [some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 - In order, following [`rules` execution flow](#rules).
 
+Inconsistent rules between jobs can lead to unexpected behavior, though [`workflow`](#workflow) rules can help mitigate this problem.
+For example, it's possible to accidentally configure jobs that cause [duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines).
+
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
 to configure the job behavior, or with [`workflow`](#workflow) to configure the pipeline behavior.
 
@@ -5188,7 +5197,6 @@ job:
 **Related topics**:
 
 - [Common `if` expressions for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables).
-- [Avoid duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines).
 - [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines).
 
 ---
@@ -6147,7 +6155,7 @@ job:
 
 **Additional details**:
 
-- When the `token` keyword is not set and there is only one token defined, the defined token will automatically be used.
+- When the `token` keyword is not set and there is only one token defined, the defined token is automatically used.
 - If there is more than one token defined, you should specify which token to use by setting the `token` keyword.
   If you do not specify which token to use, it is not possible to predict which token is used each time the job runs.
 
@@ -6314,6 +6322,9 @@ arm-sql-job:
 
 - `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+- With the Docker executor, to run a service image built for a different architecture than
+  the runner host, the host must have emulation support registered with `binfmt_misc`.
+  For more information, see [`image:docker`](#imagedocker).
 
 ---
 
@@ -6442,7 +6453,7 @@ services:
 
 #### `services:pull_policy`
 
-The pull policy that the runner uses to fetch the Docker image. Requires GitLab Runner 15.1 or later.
+The pull policy that the runner uses to fetch the Docker image.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
@@ -6669,7 +6680,7 @@ In this example, only runners with both the `ruby` and `postgres` tags can run t
 Use `timeout` to configure a timeout for a specific job. If the job runs for longer
 than the timeout, the job fails.
 
-The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
+The job-level timeout can be longer than the [project timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
 but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-the-maximum-job-timeout).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -6728,7 +6739,7 @@ The keywords available for use in trigger jobs are:
 **Supported values**:
 
 - For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
+  but not [job-only variables](../variables/predefined_variables.md#variable-availability).
   Alternatively, use [`trigger:project`](#triggerproject).
 - For child pipelines, use [`trigger:include`](#triggerinclude).
 
@@ -6874,7 +6885,7 @@ to specify a different branch.
 **Supported values**:
 
 - The path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
+  but not [job-only variables](../variables/predefined_variables.md#variable-availability).
 
 **Example of `trigger:project`**:
 
@@ -6964,9 +6975,13 @@ unless the nested downstream trigger job also uses `trigger:forward`.
 **Supported values**:
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
-  in the trigger job are passed to downstream pipelines.
-- `pipeline_variables`: `true` or `false` (default). When `true`, [pipeline variables](../variables/_index.md#cicd-variable-precedence)
-  are passed to the downstream pipeline.
+  in the trigger job are passed to downstream pipelines. This includes both
+  [default variables](#default-variables) that jobs inherit, and variables defined directly
+  in the trigger job's `variables` block.
+- `pipeline_variables`: `true` or `false` (default). When `true`, [pipeline variables](../variables/_index.md#use-pipeline-variables)
+  are passed to the downstream pipeline. This includes variables from manual pipeline runs,
+  scheduled pipelines, and dotenv variables
+  from jobs listed in `needs`.
 
 **Example of `trigger:forward`**:
 

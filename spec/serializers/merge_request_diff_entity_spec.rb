@@ -107,7 +107,7 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
     it 'returns nil if head_commit_sha does not exist' do
       allow(merge_request_diff).to receive(:head_commit_sha).and_return(nil)
 
-      expect(subject[:short_commit_sha]).to eq(nil)
+      expect(subject[:short_commit_sha]).to be_nil
     end
   end
 

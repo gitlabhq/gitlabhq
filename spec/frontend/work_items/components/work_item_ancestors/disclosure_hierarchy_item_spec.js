@@ -43,7 +43,7 @@ describe('DisclosurePathItem', () => {
       wrapper = createComponent({ item: mockDisclosureHierarchyItemsWithNoPermission });
 
       expect(findAncestorLink().classes('gl-cursor-help')).toBe(true);
-      expect(findAncestorLink().text()).toBe(mockDisclosureHierarchyItemsWithNoPermission.title);
+      expect(findAncestorLink().text()).toBe(mockDisclosureHierarchyItemsWithNoPermission.message);
     });
   });
 

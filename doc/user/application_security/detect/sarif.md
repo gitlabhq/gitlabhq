@@ -240,3 +240,49 @@ through the [instance limits](../../../administration/instance_limits.md).
 - [Project vulnerability report](../vulnerability_report/_index.md)
 - [Security policies](../policies/_index.md)
 - [SARIF 2.1.0 specification](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html)
+
+## Troubleshooting
+
+When you add SARIF reports, you might encounter the following issues:
+
+### Warning: `... result(s) were skipped during ingestion`
+
+On the pipeline's **Security** tab, you might see a **Warning parsing security reports** alert
+that contains a message similar to:
+
+```plaintext
+[Ingestion] 8 of 69 result(s) were skipped during ingestion. Causes: text field exceeded length limit (8). Check application logs for per-result details.
+```
+
+This issue occurs when results in the SARIF report do not meet the requirements described in
+[Limits](#limits). GitLab skips those results and ingests the remaining results.
+
+If more than half of the results in the report are skipped, the message is an error instead of a
+warning and ends with `could not be ingested and the scan was aborted`. In this case, GitLab does
+not store any results from the report.
+
+To resolve this issue, update the scanner configuration or the SARIF report so that all results
+meet the documented limits, then run a new pipeline.
+
+To investigate the cause:
+
+- On GitLab.com, GitLab team members can search the `pubsub-sidekiq-inf-gprd*` index in
+  [Kibana](https://log.gprd.gitlab.net/) with these filters:
+  - `json.meta.feature_category: vulnerability_management`
+  - `json.meta.pipeline_id: <pipeline-id>`
+  - `json.message: Result skipped*` or `json.message: SARIF finding skipped*`
+- On GitLab Self-Managed, search
+  [`application_json.log`](../../../administration/logs/_index.md#application_jsonlog) for
+  `Result skipped:` or `SARIF finding skipped:`.
+
+The logs identify which field or property caused the skipped results, but do not identify
+individual results.
+
+On GitLab Self-Managed, you can also read the stored messages from a
+[Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+scan = Security::Scan.find_by!(pipeline_id: <pipeline-id>, project_id: <project-id>)
+scan.processing_warnings
+scan.processing_errors
+```

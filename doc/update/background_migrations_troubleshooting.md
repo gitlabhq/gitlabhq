@@ -91,14 +91,7 @@ version and wait for the batched background migrations to finish.
 
 ## Advanced search migrations are stuck
 
-In GitLab 15.0, an advanced search migration named `DeleteOrphanedCommit` can be permanently stuck
-in a pending state across upgrades. This issue
-[is corrected in GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89539).
-
-If you are a GitLab Self-Managed customer who uses GitLab 15.0 with advanced search, you will experience performance degradation.
-To clean up the migration, upgrade to 15.1 or later.
-
-For other advanced search migrations stuck in pending problems, [retry the halted migrations](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
+For advanced search migrations stuck in pending problems, [retry the halted migrations](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 If you upgrade GitLab before all pending advanced search migrations are completed, any pending migrations
 that have been removed in the new version cannot be executed or retried.

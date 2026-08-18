@@ -429,7 +429,7 @@ section which defines the default variables for all jobs. Includes are evaluated
 so these variables cannot be used with `include`.
 
 For an example of how you can include predefined variables, and the variables' impact on CI/CD jobs,
-see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
+see this [CI/CD variable demo](https://www.youtube.com/watch?v=4XR8gw3Pkos).
 
 You cannot use CI/CD variables in an `include` section in a dynamic child pipeline's configuration.
 [Issue 378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717) proposes fixing
@@ -666,4 +666,4 @@ can cause the rate limit to be reached and cause the error. You should avoid hos
 CI/CD configuration files on a GitLab Pages site.
 
 When possible, use [`include:project`](_index.md#includeproject) to fetch configuration
-files from other projects within the GitLab instance without making external HTTP(S) requests.
+files from other projects in the GitLab instance without making external HTTP(S) requests.

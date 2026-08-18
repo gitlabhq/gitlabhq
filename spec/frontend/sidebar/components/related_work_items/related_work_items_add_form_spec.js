@@ -19,42 +19,38 @@ const recentlyViewedResponse = (items) => ({
   data: {
     currentUser: {
       id: 'gid://gitlab/User/1',
-      recentlyViewedItems: items,
+      recentlyViewedIssues: items,
       __typename: 'CurrentUser',
     },
   },
 });
 
-const workItemEntry = {
-  viewedAt: '2024-01-01T00:00:00Z',
-  item: {
-    id: 'gid://gitlab/WorkItem/1',
-    title: 'A recently viewed task',
-    webUrl: '/group/project/-/work_items/1',
-    workItemType: {
-      id: 'gid://gitlab/WorkItems::Type/1',
-      name: 'Task',
-      iconName: 'work-item-task',
-      __typename: 'WorkItemType',
-    },
-    __typename: 'WorkItem',
+const issueItem = {
+  id: 'gid://gitlab/Issue/2',
+  title: 'A recently viewed issue',
+  webUrl: '/group/project/-/issues/2',
+  reference: 'group/project#2',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2',
+    name: 'Issue',
+    iconName: 'issue-type-issue',
+    __typename: 'WorkItemType',
   },
+  __typename: 'Issue',
 };
 
-const issueEntry = {
-  viewedAt: '2024-01-02T00:00:00Z',
-  item: {
-    id: 'gid://gitlab/Issue/2',
-    title: 'A recently viewed issue',
-    webUrl: '/group/project/-/issues/2',
-    workItemType: {
-      id: 'gid://gitlab/WorkItems::Type/2',
-      name: 'Issue',
-      iconName: null,
-      __typename: 'WorkItemType',
-    },
-    __typename: 'Issue',
+const issueItemWithoutIcon = {
+  id: 'gid://gitlab/Issue/3',
+  title: 'Another recently viewed issue',
+  webUrl: '/group/project/-/issues/3',
+  reference: 'group/project#3',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/3',
+    name: 'Issue',
+    iconName: null,
+    __typename: 'WorkItemType',
   },
+  __typename: 'Issue',
 };
 
 describe('RelatedWorkItemsAddForm', () => {
@@ -64,46 +60,61 @@ describe('RelatedWorkItemsAddForm', () => {
   const findRelationshipListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findTokenInput = () => wrapper.findComponent(WorkItemTokenInput);
   const findCreateModal = () => wrapper.findComponent(CreateWorkItemModal);
-  const findCreateButton = () => wrapper.findByTestId('add-work-item-create');
+  const findCreateButton = () => wrapper.findComponentByTestId('add-work-item-create');
   const findModal = () => wrapper.findComponent(GlModal);
 
   const createComponent = ({
-    queryHandler = jest.fn().mockResolvedValue(recentlyViewedResponse([workItemEntry, issueEntry])),
+    queryHandler = jest
+      .fn()
+      .mockResolvedValue(recentlyViewedResponse([issueItem, issueItemWithoutIcon])),
     propsData = {},
   } = {}) => {
     wrapper = shallowMountExtended(RelatedWorkItemsAddForm, {
       apolloProvider: createMockApollo([[recentlyViewedWorkItemsQuery, queryHandler]]),
       propsData: {
         fullPath: 'group/project',
+        mergeRequestId: 'gid://gitlab/MergeRequest/1',
         visible: true,
         ...propsData,
       },
     });
   };
 
-  it('fetches the current user recently viewed items', async () => {
-    const queryHandler = jest.fn().mockResolvedValue(recentlyViewedResponse([workItemEntry]));
+  it('fetches the current user recently viewed issues', async () => {
+    const queryHandler = jest.fn().mockResolvedValue(recentlyViewedResponse([issueItem]));
     createComponent({ queryHandler });
     await waitForPromises();
 
     expect(queryHandler).toHaveBeenCalledTimes(1);
   });
 
-  it('renders a row for each fetched recently viewed item', async () => {
+  it('renders a row for each fetched recently viewed issue', async () => {
     createComponent();
     await waitForPromises();
 
     expect(findRecentItems()).toHaveLength(2);
-    expect(findRecentItems().at(0).text()).toContain('A recently viewed task');
-    expect(findRecentItems().at(1).text()).toContain('A recently viewed issue');
+    expect(findRecentItems().at(0).text()).toContain('A recently viewed issue');
+    expect(findRecentItems().at(1).text()).toContain('Another recently viewed issue');
   });
 
-  it('maps a work item to its type icon and an issue to the default issue icon', async () => {
+  it('renders the reference for each recently viewed issue', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(
+      findRecentItems().at(0).find('[data-testid="recently-viewed-item-reference"]').text(),
+    ).toBe('group/project#2');
+    expect(
+      findRecentItems().at(1).find('[data-testid="recently-viewed-item-reference"]').text(),
+    ).toBe('group/project#3');
+  });
+
+  it('maps an issue to its type icon and falls back to the default issue icon', async () => {
     createComponent();
     await waitForPromises();
 
     const icons = wrapper.findAllComponents(GlIcon);
-    expect(icons.at(0).props('name')).toBe('work-item-task');
+    expect(icons.at(0).props('name')).toBe('issue-type-issue');
     expect(icons.at(1).props('name')).toBe('work-item-issue');
   });
 
@@ -182,6 +193,71 @@ describe('RelatedWorkItemsAddForm', () => {
       createComponent();
 
       expect(findCreateModal().props('creationContext')).toBe('related-item');
+    });
+
+    it('lets the user pick any work item type and any project', () => {
+      createComponent();
+
+      expect(findCreateModal().props()).toMatchObject({
+        alwaysShowWorkItemTypeSelect: true,
+        allowAnyNamespace: true,
+        allowProjectsOnly: true,
+      });
+    });
+
+    it('passes the merge request id and selected relationship type to the create modal', async () => {
+      createComponent({ propsData: { mergeRequestId: 'gid://gitlab/MergeRequest/7' } });
+      await findRelationshipListbox().vm.$emit('select', 'RELATED');
+
+      expect(findCreateModal().props('mergeRequestId')).toBe('gid://gitlab/MergeRequest/7');
+      expect(findCreateModal().props('mergeRequestLinkType')).toBe('RELATED');
+    });
+
+    it('emits "created" with the new item and link type, without linking via the relation mutation', async () => {
+      const createdWorkItem = {
+        id: 'gid://gitlab/WorkItem/99',
+        iid: '99',
+        title: 'Brand new item',
+        __typename: 'WorkItem',
+      };
+      createComponent();
+      await findRelationshipListbox().vm.$emit('select', 'RELATED');
+
+      findCreateModal().vm.$emit('work-item-created', createdWorkItem);
+
+      expect(wrapper.emitted('created')).toEqual([
+        [{ workItem: createdWorkItem, linkType: 'RELATED' }],
+      ]);
+      expect(wrapper.emitted('link')).toBeUndefined();
+    });
+
+    it('hides the create modal after a work item is created', async () => {
+      createComponent();
+      await findCreateButton().vm.$emit('click');
+      expect(findCreateModal().props('visible')).toBe(true);
+
+      findCreateModal().vm.$emit('work-item-created', {
+        id: 'gid://gitlab/WorkItem/99',
+        __typename: 'WorkItem',
+      });
+      await waitForPromises();
+
+      expect(findCreateModal().props('visible')).toBe(false);
+    });
+
+    it('can reopen the create modal after it is closed via cancel', async () => {
+      createComponent();
+
+      await findCreateButton().vm.$emit('click');
+      expect(findCreateModal().props('visible')).toBe(true);
+
+      // The create modal emits `hide-modal` when the user cancels/discards.
+      findCreateModal().vm.$emit('hide-modal');
+      await waitForPromises();
+      expect(findCreateModal().props('visible')).toBe(false);
+
+      await findCreateButton().vm.$emit('click');
+      expect(findCreateModal().props('visible')).toBe(true);
     });
   });
 });

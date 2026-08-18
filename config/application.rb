@@ -54,7 +54,14 @@ module Gitlab
     config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA1 # rubocop:disable Fips/SHA1 -- New default is `SHA-256` needed for backwards compatibility
 
     # Rails 7.0
-    config.action_controller.raise_on_open_redirects = false
+    # Rails 8.1 deprecates raise_on_open_redirects; `:log` is the equivalent of setting it to false.
+    # The new option does not exist before 8.1, so it cannot be set unconditionally.
+    if Rails.gem_version >= Gem::Version.new('8.1')
+      config.action_controller.action_on_open_redirect = :log
+    else
+      config.action_controller.raise_on_open_redirects = false
+    end
+
     config.action_dispatch.return_only_request_media_type_on_content_type = true
     config.action_mailer.smtp_timeout = nil # New default is 5
     config.action_view.button_to_generates_button_tag = nil # New default is true
@@ -83,6 +90,14 @@ module Gitlab
     # Rails 5.0
     config.action_controller.per_form_csrf_tokens = false
     config.action_controller.forgery_protection_origin_check = false
+
+    # Annotate SQL queries with runtime context (application, correlation ID,
+    # endpoint, ...) so that queries can be traced back to the code issuing them.
+    # `:legacy` preserves the `key:value` comment format; Rails defaults to
+    # `:sqlcommenter`. The tags themselves are set in
+    # config/initializers/query_logs.rb.
+    config.active_record.query_log_tags_enabled = true
+    config.active_record.query_log_tags_format = :legacy
 
     require_dependency Rails.root.join('lib/gitlab')
     require_dependency Rails.root.join('lib/gitlab/action_cable/config')
@@ -309,8 +324,6 @@ module Gitlab
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
     config.assets.precompile << "application_dark.css"
-    config.assets.precompile << "application_no_bootstrap_utils.css"
-    config.assets.precompile << "application_dark_no_bootstrap_utils.css"
     config.assets.precompile << "tailwind.css"
 
     config.assets.precompile << "print.css"
@@ -335,6 +348,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/commit_rapid_diffs.css"
     config.assets.precompile << "page_bundles/commits.css"
     config.assets.precompile << "page_bundles/compare_rapid_diffs.css"
+    config.assets.precompile << "page_bundles/continuous_deployment.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
@@ -346,6 +360,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/escalation_policies.css"
     config.assets.precompile << "page_bundles/graph_charts.css"
     config.assets.precompile << "page_bundles/graphql_explorer.css"
+    config.assets.precompile << "page_bundles/group_edit.css"
     config.assets.precompile << "page_bundles/group.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/import.css"

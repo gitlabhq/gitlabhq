@@ -1,4 +1,5 @@
 <script>
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import RepoDropdown from './repo_dropdown.vue';
 import RevisionDropdown from './revision_dropdown.vue';
 
@@ -8,6 +9,7 @@ export default {
     RepoDropdown,
     RevisionDropdown,
   },
+  mixins: [glListenersMixin],
   props: {
     refsProjectPath: {
       type: String,
@@ -50,14 +52,14 @@ export default {
         :params-name="paramsName"
         :selected-project="selectedProject"
         :disabled="disableRepoDropdown"
-        v-on="$listeners"
+        v-on="glListeners()"
       />
       <revision-dropdown
         class="gl-min-w-0 gl-max-w-full gl-basis-1/2"
         :refs-project-path="refsProjectPath"
         :params-name="paramsName"
         :params-branch="paramsBranch"
-        v-on="$listeners"
+        v-on="glListeners()"
       />
     </div>
   </div>

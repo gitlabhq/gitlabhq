@@ -130,7 +130,7 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 - `gitlab:app:check`
 - `gitlab:geo:check` (only if you're running [Geo](../geo/replication/troubleshooting/common.md#health-check-rake-task))
 
-It checks that each component was set up according to the installation guide and suggest fixes
+It checks that each component was set up according to the installation guide and suggests fixes
 for issues found. This command must be run from your application server and doesn't work correctly on
 component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-own-server).
 
@@ -164,7 +164,7 @@ To run `gitlab:check`, run:
   > [!note]
   > Due to the specific architecture of Helm-based GitLab installations, the output may contain
   > false negatives for connectivity verification to `gitlab-shell`, Sidekiq, and `systemd`-related files.
-  > These reported failures are expected and do not indicate actual issues, disregard them when reviewing diagnostic results.
+  > These reported failures are expected and do not indicate actual issues. Disregard them when reviewing diagnostic results.
 
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
@@ -397,7 +397,7 @@ order that conforms to the GitLab release cadence.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42705) in GitLab 13.5 [with a feature flag](../feature_flags/_index.md) named `database_reindexing`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3989) in GitLab 13.9.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/3989) in GitLab 13.9.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188548) in GitLab 18.0.
 
 {{< /history >}}
@@ -526,16 +526,10 @@ The Rake task creates a `/tmp/structure.sql` file that contains the database sch
 To determine if there are any differences:
 
 1. Go to the [`db/structure.sql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql) file in the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
-   Select the branch that matches your GitLab version. For example, the file for GitLab 16.2: <https://gitlab.com/gitlab-org/gitlab/-/blob/16-2-stable-ee/db/structure.sql>.
+   Select the branch that matches your GitLab version. For example, the file for GitLab 19.2: <https://gitlab.com/gitlab-org/gitlab/-/blob/19-2-stable-ee/db/structure.sql>.
 1. Compare `/tmp/structure.sql` with the `db/structure.sql` file for your version.
 
 ## Check the database for schema inconsistencies
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
-
-{{< /history >}}
 
 This Rake task checks the database schema for any inconsistencies and prints them in the terminal.
 This task is a diagnostic tool to be used under the guidance of GitLab Support.
@@ -549,7 +543,7 @@ gitlab-rake gitlab:db:schema_checker:run
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-com/-/epics/2456) in GitLab 17.11.
+- [Introduced](https://gitlab.com/groups/gitlab-com/-/work_items/2456) in GitLab 17.11.
 
 {{< /history >}}
 

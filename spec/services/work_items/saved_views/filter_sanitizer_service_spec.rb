@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: :portfolio_management do
+RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: :planning_views do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }

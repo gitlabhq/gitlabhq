@@ -1,6 +1,7 @@
 <script>
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'RemoveExclusionConfirmationModal',
@@ -8,6 +9,7 @@ export default {
     GlModal,
     GlSprintf,
   },
+  mixins: [glListenersMixin],
   props: {
     visible: {
       type: Boolean,
@@ -48,7 +50,12 @@ export default {
 };
 </script>
 <template>
-  <gl-modal v-bind="$options.modalOptions" :title="modalTitle" :visible="visible" v-on="$listeners">
+  <gl-modal
+    v-bind="$options.modalOptions"
+    :title="modalTitle"
+    :visible="visible"
+    v-on="glListeners()"
+  >
     <gl-sprintf :message="$options.i18n.body">
       <template #name>
         <strong>{{ name }}</strong>

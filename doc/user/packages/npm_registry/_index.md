@@ -412,13 +412,6 @@ Prerequisites:
 
 ### Install from a group
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `npm_group_level_endpoints`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
-
-{{< /history >}}
-
 1. Authenticate to the package registry.
 1. Set the registry:
 
@@ -506,12 +499,6 @@ Group owners can disable this behavior in the group **Packages and registries** 
 Improvements are tracked in [epic 3608](https://gitlab.com/groups/gitlab-org/-/epics/3608).
 
 ## Deprecate a package
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
-
-{{< /history >}}
 
 You can deprecate a package so that a deprecation warning displays when the package is fetched.
 
@@ -615,12 +602,6 @@ npm install @scope/package@my-tag              # Install a specific tag
 ```
 
 #### From CI/CD
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
-
-{{< /history >}}
 
 You can use either of the following tokens to run `npm dist-tag` commands in a GitLab CI/CD job:
 

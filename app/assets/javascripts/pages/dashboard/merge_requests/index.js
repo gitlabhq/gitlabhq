@@ -5,9 +5,8 @@ import { initMergeRequestDashboard } from '~/merge_request_dashboard';
 initMergeRequestDashboard(document.getElementById('js-merge-request-dashboard'));
 
 requestIdleCallback(async () => {
-  const { initNewResourceDropdown } = await import(
-    '~/vue_shared/components/new_resource_dropdown/init_new_resource_dropdown'
-  );
+  const { initNewResourceDropdown } =
+    await import('~/vue_shared/components/new_resource_dropdown/init_new_resource_dropdown');
 
   initNewResourceDropdown({
     resourceType: RESOURCE_TYPE_MERGE_REQUEST,

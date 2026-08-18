@@ -266,15 +266,15 @@ RSpec.describe EventCollection do
       end
 
       context 'with pagination through events' do
-        let_it_be(:project_events, freeze: false) { create_list(:event, 10, project: project) }
-        let_it_be(:group_events, freeze: false) { create_list(:event, 10, group: group, author: user) }
+        let_it_be(:project_events, freeze: false) { create_list(:event, 4, project: project) }
+        let_it_be(:group_events, freeze: false) { create_list(:event, 4, group: group, author: user) }
 
-        let(:subject) { described_class.new(projects, limit: 10, offset: 5, groups: groups).to_a }
+        subject(:events) { described_class.new(projects, limit: 4, offset: 2, groups: groups).to_a }
 
         it 'returns recent groups and projects events' do
-          recent_events_with_offset = (project_events[5..] + group_events[..4]).reverse
+          recent_events_with_offset = (project_events[2..] + group_events[..1]).reverse
 
-          expect(subject).to eq(recent_events_with_offset)
+          expect(events).to eq(recent_events_with_offset)
         end
       end
 

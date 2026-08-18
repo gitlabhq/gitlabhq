@@ -54,7 +54,7 @@ export default {
       required: false,
     },
   },
-  emits: ['packageToDelete'],
+  emits: ['package-to-delete'],
   computed: {
     hasPipeline() {
       return Boolean(this.packageEntity.pipeline?.user?.name);
@@ -159,7 +159,7 @@ export default {
         :title="s__('PackageRegistry|Remove package')"
         :aria-label="s__('PackageRegistry|Remove package')"
         :disabled="disabledDeleteButton"
-        @click="$emit('packageToDelete', packageEntity)"
+        @click="$emit('package-to-delete', packageEntity)"
       />
     </template>
   </list-item>

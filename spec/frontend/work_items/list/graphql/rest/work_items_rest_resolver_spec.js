@@ -21,6 +21,7 @@ const makeRestItem = (overrides = {}) => ({
   global_id: 'gid://gitlab/WorkItem/1',
   iid: 42,
   title: 'My work item',
+  title_html: '<p>My work item</p>',
   state: 'opened',
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-02T00:00:00Z',
@@ -920,8 +921,14 @@ describe('workItemsRestResolver', () => {
                 global_id: 'gid://gitlab/WorkItem/10',
                 iid: 5,
                 title: 'Parent work item',
+                title_html: '<p>Parent work item</p>',
                 confidential: true,
                 web_url: 'https://gitlab.example.com/work_items/10',
+                namespace: {
+                  id: 10,
+                  kind: 'project',
+                  full_path: FULL_PATH,
+                },
                 work_item_type: {
                   id: 1,
                   name: 'Epic',
@@ -942,10 +949,75 @@ describe('workItemsRestResolver', () => {
             id: 'gid://gitlab/WorkItem/10',
             iid: '5',
             title: 'Parent work item',
+            titleHtml: '<p>Parent work item</p>',
             confidential: true,
             webUrl: 'https://gitlab.example.com/work_items/10',
+            namespace: makeNamespace(),
           },
         });
+      });
+
+      it('maps the parent its own namespace when it differs from the list namespace', async () => {
+        const item = makeRestItem({
+          features: {
+            hierarchy: {
+              parent: {
+                global_id: 'gid://gitlab/WorkItem/10',
+                iid: 5,
+                title: 'Parent work item',
+                title_html: '<p>Parent work item</p>',
+                confidential: false,
+                web_url: 'https://gitlab.example.com/groups/other-group/-/work_items/10',
+                namespace: {
+                  id: 77,
+                  kind: 'group',
+                  full_path: 'other-group',
+                },
+                work_item_type: {
+                  id: 1,
+                  name: 'Epic',
+                  icon_name: 'issue-type-epic',
+                },
+              },
+            },
+          },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.hierarchy.parent.namespace).toEqual({
+          __typename: 'Namespace',
+          id: 'gid://gitlab/Namespaces::GroupNamespace/77',
+          fullPath: 'other-group',
+        });
+      });
+
+      it('falls back to the list namespace when the parent has no namespace', async () => {
+        const item = makeRestItem({
+          features: {
+            hierarchy: {
+              parent: {
+                global_id: 'gid://gitlab/WorkItem/10',
+                iid: 5,
+                title: 'Parent work item',
+                title_html: '<p>Parent work item</p>',
+                confidential: false,
+                web_url: 'https://gitlab.example.com/work_items/10',
+                work_item_type: {
+                  id: 1,
+                  name: 'Epic',
+                  icon_name: 'issue-type-epic',
+                },
+              },
+            },
+          },
+        });
+        mockAxios.onGet(ENDPOINT).reply(HTTP_STATUS_OK, [item], {});
+
+        const { nodes } = await workItemsRestResolver(makeNamespace(), {});
+
+        expect(nodes[0].features.hierarchy.parent.namespace).toEqual(makeNamespace());
       });
 
       it('maps award_emoji to features.awardEmoji', async () => {

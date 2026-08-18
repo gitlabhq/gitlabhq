@@ -117,11 +117,11 @@ describe('BlobDeleteFileGroup component', () => {
         expect(showDeleteBlobModalMock).not.toHaveBeenCalled();
       });
 
-      it('emits showForkSuggestion event', async () => {
+      it('emits show-fork-suggestion event', async () => {
         findDeleteItem().vm.$emit('action');
         await nextTick();
 
-        expect(wrapper.emitted('showForkSuggestion')).toEqual([[]]);
+        expect(wrapper.emitted('show-fork-suggestion')).toEqual([[]]);
       });
     });
   });
@@ -139,6 +139,6 @@ describe('BlobDeleteFileGroup component', () => {
     expect(findDeleteItem().props('item')).toMatchObject({
       extraAttrs: { disabled: false },
     });
-    expect(wrapper.emitted('showForkSuggestion')).toBeUndefined();
+    expect(wrapper.emitted('show-fork-suggestion')).toBeUndefined();
   });
 });

@@ -71,7 +71,14 @@ RSpec.describe Organizations::RootGroupOrganizationBackfillWorker, feature_categ
         let_it_be(:other_org) { create(:organization) }
         let_it_be(:group) { create(:group, organization: other_org) }
 
-        it 'does not transfer the group' do
+        it 'logs the skip without transferring the group' do
+          expect(Sidekiq.logger).to receive(:info).with(
+            hash_including(
+              'message' => 'Group not in default organization, skipping backfill',
+              'group_id' => group.id
+            )
+          )
+
           expect { consume_event(subscriber: described_class, event: event) }
             .not_to change { Organizations::Organization.count }
 
@@ -209,6 +216,85 @@ RSpec.describe Organizations::RootGroupOrganizationBackfillWorker, feature_categ
         end
 
         expect { consume_event(subscriber: described_class, event: event) }.to raise_error(StandardError, 'test error')
+      end
+
+      context 'when the organization cannot be created' do
+        before do
+          allow_next_instance_of(Organizations::CreateFromGroupService) do |service|
+            allow(service).to receive(:execute).and_return(
+              ServiceResponse.error(message: 'Name is invalid', reason: :organization_not_created)
+            )
+          end
+        end
+
+        it 'logs the failure and raises' do
+          expect(Sidekiq.logger).to receive(:error).with(
+            hash_including(
+              'message' => 'Failed to create organization',
+              'group_id' => group.id,
+              'error_message' => 'Name is invalid'
+            )
+          )
+
+          expect { consume_event(subscriber: described_class, event: event) }
+            .to raise_error("Failed to create organization for group #{group.id}: Name is invalid")
+        end
+      end
+
+      context 'when the group cannot be transferred' do
+        let_it_be(:organization) { create(:organization, state: :unconfirmed) }
+
+        before do
+          allow_next_instance_of(Organizations::CreateFromGroupService) do |service|
+            allow(service).to receive(:execute).and_return(
+              ServiceResponse.error(
+                message: 'transfer failed',
+                reason: :group_not_transferred,
+                payload: { organization: organization }
+              )
+            )
+          end
+        end
+
+        it 'logs the orphaned organization and raises' do
+          expect(Sidekiq.logger).to receive(:error).with(
+            hash_including(
+              'message' => 'Failed to transfer group',
+              'group_id' => group.id,
+              Labkit::Fields::GL_ORGANIZATION_ID => organization.id,
+              'error_message' => 'transfer failed'
+            )
+          )
+
+          expect { consume_event(subscriber: described_class, event: event) }
+            .to raise_error(
+              "Failed to transfer group #{group.id} to organization #{organization.id}: transfer failed"
+            )
+        end
+      end
+
+      context 'when the service reports an unrecognized reason' do
+        before do
+          allow_next_instance_of(Organizations::CreateFromGroupService) do |service|
+            allow(service).to receive(:execute).and_return(
+              ServiceResponse.error(message: 'something else', reason: :something_else)
+            )
+          end
+        end
+
+        it 'logs the failure and raises rather than silently skipping' do
+          expect(Sidekiq.logger).to receive(:error).with(
+            hash_including(
+              'message' => 'Failed to backfill organization',
+              'group_id' => group.id,
+              'error_reason' => :something_else,
+              'error_message' => 'something else'
+            )
+          )
+
+          expect { consume_event(subscriber: described_class, event: event) }
+            .to raise_error("Failed to backfill organization for group #{group.id} (something_else): something else")
+        end
       end
     end
   end

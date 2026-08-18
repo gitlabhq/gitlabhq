@@ -6,6 +6,7 @@ import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { VARIANT_SIDEBAR } from '~/sidebar/components/labels/labels_select_widget/constants';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownTitle from './dropdown_title.vue';
@@ -28,6 +29,7 @@ export default {
     DropdownContents,
     DropdownValueCollapsed,
   },
+  mixins: [glSlotsMixin],
   props: {
     allowLabelRemove: {
       type: Boolean,
@@ -130,7 +132,7 @@ export default {
       default: false,
     },
   },
-  emits: ['onDropdownClose', 'onLabelRemove', 'toggleCollapse', 'updateSelectedLabels'],
+  emits: ['label-removed', 'onDropdownClose', 'toggle-collapse', 'update-selected-labels'],
   data() {
     return {
       contentIsOnViewport: true,
@@ -280,11 +282,11 @@ export default {
     handleDropdownClose(labels, touchedLabels) {
       // Only emit label updates if there are any
       // labels to update on UI.
-      if (labels.length) this.$emit('updateSelectedLabels', labels);
+      if (labels.length) this.$emit('update-selected-labels', labels);
       this.$emit('onDropdownClose', touchedLabels);
     },
     handleCollapsedValueClick() {
-      this.$emit('toggleCollapse');
+      this.$emit('toggle-collapse');
     },
     setContentIsOnViewport(showDropdownContents) {
       if (!showDropdownContents) {
@@ -316,7 +318,7 @@ export default {
         v-if="!hideCollapsedView"
         ref="dropdownButtonCollapsed"
         :labels="selectedLabels"
-        @onValueClick="handleCollapsedValueClick"
+        @on-value-click="handleCollapsedValueClick"
       />
       <dropdown-title
         :allow-label-edit="allowLabelEdit"
@@ -324,9 +326,9 @@ export default {
       />
       <dropdown-value
         :disable-labels="labelsSelectInProgress"
-        @onLabelRemove="$emit('onLabelRemove', $event)"
+        @label-removed="$emit('label-removed', $event)"
       >
-        <slot></slot>
+        <template v-if="glSlots().default" #default><slot></slot></template>
       </dropdown-value>
       <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
       <dropdown-contents

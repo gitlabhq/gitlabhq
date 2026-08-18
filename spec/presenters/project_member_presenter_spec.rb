@@ -22,13 +22,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       context 'and user can admin_project_member' do
         let(:can_admin) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'and user cannot admin_project_member' do
         let(:can_admin) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       let(:can_admin) { true }
       let(:is_invited) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -50,13 +50,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
     context 'when member is the holder of the personal namespace' do
       let(:is_holder) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when member is not the holder of the personal namespace' do
       let(:is_holder) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -77,13 +77,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       end
 
       context 'when user can update_project_member' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user cannot update_project_member' do
         let(:can_update_member) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -96,13 +96,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       end
 
       context 'when user can manage owners' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user cannot manage owners' do
         let(:can_manage_owners) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -125,13 +125,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       context 'when user can destroy_project_member' do
         let(:can_destroy_member) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user cannot destroy_project_member' do
         let(:can_destroy_member) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -146,13 +146,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       context 'when user can manage owners' do
         let(:can_manage_owners) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user cannot manage owners' do
         let(:can_manage_owners) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -171,13 +171,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       context 'and user can update_project_member' do
         let(:can_update) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'and user cannot update_project_member' do
         let(:can_update) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -187,13 +187,13 @@ RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
       context 'and user can update_project_member' do
         let(:can_update) { true }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'and user cannot update_project_member' do
         let(:can_update) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

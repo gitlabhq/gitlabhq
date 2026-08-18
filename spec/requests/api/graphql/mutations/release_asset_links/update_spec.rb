@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Updating an existing release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be_with_reload(:release) { create(:release, project: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
@@ -49,6 +49,17 @@ RSpec.describe 'Updating an existing release asset link', feature_category: :rel
 
   let(:update_link) { post_graphql_mutation(mutation, current_user: current_user) }
   let(:mutation_response) { graphql_mutation_response(mutation_name)&.with_indifferent_access }
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_release_link do
+    let(:user) { developer }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:release_asset_link_update, mutation_arguments, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
 
   it 'updates and existing release asset link and returns the updated link', :aggregate_failures do
     update_link

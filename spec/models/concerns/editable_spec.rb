@@ -23,8 +23,8 @@ RSpec.describe Editable do
         let(:other_organization) { create(:organization) }
         let(:ghost_user) { Users::Internal.in_organization(other_organization).ghost }
         let(:edited_note) do
-          create(:note, author: author, created_at: 3.days.ago, last_edited_at: 2.days.ago,
-            organization: other_organization)
+          create(:note, :on_personal_snippet, author: author, created_at: 3.days.ago,
+            last_edited_at: 2.days.ago, noteable: create(:personal_snippet, organization: other_organization))
         end
 
         before do

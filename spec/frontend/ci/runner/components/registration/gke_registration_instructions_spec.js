@@ -44,7 +44,7 @@ describe('GkeRegistrationInstructions', () => {
   const findZoneInput = () => wrapper.findByTestId('zone-input');
 
   const findNodePoolNameInput = () => wrapper.findByTestId('node-pool-name-input');
-  const findAddNodePoolButton = () => wrapper.findByTestId('add-node-pool-button');
+  const findAddNodePoolButton = () => wrapper.findComponentByTestId('add-node-pool-button');
   const findNodePools = () => wrapper.findAllByTestId('node-pool');
   // Node pool inputs are tested for validations in gke_node_pool_group_spec
 
@@ -54,7 +54,7 @@ describe('GkeRegistrationInstructions', () => {
   const findTokenMessage = () => wrapper.findByTestId('runner-token-message');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
+  const findInstructionsButton = () => wrapper.findComponentByTestId('show-instructions-button');
 
   const findGoogleCloudInstructionsModal = () =>
     wrapper.findComponent(GoogleCloudRegistrationInstructionsModal);

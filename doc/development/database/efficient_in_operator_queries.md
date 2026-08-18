@@ -148,7 +148,7 @@ queries.
 
 ### Requirements
 
-The technique is not a drop-in replacement for the existing group-level queries using `IN` operator.
+The technique is not a drop-in replacement for the existing group-level queries using the `IN` operator.
 The technique can only optimize `IN` queries that satisfy the following requirements:
 
 - `LIMIT` is present, which usually means that the query is paginated

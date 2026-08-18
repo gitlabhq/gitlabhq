@@ -30,9 +30,7 @@ module QA
             config.results_directory = ENV['QA_ALLURE_RESULTS_DIRECTORY'] || 'tmp/allure-results'
             config.clean_results_directory = false
 
-            # automatically attach links to testcases and issues
-            config.tms_tag = :testcase
-            config.link_tms_pattern = '{}'
+            # automatically attach links to issues
             config.issue_tag = :issue
             config.link_issue_pattern = '{}'
 

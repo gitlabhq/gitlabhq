@@ -1,0 +1,11 @@
+---
+name: deprioritize_destroyed_project_bot_user_project_authorizations_refresh
+description: Schedule the project authorization refresh triggered by destroying a
+  project bot user's memberships with medium urgency instead of high urgency.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22633
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248268
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607948
+milestone: '19.3'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

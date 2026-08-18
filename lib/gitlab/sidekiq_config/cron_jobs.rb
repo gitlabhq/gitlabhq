@@ -27,9 +27,10 @@ module Gitlab
       end
 
       # Timezone string applied to every cron job, or `nil` when no override is configured.
-      # A follow-up MR will wire the source.
+      #
+      # @return [String, nil]
       def timezone_override
-        nil
+        Gitlab::CurrentSettings.sidekiq_timezone_override
       end
 
       # Registers a dynamic job or overrides fields on an existing static job.
@@ -133,7 +134,7 @@ module Gitlab
       # @param jobs [Hash{String => Hash}]
       def apply_timezone_override(jobs)
         tz = timezone_override
-        return if tz.nil? || tz.to_s.empty?
+        return if tz.blank?
 
         validated_tz = validate_timezone(tz)
         return unless validated_tz

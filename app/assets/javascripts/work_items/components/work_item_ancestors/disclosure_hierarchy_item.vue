@@ -1,6 +1,8 @@
 <script>
 import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { GlIcon, GlLink } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { ISSUABLE_EPIC } from '../../constants';
 
 export default {
@@ -9,16 +11,22 @@ export default {
     GlIcon,
     GlLink,
   },
+  directives: {
+    SafeHtml,
+  },
+  titleInLinkSafeHtmlConfig,
   props: {
     /**
      * Path item in the form:
      * ```
      * {
-     *   title:    String, required
-     *   icon:     String, optional
+     *   titleHtml: String (rendered as HTML)
+     *   message:   String (rendered as plain text)
+     *   icon:      String, optional
      *   ancestorNotAvailable: Boolean, optional
      * }
      * ```
+     * Exactly one of either titleHtml or message must be provided.
      */
     item: {
       type: Object,
@@ -49,7 +57,12 @@ export default {
       :class="{ 'gl-cursor-help': item.ancestorNotAvailable }"
     >
       <gl-icon v-if="shouldDisplayIcon(item.icon)" :name="item.icon" class="gl-mx-2 gl-shrink-0" />
-      <span class="gl-z-200 gl-truncate">{{ item.title }}</span>
+      <span
+        v-if="item.titleHtml"
+        v-safe-html:[$options.titleInLinkSafeHtmlConfig]="item.titleHtml"
+        class="gl-z-200 gl-truncate"
+      ></span>
+      <span v-else class="gl-z-200 gl-truncate">{{ item.message }}</span>
     </gl-link>
     <!--
       @slot Additional content to be displayed in an item.

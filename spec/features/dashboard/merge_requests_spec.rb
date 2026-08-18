@@ -63,7 +63,6 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
 
     it 'shows projects only with merge requests feature enabled' do
       click_button 'Select project to create merge request'
-      wait_for_requests
 
       within_testid('new-resource-dropdown') do
         expect_listbox_item(project.full_name)

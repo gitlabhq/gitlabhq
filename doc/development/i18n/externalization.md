@@ -289,7 +289,7 @@ In Vue Single-File Components, you can define an `i18n` property in the componen
 </template>
 ```
 
-In modules, if we reuse the same translation in multiple files, we can add them to a `constants.js` or a `i18n.js` file and import those translations across the module. However, this adds yet another level of complexity to our codebase and thus should be used with caution.
+In modules, if we reuse the same translation in multiple files, we can add them to a `constants.js` or an `i18n.js` file and import those translations across the module. However, this adds yet another level of complexity to our codebase and thus should be used with caution.
 
 Another practice to avoid when exporting copy strings is to import them in specs. While it might seem like a much more efficient test (if we change the copy, the test will still pass!) it creates additional problems:
 
@@ -838,7 +838,7 @@ When text values are used in translatable strings as variables, special care mus
 
 When using variables to add text into translatable strings, several localization challenges can arise:
 
-- Gender agreement: Languages with grammatical gender may require different forms of articles, adjectives or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives and some past participles must agree with the noun's gender and position in the sentence.
+- Gender agreement: Languages with grammatical gender may require different forms of articles, adjectives, or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives, and some past participles must agree with the noun's gender and position in the sentence.
 - Case and declension: In languages with cases (like German), the inserted text may need different forms depending on its grammatical role in the sentence.
 - Word order: Different languages have different word order requirements, and inserted text may need to appear in different positions in the sentence for natural-sounding translations.
 
@@ -989,7 +989,7 @@ Suppose you want to add translations for a new language, for example, French:
    ```
 
    If you want to add a new language for a specific region, the command is similar. You must
-   separate the region with an underscore (`_`), specify the region in capital letters. For example:
+   separate the region with an underscore (`_`) and specify the region in capital letters. For example:
 
    ```shell
    bin/rake gettext:add_language[en_GB]

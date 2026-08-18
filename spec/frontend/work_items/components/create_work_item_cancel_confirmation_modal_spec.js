@@ -9,8 +9,8 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
   const findComponent = () => wrapper.findComponent(CreateWorkItemCancelConfirmationModal);
   const findModal = () => wrapper.findComponent(GlModal);
   const findContinueEditingButton = () =>
-    wrapper.find('[data-testid="create-work-item-continue-editing"]');
-  const findDiscardButton = () => wrapper.find('[data-testid="create-work-item-discard"]');
+    wrapper.findComponent('[data-testid="create-work-item-continue-editing"]');
+  const findDiscardButton = () => wrapper.findComponent('[data-testid="create-work-item-discard"]');
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(CreateWorkItemCancelConfirmationModal, {

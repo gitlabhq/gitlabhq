@@ -47,6 +47,7 @@ class ApplicationController < BaseActionController
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :set_current_organization
+  before_action :set_data_context
   before_action :enforce_read_only_organization
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :check_password_expiration, if: :html_request?

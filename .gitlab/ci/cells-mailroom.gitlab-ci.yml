@@ -1,0 +1,25 @@
+# Triggers a child pipeline that runs the cells-mailroom service's RSpec suite.
+#
+# cells-mailroom is a standalone, no-Rails bundle (not a published gem), so it
+# is wired up directly here rather than through the gems CI template.
+.cells-mailroom-rules:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      changes:
+        - "cells-mailroom/**/*"
+        - ".gitlab/ci/cells-mailroom.gitlab-ci.yml"
+
+cells-mailroom:
+  extends: ".cells-mailroom-rules"
+  needs:
+    - clone-gitlab-repo
+  trigger:
+    include: "cells-mailroom/.gitlab-ci.yml"
+    strategy: depend
+  inherit:
+    variables: false
+  variables:
+    FF_NETWORK_PER_BUILD: "true"
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    CI_FETCH_REPO_GIT_STRATEGY: none

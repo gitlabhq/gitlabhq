@@ -68,7 +68,7 @@ a GitLab Duo Chat feature to troubleshoot single-job failures.
 - Have the Developer, Maintainer, or Owner role for the project.
 - Have an existing failed pipeline.
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
 ## Fix the pipeline in a merge request
 
@@ -120,6 +120,8 @@ You can use `AGENTS.md` to customize behavior such as:
 - Commit message format for the changes the flow commits.
 - Merge request metadata, such as labels and description, for merge requests the flow creates.
 - How to classify and treat specific types of failures.
+- How to handle repeated failures of the same type, to prevent the flow from making the
+  same unsuccessful fix more than once.
 
 For example:
 
@@ -137,6 +139,20 @@ apply labels based on the following failed pipeline scenarios:
   merge_request case.
 ```
 
+For example, to handle migration failures:
+
+```markdown
+## Migration failures
+
+If a pipeline fails because of a database migration:
+
+- Run `bin/rails db:migrate:status` to check the current migration state before attempting
+  a fix.
+- Do not edit or delete past migration files.
+- If the migration cannot be safely reversed, post a comment describing the issue instead
+  of attempting a fix.
+```
+
 ## Known issues
 
 - The AI gateway processes only the last 150 KiB of job logs. If your job produces extensive
@@ -144,7 +160,7 @@ apply labels based on the following failed pipeline scenarios:
   See the following section for workarounds.
 - The flow cannot always verify package installation in the sandboxed runtime environment.
   If dependencies are missing, you can customize the default flow image. See
-  [change the default Docker image](../execution.md#change-the-default-docker-image).
+  [change the default Docker image](../execution/images.md#change-the-default-docker-image).
 - Repository instructions in `AGENTS.md` influence the flow's behavior but are not guaranteed
   to be followed in every case.
 
@@ -166,6 +182,23 @@ To work around this issue, try the following:
 - Add a summary step at the end of your script that echoes key error messages.
 - Use `after_script` to output diagnostic information after the main script completes.
 - Split verbose jobs into smaller, focused jobs with more concise logs.
+
+### Fix pipeline with Duo button does not appear
+
+You meet the [prerequisites](#prerequisites), but the **Fix pipeline with Duo** button
+does not appear.
+
+This issue occurs because the button depends on settings across three separate pages (GitLab
+Duo, the Agent Platform, and foundational flows).
+A setting turned on at one level does not guarantee it is on at every level below it.
+
+To resolve this issue, recheck each requirement:
+
+- [GitLab Duo](../../turn_on_off.md#turn-gitlab-duo-on-or-off) or
+  [GitLab Duo Core](../../turn_on_off.md#turn-gitlab-duo-core-on-or-off) is turned on.
+- The [Agent Platform is turned on](../../turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+- **Allow foundational flows** and **Fix CI/CD Pipeline** are turned on for the top-level group
+  and, on GitLab Self-Managed, the instance.
 
 ## Give feedback
 

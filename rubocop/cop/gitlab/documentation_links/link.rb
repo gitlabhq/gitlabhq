@@ -197,7 +197,7 @@ module RuboCop
 
           # This methods extracts anchors from a Markdown file. The logic in here replicates our
           # custom Kramdown header parser at https://gitlab.com/gitlab-org/ruby/gems/gitlab_kramdown/-/blob/bbc5ac439a2e6af60cbcce9a157283b2c5b59b38/lib/gitlab_kramdown/parser/header.rb.
-          # The logic is documented here: https://docs.gitlab.com/ee/user/markdown.html#heading-ids-and-links.
+          # The logic is documented here: https://docs.gitlab.com/user/markdown/#heading-anchors.
           # There a special undocumnented syntax that makes it possible to set custom IDs, eg:
           # ```md
           # ### My heading {#my-custom-id}

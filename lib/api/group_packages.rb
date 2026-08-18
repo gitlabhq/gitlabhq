@@ -29,7 +29,7 @@ module API
       requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group'
       optional :exclude_subgroups, type: Boolean, default: false, desc: 'Determines if subgroups should be excluded'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all packages for a group' do
         detail 'Lists all packages for a specified group. When accessed without authentication, only packages of ' \
           'public projects are returned. By default, packages with `default`, `deprecated`, and `error` status are ' \

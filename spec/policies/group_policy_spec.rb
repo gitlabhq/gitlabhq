@@ -1885,17 +1885,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     it { is_expected.to be_allowed(:award_achievement) }
     it { is_expected.to be_allowed(:destroy_user_achievement) }
 
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(achievements: false)
-      end
-
-      it { is_expected.to be_disallowed(:read_achievement) }
-      it { is_expected.to be_disallowed(:admin_achievement) }
-      it { is_expected.to be_disallowed(:award_achievement) }
-      it { is_expected.to be_disallowed(:destroy_user_achievement) }
-    end
-
     context 'when current user is not a group member' do
       let(:current_user) { non_group_member }
 

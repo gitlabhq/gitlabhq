@@ -1,14 +1,25 @@
 <script>
+import { defineAsyncComponent } from 'vue';
+
 export default {
   name: 'WidgetApp',
   components: {
-    MrSecurityWidget: () =>
-      import('~/vue_merge_request_widget/widgets/security_reports/mr_widget_security_reports.vue'),
-    MrTestReportWidget: () => import('~/vue_merge_request_widget/widgets/test_report/index.vue'),
-    MrTerraformWidget: () => import('~/vue_merge_request_widget/widgets/terraform/index.vue'),
-    MrCodeQualityWidget: () => import('~/vue_merge_request_widget/widgets/code_quality/index.vue'),
-    MrAccessibilityWidget: () =>
-      import('~/vue_merge_request_widget/widgets/accessibility/index.vue'),
+    MrSecurityWidget: defineAsyncComponent(
+      () =>
+        import('~/vue_merge_request_widget/widgets/security_reports/mr_widget_security_reports.vue'),
+    ),
+    MrTestReportWidget: defineAsyncComponent(
+      () => import('~/vue_merge_request_widget/widgets/test_report/index.vue'),
+    ),
+    MrTerraformWidget: defineAsyncComponent(
+      () => import('~/vue_merge_request_widget/widgets/terraform/index.vue'),
+    ),
+    MrCodeQualityWidget: defineAsyncComponent(
+      () => import('~/vue_merge_request_widget/widgets/code_quality/index.vue'),
+    ),
+    MrAccessibilityWidget: defineAsyncComponent(
+      () => import('~/vue_merge_request_widget/widgets/accessibility/index.vue'),
+    ),
   },
   props: {
     mr: {

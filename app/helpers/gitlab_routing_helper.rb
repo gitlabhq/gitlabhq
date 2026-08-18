@@ -9,6 +9,7 @@ module GitlabRoutingHelper
   include API::Helpers::RelatedResourcesHelpers
   include ::Routing::ProjectsHelper
   include ::Routing::Projects::MembersHelper
+  include ::Routing::Projects::ObservabilityHelper
   include ::Routing::Groups::MembersHelper
   include ::Routing::Groups::ObservabilityHelper
   include ::Routing::MembersHelper

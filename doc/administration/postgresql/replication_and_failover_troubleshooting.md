@@ -16,11 +16,11 @@ When working with PostgreSQL replication and failover, you might encounter the f
 
 ## Consul and PostgreSQL changes not taking effect
 
-Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL, it does not restart the services. However, not all changes can be activated by reloading.
+Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL. It does not restart the services. However, not all changes can be activated by reloading.
 
 To restart either service, run `gitlab-ctl restart SERVICE`
 
-For PostgreSQL, it is usually safe to restart the leader node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done.
+For PostgreSQL, it is usually safe to restart the leader node by default. Automatic failover defaults to a 1-minute timeout. Provided the database returns before then, nothing else needs to be done.
 
 On the Consul server nodes, it is important to [restart the Consul service](../consul.md#restart-consul) in a controlled manner.
 
@@ -52,27 +52,6 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-## PgBouncer nodes don't fail over after Patroni switchover
-
-Due to a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8166) that
-affects versions of GitLab prior to 16.5.0, the automatic failover of PgBouncer nodes does not
-happen after a [Patroni switchover](replication_and_failover.md#manual-failover-procedure-for-patroni). In this
-example, GitLab failed to detect a paused database, then attempted to `RESUME` a
-not-paused database:
-
-```plaintext
-INFO -- : Running: gitlab-ctl pgb-notify --pg-database gitlabhq_production --newhost database7.example.com --user pgbouncer --hostuser gitlab-consul
-ERROR -- : STDERR: Error running command: GitlabCtl::Errors::ExecutionError
-ERROR -- : STDERR: ERROR: ERROR:  database gitlabhq_production is not paused
-```
-
-To ensure a [Patroni switchover](replication_and_failover.md#manual-failover-procedure-for-patroni) succeeds,
-you must manually restart the PgBouncer service on all PgBouncer nodes with this command:
-
-```shell
-gitlab-ctl restart pgbouncer
-```
-
 ## Reinitialize a replica
 
 If a replica cannot start or rejoin the cluster, or when it lags behind and cannot catch up, it might be necessary to reinitialize the replica:
@@ -91,7 +70,7 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
    ```
 
 1. Sign in to the broken server and reinitialize the database and replication. Patroni shuts
-   down PostgreSQL on that server, remove the data directory, and reinitialize it from scratch:
+   down PostgreSQL on that server, removes the data directory, and reinitializes it from scratch:
 
    ```shell
    sudo gitlab-ctl patroni reinitialize-replica --member gitlab-database-2.example.com
@@ -105,6 +84,40 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
 
    ```shell
    sudo gitlab-ctl tail patroni
+   ```
+
+If you still encounter issues, remove the data directory and reinitialize the replica manually:
+
+1. Stop Patroni:
+
+   ```shell
+   sudo gitlab-ctl stop patroni
+   ```
+
+   > [!warning]
+   > This step permanently deletes all PostgreSQL data on this node. Ensure you are running this on the correct replica node, not the leader.
+
+   ```shell
+   sudo rm -rf /var/opt/gitlab/postgresql/data
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Start Patroni:
+
+   ```shell
+   sudo gitlab-ctl start patroni
+   ```
+
+1. Monitor the logs and check the cluster state:
+
+   ```shell
+   sudo gitlab-ctl tail patroni
+   sudo gitlab-ctl patroni members
    ```
 
 ## Reset the Patroni state in Consul
@@ -253,7 +266,7 @@ Traceback (most recent call last):
 If the stack trace ends with `CFUNCTYPE(c_int)(lambda: None)`, this code triggers `MemoryError`
 if the Linux server has been hardened for security.
 
-The code causes Python to write temporary executable files, and if it cannot find a file system in which to do this. For example, if `noexec` is set on the `/tmp` file system, it fails with `MemoryError` ([read more in the issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6184)).
+The code causes Python to write temporary executable files, and fails if it cannot find a file system in which to do this. For example, if `noexec` is set on the `/tmp` file system, it fails with `MemoryError` ([read more in the issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6184)).
 
 ## Errors running `gitlab-ctl`
 
@@ -341,7 +354,7 @@ the current state of PostgreSQL on this node is discarded:
    ```
 
 If this procedure doesn't work and if the cluster is unable to elect a leader,
-[there is a another fix](#reset-the-patroni-state-in-consul) which should only be
+[there is another fix](#reset-the-patroni-state-in-consul) which should only be
 used as a last resort.
 
 ## PostgreSQL major version upgrade fails on a Patroni replica

@@ -74,4 +74,33 @@ describe('AccountAndLimits', () => {
       expect(input.disabled).toBe(true);
     });
   });
+
+  describe('Dynamic client registration warning', () => {
+    /** @type {HTMLInputElement} */
+    let checkbox;
+    /** @type {HTMLElement} */
+    let warning;
+
+    const updateCheckbox = (checked) => {
+      checkbox.checked = checked;
+      checkbox.dispatchEvent(new Event('change'));
+    };
+
+    beforeEach(() => {
+      checkbox = document.querySelector('.js-dcr-enabled');
+      warning = document.querySelector('.js-dcr-disabled-warning');
+    });
+
+    it('keeps the warning hidden initially', () => {
+      expect(warning.classList.contains('gl-hidden')).toBe(true);
+    });
+
+    it('shows the warning when unchecked and hides it again when re-checked', () => {
+      updateCheckbox(false);
+      expect(warning.classList.contains('gl-hidden')).toBe(false);
+
+      updateCheckbox(true);
+      expect(warning.classList.contains('gl-hidden')).toBe(true);
+    });
+  });
 });

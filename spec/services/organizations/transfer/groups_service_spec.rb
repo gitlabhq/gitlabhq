@@ -232,6 +232,108 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
           expect { service.execute }.not_to change { user_app.reload.organization_id }
         end
+
+        context 'when IAM replication is enabled' do
+          before do
+            stub_feature_flags(iam_data_replication: true)
+          end
+
+          it 'records an upsert outbox row carrying the new organization for the moved application',
+            :aggregate_failures do
+            app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+              organization: old_organization)
+
+            expect { service.execute }
+              .to change { Authn::IamOutbox.where(entity_id: app.id, event_type: :upsert).count }.by(1)
+
+            row = Authn::IamOutbox.where(
+              entity_id: app.id, event_type: :upsert, organization_id: new_organization.id
+            ).sole
+            expect(row).to have_attributes(entity_type: 'oauth_application', payload: {})
+          end
+        end
+
+        context 'when IAM replication is disabled' do
+          before do
+            stub_feature_flags(iam_data_replication: false)
+          end
+
+          it 'records no outbox row for the moved application' do
+            create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+              organization: old_organization)
+
+            expect { service.execute }.not_to change { Authn::IamOutbox.count }
+          end
+        end
+      end
+
+      context 'when batching updates' do
+        include_context 'with transfer batch size of 1'
+
+        let_it_be_with_refind(:subgroup_project2) do
+          create(:project, namespace: subgroup)
+        end
+
+        let_it_be_with_refind(:nested_project2) do
+          create(:project, namespace: nested_subgroup)
+        end
+
+        let_it_be_with_refind(:oauth_app1) do
+          create(:oauth_application, owner_id: group.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_refind(:oauth_app2) do
+          create(:oauth_application, owner_id: subgroup.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_refind(:oauth_app3) do
+          create(:oauth_application, owner_id: nested_subgroup.id, owner_type: 'Namespace',
+            organization: old_organization)
+        end
+
+        let(:execute_service) { service.execute }
+        let(:expected_batch_queries) do
+          { 'oauth_applications' => 3 }
+        end
+
+        it 'processes all records across multiple batches' do
+          service.execute
+
+          expect(subgroup_project2.reload.organization_id).to eq(new_organization.id)
+          expect(nested_project2.reload.organization_id).to eq(new_organization.id)
+          expect(oauth_app1.reload.organization_id).to eq(new_organization.id)
+          expect(oauth_app2.reload.organization_id).to eq(new_organization.id)
+          expect(oauth_app3.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it_behaves_like 'generates batched transfer queries'
+      end
+
+      context 'when transferring topics' do
+        let!(:old_topic) { create(:topic, name: 'rails', organization: old_organization) }
+        let!(:project_topic) { create(:project_topic, project: project, topic: old_topic) }
+
+        it 'delegates to TopicsService' do
+          service.execute
+
+          new_topic = Projects::Topic.find_by(organization_id: new_organization.id, name: 'rails')
+          expect(new_topic).to be_present
+          expect(project_topic.reload.topic_id).to eq(new_topic.id)
+        end
+
+        context 'when topic has an avatar' do
+          let!(:old_topic) do
+            create(:topic, :with_avatar, organization: old_organization, slug: 'avatar-topic')
+          end
+
+          let!(:project_topic) do
+            create(:project_topic, project: project, topic: old_topic)
+          end
+
+          it 'enqueues Organizations::TransferTopicAvatarWorker' do
+            expect { service.execute }.to change { Organizations::TransferTopicAvatarWorker.jobs.size }.by(1)
+          end
+        end
       end
     end
 

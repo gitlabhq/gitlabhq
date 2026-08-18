@@ -55,12 +55,12 @@ Create a `.gitlab-ci.yml` with the following content:
 default:
   image: node:latest
   before_script:
-    - npm ci --cache .npm --prefer-offline
     - |
       {
         echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
         echo "${CI_API_V4_URL#https?}/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=\${CI_JOB_TOKEN}"
       } | tee -a .npmrc
+    - npm ci --cache .npm --prefer-offline
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -97,7 +97,9 @@ As part of publishing a package, semantic-release increases the version number i
 1. In your project, select **Add new token**.
 1. In the **Token name** box, enter a token name.
    <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab_base.Spelling = NO -->
 1. Under **Select scopes**, select the **api** checkbox.
+<!-- vale gitlab_base.Spelling = YES -->
    <!-- markdownlint-enable MD044 -->
 1. Select **Create project access token**.
 1. Copy the token value.

@@ -23,7 +23,7 @@ describe('MergeRequestLink', () => {
     });
   };
 
-  const findPipelineIcon = () => wrapper.findByTestId('pipeline-icon');
+  const findPipelineIcon = () => wrapper.findComponentByTestId('pipeline-icon');
   const findLabelsCount = () => wrapper.findByTestId('labels-count');
   const findUserNotesCount = () => wrapper.findByTestId('user-notes-count');
   const findApprovalCount = () => wrapper.findByTestId('approval-count');

@@ -107,7 +107,6 @@ qa:metadata-lint:
   script:
     - bundle exec bin/qa Test::Instance::All http://localhost:3000 --test-metadata-only
     - cd ..
-    - ./scripts/qa/testcases-check qa/tmp/test-metadata.json
     - ./scripts/qa/quarantine-check qa/tmp/test-metadata.json
   artifacts:
     expire_in: 31d

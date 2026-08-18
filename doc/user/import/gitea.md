@@ -15,11 +15,9 @@ description: "Migrate from Gitea to GitLab."
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 - Ability to import projects with a `.` in their path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/434175) in GitLab 16.11.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping/post_migration_mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/14667) to [post-migration user contribution and membership mapping](mapping/post_migration_mapping.md) in GitLab 17.8.
 - Post-migration user and contribution membership mapping [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
@@ -50,6 +48,8 @@ When importing:
 - Because Gitea is not an OAuth provider, the author or assignee cannot be mapped to users on
   your GitLab instance. The project creator (usually the user who started the import process)
   is then set as the author. For issues, you can still see the original Gitea author.
+- GitLab does not automatically create namespaces or groups that do not exist, and does not fall
+  back to your personal namespace if the namespace or group name is taken.
 
 ## Prerequisites
 

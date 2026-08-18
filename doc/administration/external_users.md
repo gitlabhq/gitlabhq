@@ -74,7 +74,7 @@ regular expression must:
 For example:
 
 - `\.int@example\.com$`: Matches email addresses that end with `.int@domain.com`.
-- `^(?:(?!\.ext@example\.com).)*$\r?`: Matches email address that don't include `.ext@example.com`.
+- `^(?:(?!\.ext@example\.com).)*$\r?`: Matches email addresses that don't include `.ext@example.com`.
 
 > [!warning]
 > Adding a regular expression can increase the risk of a regular expression denial of service (ReDoS) attack.

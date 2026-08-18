@@ -1,11 +1,10 @@
-import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import GpgBadges from '~/gpg_badges';
 import initBlob from '~/pages/projects/init_blob';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import '~/sourcegraph/load';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
-import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
 import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
@@ -38,17 +37,14 @@ export default function initBlobShow() {
     const {
       blobPath,
       projectPath,
-      targetBranch,
       originalBranch,
       resourceId,
-      userId,
       explainCodeAvailable,
       refType,
       escapedRef,
       canDownloadCode,
       fullName,
       hasRevsFile,
-      ...dataset
     } = viewBlobEl.dataset;
 
     // Initialize Apollo cache with critical GraphQL queries
@@ -69,22 +65,19 @@ export default function initBlobShow() {
       blobPath,
       projectPath,
       refType,
-      targetBranch,
       originalBranch,
       resourceId,
-      userId,
       explainCodeAvailable,
       canDownloadCode,
       hasRevsFile,
       highlightWorker: new HighlightWorker(),
-      webIdeLinkData: provideWebIdeLink(dataset),
     };
 
     const router = createRouter(projectPath, originalBranch, fullName);
 
     initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType });
     initLastCommitApp(router);
-    initHeaderApp({ router, isBlobView: true });
+    initHeaderApp({ router });
     initRepositoryApp(router, repositoryAppOptions);
 
     initAuxiliaryViewer();

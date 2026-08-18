@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe DeleteMergedBranchesWorker, feature_category: :source_code_management do
   subject(:worker) { described_class.new }
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   describe "#perform" do
     it "delegates to Branches::DeleteMergedService" do

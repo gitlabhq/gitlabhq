@@ -45,7 +45,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
     let_it_be(:namespaces) { [] }
 
     it 'does not present the import values' do
-      expect(presenter.show_alert?).to eq(false)
+      expect(presenter.show_alert?).to be(false)
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
     end
 
     it 'presents the import values' do
-      expect(presenter.show_alert?).to eq(true)
+      expect(presenter.show_alert?).to be(true)
       expect(presenter.group_links).to eq("<a href=\"/groups/blink/-/group_members?tab=placeholders\">blink</a>")
       expect(presenter.groups_awaiting_placeholder_assignment).to match_array(namespaces)
       expect(presenter.group_names).to eq('blink')
@@ -69,7 +69,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
       end
 
       it 'does not present the import values' do
-        expect(presenter.show_alert?).to eq(false)
+        expect(presenter.show_alert?).to be(false)
       end
     end
   end
@@ -84,7 +84,7 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
     end
 
     it 'presents the import values' do
-      expect(presenter.show_alert?).to eq(true)
+      expect(presenter.show_alert?).to be(true)
       expect(presenter.group_links).to eq(
         "<a href=\"/groups/blink/-/group_members?tab=placeholders\">blink</a>, " \
           "<a href=\"/groups/marquee/-/group_members?tab=placeholders\">marquee</a>, " \

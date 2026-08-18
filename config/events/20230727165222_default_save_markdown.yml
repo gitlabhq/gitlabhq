@@ -4,7 +4,7 @@ category: default
 action: save_markdown
 extra_properties:
 identifiers:
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - text_editors
 - markdown

@@ -23,40 +23,15 @@ RSpec.describe HomepageData, feature_category: :notifications do
     allow(controller).to receive_messages(
       merge_requests_dashboard_path: '/merge_requests',
       activity_dashboard_path: '/activity',
-      issues_dashboard_path: '/issues',
-      dashboard_list_title: 'Test Title'
+      issues_dashboard_path: '/issues'
     )
-  end
-
-  describe '#merge_request_ids' do
-    subject(:merge_request_ids) { controller.send(:merge_request_ids, user) }
-
-    context 'when user preference is action_based' do
-      before do
-        user.user_preference.update!(merge_request_dashboard_list_type: 'action_based')
-      end
-
-      it 'returns action_based IDs' do
-        expect(merge_request_ids).to eq(%w[reviews_requested assigned_to_you])
-      end
-    end
-
-    context 'when user preference is role_based' do
-      before do
-        user.user_preference.update!(merge_request_dashboard_list_type: 'role_based')
-      end
-
-      it 'returns role_based IDs' do
-        expect(merge_request_ids).to eq(%w[reviews assigned])
-      end
-    end
   end
 
   describe '#homepage_app_data' do
     subject(:homepage_data) { controller.send(:homepage_app_data, user) }
 
     context 'when user has a recent push event' do
-      let(:project) { build(:project, :repository) }
+      let(:project) { build(:project) }
       let(:push_event) do
         create(:push_event, project: project, author: user).tap do |event|
           # Create a push event payload with the ref information

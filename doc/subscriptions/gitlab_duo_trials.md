@@ -73,7 +73,7 @@ Prerequisites:
 
 - You must have an active paid Premium subscription.
 - You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
-- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work, however the experience may be degraded.
+- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work. However, the experience may be degraded.
 
 To start a GitLab Duo Pro trial on GitLab Self-Managed or GitLab Dedicated, reach out to your Sales contact.
 

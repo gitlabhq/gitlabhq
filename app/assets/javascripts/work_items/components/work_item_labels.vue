@@ -342,9 +342,9 @@ export default {
     multi-select
     clear-search-on-item-select
     data-testid="work-item-labels"
-    @dropdownShown="onDropdownShown"
-    @searchStarted="search"
-    @updateValue="submitLabels"
+    @dropdown-shown="onDropdownShown"
+    @search-started="search"
+    @update-value="submitLabels"
     @updateSelected="setLabels"
   >
     <template #list-item="{ item }">

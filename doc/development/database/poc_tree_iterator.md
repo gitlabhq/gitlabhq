@@ -9,7 +9,7 @@ The group hierarchy in GitLab is represented with a tree, where the root element
 is the top-level namespace, and the child elements are the subgroups or the
 recently introduced `Namespaces::ProjectNamespace` records.
 
-The tree is implemented in the `namespaces` table ,via the `parent_id` column.
+The tree is implemented in the `namespaces` table, via the `parent_id` column.
 The column points to the parent namespace record. The top level namespace has no
 `parent_id`.
 
@@ -39,7 +39,7 @@ A few examples:
 ## Problem statement
 
 A group hierarchy could grow so big that a single query would not be able to load
-it in time. The query would fail with statement timeout error.
+it in time. The query would fail with a statement timeout error.
 
 Addressing scalability issues related to very large groups requires us to store
 the same data in different formats (de-normalization). However, if we're unable
@@ -89,17 +89,17 @@ solution would not work because:
 The batching query is implemented as a recursive CTE SQL query, where one batch
 would read a maximum of N rows. Due to the tree structure, reading N rows might
 not necessarily mean that we're reading N group IDs. If the tree is structured in
-a non-optimal way, a batch could return less (but never more) group IDs.
+a non-optimal way, a batch could return fewer (but never more) group IDs.
 
 The query implements a [depth-first](https://en.wikipedia.org/wiki/Depth-first_search)
 tree walking logic, where the DB scans the first branch of the tree until the leaf
-element. We're implementing depth-first algorithm because, when a batch is finished,
+element. We're implementing a depth-first algorithm because, when a batch is finished,
 the query must return enough information for the next batch (cursor). In GitLab,
 we limit the depth of the tree to 20, which means that in the worst case, the
 query would return a cursor containing 19 elements.
 
 Implementing a [breadth-first](https://en.wikipedia.org/wiki/Breadth-first_search)
-tree walking algorithm would be impractical, because a group can have unbounded
+tree walking algorithm would be impractical, because a group can have an unbounded
 number of descendants, thus we might end up with a huge cursor.
 
 1. Create an initializer row that contains:

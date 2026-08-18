@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Search admin API
@@ -11,12 +11,6 @@ title: Search admin API
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) in GitLab 16.1
-
-{{< /history >}}
 
 Use this API to retrieve information about [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations).
 

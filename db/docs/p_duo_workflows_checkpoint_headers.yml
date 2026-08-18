@@ -1,0 +1,15 @@
+---
+table_name: p_duo_workflows_checkpoint_headers
+classes:
+- Ai::DuoWorkflows::CheckpointHeader
+feature_categories:
+- duo_agent_platform
+description: Slim per-checkpoint header for incremental Duo Workflow checkpoint storage. Stores the langgraph checkpoint minus channel_values (channel_versions, versions_seen, v, ts, pending_sends) plus its metadata, so a CheckpointTuple can be rebuilt by overlaying channel_values reconstructed from p_duo_workflows_checkpoint_blobs.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244914
+milestone: '19.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+table_size: small
+notes: Transient data retained for 30 days. Range-partitioned by workflow_created_at (= the workflow's created_at, set on every row) so all of a workflow's headers share one daily partition and a lookup prunes to it; the partition manager drops whole day-partitions older than CHECKPOINT_RETENTION_DAYS, which enforces the TTL. Growth is one row per checkpoint (workflow step); bounded by per-workflow session lifespan.

@@ -77,6 +77,7 @@ module API
           present_carrierwave_file!(
             file,
             supports_direct_download: false, # we can't support direct download if we have custom response headers
+            content_disposition: :attachment,
             extra_response_headers: headers,
             extra_send_url_params: extra_send_url_params
           )

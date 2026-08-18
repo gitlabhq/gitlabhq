@@ -12,7 +12,6 @@ RSpec.describe 'Issues > User resets their incoming email token', feature_catego
   before do
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
     project.add_maintainer(user)
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
     visit project_work_items_path(project)

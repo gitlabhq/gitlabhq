@@ -48,7 +48,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
 
       create_list(:user, 3)
 
-      expect { get :index }.not_to exceed_query_limit(base_query_count)
+      expect { get :index }.not_to exceed_query_limit(base_query_count).allow_skip_cache_inconsistency
     end
 
     context 'pagination' do

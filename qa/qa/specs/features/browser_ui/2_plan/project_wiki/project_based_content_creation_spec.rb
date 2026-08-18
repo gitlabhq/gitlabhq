@@ -16,12 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'by adding a home page to the wiki',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41035',
-          type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
+      it 'by adding a home page to the wiki' do
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_wiki)
@@ -30,10 +25,10 @@ module QA
         Page::Project::Wiki::Edit.perform do |edit|
           edit.set_title new_wiki_title
           edit.set_content new_wiki_content
+          edit.click_submit
           edit.set_message commit_message
+          edit.confirm_message
         end
-
-        Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_title new_wiki_title
@@ -41,12 +36,7 @@ module QA
         end
       end
 
-      it 'by adding a second page to the wiki',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41067',
-          type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347808' do
+      it 'by adding a second page to the wiki' do
         wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_new_page)
@@ -54,10 +44,10 @@ module QA
         Page::Project::Wiki::Edit.perform do |edit|
           edit.set_title new_wiki_title
           edit.set_content new_wiki_content
+          edit.click_submit
           edit.set_message commit_message
+          edit.confirm_message
         end
-
-        Page::Project::Wiki::Edit.perform(&:click_submit)
 
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_title new_wiki_title
@@ -65,8 +55,7 @@ module QA
         end
       end
 
-      it 'by adding a home page to the wiki using git push',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347806' do
+      it 'by adding a home page to the wiki using git push' do
         empty_wiki = build(:project_wiki_page, project: project)
 
         Resource::Repository::WikiPush.fabricate! do |push|
@@ -83,8 +72,7 @@ module QA
         end
       end
 
-      it 'by adding a second page to the wiki using git push',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347807' do
+      it 'by adding a second page to the wiki using git push' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_title}.md"
           push.file_content = new_wiki_content
@@ -99,8 +87,7 @@ module QA
         end
       end
 
-      it 'by adding a wiki page with spaces in the path using git push',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442387' do
+      it 'by adding a wiki page with spaces in the path using git push' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
           push.file_content = new_wiki_page_with_spaces_in_the_path_content

@@ -196,7 +196,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, urgency: :low do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS, urgency: :low do
       desc 'List all repository commits' do
         detail 'Lists all commits for a specified project repository.'
         success code: 200, model: Entities::Commit
@@ -401,7 +401,7 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_commit, boundary_type: :project,
         job_token_policies: :read_repositories, allow_public_access_for_enabled_project_features: :repository
-      get ':id/repository/commits/:sha', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -424,7 +424,7 @@ module API
         use :with_unidiff
       end
       route_setting :authorization, permissions: :read_commit_diff, boundary_type: :project
-      get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
+      get ':id/repository/commits/:sha/diff', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -448,13 +448,12 @@ module API
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
       route_setting :authorization, permissions: :read_commit_comment, boundary_type: :project
-      get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/comments', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
         notes = paginate(commit.notes.with_api_entity_associations.order_created_at_id_asc)
         notes = prepare_and_filter_notes(notes)
-        notes = notes.select { |n| n.readable_by?(current_user) }
 
         present notes, with: Entities::CommitNote
       end
@@ -472,7 +471,7 @@ module API
         optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges', default: false
       end
       route_setting :authorization, permissions: :read_commit_sequence, boundary_type: :project
-      get ':id/repository/commits/:sha/sequence', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/sequence', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -505,7 +504,7 @@ module API
           documentation: { example: 'Initial commit' }
       end
       route_setting :authorization, permissions: :cherry_pick_commit, boundary_type: :project
-      post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/cherry_pick', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize_push_to_branch!(params[:branch])
 
         commit = user_project.commit(params[:sha])
@@ -560,7 +559,7 @@ module API
         optional :dry_run, type: Boolean, default: false, desc: "Does not commit any changes"
       end
       route_setting :authorization, permissions: :revert_commit, boundary_type: :project
-      post ':id/repository/commits/:sha/revert', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/revert', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize_push_to_branch!(params[:branch])
 
         commit = user_project.commit(params[:sha])
@@ -611,7 +610,7 @@ module API
         use :pagination
       end
       route_setting :authorization, permissions: :read_commit_ref, boundary_type: :project
-      get ':id/repository/commits/:sha/refs', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
+      get ':id/repository/commits/:sha/refs', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
 
@@ -672,7 +671,7 @@ module API
         end
       end
       route_setting :authorization, permissions: :create_commit_comment, boundary_type: :project
-      post ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/comments', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
@@ -707,7 +706,7 @@ module API
         end
       end
 
-      desc 'List all merge requests for a commit' do
+      desc 'List all merge requests associated with a commit' do
         detail 'Lists all merge requests associated with a specified commit.'
         success code: 200, model: Entities::MergeRequestBasic
         tags %w[commits]
@@ -728,7 +727,7 @@ module API
         boundary_type: :project,
         job_token_policies: :read_repositories,
         allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
-      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS,
+      get ':id/repository/commits/:sha/merge_requests', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS,
         urgency: :low do
         authorize! :read_merge_request, user_project
 
@@ -758,7 +757,7 @@ module API
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
       route_setting :authorization, permissions: :read_commit_signature, boundary_type: :project
-      get ':id/repository/commits/:sha/signature', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/signature', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
         not_found! 'Signature' unless commit.has_signature?

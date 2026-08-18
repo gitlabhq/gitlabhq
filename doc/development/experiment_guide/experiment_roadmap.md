@@ -7,7 +7,7 @@ title: Experimentation Framework Roadmap
 
 We're actively investing in improving the experimentation platform based on feedback from teams running experiments at
 scale. The full roadmap is tracked in
-[Improve Growth experiment process and velocity](https://gitlab.com/groups/gitlab-org/-/epics/19812).
+[Improve Growth experiment process and velocity](https://gitlab.com/groups/gitlab-org/-/work_items/19812).
 
 ## Planned improvements
 

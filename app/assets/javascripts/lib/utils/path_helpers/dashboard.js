@@ -472,6 +472,28 @@ export const inactiveDashboardProjectsPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
+ * - href: `/dashboard/projects(.:format)`
+ * - Path helper: `dashboard_projects_path`
+ * - URL helper: `dashboard_projects_url`
+ * - controller#action: `dashboard/projects#index`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const dashboardProjectsPath = /*#__PURE__*/ (...args) => {
+  const _organizationDashboardProjectsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"dashboard"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+  const _dashboardProjectsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"dashboard"],[2,[7,"/"],[2,[6,"projects"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationDashboardProjectsPath(gon.current_organization.path, ...args);
+  }
+
+  return _dashboardProjectsPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/dashboard(.:format)`
  * - Path helper: `root_dashboard_path`
  * - URL helper: `root_dashboard_url`

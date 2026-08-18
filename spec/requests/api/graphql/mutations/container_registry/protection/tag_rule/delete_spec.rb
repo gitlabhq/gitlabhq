@@ -6,7 +6,7 @@ RSpec.describe Mutations::ContainerRegistry::Protection::TagRule::Delete, :aggre
   include ContainerRegistryHelpers
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:container_protection_rule) do
     create(:container_registry_protection_tag_rule, project: project)
   end

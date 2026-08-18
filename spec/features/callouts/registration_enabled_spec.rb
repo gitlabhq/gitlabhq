@@ -40,19 +40,18 @@ RSpec.describe 'Registration enabled callout', feature_category: :system_access 
       end
 
       context 'when callout is dismissed', :js do
-        before do
+        it 'does not display callout' do
           visit admin_root_path
 
           within('body.page-initialised') do
             find_by_testid('close-registration-enabled-callout').click
           end
 
-          wait_for_requests
+          expect(page).not_to have_content callout_title
 
           visit root_dashboard_path
-        end
 
-        it 'does not display callout' do
+          expect(page).to have_title _('Projects')
           expect(page).not_to have_content callout_title
         end
       end

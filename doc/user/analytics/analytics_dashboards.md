@@ -26,7 +26,7 @@ description: Visualize metrics about DevSecOps and AI features for your projects
 
 Analytics dashboards help you visualize collected data on built-in dashboards.
 
-An enhanced dashboard experience is proposed in [epic 13801](https://gitlab.com/groups/gitlab-org/-/epics/13801) and [epic 19430](https://gitlab.com/groups/gitlab-org/-/work_items/19430).
+An enhanced dashboard experience is proposed in [epic 13801](https://gitlab.com/groups/gitlab-org/-/work_items/13801) and [epic 19430](https://gitlab.com/groups/gitlab-org/-/work_items/19430).
 
 ## Data sources
 
@@ -64,14 +64,6 @@ To view a list of dashboards for a project:
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ## View group dashboards
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a feature flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
-- Feature flag `group_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439718) in GitLab 16.11.
-
-{{< /history >}}
 
 Prerequisites:
 

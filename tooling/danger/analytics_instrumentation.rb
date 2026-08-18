@@ -147,16 +147,48 @@ module Tooling
         end
       end
 
+      MISSING_EVENT_DEFINITION_MESSAGE = <<~MSG
+        The event `%<event_name>s` does not have a corresponding definition file in
+        `config/events/` or `ee/config/events/`. Missing event definitions cause
+        unhandled promise rejections in Jest that are misattributed to unrelated test
+        suites, leading to flaky pipeline failures.
+
+        Please create the definition file before merging. You can use the Internal
+        Events CLI to generate it:
+
+        ```
+        bundle exec rails generate gitlab:internal_events:event_definition %<event_name>s
+        ```
+
+        See the [event definition guide](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/event_definition_guide/)
+        for more information.
+      MSG
+
+      EVENT_DEFINITION_DIRS = %w[config/events ee/config/events].freeze
+
+      # A file referencing this identifier imports or uses InternalEvents. A bare
+      # trackEvent(...) in a file that does not (e.g. one using the legacy Snowplow
+      # mixin) is not an internal event, so we must not check it.
+      INTERNAL_EVENTS_IDENTIFIER = 'InternalEvents'
+
       def verify_fe_tracking_params
-        js_files = helper.all_changed_files.select { |filename| filename.end_with?(".js", ".vue") }
+        js_files = helper.all_changed_files.select do |filename|
+          filename.end_with?(".js", ".vue") && !spec_file?(filename)
+        end
 
         js_files.each do |filename|
+          # Only files that actually use InternalEvents can fire an internal event.
+          next unless file_uses_internal_events?(filename)
+
           changes = helper.changed_lines(filename)
 
-          # Join all added lines, remove + prefix and clean whitespace to simplify searching
+          # Join all added lines, remove + prefix and clean whitespace to simplify
+          # searching. Comment lines are dropped so a commented-out or documented
+          # trackEvent('event') reference is not treated as a real call.
           added_content = changes
             .select { |line| line.start_with?('+') }
             .map { |line| line[1..] }
+            .reject { |line| line.strip.start_with?('//', '*') }
             .join('')
             .gsub(/\s+/, ' ')
             .strip
@@ -166,37 +198,50 @@ module Tooling
             tracked_properties = hash_content ? hash_content.scan(/(\w+):/).flatten : []
 
             # Find event definition file and extract additional_properties
-            def_folders = %w[config/events ee/config/events]
-            event_file_path = nil
-
-            def_folders.each do |folder|
+            event_file_path = EVENT_DEFINITION_DIRS.filter_map do |folder|
               potential_path = File.join(folder, "#{event_name}.yml")
-              if File.exist?(potential_path)
-                event_file_path = potential_path
-                break
-              end
-            end
+              potential_path if File.exist?(potential_path)
+            end.first
 
-            if event_file_path
-              event_definition = YAML.load_file(event_file_path)
-              additional_properties = event_definition['additional_properties'] || {}
-
-              # Check if additional_properties contains all tracked_properties
-              additional_property_keys = additional_properties.keys
-              missing_keys = tracked_properties - additional_property_keys
-              unless missing_keys.empty?
-                add_suggestion(
-                  filename: filename,
-                  regex: /#{event_name}/,
-                  comment_text: "Tracked properties #{missing_keys} are not defined in additional_properties in #{event_file_path}\n Please add the missing properties to the event definition."
-                )
-              end
-            end
+            check_event_definition(filename, event_name, tracked_properties, event_file_path)
           end
         end
       end
 
       private
+
+      def check_event_definition(filename, event_name, tracked_properties, event_file_path)
+        return report_missing_event_definition(event_name) if event_file_path.nil?
+
+        event_definition = YAML.load_file(event_file_path)
+        additional_properties = event_definition['additional_properties'] || {}
+
+        # Check if additional_properties contains all tracked_properties
+        additional_property_keys = additional_properties.keys
+        missing_keys = tracked_properties - additional_property_keys
+        return if missing_keys.empty?
+
+        add_suggestion(
+          filename: filename,
+          regex: /#{event_name}/,
+          comment_text: "Tracked properties #{missing_keys} are not defined in additional_properties in #{event_file_path}\n Please add the missing properties to the event definition."
+        )
+      end
+
+      def report_missing_event_definition(event_name)
+        fail format(MISSING_EVENT_DEFINITION_MESSAGE, event_name: event_name)
+      end
+
+      def spec_file?(filename)
+        filename.start_with?('spec/') || filename.include?('/spec/')
+      end
+
+      def file_uses_internal_events?(filename)
+        project_helper.file_lines(filename).any? { |line| line.include?(INTERNAL_EVENTS_IDENTIFIER) }
+      rescue StandardError
+        # If the file can't be read (e.g. removed in the MR) assume no usage.
+        false
+      end
 
       def modified_config_files
         helper.modified_files.select { |f| f.include?('config/metrics') && f.end_with?('yml') }

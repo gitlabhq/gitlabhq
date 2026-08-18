@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import BranchRulesApp from '~/projects/settings/repository/branch_rules/app.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -25,7 +26,7 @@ export default function mountBranchRulesListing(el) {
     canCreateBranchRule,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'BranchRulesAppRoot',
     apolloProvider,
@@ -40,8 +41,6 @@ export default function mountBranchRulesListing(el) {
       securityPoliciesPath,
       canCreateBranchRule: parseBoolean(canCreateBranchRule),
     },
-    render(createElement) {
-      return createElement(BranchRulesApp);
-    },
+    component: BranchRulesApp,
   });
 }

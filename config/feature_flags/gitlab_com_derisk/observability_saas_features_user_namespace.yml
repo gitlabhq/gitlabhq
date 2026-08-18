@@ -1,0 +1,9 @@
+---
+name: observability_saas_features_user_namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240322
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606108
+milestone: '19.3'
+type: gitlab_com_derisk
+group: group::embody
+default_enabled: false
+feature_issue_url: https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/119

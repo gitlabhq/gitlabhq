@@ -6,14 +6,14 @@ module Types
 
     include Gitlab::Graphql::MountMutation
 
-    mount_mutation Mutations::Achievements::Award, experiment: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Create, experiment: { milestone: '15.8' }
-    mount_mutation Mutations::Achievements::Delete, experiment: { milestone: '15.11' }
-    mount_mutation Mutations::Achievements::DeleteUserAchievement, experiment: { milestone: '16.1' }
-    mount_mutation Mutations::Achievements::Revoke, experiment: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Update, experiment: { milestone: '15.11' }
-    mount_mutation Mutations::Achievements::UpdateUserAchievement, experiment: { milestone: '17.3' }
-    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities, experiment: { milestone: '16.5' }
+    mount_mutation Mutations::Achievements::Award
+    mount_mutation Mutations::Achievements::Create
+    mount_mutation Mutations::Achievements::Delete
+    mount_mutation Mutations::Achievements::DeleteUserAchievement
+    mount_mutation Mutations::Achievements::Revoke
+    mount_mutation Mutations::Achievements::Update
+    mount_mutation Mutations::Achievements::UpdateUserAchievement
+    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus
@@ -135,12 +135,15 @@ module Types
     mount_mutation Mutations::Organizations::Create, experiment: { milestone: '16.6' }
     mount_mutation Mutations::Organizations::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::Organizations::OrganizationUsers::Delete, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
+    mount_mutation Mutations::Organizations::Restore, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Projects::CustomAttributes::Delete, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Projects::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Projects::Transfer, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Projects::BranchRules::SquashOptions::Update, experiment: { milestone: '17.9' }
     mount_mutation Mutations::BranchRules::Update, experiment: { milestone: '16.7' }
@@ -236,6 +239,7 @@ module Types
     mount_mutation Mutations::Namespaces::RegenerateNewWorkItemEmailAddress, experiment: { milestone: '18.2' }
     mount_mutation Mutations::Groups::CustomAttributes::Delete, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Groups::CustomAttributes::Set, experiment: { milestone: '18.9' }
+    mount_mutation Mutations::Groups::Transfer, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::Users::GroupCallouts::Create

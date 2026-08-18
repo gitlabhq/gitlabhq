@@ -29,7 +29,7 @@ For GitLab Self-Managed instance runners registered to your GitLab Dedicated ins
 
 {{< history >}}
 
-- Compute usage data for GitLab-hosted runners [introduced](https://gitlab.com/groups/gitlab-com/gl-infra/gitlab-dedicated/-/epics/524) in GitLab 18.0.
+- Compute usage data for GitLab-hosted runners [introduced](https://gitlab.com/groups/gitlab-com/gl-infra/gitlab-dedicated/-/work_items/524) in GitLab 18.0.
 
 {{< /history >}}
 

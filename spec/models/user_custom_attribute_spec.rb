@@ -18,6 +18,8 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:user_id) }
   end
 
+  it_behaves_like 'custom attribute key lookup behavior', :user
+
   describe 'scopes' do
     let(:user) { create(:user) }
     let(:blocked_at) { DateTime.now }
@@ -31,12 +33,6 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
 
     describe '.by_updated_at' do
       subject { described_class.by_updated_at(Date.today.all_day) }
-
-      it { is_expected.to match_array([custom_attribute]) }
-    end
-
-    describe '.by_key' do
-      subject { described_class.by_key('blocked_at') }
 
       it { is_expected.to match_array([custom_attribute]) }
     end

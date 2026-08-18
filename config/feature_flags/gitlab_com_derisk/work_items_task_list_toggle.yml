@@ -1,0 +1,10 @@
+---
+name: work_items_task_list_toggle
+description: Enables atomic task list item toggling for work items via the taskListToggle GraphQL input, bypassing a full description replacement.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582358
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244520
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605619
+milestone: '19.2'
+group: group::planner intelligence
+type: gitlab_com_derisk
+default_enabled: false

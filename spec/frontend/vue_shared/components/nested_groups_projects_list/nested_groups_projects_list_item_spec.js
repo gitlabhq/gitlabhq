@@ -32,7 +32,7 @@ describe('NestedGroupsProjectsListItem', () => {
   const findGroupsListItem = () => wrapper.findComponent(GroupsListItem);
   const findProjectsListItem = () => wrapper.findComponent(ProjectsListItem);
   const findToggleButton = () => wrapper.findComponent(GlButton);
-  const findMoreChildrenLink = () => wrapper.findByTestId('more-children-link');
+  const findMoreChildrenLink = () => wrapper.findComponentByTestId('more-children-link');
 
   describe('when item type is group', () => {
     it('renders GroupsListItem component with correct props', () => {

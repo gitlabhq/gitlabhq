@@ -1077,9 +1077,9 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   describe 'Query limits with jobs' do
     let_it_be(:group1) { create(:group) }
     let_it_be(:group2) { create(:group) }
-    let_it_be(:project1) { create(:project, :repository, group: group1) }
-    let_it_be(:project2) { create(:project, :repository, group: group1) }
-    let_it_be(:project3) { create(:project, :repository, group: group2) }
+    let_it_be(:project1) { create(:project, group: group1) }
+    let_it_be(:project2) { create(:project, group: group1) }
+    let_it_be(:project3) { create(:project, group: group2) }
 
     let_it_be(:merge_request1) { create(:merge_request, source_project: project1) }
     let_it_be(:merge_request2) { create(:merge_request, source_project: project3) }

@@ -1,10 +1,14 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
 import AlertSidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 import mockAlerts from '../mocks/alerts.json';
+
+Vue.use(VueApollo);
 
 const mockAlert = mockAlerts[0];
 
@@ -14,23 +18,14 @@ describe('Alert Details Sidebar Status', () => {
   const findAlertStatus = () => wrapper.findComponent(AlertStatus);
   const findStatus = () => wrapper.findByTestId('status');
 
-  function createComponent({ data, loading = false, stubs = {}, provide = {} } = {}) {
+  function createComponent({ data, stubs = {}, provide = {} } = {}) {
     wrapper = shallowMountExtended(AlertSidebarStatus, {
       propsData: {
         alert: { ...mockAlert },
         ...data,
         projectPath: 'projectPath',
       },
-      mocks: {
-        $apollo: {
-          mutate: jest.fn(),
-          queries: {
-            alert: {
-              loading,
-            },
-          },
-        },
-      },
+      apolloProvider: createMockApollo(),
       stubs,
       provide,
     });
@@ -39,7 +34,6 @@ describe('Alert Details Sidebar Status', () => {
   beforeEach(() => {
     createComponent({
       data: { alert: mockAlert },
-      loading: false,
     });
   });
 
@@ -51,7 +45,6 @@ describe('Alert Details Sidebar Status', () => {
     it('ensures dropdown is hidden when loading', async () => {
       createComponent({
         data: { alert: mockAlert },
-        loading: false,
       });
       findAlertStatus().vm.$emit('handle-updating', true);
       await nextTick();
@@ -61,7 +54,6 @@ describe('Alert Details Sidebar Status', () => {
     it('stops updating when the request fails', () => {
       createComponent({
         data: { alert: mockAlert },
-        loading: false,
       });
       findAlertStatus().vm.$emit('handle-updating', false);
       expect(findStatusLoadingIcon().exists()).toBe(false);

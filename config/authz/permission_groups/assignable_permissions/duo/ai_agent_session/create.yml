@@ -1,0 +1,9 @@
+---
+name: create_ai_agent_session
+description: Grants the ability to create AI agent sessions
+available_for:
+  - granular_access_token
+permissions:
+  - create_ai_agent_session
+boundaries:
+  - project

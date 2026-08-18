@@ -38,7 +38,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel:edit', 'creating-note:done', 'creating-note:start', 'creating-note:success'],
+  emits: ['cancel-edit', 'creating-note-done', 'creating-note-start', 'creating-note-success'],
   data() {
     return {
       updatedNote: cloneDeep(this.note),
@@ -79,7 +79,7 @@ export default {
   methods: {
     updateNote(newNote) {
       this.updatedNote = newNote;
-      this.$emit('creating-note:success');
+      this.$emit('creating-note-success');
     },
     renderGFM() {
       renderGFM(this.$refs['note-body']);
@@ -122,10 +122,10 @@ export default {
           :note-id="noteId"
           :noteable-id="noteableId"
           :discussion-id="note.discussion.id"
-          @cancel="$emit('cancel:edit')"
-          @creating-note:start="$emit('creating-note:start')"
-          @creating-note:success="updateNote"
-          @creating-note:done="$emit('creating-note:done')"
+          @cancel="$emit('cancel-edit')"
+          @creating-note-start="$emit('creating-note-start')"
+          @creating-note-success="updateNote"
+          @creating-note-done="$emit('creating-note-done')"
         />
       </div>
     </div>

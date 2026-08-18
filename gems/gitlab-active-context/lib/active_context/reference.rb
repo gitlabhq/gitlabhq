@@ -38,7 +38,7 @@ module ActiveContext
       end
     end
 
-    attr_reader :collection_id, :collection, :routing, :serialized_args, :ref_version
+    attr_reader :collection_id, :collection, :routing, :serialized_args, :ref_version, :project_id, :root_namespace_id
     attr_accessor :include_ref_fields
     attr_writer :documents
 
@@ -49,6 +49,14 @@ module ActiveContext
       @serialized_args = Array(args)
       @ref_version = Time.now.to_i
       @include_ref_fields = @collection.respond_to?(:include_ref_fields) ? @collection.include_ref_fields : true
+
+      # Relevant information for embeddings generation.
+      # `root_namespace_id` should be set before the `embeddings` preprocessor is invoked.
+      # For project-scoped collections, subclasses can set the `project_id` then determine
+      # the `root_namespace_id` from the `project_id`.
+      @project_id = nil
+      @root_namespace_id = nil
+
       init
     end
 

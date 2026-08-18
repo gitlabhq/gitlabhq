@@ -25,18 +25,22 @@ module OauthApplications
 
   def load_scopes
     @scopes ||= Doorkeeper::OAuth::Scopes.from_array(
-      Doorkeeper.configuration.scopes.to_a - [
-        ::Gitlab::Auth::AI_WORKFLOW.to_s,
-        ::Gitlab::Auth::DYNAMIC_USER.to_s,
-        ::Gitlab::Auth::SELF_ROTATE_SCOPE.to_s,
-        ::Gitlab::Auth::MCP_SCOPE.to_s,
-        ::Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
-      ]
+      Doorkeeper.configuration.scopes.to_a - excluded_scopes
     )
   end
 
   def permitted_params
     %i[name redirect_uri scopes confidential device_code_enabled]
+  end
+
+  protected
+
+  def excluded_scopes
+    [
+      ::Gitlab::Auth::AI_WORKFLOW.to_s,
+      ::Gitlab::Auth::DYNAMIC_USER.to_s,
+      ::Gitlab::Auth::SELF_ROTATE_SCOPE.to_s
+    ]
   end
 
   def application_params

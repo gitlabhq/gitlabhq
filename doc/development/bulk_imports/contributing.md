@@ -47,7 +47,7 @@ For example, to add import support for a new `Project` association called `docum
 > Associations listed in this file are imported from top to bottom. If you have an association that is order-dependent, put the dependencies before the
 > associations that require them. For example, documents must be imported before merge requests, otherwise they are not valid.
 
-1. Add your association to `tree.project` within the `import_export.yml`.
+1. Add your association to `tree.project` in the `import_export.yml`.
 
    ```diff
    diff --git a/lib/gitlab/import_export/project/import_export.yml b/lib/gitlab/import_export/project/import_export.yml
@@ -64,11 +64,11 @@ For example, to add import support for a new `Project` association called `docum
    ```
 
    > [!note]
-   > If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
+   > If your association relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
    > and imported in Enterprise Edition instances of GitLab.
 
    If your association doesn't need to include any sub-relations, then this is enough. But if it needs more sub-relations to be included (for example, notes),
-   you must list them out. For example, documents can have notes (with award emojis on notes) and award emojis (on documents), which we want to migrate. In this
+   you must list them out. For example, documents can have notes (with award emoji on notes) and award emoji (on documents), which we want to migrate. In this
    case, our relation becomes the following:
 
    ```diff
@@ -88,7 +88,7 @@ For example, to add import support for a new `Project` association called `docum
         - :user
    ```
 
-1. Add `included_attributes` of the relation. By default, any relation attribute that is not listed in `included_attributes` of the YAML file are filtered
+1. Add `included_attributes` of the relation. By default, any relation attribute that is not listed in `included_attributes` of the YAML file is filtered
    out on both export and import. To include the attributes you need, you must add them to `included_attributes` list as following:
 
    ```diff
@@ -109,7 +109,7 @@ For example, to add import support for a new `Project` association called `docum
    ```
 
 1. Add `excluded_attributes` of the relation. We also have `excluded_attributes` list present in the file. You don't need to add excluded attributes for
-   `Project`, but you do still need to do it for `Group`. This list represent attributes that should not be included in the export and should be ignored
+   `Project`, but you do still need to do it for `Group`. This list represents attributes that should not be included in the export and should be ignored
    on import. These attributes usually are:
 
    - Anything that ends on `_id` or `_ids`
@@ -139,7 +139,7 @@ Follow other relations example to add the new tests.
 
 Any newly-added relation specified in `import_export.yml` is automatically added to the export files written on disk, so no extra actions are required.
 
-Once the relation is added and tests are added, we can manually check that the relation is exported. It should automatically be included in both:
+After the relation is added and tests are added, we can manually check that the relation is exported. It should automatically be included in both:
 
 - File-based imports and exports. Use the [project export functionality](../../user/project/settings/import_export.md#export-a-project-and-its-data) to export,
   download, and inspect the exported data.
@@ -266,7 +266,7 @@ module BulkImports
           },
           documents: {
             pipeline: BulkImports::Projects::Pipelines::DocumentsPipeline,
-            minimum_source_version: '16.11.0',
+            minimum_source_version: '19.3.0',
             stage: 2
           }
        end
@@ -278,8 +278,8 @@ end
 We specified:
 
 - `stage: 2`, so project and repository stages must complete first before our pipeline is run in stage 2.
-- `minimum_source_version: '16.11.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore
-  so this pipeline only runs if source version is 16.11 or later.
+- `minimum_source_version: '19.3.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore,
+  this pipeline only runs if source version is 19.3 or later.
 
 > [!note]
 > If a relation is deprecated and need only to run the pipeline up to a certain version, we can specify `maximum_source_version` attribute.
@@ -326,10 +326,10 @@ This way, the importer maps each exported `link` to the corresponding `Releases:
 
 #### Importing an existing object that is referenced by multiple other relations
 
-If relations are referenced across multiple associations (or within a single association across multiple records), we won't want to import duplicates.
+If relations are referenced across multiple associations (or in a single association across multiple records), we won't want to import duplicates.
 
 For example, consider a label that is applied on a number of different issues and merge requests. Whenever we export issues and merge requests, the exported
-label is contained within each of the records as its subrelation. When we import exported issues and merge requests, we want to import the label only once
+label is contained in each of the records as its subrelation. When we import exported issues and merge requests, we want to import the label only once
 and reuse it across all of the records. Otherwise, we end up with duplicates (multiple labels with the same name).
 
 To import an object like this only once and reuse it in multiple places, we must define the object as an existing object relation.
@@ -355,7 +355,7 @@ To add a new relation to the ObjectBuilder, you must:
 
 ### Importing a relation from GraphQL API
 
-If your relation is available through GraphQL API, you can use `GraphQlExtractor` and perform transformations and loading within the pipeline class.
+If your relation is available through GraphQL API, you can use `GraphQlExtractor` and perform transformations and loading in the pipeline class.
 
 `MembersPipeline` example:
 
@@ -438,7 +438,7 @@ There are a number of helper service classes to assist with data download:
 
 ### Add a label for the new relation
 
-Once a new relation is added to Direct Transfer, you need to make sure that the relation is displayed in human readable form in the UI.
+After a new relation is added to Direct Transfer, you need to make sure that the relation is displayed in human readable form in the UI.
 
 1. Add a new key value pair to the [`BULK_IMPORT_STATIC_ITEMS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/import/constants.js#L9)
 

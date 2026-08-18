@@ -17,29 +17,29 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 
-	gkgpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb"
+	orbitpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 type mockGKGServer struct {
-	gkgpb.UnimplementedKnowledgeGraphServiceServer
-	handler func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error
+	orbitpb.UnimplementedOrbitServiceServer
+	handler func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error
 }
 
-func (m *mockGKGServer) ExecuteQuery(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+func (m *mockGKGServer) ExecuteQuery(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 	return m.handler(stream)
 }
 
-func startMockGKGServer(t *testing.T, handler func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error) net.Listener {
+func startMockGKGServer(t *testing.T, handler func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error) net.Listener {
 	t.Helper()
 
 	lis, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 
 	s := grpc.NewServer()
-	gkgpb.RegisterKnowledgeGraphServiceServer(s, &mockGKGServer{handler: handler})
+	orbitpb.RegisterOrbitServiceServer(s, &mockGKGServer{handler: handler})
 
 	go func() { _ = s.Serve(lis) }()
 	t.Cleanup(func() {
@@ -92,20 +92,20 @@ func newTestAPI(t *testing.T, railsURL string) *api.API {
 func TestInjectHappyPath(t *testing.T) {
 	const testAddress = "test-happy-path:50051"
 
-	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 		msg, err := stream.Recv()
 		if err != nil {
 			return err
 		}
 		_ = msg.GetRequest()
 
-		sendErr := stream.Send(&gkgpb.ExecuteQueryMessage{
-			Content: &gkgpb.ExecuteQueryMessage_Redaction{
-				Redaction: &gkgpb.RedactionExchange{
-					Content: &gkgpb.RedactionExchange_Required{
-						Required: &gkgpb.RedactionRequired{
+		sendErr := stream.Send(&orbitpb.ExecuteQueryMessage{
+			Content: &orbitpb.ExecuteQueryMessage_Redaction{
+				Redaction: &orbitpb.RedactionExchange{
+					Content: &orbitpb.RedactionExchange_Required{
+						Required: &orbitpb.RedactionRequired{
 							ResultId: "r1",
-							Resources: []*gkgpb.ResourceToAuthorize{
+							Resources: []*orbitpb.ResourceToAuthorize{
 								{
 									ResourceType: "project",
 									ResourceIds:  []int64{1, 2},
@@ -127,13 +127,13 @@ func TestInjectHappyPath(t *testing.T) {
 		}
 		_ = redactionMsg.GetRedaction().GetResponse()
 
-		return stream.Send(&gkgpb.ExecuteQueryMessage{
-			Content: &gkgpb.ExecuteQueryMessage_Result{
-				Result: &gkgpb.ExecuteQueryResult{
-					Content: &gkgpb.ExecuteQueryResult_ResultJson{
+		return stream.Send(&orbitpb.ExecuteQueryMessage{
+			Content: &orbitpb.ExecuteQueryMessage_Result{
+				Result: &orbitpb.ExecuteQueryResult{
+					Content: &orbitpb.ExecuteQueryResult_ResultJson{
 						ResultJson: `[{"id":1,"name":"test"}]`,
 					},
-					Metadata: &gkgpb.QueryMetadata{
+					Metadata: &orbitpb.QueryMetadata{
 						QueryType:       "traversal",
 						RawQueryStrings: []string{"SELECT * FROM projects"},
 						RowCount:        1,
@@ -205,14 +205,14 @@ func TestInjectHappyPath(t *testing.T) {
 func TestInjectGrpcError(t *testing.T) {
 	const testAddress = "test-grpc-error:50051"
 
-	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 		if _, err := stream.Recv(); err != nil {
 			return err
 		}
 
-		return stream.Send(&gkgpb.ExecuteQueryMessage{
-			Content: &gkgpb.ExecuteQueryMessage_Error{
-				Error: &gkgpb.ExecuteQueryError{
+		return stream.Send(&orbitpb.ExecuteQueryMessage{
+			Content: &orbitpb.ExecuteQueryMessage_Error{
+				Error: &orbitpb.ExecuteQueryError{
 					Code:    "compile_error",
 					Message: "invalid query syntax",
 				},
@@ -244,18 +244,18 @@ func TestInjectGrpcError(t *testing.T) {
 func TestInjectRedactionFailure(t *testing.T) {
 	const testAddress = "test-redaction-failure:50051"
 
-	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 		if _, err := stream.Recv(); err != nil {
 			return err
 		}
 
-		if err := stream.Send(&gkgpb.ExecuteQueryMessage{
-			Content: &gkgpb.ExecuteQueryMessage_Redaction{
-				Redaction: &gkgpb.RedactionExchange{
-					Content: &gkgpb.RedactionExchange_Required{
-						Required: &gkgpb.RedactionRequired{
+		if err := stream.Send(&orbitpb.ExecuteQueryMessage{
+			Content: &orbitpb.ExecuteQueryMessage_Redaction{
+				Redaction: &orbitpb.RedactionExchange{
+					Content: &orbitpb.RedactionExchange_Required{
+						Required: &orbitpb.RedactionRequired{
 							ResultId: "r1",
-							Resources: []*gkgpb.ResourceToAuthorize{
+							Resources: []*orbitpb.ResourceToAuthorize{
 								{
 									ResourceType: "project",
 									ResourceIds:  []int64{1},
@@ -300,7 +300,7 @@ func TestInjectRedactionFailure(t *testing.T) {
 func TestInjectStreamTimeout(t *testing.T) {
 	const testAddress = "test-stream-timeout:50051"
 
-	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 		if _, err := stream.Recv(); err != nil {
 			return err
 		}
@@ -377,75 +377,75 @@ func TestValidateMcpID(t *testing.T) {
 
 func TestBuildQueryResponse(t *testing.T) {
 	t.Run("raw format with valid JSON", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_ResultJson{
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_ResultJson{
 				ResultJson: `[{"id":1}]`,
 			},
-			Metadata: &gkgpb.QueryMetadata{
+			Metadata: &orbitpb.QueryMetadata{
 				QueryType: "traversal",
 				RowCount:  5,
 			},
 		}
 
-		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+		resp := buildQueryResponse(result, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW)
 		require.Equal(t, "traversal", resp.QueryType)
 		require.Equal(t, int32(5), resp.RowCount)
 		require.JSONEq(t, `[{"id":1}]`, string(resp.Result))
 	})
 
 	t.Run("raw format with invalid JSON falls back to quoted string", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_ResultJson{
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_ResultJson{
 				ResultJson: "not valid json",
 			},
 		}
 
-		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+		resp := buildQueryResponse(result, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW)
 		require.Equal(t, `"not valid json"`, string(resp.Result))
 	})
 
 	t.Run("LLM format does not populate Result; goon body is written separately", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_FormattedText{
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_FormattedText{
 				FormattedText: "@header\nnodes:1\n@nodes\nUser(1):username=alice\n",
 			},
-			Metadata: &gkgpb.QueryMetadata{
+			Metadata: &orbitpb.QueryMetadata{
 				QueryType: "traversal",
 				RowCount:  3,
 			},
 		}
 
-		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM)
+		resp := buildQueryResponse(result, orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM)
 		require.Equal(t, "traversal", resp.QueryType)
 		require.Equal(t, int32(3), resp.RowCount)
 		require.Empty(t, resp.Result, "LLM format must leave Result nil; raw goon is emitted by writeLLMResultResponse")
 	})
 
 	t.Run("nil metadata produces zero-value fields", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_ResultJson{
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_ResultJson{
 				ResultJson: `{}`,
 			},
 		}
 
-		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+		resp := buildQueryResponse(result, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW)
 		require.Empty(t, resp.QueryType)
 		require.Equal(t, int32(0), resp.RowCount)
 		require.Nil(t, resp.RawQueryStrings, "nil metadata must leave RawQueryStrings nil so it is omitted from JSON")
 	})
 
 	t.Run("nil RawQueryStrings is dropped from RAW envelope JSON", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_ResultJson{
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_ResultJson{
 				ResultJson: `{}`,
 			},
-			Metadata: &gkgpb.QueryMetadata{
+			Metadata: &orbitpb.QueryMetadata{
 				QueryType: "traversal",
 				RowCount:  0,
 			},
 		}
 
-		resp := buildQueryResponse(result, gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+		resp := buildQueryResponse(result, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW)
 		body, err := json.Marshal(resp)
 		require.NoError(t, err)
 		require.NotContains(t, string(body), "raw_query_strings",
@@ -457,9 +457,9 @@ func TestWriteLLMResultResponse(t *testing.T) {
 	const goonBody = "@header\nquery_type:traversal\ngoon_version:1.0.0\nnodes:1\n@nodes\nUser(1):username=alice\n"
 
 	t.Run("non-MCP writes raw goon as text/plain with no envelope", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_FormattedText{FormattedText: goonBody},
-			Metadata: &gkgpb.QueryMetadata{
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_FormattedText{FormattedText: goonBody},
+			Metadata: &orbitpb.QueryMetadata{
 				QueryType: "traversal",
 				RowCount:  1,
 			},
@@ -476,8 +476,8 @@ func TestWriteLLMResultResponse(t *testing.T) {
 	})
 
 	t.Run("MCP wraps raw goon in JSON-RPC text content", func(t *testing.T) {
-		result := &gkgpb.ExecuteQueryResult{
-			Content: &gkgpb.ExecuteQueryResult_FormattedText{FormattedText: goonBody},
+		result := &orbitpb.ExecuteQueryResult{
+			Content: &orbitpb.ExecuteQueryResult_FormattedText{FormattedText: goonBody},
 		}
 		recorder := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
@@ -560,16 +560,16 @@ func TestInjectHeaders(t *testing.T) {
 
 	var capturedMD metadata.MD
 
-	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+	lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 		capturedMD, _ = metadata.FromIncomingContext(stream.Context())
 
 		if _, err := stream.Recv(); err != nil {
 			return err
 		}
-		return stream.Send(&gkgpb.ExecuteQueryMessage{
-			Content: &gkgpb.ExecuteQueryMessage_Result{
-				Result: &gkgpb.ExecuteQueryResult{
-					Content: &gkgpb.ExecuteQueryResult_ResultJson{
+		return stream.Send(&orbitpb.ExecuteQueryMessage{
+			Content: &orbitpb.ExecuteQueryMessage_Result{
+				Result: &orbitpb.ExecuteQueryResult{
+					Content: &orbitpb.ExecuteQueryResult_ResultJson{
 						ResultJson: `{}`,
 					},
 				},
@@ -607,27 +607,27 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 		name      string
 		address   string
 		queryType string
-		want      gkgpb.QueryType
+		want      orbitpb.QueryType
 	}{
-		{name: "defaults to json", address: "test-query-type-json:50051", queryType: "", want: gkgpb.QueryType_QUERY_TYPE_JSON},
-		{name: "named selects the named query type", address: "test-query-type-named:50051", queryType: "named", want: gkgpb.QueryType_QUERY_TYPE_NAMED},
+		{name: "defaults to json", address: "test-query-type-json:50051", queryType: "", want: orbitpb.QueryType_QUERY_TYPE_JSON},
+		{name: "named selects the named query type", address: "test-query-type-named:50051", queryType: "named", want: orbitpb.QueryType_QUERY_TYPE_NAMED},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := make(chan gkgpb.QueryType, 1)
-			lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[gkgpb.ExecuteQueryMessage, gkgpb.ExecuteQueryMessage]) error {
+			got := make(chan orbitpb.QueryType, 1)
+			lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 				msg, err := stream.Recv()
 				if err != nil {
 					return err
 				}
 				got <- msg.GetRequest().GetQueryType()
 
-				return stream.Send(&gkgpb.ExecuteQueryMessage{
-					Content: &gkgpb.ExecuteQueryMessage_Result{
-						Result: &gkgpb.ExecuteQueryResult{
-							Content:  &gkgpb.ExecuteQueryResult_ResultJson{ResultJson: `{}`},
-							Metadata: &gkgpb.QueryMetadata{QueryType: "neighbors"},
+				return stream.Send(&orbitpb.ExecuteQueryMessage{
+					Content: &orbitpb.ExecuteQueryMessage_Result{
+						Result: &orbitpb.ExecuteQueryResult{
+							Content:  &orbitpb.ExecuteQueryResult_ResultJson{ResultJson: `{}`},
+							Metadata: &orbitpb.QueryMetadata{QueryType: "neighbors"},
 						},
 					},
 				})

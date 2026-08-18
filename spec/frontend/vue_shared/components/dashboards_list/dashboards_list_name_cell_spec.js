@@ -13,7 +13,7 @@ describe('DashboardsListNameCell', () => {
   let wrapper;
 
   const findDashboardLink = () => wrapper.findByTestId('dashboard-redirect-link');
-  const findStarIcon = () => wrapper.findByTestId('dashboard-star-icon');
+  const findStarIcon = () => wrapper.findComponentByTestId('dashboard-star-icon');
   const findDescription = () => wrapper.findComponent(GlTruncate);
 
   const createWrapper = (props = {}, mountFn = shallowMountExtended) => {

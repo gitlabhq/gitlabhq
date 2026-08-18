@@ -7,9 +7,8 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
-import { setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
@@ -22,6 +21,10 @@ Vue.use(VueApollo);
 jest.mock('~/alert');
 jest.mock('~/ci/utils');
 jest.mock('~/ci/pipeline_details/graph/utils');
+jest.mock('~/graphql_shared/utils', () => ({
+  ...jest.requireActual('~/graphql_shared/utils'),
+  setupQueryPollingByVisibility: jest.fn(),
+}));
 
 describe('Downstream Pipeline Dropdown', () => {
   let wrapper;

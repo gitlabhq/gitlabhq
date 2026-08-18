@@ -34,18 +34,18 @@ namespace :gitlab do
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
 
-        cmd = 'yarn webpack'
+        cmd = 'yarn build'
         cmd += " > #{log_path} 2>&1" if log_path
 
         log_path_message = ""
 
         if log_path
-          puts "Compiling frontend assets with webpack, running: #{cmd}"
+          puts "Compiling frontend assets, running: #{cmd}"
 
-          log_path_message += "\nWritten webpack log written to #{log_path}"
+          log_path_message += "\nBuild log written to #{log_path}"
 
           if ENV['CI_JOB_URL']
-            log_path_message += "\nYou can inspect the webpack full log here:"
+            log_path_message += "\nYou can inspect the full build log here:"
             log_path_message += "#{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}"
           end
         end
@@ -66,10 +66,10 @@ namespace :gitlab do
         ENV['SIDEKIQ_ASSETS_DEST_PATH'] = File.join(AssetsSha::PUBLIC_ASSETS_DIR, "sidekiq")
 
         unless system(cmd)
-          puts Rainbow('Error: Unable to compile webpack production bundle.').red
+          puts Rainbow('Error: Unable to compile production assets.').red
 
           if log_path
-            puts "Last 100 line of webpack log:"
+            puts "Last 100 lines of the build log:"
             system("tail -n 100 #{log_path}")
           end
 
@@ -78,6 +78,17 @@ namespace :gitlab do
         end
 
         puts log_path_message unless log_path_message.empty?
+
+        # `Gitlab::Vue3Migration` reads this manifest at runtime in production,
+        # where the source `vue3_migration.yml` files are stripped by packaging
+        # (see `config/plugins/vue3_migration_manifest_plugin.js`). Failing the
+        # asset build here also fails Omnibus/CNG package builds, so a package
+        # can never ship without it.
+        vue3_migration_manifest = File.join(AssetsSha::PUBLIC_ASSETS_DIR, 'webpack', 'vue3_migration.json')
+
+        unless File.exist?(vue3_migration_manifest)
+          abort Rainbow("Error: Webpack did not emit #{vue3_migration_manifest}.").red
+        end
 
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:check_page_bundle_mixins_css_for_sideeffects')

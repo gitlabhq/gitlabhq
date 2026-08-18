@@ -116,8 +116,7 @@ module QA
       end
 
       it(
-        'creates variable with file path in downstream pipelines and can read file variable content',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/416337'
+        'creates variable with file path in downstream pipelines and can read file variable content'
       ) do
         child_echo_job = create(:job, project: upstream_project,
           id: upstream_project.job_by_name('child_job_echo')[:id])

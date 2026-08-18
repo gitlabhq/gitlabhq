@@ -84,10 +84,6 @@ describe('Sidebar Confidentiality Widget', () => {
       expect(findConfidentialityForm().props('confidential')).toBe(true);
       expect(findConfidentialityContent().props('confidential')).toBe(true);
     });
-
-    it('emits `confidentialityUpdated` event with a `false` payload', () => {
-      expect(wrapper.emitted('confidentialityUpdated')).toEqual([[false]]);
-    });
   });
 
   describe('when issue is confidential', () => {
@@ -113,10 +109,6 @@ describe('Sidebar Confidentiality Widget', () => {
       expect(findConfidentialityForm().props('confidential')).toBe(false);
       expect(findConfidentialityContent().props('confidential')).toBe(false);
     });
-
-    it('emits `confidentialityUpdated` event with a `true` payload', () => {
-      expect(wrapper.emitted('confidentialityUpdated')).toEqual([[true]]);
-    });
   });
 
   it('displays an alert message when query is rejected', async () => {
@@ -128,7 +120,7 @@ describe('Sidebar Confidentiality Widget', () => {
     expect(createAlert).toHaveBeenCalled();
   });
 
-  it('closes the form and dispatches an event when `closeForm` is emitted', async () => {
+  it('closes the form and dispatches an event when `close-form` is emitted', async () => {
     createComponent();
     const el = wrapper.vm.$el;
     jest.spyOn(el, 'dispatchEvent');
@@ -139,19 +131,19 @@ describe('Sidebar Confidentiality Widget', () => {
 
     expect(findConfidentialityForm().isVisible()).toBe(true);
 
-    findConfidentialityForm().vm.$emit('closeForm');
+    findConfidentialityForm().vm.$emit('close-form');
     await nextTick();
     expect(findConfidentialityForm().isVisible()).toBe(false);
 
     expect(el.dispatchEvent).toHaveBeenCalled();
-    expect(wrapper.emitted('closeForm')).toEqual([[]]);
+    expect(wrapper.emitted('close-form')).toEqual([[]]);
   });
 
-  it('emits `expandSidebar` event when it is emitted from child component', async () => {
+  it('emits `expand-sidebar` event when it is emitted from child component', async () => {
     createComponent();
     await waitForPromises();
-    findConfidentialityContent().vm.$emit('expandSidebar');
+    findConfidentialityContent().vm.$emit('expand-sidebar');
 
-    expect(wrapper.emitted('expandSidebar')).toHaveLength(1);
+    expect(wrapper.emitted('expand-sidebar')).toHaveLength(1);
   });
 });

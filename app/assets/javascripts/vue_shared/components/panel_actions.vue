@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'PanelActions',
@@ -10,6 +11,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     maximizeUrl: {
       type: String,
@@ -32,7 +34,7 @@ export default {
     <div class="panel-header-inner-actions-portal-target js-panel-actions-portal-target"></div>
 
     <div class="panel-header-controls">
-      <template v-if="$scopedSlots['panel-controls']">
+      <template v-if="glSlots()['panel-controls']">
         <slot name="panel-controls"></slot>
       </template>
       <template v-else>
@@ -52,6 +54,7 @@ export default {
           category="tertiary"
           icon="close"
           size="small"
+          data-testid="panel-close-button"
           :aria-label="$options.i18n.closePanelText"
           @click="$emit('close')"
         />

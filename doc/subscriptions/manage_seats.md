@@ -260,7 +260,7 @@ After you turn on restricted access, it governs whether a pending invitation can
     until an administrator makes a seat available, either by purchasing more seats or removing
     billable members.
   - On the Premium tier, restricted access enforces the seat limit when the account is created,
-    rather than when the invitation is accepted. GitLab notifies the user when they register
+    rather than when the invitation is accepted. GitLab notifies the user when they create an account
     that their account could not be created and they should contact a GitLab administrator.
 
 ### Changing from user cap to restricted access
@@ -381,13 +381,6 @@ which will be included in your next invoice.
 
 ### Seat usage alerts
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a feature flag](../administration/feature_flags/_index.md) named `seat_flag_alerts`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
-
-{{< /history >}}
-
 If you have the Owner role for a top-level group that is linked to a subscription enrolled in
 quarterly subscription reconciliations,
 you receive alerts about the seat usage in the subscription.
@@ -401,7 +394,7 @@ The alert displays at the following intervals:
 |-----------------------|---------------------|
 | 0-15                  | One seat remains.   |
 | 16-25                 | Two seats remain.   |
-| 26-99                 | 10% of seats remain.|
+| 26-99                 | 10% of seats remain. |
 | 100-999               | 8% of seats remain. |
 | 1000+                 | 5% of seats remain. |
 

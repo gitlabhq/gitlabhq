@@ -278,7 +278,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
       end
 
       it 'closes GitLab issue tracker issues' do
-        merge_request.cache_merge_request_closes_issues!
+        merge_request.persist_merge_request_issues!
 
         expect do
           service.execute(merge_request)
@@ -309,7 +309,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           end
 
           it 'does not close the related issues' do
-            merge_request.cache_merge_request_closes_issues!
+            merge_request.persist_merge_request_issues!
 
             expect do
               service.execute(merge_request)
@@ -336,7 +336,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           end
 
           it 'closes the related issues' do
-            merge_request.cache_merge_request_closes_issues!
+            merge_request.persist_merge_request_issues!
 
             expect do
               service.execute(merge_request)
@@ -371,7 +371,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         end
 
         it 'only closes project issues where the setting is enabled' do
-          merge_request.cache_merge_request_closes_issues!
+          merge_request.persist_merge_request_issues!
 
           expect do
             service.execute(merge_request)
@@ -407,7 +407,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         end
 
         it 'closes issues using messages from merge and squash commit' do
-          merge_request.cache_merge_request_closes_issues!
+          merge_request.persist_merge_request_issues!
 
           expect do
             service.execute(merge_request)

@@ -8,6 +8,7 @@ import {
   GlLoadingIcon,
   GlModal,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { logError } from '~/lib/logger';
@@ -40,6 +41,7 @@ export default {
     GlSprintf,
     UserAvatarList,
   },
+  mixins: [GlToastMixin],
   inject: {
     canAdminAchievement: {
       type: Boolean,

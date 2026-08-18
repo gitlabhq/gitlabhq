@@ -6,12 +6,13 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
   let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group) { create(:group) }
 
+  let(:test_service_name) { 'test-service' }
+  let(:test_email) { 'user@example.com' }
+  let(:test_password) { 'secure_password' }
+  let(:test_encryption_key) { 'encryption_key' }
+  let(:invalid_email) { 'invalid_email' }
+
   before do
-    stub_const('TEST_SERVICE_NAME', 'test-service')
-    stub_const('TEST_EMAIL', 'user@example.com')
-    stub_const('TEST_PASSWORD', 'secure_password')
-    stub_const('TEST_ENCRYPTION_KEY', 'encryption_key')
-    stub_const('INVALID_EMAIL', 'invalid_email')
     sign_in(user)
   end
 
@@ -60,6 +61,21 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(response).to render_template(template)
       end
+    end
+  end
+
+  shared_examples 'does not call the update service' do
+    it 'does not call the update service' do
+      expect(Observability::GroupO11ySettingsUpdateService).not_to receive(:new)
+
+      make_request
+    end
+  end
+
+  shared_examples 'returns 404 when setting is not found' do
+    it 'returns 404' do
+      make_request
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -140,7 +156,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
           end
 
           it 'returns empty results for non-existent group_id' do
-            get experimental_o11y_service_settings_path, params: { group_id: 999999 }
+            get experimental_o11y_service_settings_path, params: { group_id: non_existing_record_id }
 
             aggregate_failures do
               expect(assigns(:o11y_service_settings)).to be_empty
@@ -289,7 +305,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
       {
         observability_group_o11y_setting: build_settings_params(
           o11y_service_name: '',
-          o11y_service_user_email: INVALID_EMAIL,
+          o11y_service_user_email: invalid_email,
           o11y_service_password: '',
           o11y_service_post_message_encryption_key: ''
         )
@@ -310,15 +326,11 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
         end
 
         context 'with valid parameters' do
-          let(:success_response) do
-            ServiceResponse.success(payload: { settings: instance_double(Observability::GroupO11ySetting) })
-          end
-
           before do
-            success_response = ServiceResponse.success(payload: {
-              settings: instance_double(Observability::GroupO11ySetting)
-            })
-            allow(mock_service).to receive(:execute).and_return(success_response)
+            allow(mock_service).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: {
+                settings: instance_double(Observability::GroupO11ySetting)
+              }))
             stub_o11y_setting_save(true)
           end
 
@@ -330,8 +342,8 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
               expect(response).to redirect_to(new_experimental_o11y_service_setting_url)
               expect(flash[:success]).to eq(
                 format(
-                  s_('Observability|Observability settings for group %{group_name} created successfully.'),
-                  group_name: group.name
+                  s_('Observability|Observability settings for namespace %{namespace_name} created successfully.'),
+                  namespace_name: group.name
                 )
               )
             end
@@ -344,6 +356,37 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
             )
 
             make_request
+          end
+        end
+
+        context 'with a personal (user) namespace' do
+          let(:user_namespace) { create(:user_namespace) }
+
+          let(:params) do
+            { observability_group_o11y_setting: build_settings_params(group_id: user_namespace.id) }
+          end
+
+          before do
+            allow(mock_service).to receive(:execute)
+              .and_return(ServiceResponse.success(payload: {
+                settings: instance_double(Observability::GroupO11ySetting)
+              }))
+            stub_o11y_setting_save(true)
+          end
+
+          it 'creates settings for a user namespace successfully' do
+            make_request
+
+            aggregate_failures do
+              expect(mock_service).to have_received(:execute)
+              expect(response).to redirect_to(new_experimental_o11y_service_setting_url)
+              expect(flash[:success]).to eq(
+                format(
+                  s_('Observability|Observability settings for namespace %{namespace_name} created successfully.'),
+                  namespace_name: user_namespace.name
+                )
+              )
+            end
           end
         end
 
@@ -368,7 +411,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
               hash_including(
                 group_id: group.id.to_s,
                 o11y_service_name: '',
-                o11y_service_user_email: INVALID_EMAIL,
+                o11y_service_user_email: invalid_email,
                 o11y_service_password: '',
                 o11y_service_post_message_encryption_key: ''
               )
@@ -389,11 +432,11 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
           it_behaves_like 'unprocessable entity response', :new
         end
 
-        context 'when group is not found' do
+        context 'when namespace is not found' do
           let(:params) do
             {
               observability_group_o11y_setting: build_settings_params(
-                group_id: 999999
+                group_id: non_existing_record_id
               )
             }
           end
@@ -404,16 +447,12 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
             aggregate_failures do
               expect(response).to have_gitlab_http_status(:unprocessable_entity)
               expect(response).to render_template(:new)
-              expect(flash[:alert]).to eq('Group not found')
+              expect(flash[:alert]).to eq('Namespace not found')
               expect(assigns(:o11y_service_settings)).to be_a(Observability::GroupO11ySetting)
             end
           end
 
-          it 'does not call the update service' do
-            expect(Observability::GroupO11ySettingsUpdateService).not_to receive(:new)
-
-            make_request
-          end
+          it_behaves_like 'does not call the update service'
         end
 
         context 'when o11y service settings already exist' do
@@ -430,11 +469,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
             end
           end
 
-          it 'does not call the update service' do
-            expect(Observability::GroupO11ySettingsUpdateService).not_to receive(:new)
-
-            make_request
-          end
+          it_behaves_like 'does not call the update service'
         end
       end
     end
@@ -448,9 +483,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     include_examples 'requires experimental access'
 
     context 'when user is authenticated and has experimental access' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_context 'with feature flag enabled context'
 
       include_examples 'successful response', :edit
 
@@ -461,16 +494,11 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     end
 
     context 'when o11y service setting is not found' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_context 'with feature flag enabled context'
 
-      let(:make_request) { get edit_experimental_o11y_service_setting_path(999999) }
+      let(:make_request) { get edit_experimental_o11y_service_setting_path(non_existing_record_id) }
 
-      it 'returns 404' do
-        make_request
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      it_behaves_like 'returns 404 when setting is not found'
     end
   end
 
@@ -485,9 +513,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     include_examples 'requires experimental access'
 
     context 'when user is authenticated and has experimental access' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_context 'with feature flag enabled context'
 
       context 'when update is successful' do
         before do
@@ -535,19 +561,14 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     end
 
     context 'when o11y service setting is not found' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_context 'with feature flag enabled context'
 
       let(:make_request) do
-        patch experimental_o11y_service_setting_path(999999),
+        patch experimental_o11y_service_setting_path(non_existing_record_id),
           params: { observability_group_o11y_setting: build_settings_params }
       end
 
-      it 'returns 404' do
-        make_request
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      it_behaves_like 'returns 404 when setting is not found'
     end
   end
 
@@ -561,9 +582,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     include_examples 'requires experimental access'
 
     context 'when user is authenticated and has experimental access' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_context 'with feature flag enabled context'
 
       context 'when destroy is successful' do
         it 'redirects to index with success message' do
@@ -572,7 +591,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
           aggregate_failures do
             expect(response).to redirect_to(experimental_o11y_service_settings_path)
             expect(flash[:success]).to include('deleted successfully')
-            expect(flash[:success]).to include(o11y_setting.group.name.to_s)
+            expect(flash[:success]).to include(o11y_setting.namespace.name.to_s)
           end
         end
 
@@ -582,7 +601,7 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
       end
 
       context 'when destroy fails' do
-        let(:mocked_setting) { instance_double(Observability::GroupO11ySetting, group: group, destroy: false) }
+        let(:mocked_setting) { instance_double(Observability::GroupO11ySetting, namespace: group, destroy: false) }
 
         before do
           allow(Observability::GroupO11ySetting).to receive(:find_by_id)
@@ -605,18 +624,13 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     end
 
     context 'when o11y service setting is not found' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_context 'with feature flag enabled context'
 
       let(:make_request) do
-        delete experimental_o11y_service_setting_path(999999)
+        delete experimental_o11y_service_setting_path(non_existing_record_id)
       end
 
-      it 'returns 404' do
-        make_request
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      it_behaves_like 'returns 404 when setting is not found'
     end
   end
 
@@ -625,30 +639,25 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
   def build_settings_params(**overrides)
     {
       group_id: group.id,
-      o11y_service_name: TEST_SERVICE_NAME,
-      o11y_service_user_email: TEST_EMAIL,
-      o11y_service_password: TEST_PASSWORD,
-      o11y_service_post_message_encryption_key: TEST_ENCRYPTION_KEY
+      o11y_service_name: test_service_name,
+      o11y_service_user_email: test_email,
+      o11y_service_password: test_password,
+      o11y_service_post_message_encryption_key: test_encryption_key
     }.merge(overrides)
   end
 
   def expected_params_hash
     {
       group_id: group.id.to_s,
-      o11y_service_name: TEST_SERVICE_NAME,
-      o11y_service_user_email: TEST_EMAIL,
-      o11y_service_password: TEST_PASSWORD,
-      o11y_service_post_message_encryption_key: TEST_ENCRYPTION_KEY
+      o11y_service_name: test_service_name,
+      o11y_service_user_email: test_email,
+      o11y_service_password: test_password,
+      o11y_service_post_message_encryption_key: test_encryption_key
     }
   end
 
   def expected_update_params_hash
-    {
-      o11y_service_name: TEST_SERVICE_NAME,
-      o11y_service_user_email: TEST_EMAIL,
-      o11y_service_password: TEST_PASSWORD,
-      o11y_service_post_message_encryption_key: TEST_ENCRYPTION_KEY
-    }
+    expected_params_hash.except(:group_id)
   end
 
   def stub_o11y_setting_save(result)

@@ -6,6 +6,10 @@ module Releases
 
     belongs_to :release, touch: true
 
+    # Reaches the project through the release so granular-token authorization can
+    # resolve the project boundary from a release link.
+    delegate :project, to: :release, allow_nil: true
+
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/218753
     # Regex modified to prevent catastrophic backtracking
     FILEPATH_REGEX = %r{\A\/[^\/](?!.*\/\/.*)[\-\.\w\/]+[\da-zA-Z]+\z}

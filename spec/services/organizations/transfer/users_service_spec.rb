@@ -641,6 +641,48 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
     end
 
+    context 'with abuse report transfers' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+
+      before_all do
+        group.add_developer(user1)
+      end
+
+      it 'updates organization_id for abuse reports filed by transferred users' do
+        abuse_report = create(:abuse_report, reporter: user1, organization: old_organization)
+
+        service.execute
+
+        expect(abuse_report.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'updates organization_id for abuse events belonging to transferred reports' do
+        abuse_report = create(:abuse_report, reporter: user1, organization: old_organization)
+        abuse_event = create(:abuse_event, abuse_report: abuse_report, organization: old_organization)
+
+        service.execute
+
+        expect(abuse_event.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update abuse reports filed by users not in the group' do
+        non_group_report = create(:abuse_report, reporter: non_group_user, organization: old_organization)
+        non_group_event = create(:abuse_event, abuse_report: non_group_report, organization: old_organization)
+
+        expect { service.execute }
+          .to not_change { non_group_report.reload.organization_id }
+          .and not_change { non_group_event.reload.organization_id }
+      end
+
+      it 'does not update abuse reports where a transferred user is the reported user' do
+        reported_report = create(:abuse_report,
+          reporter: non_group_user, user: user1, organization: old_organization)
+
+        expect { service.execute }.not_to change { reported_report.reload.organization_id }
+      end
+    end
+
     context 'with associated organization_id updates', :aggregate_failures do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
@@ -691,6 +733,39 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             organization: old_organization)
 
           expect { service.execute }.not_to change { group_app.reload.organization_id }
+        end
+
+        context 'when IAM replication is enabled' do
+          before do
+            stub_feature_flags(iam_data_replication: true)
+          end
+
+          it 'records upsert outbox rows carrying the new organization for the moved applications',
+            :aggregate_failures do
+            app1 = create(:oauth_application, owner: user1, organization: old_organization)
+            app2 = create(:oauth_application, owner: user2, organization: old_organization)
+
+            expect { service.execute }.to change {
+              Authn::IamOutbox.where(entity_id: [app1.id, app2.id], event_type: :upsert).count
+            }.by(2)
+
+            rows = Authn::IamOutbox.where(
+              entity_id: [app1.id, app2.id], event_type: :upsert, organization_id: new_organization.id
+            )
+            expect(rows).to all(have_attributes(entity_type: 'oauth_application', payload: {}))
+          end
+        end
+
+        context 'when IAM replication is disabled' do
+          before do
+            stub_feature_flags(iam_data_replication: false)
+          end
+
+          it 'records no outbox row for the moved applications' do
+            create(:oauth_application, owner: user1, organization: old_organization)
+
+            expect { service.execute }.not_to change { Authn::IamOutbox.count }
+          end
         end
       end
 
@@ -795,11 +870,15 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect(note_by_external_user.reload.author).to eq(ghost_user)
         end
 
-        it 'performs a single UPDATE query per batch for notes' do
-          recorder = ActiveRecord::QueryRecorder.new { service.execute }
+        context 'when batching note updates' do
+          include_context 'with transfer batch size of 1'
 
-          update_queries = recorder.log.select { |q| q.include?('UPDATE "notes"') }
-          expect(update_queries.size).to eq(1)
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'notes' => 3 }
+          end
+
+          it_behaves_like 'generates batched transfer queries'
         end
 
         it 'does not update notes for personal snippets owned by users not in the group' do
@@ -861,6 +940,46 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
         end
       end
 
+      context 'when batching updates' do
+        include_context 'with transfer batch size of 1'
+
+        let_it_be_with_refind(:pat_user1) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:pat_user2) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:pat_user3) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:token1) do
+          create(:personal_access_token, user: pat_user1, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:token2) do
+          create(:personal_access_token, user: pat_user2, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:token3) do
+          create(:personal_access_token, user: pat_user3, organization: old_organization)
+        end
+
+        let(:execute_service) { service.execute }
+        let(:expected_batch_queries) do
+          { 'personal_access_tokens' => 3 }
+        end
+
+        before_all do
+          group.add_maintainer(pat_user1)
+          group.add_developer(pat_user2)
+          group.add_guest(pat_user3)
+        end
+
+        it 'processes all records across multiple batches' do
+          service.execute
+
+          expect(token1.reload.organization_id).to eq(new_organization.id)
+          expect(token2.reload.organization_id).to eq(new_organization.id)
+          expect(token3.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it_behaves_like 'generates batched transfer queries'
+      end
+
       context 'with dynamic migration models' do
         let(:foss_migratable_models) do
           [
@@ -886,6 +1005,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "Ai::Catalog::ItemStar",
             "Ai::Catalog::ItemVersion",
             "Ai::Catalog::McpServer",
+            "Ai::Catalog::McpServerBlock",
             "Ai::Catalog::McpServersUser",
             "Ai::Conversation::Thread",
             "Ai::EventsCount",

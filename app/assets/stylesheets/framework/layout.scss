@@ -139,7 +139,7 @@ html {
     /* stylelint-disable-next-line property-no-unknown */
     interpolate-size: allow-keywords;
     transition: width .25s $gl-easing-out-cubic,
-                transform .25s $gl-easing-out-cubic !important;
+                transform .25s $gl-easing-out-cubic;
   }
 }
 

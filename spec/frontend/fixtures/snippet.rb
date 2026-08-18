@@ -22,7 +22,7 @@ RSpec.describe SnippetsController, '(JavaScript fixtures)', type: :controller, f
   end
 
   it 'snippets/show.html' do
-    create(:discussion_note_on_project_snippet, noteable: snippet, project: project, author: user, note: '- [ ] Task List Item')
+    create(:discussion_note_on_personal_snippet, noteable: snippet, author: user, note: '- [ ] Task List Item')
 
     get(:show, params: { id: snippet.to_param })
 

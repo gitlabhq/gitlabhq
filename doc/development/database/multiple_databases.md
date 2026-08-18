@@ -6,9 +6,9 @@ title: Multiple Databases
 ---
 
 To allow GitLab to scale further we
-[decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
+[decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/work_items/6168).
 The main databases are `main`, `ci`, and `sec`. GitLab supports being run with one, two, or three databases.
-On GitLab.com we are using separate `main` `ci`, and `sec` databases.
+On GitLab.com we are using separate `main`, `ci`, and `sec` databases.
 
 ## GitLab Schema
 
@@ -17,7 +17,7 @@ the GitLab application implements the [database dictionary](database_dictionary.
 
 The database dictionary provides a virtual classification of tables into a `gitlab_schema`
 which conceptually is similar to [PostgreSQL Schema](https://www.postgresql.org/docs/16/ddl-schemas.html).
-We decided as part of [using database schemas to better isolated CI decomposed features](https://gitlab.com/gitlab-org/gitlab/-/issues/333415)
+We decided as part of [using database schemas to better isolate CI decomposed features](https://gitlab.com/gitlab-org/gitlab/-/issues/333415)
 that we cannot use PostgreSQL schema due to complex migration procedures. Instead we implemented
 the concept of application-level classification.
 Each table of GitLab needs to have a `gitlab_schema` assigned:
@@ -33,7 +33,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
 | `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`, to be replaced with `gitlab_sec` |
-| `gitlab_sec` | All Security and Vulnerability feature tables to be stored in the `sec:` database | [Decomposition in progress](https://gitlab.com/groups/gitlab-org/-/epics/13043) |
+| `gitlab_sec` | All Security and Vulnerability feature tables stored in the `sec:` database | |
 | `gitlab_sec_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | Cell-local, non-customer reference data on the `sec:` database that has no sharding key (for example, malware advisories) |
 | `gitlab_shared` | Deprecated, refer `gitlab_shared_cell_local` or `gitlab_shared_org` | |
 | `gitlab_shared_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
@@ -262,7 +262,7 @@ results in loading an unbounded amount of ids into memory and then
 re-serializing those in a following query back to Postgres. These cases do not
 scale and we recommend attempting one of the other options. It might seem like a
 good idea to just apply some `limit` to the plucked data to have bounded memory
-but this introduces unpredictable results for users and often is most
+but this introduces unpredictable results for users and is often most
 problematic for our largest customers (including ourselves), and as such we
 advise against it.
 
@@ -363,8 +363,8 @@ edge cases or impossible, or because the user impact of seeing the project on th
 list page may not be problematic. It's also possible to implement the
 logic to delete these rows if or whenever necessary in your domain.
 
-Finally, this de-normalization and new query also improves performance because
-it does less joins and needs less filtering.
+Finally, this de-normalization and new query also improve performance because
+they do fewer joins and need less filtering.
 
 ##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
@@ -558,8 +558,7 @@ for more details.
 
 When dealing with multiple databases, it's important to pay close attention to data modification
 that affects more than one database.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339811) GitLab 14.4, an automated check
-prevents cross-database modifications.
+An automated check prevents cross-database modifications.
 
 When at least two different databases are modified during a transaction initiated on any database
 server, the application triggers a cross-database modification error (only in test environment).
@@ -730,7 +729,7 @@ to limit the modes where tests can run, and skip them on any other modes.
 
 ## Locking writes on the tables that don't belong to the database schemas
 
-When a separate database is promoted and the split from main,
+When a separate database is promoted and split from main,
 as an extra safeguard against creating a split brain situation,
 run the Rake task `gitlab:db:lock_writes`. This command locks writes on:
 
@@ -774,7 +773,7 @@ There are two processes that automatically lock tables:
 
 `Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables` compares the list of tables before and after each database migration runs. Then
 it locks the newly added tables on the relevant database. This does not
-cover all cases. Because some migrations need
+cover all cases, because some migrations need
 to re-create the tables within the same transactional migration. For example: To convert standard unpartitioned tables into partitioned tables.
 See [this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184636).
 Such migrations leave the re-created tables unlocked. But the daily cron job of `Database::MonitorLockedTablesWorker` takes care of
@@ -811,7 +810,7 @@ end
 
 When separate databases from `main` are fully split, we can free up disk
 space by truncating tables. This results in a smaller data set: For example,
-the data in `users` table on CI database is no longer read and also no
+the data in the `users` table on the CI database is no longer read and also no
 longer updated. So this data can be removed by truncating the tables.
 
 For this purpose, GitLab provides separate Rake tasks, one for each database:
@@ -826,7 +825,7 @@ For this purpose, GitLab provides separate Rake tasks, one for each database:
 
 > [!warning]
 > The examples in this section use `DRY_RUN=true`. This ensures no data is actually
-> truncated. GitLab highly recommends to have a backup available before you run any of
+> truncated. GitLab highly recommends having a backup available before you run any of
 > these tasks without `DRY_RUN=true`.
 
 These tasks have the option to see what they do without actually changing the

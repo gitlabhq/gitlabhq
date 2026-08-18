@@ -90,6 +90,47 @@ describe('DbVacuumSection component', () => {
       expect(findRows().at(0).text()).toContain('12.5 ms');
       expect(findRows().at(1).text()).toContain('Not available');
     });
+
+    it.each([null, undefined])(
+      'renders a fallback for index progress and dead tuples when the value is %s',
+      (value) => {
+        createComponent({
+          vacuums: [
+            {
+              ...vacuumActivity[0],
+              indexes_total: value,
+              indexes_processed: value,
+              max_dead_tuple_bytes: value,
+              dead_tuple_bytes: value,
+            },
+          ],
+        });
+
+        const rowText = findRows().at(0).text();
+        expect(rowText).toContain('Not available');
+        expect(rowText).not.toContain('3 / 5');
+        expect(rowText).not.toContain('1.91 MiB');
+      },
+    );
+
+    it('treats zero as a real value, not a missing one', () => {
+      createComponent({
+        vacuums: [
+          {
+            ...vacuumActivity[0],
+            indexes_total: 0,
+            indexes_processed: 0,
+            dead_tuple_bytes: 0,
+            delay_time: 0,
+          },
+        ],
+      });
+
+      const rowText = findRows().at(0).text();
+      expect(rowText).not.toContain('Not available');
+      expect(rowText).toContain('0 / 0');
+      expect(rowText).toContain('0 ms');
+    });
   });
 
   describe('anti-wraparound vacuums', () => {

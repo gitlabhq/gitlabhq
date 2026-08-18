@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';

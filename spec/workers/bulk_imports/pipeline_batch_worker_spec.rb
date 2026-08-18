@@ -330,15 +330,15 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
       described_class.perform_async(batch.id)
     end
 
-    it 'lazy evaluates schema and tables', :aggregate_failures do
+    it 'lazy evaluates schema but always disables the autovacuum indicator', :aggregate_failures do
       block = described_class.database_health_check_attrs[:block]
 
       job_args = [batch.id]
 
-      schema, table = block.call([job_args])
+      schema, tables = block.call(job_args, :gitlab_main, [:labels])
 
       expect(schema).to eq(:gitlab_main_org)
-      expect(table).to eq(['labels'])
+      expect(tables).to eq([])
     end
 
     context 'when batch is not found' do
@@ -355,10 +355,10 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
           )
         end
 
-        schema, table = block.call([[non_existent_batch_id]])
+        schema, tables = block.call([non_existent_batch_id], :gitlab_main, [])
 
-        expect(schema).to be_nil
-        expect(table).to be_nil
+        expect(schema).to eq(:gitlab_main)
+        expect(tables).to eq([])
       end
     end
 

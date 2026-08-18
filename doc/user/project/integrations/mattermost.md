@@ -28,7 +28,7 @@ in Mattermost:
 1. Sign in to your Mattermost instance.
 1. [Enable incoming webhooks](https://docs.mattermost.com/configure/integrations-configuration-settings.html#enable-incoming-webhooks).
 1. [Add an incoming webhook](https://developers.mattermost.com/integrate/webhooks/incoming/#create-an-incoming-webhook).
-1. Choose a display name, description and channel, those can be overridden on GitLab.
+1. Choose a display name, description, and channel, those can be overridden on GitLab.
 1. Save it and copy the **Webhook URL** that is needed for GitLab.
 
 Incoming Webhooks might be blocked on your Mattermost instance. Ask your Mattermost administrator
@@ -43,19 +43,13 @@ Display name override is not enabled by default, you need to ask your administra
 
 ## Configure GitLab to send notifications to Mattermost
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Mattermost channels to 10 per event.
-
-{{< /history >}}
-
 After the Mattermost instance has an incoming webhook set up, you can set up GitLab
 to send the notifications:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
 1. Select **Mattermost notifications**.
-1. Select the GitLab events to generate notifications for. For each event you select, input the Mattermost channel
+1. Select the GitLab events to generate notifications for. For each event you select, input up to 10 Mattermost channels
    to receive the notification. You do not need to add the hash sign (`#`).
 1. Fill in the integration configuration:
 

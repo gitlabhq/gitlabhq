@@ -16,6 +16,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = Dir['spec/**/*.rb']
   gem.require_paths = ['lib']
 
+  gem.add_dependency 'base64'
+  gem.add_dependency 'bigdecimal'
   gem.add_dependency 'omniauth', '~> 2.0'
   gem.add_dependency 'omniauth-oauth2', '~> 1.8'
   gem.add_development_dependency 'rspec', '~> 3.1'

@@ -47,12 +47,13 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
     end
 
     before do
-      # The `AS::ConfigurationFile` calls `read` in `def initialize`
-      # thus we cannot use `expect_next_instance_of`
-      # rubocop:disable RSpec/AnyInstanceOf
-      expect_any_instance_of(ActiveSupport::ConfigurationFile)
-        .to receive(:read).with(Rails.root.join('config/database.yml')).and_return(database_yml)
-      # rubocop:enable RSpec/AnyInstanceOf
+      # Stub the parsed result rather than the file contents: since Rails 8,
+      # `AS::ConfigurationFile#parse` re-reads the file from disk whenever the content
+      # holds no ERB tags, which bypasses any stub of `#read`.
+      allow(ActiveSupport::ConfigurationFile).to receive(:parse).and_call_original
+      expect(ActiveSupport::ConfigurationFile)
+        .to receive(:parse).with(Rails.root.join('config/database.yml'))
+        .and_return(YAML.safe_load(database_yml, aliases: true))
     end
 
     shared_examples 'hash containing main: connection name' do

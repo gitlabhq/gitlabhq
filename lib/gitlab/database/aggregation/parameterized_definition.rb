@@ -17,9 +17,15 @@ module Gitlab
         def instance_key(configuration)
           return super unless parameterized? && configuration[:parameters].present?
 
-          parameters_postfix = parameters.keys.map do |p_key|
-            val = instance_parameter(p_key, configuration) || ''
-            val.is_a?(Array) ? val.join('_') : val
+          parameters_postfix = parameters.keys.filter_map do |p_key|
+            val = instance_parameter(p_key, configuration)
+            next unless val
+
+            val = val.join('_') if val.is_a?(Array)
+            # When several parameters are declared, prefix each value with its
+            # parameter name so partially provided combinations cannot collide
+            # (e.g. `{ bar: '42' }` vs `{ baz: '42' }`).
+            parameters.size > 1 ? "#{p_key}_#{val}" : val
           end.join('_')
 
           unless /\A\w+\z/.match?(parameters_postfix)

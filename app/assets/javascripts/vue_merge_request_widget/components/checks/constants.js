@@ -18,13 +18,9 @@ export const COMPONENTS = {
   not_approved: () =>
     import('ee_component/vue_merge_request_widget/components/checks/not_approved.vue'),
   security_policy_violations: () =>
-    import(
-      'ee_component/vue_merge_request_widget/components/checks/security_policy_violations.vue'
-    ),
+    import('ee_component/vue_merge_request_widget/components/checks/security_policy_violations.vue'),
   security_policy_pipeline_check: () =>
-    import(
-      'ee_component/vue_merge_request_widget/components/checks/security_policy_pipeline_check.vue'
-    ),
+    import('ee_component/vue_merge_request_widget/components/checks/security_policy_pipeline_check.vue'),
 };
 
 export const FAILURE_REASONS = {

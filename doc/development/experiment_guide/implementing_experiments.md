@@ -123,6 +123,67 @@ To immediately stop running an experiment, use the
 > as anything else may give odd behaviors due to how the caching of variant assignment is
 > handled.
 
+### Force variant assignment
+
+There are two ways to force a specific variant for testing and debugging,
+depending on whether a request/response cycle is available.
+
+#### Client-side: `glex_force` query parameter
+
+For experiments that run in a controller, view, or any context with an HTTP
+request, append the `glex_force` query parameter to the URL:
+
+```plaintext
+https://gitlab.example.com/my/page?glex_force=pill_color:red
+```
+
+This sets a cookie that persists the forced variant across subsequent requests.
+Use this approach for frontend experiments and any experiment where the user
+interacts through a browser, including experiments with anonymous or
+unauthenticated users.
+
+For detailed behavior including anonymous-to-authenticated migration, re-assignment,
+and interaction with disabled experiments, see the
+[`gitlab-experiment` gem documentation](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment#forced-variant-assignment-qauat).
+
+#### Server-side: assignments API
+
+For backend-only experiments that run outside of a request/response cycle
+(for example, in background jobs, service objects, or Rake tasks), the `glex_force`
+query parameter is not available. Use the
+[experiment assignments API](../../api/experiments.md#force-a-variant-assignment) instead.
+
+The API writes the variant assignment directly to the GLEX Redis cache using the
+experiment context signature. The experiment must declare its context keys by
+overriding `self.context_keys` in its experiment class. For more information, see
+[Declaring context keys for the experiments API](#declaring-context-keys-for-the-experiments-api).
+
+Force a variant for a specific user:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments" \
+  --data "variant=candidate" \
+  --data "context[user]=sidney-jones"
+```
+
+Read the current assignment:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=sidney-jones"
+```
+
+If you omit the `context` parameter, the API defaults to the authenticated user.
+
+> [!note]
+> The assignments API requires authentication and is restricted to
+> [GitLab team members](https://gitlab.com/groups/gitlab-com/-/group_members).
+> It cannot be used with anonymous or unauthenticated users. For experiments
+> involving anonymous users, use the `glex_force` query parameter instead.
+
 We can also implement this experiment in a HAML file with HTML wrappings:
 
 ```ruby
@@ -155,7 +216,7 @@ contexts to simplify reporting:
 - `{ actor: current_user, project: project }`: Assigns a variant and is "sticky"
   to the user who is viewing the given project. This creates a different variant
   assignment possibility for every project that `current_user` views. Understand this
-  can create a large cache size if an experiment like this in a highly trafficked part
+  can create a large cache size if an experiment like this runs in a highly trafficked part
   of the application.
 - `{ wday: Time.current.wday }`: Assigns a variant based on the current day of the
   week. In this example, it would consistently assign one variant on Friday, and a
@@ -215,9 +276,12 @@ class MyExperiment < ApplicationExperiment
 end
 ```
 
-The supported keys are `user`, `actor`, `namespace`, and `project`. When you
-query the API, pass every declared key as a `context` parameter. Only the
-`user` and `actor` keys fall back to the authenticated user.
+The supported keys are `user`, `actor`, `namespace`, and `project`.
+When you query the API, pass every declared key as a `context` parameter,
+except `actor`, which is resolved from the `user` parameter.
+For example, an experiment that declares `actor` reads its value from
+`context[user]`, not `context[actor]`.
+The `user` and `actor` keys fall back to the authenticated user.
 
 ### Advanced experimentation
 
@@ -318,7 +382,7 @@ about contexts now.
 We can assume we run the experiment in one or a few places, but
 track events potentially in many places. The tracking call remains the same, with
 the arguments you would usually use when
-tracking events using snowplow. The easiest example
+tracking events using Snowplow. The easiest example
 of tracking an event in Ruby would be:
 
 ```ruby
@@ -351,7 +415,7 @@ Any experiment that's been run in the request lifecycle surfaces in `window.gl.e
 and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3)
 so it can be used when resolving experimentation in the client layer.
 
-Given that we've defined a class for our experiment, and have defined the variants for it, we can publish that experiment in a couple ways.
+Given that we've defined a class for our experiment, and have defined the variants for it, we can publish that experiment in a couple of ways.
 
 The first way is by running the experiment. Assuming the experiment has been run, it surfaces in the client layer without having to do anything special.
 
@@ -374,7 +438,7 @@ window.gl.experiments // => { pill_color: { excluded: false, experiment: "pill_c
 With the `gitlab-experiment` component, you can define slots that match the name of the
 variants pushed to `window.gl.experiments`.
 
-We can make use of the named slots in the Vue component, that match the behaviors defined in :
+We can make use of the named slots in the Vue component, that match the behaviors defined in our experiment class:
 
 ```vue
 <script>

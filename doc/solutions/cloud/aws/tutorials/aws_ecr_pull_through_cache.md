@@ -44,7 +44,7 @@ aws ecr validate-pull-through-cache-rule \
      --region us-east-2
 ```
 
-To validate that your ECR Pull Through Cache rule provides pull-through access to the GitLab.com upstream registry, you can to validate by running a `docker pull` command:
+To validate that your ECR Pull Through Cache rule provides pull-through access to the GitLab.com upstream registry, you can validate by running a `docker pull` command:
 
 ```shell
 docker pull aws_account_id.dkr.ecr.region.amazonaws.com/{destination-namespace e.g. gitlab-ef1b}/{path to Gitlab.com project/group where image is hosted}/image_name:tag

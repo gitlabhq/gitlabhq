@@ -54,54 +54,6 @@ RSpec.describe Gitlab::Observability::CicdSemconv, feature_category: :observabil
     end
   end
 
-  describe "#map_pipeline_trigger_type" do
-    it "maps push" do
-      expect(instance.map_pipeline_trigger_type("push")).to eq("push")
-    end
-
-    it "maps web to manual" do
-      expect(instance.map_pipeline_trigger_type("web")).to eq("manual")
-    end
-
-    it "maps merge_request_event" do
-      expect(instance.map_pipeline_trigger_type("merge_request_event")).to eq("merge_request_event")
-    end
-
-    it "maps external_pull_request_event to pull_request_event" do
-      expect(instance.map_pipeline_trigger_type("external_pull_request_event")).to eq("pull_request_event")
-    end
-
-    it "returns nil for unmapped sources" do
-      expect(instance.map_pipeline_trigger_type("parent_pipeline")).to be_nil
-    end
-
-    it "returns nil for nil" do
-      expect(instance.map_pipeline_trigger_type(nil)).to be_nil
-    end
-  end
-
-  describe "#map_pipeline_task_type" do
-    it "maps build" do
-      expect(instance.map_pipeline_task_type("build")).to eq("build")
-    end
-
-    it "maps test" do
-      expect(instance.map_pipeline_task_type("test")).to eq("test")
-    end
-
-    it "maps deploy" do
-      expect(instance.map_pipeline_task_type("deploy")).to eq("deploy")
-    end
-
-    it "returns nil for unknown stages" do
-      expect(instance.map_pipeline_task_type("lint")).to be_nil
-    end
-
-    it "returns nil for nil" do
-      expect(instance.map_pipeline_task_type(nil)).to be_nil
-    end
-  end
-
   describe "#map_worker_state" do
     it "returns available when active is true" do
       expect(instance.map_worker_state(true)).to eq("available")
@@ -113,6 +65,48 @@ RSpec.describe Gitlab::Observability::CicdSemconv, feature_category: :observabil
 
     it "returns offline when active is nil" do
       expect(instance.map_worker_state(nil)).to eq("offline")
+    end
+  end
+
+  describe "#compact_attributes" do
+    it "removes nil entries" do
+      attrs = [
+        { key: 'keep', value: { stringValue: 'value' } },
+        nil,
+        { key: 'also_keep', value: { intValue: 1 } }
+      ]
+
+      result = instance.compact_attributes(attrs)
+
+      expect(result).to eq([
+        { key: 'keep', value: { stringValue: 'value' } },
+        { key: 'also_keep', value: { intValue: 1 } }
+      ])
+    end
+
+    it "removes attributes with blank string values" do
+      attrs = [
+        { key: 'present', value: { stringValue: 'hello' } },
+        { key: 'empty', value: { stringValue: '' } },
+        { key: 'nil_string', value: { stringValue: nil } }
+      ]
+
+      result = instance.compact_attributes(attrs)
+
+      expect(result).to eq([
+        { key: 'present', value: { stringValue: 'hello' } }
+      ])
+    end
+
+    it "preserves non-string value types regardless of value" do
+      attrs = [
+        { key: 'zero_int', value: { intValue: 0 } },
+        { key: 'false_bool', value: { boolValue: false } }
+      ]
+
+      result = instance.compact_attributes(attrs)
+
+      expect(result).to eq(attrs)
     end
   end
 end

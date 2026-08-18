@@ -1,20 +1,25 @@
 <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" fill="none">
-  <rect width="200" height="120" fill="currentColor" opacity="1"/>
-  <path d="M11.8561 7.16894L11.8671 7.19794C12.0235 7.6074 12.0426 8.056 11.9215 8.47786C11.8004 8.89911 11.5456 9.26958 11.1956 9.53344L11.1906 9.53744L9.52264 10.7859L8.70114 11.4069L8.20164 11.7844C8.14309 11.8286 8.07174 11.8525 7.99839 11.8525C7.92504 11.8525 7.85369 11.8286 7.79514 11.7844L7.29564 11.4069L6.47414 10.7859L4.81764 9.54444L4.80864 9.53744L4.80464 9.53394C4.45462 9.26998 4.1999 8.8994 4.07887 8.47804C3.95784 8.05669 3.97706 7.60742 4.13364 7.19794L4.14514 7.16944L5.23314 4.32894C5.25217 4.27997 5.28447 4.23728 5.32643 4.20566C5.36838 4.17404 5.41832 4.15474 5.47064 4.14994C5.53803 4.14303 5.60571 4.16009 5.66177 4.19813C5.71782 4.23617 5.75868 4.29276 5.77714 4.35794L6.51214 6.60794H9.48864L10.2236 4.35794C10.2399 4.30018 10.2739 4.24898 10.3208 4.21149C10.3677 4.17401 10.4251 4.15214 10.485 4.14894C10.5449 4.14575 10.6044 4.16138 10.655 4.19366C10.7056 4.22594 10.7448 4.27325 10.7671 4.32894L11.8561 7.16894Z"
-    style="color: var(--theme-preview-color);"/>
-  <rect x="68" y="4" width="64" height="8" rx="3" fill="currentColor" opacity="0.75" />
-  <rect x="68" y="4" width="64" height="8" rx="3" fill="currentColor" style="color: var(--gl-control-background-color-default);" />
-  <rect x="188" y="4" width="8" height="8" rx="4" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="4" y="20" width="24" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-accent-color);"/>
-  <rect x="4" y="28" width="18" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="4" y="36" width="20" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="32" y="16" width="154" height="100" rx="4" fill="currentColor" style="color: var(--gl-background-color-default);"/>
-  <rect x="4" y="110" width="24" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="36" y="20" width="120" height="8" rx="2" fill="currentColor" style="color: var(--theme-preview-color);" style="filter: grayscale(100%);"/>
-  <rect x="36" y="32" width="48" height="4" rx="2" fill="currentColor" style="color: var(--theme-preview-color);" style="filter: grayscale(100%);"/>
-  <rect x="36" y="48" width="112" height="64" rx="2" fill="currentColor" style="color: var(--theme-preview-color);" style="filter: grayscale(100%);"/>
-  <rect x="190" y="20" width="4" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="190" y="28" width="4" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="190" y="36" width="4" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
-  <rect x="190" y="110" width="4" height="4" rx="1" fill="currentColor" style="color: var(--theme-preview-color);"/>
+  <rect width="200" height="120" opacity="1" fill="var(--theme-preview-application-chrome-background-color)" />
+  <rect x="32" y="16" width="154" height="100" rx="4" fill="var(--theme-preview-background-color-default)" />
+  <g fill="var(--theme-preview-foreground-color-subtle)">
+    <rect x="68" y="4" width="64" height="8" rx="3" />
+    <rect x="188" y="4" width="8" height="8" rx="4" />
+    <rect x="4" y="28" width="18" height="4" rx="1" />
+    <rect x="4" y="36" width="20" height="4" rx="1" />
+    <rect x="4" y="110" width="24" height="4" rx="1" />
+    <rect x="190" y="20" width="4" height="4" rx="1" />
+    <rect x="190" y="28" width="4" height="4" rx="1" />
+    <rect x="190" y="36" width="4" height="4" rx="1" />
+    <rect x="190" y="110" width="4" height="4" rx="1" />
+  </g>
+  <g fill="var(--theme-preview-foreground-color-default)">
+    <rect x="36" y="20" width="120" height="8" rx="2" />
+    <rect x="36" y="32" width="48" height="4" rx="2" />
+    <rect x="36" y="48" width="112" height="64" rx="2" opacity="0.75" />
+  </g>
+  <g fill="var(--theme-preview-foreground-color-strong)">
+    <path
+      d="M11.8561 7.16894L11.8671 7.19794C12.0235 7.6074 12.0426 8.056 11.9215 8.47786C11.8004 8.89911 11.5456 9.26958 11.1956 9.53344L11.1906 9.53744L9.52264 10.7859L8.70114 11.4069L8.20164 11.7844C8.14309 11.8286 8.07174 11.8525 7.99839 11.8525C7.92504 11.8525 7.85369 11.8286 7.79514 11.7844L7.29564 11.4069L6.47414 10.7859L4.81764 9.54444L4.80864 9.53744L4.80464 9.53394C4.45462 9.26998 4.1999 8.8994 4.07887 8.47804C3.95784 8.05669 3.97706 7.60742 4.13364 7.19794L4.14514 7.16944L5.23314 4.32894C5.25217 4.27997 5.28447 4.23728 5.32643 4.20566C5.36838 4.17404 5.41832 4.15474 5.47064 4.14994C5.53803 4.14303 5.60571 4.16009 5.66177 4.19813C5.71782 4.23617 5.75868 4.29276 5.77714 4.35794L6.51214 6.60794H9.48864L10.2236 4.35794C10.2399 4.30018 10.2739 4.24898 10.3208 4.21149C10.3677 4.17401 10.4251 4.15214 10.485 4.14894C10.5449 4.14575 10.6044 4.16138 10.655 4.19366C10.7056 4.22594 10.7448 4.27325 10.7671 4.32894L11.8561 7.16894Z" />
+    <rect x="4" y="20" width="24" height="4" rx="1" />
+  </g>
 </svg>

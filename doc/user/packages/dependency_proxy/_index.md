@@ -39,7 +39,6 @@ For a list of planned additions, view the
 
 {{< history >}}
 
-- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
 - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 {{< /history >}}
@@ -76,8 +75,6 @@ Prerequisites:
 
 {{< history >}}
 
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
-- Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
 - Deploy token scopes `read_virtual_registry` and `write_virtual_registry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336800) in GitLab 17.11 with a flag named `dependency_proxy_read_write_scopes`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/517249) in GitLab 18.0. Feature flag `dependency_proxy_read_write_scopes` removed.
 
@@ -467,25 +464,6 @@ a minimum of the Guest role for the dependency proxy group:
 
 For more information about the work to improve the error messages in similar cases to `Access denied`,
 see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
-
-### `exec format error` when running images from the dependency proxy
-
-> [!note]
-> This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
-> For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
-> or use the workaround documented below.
-
-This error occurs if you try to use the dependency proxy on an ARM-based Docker install in GitLab 16.2 or earlier.
-The dependency proxy only supports the x86_64 architecture when pulling an image with a specific tag.
-
-As a workaround, you can specify the SHA256 of the image to force the dependency proxy
-to pull a different architecture:
-
-```shell
-docker pull ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/library/docker:20.10.3@sha256:bc9dcf5c8e5908845acc6d34ab8824bca496d6d47d1b08af3baf4b3adb1bd8fe
-```
-
-In this example, `bc9dcf5c8e5908845acc6d34ab8824bca496d6d47d1b08af3baf4b3adb1bd8fe` is the SHA256 of the ARM based image.
 
 ### `MissingFile` errors after restoring a backup
 

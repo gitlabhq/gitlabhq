@@ -45,9 +45,9 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findMergeBtn = () => wrapper.find('[data-testid="merge-unverified-changes"]');
-  const findCancelBtn = () => wrapper.find('[data-testid="merge-cancel-btn"]');
-  const findRunPipelineButton = () => wrapper.find('[data-testid="run-pipeline-button"]');
+  const findMergeBtn = () => wrapper.findComponent('[data-testid="merge-unverified-changes"]');
+  const findCancelBtn = () => wrapper.findComponent('[data-testid="merge-cancel-btn"]');
+  const findRunPipelineButton = () => wrapper.findComponent('[data-testid="run-pipeline-button"]');
 
   beforeEach(() => {
     createComponent();
@@ -63,10 +63,10 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
     );
   });
 
-  it('should emit the mergeWithFailedPipeline event', () => {
+  it('should emit the merge-with-failed-pipeline event', () => {
     findMergeBtn().vm.$emit('click');
 
-    expect(wrapper.emitted('mergeWithFailedPipeline')).toHaveLength(1);
+    expect(wrapper.emitted('merge-with-failed-pipeline')).toHaveLength(1);
   });
 
   it('when the cancel button is clicked should emit cancel and call hide', () => {

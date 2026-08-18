@@ -174,7 +174,9 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
         create(:npm_package, project: project, name: package_name, version: '1.0.6')
         params['versions'].merge!(build_params(['1.0.5', '1.0.6'])['versions'])
 
-        expect { described_class.new(project, params).execute }.not_to exceed_query_limit(control)
+        expect do
+          described_class.new(project, params).execute
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
       end
 
       it_behaves_like 'enqueues metadata cache worker'

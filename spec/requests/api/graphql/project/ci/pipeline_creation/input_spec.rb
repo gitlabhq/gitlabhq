@@ -6,7 +6,7 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
   include GraphqlHelpers
   include ReactiveCachingHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let_it_be(:config_yaml_without_inputs) do

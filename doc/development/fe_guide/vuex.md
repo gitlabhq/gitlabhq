@@ -159,7 +159,7 @@ Instead of creating a mutation to toggle the loading state, we should:
       - `PUT`: `updateSomething`
       - `DELETE`: `deleteSomething`
 
-As a result, we can dispatch the `fetchNamespace` action from the component and it is responsible to commit `REQUEST_NAMESPACE`, `RECEIVE_NAMESPACE_SUCCESS` and `RECEIVE_NAMESPACE_ERROR` mutations.
+As a result, we can dispatch the `fetchNamespace` action from the component and it is responsible to commit `REQUEST_NAMESPACE`, `RECEIVE_NAMESPACE_SUCCESS`, and `RECEIVE_NAMESPACE_ERROR` mutations.
 
 > Previously, we were dispatching actions from the `fetchNamespace` action instead of committing mutation, so don't be confused if you find a different pattern in the older parts of the codebase. However, we encourage leveraging a new pattern whenever you write new Vuex stores.
 
@@ -428,7 +428,7 @@ export default {
 
 #### Testing Vuex concerns
 
-Refer to [Vuex documentation](https://vuex.vuejs.org/guide/testing.html) regarding testing Actions, Getters and Mutations.
+Refer to [Vuex documentation](https://vuex.vuejs.org/guide/testing.html) regarding testing Actions, Getters, and Mutations.
 
 #### Testing components that need a store
 

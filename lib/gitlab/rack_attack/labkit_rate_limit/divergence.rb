@@ -23,7 +23,7 @@ module Gitlab
         BOUNDARY_NOISE_SECONDS = 1
 
         class << self
-          def record(labkit_result:, rackattack_throttle_data:)
+          def record(labkit_result:, rackattack_throttle_data:, labkit_results: [], facts: {})
             return if labkit_result&.error?
 
             exceeded = rackattack_throttle_data.find { |_name, data| rackattack_throttled?(data) }
@@ -42,9 +42,79 @@ module Gitlab
 
             counter.increment(throttle: throttle_label(labkit_result, exceeded), agreement: agreement,
               boundary: boundary)
+
+            return unless agreement == :diverge
+
+            log_divergence(labkit_result: labkit_result, labkit_results: labkit_results, facts: facts,
+              exceeded: exceeded, rackattack_throttle_data: rackattack_throttle_data)
           end
 
           private
+
+          # Temporary sampled diagnostic for the divergence classes tracked in
+          # https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29362.
+          # One structured line per sampled divergent decision, carrying what the
+          # counter above cannot: both stacks' verdicts, counters, and
+          # discriminators side by side, plus which rule each labkit limiter routed
+          # the request to. Volume is operator-controlled: the ops flag is sampled
+          # per request (percentage-of-actors on the request actor), and only
+          # divergences are logged, so the line costs nothing until enabled.
+          def log_divergence(labkit_result:, labkit_results:, facts:, exceeded:, rackattack_throttle_data:)
+            return unless ::Feature.enabled?(:log_labkit_rack_divergence, ::Feature.current_request, type: :ops)
+
+            # Fields with a standard name in Labkit::Fields are referenced by
+            # constant; the rest are specific to this diagnostic and have no
+            # standard equivalent.
+            ::Gitlab::AppJsonLogger.info(
+              ::Labkit::Fields::LOG_MESSAGE => 'Labkit rack shadow divergence',
+              ::Labkit::Fields::CLASS_NAME => name,
+              ::Labkit::Fields::REMOTE_IP => facts[:ip],
+              ::Labkit::Fields::HTTP_METHOD => facts[:method],
+              throttle: throttle_label(labkit_result, exceeded),
+              labkit_blocked: labkit_result&.action == :block,
+              rackattack_blocked: !exceeded.nil?,
+              labkit_rules: labkit_results.filter_map { |result| labkit_rule_entry(result) },
+              rackattack_throttles: rackattack_throttle_data.map do |throttle_name, data|
+                rackattack_throttle_entry(throttle_name, data)
+              end,
+              requester_type: facts[:requester_type],
+              requester_id: facts[:requester_id],
+              runner_id: facts[:runner_id],
+              path: facts[:path]
+            )
+          end
+
+          # One matched labkit rule as log fields. Every limiter contributes its
+          # first matching rule, so together these show where labkit routed the
+          # request - a synthetic skip/bypass match is as diagnostic as a block.
+          # Unmatched limiters carry no rule and are dropped; a skip rule performs
+          # no Redis operation, so its count/limit are nil.
+          def labkit_rule_entry(result)
+            return unless result.rule
+
+            {
+              rule: result.rule.name,
+              action: result.action.to_s,
+              count: result.info&.count&.to_f,
+              limit: result.info&.resolved_limit&.to_i
+            }
+          end
+
+          # One Rack::Attack throttle annotation as log fields. throttle_data holds
+          # an entry for every throttle whose discriminator resolved on this
+          # request, so a throttle labkit matched that is absent here means
+          # Rack::Attack did not even count the request - itself a finding. The
+          # discriminator is stringified: Rack::Attack discriminators mix Integers
+          # (user ids) and Strings (ips, "type:id" pairs), and a log field must
+          # keep one type.
+          def rackattack_throttle_entry(throttle_name, data)
+            {
+              throttle: throttle_name,
+              discriminator: data[:discriminator].to_s,
+              count: data[:count].to_i,
+              limit: data[:limit].to_i
+            }
+          end
 
           # Label the disagreement by whichever side decided: labkit's blocking rule,
           # else the Rack::Attack throttle that exceeded, else "none" (both allowed).

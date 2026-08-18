@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { initIssuableSidebar } from '~/issuable';
 import { pinia } from '~/pinia/instance';
 import MergeConflictsResolverApp from './merge_conflict_resolver_app.vue';
@@ -14,7 +14,7 @@ export default function initMergeConflicts() {
 
   useMergeConflicts(pinia).fetchConflictsData(conflictsPath);
 
-  return new Vue({
+  return initVueApp({
     el: conflictsEl,
     name: 'MergeConflictsResolverAppRoot',
     pinia,
@@ -23,8 +23,6 @@ export default function initMergeConflicts() {
       mergeRequestPath,
       resolveConflictsPath,
     },
-    render(createElement) {
-      return createElement(MergeConflictsResolverApp);
-    },
+    component: MergeConflictsResolverApp,
   });
 }

@@ -1,5 +1,13 @@
 <script>
-import { GlAlert, GlButton, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlFormGroup,
+  GlFormRadio,
+  GlFormRadioGroup,
+  GlLink,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -43,6 +51,7 @@ export default {
     GlFormRadioGroup,
     GlLink,
   },
+  mixins: [GlToastMixin],
   inject: ['fullPath'],
   apollo: {
     minimumOverrideRole: {

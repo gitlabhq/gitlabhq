@@ -15,7 +15,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of the group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all group clusters' do
         detail 'Lists all group clusters for a specified group.'
         success Entities::Cluster

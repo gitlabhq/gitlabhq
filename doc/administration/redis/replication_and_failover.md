@@ -350,12 +350,6 @@ the same Sentinels.
 
 ### Step 3. Configuring the Redis Sentinel instances
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235938) support for Sentinel password authentication in GitLab 16.1.
-
-{{< /history >}}
-
 Now that the Redis servers are all set up, let's configure the Sentinel
 servers.
 
@@ -556,6 +550,16 @@ until a new failover is initiated again.
 The same thing happens with `sentinel.conf` that is overridden after the
 initial execution, after any new sentinel node starts watching the **Primary**,
 or a failover promotes a different **Primary** node.
+
+> [!note]
+> GitLab uses the `redis['master_ip']` value in `gitlab.rb` only the first time you run `gitlab-ctl reconfigure`, before `sentinel.conf` exists.
+> On subsequent reconfigures, GitLab reads the current primary IP directly from `sentinel.conf` to preserve the post-failover state of Sentinel.
+> To promote a different node as primary, do not edit `redis['master_ip']`.
+> Use the Sentinel `FAILOVER` command instead:
+>
+> ```shell
+> /opt/gitlab/embedded/bin/redis-cli -p 26379 SENTINEL failover gitlab-redis
+> ```
 
 ### Example configuration for Redis primary and Sentinel 1
 
@@ -787,12 +791,6 @@ You can find the relevant attributes defined in [`gitlab_rails.rb`](https://gitl
 
 ### Control startup behavior
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
-
-{{< /history >}}
-
 To prevent the bundled Redis service from starting at boot or restarting after changing its configuration:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -813,12 +811,6 @@ working in the Redis cluster, set `start_down` to `false` and reconfigure GitLab
 to ensure the node starts and restarts as expected during operation.
 
 ### Control replica configuration
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
-
-{{< /history >}}
 
 To prevent the `replicaof` line from rendering in the Redis configuration file:
 

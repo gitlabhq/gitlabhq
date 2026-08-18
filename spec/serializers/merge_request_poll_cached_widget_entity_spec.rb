@@ -243,7 +243,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
         let(:req) { double('request', current_user: user, project: project) }
 
         it 'does not have pipeline' do
-          expect(subject[:pipeline]).to eq(nil)
+          expect(subject[:pipeline]).to be_nil
         end
       end
 
@@ -251,7 +251,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
         it 'returns nil' do
           pipeline.update!(sha: "not up to date")
 
-          expect(subject[:pipeline]).to eq(nil)
+          expect(subject[:pipeline]).to be_nil
         end
       end
     end

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { DUO_CHAT_AGENT_PLANNER, DUO_CHAT_QUICK_ACTION_SUMMARIZE } from '~/ai/constants';
 import { s__ } from '~/locale';
 import WorkItemActivitySortFilter from '~/work_items/components/notes/work_item_activity_sort_filter.vue';
@@ -14,7 +15,9 @@ import {
 export default {
   name: 'WorkItemNotesActivityHeader',
   components: {
-    DuoChatQuickAction: () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
+    DuoChatQuickAction: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
+    ),
     WorkItemActivitySortFilter,
   },
   props: {
@@ -50,19 +53,11 @@ export default {
       default: false,
       required: false,
     },
-    smallHeaderStyle: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
   },
-  emits: ['changeFilter', 'changeSort'],
+  emits: ['change-filter', 'change-sort'],
   computed: {
     summarizeTracking() {
       return { label: 'work_item_view_summary', property: this.workItemType };
-    },
-    headerClasses() {
-      return this.smallHeaderStyle ? 'gl-text-base gl-m-0' : 'gl-text-size-h1 gl-m-0';
     },
   },
   buttonOptions: { size: 'small' },
@@ -83,7 +78,7 @@ export default {
 <template>
   <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-pb-3">
     <div class="gl-flex gl-grow gl-items-center gl-justify-between gl-gap-3">
-      <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">
+      <component :is="useH2 ? 'h2' : 'h3'" class="gl-m-0 gl-text-size-h1">
         {{ s__('WorkItem|Activity') }}
       </component>
       <duo-chat-quick-action
@@ -107,7 +102,7 @@ export default {
         tracking-action="work_item_notes_filter_changed"
         tracking-label="item_track_notes_filtering"
         data-testid="work-item-filter"
-        @select="$emit('changeFilter', $event)"
+        @select="$emit('change-filter', $event)"
       />
       <work-item-activity-sort-filter
         :work-item-type="workItemType"
@@ -119,7 +114,7 @@ export default {
         tracking-action="work_item_notes_sort_order_changed"
         tracking-label="item_track_notes_sorting"
         data-testid="work-item-sort"
-        @select="$emit('changeSort', $event)"
+        @select="$emit('change-sort', $event)"
       />
     </div>
   </div>

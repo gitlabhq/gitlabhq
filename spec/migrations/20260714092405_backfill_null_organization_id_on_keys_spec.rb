@@ -32,7 +32,7 @@ RSpec.describe BackfillNullOrganizationIdOnKeys,
       expect(key_with_null_org.reload.organization_id).to eq(described_class::ORG_ID)
     end
 
-    it 'does not change rows that already have a non-NULL organization_id', :aggregate_failures do
+    it 'does not change rows that already have a non-NULL organization_id' do
       migrate!
 
       expect(key_with_default_org.reload.organization_id).to eq(default_org.id)

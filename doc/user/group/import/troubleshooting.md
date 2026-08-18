@@ -136,22 +136,6 @@ For more information, see [issue 498720](https://gitlab.com/gitlab-org/gitlab/-/
 To resolve this issue, migrate the groups or projects that failed by using the [import API](../../../api/import.md).
 With this API, you can migrate specific groups and projects individually.
 
-## Error: `404 Group Not Found`
-
-If you attempt to import a group that has a path comprised of only numbers (for example, `5000`), GitLab attempts to
-find the group by ID instead of the path. This causes a `404 Group Not Found` error in GitLab 15.4 and earlier.
-
-To solve this, you must change the source group path to include a non-numerical character using either:
-
-- The GitLab UI:
-
-  1. In the top bar, select **Search or go to** and find your group.
-  1. Select **Settings** > **General**.
-  1. Expand **Advanced**.
-  1. Under **Change group URL**, change the group URL to include non-numeric characters.
-
-- The [Groups API](../../../api/groups.md#update-group-attributes).
-
 ## Other `404` errors
 
 You can receive other `404` errors when importing a group, for example:

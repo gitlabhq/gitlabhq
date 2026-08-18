@@ -94,7 +94,7 @@ describe('BoardFilteredSearch', () => {
       });
     });
 
-    it('emits setFilters and updates URL when onFilter is emitted', () => {
+    it('emits set-filters and updates URL when onFilter is emitted', () => {
       findFilteredSearch().vm.$emit('onFilter', [{ value: { data: '' } }]);
 
       expect(updateHistory).toHaveBeenCalledWith({
@@ -103,7 +103,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/',
       });
 
-      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
   });
 
@@ -219,7 +219,7 @@ describe('BoardFilteredSearch', () => {
         url: expected,
       });
 
-      expect(wrapper.emitted('setFilters')).toStrictEqual([
+      expect(wrapper.emitted('set-filters')).toStrictEqual([
         [
           {
             iterationCadenceId: '1349',
@@ -259,7 +259,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/?custom-field[1]=2',
       });
 
-      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
   });
 
@@ -290,7 +290,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/',
       });
 
-      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
   });
 });

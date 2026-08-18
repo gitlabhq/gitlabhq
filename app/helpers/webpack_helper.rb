@@ -26,7 +26,7 @@ module WebpackHelper
   def webpack_preload_asset_tag(asset, options = {})
     return if vite_enabled?
 
-    path = Gitlab::Webpack::Manifest.asset_paths(asset).first
+    path = Gitlab::Webpack::Manifest.asset_paths(asset, manifest_filename: bundler_manifest_filename).first
 
     if options.delete(:prefetch)
       prefetch_link_tag(path)
@@ -52,11 +52,21 @@ module WebpackHelper
     route = [*controller.controller_path.split('/'), action].compact
 
     until chunks.any? || route.empty?
-      entrypoint = "pages.#{route.join('.')}"
+      base_entrypoint = "pages.#{route.join('.')}"
+      entrypoint = ::Gitlab::Vue3Migration.entrypoint_for(base_entrypoint, current_user: current_user)
       begin
         chunks = webpack_entrypoint_paths(entrypoint, extension: 'js')
       rescue Gitlab::Webpack::Manifest::AssetMissingError
-        # no bundle exists for this path
+        # The Vue 3 variant may be missing from the manifest (e.g. an
+        # incremental build skipped it). Fall back to the regular entry
+        # before giving up on this route segment.
+        if entrypoint != base_entrypoint
+          begin
+            chunks = webpack_entrypoint_paths(base_entrypoint, extension: 'js')
+          rescue Gitlab::Webpack::Manifest::AssetMissingError
+            # no bundle exists for this path
+          end
+        end
       end
       route.pop
     end
@@ -69,7 +79,7 @@ module WebpackHelper
   def webpack_entrypoint_paths(source, extension: nil, exclude_duplicates: true)
     return "" unless source.present?
 
-    paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
+    paths = Gitlab::Webpack::Manifest.entrypoint_paths(source, manifest_filename: bundler_manifest_filename)
     paths.select! { |p| p.ends_with? ".#{extension}" } if extension
 
     force_host = webpack_public_host
@@ -88,6 +98,14 @@ module WebpackHelper
   def webpack_public_host
     # We proxy webpack output in 'test' and 'dev' environment, so we can just use asset_host
     ActionController::Base.asset_host.try(:chomp, '/')
+  end
+
+  def rspack_enabled?
+    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: false)
+  end
+
+  def bundler_manifest_filename
+    rspack_enabled? ? Gitlab::Webpack::Manifest::RSPACK_MANIFEST_FILENAME : Gitlab.config.webpack.manifest_filename
   end
 
   def webpack_public_path

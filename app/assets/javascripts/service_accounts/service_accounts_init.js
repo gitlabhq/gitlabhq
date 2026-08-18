@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
@@ -14,7 +14,6 @@ export default (el) => {
 
   const {
     basePath,
-    isGroup,
     serviceAccountsEnabled,
     serviceAccountsPath,
     serviceAccountsDeletePath,
@@ -33,13 +32,12 @@ export default (el) => {
 
   injectVueAppBreadcrumbs(router, ServiceAccountsBreadcrumb);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ServiceAccountsRoot',
     router,
     pinia,
     provide: {
-      isGroup: parseBoolean(isGroup),
       serviceAccountsEnabled: parseBoolean(serviceAccountsEnabled),
       serviceAccountsPath,
       serviceAccountsDeletePath,
@@ -53,8 +51,6 @@ export default (el) => {
       accessTokenRotate,
       accessTokenShow,
     },
-    render(createElement) {
-      return createElement(app);
-    },
+    component: app,
   });
 };

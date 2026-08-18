@@ -6,6 +6,9 @@ module Mutations
       class ResetToken < HttpIntegrationBase
         graphql_name 'HttpIntegrationResetToken'
 
+        authorize_granular_token permissions: :update_http_integration,
+          boundary_argument: :id, boundary: :project, boundary_type: :project
+
         argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
           required: true,
           description: "ID of the integration to mutate."

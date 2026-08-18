@@ -3,7 +3,10 @@
 # This file is loaded from 'initializers/coverband.rb' if coverband is enabled
 
 Coverband.configure do |config|
-  config.store = Coverband::Adapters::RedisStore.new(Gitlab::Redis::SharedState.redis)
+  # One key per file, so the per-example clear has no whole blob write to race
+  config.store = Coverband::Adapters::HashRedisStore.new(
+    Gitlab::Redis::SharedState.redis, save_report_batch_size: 1000
+  )
   config.background_reporting_sleep_seconds = 1
   config.reporting_wiggle = 0 # Since this is not run in production disable wiggle and report every second.
   config.ignore += %w[spec/.* lib/tasks/.*

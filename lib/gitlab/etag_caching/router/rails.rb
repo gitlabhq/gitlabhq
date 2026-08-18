@@ -102,6 +102,12 @@ module Gitlab
             'merge_request_widget',
             ::Projects::MergeRequests::ContentController,
             :cached_widget
+          ],
+          [
+            %r{#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/ci_environments_status\z},
+            'merge_request_ci_environments_status',
+            ::Projects::MergeRequestsController,
+            :ci_environments_status
           ]
         ].map { |attrs| build_rails_route(*attrs) }.freeze
 

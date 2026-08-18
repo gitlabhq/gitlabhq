@@ -49,7 +49,9 @@ module Namespaces
         before_transition on: :schedule_transfer, do: :set_transfer_schedule_data
         before_transition on: :start_transfer, do: :ensure_transition_user
         before_transition on: :start_transfer, do: :set_transfer_data
-        before_transition on: [:complete_transfer, :cancel_transfer], do: :clear_transfer_data
+        before_transition on: :complete_transfer, do: :clear_transfer_data
+        before_transition on: :cancel_transfer, from: :transfer_scheduled, do: :clear_transfer_data
+        before_transition on: :cancel_transfer, from: :transfer_in_progress, do: :clear_transfer_data_preserving_target
         before_transition on: :reschedule_deletion, do: :set_deletion_error_data
 
         event :archive do
@@ -139,6 +141,12 @@ module Namespaces
 
       def stateful_log_metadata
         { message: 'Namespace state transition', namespace_id: id }
+      end
+    end
+
+    class_methods do
+      def overwrite_state_in_batch(ids, from:, to:)
+        with_state(from).id_in(ids).update_all(state: states[to])
       end
     end
   end

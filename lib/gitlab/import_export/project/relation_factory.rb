@@ -113,7 +113,7 @@ module Gitlab
           case @relation_name
           when :merge_request_diff_files then setup_diff
           when :note_diff_file then setup_diff
-          when :notes, :Note then setup_note
+          when :notes, :Note then setup_project_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
           when :issues then setup_work_item
@@ -127,6 +127,7 @@ module Gitlab
           when :approvals then setup_approval
           when :events then setup_event
           when :'DesignManagement::Version' then setup_design_management_version
+          when :award_emoji then setup_award_emoji
           end
 
           update_project_references
@@ -135,6 +136,12 @@ module Gitlab
           return unless RELATIONS_WITH_REWRITABLE_USERNAMES.include?(@relation_name) && @rewrite_mentions
 
           update_username_mentions(@relation_hash)
+        end
+
+        def setup_project_note
+          @relation_hash.delete('namespace_id')
+
+          setup_note
         end
 
         def generate_imported_object
@@ -167,6 +174,10 @@ module Gitlab
           @relation_hash['group_id'] = @importable.namespace_id
         end
 
+        def award_emoji_destination_group
+          @importable.namespace if @importable.namespace.is_a?(::Group)
+        end
+
         def setup_build
           @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
@@ -180,6 +191,13 @@ module Gitlab
           diff = @relation_hash.delete('diff_export') || @relation_hash.delete('utf8_diff')
 
           parsed_relation_hash['diff'] = diff.delete("\x00")
+
+          # Set project_id for merge_request_diff_files. This prepares for the
+          # NOT NULL constraint on project_id that will be added when the table
+          # is swapped with its partitioned copy. The before_validation callback
+          # may not be able to derive project_id from the parent merge_request_diff
+          # during import since the parent may not have project_id set yet.
+          parsed_relation_hash['project_id'] = @importable.id if @relation_name == :merge_request_diff_files
         end
 
         def setup_pipeline

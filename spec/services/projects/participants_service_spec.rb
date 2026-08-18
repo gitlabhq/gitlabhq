@@ -38,6 +38,38 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       ])
     end
 
+    context 'when the mentioned param is given' do
+      let_it_be(:mentioned_member) { create(:user, username: 'zzz_mentioned', developer_of: project) }
+      let_it_be(:non_member) { create(:user, username: 'zzz_outsider') }
+
+      it 'includes a mentioned project member that does not match the search' do
+        params = { search: 'aaa', mentioned: [mentioned_member.username] }
+
+        usernames = described_class.new(project, user, params).execute(noteable).pluck(:username)
+
+        expect(usernames).to include('zzz_mentioned')
+      end
+
+      it 'does not include a mentioned username that is not a project member' do
+        params = { mentioned: [non_member.username] }
+
+        usernames = described_class.new(project, user, params).execute(noteable).pluck(:username)
+
+        expect(usernames).not_to include('zzz_outsider')
+      end
+
+      it 'ignores over-length mentioned usernames before applying the limit (#security)' do
+        oversized = Array.new(Users::ParticipableService::MENTIONED_USERS_LIMIT) do
+          'a' * (Namespace::URL_MAX_LENGTH + 1)
+        end
+        params = { search: 'aaa', mentioned: oversized + [mentioned_member.username] }
+
+        usernames = described_class.new(project, user, params).execute(noteable).pluck(:username)
+
+        expect(usernames).to include('zzz_mentioned')
+      end
+    end
+
     context 'N+1 checks' do
       before do
         run_service # warmup, runs table cache queries and create queries

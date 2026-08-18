@@ -1,8 +1,17 @@
 import { GlBarChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SingleDimensionBarChart from '~/glql/components/presenters/bar_chart/single_dimension_bar_chart.vue';
+import { barCategoryAxisOptions } from '~/glql/components/presenters/bar_chart/bar_chart_options';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const DIMENSION = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
+const CREATED = {
+  key: 'created',
+  label: 'Created',
+  name: 'created',
+  type: 'dimension',
+  parameters: { granularity: 'daily' },
+};
 const TOTAL_COUNT = {
   key: 'totalCount',
   label: 'Total count',
@@ -20,6 +29,13 @@ const DURATION_QUANTILE = {
   label: 'p95',
   name: 'durationQuantile',
   type: 'metric',
+};
+const ALIASED_METRIC = {
+  key: 'p50',
+  field: 'durationQuantile',
+  label: 'Duration P50',
+  type: 'metric',
+  parameters: { quantile: 0.5 },
 };
 const SHOWN = { key: 'shownCount', label: 'Shown', name: 'shownCount', type: 'metric' };
 const ACCEPTED = { key: 'acceptedCount', label: 'Accepted', name: 'acceptedCount', type: 'metric' };
@@ -66,6 +82,77 @@ describe('SingleDimensionBarChart', () => {
         'Total count': [
           [21, 'ruby'],
           [14, 'python'],
+        ],
+      });
+    });
+  });
+
+  describe('with a time dimension', () => {
+    const TIME_DIMENSION = {
+      key: 'finished',
+      label: 'Finished',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+
+    it('includes granularity in the y-axis title', () => {
+      createComponent({ dimension: TIME_DIMENSION });
+
+      expect(findChart().props('yAxisTitle')).toBe('Finished (weekly)');
+    });
+  });
+
+  describe('with an unaliased parameterised metric', () => {
+    const PARAMETERISED_METRIC = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+    const PARAM_DATA = { nodes: [{ language: 'ruby', durationQuantile: 3661 }] };
+
+    it('uses the parameterised label as the x-axis title', () => {
+      createComponent({ metrics: [PARAMETERISED_METRIC], data: PARAM_DATA });
+
+      expect(findChart().props('xAxisTitle')).toBe('Duration quantile (0.5)');
+    });
+
+    it('keys the series data by the parameterised label', () => {
+      createComponent({ metrics: [PARAMETERISED_METRIC], data: PARAM_DATA });
+
+      expect(findChart().props('data')).toEqual({
+        'Duration quantile (0.5)': [[3661, 'ruby']],
+      });
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    it('resolves the formatter from the base field name, not the alias', () => {
+      createComponent({
+        metrics: [ALIASED_METRIC],
+        data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+      });
+
+      expect(findChart().props('option').xAxis.axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('builds the series from the alias key and labels it with the alias label', () => {
+      createComponent({
+        metrics: [ALIASED_METRIC],
+        data: {
+          nodes: [
+            { language: 'ruby', p50: 3661 },
+            { language: 'python', p50: 90 },
+          ],
+        },
+      });
+
+      expect(findChart().props('data')).toEqual({
+        'Duration P50': [
+          [3661, 'ruby'],
+          [90, 'python'],
         ],
       });
     });
@@ -134,7 +221,63 @@ describe('SingleDimensionBarChart', () => {
     it('omits the x-axis formatter override when metrics have mixed units', () => {
       createComponent({ metrics: [TOTAL_COUNT, ACCEPTANCE_RATE] });
 
-      expect(findChart().props('option')).toEqual({});
+      expect(findChart().props('option').xAxis).toBeUndefined();
+    });
+  });
+
+  describe('y-axis category labels', () => {
+    const yAxisOption = () => findChart().props('option').yAxis;
+
+    it('overrides the truncating label formatter with pixel-based sizing', () => {
+      createComponent();
+
+      // The probe must be longer than GlBarChart's 7-character truncation to
+      // tell the identity override apart from the default truncating formatter.
+      expect(yAxisOption().axisLabel.formatter('feature-branch-name')).toBe('feature-branch-name');
+      expect(yAxisOption().axisLabel.overflow).toBe('truncate');
+    });
+
+    it('sizes the label gutter from the longest category label', () => {
+      // Multi-year buckets produce yearful labels ("Jan 1, 2025"), keeping the
+      // expected width above the clamp floor so this pins the proportional
+      // sizing, not just the minimum.
+      createComponent({
+        dimension: CREATED,
+        data: {
+          nodes: [
+            { created: '2025-01-01', totalCount: 21 },
+            { created: '2026-06-01', totalCount: 14 },
+          ],
+        },
+      });
+
+      // The sizing math itself is covered by bar_chart_options_spec; here we
+      // assert the formatted labels reach the util and its output the chart.
+      const { yAxis, grid } = barCategoryAxisOptions(['Jan 1, 2025', 'Jun 1, 2026']);
+
+      expect(yAxisOption().axisLabel.width).toBe(yAxis.axisLabel.width);
+      expect(yAxisOption().nameGap).toBe(yAxis.nameGap);
+      expect(findChart().props('option').grid).toEqual(grid);
+    });
+
+    it('keeps raw bucket values in the data and formats them via the axis formatter', () => {
+      createComponent({
+        dimension: CREATED,
+        data: {
+          nodes: [
+            { created: '2026-01-01', totalCount: 21 },
+            { created: '2026-02-01', totalCount: 14 },
+          ],
+        },
+      });
+
+      expect(findChart().props('data')).toEqual({
+        'Total count': [
+          [21, '2026-01-01'],
+          [14, '2026-02-01'],
+        ],
+      });
+      expect(yAxisOption().axisLabel.formatter('2026-01-01')).toBe('Jan 1');
     });
   });
 
@@ -142,13 +285,8 @@ describe('SingleDimensionBarChart', () => {
     // Stub the chart and render its `#tooltip-content` slot with fixed params,
     // so we can assert on the resulting tooltip DOM rather than reaching into
     // component internals.
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     const mountWithTooltip = ({ metrics, stacked = false, seriesData, data = DATA }) => {
-      const stub = chartStub({ seriesData });
+      const stub = chartTooltipStub({ seriesData });
       return mountExtended(SingleDimensionBarChart, {
         propsData: { data, dimension: DIMENSION, metrics, stacked },
         stubs: { GlBarChart: stub },
@@ -176,6 +314,16 @@ describe('SingleDimensionBarChart', () => {
 
       expect(w.text()).toContain('3661');
       expect(w.text()).not.toContain('1h 1m 1s');
+    });
+
+    it('formats an aliased duration metric with the base field formatter', () => {
+      const w = mountWithTooltip({
+        metrics: [ALIASED_METRIC],
+        data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+        seriesData: [{ seriesName: 'Duration P50', value: [3661, 'ruby'], color: '#aaa' }],
+      });
+
+      expect(w.text()).toContain('1h 1m 1s');
     });
   });
 });

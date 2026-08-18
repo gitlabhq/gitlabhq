@@ -51,8 +51,8 @@ describe('ModelVersionEdit', () => {
     });
   };
 
-  const findPrimaryButton = () => wrapper.findByTestId('primary-button');
-  const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
+  const findPrimaryButton = () => wrapper.findComponentByTestId('primary-button');
+  const findSecondaryButton = () => wrapper.findComponentByTestId('secondary-button');
   const findModelDescription = () => wrapper.findByTestId('description-id');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findGlAlert = () => wrapper.findByTestId('edit-alert');

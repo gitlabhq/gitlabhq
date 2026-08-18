@@ -30,7 +30,7 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
     end
 
     it 'does not log an audit event' do
-      expect { response }.not_to change { AuditEvent.count }
+      expect { response }.not_to change { AuditEventReader.count }
     end
 
     context 'when the pipeline has jobs' do

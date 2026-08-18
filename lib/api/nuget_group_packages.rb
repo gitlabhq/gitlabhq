@@ -65,7 +65,7 @@ module API
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
 
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/-/packages' do
         namespace '/nuget' do
           include ::API::Concerns::Packages::Nuget::PublicEndpoints

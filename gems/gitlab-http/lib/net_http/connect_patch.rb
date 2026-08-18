@@ -31,6 +31,9 @@ module Net
     # rubocop:disable Style/Next -- This is upstream code
     # rubocop:disable Style/RescueStandardError -- This is upstream code
     # rubocop:disable Style/StringConcatenation -- This is upstream code
+
+    attr_accessor :gitlab_candidate_addresses
+
     def connect
       if use_ssl?
         # reference early to load OpenSSL before connecting,
@@ -46,15 +49,32 @@ module Net
         conn_port = port
       end
 
-      debug "opening connection to #{conn_addr}:#{conn_port}..."
-      s = Timeout.timeout(@open_timeout, Net::OpenTimeout) {
+      # Retry across validated candidates so a black-holed first IP (e.g. IPv6 under dual stack) can fall back.
+      candidate_addrs = proxy? ? nil : gitlab_candidate_addresses
+      candidate_addrs = [conn_addr] if candidate_addrs.nil? || candidate_addrs.empty?
+
+      fallback_errors = [
+        Net::OpenTimeout, Errno::ETIMEDOUT, Errno::EHOSTUNREACH,
+        Errno::ENETUNREACH, Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT
+      ]
+
+      s = nil
+      candidate_addrs.each_with_index do |addr, index|
+        debug "opening connection to #{addr}:#{conn_port}..."
         begin
-          TCPSocket.open(conn_addr, conn_port, @local_host, @local_port)
+          s = Timeout.timeout(@open_timeout, Net::OpenTimeout) {
+            TCPSocket.open(addr, conn_port, @local_host, @local_port)
+          }
+          conn_addr = addr
+          break
         rescue => e
+          retryable = fallback_errors.any? { |klass| e.is_a?(klass) }
+          next if retryable && index < candidate_addrs.length - 1
+
           raise e, "Failed to open TCP connection to " +
-            "#{conn_addr}:#{conn_port} (#{e.message})"
+            "#{addr}:#{conn_port} (#{e.message})"
         end
-      }
+      end
       s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
       debug "opened"
       if use_ssl?

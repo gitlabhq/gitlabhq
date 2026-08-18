@@ -13,7 +13,6 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
   let_it_be_with_reload(:issue) { create(:issue, project: project, author: user) }
 
   before do
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
     visit project_work_items_path(project)
   end
@@ -68,11 +67,13 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
   end
 
   it 'ignores pagination', :sidekiq_inline do
-    create_list(:issue, 30, project: project, author: user)
+    # 20 is the default page size (Kaminari's `default_per_page`); creating this many extra
+    # issues (plus the pre-existing `issue`) proves the export is not capped at one page.
+    create_list(:issue, 20, project: project, author: user)
 
     request_csv
 
-    expect(csv.count).to eq 31
+    expect(csv.count).to eq 21
   end
 
   it 'uses filters from issue index', :sidekiq_inline do

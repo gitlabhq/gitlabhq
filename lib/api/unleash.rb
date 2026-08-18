@@ -8,7 +8,7 @@ module API
     feature_category :feature_flags
 
     namespace :feature_flags do
-      resource :unleash, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :unleash, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :project_id, type: String, desc: 'The ID of a project'
           optional :instance_id, type: String, desc: 'The instance ID of Unleash Client'

@@ -8,6 +8,7 @@ import {
   GlLink,
   GlFormInputGroup,
   GlDisclosureDropdownItem,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
@@ -26,7 +27,7 @@ export default {
       'WorkItem|The subject is used as the title of the new work item, and the message is the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported.',
     ),
     privateEmailWarning: s__(
-      'WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}.',
+      'WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items and merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}.',
     ),
   },
   name: 'WorkItemByEmail',
@@ -43,6 +44,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     newWorkItemEmailAddress: {
       default: null,

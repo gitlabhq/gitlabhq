@@ -56,8 +56,8 @@ export default {
       :runner-id="runnerId"
       :project-path="projectPath"
       :platform="platform"
-      @selectPlatform="onSelectPlatform"
-      @runnerRegistered="onRunnerRegistered"
+      @select-platform="onSelectPlatform"
+      @runner-registered="onRunnerRegistered"
     >
       <template #runner-list-name>{{ s__('Runners|Project › CI/CD Settings › Runners') }}</template>
     </registration-instructions>

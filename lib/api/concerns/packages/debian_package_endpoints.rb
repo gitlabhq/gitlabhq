@@ -89,8 +89,8 @@ module API
                   .sent_through(:http_basic_auth)
           end
 
-          format :txt
           content_type :txt, 'text/plain'
+          format :txt
 
           params do
             requires :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex, documentation: { example: 'my-distro' }

@@ -9,6 +9,8 @@ module Resolvers
     authorize :read_build
 
     def resolve
+      return unless object.diff_head_pipeline
+
       authorize!(object.diff_head_pipeline)
 
       object.compare_codequality_reports

@@ -110,9 +110,31 @@ function initGranularTokenInput() {
   );
 }
 
+/**
+ * Shows a destructive-action warning when the admin unchecks the
+ * "Allow dynamic client registration" checkbox, because disabling the
+ * setting deletes all dynamically registered OAuth applications and
+ * revokes their access tokens.
+ */
+function initDynamicClientRegistrationWarning() {
+  const checkbox = document.querySelector('.js-dcr-enabled');
+  const warning = document.querySelector('.js-dcr-disabled-warning');
+
+  if (!checkbox || !warning) return;
+
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      warning.classList.add('gl-hidden');
+    } else {
+      warning.classList.remove('gl-hidden');
+    }
+  });
+}
+
 export default function initAccountAndLimitsSection() {
   initUserInternalRegexPlaceholder();
   initDeactivateDormantUsersPeriodInputSection();
   initGranularTokenInput();
+  initDynamicClientRegistrationWarning();
   initDatePickers();
 }

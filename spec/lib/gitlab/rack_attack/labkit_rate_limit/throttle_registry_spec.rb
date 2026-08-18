@@ -9,8 +9,8 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
     it 'backs every entry with a throttle and covers the whole Rack::Attack set' do
       # Every throttle Rack::Attack registers (via the shared all_throttle_definitions
       # source) must be classified into the shadow, and every entry must back a throttle
-      # that exists (a sibling rule via its :name). A new throttle cannot silently escape
-      # the shadow, and a renamed one fails loudly.
+      # that exists. A new throttle cannot silently escape the shadow, and a renamed
+      # one fails loudly.
       backing = entries.each_value.map(&:name).uniq
 
       expect(backing).to match_array(Gitlab::RackAttack.all_throttle_definitions.keys)
@@ -69,6 +69,26 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
 
       expect { described_class.all }.to raise_error(KeyError, /unknown throttle/)
     end
+
+    it 'declares a claim on every entry' do
+      # Every throttle currently claims its requests (the terminating :skip pair
+      # Limiters derives), preserving Rack::Attack's exclusions. An entry opting
+      # out of that is a deliberate fall-through and would change this expectation.
+      entries.each_value do |entry|
+        expect(entry.claims?).to be(true), "expected #{entry.rule_name} to declare claims: true"
+      end
+    end
+
+    it 'raises if an entry does not declare :claims' do
+      # The declaration is mandatory, never defaulted: a new throttle cannot
+      # silently decide whether requests it counts fall through to the rules
+      # below it.
+      undeclared = described_class.meta.deep_dup
+      undeclared['throttle_unauthenticated_api'].delete(:claims)
+      allow(described_class).to receive(:meta).and_return(undeclared)
+
+      expect { described_class.all }.to raise_error(KeyError, /must declare :claims/)
+    end
   end
 
   describe 'classification matches' do
@@ -100,26 +120,45 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
   end
 
   describe 'the web throttle disjunction' do
-    # web_request? OR frontend_request? cannot be one AND-match, so each web throttle
-    # is a web-path rule (WEB_PATH_REGEX) plus a frontend companion (the frontend fact)
-    # as a sibling entry backing the same throttle, with its own counter (rule_name).
-    {
-      'throttle_unauthenticated_web' => 'throttle_unauthenticated_web_frontend',
-      'throttle_authenticated_web' => 'throttle_authenticated_web_frontend'
-    }.each do |web_id, frontend_id|
-      it "expresses #{web_id} as a WEB_PATH_REGEX rule and a frontend companion" do
-        entries = described_class.all
-        web = entries.fetch(web_id)
-        frontend = entries.fetch(frontend_id)
+    # The disjunction is the single web_or_frontend fact: two rules would mean two
+    # rule names and so two Redis counters, where Rack::Attack keeps one per throttle.
+    %w[throttle_unauthenticated_web throttle_authenticated_web].each do |web_id|
+      it "expresses #{web_id} as a single web_or_frontend rule" do
+        entry = described_class.all.fetch(web_id)
 
-        expect(web.match[:path]).to eq(described_class::WEB_PATH_REGEX)
-        expect(frontend.match).to include(frontend: true)
-        expect(frontend.match).not_to have_key(:path)
-        # The companion is its own rule (counter) but the same backing throttle.
-        expect(frontend.rule_name).to eq(frontend_id.delete_prefix('throttle_'))
-        expect(frontend.name).to eq(web_id)
-        expect(frontend.cohort).to eq(web.cohort)
+        expect(entry.match).to include(web_or_frontend: true)
+        expect(entry.match).not_to have_key(:path)
       end
+    end
+
+    it 'orders the web rules after the git rules and before the general API rules', :aggregate_failures do
+      # Order encodes the exclusions: git before web (a git path is also a web
+      # path), web before API (a frontend request on an API path is web traffic).
+      general = described_class.all.values.select { |entry| entry.limiter == described_class::GENERAL }
+      positions = general.each_with_index.to_h { |entry, index| [entry.name, index] }
+
+      expect(positions['throttle_unauthenticated_git_http']).to be < positions['throttle_unauthenticated_web']
+      expect(positions['throttle_authenticated_git_lfs']).to be < positions['throttle_authenticated_web']
+      expect(positions['throttle_unauthenticated_web']).to be < positions['throttle_unauthenticated_api']
+      expect(positions['throttle_authenticated_web']).to be < positions['throttle_authenticated_api']
+    end
+  end
+
+  describe 'the general API frontend exclusion' do
+    it 'excludes frontend requests from the API rules via a frontend: false match' do
+      # The predicates' !frontend_request?, which holds even with the web setting off.
+      %w[throttle_unauthenticated_api throttle_authenticated_api].each do |api_id|
+        expect(described_class.all.fetch(api_id).match).to include(frontend: false)
+      end
+    end
+  end
+
+  describe '.by_rule_name' do
+    it 'resolves a web rule name to its backing throttle and cohort' do
+      entry = described_class.by_rule_name.fetch('unauthenticated_web')
+
+      expect(entry.name).to eq('throttle_unauthenticated_web')
+      expect(entry.cohort).to eq(2)
     end
   end
 
@@ -189,6 +228,91 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
   describe '.flag_basis' do
     it 'namespaces the basis so it cannot collide with the ApplicationRateLimiter cohorts' do
       expect(described_class.flag_basis(3)).to eq('rack_cohort_3')
+    end
+  end
+
+  describe '.shadow_enabled?' do
+    it 'is disabled by default in the test suite' do
+      expect(described_class.shadow_enabled?(2)).to be(false)
+    end
+
+    it 'reflects the cohort-specific shadow flag when enabled' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
+
+      expect(described_class.shadow_enabled?(2)).to be(true)
+    end
+
+    it 'does not conflate an enabled cohort with a different cohort' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
+
+      expect(described_class.shadow_enabled?(3)).to be(false)
+    end
+  end
+
+  describe '.enforce_enabled?' do
+    it 'is disabled by default in the test suite' do
+      expect(described_class.enforce_enabled?(2)).to be(false)
+    end
+
+    it 'reflects the cohort-specific enforce flag when enabled' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2_enforce: true)
+
+      expect(described_class.enforce_enabled?(2)).to be(true)
+    end
+
+    it 'does not conflate an enabled cohort with a different cohort' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2_enforce: true)
+
+      expect(described_class.enforce_enabled?(3)).to be(false)
+    end
+  end
+
+  describe '.fully_enforced?' do
+    def stub_shadow_and_enforce(cohort, shadow:, enforce:)
+      stub_feature_flags(
+        "rate_limiter_use_labkit_rack_cohort_#{cohort}": shadow,
+        "rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce": enforce
+      )
+    end
+
+    it 'is false by default in the test suite' do
+      expect(described_class.fully_enforced?).to be(false)
+    end
+
+    it 'is true only when every cohort both shadows and enforces' do
+      described_class.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+
+      expect(described_class.fully_enforced?).to be(true)
+    end
+
+    it 'is false when any single cohort does not enforce' do
+      described_class.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+      stub_shadow_and_enforce(2, shadow: true, enforce: false)
+
+      expect(described_class.fully_enforced?).to be(false)
+    end
+
+    # Regression guard: enforce alone is not enough. The middleware's own
+    # run(env) never executes unless shadow is on for at least one cohort (see
+    # active_cohorts), so if every enforce flag were ever on while every shadow
+    # flag was off, Labkit would do nothing while this safelist waved
+    # Rack::Attack through - leaving the request completely unthrottled.
+    it 'is false when every cohort enforces but none shadow' do
+      described_class.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: false, enforce: true) }
+
+      expect(described_class.fully_enforced?).to be(false)
+    end
+
+    # Regression guard: #all? over an empty list is vacuously true, so an empty
+    # registry (no entries, hence no cohorts) would report full enforcement while
+    # Labkit has no rules at all - and the safelist would wave Rack::Attack
+    # through, leaving every request unthrottled. The cohorts.present? gate makes
+    # "nothing is enforcing" false, not true.
+    it 'is false when the registry declares no cohorts' do
+      allow(described_class).to receive(:meta).and_return({})
+
+      expect(described_class.cohorts).to be_empty
+      expect(described_class.fully_enforced?).to be(false)
     end
   end
 

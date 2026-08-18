@@ -369,10 +369,10 @@ export default {
               :can-edit="canEdit"
               :is-editing="isEditing"
               :noteable-id="noteableId"
-              @cancel:edit="toggleEditing(false)"
-              @creating-note:start="toggleUpdating(true)"
-              @creating-note:done="toggleUpdating(false)"
-              @creating-note:success="toggleEditing(false)"
+              @cancel-edit="toggleEditing(false)"
+              @creating-note-start="toggleUpdating(true)"
+              @creating-note-done="toggleUpdating(false)"
+              @creating-note-success="toggleEditing(false)"
             />
           </slot>
         </div>

@@ -147,6 +147,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: 'rspec:test 1' },
           { key: 'CI_JOB_STAGE',
             value: job.stage_name },
+          { key: 'CI_JOB_TAGS',
+            value: job.tag_list.to_a.to_s },
           { key: 'CI_NODE_TOTAL',
             value: '1' },
           { key: 'CI_ENVIRONMENT_NAME',

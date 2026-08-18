@@ -167,7 +167,7 @@ The 1000 RPS / 50k user reference architecture is designed to accommodate most c
 | Git (Pull)    | 100 RPS           |
 | Git (Push)    | 20 RPS            |
 
-These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
 For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
@@ -621,7 +621,7 @@ but do not provide the `EXTERNAL_URL` value.
 1. On every database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
    ```ruby
-   # Disable all components except Patroni, PgBouncer and Consul
+   # Disable all components except Patroni, PgBouncer, and Consul
    roles(['patroni_role', 'pgbouncer_role'])
 
    # PostgreSQL configuration
@@ -2138,9 +2138,8 @@ On each node perform the following:
    sudo gitlab-ctl tail gitaly
    ```
 
-1. Optionally, from the Gitaly servers, confirm that Gitaly can perform callbacks to the internal API:
-   - For GitLab 15.3 and later, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
-   - For GitLab 15.2 and earlier, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
+1. Optionally, from the Gitaly servers, confirm that Gitaly can perform callbacks to the internal API by running
+   `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
 
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the

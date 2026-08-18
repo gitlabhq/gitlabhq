@@ -23,6 +23,8 @@ module Sidebars
         add_menu(Sidebars::Projects::SuperSidebarMenus::MonitorMenu.new(context))
         add_menu(Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu.new(context))
 
+        add_menu(Sidebars::Projects::SuperSidebarMenus::ObserveMenu.new(context)) if observe_menu_enabled?
+
         # Pick old menus, will be obsolete once everything is in their own
         # super sidebar menu
         pick_from_old_menus(old_menus)
@@ -38,6 +40,16 @@ module Sidebars
       override :super_sidebar_context_header
       def super_sidebar_context_header
         _('Project')
+      end
+
+      private
+
+      def observe_menu_enabled?
+        if context.container.group
+          ::Feature.enabled?(:observability_sass_features, context.container.group)
+        else
+          ::Feature.enabled?(:observability_saas_features_user_namespace, context.container.root_namespace)
+        end
       end
     end
   end

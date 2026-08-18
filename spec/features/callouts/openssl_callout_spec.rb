@@ -36,19 +36,18 @@ RSpec.describe 'OpenSSL callout', :do_not_mock_admin_mode_setting, feature_categ
       end
 
       context 'when callout is dismissed', :js do
-        before do
+        it 'does not display callout' do
           visit admin_root_path
 
           within('body.page-initialised') do
             find_by_testid('close-openssl-callout').click
           end
 
-          wait_for_requests
+          expect(page).not_to have_content callout_title
 
           visit admin_users_path
-        end
 
-        it 'does not display callout' do
+          expect(page).to have_title _('Users')
           expect(page).not_to have_content callout_title
         end
       end

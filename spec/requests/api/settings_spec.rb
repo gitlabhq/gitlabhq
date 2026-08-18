@@ -75,7 +75,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['admin_mode']).to be(false)
       expect(json_response['whats_new_variant']).to eq('all_tiers')
       expect(json_response['user_deactivation_emails_enabled']).to be(true)
-      expect(json_response['suggest_pipeline_enabled']).to be(true)
       expect(json_response['runner_token_expiration_interval']).to be_nil
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
@@ -124,7 +123,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['iframe_rendering_allowlist']).to eq([])
       expect(json_response['email_otp_enabled']).to be(false)
       expect(json_response['authn_data_retention_cleanup_enabled']).to be(false)
+      expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(false)
       expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(false)
+      expect(json_response['offline_transfer_exports_enabled']).to be(false)
+      expect(json_response['offline_transfer_imports_enabled']).to be(false)
       expect(json_response['logging_field_schema_version']).to eq(0)
       expect(json_response['logging_field_dual_emit_target']).to be_nil
     end
@@ -138,6 +140,32 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       let(:user) { admin }
       let(:request) do
         put api('/application/settings', personal_access_token: pat), params: { default_projects_limit: 42 }
+      end
+    end
+
+    context 'with a managed setting' do
+      before do
+        Gitlab::ManagedSettings.reset!
+        stub_const('Gitlab::ManagedSettings::PATH',
+          Rails.root.join('spec/fixtures/managed_settings/valid.yml'))
+      end
+
+      after do
+        Gitlab::ManagedSettings.reset!
+      end
+
+      it 'rejects changing the managed setting' do
+        put api('/application/settings', admin), params: { sidekiq_timezone_override: 'UTC' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['base'])
+          .to include('The sidekiq_timezone_override is a managed setting and cannot be changed.')
+      end
+
+      it 'allows changing an unmanaged setting' do
+        put api('/application/settings', admin), params: { home_page_url: 'http://example.com' }
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -189,6 +217,24 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['email_otp_enabled']).to be(true)
         expect(ApplicationSetting.current.email_otp_enabled?).to be(true)
+      end
+    end
+
+    context 'dynamic_client_registration_enabled setting', feature_category: :system_access do
+      it 'exposes dynamic_client_registration_enabled' do
+        get api('/application/settings', admin)
+
+        expect(json_response).to have_key('dynamic_client_registration_enabled')
+      end
+
+      it 'updates dynamic_client_registration_enabled and enqueues the cleanup worker', :aggregate_failures do
+        expect(Authn::OauthApplications::CleanupDynamicApplicationsWorker).to receive(:perform_async)
+
+        put api('/application/settings', admin), params: { dynamic_client_registration_enabled: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['dynamic_client_registration_enabled']).to be(false)
+        expect(ApplicationSetting.current.dynamic_client_registration_enabled?).to be(false)
       end
     end
 
@@ -289,7 +335,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             personal_access_token_prefix: "GL-",
             user_deactivation_emails_enabled: false,
             admin_mode: true,
-            suggest_pipeline_enabled: false,
             users_get_by_id_limit: 456,
             delete_inactive_projects: true,
             inactive_projects_delete_after_months: 24,
@@ -307,6 +352,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             default_syntax_highlighting_theme: 2,
             default_dark_syntax_highlighting_theme: 3,
             projects_api_rate_limit_unauthenticated: 100,
+            project_repositories_blobs_batch_limit: 10,
             silent_mode_enabled: true,
             valid_runner_registrars: ['group'],
             allow_account_deletion: false,
@@ -325,7 +371,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             },
             terraform_state_encryption_enabled: false,
             authn_data_retention_cleanup_enabled: true,
-            allow_s3_compatible_storage_for_offline_transfer: true
+            allow_s3_compatible_storage_for_offline_transfer: true,
+            allow_application_default_credentials_for_offline_transfer: true,
+            offline_transfer_exports_enabled: true,
+            offline_transfer_imports_enabled: true
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -392,7 +441,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['personal_access_token_prefix']).to eq("GL-")
         expect(json_response['admin_mode']).to be(true)
         expect(json_response['user_deactivation_emails_enabled']).to be(false)
-        expect(json_response['suggest_pipeline_enabled']).to be(false)
         expect(json_response['users_get_by_id_limit']).to eq(456)
         expect(json_response['delete_inactive_projects']).to be(true)
         expect(json_response['inactive_projects_delete_after_months']).to eq(24)
@@ -408,6 +456,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_syntax_highlighting_theme']).to eq(2)
         expect(json_response['default_dark_syntax_highlighting_theme']).to eq(3)
         expect(json_response['projects_api_rate_limit_unauthenticated']).to be(100)
+        expect(json_response['project_repositories_blobs_batch_limit']).to be(10)
         expect(json_response['silent_mode_enabled']).to be(true)
         expect(json_response['valid_runner_registrars']).to eq(['group'])
         expect(json_response['allow_account_deletion']).to be(false)
@@ -426,6 +475,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['terraform_state_encryption_enabled']).to be(false)
         expect(json_response['authn_data_retention_cleanup_enabled']).to be(true)
         expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(true)
+        expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(true)
+        expect(json_response['offline_transfer_exports_enabled']).to be(true)
+        expect(json_response['offline_transfer_imports_enabled']).to be(true)
       end
     end
 

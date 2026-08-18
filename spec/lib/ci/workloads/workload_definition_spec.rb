@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_integration do
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:project) { create(:project, :small_repo, group: group) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let(:image) { 'test_docker_image' }
   let(:source) { :duo_workflow }

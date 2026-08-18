@@ -1,6 +1,6 @@
 <script>
 import { UP_KEY_CODE, DOWN_KEY_CODE, TAB_KEY_CODE } from '~/lib/utils/keycodes';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
   model: {
@@ -35,6 +35,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['change', 'tab'],
   watch: {
     max() {
       // If the max index (list length) changes, reset the index
@@ -101,7 +102,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

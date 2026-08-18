@@ -20,7 +20,7 @@ RSpec.describe Tooling::TestMapGenerator do
         "./spec/models/factories_spec.rb[1]":
         - lib/gitlab/current_settings.rb
         - lib/feature.rb
-        - lib/gitlab/marginalia.rb
+        - lib/gitlab/query_logs.rb
       YAML
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Tooling::TestMapGenerator do
         "./spec/models/project_spec.rb[1]":
         - lib/gitlab/current_settings.rb
         - lib/feature.rb
-        - lib/gitlab/marginalia.rb
+        - lib/gitlab/query_logs.rb
       YAML
     end
 
@@ -67,7 +67,7 @@ RSpec.describe Tooling::TestMapGenerator do
           'lib/feature.rb' => [
             'spec/models/factories_spec.rb'
           ],
-          'lib/gitlab/marginalia.rb' => [
+          'lib/gitlab/query_logs.rb' => [
             'spec/models/factories_spec.rb'
           ]
         }
@@ -88,7 +88,14 @@ RSpec.describe Tooling::TestMapGenerator do
       end
 
       it 'displays a warning when report has no examples' do
-        expect { subject.parse('yaml3.yml') }.to output(%(No examples in yaml3.yml! Metadata: {:type=>"Crystalball::ExecutionMap", :commit=>"74056e8d9cf3773f43faa1cf5416f8779c8284c9", :timestamp=>1602671965, :version=>nil}\n)).to_stdout
+        metadata = {
+          type: 'Crystalball::ExecutionMap',
+          commit: '74056e8d9cf3773f43faa1cf5416f8779c8284c9',
+          timestamp: 1602671965,
+          version: nil
+        }
+
+        expect { subject.parse('yaml3.yml') }.to output("No examples in yaml3.yml! Metadata: #{metadata}\n").to_stdout
       end
     end
 
@@ -103,7 +110,7 @@ RSpec.describe Tooling::TestMapGenerator do
             'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ],
-          'lib/gitlab/marginalia.rb' => [
+          'lib/gitlab/query_logs.rb' => [
             'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ]

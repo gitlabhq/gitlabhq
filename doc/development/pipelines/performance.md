@@ -30,7 +30,7 @@ This works well for the following reasons:
 
 ### Fetch repository via artifacts instead of cloning/fetching from Gitaly
 
-Lately we see errors from Gitaly look like this: (see [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435456))
+Lately we see errors from Gitaly that look like this: (see [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435456))
 
 ```plaintext
 fatal: remote error: GitLab is currently unable to handle this request due to load.
@@ -39,20 +39,20 @@ fatal: remote error: GitLab is currently unable to handle this request due to lo
 While GitLab.com uses [pack-objects cache](../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
 sometimes the load is still too heavy for Gitaly to handle, and
 [thundering herds](https://gitlab.com/gitlab-org/gitlab/-/issues/423830) can
-also be a concern that we have a lot of jobs cloning the repository around
+also be a concern, because we have a lot of jobs cloning the repository around
 the same time.
 
 To mitigate and reduce loads for Gitaly, we changed some jobs to fetch the
 repository from artifacts in a job instead of all cloning from Gitaly at once.
 
-For now this applies to most of the RSpec jobs, which has the most concurrent
+For now this applies to most of the RSpec jobs, which have the most concurrent
 jobs in most pipelines. This also slightly improved the speed because fetching
 from the artifacts is also slightly faster than cloning, at the cost of saving
 more artifacts for each pipeline.
 
 Based on the numbers on 2023-12-20 at [Fetch repo from artifacts for RSpec jobs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140330),
 the extra storage cost was about 280M for each pipeline, and we save 15 seconds
-for each RSpec jobs.
+for each RSpec job.
 
 We do not apply this to jobs having no other job dependencies because we don't
 want to delay any jobs from starting.
@@ -90,7 +90,7 @@ We limit the artifacts that are saved and retrieved by jobs to the minimum to re
 By default, `setup-test-env` creates an artifact which contains stripped
 binaries to [save storage and speed-up artifact downloads](https://gitlab.com/gitlab-org/gitlab/-/issues/442029#note_1775193538) of subsequent CI jobs.
 
-To make debugging a crash from stripped binaries easier comment line with
+To make debugging a crash from stripped binaries easier, comment the line with
 `strip_executable_binaries` in the `setup_test_env` function in `scripts/gitlab_component_helpers.sh` shell script and start a new pipeline.
 
 ## Skip pipelines in merge request titles

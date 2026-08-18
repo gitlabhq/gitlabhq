@@ -178,7 +178,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
 
     expect do
       described_class.new(project, user2).execute.map(&:user)
-    end.to issue_same_number_of_queries_as(control)
+    end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
   end
 
   context 'with :shared_into_ancestors' do

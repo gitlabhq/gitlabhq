@@ -35,8 +35,19 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
         end
       end
 
+      it 'tracks the visit_observability_setup_page internal event', :clean_gitlab_redis_shared_state do
+        expect { get_setup_page }
+          .to trigger_internal_events('visit_observability_setup_page')
+          .with(user: user, namespace: group, additional_properties: { label: 'group' },
+            category: 'Groups::Observability::SetupController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_weekly'
+          )
+      end
+
       context 'when group already has observability settings' do
-        let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group) }
+        let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group, created_at: 10.minutes.ago) }
 
         it 'returns early without building a new setting' do
           get_setup_page
@@ -93,6 +104,27 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
           end
         end
 
+        context 'when pipeline existence check times out' do
+          before do
+            allow_next_instance_of(Observability::PipelinesSinceSetupExist) do |service|
+              allow(service).to receive(:execute).and_raise(ActiveRecord::QueryCanceled)
+            end
+          end
+
+          it 'logs the error and falls back to false' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(ActiveRecord::QueryCanceled), group_id: group.id
+            )
+
+            get_setup_page
+
+            aggregate_failures do
+              expect(response).to have_gitlab_http_status(:success)
+              expect(assigns(:has_pipelines_since_setup)).to be(false)
+            end
+          end
+        end
+
         describe 'page layout and section order' do
           it 'renders the connect your application section before endpoint details' do
             get_setup_page
@@ -145,6 +177,28 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
               expect(response.body).to include('Non-TLS endpoints and advanced configuration')
               expect(response.body).to include('Firewall configuration')
             end
+          end
+
+          it 'renders the MCP server section with the MCP endpoint on GitLab.com' do
+            allow(Gitlab).to receive(:com?).and_return(true)
+
+            get_setup_page
+
+            setting = group.observability_group_o11y_setting
+
+            aggregate_failures do
+              expect(response.body).to include('MCP server')
+              expect(response.body).to include(setting.o11y_mcp_url)
+              expect(response.body).to include('MCP server documentation')
+            end
+          end
+
+          it 'does not render the MCP server section when not on GitLab.com' do
+            allow(Gitlab).to receive(:com?).and_return(false)
+
+            get_setup_page
+
+            expect(response.body).not_to include('MCP server documentation')
           end
 
           it 'renders endpoint details before the CI/CD export settings' do

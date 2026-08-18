@@ -74,7 +74,6 @@ in the user interface, and you can also resolve conflicts using the following me
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -82,6 +81,7 @@ in the user interface, and you can also resolve conflicts using the following me
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235919) in GitLab 19.0
   [with a feature flag](../../../administration/feature_flags/_index.md) named `mr_ai_resolve_conflicts`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/596465) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -97,8 +97,6 @@ Prerequisites:
 - The Developer, Maintainer, or Owner role.
 - Push access to the source branch.
 - [GitLab Duo Agent Platform prerequisites](../../duo_agent_platform/_index.md#prerequisites).
-- [Beta and experimental features](../../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features)
-  turned on.
 - A merge request with conflicts that
   [can be resolved in the user interface](#conflicts-you-can-resolve-in-the-user-interface).
 

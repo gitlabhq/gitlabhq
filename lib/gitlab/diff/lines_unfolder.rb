@@ -40,7 +40,10 @@ module Gitlab
           # unchanged line, so the parsing and highlighting step can get fuzzy
           # without the following change.
           line_prefix = ' '
-          blob_as_diff_lines = @blob.data.each_line.map { |line| "#{line_prefix}#{line}" }
+          # blob_data is capped at the viewable size; when the flag is disabled we
+          # read @blob.data directly to preserve the previous behavior.
+          source = unfold_large_blob_enabled? ? blob_data : @blob.data
+          blob_as_diff_lines = source.each_line.map { |line| "#{line_prefix}#{line}" }
 
           lines = Gitlab::Diff::Parser.new.parse(blob_as_diff_lines, diff_file: @diff_file).to_a
 
@@ -58,8 +61,19 @@ module Gitlab
           next false if @diff_file.new_file? || @diff_file.deleted_file?
           next false unless @position.old_line
           next false unless @position.old_line.is_a?(Integer)
-          # Invalid position (MR import scenario)
-          next false if @position.old_line > @blob.lines.size
+
+          # Invalid position (MR import scenario) or a line beyond the fetched
+          # blob. Count newlines in @blob.data rather than using @blob.lines:
+          # Gitlab::BlobHelper#lines is empty for blobs > 1 MB (large?), and a
+          # raw \n count matches git line numbering and #blob_lines (both split
+          # on \n). Gated by unfold_diff_note_large_blob; when disabled we fall
+          # back to @blob.lines (bails for > 1 MB blobs).
+          if unfold_large_blob_enabled?
+            next false if @position.old_line > blob_data_line_count
+          elsif @position.old_line > @blob.lines.size
+            next false
+          end
+
           next false if @diff_file.diff_lines.empty?
           next false if @diff_file.line_for_position(@position)
           next false unless unfold_line
@@ -71,6 +85,51 @@ module Gitlab
       private
 
       attr_reader :from_blob_line, :to_blob_line
+
+      def unfold_large_blob_enabled?
+        strong_memoize(:unfold_large_blob_enabled) do
+          Feature.enabled?(:unfold_diff_note_large_blob, @diff_file.repository&.project)
+        end
+      end
+
+      # The blob data used for unfolding, capped at the viewable size (see
+      # Gitlab::BlobHelper#large?). The fetched diff blob is already smaller than
+      # this on the normal path (so no slicing happens), but capping guarantees
+      # we never count or parse more than a viewable-sized chunk even if the blob
+      # was fully loaded upstream via load_all_data!. Byte slicing matches how the
+      # blob fetch itself truncates (at a byte boundary).
+      #
+      # Slicing at a byte boundary can split a multibyte character, leaving an
+      # invalid-UTF-8 tail; scrub the trailing partial character so counting and
+      # parsing the capped data never raise (ArgumentError: invalid byte sequence).
+      def blob_data
+        strong_memoize(:blob_data) do
+          data = @blob&.data.to_s
+          next data if data.bytesize <= Gitlab::BlobHelper::MEGABYTE
+
+          data.byteslice(0, Gitlab::BlobHelper::MEGABYTE).scrub('')
+        end
+      end
+
+      # Number of lines in the (capped) blob data, counted by newline bytes.
+      #
+      # We avoid @blob.lines (Gitlab::BlobHelper#lines): it returns [] for blobs
+      # larger than 1 MB (large?), which would make unfolding bail for every
+      # comment on such files. Counting the data also matches git line numbering
+      # and #blob_lines (both split on \n), whereas BlobHelper#lines additionally
+      # splits on \r and keeps a trailing empty element.
+      #
+      # String#count is a C-level, allocation-free byte scan: O(n) time, O(1)
+      # memory, and ~3.4x faster than String#lines.size (~0.13 ms vs ~0.46 ms per
+      # MB in benchmarks) since it builds no per-line String/Array objects. The
+      # end_with? term adds the final unterminated line so the count equals
+      # String#lines.size (a file not ending in "\n" has one more line than "\n"s).
+      def blob_data_line_count
+        data = blob_data
+        return 0 if data.empty?
+
+        data.count("\n") + (data.end_with?("\n") ? 0 : 1)
+      end
 
       def merged_diff_with_blob_lines
         lines = @diff_file.diff_lines

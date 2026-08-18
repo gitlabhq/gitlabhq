@@ -1,0 +1,73 @@
+- name: Integrate third-party scanner results with GitLab (GA)
+  description: |
+    Any scanner that outputs SARIF now runs under your GitLab policies across every project,
+    so the security tools you already use give you coverage you can prove.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/detect/sarif/
+  published_at: 2026-06-18
+  release: "19.1"
+
+- name: New event triggers for flows and external agents
+  description: |
+    Automate more of the merge request lifecycle without manual handoffs. Four new triggers let flows and external agents respond
+    when a merge request moves from draft to ready, hits a code conflict, receives approval, or a work item is created.
+    Plus, we've shipped new configuration capabilities to the existing Pipeline Events trigger.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/triggers/#create-a-trigger
+  published_at: 2026-06-18
+  release: "19.1"
+
+- name: Secret false positive detection with GitLab Duo
+  description: |
+    Spend less time triaging secrets that turn out to be false positives. GitLab Duo Agent Platform analyzes critical and high severity findings,
+    scores confidence, and flags false positives so security teams remediate only genuine exposures.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/vulnerabilities/secret_false_positive_detection/
+  published_at: 2026-06-18
+  release: "19.1"
+
+- name: Improved secret detection coverage for feature branch pipelines
+  description: |
+    Close a gap where secrets in earlier feature branch commits could go undetected.
+    Secret detection now scans every commit from the branch's divergence point with the default branch to the latest commit.
+  stage: application_security_testing
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/#coverage
+  published_at: 2026-06-18
+  release: "19.1"
+
+- name: Always on availability mode for GitLab Duo
+  description: |
+    Administrators can now set GitLab Duo to be always on for all projects in an entire instance or top-level group.
+    When GitLab Duo is set to always on, group, subgroup, and project owners cannot turn off GitLab Duo,
+    giving enterprises centralized AI governance for compliance and regulated environments.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/turn_on_off/#lock-gitlab-duo-on
+  published_at: 2026-06-18
+  release: "19.1"
+
+- name: Tool approval guardrails for GitLab Duo agents (beta)
+  description: |
+    Control what your AI agents can do, tool by tool. Configure approval policies with three modes
+    (Allow, Ask, or Deny) across Agentic Chat, IDE, and flows, with audit events for every approval decision.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/tool-governance/
+  published_at: 2026-06-18
+  release: "19.1"

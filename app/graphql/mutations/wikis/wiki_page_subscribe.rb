@@ -5,6 +5,9 @@ module Mutations
     class WikiPageSubscribe < BaseMutation
       graphql_name 'WikiPageSubscribe'
 
+      authorize_granular_token permissions: :subscribe_wiki,
+        boundary_argument: :id, boundary: :resource_parent, boundary_type: :project
+
       argument :id, ::Types::GlobalIDType[::WikiPage::Meta],
         required: true,
         description: 'Global ID of the wiki page meta record.'

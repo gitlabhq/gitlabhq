@@ -867,65 +867,29 @@ RSpec.describe ProjectPresenter do
       let_it_be(:group) { create(:group) }
       let_it_be(:project_with_group) { create(:project, group: group) }
 
-      before do
-        stub_feature_flags(observability_sass_features: group)
-        allow(presenter).to receive(:can?).with(user, :read_observability_portal,
-          group).and_return(can_read_observability)
+      shared_examples 'observability anchor data' do
+        context 'when user cannot read observability' do
+          let(:can_read_observability) { false }
 
-        allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
-          .with(project)
-          .and_return(observability_setting)
-      end
-
-      context 'when project has no group' do
-        it 'returns nil' do
-          expect(presenter.send(:observability_anchor_data)).to be_nil
-        end
-      end
-
-      context 'when current_user is nil' do
-        let(:presenter_without_user) { described_class.new(project_with_group, current_user: nil) }
-
-        it 'returns nil' do
-          expect(presenter_without_user.send(:observability_anchor_data)).to be_nil
-        end
-      end
-
-      context 'when user cannot read observability' do
-        let(:can_read_observability) { false }
-
-        it 'returns nil' do
-          expect(presenter.observability_anchor_data).to be_nil
-        end
-      end
-
-      context 'when observability feature is not enabled' do
-        before do
-          stub_feature_flags(observability_sass_features: false)
+          it 'returns nil' do
+            expect(presenter.observability_anchor_data).to be_nil
+          end
         end
 
-        it 'returns nil' do
-          expect(presenter.observability_anchor_data).to be_nil
-        end
-      end
+        context 'when observability feature is not enabled' do
+          before do
+            stub_feature_flags(observability_sass_features: false, observability_saas_features_user_namespace: false)
+          end
 
-      context 'when all conditions are met' do
-        let(:presenter) { described_class.new(project_with_group, current_user: user) }
-        let(:expected_link) { presenter.group_observability_setup_path(project_with_group.group) }
-
-        before do
-          allow(presenter).to receive(:can?).with(user, :read_observability_portal,
-            group).and_return(can_read_observability)
-
-          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
-            .with(project_with_group)
-            .and_return(observability_setting)
+          it 'returns nil' do
+            expect(presenter.observability_anchor_data).to be_nil
+          end
         end
 
         context 'when observability settings are present' do
           let(:observability_setting) { instance_double(Observability::GroupO11ySetting) }
 
-          it 'returns anchor data with configuration label and btn-default class' do
+          it 'returns anchor data with configuration label' do
             expect(presenter.observability_anchor_data).to have_attributes(
               is_link: false,
               label: a_string_including('Observability configuration'),
@@ -937,7 +901,7 @@ RSpec.describe ProjectPresenter do
         end
 
         context 'when observability settings are not present' do
-          it 'returns anchor data with enable label and no class modifier' do
+          it 'returns anchor data with enable label' do
             expect(presenter.observability_anchor_data).to have_attributes(
               is_link: false,
               label: a_string_including('Enable Observability'),
@@ -947,6 +911,49 @@ RSpec.describe ProjectPresenter do
             )
           end
         end
+      end
+
+      context 'when project belongs to a group' do
+        let(:presenter) { described_class.new(project_with_group, current_user: user) }
+        let(:expected_link) { presenter.group_observability_setup_path(project_with_group.group) }
+
+        before do
+          stub_feature_flags(observability_sass_features: group)
+          allow(presenter).to receive(:can?).with(user, :read_observability_portal,
+            group).and_return(can_read_observability)
+
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(project_with_group)
+            .and_return(observability_setting)
+        end
+
+        it_behaves_like 'observability anchor data'
+
+        context 'when current_user is nil' do
+          let(:presenter) { described_class.new(project_with_group, current_user: nil) }
+
+          it 'returns nil' do
+            expect(presenter.observability_anchor_data).to be_nil
+          end
+        end
+      end
+
+      context 'when project belongs to a personal namespace' do
+        let_it_be(:personal_project) { create(:project, :in_user_namespace) }
+        let(:presenter) { described_class.new(personal_project, current_user: user) }
+        let(:expected_link) { presenter.project_observability_setup_path(personal_project) }
+
+        before do
+          stub_feature_flags(observability_saas_features_user_namespace: personal_project.root_namespace)
+          allow(presenter).to receive(:can?).with(user, :read_observability_portal,
+            personal_project).and_return(can_read_observability)
+
+          allow(Observability::GroupO11ySetting).to receive(:observability_setting_for)
+            .with(personal_project)
+            .and_return(observability_setting)
+        end
+
+        it_behaves_like 'observability anchor data'
       end
     end
   end

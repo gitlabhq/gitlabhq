@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Patch::ConnectionPoolExtendedStat, feature_category: :dat
       orig_db_config.configuration_hash.merge(reaping_frequency: 0)
     )
     ActiveRecord::ConnectionAdapters::PoolConfig.new(
-      orig_db_config.adapter_class,
+      ApplicationRecord,
       db_config,
       orig_pool_config.role,
       orig_pool_config.shard

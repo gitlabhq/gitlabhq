@@ -687,7 +687,7 @@ export default {
         <work-item-description-template-listbox
           :full-path="fullPath"
           :template="selectedTemplate"
-          @selectTemplate="handleSelectTemplate"
+          @select-template="handleSelectTemplate"
           @clear="handleClearTemplate"
           @reset="handleResetTemplate"
         />

@@ -69,7 +69,7 @@ Some possible reasons for this error message:
 
   1. The project has merge request pipelines enabled in the `.gitlab-ci.yml` configuration
      file when the merge request is created.
-  1. The **Run pipeline** options is available in the merge request's **Pipelines** tab,
+  1. The **Run pipeline** option is available in the merge request's **Pipelines** tab,
      and selecting **Run pipeline** at this point likely does not cause any errors.
   1. The project's `.gitlab-ci.yml` file is changed to remove the merge request pipelines configuration.
   1. The branch is rebased to bring the updated configuration into the merge request.

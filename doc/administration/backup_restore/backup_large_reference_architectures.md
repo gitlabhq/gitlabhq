@@ -172,7 +172,7 @@ Set up cronjobs to perform Gitaly server-side backups:
    crontab -e
    ```
 
-1. There, add the following lines to schedule the backup for everyday of every month at 2 AM. To limit the number of increments needed to restore a backup, a full backup of Git repositories will be taken on the first of each month, and the rest of the days will take an incremental backup.:
+1. There, add the following lines to schedule the backup for every day of every month at 2 AM. To limit the number of increments needed to restore a backup, a full backup of Git repositories will be taken on the first of each month, and the rest of the days will take an incremental backup:
 
    ```plaintext
    0 2 1 * * /opt/gitlab/bin/gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db CRON=1
@@ -213,7 +213,7 @@ Set up cronjobs to perform Gitaly server-side backups:
 
 ### Configure backup of configuration files
 
-If your configuration and secrets are defined outside of your deployment and then deployed into it, then the implementation of the backup strategy depends on your specific setup and requirements. As an example, you can store secrets in [AWS Secret Manager](https://aws.amazon.com/secrets-manager/) with [replication to multiple regions](https://docs.aws.amazon.com/secretsmanager/latest/userguide/create-manage-multi-region-secrets.html) and configure a script to back up secrets automatically.
+If your configuration and secrets are defined outside of your deployment and then deployed into it, then the implementation of the backup strategy depends on your specific setup and requirements. As an example, you can store secrets in [AWS Secret Manager](https://aws.amazon.com/secrets-manager/) with [replication to multiple regions](https://docs.aws.amazon.com/secretsmanager/latest/userguide/replicate-secrets.html) and configure a script to back up secrets automatically.
 
 If your configuration and secrets are only defined inside your deployment:
 
@@ -258,7 +258,7 @@ Before restoring a backup:
         kubectl get pods -lrelease=RELEASE_NAME,app=toolbox
         ```
 
-     1. The Webservice, Sidekiq and Toolbox pods must be restarted.
+     1. The Webservice, Sidekiq, and Toolbox pods must be restarted.
         The safest way to restart those pods is to run:
 
         ```shell

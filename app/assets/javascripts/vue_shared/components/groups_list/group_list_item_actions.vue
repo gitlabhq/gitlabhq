@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__, __, sprintf } from '~/locale';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
@@ -46,7 +46,7 @@ export default {
     GroupDeleteModal,
     TransferModal,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   inject: ['triggerRestoreLocation'],
   props: {
     group: {

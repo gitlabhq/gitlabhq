@@ -67,7 +67,7 @@ To undo local changes that are not yet staged:
 ### Revert staged local changes
 
 You can undo local changes that are already staged. In the following example,
-a file was added to the staging, but not committed:
+a file was added to the staging area, but not committed:
 
 1. Confirm that the file is staged with `git status`:
 
@@ -308,7 +308,7 @@ or a branch that might be used by others.
 A branch of a merge request is a public branch and might be used by
 other developers. However, the project rules might require
 you to use `git rebase` to reduce the number of
-displayed commits on target branch after reviews are done.
+displayed commits on the target branch after reviews are done.
 
 You can modify history by using `git rebase -i`. Use this command to modify, squash,
 and delete commits.
@@ -532,7 +532,7 @@ git revert <commit-sha>
 
 ## Remove a file from a repository
 
-- To remove a file from disk and repository, use `git rm`. To remove a directory, use the `-r` flag:
+- To remove a file from disk and the repository, use `git rm`. To remove a directory, use the `-r` flag:
 
   ```shell
   git rm '*.txt'

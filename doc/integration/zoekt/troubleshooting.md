@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Zoekt
@@ -388,21 +388,25 @@ might exist between Rails and Zoekt.
 
 ### Run test searches from the UI
 
-While you monitor Zoekt logs, you can run test searches from the GitLab UI:
+While you monitor the `zoekt.log` file, you can run test searches from the GitLab UI:
 
 - Search in a project for specific nodes.
 - Search in a group to query multiple nodes.
 - Search globally to query all nodes.
 
-If searches fail, check the Rails application logs for detailed error messages:
+If searches fail, check the `zoekt.log` file for detailed error messages:
 
 ```shell
 # For installations that use the Linux package
-tail -f /var/log/gitlab/gitlab-rails/application_json.log | grep -i zoekt
+tail -f /var/log/gitlab/gitlab-rails/zoekt.log
 
 # For self-compiled installations
-tail -f log/application_json.log | grep -i zoekt
+tail -f /home/git/gitlab/log/zoekt.log
 ```
+
+For search failures, the `application_json.log` file records only a
+`Global Search Error Rate SLI` entry.
+This entry is a Service Level Indicator (SLI) metric, not a detailed error message.
 
 Look for connection errors, timeouts, or authentication failures that might
 indicate network issues between GitLab and your Zoekt infrastructure.

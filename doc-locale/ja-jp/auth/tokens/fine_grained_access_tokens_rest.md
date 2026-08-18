@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: REST APIにおける詳細権限パーソナルアクセストークンの権限
+title: REST APIのきめ細かいパーミッション
 ---
 
 <!--
@@ -19,17 +19,31 @@ title: REST APIにおける詳細権限パーソナルアクセストークン�
 
 - プラン: Free、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: ベータ版
 
 {{< /details >}}
 
-詳細権限パーソナルアクセストークンを作成するには、[詳細権限パーソナルアクセストークン](fine_grained_access_tokens.md#create-a-fine-grained-personal-access-token)を参照してください。
+{{< history >}}
+
+- GitLab 19.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/596613)になりました。
+
+{{< /history >}}
+
+詳細権限パーソナルアクセストークンは、付与したリソースとパーミッションのみにアクセスできます。REST APIで使用するには、トークンを作成し、そのスコープを定義します。詳細については、[詳細権限パーソナルアクセストークン](fine_grained_access_tokens.md)を参照してください。
 
 ## 利用可能なきめ細かい権限 {#available-fine-grained-permissions}
 
 詳細権限パーソナルアクセストークンは、以下のREST APIエンドポイントにアクセスできます:
 
 ### アプリケーションセキュリティリソース {#application-security-resources}
+
+#### アテステーション {#attestation}
+
+アテステーションを読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/attestations/:attestation_iid/download` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/attestations/:subject_digest` |
 
 #### コンプライアンスポリシー設定 {#compliance-policy-setting}
 
@@ -50,12 +64,17 @@ title: REST APIにおける詳細権限パーソナルアクセストークン�
 
 #### 依存関係リストエクスポート {#dependency-list-export}
 
-依存関係リストをエクスポートする機能が付与されます。
+依存関係リストのエクスポートを作成および読み取る権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/pipelines/:id/dependency_list_exports` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/dependency_list_exports` |
 | 作成 | グループ | `POST` | `/groups/:id/dependency_list_exports` |
+| 読み取り | プロジェクト | `GET` | `/dependency_list_exports/:export_id` |
+| 読み取り | プロジェクト | `GET` | `/dependency_list_exports/:export_id/download` |
+| 読み取り | グループ | `GET` | `/dependency_list_exports/:export_id` |
+| 読み取り | グループ | `GET` | `/dependency_list_exports/:export_id/download` |
 
 #### SBOM出現 {#sbom-occurrence}
 
@@ -64,6 +83,14 @@ SBOM出現を読み取る機能が付与されます。
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 読み取り | プロジェクト | `GET` | `/occurrences/vulnerabilities` |
+
+#### セキュリティスキャン {#security-scan}
+
+セキュリティスキャンを作成する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/security_scans/sast/:sast_endpoint` |
 
 #### セキュリティ設定 {#security-setting}
 
@@ -83,11 +110,22 @@ SBOM出現を読み取る機能が付与されます。
 | ------ | ------ | ------ | ---- |
 | 作成 | プロジェクト | `POST` | `/projects/:id/vulnerabilities` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/vulnerabilities` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/vulnerability_findings` |
 | 読み取り | プロジェクト | `GET` | `/vulnerabilities/:id` |
 | 更新 | プロジェクト | `POST` | `/vulnerabilities/:id/confirm` |
 | 更新 | プロジェクト | `POST` | `/vulnerabilities/:id/dismiss` |
 | 更新 | プロジェクト | `POST` | `/vulnerabilities/:id/resolve` |
 | 更新 | プロジェクト | `POST` | `/vulnerabilities/:id/revert` |
+
+#### 脆弱性アーカイブエクスポート {#vulnerability-archive-export}
+
+脆弱性アーカイブエクスポートを作成および読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/security/projects/:id/vulnerability_archive_exports` |
+| 読み取り | プロジェクト | `GET` | `/security/vulnerability_archive_exports/:id` |
+| 読み取り | プロジェクト | `GET` | `/security/vulnerability_archive_exports/:id/download` |
 
 #### 脆弱性エクスポート {#vulnerability-export}
 
@@ -101,6 +139,24 @@ SBOM出現を読み取る機能が付与されます。
 | 読み取り | インスタンス | `GET` | `/security/vulnerability_exports/:id` |
 | 読み取り | インスタンス | `GET` | `/security/vulnerability_exports/:id/download` |
 
+#### 脆弱性フラグ {#vulnerability-flag}
+
+脆弱性フラグを更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 更新 | プロジェクト | `POST` | `/vulnerabilities/:vulnerability_id/flags/ai_detection` |
+
+#### 脆弱性イシューリンク {#vulnerability-issue-link}
+
+脆弱性イシューリンクを作成、削除、および読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/vulnerabilities/:id/issue_links` |
+| 削除 | プロジェクト | `DELETE` | `/vulnerabilities/:id/issue_links/:issue_link_id` |
+| 読み取り | プロジェクト | `GET` | `/vulnerabilities/:id/issue_links` |
+
 ### CI/CDリソース {#cicd-resources}
 
 #### アーティファクト {#artifact}
@@ -110,6 +166,14 @@ SBOM出現を読み取る機能が付与されます。
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/artifacts` |
+
+#### カタログバージョン {#catalog-version}
+
+CIカタログバージョンを公開する機能が付与されます。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 公開 | プロジェクト | `POST` | `/projects/:id/catalog/publish` |
 
 #### CI設定 {#ci-config}
 
@@ -131,14 +195,6 @@ CI分を作成および転送する機能が付与されます。
 | 転送 | グループ | `PATCH` | `/namespaces/:id/minutes/move/:target_id` |
 | 転送 | ユーザー | `PATCH` | `/namespaces/:id/minutes/move/:target_id` |
 
-#### カタログバージョン {#catalog-version}
-
-CIカタログバージョンを公開する機能が付与されます。
-
-| アクション | アクセス | 方法 | パス |
-| ------ | ------ | ------ | ---- |
-| 公開 | プロジェクト | `POST` | `/projects/:id/catalog/publish` |
-
 #### クラスター {#cluster}
 
 クラスターを作成、削除、読み取り、および更新する機能が付与されます。
@@ -153,6 +209,7 @@ CIカタログバージョンを公開する機能が付与されます。
 | 削除 | インスタンス | `DELETE` | `/admin/clusters/:cluster_id` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/clusters` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/clusters/:cluster_id` |
+| 読み取り | グループ | `GET` | `/discover-cert-based-clusters` |
 | 読み取り | グループ | `GET` | `/groups/:id/clusters` |
 | 読み取り | グループ | `GET` | `/groups/:id/clusters/:cluster_id` |
 | 読み取り | インスタンス | `GET` | `/admin/clusters` |
@@ -194,6 +251,14 @@ CIカタログバージョンを公開する機能が付与されます。
 | 読み取り | プロジェクト | `GET` | `/projects/:id/cluster_agents/:agent_id/url_configurations` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id` |
 
+#### コミットステータス {#commit-status}
+
+コミットステータスを作成する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/statuses/:sha` |
+
 #### デプロイ {#deployment}
 
 デプロイを承認、作成、削除、読み取り、および更新する機能が付与されます。
@@ -209,6 +274,16 @@ CIカタログバージョンを公開する機能が付与されます。
 | 更新 | プロジェクト | `PUT` | `/projects/:id/deployments/:deployment_id` |
 
 <sup>1</sup> `Read Merge Request`権限も必要です。
+
+#### DORAメトリクス {#dora-metric}
+
+DORAメトリクスを読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/analytics/deployment_frequency` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/dora/metrics` |
+| 読み取り | グループ | `GET` | `/groups/:id/dora/metrics` |
 
 #### 環境 {#environment}
 
@@ -309,6 +384,7 @@ CIカタログバージョンを公開する機能が付与されます。
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pipelines/:pipeline_id/jobs` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pipelines/:pipeline_id/test_report` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pipelines/:pipeline_id/test_report_summary` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/pipelines/:pipeline_id/trigger_jobs` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pipelines/:pipeline_id/variables` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pipelines/latest` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/pipelines/:pipeline_id/cancel` |
@@ -411,8 +487,60 @@ Runnerを割り当て、作成、削除、読み取り、および更新する�
 | 割り当て | プロジェクト | `POST` | `/projects/:id/runners` |
 | 割り当て | プロジェクト | `DELETE` | `/projects/:id/runners/:runner_id` |
 | 作成 | ユーザー | `POST` | `/user/runners` |
+| 削除 | プロジェクト | `DELETE` | `/runners/:id` |
+| 削除 | グループ | `DELETE` | `/runners/:id` |
+| 削除 | インスタンス | `DELETE` | `/runners/:id` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/runners` |
+| 読み取り | プロジェクト | `GET` | `/runners/:id` |
+| 読み取り | プロジェクト | `GET` | `/runners/:id/jobs` |
+| 読み取り | プロジェクト | `GET` | `/runners/:id/managers` |
+| 読み取り | プロジェクト | `GET` | `/runners/:id/projects` |
 | 読み取り | グループ | `GET` | `/groups/:id/runners` |
+| 読み取り | グループ | `GET` | `/runners/:id` |
+| 読み取り | グループ | `GET` | `/runners/:id/jobs` |
+| 読み取り | グループ | `GET` | `/runners/:id/managers` |
+| 読み取り | グループ | `GET` | `/runners/:id/projects` |
+| 読み取り | ユーザー | `GET` | `/runners` |
+| 読み取り | インスタンス | `GET` | `/runners/:id` |
+| 読み取り | インスタンス | `GET` | `/runners/:id/jobs` |
+| 読み取り | インスタンス | `GET` | `/runners/:id/managers` |
+| 読み取り | インスタンス | `GET` | `/runners/:id/projects` |
+| 読み取り | インスタンス | `GET` | `/runners/all` |
+| 更新 | プロジェクト | `POST` | `/runners/:id/reset_authentication_token` |
+| 更新 | プロジェクト | `PUT` | `/runners/:id` |
+| 更新 | グループ | `POST` | `/runners/:id/reset_authentication_token` |
+| 更新 | グループ | `PUT` | `/runners/:id` |
+| 更新 | インスタンス | `POST` | `/runners/:id/reset_authentication_token` |
+| 更新 | インスタンス | `PUT` | `/runners/:id` |
+
+#### Runnerコントローラー {#runner-controller}
+
+Runnerコントローラーを作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/runner_controllers` |
+| 削除 | インスタンス | `DELETE` | `/runner_controllers/:id` |
+| 読み取り | インスタンス | `GET` | `/runner_controllers` |
+| 読み取り | インスタンス | `GET` | `/runner_controllers/:id` |
+| 読み取り | インスタンス | `GET` | `/runner_controllers/:id/scopes` |
+| 更新 | インスタンス | `POST` | `/runner_controllers/:id/scopes/instance` |
+| 更新 | インスタンス | `POST` | `/runner_controllers/:id/scopes/runners/:runner_id` |
+| 更新 | インスタンス | `PUT` | `/runner_controllers/:id` |
+| 更新 | インスタンス | `DELETE` | `/runner_controllers/:id/scopes/instance` |
+| 更新 | インスタンス | `DELETE` | `/runner_controllers/:id/scopes/runners/:runner_id` |
+
+#### Runnerコントローラートークン {#runner-controller-token}
+
+Runnerコントローラートークンを作成、読み取り、失効、およびローテーションする権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/runner_controllers/:runner_controller_id/tokens` |
+| 読み取り | インスタンス | `GET` | `/runner_controllers/:runner_controller_id/tokens` |
+| 読み取り | インスタンス | `GET` | `/runner_controllers/:runner_controller_id/tokens/:id` |
+| 失効 | インスタンス | `DELETE` | `/runner_controllers/:runner_controller_id/tokens/:id` |
+| ローテーション | インスタンス | `POST` | `/runner_controllers/:runner_controller_id/tokens/:id/rotate` |
 
 #### Runner登録トークン {#runner-registration-token}
 
@@ -422,6 +550,7 @@ Runner登録トークンをリセットする機能が付与されます。
 | ------ | ------ | ------ | ---- |
 | リセット | プロジェクト | `POST` | `/projects/:id/runners/reset_registration_token` |
 | リセット | グループ | `POST` | `/groups/:id/runners/reset_registration_token` |
+| リセット | インスタンス | `POST` | `/runners/reset_registration_token` |
 
 #### セキュアファイル {#secure-file}
 
@@ -449,6 +578,16 @@ Terraform状態を作成、削除、ロック、読み取り、および更新�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/terraform/state/:name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/terraform/state/:name/versions/:serial` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/terraform/state_protection_rules` |
+
+#### Terraform状態保護ルール {#terraform-state-protection-rule}
+
+Terraform状態保護ルールを作成、削除、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/terraform/state_protection_rules` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/terraform/state_protection_rules/:terraform_state_protection_rule_id` |
+| 更新 | プロジェクト | `PATCH` | `/projects/:id/terraform/state_protection_rules/:terraform_state_protection_rule_id` |
 
 #### トリガー {#trigger}
 
@@ -492,6 +631,8 @@ CI変数を作成、削除、読み取り、および更新する機能が付与
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/audit_events` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/audit_events/:audit_event_id` |
 | 読み取り | グループ | `GET` | `/groups/:id/audit_events` |
 | 読み取り | グループ | `GET` | `/groups/:id/audit_events/:audit_event_id` |
 | 読み取り | インスタンス | `GET` | `/audit_events` |
@@ -519,6 +660,14 @@ CI変数を作成、削除、読み取り、および更新する機能が付与
 | 更新 | プロジェクト | `PUT` | `/projects/:id/external_status_checks/:check_id` |
 
 ### Duoリソース {#duo-resources}
+
+#### AIカタログ外部エージェント {#ai-catalog-external-agent}
+
+AIカタログ外部エージェントを作成する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/admin/ai_catalog/seed_external_agents` |
 
 #### チャット補完 {#chat-completion}
 
@@ -562,12 +711,13 @@ CI変数を作成、削除、読み取り、および更新する機能が付与
 
 #### Duoワークフロー {#duo-workflow}
 
-Duoワークフローを作成、読み取り、および再開する機能が付与されます。
+Duoワークフローを作成、読み取り、再開、および更新する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | ユーザー | `POST` | `/ai/duo_workflows/workflows` |
 | 読み取り | ユーザー | `GET` | `/ai/duo_workflows/list_tools` |
+| 読み取り | ユーザー | `GET` | `/ai/duo_workflows/workflows/:workflow_id/trace.jsonl` |
 | 読み取り | ユーザー | `GET` | `/ai/duo_workflows/workflows/agent_privileges` |
 | 読み取り | ユーザー | `GET` | `/ai/duo_workflows/ws` |
 | 再開 | ユーザー | `POST` | `/ai/duo_workflows/workflows/:workflow_id/resume` |
@@ -580,6 +730,23 @@ Duoワークフロー用の直接アクセストークンを作成する機能�
 | ------ | ------ | ------ | ---- |
 | 作成 | ユーザー | `POST` | `/ai/duo_workflows/direct_access` |
 
+#### Gitコマンド {#git-command}
+
+Gitコマンドを作成する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | ユーザー | `POST` | `/ai/llm/git_command` |
+
+#### MCPツール {#mcp-tool}
+
+MCPサーバーを介してツールを実行する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 実行 | ユーザー | `GET` | `/mcp` |
+| 実行 | ユーザー | `POST` | `/mcp` |
+
 #### サードパーティエージェント直接アクセストークン {#third-party-agent-direct-access-token}
 
 サードパーティエージェント用の直接アクセストークンを作成する機能が付与されます
@@ -589,6 +756,17 @@ Duoワークフロー用の直接アクセストークンを作成する機能�
 | 作成 | ユーザー | `POST` | `/ai/third_party_agents/direct_access` |
 
 ### Geoリソース {#geo-resources}
+
+#### 管理者データ管理 {#admin-data-management}
+
+管理者データ管理を読み取りおよび更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | インスタンス | `GET` | `/admin/data_management/:model_name` |
+| 読み取り | インスタンス | `GET` | `/admin/data_management/:model_name/:record_identifier` |
+| 更新 | インスタンス | `PUT` | `/admin/data_management/:model_name/:record_identifier/checksum` |
+| 更新 | インスタンス | `PUT` | `/admin/data_management/:model_name/checksum` |
 
 #### Geoノード {#geo-node}
 
@@ -602,6 +780,7 @@ Geoノードを作成、削除、読み取り、修復、および更新する�
 | 読み取り | インスタンス | `GET` | `/geo_nodes/:id` |
 | 読み取り | インスタンス | `GET` | `/geo_nodes/:id/status` |
 | 読み取り | インスタンス | `GET` | `/geo_nodes/status` |
+| 読み取り | インスタンス | `POST` | `/geo/node_proxy/:id/graphql` |
 | 修復 | インスタンス | `POST` | `/geo_nodes/:id/repair` |
 | 更新 | インスタンス | `PUT` | `/geo_nodes/:id` |
 
@@ -629,6 +808,16 @@ Geoサイトを作成、削除、読み取り、修復、および更新する�
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 読み取り | ユーザー | `GET` | `/user/activities` |
+
+#### アクティビティ分析 {#activity-analytics}
+
+アクティビティ分析を読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | グループ | `GET` | `/analytics/group_activity/issues_count` |
+| 読み取り | グループ | `GET` | `/analytics/group_activity/merge_requests_count` |
+| 読み取り | グループ | `GET` | `/analytics/group_activity/new_members_count` |
 
 #### 管理者メンバーロール {#admin-member-role}
 
@@ -682,12 +871,15 @@ GPGキーを作成、削除、読み取り、および失効する機能が付�
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | ユーザー | `POST` | `/user/gpg_keys` |
+| 作成 | インスタンス | `POST` | `/users/:id/gpg_keys` |
 | 削除 | ユーザー | `DELETE` | `/user/gpg_keys/:key_id` |
+| 削除 | インスタンス | `DELETE` | `/users/:id/gpg_keys/:key_id` |
 | 読み取り | ユーザー | `GET` | `/user/gpg_keys` |
 | 読み取り | ユーザー | `GET` | `/user/gpg_keys/:key_id` |
 | 読み取り | ユーザー | `GET` | `/users/:id/gpg_keys` |
 | 読み取り | ユーザー | `GET` | `/users/:id/gpg_keys/:key_id` |
 | 失効 | ユーザー | `POST` | `/user/gpg_keys/:key_id/revoke` |
+| 失効 | インスタンス | `POST` | `/users/:id/gpg_keys/:key_id/revoke` |
 
 #### グループ {#group}
 
@@ -729,13 +921,14 @@ GPGキーを作成、削除、読み取り、および失効する機能が付�
 
 #### ネームスペース {#namespace}
 
-ネームスペースを読み取る機能が付与されます。
+ネームスペースを読み取りおよび更新する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 読み取り | ユーザー | `GET` | `/namespaces` |
 | 読み取り | ユーザー | `GET` | `/namespaces/:id` |
 | 読み取り | ユーザー | `GET` | `/namespaces/:id/exists` |
+| 更新 | インスタンス | `PUT` | `/namespaces/:id` |
 
 #### 設定 {#preference}
 
@@ -769,12 +962,14 @@ SSH証明書を作成、削除、および読み取る機能が付与されま�
 
 #### サポートPIN {#support-pin}
 
-サポートPINを作成および読み取る機能が付与されます。
+サポートPINを作成、読み取り、および失効する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | ユーザー | `POST` | `/user/support_pin` |
 | 読み取り | ユーザー | `GET` | `/user/support_pin` |
+| 読み取り | インスタンス | `GET` | `/users/:id/support_pin` |
+| 失効 | インスタンス | `POST` | `/users/:id/support_pin/revoke` |
 
 #### テンプレート {#template}
 
@@ -797,6 +992,347 @@ SSH証明書を作成、削除、および読み取る機能が付与されま�
 | 更新 | インスタンス | `PUT` | `/topics/:id` |
 
 ### インテグレーションリソース {#integrations-resources}
+
+#### インテグレーション {#integration}
+
+インテグレーションを削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 削除 | プロジェクト | `DELETE` | `/groups/:id/integrations/:slug` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/integrations/:slug` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/services/:slug` |
+| 削除 | グループ | `DELETE` | `/groups/:id/integrations/:slug` |
+| 削除 | グループ | `DELETE` | `/projects/:id/integrations/:slug` |
+| 削除 | グループ | `DELETE` | `/projects/:id/services/:slug` |
+| 読み取り | プロジェクト | `GET` | `/groups/:id/integrations` |
+| 読み取り | プロジェクト | `GET` | `/groups/:id/integrations/:slug` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/google_cloud/setup/integrations.sh` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/google_cloud/setup/runner_deployment_project.sh` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/integrations` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/integrations/:slug` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/services` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/services/:slug` |
+| 読み取り | グループ | `GET` | `/groups/:id/integrations` |
+| 読み取り | グループ | `GET` | `/groups/:id/integrations/:slug` |
+| 読み取り | グループ | `GET` | `/projects/:id/integrations` |
+| 読み取り | グループ | `GET` | `/projects/:id/integrations/:slug` |
+| 読み取り | グループ | `GET` | `/projects/:id/services` |
+| 読み取り | グループ | `GET` | `/projects/:id/services/:slug` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/apple-app-store` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/asana` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/assembla` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/bamboo` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/bugzilla` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/buildkite` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/campfire` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/clickup` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/confluence` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/custom-issue-tracker` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/datadog` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/diffblue-cover` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/discord` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/drone-ci` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/emails-on-push` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/ewm` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/external-wiki` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/git-guardian` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/github` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/gitlab-slack-application` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/google-cloud-platform-artifact-registry` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/google-cloud-platform-workload-identity-federation` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/google-play` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/hangouts-chat` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/harbor` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/irker` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/jenkins` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/jira` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/jira-cloud-app` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/linear` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/matrix` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/mattermost` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/mattermost-slash-commands` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/microsoft-teams` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/mock-ci` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/mock-monitoring` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/packagist` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/phorge` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/pipelines-email` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/pivotaltracker` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/pumble` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/pushover` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/redmine` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/slack` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/squash-tm` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/teamcity` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/telegram` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/unify-circuit` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/webex-teams` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/youtrack` |
+| 更新 | プロジェクト | `PUT` | `/groups/:id/integrations/zentao` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/apple-app-store` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/asana` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/assembla` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/bamboo` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/bugzilla` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/buildkite` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/campfire` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/clickup` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/confluence` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/custom-issue-tracker` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/datadog` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/diffblue-cover` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/discord` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/drone-ci` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/emails-on-push` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/ewm` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/external-wiki` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/git-guardian` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/github` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/gitlab-slack-application` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/google-cloud-platform-artifact-registry` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/google-cloud-platform-workload-identity-federation` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/google-play` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/hangouts-chat` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/harbor` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/irker` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/jenkins` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/jira` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/jira-cloud-app` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/linear` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/matrix` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/mattermost` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/mattermost-slash-commands` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/microsoft-teams` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/mock-ci` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/mock-monitoring` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/packagist` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/phorge` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/pipelines-email` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/pivotaltracker` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/pumble` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/pushover` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/redmine` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/slack` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/squash-tm` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/teamcity` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/telegram` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/unify-circuit` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/webex-teams` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/youtrack` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/integrations/zentao` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/apple-app-store` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/asana` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/assembla` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/bamboo` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/bugzilla` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/buildkite` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/campfire` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/clickup` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/confluence` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/custom-issue-tracker` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/datadog` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/diffblue-cover` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/discord` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/drone-ci` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/emails-on-push` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/ewm` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/external-wiki` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/git-guardian` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/github` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/gitlab-slack-application` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/google-cloud-platform-artifact-registry` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/google-cloud-platform-workload-identity-federation` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/google-play` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/hangouts-chat` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/harbor` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/irker` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/jenkins` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/jira` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/jira-cloud-app` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/linear` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/matrix` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/mattermost` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/mattermost-slash-commands` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/microsoft-teams` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/mock-ci` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/mock-monitoring` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/packagist` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/phorge` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/pipelines-email` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/pivotaltracker` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/pumble` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/pushover` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/redmine` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/slack` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/squash-tm` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/teamcity` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/telegram` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/unify-circuit` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/webex-teams` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/youtrack` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/services/zentao` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/apple-app-store` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/asana` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/assembla` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/bamboo` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/bugzilla` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/buildkite` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/campfire` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/clickup` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/confluence` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/custom-issue-tracker` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/datadog` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/diffblue-cover` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/discord` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/drone-ci` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/emails-on-push` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/ewm` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/external-wiki` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/git-guardian` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/github` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/gitlab-slack-application` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/google-cloud-platform-artifact-registry` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/google-cloud-platform-workload-identity-federation` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/google-play` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/hangouts-chat` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/harbor` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/irker` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/jenkins` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/jira` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/jira-cloud-app` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/linear` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/matrix` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/mattermost` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/mattermost-slash-commands` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/microsoft-teams` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/mock-ci` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/mock-monitoring` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/packagist` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/phorge` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/pipelines-email` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/pivotaltracker` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/pumble` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/pushover` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/redmine` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/slack` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/squash-tm` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/teamcity` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/telegram` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/unify-circuit` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/webex-teams` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/youtrack` |
+| 更新 | グループ | `PUT` | `/groups/:id/integrations/zentao` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/apple-app-store` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/asana` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/assembla` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/bamboo` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/bugzilla` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/buildkite` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/campfire` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/clickup` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/confluence` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/custom-issue-tracker` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/datadog` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/diffblue-cover` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/discord` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/drone-ci` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/emails-on-push` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/ewm` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/external-wiki` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/git-guardian` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/github` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/gitlab-slack-application` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/google-cloud-platform-artifact-registry` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/google-cloud-platform-workload-identity-federation` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/google-play` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/hangouts-chat` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/harbor` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/irker` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/jenkins` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/jira` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/jira-cloud-app` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/linear` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/matrix` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/mattermost` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/mattermost-slash-commands` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/microsoft-teams` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/mock-ci` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/mock-monitoring` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/packagist` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/phorge` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/pipelines-email` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/pivotaltracker` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/pumble` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/pushover` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/redmine` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/slack` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/squash-tm` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/teamcity` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/telegram` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/unify-circuit` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/webex-teams` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/youtrack` |
+| 更新 | グループ | `PUT` | `/projects/:id/integrations/zentao` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/apple-app-store` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/asana` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/assembla` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/bamboo` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/bugzilla` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/buildkite` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/campfire` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/clickup` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/confluence` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/custom-issue-tracker` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/datadog` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/diffblue-cover` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/discord` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/drone-ci` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/emails-on-push` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/ewm` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/external-wiki` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/git-guardian` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/github` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/gitlab-slack-application` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/google-cloud-platform-artifact-registry` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/google-cloud-platform-workload-identity-federation` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/google-play` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/hangouts-chat` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/harbor` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/irker` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/jenkins` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/jira` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/jira-cloud-app` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/linear` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/matrix` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/mattermost` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/mattermost-slash-commands` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/microsoft-teams` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/mock-ci` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/mock-monitoring` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/packagist` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/phorge` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/pipelines-email` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/pivotaltracker` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/pumble` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/pushover` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/redmine` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/slack` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/squash-tm` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/teamcity` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/telegram` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/unify-circuit` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/webex-teams` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/youtrack` |
+| 更新 | グループ | `PUT` | `/projects/:id/services/zentao` |
+
+#### Jira接続サブスクリプション {#jira-connect-subscription}
+
+Jira接続サブスクリプションを作成する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | グループ | `POST` | `/integrations/jira_connect/subscriptions` |
 
 #### Webhook {#webhook}
 
@@ -822,6 +1358,7 @@ Webhookを作成、削除、読み取り、トリガー、および更新する�
 | トリガー | プロジェクト | `POST` | `/projects/:id/hooks/:hook_id/test/:trigger` |
 | トリガー | グループ | `POST` | `/groups/:id/hooks/:hook_id/events/:hook_log_id/resend` |
 | トリガー | グループ | `POST` | `/groups/:id/hooks/:hook_id/test/:trigger` |
+| トリガー | インスタンス | `POST` | `/hooks/:hook_id` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/hooks/:hook_id` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/hooks/:hook_id/custom_headers/:key` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/hooks/:hook_id/url_variables/:key` |
@@ -839,6 +1376,45 @@ Webhookを作成、削除、読み取り、トリガー、および更新する�
 | 更新 | インスタンス | `DELETE` | `/hooks/:hook_id/url_variables/:key` |
 
 ### モニタリングリソース {#monitoring-resources}
+
+#### アラートメトリクスイメージ {#alert-metric-image}
+
+アラートメトリクスイメージを作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images/:metric_image_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images/:metric_image_id` |
+
+#### エラー追跡クライアントキー {#error-tracking-client-key}
+
+エラー追跡クライアントキーを作成、削除、および読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/error_tracking/client_keys` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/error_tracking/client_keys/:key_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/error_tracking/client_keys` |
+
+#### エラー追跡設定 {#error-tracking-setting}
+
+エラー追跡設定を読み取りおよび更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/error_tracking/settings` |
+| 更新 | プロジェクト | `PATCH` | `/projects/:id/error_tracking/settings` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/error_tracking/settings` |
+
+#### GLQL {#glql}
+
+GLQLクエリを読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | ユーザー | `POST` | `/glql` |
 
 #### Sidekiqジョブ {#sidekiq-job}
 
@@ -875,14 +1451,25 @@ Sidekiqメトリクスを読み取る機能が付与されます。
 
 ### 通知リソース {#notifications-resources}
 
+#### ブロードキャストメッセージ {#broadcast-message}
+
+ブロードキャストメッセージを作成、削除、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/broadcast_messages` |
+| 削除 | インスタンス | `DELETE` | `/broadcast_messages/:id` |
+| 更新 | インスタンス | `PUT` | `/broadcast_messages/:id` |
+
 #### To-Do {#todo}
 
-To-Doを作成、読み取り、および更新する機能が付与されます。
+To-Doを作成、削除、読み取り、および更新する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | プロジェクト | `POST` | `/projects/:id/issues/:issue_iid/todo` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/merge_requests/:merge_request_iid/todo` |
+| 作成 | グループ | `POST` | `/groups/:id/epics/:epic_iid/todo` |
 | 読み取り | ユーザー | `GET` | `/todos` |
 | 更新 | ユーザー | `POST` | `/todos/:id/mark_as_done` |
 | 更新 | ユーザー | `POST` | `/todos/mark_as_done` |
@@ -897,6 +1484,7 @@ To-Doを作成、読み取り、および更新する機能が付与されます
 | ------ | ------ | ------ | ---- |
 | 読み取り | ユーザー | `GET` | `/orbit/agent/commands` |
 | 読み取り | ユーザー | `GET` | `/orbit/graph_status` |
+| 読み取り | ユーザー | `GET` | `/orbit/query/templates` |
 | 読み取り | ユーザー | `GET` | `/orbit/schema` |
 | 読み取り | ユーザー | `GET` | `/orbit/schema/dsl` |
 | 読み取り | ユーザー | `GET` | `/orbit/schema/format` |
@@ -904,6 +1492,37 @@ To-Doを作成、読み取り、および更新する機能が付与されます
 | 読み取り | ユーザー | `GET` | `/orbit/tools` |
 | 読み取り | ユーザー | `POST` | `/orbit/agent/commands/:name` |
 | 読み取り | ユーザー | `POST` | `/orbit/query` |
+| 読み取り | ユーザー | `POST` | `/orbit/query/:name` |
+
+#### ナレッジグラフ有効なネームスペース {#knowledge-graph-enabled-namespace}
+
+ナレッジグラフ有効なネームスペースを作成、削除、および読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `PUT` | `/admin/knowledge_graph/namespaces/:id` |
+| 削除 | インスタンス | `DELETE` | `/admin/knowledge_graph/namespaces/:id` |
+| 読み取り | インスタンス | `GET` | `/admin/knowledge_graph/namespaces` |
+
+#### Orbit MCPツール {#orbit-mcp-tool}
+
+OrbitナレッジグラフMCPサーバーを介してツールを実行する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 実行 | ユーザー | `GET` | `/orbit/mcp` |
+| 実行 | ユーザー | `POST` | `/orbit/mcp` |
+
+### 組織リソース {#organizations-resources}
+
+#### 組織 {#organization}
+
+組織を作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/organizations` |
+| 削除 | インスタンス | `DELETE` | `/organizations/:id` |
 
 ### パッケージおよびレジストリリソース {#packages-and-registry-resources}
 
@@ -983,7 +1602,9 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 作成 | プロジェクト | `POST` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/packages/helm/api/:channel/charts` |
+| 作成 | プロジェクト | `POST` | `/projects/:id/packages/protection/rules` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/packages/pypi` |
+| 作成 | プロジェクト | `POST` | `/projects/:id/packages/rpm` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/packages/rubygems/api/v1/gems` |
 | 作成 | プロジェクト | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | 作成 | プロジェクト | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
@@ -1006,11 +1627,13 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 削除 | プロジェクト | `DELETE` | `/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` |
 | 削除 | プロジェクト | `DELETE` | `/packages/npm/-/package/*package_name/dist-tags/:tag` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/:package_id` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/:package_id/package_files/:package_file_id` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/nuget/*package_name/*package_version` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/packages/protection/rules/:package_protection_rule_id` |
 | 削除 | グループ | `DELETE` | `/groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` |
 | 読み取り | プロジェクト | `GET` | `/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` |
 | 読み取り | プロジェクト | `GET` | `/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` |
@@ -1022,10 +1645,19 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 読み取り | プロジェクト | `GET` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | 読み取り | プロジェクト | `GET` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
 | 読み取り | プロジェクト | `GET` | `/packages/npm/-/package/*package_name/dist-tags` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/dependency_proxy/packages/maven/*path/:file_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/dependency_proxy/packages/npm/*package_name/-/*file_name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/:package_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/:package_id/package_files` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/:package_id/package_files/:package_file_id/download` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/:package_id/pipelines` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/cargo/1/:package_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/cargo/2/:package_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/cargo/3/:first_char/:package_name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/cargo/:package_name/:package_version/download` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/cargo/:prefix_1/:prefix_2/:package_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/cargo/config.json` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/composer/archives/*package_name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` |
@@ -1078,9 +1710,13 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/nuget/metadata/*package_name/*package_version` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/nuget/metadata/*package_name/index` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/nuget/query` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/protection/rules` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/pypi/files/:sha256/*file_identifier` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/pypi/simple` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/pypi/simple/*package_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/rpm/*package_file_id/*file_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/rpm/repodata/*file_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/rubygems/:file_name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/rubygems/api/v1/dependencies` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/rubygems/gems/:file_name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/packages/rubygems/quick/Marshal.4.8/:file_name` |
@@ -1099,6 +1735,7 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 読み取り | グループ | `GET` | `/groups/:id/-/packages/debian/dists/*distribution/InRelease` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/packages/debian/dists/*distribution/Release` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/packages/debian/dists/*distribution/Release.gpg` |
+| 読み取り | グループ | `GET` | `/groups/:id/-/packages/debian/pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/packages/maven/*path/:file_name` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/packages/npm/-/package/*package_name/dist-tags` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/packages/nuget/metadata/*package_name/*package_version` |
@@ -1119,6 +1756,7 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 読み取り | インスタンス | `GET` | `/packages/conan/v1/users/authenticate` |
 | 読み取り | インスタンス | `GET` | `/packages/conan/v1/users/check_credentials` |
 | 読み取り | インスタンス | `GET` | `/packages/maven/*path/:file_name` |
+| 更新 | プロジェクト | `PATCH` | `/projects/:id/packages/protection/rules/:package_protection_rule_id` |
 
 #### 仮想レジストリ {#virtual-registry}
 
@@ -1131,6 +1769,7 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 作成 | グループ | `POST` | `/groups/:id/-/virtual_registries/packages/npm/registries` |
 | 作成 | グループ | `POST` | `/virtual_registries/container/registries/:id/upstreams` |
 | 作成 | グループ | `POST` | `/virtual_registries/container/registry_upstreams` |
+| 作成 | グループ | `POST` | `/virtual_registries/packages/maven/registries/:id/local/upstreams` |
 | 作成 | グループ | `POST` | `/virtual_registries/packages/maven/registries/:id/upstreams` |
 | 作成 | グループ | `POST` | `/virtual_registries/packages/maven/registry_upstreams` |
 | 作成 | グループ | `POST` | `/virtual_registries/packages/npm/registry_upstreams` |
@@ -1141,6 +1780,7 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 削除 | グループ | `DELETE` | `/virtual_registries/container/upstreams/:id` |
 | 削除 | グループ | `DELETE` | `/virtual_registries/container/upstreams/:id/cache` |
 | 削除 | グループ | `DELETE` | `/virtual_registries/packages/maven/cache_entries/*id` |
+| 削除 | グループ | `DELETE` | `/virtual_registries/packages/maven/local/upstreams/:id` |
 | 削除 | グループ | `DELETE` | `/virtual_registries/packages/maven/registries/:id` |
 | 削除 | グループ | `DELETE` | `/virtual_registries/packages/maven/registries/:id/cache` |
 | 削除 | グループ | `DELETE` | `/virtual_registries/packages/maven/registry_upstreams/:id` |
@@ -1159,6 +1799,7 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 読み取り | グループ | `GET` | `/virtual_registries/container/registries/:id/upstreams` |
 | 読み取り | グループ | `GET` | `/virtual_registries/container/upstreams/:id` |
 | 読み取り | グループ | `GET` | `/virtual_registries/container/upstreams/:id/cache_entries` |
+| 読み取り | グループ | `GET` | `/virtual_registries/packages/maven/local/upstreams/:id` |
 | 読み取り | グループ | `GET` | `/virtual_registries/packages/maven/registries/:id` |
 | 読み取り | グループ | `GET` | `/virtual_registries/packages/maven/registries/:id/upstreams` |
 | 読み取り | グループ | `GET` | `/virtual_registries/packages/maven/upstreams/:id` |
@@ -1173,6 +1814,7 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 更新 | グループ | `PATCH` | `/virtual_registries/container/registries/:id` |
 | 更新 | グループ | `PATCH` | `/virtual_registries/container/registry_upstreams/:id` |
 | 更新 | グループ | `PATCH` | `/virtual_registries/container/upstreams/:id` |
+| 更新 | グループ | `PATCH` | `/virtual_registries/packages/maven/local/upstreams/:id` |
 | 更新 | グループ | `PATCH` | `/virtual_registries/packages/maven/registries/:id` |
 | 更新 | グループ | `PATCH` | `/virtual_registries/packages/maven/registry_upstreams/:id` |
 | 更新 | グループ | `PATCH` | `/virtual_registries/packages/maven/upstreams/:id` |
@@ -1221,6 +1863,24 @@ Debianディストリビューションを作成、削除、読み取り、お�
 | 読み取り | グループ | `GET` | `/groups/:id/badges/render` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/badges/:badge_id` |
 | 更新 | グループ | `PUT` | `/groups/:id/badges/:badge_id` |
+
+#### コードレビュー分析 {#code-review-analytics}
+
+コードレビュー分析を読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `GET` | `/analytics/code_review` |
+
+#### プロダクト分析 {#product-analytics}
+
+プロダクト分析を読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `POST` | `/projects/:project_id/product_analytics/request/dry-run` |
+| 読み取り | プロジェクト | `POST` | `/projects/:project_id/product_analytics/request/load` |
+| 読み取り | プロジェクト | `POST` | `/projects/:project_id/product_analytics/request/meta` |
 
 #### リリース {#release}
 
@@ -1285,18 +1945,55 @@ Debianディストリビューションを作成、削除、読み取り、お�
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/snippets` |
 | 作成 | ユーザー | `POST` | `/snippets` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/snippets/:snippet_id` |
 | 削除 | ユーザー | `DELETE` | `/snippets/:id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/snippets` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/snippets/:snippet_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/snippets/:snippet_id/files/:ref/:file_path/raw` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/snippets/:snippet_id/raw` |
 | 読み取り | ユーザー | `GET` | `/snippets` |
 | 読み取り | ユーザー | `GET` | `/snippets/:id` |
 | 読み取り | ユーザー | `GET` | `/snippets/:id/files/:ref/:file_path/raw` |
 | 読み取り | ユーザー | `GET` | `/snippets/:id/raw` |
 | 読み取り | ユーザー | `GET` | `/snippets/all` |
 | 読み取り | ユーザー | `GET` | `/snippets/public` |
+| 読み取り | インスタンス | `GET` | `/projects/:id/snippets/:snippet_id/user_agent_detail` |
 | 読み取り | インスタンス | `GET` | `/snippets/:id/user_agent_detail` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/snippets/:snippet_id` |
 | 更新 | ユーザー | `PUT` | `/snippets/:id` |
 
 ### プロジェクトモデルレジストリおよび実験リソース {#project-model-registry-and-experiments-resources}
+
+#### ML実験 {#ml-experiment}
+
+ML実験を作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/create` |
+| 削除 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/delete` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get-by-name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/list` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/metrics/get-history` |
+| 読み取り | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/search` |
+| 更新 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag` |
+
+#### MLモデル {#ml-model}
+
+MLモデルを作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/create` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/delete` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/alias` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/search` |
+| 読み取り | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/get-latest-versions` |
+| 更新 | プロジェクト | `PATCH` | `/projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/update` |
 
 #### MLflowアーティファクト {#mlflow-artifact}
 
@@ -1322,6 +2019,19 @@ MLflow実行を作成、削除、ログ記録、読み取り、および更新�
 | 読み取り | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/search` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/set-tag` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/update` |
+
+#### モデルバージョン {#model-version}
+
+モデルバージョンを作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/create` |
+| 作成 | プロジェクト | `PUT` | `/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name` |
+| 更新 | プロジェクト | `PATCH` | `/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/update` |
 
 ### プロジェクト計画リソース {#project-planning-resources}
 
@@ -1365,9 +2075,29 @@ MLflow実行を作成、削除、ログ記録、読み取り、および更新�
 | 追跡 | インスタンス | `POST` | `/usage_data/track_event` |
 | 追跡 | インスタンス | `POST` | `/usage_data/track_events` |
 
+#### 発行可能なメトリクスイメージ {#issuable-metric-image}
+
+発行可能なメトリクスイメージを作成、削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/issues/:issue_iid/metric_images` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/issues/:issue_iid/metric_images/:metric_image_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/issues/:issue_iid/metric_images` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/issues/:issue_iid/metric_images/:metric_image_id` |
+
+#### イシュー {#issue}
+
+イシューをサブスクリプションする権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| サブスクライブ | プロジェクト | `POST` | `/projects/:id/issues/:subscribable_id/subscribe` |
+| サブスクライブ | プロジェクト | `POST` | `/projects/:id/issues/:subscribable_id/unsubscribe` |
+
 #### ラベル {#label}
 
-ラベルを作成、削除、プロモート、読み取り、更新する機能が付与されます。
+ラベルを作成、削除、プロモート、読み取り、サブスクリプション、および更新する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
@@ -1383,6 +2113,10 @@ MLflow実行を作成、削除、ログ記録、読み取り、および更新�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/labels/:name` |
 | 読み取り | グループ | `GET` | `/groups/:id/labels` |
 | 読み取り | グループ | `GET` | `/groups/:id/labels/:name` |
+| サブスクライブ | プロジェクト | `POST` | `/projects/:id/labels/:subscribable_id/subscribe` |
+| サブスクライブ | プロジェクト | `POST` | `/projects/:id/labels/:subscribable_id/unsubscribe` |
+| サブスクライブ | グループ | `POST` | `/groups/:id/labels/:subscribable_id/subscribe` |
+| サブスクライブ | グループ | `POST` | `/groups/:id/labels/:subscribable_id/unsubscribe` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/labels` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/labels/:name` |
 | 更新 | グループ | `PUT` | `/groups/:id/labels` |
@@ -1487,15 +2221,21 @@ Service Pingデータを読み取る機能が付与されます。
 | 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/award_emoji` |
 | 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/children` |
+| 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
+| 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
+| 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_resources` |
 | 読み取り | プロジェクト | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/award_emoji` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/children` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/current_user_todos` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/email_participants` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_items` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_resources` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/-/work_items/:work_item_iid/notes` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/boards` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/boards/:board_id` |
@@ -1568,8 +2308,11 @@ Service Pingデータを読み取る機能が付与されます。
 | 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/award_emoji` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/children` |
+| 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/current_user_todos` |
+| 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/email_participants` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_items` |
+| 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_resources` |
 | 読み取り | グループ | `GET` | `/groups/:id/-/work_items/:work_item_iid/notes` |
 | 読み取り | グループ | `GET` | `/groups/:id/boards` |
 | 読み取り | グループ | `GET` | `/groups/:id/boards/:board_id` |
@@ -1612,8 +2355,11 @@ Service Pingデータを読み取る機能が付与されます。
 | 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/award_emoji` |
 | 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/children` |
+| 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
+| 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
+| 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_resources` |
 | 読み取り | グループ | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | 読み取り | ユーザー | `GET` | `/issues` |
 | 読み取り | ユーザー | `GET` | `/issues_statistics` |
@@ -1657,6 +2403,25 @@ Service Pingデータを読み取る機能が付与されます。
 
 ### プロジェクトリソース {#projects-resources}
 
+#### イベント {#event}
+
+イベントを読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/events` |
+| 読み取り | ユーザー | `GET` | `/events` |
+| 読み取り | ユーザー | `GET` | `/users/:id/events` |
+
+#### Markdown {#markdown}
+
+Markdownをレンダリングする権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| レンダリング | プロジェクト | `POST` | `/markdown` |
+| レンダリング | ユーザー | `POST` | `/markdown` |
+
 #### Markdownアップロード {#markdown-upload}
 
 Markdownアップロードを作成、削除、読み取る機能が付与されます。
@@ -1696,6 +2461,7 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/pages/domains/:domain` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pages/domains` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/pages/domains/:domain` |
+| 読み取り | インスタンス | `GET` | `/pages/domains` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/pages/domains/:domain` |
 | 検証 | プロジェクト | `PUT` | `/projects/:id/pages/domains/:domain/verify` |
 
@@ -1731,6 +2497,7 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 | 読み取り | ユーザー | `GET` | `/users/:user_id/starred_projects` |
 | 共有 | プロジェクト | `POST` | `/projects/:id/share` |
 | 共有 | プロジェクト | `DELETE` | `/projects/:id/share/:group_id` |
+| 共有 | グループ | `DELETE` | `/groups/:id/shared_projects/:project_id` |
 | 転送 | プロジェクト | `PUT` | `/projects/:id/transfer` |
 | 転送 | インスタンス | `POST` | `/groups/:id/projects/:project_id` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/housekeeping` |
@@ -1759,12 +2526,18 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | プロジェクト | `POST` | `/projects/:id/approval_rules` |
+| 作成 | プロジェクト | `POST` | `/projects/:id/approval_settings/rules` |
 | 作成 | グループ | `POST` | `/groups/:id/approval_rules` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/approval_rules/:approval_rule_id` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/approval_settings/rules/:approval_rule_id` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/approval_rules` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/approval_rules/:approval_rule_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/approval_settings` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_settings` |
 | 読み取り | グループ | `GET` | `/groups/:id/approval_rules` |
+| 更新 | プロジェクト | `POST` | `/projects/:id/merge_requests/:merge_request_iid/approvals` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/approval_rules/:approval_rule_id` |
+| 更新 | プロジェクト | `PUT` | `/projects/:id/approval_settings/rules/:approval_rule_id` |
 | 更新 | グループ | `PUT` | `/groups/:id/approval_rules/:approval_rule_id` |
 
 #### 承認設定 {#approval-setting}
@@ -1829,12 +2602,14 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/commits/:sha/refs` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/commits/:sha/sequence` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/commits/:sha/signature` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/repository/commits/:sha/statuses` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/repository/diverging_commits` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/repository/commits/:sha/comments` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 
 #### マージリクエスト {#merge-request}
 
-マージリクエストを承認、作成、削除、マージする、読み取り、更新する機能が付与されます。
+マージリクエストを承認、作成、削除、マージ、読み取り、サブスクリプション、および更新する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
@@ -1881,6 +2656,8 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | 読み取り | グループ | `GET` | `/groups/:id/merge_requests` |
 | 読み取り | ユーザー | `GET` | `/merge_requests` |
+| サブスクライブ | プロジェクト | `POST` | `/projects/:id/merge_requests/:subscribable_id/subscribe` |
+| サブスクライブ | プロジェクト | `POST` | `/projects/:id/merge_requests/:subscribable_id/unsubscribe` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/merge_requests/:merge_request_iid/context_commits` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes` |
 | 更新 | プロジェクト | `POST` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish` |
@@ -1964,6 +2741,7 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/health` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/merge_base` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/tree` |
+| 読み取り | プロジェクト | `POST` | `/projects/:id/repository/blobs/batch` |
 | 読み取り | プロジェクト | `HEAD` | `/projects/:id/repository/files/:file_path` |
 | 読み取り | プロジェクト | `HEAD` | `/projects/:id/repository/files/:file_path/blame` |
 | 更新 | プロジェクト | `PUT` | `/projects/:id/repository/files/:file_path` |
@@ -1988,6 +2766,15 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/tags/:tag_name` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/repository/tags/:tag_name/signature` |
 
+#### 提案 {#suggestion}
+
+提案を適用する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 適用 | プロジェクト | `PUT` | `/suggestions/:id/apply` |
+| 適用 | プロジェクト | `PUT` | `/suggestions/batch_apply` |
+
 #### タグ {#tag}
 
 タグを保護する機能が付与されます。
@@ -1999,6 +2786,24 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 
 ### 検索リソース {#search-resources}
 
+#### アクティブコンテキストコレクション {#active-context-collection}
+
+アクティブコンテキストコレクションを更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 更新 | インスタンス | `PUT` | `/admin/active_context/collections/:id` |
+
+#### アクティブコンテキスト接続 {#active-context-connection}
+
+アクティブコンテキスト接続を読み取りおよび更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | インスタンス | `GET` | `/admin/active_context/connections` |
+| 更新 | インスタンス | `PUT` | `/admin/active_context/connections/activate` |
+| 更新 | インスタンス | `PUT` | `/admin/active_context/connections/deactivate` |
+
 #### アクティブコンテキストデッドキュー {#active-context-dead-queue}
 
 ActiveContextデッドキューをクリアし、リプレイする機能が付与されます。
@@ -2007,6 +2812,23 @@ ActiveContextデッドキューをクリアし、リプレイする機能が付�
 | ------ | ------ | ------ | ---- |
 | クリア | インスタンス | `DELETE` | `/admin/active_context/dead_queue` |
 | リプレイ | インスタンス | `POST` | `/admin/active_context/dead_queue/replay` |
+
+#### アクティブコンテキスト有効なネームスペース {#active-context-enabled-namespace}
+
+アクティブコンテキスト有効なネームスペースを更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 更新 | インスタンス | `PUT` | `/admin/active_context/code/enabled_namespaces` |
+
+#### Elasticsearchインデックス付きネームスペース {#elasticsearch-indexed-namespace}
+
+Elasticsearchインデックス付きネームスペースを更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 更新 | インスタンス | `PUT` | `/elasticsearch_indexed_namespaces/rollback` |
+| 更新 | インスタンス | `PUT` | `/elasticsearch_indexed_namespaces/rollout` |
 
 #### グローバル検索 {#global-search}
 
@@ -2054,7 +2876,36 @@ Zoektノードを読み取る機能が付与されます。
 | 読み取り | インスタンス | `GET` | `/admin/zoekt/shards` |
 | 読み取り | インスタンス | `GET` | `/admin/zoekt/shards/:node_id/indexed_namespaces` |
 
-### サブスクリプションとライセンスのリソース {#subscription-and-licensing-resources}
+### シークレット管理リソース {#secrets-management-resources}
+
+#### シークレットマネージャーAPI JWT {#secrets-manager-api-jwt}
+
+シークレットへの直接APIアクセスのために、シークレットマネージャーAPI JWTを作成する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/secrets_manager/access_token` |
+| 作成 | グループ | `POST` | `/groups/:id/secrets_manager/access_token` |
+
+### サブスクリプションおよびライセンスリソース {#subscription-and-licensing-resources}
+
+#### アドオン購入 {#add-on-purchase}
+
+アドオン購入を作成、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/namespaces/:id/subscription_add_on_purchase/:add_on_name` |
+| 読み取り | インスタンス | `GET` | `/namespaces/:id/subscription_add_on_purchase/:add_on_name` |
+| 更新 | インスタンス | `PUT` | `/namespaces/:id/subscription_add_on_purchase/:add_on_name` |
+
+#### クレジットカード検証 {#credit-card-validation}
+
+クレジットカード検証を更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 更新 | インスタンス | `PUT` | `/user/:user_id/credit_card_validation` |
 
 #### GitLabサブスクリプション {#gitlab-subscription}
 
@@ -2090,6 +2941,16 @@ GitLabサブスクリプションを作成、読み取り、更新する機能�
 | ------ | ------ | ------ | ---- |
 | 更新 | インスタンス | `PUT` | `/license/:id/refresh_billable_users` |
 
+#### ネームスペースストレージ制限除外 {#namespace-storage-limit-exclusion}
+
+ネームスペースストレージ制限除外を作成、削除、および読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/namespaces/:id/storage/limit_exclusion` |
+| 削除 | インスタンス | `DELETE` | `/namespaces/:id/storage/limit_exclusion` |
+| 読み取り | インスタンス | `GET` | `/namespaces/storage/limit_exclusions` |
+
 ### システムアクセスリソース {#system-access-resources}
 
 #### アクセスリクエスト {#access-request}
@@ -2109,6 +2970,15 @@ GitLabサブスクリプションを作成、読み取り、更新する機能�
 | 読み取り | プロジェクト | `GET` | `/projects/:id/access_requests` |
 | 読み取り | グループ | `GET` | `/groups/:id/access_requests` |
 
+#### 任意のトークン {#any-token}
+
+任意のトークンを読み取りおよび失効する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | インスタンス | `POST` | `/admin/token` |
+| 失効 | インスタンス | `DELETE` | `/admin/token` |
+
 #### アプリケーションの外観 {#application-appearance}
 
 アプリケーションの外観設定を読み取り、更新する機能が付与されます。
@@ -2117,6 +2987,15 @@ GitLabサブスクリプションを作成、読み取り、更新する機能�
 | ------ | ------ | ------ | ---- |
 | 読み取り | インスタンス | `GET` | `/application/appearance` |
 | 更新 | インスタンス | `PUT` | `/application/appearance` |
+
+#### アプリケーション設定 {#application-setting}
+
+アプリケーション設定を読み取りおよび更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | インスタンス | `GET` | `/application/settings` |
+| 更新 | インスタンス | `PUT` | `/application/settings` |
 
 #### カウント {#counts}
 
@@ -2165,9 +3044,12 @@ GitLabサブスクリプションを作成、読み取り、更新する機能�
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | ユーザー | `POST` | `/user/emails` |
+| 作成 | インスタンス | `POST` | `/users/:id/emails` |
 | 削除 | ユーザー | `DELETE` | `/user/emails/:email_id` |
+| 削除 | インスタンス | `DELETE` | `/users/:id/emails/:email_id` |
 | 読み取り | ユーザー | `GET` | `/user/emails` |
 | 読み取り | ユーザー | `GET` | `/user/emails/:email_id` |
+| 読み取り | インスタンス | `GET` | `/users/:id/emails` |
 
 #### エンタープライズユーザー {#enterprise-user}
 
@@ -2188,6 +3070,45 @@ GitLabサブスクリプションを作成、読み取り、更新する機能�
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 読み取り | インスタンス | `GET` | `/experiments` |
+| 読み取り | インスタンス | `GET` | `/experiments/:experiment_name/assignments` |
+
+#### 実験キャッシュ {#experiment-cache}
+
+実験キャッシュを削除する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 削除 | インスタンス | `DELETE` | `/experiments/:name/cache` |
+
+#### 機能 {#feature}
+
+機能を削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 削除 | インスタンス | `DELETE` | `/features/:name` |
+| 読み取り | インスタンス | `GET` | `/features` |
+| 読み取り | インスタンス | `GET` | `/features/definitions` |
+| 更新 | インスタンス | `POST` | `/features/:name` |
+
+#### ID {#identity}
+
+IDを削除する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 削除 | インスタンス | `DELETE` | `/users/:id/identities/:provider` |
+
+#### 代理トークン {#impersonation-token}
+
+代理トークンを作成、読み取り、および失効する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | インスタンス | `POST` | `/users/:user_id/impersonation_tokens` |
+| 読み取り | インスタンス | `GET` | `/users/:user_id/impersonation_tokens` |
+| 読み取り | インスタンス | `GET` | `/users/:user_id/impersonation_tokens/:impersonation_token_id` |
+| 失効 | インスタンス | `DELETE` | `/users/:user_id/impersonation_tokens/:impersonation_token_id` |
 
 #### 招待 {#invitation}
 
@@ -2225,6 +3146,15 @@ GitLabサブスクリプションを作成、読み取り、更新する機能�
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/job_token_scope/groups_allowlist/:target_group_id` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/job_token_scope/allowlist` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/job_token_scope/groups_allowlist` |
+
+#### LDAPグループ {#ldap-group}
+
+LDAPグループを読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 読み取り | インスタンス | `GET` | `/ldap/:provider/groups` |
+| 読み取り | インスタンス | `GET` | `/ldap/groups` |
 
 #### LDAPグループリンク {#ldap-group-link}
 
@@ -2292,12 +3222,12 @@ LDAPグループの同期を実行する機能が付与されます。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
-| 読み取り | プロジェクト | `GET` | `/projects/:id/notification_settings` |
-| 読み取り | グループ | `GET` | `/groups/:id/notification_settings` |
+| 読み取り | ユーザー | `GET` | `/groups/:id/notification_settings` |
 | 読み取り | ユーザー | `GET` | `/notification_settings` |
-| 更新 | プロジェクト | `PUT` | `/projects/:id/notification_settings` |
-| 更新 | グループ | `PUT` | `/groups/:id/notification_settings` |
+| 読み取り | ユーザー | `GET` | `/projects/:id/notification_settings` |
+| 更新 | ユーザー | `PUT` | `/groups/:id/notification_settings` |
 | 更新 | ユーザー | `PUT` | `/notification_settings` |
+| 更新 | ユーザー | `PUT` | `/projects/:id/notification_settings` |
 
 #### OAuthアプリケーション {#oauth-application}
 
@@ -2322,10 +3252,18 @@ OAuthアプリケーションを作成、削除、読み取り、シークレッ
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 作成 | ユーザー | `POST` | `/user/personal_access_tokens` |
+| 作成 | インスタンス | `POST` | `/users/:user_id/personal_access_tokens` |
+| 読み取り | グループ | `GET` | `/groups/:id/manage/personal_access_tokens` |
 | 読み取り | ユーザー | `GET` | `/personal_access_tokens` |
 | 読み取り | ユーザー | `GET` | `/personal_access_tokens/:id` |
+| 読み取り | ユーザー | `GET` | `/personal_access_tokens/self` |
+| 読み取り | ユーザー | `GET` | `/personal_access_tokens/self/associations` |
+| 失効 | グループ | `DELETE` | `/groups/:id/manage/personal_access_tokens/:pat_id` |
 | 失効 | ユーザー | `DELETE` | `/personal_access_tokens/:id` |
+| 失効 | ユーザー | `DELETE` | `/personal_access_tokens/self` |
+| ローテーション | グループ | `POST` | `/groups/:id/manage/personal_access_tokens/:pat_id/rotate` |
 | ローテーション | ユーザー | `POST` | `/personal_access_tokens/:id/rotate` |
+| ローテーション | ユーザー | `POST` | `/personal_access_tokens/self/rotate` |
 
 #### プラン制限 {#plan-limit}
 
@@ -2354,14 +3292,17 @@ OAuthアプリケーションを作成、削除、読み取り、シークレッ
 | 作成 | グループ | `POST` | `/groups/:id/access_tokens` |
 | 削除 | プロジェクト | `DELETE` | `/projects/:id/access_tokens/:token_id` |
 | 削除 | グループ | `DELETE` | `/groups/:id/access_tokens/:token_id` |
+| 削除 | グループ | `DELETE` | `/groups/:id/manage/resource_access_tokens/:prat_id` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/access_tokens` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/access_tokens/:token_id` |
 | 読み取り | グループ | `GET` | `/groups/:id/access_tokens` |
 | 読み取り | グループ | `GET` | `/groups/:id/access_tokens/:token_id` |
+| 読み取り | グループ | `GET` | `/groups/:id/manage/resource_access_tokens` |
 | ローテーション | プロジェクト | `POST` | `/projects/:id/access_tokens/:token_id/rotate` |
 | ローテーション | プロジェクト | `POST` | `/projects/:id/access_tokens/self/rotate` |
 | ローテーション | グループ | `POST` | `/groups/:id/access_tokens/:token_id/rotate` |
 | ローテーション | グループ | `POST` | `/groups/:id/access_tokens/self/rotate` |
+| ローテーション | グループ | `POST` | `/groups/:id/manage/resource_access_tokens/:prat_id/rotate` |
 
 #### SAMLグループID {#saml-group-identity}
 
@@ -2404,32 +3345,21 @@ SCIMアイデンティティを削除、読み取り、更新する機能が付�
 | 読み取り | グループ | `GET` | `/groups/:id/scim/identities` |
 | 更新 | グループ | `PATCH` | `/groups/:id/scim/:uid` |
 
-#### SSHキー {#ssh-key}
-
-SSHキーを作成、削除、読み取る機能が付与されます。
-
-| アクション | アクセス | 方法 | パス |
-| ------ | ------ | ------ | ---- |
-| 作成 | ユーザー | `POST` | `/user/keys` |
-| 削除 | ユーザー | `DELETE` | `/user/keys/:key_id` |
-| 読み取り | ユーザー | `GET` | `/user/keys` |
-| 読み取り | ユーザー | `GET` | `/user/keys/:key_id` |
-| 読み取り | ユーザー | `GET` | `/users/:id/keys/:key_id` |
-| 読み取り | ユーザー | `GET` | `/users/:user_id/keys` |
-| 読み取り | インスタンス | `GET` | `/keys` |
-| 読み取り | インスタンス | `GET` | `/keys/:id` |
-
 #### サービスアカウント {#service-account}
 
 サービスアカウントを作成、削除、読み取り、更新する機能が付与されます。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/service_accounts` |
 | 作成 | グループ | `POST` | `/groups/:id/service_accounts` |
 | 作成 | インスタンス | `POST` | `/service_accounts` |
+| 削除 | プロジェクト | `DELETE` | `/projects/:id/service_accounts/:user_id` |
 | 削除 | グループ | `DELETE` | `/groups/:id/service_accounts/:user_id` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/service_accounts` |
 | 読み取り | グループ | `GET` | `/groups/:id/service_accounts` |
 | 読み取り | インスタンス | `GET` | `/service_accounts` |
+| 更新 | プロジェクト | `PATCH` | `/projects/:id/service_accounts/:user_id` |
 | 更新 | グループ | `PATCH` | `/groups/:id/service_accounts/:user_id` |
 | 更新 | インスタンス | `PATCH` | `/service_accounts/:user_id` |
 
@@ -2439,10 +3369,33 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| 作成 | プロジェクト | `POST` | `/projects/:id/service_accounts/:user_id/personal_access_tokens` |
 | 作成 | グループ | `POST` | `/groups/:id/service_accounts/:user_id/personal_access_tokens` |
+| 読み取り | プロジェクト | `GET` | `/projects/:id/service_accounts/:user_id/personal_access_tokens` |
 | 読み取り | グループ | `GET` | `/groups/:id/service_accounts/:user_id/personal_access_tokens` |
+| 失効 | プロジェクト | `DELETE` | `/projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id` |
 | 失効 | グループ | `DELETE` | `/groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id` |
+| ローテーション | プロジェクト | `POST` | `/projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate` |
 | ローテーション | グループ | `POST` | `/groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate` |
+
+#### SSHキー {#ssh-key}
+
+SSHキーを作成、削除、読み取る機能が付与されます。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | ユーザー | `POST` | `/user/keys` |
+| 作成 | インスタンス | `POST` | `/users/:user_id/keys` |
+| 削除 | グループ | `DELETE` | `/groups/:id/manage/ssh_keys/:key_id` |
+| 削除 | ユーザー | `DELETE` | `/user/keys/:key_id` |
+| 削除 | インスタンス | `DELETE` | `/users/:id/keys/:key_id` |
+| 読み取り | グループ | `GET` | `/groups/:id/manage/ssh_keys` |
+| 読み取り | ユーザー | `GET` | `/user/keys` |
+| 読み取り | ユーザー | `GET` | `/user/keys/:key_id` |
+| 読み取り | ユーザー | `GET` | `/users/:id/keys/:key_id` |
+| 読み取り | ユーザー | `GET` | `/users/:user_id/keys` |
+| 読み取り | インスタンス | `GET` | `/keys` |
+| 読み取り | インスタンス | `GET` | `/keys/:id` |
 
 #### 統計 {#statistic}
 
@@ -2451,6 +3404,7 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/statistics` |
+| 読み取り | インスタンス | `GET` | `/application/statistics` |
 
 #### 使用状況データクエリ {#usage-data-query}
 
@@ -2462,14 +3416,40 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 
 #### ユーザー {#user}
 
-ユーザーをフォロー、読み取り、およびフォロー解除する機能が付与されます。
+ユーザーをアクティブ化、承認、BAN、ブロック、作成、非アクティブ化、削除、二要素認証無効化、フォロー、読み取り、拒否、BAN解除、ブロック解除、フォロー解除、および更新する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| アクティブ化 | インスタンス | `POST` | `/users/:id/activate` |
+| 承認 | インスタンス | `POST` | `/users/:id/approve` |
+| BAN | インスタンス | `POST` | `/users/:id/ban` |
+| ブロック | インスタンス | `POST` | `/users/:id/block` |
+| 作成 | インスタンス | `POST` | `/users` |
+| 非アクティブ化 | インスタンス | `POST` | `/users/:id/deactivate` |
+| 削除 | インスタンス | `DELETE` | `/users/:id` |
+| 二要素認証無効化 | インスタンス | `PATCH` | `/users/:id/disable_two_factor` |
 | フォロー | ユーザー | `POST` | `/users/:id/follow` |
 | 読み取り | ユーザー | `GET` | `/user` |
 | 読み取り | ユーザー | `GET` | `/users/:id` |
+| 読み取り | インスタンス | `GET` | `/users` |
+| 読み取り | インスタンス | `GET` | `/users/:user_id/memberships` |
+| 拒否 | インスタンス | `POST` | `/users/:id/reject` |
+| BAN解除 | インスタンス | `POST` | `/users/:id/unban` |
+| ブロック解除 | インスタンス | `POST` | `/users/:id/unblock` |
 | フォロー解除 | ユーザー | `POST` | `/users/:id/unfollow` |
+| 更新 | インスタンス | `PUT` | `/users/:id` |
+
+#### VSCode設定 {#vscode-setting}
+
+VSCode設定を削除、読み取り、および更新する権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 削除 | ユーザー | `DELETE` | `/vscode/settings_sync(/:settings_context_hash)/v1/collection` |
+| 読み取り | ユーザー | `GET` | `/vscode/settings_sync(/:settings_context_hash)/v1/manifest` |
+| 読み取り | ユーザー | `GET` | `/vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name` |
+| 読み取り | ユーザー | `GET` | `/vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name/:id` |
+| 更新 | ユーザー | `POST` | `/vscode/settings_sync(/:settings_context_hash)/v1/resource/:resource_name` |
 
 ### システム移行リソース {#system-migration-resources}
 
@@ -2490,15 +3470,17 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
+| 読み取り | インスタンス | `GET` | `/admin/databases/:database_name/dictionary/tables/:table_name` |
 | 読み取り | インスタンス | `GET` | `/databases/:database_name/dictionary/tables` |
 
 #### データベース移行 {#database-migration}
 
-データベース移行をマークする機能が付与されます。
+データベース移行をマークおよび読み取る権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | マーク | インスタンス | `POST` | `/admin/migrations/:timestamp/mark` |
+| 読み取り | インスタンス | `GET` | `/admin/migrations/pending` |
 
 #### エクスポート {#export}
 
@@ -2509,11 +3491,14 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 | 作成 | プロジェクト | `POST` | `/projects/:id/export` |
 | 作成 | プロジェクト | `POST` | `/projects/:id/export_relations` |
 | 作成 | グループ | `POST` | `/groups/:id/export` |
+| 作成 | グループ | `POST` | `/groups/:id/export_relations` |
 | ダウンロード | プロジェクト | `GET` | `/projects/:id/export/download` |
 | ダウンロード | プロジェクト | `GET` | `/projects/:id/export_relations/download` |
 | ダウンロード | グループ | `GET` | `/groups/:id/export/download` |
+| ダウンロード | グループ | `GET` | `/groups/:id/export_relations/download` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/export` |
 | 読み取り | プロジェクト | `GET` | `/projects/:id/export_relations/status` |
+| 読み取り | グループ | `GET` | `/groups/:id/export_relations/status` |
 
 #### インポート {#import}
 
@@ -2549,6 +3534,16 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 | 読み取り | インスタンス | `GET` | `/bulk_imports/:import_id/entities/:entity_id/failures` |
 | 読み取り | インスタンス | `GET` | `/bulk_imports/entities` |
 
+#### オフラインエクスポート {#offline-export}
+
+オフラインエクスポートを作成および読み取る権限を付与します。
+
+| アクション | アクセス | 方法 | パス |
+| ------ | ------ | ------ | ---- |
+| 作成 | ユーザー | `POST` | `/offline_exports` |
+| 読み取り | ユーザー | `GET` | `/offline_exports` |
+| 読み取り | ユーザー | `GET` | `/offline_exports/:id` |
+
 #### プレースホルダーの再割り当て {#placeholder-reassignment}
 
 プレースホルダーの再割り当てを作成および読み取る機能が付与されます。
@@ -2562,11 +3557,14 @@ SSHキーを作成、削除、読み取る機能が付与されます。
 
 #### バッチ処理されたバックグラウンド操作 {#batched-background-operation}
 
-バッチ処理されたバックグラウンド操作を読み取る機能が付与されます。
+バッチ処理されたバックグラウンド操作を読み取りおよび実行する権限を付与します。
 
 | アクション | アクセス | 方法 | パス |
 | ------ | ------ | ------ | ---- |
 | 読み取り | インスタンス | `GET` | `/admin/batched_background_operations` |
+| 読み取り | インスタンス | `GET` | `/admin/batched_background_operations/:id` |
+| 実行 | インスタンス | `PUT` | `/admin/batched_background_operations/:id/restart` |
+| 実行 | インスタンス | `PUT` | `/admin/batched_background_operations/:id/stop` |
 
 ### Wikiリソース {#wiki-resources}
 
@@ -2595,6 +3593,8 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 
 | 方法 | パス |
 | ------ | ---- |
+| `GET` | `/broadcast_messages` |
+| `GET` | `/broadcast_messages/:id` |
 | `GET` | `/groups/:id/-/packages/nuget/index` |
 | `GET` | `/groups/:id/-/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name` |
 | `GET` | `/groups/:id/-/packages/nuget/v2` |
@@ -2618,6 +3618,7 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `GET` | `/templates/licenses/:name` |
 | `GET` | `/topics` |
 | `GET` | `/topics/:id` |
+| `GET` | `/web_commits/public_key` |
 
 ## 公開アクセス可能なエンドポイント {#publicly-accessible-endpoints}
 
@@ -2625,13 +3626,20 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 
 | アクション | 方法 | パス |
 | ------ | ------ | ---- |
+| コードレビュー分析: 読み取り | `GET` | `/analytics/code_review` |
 | パッケージ: 読み取り | `GET` | `/group/:id/-/packages/composer/*package_name` |
 | パッケージ: 読み取り | `GET` | `/group/:id/-/packages/composer/p/:sha` |
 | パッケージ: 読み取り | `GET` | `/group/:id/-/packages/composer/p2/*package_name` |
 | パッケージ: 読み取り | `GET` | `/group/:id/-/packages/composer/packages` |
 | グループ: 読み取り | `GET` | `/groups/:id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/(-/)epics/:epic_iid/epics` |
+| グローバル検索: 使用 | `GET` | `/groups/:id/(-/)search` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/-/epics/:epic_iid/issues` |
 | パッケージ: 読み取り | `GET` | `/groups/:id/-/packages/maven/*path/:file_name` |
 | パッケージ: 読み取り | `GET` | `/groups/:id/-/packages/npm/-/package/*package_name/dist-tags` |
+| パッケージ: 読み取り | `GET` | `/groups/:id/-/packages/pypi/files/:sha256/*file_identifier` |
+| パッケージ: 読み取り | `GET` | `/groups/:id/-/packages/pypi/simple` |
+| パッケージ: 読み取り | `GET` | `/groups/:id/-/packages/pypi/simple/*package_name` |
 | アバター: 読み取り | `GET` | `/groups/:id/avatar` |
 | バッジ: 読み取り | `GET` | `/groups/:id/badges` |
 | バッジ: 読み取り | `GET` | `/groups/:id/badges/:badge_id` |
@@ -2639,9 +3647,24 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | グループ: 読み取り | `GET` | `/groups/:id/descendant_groups` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:epic_iid/award_emoji` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:epic_iid/award_emoji/:award_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:epic_iid/issues` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji/:award_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:eventable_id/resource_label_events` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:eventable_id/resource_label_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:eventable_id/resource_state_events` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:eventable_id/resource_state_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:noteable_id/discussions` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:noteable_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/issues_statistics` |
+| メンバー: 読み取り | `GET` | `/groups/:id/members` |
+| メンバー: 読み取り | `GET` | `/groups/:id/members/:user_id` |
+| メンバー: 読み取り | `GET` | `/groups/:id/members/all` |
+| メンバー: 読み取り | `GET` | `/groups/:id/members/all/:user_id` |
 | マージリクエスト: 読み取り | `GET` | `/groups/:id/merge_requests` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/milestones/:milestone_id/issues` |
 | 作業アイテム: 読み取り | `GET` | `/groups/:id/milestones/:milestone_id/merge_requests` |
@@ -2652,9 +3675,17 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | Markdownのアップロード: 読み取り | `GET` | `/groups/:id/uploads` |
 | Markdownのアップロード: 読み取り | `GET` | `/groups/:id/uploads/:secret/:filename` |
 | Markdownのアップロード: 読み取り | `GET` | `/groups/:id/uploads/:upload_id` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/wiki_pages/:noteable_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Wiki: 読み取り | `GET` | `/groups/:id/wikis` |
+| Wiki: 読み取り | `GET` | `/groups/:id/wikis/:slug` |
 | パッケージ: 読み取り | `GET` | `/packages/npm/-/package/*package_name/dist-tags` |
 | プロジェクト: 読み取り | `GET` | `/projects/:id` |
+| グローバル検索: 使用 | `GET` | `/projects/:id/(-/)search` |
 | コード: 読み取り | `GET` | `/projects/:id/(-/)search/semantic` |
+| 承認ルール: 読み取り | `GET` | `/projects/:id/approval_rules` |
+| 承認ルール: 読み取り | `GET` | `/projects/:id/approval_rules/:approval_rule_id` |
+| 承認ルール: 読み取り | `GET` | `/projects/:id/approval_settings` |
 | アバター: 読み取り | `GET` | `/projects/:id/avatar` |
 | バッジ: 読み取り | `GET` | `/projects/:id/badges` |
 | バッジ: 読み取り | `GET` | `/projects/:id/badges/:badge_id` |
@@ -2663,25 +3694,58 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/boards/:board_id` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/boards/:board_id/lists` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/boards/:board_id/lists/:list_id` |
+| パッケージ: 読み取り | `GET` | `/projects/:id/dependency_proxy/packages/maven/*path/:file_name` |
+| パッケージ: 読み取り | `GET` | `/projects/:id/dependency_proxy/packages/npm/*package_name/-/*file_name` |
 | デプロイ: 読み取り | `GET` | `/projects/:id/deployments` |
 | デプロイ: 読み取り | `GET` | `/projects/:id/deployments/:deployment_id` |
 | デプロイ: 読み取り、マージリクエスト: 読み取り | `GET` | `/projects/:id/deployments/:deployment_id/merge_requests` |
 | 環境: 読み取り | `GET` | `/projects/:id/environments` |
 | 環境: 読み取り | `GET` | `/projects/:id/environments/:environment_id` |
+| イベント: 読み取り | `GET` | `/projects/:id/events` |
 | プロジェクト: 読み取り | `GET` | `/projects/:id/forks` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_iteration_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_iteration_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_milestone_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_milestone_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_state_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_state_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_weight_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:eventable_id/resource_weight_events/:event_id` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/closed_by` |
+| 発行可能なメトリクスイメージ: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/metric_images` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/notes/:note_id/award_emoji` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/participants` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/related_merge_requests` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:issue_iid/time_stats` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:noteable_id/discussions` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:noteable_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/issues/:noteable_id/notes/:note_id` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/issues_statistics` |
 | ラベル: 読み取り | `GET` | `/projects/:id/labels` |
 | ラベル: 読み取り | `GET` | `/projects/:id/labels/:name` |
+| メンバー: 読み取り | `GET` | `/projects/:id/members` |
+| メンバー: 読み取り | `GET` | `/projects/:id/members/:user_id` |
+| メンバー: 読み取り | `GET` | `/projects/:id/members/all` |
+| メンバー: 読み取り | `GET` | `/projects/:id/members/all/:user_id` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests` |
+| マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events` |
+| マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_label_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events/:event_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_state_events` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_state_events/:event_id` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid` |
 | マージリクエスト承認ルール: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules` |
 | マージリクエスト承認ルール: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id` |
+| 承認ルール: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_settings` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approval_state` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/approvals` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/changes` |
@@ -2692,6 +3756,8 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/merge_ref` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/notes/:note_id/award_emoji` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/notes/:note_id/award_emoji/:award_id` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/participants` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/pipelines` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/raw_diffs` |
@@ -2700,11 +3766,22 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/time_stats` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/versions` |
 | マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:merge_request_iid/versions/:version_id` |
+| マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions` |
+| マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id` |
+| マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes` |
+| マージリクエスト: 読み取り | `GET` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:noteable_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/merge_requests/:noteable_id/notes/:note_id` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/milestones` |
 | 作業アイテム: 読み取り | `GET` | `/projects/:id/milestones/:milestone_id` |
+| モデルバージョン: 読み取り | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get` |
+| モデルバージョン: 読み取り | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/:package_id` |
+| パッケージ: 読み取り | `GET` | `/projects/:id/packages/:package_id/package_files` |
+| パッケージ: 読み取り | `GET` | `/projects/:id/packages/:package_id/package_files/:package_file_id/download` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/:package_id/pipelines` |
+| パッケージ: 読み取り | `GET` | `/projects/:id/packages/cargo/config.json` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/composer/archives/*package_name` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:package_version/:file_name` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` |
@@ -2715,6 +3792,7 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/helm/:channel/charts/:file_name.tgz` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/helm/:channel/index.yaml` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/maven/*path/:file_name` |
+| モデルバージョン: 読み取り | `GET` | `/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/npm/*package_name` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/npm/*package_name/-/*file_name` |
 | パッケージ: 読み取り | `GET` | `/projects/:id/packages/npm/-/package/*package_name/dist-tags` |
@@ -2735,11 +3813,16 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/archive` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/blobs/:sha` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/blobs/:sha/raw` |
+| リポジトリ: 読み取り | `POST` | `/projects/:id/repository/blobs/batch` |
 | ブランチ: 読み取り | `GET` | `/projects/:id/repository/branches` |
 | ブランチ: 読み取り | `GET` | `/projects/:id/repository/branches/:branch` |
 | ブランチ: 読み取り | `HEAD` | `/projects/:id/repository/branches/:branch` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/changelog` |
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits` |
+| コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:noteable_id/discussions` |
+| コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id` |
+| コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id/notes` |
+| コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha` |
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha/comments` |
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha/diff` |
@@ -2747,8 +3830,10 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha/refs` |
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha/sequence` |
 | コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha/signature` |
+| コミット: 読み取り | `GET` | `/projects/:id/repository/commits/:sha/statuses` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/compare` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/contributors` |
+| コミット: 読み取り | `GET` | `/projects/:id/repository/diverging_commits` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/files/:file_path` |
 | リポジトリ: 読み取り | `HEAD` | `/projects/:id/repository/files/:file_path` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/files/:file_path/blame` |
@@ -2760,7 +3845,21 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | リポジトリタグ: 読み取り | `GET` | `/projects/:id/repository/tags/:tag_name` |
 | リポジトリタグ: 読み取り | `GET` | `/projects/:id/repository/tags/:tag_name/signature` |
 | リポジトリ: 読み取り | `GET` | `/projects/:id/repository/tree` |
+| スニペット: 読み取り | `GET` | `/projects/:id/snippets` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:noteable_id/discussions` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:noteable_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
+| スニペット: 読み取り | `GET` | `/projects/:id/snippets/:snippet_id` |
+| スニペット: 読み取り | `GET` | `/projects/:id/snippets/:snippet_id/files/:ref/:file_path/raw` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:snippet_id/notes/:note_id/award_emoji` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/snippets/:snippet_id/notes/:note_id/award_emoji/:award_id` |
+| スニペット: 読み取り | `GET` | `/projects/:id/snippets/:snippet_id/raw` |
 | プロジェクト: 読み取り | `GET` | `/projects/:id/starrers` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/wiki_pages/:noteable_id/notes` |
+| 作業アイテム: 読み取り | `GET` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Wiki: 読み取り | `GET` | `/projects/:id/wikis` |
 | Wiki: 読み取り | `GET` | `/projects/:id/wikis/:slug` |
 | パッケージ: 読み取り | `GET` | `/virtual_registries/packages/maven/:id/*path` |
@@ -2771,9 +3870,21 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 
 | 方法 | パス | 理由 |
 | ------ | ---- | ------ |
+| `*` | `/*path` | すべてを捕捉するフォールバック |
 | `POST` | `/ai/duo_workflows/agent_workflows` | AIワークフローOAuthトークン |
+| `POST` | `/ai/duo_workflows/code_review/add_comments` | AIワークフローOAuthトークン |
 | `GET` | `/ai/duo_workflows/code_review/custom_instructions` | AIワークフローOAuthトークン |
+| `POST` | `/ai/duo_workflows/revoke_token` | AIワークフローOAuthトークン |
+| `GET` | `/ai/duo_workflows/workflows/:id` | AIワークフローOAuthトークン |
+| `PATCH` | `/ai/duo_workflows/workflows/:id` | AIワークフローOAuthトークン |
 | `POST` | `/ai/duo_workflows/workflows/:id/audit_events` | AIワークフローOAuthトークン |
+| `POST` | `/ai/duo_workflows/workflows/:id/checkpoint_writes_batch` | AIワークフローOAuthトークン |
+| `GET` | `/ai/duo_workflows/workflows/:id/checkpoints` | AIワークフローOAuthトークン |
+| `POST` | `/ai/duo_workflows/workflows/:id/checkpoints` | AIワークフローOAuthトークン |
+| `GET` | `/ai/duo_workflows/workflows/:id/checkpoints/:checkpoint_id` | AIワークフローOAuthトークン |
+| `GET` | `/ai/duo_workflows/workflows/:id/events` | AIワークフローOAuthトークン |
+| `POST` | `/ai/duo_workflows/workflows/:id/events` | AIワークフローOAuthトークン |
+| `PUT` | `/ai/duo_workflows/workflows/:id/events/:event_id` | AIワークフローOAuthトークン |
 | `GET` | `/api/scim/:version/application/Groups` | SCIMトークン |
 | `POST` | `/api/scim/:version/application/Groups` | SCIMトークン |
 | `GET` | `/api/scim/:version/application/Groups/:id` | SCIMトークン |
@@ -2791,6 +3902,7 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `PATCH` | `/api/scim/:version/groups/:group/Users/:id` | SCIMトークン |
 | `DELETE` | `/api/scim/:version/groups/:group/Users/:id` | SCIMトークン |
 | `POST` | `/container_registry_event/events` | コンテナレジストリイベントトークン |
+| `POST` | `/duo_code_review/evaluations` | 内部テスト |
 | `GET` | `/feature_flags/unleash/:project_id` | Unleashトークン |
 | `GET` | `/feature_flags/unleash/:project_id/client/features` | Unleashトークン |
 | `POST` | `/feature_flags/unleash/:project_id/client/metrics` | Unleashトークン |
@@ -2810,6 +3922,14 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `POST` | `/groups/:id/placeholder_reassignments/authorize` | Workhorse事前認可 |
 | `POST` | `/groups/:id/uploads/authorize` | Workhorse事前認可 |
 | `POST` | `/groups/import/authorize` | Workhorse事前認可 |
+| `PUT` | `/integrations/jira_forge/installation` | GitLab用Jira（フォージ）アプリトークン |
+| `POST` | `/integrations/jira_forge/installation/forge_token` | GitLab用Jira（フォージ）アプリトークン |
+| `GET` | `/integrations/jira_forge/subscriptions` | GitLab用Jira（フォージ）アプリトークン |
+| `POST` | `/integrations/jira_forge/subscriptions` | GitLab用Jira（フォージ）アプリトークン |
+| `DELETE` | `/integrations/jira_forge/subscriptions/:id` | GitLab用Jira（フォージ）アプリトークン |
+| `POST` | `/integrations/slack/events` | Slackリクエスト署名 |
+| `POST` | `/integrations/slack/interactions` | Slackリクエスト署名 |
+| `POST` | `/integrations/slack/options` | Slackリクエスト署名 |
 | `GET` | `/internal/agents/agentk/agent_info` | KubernetesエージェントJWT |
 | `GET` | `/internal/agents/agentw/agent_info` | KubernetesエージェントJWT |
 | `GET` | `/internal/agents/agentw/authorize_user_access` | KubernetesエージェントJWT |
@@ -2817,11 +3937,11 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `POST` | `/internal/allowed` | GitLab Shellトークン |
 | `GET` | `/internal/authorized_certs` | GitLab Shellトークン |
 | `GET` | `/internal/authorized_keys` | GitLab Shellトークン |
-| `GET` | `/internal/autoflow/repository_info` | KubernetesエージェントJWT |
 | `GET` | `/internal/check` | GitLab Shellトークン |
 | `GET` | `/internal/ci/agents/runner/info` | KubernetesエージェントJWT |
 | `GET` | `/internal/ci/agents/runnerc/info` | KubernetesエージェントJWT |
 | `PUT` | `/internal/ci/job_router/jobs/:id` | CIジョブトークン |
+| `POST` | `/internal/ci/job_router/jobs/request` | KubernetesエージェントJWT |
 | `GET` | `/internal/ci/job_router/runner_controllers/job_admission` | KubernetesエージェントJWT |
 | `POST` | `/internal/dast/site_validations/:id/transition` | CIジョブトークン |
 | `GET` | `/internal/discover` | GitLab Shellトークン |
@@ -2901,8 +4021,6 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `POST` | `/jobs/:id/sbom_scans/authorize` | CIジョブトークン |
 | `PATCH` | `/jobs/:id/trace` | CIジョブトークン |
 | `POST` | `/jobs/request` | Runnerトークン |
-| `GET` | `/orbit/mcp` | Orbit内部トークン |
-| `POST` | `/orbit/mcp` | Orbit内部トークン |
 | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | Workhorse事前認可 |
 | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse事前認可 |
 | `GET` | `/packages/npm/*package_name` | 外部レジストリリダイレクト |
@@ -2911,7 +4029,13 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `POST` | `/projects/:id/(ref/:ref/)trigger/pipeline` | CIトリガートークン |
 | `POST` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images/authorize` | Workhorse事前認可 |
 | `PATCH` | `/projects/:id/compliance_external_controls/:control_id/status` | コンプライアンス外部コントロールトークン |
+| `POST` | `/projects/:id/integrations/mattermost_slash_commands/trigger` | プロジェクトインテグレーショントークン |
 | `POST` | `/projects/:id/issues/:issue_iid/metric_images/authorize` | Workhorse事前認可 |
+| `GET` | `/projects/:id/managed_licenses` | 非推奨エンドポイント |
+| `POST` | `/projects/:id/managed_licenses` | 非推奨エンドポイント |
+| `GET` | `/projects/:id/managed_licenses/:managed_license_id` | 非推奨エンドポイント |
+| `PATCH` | `/projects/:id/managed_licenses/:managed_license_id` | 非推奨エンドポイント |
+| `DELETE` | `/projects/:id/managed_licenses/:managed_license_id` | 非推奨エンドポイント |
 | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | Workhorse事前認可 |
 | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse事前認可 |
 | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | Workhorse事前認可 |
@@ -2934,6 +4058,7 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `POST` | `/projects/:id/repository/commits/authorize` | Workhorse事前認可 |
 | `POST` | `/projects/:id/repository/files/:file_path/authorize` | Workhorse事前認可 |
 | `PUT` | `/projects/:id/repository/files/:file_path/authorize` | Workhorse事前認可 |
+| `POST` | `/projects/:id/services/mattermost_slash_commands/trigger` | プロジェクトインテグレーショントークン |
 | `POST` | `/projects/:id/terraform/state/:name/authorize` | Workhorse事前認可 |
 | `POST` | `/projects/:id/uploads/authorize` | Workhorse事前認可 |
 | `POST` | `/projects/import-relation/authorize` | Workhorse事前認可 |
@@ -2944,5 +4069,8 @@ Wikiの作成、削除、読み取り、および更新の機能が付与され�
 | `POST` | `/runners/reset_authentication_token` | Runnerトークン |
 | `GET` | `/runners/router/discovery` | Runnerトークン |
 | `POST` | `/runners/verify` | Runnerトークン |
+| `POST` | `/slack/trigger` | プロジェクトインテグレーショントークン |
+| `GET` | `/swagger_doc` | 内部テスト |
+| `GET` | `/swagger_doc/:name` | 内部テスト |
 | `POST` | `/token_exchange` | モジュラーサービストークン交換 |
 | `GET` | `/usage_data/metric_definitions` | 使用状況データトークン |

@@ -50,7 +50,7 @@ export default {
       required: true,
     },
   },
-  emits: ['showForkSuggestion'],
+  emits: ['show-fork-suggestion'],
   computed: {
     replaceFileItem() {
       return {
@@ -71,7 +71,7 @@ export default {
   methods: {
     showModal() {
       if (this.shouldShowForkSuggestion) {
-        this.$emit('showForkSuggestion');
+        this.$emit('show-fork-suggestion');
         return;
       }
 

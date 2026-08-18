@@ -35,15 +35,19 @@ module Ci
 
         finder = build_finder
 
-        return finder.final_query if returns_final_query?(finder)
+        return finder.final_query if siphon_finder?(finder)
 
         finder.query_builder
       end
 
       private
 
+      # The pipeline filter is applied before the stages join so the siphon
+      # finder can scope the join by the pipelines CTE it attaches.
       def build_finder
         finder = scope_to_project(base_finder)
+
+        finder = apply_pipeline_attrs(finder)
 
         finder = finder.with_stages(project) if siphon_finder?(finder) && stage_name_requested?
 
@@ -55,14 +59,11 @@ module Ci
 
         finder = finder.filter_by_job_name(name_search) if name_search
 
-        finder = apply_pipeline_attrs(finder)
         apply_time_filter(finder)
       end
 
       def base_finder
         return ::ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder.new if use_siphon_finder?
-
-        return ::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder.new if use_deduplicated_finder?
 
         ::ClickHouse::Finders::Ci::FinishedBuildsFinder.new
       end
@@ -102,16 +103,8 @@ module Ci
         finder.is_a?(::ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder)
       end
 
-      def returns_final_query?(finder)
-        finder.is_a?(::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder) || siphon_finder?(finder)
-      end
-
       def use_siphon_finder?
         ::Feature.enabled?(:job_analytics_siphon, project)
-      end
-
-      def use_deduplicated_finder?
-        ::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper.backfill_in_progress?
       end
 
       def extract_sort_info(value)

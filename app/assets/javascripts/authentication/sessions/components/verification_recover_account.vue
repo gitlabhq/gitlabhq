@@ -21,13 +21,9 @@ export default {
       "
     >
       <template #button="{ content }">
-        <gl-button
-          variant="link"
-          category="tertiary"
-          data-testid="recovery-button"
-          @click="$emit('recover')"
-          >{{ content }}</gl-button
-        >
+        <gl-button variant="link" data-testid="recovery-button" @click="$emit('recover')">{{
+          content
+        }}</gl-button>
       </template>
     </gl-sprintf>
   </p>

@@ -13,7 +13,7 @@ class WebHookLog < ApplicationRecord
 
   self.primary_key = :id
   self.table_name = :web_hook_logs_daily
-  partitioned_by :created_at, strategy: :daily, retain_for: 14.days, retain_detached_partitions_for: 2.days
+  partitioned_by :created_at, strategy: :daily, retain_for: 7.days, retain_detached_partitions_for: 2.days
 
   belongs_to :web_hook
 
@@ -59,10 +59,6 @@ class WebHookLog < ApplicationRecord
 
   def self.max_recent_days_ago
     WebHookLog::MAX_RECENT_DAYS.days.ago.beginning_of_day
-  end
-
-  def outside_recent_window?
-    created_at.before?(self.class.max_recent_days_ago)
   end
 
   def success?

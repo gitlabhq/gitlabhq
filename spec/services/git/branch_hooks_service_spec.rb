@@ -787,13 +787,20 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     context 'when the project is forked', :sidekiq_might_not_need_inline do
       let(:upstream_project) { project }
       let(:forked_project) { fork_project(upstream_project, user, repository: true, using_service: true) }
+      let(:process_commit_worker_pool) { Gitlab::Git::ProcessCommitWorkerPool.new }
 
       let!(:forked_service) do
-        described_class.new(forked_project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref })
+        described_class.new(
+          forked_project,
+          user,
+          process_commit_worker_pool: process_commit_worker_pool,
+          change: { oldrev: oldrev, newrev: newrev, ref: ref }
+        )
       end
 
       context 'when commits already exists in the upstream project' do
-        it 'does not process commit messages' do
+        it 'does not process commit messages before deduplication', :aggregate_failures do
+          expect(process_commit_worker_pool).not_to receive(:try_schedule_commit)
           expect(ProcessCommitWorker).not_to receive(:perform_in)
 
           forked_service.execute
@@ -852,12 +859,90 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           })
         end
 
-        it 'delays jobs' do
+        it 'delays jobs', :aggregate_failures do
+          expect(pool).to receive(:try_schedule_commit).with(anything, default: true).twice.and_return(true)
           expect(pool).to receive(:get_and_increment_delay).twice.and_return(99)
           expect(ProcessCommitWorker).to receive(:perform_in).twice.with(99, any_args)
 
           service.execute
         end
+      end
+    end
+
+    context 'with process commit worker deduplication' do
+      let(:process_commit_worker_pool) { Gitlab::Git::ProcessCommitWorkerPool.new }
+
+      def service_for(branch_name, oldrev_value: oldrev, newrev_value: newrev, pool: process_commit_worker_pool)
+        described_class.new(
+          project,
+          user,
+          process_commit_worker_pool: pool,
+          change: { oldrev: oldrev_value, newrev: newrev_value, ref: "refs/heads/#{branch_name}" }
+        )
+      end
+
+      before do
+        stub_const("::Git::BaseHooksService::PROCESS_COMMIT_LIMIT", 2)
+      end
+
+      it 'enqueues a shared SHA only once across branch services in one push' do
+        project.repository.add_branch(user, 'feature-1', oldrev)
+        project.repository.add_branch(user, 'feature-2', oldrev)
+
+        expect(ProcessCommitWorker).to receive(:perform_in).once.with(anything, anything, anything, anything, false)
+
+        service_for('feature-1').execute
+        service_for('feature-2').execute
+      end
+
+      it 'keeps default branch processing when the default branch is seen first' do
+        project.repository.add_branch(user, 'feature-1', oldrev)
+
+        expect(ProcessCommitWorker).to receive(:perform_in).once.with(anything, anything, anything, anything, true)
+
+        service_for(project.default_branch).execute
+        service_for('feature-1').execute
+      end
+
+      it 'upgrades feature branch processing when the default branch is seen later', :aggregate_failures do
+        project.repository.add_branch(user, 'feature-1', oldrev)
+
+        expect(ProcessCommitWorker).to receive(:perform_in).ordered.with(anything, anything, anything, anything, false)
+        expect(ProcessCommitWorker).to receive(:perform_in).ordered.with(anything, anything, anything, anything, true)
+
+        service_for('feature-1').execute
+        service_for(project.default_branch).execute
+      end
+
+      it 'still enqueues unrelated commits on different branches' do
+        project.repository.add_branch(user, 'feature-1', commit_ids[1])
+        project.repository.add_branch(user, 'feature-2', commit_ids[3])
+
+        expect(ProcessCommitWorker).to receive(:perform_in).twice.with(anything, anything, anything, anything, false)
+
+        service_for('feature-1', oldrev_value: commit_ids[1], newrev_value: commit_ids[2]).execute
+        service_for('feature-2', oldrev_value: commit_ids[3], newrev_value: commit_ids[4]).execute
+      end
+
+      it 'applies the cross-reference filter before deduplication', :aggregate_failures do
+        pool = instance_double(Gitlab::Git::ProcessCommitWorkerPool)
+        non_referencing_service = described_class.new(
+          project,
+          user,
+          process_commit_worker_pool: pool,
+          change: { oldrev: commit_ids[4], newrev: commit_ids[5], ref: ref }
+        )
+
+        expect(pool).not_to receive(:try_schedule_commit)
+        expect(ProcessCommitWorker).not_to receive(:perform_in)
+
+        non_referencing_service.execute
+      end
+
+      it 'preserves scheduling when the pool is nil' do
+        expect(ProcessCommitWorker).to receive(:perform_in).once
+
+        service_for(project.default_branch, pool: nil).execute
       end
     end
   end

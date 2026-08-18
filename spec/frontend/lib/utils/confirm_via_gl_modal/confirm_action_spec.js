@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createConfirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import ConfirmModal from '~/lib/utils/confirm_via_gl_modal/confirm_modal.vue';
@@ -37,9 +38,8 @@ describe('confirmAction', () => {
 
   const renderRootComponent = async (message, opts) => {
     confirActionPromise = confirmAction(message, opts);
-    // Wait for dynamic import in implementation to resolve.
-    await import('~/lib/utils/confirm_via_gl_modal/confirm_modal.vue');
-    // Wait for root component to render.
+    // Wait for the async ConfirmModal component to resolve and render.
+    await waitForPromises();
     await nextTick();
     modal = findConfirmModal();
   };

@@ -1,0 +1,18 @@
+- breadcrumb_title s_('Observability|Observability')
+- page_title s_('Observability|Observability')
+- add_page_specific_style 'page_bundles/observability'
+
+.page-content
+  .content-wrapper
+    .container-fluid.container-limited
+      .row
+        .gl-col-md-10.col-md-offset-1
+          = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-8' }) do |c|
+            - c.with_body do
+              .gl-p-8.gl-text-center
+                = sprite_icon('status-health', css_class: 'gl-text-subtle gl-mb-4', size: 32)
+                %h2.gl-text-size-h2.gl-font-bold.gl-mb-4
+                  = s_('Observability|Observability is not enabled')
+                %p.gl-text-lg.gl-text-subtle
+                  - strong_tag = content_tag(:strong, '')
+                  = safe_format(s_('Observability|To use GitLab Observability for this project, ask the %{strong_start}project owner%{strong_end} to enable it.'), tag_pair(strong_tag, :strong_start, :strong_end))

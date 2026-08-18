@@ -32,7 +32,39 @@ RSpec.describe Compare, feature_category: :source_code_management do
     it 'returns nil if compare base commit is nil' do
       expect(raw_compare).to receive(:base).and_return(nil)
 
-      expect(subject.start_commit).to eq(nil)
+      expect(subject.start_commit).to be_nil
+    end
+  end
+
+  describe '#raw_diffs' do
+    let(:base_sha) { start_commit.id }
+
+    subject(:compare) { described_class.new(raw_compare, project, base_sha: base_sha, straight: straight) }
+
+    it 'passes the known base_sha as the merge base' do
+      expect(raw_compare).to receive(:diffs).with(hash_including(merge_base: base_sha))
+
+      compare.raw_diffs
+    end
+
+    context 'when the comparison is straight' do
+      let(:straight) { true }
+
+      it 'does not pass a merge base' do
+        expect(raw_compare).to receive(:diffs).with(hash_excluding(:merge_base))
+
+        compare.raw_diffs
+      end
+    end
+
+    context 'when base_sha is unknown' do
+      let(:base_sha) { nil }
+
+      it 'does not pass a merge base' do
+        expect(raw_compare).to receive(:diffs).with(hash_excluding(:merge_base))
+
+        compare.raw_diffs
+      end
     end
   end
 
@@ -72,7 +104,7 @@ RSpec.describe Compare, feature_category: :source_code_management do
     it 'returns nil if compare head commit is nil' do
       expect(raw_compare).to receive(:head).and_return(nil)
 
-      expect(subject.commit).to eq(nil)
+      expect(subject.commit).to be_nil
     end
   end
 
@@ -108,13 +140,13 @@ RSpec.describe Compare, feature_category: :source_code_management do
     it 'returns nil if there is no start_commit' do
       expect(subject).to receive(:start_commit).and_return(nil)
 
-      expect(subject.base_commit_sha).to eq(nil)
+      expect(subject.base_commit_sha).to be_nil
     end
 
     it 'returns nil if there is no head commit' do
       expect(subject).to receive(:head_commit).and_return(nil)
 
-      expect(subject.base_commit_sha).to eq(nil)
+      expect(subject.base_commit_sha).to be_nil
     end
   end
 

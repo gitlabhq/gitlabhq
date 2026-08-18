@@ -69,12 +69,6 @@ Each link as an asset has the following attributes:
 
 #### Permanent links to release assets
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a personal access token.
-
-{{< /history >}}
-
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue

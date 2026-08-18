@@ -124,7 +124,9 @@ RSpec.describe Ci::StuckBuilds::DropPendingService, feature_category: :continuou
         context 'when created_at is before updated_at' do
           let(:created_at) { 2.days.ago }
 
-          it_behaves_like 'job is unchanged'
+          # `updated_at` stopped gating this path when `drop_stuck` began reading pending_builds_queue,
+          # which filters on the queuing entry's `created_at` alone.
+          it_behaves_like 'job is dropped with failure reason', 'stuck_pending_no_matching_runners'
         end
       end
     end

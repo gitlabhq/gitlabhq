@@ -222,7 +222,7 @@ For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitop
 
 ## Migrate from GitLab-managed applications
 
-GitLab-managed Apps (GMA) were deprecated in GitLab 14.0, and removed in GitLab 15.0.
+GitLab-managed Apps (GMA) were deprecated and removed.
 The agent for Kubernetes does not support them. To migrate from GMA to the
 agent, go through the following steps:
 

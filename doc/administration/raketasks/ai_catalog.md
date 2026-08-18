@@ -1,40 +1,13 @@
 ---
-stage: Agent Foundations
-group: AI Catalog
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: AI Catalog Rake tasks
+redirect_to: '../../user/duo_agent_platform/agents/external.md#add-gitlab-managed-agents-to-other-instances'
+remove_date: '2026-10-21'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+This document was moved to [another location](../../user/duo_agent_platform/agents/external.md#add-gitlab-managed-agents-to-other-instances).
 
-{{< /details >}}
-
-GitLab provides a Rake task for seeding Self-managed AI Catalogs with the following external agents:
-
-- Claude Agent by GitLab <https://gitlab.com/explore/ai-catalog/agents/2057/>
-- Codex Agent by GitLab <https://gitlab.com/explore/ai-catalog/agents/513/>
-
-## Seed AI catalog external agents
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-```shell
-sudo gitlab-rake gitlab:ai_catalog:seed_external_agents
-```
-
-{{< /tab >}}
-
-{{< tab title="Self-compiled (source)" >}}
-
-```shell
-bundle exec rake gitlab:ai_catalog:seed_external_agents
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
+<!-- This redirect file can be deleted after 2026-10-21. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

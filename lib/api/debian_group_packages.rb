@@ -10,7 +10,7 @@ module API
       :group
     end
 
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
           find_authorized_group!
@@ -47,6 +47,13 @@ module API
             { code: 404, message: 'Not Found' }
           ]
           tags %w[packages_debian]
+        end
+        params do
+          requires :distribution, type: String, desc: 'The Debian distribution name'
+          requires :letter, type: String, desc: 'The package name first letter'
+          requires :package_name, type: String, desc: 'The package name'
+          requires :package_version, type: String, desc: 'The package version'
+          requires :file_name, type: String, desc: 'The package file name'
         end
 
         route_setting :authorization, permissions: :download_debian_package, boundary_type: :group

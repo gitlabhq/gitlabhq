@@ -7,6 +7,7 @@ module UserSettings
     before_action :verify_state, only: [:new]
     before_action :assign_variables_from_session
     before_action :verify_session_variables
+    before_action :verify_intended_user
 
     def new
       # rubocop:disable CodeReuse/ActiveRecord -- Specific use-case
@@ -54,10 +55,20 @@ module UserSettings
         notice: _('Error linking identity: Provider and Extern UID must be in the session.')
     end
 
+    def verify_intended_user
+      intended_user_id = session[:identity_link_user_id]
+      return if intended_user_id.blank?
+      return if current_user.id == intended_user_id
+
+      delete_session_variables
+      render_403
+    end
+
     def delete_session_variables
       session.delete(:identity_link_state)
       session.delete(:identity_link_provider)
       session.delete(:identity_link_extern_uid)
+      session.delete(:identity_link_user_id)
     end
   end
 end

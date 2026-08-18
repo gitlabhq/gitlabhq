@@ -180,6 +180,8 @@ rspec-all frontend_fixture clickhouse:
     - .use-pg17-clickhouse25
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
+  variables:
+    RSPEC_DRY_RUN_TAGS: "click_house"
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_parallelized_job "--tag click_house"
@@ -525,8 +527,42 @@ jest-msw-integration:
     - .frontend-test-base
     - .repo-from-artifacts
     - .frontend:rules:jest-msw-integration
+  variables:
+    JEST_MSW_REPORT: tmp/jest-msw-report.json
+    JEST_MSW_START_TIME_FILE: tmp/jest-msw-start-time
   script:
-    - yarn jest:msw-integration --ci --passWithNoTests --forceExit
+    - date +%s > "${JEST_MSW_START_TIME_FILE}"
+    # Capture the Jest exit code so we can re-raise it after the summary step.
+    # The summary is always posted (even on test failure) because the inline
+    # comment is the primary signal for reviewers; the job itself also fails
+    # when tests fail, surfacing the failure in the pipeline.
+    - yarn jest:msw-integration --ci --passWithNoTests --forceExit --json --outputFile="${JEST_MSW_REPORT}"; JEST_EXIT=$?
+    # This runs in `script` instead of `after_script` on purpose.
+    # We want the budget gate to be able to fail the job when someone adds too many new tests.
+    # That only works from `script`, because GitLab ignores the exit code of `after_script` and a failure there
+    # wouldn't stop the pipeline.
+    #
+    # Posting the summary comment is best-effort: if the API call fails, the script quietly ignores it
+    # and the job keeps going. The job fails when tests fail or when the per-new-test budget is breached.
+    - |
+      # Read the recorded jest-msw start timestamp; fall back to 0 if the file is
+      # missing or unreadable (keeps later duration math from breaking).
+      START=$(cat "${JEST_MSW_START_TIME_FILE}" 2>/dev/null || echo 0)
+      DURATION=$(( $(date +%s) - START ))
+      node scripts/frontend/post_msw_test_summary.mjs \
+        --job-name "${CI_JOB_NAME}" \
+        --report-path "${JEST_MSW_REPORT}" \
+        --artifact-path "${JEST_MSW_REPORT}" \
+        --job-url "${CI_JOB_URL}" \
+        --duration "${DURATION}"
+      echo "Exiting with jest exit code $JEST_EXIT."
+      exit $JEST_EXIT
+  artifacts:
+    name: jest-msw-report
+    expire_in: 7d
+    when: always
+    paths:
+      - tmp/jest-msw-report.json
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.frontend-test-base, needs]
@@ -651,7 +687,10 @@ webpack-dev-server:
     - .default-utils-before_script
     - .yarn-cache
     - .repo-from-artifacts
-    - .frontend:rules:default-frontend-jobs
+  rules:
+    - if: '$ENABLE_RSPACK == "true"'
+      when: never
+    - !reference [".frontend:rules:default-frontend-jobs", rules]
   stage: test-frontend
   variables:
     WEBPACK_MEMORY_TEST: "true"
@@ -733,7 +772,10 @@ bundle-size-review:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache-pull
-    - .frontend:rules:bundle-size-review
+  rules:
+    - if: '$ENABLE_RSPACK == "true"'
+      when: never
+    - !reference [".frontend:rules:bundle-size-review", rules]
   stage: test-frontend
   needs:
     - job: compile-fe-islands

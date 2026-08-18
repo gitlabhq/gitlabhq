@@ -48,13 +48,13 @@ RSpec.describe LfsObject, feature_category: :source_code_management do
     it 'returns true when file_store is equal to LfsObjectUploader::Store::LOCAL' do
       subject.file_store = LfsObjectUploader::Store::LOCAL
 
-      expect(subject.local_store?).to eq true
+      expect(subject.local_store?).to be true
     end
 
     it 'returns false when file_store is equal to LfsObjectUploader::Store::REMOTE' do
       subject.file_store = LfsObjectUploader::Store::REMOTE
 
-      expect(subject.local_store?).to eq false
+      expect(subject.local_store?).to be false
     end
   end
 
@@ -65,11 +65,11 @@ RSpec.describe LfsObject, feature_category: :source_code_management do
     it 'returns true when project is linked' do
       create(:lfs_objects_project, lfs_object: lfs_object, project: project)
 
-      expect(lfs_object.project_allowed_access?(project)).to eq(true)
+      expect(lfs_object.project_allowed_access?(project)).to be(true)
     end
 
     it 'returns false when project is not linked' do
-      expect(lfs_object.project_allowed_access?(project)).to eq(false)
+      expect(lfs_object.project_allowed_access?(project)).to be(false)
     end
 
     context 'when project is a member of a fork network' do
@@ -80,20 +80,20 @@ RSpec.describe LfsObject, feature_category: :source_code_management do
       it 'returns true for all members when forked project is linked' do
         create(:lfs_objects_project, lfs_object: lfs_object, project: project)
 
-        expect(lfs_object.project_allowed_access?(project)).to eq(true)
-        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to eq(true)
+        expect(lfs_object.project_allowed_access?(project)).to be(true)
+        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to be(true)
       end
 
       it 'returns true for all members when root of network is linked' do
         create(:lfs_objects_project, lfs_object: lfs_object, project: fork_network_root_project)
 
-        expect(lfs_object.project_allowed_access?(project)).to eq(true)
-        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to eq(true)
+        expect(lfs_object.project_allowed_access?(project)).to be(true)
+        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to be(true)
       end
 
       it 'returns false when no member of fork network is linked' do
-        expect(lfs_object.project_allowed_access?(project)).to eq(false)
-        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to eq(false)
+        expect(lfs_object.project_allowed_access?(project)).to be(false)
+        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to be(false)
       end
     end
   end

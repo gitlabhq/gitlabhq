@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlLink } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
+import { GlButton, GlLink, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
@@ -53,9 +54,11 @@ export default {
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
-    RunnerDashboardLink: () =>
-      import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
+    RunnerDashboardLink: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
+    ),
   },
+  mixins: [GlToastMixin],
   props: {
     newRunnerPath: {
       type: String,
@@ -189,7 +192,7 @@ export default {
       this.refetchCounts();
     },
     onDeleted({ message }) {
-      this.$root.$toast?.show(message);
+      this.$toast.show(message);
       this.refetchCounts();
     },
     reportToSentry(error) {
@@ -264,7 +267,7 @@ export default {
         :checkable="true"
         :loading="runnersLoading"
         @deleted="onDeleted"
-        @toggledPaused="onToggledPaused"
+        @toggled-paused="onToggledPaused"
       >
         <template #runner-name="{ runner }">
           <gl-link :href="webUrl(runner)">
@@ -275,7 +278,7 @@ export default {
           <runner-actions-cell
             :runner="runner"
             :edit-url="editUrl(runner)"
-            @toggledPaused="onToggledPaused"
+            @toggled-paused="onToggledPaused"
             @deleted="onDeleted"
           />
         </template>

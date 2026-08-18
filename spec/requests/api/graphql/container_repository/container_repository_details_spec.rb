@@ -805,4 +805,26 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       end.to issue_same_number_of_queries_as(control)
     end
   end
+
+  context 'when current organization differs from the repository organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_project) { create(:project, :private, organization: other_organization) }
+    let_it_be(:other_repository) { create(:container_repository, project: other_project) }
+
+    let(:variables) { { id: other_repository.to_global_id.to_s } }
+
+    before_all do
+      other_project.add_reporter(project.first_owner)
+    end
+
+    before do
+      current_organization.mark_as_isolated!
+    end
+
+    it 'does not return the repository' do
+      subject
+
+      expect(container_repository_details_response).to be_nil
+    end
+  end
 end

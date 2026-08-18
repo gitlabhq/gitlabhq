@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import { __, s__ } from '~/locale';
@@ -14,7 +15,7 @@ export default {
   name: 'WorkItemLinkChild',
   components: {
     GlButton,
-    WorkItemChildrenWrapper: () => import('./work_item_children_wrapper.vue'),
+    WorkItemChildrenWrapper: defineAsyncComponent(() => import('./work_item_children_wrapper.vue')),
     WorkItemLinkChildContents,
     WorkItemChildrenLoadMore,
   },
@@ -96,7 +97,7 @@ export default {
       default: false,
     },
   },
-  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'removeChild', 'toggleDrawer'],
+  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'remove-child', 'toggle-drawer'],
   data() {
     return {
       isExpanded: false,
@@ -294,8 +295,8 @@ export default {
           :contextual-view-enabled="contextualViewEnabled"
           @mouseover="$emit('mouseover')"
           @mouseout="$emit('mouseout')"
-          @click="$emit('toggleDrawer', $event)"
-          @removeChild="$emit('removeChild', childItem)"
+          @click="$emit('toggle-drawer', $event)"
+          @remove-child="$emit('remove-child', childItem)"
         />
       </div>
     </div>
@@ -321,7 +322,7 @@ export default {
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"
         @error="$emit('error', $event)"
-        @click="$emit('toggleDrawer', $event)"
+        @click="$emit('toggle-drawer', $event)"
       />
       <work-item-children-load-more
         v-if="hasNextPage && isExpanded"

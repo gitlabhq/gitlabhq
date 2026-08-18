@@ -17,6 +17,7 @@ import { addAgentTokenToStore } from '../graphql/cache_update';
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_MODAL });
 
 export default {
+  name: 'CreateTokenModal',
   components: {
     AgentToken,
     GlButton,

@@ -86,6 +86,8 @@ KNOWN_STABLE_CE_IDS = %i[
   new_issue
   notification_channels
   o11y_settings
+  observability_alerts
+  observability_dashboard
   organization_overview
   organization_settings_general
   organization_users
@@ -133,10 +135,12 @@ KNOWN_STABLE_EE_IDS = %i[
   ai_catalog_mcp_servers
   ai_flow_triggers
   ai_flows
+  artifact_registry_repositories
   audit_events
   compliance
   contribution_analytics
   credentials
+  dependency_firewall
   dependency_list
   devops_adoption
   epic_list
@@ -148,6 +152,7 @@ KNOWN_STABLE_EE_IDS = %i[
   insights
   issues_analytics
   learn_gitlab
+  policy_store
   productivity_analytics
   roadmap
   scan_policies

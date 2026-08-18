@@ -28,7 +28,7 @@ RSpec.describe DiffViewerEntity, feature_category: :code_review_workflow do
     let(:options) { { whitespace_only: true } }
 
     it 'returns the whitespace_only attribute true' do
-      expect(subject.with_indifferent_access[:whitespace_only]).to eq true
+      expect(subject.with_indifferent_access[:whitespace_only]).to be true
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe DiffViewerEntity, feature_category: :code_review_workflow do
     let(:options) { { whitespace_only: false } }
 
     it 'returns the whitespace_only attribute false' do
-      expect(subject.with_indifferent_access[:whitespace_only]).to eq false
+      expect(subject.with_indifferent_access[:whitespace_only]).to be false
     end
   end
 end

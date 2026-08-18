@@ -26,7 +26,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
     it_behaves_like 'matches schema'
 
     it 'returns expected validity' do
-      expect(linting_result[:valid]).to eq(false)
+      expect(linting_result[:valid]).to be(false)
       expect(linting_result[:errors]).to eq(['jobs:rspec:tags config should be an array of strings'])
       expect(linting_result[:warnings]).to eq([])
     end
@@ -42,7 +42,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
     it_behaves_like 'matches schema'
 
     it 'returns expected validity' do
-      expect(linting_result[:valid]).to eq(true)
+      expect(linting_result[:valid]).to be(true)
       expect(linting_result[:errors]).to eq([])
       expect(linting_result[:warnings]).to eq([])
     end
@@ -54,11 +54,11 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
       expect(first_job[:script]).to eq(['rake spec'])
       expect(first_job[:after_script]).to eq([])
       expect(first_job[:tag_list]).to eq(%w[ruby postgres])
-      expect(first_job[:environment]).to eq(nil)
+      expect(first_job[:environment]).to be_nil
       expect(first_job[:when]).to eq('on_success')
-      expect(first_job[:allow_failure]).to eq(false)
+      expect(first_job[:allow_failure]).to be(false)
       expect(first_job[:only]).to eq(refs: ['branches'])
-      expect(first_job[:except]).to eq(nil)
+      expect(first_job[:except]).to be_nil
     end
 
     context 'when dry run is enabled' do
@@ -71,7 +71,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
       it_behaves_like 'matches schema'
 
       it 'returns expected validity' do
-        expect(linting_result[:valid]).to eq(true)
+        expect(linting_result[:valid]).to be(true)
         expect(linting_result[:errors]).to eq([])
         expect(linting_result[:warnings]).to eq([])
       end
@@ -83,11 +83,11 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
         expect(first_job[:script]).to eq(['rake spec'])
         expect(first_job[:after_script]).to eq([])
         expect(first_job[:tag_list]).to eq(%w[ruby postgres])
-        expect(first_job[:environment]).to eq(nil)
+        expect(first_job[:environment]).to be_nil
         expect(first_job[:when]).to eq('on_success')
-        expect(first_job[:allow_failure]).to eq(false)
-        expect(first_job[:only]).to eq(nil)
-        expect(first_job[:except]).to eq(nil)
+        expect(first_job[:allow_failure]).to be(false)
+        expect(first_job[:only]).to be_nil
+        expect(first_job[:except]).to be_nil
       end
     end
 
@@ -186,11 +186,11 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
           expect(first_job[:script]).to eq(['echo'])
           expect(first_job[:after_script]).to eq([])
           expect(first_job[:tag_list]).to eq([])
-          expect(first_job[:environment]).to eq(nil)
+          expect(first_job[:environment]).to be_nil
           expect(first_job[:when]).to eq('on_success')
-          expect(first_job[:allow_failure]).to eq(false)
+          expect(first_job[:allow_failure]).to be(false)
           expect(first_job[:only]).to eq(refs: %w[branches tags])
-          expect(first_job[:except]).to eq(nil)
+          expect(first_job[:except]).to be_nil
         end
       end
 

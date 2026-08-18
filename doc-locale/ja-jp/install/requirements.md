@@ -13,42 +13,87 @@ title: GitLabのインストール要件
 
 {{< /details >}}
 
-GitLabには、固有のインストール要件があります。
+GitLab Self-Managedには、デプロイ規模とワークロードに応じて異なる特定のハードウェア、コンポーネント、およびインフラストラクチャの要件があります。大規模な、または分散型のデプロイの場合は、[サイジングガイド](../administration/reference_architectures/sizing.md)を使用して、環境に合った適切な仕様を決定してください。
 
-## ストレージ {#storage}
+## ハードウェア {#hardware}
 
-必要とされるストレージ容量は、主にGitLabに格納するリポジトリのサイズによって異なります。ガイドラインとして、最低でも、すべてのリポジトリの合計と同じくらいの空き容量が必要です。
+GitLabを単一ノード、または複数のノードにわたって分散型でデプロイできます。単一ノードインストールに必要な最小ハードウェア要件を以下に示します。分散型デプロイの場合、要件はコンポーネントの種類ごとに割り当てられ、負荷に応じてスケールします。期待される負荷とワークロード構成に基づいて適切な仕様を決定するには、[サイジングガイド](../administration/reference_architectures/sizing.md)を使用してください。
 
-Linuxパッケージのインストールには、約2.5 GBのストレージ容量が必要です。PostgreSQL、ログ、一時ファイル、およびオペレーティングシステムのオーバーヘッドと組み合わせると、リポジトリデータのない基本的なGitLabインストールの場合、少なくとも40 GBのディスク容量を確保してください。ストレージの柔軟性を高めるには、論理ボリューム管理を通じてハードドライブをマウントすることを検討してください。応答時間を短縮するために、7,200 RPM以上のハードドライブ、またはソリッドステートドライブが必要です。
+### CPU {#cpu}
 
-ファイルシステムのパフォーマンスはGitLabの全体的なパフォーマンスに影響を与える可能性があるため、[ストレージにクラウドベースのファイルシステムを使用することは避けて](../administration/nfs.md#avoid-using-cloud-based-file-systems)ください。
+単一ノードインストールの場合、8 vCPUがベースラインです。ARMベースのプロセッサがサポートされています。分散型デプロイの場合、CPUはコンポーネントの種類ごとに割り当てられ、負荷に応じてスケールします。
 
-## CPU {#cpu}
+> [!note]
+> パフォーマンスが不安定なため、バースト可能なインスタンスタイプは推奨されません。
 
-CPU要件は、ユーザー数と予想されるワークロードによって異なります。ワークロードには、ユーザーのアクティビティ、自動化とミラーリングの使用、リポジトリのサイズが含まれます。
+### メモリ {#memory}
 
-最大で1秒あたり20リクエストまたは1,000ユーザーの場合、8 vCPUが必要です。それ以上のユーザー数またはワークロードについては、[リファレンスアーキテクチャ](../administration/reference_architectures/_index.md)を参照してください。
+単一ノードインストールの場合、16 GBがベースラインです。分散型デプロイの場合、メモリはコンポーネントの種類ごとに割り当てられ、負荷に応じてスケールします。
 
-## メモリ {#memory}
+メモリに制約のある環境での単一ノードインストールの場合、GitLabは最低8 GBのメモリで実行できます。詳細については、[メモリ制約のある環境でGitLabを実行する](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs/)を参照してください。
 
-メモリ要件は、ユーザー数と予想されるワークロードによって異なります。ワークロードには、ユーザーのアクティビティ、自動化とミラーリングの使用、リポジトリのサイズが含まれます。
+> [!note]
+> 可能な場合はスワップを無効にしてください。スワップは、負荷がかかるとパフォーマンスが著しく低下する可能性があります。スワップを無効にできない場合は、GitLabが使用しないように十分なメモリをプロビジョニングしてください。
 
-最大で1秒あたり20リクエストまたは1,000ユーザーの場合、16 GBのメモリが必要です。それ以上のユーザー数またはワークロードについては、[リファレンスアーキテクチャ](../administration/reference_architectures/_index.md)を参照してください。
+### ストレージ {#storage}
 
-場合によっては、GitLabは最低8 GBのメモリで実行できます。詳細については、[メモリ制約のある環境でGitLabを実行する](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs/)を参照してください。
+ストレージ要件はコンポーネント固有です。単一ノードインストールの場合、すべての要件を1台のマシンに集約します。分散型デプロイの場合は、それぞれを関連するノードタイプに適用します:
 
-## PostgreSQL {#postgresql}
+| コンポーネント | 最小ストレージ | 備考 |
+|-----------|----------------|-------|
+| アプリケーションノード（Rails, Sidekiq, Puma） | 40 GB | パッケージのインストール（約2.5 GB）のほか、OS、ログ、一時ファイル。 |
+| リポジトリストレージ（Gitaly） | すべてのリポジトリを合計した容量以上 | [Gitalyディスク要件](../administration/gitaly/_index.md#disk-requirements)を参照してください。 |
+| データベース（PostgreSQL） | 5-12 GB | [PostgreSQLストレージ要件](#storage-requirements)を参照してください。 |
 
-[PostgreSQL](https://www.postgresql.org/)は、サポートされている唯一のデータベースであり、Linuxパッケージにバンドルされています。[外部のPostgreSQLデータベース](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server)も使用できますが、その場合は[正しく設定する必要があります](#postgresql-settings)。
+NFS、Amazon EFS、Azure Filesなどのネットワークファイルシステムは、パフォーマンスに大きな影響を与える可能性があるため、避けてください。詳細については、[クラウドベースのファイルシステムの回避](../administration/nfs.md#avoid-using-cloud-based-file-systems)を参照してください。
 
-### サポートされているバージョン {#supported-versions}
+> [!note]
+> 最高のパフォーマンスを得るには、SSDベースのストレージを使用してください。これは、I/O負荷の高いGitalyにとって特に重要です。パフォーマンスが不安定なため、バースト可能なディスクタイプは推奨されません。
+
+## インフラストラクチャ {#infrastructure}
+
+GitLabは、さまざまなインフラストラクチャタイプで動作します。次のセクションでは、サポートされているプラットフォームと高可用性の要件について説明します。
+
+### サポートされているインフラストラクチャ {#supported-infrastructure}
+
+GitLabは、基盤となる環境がこのガイドで説明されているハードウェアおよびコンポーネントの要件を満たしている場合、クラウドプロバイダーおよびセルフマネージドインフラストラクチャで動作します。一般的に使用されるクラウドプロバイダーには、AWS、GCP、Azureなどがあります。[GitLab Support](https://support.gitlab.com/hc/en-us/articles/11625911285404-Statement-of-Support)はGitLab自体を対象としています。基盤となるインフラストラクチャまたはプラットフォームに関するイシューは、そのスコープ外です。
+
+Cloud Nativeデプロイの場合、GitLabは[GitLab Helmチャートの前提条件](https://docs.gitlab.com/charts/installation/tools/)を満たすすべてのKubernetesディストリビューションで実行されます。Kubernetesプラットフォーム固有の動作（ネットワーキング、ストレージクラス、認証など）は、GitLabサポートのスコープ外です。
+
+### 高可用性 {#high-availability}
+
+HAのデプロイには、特定のネットワーク要件があります:
+
+- 同期レプリケーションをサポートするには、ノード間のレイテンシーが5ミリ秒未満である必要があります。
+- 耐障害性を高めるには、アベイラビリティーゾーンをまたいでデプロイすることが推奨されます。クォーラム要件を満たすには、奇数個のゾーンを使用してください。
+- 複数のセルフマネージドデータセンターにまたがってデプロイするには、同期可能なレイテンシー、冗長なネットワークリンク、および同じ地理的リージョン内に奇数個のセンターが必要です。
+
+> [!warning]
+> 単一のGitLabインスタンスは、複数の地理的リージョンにまたがって展開してはなりません。マルチリージョンデプロイの場合は、地理的に分散されたインストール向けに設計された[Geo](../administration/geo/_index.md)を使用してください。複数のデータセンターでのデプロイにおけるインフラストラクチャ関連のイシューは、GitLabサポートのスコープ外となる可能性があります。
+
+## コンポーネント要件 {#component-requirements}
+
+### PostgreSQL {#postgresql}
+
+[PostgreSQL](https://www.postgresql.org/)は唯一サポートされているデータベースであり、以下で利用可能です:
+
+- Linuxパッケージに[バンドルされたインスタンス](https://docs.gitlab.com/omnibus/settings/database/)として。
+- [外部サービス](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server)として。
+
+外部インスタンスについては、以下を参照してください:
+
+- 外部で管理されるインスタンスの[必須設定](../administration/postgresql/tune.md#required-settings-for-external-instances)。
+- スキーマガイダンスについては、[データベーススキーマ](../administration/postgresql/external.md#database-schemas)を参照してください。
+- ロケールに関する考慮事項については、[ロケールの互換性を確認するタイミング](../administration/postgresql/upgrading_os.md#when-to-check-locale-compatibility)を参照してください。
+
+#### サポートされているバージョン {#supported-versions}
 
 次のバージョンのGitLabでは、対応するPostgreSQLバージョンを使用してください。
 
 | GitLabバージョン | Helmチャートバージョン | PostgreSQLの最小バージョン | PostgreSQLの最大バージョン |
 | -------------- | ------------------ | -------------------------- | -------------------------- |
 | 19.x           | 10.x               | 17.x                       | 17.x                       |
-| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x ([GitLab 17.10以降でテスト済み](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)) |
+| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x（[GitLab 17.10以降でテスト済み](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)） |
 | 17.x           | 8.x                | [14.14](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 16.x（[GitLab 16.10以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)） |
 | 16.x           | 7.x                | 13.6                       | 15.x（[GitLab 16.1以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)） |
 
@@ -56,14 +101,14 @@ PostgreSQLのマイナーリリースには、[バグとセキュリティの修
 
 指定されているバージョンよりも新しいPostgreSQLのメジャーバージョンを使用するには、[新しいバージョンがLinuxパッケージにバンドルされているかどうか](http://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html)を確認してください。
 
-### ストレージ要件 {#storage-requirements}
+#### ストレージ要件 {#storage-requirements}
 
 [ユーザー数](../administration/reference_architectures/_index.md)に応じて、PostgreSQLサーバーには以下が必要です。
 
 - ほとんどのGitLabインスタンスの場合、少なくとも5～10 GBのストレージ。
 - Ultimateの場合、少なくとも12 GBのストレージ（1 GBの脆弱性データをインポートする必要があります）。
 
-### 拡張機能 {#extensions}
+#### 拡張機能 {#extensions}
 
 拡張機能をインストールするには、PostgreSQLにはスーパーユーザー権限が必要です。手順については、[Manage PostgreSQL extensions](../administration/postgresql/extensions.md)を参照してください。
 
@@ -72,60 +117,33 @@ PostgreSQLのマイナーリリースには、[バグとセキュリティの修
 | `amcheck`            | 18.4                   | 必須    | メイン |
 | `btree_gist`         | 13.1                   | 必須    | メイン |
 | `pg_trgm`            | 8.6                    | 必須    | メイン |
-| `plpgsql`            | 11.7                   | 必須    | main、[Geoセカンダリ追跡データベース](../administration/geo/_index.md) (最小バージョン9.0) |
+| `plpgsql`            | 11.7                   | 必須    | main、[Geoセカンダリ追跡データベース](../administration/geo/_index.md)（最小バージョン9.0） |
 | `pg_stat_statements` | –                      | 推奨 | すべて |
 
-### GitLab Geo {#gitlab-geo}
+#### Gitaly Cluster (Praefect) {#gitaly-cluster-praefect}
 
-[GitLab Geo](../administration/geo/_index.md)は、Linuxパッケージまたは[検証済みのクラウドプロバイダー](../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services)を使用してGitLabをインストールする必要があります。他の外部データベースとの互換性は保証されていません。
+[Gitalyクラスター](../administration/gitaly/praefect/_index.md)には、メインのGitLabデータベースとは別の専用PostgreSQLインスタンスが必要です。完全なHAを実現するには、サードパーティのPostgreSQLソリューションを使用してください。Linuxパッケージを使用する非HAのPostgreSQLインスタンスは、Gitalyのデータベースレベルの冗長性を必要としない環境には十分です。
 
-詳細については、[Geoの実行要件](../administration/geo/_index.md#requirements-for-running-geo)を参照してください。
+### RedisまたはValkey {#redis-or-valkey}
 
-### ロケールの互換性 {#locale-compatibility}
+[Redis](https://redis.io/)または[Valkey](https://valkey.io/)は、すべてのユーザーセッションとバックグラウンドタスクを保存します。
 
-`glibc`でロケールデータを変更すると、PostgreSQLデータベースファイルは、異なるオペレーティングシステム間では完全な互換性がなくなります。インデックスの破損を回避するには、以下の場合に[ロケールの互換性を確認](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください。
+サポートされているRedisまたはValkeyのバージョンは次のとおりです:
 
-- サーバー間でバイナリPostgreSQLデータを移動する。
-- Linuxディストリビューションをアップグレードする。
-- サードパーティのコンテナイメージを更新または変更する。
+| データストア | 推奨バージョン | 最小バージョン |
+| --------- | ------------------- | --------------- |
+| Redis     | 7.2                 | 7.0<sup>1</sup> |
+| Valkey    | 7.2                 | 7.2             |
 
-詳細については、[PostgreSQLのオペレーティングシステムのアップグレード](../administration/postgresql/upgrading_os.md)を参照してください。
+<sup>1</sup> Redis 7.0はアップストリームでEOL（End-of-Life）に達しましたが、ベンダーによっては積極的にメンテナンスされている場合があります。たとえば、Amazon ElastiCache for Redis 7.1は独自のバージョン番号を使用していますが、Redis 7.0をベースに構築されています。
 
-### GitLabスキーマ {#gitlab-schemas}
+Redisのサポート終了日に関する詳細については、[Redisドキュメント](https://redis.io/docs/latest/operate/oss_and_stack/install/version-mgmt/)を参照してください。
 
-GitLab、[Geo](../administration/geo/_index.md) 、[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md)、またはその他のコンポーネント専用のデータベースを作成または使用する必要があります。以下に従う場合を除き、データベース、スキーマ、ユーザー、またはその他のプロパティを作成または変更しないでください。
+- スタンドアロンインスタンスを使用します（高可用性の有無にかかわらず）。Redisクラスターはサポートされていません。
+- Serverless RedisおよびValkeyのバリアントはサポートされていません。
+- 必要に応じて[削除ポリシー](../administration/redis/replication_and_failover_external.md#setting-the-eviction-policy)を設定します。
 
-- GitLabドキュメントの手順
-- GitLabサポートまたはエンジニアの指示
-
-主なGitLabアプリケーションは、3つのスキーマを使用します。
-
-- デフォルトの`public`スキーマ
-- `gitlab_partitions_static`（自動作成）
-- `gitlab_partitions_dynamic`（自動作成）
-
-Railsデータベースの移行中に、GitLabはスキーマまたはテーブルを作成または変更する場合があります。データベースの移行は、GitLabコードベースのスキーマ定義に対してテストされます。スキーマを変更すると、[GitLabのアップグレード](../update/_index.md)が失敗する可能性があります。
-
-### PostgreSQLの設定 {#postgresql-settings}
-
-外部で管理されるPostgreSQLインスタンスに必要な設定を次に示します。
-
-| 調整可能な設定        | 必要な値 | 詳細情報 |
-|:-----------------------|:---------------|:-----------------|
-| `work_mem`             | 最小`8 MB`  | この値は、Linuxパッケージのデフォルトです。大規模なデプロイメントで、クエリが一時ファイルを作成する場合は、この設定を増やす必要があります。 |
-| `maintenance_work_mem` | 最小`64 MB` | [大規模なデータベースサーバーの場合は、より多くの容量](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087)が必要です。 |
-| `max_connections`      | 最小`400`   | お使いのGitLabコンポーネントに基づいて計算します。詳細なガイダンスについては、[Tune PostgreSQL](../administration/postgresql/tune.md)ページを参照してください。 |
-| `shared_buffers`       | 最小`2 GB`  | 大規模なデータベースサーバーの場合は、より多くの容量が必要です。Linuxパッケージのデフォルトは、サーバーRAMの25%に設定されています。 |
-| `statement_timeout`    | 15000～60000 | ステートメントのタイムアウトにより、ロックによる制御不能イシューや、データベースが新しいクライアントを拒否するのを回避できます。15～60秒の間の値（15000～60000ミリ秒）を使用してください。ここで1分はPumaラックタイムアウト設定に一致します。 |
-| `hot_standby_feedback` | `on` | マルチノードと[データベースロードバランシング](../administration/postgresql/database_load_balancing.md#configuring-database-load-balancing)が設定されている設定では、すべてのレプリカノードで`hot_standby_feedback`が有効になっており、ラグの蓄積を防ぐようにしてください。 |
-
-サーバー上のすべてのデータベースではなく、特定のデータベースに対して一部のPostgreSQL設定を設定できます。
-
-- 同じサーバー上で複数のデータベースをホスティングする場合、特定のデータベースに設定を制限できます。
-- 設定の適用場所に関するガイダンスについては、データベース管理者またはベンダーにお問い合わせください。
-- GCP Cloud SQLの場合、特定のデータベースまたはユーザーに対して`statement_timeout`を設定できますが、[as a database flag](https://cloud.google.com/sql/docs/postgres/flags#list-flags-postgres)（データベースフラグとして）は設定できません。例: `ALTER DATABASE gitlab SET statement_timeout = '60s';`。
-
-## Puma {#puma}
+### Puma {#puma}
 
 推奨される[Puma](https://puma.io/)設定は、[インストール](install_methods.md)によって異なります。デフォルトでは、Linuxパッケージは推奨設定を使用します。
 
@@ -134,51 +152,59 @@ Pumaの設定を調整するには:
 - Linuxパッケージについては、[Puma設定](../administration/operations/puma.md)を参照してください。
 - GitLab Helmチャートについては、[`webservice`チャート](https://docs.gitlab.com/charts/charts/gitlab/webservice/)を参照してください。
 
-### ワーカー {#workers}
+ワーカーおよびスレッドのサイジングガイダンスについては、[Pumaワーカーおよびスレッドのサイジング](../administration/operations/puma.md#worker-and-thread-sizing)を参照してください。
 
-推奨されるPumaワーカーの数は、主にCPUとメモリの容量によって異なります。デフォルトでは、Linuxパッケージは推奨される数のワーカーを使用します。この数の計算方法について詳しくは、[`puma.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-cookbooks/gitlab/libraries/puma.rb?ref_type=heads#L46-69)を参照してください。
+### Sidekiq {#sidekiq}
 
-ノードのPumaワーカー数は2つ以上でなければなりません。たとえば、ノードには以下が必要です。
+[Sidekiq](https://sidekiq.org/)は、複数のスレッドを使用してバックグラウンドジョブを処理します。各プロセスには最低200 MBのメモリが必要で、負荷がかかると大幅に増加する可能性があります。10,000人を超えるユーザーがいる環境では、Sidekiqプロセスごとに少なくとも1 GBを割り当ててください。
 
-- 2 CPUコアと8 GBのメモリに対して2個のワーカー
-- 4 CPUコアと4 GBのメモリに対して2個のワーカー
-- 4 CPUコアと8 GBのメモリに対して4個のワーカー
-- 8 CPUコアと8 GBのメモリに対して6個のワーカー
-- 8 CPUコアと16 GBのメモリに対して8個のワーカー
+### オブジェクトストレージ {#object-storage}
 
-デフォルトでは、各Pumaワーカーは1.2 GBのメモリに制限されています。`/etc/gitlab/gitlab.rb`で[この設定を調整](../administration/operations/puma.md#tuning-memory-use)できます。
+オブジェクトストレージは分散型デプロイに必須であり、すべてのインストールで推奨されます。LFSオブジェクト、CI/CDアーティファクト、アップロード、コンテナレジストリデータ、バックアップなど、バイナリデータを保存します。
 
-十分なCPUおよびメモリ容量がある場合は、Pumaワーカーの数を増やすこともできます。ワーカー数を増やすと、応答時間が短縮され、並列リクエストを処理する能力が向上します。テストを実行して、[インストール](install_methods.md)に最適なワーカーの数を確認します。
+任意のS3互換オブジェクトストレージサービスを使用してください。設定およびテスト済みのプロバイダーのリストについては、[オブジェクトストレージ](../administration/object_storage.md)を参照してください。
 
-### スレッド {#threads}
+## オプションコンポーネント {#optional-components}
 
-推奨されるPumaスレッド数は、システムメモリの合計によって異なります。ノードは以下を使用する必要があります。
+これらのコンポーネントは、コアGitLabのインストールには必須ではありませんが、使用する場合には個別のインフラストラクチャまたはリソース要件があります。
 
-- 最大2 GBのメモリを持つオペレーティングシステムの場合は1つのスレッド
-- 2 GBを超えるメモリを持つオペレーティングシステムの場合は4つのスレッド
+### コンテナレジストリ {#container-registry}
 
-スレッドをそれ以上増やすと、過度のスワップが発生し、パフォーマンスが低下します。
+[GitLabコンテナレジストリ](../administration/packages/container_registry.md)は、GitLabプロジェクト用のDockerおよびOCIイメージを保存し、以下を必要とします:
 
-## Redis {#redis}
+- ドメイン。
+- TLS証明書。
+- ファイルシステムまたはS3互換オブジェクトストレージのいずれか。
 
-[Redis](https://redis.io/)または[Valkey](https://valkey.io/)はすべてのユーザーセッションとバックグラウンドタスクを保存し、ユーザーあたり平均約25 KBを必要とします。
+高トラフィック環境の場合、レジストリはメインのGitLabインスタンスとは別の専用インフラストラクチャで実行できます。
 
-Redis 7.2またはValkey 7.2が必要です。サポート終了日について詳しくは、[Redisドキュメント](https://redis.io/docs/latest/operate/oss_and_stack/install/version-mgmt/)を参照してください。
+### GitLab Pages {#gitlab-pages}
 
-- スタンドアロンインスタンスを使用します（高可用性の有無にかかわらず）。Redisクラスターはサポートされていません。
-- 必要に応じて[削除ポリシー](../administration/redis/replication_and_failover_external.md#setting-the-eviction-policy)を設定します。
+[GitLab Pages](../administration/pages/_index.md)は、プロジェクトとグループの静的ウェブサイトをホストします。これは別のデーモンとして実行され、DNSワイルドカードを必要とします。カスタムドメインのサポートには、セカンダリIPアドレスとTLS証明書が必要です。
 
-## Sidekiq {#sidekiq}
+### ElasticsearchとOpenSearch {#elasticsearch-and-opensearch}
 
-[Sidekiq](https://sidekiq.org/)は、バックグラウンドジョブにマルチスレッドプロセスを使用します。このプロセスでは、最初は200 MB以上のメモリを消費し、メモリリークが原因で時間とともに増加する可能性があります。
+[高度な検索](../integration/advanced_search/elasticsearch.md)は、GitLabコンテンツ全体でより高速で高性能な検索を可能にします。これには、個別のElasticsearchまたはOpenSearchクラスターが必要です。クラスターのサイズは、インデックス付きデータの量によって異なります。
 
-請求対象ユーザーが10,000人を超える非常にアクティブなサーバーでは、Sidekiqプロセスで1 GB以上のメモリを消費する可能性があります。
+### Prometheus {#prometheus}
 
-## Prometheus {#prometheus}
+[Prometheus](https://prometheus.io)モニタリングはLinuxパッケージにバンドルされており、デフォルトで有効になっています。設定または無効化に関する情報については、[Prometheusを使用したGitLabのモニタリング](../administration/monitoring/prometheus/_index.md)を参照してください。
 
-デフォルトでは、[Prometheus](https://prometheus.io)とその関連exporterはGitLabをモニタリングするために有効になっています。これらのプロセスは、約200 MBのメモリを消費します。
+### Zoekt {#zoekt}
 
-詳細については、[Prometheusを使用したGitLabのモニタリング](../administration/monitoring/prometheus/_index.md)を参照してください。
+[Zoekt](../integration/zoekt/_index.md)は、リポジトリ全体で完全一致コードの検索を提供し、個別のサービスとして実行されます。リソース要件については、[Zoekt管理](../integration/zoekt/_index.md)を参照してください。
+
+### ClickHouse {#clickhouse}
+
+[ClickHouse](../integration/clickhouse.md)は、オープンソースの列指向データベースであり、プロダクト分析機能に使用されます。これは別のデータベースサービスとして実行されます。リソース要件については、[ClickHouse設定](../integration/clickhouse.md)を参照してください。
+
+### AIゲートウェイ {#ai-gateway}
+
+[AIゲートウェイ](install_ai_gateway.md)は、GitLab DuoのAI機能のバックエンドサービスを提供します。これは、DockerまたはKubernetesにデプロイ可能なスタンドアロンサービスとして実行されます。リソース要件については、インストールガイドを参照してください。
+
+### シークレットマネージャー {#secrets-manager}
+
+[GitLab Secrets Manager](../administration/secrets_manager/_index.md)は、OpenBaoを搭載したネイティブのシークレット管理を提供します。これは、個別のKubernetesサービスとして実行され、専用のPostgreSQLデータベースとロードバランサーを必要とします。
 
 ## サポートされているWebブラウザ {#supported-web-browsers}
 
@@ -190,10 +216,7 @@ GitLabは、次のWebブラウザをサポートしています。
 - [Apple Safari](https://www.apple.com/safari/)
 - [Microsoft Edge](https://www.microsoft.com/en-us/edge?form=MA13QK)
 
-GitLabがサポートするもの: 
-
-- これらのブラウザの最新の2つのメジャーバージョン
-- サポートされているメジャーバージョンの現在のマイナーバージョン
+GitLabは、[Baseline](https://web-platform-dx.github.io/baseline/) Widely availableブラウザセットをターゲットにしています。これらは、すべてのコアブラウザで安定したウェブプラットフォーム機能をサポートするブラウザのバージョンです。機能は、少なくとも30か月後にWidely availableステータスに達します。Widely availableブラウザセットには、これらのブラウザのデスクトップバージョンとモバイルバージョンの両方が含まれます。
 
 これらのブラウザでJavaScriptを無効にしてGitLabを実行することはサポートされていません。
 
@@ -201,3 +224,4 @@ GitLabがサポートするもの:
 
 - [GitLab Runnerをインストールする](https://docs.gitlab.com/runner/install/)
 - [インストールのセキュリティ保護](../security/_index.md)
+- [Geoを実行するための要件](../administration/geo/_index.md#requirements-for-running-geo)

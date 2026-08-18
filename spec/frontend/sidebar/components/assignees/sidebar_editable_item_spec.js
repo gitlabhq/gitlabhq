@@ -7,7 +7,7 @@ describe('boards sidebar remove issue', () => {
   let wrapper;
 
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
-  const findEditButton = () => wrapper.find('[data-testid="edit-button"]');
+  const findEditButton = () => wrapper.findComponent('[data-testid="edit-button"]');
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
   const findExpanded = () => wrapper.find('[data-testid="expanded-content"]');

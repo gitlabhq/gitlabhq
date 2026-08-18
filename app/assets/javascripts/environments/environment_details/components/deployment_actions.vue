@@ -4,9 +4,8 @@ import { translations } from '~/environments/environment_details/constants';
 import ActionsComponent from '~/environments/components/environment_actions.vue';
 import setEnvironmentToRollback from '~/environments/graphql/mutations/set_environment_to_rollback.mutation.graphql';
 
-const EnvironmentApprovalComponent = import(
-  'ee_component/environments/components/environment_approval.vue'
-);
+const EnvironmentApprovalComponent =
+  import('ee_component/environments/components/environment_approval.vue');
 
 export default {
   name: 'DeploymentActions',

@@ -1,8 +1,3 @@
-export const startDate = new Date('2020-05-01');
-export const endDate = new Date('2020-08-01');
-
-export const fullPath = 'gitlab-org/gitlab';
-
 // We should update our tests to use fixtures instead of hardcoded mock data.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/270544
 export const throughputChartData = {
@@ -66,74 +61,6 @@ export const expectedMonthData = [
   },
 ];
 
-export const throughputChartQuery = `query ($fullPath: ID!, $labels: [String!], $authorUsername: String, $assigneeUsername: String, $milestoneTitle: String, $sourceBranches: [String!], $targetBranches: [String!], $notLabels: [String!], $notMilestoneTitle: String) {
-  throughputChartData: project(fullPath: $fullPath) {
-    May_2020: mergeRequests(
-      first: 0
-      mergedBefore: "2020-06-01"
-      mergedAfter: "2020-05-17"
-      labels: $labels
-      authorUsername: $authorUsername
-      assigneeUsername: $assigneeUsername
-      milestoneTitle: $milestoneTitle
-      sourceBranches: $sourceBranches
-      targetBranches: $targetBranches
-      not: {labels: $notLabels, milestoneTitle: $notMilestoneTitle}
-    ) {
-      count
-      totalTimeToMerge
-    }
-    Jun_2020: mergeRequests(
-      first: 0
-      mergedBefore: "2020-07-01"
-      mergedAfter: "2020-06-01"
-      labels: $labels
-      authorUsername: $authorUsername
-      assigneeUsername: $assigneeUsername
-      milestoneTitle: $milestoneTitle
-      sourceBranches: $sourceBranches
-      targetBranches: $targetBranches
-      not: {labels: $notLabels, milestoneTitle: $notMilestoneTitle}
-    ) {
-      count
-      totalTimeToMerge
-    }
-    Jul_2020: mergeRequests(
-      first: 0
-      mergedBefore: "2020-07-17"
-      mergedAfter: "2020-07-01"
-      labels: $labels
-      authorUsername: $authorUsername
-      assigneeUsername: $assigneeUsername
-      milestoneTitle: $milestoneTitle
-      sourceBranches: $sourceBranches
-      targetBranches: $targetBranches
-      not: {labels: $notLabels, milestoneTitle: $notMilestoneTitle}
-    ) {
-      count
-      totalTimeToMerge
-    }
-  }
-}`;
-
-export const throughputTableHeaders = [
-  'Merge Request',
-  'Date Merged',
-  'Time to merge',
-  'Milestone',
-  'Commits',
-  'Pipelines',
-  'Line changes',
-  'Assignees',
-];
-
-export const pageInfo = {
-  hasNextPage: true,
-  hasPreviousPage: false,
-  startCursor: 'abc',
-  endCursor: 'bcd',
-};
-
 export const throughputTableData = [
   {
     id: '1',
@@ -180,19 +107,6 @@ export const throughputTableData = [
     approvedBy: {
       nodes: [{ id: '1' }, { id: '2' }],
     },
-  },
-];
-
-export const stats = [
-  {
-    title: 'Mean time to merge',
-    unit: 'days',
-    value: '10',
-  },
-  {
-    title: 'MRs per engineer',
-    unit: 'MRs per engineer (per month)',
-    value: '23',
   },
 ];
 

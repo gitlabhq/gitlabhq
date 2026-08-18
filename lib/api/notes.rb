@@ -37,7 +37,7 @@ module API
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
-      resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{noteable_name} notes" do
           detail "Lists all notes for a specified #{noteable_name}."
           success Entities::Note
@@ -87,8 +87,7 @@ module API
           # mismatch between the pagination headers info and the actual notes
           # array returned, but this is really a edge-case.
           notes = paginate(raw_notes)
-          notes = prepare_notes_for_rendering(notes)
-          notes = notes.select { |note| note.readable_by?(current_user) }
+          notes = prepare_and_filter_notes(notes)
           present_note_collection(notes, noteable, noteable_class)
         end
         # rubocop: enable CodeReuse/ActiveRecord

@@ -24,9 +24,9 @@ Is it ok if these jobs don't get executed for several hours because [Sidekiq nod
 
 ### When modifying JavaScript/Vue
 
-If the Rails code changes (Rails controller, REST API or GraphQL API) were merged and released in the previous monthly release, JavaScript can make a request to that Rails code without issues.
+If the Rails code changes (Rails controller, REST API, or GraphQL API) were merged and released in the previous monthly release, JavaScript can make a request to that Rails code without issues.
 
-If the Rails code changes (Rails controller, REST API or GraphQL API) have not yet been released, JavaScript can make a request to that Rails code but it needs to be behind a default disabled feature flag or able to fail gracefully. For example if you add a GraphQL query in 18.3 you need to wait until 18.4 to use that query on the frontend without a feature flag.
+If the Rails code changes (Rails controller, REST API, or GraphQL API) have not yet been released, JavaScript can make a request to that Rails code but it needs to be behind a default disabled feature flag or able to fail gracefully. For example if you add a GraphQL query in 18.3 you need to wait until 18.4 to use that query on the frontend without a feature flag.
 
 When adding GraphQL fields to an existing query you can use the [`@gl_introduced` directive](api_graphql_styleguide.md#mitigation) to fail gracefully. When adding fields to REST APIs you can fail gracefully by falling back to the old field if the new field doesn't exist in the response.
 

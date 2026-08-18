@@ -22,6 +22,10 @@ module Types
 
     present_using MergeRequestPresenter
 
+    field :available_quick_actions,
+      resolver: Resolvers::Notes::AvailableQuickActionsResolver,
+      null: true,
+      description: 'Quick actions available to the current user on the merge request.'
     field :closed_at, Types::TimeType, null: true, complexity: 5,
       description: 'Timestamp of when the merge request was closed, null if not closed.'
     field :created_at, Types::TimeType, null: false,
@@ -197,7 +201,8 @@ module Types
       null: true,
       description: 'Other open merge requests in the same stack as this merge request, ' \
         'ordered from the top of the stack to the bottom. ' \
-        'Returns null if this merge request is not part of a stack.',
+        'Returns null if this merge request is not part of a stack, or if the stack contains ' \
+        "more than #{::MergeRequests::StackFinder::MAX_STACK_SIZE} merge requests.",
       resolver: Resolvers::MergeRequests::StackResolver
 
     field :assignees,

@@ -6,7 +6,7 @@ identifiers:
 - project
 - user
 - namespace
-product_group: project_management
+product_group: work_items
 product_categories:
 - service_desk
 milestone: "17.0"

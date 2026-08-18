@@ -32,6 +32,7 @@ describe('CI Lint Results', () => {
   const findErrors = findByTestId('errors');
   const findWarnings = findByTestId('warnings');
   const findStatus = findByTestId('status');
+  const findStatusComponent = () => wrapper.findComponent('[data-testid="ci-lint-status"]');
   const findOnlyExcept = findByTestId('only-except');
   const findLintParameters = findAllByTestId('parameter');
   const findLintValues = findAllByTestId('value');
@@ -76,7 +77,7 @@ describe('CI Lint Results', () => {
 
     it('displays the invalid status', () => {
       expect(findStatus().text()).toContain(`Status: ${wrapper.vm.$options.incorrect.text}`);
-      expect(findStatus().props('variant')).toBe(wrapper.vm.$options.incorrect.variant);
+      expect(findStatusComponent().props('variant')).toBe(wrapper.vm.$options.incorrect.variant);
     });
 
     it('contains the link to documentation', () => {
@@ -109,7 +110,7 @@ describe('CI Lint Results', () => {
 
     it('displays the valid status', () => {
       expect(findStatus().text()).toContain(wrapper.vm.$options.correct.text);
-      expect(findStatus().props('variant')).toBe(wrapper.vm.$options.correct.variant);
+      expect(findStatusComponent().props('variant')).toBe(wrapper.vm.$options.correct.variant);
     });
 
     it('does not display only/expect values with dry run', () => {

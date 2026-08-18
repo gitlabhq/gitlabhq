@@ -16,7 +16,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
       end
 
       def execute
-        Mcp::Tools::Response.success(
+        Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: '{"result": "success"}' }],
           { 'result' => 'success' }
         )
@@ -187,11 +187,11 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
 
           protected
 
-          def perform_0_1_0(arguments)
-            Mcp::Tools::Response.success([], { version: '0.1.0', args: arguments })
+          def perform_v0_1_0(arguments)
+            Mcp::Tools::Base::Response.success([], { version: '0.1.0', args: arguments })
           end
 
-          # No perform_0_2_0 defined - will fall back to perform_default
+          # No perform_v0_2_0 defined - will fall back to perform_default
         end
       end
 
@@ -219,8 +219,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
 
           protected
 
-          def perform_0_1_0(arguments)
-            Mcp::Tools::Response.success([], { version: '0.1.0', args: arguments })
+          def perform_v0_1_0(arguments)
+            Mcp::Tools::Base::Response.success([], { version: '0.1.0', args: arguments })
           end
 
           # Override perform_default to provide fallback behavior
@@ -304,11 +304,11 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
 
           protected
 
-          def perform_0_1_0(arguments)
+          def perform_v0_1_0(arguments)
             execute_graphql_tool(arguments)
           end
 
-          def perform_0_2_0(arguments)
+          def perform_v0_2_0(arguments)
             execute_graphql_tool(arguments)
           end
         end
@@ -356,12 +356,12 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
 
         protected
 
-        def perform_0_1_0(arguments)
-          Mcp::Tools::Response.success([], { version: '0.1.0', args: arguments })
+        def perform_v0_1_0(arguments)
+          Mcp::Tools::Base::Response.success([], { version: '0.1.0', args: arguments })
         end
 
-        def perform_0_2_0(arguments)
-          Mcp::Tools::Response.success([], { version: '0.2.0', args: arguments })
+        def perform_v0_2_0(arguments)
+          Mcp::Tools::Base::Response.success([], { version: '0.2.0', args: arguments })
         end
       end
     end

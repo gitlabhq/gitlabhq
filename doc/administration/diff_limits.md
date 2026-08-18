@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 description: Configure the maximum diff size to display on GitLab Self-Managed.
@@ -42,8 +42,9 @@ Read more about the [built-in limits for merge requests and diffs](instance_limi
 ## Configure diff limits
 
 > [!warning]
-> These settings are experimental. An increased maximum increases resource
-> consumption of your instance. Keep this in mind when adjusting the maximum.
+> Higher limits increase resource consumption and can cause instance
+> instability. Adjust these values with caution, and monitor instance
+> performance after any changes.
 
 Prerequisites:
 

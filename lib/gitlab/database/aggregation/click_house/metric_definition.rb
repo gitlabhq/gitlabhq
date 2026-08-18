@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def to_inner_arel(context)
-            expression ? expression.call(expression_params(context)) : context[:scope][name]
+            expression ? expression.call(expression_params(context)) : context[:scope][source_column]
           end
 
           def secondary_arel(context)
@@ -29,6 +29,10 @@ module Gitlab
           end
 
           private
+
+          def supports_dotted_identifier?
+            true
+          end
 
           def expression_params(context)
             return {} unless parameterized?

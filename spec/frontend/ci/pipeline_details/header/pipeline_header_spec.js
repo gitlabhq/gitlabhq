@@ -71,14 +71,14 @@ describe('Pipeline header', () => {
   const findBadges = () => wrapper.findComponent(HeaderBadges);
   const findHeaderActions = () => wrapper.findComponent(HeaderActions);
   const findCreatedStatus = () => wrapper.findByTestId('pipeline-created-status');
-  const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
-  const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
+  const findCreatedTimeAgo = () => wrapper.findComponentByTestId('pipeline-created-time-ago');
+  const findFinishedTimeAgo = () => wrapper.findComponentByTestId('pipeline-finished-time-ago');
   const findPipelineId = () => wrapper.findByTestId('pipeline-id');
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findCommitTitle = () => wrapper.findByTestId('commit-title');
-  const findCommitCopyButton = () => wrapper.findByTestId('commit-copy-sha');
+  const findCommitCopyButton = () => wrapper.findComponentByTestId('commit-copy-sha');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
   const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');
@@ -340,8 +340,8 @@ describe('Pipeline header', () => {
         });
       });
 
-      it('should call retryPipeline Mutation with pipeline id', async () => {
-        clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
+      it('should call retry-pipeline Mutation with pipeline id', async () => {
+        clickActionButton('retry-pipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
         await nextTick();
 
@@ -369,7 +369,7 @@ describe('Pipeline header', () => {
       });
 
       it('should display error message on failure', async () => {
-        clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
+        clickActionButton('retry-pipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
         await waitForPromises();
 
@@ -377,7 +377,7 @@ describe('Pipeline header', () => {
       });
 
       it('retry button loading state should reset on error', async () => {
-        clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
+        clickActionButton('retry-pipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
         await nextTick();
 
@@ -391,7 +391,7 @@ describe('Pipeline header', () => {
 
     describe('cancel action', () => {
       describe('with permissions', () => {
-        it('should call cancelPipeline Mutation with pipeline id', async () => {
+        it('should call cancel-pipeline Mutation with pipeline id', async () => {
           await createComponent({
             handlers: [
               [getPipelineDetailsQuery, runningHandler],
@@ -400,7 +400,7 @@ describe('Pipeline header', () => {
             ],
           });
 
-          clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
+          clickActionButton('cancel-pipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
           await nextTick();
 
@@ -424,7 +424,7 @@ describe('Pipeline header', () => {
             ],
           });
 
-          clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
+          clickActionButton('cancel-pipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
           await waitForPromises();
 
@@ -434,10 +434,10 @@ describe('Pipeline header', () => {
     });
 
     describe('delete action', () => {
-      it('should call deletePipeline Mutation with pipeline id when modal is submitted', async () => {
+      it('should call delete-pipeline Mutation with pipeline id when modal is submitted', async () => {
         await createComponent();
 
-        clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
+        clickActionButton('delete-pipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
         await nextTick();
 
@@ -460,7 +460,7 @@ describe('Pipeline header', () => {
           ],
         });
 
-        clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
+        clickActionButton('delete-pipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
         await waitForPromises();
 
@@ -476,7 +476,7 @@ describe('Pipeline header', () => {
           ],
         });
 
-        clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
+        clickActionButton('delete-pipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
         await nextTick();
 
@@ -519,7 +519,7 @@ describe('Pipeline header', () => {
 
         expect(subscriptionHandler).toHaveBeenCalledTimes(1);
 
-        clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
+        clickActionButton('cancel-pipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
         await nextTick();
 

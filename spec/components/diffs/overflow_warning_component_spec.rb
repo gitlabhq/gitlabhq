@@ -112,7 +112,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
   end
 
   describe "#message" do
-    subject { component.message }
+    subject(:message) { component.message }
 
     before do
       render_inline component
@@ -121,7 +121,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
     it { is_expected.to be_a(String) }
 
     it "is HTML-safe" do
-      expect(subject.html_safe?).to be_truthy
+      expect(message.html_safe?).to be_truthy
     end
   end
 
@@ -184,7 +184,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
   end
 
   describe '#message_text' do
-    subject { component.message_text }
+    subject(:message_text) { component.message_text }
 
     context "when on a commit page" do
       before do
@@ -193,9 +193,9 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
       end
 
       it "contains base and download message" do
-        expect(subject).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
+        expect(message_text).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
           "%{real_size}%{strong_close} files are shown."))
-        expect(subject).to include(_("Download one of the files below to see all changes."))
+        expect(message_text).to include(_("Download one of the files below to see all changes."))
       end
     end
 
@@ -206,9 +206,9 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
       end
 
       it "contains base and download message" do
-        expect(subject).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
+        expect(message_text).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
           "%{real_size}%{strong_close} files are shown."))
-        expect(subject).to include(_("Download one of the files below to see all changes."))
+        expect(message_text).to include(_("Download one of the files below to see all changes."))
       end
     end
 
@@ -220,9 +220,9 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
       end
 
       it "contains base message only" do
-        expect(subject).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
+        expect(message_text).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
           "%{real_size}%{strong_close} files are shown."))
-        expect(subject).not_to include(_("Download one of the files below to see all changes."))
+        expect(message_text).not_to include(_("Download one of the files below to see all changes."))
       end
     end
   end

@@ -27,7 +27,7 @@ GitLab CI/CDの設定はYAML形式を使用するため、キーワードの順�
 
 <!--
 If you are editing content on this page, follow the instructions for documenting keywords:
-https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
+<https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/>
 -->
 
 ## キーワード {#keywords}
@@ -100,12 +100,6 @@ GitLab CI/CDパイプラインの設定には、次の要素が含まれます�
 
 ### `default` {#default}
 
-{{< history >}}
-
-- `id_tokens`のサポートは、GitLab 16.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/419750)されました。
-
-{{< /history >}}
-
 一部のキーワードではグローバルデフォルトを設定できます。各デフォルトキーワードは、まだそのキーワードが定義されていないすべてのジョブにコピーされます。
 
 デフォルト設定はジョブの設定とマージされません。ジョブにキーワードがすでに定義されている場合、ジョブキーワードが優先され、そのキーワードのデフォルト設定は使用されません。
@@ -125,7 +119,6 @@ GitLab CI/CDパイプラインの設定には、次の要素が含まれます�
 - [`retry`](#retry)
 - [`services`](#services)
 - [`tags`](#tags)
-- [`timeout`](#timeout)。ただし、[イシュー213634](https://gitlab.com/gitlab-org/gitlab/-/issues/213634)のためこのキーワードには効果がありません。
 
 **`default`の例**:
 
@@ -193,10 +186,9 @@ rspec 2.7:
 - 再実行する場合:
   - ジョブを再実行すると、`include`ファイルは再度フェッチされません。パイプラインのすべてのジョブは、パイプラインの作成時にフェッチされた設定を使用します。そのため、ソース`include`ファイルが変更されても、ジョブの再実行には影響しません。
   - パイプラインを再実行すると、`include`ファイルが再度フェッチされます。前回のパイプライン実行後にこれらのファイルが変更されていた場合、新しいパイプラインは変更された設定を使用します。
-- デフォルトでは、[ネストされたインクルード](includes.md#use-nested-includes)を含めて、パイプラインごとに最大150個のインクルードを使用できます。補足情報を以下に示します。
-  - [GitLab 16.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/207270)、GitLab Self-Managedのユーザーは、[最大インクルード数](../../administration/settings/continuous_integration.md#set-maximum-includes)の値を変更できるようになりました。
-  - [GitLab 15.10以降](https://gitlab.com/gitlab-org/gitlab/-/issues/367150)、最大150個のインクルードを設定できます。ネストされたインクルードでは、同じファイルを複数回インクルードできますが、重複したインクルードもカウントの対象になります。
-  - [GitLab 14.9からGitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987)では、最大100個のインクルードを使用できます。ネストされたインクルードでは同じファイルを複数回インクルードできますが、重複は無視されます。
+- デフォルトでは、[ネストされたインクルード](includes.md#use-nested-includes)を含めて、パイプラインごとに最大150個のインクルードを使用できます。追加の注意点:
+  - GitLab Self-Managedのユーザーは、[maximum includes](../../administration/cicd/limits.md#maximum-number-of-includes)の値を変更できます。
+  - ネストされたインクルードでは、同じファイルを複数回インクルードできますが、重複したインクルードもカウントの対象になります。
 
 ---
 
@@ -214,6 +206,10 @@ rspec 2.7:
 include:
   - component: $CI_SERVER_FQDN/my-org/security-components/secret-detection@1.0
 ```
+
+**補足情報**:
+
+- コンポーネントのソースプロジェクトがプライベートな場合、パイプラインを実行するユーザーは少なくともレポーターロールが必要です。内部プロジェクトの場合、認証済みの非外部ユーザーであれば誰でもコンポーネントにアクセスできます。公開プロジェクトの場合、メンバーシップは不要です。
 
 **関連トピック**:
 
@@ -300,7 +296,7 @@ include:
 
 - `include`設定は常に、パイプラインを実行しているプロジェクトではなく、`include`キーワードを含むファイルの場所を基準に評価されます。そのため、[ネストされた`include`](includes.md#use-nested-includes)が別のプロジェクトの設定ファイル内にある場合、`include: local`はその別のプロジェクト内でファイルを確認します。
 - パイプラインが開始されると、すべての方法によってインクルードされた`.gitlab-ci.yml`ファイルの設定が評価されます。この設定はその時点でのスナップショットであり、データベースに保持されます。GitLabは、参照先の`.gitlab-ci.yml`ファイルの設定が変更されても、次のパイプラインが開始されるまではその変更を反映しません。
-- 別の非公開プロジェクトのYAMLファイルをインクルードする場合、パイプラインを実行するユーザーは両方のプロジェクトのメンバーであり、パイプラインを実行するための適切な権限を持っている必要があります。ユーザーがインクルード対象のファイルにアクセスできない場合、`not found or access denied`エラーが表示されることがあります。
+- `include:project`のプライベートプロジェクトでは、パイプラインを実行するユーザーは少なくともレポーターロールが必要です。内部プロジェクトの場合、認証済みの非外部ユーザーであれば誰でも含まれているファイルにアクセスできます。公開プロジェクトの場合、メンバーシップは不要です。含まれているプロジェクトに対してユーザーが十分な権限を持っていない場合、`not found or access denied`エラーが表示されます。
 - 別のプロジェクトのCI/CD設定ファイルをインクルードする場合は注意してください。CI/CD設定ファイルが変更されても、パイプラインや通知はトリガーされません。セキュリティの観点では、これはサードパーティの依存関係をプルすることと似ています。`ref`については以下を検討してください。
   - 特定のSHAハッシュを使用する。これはもっとも安定したオプションです。目的のコミットが確実に参照されるように、40文字の完全なSHAハッシュを使用してください。`ref`に短いSHAハッシュを使用すると、あいまいになる可能性があるためです。
   - 他のプロジェクトの`ref`に対して、[保護ブランチ](../../user/project/repository/branches/protected.md)と[保護タグ](../../user/project/protected_tags.md#prevent-tag-creation-with-branch-names)の両方のルールを適用する。保護タグと保護ブランチは、変更される前に変更管理を通過する可能性が高くなります。
@@ -343,9 +339,7 @@ include:
 
 **サポートされている値**: 
 
-[CI/CDテンプレート](../examples/_index.md#cicd-templates):
-
-- すべてのテンプレートは、[`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)で確認できます。すべてのテンプレートが`include:template`での使用を前提として設計されているわけではないため、使用する前にテンプレートのコメントを確認してください。
+- CI/CDテンプレートのファイル名。例: `Auto-DevOps.gitlab-ci.yml`。
 - [特定のCI/CD変数](includes.md#use-variables-with-include)を使用できます。
 
 **`include:template`の例**:
@@ -366,6 +360,7 @@ include:
 
 **補足情報**:
 
+- すべてのテンプレートは、[`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)で確認できます。すべてのテンプレートが`include:template`での使用を前提として設計されているわけではないため、使用する前にテンプレートのコメントを確認してください。
 - すべての[ネストされたインクルード](includes.md#use-nested-includes)は、公開ユーザーとしてコンテキストなしで実行されるため、公開プロジェクトまたはテンプレートのみをインクルードできます。ネストされたインクルードの`include`セクションでは、変数は使用できません。
 
 ---
@@ -374,7 +369,6 @@ include:
 
 {{< history >}}
 
-- GitLab 15.11でベータ機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)されました。
 - GitLab 17.0で[一般提供](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062)になりました。
 
 {{< /history >}}
@@ -476,24 +470,16 @@ include:
 
 #### `include:cache` {#includecache}
 
-{{< details >}}
-
-- ステータス: 実験的機能
-
-{{< /details >}}
-
 {{< history >}}
 
-- GitLab 18.9で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/351252) 。これは[実験](../../policy/development_stages_support.md#experiment)的な機能で、[機能フラグ](../../administration/feature_flags/_index.md) `ci_cache_remote_includes`で提供されます。デフォルトでは無効になっています。
+- GitLab 18.9で、`ci_cache_remote_includes`という[機能フラグ](../../administration/feature_flags/_index.md)を持つ[実験](../../policy/development_stages_support.md#experiment)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/351252)されました。デフォルトでは無効になっています。
+- GitLab 19.0で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235028)になりました。機能フラグ`ci_cache_remote_includes`は削除されました。
 
 {{< /history >}}
 
-> [!flag]
-> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+`cache`を`include:remote`と一緒に使用すると、フェッチされたリモートファイルの内容をキャッシュし、HTTPリクエストを削減できます。有効にすると、リモートファイルは指定された有効期間（TTL）の間キャッシュされ、同じリモートインクルードを繰り返し使用する設定でパイプラインのパフォーマンスが向上します。
 
-`cache`と`include:remote`を使用して、フェッチしたリモートファイルコンテンツをキャッシュし、HTTPリクエストを削減します。有効にすると、リモートファイルは指定されたtime-to-live (TTL) の間キャッシュされ、同じリモートインクルードを繰り返し使用する設定のパイプラインパフォーマンスが向上します。
-
-キャッシュ期間を設定する際は、パフォーマンスと鮮度のトレードオフを考慮してください。長いキャッシュ期間はパフォーマンスを向上させますが、リモートファイルが頻繁に変更される場合、陳腐化したコンテンツを使用する可能性があります。
+キャッシュの期間を設定する際には、パフォーマンスと鮮度のトレードオフを考慮してください。キャッシュ期間が長いとパフォーマンスは向上しますが、リモートファイルが頻繁に変更される場合は古いコンテンツが使用される可能性があります。
 
 `cache`が定義されていない場合、リモートファイルは毎回フェッチされます。
 
@@ -501,8 +487,8 @@ include:
 
 **サポートされている値**: 
 
-- `true`: デフォルトのtime-to-live (TTL) を1時間として、キャッシュを有効にします。
-- 期間 (文字列): 有効なTTL期間文字列は、`minutes`、`hours`、または`days`のような時間単位を使用します（最小`1 minute`）。
+- `true`: 1時間のデフォルト有効期間（TTL）でキャッシュを有効にします。
+- 期間（文字列）: 有効なTTL期間文字列は、`minutes`、`hours`、`days`などの時間単位を使用します（最小`1 minute`）。
 
 **`include:cache`の例**:
 
@@ -516,19 +502,13 @@ include:
 
 **補足情報**:
 
-- キャッシュは`include:remote`の場合にのみ利用可能です。
-- リモートファイルがキャッシュされると、リモートファイルコンテンツが変更された場合でも、TTLが期限切れになるまでキャッシュされたバージョンは引き続き使用されます。
-- [`integrity`](#includeintegrity)と`cache`を使用する場合、キャッシュされたコンテンツを使用している場合でも、パイプラインの実行ごとに整合性チェックが実行されます。
+- キャッシュは`include:remote`のみで利用可能です。
+- リモートファイルがキャッシュされると、リモートファイルの内容が変更されても、TTLの有効期限が切れるまでキャッシュされたバージョンが引き続き使用されます。
+- [`integrity`](#includeintegrity)を`cache`と一緒に使用すると、キャッシュされたコンテンツを使用している場合でも、パイプラインの実行ごとに整合性チェックが実行されます。
 
 ---
 
 ### `stages` {#stages}
-
-{{< history >}}
-
-- 文字列のネストされた配列のサポートは、GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/439451)されました。
-
-{{< /history >}}
 
 `stages`を使用して、ジョブのグループを含むステージを定義します。ジョブに[`stage`](#stage)を指定することで、そのジョブを特定のステージで実行するように設定できます。
 
@@ -595,14 +575,6 @@ stages:
 
 #### `workflow:auto_cancel:on_new_commit` {#workflowauto_cancelon_new_commit}
 
-{{< history >}}
-
-- GitLab 16.8で`ci_workflow_auto_cancel_on_new_commit`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/412473)されました。デフォルトでは無効になっています。
-- GitLab 16.9の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。
-- GitLab 16.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。機能フラグ`ci_workflow_auto_cancel_on_new_commit`は削除されました。
-
-{{< /history >}}
-
 `workflow:auto_cancel:on_new_commit`を使用して、[冗長なパイプラインを自動キャンセル](../pipelines/settings.md#auto-cancel-redundant-pipelines)機能の動作を設定します。
 
 **サポートされている値**: 
@@ -635,13 +607,6 @@ job2:
 ---
 
 #### `workflow:auto_cancel:on_job_failure` {#workflowauto_cancelon_job_failure}
-
-{{< history >}}
-
-- GitLab 16.10で`auto_cancel_pipeline_on_job_failure`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/23605)されました。デフォルトでは無効になっています。
-- GitLab 16.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/433163)になりました。機能フラグ`auto_cancel_pipeline_on_job_failure`は削除されました。
-
-{{< /history >}}
 
 `workflow:auto_cancel:on_job_failure`を使用して、いずれかのジョブが失敗した場合にキャンセルするジョブを設定します。
 
@@ -684,14 +649,6 @@ job3:
 ---
 
 #### `workflow:name` {#workflowname}
-
-{{< history >}}
-
-- GitLab 15.5で`pipeline_name`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/372538)されました。デフォルトでは無効になっています。
-- GitLab 15.7の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/376095)になりました。
-- GitLab 15.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/376095)になりました。機能フラグ`pipeline_name`は削除されました。
-
-{{< /history >}}
 
 `workflow:`で`name`を使用して、パイプラインの名前を定義できます。
 
@@ -853,16 +810,6 @@ job2:
 
 #### `workflow:rules:auto_cancel` {#workflowrulesauto_cancel}
 
-{{< history >}}
-
-- GitLab 16.8で`ci_workflow_auto_cancel_on_new_commit`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/436467)されました。デフォルトでは無効になっています。
-- GitLab 16.9の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。
-- GitLab 16.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。機能フラグ`ci_workflow_auto_cancel_on_new_commit`は削除されました。
-- `workflow:rules`の`on_job_failure`オプションは、GitLab 16.10で`auto_cancel_pipeline_on_job_failure`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/23605)されました。デフォルトでは無効になっています。
-- `workflow:rules`の`on_job_failure`オプションは、GitLab 16.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/433163)になりました。機能フラグ`auto_cancel_pipeline_on_job_failure`は削除されました。
-
-{{< /history >}}
-
 `workflow:rules:auto_cancel`を使用して、[`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)機能または[`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)機能の動作を設定します。
 
 **サポートされている値**: 
@@ -907,12 +854,6 @@ test-job2:
 ---
 
 ### `spec` {#spec}
-
-{{< history >}}
-
-- GitLab 15.11でベータ機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)されました。
-
-{{< /history >}}
 
 YAMLファイルのヘッダーに`spec`セクションを追加すると、`include`キーワードを使用して設定がパイプラインに追加されたときのパイプラインの動作を設定できます。
 
@@ -960,12 +901,6 @@ scan-website:
 
 ##### `spec:inputs:default` {#specinputsdefault}
 
-{{< history >}}
-
-- GitLab 15.11でベータ機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)されました。
-
-{{< /history >}}
-
 `spec:inputs:default`を使用してデフォルト値を設定しない限り、仕様に含まれるインプットはすべて必須になります。
 
 デフォルト値を設定しない場合は`default: ''`を使用します。
@@ -1005,12 +940,6 @@ spec:
 
 ##### `spec:inputs:description` {#specinputsdescription}
 
-{{< history >}}
-
-- GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/415637)されました。
-
-{{< /history >}}
-
 `description`を使用して、特定のインプットに説明を付けます。説明はインプットの動作に影響を与えません。ファイルのユーザーがインプットを理解できるようにする目的でのみ使用されます。
 
 **キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
@@ -1034,7 +963,7 @@ spec:
 
 {{< history >}}
 
-- GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393401)されました。
+- 配列型入力のサポートはGitLab 19.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/566155)されました。
 
 {{< /history >}}
 
@@ -1042,7 +971,7 @@ spec:
 
 **キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
 
-**サポートされている値**: インプットオプションの配列。文字列と数値の[`type`](#specinputstype)インプットのみをオプションで使用できます。
+**サポートされている値**: 入力オプションの配列。
 
 **`spec:inputs:options`の例**:
 
@@ -1071,12 +1000,6 @@ spec:
 ---
 
 ##### `spec:inputs:regex` {#specinputsregex}
-
-{{< history >}}
-
-- GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/410836)されました。
-
-{{< /history >}}
 
 `spec:inputs:regex`を使用して、インプットが一致する必要がある正規表現を指定します。
 
@@ -1201,7 +1124,7 @@ spec:
 
 {{< history >}}
 
-- GitLab 18.6で`ci_file_inputs`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931)されました。デフォルトでは無効になっています。
+- GitLab 18.6で`ci_file_inputs`[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931)されました。デフォルトでは無効になっています。
 - GitLab 18.9で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/579240)になりました。機能フラグ`ci_file_inputs`は削除されました。
 
 {{< /history >}}
@@ -1251,7 +1174,7 @@ deploy:
 - [CI/CDコンポーネント](../components/_index.md#component-spec-section)では`spec:include`を使用できません。
 - 外部インプットファイルには、`inputs`キーのみが含まれている必要があります。他のキーは検証エラーを引き起こします。
 - 最初に外部インプットがマージされ、次にインラインインプットが適用されます。
-- インラインインプットは、同じ名前の外部インプットよりも優先されます。
+- インライン入力は、含まれている入力と同じ名前にすることはできません。
 - 複数のインプットファイルを含める場合、指定された順序でマージされます。
 - [`local`](#includelocal) 、[`remote`](#includeremote) 、および[`project`](#includeproject)インクルードタイプをサポートします。`template`、`component`、または`artifact`インクルードはサポートされていません。
 
@@ -1265,7 +1188,7 @@ deploy:
 
 {{< history >}}
 
-- GitLab 18.6で`ci_component_context_interpolation`[機能フラグ](../../administration/feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/438275)されました。デフォルトでは有効になっています。
+- GitLab 18.6で、`ci_component_context_interpolation`という[機能フラグ](../../administration/feature_flags/_index.md)を持つ[ベータ](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/438275)されました。デフォルトでは有効になっています。
 - GitLab 18.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/571986)になりました。機能フラグ`ci_component_context_interpolation`は削除されました。
 
 {{< /history >}}
@@ -1293,11 +1216,12 @@ deploy:
 spec:
   component: [name, version, reference]
   inputs:
-    image_tag:
-      default: latest
+    stage:
+      default: build
 ---
 
 build-image:
+  stage: $[[ inputs.stage ]]
   image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
   script:
     - echo "Building with component version $[[ component.version ]]"
@@ -1309,7 +1233,7 @@ build-image:
 - `version`フィールドは、以下を使用する場合に実際のセマンティックバージョンに解決されます:
   - `@1.0.0`のような完全なバージョン（`1.0.0`を返します）
   - `@1.0`のような部分的なバージョン（たとえば、`1.0.2`のように、一致する最新のバージョンを返します）
-  - `@~latest` （最新のバージョンを返します）
+  - `@~latest`（最新のバージョンを返します）
 - `reference`フィールドは、`@`の後に指定された正確な値を常に返します:
   - `@1.0`は`1.0`を返します（`version`が`1.0.2`を返す場合があります）
   - `@~latest`は`~latest`を返します（`version`は実際のバージョン番号を返します）
@@ -1318,6 +1242,36 @@ build-image:
 **関連トピック**:
 
 - [コンポーネントでコンポーネントコンテキストを使用する](../components/_index.md#use-component-context-in-components)。
+
+---
+
+#### `spec:description` {#specdescription}
+
+{{< history >}}
+
+- GitLab 18.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/588286)されました。
+
+{{< /history >}}
+
+コンポーネントの短い説明を提供するには、`spec:description`を使用します。この説明は、CI/CDカタログのコンポーネント詳細ページで、入力テーブルの上に表示されます。
+
+**キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
+
+**サポートされている値**: コンポーネントを説明する文字列。
+
+**`spec:description`の例**:
+
+```yaml
+spec:
+  description: "A description of the component visible to users in the CI/CD Catalog."
+  inputs:
+    stage:
+      default: test
+---
+scan-job:
+  stage: $[[ inputs.stage ]]
+  script: ./run-scan.sh
+```
 
 ---
 
@@ -1370,9 +1324,8 @@ job:
 - `before_script`または`script`で定義されたコマンドによる変更にはアクセスできません。これには以下が含まれます。
   - `script`スクリプトでエクスポートされたコマンドエイリアスと変数。
   - ワークツリー外の変更（Runnerのexecutorによってアクセス可否が異なります）。たとえば、`before_script`または`script`スクリプトによってインストールされたソフトウェアなどが該当します。
-- 個別のタイムアウトが設定されます。GitLab Runner 16.4以降では、デフォルトは5分で、[`RUNNER_AFTER_SCRIPT_TIMEOUT`](../runners/configure_runners.md#set-script-and-after_script-timeouts)変数で設定できます。GitLab 16.3以前では、タイムアウトは5分にハードコードされています。
+- 個別のタイムアウトが設定されます。これは5分にデフォルト設定されており、[`RUNNER_AFTER_SCRIPT_TIMEOUT`](../runners/configure_runners.md#set-script-and-after_script-timeouts)変数で設定できます。
 - ジョブの終了コードには影響しません。`script`セクションが成功し、`after_script`がタイムアウトになるか失敗した場合、ジョブはコード`0`（`Job Succeeded`）で終了します。
-- `after_script`で[CI/CDジョブトークン](../jobs/ci_job_token.md)を使用する場合の既知の問題があります。`after_script`コマンドでの認証にジョブトークンを使用することはできますが、ジョブがキャンセルされるとそのトークンは直ちに無効になります。詳細については、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)を参照してください。
 - ジョブがタイムアウトした場合:
   - `after_script`コマンドはデフォルトでは実行されません。
   - [タイムアウト値を設定](../runners/configure_runners.md#ensuring-after_script-execution)することで、`after_script`を確実に実行させることができます。そのためには、ジョブのタイムアウトを超えないように、`RUNNER_SCRIPT_TIMEOUT`と`RUNNER_AFTER_SCRIPT_TIMEOUT`に適切な値を設定します。
@@ -1420,7 +1373,7 @@ job:
 - ジョブがキャンセルされた場合に[`after_script`コマンドをスキップ](script.md#skip-after_script-commands-if-a-job-is-canceled)するようにジョブを設定できます。
 - [ゼロ以外の終了コードを無視](script.md#ignore-non-zero-exit-codes)できます。
 - [`after_script`でカラーコードを使用する](script.md#add-color-codes-to-script-output)と、ジョブログのレビューが容易になります。
-- [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
+- [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#create-custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
 - [`after_script`のエラーを無視](../runners/configure_runners.md#ignore-errors-in-after_script)できます。
 
 ---
@@ -1724,21 +1677,13 @@ job:
 
 #### `artifacts:public` {#artifactspublic}
 
-{{< history >}}
-
-- GitLab 15.10で[更新](https://gitlab.com/gitlab-org/gitlab/-/issues/322454)されました。15.10よりも前に`artifacts:public`を使用して作成されたアーティファクトは、この更新後も非公開が維持される保証はありません。
-- GitLab 16.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/294503)になりました。機能フラグ`non_public_artifacts`は削除されました。
-
-{{< /history >}}
-
 > [!note]
-> `artifacts:public`キーワードは、より多くのオプションがある[`artifacts:access`](#artifactsaccess)に置き換えられました。
+> `artifacts:public`は、より多くのオプションを持つ[`artifacts:access`](#artifactsaccess)に置き換えられました。
 
 `artifacts:public`を使用して、パブリックパイプライン内のジョブアーティファクトが匿名ユーザー、またはゲストロールとレポーターロールによってGitLab UIおよびAPIでダウンロードできるかどうかを制御します。
 
 > [!warning]
->
-> このオプションは、GitLab UIとAPIアクセスにのみ影響します。ジョブトークンを使用するCI/CDジョブは、この設定に関係なく、Runner APIでアーティファクトにアクセスできます。ジョブトークンアクセスを制限するには、プロジェクトの[CI/CD表示レベル設定](../../user/project/settings/_index.md#configure-project-features-and-permissions)を**プロジェクトメンバーのみ**に構成します。
+> このオプションは、GitLab UIとAPIのアクセスのみに影響します。ジョブトークンを使用するCI/CDジョブは、この設定に関係なく、Runner APIでアーティファクトにアクセスできます。ジョブトークンアクセスを制限するには、プロジェクトの[CI/CD表示レベル設定](../../user/project/settings/_index.md#configure-project-features-and-permissions)を**プロジェクトメンバーのみ**に構成します。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
 
@@ -1761,7 +1706,6 @@ job:
 
 {{< history >}}
 
-- GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206)されました。
 - `maintainer`オプションはGitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/454398)されました。
 
 {{< /history >}}
@@ -1771,8 +1715,7 @@ job:
 同じジョブ内で[`artifacts:public`](#artifactspublic)と`artifacts:access`を併用することはできません。
 
 > [!warning]
-> 
-> このオプションは、GitLab UIとAPIアクセスにのみ影響します。ジョブトークンを使用するCI/CDジョブは、この設定に関係なく、Runner APIでアーティファクトにアクセスできます。ジョブトークンアクセスを制限するには、プロジェクトの[CI/CD表示レベル設定](../../user/project/settings/_index.md#configure-project-features-and-permissions)を**プロジェクトメンバーのみ**に構成します。
+> このオプションは、GitLab UIとAPIのアクセスのみに影響します。ジョブトークンを使用するCI/CDジョブは、この設定に関係なく、Runner APIでアーティファクトにアクセスできます。ジョブトークンアクセスを制限するには、プロジェクトの[CI/CD表示レベル設定](../../user/project/settings/_index.md#configure-project-features-and-permissions)を**プロジェクトメンバーのみ**に構成します。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
@@ -1822,7 +1765,7 @@ rspec:
 
 **補足情報**:
 
-- [子パイプラインからのアーティファクト](#needspipelinejob)を使用して、親パイプラインでレポートを組み合わせる操作はサポートされていません。サポートの追加については、[このイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/215725)で進捗を追跡できます。
+- [子パイプラインからのアーティファクト](#needspipelinejob)を使用して、親パイプラインでレポートを組み合わせる操作はサポートされていません。詳細については、[エピック8205](https://gitlab.com/groups/gitlab-org/-/work_items/8205)を参照してください。
 - レポートの出力ファイルを参照してダウンロードできるようにするには、[`artifacts:paths`](#artifactspaths)キーワードを含めます。これにより、アーティファクトのアップロードと保存が2回実行されます。
 - `artifacts: reports`のために作成されたアーティファクトは、ジョブの結果（成功または失敗）にかかわらず、常にアップロードされます。[`artifacts:expire_in`](#artifactsexpire_in)を使用して、アーティファクトの有効期限を設定できます。
 
@@ -1915,7 +1858,7 @@ job:
   - ジョブの設定とデフォルト設定は一緒にマージされません。パイプラインに[`default:before_script`](#default)が定義されていて、ジョブにも`before_script`がある場合、ジョブの設定が優先され、デフォルト設定は使用されません。
 - [ゼロ以外の終了コードを無視](script.md#ignore-non-zero-exit-codes)できます。
 - [`before_script`でカラーコードを使用する](script.md#add-color-codes-to-script-output)と、ジョブログのレビューが容易になります。
-- [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
+- [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#create-custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
 
 ---
 
@@ -1923,7 +1866,6 @@ job:
 
 {{< history >}}
 
-- GitLab 15.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/330047)されました。キャッシュは、保護ブランチと保護されていないブランチの間では共有されません。
 - GitLab Runner 18.1で[更新](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5543)されました。キャッシュ処理中に`symlinks`が追跡されることはなくなりました。これは、旧バージョンのGitLab Runnerにおいて一部のエッジケースで発生していました。
 
 {{< /history >}}
@@ -2019,10 +1961,8 @@ cache-job:
 
 - **Windowsバッチ**を使用してShellスクリプトを実行する場合は、`$`を`%`に置き換える必要があります。例: `key: %CI_COMMIT_REF_SLUG%`
 - `cache:key`の値に次の文字を含めることはできません。
-
   - `/`、またはそのURIエンコード形式である`%2F`。
   - `.`のみ（任意の数）、またはそのURIエンコード形式である`%2E`。
-
 - キャッシュはジョブ間で共有されるため、ジョブごとに異なるパスを使用している場合は、それぞれ異なる`cache:key`も設定する必要があります。そうしないと、キャッシュの内容が上書きされる可能性があります。
 
 **関連トピック**:
@@ -2066,7 +2006,8 @@ cache-job:
 **補足情報**:
 
 - キャッシュ`key`は、リストされたファイルの内容から計算されたSHAです。ファイルが存在しない場合、キーの計算では無視されます。指定されたファイルが存在しない場合、フォールバックキーは`default`です。
-- `**/package.json`などのワイルドカードパターンを使用できます。キャッシュキーに指定できるパスまたはパターンの数を増やすための[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/301161)が存在します。
+- `**/package.json`などのワイルドカードパターンを使用できます。
+- 最大2つのファイルを指定できます。許可されるパスまたはパターンの数を増やすための更新については、[イシュー301161](https://gitlab.com/gitlab-org/gitlab/-/work_items/301161)を参照してください。
 
 ---
 
@@ -2187,17 +2128,10 @@ rspec:
 
 #### `cache:unprotect` {#cacheunprotect}
 
-{{< history >}}
-
-- GitLab 15.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362114)されました。
-
-{{< /history >}}
-
 `cache:unprotect`を使用して、[保護](../../user/project/repository/branches/protected.md)ブランチと保護されていないブランチの間でキャッシュが共有されるように設定します。
 
-> [!warning] 
->
-> `true`に設定すると、保護ブランチへのアクセス権を持たないユーザーが、保護ブランチで使用されるキャッシュキーを読み書きできます。
+> [!warning]
+> `true`に設定すると、保護ブランチへのアクセス権を持たないユーザーでも、保護ブランチで使用されるキャッシュキーを読み書きできるようになります。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
 
@@ -2326,9 +2260,7 @@ rspec:
 
 ### `coverage` {#coverage}
 
-`coverage`とカスタム正規表現を使用して、ジョブの出力からコードカバレッジを抽出する方法を設定します。ジョブの出力に、正規表現と一致する行が1行以上含まれている場合、カバレッジがUIに表示されます。
-
-一致した文字列からコードカバレッジの値を抽出するために、GitLabは短い正規表現`\d+(?:\.\d+)?`を使用します。
+`coverage`とカスタム正規表現を使用して、ジョブの出力からコードカバレッジを抽出する方法を設定します。GitLabは、一致したパーセンテージをMRウィジェット、パイプラインジョブリスト、および分析グラフに表示します。
 
 **サポートされている値**: 
 
@@ -2345,16 +2277,21 @@ job1:
 この例では:
 
 1. GitLabが、ジョブログに対して正規表現が一致するかどうかをチェックします。`Code coverage: 67.89% of lines covered`のような行が一致します。
-1. GitLabは、一致した部分をチェックして、正規表現`\d+(?:\.\d+)?`と一致する箇所を見つけます。この例の正規表現は、コードカバレッジの値`67.89`に一致します。
+1. GitLabは、一致したフラグメントを`\d+(?:\.\d+)?`と照合して数値を抽出します。サンプルの正規表現は`67.89`と一致します。
 
 **補足情報**:
 
-- 正規表現の例は[コードカバレッジ](../testing/code_coverage/_index.md#coverage-regex-patterns)に記載されています。
-- ジョブの出力に一致する行が複数ある場合は、最後の行が使用されます（逆方向検索で最初に一致した結果）。
-- 1行内に一致した箇所が複数ある場合は、最後に一致した部分からカバレッジの数値が抽出されます。
-- 一致した部分から複数のカバレッジの数値が見つかった場合は、最初の数値が使用されます。
+- ジョブの出力に一致する行が複数ある場合、最後の行が使用されます。
+- 1行に複数のマッチがある場合、最後のマッチが使用されます。
+- 一致するフラグメントに複数のカバレッジ番号がある場合、最初の番号が使用されます。
 - 先頭のゼロは削除されます。
-- [子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)からのカバレッジ出力は、記録または表示されません。詳細については、[関連イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)を確認してください。
+- [子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)からのカバレッジ出力は記録されません。[イシュー280818](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)を参照してください。
+- MR差分でコード行ごとの差分アノテーションを表示するには、[`artifacts:reports:coverage_report`](artifacts_reports.md#artifactsreportscoverage_report)を別途設定します。いずれか一方を設定しても、もう一方は有効になりません。
+
+**関連トピック**:
+
+- [カバレッジの正規表現パターン](../testing/code_coverage/coverage_reporting.md#coverage-regex-patterns)
+- [カバレッジの可視化](../testing/code_coverage/coverage_visualization.md)
 
 ---
 
@@ -2423,9 +2360,9 @@ dast:
 **`dependencies`の例**:
 
 ```yaml
-build osx:
+build mac:
   stage: build
-  script: make build:osx
+  script: make build:mac
   artifacts:
     paths:
       - binaries/
@@ -2437,11 +2374,11 @@ build linux:
     paths:
       - binaries/
 
-test osx:
+test mac:
   stage: test
-  script: make test:osx
+  script: make test:mac
   dependencies:
-    - build osx
+    - build mac
 
 test linux:
   stage: test
@@ -2455,13 +2392,13 @@ deploy:
   environment: production
 ```
 
-この例では、`build osx`と`build linux`の2つのジョブがアーティファクトを生成します。`test osx`が実行されると、`build osx`からのアーティファクトがダウンロードされ、ビルドのコンテキストで抽出されます。`test linux`も同様に、`build linux`からのアーティファクトを取得します。
+この例では、`build mac`と`build linux`の2つのジョブがアーティファクトを生成します。`test mac`が実行されると、`build mac`からのアーティファクトがダウンロードされ、ビルドのコンテキストで抽出されます。`test linux`も同様に、`build linux`からのアーティファクトを取得します。
 
 `deploy`ジョブは、[ステージ](#stages)の優先順位に従って、それ以前のすべてのジョブからアーティファクトをダウンロードします。
 
 **補足情報**:
 
-- ジョブステータスは関係ありません。ジョブが失敗した場合、またはトリガーされていない手動ジョブである場合、エラーは発生しません。
+- 以前のジョブがアーティファクトを生成しない場合、または実行されなかった手動ジョブである場合でも、依存するジョブは実行され、エラーは発生しません。
 - 依存先のジョブのアーティファクトが[期限切れ](#artifactsexpire_in)であるか[削除](../jobs/job_artifacts.md#delete-job-log-and-artifacts)されている場合、ジョブは失敗します。
 
 ---
@@ -2593,7 +2530,6 @@ stop_review_app:
 
 {{< history >}}
 
-- CI/CD変数のサポートは、GitLab 15.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/365140)されました。
 - GitLab 17.7で`prepare`、`access`、および`verify`環境アクションをサポートするために[更新](https://gitlab.com/gitlab-org/gitlab/-/issues/437133)されました。
 
 {{< /history >}}
@@ -2670,7 +2606,7 @@ deploy:
         flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
 ```
 
-管理対象リソースを無効にする場合の**`environment:kubernetes`の例**:
+管理対象リソースを無効にする場合の **`environment:kubernetes`の例**:
 
 ```yaml
 deploy:
@@ -2826,13 +2762,6 @@ rubocop:
 
 ### `hooks` {#hooks}
 
-{{< history >}}
-
-- GitLab 15.6で`ci_hooks_pre_get_sources_script`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/356850)されました。デフォルトでは無効になっています。
-- GitLab 15.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/381840)になりました。機能フラグ`ci_hooks_pre_get_sources_script`は削除されました。
-
-{{< /history >}}
-
 `hooks`を使用して、ジョブ実行の特定のステージ（Gitリポジトリを取得する前など）で、Runnerで実行するコマンドのリストを指定します。
 
 ジョブの設定とデフォルト設定は一緒にマージされません。パイプラインに[`default:hooks`](#default)が定義されていて、ジョブにも`hooks`がある場合、ジョブの設定が優先され、デフォルト設定は使用されません。
@@ -2846,13 +2775,6 @@ rubocop:
 ---
 
 #### `hooks:pre_get_sources_script` {#hookspre_get_sources_script}
-
-{{< history >}}
-
-- GitLab 15.6で`ci_hooks_pre_get_sources_script`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/356850)されました。デフォルトでは無効になっています。
-- GitLab 15.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/381840)になりました。機能フラグ`ci_hooks_pre_get_sources_script`は削除されました。
-
-{{< /history >}}
 
 `hooks:pre_get_sources_script`を使用して、Gitリポジトリとサブモジュールをクローンする前にRunnerで実行するコマンドのリストを指定します。たとえば、次のような用途に使用できます。
 
@@ -2895,7 +2817,7 @@ job1:
 
 {{< history >}}
 
-- GitLab 16.9で`google_cloud_support_feature_flag`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054)されました。この機能は[ベータ版](../../policy/development_stages_support.md)です。
+- GitLab 16.9で`google_cloud_support_feature_flag`[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054)されました。この機能は[ベータ版](../../policy/development_stages_support.md)です。
 - GitLab 17.1の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472)になりました。機能フラグ`google_cloud_support_feature_flag`は削除されました。
 
 {{< /history >}}
@@ -2904,7 +2826,7 @@ job1:
 
 `identity`を使用して、アイデンティティフェデレーションを使用したサードパーティサービスの認証を行います。
 
-**キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default:`セクション](#default)でのみ使用できます。
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
 **サポートされている値**: 識別子。サポートされているプロバイダーは以下のとおりです。
 
@@ -2921,18 +2843,12 @@ job_with_workload_identity:
 
 **関連トピック**:
 
-- [Workload Identity連携](https://cloud.google.com/iam/docs/workload-identity-federation)。
+- [Workload Identity連携](https://docs.cloud.google.com/iam/docs/workload-identity-federation)。
 - [Google Cloud IAMインテグレーション](../../integration/google_cloud_iam.md)。
 
 ---
 
 ### `id_tokens` {#id_tokens}
-
-{{< history >}}
-
-- GitLab 15.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/356986)されました。
-
-{{< /history >}}
 
 `id_tokens`を使用して、サードパーティサービスの認証を行うための[IDトークン](../secrets/id_token_authentication.md)を作成します。この方法で作成されたすべてのJSON Webトークンは、OIDC認証をサポートしています。JSON Webトークンの`aud`クレームを設定するために、必須のサブキーワード`aud`を使用します。
 
@@ -3073,13 +2989,6 @@ test-job:
 
 #### `image:docker` {#imagedocker}
 
-{{< history >}}
-
-- GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919)されました。GitLab Runner 16.7以降が必要です。
-- `user`インプットオプションは、GitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137907)されました。
-
-{{< /history >}}
-
 `image:docker`を使用して、[Docker executor](https://docs.gitlab.com/runner/executors/docker/)または[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)を使用するRunnerにオプションを渡します。このキーワードは、他のexecutorタイプでは機能しません。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
@@ -3156,15 +3065,6 @@ arm-sql-job:
 
 #### `image:pull_policy` {#imagepull_policy}
 
-{{< history >}}
-
-- GitLab 15.1で`ci_docker_image_pull_policy`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21619)されました。デフォルトでは無効になっています。
-- GitLab 15.2の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/363186)になりました。
-- GitLab 15.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/363186)になりました。[機能フラグ`ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186)は削除されました。
-- GitLab Runner 15.1以降が必要です。
-
-{{< /history >}}
-
 RunnerがDockerイメージをフェッチするために使用するプルポリシー。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
@@ -3198,6 +3098,179 @@ job2:
 - [DockerコンテナでCI/CDジョブを実行する](../docker/using_docker_images.md)。
 - [Runnerがイメージをプルする方法を設定する](https://docs.gitlab.com/runner/executors/docker/#configure-how-runners-pull-images)。
 - [複数のプルポリシーを設定する](https://docs.gitlab.com/runner/executors/docker/#set-multiple-pull-policies)。
+
+---
+
+### `inputs` {#inputs}
+
+{{< history >}}
+
+- GitLab 18.10で[導入](https://gitlab.com/groups/gitlab-org/-/epics/17833)されました。
+
+{{< /history >}}
+
+ジョブの型付き検証済み入力を定義するには、`inputs`を使用します。手動でジョブを実行または再試行する際に、[ジョブインプット](../jobs/job_inputs.md)を上書きできます。
+
+ジョブインプットは、型安全性と検証を提供するパラメータです。[CI/CD変数](../variables/_index.md)とは異なり、ジョブの実行または再試行時に指定できるのは、ジョブで明示的に定義された入力のみです。すべてのジョブ入力名は事前定義されている必要があります。
+
+`${{ job.inputs.INPUT_NAME }}` [Moa](../functions/moa.md)構文でジョブ入力値を参照します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 
+
+各入力が1つ以上のサブキーで設定された入力名のハッシュ:
+
+- [`default`](#inputsdefault)（必須）
+- [`type`](#inputstype)
+- [`options`](#inputsoptions)
+- [`description`](#inputsdescription)
+- [`regex`](#inputsregex)
+
+**`inputs`の例**:
+
+```yaml
+test_job:
+  inputs:
+    test_suite:
+      default: unit
+      description: Which test suite to run
+      options: [unit, integration, e2e]
+    parallel_count:
+      type: number
+      default: 5
+      description: Number of parallel test runners
+    verbose:
+      type: boolean
+      default: false
+      description: Enable verbose test output
+  script:
+    - 'echo "Running ${{ job.inputs.test_suite }} tests"'
+    - 'if [ "${{ job.inputs.verbose }}" == "true" ]; then export TEST_VERBOSE=1; fi'
+    - ./run_tests.sh --suite ${{ job.inputs.test_suite }} --parallel ${{ job.inputs.parallel_count }}
+```
+
+**補足情報**:
+
+- ジョブインプットは、ジョブが作成される際、および新しい入力値でジョブを再試行する際に検証されます。検証が失敗した場合、ジョブは開始されません。
+- ジョブインプットは、定義されたジョブにスコープされており、他のジョブからアクセスすることはできません。
+- ジョブ入力をサポートするキーワードの完全なリストについては、[ジョブ入力を使用できる場所](../jobs/job_inputs.md#where-you-can-use-job-inputs)を参照してください。
+
+---
+
+#### `inputs:default` {#inputsdefault}
+
+すべてのジョブ入力は、`default`で定義されたデフォルト値を持っている必要があります。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 入力の[`type`](#inputstype)に一致する任意の値。
+
+**`inputs:default`の例**:
+
+```yaml
+test_job:
+  inputs:
+    environment:
+      default: staging
+    timeout:
+      type: number
+      default: 30
+```
+
+---
+
+#### `inputs:type` {#inputstype}
+
+入力値のデータ型を定義するには、`type`を使用します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 
+
+- `string`（デフォルト）
+- `number`
+- `boolean`
+- `array`。
+
+**`inputs:type`の例**:
+
+```yaml
+test_job:
+  inputs:
+    count:
+      type: number
+      default: 5
+    enabled:
+      type: boolean
+      default: true
+```
+
+---
+
+#### `inputs:description` {#inputsdescription}
+
+入力の目的についての情報を提供するには、`description`を使用します。説明は入力の動作に影響しません。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 文字列。
+
+**`inputs:description`の例**:
+
+```yaml
+deploy_job:
+  inputs:
+    environment:
+      default: staging
+      description: Target deployment environment
+```
+
+---
+
+#### `inputs:options` {#inputsoptions}
+
+入力に許可される値のリストを指定するには、`options`を使用します。
+
+入力値は、リストされたオプションのいずれかに正確に一致する必要があります（大文字と小文字を区別）。値がオプションに一致しない場合、検証は失敗します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 許可された値の配列。
+
+**`inputs:options`の例**:
+
+```yaml
+deploy_job:
+  inputs:
+    environment:
+      default: staging
+      options: [development, staging, production]
+```
+
+---
+
+#### `inputs:regex` {#inputsregex}
+
+入力値が一致する必要がある正規表現パターンを指定するには、`regex`を使用します。
+
+値が正規表現に一致しない場合、検証は失敗します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 正規表現文字列。
+
+**`inputs:regex`の例**:
+
+```yaml
+deploy_job:
+  inputs:
+    version:
+      default: v1.0.0
+      regex: ^v\d+\.\d+\.\d+$
+```
+
+この例では、`v1.1.1`の入力値は正規表現検証を通過しますが、`v1.1.1-beta`の入力は通過しません。
 
 ---
 
@@ -3285,13 +3358,7 @@ job2:
 
 ### `interruptible` {#interruptible}
 
-{{< history >}}
-
-- `trigger`ジョブのサポートは、GitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138508)されました。
-
-{{< /history >}}
-
-`interruptible`を使用して、[冗長なパイプラインを自動キャンセル](../pipelines/settings.md#auto-cancel-redundant-pipelines)する機能を設定します。この機能は、新しいコミットに対して同じref上で新しいパイプラインが開始された場合、ジョブが完了する前にそのジョブをキャンセルします。この機能が無効になっている場合、このキーワードは効果がありません。新しいパイプラインは、新しい変更を含むコミットに対して開始されたものである必要があります。たとえば、UIで**パイプラインを新規作成**を選択して同じコミットに対してパイプラインを実行した場合、**冗長なパイプラインを自動キャンセル**する機能は適用されません。
+`interruptible`を使用して、[冗長なパイプラインを自動キャンセル](../pipelines/settings.md#auto-cancel-redundant-pipelines)する機能を設定します。この機能は、新しいコミットに対して同じref上で新しいパイプラインが開始された場合、ジョブが完了する前にそのジョブをキャンセルします。この機能が無効になっている場合、このキーワードは効果がありません。新しいパイプラインは、新しい変更を含むコミットに対して開始されたものである必要があります。たとえば、UIで**新しいパイプライン**を選択して同じコミットに対してパイプラインを実行した場合、**冗長なパイプラインを自動キャンセル**する機能は適用されません。
 
 **冗長なパイプラインを自動キャンセル**機能の動作は[`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)設定で制御できます。
 
@@ -3439,7 +3506,7 @@ production:
 
 - 単一のジョブが`needs`配列に指定できるジョブの最大数には、次の制限があります。
   - GitLab.comの場合、上限は50です。詳細については、[イシュー350398](https://gitlab.com/gitlab-org/gitlab/-/issues/350398)を参照してください。
-  - GitLab Self-ManagedおよびGitLab Dedicatedの場合、デフォルトの制限は50です。この制限は、[管理者エリアでCI/CD制限を更新](../../administration/settings/continuous_integration.md#set-cicd-limits)することで変更できます。
+  - GitLab Self-ManagedおよびGitLab Dedicatedの場合、デフォルトの制限は50です。この制限は、[管理者エリアでCI/CD制限を更新](../../administration/cicd/limits.md#maximum-number-of-needs-dependencies)することで変更できます。
 - `needs`が[`parallel`](#parallel)キーワードを使用するジョブを参照している場合、それは1つのジョブだけでなく、並列に作成されるすべてのジョブに依存します。また、デフォルトでは、すべての並列ジョブからアーティファクトをダウンロードします。同じ名前のアーティファクトがある場合、上書きすることになり、最後にダウンロードしたアーティファクトだけが保存されます。
   - `needs`に（並列ジョブのすべてではなく）並列ジョブの一部のみを参照させるには、[`needs:parallel:matrix`](#needsparallelmatrix)キーワードを使用します。
 - 設定対象のジョブと同じステージのジョブを参照できます。
@@ -3556,7 +3623,7 @@ build_job:
 **補足情報**:
 
 - 現在のプロジェクト内の別のパイプラインからアーティファクトをダウンロードするには、`project`に現在のプロジェクトと同じ値を指定し、現在のパイプラインとは異なるrefを使用します。同じref上で複数のパイプラインが同時に実行されていると、アーティファクトが上書きされる可能性があります。
-- パイプラインを実行するユーザーは、グループまたはプロジェクトに対してレポーター、デベロッパー、メンテナー、またはオーナーロールを持っている必要があります。あるいは、そのグループ/プロジェクトは公開の表示レベルである必要があります。
+- パイプラインを実行するユーザーは、グループまたはプロジェクトのレポーター、デベロッパー、メンテナー、またはオーナーロールを持っている必要があります。あるいは、グループ/プロジェクトが公開表示レベルである必要があります。
 - `needs:project`と[`trigger`](#trigger)は、同じジョブ内で併用できません。
 - `needs:project`を使用して別のパイプラインからアーティファクトをダウンロードする場合、ジョブは必要なジョブが完了するのを待機しません。[`needs`を使用してジョブの完了を待機する](needs.md)動作は、同じパイプライン内のジョブに限定されます。そのため、ジョブがアーティファクトをダウンロードしようとする前に、他のパイプライン内の必要なジョブが完了していることを確認してください。
 - [`parallel`](#parallel)で実行されるジョブからアーティファクトをダウンロードすることはできません。
@@ -3678,7 +3745,7 @@ review-job:
 
 **補足情報**:
 
-- `needs:optional`と[`needs:parallel:matrix`](#needsparallelmatrix)を使用することはできません。
+- `needs:optional`を[`needs:parallel:matrix`](#needsparallelmatrix)と一緒に使用することはできません。
 
 ---
 
@@ -3708,12 +3775,6 @@ upstream_status:
 ---
 
 #### `needs:parallel:matrix` {#needsparallelmatrix}
-
-{{< history >}}
-
-- GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/254821)されました。
-
-{{< /history >}}
 
 ジョブで[`parallel:matrix`](#parallelmatrix)を使用すれば、単一のパイプラインで1つのジョブを複数のインスタンスとして同時実行し、ジョブのインスタンスごとに異なる変数値を使用できます。
 
@@ -3764,7 +3825,7 @@ linux:rspec
 
 **補足情報**:
 
-- `needs:parallel:matrix`と[`needs:optional`](#needsoptional)を使用することはできません。
+- `needs:parallel:matrix`を[`needs:optional`](#needsoptional)と一緒に使用することはできません。
 - `needs:parallel:matrix`のマトリックス識別子の順序は、必要なジョブのマトリックス変数の順序と一致する必要があります。たとえば、前述の例の`linux:rspec`ジョブで、変数の順序を逆にすると無効になります。
 
   ```yaml
@@ -3844,7 +3905,6 @@ create-pages:
 
 {{< history >}}
 
-- GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/415821)されました。
 - GitLab 17.9で、`publish`プロパティに渡す際に変数を利用できるように[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/500000)されました。
 - GitLab 17.9で、`publish`プロパティが`pages`キーワードの下に[移動](https://gitlab.com/gitlab-org/gitlab/-/issues/428018)されました。
 - GitLab 17.10で、`pages.publish`パスが`artifacts:paths`に自動的に[付加](https://gitlab.com/gitlab-org/gitlab/-/issues/428018)されるようになりました。
@@ -3910,7 +3970,7 @@ create-pages:
 
 {{< history >}}
 
-- GitLab 16.7で`pages_multiple_versions_setting`[フラグ](../../administration/feature_flags/_index.md)とともに[実験的機能](../../policy/development_stages_support.md)として[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534)されました。デフォルトでは無効になっています。
+- GitLab 16.7で、`pages_multiple_versions_setting`という[機能フラグ](../../administration/feature_flags/_index.md)を持つ[実験](../../policy/development_stages_support.md)として[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534)されました（デフォルトでは無効）。
 - GitLab 17.4の[GitLab.com、GitLab Self-Managed、GitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/422145)になりました。
 - GitLab 17.8で、ピリオドを許可するように[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/507423)されました。
 - GitLab 17.9で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/487161)になりました。機能フラグ`pages_multiple_versions_setting`は削除されました。
@@ -3994,12 +4054,6 @@ create-pages:
 
 ### `parallel` {#parallel}
 
-{{< history >}}
-
-- GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/336576)され、`parallel`の最大値が50から200に増加しました。
-
-{{< /history >}}
-
 `parallel`を使用して、1つのパイプラインで同じジョブを複数並列に実行します。
 
 複数のRunnerが存在する必要があります。または、単一のRunnerが複数のジョブを同時に実行するよう設定されている必要があります。
@@ -4027,7 +4081,7 @@ test:
 - どの並列ジョブにも、`CI_NODE_INDEX`および`CI_NODE_TOTAL`という[定義済みのCI/CD変数](../variables/_index.md#predefined-cicd-variables)が設定されています。
 - `parallel`を使用するジョブを含むパイプラインでは、次のような状況が発生する可能性があります。
   - 利用可能なRunner数を超える並列実行ジョブが作成されることがあります。超過したジョブはキューに入れられ、Runnerが利用可能になるまで待機している間、`pending`のマークが付けられます。
-  - パイプラインを作成すると、すべてのアクティブなパイプライン全体のジョブの合計数が[インスタンス制限を超える](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines)場合、`job_activity_limit_exceeded`エラーで失敗します。
+  - パイプラインを作成すると、すべてのアクティブなパイプライン全体のジョブの合計数が[インスタンス制限を超える](../../administration/cicd/limits.md#number-of-jobs-in-active-pipelines)場合、`job_activity_limit_exceeded`エラーで失敗します。
 
 **関連トピック**:
 
@@ -4036,12 +4090,6 @@ test:
 ---
 
 #### `parallel:matrix` {#parallelmatrix}
-
-{{< history >}}
-
-- GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/336576)され、順列の最大数が50から200に増加しました。
-
-{{< /history >}}
 
 `parallel:matrix`を使用して、1つのパイプラインで同じジョブを複数並列に実行し、ジョブのインスタンスごとに異なる変数値を指定します。
 
@@ -4086,10 +4134,8 @@ deploystacks:
 
 **補足情報**:
 
-- `parallel:matrix`ジョブでは、ジョブを互いに区別するためにジョブ名にマトリックス値を追加しますが、[値が長すぎると名前が制限を超える可能性があります](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
-  - [ジョブ名](../jobs/_index.md#job-names)は255文字以下でなければなりません。
-  - [`needs`](#needs)を使用する場合、ジョブ名は128文字以下でなければなりません。
-- [`rules:if`](#rulesif)の変数としてマトリックス値を使用することはできません。
+- `parallel:matrix`ジョブは、ジョブを区別するためにマトリックス値をジョブ名に追加します。しかし、長い値はジョブ名が255文字の制限を超える原因となる可能性があります。詳細については、[エピック11791](https://gitlab.com/groups/gitlab-org/-/work_items/11791)を参照してください。
+- マトリックス変数値は、[`rules:if`](#rulesif)式でCI/CD変数として利用できます。詳細については、[matrix変数を`rules:if`で使用する](../jobs/job_control.md#use-matrix-variables-in-rulesif)を参照してください。
 - 同じ値で異なる名前を指定して複数のマトリックス設定を作成することはできません。ジョブ名は名前ではなくマトリックス値から生成されるため、マトリックスエントリが同じなら、同一のジョブ名が生成されて互いに上書きすることになります。
 
   たとえば、次の`test`設定では、同一のジョブで構成される2つのシリーズを作成しようとしていますが、`OS2`バージョンのジョブが`OS`バージョンのジョブを上書きすることになります。
@@ -4109,6 +4155,7 @@ deploystacks:
 - [並列ジョブの1次元マトリックスを実行する](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs)。
 - [並列トリガージョブのマトリックスを実行する](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs)。
 - [並列マトリックスジョブごとに異なるRunnerタグを選択する](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job)。
+- [ルールでmatrix変数を使用する](../jobs/job_control.md#use-matrix-variables-in-rules)。
 - [`needs:parallel:matrix`のマトリックス式](matrix_expressions.md#matrix-expressions-in-needsparallelmatrix)。
 
 ---
@@ -4159,14 +4206,14 @@ release_job:
 
 **補足情報**:
 
-- [トリガー](#trigger)ジョブを除くすべてのリリースジョブには、`script`キーワードを含める必要があります。リリースジョブでは、スクリプト型コマンドからの出力を使用できます。スクリプトが不要な場合は、次のようにプレースホルダーを使用できます。
+- リリースジョブには`script`キーワードを含める必要があります。リリースジョブでは、スクリプト型コマンドからの出力を使用できます。スクリプトが不要な場合は、次のようにプレースホルダーを使用できます。
 
   ```yaml
   script:
     - echo "release job"
   ```
 
-  この要件を削除するための[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/223856)が存在します。
+  この制限を削除することを目的とした[イシュー223856](https://gitlab.com/gitlab-org/gitlab/-/issues/223856)を参照してください。
 
 - `release`セクションは、`script`キーワードの後、`after_script`の前に実行されます。
 - リリースが作成されるのは、ジョブのメインスクリプトが成功した場合のみです。
@@ -4211,7 +4258,7 @@ job:
     - if: $CI_COMMIT_TAG
 ```
 
-リリースと新しいタグを同時に作成するには、新しいタグに対してのみジョブが実行されるように[`rules`](#rules)を設定**しないでください**。セマンティックバージョニングの例を以下に示します。
+リリースと新しいタグを同時に作成するには、[`rules`](#rules)が新しいタグのみでジョブを実行するように設定しないようにする必要があります。セマンティックバージョニングの例を以下に示します。
 
 ```yaml
 job:
@@ -4447,12 +4494,17 @@ test_advanced:
 - `script_failure`: 次のいずれかの場合に再試行します。
   - スクリプトが失敗した。
   - RunnerがDockerイメージのプルに失敗した。[executor](https://docs.gitlab.com/runner/executors/)が`docker`、`docker+machine`、`kubernetes`の場合。
+  - GitLab 19.1で導入され、一部の失敗は`script_failure`から、より正確な`runner_configuration_error`に変更されました。
 - `api_failure`: APIの失敗時に再試行します。
-- `stuck_or_timeout_failure`: ジョブがスタックした場合、またはタイムアウトした場合に再試行します。
+- `stuck_or_timeout_failure`: ジョブがスタックした場合、またはタイムアウトした場合に再試行します。GitLab 19.1で非推奨になりました。`stuck_pending_with_matching_runners`、`stuck_pending_no_matching_runners`、`no_updates_running`、または`no_updates_canceling`のいずれかで再試行します。代わりにこれらの値を使用してください。
 - `runner_system_failure`: Runnerのシステムエラーが発生した場合（ジョブのセットアップの失敗など）に再試行します。
+  - GitLab 19.1で導入され、一部の失敗は`runner_system_failure`から、より正確な`runner_external_dependency_failure`または`runner_interrupted`に変更されました。
+- `runner_configuration_error`: 無効なイメージまたはタグ、互換性のないプルポリシー、または設定ミスのあるRunnerなど、CI/CDまたはRunnerの設定エラーが原因でジョブが失敗した場合は再試行します。
+- `runner_external_dependency_failure`: Runnerが、ネットワークまたはDNSの問題により、イメージレジストリなどの外部依存に到達できなかった場合は再試行します。
+- `runner_interrupted`: 再起動、シャットダウン、またはホストの再利用などによって、ジョブの実行中にRunnerが中断された場合は再試行します。
 - `runner_unsupported`: Runnerがサポートされていない場合に再試行します。
 - `stale_schedule`: 遅延ジョブを実行できなかった場合に再試行します。
-- `job_execution_timeout`: ジョブに対して設定されている最大実行時間をスクリプトが超過した場合に再試行します。
+- `job_execution_timeout`: ジョブに対して設定されている最大実行時間をスクリプトが超過した場合に再試行します。GitLab 19.1で非推奨になりました。`server_timeout_running`または`server_timeout_canceling`のいずれかで再試行します。代わりにこれらの値を使用してください。
 - `archived_failure`: ジョブがアーカイブされていて実行できない場合に再試行します。
 - `unmet_prerequisites`: ジョブの前提条件タスクが正常に完了しなかった場合に再試行します。
 - `scheduler_failure`: スケジューラーがジョブをRunnerに割り当てられなかった場合に再試行します。
@@ -4488,7 +4540,7 @@ test:
 
 {{< history >}}
 
-- GitLab 16.10で`ci_retry_on_exit_codes`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/430037)されました。デフォルトでは無効になっています。
+- GitLab 16.10で、`ci_retry_on_exit_codes`という[機能フラグ](../../administration/feature_flags/_index.md)を持つ[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/430037)されました。デフォルトでは無効になっています。
 - GitLab 16.11の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/430037)になりました。
 - GitLab 17.5で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/452412)になりました。機能フラグ`ci_retry_on_exit_codes`は削除されました。
 
@@ -4580,6 +4632,8 @@ test_job_2:
 - [CI/CD変数](../variables/_index.md)または[定義済みCI/CD変数](../variables/predefined_variables.md)の値に基づいて評価される（[一部例外](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)あり）。
 - [`rules`の実行フロー](#rules)に従って、順番に評価される。
 
+ジョブ間のルールが矛盾していると、予期せぬ動作につながる可能性がありますが、[`workflow`](#workflow)ルールはこの問題の軽減に役立ちます。例えば、[重複するパイプライン](../jobs/job_rules.md#avoid-duplicate-pipelines)を引き起こすジョブを誤って設定してしまう可能性があります。
+
 **キーワードのタイプ**: ジョブ固有およびパイプライン固有。ジョブの一部として使用してジョブの動作を設定するか、または[`workflow`](#workflow)とともに使用してパイプラインの動作を設定できます。
 
 **サポートされている値**: 
@@ -4604,7 +4658,7 @@ job:
 
 - [ネストされた変数](../variables/where_variables_can_be_used.md#nested-variable-expansion)を`if`で使用することはできません。詳細については、[イシュー327780](https://gitlab.com/gitlab-org/gitlab/-/issues/327780)を参照してください。
 - ルールが一致し、かつ`when`が定義されていない場合、ルールはジョブで定義されている`when`を使用します。ジョブにも定義されていない場合のデフォルトは`on_success`です。
-- [ジョブレベルの`when`とルール内の`when`を組み合わせる](https://gitlab.com/gitlab-org/gitlab/-/issues/219437)ことができます。`rules`内の`when`の設定がジョブレベルの`when`よりも優先されます。
+- ジョブレベルの`when`とルールの`when`を混在させることができます。`rules`の`when`設定は、ジョブレベルの`when`よりも優先されます。
 - [`script`](../variables/job_scripts.md)セクションの変数とは異なり、ルール式内の変数は常に`$VARIABLE`形式です。
   - `rules:if`と`include`を組み合わせて使用すると、[他の設定ファイルを条件付きでインクルードできます](includes.md#use-rules-with-include)。
 - `=~`式と`!~`式の右辺にあるCI/CD変数は、[正規表現として評価されます](../jobs/job_rules.md#store-a-regular-expression-in-a-variable)。
@@ -4612,7 +4666,6 @@ job:
 **関連トピック**:
 
 - [`rules`の一般的な`if`式](../jobs/job_rules.md#common-if-clauses-with-predefined-variables)。
-- [重複パイプラインを回避する](../jobs/job_rules.md#avoid-duplicate-pipelines)。
 - [`rules`を使用してマージリクエストパイプラインを実行する](../pipelines/merge_request_pipelines.md#configure-merge-request-pipelines)。
 
 ---
@@ -4621,7 +4674,7 @@ job:
 
 `rules:changes`を使用して、特定のファイルに対する変更をチェックすることで、ジョブをパイプラインに追加する条件を指定します。
 
-新しいブランチパイプラインの場合、またはGitの`push`イベントがない場合、`rules: changes`は常にtrueと評価され、ジョブは常に実行されます。タグパイプライン、スケジュールされたパイプライン、手動パイプラインなどのパイプラインはどれも、Gitの`push`イベントが関連付けられて**いません**。これらのケースに対応するには、[`rules: changes: compare_to`](#ruleschangescompare_to)を使用して、パイプラインのrefと比較するブランチを指定します。
+新しいブランチパイプラインの場合、またはGitの`push`イベントがない場合、`rules: changes`は常にtrueと評価され、ジョブは常に実行されます。タグパイプライン、スケジュールされたパイプライン、手動パイプラインなどのパイプラインには、Git `push`イベントは関連付けられていません。これらのケースに対応するには、[`rules: changes: compare_to`](#ruleschangescompare_to)を使用して、パイプラインのrefと比較するブランチを指定します。
 
 `compare_to`を使用しない場合、`rules: changes`は[ブランチパイプライン](../pipelines/pipeline_types.md#branch-pipeline)または[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md)のみに使用してください。ただし、新しいブランチを作成する際は、`rules: changes`は依然としてtrueと評価されます。次のように動作します。
 
@@ -4688,12 +4741,6 @@ docker build alternative:
 
 ##### `rules:changes:paths` {#ruleschangespaths}
 
-{{< history >}}
-
-- GitLab 15.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90171)されました。
-
-{{< /history >}}
-
 `rules:changes`を使用して、特定のファイルが変更された場合にのみジョブをパイプラインに追加するよう指定します。また、`rules:changes:paths`を使用して、対象とするファイルを指定します。
 
 `rules:changes:paths`は、[`rules:changes`](#ruleschanges)をサブキーなしで使用するのと同じです。補足情報と関連トピックもすべて同じです。
@@ -4731,8 +4778,6 @@ docker-build-2:
 
 {{< history >}}
 
-- GitLab 15.3で`ci_rules_changes_compare`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/293645)されました。デフォルトでは有効になっています。
-- GitLab 15.5で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/366412)になりました。機能フラグ`ci_rules_changes_compare`は削除されました。
 - CI/CD変数のサポートは、GitLab 17.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/369916)されました。
 
 {{< /history >}}
@@ -4776,11 +4821,56 @@ docker build:
 
 ---
 
+##### `rules:changes:regexp` {#ruleschangesregexp}
+
+{{< history >}}
+
+- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236982)されました。
+
+{{< /history >}}
+
+`rules:changes:regexp`を使用して、globパターンではなくRubyの正規表現を使用して変更されたファイルパスを照合します。
+
+`regexp:`と`paths:`は相互に排他的です。`rules:changes`ブロックごとに正確に1つを使用します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 
+
+- Ruby正規表現文字列。最大長は255文字です。このパターンは、変更された各ファイルパスと照合されます。少なくとも1つのパスが一致すれば、ルールは満たされます。
+
+CI/CD変数が[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)。パターン内の変数は、パターンが照合される前に展開されます。255文字の制限は、展開されたパターンにも適用されます。
+
+**`rules:changes:regexp`の例**:
+
+```yaml
+backend-tests:
+  script: rspec
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        regexp: '\A(?!docs/).*'
+```
+
+この例では、少なくとも1つの変更されたファイルが`docs/`ディレクトリの外部にある場合、`backend-tests`が実行されます。
+
+**補足情報**:
+
+- アンカーを設定しない限り、このパターンはパスの任意の部分に一致します。完全なパスと一致させるには、パターンを`\A`と`\z`でアンカーします。
+- `^`と`$`の代わりに、`\A`と`\z`でパターンをアンカーします。Gitはファイルパス内の改行を許可し、`^`と`$`は改行の境界で一致します。`^(?!docs/)`のようなパターンは、`docs/`の下にあるファイルとその後に続く改行、および別のパスのように、改行を含む細工されたパスに一致する可能性があります。
+- RE2を使用する`rules:if`とは異なり、`rules:changes:regexp`は[Ruby](https://docs.ruby-lang.org/en/3.3/Regexp.html)のネイティブ正規表現エンジンを使用します。
+- 先読みと後読みがサポートされています。
+- ReDoS攻撃を防ぐため、パターンは2つのタイムアウトによって制限されます。各単一パスのマッチには50ミリ秒のタイムアウトがあり、すべてのパスにわたる評価には合計2秒の予算があります。いずれかのタイムアウトを超過した場合、パイプラインは設定エラーで失敗します。
+- 展開されたパターンが255文字より長い場合、パイプラインは設定エラーで失敗します。
+- パフォーマンス上の理由から、50,000を超えるファイルが変更された場合、ルールはパターンを実行せずに`true`と評価されます。
+- `regexp:`と`compare_to:`を組み合わせて、比較対象の参照を制御できます。
+
+---
+
 #### `rules:exists` {#rulesexists}
 
 {{< history >}}
 
-- CI/CD変数のサポートは、GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/283881)されました。
 - GitLab 17.7で、`exists`パターンまたはファイルパスに対するチェックの最大回数が10,000から50,000に[増加](https://gitlab.com/gitlab-org/gitlab/-/issues/227632)しました。
 - ディレクトリパスのサポートは、GitLab 18.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/327485)されました。
 
@@ -4836,7 +4926,7 @@ job2:
 
 {{< history >}}
 
-- GitLab 16.11で`ci_support_rules_exists_paths_and_project`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)されました。デフォルトでは無効になっています。
+- GitLab 16.11で`ci_support_rules_exists_paths_and_project`[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)されました。デフォルトでは無効になっています。
 - GitLab 17.0で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)になりました。機能フラグ`ci_support_rules_exists_paths_and_project`は削除されました。
 
 {{< /history >}}
@@ -4876,7 +4966,7 @@ docker-build-2:
 
 {{< history >}}
 
-- GitLab 16.11で`ci_support_rules_exists_paths_and_project`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)されました。デフォルトでは無効になっています。
+- GitLab 16.11で`ci_support_rules_exists_paths_and_project`[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)されました。デフォルトでは無効になっています。
 - GitLab 17.0で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)になりました。機能フラグ`ci_support_rules_exists_paths_and_project`は削除されました。
 
 {{< /history >}}
@@ -4904,6 +4994,51 @@ docker build:
 ```
 
 この例では、`docker build`ジョブがパイプラインに含まれるのは、プロジェクト`my-group/my-project`の`v1.0.0`タグが付けられたコミットに`Dockerfile`が存在する場合のみです。
+
+---
+
+##### `rules:exists:regexp` {#rulesexistsregexp}
+
+{{< history >}}
+
+- GitLab 19.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236982)されました。
+
+{{< /history >}}
+
+`rules:exists:regexp`を使用して、globパターンではなくRubyの正規表現を使用してリポジトリ内のファイルパスを照合します。
+
+`regexp:`と`paths:`は相互に排他的です。`rules:exists`ブロックごとに正確に1つを使用します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブまたは[`include`](#include)の一部として使用できます。
+
+**サポートされている値**: 
+
+- Ruby正規表現文字列。最大長は255文字です。このパターンは、リポジトリ内のすべてのファイルパスと照合されます。少なくとも1つのパスが一致すれば、ルールは満たされます。
+
+CI/CD変数が[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)。パターン内の変数は、パターンが照合される前に展開されます。255文字の制限は、展開されたパターンにも適用されます。
+
+**`rules:exists:regexp`の例**:
+
+```yaml
+run-if-go-files-exist:
+  script: go test ./...
+  rules:
+    - exists:
+        regexp: '\.go$'
+```
+
+この例では、リポジトリ内のどこかに`.go`ファイルが存在する場合にジョブが実行されます。
+
+**補足情報**:
+
+- アンカーを設定しない限り、このパターンはパスの任意の部分に一致します。完全なパスと一致させるには、パターンを`\A`と`\z`でアンカーします。
+- `^`と`$`の代わりに、`\A`と`\z`でパターンをアンカーします。Gitはファイルパス内の改行を許可し、`^`と`$`は改行の境界で一致します。`^(?!docs/)`のようなパターンは、`docs/`の下にあるファイルとその後に続く改行、および別のパスのように、改行を含む細工されたパスに一致する可能性があります。
+- RE2を使用する`rules:if`とは異なり、`rules:exists:regexp`は[Ruby](https://docs.ruby-lang.org/en/3.3/Regexp.html)のネイティブ正規表現エンジンを使用します。
+- 先読みと後読みがサポートされています。
+- ReDoS攻撃を防ぐため、パターンは2つのタイムアウトによって制限されます。各単一パスのマッチには50ミリ秒のタイムアウトがあり、すべてのパスにわたる評価には合計2秒の予算があります。いずれかのタイムアウトを超過した場合、パイプラインは設定エラーで失敗します。
+- 展開されたパターンが255文字より長い場合、パイプラインは設定エラーで失敗します。
+- パフォーマンス上の理由から、リポジトリに50,000を超えるファイルが含まれている場合、ルールはパターンを実行せずに`true`と評価されます。
+- `regexp:`を`project:`および`ref:`と組み合わせて、別のプロジェクトを検索できます。
 
 ---
 
@@ -4987,13 +5122,6 @@ job:
 
 #### `rules:needs` {#rulesneeds}
 
-{{< history >}}
-
-- GitLab 16.0で`introduce_rules_with_needs`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/31581)されました。デフォルトでは無効になっています。
-- GitLab 16.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/408871)になりました。機能フラグ`introduce_rules_with_needs`は削除されました。
-
-{{< /history >}}
-
 ルールで`needs`を使用して、特定の条件に応じてジョブの[`needs`](#needs)を更新します。条件がルールに一致すると、ジョブの`needs`設定は、ルール内の`needs`で完全に置き換えられます。
 
 **キーワードのタイプ**: ジョブ固有。ジョブの一部としてのみ使用できます。
@@ -5073,12 +5201,6 @@ job:
 
 #### `rules:interruptible` {#rulesinterruptible}
 
-{{< history >}}
-
-- GitLab 16.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/194023)されました。
-
-{{< /history >}}
-
 ルールで`interruptible`を使用して、特定の条件に応じてジョブの[`interruptible`](#interruptible)値を更新します。
 
 **キーワードのタイプ**: ジョブ固有。ジョブの一部としてのみ使用できます。
@@ -5115,15 +5237,15 @@ job:
 
 {{< history >}}
 
-- GitLab 17.3で`pipeline_run_keyword`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/440487)されました。デフォルトでは無効になっています。GitLab Runner 17.1が必要です。
+- GitLab 17.3で、`pipeline_run_keyword`という[機能フラグ](../../administration/feature_flags/_index.md)を持つ[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/440487)されました。デフォルトでは無効になっています。GitLab Runner 17.1が必要です。
 - 機能フラグ`pipeline_run_keyword`は、GitLab 17.5で[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/471925)されました。
 
 {{< /history >}}
 
 > [!note]
-> この機能はテストには利用できますが、本番環境での使用には適していません。
+> この機能はテスト可能ですが、本番環境での使用には適していません。
 
-`run`を使用して、ジョブ内で実行する一連の[ステップ](../steps/_index.md)を定義します。各ステップは、スクリプトまたは定義済みステップのいずれかになります。
+`run`を使用して、ジョブ内で実行する一連の[ステップ](../functions/_index.md)を定義します。各ステップは、スクリプトまたは定義済みステップのいずれかになります。
 
 オプションで環境変数とインプットを指定することもできます。
 
@@ -5204,7 +5326,7 @@ job2:
 
 - [ゼロ以外の終了コードを無視](script.md#ignore-non-zero-exit-codes)できます。
 - [`script`でカラーコードを使用する](script.md#add-color-codes-to-script-output)と、ジョブログのレビューが容易になります。
-- [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
+- [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#create-custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
 
 ---
 
@@ -5225,12 +5347,6 @@ job2:
 ---
 
 #### `secrets:vault` {#secretsvault}
-
-{{< history >}}
-
-- `generic`エンジンオプションは、GitLab Runner 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/366492)されました。
-
-{{< /history >}}
 
 `secrets:vault`を使用して、[HashiCorp Vault](https://www.vaultproject.io/)によって提供されるシークレットを指定します。
 
@@ -5281,12 +5397,6 @@ job:
 
 #### `secrets:gcp_secret_manager` {#secretsgcp_secret_manager}
 
-{{< history >}}
-
-- GitLab 16.8およびGitLab Runner 16.8で[導入](https://gitlab.com/groups/gitlab-org/-/epics/11739)されました。
-
-{{< /history >}}
-
 `secrets:gcp_secret_manager`を使用して、[GCP Secret Manager](https://cloud.google.com/security/products/secret-manager)によって提供されるシークレットを指定します。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
@@ -5313,13 +5423,36 @@ job:
 
 ---
 
-#### `secrets:azure_key_vault` {#secretsazure_key_vault}
+#### `secrets:gitlab_secrets_manager` {#secretsgitlab_secrets_manager}
 
 {{< history >}}
 
-- GitLab 16.3およびGitLab Runner 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/271271)されました。
+- GitLab 19.0で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21731)されました。GitLab Runner 19.0以降が必要です。
 
 {{< /history >}}
+
+[GitLab Secrets Manager](../secrets/secrets_manager/_index.md)からシークレットを指定するには、`secrets:gitlab_secrets_manager`を使用します。
+
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
+
+**サポートされている値**: 
+
+- `name`: シークレットの名前。
+- `source`: オプション。シークレットのソース。指定しない場合、現在のプロジェクトにデフォルト設定されます。グループシークレットには`group/<full-path-to-group>`を使用します。
+
+**`secrets:gitlab_secrets_manager`の例**:
+
+```yaml
+job:
+  secrets:
+    MY_DEPLOY_SECRET:
+      gitlab_secrets_manager:
+        name: deployment_token
+```
+
+---
+
+#### `secrets:azure_key_vault` {#secretsazure_key_vault}
 
 `secrets:azure_key_vault`を使用して、[Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/)によって提供されるシークレットを指定します。
 
@@ -5379,13 +5512,6 @@ job:
 
 #### `secrets:token` {#secretstoken}
 
-{{< history >}}
-
-- GitLab 15.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/356986)されました。**JSON Webトークン（JWT）アクセスを制限する**設定により制御します。
-- GitLab 16.0で[常に使用可能になり**、JSON Webトークン（JWT）アクセスを制限する**設定は削除されました](https://gitlab.com/gitlab-org/gitlab/-/issues/366798)。
-
-{{< /history >}}
-
 `secrets:token`を使用して、トークンのCI/CD変数を参照することにより、外部シークレットプロバイダーで認証する際に使用するトークンを明示的に選択します。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
@@ -5422,6 +5548,9 @@ job:
 
 ジョブの設定とデフォルト設定は一緒にマージされません。パイプラインに[`default:services`](#default)が定義されていて、ジョブにも`services`がある場合、ジョブの設定が優先され、デフォルト設定は使用されません。
 
+> [!warning]
+> サービス間ネットワーキングを有効にするには、`FF_NETWORK_PER_BUILD`を`true`に設定します。このフラグがないと、サービスが正常に動作しない可能性があります。詳細については、[feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/)を参照してください。
+
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
 
 **サポートされている値**: サービスイメージの名前（必要に応じてレジストリパスを含む）。次のいずれかの形式で指定します。
@@ -5430,7 +5559,7 @@ job:
 - `<image-name>:<tag>`
 - `<image-name>@<digest>`
 
-CI/CD変数が[サポート](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)されていますが、[`alias`には使用できません](https://gitlab.com/gitlab-org/gitlab/-/issues/19561)。
+CI/CD変数は[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)が、`alias`にはサポートされていません。`alias`を動的にカスタマイズするには、代わりに[CI/CDインプット](../inputs/_index.md)を使用します。
 
 **`services`の例**:
 
@@ -5534,13 +5663,6 @@ services:
 ---
 
 #### `services:docker` {#servicesdocker}
-
-{{< history >}}
-
-- GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919)されました。GitLab Runner 16.7以降が必要です。
-- `user`インプットオプションは、GitLab 16.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137907)されました。
-
-{{< /history >}}
 
 `services:docker`を使用して、GitLab RunnerのDocker executorにオプションを渡します。
 
@@ -5692,15 +5814,7 @@ services:
 
 #### `services:pull_policy` {#servicespull_policy}
 
-{{< history >}}
-
-- GitLab 15.1で`ci_docker_image_pull_policy`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21619)されました。デフォルトでは無効になっています。
-- GitLab 15.2の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/363186)になりました。
-- GitLab 15.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/363186)になりました。[機能フラグ`ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186)は削除されました。
-
-{{< /history >}}
-
-RunnerがDockerイメージをフェッチするために使用するプルポリシー。GitLab Runner 15.1以降が必要です。
+RunnerがDockerイメージをフェッチするために使用するプルポリシー。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
 
@@ -5744,7 +5858,7 @@ job2:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 次のいずれかの文字列。
+**サポートされている値**: 次のいずれかの文字列:
 
 - [デフォルトステージ](#stages)。
 - ユーザー定義ステージ。
@@ -5909,7 +6023,7 @@ job:
 
 ジョブレベルのタイムアウトは、[プロジェクトレベルのタイムアウト](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)よりも長くすることができますが、[Runnerのタイムアウト](../runners/configure_runners.md#set-the-maximum-job-timeout)よりも長くすることはできません。
 
-**キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
 **サポートされている値**: 自然言語で記述された期間。たとえば、以下の表記はすべて同等です。
 
@@ -5929,15 +6043,13 @@ test:
   timeout: 3h 30m
 ```
 
+**補足情報**:
+
+- `timeout`キーワードは`default`設定ではサポートされていません。代わりに個々のジョブ設定で`timeout`を定義します。詳細については、[イシュー213634](https://gitlab.com/gitlab-org/gitlab/-/issues/213634)を参照してください。
+
 ---
 
 ### `trigger` {#trigger}
-
-{{< history >}}
-
-- `environment`のサポートは、GitLab 16.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/369061)されました。
-
-{{< /history >}}
 
 `trigger`を使用して、ジョブが次のいずれかの[ダウンストリームパイプライン](../pipelines/downstream_pipelines.md)を開始する「トリガージョブ」であることを宣言します。
 
@@ -5955,7 +6067,7 @@ test:
 - [`stage`](#stage)。
 - [`trigger`](#trigger)。
 - [`variables`](#variables)。
-- [`when`](#when)（値が`on_success`、`on_failure`、`always`の場合のみ）。
+- [`when`](#when)（`on_success`、`on_failure`、`always`、または`manual`の値の場合のみ）。
 - [`resource_group`](#resource_group)。
 - [`environment`](#environment)。
 
@@ -5963,7 +6075,7 @@ test:
 
 **サポートされている値**: 
 
-- マルチプロジェクトパイプラインの場合、ダウンストリームプロジェクトのパス。GitLab 15.3以降はCI/CD変数が[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)。ただし、[ジョブ専用変数](../variables/predefined_variables.md#variable-availability)はサポートされていません。代わりに、[`trigger:project`](#triggerproject)を使用してください。
+- マルチプロジェクトパイプラインの場合、ダウンストリームプロジェクトのパス。CI/CD変数は[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)が、[ジョブ](../variables/predefined_variables.md#variable-availability)専用変数はサポートされていません。または、[`trigger:project`](#triggerproject)を使用することもできます。
 - 子パイプラインの場合は、[`trigger:include`](#triggerinclude)を使用します。
 
 **`trigger`の例**:
@@ -6090,7 +6202,7 @@ trigger-job:
 
 **サポートされている値**: 
 
-- ダウンストリームプロジェクトのパス。GitLab 15.3以降はCI/CD変数が[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)。ただし、[ジョブ専用変数](../variables/predefined_variables.md#variable-availability)はサポートされていません。
+- ダウンストリームプロジェクトのパス。CI/CD変数は[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)が、[ジョブ](../variables/predefined_variables.md#variable-availability)専用変数はサポートされていません。
 
 **`trigger:project`の例**:
 
@@ -6158,12 +6270,6 @@ trigger_job:
 ---
 
 #### `trigger:forward` {#triggerforward}
-
-{{< history >}}
-
-- GitLab 15.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/355572)になりました。[機能フラグ`ci_trigger_forward_variables`](https://gitlab.com/gitlab-org/gitlab/-/issues/355572)は削除されました。
-
-{{< /history >}}
 
 `trigger:forward`を使用して、ダウンストリームパイプラインに転送する内容を指定します。[親子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)と[マルチプロジェクトパイプライン](../pipelines/downstream_pipelines.md#multi-project-pipelines)の両方に転送する内容を制御できます。
 
@@ -6357,7 +6463,7 @@ stop_production:
 
 **可能なインプット**: 秒、分、または時間単位の時間。1週間以下である必要があります。有効な値の例:
 
-- `'5'` （5秒）
+- `'5'`（5秒）
 - `'10 seconds'`
 - `'30 minutes'`
 - `'1 hour'`
@@ -6534,12 +6640,6 @@ variables:
 
 #### `variables:options` {#variablesoptions}
 
-{{< history >}}
-
-- GitLab 15.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502)されました。
-
-{{< /history >}}
-
 `variables:options`を使用して、[パイプラインを手動で実行する際にUIで選択できる](../pipelines/_index.md#configure-a-list-of-selectable-prefilled-variable-values)値の配列を定義します。
 
 `variables: value`と組み合わせて使用する必要があります。`value`に指定する文字列の条件は次のとおりです。
@@ -6571,15 +6671,6 @@ variables:
 ---
 
 ### `variables:expand` {#variablesexpand}
-
-{{< history >}}
-
-- GitLab 15.6で`ci_raw_variables_in_yaml_config`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/353991)されました。デフォルトでは無効になっています。
-- GitLab 15.6の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/375034)になりました。
-- GitLab 15.7の[GitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/375034)になりました。
-- GitLab 15.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/375034)になりました。機能フラグ`ci_raw_variables_in_yaml_config`は削除されました。
-
-{{< /history >}}
 
 `expand`キーワードを使用して、変数を展開可能にするかどうかを設定します。
 

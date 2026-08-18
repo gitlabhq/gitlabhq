@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import { map, isEqual } from 'lodash-es';
+import { camelCase, map, isEqual } from 'lodash-es';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -350,6 +350,7 @@ export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }
 };
 
 export const getNewWorkItemSharedCache = ({
+  workItemAttributesWrapperOrder = [],
   fullPath,
   context,
   workItemType,
@@ -612,7 +613,7 @@ export const getNewWorkItemSharedCache = ({
 
     let customFieldValues = workItemTypeSpecificFeatures[WIDGET_TYPE_CUSTOM_FIELDS]
       ? typeSpecificCustomFieldValues
-      : widgetDefinitionsHash[WIDGET_TYPE_CUSTOM_FIELDS]?.customFieldValues ?? [];
+      : (widgetDefinitionsHash[WIDGET_TYPE_CUSTOM_FIELDS]?.customFieldValues ?? []);
 
     if (cachedCustomFieldValues && availableCustomFieldValues) {
       customFieldValues = availableCustomFieldValues.map((availableField) => {
@@ -646,9 +647,16 @@ export const getNewWorkItemSharedCache = ({
     };
   }
 
+  // Attributes with no widget definition aren't supported by this type, and an empty feature
+  // object is still truthy, so the create form would render them. Null instead of delete keeps the
+  // `features` selection set satisfied. Same guard as `availableWidgets` on the legacy path.
+  const unsupportedFeatures = workItemAttributesWrapperOrder
+    .filter((widgetType) => !widgetDefinitionsHash[widgetType])
+    .map((widgetType) => [camelCase(widgetType), null]);
+
   return {
     draftTitle,
-    features,
+    features: { ...features, ...Object.fromEntries(unsupportedFeatures) },
   };
 };
 export const legacyGetNewWorkItemSharedCache = ({
@@ -911,7 +919,7 @@ export const legacyGetNewWorkItemSharedCache = ({
         // Set fallback custom fields value.
         let customFieldValues = workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]
           ? typeSpecificCustomFieldValues
-          : customFieldsWidgetData?.customFieldValues ?? [];
+          : (customFieldsWidgetData?.customFieldValues ?? []);
 
         if (cachedCustomFieldValues && availableCustomFieldValues) {
           // Create a merged list of custom fields and its values from shared cache & type-specific cache

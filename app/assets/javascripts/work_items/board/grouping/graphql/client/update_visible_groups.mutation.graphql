@@ -1,0 +1,4 @@
+# @feature_category: portfolio_management
+mutation updateWorkItemsGroupByVisibleGroups($visibleGroups: [String!]) {
+  updateWorkItemsGroupByVisibleGroups(visibleGroups: $visibleGroups) @client
+}

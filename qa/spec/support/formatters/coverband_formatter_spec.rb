@@ -15,7 +15,6 @@ describe QA::Support::Formatters::CoverbandFormatter do
       file_path: 'create_issue_spec.rb',
       execution_result: instance_double(RSpec::Core::Example::ExecutionResult, status: status),
       metadata: {
-        testcase: 'testcase',
         full_description: "Plan",
         location: "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb:5"
       }
@@ -26,7 +25,7 @@ describe QA::Support::Formatters::CoverbandFormatter do
   let(:api_path) { "#{gitlab_address}/api/v4/internal/coverage" }
   let(:status) { :failed }
   let(:token_header) { { "PRIVATE-TOKEN" => 'token' } }
-  let(:logger) { instance_double(ActiveSupport::Logger, debug: true, error: true, info: true) }
+  let(:logger) { instance_double(ActiveSupport::Logger, debug: true, error: true, info: true, warn: true) }
   let(:api_response) { instance_double(::RestClient::Response, code: code, body: body) }
   let(:code) { 200 }
   let(:body) { '[]' }
@@ -41,6 +40,50 @@ describe QA::Support::Formatters::CoverbandFormatter do
     allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
     allow(QA::Runtime::Scenario).to receive(:gitlab_address).and_return(gitlab_address)
     allow(::RestClient::Request).to receive(:execute).and_return(api_response)
+  end
+
+  context 'with start' do
+    let(:start_notification) { instance_double(RSpec::Core::Notifications::StartNotification) }
+
+    before do
+      allow(formatter).to receive(:sleep)
+    end
+
+    context 'when the runtime bucket is already below the threshold' do
+      it 'waits for in-flight reports before reading back, and logs the remaining count',
+        :aggregate_failures do
+        formatter.start(start_notification)
+
+        expect(formatter).to have_received(:sleep).with(described_class::WAIT_FOR_COVERBAND_REPORTING_SECONDS).once
+        expect(logger).to have_received(:info).with("Cleared boot coverage data, 0 files remaining").once
+      end
+    end
+
+    context 'when boot coverage keeps coming back' do
+      let(:body) do
+        ([nil] * described_class::MAX_REMAINING_CODE_PATHS_AFTER_CLEAR).each_with_index.to_h { |_, i| [i, {}] }.to_json
+      end
+
+      it 'retries up to the attempt limit without raising' do
+        formatter.start(start_notification)
+
+        expect(::RestClient::Request).to have_received(:execute)
+          .exactly(2 * described_class::BOOT_COVERAGE_CLEAR_ATTEMPTS).times
+      end
+    end
+
+    context 'when the coverage endpoint is not deployed' do
+      let(:code) { 404 }
+
+      it 'gives up after one attempt and does not report a successful clear', :aggregate_failures do
+        formatter.start(start_notification)
+
+        expect(::RestClient::Request).to have_received(:execute).twice
+        expect(logger).to have_received(:warn)
+          .with("Coverage API is not available, no mapping will be produced by this job").once
+        expect(logger).not_to have_received(:info).with(/Cleared boot coverage data/)
+      end
+    end
   end
 
   context 'with example_started' do

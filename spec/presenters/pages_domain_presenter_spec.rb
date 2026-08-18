@@ -36,21 +36,21 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
       stub_lets_encrypt_settings
     end
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context "when we failed to obtain Let's Encrypt's certificate" do
       before do
         domain.update!(auto_ssl_failed: true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context "when Let's Encrypt integration is disabled" do
         before do
           allow(::Gitlab::LetsEncrypt).to receive(:enabled?).and_return false
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context "when domain is unverified" do
@@ -58,7 +58,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
           domain.update!(verified_at: nil)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -69,7 +69,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
     let(:domain) { create(:pages_domain) }
 
     context "when domain certificate is user provided" do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context "when domain is not persisted" do
@@ -77,7 +77,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
         domain.destroy!
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context "when domain certificate is blank" do
@@ -85,7 +85,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
         domain.update!(certificate: nil, key: nil)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context "when domain certificate source is gitlab_provided" do
@@ -93,7 +93,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
         domain.update!(certificate_source: :gitlab_provided)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context "when domain certificate has error" do
@@ -101,7 +101,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
         domain.errors.add(:certificate, "certificate error")
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

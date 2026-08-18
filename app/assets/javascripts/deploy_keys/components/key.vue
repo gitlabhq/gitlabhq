@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlBadge, GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { head, tail } from 'lodash-es';

@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '~/vue_shared/translate';
@@ -14,7 +15,7 @@ export default () => {
   if (!el) {
     return null;
   }
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PackagesSettingsAppRoot',
     apolloProvider,
@@ -26,8 +27,6 @@ export default () => {
       ),
       virtualRegistryCleanupPolicyPath: el.dataset.virtualRegistryCleanupPolicyPath,
     },
-    render(createElement) {
-      return createElement(SettingsApp);
-    },
+    component: SettingsApp,
   });
 };

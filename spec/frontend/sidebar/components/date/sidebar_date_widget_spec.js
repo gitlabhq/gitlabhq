@@ -103,10 +103,6 @@ describe('Sidebar date Widget', () => {
     it('passes a `loading` prop as false to editable item', () => {
       expect(findEditableItem().props('loading')).toBe(false);
     });
-
-    it('emits `dueDateUpdated` event with a `null` payload', () => {
-      expect(wrapper.emitted('dueDateUpdated')).toEqual([[null]]);
-    });
   });
 
   describe('when issue has due date', () => {
@@ -119,10 +115,6 @@ describe('Sidebar date Widget', () => {
 
     it('passes a `loading` prop as false to editable item', () => {
       expect(findEditableItem().props('loading')).toBe(false);
-    });
-
-    it('emits `dueDateUpdated` event with the date payload', () => {
-      expect(wrapper.emitted('dueDateUpdated')).toEqual([[date]]);
     });
 
     it('uses a correct prop to set the initial date and first day of the week for GlDatePicker', () => {
@@ -182,12 +174,12 @@ describe('Sidebar date Widget', () => {
   });
 
   it.each`
-    dateType       | text            | event                 | mockedResponse               | issuableType | queryHandler
-    ${'dueDate'}   | ${'Due date'}   | ${'dueDateUpdated'}   | ${issuableDueDateResponse}   | ${'issue'}   | ${'dueDateQueryHandler'}
-    ${'startDate'} | ${'Start date'} | ${'startDateUpdated'} | ${issuableStartDateResponse} | ${'epic'}    | ${'startDateQueryHandler'}
+    dateType       | text            | mockedResponse               | issuableType | queryHandler
+    ${'dueDate'}   | ${'Due date'}   | ${issuableDueDateResponse}   | ${'issue'}   | ${'dueDateQueryHandler'}
+    ${'startDate'} | ${'Start date'} | ${issuableStartDateResponse} | ${'epic'}    | ${'startDateQueryHandler'}
   `(
-    'when dateType is $dateType, component renders $text and emits $event',
-    async ({ dateType, text, event, mockedResponse, issuableType, queryHandler }) => {
+    'when dateType is $dateType, component renders $text',
+    async ({ dateType, text, mockedResponse, issuableType, queryHandler }) => {
       createComponent({
         dateType,
         issuableType,
@@ -196,7 +188,6 @@ describe('Sidebar date Widget', () => {
       await waitForPromises();
 
       expect(wrapper.text()).toContain(text);
-      expect(wrapper.emitted(event)).toEqual([[date]]);
     },
   );
 

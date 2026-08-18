@@ -19,7 +19,7 @@ When using job rules, learn how to [avoid duplicate pipelines](job_rules.md#avoi
 
 ## Create a job that must be run manually
 
-You can require that a job doesn't run unless a user starts it. This is called a **manual job**.
+You can require that a job doesn't run unless a user starts it. This type of job is called a **manual job**.
 You might want to use a manual job for something like deploying to production.
 
 To specify a job as manual, add [`when: manual`](../yaml/_index.md#when) to the job
@@ -105,7 +105,7 @@ To retry a manual job with previously-specified variables:
 - With the same variables:
   - From the job details page, select **Retry** ({{< icon name="retry" >}}).
 - With updated variables:
-  - From the job details page, select **Retry job with modified values** in dropdown.
+  - From the job details page, select **Retry job with modified values** in the dropdown list.
   - The variables that were specified in the previous run are prefilled in the form.
     You can add, modify, or delete CI/CD variables from this form.
   - Select **Run job again**.
@@ -151,10 +151,9 @@ To protect a manual job:
    ```
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
-   select the environment (`production` in this example) and add the users, roles or groups
-   that are authorized to run the manual job to the **Allowed to Deploy** list. Only those in
-   this list can run this manual job, and GitLab administrators
-   who are always able to use protected environments.
+   select the environment (`production` in this example) and add the users, roles, or groups
+   that are authorized to run the manual job to the **Allowed to Deploy** list. Only users in
+   this list or GitLab administrators can run this manual job.
 
 You can use protected environments with blocking manual jobs to have a list of users
 allowed to approve later pipeline stages. Add `allow_failure: false` to the protected
@@ -349,7 +348,7 @@ Only the jobs where `SKIP` is `"false"` are included in the pipeline.
 
 Use matrix variables in [`rules:changes`](../yaml/_index.md#ruleschanges)
 paths to include a matrix job only when files relevant to that job have changed.
-This pattern is useful in monorepos where each matrix value corresponds to a
+Use this pattern in monorepos where each matrix value corresponds to a
 component or service with its own directory.
 
 For example, to run a test job only for the component whose files changed:

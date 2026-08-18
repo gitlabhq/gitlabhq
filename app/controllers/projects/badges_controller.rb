@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 class Projects::BadgesController < Projects::ApplicationController
-  layout 'project_settings'
-  before_action :authorize_admin_project!, only: [:index]
   before_action :no_cache_headers, only: [:pipeline, :coverage]
   before_action :authorize_read_build!, only: [:pipeline, :coverage]
 
-  feature_category :continuous_integration, [:index, :pipeline]
+  feature_category :continuous_integration, [:pipeline]
   feature_category :groups_and_projects, [:custom]
   feature_category :code_testing, [:coverage]
   feature_category :release_orchestration, [:release]

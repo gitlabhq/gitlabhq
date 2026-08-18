@@ -38,7 +38,7 @@ const findCustomEmojiUrlInput = () => wrapper.findByTestId('custom-emoji-url-inp
 const findCustomEmojiUrlFormGroup = () => wrapper.findByTestId('custom-emoji-url-form-group');
 const findCustomEmojiFrom = () => wrapper.findByTestId('custom-emoji-form');
 const findAlerts = () => wrapper.findAllComponents(GlAlert);
-const findSubmitBtn = () => wrapper.findByTestId('custom-emoji-form-submit-btn');
+const findSubmitBtn = () => wrapper.findComponentByTestId('custom-emoji-form-submit-btn');
 
 function completeForm() {
   findCustomEmojiNameInput().setValue('Test');

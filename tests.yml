@@ -55,6 +55,11 @@ mapping:
   - source: 'config/(?<rest>.+)\..*'
     test: 'spec/config/%{rest}_spec.rb'
 
+  # The loose foreign keys config is validated by a spec that lives outside of
+  # spec/config/, so it needs an explicit mapping.
+  - source: 'config/gitlab_loose_foreign_keys\.yml'
+    test: 'spec/lib/gitlab/database/loose_foreign_keys_spec.rb'
+
   # Initializers should map to respective spec
   - source: 'config/initializers/(?<rest>.+)\.rb'
     test: 'spec/initializers/%{rest}_spec.rb'
@@ -255,6 +260,10 @@ mapping:
       - 'ee/spec/lib/gitlab/database/inclusion_of_tables_with_gitlab_sec_schema_spec.rb'
       - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb'
       - 'spec/lib/gitlab/organizations/sharding_key_spec.rb'
+      # Dropping a table adds/moves a db/docs/deleted_tables/*.yml entry; run the
+      # loose foreign keys spec so stale source/target tables in the LFK config
+      # are caught on the same MR.
+      - 'spec/lib/gitlab/database/loose_foreign_keys_spec.rb'
 
   # Always run the ClickHouse siphon tables spec when anything under db/ changes,
   # so PG schema / migration / siphon-definition drift vs ClickHouse is caught.
@@ -430,6 +439,9 @@ mapping:
   # Docs related checks
   - source: 'doc/api/settings\.md'
     test: 'spec/scripts/cells/application_settings_analysis_spec.rb'
+
+  - source: 'doc/api/glql\.md'
+    test: 'spec/lib/analytics/glql/documentation_spec.rb'
 
   # Devfile and root yaml related checks
   - source:

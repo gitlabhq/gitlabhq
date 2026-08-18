@@ -63,10 +63,7 @@ module QA
           project.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
         end
 
-        context(
-          'when using HTTP endpoint integration',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389993'
-        ) do
+        context 'when using HTTP endpoint integration' do
           before do
             send_http_alert
           end
@@ -74,10 +71,7 @@ module QA
           it_behaves_like 'notification on new alert'
         end
 
-        context(
-          'when using Prometheus integration',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389994'
-        ) do
+        context 'when using Prometheus integration' do
           before do
             send_prometheus_alert
           end
@@ -91,10 +85,7 @@ module QA
           project.add_member(user, Resource::Members::AccessLevel::OWNER)
         end
 
-        context(
-          'when using HTTP endpoint integration',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390145'
-        ) do
+        context 'when using HTTP endpoint integration' do
           before do
             send_http_alert
           end
@@ -102,10 +93,7 @@ module QA
           it_behaves_like 'notification on new alert'
         end
 
-        context(
-          'when using Prometheus integration',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390144'
-        ) do
+        context 'when using Prometheus integration' do
           before do
             send_prometheus_alert
           end

@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Elasticsearch access
@@ -75,7 +75,7 @@ es_url.save!
 ## View logs
 
 One of the most valuable tools for identifying issues with the Elasticsearch
-integration are logs. The most relevant logs for this integration are:
+integration is logs. The most relevant logs for this integration are:
 
 1. [`sidekiq.log`](../../../administration/logs/_index.md#sidekiqlog) - All of the
    indexing happens in Sidekiq, so much of the relevant logs for the
@@ -96,7 +96,7 @@ To verify that your GitLab instance is using Elasticsearch:
 - In the **Admin** area, under **Settings** > **Search**, check that the
   advanced search settings are selected.
 
-  Those same settings there can be obtained from the Rails console if necessary:
+  Those same settings can also be obtained from the Rails console if necessary:
 
   ```ruby
   ::Gitlab::CurrentSettings.elasticsearch_search?         # Whether or not searches will use Elasticsearch

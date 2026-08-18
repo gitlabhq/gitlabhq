@@ -13,13 +13,6 @@ description: Understand how to specify criteria using license approval policy fo
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a feature flag](../../administration/feature_flags/_index.md) named `license_scanning_policies`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
-
-{{< /history >}}
-
 Use license approval policies to specify criteria that determines when approval is required before a merge request can be merged.
 
 License approval policies apply only to [protected](../project/repository/branches/protected.md) target branches.

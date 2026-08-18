@@ -8,6 +8,7 @@ import {
   GlAnimatedChevronLgDownUpIcon,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'CrudComponent',
@@ -21,6 +22,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     title: {
       type: String,
@@ -61,18 +63,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    /**
-     * Use `v-show` instead of `v-if` to show/hide collapsed content.
-     * This will prevent the content from being removed from the page entirely, which
-     * can cause loss of internal state for collapsed components.
-     * This behaviour defaults to true as of 18.9:
-     * https://gitlab.com/gitlab-org/gitlab/-/issues/581227
-     */
-    keepAliveCollapsedContent: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     containerTag: {
       type: String,
@@ -126,7 +116,7 @@ export default {
       default: false,
     },
   },
-  emits: ['click-collapsed', 'click-expanded', 'collapsed', 'expanded', 'hideForm', 'showForm'],
+  emits: ['click-collapsed', 'click-expanded', 'collapsed', 'expanded', 'hide-form', 'show-form'],
   data() {
     return {
       isCollapsed:
@@ -162,7 +152,7 @@ export default {
       return null;
     },
     isFormUsedAndVisible() {
-      return this.$scopedSlots.form && this.isFormVisible && !this.isCollapsed;
+      return this.glSlots().form && this.isFormVisible && !this.isCollapsed;
     },
   },
   watch: {
@@ -221,11 +211,11 @@ export default {
     showForm() {
       this.isFormVisible = true;
       this.isCollapsed = false;
-      this.$emit('showForm');
+      this.$emit('show-form');
     },
     hideForm() {
       this.isFormVisible = false;
-      this.$emit('hideForm');
+      this.$emit('hide-form');
     },
     getLocalStorageKeyName() {
       return `crud-collapse-${this.anchorId}`;
@@ -270,7 +260,7 @@ export default {
           </slot>
 
           <span
-            v-if="displayedCount || $scopedSlots.count"
+            v-if="displayedCount || glSlots().count"
             class="crud-count gl-inline-flex gl-items-center gl-gap-2 gl-self-start gl-text-sm gl-font-normal gl-text-subtle"
             data-testid="crud-count"
           >
@@ -278,11 +268,11 @@ export default {
               <gl-icon v-if="icon" :name="icon" variant="subtle" data-testid="crud-icon" />
               {{ displayedCount }}
             </template>
-            <slot v-if="$scopedSlots.count" name="count"></slot>
+            <slot v-if="glSlots().count" name="count"></slot>
           </span>
         </component>
         <p
-          v-if="description || $scopedSlots.description"
+          v-if="description || glSlots().description"
           class="!gl-mb-0 !gl-text-sm !gl-leading-normal !gl-text-subtle"
           data-testid="crud-description"
         >
@@ -331,38 +321,36 @@ export default {
       <slot name="form" :hide-form="hideForm"></slot>
     </div>
 
-    <template v-if="isContentVisible || keepAliveCollapsedContent">
+    <div
+      v-show="isContentVisible"
+      class="crud-body gl-grow gl-rounded-lg gl-bg-default gl-p-3 contrast-more:gl-border forced-colors:gl-border"
+      :class="[bodyClass, { 'gl-px-3 gl-pt-3': isLoading }]"
+      data-testid="crud-body"
+    >
+      <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
+
+      <span v-else-if="glSlots().empty" class="gl-text-subtle" data-testid="crud-empty">
+        <slot name="empty"></slot>
+      </span>
+      <slot v-else :show-form="showForm"></slot>
+
       <div
-        v-show="isContentVisible"
-        class="crud-body gl-grow gl-rounded-lg gl-bg-default gl-p-3 contrast-more:gl-border forced-colors:gl-border"
-        :class="[bodyClass, { 'gl-px-3 gl-pt-3': isLoading }]"
-        data-testid="crud-body"
+        v-if="glSlots().pagination"
+        class="crud-pagination gl-border-t gl-flex gl-justify-center gl-border-t-section gl-p-5"
+        data-testid="crud-pagination"
       >
-        <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
-
-        <span v-else-if="$scopedSlots.empty" class="gl-text-subtle" data-testid="crud-empty">
-          <slot name="empty"></slot>
-        </span>
-        <slot v-else :show-form="showForm"></slot>
-
-        <div
-          v-if="$scopedSlots.pagination"
-          class="crud-pagination gl-border-t gl-flex gl-justify-center gl-border-t-section gl-p-5"
-          data-testid="crud-pagination"
-        >
-          <slot name="pagination"></slot>
-        </div>
+        <slot name="pagination"></slot>
       </div>
+    </div>
 
-      <footer
-        v-show="isContentVisible"
-        v-if="$scopedSlots.footer"
-        class="gl-rounded-b-lg gl-px-3 gl-pb-2 gl-pt-3"
-        :class="footerClass"
-        data-testid="crud-footer"
-      >
-        <slot name="footer"></slot>
-      </footer>
-    </template>
+    <footer
+      v-show="isContentVisible"
+      v-if="glSlots().footer"
+      class="gl-rounded-b-lg gl-px-3 gl-pb-2 gl-pt-3"
+      :class="footerClass"
+      data-testid="crud-footer"
+    >
+      <slot name="footer"></slot>
+    </footer>
   </component>
 </template>

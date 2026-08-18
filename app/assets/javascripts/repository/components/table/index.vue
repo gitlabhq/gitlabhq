@@ -1,9 +1,9 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { createItemVisibilityObserver, observeElementsByIds } from '~/lib/utils/lazy_render_utils';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';
@@ -20,7 +20,7 @@ export default {
     ParentRow,
     GlButton,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glListenersMixin],
   props: {
     commits: {
       type: Array,
@@ -202,7 +202,7 @@ export default {
                 :loading-path="loadingPath"
                 :row-number="generateRowNumber(entry, index)"
                 :commit-info="getCommit(entry.name)"
-                v-on="$listeners"
+                v-on="glListeners()"
               />
               <tr
                 v-else

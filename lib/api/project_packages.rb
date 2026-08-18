@@ -25,7 +25,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all packages for a project' do
         detail 'Lists all packages for a specified project. All package types are included in results. ' \
           'Unauthenticated requests return only packages of public projects. By default, packages with `default`, ' \

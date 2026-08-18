@@ -178,5 +178,103 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
 
       service.update_authorizations([], to_be_added)
     end
+
+    it 'logs the rows actually affected rather than the ones requested' do
+      existing = user.project_authorizations.find_by(project_id: project.id)
+
+      # Nothing ends up being written: the removal names a project the user holds no row
+      # for, and the addition duplicates a row that is already there.
+      to_be_removed = [non_existing_record_id]
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: existing.access_level }
+      ]
+
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including(
+          'authorized_projects_refresh.rows_deleted_count': 0,
+          'authorized_projects_refresh.rows_added_count': 0,
+          # The slices keep reporting what was requested, so the two can be compared.
+          'authorized_projects_refresh.rows_deleted_slice': to_be_removed
+        )
+      )
+
+      service.update_authorizations(to_be_removed, to_be_added)
+    end
+
+    it 'includes the related_class from the ambient context as the trigger' do
+      user.project_authorizations.delete_all
+
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
+
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including('authorized_projects_refresh.trigger': 'SomeCaller')
+      )
+
+      Gitlab::ApplicationContext.with_context(related_class: 'SomeCaller') do
+        service.update_authorizations([], to_be_added)
+      end
+    end
+
+    describe 'safety-net refresh metrics', :prometheus do
+      let(:to_be_removed) { [project.id] }
+      let(:to_be_added) do
+        [{ user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }]
+      end
+
+      let(:service) { described_class.new(user) }
+      let(:counter) { Gitlab::Metrics.counter(:gitlab_authorized_projects_safety_net_refresh_rows_total, 'test') }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:counter).and_call_original
+        allow(Gitlab::Metrics).to receive(:counter)
+          .with(:gitlab_authorized_projects_safety_net_refresh_rows_total, anything)
+          .and_return(counter)
+      end
+
+      context 'when the refresh is marked with the safety-net purpose' do
+        it 'increments the refresh trend counter for each direction, including the trigger label' do
+          expect(counter).to receive(:increment)
+            .with(hash_including(trigger: 'SomeCaller', direction: 'deleted'), 1)
+          expect(counter).to receive(:increment)
+            .with(hash_including(trigger: 'SomeCaller', direction: 'added'), 1)
+
+          Gitlab::ApplicationContext.with_raw_context(
+            authorized_projects_refresh_purpose: UserProjectAccessChangedService::SAFETY_NET_REFRESH_PURPOSE
+          ) do
+            Gitlab::ApplicationContext.with_context(related_class: 'SomeCaller') do
+              service.update_authorizations(to_be_removed, to_be_added)
+            end
+          end
+        end
+      end
+
+      context "when the refresh isn't marked with the safety-net purpose" do
+        it 'does not increment the refresh trend counter' do
+          expect(counter).not_to receive(:increment)
+
+          service.update_authorizations(to_be_removed, to_be_added)
+        end
+      end
+
+      # Guards the case that prompted this counting: a stale replica read still listed
+      # rows for a project whose authorizations Postgres had already removed through the
+      # `projects` cascade, so the refresh asked to delete rows that were already gone.
+      context 'when the requested changes no longer match the rows in the database' do
+        let(:to_be_removed) { [non_existing_record_id] }
+        let(:to_be_added) { [] }
+
+        it 'does not increment the refresh trend counter' do
+          expect(counter).not_to receive(:increment)
+
+          Gitlab::ApplicationContext.with_raw_context(
+            authorized_projects_refresh_purpose: UserProjectAccessChangedService::SAFETY_NET_REFRESH_PURPOSE
+          ) do
+            service.update_authorizations(to_be_removed, to_be_added)
+          end
+        end
+      end
+    end
   end
 end

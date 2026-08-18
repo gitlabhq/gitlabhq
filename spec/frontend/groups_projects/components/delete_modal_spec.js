@@ -142,6 +142,16 @@ describe('GroupsProjectsDeleteModal', () => {
     expect(wrapper.findByTestId('alert-slot').exists()).toBe(true);
   });
 
+  it('renders the confirmation phrase as the input label', () => {
+    createComponent();
+
+    expect(
+      wrapper
+        .findByLabelText(`Enter the following to confirm: ${defaultPropsData.confirmPhrase}`)
+        .attributes('autocomplete'),
+    ).toBe('off');
+  });
+
   describe('when correct confirm phrase is used', () => {
     beforeEach(() => {
       createComponent();

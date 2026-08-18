@@ -98,11 +98,11 @@ describe('PlaceholderActions', () => {
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findDontReassignButton = () => wrapper.findByTestId('dont-reassign-button');
-  const findNotifyButton = () => wrapper.findByTestId('notify-button');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findConfirmButton = () => wrapper.findByTestId('confirm-button');
-  const findConfirmModal = () => wrapper.findByTestId('confirm-modal');
+  const findDontReassignButton = () => wrapper.findComponentByTestId('dont-reassign-button');
+  const findNotifyButton = () => wrapper.findComponentByTestId('notify-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
+  const findConfirmButton = () => wrapper.findComponentByTestId('confirm-button');
+  const findConfirmModal = () => wrapper.findComponentByTestId('confirm-modal');
 
   it('renders listbox with infinite scroll', () => {
     createComponent();

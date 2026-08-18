@@ -17,7 +17,7 @@ describe('Environments detail header component', () => {
 
   const findHeader = () => wrapper.findByRole('heading');
   const findAutoStopsAt = () => wrapper.findByTestId('auto-stops-at');
-  const findCancelAutoStopAtButton = () => wrapper.findByTestId('cancel-auto-stop-button');
+  const findCancelAutoStopAtButton = () => wrapper.findComponentByTestId('cancel-auto-stop-button');
   const findCancelAutoStopAtForm = () => wrapper.findByTestId('cancel-auto-stop-form');
   const findTerminalButton = () => wrapper.findByTestId('terminal-button');
   const findExternalUrlButton = () => wrapper.findComponentByTestId('external-url-button');

@@ -38,10 +38,10 @@ RSpec.shared_examples 'diff file endpoint' do
       expect(response.body).to include('rd-diff-file-component')
     end
 
-    context 'when blob size exceeds max patch bytes' do
+    context 'when blob size exceeds the highlight file size limit' do
       before do
         allow_next_instance_of(Blob) do |blob|
-          allow(blob).to receive(:raw_size).and_return(Gitlab::CurrentSettings.diff_max_patch_bytes + 1)
+          allow(blob).to receive(:raw_size).and_return(Gitlab::Highlight.file_size_limit + 1)
         end
       end
 

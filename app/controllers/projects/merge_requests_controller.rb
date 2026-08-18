@@ -18,7 +18,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss, permission: :read_merge_request) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
-  before_action :apply_diff_view_cookie!, only: [:show, :diffs, :rapid_diffs]
+  before_action :apply_diff_view_cookie!, only: [:show, :diffs]
   before_action :disable_query_limiting, only: [:assign_related_issues, :update, :show]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :authorize_read_diff_head_pipeline!, only: [
@@ -39,25 +39,26 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:show_merge_request_status_draft, current_user)
   end
 
-  before_action only: [:show, :diffs, :rapid_diffs, :reports] do
+  before_action only: [:show, :diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)
     push_frontend_feature_flag(:explicit_mr_work_item_relations, project)
+    gon.push({ rapid_diffs_page_enabled: rapid_diffs_page_enabled? })
   end
 
   before_action do
     push_frontend_feature_flag(:merge_widget_stop_polling, current_user)
   end
 
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
 
-  after_action :log_merge_request_show, only: [:show, :diffs, :rapid_diffs]
+  after_action :log_merge_request_show, only: [:show, :diffs]
 
   feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update,
+    :show, :diffs, :toggle_award_emoji, :toggle_subscription, :update,
     :versions
   ]
 
@@ -73,7 +74,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :index,
     :show,
     :diffs,
-    :rapid_diffs,
     :commits,
     :bulk_update,
     :edit,
@@ -96,8 +96,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   helper_method :rapid_diffs_page_enabled?
 
-  track_internal_event :diffs, name: 'view_merge_request_diffs', additional_properties: { label: 'legacy_diffs' }
-  track_internal_event :rapid_diffs, name: 'view_merge_request_diffs', additional_properties: { label: 'rapid_diffs' }
+  track_internal_event :diffs, name: 'view_merge_request_diffs',
+    conditions: -> { !rapid_diffs_page_enabled? }, additional_properties: { label: 'legacy_diffs' }
+  track_internal_event :diffs, name: 'view_merge_request_diffs',
+    conditions: -> { rapid_diffs_page_enabled? }, additional_properties: { label: 'rapid_diffs' }
 
   def index
     @merge_requests = @issuables
@@ -113,36 +115,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def diffs
-    show_merge_request
-  end
+    return show_merge_request unless rapid_diffs_page_enabled?
 
-  def rapid_diffs
-    unless rapid_diffs_page_enabled?
-      cookies.delete(:rapid_diffs_enabled)
-      return redirect_to(diffs_project_merge_request_path(project, @merge_request))
-    end
-
-    rapid_diffs_presenter.offset = 5
-    show_merge_request
-  rescue StandardError => exception
-    log_exception(exception)
-
-    feedback_link = view_context.link_to(
-      _("Leave feedback"),
-      "https://gitlab.com/gitlab-org/gitlab/-/work_items/596236",
-      class: 'gl-link',
-      target: '_blank',
-      rel: 'noopener noreferrer'
-    )
-
-    redirect_to(
-      diffs_project_merge_request_path(project, @merge_request, rapid_diffs_disabled: 'true'),
-      alert: safe_format(
-        _("Rapid Diffs encountered an error and has been temporarily disabled. " \
-          "The page has loaded using the standard diff view. %{feedback_link}"),
-        feedback_link: feedback_link
-      )
-    )
+    show_rapid_diffs
   end
 
   def commits
@@ -437,6 +412,32 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     super
   end
 
+  def show_rapid_diffs
+    @js_action_name = 'rapid_diffs'
+    rapid_diffs_presenter.baseline_offset = 5
+
+    show_merge_request
+  rescue StandardError => exception
+    log_exception(exception)
+
+    feedback_link = view_context.link_to(
+      _("Leave feedback"),
+      "https://gitlab.com/gitlab-org/gitlab/-/work_items/596236",
+      class: 'gl-link',
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    )
+
+    redirect_to(
+      diffs_project_merge_request_path(project, @merge_request, rapid_diffs_disabled: 'true'),
+      alert: safe_format(
+        _("Rapid Diffs encountered an error and has been temporarily disabled. " \
+          "The page has loaded using the standard diff view. %{feedback_link}"),
+        feedback_link: feedback_link
+      )
+    )
+  end
+
   def show_merge_request
     close_merge_request_if_no_source_project
     @merge_request.check_mergeability(async: true)
@@ -530,7 +531,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     @number_of_pipelines = @pipelines.size
 
-    render
+    render action: @js_action_name || action_name
   end
 
   def get_diffs_count
@@ -740,7 +741,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def diff_file_component(base_args)
     ::RapidDiffs::MergeRequestDiffFileComponent.new(
-      **base_args.merge({ merge_request: @merge_request })
+      **base_args.merge({
+        merge_request: @merge_request,
+        conflict_resolution_path: rapid_diffs_presenter.conflict_resolution_path,
+        can_merge: rapid_diffs_presenter.can_merge
+      })
     )
   end
 
@@ -757,10 +762,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rapid_diffs_page_enabled?
-    ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta) &&
-      params[:rapid_diffs_disabled] != 'true' &&
-      (params[:rapid_diffs] == 'true' || cookies[:rapid_diffs_enabled] == 'true')
+    return false unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
+    return false if params[:rapid_diffs_disabled] == 'true'
+    return true if params[:rapid_diffs] == 'true'
+
+    if ::Feature.enabled?(:rapid_diffs_default_on_mr_show, current_user)
+      cookies[:rapid_diffs_enabled] != 'false'
+    else
+      cookies[:rapid_diffs_enabled] == 'true'
+    end
   end
+  strong_memoize_attr :rapid_diffs_page_enabled?
 
   def auto_merge_strategy
     params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy

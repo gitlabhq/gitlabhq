@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.wiki_pages_delete
 description: Count of all Wiki pages deleted
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 value_type: number

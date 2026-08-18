@@ -22,7 +22,7 @@ func transform(t *testing.T, input string) (string, error) {
 	t.Helper()
 
 	var out bytes.Buffer
-	err := Transform(strings.NewReader(input), &out, targetKey, npmPrefix, gitlabPrefix)
+	err := Transform(strings.NewReader(input), &out, targetKey, []string{npmPrefix}, gitlabPrefix)
 
 	return out.String(), err
 }
@@ -122,7 +122,7 @@ func TestTransformEmptyFromLeavesInputUnchanged(t *testing.T) {
 	input := `{"dist":{"tarball":"https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"}}`
 
 	var out bytes.Buffer
-	err := Transform(strings.NewReader(input), &out, targetKey, "", gitlabPrefix)
+	err := Transform(strings.NewReader(input), &out, targetKey, []string{""}, gitlabPrefix)
 
 	require.NoError(t, err)
 	assert.Equal(t, input, out.String())
@@ -171,8 +171,32 @@ func BenchmarkTransform(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		if err := Transform(strings.NewReader(packument), io.Discard, targetKey, npmPrefix, gitlabPrefix); err != nil {
+		if err := Transform(strings.NewReader(packument), io.Discard, targetKey, []string{npmPrefix}, gitlabPrefix); err != nil {
 			b.Fatal(err)
 		}
+	}
+}
+
+// htmlstream matched case-insensitively while this one did not, so an upstream
+// packument spelling the scheme or host in uppercase slipped through unrewritten
+// and was fetched directly. Both now share prefixrewrite.
+func TestTransformMatchesPrefixCaseInsensitively(t *testing.T) {
+	tests := []struct {
+		name    string
+		tarball string
+	}{
+		{"lowercase", "https://registry.npmjs.org/a/-/a-1.0.0.tgz"},
+		{"uppercase scheme", "HTTPS://registry.npmjs.org/a/-/a-1.0.0.tgz"},
+		{"mixed case host", "https://Registry.NpmJS.ORG/a/-/a-1.0.0.tgz"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := transform(t, `{"dist":{"tarball":"`+tt.tarball+`"}}`)
+
+			require.NoError(t, err)
+			assert.Contains(t, got, gitlabPrefix+"a/-/a-1.0.0.tgz")
+			assert.NotContains(t, got, "npmjs.org")
+		})
 	}
 }

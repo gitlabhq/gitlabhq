@@ -11,7 +11,7 @@ module Banzai
       # Matches a checkbox marker at the beginning of a text node:
       #   [ ]  unchecked
       #   [X]  checked
-      #   [-]  indeterminate (partially done)
+      #   [-]  indeterminate (partially checked)
       CHECKBOX_PATTERN = /\A\[([ X-])\](?:[ \t]+(.*))?\z/m
 
       CHECKBOX_ATTRS = {

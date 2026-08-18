@@ -242,8 +242,7 @@ to remote storage. The processing is done in a background worker and requires no
 You can optionally track progress and verify that all Dependency Proxy blobs and manifests migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Linux package installations running version 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Linux package installations running version 14.2 and later.
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled instances.
 
 Verify that `objectstg` (where `file_store = '2'`) has the count of all Dependency Proxy blobs and

@@ -13,13 +13,6 @@ title: Compliance projects report
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
-- [Renamed from compliance frameworks report](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
-
-{{< /history >}}
-
 With the compliance projects report, you can see the compliance frameworks that are applied to projects in a group, subgroup, or project.
 Each row of the report shows:
 
@@ -45,8 +38,6 @@ To view the compliance projects report:
 
 {{< history >}}
 
-- Adding compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
-- Adding compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
 - Ability to add compliance frameworks to subgroups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469004) in GitLab 17.2.
 - Ability to add compliance frameworks to projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507986) in GitLab 17.9.
 
@@ -80,8 +71,6 @@ To apply a compliance framework to multiple projects in a group:
 
 {{< history >}}
 
-- Removing compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
-- Removing compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
 - Ability to remove compliance frameworks from subgroups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469004) in GitLab 17.2.
 - Ability to remove compliance frameworks from projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507986) in GitLab 17.9.
 
@@ -111,12 +100,6 @@ To remove a compliance framework from multiple projects in a group:
 
 ## Export a report of compliance frameworks on projects in a group
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
-
-{{< /history >}}
-
 Export a report of compliance frameworks that are applied to projects in a group. Reports:
 
 - Do not use filters on the framework report.
@@ -136,12 +119,6 @@ To export a report of compliance frameworks on projects in a group:
 A report is compiled and delivered to your email inbox as an attachment.
 
 ## Filter the compliance projects report
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
-
-{{< /history >}}
 
 To filter the list of compliance frameworks:
 

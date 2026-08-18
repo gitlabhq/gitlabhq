@@ -46,7 +46,7 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
 
   describe 'inheritance and includes' do
     it 'inherits from GraphqlTool' do
-      expect(described_class.superclass).to eq(Mcp::Tools::GraphqlTool)
+      expect(described_class.superclass).to eq(Mcp::Tools::Base::GraphqlTool)
     end
 
     it 'includes Constants concern' do

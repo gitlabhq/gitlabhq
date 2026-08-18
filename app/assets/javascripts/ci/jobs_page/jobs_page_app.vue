@@ -306,12 +306,12 @@ export default {
       :loading="loading"
       :filters="requestData"
       class="gl-mt-3"
-      @fetchJobsByStatus="fetchJobsByStatus"
+      @fetch-jobs-by-status="fetchJobsByStatus"
     />
     <div v-if="showFilteredSearch" :class="$options.filterSearchBoxStyles">
       <jobs-filtered-search
         :query-string="validatedQueryString"
-        @filterJobsBySearch="filterJobsBySearch"
+        @filter-jobs-by-search="filterJobsBySearch"
       />
     </div>
 

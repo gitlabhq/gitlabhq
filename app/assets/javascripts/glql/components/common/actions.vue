@@ -12,11 +12,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    modalTitle: {
-      type: String,
-      required: false,
-      default: '',
-    },
     showCopyContents: {
       type: Boolean,
       required: false,
@@ -36,7 +31,7 @@ export default {
       return [
         {
           text: __('View source'),
-          action: () => this.$emit('view-source', { title: this.modalTitle }),
+          action: () => this.$emit('view-source'),
         },
         {
           text: __('Copy source'),

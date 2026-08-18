@@ -33,21 +33,6 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
       subject.execute
     end
 
-    context 'when BranchPushService' do
-      it 'calls BranchPushService with process_commit_worker_pool' do
-        next unless push_service_class == Git::BranchPushService
-
-        expect(push_service_class)
-          .to receive(:new)
-          .with(anything, anything, hash_including(
-            process_commit_worker_pool: a_kind_of(Gitlab::Git::ProcessCommitWorkerPool)
-          )).exactly(changes.count).times
-            .and_return(service)
-
-        subject.execute
-      end
-    end
-
     context 'changes exceed push_event_hooks_limit' do
       let(:push_event_hooks_limit) { 3 }
 
@@ -185,6 +170,10 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
         before do
           stub_ci_pipeline_yaml_file(nil)
 
+          allow_any_instance_of(Project)
+            .to receive(:commit)
+            .and_return(project.commit)
+
           allow_any_instance_of(Repository).to receive(:ref_exists?) { true }
           allow(Gitlab::Git::Commit).to receive(:between) { [] }
         end
@@ -250,6 +239,22 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           { index: 1, oldrev: '123456', newrev: '789012', ref: "refs/heads/update" },
           { index: 2, oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "refs/heads/delete" }
         ]
+      end
+
+      it 'shares one process_commit_worker_pool across branch push services', :aggregate_failures do
+        process_commit_worker_pools = []
+
+        expect(Git::BranchPushService)
+          .to receive(:new)
+          .exactly(changes.count).times do |_, _, options|
+            process_commit_worker_pools << options[:process_commit_worker_pool]
+            service
+          end
+
+        subject.execute
+
+        expect(process_commit_worker_pools).to all(be_a(Gitlab::Git::ProcessCommitWorkerPool))
+        expect(process_commit_worker_pools.uniq).to contain_exactly(process_commit_worker_pools.first)
       end
     end
 
@@ -366,6 +371,16 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           { index: 1, oldrev: '123456', newrev: tag_2.target, ref: "refs/tags/#{tag_2.name}" },
           { index: 2, oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "refs/tags/delete" }
         ]
+      end
+
+      it 'does not pass process_commit_worker_pool to tag push services' do
+        expect(Git::TagPushService)
+          .to receive(:new)
+          .with(anything, anything, satisfy { |options| !options.key?(:process_commit_worker_pool) })
+          .exactly(changes.count).times
+          .and_return(service)
+
+        subject.execute
       end
     end
   end

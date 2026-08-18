@@ -92,7 +92,7 @@ Administrators can enforce 2FA for both:
 1. Select **Save changes**.
 
 > [!note]
-> If you are using an external provider to sign in into GitLab, this setting will not enforce 2FA for users. 2FA should be enabled on that external provider.
+> If you are using an external provider to sign in to GitLab, this setting will not enforce 2FA for users. 2FA should be enabled on that external provider.
 
 ## Enforce 2FA for all users in a group
 
@@ -106,7 +106,7 @@ Administrators can enforce 2FA for both:
 You can enforce 2FA for all users in a group or subgroup.
 
 2FA enforcement applies to both [direct and inherited members](../user/project/members/_index.md#membership-types)
-group members. If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
+of the group. If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
 Inherited members are members of the ancestor groups.
 
 > [!note]
@@ -251,16 +251,15 @@ You cannot use the API endpoint to disable 2FA for administrators.
 
 {{< /details >}}
 
-Top-level group Owners can disable two-factor authentication (2FA) for [enterprise users](../user/enterprise_user/_index.md).
+Top-level group Owners can disable two-factor authentication (2FA) for [enterprise users](../user/enterprise_user/_index.md) through the UI or [the API](../api/group_enterprise_users.md#disable-two-factor-authentication-for-an-enterprise-user).
+To disable 2FA for enterprise users who are not members of the group, you must use the API.
 
-To disable 2FA:
+To disable 2FA from the UI:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Manage** > **Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
-
-You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-authentication-for-an-enterprise-user) to disable 2FA for enterprise users, including enterprise users who are no longer a member of the group.
 
 ## 2FA for Git over SSH operations
 

@@ -1,0 +1,384 @@
+:root.aura-tinted-themes {
+  /**
+   * Warm base neutrals
+   */
+  --gl-color-neutral-0: #fff;
+  --gl-color-neutral-10: #f7f7f5;
+  --gl-color-neutral-50: #ecebea;
+  --gl-color-neutral-100: #dcdbd9;
+  --gl-color-neutral-200: #c1bfbe;
+  --gl-color-neutral-300: #a5a3a3;
+  --gl-color-neutral-400: #8a8888;
+  --gl-color-neutral-500: #747273;
+  --gl-color-neutral-600: #646163;
+  --gl-color-neutral-700: #4d4b4e;
+  --gl-color-neutral-800: #3a383d;
+  --gl-color-neutral-900: #28272d;
+  --gl-color-neutral-950: #18171d;
+  --gl-color-neutral-1000: #050408;
+
+  /**
+   * Tinted theme neutrals
+   */
+  &.ui-neutral,
+  .ui-neutral-scope {
+    --gl-color-neutral-0: #fff;
+    --gl-color-neutral-10: #fbfafd;
+    --gl-color-neutral-50: #ececef;
+    --gl-color-neutral-100: #dcdcde;
+    --gl-color-neutral-200: #bfbfc3;
+    --gl-color-neutral-300: #a4a3a8;
+    --gl-color-neutral-400: #89888d;
+    --gl-color-neutral-500: #737278;
+    --gl-color-neutral-600: #626168;
+    --gl-color-neutral-700: #4c4b51;
+    --gl-color-neutral-800: #3a383f;
+    --gl-color-neutral-900: #28272d;
+    --gl-color-neutral-950: #18171d;
+    --gl-color-neutral-1000: #050506;
+  }
+
+  &.ui-indigo,
+  .ui-indigo-scope {
+    --gl-color-neutral-0: #fff;
+    --gl-color-neutral-10: #f9f8fa;
+    --gl-color-neutral-50: #efebf2;
+    --gl-color-neutral-100: #e1d9e6;
+    --gl-color-neutral-200: #c2bdc7;
+    --gl-color-neutral-300: #a5a2a8;
+    --gl-color-neutral-400: #89888b;
+    --gl-color-neutral-500: #737374;
+    --gl-color-neutral-600: #646067;
+    --gl-color-neutral-700: #504955;
+    --gl-color-neutral-800: #3f3546;
+    --gl-color-neutral-900: #2e2434;
+    --gl-color-neutral-950: #1d1424;
+    --gl-color-neutral-1000: #09030e;
+  }
+
+  &.ui-blue,
+  .ui-blue-scope {
+    --gl-color-neutral-0: #fff;
+    --gl-color-neutral-10: #f8f8fa;
+    --gl-color-neutral-50: #e9ebf0;
+    --gl-color-neutral-100: #d7dce5;
+    --gl-color-neutral-200: #bcbfc6;
+    --gl-color-neutral-300: #a1a3a7;
+    --gl-color-neutral-400: #88888a;
+    --gl-color-neutral-500: #727273;
+    --gl-color-neutral-600: #5f6266;
+    --gl-color-neutral-700: #474c54;
+    --gl-color-neutral-800: #333945;
+    --gl-color-neutral-900: #222733;
+    --gl-color-neutral-950: #121722;
+    --gl-color-neutral-1000: #03050d;
+  }
+
+  &.ui-green,
+  .ui-green-scope {
+    --gl-color-neutral-0: #fff;
+    --gl-color-neutral-10: #f7f9f8;
+    --gl-color-neutral-50: #e6edeb;
+    --gl-color-neutral-100: #d4dfdb;
+    --gl-color-neutral-200: #b9c1bf;
+    --gl-color-neutral-300: #a0a4a3;
+    --gl-color-neutral-400: #878988;
+    --gl-color-neutral-500: #717372;
+    --gl-color-neutral-600: #5e6361;
+    --gl-color-neutral-700: #444e4a;
+    --gl-color-neutral-800: #313b38;
+    --gl-color-neutral-900: #1f2a26;
+    --gl-color-neutral-950: #101916;
+    --gl-color-neutral-1000: #010705;
+  }
+
+  &.ui-red,
+  .ui-red-scope {
+    --gl-color-neutral-0: #fff;
+    --gl-color-neutral-10: #fbf7f9;
+    --gl-color-neutral-50: #f4eaee;
+    --gl-color-neutral-100: #e9d7de;
+    --gl-color-neutral-200: #cabbc1;
+    --gl-color-neutral-300: #aaa1a4;
+    --gl-color-neutral-400: #8b8789;
+    --gl-color-neutral-500: #747273;
+    --gl-color-neutral-600: #656062;
+    --gl-color-neutral-700: #53494c;
+    --gl-color-neutral-800: #423539;
+    --gl-color-neutral-900: #312428;
+    --gl-color-neutral-950: #201418;
+    --gl-color-neutral-1000: #0b0306;
+  }
+
+  &.ui-gray,
+  .ui-gray-scope {
+    --gl-color-neutral-0: #fff;
+    --gl-color-neutral-10: #f8f8f8;
+    --gl-color-neutral-50: #ececec;
+    --gl-color-neutral-100: #dcdcdc;
+    --gl-color-neutral-200: #bfbfbf;
+    --gl-color-neutral-300: #a3a3a3;
+    --gl-color-neutral-400: #898889;
+    --gl-color-neutral-500: #727272;
+    --gl-color-neutral-600: #616161;
+    --gl-color-neutral-700: #4b4b4b;
+    --gl-color-neutral-800: #383839;
+    --gl-color-neutral-900: #272727;
+    --gl-color-neutral-950: #171717;
+    --gl-color-neutral-1000: #050505;
+  }
+
+  /**
+   * New application-chrome.background.color design token
+   */
+  --gl-application-chrome-background-color: var(--gl-color-neutral-50);
+
+  &.gl-dark {
+    --gl-application-chrome-background-color: var(--gl-color-neutral-1000);
+  }
+
+  /**
+   * Panel shadow override
+   */
+  .paneled-view,
+  .paneled-view-portal {
+    @apply gl-shadow-sm;
+  }
+
+  /**
+   * Content panel override
+   * app/assets/stylesheets/page_bundles/boards.scss
+   */
+  .content-panels.is-focused {
+    background-color: var(--gl-application-chrome-background-color);
+  }
+
+  /**
+   * GlNavItem design token updates
+   */
+  --gl-nav-item-border-radius: var(--gl-action-border-radius);
+  --gl-nav-item-font-size: var(--gl-font-size-300);
+  --gl-nav-item-font-weight: 425;
+  --gl-nav-item-selected-font-weight: var(--gl-font-weight-bold);
+
+  --gl-nav-item-foreground-color-default: var(--gl-color-neutral-600);
+  --gl-nav-item-background-color-default: var(--gl-color-alpha-0);
+  --gl-nav-item-foreground-color-hover: var(--gl-color-neutral-950);
+  --gl-nav-item-background-color-hover: var(--gl-color-neutral-100);
+  --gl-nav-item-foreground-color-focus: var(--gl-nav-item-foreground-color-hover);
+  --gl-nav-item-background-color-focus: var(--gl-nav-item-background-color-hover);
+  --gl-nav-item-foreground-color-active: var(--gl-nav-item-foreground-color-focus);
+  --gl-nav-item-background-color-active: var(--gl-color-neutral-200);
+
+  --gl-nav-item-selected-foreground-color-default: var(--gl-color-neutral-950);
+  --gl-nav-item-selected-background-color-default: var(--gl-color-neutral-100);
+  --gl-nav-item-selected-foreground-color-hover: var(--gl-nav-item-foreground-color-hover);
+  --gl-nav-item-selected-background-color-hover: var(--gl-nav-item-background-color-hover);
+  --gl-nav-item-selected-foreground-color-focus: var(--gl-nav-item-foreground-color-focus);
+  --gl-nav-item-selected-background-color-focus: var(--gl-nav-item-background-color-focus);
+  --gl-nav-item-selected-foreground-color-active: var(--gl-nav-item-foreground-color-active);
+  --gl-nav-item-selected-background-color-active: var(--gl-nav-item-background-color-active);
+
+  &.gl-dark {
+    --gl-nav-item-foreground-color-default: var(--gl-color-neutral-200);
+    --gl-nav-item-background-color-default: var(--gl-color-alpha-0);
+    --gl-nav-item-foreground-color-hover: var(--gl-color-neutral-0);
+    --gl-nav-item-background-color-hover: var(--gl-color-neutral-900);
+    --gl-nav-item-foreground-color-focus: var(--gl-nav-item-foreground-color-hover);
+    --gl-nav-item-background-color-focus: var(--gl-nav-item-background-color-hover);
+    --gl-nav-item-foreground-color-active: var(--gl-nav-item-foreground-color-focus);
+    --gl-nav-item-background-color-active: var(--gl-color-neutral-950);
+
+    --gl-nav-item-selected-foreground-color-default: var(--gl-color-neutral-0);
+    --gl-nav-item-selected-background-color-default: var(--gl-color-neutral-900);
+    --gl-nav-item-selected-foreground-color-hover: var(--gl-nav-item-foreground-color-hover);
+    --gl-nav-item-selected-background-color-hover: var(--gl-nav-item-background-color-hover);
+    --gl-nav-item-selected-foreground-color-focus: var(--gl-nav-item-foreground-color-focus);
+    --gl-nav-item-selected-background-color-focus: var(--gl-nav-item-background-color-focus);
+    --gl-nav-item-selected-foreground-color-active: var(--gl-nav-item-foreground-color-active);
+    --gl-nav-item-selected-background-color-active: var(--gl-nav-item-background-color-active);
+  }
+
+  .gl-nav-item {
+    &.selected {
+      font-weight: var(--gl-nav-item-selected-font-weight);
+    }
+  }
+
+  // Selected indicator
+  .super-sidebar {
+    .gl-nav-item.selected::before {
+      @apply gl-absolute;
+      @apply -gl-left-3;
+      @apply gl-w-1;
+      @apply gl-top-2;
+      @apply gl-bottom-2;
+      @apply gl-rounded-r-default;
+      content: '';
+      background-color: currentColor;
+    }
+  }
+
+  .ai-navigation-rail {
+    .gl-nav-item {
+      @apply gl-text-strong;
+    }
+
+    .gl-nav-item.selected::before {
+      @apply gl-absolute;
+      @apply gl-h-1;
+      @apply gl-left-2;
+      @apply gl-right-2;
+      @apply -gl-bottom-[6px];
+      @apply gl-rounded-t-default;
+      @apply lg:gl-h-auto;
+      @apply lg:gl-w-1;
+      @apply lg:gl-left-auto;
+      @apply lg:-gl-right-[6px];
+      @apply lg:gl-top-2;
+      @apply lg:gl-bottom-2;
+      @apply lg:gl-rounded-l-default;
+      @apply lg:gl-rounded-tr-none;
+      content: '';
+      background-color: currentColor;
+    }
+  }
+
+  /**
+   * Duo chat message bubble color overrides
+   * app/assets/stylesheets/framework/duo_chat.scss
+   */
+  --duo-chat-bubble-foreground-color-default: var(--gl-color-neutral-800);
+  --duo-chat-bubble-background-color-default: var(--gl-color-neutral-50);
+
+  &.gl-dark {
+    --duo-chat-bubble-foreground-color-default: var(--gl-color-neutral-50);
+    --duo-chat-bubble-background-color-default: var(--gl-color-neutral-800);
+  }
+
+  &.ui-neutral {
+    --duo-chat-bubble-foreground-color-default: var(--gl-color-blue-800);
+    --duo-chat-bubble-background-color-default: var(--gl-color-blue-50);
+  }
+
+  &.ui-neutral.gl-dark {
+    --duo-chat-bubble-foreground-color-default: var(--gl-color-blue-50);
+    --duo-chat-bubble-background-color-default: var(--gl-color-blue-800);
+  }
+
+  /**
+   * Super sidebar overrides
+   * app/assets/stylesheets/framework/super_sidebar.scss
+   */
+  --super-sidebar-hr-border-color: var(--gl-color-neutral-100);
+  --super-sidebar-hr-mix-blend-mode: none;
+
+  &.gl-dark {
+    --super-sidebar-hr-border-color: var(--gl-color-neutral-900);
+    --super-sidebar-hr-mix-blend-mode: none;
+  }
+
+  .super-sidebar {
+    background-color: var(--gl-application-chrome-background-color);
+    @apply xl:gl-bg-transparent;
+  }
+
+  .super-sidebar-context-header {
+    color: inherit;
+  }
+
+  /**
+   * Application theme preview overrides
+   * app/assets/stylesheets/page_bundles/profiles/preferences.scss
+   */
+  .application-theme .preview {
+    --theme-preview-application-chrome-background-color: var(--gl-color-neutral-50);
+    --theme-preview-background-color-default: var(--gl-color-neutral-0);
+    --theme-preview-foreground-color-subtle: var(--gl-color-alpha-dark-8);
+    --theme-preview-foreground-color-default: var(--gl-color-alpha-dark-16);
+    --theme-preview-foreground-color-strong: var(--gl-color-alpha-dark-24);
+  }
+
+  &.gl-dark .application-theme .preview {
+    --theme-preview-application-chrome-background-color: var(--gl-color-neutral-1000);
+    --theme-preview-background-color-default: var(--gl-color-neutral-950);
+    --theme-preview-foreground-color-subtle: var(--gl-color-alpha-light-8);
+    --theme-preview-foreground-color-default: var(--gl-color-alpha-light-16);
+    --theme-preview-foreground-color-strong: var(--gl-color-alpha-light-24);
+  }
+
+  /**
+   * Bloom backgrounds
+   */
+
+  // The two bloom variants are rendered as fixed, full-viewport pseudo-element
+  // layers so toggling the AI panel cross-fades them via opacity instead of
+  // swapping a (non-animatable) background-image.
+  //
+  // The z-index: -1 layers stay visible because body's background-color
+  // propagates to the canvas (html has no background of its own), so body
+  // itself paints no background over them.
+  &.with-bloom body {
+    background-color: var(--gl-application-chrome-background-color);
+    // Override `.page-theme-background` background-image used to provide
+    // gradient with a solid application-chrome background color
+    background-image: none;
+
+    &::before,
+    &::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-repeat: no-repeat;
+
+      @media (prefers-reduced-motion: no-preference) {
+        transition: opacity 0.6s ease-in-out;
+      }
+    }
+
+    // Default view when AI features are available
+    &::before {
+      opacity: 0;
+
+      @include media-breakpoint-up(lg) {
+        background-image: url('blooms/bloom-side.png');
+        background-position: top right;
+        background-size: 350px 600px;
+        opacity: 1;
+      }
+    }
+
+    // AI panel is open
+    &::after {
+      background-image: url('blooms/bloom-bottom.png');
+      background-position: bottom right -300px;
+      background-size: 1200px 400px;
+      opacity: 0;
+    }
+  }
+
+  &.with-bloom.ai-panel-is-open body {
+    &::before {
+      opacity: 0;
+    }
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  // Sign in/up pages
+  &.html-devise-layout body {
+    background-color: var(--gl-application-chrome-background-color);
+    background-image: url('blooms/bloom-grand-ambient.png');
+    background-position: bottom center;
+    background-size: 1440px 525px;
+    background-repeat: no-repeat;
+  }
+
+  &.html-devise-layout .footer-container hr {
+    display: none;
+  }
+}

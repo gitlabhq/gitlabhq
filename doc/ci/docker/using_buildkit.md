@@ -317,17 +317,17 @@ In this example:
 Add a `CA_CERT` CI/CD variable with the full certificate chain, including the root and
 any intermediate certificates.
 Because PEM certificates contain newlines, the value of `CA_CERT` cannot be masked.
-To mask the value, use a [file-type variable](../../ci/variables/_index.md#use-file-type-cicd-variables)
+To mask the value, use a [file-type variable](../variables/_index.md#use-file-type-cicd-variables)
 instead and replace `echo "$CA_CERT"` with `cat "$CA_CERT"` in the `before_script`.
 
 If the target registry uses the same certificate authority as your GitLab instance, and the
 runner is configured with `tls-ca-file`, you can reference the predefined
-[`CI_SERVER_TLS_CA_FILE`](../../ci/variables/predefined_variables.md) variable instead of a
+[`CI_SERVER_TLS_CA_FILE`](../variables/predefined_variables.md) variable instead of a
 `CA_CERT` variable.
 
 ## Migrate from Kaniko to BuildKit
 
-BuildKit rootless is a secure alternative for Kaniko that offers improved performance, better
+BuildKit rootless is a secure alternative to Kaniko that offers improved performance, better
 caching, and enhanced security features without privileged containers.
 
 ### Update your configuration
@@ -378,7 +378,7 @@ You must configure CA certificates in a BuildKit configuration file before the d
 
 To migrate custom CA certificate configuration to BuildKit rootless:
 
-1. Store the full certificate chain in a [CI/CD variable](../../ci/variables/_index.md) named
+1. Store the full certificate chain in a [CI/CD variable](../variables/_index.md) named
    `CA_CERT`.
    Include the root and any intermediate certificates.
 

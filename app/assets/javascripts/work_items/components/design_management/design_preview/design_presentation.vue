@@ -57,7 +57,7 @@ export default {
       default: true,
     },
   },
-  emits: ['closeCommentForm', 'moveNote', 'openCommentForm'],
+  emits: ['move-note', 'open-comment-form'],
   data() {
     return {
       overlayDimensions: null,
@@ -237,15 +237,14 @@ export default {
     },
     openCommentForm(coordinates) {
       this.currentAnnotationPosition = this.getAnnotationPosition(coordinates);
-      this.$emit('openCommentForm', this.currentAnnotationPosition);
+      this.$emit('open-comment-form', this.currentAnnotationPosition);
     },
     closeCommentForm() {
       this.currentAnnotationPosition = null;
-      this.$emit('closeCommentForm');
     },
     moveNote({ noteId, discussionId, coordinates }) {
       const position = this.getAnnotationPosition(coordinates);
-      this.$emit('moveNote', { noteId, discussionId, position });
+      this.$emit('move-note', { noteId, discussionId, position });
     },
     onPresentationMousedown({ clientX, clientY }) {
       if (!this.isDesignOverflowing()) return;
@@ -337,9 +336,9 @@ export default {
         :disable-commenting="!isLoggedIn || isDraggingDesign || disableCommenting"
         :disable-notes="!isSidebarOpen"
         :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-        @openCommentForm="openCommentForm"
-        @closeCommentForm="closeCommentForm"
-        @moveNote="moveNote"
+        @open-comment-form="openCommentForm"
+        @close-comment-form="closeCommentForm"
+        @move-note="moveNote"
       />
     </div>
   </div>

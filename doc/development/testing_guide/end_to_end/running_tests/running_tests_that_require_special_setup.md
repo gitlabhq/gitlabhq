@@ -19,7 +19,7 @@ Some extra environment variables for the location of the forked repository are a
 - `QA_THIRD_PARTY_DOCKER_USER` (a username that has access to the container registry for this repository)
 - `QA_THIRD_PARTY_DOCKER_PASSWORD` (a password/token for the username to authenticate with)
 
-The test configures the GitLab plugin in Jenkins with a URL of the GitLab instance that are used
+The test configures the GitLab plugin in Jenkins with a URL of the GitLab instance that is used
 to run the tests. Bi-directional networking is needed between a GitLab instance and Jenkins, so GitLab can also be started in a Docker container.
 
 To start a Docker container for GitLab based on the nightly image:
@@ -44,7 +44,7 @@ export WEBDRIVER_HEADLESS=0
 bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
 ```
 
-The test automatically spins up a Docker container for Jenkins and tear down once the test completes.
+The test automatically spins up a Docker container for Jenkins and tears down once the test completes.
 
 If you need to run Jenkins manually outside of the tests, refer to the README for the
 [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public/-/blob/main/jenkins/README.md)

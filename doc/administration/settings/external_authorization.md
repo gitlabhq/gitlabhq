@@ -64,13 +64,6 @@ The external authorization service can be enabled by an administrator:
 
 ### Allow external authorization with deploy tokens and deploy keys
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
-- Deploy tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
-
-{{< /history >}}
-
 You can set your instance to allow external authorization for Git operations with
 [deploy tokens](../../user/project/deploy_tokens/_index.md) or [deploy keys](../../user/project/deploy_keys/_index.md).
 
@@ -127,7 +120,7 @@ When denying access, a `reason` can be optionally specified in the JSON body:
 }
 ```
 
-Any other status code than 200, 401 or 403 also deny access to the user, but the
+Any other status code than 200, 401, or 403 also deny access to the user, but the
 response isn't cached.
 
 If the service times out (after 500 ms), a message "External Policy Server did

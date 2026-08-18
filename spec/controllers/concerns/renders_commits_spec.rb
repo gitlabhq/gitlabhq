@@ -54,7 +54,7 @@ RSpec.describe RendersCommits do
 
       expect do
         go
-      end.not_to exceed_all_query_limit(control)
+      end.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
     end
   end
 
@@ -73,7 +73,7 @@ RSpec.describe RendersCommits do
       expect do
         subject.prepare_commits_for_rendering(merge_request.commits)
         merge_request.commits.each(&:latest_pipeline)
-      end.not_to exceed_all_query_limit(control)
+      end.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
     end
   end
 end

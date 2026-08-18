@@ -92,6 +92,12 @@ module Namespaces
       project.max_member_access_for_user(user)
     end
 
+    def member?(user, min_access_level = Gitlab::Access::GUEST)
+      return false unless user
+
+      max_member_access_for_user(user) >= min_access_level
+    end
+
     override :remove_ancestor_inherited_transitions?
     def remove_ancestor_inherited_transitions?
       Feature.enabled?(:remove_project_ancestor_inherited_transitions, project)

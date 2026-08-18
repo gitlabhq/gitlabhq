@@ -84,7 +84,7 @@ You can triage and debug issues raised by ArkoseLabs with:
 - The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb)
 - The [Arkose Labs Portal](https://portal.arkoselabs.com) (users can request access through the Okta portal)
 
-### Analysing Arkose Labs dashboard
+### Analyzing Arkose Labs dashboard
 
 - GitLab regularly sends session data to the Arkose team, which is used to apply custom
   telltales to prevent malicious users from signing up.
@@ -128,7 +128,10 @@ KQL: json.message:"Arkose*" AND json.username:replace_username_here
 
 ## Allowlists
 
-To ensure end-to-end QA test suites can pass during staging and production, we've [allowlisted](https://developer.arkoselabs.com/docs/verify-api-v4#creating-allowlists-and-denylists) the [GITLAB_QA_USER_AGENT](https://start.1password.com/open/i?a=LKATQYUATRBRDHRRABEBH4RJ5Y&v=6gq44ckmq23vqk5poqunurdgay&i=u2wvs63affaxzi22gnfbjjw2zm&h=gitlab.1password.com). Each QA user receives an `ALLOWLIST` [risk category](https://developer.arkoselabs.com/docs/risk-score).
+To ensure end-to-end QA test suites can pass during staging and production, we've
+[allowlisted](https://developer.arkoselabs.com/docs/verify-api-v4#creating-allowlists-and-denylists)
+the [`GITLAB_QA_USER_AGENT`](https://start.1password.com/open/i?a=LKATQYUATRBRDHRRABEBH4RJ5Y&v=6gq44ckmq23vqk5poqunurdgay&i=u2wvs63affaxzi22gnfbjjw2zm&h=gitlab.1password.com).
+Each QA user receives an `ALLOWLIST` [risk category](https://developer.arkoselabs.com/docs/risk-score).
 
 You can find the usage of the allowlist telltale in our [Arkose::VerifyResponse](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/verify_response.rb#L38) class.
 

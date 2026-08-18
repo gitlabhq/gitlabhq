@@ -35,6 +35,17 @@ module GroupsHelper
     Ability.allowed?(current_user, :invite_group_members, group)
   end
 
+  def can_create_organization_from_group_settings?(group)
+    return false unless Organizations::Release.enabled?(:create_org_from_group_settings, group)
+    return false unless group.root?
+    return false unless can?(current_user, :admin_group, group)
+
+    # Follow-up to consider moving this check to SaaS feature - https://gitlab.com/gitlab-org/gitlab/-/work_items/608261
+    return Gitlab.com? if Organizations::Organization.default?(group.organization_id) # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- self-managed can only have a single organization, see https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/decisions/007_self_managed_dedicated_single_organization/
+
+    group.organization.unconfirmed?
+  end
+
   def show_prevent_inviting_groups_outside_hierarchy_setting?(group)
     group.root?
   end

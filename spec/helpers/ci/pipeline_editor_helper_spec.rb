@@ -23,7 +23,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
   end
 
   describe '#js_pipeline_editor_data' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:default_helper_data) do
       {
         "ci-config-path": project.ci_config_path_or_default,

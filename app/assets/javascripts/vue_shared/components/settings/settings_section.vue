@@ -1,6 +1,9 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+
 export default {
   name: 'SettingsSection',
+  mixins: [glSlotsMixin],
   props: {
     heading: {
       type: String,
@@ -25,10 +28,10 @@ export default {
   },
   computed: {
     hasHeading() {
-      return this.$scopedSlots.heading || this.heading;
+      return this.glSlots().heading || this.heading;
     },
     hasDescription() {
-      return this.$scopedSlots.description || this.description;
+      return this.glSlots().description || this.description;
     },
   },
 };

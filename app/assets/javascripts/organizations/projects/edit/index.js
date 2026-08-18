@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import App from './components/app.vue';
@@ -16,7 +16,7 @@ export const initOrganizationsProjectsEdit = () => {
     { deep: true },
   );
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationProjectsEditRoot',
     provide: {
@@ -24,8 +24,6 @@ export const initOrganizationsProjectsEdit = () => {
       previewMarkdownPath,
       project,
     },
-    render(createElement) {
-      return createElement(App);
-    },
+    component: App,
   });
 };

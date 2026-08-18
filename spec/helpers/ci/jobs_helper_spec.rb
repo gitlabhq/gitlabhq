@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
   describe 'job helper functions' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:job) { create(:ci_build, project: project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:report) { create(:ci_build_report_result, build: job, project: project) }

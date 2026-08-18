@@ -31,7 +31,7 @@ describe('CustomEmailForm', () => {
   const findSmtpUsernameInput = () => findInputByTestId('form-smtp-username');
   const findSmtpPasswordInput = () => findInputByTestId('form-smtp-password');
   const findSmtpAuthenticationSelect = () => wrapper.findComponent(GlFormSelect).find('select');
-  const findSubmit = () => wrapper.findByTestId('form-submit');
+  const findSubmit = () => wrapper.findComponentByTestId('form-submit');
 
   const clickButtonAndExpectNoSubmitEvent = async () => {
     await nextTick();

@@ -171,6 +171,7 @@ export default {
         const treePath = normalizePath(tree.path || tree.name);
         const routerPath = buildURLwithRefType({
           path: joinPaths(
+            // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
             '/-/tree',
             this.escapedRef,
             treePath.split('/').map(encodeURIComponent).join('/'),
@@ -212,6 +213,7 @@ export default {
         const blobPath = normalizePath(blob.path);
         const routerPath = buildURLwithRefType({
           path: joinPaths(
+            // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
             '/-/blob',
             this.escapedRef,
             blobPath.split('/').map(encodeURIComponent).join('/'),
@@ -670,12 +672,12 @@ export default {
             }"
             :bold-text="isCurrentPath(item.path)"
             class="gl-relative !gl-mx-0"
-            @clickTree="onTreeClick(item)"
-            @toggleTree.stop="toggleDirectory(item.path)"
-            @clickSubmodule="handleClickSubmodule(item.webUrl)"
-            @clickFile="handleNavigate(item)"
-            @clickRow="onFileClick"
-            @showMore="handleShowMore(item.parentPath, $event)"
+            @click-tree="onTreeClick(item)"
+            @toggle-tree.stop="toggleDirectory(item.path)"
+            @click-submodule="handleClickSubmodule(item.webUrl)"
+            @click-file="handleNavigate(item)"
+            @click-row="onFileClick"
+            @show-more="handleShowMore(item.parentPath, $event)"
           />
           <div v-else data-placeholder-item class="gl-h-7" tabindex="-1"></div>
         </li>

@@ -236,7 +236,6 @@ module API
       optional :whats_new_variant, type: String, values: ApplicationSetting.whats_new_variants.keys, desc: "What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`."
       optional :floc_enabled, type: Grape::API::Boolean, desc: 'Enable FloC (Federated Learning of Cohorts)'
       optional :user_deactivation_emails_enabled, type: Boolean, desc: 'Send emails to users upon account deactivation'
-      optional :suggest_pipeline_enabled, type: Boolean, desc: 'Enable pipeline suggestion banner'
       optional :show_migrate_from_jenkins_banner, type: Boolean, desc: 'Enable Jenkins migration banner'
       optional :enable_artifact_external_redirect_warning_page, type: Boolean, desc: 'Show the external redirect page that warns you about user-generated content in GitLab Pages'
       optional :users_get_by_id_limit, type: Integer, desc: "Maximum number of calls to the /users/:id API per 10 minutes per user. Set to 0 for unlimited requests."
@@ -304,7 +303,9 @@ module API
 
       use :optional_params_ee
 
-      optional(*Helpers::SettingsHelpers.optional_attributes) # rubocop:disable API/ParameterDescription -- dynamic splat of optional_attributes, cannot add static desc
+      # rubocop:disable API/ParameterType, API/ParameterDescription -- `optional_attributes` is a dynamic value, cops do not recognise this pattern
+      optional(*Helpers::SettingsHelpers.optional_attributes)
+      # rubocop:enable API/ParameterType, API/ParameterDescription
       at_least_one_of(*Helpers::SettingsHelpers.optional_attributes)
     end
     route_setting :authorization, permissions: :update_application_setting, boundary_type: :instance

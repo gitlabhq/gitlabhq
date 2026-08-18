@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import RepositoryApp from '~/repository/components/app.vue';
@@ -10,20 +10,17 @@ export default function initRepositoryApp(router, options = {}) {
     blobPath,
     projectPath,
     refType,
-    targetBranch,
     originalBranch,
     resourceId,
-    userId,
     explainCodeAvailable,
     canDownloadCode,
     hasRevsFile,
     highlightWorker,
-    webIdeLinkData: { newWorkspacePath } = {},
   } = options;
 
   if (!viewBlobEl || !blobPath || !projectPath || !highlightWorker) return null;
 
-  return new Vue({
+  return initVueApp({
     el: viewBlobEl,
     name: 'RepositoryAppRoot',
     store: createStore(),
@@ -31,22 +28,16 @@ export default function initRepositoryApp(router, options = {}) {
     apolloProvider,
     provide: {
       highlightWorker,
-      targetBranch,
       originalBranch,
       resourceId,
-      userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       canDownloadCode: parseBoolean(canDownloadCode),
       hasRevsFile: parseBoolean(hasRevsFile),
-      newWorkspacePath,
     },
-    render(createElement) {
-      return createElement(RepositoryApp, {
-        props: {
-          projectPath,
-          refType,
-        },
-      });
+    component: RepositoryApp,
+    props: {
+      projectPath,
+      refType,
     },
   });
 }

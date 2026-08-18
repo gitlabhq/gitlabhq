@@ -4,7 +4,7 @@ require('spec_helper')
 
 RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token) }
+  let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token, organization: current_organization) }
   let_it_be_with_reload(:project_auto_devops) { create(:project_auto_devops, project: project) }
 
   context 'as a maintainer' do
@@ -140,7 +140,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           end
 
           context 'when the project repository is not empty' do
-            let(:project) { create(:project, :repository) }
+            let(:project) { create(:project, :repository, organization: current_organization) }
 
             it 'displays a toast message' do
               allow(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
@@ -239,7 +239,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             request
 
             project.reload
-            expect(project.ci_forward_deployment_enabled).to eq(false)
+            expect(project.ci_forward_deployment_enabled).to be(false)
           end
         end
 
@@ -398,9 +398,9 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
   end
 
   describe 'GET show' do
-    let_it_be(:parent_group) { create(:group) }
-    let_it_be(:group) { create(:group, parent: parent_group) }
-    let_it_be(:other_project) { create(:project, group: group) }
+    let_it_be(:parent_group) { create(:group, organization: current_organization) }
+    let_it_be(:group) { create(:group, parent: parent_group, organization: current_organization) }
+    let_it_be(:other_project) { create(:project, group: group, organization: current_organization) }
 
     subject(:request) do
       get :show, params: { namespace_id: project.namespace, project_id: project }
@@ -437,6 +437,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             additional_details: hash_including(
               project_path: project.full_path,
               project_id: project.id,
+              organization_id: project.organization_id,
               ip_address: '0.0.0.0',
               timestamp: kind_of(String),
               action: 'project_ci_cd_settings_page_viewed'

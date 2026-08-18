@@ -2,7 +2,6 @@
 - breadcrumb_title @user.name
 - page_title _('Impersonation Tokens'), @user.name, _('Users')
 - type = _('impersonation token')
-- type_plural = _('impersonation tokens')
 
 = render 'admin/users/head'
 
@@ -31,4 +30,4 @@
       help_path: help_page_path('api/rest/authentication.md', anchor: 'impersonation-tokens')
 
   - c.with_body do
-    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_impersonation_tokens.to_json } }
+    #js-access-token-table-app{ data: { access_token_type: type, no_active_tokens_message: _('This user has no active impersonation tokens.'), initial_active_access_tokens: @active_impersonation_tokens.to_json } }

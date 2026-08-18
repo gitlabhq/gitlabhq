@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'gitlab-glfm-markdown'
+require 'gitlab/heading_slug'
 
 # Use the gitlab-glfm-markdown gem (https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown)
 # to interface with the Rust-based Comrak parser (https://github.com/kivikakk/comrak).
@@ -22,7 +23,7 @@ module Banzai
           full_info_string: true,
           hardbreaks: false,
           header_accessibility: true,
-          header_ids: Banzai::Renderer::USER_CONTENT_ID_PREFIX,
+          header_id_prefix: Banzai::Renderer::USER_CONTENT_ID_PREFIX,
           inapplicable_tasks: true,
           math_code: true,
           math_dollars: true,
@@ -67,8 +68,15 @@ module Banzai
 
         def render_options
           customized_options.merge(
-              github_pre_lang: Feature.disabled?(:use_css_language_classes, resolve_project)
-            )
+            github_pre_lang: Feature.disabled?(:use_css_language_classes, resolve_project),
+            header_slug_prefix: filename_prefix
+          )
+        end
+
+        def filename_prefix
+          return unless context[:use_filename_in_anchor]
+
+          Gitlab::HeadingSlug.prefix_from_file_path(context[:requested_path])
         end
 
         def customized_options
@@ -76,7 +84,7 @@ module Banzai
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
-            header_ids: headers_disabled? ? nil : OPTIONS[:header_ids],
+            header_id_prefix: headers_disabled? ? nil : OPTIONS[:header_id_prefix],
             autolink: !autolink_disabled?,
             relaxed_autolinks: !autolink_disabled?,
             placeholder_detection: !placeholders_disabled?,

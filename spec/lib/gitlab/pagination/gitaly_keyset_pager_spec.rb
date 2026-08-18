@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Pagination::GitalyKeysetPager, feature_category: :source_code_management do
   let(:pager) { described_class.new(request_context, project) }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:request_context) { double("request context") }
   let(:finder) { double("branch finder") }

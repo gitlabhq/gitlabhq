@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Diff::PositionTracer::FileStrategy, feature_category: :code_review_workflow do
   include PositionTracerHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:current_user) { project.first_owner }
   let(:file_name) { 'test-file' }
   let(:new_file_name) { "#{file_name}-new" }

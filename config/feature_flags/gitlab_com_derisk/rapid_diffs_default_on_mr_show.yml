@@ -1,0 +1,10 @@
+---
+name: rapid_diffs_default_on_mr_show
+description: Makes Rapid Diffs the default experience on the merge request Changes tab, with the in-MR toggle becoming an opt-out back to legacy diffs
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/602723
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247629
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/609355
+milestone: '19.3'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

@@ -64,15 +64,10 @@ For the [GitLab for Jira Cloud app](connect-app.md), the following information i
 
 | GitLab: where you mention the Jira issue ID | Jira development panel: what information is displayed |
 |---------------------------------------------|-------------------------------------------------------|
-| Merge request title or description          | Link to the merge request<br>Link to the deployment<br>Link to the pipeline through the merge request title<br>Link to the pipeline through the merge request description ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10)<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11)<br>Reviewer information and approval status ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364273) in GitLab 16.5) |
+| Merge request title or description          | Link to the merge request<br>Link to the deployment<br>Link to the pipeline through the merge request title<br>Link to the pipeline through the merge request description<br>Link to the branch<br>Reviewer information and approval status |
 | Branch name                                 | Link to the branch<br>Link to the deployment          |
-| Commit message                              | Link to the commit<br>Link to the deployment from up to 2,000 commits after the last successful deployment to the environment <sup>1</sup> <sup>2</sup> |
+| Commit message                              | Link to the commit<br>Link to the deployment from up to 2,000 commits after the last successful deployment to the environment |
 | [Jira Smart Commit](#jira-smart-commits)    | Custom comment, logged time, or workflow transition   |
-
-**Footnotes**:
-
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_deployment_issue_keys`. Enabled by default.
-1. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415025) in GitLab 16.3. Feature flag `jira_deployment_issue_keys` removed.
 
 ## Jira Smart Commits
 

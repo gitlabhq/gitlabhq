@@ -11,8 +11,10 @@ module Organizations
     include Organizations::Stateful
     include Cells::Claimable
 
-    cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, feature_flag: :cells_claims_organizations
-    cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::ORGANIZATION_IDS, feature_flag: :cells_claims_organizations
+    cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_PATH,
+      feature_flag: :cells_claims_organizations
+    cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ORGANIZATION_ID,
+      feature_flag: :cells_claims_organizations
 
     cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :id
 
@@ -130,14 +132,6 @@ module Organizations
 
     def empty?
       groups.none? && projects.none?
-    end
-
-    # Single source of truth for "is this organization read-only AND is the
-    # enforcement feature flag enabled for it?". The request-level enforcement
-    # concern, the OAuth new-user guard, and the API helpers all call this so
-    # the cutover-safety decision cannot drift between call sites.
-    def read_only_enforced?
-      read_only? && Feature.enabled?(:organization_read_only_enforcement, self)
     end
 
     def to_param

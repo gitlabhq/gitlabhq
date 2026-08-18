@@ -47,6 +47,12 @@ module RapidDiffs
       merge_request.target_branch
     end
 
+    expose :merge_head?, as: :is_head, if: ->(diff, _) { latest_or_merge_head?(diff) }
+
+    expose :is_base, if: ->(diff, _) { latest_or_merge_head?(diff) } do |merge_request_diff|
+      !merge_request_diff.merge_head?
+    end
+
     private
 
     def compare_path(merge_request_diff)

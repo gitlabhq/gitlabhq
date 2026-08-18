@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLabのGitコミットのためのREST APIのドキュメント
 title: コミットAPI
 ---
@@ -13,18 +13,18 @@ title: コミットAPI
 
 {{< /details >}}
 
-このAPIを使用して、[Gitコミット](../user/project/repository/commits/_index.md)を管理します。
+このAPIを使用して[Gitコミット](../user/project/repository/commits/_index.md)を管理します。
 
 ## 応答 {#responses}
 
-このAPIからの応答に含まれる日付フィールドの一部で、情報が重複しているか、またはそのように見えることがあります:
+このAPIからの応答に含まれる日付フィールドの一部で、情報が重複しているか、またはそのように見えることがあります。
 
 - `created_at`フィールドは、他のGitLab APIとの整合性だけを目的として存在しています。常に`committed_date`フィールドと同一です。
 - `committed_date`フィールドと`authored_date`フィールドは異なるソースから生成されるため、同一ではない場合があります。
 
 ### ページネーションレスポンスヘッダー {#pagination-response-headers}
 
-パフォーマンス上の理由から、GitLabはコミットAPIのレスポンスで以下のヘッダーを返しません:
+パフォーマンス上の理由から、GitLabはコミットAPIのレスポンスで以下のヘッダーを返しません。
 
 - `x-total`
 - `x-total-pages`
@@ -32,6 +32,12 @@ title: コミットAPI
 詳細については、[イシュー389582](https://gitlab.com/gitlab-org/gitlab/-/issues/389582)を参照してください。
 
 ## リポジトリコミットをリストする {#list-repository-commits}
+
+{{< history >}}
+
+- `follow`がGitLab 18.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225733)されました。
+
+{{< /history >}}
 
 プロジェクト内のリポジトリコミットのリストを取得します。
 
@@ -41,10 +47,11 @@ GET /projects/:id/repository/commits
 
 | 属性      | 型           | 必須 | 説明 |
 |----------------|----------------|----------|-------------|
-| `id`           | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `all`          | ブール値        | いいえ       | リポジトリからすべてのコミットを取得します。`true`の場合、`ref_name`パラメータは無視されます。 |
 | `author`       | 文字列         | いいえ       | コミット作成者でコミットを検索します。 |
 | `first_parent` | ブール値        | いいえ       | `true`の場合、マージコミットが確認されたら、最初の親コミットのみをフォローします。 |
+| `follow`       | ブール値        | いいえ       | `true`の場合、`path`によるコミットのフィルタリング時にファイル名の変更を追跡し、ファイルが名前変更された場合でもそのファイルのコミットを返します。`false`の場合、ファイルが現在のパスに存在したコミットのみを返します。`path`が単一のファイルを指定している場合にのみ使用されます。`true`がデフォルトです。 |
 | `order`        | 文字列         | いいえ       | コミットを順にリストします。使用可能な値は`default`、[`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order)です。デフォルトは`default`で、コミットは逆時系列順に表示されます。 |
 | `path`         | 文字列         | いいえ       | ファイルのパス。 |
 | `ref_name`     | 文字列         | いいえ       | リポジトリのブランチ、タグ、またはリビジョン範囲の名前。指定されていない場合はデフォルトのブランチの名前です。 |
@@ -53,7 +60,7 @@ GET /projects/:id/repository/commits
 | `until`        | 文字列         | いいえ       | この日付以前のコミットのみがISO 8601形式（`YYYY-MM-DDTHH:MM:SSZ`）で返されます。 |
 | `with_stats`   | ブール値        | いいえ       | `true`の場合、各コミットに関する統計情報を取得します。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性           | 型   | 説明 |
 |---------------------|--------|-------------|
@@ -78,7 +85,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -128,7 +135,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 複数のファイルとアクションを含むコミットを作成する {#create-a-commit-with-multiple-files-and-actions}
+## コミットを作成する {#create-a-commit}
+
+{{< history >}}
+
+- `allow_empty`がGitLab 18.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211520)されました。
+- リクエストサイズとレート制限がGitLab 18.7で導入されました。
+
+{{< /history >}}
 
 JSONペイロードを送信することでコミットを作成します。
 
@@ -136,31 +150,42 @@ JSONペイロードを送信することでコミットを作成します。
 POST /projects/:id/repository/commits
 ```
 
-| 属性        | 型           | 必須 | 説明 |
-|------------------|----------------|----------|-------------|
-| `actions[]`      | 配列          | はい      | バッチとしてコミットするアクションハッシュの配列。取れる属性については、次の表を参照してください。 |
-| `branch`         | 文字列         | はい      | コミット先のブランチの名前。新しいブランチを作成するには、`start_branch`または`start_sha`を指定します。また、オプションで`start_project`も指定できます。 |
-| `commit_message` | 文字列         | はい      | コミットメッセージ。 |
-| `id`             | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `author_email`   | 文字列         | いいえ       | コミットの作成者のメールアドレスを指定します。 |
-| `author_name`    | 文字列         | いいえ       | コミットの作成者の名前を指定します。 |
-| `force`          | ブール値        | いいえ       | `true`の場合、`start_branch`または`start_sha`に基づく新しいコミットでターゲットブランチを上書きします。 |
-| `start_branch`   | 文字列         | いいえ       | 新しいブランチの開始元となるブランチの名前。 |
-| `start_project`  | 整数または文字列 | いいえ       | 新しいブランチの開始元となるプロジェクトのプロジェクトIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。デフォルトは`id`の値です。 |
-| `start_sha`      | 文字列         | いいえ       | 新しいブランチの開始元となるコミットのSHA。 |
-| `stats`          | ブール値        | いいえ       | コミット統計を含めます。デフォルトは`true`です。 |
+> [!note]
+> このエンドポイントには[リクエストサイズとレート制限](../administration/instance_limits.md#commits-and-files-api-limits)が適用されます。デフォルトの300 MBの制限を超えるリクエストは拒否されます。20 MBを超えるリクエストは、30秒ごとに3つのリクエストにレート制限されます。
+
+| 属性        | 型              | 必須 | 説明 |
+|------------------|-------------------|----------|-------------|
+| `branch`         | 文字列            | はい      | コミット先のブランチの名前。新しいブランチを作成するには、`start_branch`または`start_sha`を指定します。また、オプションで`start_project`も指定できます。 |
+| `commit_message` | 文字列            | はい      | コミットメッセージ。 |
+| `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `actions[]`      | 配列             | いいえ       | バッチとしてコミットするアクションハッシュの配列。取れる属性については、次の表を参照してください。 |
+| `allow_empty`    | ブール値           | いいえ       | `true`の場合、空のコミットを作成します。デフォルトは`false`です。 |
+| `author_email`   | 文字列            | いいえ       | コミットの作成者のメールアドレスを指定します。 |
+| `author_name`    | 文字列            | いいえ       | コミットの作成者の名前を指定します。 |
+| `force`          | ブール値           | いいえ       | `true`の場合、`branch`を`start_branch`または`start_sha`に基づく新しいコミットで上書きし、ブランチの既存のコミット履歴を置き換えます。デフォルトは`false`です。<sup>1</sup> |
+| `start_branch`   | 文字列            | いいえ       | 新しいコミットの親として使用するブランチ名。指定されておらず、`start_sha`も指定されていない場合、`branch`の値がデフォルトとなります。`start_sha`と相互に排他的です。<sup>1</sup> |
+| `start_project`  | 整数または文字列 | いいえ       | `start_branch`または`start_sha`のソースとして使用するプロジェクトIDまたは[プロジェクトのURLエンコードされたパス](rest/_index.md#namespaced-paths)。デフォルトは`id`の値です。 |
+| `start_sha`      | 文字列            | いいえ       | 新しいコミットの親として使用するコミットのSHA。40文字の完全なSHAである必要があります。`start_branch`と相互に排他的です。<sup>1</sup> |
+| `stats`          | ブール値           | いいえ       | コミット統計を含めます。デフォルトは`true`です。 |
+
+**補足説明**: 
+
+1. `force`が`true`の場合、異なる親コミットを指定するために`start_branch`または`start_sha`を提供します。どちらも指定されていない場合、`start_branch`は`branch`の値にデフォルト設定され、新しいコミットは現在のブランチの先端に基づきます。その場合、結果は通常のコミットと同じになるため、`force`は効果がありません。
+
+> [!note]
+> 多くのアクションを含む大規模なリクエストには、サイズ制限が適用される場合があります。詳細については、[コミットAPIの制限](../administration/instance_limits.md#commits-and-files-api-limits)を参照してください。
 
 | `actions[]`属性 | 型    | 必須 | 説明 |
 |-----------------------|---------|----------|-------------|
 | `action`              | 文字列  | はい      | 実行するアクション: `create`、`delete`、`move`、`update`、または`chmod`。 |
-| `file_path`           | 文字列  | はい      | ファイルのフルパス。例: `lib/class.rb`。 |
+| `file_path`           | 文字列  | はい      | ファイルのフルパス。たとえば、`lib/class.rb`などです。 |
 | `content`             | 文字列  | いいえ       | ファイルの内容。`delete`、`chmod`、`move`を除くすべての場合に必須です。移動アクションで`content`が指定されていない場合、既存のファイルコンテンツが保持されます。`content`以外の値の場合、ファイルの内容が上書きされます。 |
 | `encoding`            | 文字列  | いいえ       | `text`または`base64`。`text`がデフォルトです。 |
 | `execute_filemode`    | ブール値 | いいえ       | `true`の場合、ファイルの実行フラグを有効にします。`false`の場合、無効になります。`chmod`アクションの場合のみ考慮されます。 |
 | `last_commit_id`      | 文字列  | いいえ       | 既知の最新のファイルコミットID。update、move、およびdeleteアクションでのみ考慮されます。 |
-| `previous_path`       | 文字列  | いいえ       | 移動されるファイルの元のフルパス。例: `lib/class1.rb`。`move`アクションの場合のみ考慮されます。 |
+| `previous_path`       | 文字列  | いいえ       | 移動されるファイルの元のフルパス。たとえば、`lib/class1.rb`などです。`move`アクションの場合のみ考慮されます。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -222,7 +247,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -250,7 +275,7 @@ curl --request POST \
 }
 ```
 
-GitLabは[フォームエンコード](rest/_index.md#array-and-hash-types)をサポートしています。次に、フォームエンコードでCommits APIを使用する例を示します:
+GitLabは[フォームエンコード](rest/_index.md#array-and-hash-types)をサポートしています。次に、フォームエンコードでCommits APIを使用する例を示します。
 
 ```shell
 curl --request POST \
@@ -276,9 +301,9 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
-## 1つのコミットを取得する {#get-a-single-commit}
+## コミットを取得する {#retrieve-a-commit}
 
-ブランチまたはタグのコミットハッシュまたは名前で識別される特定のコミットを取得します。
+コミットハッシュ、またはブランチ名/タグ名で識別される指定されたコミットを取得します。
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha
@@ -288,11 +313,11 @@ GET /projects/:id/repository/commits/:sha
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 | `stats`   | ブール値        | いいえ       | コミット統計を含めます。デフォルトは`true`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -318,7 +343,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -352,9 +377,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## コミットのプッシュ先の参照を取得する {#get-references-a-commit-is-pushed-to}
+## コミットがプッシュされるすべての参照をリスト表示する {#list-all-references-a-commit-is-pushed-to}
 
-コミットのプッシュ先の参照をすべて（ブランチまたはタグから）を取得します。ページネーションパラメータ`page`と`per_page`を使用して、参照のリストを制限できます。
+すべての参照（ブランチまたはタグから）コミットがプッシュされるものをリスト表示します。ページネーションパラメータ`page`と`per_page`を使用して、参照のリストを制限できます。
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/refs
@@ -364,11 +389,11 @@ GET /projects/:id/repository/commits/:sha/refs
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | コミットハッシュ。 |
 | `type`    | 文字列         | いいえ       | コミットのスコープ。使用可能な値は`branch`、`tag`、`all`です。デフォルトは`all`です。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
@@ -380,7 +405,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -423,11 +448,11 @@ GET /projects/:id/repository/commits/:sha/sequence
 
 | 属性      | 型           | 必須 | 説明 |
 |----------------|----------------|----------|-------------|
-| `id`           | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`           | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`          | 文字列         | はい      | コミットハッシュ。 |
 | `first_parent` | ブール値        | いいえ       | `true`の場合、マージコミットが確認されたら、最初の親コミットのみをフォローします。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性 | 型 | 説明 |
 | --------- | ---- | ----------- |
@@ -440,7 +465,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/sequence"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -461,12 +486,12 @@ POST /projects/:id/repository/commits/:sha/cherry_pick
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `branch`  | 文字列         | はい      | ブランチの名前 |
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | コミットハッシュ。 |
 | `dry_run` | ブール値        | いいえ       | `true`の場合、変更をコミットしません。デフォルトは`false`です。 |
 | `message` | 文字列         | いいえ       | 新しいコミットに使用するカスタムコミットメッセージ。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -491,7 +516,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/cherry_pick"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -513,7 +538,7 @@ curl --request POST \
 }
 ```
 
-チェリーピックが失敗した場合、応答はその理由に関するコンテキストを提供します:
+チェリーピックが失敗した場合、応答はその理由に関するコンテキストを提供します。
 
 ```json
 {
@@ -524,7 +549,7 @@ curl --request POST \
 
 ここでは、チェンジセットが空であるためにチェリーピックが失敗しています。そして、コミットがターゲットブランチにすでに存在する可能性を示しています。エラーコードとして返される可能性があるもう1つのものは`conflict`です。これはマージコンフリクトが発生していたことを示します。
 
-`dry_run`が有効になっている場合、サーバーはチェリーピックの適用を試みます_が、実際には結果の変更をコミットしません_。チェリーピックが正常に適用されると、APIは`200 OK`で応答します:
+`dry_run`が有効になっている場合、サーバーはチェリーピックの適用を試みます_が、実際には結果の変更をコミットしません_。チェリーピックが正常に適用されると、APIは`200 OK`で応答します。
 
 ```json
 {
@@ -547,11 +572,11 @@ POST /projects/:id/repository/commits/:sha/revert
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
 | `branch`  | 文字列         | はい      | ターゲットブランチ名。 |
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | リバートするコミットSHA。 |
 | `dry_run` | ブール値        | いいえ       | `true`の場合、変更をコミットしません。デフォルトは`false`です。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性         | 型   | 説明 |
 |-------------------|--------|-------------|
@@ -576,7 +601,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -598,7 +623,7 @@ curl --request POST \
 }
 ```
 
-リバートが失敗した場合、応答はその理由に関するコンテキストを提供します:
+リバートが失敗した場合、応答はその理由に関するコンテキストを提供します。
 
 ```json
 {
@@ -609,7 +634,7 @@ curl --request POST \
 
 上記の例では、試行されたリバートによってマージコンフリクトが発生したためにリバートが失敗しました。返される可能性があるもう1つのエラーコードは`empty`です。これは、変更がすでにリバートされているために、チェンジセットが空であることを示しています。
 
-`dry_run`が有効になっている場合、サーバーはリバートの適用を試みますが、_実際には結果の変更をコミットしません_。リバートが正常に適用されると、APIは`200 OK`で応答します:
+`dry_run`が有効になっている場合、サーバーはリバートの適用を試みますが、_実際には結果の変更をコミットしません_。リバートが正常に適用されると、APIは`200 OK`で応答します。
 
 ```json
 {
@@ -619,7 +644,7 @@ curl --request POST \
 
 失敗した場合、ドライランなしの失敗と同じエラーが表示されます。
 
-## コミットの差分を取得 {#get-commit-diff}
+## コミット差分を取得する {#retrieve-commit-diff}
 
 {{< history >}}
 
@@ -637,35 +662,14 @@ GET /projects/:id/repository/commits/:sha/diff
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 | `unidiff` | ブール値        | いいえ       | `true`の場合、[unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)形式で差分を表示します。デフォルトは`false`です。GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610)されました。 |
 
-{{< alert type="note" >}}
+> [!note]
+> このエンドポイントには[差分制限](../administration/diff_limits.md)が適用されます。コミットが設定された最大ファイル数を超えると、ページネーションは停止し、制限を超えて追加のファイルは返されません。GitLab.comの特定の制限については、[差分表示の制限](../user/gitlab_com/_index.md#diff-display-limits)を参照してください。
 
-このエンドポイントには、[差分の制限](../administration/diff_limits.md)が適用されます。コミットが構成された最大ファイル数を超えると、ページネーションが停止し、制限を超えて追加のファイルが返されなくなります。GitLab.com固有の制限については、[差分の表示制限](../user/gitlab_com/_index.md#diff-display-limits)を参照してください。
-
-{{< /alert >}}
-
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
-
-| 属性      | 型    | 説明 |
-|----------------|---------|-------------|
-| `a_mode`       | 文字列  | 変更前のファイルモード。 |
-| `b_mode`       | 文字列  | 変更後のファイルモード。 |
-| `deleted_file` | ブール値 | `true`の場合、ファイルは削除されています。 |
-| `diff`         | 文字列  | 差分の内容。 |
-| `new_file`     | ブール値 | `true`の場合、これは新しいファイルです。 |
-| `new_path`     | 文字列  | ファイルの新しいパス。 |
-| `old_path`     | 文字列  | ファイルの古いパス。 |
-| `renamed_file` | ブール値 | `true`の場合、ファイルの名前が変更されています。 |
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
-```
-
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性      | 型    | 説明 |
 |----------------|---------|-------------|
@@ -680,7 +684,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 | `renamed_file` | ブール値 | ファイルの名前が変更されました。 |
 | `too_large`    | ブール値 | ファイルの差分は除外され、取得できません。 |
 
-レスポンス例:
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
+```
+
+レスポンス例: 
 
 ```json
 [
@@ -699,9 +708,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## コミットコメントを取得 {#get-commit-comments}
+## すべてのコミットコメントをリスト表示する {#list-all-commit-comments}
 
-プロジェクト内のコミットのコメントを取得します。
+プロジェクト内のコミットのすべてのコメントをリスト表示します。
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/comments
@@ -711,10 +720,10 @@ GET /projects/:id/repository/commits/:sha/comments
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列         | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
@@ -726,7 +735,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/comments"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -746,11 +755,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## コミットにコメントを投稿する {#post-comment-to-commit}
 
-コミットにコメントを追加します。
+コミットにコメントを作成します。
 
 特定のファイルの特定の行にコメントを投稿するには、完全なコミットSHA、`path`、`line`を指定する必要があり、`line_type`は`new`である必要があります。
 
-以下の1つ以上のケースに該当する場合、コメントは最終コミットの終わりに追加されます:
+以下の1つ以上のケースに該当する場合、コメントは最終コミットの終わりに追加されます。
 
 - ブランチまたはタグの代わりに`sha`があり、`line`または`path`が無効である。
 - `line`番号が無効である（存在しない）。
@@ -758,7 +767,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 上記のいずれの場合も、`line`、`line_type`、`path`の応答は`null`に設定されます。
 
-マージリクエストへコメントするその他の方法については、Notes APIの[新しいマージリクエストノートを作成する](notes.md#create-new-merge-request-note) 、およびDiscussions APIの[マージリクエスト差分に新しいスレッドを作成する](discussions.md#create-a-new-thread-in-the-merge-request-diff)を参照してください。
+マージリクエストにコメントする他のアプローチについては、ノートAPIの[マージリクエストノートを作成する](notes.md#create-a-merge-request-note)、およびディスカッションAPIの[マージリクエスト差分に新しいスレッドを作成する](discussions.md#create-a-new-thread-in-the-merge-request-diff)を参照してください。
 
 ```plaintext
 POST /projects/:id/repository/commits/:sha/comments
@@ -766,14 +775,14 @@ POST /projects/:id/repository/commits/:sha/comments
 
 | 属性   | 型           | 必須 | 説明 |
 |-------------|----------------|----------|-------------|
-| `id`        | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`        | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `note`      | 文字列         | はい      | コメントのテキスト。 |
 | `sha`       | 文字列         | はい      | リポジトリのブランチまたはタグのコミットSHAまたは名前。 |
 | `line`      | 整数        | いいえ       | コメントを配置する行の番号。 |
 | `line_type` | 文字列         | いいえ       | 行のタイプ。引数として`new`または`old`を取ります。 |
 | `path`      | 文字列         | いいえ       | リポジトリを基準とした相対的なパス。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性    | 型    | 説明 |
 |--------------|---------|-------------|
@@ -794,7 +803,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -814,9 +823,9 @@ curl --request POST \
 }
 ```
 
-## コミットディスカッションを取得 {#get-commit-discussions}
+## すべてのコミットディスカッションをリスト表示する {#list-all-commit-discussions}
 
-プロジェクト内のコミットのディスカッションを取得します。
+プロジェクト内のコミットのすべてのディスカッションをリスト表示します。
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/discussions
@@ -826,10 +835,10 @@ GET /projects/:id/repository/commits/:sha/discussions
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id`      | 整数または文字列 | はい | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列 | はい | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性         | 型    | 説明 |
 |-------------------|---------|-------------|
@@ -842,7 +851,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/4604744a1c64de00ff62e1e8a6766919923d2b41/discussions"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -908,7 +917,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `sort`        | 文字列            | いいえ       | ステータスを昇順または降順でソートします。有効な値は`asc`と`desc`です。デフォルトは`asc`です。 |
 | `stage`       | 文字列            | いいえ       | [Buildステージ](../ci/yaml/_index.md#stages)でステータスをフィルタリングします。たとえば`test`などです。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性       | 型    | 説明 |
 |-----------------|---------|-------------|
@@ -930,7 +939,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -983,27 +992,24 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### コミットパイプラインステータスを設定 {#set-commit-pipeline-status}
 
-`external`ステージングのジョブによって表されるコミットのステータスを追加または更新します。コミットがマージリクエストに関連付けられている場合、ターゲットはマージリクエストのソースブランチのコミットにしてください。
+`external`ステージのジョブによって表されるコミットのステータスを追加または更新します。コミットがマージリクエストに関連付けられている場合、マージリクエストのソースブランチ内のコミットをターゲットとします。
 
 コミットステータスを設定する場合:
 
 - 既存のパイプラインが最初に検索され、ジョブが追加されます。
-- 適切なパイプラインが存在しない場合、`CI_PIPELINE_SOURCE: external`を指定して新しいパイプラインが作成されます。
+- 適切なパイプラインが存在しない場合、`CI_PIPELINE_SOURCE: external`で新しいパイプラインが作成されます。
 
 詳細については、[外部コミットステータス](../ci/ci_cd_for_external_repos/external_commit_statuses.md)を参照してください。
 
-{{< alert type="note" >}}
+> [!note]
+> 同じコミットに対して重複するパイプラインが存在する場合、どのパイプラインが外部ステータスを受け取るかが曖昧になる可能性があります。パイプラインを[重複を避ける](../ci/jobs/job_rules.md#avoid-duplicate-pipelines)ように設定します。
 
-同じコミットに対して重複するパイプラインが存在する場合、どのパイプラインが外部ステータスを受信するかが不明確になる可能性があります。[重複を避ける](../ci/jobs/job_rules.md#avoid-duplicate-pipelines)ようにパイプラインを構成します。
-
-{{< /alert >}}
-
-[1つのパイプラインのジョブ最大数制限](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline)をすでに超えているパイプラインが存在する場合は、以下のとおりとなります:
+[1つのパイプラインのジョブ最大数制限](../administration/cicd/limits.md#maximum-number-of-jobs-in-a-pipeline)をすでに超えているパイプラインが存在する場合は、以下のとおりとなります。
 
 - `pipeline_id`が指定されている場合は`422`エラー（`The number of jobs has exceeded the limit`）が返されます。
 - それ以外の場合は、新しいパイプラインが作成されます。
 
-SHA/refsの組み合わせに対して更新が既に進行中の場合、`409`エラーが返されます。このエラーを処理するには、リクエストを再試行してください。
+SHA/参照の組み合わせに対する更新がすでに進行中の場合、`409`エラーが返されます。このエラーを処理するには、リクエストを再試行してください。
 
 ```plaintext
 POST /projects/:id/statuses/:sha
@@ -1011,7 +1017,7 @@ POST /projects/:id/statuses/:sha
 
 | 属性           | 型              | 必須 | 説明 |
 |---------------------|-------------------|----------|-------------|
-| `id`                | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`               | 文字列            | はい      | コミットSHA。 |
 | `state`             | 文字列            | はい      | ステータスの状態。`pending`、`running`、`success`、`failed`、`canceled`、`skipped`のいずれかになります。 |
 | `coverage`          | 浮動小数点数             | いいえ       | 合計コードカバレッジ。 |
@@ -1021,7 +1027,7 @@ POST /projects/:id/statuses/:sha
 | `ref`               | 文字列            | いいえ       | ステータスが参照する`ref`（ブランチまたはタグ）。255文字以下にする必要があります。 |
 | `target_url`        | 文字列            | いいえ       | このステータスに関連付けるターゲットURL。255文字以下にする必要があります。 |
 
-成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性       | 型    | 説明 |
 |-----------------|---------|-------------|
@@ -1045,7 +1051,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1088,11 +1094,11 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列            | はい      | コミットSHA。 |
 | `state`   | 文字列            | いいえ       | 指定された状態（`opened`、`closed`、`locked`、または`merged`）のマージリクエストを返します。このパラメータを省略すると、状態に関係なく、すべてのマージリクエストが取得されます。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性                      | 型    | 説明 |
 |--------------------------------|---------|-------------|
@@ -1101,7 +1107,7 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `created_at`                   | 文字列  | マージリクエストが作成された日付。 |
 | `description`                  | 文字列  | マージリクエストの説明。 |
 | `discussion_locked`            | ブール値 | `true`の場合、ディスカッションはロックされます。 |
-| `downvotes`                    | 整数 | 同意しないの数。 |
+| `downvotes`                    | 整数 | 不同意の数。 |
 | `draft`                        | ブール値 | `true`の場合、マージリクエストはドラフトです。 |
 | `force_remove_source_branch`   | ブール値 | `true`の場合、ソースブランチの削除を強制します。 |
 | `id`                           | 整数 | マージリクエストのID。 |
@@ -1123,7 +1129,7 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `time_stats`                   | オブジェクト  | タイムトラッキングの統計。 |
 | `title`                        | 文字列  | マージリクエストのタイトル。 |
 | `updated_at`                   | 文字列  | マージリクエストが最後に更新された日時。 |
-| `upvotes`                      | 整数 | 「同意する」の数。 |
+| `upvotes`                      | 整数 | 同意の数。 |
 | `user_notes_count`             | 整数 | ユーザーノートの数。 |
 | `web_url`                      | 文字列  | マージリクエストのWeb URL。 |
 | `work_in_progress`             | ブール値 | `true`の場合、マージリクエストは実行中として設定されます。 |
@@ -1133,7 +1139,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests?state=opened"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -1185,9 +1191,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## コミット署名を取得 {#get-commit-signature}
+## コミット署名を取得する {#retrieve-commit-signature}
 
-コミットが署名されている場合に[コミットから署名](../user/project/repository/signed_commits/_index.md)を取得します。署名なしコミットの場合、404応答になります。
+署名されている場合、[コミットからの署名](../user/project/repository/signed_commits/_index.md)を取得します。署名なしコミットの場合、404応答になります。
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/signature
@@ -1197,10 +1203,10 @@ GET /projects/:id/repository/commits/:sha/signature
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
-| `id`      | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `sha`     | 文字列            | はい      | リポジトリのブランチまたはタグのコミットハッシュまたは名前。 |
 
-成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます:
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
 
 | 属性               | 型    | 説明 |
 |-------------------------|---------|-------------|
@@ -1212,7 +1218,7 @@ GET /projects/:id/repository/commits/:sha/signature
 | `gpg_key_user_name`     | 文字列  | GPGキーに関連付けられているユーザー名。 |
 | `key`                   | オブジェクト  | SSHキー情報（SSH署名の場合）。 |
 | `signature_type`        | 文字列  | 署名の種類（`PGP`、`SSH`、または`X509`）。 |
-| `verification_status`   | 文字列  | 署名の検証状態。 |
+| `verification_status`   | 文字列  | 署名の検証ステータス。 |
 | `x509_certificate`      | オブジェクト  | X.509署名の情報（X.509署名の場合）。 |
 
 ```shell

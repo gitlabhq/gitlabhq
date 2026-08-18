@@ -47,6 +47,7 @@ describe('NewLineDiscussionForm', () => {
 
   const findNoteForm = () => wrapper.findComponent(NoteForm);
   const findLineRangeHeadline = () => wrapper.findComponent(LineRangeHeadline);
+  const findEditButton = () => wrapper.findComponent('[data-testid="edit-line-range-button"]');
 
   const withLineRange = (start, end) => ({
     ...createDiscussion(),
@@ -173,6 +174,31 @@ describe('NewLineDiscussionForm', () => {
       const discussion = withLineRange(5, 8);
       createComponent({ discussion });
       expect(findLineRangeHeadline().props('lineRange')).toEqual(discussion.position.line_range);
+    });
+
+    describe('edit button', () => {
+      it('is hidden when the store does not support line range editing', () => {
+        createComponent({ discussion: withLineRange(5, 8) });
+        expect(findEditButton().exists()).toBe(false);
+      });
+
+      describe('when the store supports line range editing', () => {
+        beforeEach(() => {
+          store.startLineRangeEditing = jest.fn();
+        });
+
+        it('is shown', () => {
+          createComponent({ discussion: withLineRange(5, 8) });
+          expect(findEditButton().exists()).toBe(true);
+        });
+
+        it('starts editing the line range when clicked', () => {
+          const discussion = withLineRange(5, 8);
+          createComponent({ discussion });
+          findEditButton().vm.$emit('click');
+          expect(store.startLineRangeEditing).toHaveBeenCalledWith(discussion);
+        });
+      });
     });
   });
 

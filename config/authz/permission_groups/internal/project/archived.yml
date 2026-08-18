@@ -63,6 +63,7 @@ permissions:
   - create_pipeline
   - create_pipeline_schedule
   - create_release
+  - create_security_policy
   - create_snippet
   - create_test_case
   - create_timelog
@@ -102,6 +103,7 @@ permissions:
   - destroy_vulnerability_feedback
   - destroy_wiki
   - manage_trigger
+  - modify_security_policy
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

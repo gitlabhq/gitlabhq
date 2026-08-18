@@ -107,7 +107,7 @@ export default {
     class="gl-grid gl-shrink-0 gl-grid-cols-1 gl-gap-3 gl-text-sm @sm:gl-grid-cols-2 @md:gl-flex @md:gl-w-31 @md:gl-flex-col"
   >
     <div class="gl-flex gl-flex-col gl-gap-3">
-      <div>
+      <div class="gl-flex">
         <user-avatar-link
           v-if="author"
           :link-href="author.webPath"
@@ -118,7 +118,8 @@ export default {
           :popover-username="author.username"
           :popover-user-id="author.id"
           img-css-wrapper-classes="gl-mr-1"
-          class="gl-items-center gl-leading-0 gl-text-subtle"
+          :truncate-username="true"
+          class="gl-min-w-0 gl-items-center gl-text-subtle"
         />
       </div>
       <div v-if="timeAt" class="gl-flex gl-gap-2 gl-text-subtle">

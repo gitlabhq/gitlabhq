@@ -214,12 +214,6 @@ Members who inherit membership in the invited group are not eligible.
 
 ## Error handling
 
-{{< history >}}
-
-- Error validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216066) in GitLab 16.3.
-
-{{< /history >}}
-
 ### Entries with spaces
 
 Escape whitespace in paths with backslashes:
@@ -302,6 +296,6 @@ auto-approves it in merge requests.
 
 ### Minimum approvals
 
-When [defining the number of approvals](advanced.md#require-multiple-approvals-from-code-owners) for a section,
+When [defining the number of approvals](#require-multiple-approvals-from-code-owners) for a section,
 the minimum number of approvals is `1`. Setting the number of approvals to
 `0` results in GitLab requiring one approval.

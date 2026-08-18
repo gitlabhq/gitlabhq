@@ -22,6 +22,15 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      localEvents: (this.events || []).map((event) => ({
+        ...event,
+        value: event.value || false,
+        fieldValue: event.field?.value,
+      })),
+    };
+  },
   computed: {
     ...mapState(useIntegrationForm, ['isInheriting']),
     defaultPlaceholder() {
@@ -46,14 +55,18 @@ export default {
     data-testid="trigger-fields-group"
   >
     <div id="trigger-fields">
-      <gl-form-group v-for="event in events" :key="event.name" :description="event.description">
-        <input :name="checkboxName(event.name)" type="hidden" :value="event.value || false" />
+      <gl-form-group
+        v-for="event in localEvents"
+        :key="event.name"
+        :description="event.description"
+      >
+        <input :name="checkboxName(event.name)" type="hidden" :value="event.value" />
         <gl-form-checkbox v-model="event.value" :disabled="isInheriting">
           {{ event.title }}
         </gl-form-checkbox>
         <gl-form-input
           v-if="event.field"
-          v-model="event.field.value"
+          v-model="event.fieldValue"
           :name="fieldName(event.field.name)"
           :placeholder="event.field.placeholder || defaultPlaceholder"
           :readonly="isInheriting"

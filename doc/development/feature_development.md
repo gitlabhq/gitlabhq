@@ -104,6 +104,7 @@ Consult these topics for information on contributing to specific GitLab features
 ### Import and Export
 
 - [Add new relations to the direct transfer importer](bulk_imports/contributing.md)
+- [Offline transfer](offline_transfer.md)
 - [Principles of importer design](import/principles_of_importer_design.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
@@ -134,7 +135,7 @@ The following integration guides are internal. Some integrations require access 
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL or tracking down N+1 queries using Bullet.
 - [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries
-  masked by query caching, memory profiling and why should we avoid cached
+  masked by query caching, memory profiling, and why should we avoid cached
   queries.
 - [JSON guidelines](json.md) for how to handle JSON in a performant manner.
 - [GraphQL API optimizations](api_graphql_styleguide.md#optimizations) for how to optimize GraphQL code.

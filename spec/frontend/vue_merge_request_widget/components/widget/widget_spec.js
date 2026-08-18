@@ -28,10 +28,10 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findStatusIcon = () => wrapper.findComponent(StatusIcon);
   const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
-  const findToggleButton = () => wrapper.findByTestId('toggle-button');
+  const findToggleButton = () => wrapper.findComponentByTestId('toggle-button');
   const findToggleChevron = () => findToggleButton().findComponent(GlAnimatedChevronLgDownUpIcon);
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
-  const findDynamicScroller = () => wrapper.findByTestId('dynamic-content-scroller');
+  const findDynamicScroller = () => wrapper.findComponentByTestId('dynamic-content-scroller');
 
   const createComponent = async ({
     propsData,
@@ -502,7 +502,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     it('when full report is clicked it should call the respective telemetry event', async () => {
       expect(wrapper.vm.telemetryHub.fullReportClicked).not.toHaveBeenCalled();
 
-      wrapper.findByTestId('extension-actions-button').vm.$emit('click');
+      wrapper.findComponentByTestId('extension-actions-button').vm.$emit('click');
       await nextTick();
       expect(wrapper.vm.telemetryHub.fullReportClicked).toHaveBeenCalledTimes(1);
     });

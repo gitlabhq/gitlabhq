@@ -5,6 +5,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import eventHub from '~/issues/show/event_hub';
+import { taskListSortableOptions } from '~/issues/show/utils';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import {
@@ -268,6 +269,39 @@ describe('WorkItemDescriptionRendered', () => {
           handle: '.drag-icon',
         });
       });
+
+      it('passes the shared task list drag callbacks to Sortable', () => {
+        const options = Sortable.create.mock.calls[0][1];
+
+        expect(options).toMatchObject(taskListSortableOptions);
+      });
+
+      it('creates Sortable with revertOnEscape enabled', () => {
+        const options = Sortable.create.mock.calls[0][1];
+
+        expect(options).toMatchObject({ revertOnEscape: true });
+      });
+
+      it('destroys the sortable instance when the component is destroyed', () => {
+        const sortableInstance = Sortable.create.mock.results[0].value;
+        const destroySpy = jest.spyOn(sortableInstance, 'destroy');
+
+        wrapper.destroy();
+
+        expect(destroySpy).toHaveBeenCalled();
+      });
+
+      it('destroys the previous sortable instance before re-rendering the list', async () => {
+        const firstSortableInstance = Sortable.create.mock.results[0].value;
+        const destroySpy = jest.spyOn(firstSortableInstance, 'destroy');
+
+        wrapper.setProps({
+          workItemDescription: { description, descriptionHtml: `${descriptionHtml}\n` },
+        });
+        await waitForPromises();
+
+        expect(destroySpy).toHaveBeenCalled();
+      });
     });
 
     it('excludes footnotes from sortable lists', async () => {
@@ -336,19 +370,25 @@ and even more`,
           parentId: 'gid://gitlab/WorkItem/818',
           relatedItem: null,
           showProjectSelector: false,
+          suppressCreatedToast: false,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
           preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
           isEpicsList: false,
-          fromGlobalMenu: false,
+          allowAnyNamespace: false,
+          allowProjectsOnly: false,
+          mergeRequestId: null,
+          mergeRequestLinkType: null,
+          mergeRequestReference: '',
+          mergeRequestTitle: '',
         });
 
         findCreateWorkItemModal().vm.$emit('work-item-created');
 
         expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
 
-        findCreateWorkItemModal().vm.$emit('hideModal');
+        findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
 
         expect(findCreateWorkItemModal().props('visible')).toBe(false);

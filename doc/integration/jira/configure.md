@@ -26,7 +26,6 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, `9.x`, and `10.x`.
 
 {{< history >}}
 
-- Authentication with Jira personal access tokens [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
 - **Jira issues** and **Jira issues for vulnerabilities** sections [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - **Jira issues** and **Jira issues for vulnerabilities** sections [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 - **Enable Jira issues** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **View Jira issues** in GitLab 17.0.
@@ -54,7 +53,7 @@ Prerequisites:
     [GitLab.com IP range](../../user/gitlab_com/_index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
-  - Jira personal access token (GitLab 16.0 and later).
+  - Jira personal access token.
 
 You can enable the Jira issues integration by configuring your project settings in GitLab.
 You can also configure the integration for a specific
@@ -144,7 +143,6 @@ To configure your project settings in GitLab:
 
 {{< history >}}
 
-- Enabling Jira issues for a group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325715) in GitLab 16.9.
 - Viewing issues from multiple Jira projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_multiple_project_keys`. Disabled by default.
 - Viewing issues from multiple Jira projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 

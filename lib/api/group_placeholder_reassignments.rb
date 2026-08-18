@@ -17,7 +17,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve pending reassignments' do
         detail 'Retrieves a CSV file with a list of pending reassignments. ' \
           'This feature was introduced in GitLab 17.10.'

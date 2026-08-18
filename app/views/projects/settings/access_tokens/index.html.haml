@@ -1,7 +1,6 @@
 - breadcrumb_title s_('AccessTokens|Access tokens')
 - page_title _('Project access tokens')
 - type = _('project access token')
-- type_plural = _('project access tokens')
 
 = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
   - c.with_description do
@@ -36,7 +35,7 @@
           = render_if_exists 'projects/settings/access_tokens/form', type: type
 
       - c.with_body do
-        #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
+        #js-access-token-table-app{ data: { access_token_type: type, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
 
     .gl-mt-5
       = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),

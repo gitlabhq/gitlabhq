@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions, mapState } from 'pinia';
@@ -46,10 +47,12 @@ export default {
     CommentFieldLayout,
     CommentTypeDropdown,
     GlFormCheckbox,
-    CommentTemperature: () =>
-      import(
-        /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
-      ),
+    CommentTemperature: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
+        ),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

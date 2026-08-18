@@ -1237,6 +1237,11 @@ func Test_intersectServerCapabilities(t *testing.T) {
 			fromServer: []string{"incremental_checkpoints"},
 			expected:   []string{"incremental_checkpoints"},
 		},
+		{
+			name:       "incremental_checkpoints_only server capability passes through",
+			fromServer: []string{"incremental_checkpoints_only"},
+			expected:   []string{"incremental_checkpoints_only"},
+		},
 	}
 
 	for _, tt := range tests {
@@ -1319,7 +1324,7 @@ func TestRunner_Shutdown(t *testing.T) {
 		}
 
 		// Pre-acquire the lock so we can verify it gets released
-		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID, "software_development")
 		require.NoError(t, err)
 		r.mutex = mutex
 
@@ -1359,7 +1364,7 @@ func TestRunner_Shutdown(t *testing.T) {
 		require.Equal(t, "WORKHORSE_SERVER_SHUTDOWN", stopEvent.Reason)
 
 		// Verify the lock was released: acquiring it again should succeed
-		newMutex, lockErr := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		newMutex, lockErr := r.lockManager.acquireLock(context.Background(), r.workflowID, "software_development")
 		require.NoError(t, lockErr)
 		require.NotNil(t, newMutex)
 		r.lockManager.releaseLock(context.Background(), newMutex, r.workflowID)
@@ -1505,7 +1510,7 @@ func TestRunner_Shutdown(t *testing.T) {
 		}
 
 		// Pre-acquire the lock
-		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID, "software_development")
 		require.NoError(t, err)
 		r.mutex = mutex
 
@@ -1514,7 +1519,7 @@ func TestRunner_Shutdown(t *testing.T) {
 
 		// Lock should have been released even though stop timed out,
 		// so the executor can reconnect to a new workhorse instance.
-		newMutex, lockErr := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		newMutex, lockErr := r.lockManager.acquireLock(context.Background(), r.workflowID, "software_development")
 		require.NoError(t, lockErr, "lock should be released even when stop fails")
 		r.lockManager.releaseLock(context.Background(), newMutex, r.workflowID)
 	})
@@ -1990,7 +1995,7 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 	require.Equal(t, "handleWebSocketMessages: failed to read a WS message: EOF", err.Error())
 
 	// Verify lock was released (we can acquire it again)
-	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123")
+	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123", "software_development")
 	require.NoError(t, err)
 	require.NotNil(t, mutex)
 }

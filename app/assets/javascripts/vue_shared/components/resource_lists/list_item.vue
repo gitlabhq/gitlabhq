@@ -11,6 +11,7 @@ import {
   TIMESTAMP_TYPE_UPDATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ListItemDescription from './list_item_description.vue';
 
 export default {
@@ -31,6 +32,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [glSlotsMixin],
   props: {
     resource: {
       type: Object,
@@ -107,7 +109,7 @@ export default {
     },
     hasActions() {
       return (
-        this.$scopedSlots.actions ||
+        this.glSlots().actions ||
         (Object.keys(this.actions).length && this.resource.availableActions?.length)
       );
     },

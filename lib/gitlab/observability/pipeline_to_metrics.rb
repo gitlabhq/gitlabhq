@@ -2,24 +2,8 @@
 
 module Gitlab
   module Observability
-    class PipelineToMetrics
-      include Gitlab::Utils::StrongMemoize
-
+    class PipelineToMetrics < PipelineConverterBase
       HISTOGRAM_BUCKETS = [1, 5, 10, 30, 60, 300, 600, 1800, 3600].freeze
-
-      PIPELINE_RESULT_MAP = {
-        'success' => 'success',
-        'failed' => 'failure',
-        'canceled' => 'cancellation',
-        'skipped' => 'skip'
-      }.freeze
-
-      def initialize(integration, pipeline_data)
-        @integration = integration
-        @pipeline_data = pipeline_data
-        @pipeline = pipeline_data[:object_attributes]
-        @builds = pipeline_data[:builds] || []
-      end
 
       def convert
         return empty_metrics_payload if @pipeline.blank?
@@ -41,30 +25,16 @@ module Gitlab
 
       private
 
-      attr_reader :integration, :pipeline_data, :pipeline, :builds
-
       def empty_metrics_payload
         { resourceMetrics: [] }
       end
 
       def build_resource
         {
-          attributes: [
-            { key: 'service.name', value: { stringValue: service_name } },
-            { key: 'service.version', value: { stringValue: '1.0.0' } },
-            { key: 'deployment.environment', value: { stringValue: environment } },
-            { key: 'gitlab.project.id', value: { intValue: pipeline_data.dig(:project, :id) } },
-            { key: 'gitlab.project.name', value: { stringValue: pipeline_data.dig(:project, :name) } },
-            { key: 'gitlab.pipeline.id', value: { intValue: pipeline[:id] } },
-            { key: 'gitlab.pipeline.ref', value: { stringValue: pipeline[:ref] } },
-            { key: 'cicd.pipeline.name', value: { stringValue: pipeline_name } },
-            { key: 'vcs.repository.name', value: { stringValue: pipeline_data.dig(:project, :name) } },
-            { key: 'vcs.repository.url.full', value: { stringValue: pipeline_data.dig(:project, :web_url) } },
-            { key: 'vcs.owner.name', value: { stringValue: pipeline_data.dig(:project, :namespace) } },
-            { key: 'vcs.provider.name', value: { stringValue: 'gitlab' } },
-            { key: 'vcs.ref.head.name', value: { stringValue: pipeline[:ref] } },
-            { key: 'vcs.ref.head.type', value: { stringValue: ref_head_type } }
-          ]
+          attributes: compact_attributes(
+            resource_semconv +
+              [{ key: 'gitlab.cicd.pipeline.trace_id', value: { stringValue: pipeline_trace_id } }]
+          )
         }
       end
 
@@ -119,7 +89,13 @@ module Gitlab
                 attributes: [
                   { key: 'pipeline.status', value: { stringValue: pipeline[:status] } },
                   { key: 'pipeline.ref', value: { stringValue: pipeline[:ref] } }
-                ]
+                ],
+                exemplars: [{
+                  timeUnixNano: current_time_nanoseconds,
+                  asDouble: pipeline[:duration] / 1000.0,
+                  traceId: pipeline_trace_id,
+                  spanId: pipeline_span_id
+                }]
               }
             ]
           }
@@ -274,11 +250,13 @@ module Gitlab
             bucketCounts: build_histogram_buckets(durations),
             explicitBounds: HISTOGRAM_BUCKETS,
             attributes: [
-              { key: 'job.stage', value: { stringValue: stage } },
+              { key: 'cicd.pipeline.task.type', value: { stringValue: stage } },
               { key: 'cicd.pipeline.result', value: { stringValue: pipeline_result } },
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: trigger_type } },
+              (pipeline[:source].present? &&
+                { key: 'gitlab.cicd.pipeline.trigger.type',
+                  value: { stringValue: pipeline[:source].to_s } }) || nil,
               { key: 'vcs.ref.head.type', value: { stringValue: ref_head_type } }
-            ]
+            ].compact
           }
         end
 
@@ -317,7 +295,7 @@ module Gitlab
 
       def build_pipeline_run_queue_duration_metric
         {
-          name: 'cicd.pipeline.run.queue_duration',
+          name: 'gitlab.cicd.pipeline.run.queued_duration',
           description: 'Time spent in queue before pipeline run execution',
           unit: 's',
           gauge: {
@@ -359,9 +337,11 @@ module Gitlab
           { key: 'cicd.pipeline.name', value: { stringValue: pipeline_name } },
           { key: 'cicd.pipeline.run.state', value: { stringValue: 'finalizing' } },
           { key: 'cicd.pipeline.result', value: { stringValue: pipeline_result } },
-          { key: 'cicd.pipeline.trigger.type', value: { stringValue: trigger_type } },
+          (pipeline[:source].present? &&
+            { key: 'gitlab.cicd.pipeline.trigger.type',
+              value: { stringValue: pipeline[:source].to_s } }) || nil,
           { key: 'vcs.ref.head.type', value: { stringValue: ref_head_type } }
-        ]
+        ].compact
       end
 
       def build_histogram_buckets(durations)
@@ -377,14 +357,6 @@ module Gitlab
         buckets
       end
 
-      def service_name
-        integration.service_name.presence || pipeline_data.dig(:project, :name) || 'gitlab-ci'
-      end
-
-      def environment
-        integration.environment.presence || 'production'
-      end
-
       def current_time_nanoseconds
         Time.current.to_i * 1_000_000_000
       end
@@ -393,17 +365,13 @@ module Gitlab
         pipeline[:tag] ? 'tag' : 'branch'
       end
 
-      def trigger_type
-        pipeline[:source] || 'unknown'
-      end
-
       def pipeline_name
         pipeline[:name] || pipeline[:ref]
       end
       strong_memoize_attr :pipeline_name
 
       def pipeline_result
-        PIPELINE_RESULT_MAP.fetch(pipeline[:status], pipeline[:status])
+        map_pipeline_result(pipeline[:status]) || pipeline[:status]
       end
       strong_memoize_attr :pipeline_result
     end

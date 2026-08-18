@@ -287,6 +287,7 @@ describe('NoteBody', () => {
   describe('Duo first review comment', () => {
     const duoNote = (overrides = {}) => ({
       ...defaultProps.note,
+      award_emoji: [],
       author: {
         ...defaultProps.note.author,
         user_type: 'duo_code_review_bot',
@@ -308,6 +309,13 @@ describe('NoteBody', () => {
     it('renders when the note is the first Duo code review bot note', () => {
       createComponent({ note: duoNote(), isFirstNote: true });
       expect(findDuoReviewFooter().exists()).toBe(true);
+    });
+
+    it('shows default awards list with thumbsup and thumbsdown for first DiffNote from GitLabDuo', () => {
+      createComponent({ note: duoNote(), isFirstNote: true });
+
+      expect(findAwardsList().exists()).toBe(true);
+      expect(findAwardsList().props('defaultAwards')).toEqual(['thumbsup', 'thumbsdown']);
     });
   });
 });

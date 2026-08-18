@@ -11,7 +11,7 @@ class MergeRequestsClosingIssues < ApplicationRecord
 
   validates :merge_request_id, uniqueness: { scope: [:issue_id, :link_type] }, presence: true
   validates :issue_id, presence: true
-  validate :from_mr_description_only_for_closes
+  validate :ensure_related_links_are_not_from_description
 
   scope :with_opened_merge_request, -> { joins(:merge_request).merge(MergeRequest.with_state(:opened)) }
   scope :from_mr_description, -> { where(from_mr_description: true) }
@@ -51,6 +51,14 @@ class MergeRequestsClosingIssues < ApplicationRecord
       closing_merge_requests(id, current_user).count
     end
 
+    # Returns the subset of `ids` that have at least one opened closing merge request, as a set.
+    # Intentionally not visibility-filtered (no `current_user`): this mirrors the widget's
+    # will_auto_close_by_merge_request, which checks the raw closing-issues association without an
+    # accessibility scope, so the boolean stays consistent between REST and GraphQL.
+    def auto_close_issue_ids(ids)
+      with_issues(ids).link_type_closes.with_opened_merge_request.distinct.pluck(:issue_id).to_set
+    end
+
     private
 
     def closing_merge_requests(ids, current_user)
@@ -64,9 +72,10 @@ class MergeRequestsClosingIssues < ApplicationRecord
 
   private
 
-  def from_mr_description_only_for_closes
-    return unless from_mr_description && !link_type_closes?
+  def ensure_related_links_are_not_from_description
+    return unless link_type_related?
+    return unless from_mr_description
 
-    errors.add(:from_mr_description, 'can only be true when link_type is closes')
+    errors.add(:from_mr_description, 'cannot be true for related link types')
   end
 end

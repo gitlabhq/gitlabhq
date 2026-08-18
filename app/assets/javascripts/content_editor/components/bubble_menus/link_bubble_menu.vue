@@ -136,6 +136,14 @@ export default {
       this.endEditingLink();
     },
 
+    handleLinkUpdate() {
+      // Syncing from the document while the form is open would discard whatever
+      // the user has typed but not applied yet.
+      if (this.isEditing) return;
+
+      this.updateLinkToState();
+    },
+
     updateLinkToState() {
       const editor = this.tiptapEditor;
       const { href, canonicalSrc, uploading } = editor.getAttributes(Link.name);
@@ -211,7 +219,7 @@ export default {
   <editor-state-observer
     :debounce="0"
     @transaction="onTransaction"
-    @selectionUpdate="updateLinkToState"
+    @selection-update="handleLinkUpdate"
   >
     <bubble-menu
       data-testid="link-bubble-menu"

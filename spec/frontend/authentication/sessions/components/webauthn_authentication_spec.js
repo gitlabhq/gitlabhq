@@ -49,9 +49,11 @@ describe('WebAuthnAuthentication', () => {
 
   const findInProgress = () => wrapper.findByTestId('webauthn-in-progress');
   const findForm = () => wrapper.find('form');
-  const findTryAgainButton = () => wrapper.findByTestId('try-again-button');
-  const findAuthenticatorAppButton = () => wrapper.findByTestId('authenticator-app-button');
-  const findRecoveryButton = () => wrapper.findByTestId('recovery-button');
+  const findTryAgainButton = () => wrapper.findComponentByTestId('try-again-button');
+  const findAuthenticatorAppButton = () =>
+    wrapper.findComponentByTestId('authenticator-app-button');
+  const findRecoveryButton = () => wrapper.findComponentByTestId('recovery-button');
+  const findEmailCodeButton = () => wrapper.findComponentByTestId('email-code-button');
   const findDeviceResponseInput = () => wrapper.find('input[name="user[device_response]"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');
@@ -82,7 +84,7 @@ describe('WebAuthnAuthentication', () => {
       createComponent();
       await nextTick();
 
-      expect(findInProgress().exists()).toBe(true);
+      expect(findInProgress().text()).toContain('Trying to communicate with your device');
     });
 
     it('disables the "Try again" button while authentication is in progress', async () => {
@@ -183,6 +185,24 @@ describe('WebAuthnAuthentication', () => {
     });
   });
 
+  describe('email a code button', () => {
+    it('is absent when emailEnabled is false', () => {
+      createComponent();
+
+      expect(findEmailCodeButton().exists()).toBe(false);
+    });
+
+    it('is present and emits switch-method "email" when emailEnabled is true', () => {
+      createComponent({ emailEnabled: true });
+
+      expect(findEmailCodeButton().exists()).toBe(true);
+
+      findEmailCodeButton().vm.$emit('click');
+
+      expect(wrapper.emitted('switch-method')).toEqual([['email']]);
+    });
+  });
+
   describe('when totpEnabled is false', () => {
     beforeEach(() => {
       createComponent({ totpEnabled: false });
@@ -206,6 +226,13 @@ describe('WebAuthnAuthentication', () => {
 
     it('emits webauthn-not-supported and does not call get', () => {
       expect(wrapper.emitted('webauthn-not-supported')).toHaveLength(1);
+    });
+
+    it('keeps the aria-live region in the DOM even without an in-progress message', () => {
+      // The live region must be present before its text so screen readers register it.
+      expect(findInProgress().exists()).toBe(true);
+      expect(findInProgress().attributes('aria-live')).toBe('polite');
+      expect(findInProgress().text()).toBe('');
     });
   });
 });

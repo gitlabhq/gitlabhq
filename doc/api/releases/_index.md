@@ -409,12 +409,6 @@ Example response:
 
 ## Download a release asset
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
-
-{{< /history >}}
-
 Download a release asset file by making a request with the following format:
 
 ```plaintext
@@ -434,12 +428,6 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 ```
 
 ### Get the latest release
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
-
-{{< /history >}}
 
 Latest release information is accessible through a permanent API URL.
 
@@ -495,9 +483,10 @@ POST /projects/:id/releases
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header 'Content-Type: application/json' \
      --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "direct_asset_path": "/binaries/linux-amd64", "link_type":"other" }] } }' \
-     --request POST "https://gitlab.example.com/api/v4/projects/24/releases"
+     --url "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
 
 Example response:
@@ -653,12 +642,6 @@ Example response:
 
 ## Update a release
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-
-{{< /history >}}
-
 Updates a release. Developer level access to the project is required to update a release.
 
 ```plaintext
@@ -677,8 +660,10 @@ PUT /projects/:id/releases/:tag_name
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT --data '{"name": "new name", "milestones": ["v1.2"]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header 'Content-Type: application/json' \
+     --data '{"name": "new name", "milestones": ["v1.2"]}' \
+     --url "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -766,12 +751,6 @@ Example response:
 
 ## Delete a Release
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/work_items/41766) in GitLab 11.7.
-
-{{< /history >}}
-
 Deletes a release. Deleting a release doesn't delete the associated tag. Requires at least the Developer role for the project.
 
 ```plaintext
@@ -858,19 +837,13 @@ Example response:
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/_index.md#upcoming-releases).
 
-Additionally, if a [release is requested from the API](#list-releases), for each release with a `release_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) is returned as part of the response.
+Additionally, if a [release is requested from the API](#list-releases), for each release with a `released_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) is returned as part of the response.
 
 ## Historical releases
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
-
-{{< /history >}}
-
 A release with a `released_at` attribute set to a past date is labeled
-as an **Historical release** [in the UI](../../user/project/releases/_index.md#historical-releases).
+as a **Historical release** [in the UI](../../user/project/releases/_index.md#historical-releases).
 
 Additionally, if a [release is requested from the API](#list-releases), for each
-release with a `release_at` attribute set to a past date, an additional
+release with a `released_at` attribute set to a past date, an additional
 attribute `historical_release` (set to true) is returned as part of the response.

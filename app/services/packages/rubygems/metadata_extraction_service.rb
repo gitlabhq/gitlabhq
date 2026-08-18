@@ -22,7 +22,6 @@ module Packages
       def write_metadata
         metadatum.update!(
           authors: gemspec&.authors,
-          files: gemspec&.files&.to_json,
           summary: gemspec&.summary,
           description: gemspec&.description,
           email: gemspec&.email,

@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Current.organization resolution in Grape API', feature_category: :organization do
-  before do
-    stub_feature_flags(set_current_organization_for_grape_api: true)
-  end
-
   let_it_be(:default_organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- needed for fallback
   let_it_be(:user_organization) { create(:organization) }
   let_it_be(:project_organization) { create(:organization) }
@@ -155,16 +151,43 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
   end
 
   describe 'Deploy token' do
-    let_it_be(:deploy_token) { create(:deploy_token, projects: [project]) }
+    # The PyPI simple index routes opt into deploy token authentication via
+    # route_setting :authentication, deploy_token_allowed: true.
+    it 'resolves to the organization of the project the token belongs to' do
+      deploy_token = create(:deploy_token, projects: [project], read_package_registry: true)
 
-    it 'falls back to the default organization (deploy tokens are not user-based)' do
-      expect_logged_organization_id(default_organization.id)
+      expect_logged_organization_id(project_organization.id)
 
-      get api("/projects/#{project.id}/registry/repositories"),
+      get api("/projects/#{project.id}/packages/pypi/simple"),
         headers: { 'Deploy-Token' => deploy_token.token }
 
-      # Endpoint returns 404 when the registry is disabled, but the global hook still fires.
-      expect(response).to have_gitlab_http_status(:ok).or have_gitlab_http_status(:not_found)
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'resolves to the organization of the group the token belongs to' do
+      group = create(:group, :public, organization: user_organization)
+      deploy_token = create(:deploy_token, :group, groups: [group], read_package_registry: true)
+
+      expect_logged_organization_id(user_organization.id)
+
+      get api("/groups/#{group.id}/-/packages/pypi/simple"),
+        headers: { 'Deploy-Token' => deploy_token.token }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'lets the X-GitLab-Organization-ID header take precedence over the token' do
+      deploy_token = create(:deploy_token, projects: [project], read_package_registry: true)
+
+      expect_logged_organization_id(header_organization.id)
+
+      get api("/projects/#{project.id}/packages/pypi/simple"),
+        headers: {
+          'Deploy-Token' => deploy_token.token,
+          'X-GitLab-Organization-ID' => header_organization.id.to_s
+        }
+
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -314,7 +337,7 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
     end
   end
 
-  describe 'Cluster agent token (KAS, opted out)' do
+  describe 'Cluster agent token (KAS)' do
     let(:jwt_secret) { SecureRandom.random_bytes(Gitlab::Kas::SECRET_LENGTH) }
     let(:jwt_token) do
       JWT.encode(
@@ -328,7 +351,47 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
       allow(Gitlab::Kas).to receive(:secret).and_return(jwt_secret)
     end
 
-    it 'leaves Current.organization unassigned (global hook opted out)' do
+    it 'resolves to the organization of the agent project' do
+      agent_organization = create(:organization)
+      agent_project = create(:project, organization: agent_organization)
+      agent_token = create(:cluster_agent_token, agent: create(:cluster_agent, project: agent_project))
+
+      expect_logged_organization_id(agent_organization.id)
+
+      get api('/internal/kubernetes/verify_project_access'),
+        params: { id: agent_project.id },
+        headers: {
+          Gitlab::Kas::INTERNAL_API_KAS_REQUEST_HEADER => jwt_token,
+          Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => agent_token.token
+        }
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    context 'when an organization is already assigned' do
+      let(:other_organization) { create(:organization) }
+      let(:agent_project) { create(:project) }
+      let(:agent_token) { create(:cluster_agent_token, agent: create(:cluster_agent, project: agent_project)) }
+
+      before do
+        allow(::Current).to receive_messages(organization_assigned: true, organization: other_organization)
+      end
+
+      it 'does not overwrite the assigned organization' do
+        expect(::Current).not_to receive(:organization=)
+
+        get api('/internal/kubernetes/verify_project_access'),
+          params: { id: agent_project.id },
+          headers: {
+            Gitlab::Kas::INTERNAL_API_KAS_REQUEST_HEADER => jwt_token,
+            Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => agent_token.token
+          }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    it 'leaves Current.organization unassigned for KAS JWT-only endpoints (no agent token)' do
       expect_no_logged_organization_id
 
       post api('/internal/kubernetes/usage_metrics'),

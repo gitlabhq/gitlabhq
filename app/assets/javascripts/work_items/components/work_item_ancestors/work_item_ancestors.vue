@@ -3,6 +3,7 @@ import { GlIcon, GlPopover, GlBadge, GlSprintf } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -13,7 +14,7 @@ import WorkItemStateBadge from '../work_item_state_badge.vue';
 import DisclosureHierarchy from './disclosure_hierarchy.vue';
 
 export const ANCESTOR_NOT_AVAILABLE = {
-  title: s__('WorkItems|Ancestors not available'),
+  message: s__('WorkItems|Ancestors not available'),
   ancestorNotAvailable: true,
   icon: 'eye-slash',
 };
@@ -32,6 +33,9 @@ export default {
     TimeAgoTooltip,
     WorkItemStateBadge,
     DisclosureHierarchy,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -116,9 +120,7 @@ export default {
         <template #title>
           <div>
             <gl-badge variant="neutral">{{ $options.i18n.ancestorLabel }}</gl-badge>
-            <div class="gl-pt-3">
-              {{ item.title }}
-            </div>
+            <div v-safe-html="item.titleHtml" class="gl-pt-3"></div>
           </div>
         </template>
         <div class="gl-pb-3 gl-text-subtle">

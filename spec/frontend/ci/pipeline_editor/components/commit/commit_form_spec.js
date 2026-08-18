@@ -73,7 +73,7 @@ describe('Pipeline Editor | Commit Form', () => {
     it('emits an event when the form resets', () => {
       findCancelBtn().trigger('click');
 
-      expect(wrapper.emitted('resetContent')).toHaveLength(1);
+      expect(wrapper.emitted('reset-content')).toHaveLength(1);
     });
   });
 
@@ -184,8 +184,8 @@ describe('Pipeline Editor | Commit Form', () => {
       // Click the existing reset button
       await findCancelBtn().trigger('click');
 
-      // Verify the resetContent event is still emitted (existing functionality)
-      expect(wrapper.emitted('resetContent')).toHaveLength(1);
+      // Verify the reset-content event is still emitted (existing functionality)
+      expect(wrapper.emitted('reset-content')).toHaveLength(1);
 
       // The commit message should still be there (reset button doesn't clear it)
       expect(findCommitTextarea().element.value).toBe(customMessage);

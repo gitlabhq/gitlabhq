@@ -13,6 +13,13 @@ export default {
     GlCollapsibleListbox,
   },
   inject: ['environmentsEndpoint'],
+  props: {
+    excludedEnvironments: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   emits: ['add'],
   data() {
     return {
@@ -26,8 +33,11 @@ export default {
     noResultsLabel: __('No matching results'),
   },
   computed: {
+    filteredResults() {
+      return this.results.filter(({ value }) => !this.excludedEnvironments.includes(value));
+    },
     srOnlyResultsCount() {
-      return n__('%d environment found', '%d environments found', this.results.length);
+      return n__('%d environment found', '%d environments found', this.filteredResults.length);
     },
     createEnvironmentLabel() {
       return sprintf(__('Create %{environment}'), { environment: this.environmentSearch });
@@ -90,7 +100,7 @@ export default {
     icon="plus"
     data-testid="new-environments-dropdown"
     :toggle-text="$options.translations.addEnvironmentsLabel"
-    :items="results"
+    :items="filteredResults"
     :searching="isLoading"
     :header-text="$options.translations.addEnvironmentsLabel"
     searchable

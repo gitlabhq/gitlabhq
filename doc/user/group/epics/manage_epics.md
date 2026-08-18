@@ -22,7 +22,7 @@ For information on managing child items of an epic, see [child items](../../work
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
-- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
+- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
 - Assigning weight to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12273) in GitLab 18.11.
 
 {{< /history >}}
@@ -260,8 +260,6 @@ The assignee is changed without having to refresh the page.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `epic_color_highlight`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) in GitLab 16.11. Feature flag `epic_color_highlight` removed.
 - Customizable color [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394864) in GitLab 17.5.
 
 {{< /history >}}
@@ -310,7 +308,6 @@ The epic's color is updated.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](../../work_items/child_items.md#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
 - [Allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) Planner role to delete an epic in GitLab 17.7.
 
 {{< /history >}}

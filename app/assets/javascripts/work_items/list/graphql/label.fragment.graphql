@@ -3,4 +3,5 @@ fragment Label on Label {
   color
   textColor
   title
+  description
 }

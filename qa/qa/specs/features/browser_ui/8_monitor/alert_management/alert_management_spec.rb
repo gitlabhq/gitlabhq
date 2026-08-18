@@ -66,8 +66,8 @@ module QA
         end
       end
 
-      shared_examples 'creates alerts via UI' do |testcase|
-        it 'creates new alert', testcase: testcase do
+      shared_examples 'creates alerts via UI' do
+        it 'creates new alert' do
           Flow::AlertSettings.send_test_alert(payload: payload)
 
           Page::Project::Menu.perform(&:go_to_monitor_alerts)
@@ -77,8 +77,8 @@ module QA
         end
       end
 
-      shared_examples 'creates alerts using authorization key' do |testcase|
-        it 'creates new alert', :aggregate_failures, testcase: testcase do
+      shared_examples 'creates alerts using authorization key' do
+        it 'creates new alert', :aggregate_failures do
           credentials = Flow::AlertSettings.integration_credentials
 
           response = RestClient.post(
@@ -104,9 +104,9 @@ module QA
         end
       end
 
-      shared_examples 'creates incident from alert' do |testcase|
+      shared_examples 'creates incident from alert' do
         include_context 'with enabled incidents'
-        it 'automatically creates new incident', testcase: testcase do
+        it 'automatically creates new incident' do
           integration_type = if http
                                'http'
                              else
@@ -125,9 +125,9 @@ module QA
         end
       end
 
-      shared_examples 'resolves alerts correctly' do |testcase, quarantine|
+      shared_examples 'resolves alerts correctly' do |quarantine|
         include_context 'sends and resolves test alerts'
-        it 'only resolves the correct alert', :aggregate_failures, testcase: testcase, quarantine: quarantine do
+        it 'only resolves the correct alert', :aggregate_failures, quarantine: quarantine do
           # Send two alerts, then resolve one
           Page::Project::Menu.perform(&:go_to_monitor_alerts)
           Page::Project::Monitor::Alerts::Index.perform do |index|
@@ -145,17 +145,13 @@ module QA
       context 'when HTTP endpoint integration' do
         include_context 'with HTTP integration setup'
 
-        it_behaves_like 'creates alerts via UI',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/382803'
+        it_behaves_like 'creates alerts via UI'
 
-        it_behaves_like 'creates alerts using authorization key',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386734'
+        it_behaves_like 'creates alerts using authorization key'
 
-        it_behaves_like 'creates incident from alert',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/388469'
+        it_behaves_like 'creates incident from alert'
 
         it_behaves_like 'resolves alerts correctly',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393589',
           {
             only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-test-on-omnibus-ce' } },
             type: :bug,
@@ -166,17 +162,13 @@ module QA
       context 'when Prometheus integration' do
         include_context 'with Prometheus integration setup'
 
-        it_behaves_like 'creates alerts via UI',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/385792'
+        it_behaves_like 'creates alerts via UI'
 
-        it_behaves_like 'creates alerts using authorization key',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386735'
+        it_behaves_like 'creates alerts using authorization key'
 
-        it_behaves_like 'creates incident from alert',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390123'
+        it_behaves_like 'creates incident from alert'
 
         it_behaves_like 'resolves alerts correctly',
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393590',
           {
             type: :flaky,
             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413220'

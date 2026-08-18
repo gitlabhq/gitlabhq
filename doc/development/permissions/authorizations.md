@@ -7,7 +7,7 @@ title: Where to check permissions
 
 ## Where should permissions be checked?
 
-When deciding where to check permissions, apply defense-in-depth by implementing multiple checks at different layers. Starting with low-level layers, such as finders and services,
+When deciding where to check permissions, apply defense-in-depth by implementing multiple checks at different layers, starting with low-level layers, such as finders and services,
 followed by high-level layers, such as GraphQL, public REST API, and controllers.
 
 For more information, see [guidelines for reusing abstractions](../reusing_abstractions.md).
@@ -19,7 +19,9 @@ For more information on permissions, see the permissions section in the [secure 
 
 ### Considerations
 
-You MUST enforce authorization as much as possible in shared business logic layer (i.e. services and finders). That would help ensure that authorization is consistent across REST, graphql, and controllers. Services or finders are appropriate locations because:
+You MUST enforce authorization as much as possible in the shared business logic layer (services and
+finders). That would help ensure that authorization is consistent across REST, GraphQL, and controllers.
+Services or finders are appropriate locations because:
 
 - Multiple endpoints share services or finders so downstream logic is more likely to be re-used.
 - Sometimes authorization logic must be incorporated in DB queries to filter records.
@@ -81,7 +83,7 @@ To check for an ability in a Vue template, see the
 
 ### Example: Adding a new API endpoint
 
-By default, we authorize at the endpoint. Checking an existing ability may make sense; if not, then we probably need to add one.
+By default, we authorize at the endpoint. Checking an existing ability may make sense. If not, then we probably need to add one.
 
 As an aside, most endpoints can be cleanly categorized as a CRUD (create, read, update, destroy) action on a resource. The services and abilities follow suit, which is why many are named like `Projects::CreateService` or `:read_project`.
 

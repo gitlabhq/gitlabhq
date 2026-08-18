@@ -48,7 +48,7 @@ describe('ToggleSnoozedStatus', () => {
   });
 
   const findSnoozeTimePicker = () => wrapper.findComponent(SnoozeTimePicker);
-  const findUnSnoozeButton = () => wrapper.findByTestId('un-snooze-button');
+  const findUnSnoozeButton = () => wrapper.findComponentByTestId('un-snooze-button');
 
   const createComponent = ({
     props = {},

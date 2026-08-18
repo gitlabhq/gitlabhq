@@ -15,6 +15,7 @@ import {
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- This content is shown in a modal, we can refer to viewport breakpoints
 import { __, s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
 import {
   PLATFORM_DOCKER,
@@ -47,6 +48,7 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  mixins: [glListenersMixin],
   props: {
     modalId: {
       type: String,
@@ -174,7 +176,7 @@ export default {
     :title="$options.i18n.installARunner"
     v-bind="$attrs"
     hide-footer
-    v-on="$listeners"
+    v-on="glListeners()"
     @shown="onShown"
   >
     <gl-alert :title="$options.i18n.deprecationAlertTitle" variant="warning" :dismissible="false">

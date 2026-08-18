@@ -72,13 +72,13 @@ RSpec.describe CommitPresenter, feature_category: :source_code_management do
       it 'returns if there are any pipelines for commit' do
         expect(commit).to receive_message_chain(:pipelines, :any?).and_return(true)
 
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
       end
     end
 
     context 'when user can not read pipeline' do
       it 'is false' do
-        is_expected.to eq(false)
+        is_expected.to be(false)
       end
     end
   end

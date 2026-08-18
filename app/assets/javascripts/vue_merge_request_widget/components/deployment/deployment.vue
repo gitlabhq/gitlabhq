@@ -1,13 +1,10 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { MANUAL_DEPLOY, WILL_DEPLOY, CREATED, BLOCKED } from './constants';
 import DeploymentActions from './deployment_actions.vue';
 import DeploymentInfo from './deployment_info.vue';
 
 export default {
-  // name: 'Deployment' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  name: 'Deployment',
+  name: 'MrWidgetDeployment',
   components: {
     DeploymentActions,
     DeploymentInfo,

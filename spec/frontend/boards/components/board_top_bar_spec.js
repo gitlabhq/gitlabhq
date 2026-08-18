@@ -98,18 +98,18 @@ describe('BoardTopBar', () => {
       expect(wrapper.findComponent(ToggleFocus).exists()).toBe(true);
     });
 
-    it('emits setFilters when setFilters is emitted by filtered search', () => {
-      wrapper.findComponent(IssueBoardFilteredSearch).vm.$emit('setFilters');
-      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+    it('emits set-filters when set-filters is emitted by filtered search', () => {
+      wrapper.findComponent(IssueBoardFilteredSearch).vm.$emit('set-filters');
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
 
-    it('emits updateBoard when updateBoard is emitted by boards selector', () => {
-      findBoardsSelector().vm.$emit('updateBoard');
-      expect(wrapper.emitted('updateBoard')).toHaveLength(1);
+    it('emits update-board when update-board is emitted by boards selector', () => {
+      findBoardsSelector().vm.$emit('update-board');
+      expect(wrapper.emitted('update-board')).toHaveLength(1);
     });
 
-    it('passes current form to BoardsSelector when showBoardModal is emitted by config toggle', async () => {
-      wrapper.findComponent(ConfigToggle).vm.$emit('showBoardModal', formType.edit);
+    it('passes current form to BoardsSelector when show-board-modal is emitted by config toggle', async () => {
+      wrapper.findComponent(ConfigToggle).vm.$emit('show-board-modal', formType.edit);
       await nextTick();
       expect(findBoardsSelector().props('boardModalForm')).toEqual(formType.edit);
     });

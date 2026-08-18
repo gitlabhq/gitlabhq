@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import WebIdeOAuthApplicationCallout from './components/oauth_application_callout.vue';
 
 export const initWebIdeOAuthApplicationCallout = () => {
@@ -10,16 +10,13 @@ export const initWebIdeOAuthApplicationCallout = () => {
 
   const { redirectUrlPath, resetApplicationSettingsPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WebIdeOAuthApplicationCallout',
-    render(h) {
-      return h(WebIdeOAuthApplicationCallout, {
-        props: {
-          redirectUrlPath,
-          resetApplicationSettingsPath,
-        },
-      });
+    component: WebIdeOAuthApplicationCallout,
+    props: {
+      redirectUrlPath,
+      resetApplicationSettingsPath,
     },
   });
 };

@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import eventHub from '../event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
@@ -73,11 +74,19 @@ export default {
     },
   },
   methods: {
-    openModal() {
+    async openModal() {
+      try {
+        const { default: initInviteMembersModal } =
+          await import('~/invite_members/init_invite_members_modal');
+        initInviteMembersModal();
+      } catch (error) {
+        captureException(error);
+      }
+
       eventHub.$emit('open-modal', { source: this.triggerSource });
     },
-    handleDisclosureDropdownAction() {
-      this.openModal();
+    async handleDisclosureDropdownAction() {
+      await this.openModal();
       this.$emit('modal-opened');
     },
   },

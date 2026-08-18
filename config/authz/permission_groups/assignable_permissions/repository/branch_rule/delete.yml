@@ -1,0 +1,10 @@
+---
+name: delete_branch_rule
+description: Grants the ability to delete a branch rule
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_branch_rule
+  - delete_squash_option

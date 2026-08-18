@@ -1,6 +1,7 @@
 ---
 name: vue3_migrate_pipelines
-description: Enables Vue 3 in compatibility mode for pipelines lists and details
+description: Enables Vue 3 in compatibility mode for the pipeline list, details, new
+  pipeline form, schedules, and editor pages
 feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20939
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228275
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594278

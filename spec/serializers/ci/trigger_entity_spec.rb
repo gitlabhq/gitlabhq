@@ -36,7 +36,7 @@ RSpec.describe Ci::TriggerEntity, feature_category: :continuous_integration do
       end
 
       it 'returns has_token_exposed' do
-        expect(as_json[:has_token_exposed]).to eq(false)
+        expect(as_json[:has_token_exposed]).to be(false)
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Ci::TriggerEntity, feature_category: :continuous_integration do
       end
 
       it 'returns has_token_exposed' do
-        expect(as_json[:has_token_exposed]).to eq(true)
+        expect(as_json[:has_token_exposed]).to be(true)
       end
     end
   end

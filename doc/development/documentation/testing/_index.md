@@ -56,12 +56,6 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 
 ### Mermaid chart linting
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144328) in GitLab 16.10.
-
-{{< /history >}}
-
 [Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
 
 The script (`scripts/lint/check_mermaid.mjs`) runs in the `docs-lint mermaid` job for
@@ -388,7 +382,7 @@ To update the linting images:
 1. In `docs-gitlab-com`, open a merge request to update `.gitlab-ci.yml` to use the new tooling
    version. ([Example MR](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/merge_requests/341))
 1. When merged, start a `Build docker images pipeline (Manual)` [scheduled pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipeline_schedules).
-1. Go the pipeline you started, and wait for the relevant `test:image` job to complete,
+1. Go to the pipeline you started, and wait for the relevant `test:image` job to complete,
    for example `test:image:docs-lint-markdown`. If the job:
    - Passes, start the relevant `image:` job, for example, `image:docs-lint-markdown`.
    - Fails, review the test job log and start troubleshooting the issue. The image configuration
@@ -479,6 +473,7 @@ in the relevant projects:
 - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/ops/artifact-registry/-/blob/main/.gitlab-ci.yml>
 
 We also run some documentation tests in these projects:
 

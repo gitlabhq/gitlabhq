@@ -15,16 +15,15 @@ title: GitLab installation requirements
 
 GitLab Self-Managed has specific hardware, component, and infrastructure requirements that
 vary based on your deployment size and workload. For larger or distributed deployments, use the
-[sizing guide](../administration/reference_architectures/sizing.md) to determine the right
-specifications for your environment.
+[sizing guide](sizing.md) to determine the right specifications for your environment.
 
 ## Hardware
 
-You can deploy GitLab a single node or distributed across multiple nodes. The minimum
+You can deploy GitLab on a single node or distributed across multiple nodes. The minimum
 hardware requirements for a single-node installation are listed below. For distributed
 deployments, requirements are allocated per component type and scale with load. Use the
-[sizing guide](../administration/reference_architectures/sizing.md) to determine the right
-specifications based on expected load and workload composition.
+[sizing guide](sizing.md) to determine the right specifications based on expected load and
+workload composition.
 
 ### CPU
 
@@ -101,7 +100,10 @@ HA deployments have specific network requirements:
 [PostgreSQL](https://www.postgresql.org/) is the only supported database and is available:
 
 - As a [bundled instance](https://docs.gitlab.com/omnibus/settings/database/) with the Linux package.
-- As an [external service](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
+- As an external service, such as:
+  - A [managed cloud provider service](cloud-services.md#use-managed-cloud-postgresql).
+  - The [CloudNativePG operator](https://cloudnative-pg.io/).
+  - A [self-managed instance](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
 For external instances, see:
 
@@ -158,6 +160,8 @@ A non-HA PostgreSQL instance using the Linux package is sufficient for environme
 ### Redis or Valkey
 
 [Redis](https://redis.io/) or [Valkey](https://valkey.io/) stores all user sessions and background tasks.
+You can self-manage Redis or Valkey, or use a
+[managed cloud provider service](cloud-services.md#use-managed-cloud-redis-and-valkey).
 
 The supported versions of Redis or Valkey are:
 

@@ -34,8 +34,8 @@ describe('CI Editor Header', () => {
     );
   };
 
-  const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
-  const findCatalogRepoLinkButton = () => wrapper.findByTestId('catalog-repo-link');
+  const findHelpBtn = () => wrapper.findComponentByTestId('drawer-toggle');
+  const findCatalogRepoLinkButton = () => wrapper.findComponentByTestId('catalog-repo-link');
   const findEditorA11yDocsLinkButton = () => wrapper.findByTestId('editor-accessibility-link');
 
   afterEach(() => {

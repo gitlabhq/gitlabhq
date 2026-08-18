@@ -1,0 +1,15 @@
+---
+description: Settings button clicked on the admin runners page
+internal_events: true
+action: click_runner_settings_button_in_admin_runners
+identifiers:
+  - user
+product_group: runner_core
+product_categories:
+  - runner_core
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245732
+tiers:
+  - free
+  - premium
+  - ultimate

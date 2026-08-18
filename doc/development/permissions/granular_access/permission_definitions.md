@@ -11,13 +11,13 @@ Each permission should have a corresponding definition file (also called a "raw 
 
 Generate the permission definition and resource metadata files using the `bin/permission` command.
 
-**Interactive mode** — pass just the permission name and the command walks you through each field, using the name to suggest defaults:
+**Interactive mode** - pass just the permission name and the command walks you through each field, using the name to suggest defaults:
 
 ```shell
 bin/permission <permission_name>
 ```
 
-**Non-interactive mode** — pass `-a` (action) and `-r` (resource) as flags to skip prompts. The description auto-defaults to `"Grants the ability to <action> <resource>"`. Add `-c` to also skip the feature category prompt:
+**Non-interactive mode** - pass `-a` (action) and `-r` (resource) as flags to skip prompts. The description auto-defaults to `"Grants the ability to <action> <resource>"`. Add `-c` to also skip the feature category prompt:
 
 ```shell
 bin/permission <permission_name> -a <action> -r <resource> -c <feature_category>

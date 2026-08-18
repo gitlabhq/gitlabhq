@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { simpleHash } from '../lib/utils/text_utility';
 import Facade from './components/common/facade.vue';
 
@@ -14,16 +14,14 @@ const renderGlqlNode = (el) => {
 
   wrapper.parentNode.replaceChild(container, wrapper);
 
-  return new Vue({
+  return initVueApp({
     el: container,
     name: 'GlqlFacadeRoot',
-    render: (h) =>
-      h(Facade, {
-        props: {
-          queryKey: simpleHash(pre.textContent + pre.dataset.sourcepos),
-          queryYaml: pre.textContent,
-        },
-      }),
+    component: Facade,
+    props: {
+      queryKey: simpleHash(pre.textContent + pre.dataset.sourcepos),
+      queryYaml: pre.textContent,
+    },
   });
 };
 

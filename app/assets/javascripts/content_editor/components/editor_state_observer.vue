@@ -1,11 +1,11 @@
 <script>
 import { debounce } from 'lodash-es';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { ALERT_EVENT, KEYDOWN_EVENT } from '../constants';
 
 export const tiptapToComponentMap = {
-  update: 'docUpdate',
-  selectionUpdate: 'selectionUpdate',
+  update: 'doc-update',
+  selectionUpdate: 'selection-update',
   transaction: 'transaction',
   focus: 'focus',
   blur: 'blur',
@@ -25,6 +25,7 @@ export default normalizeRender({
       default: 100,
     },
   },
+  emits: [...Object.values(tiptapToComponentMap), ...eventHubEvents],
   created() {
     this.disposables = [];
 
@@ -57,7 +58,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

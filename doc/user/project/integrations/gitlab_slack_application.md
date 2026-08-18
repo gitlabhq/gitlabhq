@@ -13,12 +13,6 @@ description: "Configure the GitLab for Slack app to use slash commands, receive 
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for GitLab Self-Managed in GitLab 16.2.
-
-{{< /history >}}
-
 > [!note]
 > For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
 
@@ -33,7 +27,7 @@ Prerequisites:
 - You must have the [appropriate permissions to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
 - On GitLab Self-Managed, an administrator must [enable the integration](../../../administration/settings/slack_app.md).
 
-In GitLab 15.0 and later, the GitLab for Slack app uses
+The GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
 Although functionality has not changed, you should [reinstall the app](#reinstall-the-gitlab-for-slack-app).
 
@@ -254,12 +248,6 @@ in the following format:
 You can use these fallback aliases in slash commands when the preferred alias is unavailable.
 
 ## Slack notifications
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381012) in GitLab 15.9.
-
-{{< /history >}}
 
 You can receive notifications to Slack channels for certain GitLab [events](#notification-events).
 

@@ -20,7 +20,10 @@ module Gitlab
     # ordered rule set over them (cohort gates enforcement, not which rules exist).
     # Each limiter returns its first matching rule's decision; labkit blocks the
     # request when any of those decisions is a block whose cohort enforces. On the
-    # way back up it compares labkit's block decision against Rack::Attack's.
+    # way back up it compares labkit's block decision against Rack::Attack's. Once
+    # fully enforced, it also adds the proactive RateLimit-* headers to non-429
+    # responses, taking over from RackAttackHeaders, which the safelist leaves with
+    # nothing to read.
     #
     # The middleware blocks only when an enforcing cohort's rule blocks; otherwise it
     # never blocks. The request's own errors propagate (@app.call is not wrapped);
@@ -44,7 +47,10 @@ module Gitlab
 
         status, headers, body = @app.call(env)
 
-        guard { record(env, decision) } if decision
+        if decision
+          guard { record(env, decision) }
+          guard { annotate_rate_limit_headers(status, headers, decision[:results]) }
+        end
 
         [status, headers, body]
       end
@@ -64,18 +70,41 @@ module Gitlab
         request = build_request(env)
         context = with_isolated_throttle_instrumentation { request.labkit_facts }
         results = limiters.all.values.map { |limiter| limiter.check(context) }
-        { results: results, response: enforced_response(results) }
+        { facts: context, results: results, response: enforced_response(results) }
       end
 
       # Outbound: compare labkit's block decision against Rack::Attack's for the same
       # request. The comparison is on the decision, not per-throttle counts: labkit
       # blocked iff one of its rules blocked, Rack::Attack blocked iff one of the
-      # throttles it annotated onto the env exceeded its limit.
+      # throttles it annotated onto the env exceeded its limit. The full result set
+      # and the request facts ride along for the sampled divergence log.
       def record(env, decision)
         divergence.record(
           labkit_result: blocking_result(decision[:results]),
-          rackattack_throttle_data: env['rack.attack.throttle_data'] || {}
+          rackattack_throttle_data: env['rack.attack.throttle_data'] || {},
+          labkit_results: decision[:results],
+          facts: decision[:facts]
         )
+      end
+
+      # Outbound: proactive RateLimit-* headers for non-429 responses (a 429 already
+      # carries its own), added only once labkit fully owns enforcement - until then
+      # Rack::Attack still evaluates throttles and RackAttackHeaders builds these.
+      # Built from the counted evaluations, not each limiter's reported result (an
+      # under-limit result reports the claim rule, which carries no counter info);
+      # min is the most constraining evaluation across all limiters.
+      def annotate_rate_limit_headers(status, headers, results)
+        return if status == 429 || !registry.fully_enforced?
+
+        evaluation = results.flat_map(&:evaluations).min
+        entry = evaluation && entry_for_rule(evaluation.rule.name)
+        return unless entry
+
+        rate_limit_headers = ::Gitlab::RackAttack::RequestThrottleData
+          .from_labkit_result(name: entry.name, result: evaluation)
+          &.common_response_headers
+
+        headers.merge!(rate_limit_headers) if rate_limit_headers
       end
 
       # The byte-identical legacy 429 for the first blocking rule whose cohort
@@ -92,14 +121,13 @@ module Gitlab
           next false unless blocked?(result)
 
           entry = entry_for_rule(result.rule.name)
-          entry && enforce_enabled?(entry.cohort)
+          entry && registry.enforce_enabled?(entry.cohort)
         end
         return unless blocked
 
         # The 429's RateLimit-Name is the real throttle name (Entry#name), not the
-        # matched rule name: a companion rule (e.g. authenticated_web_frontend) is the
-        # same throttle as its base (throttle_authenticated_web), so the header stays
-        # byte-identical to the legacy Rack::Attack responder for that throttle.
+        # matched rule name, so the header stays byte-identical to the legacy
+        # Rack::Attack responder for that throttle.
         headers = ::Gitlab::RackAttack::RequestThrottleData
           .from_labkit_result(name: entry_for_rule(blocked.rule.name).name, result: blocked)
           &.throttled_response_headers
@@ -108,9 +136,9 @@ module Gitlab
       end
 
       # The first rule that blocked, or nil. A dry-run throttle's rule is :log, so it
-      # never reports :block; the synthetic bypass/skip/runner rules and an unmatched
-      # request are :allow. So neither a tracked-only throttle nor a short-circuited
-      # request is ever read as a block.
+      # never reports :block; the synthetic bypass/skip/runner/claim rules and an
+      # unmatched request are :allow. So neither a tracked-only throttle nor a
+      # short-circuited request is ever read as a block.
       def blocking_result(results)
         results.find { |result| blocked?(result) }
       end
@@ -122,11 +150,9 @@ module Gitlab
       # The throttle Entry a matched Labkit rule name resolves to, memoized on first
       # use (the first request, past initialization, so the require_dependency'd
       # middleware never resolves its registry sibling at load time). Keyed by Labkit
-      # rule name, companion rules included (a companion like authenticated_web_frontend
-      # resolves to its base throttle_authenticated_web), so both the enforce cohort
-      # (Entry#cohort) and the 429 header name (Entry#name) come from the base throttle.
-      # A synthetic rule has no entry, but a synthetic rule never blocks, so it is
-      # never looked up here.
+      # rule name, from which both the enforce cohort (Entry#cohort) and the 429 header
+      # name (Entry#name, the backing throttle) resolve. A synthetic rule has no entry,
+      # but a synthetic rule never blocks, so it is never looked up here.
       def entry_for_rule(rule_name)
         @entries_by_rule ||= registry.by_rule_name
         @entries_by_rule[rule_name]
@@ -149,28 +175,7 @@ module Gitlab
       end
 
       def active_cohorts
-        registry.cohorts.select { |cohort| shadow_enabled?(cohort) }.to_set
-      end
-
-      # The flag symbol is built inline (not assigned to a local first) so the
-      # MarkUsedFeatureFlags cop sees a dynamic-symbol literal and optimistically
-      # marks every flag with this prefix used; a local variable would read as an
-      # lvar and the cop would report the flags unused. Mirrors the Stage 2a
-      # adapter (Gitlab::ApplicationRateLimiter::LabkitAdapter).
-      def shadow_enabled?(cohort)
-        # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
-        ::Feature.enabled?(
-          :"rate_limiter_use_labkit_#{registry.flag_basis(cohort)}", ::Feature.current_request, type: :wip
-        )
-        # rubocop:enable Gitlab/FeatureFlagKeyDynamic
-      end
-
-      def enforce_enabled?(cohort)
-        # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
-        ::Feature.enabled?(
-          :"rate_limiter_use_labkit_#{registry.flag_basis(cohort)}_enforce", ::Feature.current_request, type: :wip
-        )
-        # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+        registry.cohorts.select { |cohort| registry.shadow_enabled?(cohort) }.to_set
       end
 
       # The request that classifies itself for labkit, built from a dup of the env

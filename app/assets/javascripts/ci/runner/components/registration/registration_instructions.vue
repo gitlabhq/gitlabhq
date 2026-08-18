@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { createAlert } from '~/alert';
@@ -38,8 +39,9 @@ export default {
     GkeRegistrationInstructions,
     PlatformsDrawer,
     RunnerPlatformsRadioGroup,
-    RunnerGoogleCloudOptions: () =>
-      import('ee_component/ci/runner/components/runner_google_cloud_options.vue'),
+    RunnerGoogleCloudOptions: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_google_cloud_options.vue'),
+    ),
   },
   props: {
     runnerId: {
@@ -61,7 +63,7 @@ export default {
       default: null,
     },
   },
-  emits: ['runnerRegistered', 'selectPlatform'],
+  emits: ['runner-registered', 'select-platform'],
   data() {
     return {
       runner: null,
@@ -155,7 +157,7 @@ export default {
   watch: {
     isRunnerRegistered(newVal, oldVal) {
       if (!oldVal && newVal) {
-        this.$emit('runnerRegistered');
+        this.$emit('runner-registered');
       }
     },
   },
@@ -167,7 +169,7 @@ export default {
   },
   methods: {
     onSelectPlatform(event) {
-      this.$emit('selectPlatform', event);
+      this.$emit('select-platform', event);
     },
     onToggleDrawer(val = !this.isDrawerOpen) {
       this.isDrawerOpen = val;

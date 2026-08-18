@@ -15,9 +15,6 @@ title: Value Streams Dashboard
 
 {{< history >}}
 
-- Introduced in GitLab 15.8 as a closed [beta](../../policy/development_stages_support.md#beta) feature [with a feature flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Disabled by default.
-- Released in GitLab 15.11 as an open [beta](../../policy/development_stages_support.md#beta) feature [with a feature flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195086) from GitLab Ultimate to GitLab Premium in 18.2.
 
 {{< /history >}}
@@ -90,7 +87,6 @@ For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/ep
 
 {{< history >}}
 
-- Contributor count metric at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) to GitLab.com in GitLab 16.9.
 - Contributor count metric at the project level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474119) to GitLab.com in GitLab 18.0.
 - DevSecOps metrics comparison tables [migrated](https://gitlab.com/gitlab-org/gitlab/-/issues/541489) to the `ai_impact_table` visualization in GitLab 18.5.
 
@@ -123,14 +119,6 @@ The sparkline color ranges from blue to green, where green indicates a positive 
 - Tier: Ultimate
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a feature flag](../../administration/feature_flags/_index.md) named `dora_performers_score_panel`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
-
-{{< /history >}}
 
 The DORA Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects for the last full calendar month.
 
@@ -205,14 +193,6 @@ For further investigation, you can select a project name to drill down into that
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a feature flag](../../administration/feature_flags/_index.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.
-- [Feature flag `value_stream_dashboard_on_off_setting` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134619) in GitLab 16.6.
-
-{{< /history >}}
 
 To enable or disable the overview count aggregation for the Value Streams Dashboard:
 

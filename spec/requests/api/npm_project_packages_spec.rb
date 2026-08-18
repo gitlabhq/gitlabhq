@@ -292,6 +292,36 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
       end
     end
 
+    context 'when the package is not hosted locally' do
+      let(:headers) { build_token_auth_header(token.plaintext_token) }
+      let(:url) { api("/projects/#{project.id}/packages/npm/unknown-pkg/-/unknown-pkg-1.0.0.tgz") }
+
+      context 'when npm request forwarding is enabled' do
+        before do
+          stub_application_setting(npm_package_requests_forwarding: true)
+        end
+
+        it '302-redirects to the upstream registry' do
+          request
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response.headers['Location']).to eq('https://registry.npmjs.org/unknown-pkg/-/unknown-pkg-1.0.0.tgz')
+        end
+      end
+
+      context 'when npm request forwarding is disabled' do
+        before do
+          stub_application_setting(npm_package_requests_forwarding: false)
+        end
+
+        it 'returns 404' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
     shared_examples 'successfully downloads the file' do
       it 'returns the file' do
         subject

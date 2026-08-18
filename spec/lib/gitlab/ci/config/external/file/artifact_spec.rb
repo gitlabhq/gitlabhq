@@ -13,12 +13,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
   let(:external_file) { described_class.new(params, context) }
 
-  before do
-    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-      .with(:ci_interpolation_split_function)
-      .and_return(false)
-  end
-
   describe '#matching?' do
     context 'when params contain artifact location' do
       let(:params) { { artifact: 'generated.yml' } }

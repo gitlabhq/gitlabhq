@@ -32,7 +32,7 @@ module API
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
-      resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{parent_type} #{human_eventable_str} label events" do
           success Entities::ResourceLabelEvent
           detail "Lists all label events for a specified #{human_eventable_str}."

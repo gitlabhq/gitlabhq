@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio_management do
+RSpec.describe 'Project issue boards sidebar', :js, feature_category: :planning_views do
   include BoardHelpers
 
   let_it_be(:user) { create(:user) }

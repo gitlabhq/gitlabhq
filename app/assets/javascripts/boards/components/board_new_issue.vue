@@ -27,7 +27,7 @@ export default {
       required: true,
     },
   },
-  emits: ['addNewIssue', 'toggleNewForm'],
+  emits: ['add-new-issue', 'toggle-new-form'],
   data() {
     return {
       selectedProject: {},
@@ -98,10 +98,10 @@ export default {
         input.projectPath = this.fullPath;
       }
 
-      this.$emit('addNewIssue', input);
+      this.$emit('add-new-issue', input);
     },
     cancel() {
-      this.$emit('toggleNewForm');
+      this.$emit('toggle-new-form');
     },
   },
 };

@@ -36,8 +36,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'Ability.allowed? with private (underscore-prefixed) permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        Ability.allowed?(user, :_run_dast_pipeline, project)
-                               ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        Ability.allowed?(user, :_read_protected, project)
+                               ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end
@@ -45,8 +45,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'three-argument can? with private permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        can?(current_user, :_run_dast_pipeline, project)
-                           ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        can?(current_user, :_read_protected, project)
+                           ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end
@@ -54,8 +54,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'user.can? with private permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        current_user.can?(:_run_dast_pipeline, project)
-                          ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        current_user.can?(:_read_protected, project)
+                          ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end
@@ -63,8 +63,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'authorize call with private permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        authorize :_run_dast_pipeline
-                  ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        authorize :_read_protected
+                  ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end
@@ -72,8 +72,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'authorize: keyword argument with private permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        field :foo, Type, authorize: :_run_dast_pipeline
-                                     ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        field :foo, Type, authorize: :_read_protected
+                                     ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end
@@ -81,8 +81,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'authorize! call with private permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        authorize! :_run_dast_pipeline, project
-                   ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        authorize! :_read_protected, project
+                   ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end
@@ -90,8 +90,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Authz::PermissionCheck, feature_category: :
   describe 'can? with one argument and private permission' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
-        can?(:_run_dast_pipeline)
-             ^^^^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
+        can?(:_read_protected)
+             ^^^^^^^^^^^^^^^^ Do not check private (underscore-prefixed) permissions at enforcement points. Private permissions are for composition inside policy rules only; check a public permission instead.
       RUBY
     end
   end

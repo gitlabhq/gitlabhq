@@ -26,10 +26,6 @@ Git abuse rate limiting is a feature to automatically ban users who download, cl
 
 Git abuse rate limiting does not apply to top-level group owners, [deploy tokens](../../project/deploy_tokens/_index.md), or [deploy keys](../../project/deploy_keys/_index.md).
 
-How GitLab determines a user's rate limit is under development.
-GitLab team members can view more information in this confidential epic:
-`https://gitlab.com/groups/gitlab-org/modelops/anti-abuse/-/epics/14`.
-
 ## Automatic ban notifications
 
 Selected users receive an email notification when a user is banned.

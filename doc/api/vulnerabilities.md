@@ -274,7 +274,7 @@ Example response:
 
 ## Replace Vulnerability REST API with GraphQL
 
-To prepare for the [upcoming deprecation](https://gitlab.com/groups/gitlab-org/-/epics/5118) of
+To prepare for the [upcoming deprecation](https://gitlab.com/groups/gitlab-org/-/work_items/5118) of
 the Vulnerability REST API endpoint, use the examples below to perform the equivalent operations
 with the GraphQL API.
 

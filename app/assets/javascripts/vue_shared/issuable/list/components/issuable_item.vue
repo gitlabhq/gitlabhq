@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlBadge,
   GlLink,
@@ -17,6 +18,7 @@ import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -34,6 +36,7 @@ import {
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'IssuableItem',
@@ -49,14 +52,15 @@ export default {
     IssuableAssignees,
     WorkItemTypeIcon,
     WorkItemPrefetch,
-    WorkItemRelationshipIcons: () =>
-      import('~/work_items/components/shared/work_item_relationship_icons.vue'),
+    WorkItemRelationshipIcons: defineAsyncComponent(
+      () => import('~/work_items/components/shared/work_item_relationship_icons.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  mixins: [timeagoMixin, glFeatureFlagMixin(), glSlotsMixin],
   inject: {
     isGroup: {
       default: false,
@@ -125,6 +129,7 @@ export default {
     },
   },
   emits: ['checked-input', 'select-issuable'],
+  titleInLinkSafeHtmlConfig,
   constants: {
     METADATA_KEYS,
   },
@@ -253,17 +258,17 @@ export default {
     showIssuableMeta() {
       return Boolean(
         this.hasSlotContents('status') ||
-          this.hasSlotContents('statistics') ||
-          this.showDiscussions ||
-          this.issuable.assignees,
+        this.hasSlotContents('statistics') ||
+        this.showDiscussions ||
+        this.issuable.assignees,
       );
     },
     showDraftStatusBadge() {
       return Boolean(
         this.isMergeRequest &&
-          this.isOpen &&
-          this.issuable.draft &&
-          this.glFeatures.showMergeRequestStatusDraft,
+        this.isOpen &&
+        this.issuable.draft &&
+        this.glFeatures.showMergeRequestStatusDraft,
       );
     },
     statusBadgeVariant() {
@@ -462,7 +467,7 @@ export default {
               @mouseover="prefetchWorkItem(issuableIid)"
               @mouseout="clearPrefetching"
             >
-              <span v-safe-html="issuable.titleHtml"></span>
+              <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="issuable.titleHtml"></span>
               <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
             </gl-link>
           </template>
@@ -477,7 +482,7 @@ export default {
           v-bind="issuableTitleProps"
           @click.stop="handleIssuableItemClick"
         >
-          <span v-safe-html="issuable.titleHtml"></span>
+          <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="issuable.titleHtml"></span>
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
         </gl-link>
         <slot name="title-icons"></slot>
@@ -580,7 +585,7 @@ export default {
             class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
           >
             <gl-badge :variant="statusBadgeVariant">
-              <slot name="status"></slot>
+              <template v-if="glSlots().status" #default><slot name="status"></slot></template>
             </gl-badge>
           </button>
           <slot v-else name="status"></slot>

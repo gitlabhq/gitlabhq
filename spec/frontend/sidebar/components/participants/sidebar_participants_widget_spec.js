@@ -42,12 +42,12 @@ describe('Sidebar Participants Widget', () => {
     expect(findParticipants().props('loading')).toBe(true);
   });
 
-  it('emits toggleSidebar event when participants child component emits toggleSidebar', async () => {
+  it('emits toggle-sidebar event when participants child component emits toggle-sidebar', async () => {
     createComponent();
-    findParticipants().vm.$emit('toggleSidebar');
+    findParticipants().vm.$emit('toggle-sidebar');
 
     await nextTick();
-    expect(wrapper.emitted('toggleSidebar')).toEqual([[]]);
+    expect(wrapper.emitted('toggle-sidebar')).toEqual([[]]);
   });
 
   describe('when participants are loaded', () => {

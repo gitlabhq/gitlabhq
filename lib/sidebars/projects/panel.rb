@@ -32,6 +32,7 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::PackagesRegistriesMenu.new(context))
         add_menu(Sidebars::Projects::Menus::InfrastructureMenu.new(context))
         add_menu(Sidebars::Projects::Menus::MonitorMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::ObserveMenu.new(context))
         add_menu(Sidebars::Projects::Menus::AnalyticsMenu.new(context))
         add_wiki_menus
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))

@@ -68,18 +68,26 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def set_cache_headers
-    commit_id = archive_metadata['CommitId']
+    cache = archive_cache_control
 
     expires_in(
-      cache_max_age(commit_id),
-      public: ::Users::Anonymous.can?(:download_code, project),
+      cache.max_age,
+      public: cache.public?,
       must_revalidate: true,
-      stale_if_error: 5.minutes,
-      stale_while_revalidate: 1.minute,
-      's-maxage': 1.minute
+      stale_if_error: Gitlab::Repositories::ArchiveCacheControl::STALE_IF_ERROR,
+      stale_while_revalidate: Gitlab::Repositories::ArchiveCacheControl::STALE_WHILE_REVALIDATE,
+      's-maxage': Gitlab::Repositories::ArchiveCacheControl::SHARED_MAX_AGE
     )
 
-    fresh_when(strong_etag: [commit_id, archive_metadata['ArchivePath']])
+    fresh_when(strong_etag: cache.etag_components)
+  end
+
+  def archive_cache_control
+    @archive_cache_control ||= Gitlab::Repositories::ArchiveCacheControl.new(
+      project,
+      ref: @ref,
+      metadata: archive_metadata
+    )
   end
 
   def archive_not_modified?
@@ -106,19 +114,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
       path: repo_params[:path],
       ref_type: repo_params[:ref_type]
     )
-  end
-
-  def cache_max_age(commit_id)
-    if @ref == commit_id
-      # This is a link to an archive by a commit SHA. That means that the archive
-      # is immutable. The only reason to invalidate the cache is if the commit
-      # was deleted or if the user lost access to the repository.
-      Repository::ARCHIVE_CACHE_TIME_IMMUTABLE
-    else
-      # A branch or tag points at this archive. That means that the expected archive
-      # content may change over time.
-      Repository::ARCHIVE_CACHE_TIME
-    end
   end
 
   def assign_append_sha

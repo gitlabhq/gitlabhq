@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import LinksToSpamInput from './components/links_to_spam_input.vue';
 
 export const initLinkToSpam = () => {
@@ -8,15 +8,12 @@ export const initLinkToSpam = () => {
 
   const { links } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'LinksToSpamRoot',
-    render(createElement) {
-      return createElement(LinksToSpamInput, {
-        props: {
-          previousLinks: JSON.parse(links),
-        },
-      });
+    component: LinksToSpamInput,
+    props: {
+      previousLinks: JSON.parse(links),
     },
   });
 };

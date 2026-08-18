@@ -23,7 +23,7 @@ GITLAB_QA_ACCESS_TOKEN=<your_personal_access_token> GITLAB_URL="<address:port>" 
 Make sure you do the following:
 
 - Replace `<your_personal_access_token>` with the token you generated in step one.
-- Double check the `GITLAB_URL`. It should point to address and port of your GitLab instance, for example `http://localhost:3000` if you are running GDK
+- Double check the `GITLAB_URL`. It should point to the address and port of your GitLab instance, for example `http://localhost:3000` if you are running GDK
 - Replace `<your_project_id>` with the ID you obtained in step three above.
 - Replace `<vulnerability_count>` with the number of vulnerabilities you'd like to generate.
 

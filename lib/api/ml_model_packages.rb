@@ -6,8 +6,8 @@ module API
     include ::API::Helpers::Authentication
 
     ML_MODEL_PACKAGES_REQUIREMENTS = {
-      model_name: API::NO_SLASH_URL_PART_REGEX,
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      model_name: ::API::NO_SLASH_URL_PART_REGEX,
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     FAILURES = [
@@ -82,7 +82,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         requires :file_name, type: String, desc: 'File name', file_path: true,
           regexp: Gitlab::Regex.ml_model_file_name_regex

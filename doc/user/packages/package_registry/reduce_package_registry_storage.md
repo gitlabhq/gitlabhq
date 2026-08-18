@@ -77,12 +77,6 @@ To delete a package, you can also use [the API](../../../api/packages.md#delete-
 
 ## Cleanup policy
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
-
-{{< /history >}}
-
 When you upload a package with the same name and version to the package registry,
 more assets are added to the package.
 

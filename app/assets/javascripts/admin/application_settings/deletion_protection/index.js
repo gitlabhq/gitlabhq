@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseFormProps } from './utils';
 import FormGroup from './components/form_group.vue';
 
@@ -11,15 +11,12 @@ export const initAdminDeletionProtectionSettings = () => {
 
   const { deletionAdjournedPeriod } = parseFormProps(el.dataset);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminDeletionProtectionSettings',
-    render(createElement) {
-      return createElement(FormGroup, {
-        props: {
-          deletionAdjournedPeriod,
-        },
-      });
+    component: FormGroup,
+    props: {
+      deletionAdjournedPeriod,
     },
   });
 };

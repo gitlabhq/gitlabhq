@@ -7,7 +7,7 @@ title: Local setup and debugging
 
 > [!note]
 > To track user interactions in the browser, browser settings, such as privacy filters (for example,
-> AdBlock, uBlock) and Do-Not-Track (DNT). For more information, see [settings that affect tracking](https://snowplow.io/blog/how-many-of-your-visitors-block-your-snowplow-tracking).
+> AdBlock, uBlock) and Do-Not-Track (DNT), might need to be adjusted. For more information, see [settings that affect tracking](https://snowplow.io/blog/how-many-of-your-visitors-block-your-snowplow-tracking).
 
 Internal events are using a tool called Snowplow under the hood. To develop and test internal events, there are several tools to test frontend and backend events:
 
@@ -78,7 +78,7 @@ Monitored events: i_code_review_user_create_mr
 The Monitor's Keyboard commands:
 
 - The `p` key acts as a toggle to pause and start the monitor. It makes it easier to select and copy the tables.
-- The `r` key resets the monitor to it's internal state, and removes any previous event that had been fired from the display.
+- The `r` key resets the monitor to its internal state, and removes any previous event that had been fired from the display.
 - The `q` key quits the monitor.
 
 ## Snowplow Micro

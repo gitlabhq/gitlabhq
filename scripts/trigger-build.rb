@@ -692,6 +692,8 @@ module Trigger
         'orbit'
       when 'gitlab-org/gitlab-environment-toolkit'
         'get'
+      when 'gitlab-org/ops/artifact-registry'
+        'artifact_registry'
       end
     end
 

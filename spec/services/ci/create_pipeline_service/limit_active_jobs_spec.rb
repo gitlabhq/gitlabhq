@@ -13,7 +13,7 @@ RSpec.describe Ci::CreatePipelineService,
   subject(:pipeline) { service.execute(:push).payload }
 
   before do
-    create_list(:ci_build, 8, pipeline: existing_pipeline)
+    create_list(:ci_build, 2, pipeline: existing_pipeline)
     create_list(:ci_bridge, 1, pipeline: existing_pipeline)
 
     stub_ci_pipeline_yaml_file(<<~YAML)
@@ -30,7 +30,7 @@ RSpec.describe Ci::CreatePipelineService,
 
   context 'when project has exceeded the active jobs limit' do
     before do
-      project.namespace.actual_limits.update!(ci_active_jobs: 10)
+      project.namespace.actual_limits.update!(ci_active_jobs: 5)
     end
 
     it 'fails the pipeline before populating it' do

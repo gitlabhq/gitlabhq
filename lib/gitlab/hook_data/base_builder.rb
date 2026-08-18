@@ -40,7 +40,7 @@ module Gitlab
         return markdown_text unless regex.match?(markdown_text)
 
         regex.replace_gsub(markdown_text) do |match|
-          if match[:image] && !match[:https]
+          if match[:image] && match[:https].blank?
             url = match[:url]
             url = File.join(uploads_prefix, url) if url.start_with?('/uploads', 'uploads')
             url = "/#{url}" unless url.start_with?('/')

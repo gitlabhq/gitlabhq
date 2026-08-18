@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::SavedViews::UserSavedView, feature_category: :portfolio_management do
+RSpec.describe WorkItems::SavedViews::UserSavedView, feature_category: :planning_views do
   describe '.user_saved_view_limit' do
     let(:namespace) { build(:namespace) }
 

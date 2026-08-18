@@ -29,6 +29,7 @@ export default {
     lastRelease: s__('CiCatalog|Released %{date}'),
     lastReleaseMissing: s__('CiCatalog|No release available'),
     publishedMessage: s__('CiCatalog|Published %{timeAgo} by %{author}'),
+    publishedMessageNoAuthor: s__('CiCatalog|Published %{timeAgo}'),
     unreleased: s__('CiCatalog|Unreleased'),
   },
   descriptionTruncateWidth: 260,
@@ -52,6 +53,16 @@ export default {
     resource: {
       type: Object,
       required: true,
+    },
+    showStats: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    showAuthor: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   computed: {
@@ -116,6 +127,11 @@ export default {
     },
     latestVersion() {
       return this.resource?.versions?.nodes[0] || [];
+    },
+    publishedMessageText() {
+      return this.showAuthor
+        ? this.$options.i18n.publishedMessage
+        : this.$options.i18n.publishedMessageNoAuthor;
     },
     name() {
       return this.latestVersion?.name || this.$options.i18n.unreleased;
@@ -225,7 +241,7 @@ export default {
               {{ __('Archived') }}
             </gl-badge>
           </div>
-          <div class="gl-ml-3 gl-flex gl-items-center">
+          <div v-if="showStats" class="gl-ml-3 gl-flex gl-items-center">
             <div v-gl-tooltip.top class="gl-mr-3 gl-flex gl-items-center" :title="usageText">
               <gl-icon name="chart" :size="16" />
               <span class="gl-ml-2" data-testid="stats-usage">
@@ -280,13 +296,13 @@ export default {
         </div>
         <div class="gl-flex gl-shrink-0 gl-justify-end">
           <div v-if="hasReleasedVersion" class="gl-shrink-0" data-testid="published-info">
-            <gl-sprintf :message="$options.i18n.publishedMessage">
+            <gl-sprintf :message="publishedMessageText">
               <template #timeAgo>
                 <span v-gl-tooltip.top :title="formattedDate">
                   {{ releasedAt }}
                 </span>
               </template>
-              <template #author>
+              <template v-if="showAuthor" #author>
                 <gl-link
                   :data-name="authorName"
                   :data-user-id="authorId"

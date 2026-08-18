@@ -13,13 +13,9 @@ title: GitLab Pages public folder
 
 {{< /details >}}
 
-{{< history >}}
-
-- GitLab 16.1 introduced support for configuring the published folder in
-  `.gitlab-ci.yml`. You no longer need to change your framework configuration. For more
-  information, see [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
-
-{{< /history >}}
+You can configure the published folder in `.gitlab-ci.yml`. You no longer need to change your
+framework configuration. For more information, see
+[set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
 
 Follow these instructions to configure the `public` folder
 for the following frameworks.

@@ -170,9 +170,12 @@ export default {
 
       const isOnlyRoleSelected =
         counts[LEVEL_TYPES.ROLE] === 1 &&
-        [counts[LEVEL_TYPES.USER], counts[LEVEL_TYPES.GROUP], counts[LEVEL_TYPES.DEPLOY_KEY]].every(
-          (count) => count === 0,
-        );
+        [
+          counts[LEVEL_TYPES.USER],
+          counts[LEVEL_TYPES.GROUP],
+          counts[LEVEL_TYPES.DEPLOY_KEY],
+          counts[LEVEL_TYPES.MEMBER_ROLE],
+        ].every((count) => count === 0);
 
       if (isOnlyRoleSelected) {
         return this.selected[LEVEL_TYPES.ROLE][0].text;
@@ -200,6 +203,10 @@ export default {
         labelPieces.push(n__('1 group', '%d groups', counts[LEVEL_TYPES.GROUP]));
       }
 
+      if (counts[LEVEL_TYPES.MEMBER_ROLE] > 0) {
+        labelPieces.push(n__('1 custom role', '%d custom roles', counts[LEVEL_TYPES.MEMBER_ROLE]));
+      }
+
       return labelPieces.join(', ') || this.label;
     },
     fossWithMergeAccess() {
@@ -216,6 +223,7 @@ export default {
         ...this.getDataForSave(LEVEL_TYPES.ROLE, 'access_level'),
         ...this.getDataForSave(LEVEL_TYPES.GROUP, 'group_id'),
         ...this.getDataForSave(LEVEL_TYPES.USER, 'user_id'),
+        ...this.getDataForSave(LEVEL_TYPES.MEMBER_ROLE, 'member_role_id'),
         ...this.getDataForSave(LEVEL_TYPES.DEPLOY_KEY, 'deploy_key_id'),
       ];
     },
@@ -247,6 +255,8 @@ export default {
             selected[LEVEL_TYPES.GROUP].push({ id: item.group_id, ...item });
           } else if (item.user_id) {
             selected[LEVEL_TYPES.USER].push({ id: item.user_id, ...item });
+          } else if (item.member_role_id) {
+            selected[LEVEL_TYPES.MEMBER_ROLE].push({ id: item.member_role_id, ...item });
           } else if (item.access_level) {
             const level = this.accessLevelsData.find(({ id }) => item.access_level === id);
             selected[LEVEL_TYPES.ROLE].push(level);
@@ -273,15 +283,16 @@ export default {
         : getGroups({ withProjectAccess: this.groupsWithProjectAccess });
     },
     getCustomRoles() {
-      // TODO: Replace the mocked getMemberRoles with the real API integration
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/600529
       if (!this.customRolesEnabled) {
         return Promise.resolve({ data: [] });
       }
 
       return this.customRoles.length
         ? Promise.resolve({ data: this.customRoles })
-        : getMemberRoles(gon.current_group_id);
+        : getMemberRoles(gon.current_group_id).catch(() => {
+            createAlert({ message: __('Failed to load custom roles.') });
+            return { data: [] };
+          });
     },
     getData({ initial = false } = {}) {
       this.initialLoading = initial;
@@ -434,6 +445,15 @@ export default {
           },
         );
         this.selected[LEVEL_TYPES.GROUP] = selectedGroups;
+
+        const selectedMemberRoles = intersectionWith(
+          this.customRoles,
+          this.preselectedItems,
+          (role, selected) => {
+            return selected.type === LEVEL_TYPES.MEMBER_ROLE && role.id === selected.member_role_id;
+          },
+        );
+        this.selected[LEVEL_TYPES.MEMBER_ROLE] = selectedMemberRoles;
 
         const selectedDeployKeys = intersectionWith(
           this.deployKeys,

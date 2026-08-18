@@ -14,7 +14,7 @@
 - if @gitaly_unavailable
   .container-fluid{ class: [container_class] }
     = render 'shared/errors/gitaly_unavailable', reason: s_('CompareRevisions|Unable to compare revisions')
-- elsif rapid_diffs_presenter.present? && params[:to] != params[:from]
+- elsif rapid_diffs_presenter.present? && !rapid_diffs_presenter.same
   .container-fluid{ class: [container_class] }
     = render "projects/commits/commit_list"
   .container-fluid
@@ -26,7 +26,7 @@
         = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
           title: s_("CompareRevisions|There isn't anything to compare")) do |empty_state_instance|
           - empty_state_instance.with_description do
-            - if params[:to] == params[:from]
+            - if rapid_diffs_presenter&.same
               - source_branch = capture do
                 %span.ref-name= params[:from]
               - target_branch = capture do

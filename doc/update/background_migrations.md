@@ -409,18 +409,6 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 #### Parallel execution
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a feature flag](../administration/feature_flags/_index.md) named `batched_migrations_parallel_execution`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372316) in GitLab 15.11.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120808) in GitLab 16.1. Feature flag `batched_migrations_parallel_execution` removed.
-
-{{< /history >}}
-
-> [!warning]
-> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-> Refer to this feature's history for more details.
-
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags/_index.md) can change

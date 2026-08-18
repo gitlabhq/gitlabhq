@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlCard,
@@ -134,10 +135,10 @@ export default {
     ConfirmDanger,
     SecretManagerSettings,
     BotAccessSettings,
-    OtherProjectSettings: () =>
-      import(
-        'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
-      ),
+    OtherProjectSettings: defineAsyncComponent(
+      () =>
+        import('jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'),
+    ),
   },
   mixins: [settingsMixin],
   props: {

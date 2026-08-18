@@ -253,7 +253,7 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
   end
 
   describe '#input_schema' do
-    it 'returns input schema for the current version' do
+    it 'returns input schema for the current version with additionalProperties defaulted to false' do
       instance = test_class.new(version: '1.1.0')
       expected_schema = {
         type: 'object',
@@ -261,9 +261,44 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
           name: { type: 'string' },
           age: { type: 'integer' }
         },
-        required: ['name']
+        required: ['name'],
+        additionalProperties: false
       }
       expect(instance.input_schema).to eq(expected_schema)
+    end
+
+    it 'preserves an explicit additionalProperties setting' do
+      opt_out_class = Class.new do
+        include Mcp::Tools::Concerns::Versionable
+
+        register_version '1.0.0', {
+          input_schema: { type: 'object', properties: {}, additionalProperties: true }
+        }
+
+        def initialize(version: nil)
+          initialize_version(version)
+        end
+      end
+
+      instance = opt_out_class.new(version: '1.0.0')
+      expect(instance.input_schema[:additionalProperties]).to be(true)
+    end
+
+    it 'does not inject additionalProperties for a composition schema' do
+      composition_class = Class.new do
+        include Mcp::Tools::Concerns::Versionable
+
+        register_version '1.0.0', {
+          input_schema: { oneOf: [{ type: 'object', properties: { a: { type: 'string' } } }] }
+        }
+
+        def initialize(version: nil)
+          initialize_version(version)
+        end
+      end
+
+      instance = composition_class.new(version: '1.0.0')
+      expect(instance.input_schema).not_to have_key(:additionalProperties)
     end
 
     it 'raises error when input schema is not defined' do
@@ -537,11 +572,11 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
 
           private
 
-          def build_variables_1_0_0
+          def build_variables_v1_0_0
             { version: '1.0.0', basic: true, id: params[:id] }
           end
 
-          def build_variables_2_0_0
+          def build_variables_v2_0_0
             {
               version: '2.0.0',
               advanced: true,
@@ -617,7 +652,7 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
 
           private
 
-          def build_variables_1_0_0
+          def build_variables_v1_0_0
             { version: '1.0.0' }
           end
         end
@@ -633,9 +668,9 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
   end
 
   describe '#version_method_suffix' do
-    it 'converts version dots to underscores' do
+    it 'prefixes the version with v and converts dots to underscores' do
       instance = test_class.new(version: '1.1.0')
-      expect(instance.send(:version_method_suffix)).to eq('1_1_0')
+      expect(instance.send(:version_method_suffix)).to eq('v1_1_0')
     end
   end
 
@@ -683,14 +718,14 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
 
         protected
 
-        def perform_1_0_0(arguments = {})
+        def perform_v1_0_0(arguments = {})
           {
             content: [{ type: 'text', text: "Hello #{arguments[:name]} (v1.0.0)" }],
             structuredContent: { version: '1.0.0', name: arguments[:name] }
           }
         end
 
-        def perform_1_1_0(arguments = {})
+        def perform_v1_1_0(arguments = {})
           text = "Hello #{arguments[:name]}"
           text += ", age #{arguments[:age]}" if arguments[:age]
           text += " (v1.1.0)"
@@ -701,7 +736,7 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
           }
         end
 
-        def perform_2_0_0(arguments = {})
+        def perform_v2_0_0(arguments = {})
           {
             content: [{ type: 'text', text: "Hello #{arguments[:full_name]} (v2.0.0)" }],
             structuredContent: { version: '2.0.0', full_name: arguments[:full_name], metadata: arguments[:metadata] }

@@ -1,0 +1,7 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+# This gem uses #create as a domain method for creating policies, not FactoryBot
+RSpec/FactoryBot/AvoidCreate:
+  Exclude:
+    - 'spec/**/*.rb'

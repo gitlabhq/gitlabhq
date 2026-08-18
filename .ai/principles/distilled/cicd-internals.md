@@ -1,6 +1,6 @@
 ---
-source_checksum: 4186dc0d16bee6b6
-distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
+source_checksum: aff32136b0f97801
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -22,11 +22,21 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 
 - Check feature flags inside `Entry::Node#value` (or a private helper) using `Gitlab::Ci::Config::FeatureFlags.enabled?(:flag, type: :beta)` rather than scattering flag checks across callers.
 - DO NOT use feature flags in entry classes without an actor; prefer `Feature.enabled?(:flag, Feature.current_request)` or `Config::FeatureFlags.enabled?(:flag)`, or move the flag check outside the entry class entirely.
+- Place CI YAML parsing changes behind a feature flag that is default-enabled for a full milestone before removal, so Self-Managed and Dedicated users can revert to the original behaviour if unexpected side effects arise.
 
 ### Testing and Validation
 
 - Add or update the corresponding spec file whenever an entry is added or modified.
 - Add or update integration tests in `spec/lib/gitlab/ci/yaml_processor_spec.rb` or the files under `spec/lib/gitlab/ci/yaml_processor/test_cases/` for every new or changed keyword.
+
+### YAML Keyword Reviews
+
+- For path-based keywords: document and test whether glob patterns (`*`, `**`, `?`), relative/absolute paths, symbolic links, and missing-path behaviour are supported; explicitly document and spec any intentionally unsupported behaviour so a future accidental enablement causes a test failure.
+- For variable expansion: document the expansion type in the [variables usage table](https://docs.gitlab.com/ci/variables/where_variables_can_be_used/#variables-usage), test both positive and negative cases, and add a spec that prevents accidental future enablement of unsupported nested expansion (which would be a breaking change).
+- For keyword reuse (adding an existing keyword as a subkeyword): document any unsupported sub-features, provide clear validation errors for unsupported syntax, and test scenarios where users assume the subkeyword behaves identically to the original.
+- For composability: document and test `!reference` tag behaviour (a frequent source of unexpected behaviour), `include:` semantics, and `extends:` merge behaviour (deep-merges hashes but replaces arrays); add validation that rejects unwanted `!reference` or `include:` usage where applicable.
+- Ensure every relevant usage dimension (string length, list/array size) has a documented limit with a note on the performance impact of raising it; DO NOT ship a keyword without limits on every dimension that could be exploited at scale.
+- Ensure all implemented behaviour is documented, all documented behaviour is covered by specs, validation errors are specific and actionable, and JSON schema validation is consistent with backend validation; update the syntax reference page with the new or changed keyword and include examples covering common use cases with limitations and gotchas clearly called out.
 
 ### CI Database Tables (Partitioning)
 
@@ -46,4 +56,5 @@ For the full picture, see:
 
 - doc/development/cicd/configuration.md
 - doc/development/cicd/cicd_tables.md
+- doc/development/cicd/keyword_reviews.md
 

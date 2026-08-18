@@ -49,6 +49,16 @@
       "uniqueItems": true,
       "maxItems": 100
     },
+    "groupOrder": {
+      "description": "Ordered array of group identifiers (for example status IDs) defining the board column order. Groups not listed are rendered after these in their default order; unknown identifiers are ignored",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 256
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
     "viewMode": {
       "description": "Which view mode (list or board) the saved view should open in",
       "type": "string",

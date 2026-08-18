@@ -20,7 +20,7 @@ describe('UserItem spec', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findDeleteButton = () => wrapper.findByTestId('delete-user-btn');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-user-btn');
 
   beforeEach(() => createComponent());
 

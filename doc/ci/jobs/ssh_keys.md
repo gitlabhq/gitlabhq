@@ -76,7 +76,7 @@ This method uses a regular CI/CD variable instead of a file type variable. Gener
 When your CI/CD jobs run in Docker containers, the environment is isolated. To deploy your code to a private server, you can use an SSH key pair.
 
 1. [Generate a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair).
-   Do not add a passphrase to the SSH key, or the `before_script` will prompt for it.
+   Do not add a passphrase to the SSH key. If you do, the `before_script` prompts you for it.
 1. Add the private key as a [file type CI/CD variable](#add-an-ssh-key-as-a-file-type-variable) named `SSH_PRIVATE_KEY`.
 1. Modify your `.gitlab-ci.yml` with a `before_script` action. The following example assumes a
    Debian-based image and that the job runs in a container with permission to install packages.
@@ -119,7 +119,7 @@ When your CI/CD jobs run in Docker containers, the environment is isolated. To d
 
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).
 1. As a final step, add the public key from the one you created in the first
-   step to the services that you want to have an access to from inside the build
+   step to the services that you want to have access to from inside the build
    environment. If you are accessing a private GitLab repository you must add
    it as a [deploy key](../../user/project/deploy_keys/_index.md).
 
@@ -145,7 +145,7 @@ on, and use that key for all projects that are run on this machine.
    Do not add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 1. As a final step, add the public key from the one you created earlier to the
-   services that you want to have an access to from inside the build environment.
+   services that you want to have access to from inside the build environment.
    If you are accessing a private GitLab repository you must add it as a
    [deploy key](../../user/project/deploy_keys/_index.md).
 

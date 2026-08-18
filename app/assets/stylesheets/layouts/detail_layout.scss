@@ -42,17 +42,23 @@ $detail-layout-gap: 2rem;
     > .gl-detail-layout-sidebar {
       grid-area: sidebar;
       position: sticky;
-      top: var(--detail-layout-sidebar-top, var(--work-item-sticky-header-height, 0));
+      top: var(--detail-layout-sidebar-top, var(--layout-sticky-header-height, 0));
       align-self: start;
+      // Reserve the sticky header height so the sidebar can never scroll under it.
+      // The reserved var is stable (set once); the live --layout-sticky-header-height
+      // toggles on scroll and would resize the sidebar, stuttering the UI.
       height: var(
         --detail-layout-sidebar-height,
         calc(
           var(--panel-content-inner-height, #{$calc-application-viewport-height}) -
-            var(--work-item-sticky-header-height, 0)
+            var(--layout-sticky-header-reserved-height, 0px)
         )
       );
       overflow-y: auto;
       overflow-x: hidden;
+      // Matches the transition of the sticky header appearing/disappearing,
+      // which shifts the top value
+      transition: top $gl-transition-duration-medium $gl-easing-out-cubic;
     }
 
     > .gl-detail-layout-widgets {

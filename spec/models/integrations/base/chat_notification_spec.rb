@@ -75,7 +75,7 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
   end
 
   describe '#execute' do
-    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
     let(:user) { build_stubbed(:user) }
     let(:webhook_url) { 'https://example.gitlab.com/' }

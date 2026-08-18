@@ -64,7 +64,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
 
     it('renders the main merge request button with correct text', async () => {
       wrapper = createComponent();
-      findCreateModal().vm.$emit('fetchedPermissions', true);
+      findCreateModal().vm.$emit('fetched-permissions', true);
       await waitForPromises();
 
       expect(findMainButton().text()).toBe('Create merge request');
@@ -73,7 +73,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
 
     it('renders the main button with correct text when a confidential work item', async () => {
       wrapper = createComponent({ props: { isConfidentialWorkItem: true } });
-      findCreateModal().vm.$emit('fetchedPermissions', true);
+      findCreateModal().vm.$emit('fetched-permissions', true);
       await waitForPromises();
 
       expect(findMainButton().text()).toBe('Create merge request');
@@ -81,7 +81,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
 
     it('hides the button when the user does not have permission to create merge requests', async () => {
       wrapper = createComponent();
-      await findCreateModal().vm.$emit('fetchedPermissions', false);
+      await findCreateModal().vm.$emit('fetched-permissions', false);
 
       expect(findButtonGroup().exists()).toBe(false);
     });

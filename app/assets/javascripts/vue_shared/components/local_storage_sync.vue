@@ -1,7 +1,7 @@
 <script>
 import { isEqual } from 'lodash-es';
 import { getStorageValue, saveStorageValue, removeStorageValue } from '~/lib/utils/local_storage';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * This component will save and restore a value to and from localStorage.
@@ -42,6 +42,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['input'],
   watch: {
     value(newVal) {
       if (!this.persist) return;
@@ -63,7 +64,7 @@ export default normalizeRender({
     }
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

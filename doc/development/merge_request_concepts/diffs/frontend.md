@@ -221,10 +221,10 @@ required.
 The main diff app component is the main entry point to the diffs app. One of the most important parts
 of this component is to dispatch the action that assigns discussions to diff lines. This action
 gets dispatched after the metadata request is completed, and after the batch diffs requests are
-finished. There is also a watcher set up to watches for changes in both the diff files array and the notes
+finished. There is also a watcher set up to watch for changes in both the diff files array and the notes
 array. Whenever a change happens here, the set discussion action gets dispatched.
 
-The DiffRow component is set up in a way that allows for us to store the diff line data in one format.
+The DiffRow component is set up in a way that allows us to store the diff line data in one format.
 Previously, we had to request two different formats for inline and side-by-side. The DiffRow component
 then uses this standard format to render the diff line data. With this standard format, the user
 can then switch between inline and side-by-side without the need to re-fetch any data.
@@ -243,10 +243,10 @@ The Vuex store for the diffs app consists of 3 different modules:
 - Batch comments
 
 The notes module is responsible for the discussions, including diff discussions. In this module,
-the discussions get fetched, and the polling for new discussions is setup. This module gets shared
+the discussions get fetched, and the polling for new discussions is set up. This module gets shared
 with the issue app as well, so changes here need to be tested in both issues and merge requests.
 
-The diffs module is responsible for the everything related to diffs. This includes, but is not limited
+The diffs module is responsible for everything related to diffs. This includes, but is not limited
 to, fetching diffs, assigning diff discussions to lines, and creating diff discussions.
 
 Finally, the batch comments module is not complex, and is responsible only for the draft comments feature.
@@ -302,8 +302,8 @@ The structure for this file object is:
 To reduce the response size for the diffs endpoint, we are splitting this response up into different
 requests, to:
 
-- Reduces the response size of each request.
-- Allows the diffs app to start rendering diffs as quickly as the first request finishes.
+- Reduce the response size of each request.
+- Allow the diffs app to start rendering diffs as quickly as the first request finishes.
 
 To make the first request quicker, the request gets sent asking for a small amount of
 diffs. The number of diffs requested then increases, until the maximum number of diffs per request is 30.

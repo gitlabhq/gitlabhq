@@ -171,9 +171,8 @@ export default {
           token: GlFilteredSearchToken,
           unique: true,
           operators: OPERATORS_IS,
-          options: this.programmingLanguages.map(({ id, name }) => ({
-            // Cast to string so it matches value from query string
-            value: id.toString(),
+          options: this.programmingLanguages.map(({ name }) => ({
+            value: name,
             title: name,
           })),
         },
@@ -331,12 +330,11 @@ export default {
       return minAccessLevelInteger && ACCESS_LEVELS_INTEGER_TO_STRING[minAccessLevelInteger];
     },
     programmingLanguageName() {
-      const { [FILTERED_SEARCH_TOKEN_LANGUAGE]: programmingLanguageId } = this.filters;
+      const programmingLanguageName = this.filters[FILTERED_SEARCH_TOKEN_LANGUAGE];
 
-      return (
-        programmingLanguageId &&
-        this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
-      );
+      return Array.isArray(programmingLanguageName)
+        ? programmingLanguageName[0]
+        : programmingLanguageName;
     },
     namespacePath() {
       const namespacePath = this.filters[FILTERED_SEARCH_TOKEN_NAMESPACE];

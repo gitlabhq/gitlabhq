@@ -23,6 +23,7 @@ module Organizations
       end
 
       return unless record && expected_state?(record, changes)
+      return unless record.organization&.isolated?
 
       # Transform database column name into method names
       changed_associations = changed_associations(model, changes)

@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Zoekt
@@ -20,14 +20,14 @@ title: Zoekt
 - Global code search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `zoekt_cross_namespace_search`. Disabled by default.
 - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
 - Feature flag `zoekt_rollout_worker` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175666) in GitLab 17.9. Disabled by default.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/17918) from beta to limited availability in GitLab 18.6.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/17918) from beta to limited availability in GitLab 18.6.
 - Feature flags [`zoekt_cross_namespace_search`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213413) and [`zoekt_rollout_worker`](https://gitlab.com/gitlab-org/gitlab/-/issues/519660) removed in GitLab 18.7.
 
 {{< /history >}}
 
 > [!warning]
 > This feature is in [limited availability](../../policy/development_stages_support.md#limited-availability).
-> For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+> For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/work_items/9404).
 > Provide feedback in [issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 Zoekt is an open-source search engine designed specifically to search for code.
@@ -806,12 +806,6 @@ To set the maximum number of process restarts for nodes:
 1. Select **Save changes**.
 
 ## Run Zoekt on a separate server
-
-{{< history >}}
-
-- Authentication for Zoekt [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389749) in GitLab 16.3.
-
-{{< /history >}}
 
 Prerequisites:
 

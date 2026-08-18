@@ -27,6 +27,18 @@ RSpec.describe Mutations::Notes::ConvertToThread, feature_category: :team_planni
     graphql_mutation_response(:note_convert_to_thread)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_note do
+    let(:user) { create(:user, developer_of: project) }
+    let(:note) { create(:note, noteable: noteable, project: project, author: user) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:note_convert_to_thread, { id: global_id_of(note) }, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   it 'converts to resolvable thread' do
     post_graphql_mutation(mutation, current_user: current_user)
 

@@ -76,6 +76,11 @@ identical to the data exported with GitLab project import and export.
 This includes the full Git commit history from the template project.
 For more information, see [migrate GitLab data by using file exports](../user/project/settings/import_export.md).
 
+During import, some items are modified. For example, protected branch
+and protected tag access levels are reset to Maintainers. For
+more information, see
+[changes to imported items](../user/project/settings/import_export.md#changes-to-imported-items).
+
 To create a template without commit history, initialize your template project with a single commit
 that contains all the files you want to include.
 

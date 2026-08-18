@@ -701,6 +701,43 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
       end
     end
 
+    describe '#cleaner_class_for' do
+      let(:custom_cleaner) { Ci::JobArtifacts::LooseForeignKeyCleanerService }
+
+      let(:definition_with_custom_cleaner) do
+        ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          '_test_loose_fk_child_table_1',
+          '_test_loose_fk_parent_table',
+          { column: 'parent_id', on_delete: :async_delete, gitlab_schema: :gitlab_main, cleaner_class: custom_cleaner }
+        )
+      end
+
+      let(:definition_without_custom_cleaner) do
+        ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          '_test_loose_fk_child_table_1',
+          '_test_loose_fk_parent_table',
+          { column: 'parent_id', on_delete: :async_delete, gitlab_schema: :gitlab_main, cleaner_class: nil }
+        )
+      end
+
+      context 'when cleaner_class is set' do
+        it 'returns the custom cleaner regardless of partitioning' do
+          expect(build_service.send(:cleaner_class_for, definition_with_custom_cleaner, false)).to eq(custom_cleaner)
+          expect(build_service.send(:cleaner_class_for, definition_with_custom_cleaner, true)).to eq(custom_cleaner)
+        end
+      end
+
+      context 'when cleaner_class is nil' do
+        it 'returns CleanerService for non-partitioned tables' do
+          expect(build_service.send(:cleaner_class_for, definition_without_custom_cleaner, false)).to eq(LooseForeignKeys::CleanerService)
+        end
+
+        it 'returns PartitionCleanerService for partitioned tables' do
+          expect(build_service.send(:cleaner_class_for, definition_without_custom_cleaner, true)).to eq(LooseForeignKeys::PartitionCleanerService)
+        end
+      end
+    end
+
     describe '#db_config_name' do
       let(:db_name) { 'gitlab_db' }
       let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: db_name) }

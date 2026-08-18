@@ -56,6 +56,7 @@ module.exports = (path, options = {}) => {
       '^vue-virtual-scroll-list$':
         '<rootDir>/app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
       '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
+      '^vue-demi$': 'vue-demi/lib/v3/index.mjs',
     });
     if (USE_VUE3_COMPILER) {
       Object.assign(globals, {
@@ -79,6 +80,8 @@ module.exports = (path, options = {}) => {
         },
       });
     }
+  } else {
+    setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/__helpers__/vtu1_dom_find_parity.js');
   }
 
   // To have consistent date time parsing both in local and CI environments we set
@@ -211,6 +214,7 @@ module.exports = (path, options = {}) => {
 
   const transformIgnoreNodeModules = [
     'vue-test-utils-compat',
+    'vue-demi',
     '@gitlab/svgs',
     '@gitlab/ui',
     '@gitlab/duo-ui',
@@ -320,7 +324,7 @@ module.exports = (path, options = {}) => {
     maxWorkers: process.env.CI ? '' : '60%',
     testPathIgnorePatterns: [
       '<rootDir>/ee/frontend_islands',
-      '<rootDir>/spec/frontend/msw_integration',
+      // MSW integration tests are EE-only and run via jest.config.msw_integration.js.
       '<rootDir>/ee/spec/frontend/msw_integration',
     ],
   };

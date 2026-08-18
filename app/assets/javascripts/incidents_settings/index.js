@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import SettingsTabs from './components/incidents_settings_tabs.vue';
 import IncidentsSettingsService from './incidents_settings_service';
@@ -23,7 +23,7 @@ export default () => {
   } = el;
 
   const service = new IncidentsSettingsService(operationsSettingsEndpoint, pagerdutyResetKeyPath);
-  return new Vue({
+  return initVueApp({
     el,
     name: 'IncidentsSettingsTabsRoot',
     provide: {
@@ -38,8 +38,6 @@ export default () => {
         available: parseBoolean(slaFeatureAvailable),
       },
     },
-    render(createElement) {
-      return createElement(SettingsTabs);
-    },
+    component: SettingsTabs,
   });
 };

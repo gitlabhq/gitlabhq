@@ -12,13 +12,6 @@ title: Group release API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351703) in GitLab 14.10 [with a feature flag](../administration/feature_flags/_index.md) named `group_releases_finder_inoperator`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355463) in GitLab 15.0. Feature flag `group_releases_finder_inoperator` removed.
-
-{{< /history >}}
-
 Use this API to interact with [projects releases](../user/project/releases/_index.md) in groups.
 
 > [!note]

@@ -126,8 +126,7 @@ export default {
         { 'gl-rounded-b-none': reviewingDocsPath },
       ]"
       data-testid="how-to-merge-instructions"
-      >{{ mergeInfo1 }}</pre
-    >
+      >{{ mergeInfo1 }}</pre>
     <p
       v-if="reviewingDocsPath"
       class="-gl-mt-4 gl-rounded-b-base gl-border-1 gl-border-solid gl-border-default gl-px-4 gl-py-3"
@@ -170,7 +169,6 @@ export default {
     <pre
       class="code highlight js-syntax-highlight language-shell gl-rounded-base"
       data-testid="how-to-merge-instructions"
-      >{{ mergeInfo2 }}</pre
-    >
+      >{{ mergeInfo2 }}</pre>
   </gl-modal>
 </template>

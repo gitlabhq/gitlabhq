@@ -288,16 +288,16 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :ob
 
       it { expect(result).to eq(issue: issue) }
       it { expect(result[:issue].first_release_version).to eq(commit_id) }
-      it { expect(result[:issue].gitlab_commit).to eq(nil) }
-      it { expect(result[:issue].gitlab_commit_path).to eq(nil) }
+      it { expect(result[:issue].gitlab_commit).to be_nil }
+      it { expect(result[:issue].gitlab_commit_path).to be_nil }
 
       context 'when release version is nil' do
         before do
           issue.first_release_version = nil
         end
 
-        it { expect(result[:issue].gitlab_commit).to eq(nil) }
-        it { expect(result[:issue].gitlab_commit_path).to eq(nil) }
+        it { expect(result[:issue].gitlab_commit).to be_nil }
+        it { expect(result[:issue].gitlab_commit_path).to be_nil }
       end
 
       context 'when repo commit matches first release version' do
@@ -564,7 +564,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :ob
       end
 
       it 'returns nil' do
-        expect(subject.api_url).to eq(nil)
+        expect(subject.api_url).to be_nil
       end
     end
   end
@@ -584,7 +584,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :ob
 
       subject.expire_issues_cache
 
-      expect(subject.list_sentry_issues(params)).to eq(nil)
+      expect(subject.list_sentry_issues(params)).to be_nil
     end
   end
 

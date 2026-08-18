@@ -30,6 +30,8 @@ RSpec.describe 'Upload a maven package', :api, :js, feature_category: :package_r
     let(:dummy_package) { double(Packages::Package) }
     let(:api_path) { "/projects/#{project_id}/packages/maven/com/example/my-app/1.0/my-app-1.0-20180724.124855-1.jar.sha1" }
 
+    let_it_be(:existing_package) { create(:maven_package, project: project, name: 'com/example/my-app', version: '1.0') }
+
     before do
       # The sha verification done by the maven api is between:
       # - the sha256 set by workhorse

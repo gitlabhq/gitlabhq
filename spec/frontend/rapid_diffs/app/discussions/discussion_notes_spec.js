@@ -35,7 +35,7 @@ describe('DiscussionNotes', () => {
   it('propagates toggle event', () => {
     createComponent({ notes: [{ id: 'foo' }, { id: 'bar' }] });
     wrapper.findComponent(ToggleRepliesWidget).vm.$emit('toggle');
-    expect(wrapper.emitted('toggleDiscussionReplies')).toStrictEqual([[]]);
+    expect(wrapper.emitted('toggle-discussion-replies')).toStrictEqual([[]]);
   });
 
   it('provides footer slot when expanded', () => {
@@ -91,19 +91,19 @@ describe('DiscussionNotes', () => {
         expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
       });
 
-      it('propagates startReplying event', () => {
+      it('propagates start-replying event', () => {
         const note = { id: 'foo' };
         createComponent({ notes: [note] });
-        wrapper.findComponent(NoteableNote).vm.$emit('startReplying');
-        expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
+        wrapper.findComponent(NoteableNote).vm.$emit('start-replying');
+        expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
       });
 
-      it('propagates noteEdited event', () => {
+      it('propagates note-edited event', () => {
         const value = 'smile';
         const note = { id: 'foo' };
         createComponent({ notes: [note] });
-        wrapper.findComponent(NoteableNote).vm.$emit('noteEdited', value);
-        expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
+        wrapper.findComponent(NoteableNote).vm.$emit('note-edited', value);
+        expect(wrapper.emitted('note-edited')).toStrictEqual([[{ note, value }]]);
       });
     });
 
@@ -129,11 +129,11 @@ describe('DiscussionNotes', () => {
           expect(wrapper.emitted(event)).toStrictEqual([[note]]);
         });
 
-        it('propagates noteEdited event', () => {
+        it('propagates note-edited event', () => {
           const value = 'smile';
           createComponent({ notes });
-          findNoteableNote().vm.$emit('noteEdited', value);
-          expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
+          findNoteableNote().vm.$emit('note-edited', value);
+          expect(wrapper.emitted('note-edited')).toStrictEqual([[{ note, value }]]);
         });
       });
     });

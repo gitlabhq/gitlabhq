@@ -59,7 +59,6 @@ describe('~/environments/components/environments_app.vue', () => {
       provide: {
         newEnvironmentPath: '/environments/new',
         canCreateEnvironment: true,
-        defaultBranchName: 'main',
         helpPagePath: '/help',
         projectId: '1',
         projectPath: '/1',

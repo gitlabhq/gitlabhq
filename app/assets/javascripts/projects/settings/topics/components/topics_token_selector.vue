@@ -45,11 +45,7 @@ export default {
         };
       },
       update(data) {
-        return (
-          data.topics?.nodes.filter(
-            (topic) => !this.selectedTokens.some((token) => token.name === topic.name),
-          ) || []
-        );
+        return data.topics?.nodes || [];
       },
       debounce: 250,
     },
@@ -65,11 +61,24 @@ export default {
     loading() {
       return this.$apollo.queries.topics.loading;
     },
+    availableTopics() {
+      // Filter selected tokens out of the dropdown locally so no refetch is
+      // needed when tokens change.
+      return this.topics.filter(
+        (topic) => !this.selectedTokens.some((token) => token.name === topic.name),
+      );
+    },
     placeholderText() {
       return this.selectedTokens.length ? '' : this.$options.i18n.placeholder;
     },
     topicsHelpUrl() {
       return helpPagePath('user/project/project_topics');
+    },
+  },
+  watch: {
+    selected(newSelected) {
+      // Keep internal state in sync with prop changes (e.g., after form reload)
+      this.selectedTokens = newSelected;
     },
   },
   methods: {
@@ -102,12 +111,12 @@ export default {
     <gl-token-selector
       ref="tokenSelector"
       :selected-tokens="selectedTokens"
-      :dropdown-items="topics"
+      :dropdown-items="availableTopics"
       :loading="loading"
       allow-user-defined-tokens
       show-add-new-always
       :placeholder="placeholderText"
-      :text-input-attrs="{ id: 'project_topics_input' }"
+      :text-input-attrs="{ id: 'project_topics_input', 'aria-label': $options.i18n.topicsTitle }"
       @keydown.enter="handleEnter"
       @text-input="filterTopics"
       @input="onTokensUpdate"

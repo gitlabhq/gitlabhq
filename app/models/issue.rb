@@ -306,8 +306,24 @@ class Issue < ApplicationRecord
   scope :by_project_id_and_iid, ->(composites) do
     where_composite(%i[project_id iid], composites)
   end
-  scope :with_null_relative_position, -> { where(relative_position: nil) }
-  scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
+
+  # When the flag is enabled, filter on `work_item_positions.relative_position` (kept
+  # in sync with `issues.relative_position` by a trigger); otherwise the legacy column.
+  # LEFT JOIN treats both a missing joined row and a NULL position as "null".
+  scope :with_null_relative_position, ->(root_namespace = nil) {
+    if read_relative_positions_from_work_item_positions?(root_namespace)
+      left_joins(:work_item_position).where(work_item_positions: { relative_position: nil })
+    else
+      where(relative_position: nil)
+    end
+  }
+  scope :with_non_null_relative_position, ->(root_namespace = nil) {
+    if read_relative_positions_from_work_item_positions?(root_namespace)
+      joins(:work_item_position).where.not(work_item_positions: { relative_position: nil })
+    else
+      where.not(relative_position: nil)
+    end
+  }
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type, :ensure_namespace_traversal_ids
@@ -395,23 +411,15 @@ class Issue < ApplicationRecord
     [:assignees] + super
   end
 
+  # Finds the previous/next sibling by position - from `work_item_positions.relative_position`
+  # when the flag is on, otherwise `issues.relative_position` (via InOperatorOptimization).
   def next_object_by_relative_position(ignoring: nil, order: :asc)
-    array_mapping_scope = ->(id_expression) do
-      relation = Issue.where(Issue.arel_table[:namespace_id].eq(id_expression))
-
-      if order == :asc
-        relation.where(Issue.arel_table[:relative_position].gt(relative_position))
+    relation =
+      if self.class.read_relative_positions_from_work_item_positions?(namespace.root_ancestor)
+        next_sibling_from_work_item_positions(order: order)
       else
-        relation.where(Issue.arel_table[:relative_position].lt(relative_position))
+        next_sibling_from_issues(order: order)
       end
-    end
-
-    relation = Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
-      scope: Issue.order(relative_position: order, id: order),
-      array_scope: namespace.work_item_positioning_root.self_and_descendant_ids(skope: Namespace).select(:id),
-      array_mapping_scope: array_mapping_scope,
-      finder_query: ->(_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
-    ).execute
 
     relation = exclude_self(relation, excluded: ignoring) if ignoring.present?
 
@@ -419,7 +427,28 @@ class Issue < ApplicationRecord
   end
 
   def self.relative_positioning_query_base(issue)
-    where(namespace_id: issue.namespace.work_item_positioning_root.self_and_descendant_ids(skope: Namespace))
+    relation = where(namespace_id: issue.namespace.work_item_positioning_root.self_and_descendant_ids(skope: Namespace))
+
+    if read_relative_positions_from_work_item_positions?(issue.namespace.root_ancestor)
+      relation = relation.joins(:work_item_position)
+    end
+
+    relation
+  end
+
+  # The Arel column ItemContext orders/compares against. When the cutover flag
+  # is enabled for the record's positioning root, this is the joined
+  # `work_item_positions.relative_position` (resolvable because
+  # `relative_positioning_query_base` adds the JOIN); otherwise the legacy
+  # `issues.relative_position`.
+  def self.relative_positioning_column(object = nil)
+    root_namespace = object&.namespace&.root_ancestor
+
+    if read_relative_positions_from_work_item_positions?(root_namespace)
+      WorkItems::Position.arel_table[:relative_position]
+    else
+      arel_table[:relative_position]
+    end
   end
 
   def self.relative_positioning_parent_column
@@ -514,16 +543,53 @@ class Issue < ApplicationRecord
     end
   end
 
-  def self.order_by_relative_position
-    reorder(Gitlab::Pagination::Keyset::Order.build([column_order_relative_position, column_order_id_asc]))
+  # Guard for the work_item_positions read cutover (step 5 of
+  # https://gitlab.com/gitlab-org/gitlab/-/work_items/594236). Positioning is scoped
+  # per root namespace, so the flag is evaluated against the positioning root and
+  # flips consistently across a group hierarchy. Callers that know the root namespace
+  # pass it; callers without it (e.g. finder-driven sorts via `sort_by_attribute`)
+  # pass nil and follow the flag's instance-level default until the actor is threaded
+  # through.
+  def self.read_relative_positions_from_work_item_positions?(root_namespace = nil)
+    Feature.enabled?(:read_relative_positions_from_work_item_positions, root_namespace)
   end
 
+  # Order by `work_item_positions.relative_position` when the flag is on, else the legacy
+  # `issues.relative_position`. LEFT JOIN keeps unpositioned issues last (NULLS LAST).
+  def self.order_by_relative_position(root_namespace = nil)
+    if read_relative_positions_from_work_item_positions?(root_namespace)
+      order = Gitlab::Pagination::Keyset::Order.build([column_order_work_item_position, column_order_id_asc])
+      order.apply_cursor_conditions(left_joins(:work_item_position)).reorder(order)
+    else
+      reorder(Gitlab::Pagination::Keyset::Order.build([column_order_relative_position, column_order_id_asc]))
+    end
+  end
+
+  # Legacy keyset column: orders by `issues.relative_position`.
   def self.column_order_relative_position
     Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
       attribute_name: 'relative_position',
       column_expression: arel_table[:relative_position],
       order_expression: Issue.arel_table[:relative_position].asc.nulls_last,
       nullable: :nulls_last
+    )
+  end
+
+  # Keyset ordering by the joined `work_item_positions.relative_position`. A distinct
+  # `attribute_name` avoids colliding with `issues.relative_position`; `add_to_projections`
+  # injects the aliased column so the keyset cursor can read it back.
+  def self.column_order_work_item_position
+    column = WorkItems::Position.arel_table[:relative_position]
+
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'work_item_position_relative_position',
+      column_expression: column,
+      order_expression: column.asc.nulls_last,
+      reversed_order_expression: column.desc.nulls_first,
+      order_direction: :asc,
+      nullable: :nulls_last,
+      sql_type: 'bigint',
+      add_to_projections: true
     )
   end
 
@@ -534,10 +600,11 @@ class Issue < ApplicationRecord
     )
   end
 
-  def self.to_branch_name(id, title, project: nil)
+  def self.to_branch_name(id, title, project: nil, current_user: nil)
     params = {
       'id' => id.to_s.parameterize(preserve_case: true),
-      'title' => title.to_s.parameterize
+      'title' => title.to_s.parameterize,
+      'branch_creator' => current_user&.username.to_s.parameterize(preserve_case: true)
     }
     template = project&.issue_branch_template
 
@@ -547,7 +614,7 @@ class Issue < ApplicationRecord
           params[arg]
         end
       else
-        params.values.select(&:present?).join('-')
+        params.values_at('id', 'title').select(&:present?).join('-')
       end
 
     if branch_name.length > 100
@@ -590,14 +657,15 @@ class Issue < ApplicationRecord
     "#{namespace.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
   end
 
-  def suggested_branch_name
-    return to_branch_name unless project.repository.branch_exists?(to_branch_name)
+  def suggested_branch_name(current_user: nil)
+    base_branch_name = to_branch_name(current_user: current_user)
+    return base_branch_name unless project.repository.branch_exists?(base_branch_name)
 
     start_counting_from = 2
 
     branch_name_generator = ->(counter) do
       suffix = counter > 5 ? SecureRandom.hex(8) : counter
-      "#{to_branch_name}-#{suffix}"
+      "#{base_branch_name}-#{suffix}"
     end
 
     Gitlab::Utils::Uniquify.new(start_counting_from).string(branch_name_generator) do |suggested_branch_name|
@@ -632,11 +700,11 @@ class Issue < ApplicationRecord
   end
   alias_method :can_clone?, :can_move?
 
-  def to_branch_name
+  def to_branch_name(current_user: nil)
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      self.class.to_branch_name(iid, title, project: project)
+      self.class.to_branch_name(iid, title, project: project, current_user: current_user)
     end
   end
 
@@ -722,10 +790,6 @@ class Issue < ApplicationRecord
     ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
   end
 
-  def previous_updated_at
-    previous_changes['updated_at']&.first || updated_at
-  end
-
   def banzai_render_context(field)
     additional_attributes = { label_url_method: :project_issues_url }
     additional_attributes[:group] = namespace if namespace.is_a?(Group)
@@ -761,10 +825,6 @@ class Issue < ApplicationRecord
 
   def supports_move_and_clone?
     issue_type_supports?(:move_and_clone)
-  end
-
-  def email_participants_emails
-    issue_email_participants.pluck(:email)
   end
 
   def email_participants_emails_downcase
@@ -880,6 +940,13 @@ class Issue < ApplicationRecord
     project.autoclose_referenced_issues
   end
 
+  # Whether the issue can still be auto-closed by one of its closing merge requests.
+  # Shared by the development widget (GraphQL) and the REST development feature preload
+  # so the eligibility check stays consistent across APIs.
+  def eligible_for_autoclose_by_merge_request?
+    opened? && autoclose_by_merged_closing_merge_request?
+  end
+
   # Overridden in EE
   def epic_work_item?
     false
@@ -917,6 +984,46 @@ class Issue < ApplicationRecord
   alias_method :eql?, :==
 
   private
+
+  # Neighbour lookup reading positions from the joined `work_item_positions` table.
+  def next_sibling_from_work_item_positions(order:)
+    position_column = WorkItems::Position.arel_table[:relative_position]
+    id_column = Issue.arel_table[:id]
+    namespace_ids = namespace.work_item_positioning_root.self_and_descendant_ids(skope: Namespace).select(:id)
+
+    position_predicate, position_order, id_order =
+      if order == :asc
+        [position_column.gt(relative_position), position_column.asc, id_column.asc]
+      else
+        [position_column.lt(relative_position), position_column.desc, id_column.desc]
+      end
+
+    Issue
+      .joins(:work_item_position)
+      .where(namespace_id: namespace_ids)
+      .where(position_predicate)
+      .reorder(position_order, id_order)
+  end
+
+  # Legacy neighbour lookup reading `issues.relative_position` via InOperatorOptimization.
+  def next_sibling_from_issues(order:)
+    array_mapping_scope = ->(id_expression) do
+      rel = Issue.where(Issue.arel_table[:namespace_id].eq(id_expression))
+
+      if order == :asc
+        rel.where(Issue.arel_table[:relative_position].gt(relative_position))
+      else
+        rel.where(Issue.arel_table[:relative_position].lt(relative_position))
+      end
+    end
+
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+      scope: Issue.order(relative_position: order, id: order),
+      array_scope: namespace.work_item_positioning_root.self_and_descendant_ids(skope: Namespace).select(:id),
+      array_mapping_scope: array_mapping_scope,
+      finder_query: ->(_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+    ).execute
+  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?

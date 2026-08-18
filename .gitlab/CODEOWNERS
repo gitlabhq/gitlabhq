@@ -23,6 +23,10 @@
 /tooling/ @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/technical-writing/tw-docops @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend
 /.gitlab/ @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/technical-writing/tw-docops @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend
 
+# Caproni
+/.gitlab/caproni @gitlab-org/maintainers/caproni
+caproni-project.yaml @gitlab-org/maintainers/caproni
+
 # Workhorse
 /workhorse/ @gitlab-org/maintainers/gitlab-workhorse
 
@@ -33,10 +37,8 @@
 *.erb @gitlab-org/maintainers/rails-backend
 Gemfile @gitlab-org/maintainers/rails-backend
 Gemfile.lock @gitlab-org/maintainers/rails-backend
-Gemfile.checksum @gitlab-org/maintainers/rails-backend
 Gemfile.next @gitlab-org/maintainers/rails-backend
 Gemfile.next.lock @gitlab-org/maintainers/rails-backend
-Gemfile.next.checksum @gitlab-org/maintainers/rails-backend
 Rakefile @gitlab-org/maintainers/rails-backend
 config.ru @gitlab-org/maintainers/rails-backend
 /.license_encryption_key.pub @gitlab-org/maintainers/rails-backend
@@ -48,6 +50,7 @@ config.ru @gitlab-org/maintainers/rails-backend
 /.rubocop_todo/ @gitlab-org/maintainers/rails-backend
 /app/ @gitlab-org/maintainers/rails-backend
 /bin/ @gitlab-org/maintainers/rails-backend
+/cells-mailroom/ @gitlab-org/maintainers/rails-backend
 /config/ @gitlab-org/maintainers/rails-backend
 /ee/ @gitlab-org/maintainers/rails-backend
 /gems/ @gitlab-org/maintainers/rails-backend
@@ -84,6 +87,9 @@ config.ru @gitlab-org/maintainers/rails-backend
 *.mjs @gitlab-org/maintainers/frontend
 *.vue @gitlab-org/maintainers/frontend
 *.graphql @gitlab-org/maintainers/frontend
+# MCP tool query documents can be approved by the MCP tool review board or frontend
+/app/graphql/queries/mcp/**/*.graphql @gitlab-org/maintainers/frontend @gitlab-org/ai-powered/mcp-tool-review-board
+/ee/app/graphql/queries/mcp/**/*.graphql @gitlab-org/maintainers/frontend @gitlab-org/ai-powered/mcp-tool-review-board
 package.json @gitlab-org/maintainers/frontend
 yarn.lock @gitlab-org/maintainers/frontend
 /.browserslistrc @gitlab-org/maintainers/frontend
@@ -93,6 +99,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.stylelintrc @gitlab-org/maintainers/frontend
 /axe-linter.yml @gitlab-org/maintainers/frontend
 /.eslint_todo/ @gitlab-org/maintainers/frontend
+/.dependency_cruiser_todo/ @gitlab-org/maintainers/frontend
 /storybook/ @gitlab-org/maintainers/frontend
 # Overrides above BE directory assignments
 /app/assets/ @gitlab-org/maintainers/frontend
@@ -212,10 +219,11 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/frontend-haml.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/frontend-a11y.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/testing-rspec.md @gitlab-org/maintainers/rails-backend
+/.ai/principles/distilled/authentication-testing.md @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-com/gl-security/appsec
 /.ai/principles/distilled/testing-jest.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/testing-migrations.md @gitlab-org/maintainers/database
-/.ai/principles/distilled/testing-frontend-testing-hierarchy.md @gitlab-org/maintainers/frontend @gitlab-org/plan-stage/frontend-engineers
-/.ai/principles/distilled/testing-msw.md @gitlab-org/maintainers/frontend @gitlab-org/plan-stage/frontend-engineers
+/.ai/principles/distilled/testing-frontend-testing-hierarchy.md @gitlab-org/maintainers/frontend
+/.ai/principles/distilled/testing-msw.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/testing-e2e.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/performance.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/documentation.md @gitlab-org/technical-writing/tw-docops
@@ -224,6 +232,8 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/documentation-feature-lifecycle.md @gitlab-org/technical-writing/tw-docops
 /.ai/principles/distilled/feature-flags.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/analytics.md @gitlab-org/analytics-section/analytics-instrumentation/engineers @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/.ai/principles/distilled/import-fundamentals.md @gitlab-com/create-team/import
+/.ai/principles/distilled/import-direct-and-offline.md @gitlab-com/create-team/import
 # END GENERATED: gitlab-ai-principles-distiller
 /.claude/ @gitlab-org/maintainers/ai-harness
 /AGENTS.md @gitlab-org/maintainers/ai-harness
@@ -351,13 +361,15 @@ Dangerfile
 /spec/rubocop/
 /spec/rubocop*
 
-^[Unused code linting scripts] @kerrizor @splattael @dstull
+^[Unused code linting scripts] @kerrizor @dstull
+/.keela/
 /scripts/lint/unused_methods.rb
 /scripts/lint/unused_code.rb
 /scripts/lint/excluded_methods.yml
 /scripts/lint/excluded_scopes.yml
 /scripts/lint/potential_methods_to_remove.yml
 /scripts/lint/potential_scopes_to_remove.yml
+/scripts/lint/keela_baseline.yml
 
 ^[LDAP] @dblessing @mkozono
 /ee/lib/ee/gitlab/auth/ldap/
@@ -402,7 +414,7 @@ Dangerfile
 /ee/app/assets/javascripts/dependencies/
 /ee/spec/frontend/dependencies/
 
-[Security Insights frontend] @gitlab-org/security-risk-management/security-insights/frontend
+[Security Insights frontend GraphQL] @gitlab-org/security-risk-management/security-insights/frontend
 /ee/app/assets/javascripts/security_dashboard/graphql/
 
 ^[Composition Analysis backend] @gitlab-org/secure/composition-analysis-be
@@ -847,6 +859,7 @@ lib/gitlab/checks/
 /tooling/ci/job_tokens/docs/
 /tooling/custom_roles/docs/
 /tooling/eslint-config/eslint-local-rules/require_valid_help_page_path.js
+/tooling/graphql/docs/
 /tooling/graphql/deprecated_docs/
 
 ^[Documentation Pages] @gl-docsteam
@@ -1802,11 +1815,11 @@ lib/gitlab/checks/
 /app/presenters/generic_commit_status_presenter.rb
 /app/services/projects/refresh_build_artifacts_size_statistics_service.rb
 /app/uploaders/job_artifact_uploader.rb
-/app/validators/json_schemas/build_metadata_id_tokens.json
-/app/validators/json_schemas/build_metadata_config_options.json
-/app/validators/json_schemas/build_metadata_secrets.json
 /app/validators/json_schemas/ci_job_definition_config.json
-/app/validators/json_schemas/ci_run_steps.json
+/app/validators/json_schemas/ci_job_definition_id_tokens.json
+/app/validators/json_schemas/ci_job_definition_options.json
+/app/validators/json_schemas/ci_job_definition_run_steps.json
+/app/validators/json_schemas/ci_job_definition_secrets.json
 /app/workers/build_queue_worker.rb
 /app/workers/create_pipeline_worker.rb
 /app/workers/expire_build_artifacts_worker.rb
@@ -1888,7 +1901,6 @@ lib/gitlab/checks/
 # Verify Frontend, optional approvals
 ^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/ci/
-/**/javascripts/token_access/
 /**/javascripts/admin/application_settings/runner_token_expiration/
 /**/javascripts/editor/schema/ci.json
 /app/**/ci/*.haml
@@ -1947,8 +1959,10 @@ lib/gitlab/checks/
 /lib/gitlab/seeders/ci/runner/
 /lib/tasks/gitlab/seed/runner_fleet.rake
 
-# Require approvals for Project API entities affecting availability
+# Require approvals for organization transfer support registry and Project API entities affecting availability
 [Organizations] @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
+/config/organizations/transfer_support.yml
+/spec/lib/gitlab/organizations/organization_transfer_support_spec.rb
 lib/api/entities/basic_project_details.rb
 lib/api/entities/project_with_access.rb
 lib/api/entities/project_identity.rb
@@ -1981,11 +1995,10 @@ ee/lib/gitlab/llm/chain/utils/chat_conversation.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
 [Category:MCP Server] @gitlab-org/ai-powered/mcp-tool-review-board
-lib/api/mcp/server.rb
+lib/api/mcp/
+ee/lib/ee/api/mcp/
 app/services/mcp/tools/
-
-^[Category:MCP Server] @gitlab-org/ai-powered/mcp-tool-review-board
-spec/services/mcp/tools/
+ee/app/services/ee/mcp/tools/
 
 [Category:Code Suggestions] @gitlab-org/code-creation/engineers
 ee/lib/api/code_suggestions.rb
@@ -2159,8 +2172,6 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/**.md @luciezhao @axil @fneill
-/doc/**/geo_**.md @luciezhao @axil @fneill
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /ee/lib/gitlab/geo.rb @gitlab-org/geo-team/geo-backend
 /ee/spec/lib/gitlab/geo_spec.rb @gitlab-org/geo-team/geo-backend
@@ -2170,6 +2181,12 @@ ee/app/workers/ai/repository_xray/
 ^[Geo Frontend]
 app/assets/**/geo_* @zcuddy
 frontend/**/geo_* @zcuddy
+
+^[Geo Docs]
+/doc/administration/geo/**.md @thiagocsf @axil @fneill
+/doc/administration/geo_sites.md @thiagocsf @axil @fneill
+/doc/api/geo_nodes.md @thiagocsf @axil @fneill
+/doc/api/geo_sites.md @thiagocsf @axil @fneill
 
 [DAST Generated]
 # File is generated but there is no verification job, so requires approval to prevent drift
@@ -2331,7 +2348,6 @@ frontend/**/geo_* @zcuddy
 /app/workers/repositories/
 /app/workers/object_pool/
 /app/workers/flush_counter_increments_worker.rb
-/app/workers/trending_projects_worker.rb
 /app/workers/post_receive.rb
 /app/workers/project_cache_worker.rb
 /app/workers/system_hook_push_worker.rb
@@ -2438,5 +2454,5 @@ frontend/**/geo_* @zcuddy
 /app/services/push_event_payload_service.rb
 
 # Ensure database sharding requirements are followed - See https://docs.gitlab.com/development/organization/sharding/
-[Database Sharding] @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
+[Database Sharding] @gitlab-com/gl-infra/tenant-scale/transport/backend-engineers @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
 /spec/lib/gitlab/organizations/sharding_key_spec.rb

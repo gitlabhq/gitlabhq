@@ -389,7 +389,7 @@ To migrate back to local storage:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11872) in GitLab 17.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/11872) in GitLab 17.2.
 - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3845) for Helm chart (Kubernetes) in GitLab 17.3.
 
 {{< /history >}}
@@ -534,7 +534,7 @@ An error about a missing LFS object may occur in either of these situations:
   /var/opt/gitlab/gitlab-rails/shared/lfs-objects/00/66/22269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7
   ```
 
-   (Line breaks have been added for legibility.)
+  (Line breaks have been added for legibility.)
 
 - When running the
   [integrity check for LFS objects](../raketasks/check.md#uploaded-files-integrity)

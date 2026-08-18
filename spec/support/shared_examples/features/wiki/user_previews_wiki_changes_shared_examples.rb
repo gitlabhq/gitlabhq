@@ -73,22 +73,22 @@ RSpec.shared_examples 'User previews wiki changes' do
 
     before do
       wiki_page.create # rubocop:disable Rails/SaveBang
-      visit wiki_page_path(wiki, wiki_page, action: :edit)
+      visit wiki_page_path(wiki, wiki_page, action: :show, edit: 'true')
     end
 
     it_behaves_like 'relative links' do
       before do
-        click_button("Preview")
+        page.within('.wiki-form') { click_button("Preview") }
       end
 
       let(:element) { preview }
     end
 
     it 'renders content with CommonMark' do
-      # using two `\n` ensures we're sublist to it's own line due
+      # using two `\n` ensures we're sublist to its own line due
       # to list auto-continue
       fill_in :wiki_content, with: "1. one\n\n  - sublist\n"
-      click_button("Preview")
+      page.within('.wiki-form') { click_button("Preview") }
 
       # the above generates two separate lists (not embedded) in CommonMark
       expect(preview).to have_content("sublist")
@@ -102,7 +102,7 @@ RSpec.shared_examples 'User previews wiki changes' do
         [[also_do_not_linkify]]
         ```
       HEREDOC
-      click_button("Preview")
+      page.within('.wiki-form') { click_button("Preview") }
 
       expect(preview).to have_content("do_not_linkify")
       expect(preview).to have_content('[[do_not_linkify]]')

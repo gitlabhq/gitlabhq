@@ -16,16 +16,16 @@
 
       .row
         .form-group.gl-col-md-6
-          = f.label :group_id, s_('Observability|Group ID'), class: 'label-bold'
+          = f.label :group_id, s_('Observability|Namespace ID'), class: 'label-bold'
           = f.text_field :group_id, class: 'form-control', placeholder: '12345', readonly: true
           %span.form-text.gl-text-subtle
-            = s_('Observability|The ID of the group for this o11y service configuration.')
+            = s_('Observability|The ID of the namespace for this o11y service configuration.')
 
         .form-group.gl-col-md-6
-          = label_tag :group_name, s_('Observability|Group name'), class: 'label-bold'
-          = text_field_tag :group_name, @o11y_service_settings.group.name, class: 'form-control', readonly: true
+          = label_tag :namespace_name, s_('Observability|Namespace name'), class: 'label-bold'
+          = text_field_tag :namespace_name, @o11y_service_settings.namespace.name, class: 'form-control', readonly: true
           %span.form-text.gl-text-subtle
-            = s_('Observability|The name of the group for this o11y service configuration.')
+            = s_('Observability|The name of the namespace for this o11y service configuration.')
 
       = render 'groups/observability/o11y_service_settings/form_fields', f: f
 

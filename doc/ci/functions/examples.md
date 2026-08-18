@@ -180,7 +180,7 @@ Admins: ["Alice", "Carol"]
 
 ## Authenticate to Docker
 
-Creates a Docker config and adds it as the value to the environment variable `DOCKER_AUTH_CONFIG`
+Creates a Docker configuration and adds it as the value to the environment variable `DOCKER_AUTH_CONFIG`
 for use in subsequent functions.
 For full source code, see [Docker Auth](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth).
 

@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :dat
   end
 
   describe '#execute_query' do
-    context "when a query is sucessfully executed" do
+    context "when a query is successfully executed" do
       it 'executes the query and returns the result' do
         result = handler.execute_query(queries[:pg_show_all_settings])
         expect(result).to be_an(PG::Result)

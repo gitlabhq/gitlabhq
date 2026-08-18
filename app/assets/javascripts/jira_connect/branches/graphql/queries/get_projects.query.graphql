@@ -7,6 +7,7 @@ query jiraGetProjects(
   $searchNamespaces: Boolean = false
   $sort: String
   $membership: Boolean = true
+  $active: Boolean = true
 ) {
   projects(
     search: $search
@@ -15,6 +16,7 @@ query jiraGetProjects(
     membership: $membership
     searchNamespaces: $searchNamespaces
     sort: $sort
+    active: $active
   ) {
     nodes {
       id

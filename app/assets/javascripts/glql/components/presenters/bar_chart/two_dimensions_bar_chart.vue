@@ -1,9 +1,17 @@
 <script>
 import { GlBarChart } from '@gitlab/ui/src/charts';
 import { DISPLAY_TYPES } from '../../../constants';
-import { buildStackedByDimension, tooltipContentFromParams } from '../../../utils/chart_data';
+import {
+  buildStackedByDimension,
+  dimensionLabelFormatter,
+  tooltipContentFromParams,
+  tooltipTitleFromParams,
+  baseFieldKeyOf,
+  labelWithParameter,
+} from '../../../utils/chart_data';
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
+import { barCategoryAxisOptions } from './bar_chart_options';
 
 export default {
   name: 'TwoDimensionsBarChart',
@@ -51,16 +59,27 @@ export default {
       );
     },
     metricFormatter() {
-      return formatterFor(this.metric?.key);
+      return formatterFor(baseFieldKeyOf(this.metric));
     },
     metricAxisFormatter() {
-      return axisFormatterFor(this.metric?.key);
+      return axisFormatterFor(baseFieldKeyOf(this.metric));
     },
     yAxisTitle() {
       return dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension);
     },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.primaryDimension);
+    },
+    xAxisTitle() {
+      return labelWithParameter(this.metric);
+    },
     chartOptions() {
-      return { xAxis: { axisLabel: { formatter: this.metricAxisFormatter } } };
+      return {
+        ...barCategoryAxisOptions(this.chart.groups.map(this.categoryFormatter), {
+          formatter: this.categoryFormatter,
+        }),
+        xAxis: { axisLabel: { formatter: this.metricAxisFormatter } },
+      };
     },
   },
   methods: {
@@ -69,6 +88,13 @@ export default {
     },
     contentFromParams(params) {
       return tooltipContentFromParams(params, DISPLAY_TYPES.BAR_CHART);
+    },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.yAxisTitle,
+        displayType: DISPLAY_TYPES.BAR_CHART,
+      });
     },
   },
 };
@@ -79,9 +105,10 @@ export default {
     :data="chartData"
     :option="chartOptions"
     presentation="stacked"
-    :x-axis-title="metric.label"
+    :x-axis-title="xAxisTitle"
     :y-axis-title="yAxisTitle"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

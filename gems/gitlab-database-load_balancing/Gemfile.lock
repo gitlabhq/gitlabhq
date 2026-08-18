@@ -8,8 +8,8 @@ PATH
   remote: ../gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
-      activerecord (>= 7, < 9)
-      activesupport (>= 7, < 9)
+      activerecord (>= 7.2, < 9)
+      activesupport (>= 7.2, < 9)
       gitlab_quality-test_tooling (>= 3.13, < 4)
       rspec (~> 3.0)
       test-prof (~> 1.5)
@@ -567,7 +567,6 @@ CHECKSUMS
   bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
   binding_of_caller (1.0.0) sha256=3aad25d1d538fc6e7972978f9bf512ccd992784009947c81633bea776713161d
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
-  bundler (4.0.11) sha256=5bcec0fb78302e48d02ee46f10ee6e6942be647ba5b44a6d1ddfda9a240ce785
   cgi (0.5.1) sha256=e93fcafc69b8a934fe1e6146121fa35430efa8b4a4047c4893764067036f18e9
   citrus (3.0.2) sha256=4ec2412fc389ad186735f4baee1460f7900a8e130ffe3f216b30d4f9c684f650
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
@@ -732,4 +731,4 @@ CHECKSUMS
   zeitwerk (2.8.1) sha256=1c85e0f28954d68cd16e575da37f26846f609b68d80b5942ccfd31030c2449d5
 
 BUNDLED WITH
-  4.0.11
+  4.0.10

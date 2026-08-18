@@ -40,6 +40,14 @@ module Projects
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?
 
+      # Handle avatar removal: both nil and empty string mean remove the avatar.
+      # Map to CarrierWave's `remove_avatar` virtual attribute so the file is
+      # only removed inside the save lifecycle, after validations pass.
+      if params.key?(:avatar) && (params[:avatar].nil? || params[:avatar] == '')
+        params.delete(:avatar)
+        params[:remove_avatar] = true
+      end
+
       update_project!
       after_update
 

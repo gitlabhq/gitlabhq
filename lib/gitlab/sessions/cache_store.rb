@@ -6,7 +6,14 @@ module Gitlab
       DELIMITER = '-'
       ORIGINAL_SESSION_KEY = 'gitlab.original_session_data'
       LAST_WRITE_AT_KEY = '_gitlab_session_last_write_at'
+      # We throttle writes when session is unchanged to prevent session clobbering
+      # and reduce load on Redis.
       WRITE_THROTTLE_INTERVAL = 1.hour.to_i
+      # A throttled write also skips refreshing the Redis TTL, so a session can expire one
+      # interval earlier than its last activity. Capping the interval at a fraction of the expiry
+      # bounds how surprising that is: a session never lapses more than a tenth of its configured
+      # lifetime early, or an hour, whichever is smaller.
+      WRITE_THROTTLE_EXPIRY_RATIO = 10
 
       attr_reader :session_cookie_token_prefix
 
@@ -34,7 +41,7 @@ module Gitlab
 
         if !session
           @cache.delete(key)
-        elsif session_changed?(env, sid, session) || !write_throttled?(session)
+        elsif session_changed?(env, sid, session) || !write_throttled?(session, options[:redis_expiry])
           session[LAST_WRITE_AT_KEY] = Time.now.to_i
           @cache.write(key, session, expires_in: options[:redis_expiry])
         end
@@ -56,9 +63,15 @@ module Gitlab
           original_session_data.nil? || original_session_data != session
       end
 
-      def write_throttled?(session)
+      def write_throttled?(session, redis_expiry)
         last_write_at = session[LAST_WRITE_AT_KEY]
-        last_write_at && (Time.now.to_i - last_write_at) < WRITE_THROTTLE_INTERVAL
+        last_write_at && (Time.now.to_i - last_write_at) < write_throttle_interval(redis_expiry)
+      end
+
+      def write_throttle_interval(redis_expiry)
+        return WRITE_THROTTLE_INTERVAL unless redis_expiry
+
+        [WRITE_THROTTLE_INTERVAL, redis_expiry / WRITE_THROTTLE_EXPIRY_RATIO].min
       end
 
       # ActionDispatch::Session::CacheStore (superclass) prepends

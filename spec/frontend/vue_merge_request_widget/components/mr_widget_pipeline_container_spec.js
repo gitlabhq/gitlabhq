@@ -104,7 +104,7 @@ describe('MrWidgetPipelineContainer', () => {
         }),
       );
 
-      const deployments = wrapper.findAll('.mr-widget-extension .js-pre-deployment');
+      const deployments = wrapper.findAllComponents('.mr-widget-extension .js-pre-deployment');
 
       expect(findDeploymentList().exists()).toBe(true);
       expect(findDeploymentList().props('deployments')).toBe(mockStore.deployments);
@@ -181,7 +181,7 @@ describe('MrWidgetPipelineContainer', () => {
         }),
       );
 
-      const deployments = wrapper.findAll('.mr-widget-extension .js-post-deployment');
+      const deployments = wrapper.findAllComponents('.mr-widget-extension .js-post-deployment');
 
       expect(findDeploymentList().exists()).toBe(true);
       expect(findDeploymentList().props('deployments')).toBe(mockStore.postMergeDeployments);

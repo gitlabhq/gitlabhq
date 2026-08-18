@@ -8,7 +8,7 @@ describe('VerificationRecoverAccount', () => {
     wrapper = mountExtended(VerificationRecoverAccount);
   };
 
-  const findRecoveryButton = () => wrapper.findByTestId('recovery-button');
+  const findRecoveryButton = () => wrapper.findComponentByTestId('recovery-button');
 
   beforeEach(() => {
     createComponent();

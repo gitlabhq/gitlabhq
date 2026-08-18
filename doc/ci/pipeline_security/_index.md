@@ -30,8 +30,8 @@ that should be kept confidential. Examples of a secret include:
 
 Secrets that are the most sensitive and under the strictest policies should be stored
 in a secrets manager. When using a secrets manager solution, secrets are stored outside
-of the GitLab instance. There are a number of providers in this space, including
-[HashiCorp's Vault](https://www.vaultproject.io), [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault),
+of the GitLab instance. Several providers offer this service, including
+[HashiCorp Vault](https://www.vaultproject.io), [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault),
 and [Google Cloud Secret Manager](https://cloud.google.com/security/products/secret-manager).
 
 You can use the GitLab native integrations for certain [external secret management providers](../secrets/_index.md) to retrieve those secrets in CI/CD pipelines when they are needed.
@@ -43,7 +43,7 @@ in a CI/CD pipeline, but variables are less secure than secrets management provi
 Variable values:
 
 - Are stored in the GitLab project, group, or instance settings. Users with access
-  to the settings have access to variables values that are not [hidden](../variables/_index.md#hide-a-cicd-variable).
+  to the settings have access to variable values that are not [hidden](../variables/_index.md#hide-a-cicd-variable).
 - Can be [overridden](../variables/_index.md#use-pipeline-variables),
   making it hard to determine which value was used.
 - Can be exposed by accidental pipeline misconfiguration.

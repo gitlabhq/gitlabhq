@@ -1015,7 +1015,7 @@ Support for populating the vulnerability report with all present advisory data, 
 
 Prerequisites:
 
-- The Security Manager, Maintainer or Owner role for the project.
+- The Security Manager, Maintainer, or Owner role for the project.
 - The project must not be empty. If you are using an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
 - By default there is a limit of `50` scans per project per day.
 - You must [configure container registry notifications](../../../administration/packages/container_registry.md#configure-container-registry-notifications).

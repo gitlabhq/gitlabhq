@@ -24,7 +24,7 @@ file. For instance, GitLab generates a `.secret` file if it cannot find one
 and write it to the Rails root. In the Omnibus packages, reconfigure writes the
 `.secret` file first, so that GitLab never tries to write it.
 
-## Code, data and logs are in separate directories
+## Code, data, and logs are in separate directories
 
 The Omnibus design separates code (read-only, under `/opt/gitlab`) from data
 (read/write, under `/var/opt/gitlab`) and logs (read/write, under

@@ -83,13 +83,13 @@ from being viewed by non-authenticated users.
 
 In **Import sources**, select only the sources you really need.
 
-A typical deployment has **Enabled Git access protocols** set to **Both SSH and HTTP(S)**,
-however if one of the Git protocols is not in use by your users, set it to either
+A typical deployment has **Enabled Git access protocols** set to **Both SSH and HTTP(S)**.
+However, if one of the Git protocols is not in use by your users, set it to either
 **Only SSH** or **Only HTTP(S)** accordingly. This helps shrink the attack surface.
 
 For SSH key types, the following are preferred: `ED25519` (and `ED25519-SK`), `RSA`, and
 `ECDSA` (and `ECDSA-SK`) in that order. `ED25519` is considered as secure as `RSA` when
-`RSA` is set to 2048 bits or higher, however the `ED25519` keys are smaller and the
+`RSA` is set to 2048 bits or higher. However, the `ED25519` keys are smaller and the
 algorithm is much faster.
 
 `ED25519-SK` and `ECDSA-SK` both end with `-SK` which stands for

@@ -42,8 +42,8 @@ describe('Create New Runner Registration', () => {
   };
 
   const findGlMultiStepFormTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
-  const findToken = () => wrapper.findByTestId('token-input');
-  const findCopyTokenButton = () => wrapper.findByTestId('copy-token-to-clipboard');
+  const findToken = () => wrapper.findComponentByTestId('token-input');
+  const findCopyTokenButton = () => wrapper.findComponentByTestId('copy-token-to-clipboard');
   const findLoadingIcon = () => wrapper.findByTestId('loading-icon-wrapper');
   const findRunnerRegisteredAlert = () => wrapper.findByTestId('runner-registered-alert');
 

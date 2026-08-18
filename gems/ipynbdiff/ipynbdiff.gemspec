@@ -19,12 +19,12 @@ Gem::Specification.new do |s|
   s.homepage = 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/ipynbdiff'
   s.license = 'MIT'
 
-  s.add_runtime_dependency 'diffy', '~> 3.4'
-  s.add_runtime_dependency 'oj', '~> 3.16', '>=3.16.10'
+  s.add_dependency 'diffy', '~> 3.4'
+  s.add_dependency 'oj', '~> 3.16', '>=3.16.10'
 
   s.add_development_dependency 'benchmark-memory', '~>0.2.0'
-  s.add_development_dependency 'bundler', '~> 2.2'
-  s.add_development_dependency 'gitlab-styles', '~> 10.1.0'
+  s.add_development_dependency 'bundler', '~> 4.0'
+  s.add_development_dependency 'gitlab-styles', '~> 14.0'
   s.add_development_dependency 'pry', '~> 0.14'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.10'

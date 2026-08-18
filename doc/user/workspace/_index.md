@@ -13,13 +13,6 @@ title: Workspaces
 
 {{< /details >}}
 
-{{< history >}}
-
-- Feature flag `remote_development_feature_flag` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
-
-{{< /history >}}
-
 A workspace is a virtual sandbox environment for your code in GitLab.
 You can use workspaces to create and manage isolated development environments for your GitLab projects.
 These environments ensure that different projects don't interfere with each other.
@@ -50,12 +43,6 @@ A running workspace remains accessible to the user even if user permissions are 
 
 ### Manage workspaces from a project
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
-
-{{< /history >}}
-
 To manage workspaces from a project:
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -81,12 +68,6 @@ To clean up orphaned resources, an administrator must manually delete the worksp
 [Epic 11452](https://gitlab.com/groups/gitlab-org/-/work_items/11452) proposes to change this behavior.
 
 ## Manage workspaces at the agent level
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419281) in GitLab 16.8.
-
-{{< /history >}}
 
 To manage all workspaces associated with `agentk`:
 
@@ -382,7 +363,7 @@ events:
 > [!note]
 > This container `image` is for demonstration purposes only.
 
-For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
+For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/workspaces/examples).
 
 ## Workspace container requirements
 
@@ -485,7 +466,6 @@ For more information, see [configure VS Code Extension Marketplace](../../admini
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
 - `api` permission [added](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
 
 {{< /history >}}
@@ -528,7 +508,7 @@ To delete the provisioned volume, you must terminate the workspace.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14910) in GitLab 17.6.
 
 {{< /history >}}
 

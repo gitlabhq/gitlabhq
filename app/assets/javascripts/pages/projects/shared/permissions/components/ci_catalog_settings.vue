@@ -1,5 +1,13 @@
 <script>
-import { GlLink, GlLoadingIcon, GlModal, GlSprintf, GlToggle, GlIcon } from '@gitlab/ui';
+import {
+  GlLink,
+  GlLoadingIcon,
+  GlModal,
+  GlSprintf,
+  GlToggle,
+  GlIcon,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -63,6 +71,7 @@ export default {
     GlToggle,
     GlIcon,
   },
+  mixins: [GlToastMixin],
   props: {
     fullPath: {
       type: String,

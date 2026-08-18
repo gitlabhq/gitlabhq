@@ -7,7 +7,7 @@ import CommitStep, { i18n } from '~/pipeline_wizard/components/commit.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import createCommitMutation from '~/pipeline_wizard/queries/create_commit.graphql';
 import getFileMetadataQuery from '~/pipeline_wizard/queries/get_file_meta.graphql';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   createCommitMutationErrorResult,

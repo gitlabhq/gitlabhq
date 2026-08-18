@@ -8,6 +8,8 @@ jest.mock('~/alert');
 
 const AVAILABLE_VERSIONS = [0, 1, 2];
 const LATEST_VERSION = 2;
+const SCHEMA_FIELD_NAME = 'application_setting[logging_field_schema_version]';
+const DUAL_EMIT_FIELD_NAME = 'application_setting[logging_field_dual_emit_target]';
 const FIELD_CHANGES = {
   1: [
     { standard_field: 'correlation_id', deprecated_fields: ['tags.correlation_id'] },
@@ -26,6 +28,8 @@ describe('LoggingFieldSettings', () => {
         latestVersion: LATEST_VERSION,
         availableVersions: AVAILABLE_VERSIONS,
         fieldChanges: FIELD_CHANGES,
+        schemaFieldName: SCHEMA_FIELD_NAME,
+        dualEmitFieldName: DUAL_EMIT_FIELD_NAME,
         ...props,
       },
       stubs: { GlTableLite },
@@ -170,55 +174,52 @@ describe('LoggingFieldSettings', () => {
   });
 
   describe('form integration', () => {
-    const findHiddenInputs = () => wrapper.findAll('input[type="hidden"]');
-    const findHiddenInputByName = (name) =>
-      findHiddenInputs().wrappers.find((w) => w.attributes('name') === name);
+    it('passes the schema field name to the schema version select', () => {
+      createComponent({ persistedVersion: 0 });
 
-    it('submits the schema version via a hidden input', async () => {
+      expect(findSchemaSelect().attributes('name')).toBe(SCHEMA_FIELD_NAME);
+    });
+
+    it('passes the dual-emit field name to the dual-emit select', () => {
+      createComponent({ persistedVersion: 0 });
+
+      expect(findDualEmitSelect().attributes('name')).toBe(DUAL_EMIT_FIELD_NAME);
+    });
+
+    it('submits the schema version via the select', async () => {
       createComponent({ persistedVersion: 0 });
 
       await setSchemaVersion(1);
 
-      const input = findHiddenInputByName('application_setting[logging_field_schema_version]');
-      expect(input.attributes('value')).toBe('1');
+      expect(findSchemaSelect().attributes('value')).toBe('1');
     });
 
-    it('submits the dual-emit target via a hidden input', async () => {
+    it('submits the dual-emit target via the select', async () => {
       createComponent({ persistedVersion: 0 });
 
       await setDualEmitTarget(1);
 
-      const input = findHiddenInputByName('application_setting[logging_field_dual_emit_target]');
-      expect(input.attributes('value')).toBe('1');
+      expect(findDualEmitSelect().attributes('value')).toBe('1');
     });
 
-    it('initializes the dual-emit hidden input from persistedDualEmitTarget', () => {
+    it('initializes the dual-emit select from persistedDualEmitTarget', () => {
       createComponent({ persistedVersion: 0, persistedDualEmitTarget: 2 });
 
-      const input = findHiddenInputByName('application_setting[logging_field_dual_emit_target]');
-      expect(input.attributes('value')).toBe('2');
+      expect(findDualEmitSelect().attributes('value')).toBe('2');
     });
 
     it('submits an empty string when no dual-emit target is selected', () => {
       createComponent({ persistedVersion: 0, persistedDualEmitTarget: null });
 
-      const input = findHiddenInputByName('application_setting[logging_field_dual_emit_target]');
-      expect(input.element.value).toBe('');
+      expect(findDualEmitSelect().attributes('value')).toBe('');
     });
 
-    // The backend relies on this invariant: even with the dual-emit select disabled
-    // (schema version is at the latest), both hidden inputs must still submit so the
-    // controller never has to special-case missing params.
-    it('submits both hidden inputs when at the latest version', () => {
+    it('submits both selects when at the latest version', () => {
       createComponent({ persistedVersion: LATEST_VERSION, persistedDualEmitTarget: null });
 
       expect(findDualEmitSelect().attributes('disabled')).toBeDefined();
-      expect(
-        findHiddenInputByName('application_setting[logging_field_schema_version]').exists(),
-      ).toBe(true);
-      expect(
-        findHiddenInputByName('application_setting[logging_field_dual_emit_target]').exists(),
-      ).toBe(true);
+      expect(findSchemaSelect().attributes('name')).toBe(SCHEMA_FIELD_NAME);
+      expect(findDualEmitSelect().attributes('name')).toBe(DUAL_EMIT_FIELD_NAME);
     });
 
     it('only renders the dual-emit cost warning by default', () => {

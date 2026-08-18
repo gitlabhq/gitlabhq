@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Advanced search development guidelines
@@ -16,7 +16,7 @@ These recordings and presentations provide in-depth knowledge about the Advanced
 
 |    Date     | Topic                                                                                                     |    Presenter     | Resources                                                                                                                                                                                                                                                                                                                                                                   | GitLab Version |
 |:-----------:|-----------------------------------------------------------------------------------------------------------|:----------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------:|
-|  July 2024  | Advanced search basics, integration, indexing, and search                                                 |    Terri Chu     | <i class="fa-youtube-play" aria-hidden="true"></i>[Recording on YouTube](https://youtu.be/5OXK1isDaks) (GitLab team members only)<br>[Google slides](https://docs.google.com/presentation/d/1Fy3pfFIGK_2ZCoB93EksRKhaS7uuNp81I3L5_joWa04/edit?usp=sharing_) (GitLab team members only)                                                                          |  GitLab 17.0   |
+|  July 2024  | Advanced search basics, integration, indexing, and search                                                 |    Terri Chu     | <i class="fa-youtube-play" aria-hidden="true"></i>[Recording on YouTube](https://www.youtube.com/watch?v=5OXK1isDaks) (GitLab team members only)<br>[Google slides](https://docs.google.com/presentation/d/1Fy3pfFIGK_2ZCoB93EksRKhaS7uuNp81I3L5_joWa04/edit?usp=sharing_) (GitLab team members only)                                                                          |  GitLab 17.0   |
 |  June 2021  | GitLabs data migration process for Advanced search                                                       |   Dmitry Gruzd   | [Blog post](https://about.gitlab.com/blog/advanced-search-data-migrations/)                                                                                                                                                                                                                                                                                      |     GitLab 13.12      |
 | August 2020 | [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices) |    Mark Chao     | [Recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg)<br>[Google slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/)                                                                                                                                                                                                                           |  GitLab 13.3   |
 |  June 2019  | GitLab [Elasticsearch integration](../integration/advanced_search/elasticsearch.md)                       | Mario de la Ossa | <i class="fa-youtube-play" aria-hidden="true"></i>[Recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA)<br>[Google slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit)<br>[PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf) |  GitLab 12.0   |
@@ -194,7 +194,7 @@ in the cluster back the request in GitLab.
 
 ## Architecture
 
-The framework used to communicate to Elasticsearch is in the process of a refactor tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/13873).
+The framework used to communicate to Elasticsearch is in the process of a refactor tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/work_items/13873).
 
 ### Indexing Overview
 
@@ -852,8 +852,8 @@ gradual rollout. After the migration completes, remove the legacy entry and the
 QUERY_COMPONENTS = {
   ::Search::Elastic::Filters => [
     :by_type,
-    { method: :by_search_level_and_membership, migration: :migration_name },
-    { method: :by_project_authorization, unless_migration: :migration_name },
+    { method: :new_filter_method, migration: :migration_name },
+    { method: :old_filter_method, unless_migration: :migration_name },
     :by_archived
   ],
   ::Search::Elastic::Formats => [
@@ -1945,7 +1945,7 @@ This filter can be used in place of `by_search_level_and_membership` if the data
 
 #### `by_search_level_and_membership`
 
-Requires `project_id`, `traversal_id` and project visibility (defaulting to `visibility_level` but can set with the `project_visibility_level_field` option) fields. Supports feature `*_access_level` fields. Query with `search_level`
+Requires `project_id`, `traversal_id`, and project visibility (defaulting to `visibility_level` but can set with the `project_visibility_level_field` option) fields. Supports feature `*_access_level` fields. Query with `search_level`
  and optionally `project_ids`, `group_ids`, `features`, and `current_user` in options.
 
 Filtering is applied for:

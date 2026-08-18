@@ -1,6 +1,7 @@
 <script>
 import { createAlert } from '~/alert';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import destroyArtifactMutation from '../graphql/mutations/destroy_artifact.mutation.graphql';
 import { removeArtifactFromStore } from '../graphql/cache_update';
@@ -20,6 +21,7 @@ export default {
     ArtifactRow,
     ArtifactDeleteModal,
   },
+  mixins: [glListenersMixin],
   props: {
     artifacts: {
       type: Object,
@@ -38,7 +40,7 @@ export default {
       required: true,
     },
   },
-  emits: ['refetch', 'selectArtifact'],
+  emits: ['refetch', 'select-artifact'],
   data() {
     return {
       isModalVisible: false,
@@ -113,7 +115,7 @@ export default {
             :is-selected="isSelected(item)"
             :is-last-row="isLastRow(index)"
             :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
-            v-on="$listeners"
+            v-on="glListeners()"
             @delete="showModal(item)"
           />
         </dynamic-scroller-item>

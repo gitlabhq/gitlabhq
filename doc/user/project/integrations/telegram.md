@@ -13,12 +13,6 @@ description: "Configure the Telegram integration to receive notifications from G
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122879) in GitLab 16.1.
-
-{{< /history >}}
-
 You can configure GitLab to send notifications to a Telegram chat or channel.
 To set up the Telegram integration, you must:
 
@@ -49,7 +43,6 @@ To configure the bot in Telegram:
 
 {{< history >}}
 
-- **Message thread ID** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11.
 - **Hostname** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461313) in GitLab 17.1.
 
 {{< /history >}}

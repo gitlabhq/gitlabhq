@@ -6,13 +6,25 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:export_1) { create(:offline_export, user: user) }
-  let_it_be(:export_2) { create(:offline_export, user: user) }
-  let_it_be(:other_user_export) { create(:offline_export) }
+  let_it_be(:export_1) { create(:offline_export, :with_configuration, user: user) }
+  let_it_be(:export_2) { create(:offline_export, :with_configuration, user: user) }
+  let_it_be(:other_user_export) { create(:offline_export, :with_configuration) }
+
+  before do
+    stub_application_setting(offline_transfer_exports_enabled: true, offline_transfer_imports_enabled: true)
+  end
 
   shared_examples 'not found when offline_transfer_exports is disabled' do
     before do
       stub_feature_flags(offline_transfer_exports: false)
+    end
+
+    it_behaves_like '404 response'
+  end
+
+  shared_examples 'not found when offline_transfer_exports_enabled setting is disabled' do
+    before do
+      stub_application_setting(offline_transfer_exports_enabled: false)
     end
 
     it_behaves_like '404 response'
@@ -218,6 +230,13 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       it_behaves_like 'configuring path_style', :gcs_hmac
     end
 
+    context 'when using GCS object storage with Application Default Credentials' do
+      it_behaves_like 'starting a new export', :gcs_application_default do
+        let(:configuration_key) { :gcs_adc_configuration }
+        let(:credentials) { { 'google_project' => 'gitlab-project' } }
+      end
+    end
+
     context 'when no configuration params are provided' do
       let(:params) do
         {
@@ -249,7 +268,9 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
         request
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
-        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:offline_export))
+        expect(response.headers).to include(
+          'Retry-After' => Gitlab::ApplicationRateLimiter.period_for(:offline_export)
+        )
         expect(json_response['message']['error']).to eq(
           'This endpoint has been requested too many times. Try again later.'
         )
@@ -280,6 +301,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     it_behaves_like 'not found when offline_transfer_exports is disabled'
+    it_behaves_like 'not found when offline_transfer_exports_enabled setting is disabled'
   end
 
   describe 'GET /offline_exports' do
@@ -374,6 +396,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     it_behaves_like 'not found when offline_transfer_exports is disabled'
+    it_behaves_like 'not found when offline_transfer_exports_enabled setting is disabled'
   end
 
   describe 'GET /offline_exports/:id' do
@@ -421,6 +444,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     it_behaves_like 'not found when offline_transfer_exports is disabled'
+    it_behaves_like 'not found when offline_transfer_exports_enabled setting is disabled'
   end
 
   describe 'POST /offline_imports', :with_current_organization do
@@ -569,6 +593,13 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       end
     end
 
+    context 'when using GCS object storage with Application Default Credentials' do
+      it_behaves_like 'starting a new import', :gcs_application_default do
+        let(:configuration_key) { :gcs_adc_configuration }
+        let(:credentials) { { 'google_project' => 'gitlab-project' } }
+      end
+    end
+
     context 'when no configuration params are provided' do
       let(:params) do
         {
@@ -602,7 +633,9 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
         request
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
-        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:offline_import))
+        expect(response.headers).to include(
+          'Retry-After' => Gitlab::ApplicationRateLimiter.period_for(:offline_import)
+        )
         expect(json_response['message']['error']).to eq(
           'This endpoint has been requested too many times. Try again later.'
         )
@@ -629,6 +662,14 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     context 'when offline_transfer_imports is disabled' do
       before do
         stub_feature_flags(offline_transfer_imports: false)
+      end
+
+      it_behaves_like '404 response'
+    end
+
+    context 'when offline_transfer_imports_enabled setting is disabled' do
+      before do
+        stub_application_setting(offline_transfer_imports_enabled: false)
       end
 
       it_behaves_like '404 response'

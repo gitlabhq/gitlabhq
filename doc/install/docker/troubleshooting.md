@@ -134,7 +134,7 @@ solution to fix this problem is to
 If you use `docker run`, you can pass the flag `--shm-size 256m`.
 If you use a `docker-compose.yml` file, you can set the `shm_size` key.
 
-## Docker containers exhausts space due to the `json-file`
+## Docker containers exhaust space due to the `json-file`
 
 Docker uses the [`json-file` default logging driver](https://docs.docker.com/config/containers/logging/configure/#configure-the-default-logging-driver), which performs no log rotation by default. As a result of this lack of rotation, log files stored by the `json-file` driver can consume a significant amount of disk space for containers that generate a lot of output. This can lead to disk space exhaustion. To address this, use [`journald`](https://docs.docker.com/engine/logging/drivers/journald/) as the logging driver when available, or [another supported driver](https://docs.docker.com/config/containers/logging/configure/#supported-logging-drivers) with native rotation support.
 
@@ -194,7 +194,7 @@ can't create Thread: Operation not permitted
 ```
 
 This error occurs when running a container built with newer `glibc` versions on a
-[host that doesn't support the clone3 function](https://github.com/moby/moby/issues/42680). In GitLab 16.0 and later, the container image includes
+[host that doesn't support the clone3 function](https://github.com/moby/moby/issues/42680). The container image includes
 the Ubuntu 22.04 Linux package, which is built with newer `glibc` versions.
 
 This problem does not occur in newer container runtime tools like [Docker 20.10.10](https://github.com/moby/moby/pull/42836).

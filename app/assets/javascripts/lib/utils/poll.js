@@ -98,7 +98,7 @@ export default class Poll {
   makeRequest() {
     const { resource, method, data, errorCallback, notificationCallback } = this.options;
 
-    // It's called everytime a new request is made. Useful to update the status.
+    // It's called every time a new request is made. Useful to update the status.
     notificationCallback(true);
 
     return resource[method](data)

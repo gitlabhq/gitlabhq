@@ -94,7 +94,7 @@ describe('IssuableItem', () => {
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
   const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
   const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
-  const findDraftStatusBadge = () => wrapper.findByTestId('issuable-draft-status-badge');
+  const findDraftStatusBadge = () => wrapper.findComponentByTestId('issuable-draft-status-badge');
 
   describe('computed', () => {
     describe('author', () => {
@@ -366,6 +366,32 @@ describe('IssuableItem', () => {
         expect(titleEl.findComponent(GlLink).text()).toBe(mockIssuable.title);
       },
     );
+
+    describe('when titleHtml contains an anchor tag', () => {
+      const titleHtmlWithLink = 'Fix <a href="/issues/1">#1</a> bug';
+
+      it('strips the anchor tag from the title rendered inside the listing link (non-prefetch path)', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, titleHtml: titleHtmlWithLink },
+          preventRedirect: false,
+        });
+
+        const titleLink = wrapper.findByTestId('issuable-title-link');
+        expect(titleLink.find('a').exists()).toBe(false);
+        expect(titleLink.text()).toContain('#1');
+      });
+
+      it('strips the anchor tag from the title rendered inside the listing link (prefetch path)', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, titleHtml: titleHtmlWithLink },
+          preventRedirect: true,
+        });
+
+        const titleLink = wrapper.findByTestId('issuable-title-link');
+        expect(titleLink.find('a').exists()).toBe(false);
+        expect(titleLink.text()).toContain('#1');
+      });
+    });
 
     it('renders checkbox when `showCheckbox` prop is true', async () => {
       wrapper = createComponent({

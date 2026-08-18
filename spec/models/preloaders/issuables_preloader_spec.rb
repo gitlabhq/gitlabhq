@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Preloaders::IssuablesPreloader, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
 
-  let_it_be(:projects) { create_list(:project, 3, :public, :repository) }
+  let_it_be(:projects) { create_list(:project, 3, :public) }
   let_it_be(:issues) { projects.map { |p| create(:issue, project: p) } }
   let_it_be(:associations) { [:namespace] }
 

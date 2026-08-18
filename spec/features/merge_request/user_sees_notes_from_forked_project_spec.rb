@@ -39,8 +39,6 @@ RSpec.describe 'Merge request > User sees notes from forked project', :js, featu
       find('.js-comment-button').click
     end
 
-    wait_for_requests
-
     expect(page).to have_content('A reply comment')
   end
 end

@@ -59,8 +59,6 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
   end
 
   before do
-    # this will be removed during - https://gitlab.com/gitlab-org/gitlab/-/work_items/594274
-    stub_feature_flags(subscription_sm_unification: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
   end
 

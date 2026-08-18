@@ -72,6 +72,9 @@ export const shouldRenderAsDuoSystemNote = (note) =>
     (note.author?.user_type === 'duo_code_review_bot' &&
       note.system_note_icon_name !== 'comment-dots'));
 
+const matchesAuthor = (candidate, authorId) =>
+  shouldRenderAsDuoSystemNote(candidate) && candidate.author?.id === authorId;
+
 /**
  * Finds the Duo "thinking" note that an incoming reply should remove, matched by
  * author so a human comment during the flow never removes it early.
@@ -86,9 +89,6 @@ export const shouldRenderAsDuoSystemNote = (note) =>
  * @returns {Object|null} The started note to remove, or null if none found.
  */
 export const findStartedNoteForReply = (incomingNotes, discussions) => {
-  const matchesAuthor = (candidate, authorId) =>
-    shouldRenderAsDuoSystemNote(candidate) && candidate.author?.id === authorId;
-
   for (const note of incomingNotes) {
     if (note.system || note.author?.id == null) continue;
 

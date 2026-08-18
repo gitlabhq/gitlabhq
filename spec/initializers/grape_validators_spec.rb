@@ -36,9 +36,8 @@ RSpec.describe 'config/initializers/grape_validators.rb', feature_category: :api
     expected_short_names = validator_names.map(&:underscore)
 
     # Resolve each name through Grape's public lookup, which raises
-    # UnknownValidator when a validator is not registered. This works across
-    # Grape versions, whereas the internal store moved from `.validators`
-    # (Grape 2.0) to a private `registry` (Grape 2.4+).
+    # UnknownValidator when a validator is not registered. The internal store
+    # (`registry`) is private, so it must not be reached into here.
     unregistered = expected_short_names.reject do |short_name|
       Grape::Validations.require_validator(short_name)
     rescue Grape::Exceptions::UnknownValidator

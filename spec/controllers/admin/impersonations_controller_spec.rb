@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ImpersonationsController do
+RSpec.describe Admin::ImpersonationsController, feature_category: :system_access do
   let(:impersonator) { create(:admin) }
   let(:user) { create(:user) }
 
@@ -109,6 +109,14 @@ RSpec.describe Admin::ImpersonationsController do
               before do
                 allow(user).to receive(:temp_oauth_email?).and_return(true)
                 allow(controller).to receive(:current_user).and_return(user)
+              end
+
+              it_behaves_like "successfully stops impersonating"
+            end
+
+            context "and the impersonated user's password has expired" do
+              before do
+                user.update!(password_expires_at: 5.minutes.ago)
               end
 
               it_behaves_like "successfully stops impersonating"

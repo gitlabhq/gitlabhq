@@ -23,7 +23,7 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
     stub_feature_flags(work_item_rest_api: true)
   end
 
-  shared_examples 'children endpoint' do
+  shared_examples 'children GET endpoint' do
     it 'returns children of the parent work item in relative-position order' do
       get api(api_request_path, user)
 
@@ -103,7 +103,7 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
   describe 'GET /projects/:id/-/work_items/:work_item_iid/children' do
     let(:api_request_path) { "/projects/#{project.id}/-/work_items/#{parent_work_item.iid}/children" }
 
-    it_behaves_like 'children endpoint'
+    it_behaves_like 'children GET endpoint'
 
     it_behaves_like 'authorizing granular token permissions', :read_work_item do
       let(:boundary_object) { project }
@@ -153,7 +153,7 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
       "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items/#{parent_work_item.iid}/children"
     end
 
-    it_behaves_like 'children endpoint'
+    it_behaves_like 'children GET endpoint'
 
     it_behaves_like 'authorizing granular token permissions', :read_work_item do
       let(:boundary_object) { project }
@@ -161,5 +161,64 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
         get api(api_request_path, personal_access_token: pat)
       end
     end
+  end
+
+  shared_context 'for attach child work item' do
+    let_it_be(:unauthorized_user) { create(:user, guest_of: project) }
+    let(:child) { create(:work_item, :task, project: project) }
+    let(:already_attached_child) { first_child }
+    let(:other_parent_work_item) { create(:work_item, :issue, project: project) }
+    let(:invalid_hierarchy_child_work_item) { create(:work_item, :issue, project: project) }
+    let(:confidential_parent_work_item) { create(:work_item, :issue, :confidential, project: project) }
+
+    let(:cross_boundary_child_work_item) do
+      other_project = create(:project, :private, reporters: user)
+      create(:work_item, :task, project: other_project)
+    end
+
+    let(:unreadable_child_work_item) do
+      other_project = create(:project, :private)
+      create(:work_item, :task, project: other_project)
+    end
+  end
+
+  describe 'POST /projects/:id/-/work_items/:work_item_iid/children/:child_id' do
+    include_context 'for attach child work item'
+
+    let(:path_for) do
+      ->(work_item_iid:, child_id:) { "/projects/#{project.id}/-/work_items/#{work_item_iid}/children/#{child_id}" }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_work_item, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: child.id) }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'attach child work item endpoint'
+  end
+
+  describe 'POST /namespaces/:id/-/work_items/:work_item_iid/children/:child_id' do
+    include_context 'for attach child work item'
+
+    let(:project_namespace) { CGI.escape(project.project_namespace.full_path) }
+
+    let(:path_for) do
+      ->(work_item_iid:, child_id:) {
+        "/namespaces/#{project_namespace}/-/work_items/#{work_item_iid}/children/#{child_id}"
+      }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_work_item, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: child.id) }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'attach child work item endpoint'
   end
 end

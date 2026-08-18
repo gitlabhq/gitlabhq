@@ -12,13 +12,8 @@ attention to the following rules.
 
 In [GitLab 19.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230459),
 we have now switched to native Bundler checksum verification.
-
-The old bundler-checksum gem is now deprecated.
-Please remove any usages of :
-
-- `BUNDLER_CHECKSUM_VERIFICATION_OPT_IN`
-- `bundle exec bundler-checksum init`
-- `bundle exec bundler-checksum lint`
+Since [GitLab 19.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249260),
+the old `bundler-checksum` gem has been removed.
 
 ### Updating the checksum file
 
@@ -30,14 +25,14 @@ Please remove any usages of :
 Whenever gems are updated, ensure that the `Gemfile.next.lock` file remains consistent.
 
 1. Sync the gem files
-   If you update `Gemfile.checksum`, you must sync the gem files by running:
+   If you update `Gemfile.lock`, you must sync the gem files by running:
 
    ```shell
    bundle exec rake bundler:gemfile:sync
    ```
 
 1. Review and commit changes
-   After syncing, verify the updates and commit any changes to `Gemfile.next.checksum` and `Gemfile.next.lock`.
+   After syncing, verify the updates and commit any changes to `Gemfile.next.lock`.
 
 ## No gems fetched from Git repositories
 

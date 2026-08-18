@@ -13,12 +13,6 @@ description: "Configure GitLab to send notifications to a Pumble channel."
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93623) in GitLab 15.3.
-
-{{< /history >}}
-
 You can configure GitLab to send notifications to a Pumble channel:
 
 1. Create a webhook for the channel.

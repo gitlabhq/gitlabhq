@@ -2,6 +2,7 @@
 import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -15,6 +16,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     id: {
       type: String,
@@ -169,7 +171,7 @@ export default {
         <slot name="drafts"></slot>
       </template>
 
-      <template #default>
+      <template v-if="glSlots().default || glSlots().drafts" #default>
         <slot></slot>
         <slot name="drafts"></slot>
       </template>

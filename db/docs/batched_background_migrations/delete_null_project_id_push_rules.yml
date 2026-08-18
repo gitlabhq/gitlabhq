@@ -1,8 +1,12 @@
 ---
 migration_job_name: DeleteNullProjectIdPushRules
-description: Deletes push_rules rows where project_id IS NULL to prepare for NOT NULL constraint
+description: Deletes push_rules rows where project_id IS NULL to prepare for NOT NULL constraint.
+  Originally introduced by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236788 and finalized
+  for GitLab.com only by 20260713080858. Requeued for self-managed so the cleanup runs after the
+  NOT NULL constraint on push_rules.project_id (20260715040848).
 feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236788
-milestone: '19.2'
-queued_migration_version: 20260615053722
+milestone: '19.3'
+queued_migration_version: 20260805094315
+finalized_by:
 gitlab_schema: gitlab_main_org

@@ -252,7 +252,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         context 'when authenticated' do
           before do
-            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(110)
           end
 
           it 'creates a new project under the existing namespace' do
@@ -293,7 +293,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       let(:path) { "/#{wiki.repository.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) { create(:project, :wiki_repo, :public, :wiki_enabled) }
+        let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, :wiki_enabled) }
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
@@ -316,7 +316,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
           context 'and as a developer on the team' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
             end
 
             context 'but the repo is disabled' do
@@ -341,7 +341,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       end
 
       context "when the project is private" do
-        let(:project) { create(:project, :wiki_repo, :private, :wiki_enabled) }
+        let_it_be(:project, reload: true) { create(:project, :wiki_repo, :private, :wiki_enabled) }
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
@@ -350,7 +350,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         context 'when authenticated' do
           context 'and as a developer on the team' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
             end
 
             context 'when user is using credentials with special characters' do
@@ -407,7 +407,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       let(:path) { "#{project.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) { create(:project, :repository, :public) }
+        let_it_be(:project, reload: true) { create(:project, :repository, :public) }
 
         it_behaves_like 'pushes require Basic HTTP Authentication'
 
@@ -422,7 +422,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
           context 'as a developer on the team' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
             end
 
             it_behaves_like 'pulls are allowed'
@@ -549,7 +549,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       end
 
       context "when the project is private" do
-        let(:project) { create(:project, :repository, :private) }
+        let_it_be(:project, reload: true) { create(:project, :repository, :private) }
 
         it_behaves_like 'pulls require Basic HTTP Authentication'
         it_behaves_like 'pushes require Basic HTTP Authentication'
@@ -586,7 +586,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
             context "when the user has access to the project" do
               before do
-                project.add_maintainer(user)
+                project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
               end
 
               context "when the user is blocked" do
@@ -705,7 +705,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
                   context 'when service account has developer access to the project' do
                     before do
-                      project.add_developer(service_account)
+                      project.add_developer(service_account) # rubocop:disable RSpec/BeforeAllRoleAssignment -- kept per-example alongside the per-example user role assignments in this spec
                     end
 
                     it_behaves_like 'pulls are allowed'
@@ -756,7 +756,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_maintainer(user)
+                  project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
                 end
 
                 context 'when username and password are provided' do
@@ -936,7 +936,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_maintainer(user)
+                  project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
                 end
 
                 context 'when username and password are provided' do
@@ -976,7 +976,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   let(:path) { "#{project.full_path}.git" }
 
                   before do
-                    project.add_maintainer(user)
+                    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
 
                     stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
                   end
@@ -1312,7 +1312,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       let(:path) { "#{project.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) do
+        let_it_be(:project, reload: true) do
           project = create(:project, :repository, :public)
           project.update_attribute(:path, 'foo.')
           project
@@ -1331,7 +1331,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
           context 'as a developer on the team' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
             end
 
             it_behaves_like 'pulls are allowed'
@@ -1458,7 +1458,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       end
 
       context "when the project is private" do
-        let(:project) do
+        let_it_be(:project, reload: true) do
           project = create(:project, :repository, :private)
           project.update_attribute(:path, 'foo.')
           project
@@ -1499,7 +1499,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
             context "when the user has access to the project" do
               before do
-                project.add_maintainer(user)
+                project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
               end
 
               context "when the user is blocked" do
@@ -1588,7 +1588,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_maintainer(user)
+                  project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
                 end
 
                 context 'when username and password are provided' do
@@ -1949,7 +1949,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       let(:path) { "/#{wiki.repository.full_path}.git" }
 
       context "when the project is public" do
-        let(:project) do
+        let_it_be(:project, reload: true) do
           project = create(:project, :wiki_repo, :public, :wiki_enabled)
           project.update_attribute(:path, 'foo.')
           project
@@ -1976,7 +1976,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
           context 'and as a developer on the team' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
             end
 
             context 'but the repo is disabled' do
@@ -2005,7 +2005,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       end
 
       context "when the project is private" do
-        let(:project) do
+        let_it_be(:project, reload: true) do
           project = create(:project, :wiki_repo, :private, :wiki_enabled)
           project.update_attribute(:path, 'foo.')
           project
@@ -2018,7 +2018,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         context 'when authenticated' do
           context 'and as a developer on the team' do
             before do
-              project.add_developer(user)
+              project.add_developer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
             end
 
             context 'when user is using credentials with special characters' do

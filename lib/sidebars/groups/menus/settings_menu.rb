@@ -46,7 +46,8 @@ module Sidebars
             title: _('General'),
             link: edit_group_path(context.group),
             active_routes: { path: 'groups#edit' },
-            item_id: :general
+            item_id: :general,
+            library_icon: 'settings'
           )
         end
 
@@ -55,7 +56,8 @@ module Sidebars
             title: _('Integrations'),
             link: group_settings_integrations_path(context.group),
             active_routes: { controller: :integrations },
-            item_id: :integrations
+            item_id: :integrations,
+            library_icon: 'settings'
           )
         end
 
@@ -68,7 +70,8 @@ module Sidebars
             title: _('Access tokens'),
             link: group_settings_access_tokens_path(context.group),
             active_routes: { path: 'access_tokens#index' },
-            item_id: :access_tokens
+            item_id: :access_tokens,
+            library_icon: 'settings'
           )
         end
 
@@ -77,7 +80,8 @@ module Sidebars
             title: _('Repository'),
             link: group_settings_repository_path(context.group),
             active_routes: { controller: :repository },
-            item_id: :repository
+            item_id: :repository,
+            library_icon: 'settings'
           )
         end
 
@@ -86,7 +90,8 @@ module Sidebars
             title: _('CI/CD'),
             link: group_settings_ci_cd_path(context.group),
             active_routes: { path: 'ci_cd#show' },
-            item_id: :ci_cd
+            item_id: :ci_cd,
+            library_icon: 'settings'
           )
         end
 
@@ -95,7 +100,8 @@ module Sidebars
             title: _('Applications'),
             link: group_settings_applications_path(context.group),
             active_routes: { controller: :applications },
-            item_id: :applications
+            item_id: :applications,
+            library_icon: 'settings'
           )
         end
 
@@ -106,7 +112,8 @@ module Sidebars
             title: s_('UsageQuota|Usage quotas'),
             link: group_usage_quotas_path(context.group),
             active_routes: { path: 'usage_quotas#root' },
-            item_id: :usage_quotas
+            item_id: :usage_quotas,
+            library_icon: 'settings'
           )
         end
 
@@ -117,7 +124,8 @@ module Sidebars
             title: _('Service accounts'),
             link: group_settings_service_accounts_path(context.group),
             active_routes: { controller: :service_accounts },
-            item_id: :service_accounts
+            item_id: :service_accounts,
+            library_icon: 'settings'
           )
         end
 
@@ -134,7 +142,8 @@ module Sidebars
             title: _('Packages and registries'),
             link: group_settings_packages_and_registries_path(context.group),
             active_routes: { controller: packages_and_registries_controllers },
-            item_id: :packages_and_registries
+            item_id: :packages_and_registries,
+            library_icon: 'settings'
           )
         end
 

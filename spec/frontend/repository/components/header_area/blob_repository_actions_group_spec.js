@@ -33,8 +33,8 @@ describe('BlobRepositoryActionsGroup', () => {
   };
 
   const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
-  const findFindFileDropdownItem = () => wrapper.findByTestId('find');
-  const findBlameDropdownItem = () => wrapper.findByTestId('blame-dropdown-item');
+  const findFindFileDropdownItem = () => wrapper.findComponentByTestId('find');
+  const findBlameDropdownItem = () => wrapper.findComponentByTestId('blame-dropdown-item');
   const findPermalinkLinkDropdown = () => wrapper.findComponent(PermalinkDropdownItem);
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 

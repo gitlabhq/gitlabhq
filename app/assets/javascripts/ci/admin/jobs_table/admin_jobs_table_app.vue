@@ -234,14 +234,14 @@ export default {
       :all-jobs-count="count"
       :loading="loading"
       :show-cancel-all-jobs-button="canUpdateAllJobs && isCancelable"
-      @fetchJobsByStatus="fetchJobsByStatus"
+      @fetch-jobs-by-status="fetchJobsByStatus"
     />
 
     <div v-if="showFilteredSearch" :class="$options.filterSearchBoxStyles">
       <jobs-filtered-search
         :query-string="validatedQueryString"
         admin
-        @filterJobsBySearch="filterJobsBySearch"
+        @filter-jobs-by-search="filterJobsBySearch"
       />
     </div>
 

@@ -70,14 +70,12 @@ To view private contributions:
 ### Follow a user's activity
 
 You can follow users whose activity you're interested in.
-In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
-the maximum number of users you can follow is 300.
+The maximum number of users you can follow is 300.
 
 To follow a user, either:
 
 - From a user's profile, select **Follow**.
-- Hover over a user's name, and select **Follow** ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
-  in GitLab 15.0).
+- Hover over a user's name, and select **Follow**.
 
 To view the activity of users you follow:
 

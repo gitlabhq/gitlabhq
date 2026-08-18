@@ -92,7 +92,7 @@ Prerequisites:
   - Must not:
     - Start with `_`, `-`, or `.`.
     - Contain emoji.
-    - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git` or `jon.atom`. However,
+    - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git`, or `jon.atom`. However,
       `jonpng` is valid.
 
 To change your username:
@@ -244,8 +244,6 @@ To add links to other accounts:
 
 {{< history >}}
 
-- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a feature flag](../../administration/feature_flags/list.md) named `mastodon_social_ui`. Disabled by default.
-- Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
 - Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/list.md) named `verify_mastodon_user`. Disabled by default.
 - Ability to verify Mastodon account using your GitLab user profile [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/504194) in GitLab 18.8. Feature flag `verify_mastodon_user` removed.
 
@@ -404,23 +402,13 @@ git config --global user.email <your email address>
 You can follow or unfollow users from either:
 
 - Their [user profiles](#access-your-user-profile).
-- The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
-  in GitLab 15.0).
+- The small popover that appears when you hover over a user's name.
 
-In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
-the maximum number of users you can follow is 300.
+The maximum number of users you can follow is 300.
 
-In [GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/441774),
-blocked users don't appear in the followers list on user profiles.
+Blocked users don't appear in the followers list on user profiles.
 
 ### Disable following and being followed by other users
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a feature flag](../../administration/feature_flags/list.md) named `disable_follow_users`.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/420620) in GitLab 16.3.
-
-{{< /history >}}
 
 You can disable following and being followed by other users.
 
@@ -499,12 +487,6 @@ GitLab administrators can
 [change this default](../../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
 ### Stay signed in indefinitely
-
-{{< history >}}
-
-- Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
-
-{{< /history >}}
 
 To remain signed in indefinitely, select the **Remember me** checkbox on the GitLab sign-in page.
 

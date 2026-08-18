@@ -103,10 +103,12 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         expect(merge_request.reload.merge_error).to eq(described_class::REBASE_ERROR)
       end
 
-      it 'returns an error' do
-        expect(service.execute(merge_request)).to match(
-          status: :error, message: described_class::REBASE_ERROR
-        )
+      it 'returns an error and categorises the reason as unknown', :aggregate_failures do
+        result = service.execute(merge_request)
+
+        expect(result).to be_error
+        expect(result.message).to eq(described_class::REBASE_ERROR)
+        expect(result.reason).to eq(described_class::REASON_UNKNOWN)
       end
 
       it 'logs the error' do
@@ -131,10 +133,12 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         expect(merge_request.reload.merge_error).to eq(described_class::REBASE_ERROR)
       end
 
-      it 'returns an error' do
-        expect(service.execute(merge_request)).to match(
-          status: :error, message: described_class::REBASE_ERROR
-        )
+      it 'returns an error and categorises the reason as conflict', :aggregate_failures do
+        result = service.execute(merge_request)
+
+        expect(result).to be_error
+        expect(result.message).to eq(described_class::REBASE_ERROR)
+        expect(result.reason).to eq(described_class::REASON_CONFLICT)
       end
 
       it 'logs the error but does not track GitError in Sentry' do
@@ -164,10 +168,12 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         expect(merge_request.reload.merge_error).to eq merge_error
       end
 
-      it 'returns an error' do
-        expect(service.execute(merge_request)).to match(
-          status: :error,
-          message: merge_error)
+      it 'returns an error and categorises the reason as pre_receive', :aggregate_failures do
+        result = service.execute(merge_request)
+
+        expect(result).to be_error
+        expect(result.message).to eq(merge_error)
+        expect(result.reason).to eq(described_class::REASON_PRE_RECEIVE)
       end
     end
 
@@ -180,10 +186,12 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
       end
 
       it 'saves a specific message and returns an error', :aggregate_failures do
-        result = subject.execute(merge_request)
+        result = service.execute(merge_request)
 
         expect(merge_request.reload.merge_error).to eq merge_error
-        expect(result).to match(status: :error, message: merge_error)
+        expect(result).to be_error
+        expect(result.message).to eq(merge_error)
+        expect(result.reason).to eq(described_class::REASON_COMMAND_ERROR)
       end
     end
 
@@ -198,10 +206,12 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
         expect(merge_request.reload.merge_error).to eq described_class::REBASE_ERROR
       end
 
-      it 'returns an error' do
-        expect(service.execute(merge_request)).to match(
-          status: :error, message: described_class::REBASE_ERROR
-        )
+      it 'returns an error and categorises the reason as conflict', :aggregate_failures do
+        result = service.execute(merge_request)
+
+        expect(result).to be_error
+        expect(result.message).to eq(described_class::REBASE_ERROR)
+        expect(result.reason).to eq(described_class::REASON_CONFLICT)
       end
     end
 
@@ -216,7 +226,9 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
 
         result = service.execute(merge_request)
 
-        expect(result).to match(status: :error, message: 'Source branch does not exist')
+        expect(result).to be_error
+        expect(result.message).to eq('Source branch does not exist')
+        expect(result.reason).to eq(described_class::REASON_SOURCE_BRANCH_MISSING)
         expect(merge_request.reload.merge_error).to eq('Source branch does not exist')
         expect(merge_request.rebase_jid).to be_nil
       end

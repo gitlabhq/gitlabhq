@@ -21,8 +21,9 @@ describe('CreateMenu component', () => {
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
   const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
-  const findCreateWorkItemModalTrigger = () => wrapper.findByTestId('new-work-item-trigger');
-  const findCreateWorkItemModal = () => wrapper.findByTestId('new-work-item-modal');
+  const findCreateWorkItemModalTrigger = () =>
+    wrapper.findComponentByTestId('new-work-item-trigger');
+  const findCreateWorkItemModal = () => wrapper.findComponentByTestId('new-work-item-modal');
 
   const createWrapper = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(CreateMenu, {
@@ -109,7 +110,7 @@ describe('CreateMenu component', () => {
         });
       });
 
-      it('hides modal when hideModal event is emitted', async () => {
+      it('hides modal when hide-modal event is emitted', async () => {
         createWrapper({ props: { groups: createNewMenuProjects } });
 
         findCreateWorkItemModalTrigger().vm.$emit('action');
@@ -117,7 +118,7 @@ describe('CreateMenu component', () => {
 
         expect(findCreateWorkItemModal().props('visible')).toBe(true);
 
-        findCreateWorkItemModal().vm.$emit('hideModal');
+        findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
 
         expect(findCreateWorkItemModal().props('visible')).toBe(false);
@@ -133,7 +134,7 @@ describe('CreateMenu component', () => {
 
         expect(findCreateWorkItemModal().exists()).toBe(true);
 
-        findCreateWorkItemModal().vm.$emit('hideModal');
+        findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
 
         expect(findCreateWorkItemModal().exists()).toBe(true);

@@ -106,32 +106,38 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'project-visibility-settings' });
   const findIssuesSettingsRow = () => wrapper.findComponent({ ref: 'issues-settings' });
   const findAnalyticsRow = () => wrapper.findComponent({ ref: 'analytics-settings' });
-  const findProjectVisibilityLevelInput = () => wrapper.find('[name="project[visibility_level]"]');
+  const findProjectVisibilityLevelInput = () =>
+    wrapper.findComponent('[name="project[visibility_level]"]');
   const findRequestAccessEnabledInput = () =>
     wrapper.find('[name="project[request_access_enabled]"]');
   const findMergeRequestsAccessLevelInput = () =>
-    wrapper.find('[name="project[project_feature_attributes][merge_requests_access_level]"]');
+    wrapper.findComponent(
+      '[name="project[project_feature_attributes][merge_requests_access_level]"]',
+    );
   const findForkingAccessLevelInput = () =>
-    wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]');
+    wrapper.findComponent('[name="project[project_feature_attributes][forking_access_level]"]');
   const findBuildsAccessLevelInput = () =>
-    wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]');
+    wrapper.findComponent('[name="project[project_feature_attributes][builds_access_level]"]');
   const findContainerRegistrySettings = () =>
     wrapper.findComponent({ ref: 'container-registry-settings' });
   const findContainerRegistryPublicNoteGlSprintfComponent = () =>
     findContainerRegistrySettings().findComponent(GlSprintf);
   const findContainerRegistryAccessLevelInput = () =>
-    wrapper.find('[name="project[project_feature_attributes][container_registry_access_level]"]');
+    wrapper.findComponent(
+      '[name="project[project_feature_attributes][container_registry_access_level]"]',
+    );
   const findPackageAccessLevel = () => wrapper.findByTestId('package-registry-access-level');
-  const findPackageRegistryEnabledInput = () => wrapper.find('[name="package_registry_enabled"]');
+  const findPackageRegistryEnabledInput = () =>
+    wrapper.findComponent('[name="package_registry_enabled"]');
   const findPackageRegistryAccessLevelHiddenInput = () =>
     wrapper.find(
       'input[name="project[project_feature_attributes][package_registry_access_level]"]',
     );
   const findPackageRegistryApiForEveryoneEnabledInput = () =>
-    wrapper.find('[name="package_registry_api_for_everyone_enabled"]');
+    wrapper.findComponent('[name="package_registry_api_for_everyone_enabled"]');
   const findPagesSettings = () => wrapper.findComponent({ ref: 'pages-settings' });
   const findPagesAccessLevels = () =>
-    wrapper.find('[name="project[project_feature_attributes][pages_access_level]"]');
+    wrapper.findComponent('[name="project[project_feature_attributes][pages_access_level]"]');
   const findCiCatalogSettings = () => wrapper.findComponent(CiCatalogSettings);
   const findEmailSettings = () => wrapper.findComponent({ ref: 'email-settings' });
   const findShowDiffPreviewSetting = () =>
@@ -158,7 +164,7 @@ describe('Settings Panel', () => {
   const findBotAccessFilePatternsInput = () =>
     wrapper.findByTestId('bot-access-file-patterns-input');
   const findProjectFeatureInputByAttribute = (attributeName) =>
-    wrapper.find(`[name="project[project_feature_attributes][${attributeName}]"]`);
+    wrapper.findComponent(`[name="project[project_feature_attributes][${attributeName}]"]`);
 
   const setProjectVisibilityLevel = (level) =>
     findProjectVisibilityLevelInput().vm.$emit('input', level);

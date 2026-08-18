@@ -8,7 +8,13 @@ module ActiveContext
       ContentNotFoundError = Class.new(StandardError)
 
       class_methods do
-        def fetch_content(refs:, query:, collection:, content_field: 'content', skip_missing_content: false)
+        def fetch_content(
+          refs:,
+          query:,
+          collection:,
+          queue_name: nil,
+          content_field: 'content',
+          skip_missing_content: false)
           matches = ::ActiveContext.adapter.search(
             user: nil,
             collection: collection,
@@ -26,7 +32,11 @@ module ActiveContext
                          { retry_error_types: [ContentNotFoundError] }
                        end
 
-          with_per_ref_handling(refs, **error_opts) do |ref|
+          with_per_ref_handling(
+            refs,
+            queue_name: queue_name,
+            preprocessor: 'content_fetcher',
+            **error_opts) do |ref|
             unless content_by_id.key?(ref.identifier)
               raise ContentNotFoundError, "content not found for chunk with id: #{ref.identifier}"
             end

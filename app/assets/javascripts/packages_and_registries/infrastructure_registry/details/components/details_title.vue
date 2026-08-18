@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'DetailsTitle',
@@ -17,7 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, glSlotsMixin],
   i18n: {
     packageInfo: __('v%{version} published %{timeAgo}'),
   },
@@ -84,7 +85,7 @@ export default {
       <metadata-item data-testid="package-ref" icon="branch" :text="packagePipeline.ref" />
     </template>
 
-    <template #right-actions>
+    <template v-if="glSlots()['delete-button']" #right-actions>
       <slot name="delete-button"></slot>
     </template>
   </title-area>

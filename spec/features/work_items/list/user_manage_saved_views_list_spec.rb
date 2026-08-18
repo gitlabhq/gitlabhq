@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User manage saved views list', :js, feature_category: :team_planning do
+RSpec.describe 'User manage saved views list', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
   include WorkItemsHelpers
 
@@ -18,8 +18,6 @@ RSpec.describe 'User manage saved views list', :js, feature_category: :team_plan
   before_all do
     project.add_planner(user)
     project.add_guest(guest_user)
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
-    create(:callout, user: guest_user, feature_name: :work_items_onboarding_modal)
   end
 
   context 'when user has planner role' do

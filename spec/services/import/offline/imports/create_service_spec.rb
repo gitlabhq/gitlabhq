@@ -125,16 +125,56 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
       end
     end
 
-    context 'when offline_transfer_imports is disabled' do
-      before do
-        stub_feature_flags(offline_transfer_imports: false)
+    context 'when using Application Default Credentials' do
+      let(:object_storage_configuration) do
+        {
+          bucket: 'gitlab-offline-transfer-imports',
+          provider: 'gcs_application_default',
+          export_prefix: '2026-02-23_11-52-43_export_iW11t5cQ',
+          object_storage_credentials: {
+            google_project: 'my-project'
+          }.stringify_keys
+        }
       end
 
-      it 'returns an error' do
-        response = service.execute
+      before do
+        stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+      end
 
-        expect(response).to be_error
-        expect(response.message).to eq('offline_transfer_imports feature flag must be enabled.')
+      context 'when the user is not an administrator' do
+        it 'returns an error and does not create a BulkImport' do
+          result = nil
+          expect { result = service.execute }.not_to change { BulkImport.count }
+          expect(result).to be_error
+          expect(result.message).to eq(
+            s_('OfflineTransfer|Only administrators can use Application Default Credentials for offline transfer.')
+          )
+        end
+      end
+
+      context 'when the user is an administrator' do
+        before do
+          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+        end
+
+        it 'creates the offline transfer configuration and returns success', :aggregate_failures do
+          result = nil
+          expect { result = service.execute }.to change { Import::Offline::Configuration.count }.by(1)
+          expect(result).to be_success
+        end
+
+        context 'when Application Default Credentials are not enabled for offline transfer' do
+          before do
+            stub_application_setting(allow_application_default_credentials_for_offline_transfer: false)
+          end
+
+          it 'returns an error and does not create a BulkImport', :aggregate_failures do
+            result = nil
+            expect { result = service.execute }.not_to change { BulkImport.count }
+            expect(result).to be_error
+            expect(result.message).to include('Provider is not included in the list')
+          end
+        end
       end
     end
 

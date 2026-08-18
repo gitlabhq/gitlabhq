@@ -28,7 +28,7 @@ Selecting an incident displays a detail page with more information about a parti
 - The description of the incident, including emoji.
 - Any file attachments provided in the incident description, or comments with a
   valid image extension.
-- A chronological ordered list of updates to the incident.
+- A chronologically ordered list of updates to the incident.
 
 ## Set up a Status Page
 
@@ -56,7 +56,7 @@ To provide GitLab with the AWS account information needed to push content to you
 1. Select the **Active** checkbox.
 1. In the **Status Page URL** box, provide the URL for your external status page.
 1. In the **S3 Bucket name** box, type the name of your S3 bucket. For more information, see
-   [Bucket configuration documentation](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+   [Bucket configuration documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html).
 1. In the **AWS region** box, type the region for your bucket. For more information, see the
    [AWS documentation](https://github.com/aws/aws-sdk-ruby#configuration).
 1. Enter your **AWS access key ID** and **AWS Secret access key**.
@@ -67,7 +67,7 @@ To provide GitLab with the AWS account information needed to push content to you
 1. Within your AWS account, create two new IAM policies, using the following files
    as examples:
    - [Create bucket](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_create_policy.json).
-   - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember replace `S3_BUCKET_NAME` with your bucket name).
+   - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember to replace `S3_BUCKET_NAME` with your bucket name).
 1. Create a new AWS access key with the permissions policies created in the first step.
 
 ### Create a status page project
@@ -84,7 +84,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
    - `S3_BUCKET_NAME` - The name of the Amazon S3 bucket.
      If no bucket with the provided name exists, the first pipeline run creates
      one and configures it for
-     [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+     [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html).
 
    - `AWS_DEFAULT_REGION` - The AWS region.
    - `AWS_ACCESS_KEY_ID` - The AWS access key ID.
@@ -98,8 +98,8 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
 
 ### Sync incidents to the Status Page
 
-After creating the CI/CD variables, configure the Project you want to use for
-Incidents:
+After creating the CI/CD variables, configure the project you want to use for
+incidents:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Monitor**.

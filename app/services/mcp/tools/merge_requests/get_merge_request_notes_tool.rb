@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     module MergeRequests
-      class GetMergeRequestNotesTool < Mcp::Tools::GraphqlTool
+      class GetMergeRequestNotesTool < Mcp::Tools::Base::GraphqlTool
         include Mcp::Tools::Concerns::ResourceFinder
 
         def self.build_query
@@ -30,7 +30,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 
@@ -48,7 +48,7 @@ module Mcp
 
             raise ArgumentError, 'Provide either url, or project_id and merge_request_iid' unless iid && project_id
 
-            [find_project(project_id).full_path, iid]
+            [find_project!(project_id).full_path, iid]
           end
         end
 
@@ -61,7 +61,7 @@ module Mcp
 
           merge_request = processed_result[:structuredContent]['mergeRequest']
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(merge_request) }]
-          ::Mcp::Tools::Response.success(formatted_content, merge_request)
+          ::Mcp::Tools::Base::Response.success(formatted_content, merge_request)
         end
 
         def missing_resource(result)
@@ -74,7 +74,7 @@ module Mcp
         end
 
         def resource_not_found_error(resource)
-          ::Mcp::Tools::Response.error(
+          ::Mcp::Tools::Base::Response.error(
             "#{resource} not found: it does not exist or you do not have access to it."
           )
         end

@@ -11,8 +11,8 @@ describe('Diff settings dropdown component', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findWhitespaceCheckbox = () => wrapper.findByTestId('show-whitespace');
-  const findFileByFileCheckbox = () => wrapper.findByTestId('file-by-file');
+  const findWhitespaceCheckbox = () => wrapper.findComponentByTestId('show-whitespace');
+  const findFileByFileCheckbox = () => wrapper.findComponentByTestId('file-by-file');
 
   const createComponent = (propsData) => {
     wrapper = shallowMountExtended(SettingsDropdown, {
@@ -34,10 +34,10 @@ describe('Diff settings dropdown component', () => {
       expect(findDropdown().props('selected')).toBe('parallel');
     });
 
-    it('emits updateDiffViewType event', () => {
+    it('emits update-diff-view-type event', () => {
       createComponent();
       findDropdown().vm.$emit('select', 'inline');
-      expect(wrapper.emitted('updateDiffViewType')).toEqual([['inline']]);
+      expect(wrapper.emitted('update-diff-view-type')).toEqual([['inline']]);
     });
   });
 
@@ -52,10 +52,10 @@ describe('Diff settings dropdown component', () => {
       expect(findWhitespaceCheckbox().props('checked')).toBe(true);
     });
 
-    it('emits toggleWhitespace event', () => {
+    it('emits toggle-whitespace event', () => {
       createComponent();
       findWhitespaceCheckbox().vm.$emit('input', false);
-      expect(wrapper.emitted('toggleWhitespace')).toEqual([[false]]);
+      expect(wrapper.emitted('toggle-whitespace')).toEqual([[false]]);
     });
   });
 
@@ -77,11 +77,11 @@ describe('Diff settings dropdown component', () => {
       ${true}             | ${false}
       ${false}            | ${true}
     `(
-      'emits toggleFileByFile event with $setting value when viewDiffsFileByFile is $viewDiffsFileByFile',
+      'emits toggle-file-by-file event with $setting value when viewDiffsFileByFile is $viewDiffsFileByFile',
       ({ viewDiffsFileByFile, eventValue }) => {
         createComponent({ viewDiffsFileByFile });
         findFileByFileCheckbox().vm.$emit('input', eventValue);
-        expect(wrapper.emitted('toggleFileByFile')).toEqual([[eventValue]]);
+        expect(wrapper.emitted('toggle-file-by-file')).toEqual([[eventValue]]);
       },
     );
 

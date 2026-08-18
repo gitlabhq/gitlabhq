@@ -133,7 +133,7 @@ When passing input values through the API or UI, arrays must be JSON-formatted, 
 
 ### Where you can use job inputs
 
-You can use simple interpolation or more complex expressions with operators and functions.
+You can use interpolation or more complex expressions with operators and functions.
 See [Moa expression language](../functions/moa.md) for the complete syntax.
 
 Job inputs can be used in these job keywords and their subkeys:
@@ -143,8 +143,6 @@ Job inputs can be used in these job keywords and their subkeys:
 - `cache`
 - `image`
 - `services`
-
-### Limitations
 
 Job inputs use `${{ job.inputs.INPUT_NAME }}` syntax which is evaluated when the job runs, not when
 the pipeline configuration is created. You cannot use job inputs in parts of the configuration

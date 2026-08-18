@@ -406,7 +406,7 @@ flowchart TD
 
 Different cases exist when viewing diffs, though, and the flow for each case differs.
 
-#### Viewing HEAD, latest or specific diff version
+#### Viewing HEAD, latest, or specific diff version
 
 The HEAD diff is viewed by default, if it is available. If not, it falls back to
 latest diff version. It's also possible to view a specific diff version. These cases

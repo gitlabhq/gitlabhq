@@ -208,7 +208,7 @@ You can also see details of the user that GitLab received from the SAML provider
 
 You can use one of the following to troubleshoot SAML:
 
-- A [complete GitLab with SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/tree/master/compose_files).
+- A [complete GitLab with SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/-/tree/main/compose_files).
 - A [quick start guide to start a Docker container](../../../administration/troubleshooting/test_environments.md#saml)
   with a plug and play SAML 2.0 identity provider if you only require a SAML provider.
 - A local environment by
@@ -604,7 +604,7 @@ Ensure the SAML identity provider is configured to send a [supported mail attrib
 </Attribute>
 ```
 
-Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported by default beginning in GitLab 16.7.
+Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported by default.
 
 ```xml
 <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress">

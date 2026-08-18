@@ -264,7 +264,7 @@ describe('ProjectSelect', () => {
     expect(findAlert().text()).toBe(FETCH_PROJECTS_ERROR);
   });
 
-  it('forwards events to the parent scope via `v-on="$listeners"`', () => {
+  it('forwards events to the parent scope via `v-on="glListeners()"`', () => {
     createComponent();
     findEntitySelect().vm.$emit('input');
 

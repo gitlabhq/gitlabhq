@@ -75,19 +75,21 @@ describe('Job Variables Form', () => {
   const findAllDeleteVarBtns = () => wrapper.findAllByTestId('delete-variable-btn');
   const findDeleteVarBtnPlaceholder = () => wrapper.findByTestId('delete-variable-btn-placeholder');
   const findCiVariableKey = () => wrapper.findByTestId('ci-variable-key');
+  const findCiVariableKeyComponent = () => wrapper.findComponentByTestId('ci-variable-key');
   const findAllCiVariableKeys = () => wrapper.findAllByTestId('ci-variable-key');
+  const findAllCiVariableKeyComponents = () => wrapper.findAllComponentsByTestId('ci-variable-key');
   const findCiVariableValue = () => wrapper.findByTestId('ci-variable-value');
   const findAllVariables = () => wrapper.findAllByTestId('ci-variable-row');
 
   const setCiVariableKey = () => {
     findCiVariableKey().setValue('new key');
-    findCiVariableKey().vm.$emit('change');
+    findCiVariableKeyComponent().vm.$emit('change');
     nextTick();
   };
 
   const setCiVariableKeyByPosition = (position, value) => {
     findAllCiVariableKeys().at(position).setValue(value);
-    findAllCiVariableKeys().at(position).vm.$emit('change');
+    findAllCiVariableKeyComponents().at(position).vm.$emit('change');
     nextTick();
   };
 

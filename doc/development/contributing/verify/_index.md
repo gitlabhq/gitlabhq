@@ -9,7 +9,7 @@ title: Contribute to Verify stage codebase
 Verify stage is working on a comprehensive Continuous Integration platform
 integrated into the GitLab product. Our goal is to empower our users to make
 great technical and business decisions, by delivering a fast, reliable, secure
-platform that verifies assumptions that our users make, and check them against
+platform that verifies assumptions that our users make, and checks them against
 the criteria defined in CI/CD configuration. They could be unit tests, end-to-end
 tests, benchmarking, performance validation, code coverage enforcement, and so on.
 
@@ -154,7 +154,7 @@ because it can contain important information, we also do have compliance and
 auditing responsibilities.
 
 Therefore we must take extra care when we are writing migrations
-that permanently removes data from our database, or when we are define
+that permanently remove data from our database, or when we are defining
 new retention policies.
 
 As a general rule, when you are writing code that is supposed to remove
@@ -203,7 +203,7 @@ attention from reviews and an additional reviewer:
 1. Merge requests changing code around authentication / security features.
 
 In both cases engineers are expected to request a review from a maintainer and
-a domain expert. If maintainer is the domain expert, involving another person
+a domain expert. If the maintainer is the domain expert, involving another person
 is recommended.
 
 ### Incremental rollouts

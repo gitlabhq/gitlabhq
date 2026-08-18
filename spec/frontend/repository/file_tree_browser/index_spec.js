@@ -41,7 +41,7 @@ describe('initFileTreeBrowser', () => {
         refType: 'heads',
       };
 
-      const router = createRouter();
+      const router = createRouter('foo/bar');
       await router.push({ name: routeName });
 
       await initFileTreeBrowser(router, options);

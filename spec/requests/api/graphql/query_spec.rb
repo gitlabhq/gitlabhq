@@ -35,6 +35,30 @@ RSpec.describe 'Query', feature_category: :shared do
     end
   end
 
+  describe 'restrictedVisibilityLevels field' do
+    let(:restricted_visibility_levels) { [Gitlab::VisibilityLevel::INTERNAL] }
+    let(:restricted_visibility_levels_query) do
+      <<~GRAPHQL
+        { restrictedVisibilityLevels }
+      GRAPHQL
+    end
+
+    before do
+      stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+      post_graphql(restricted_visibility_levels_query)
+    end
+
+    context 'when visibility levels are restricted for the instance' do
+      it { expect(graphql_data).to include('restrictedVisibilityLevels' => %w[internal]) }
+    end
+
+    context 'when no visibility levels are restricted' do
+      let(:restricted_visibility_levels) { nil }
+
+      it { expect(graphql_data).to include('restrictedVisibilityLevels' => []) }
+    end
+  end
+
   describe '.designManagement' do
     include DesignManagementTestHelpers
 

@@ -23,7 +23,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
 
   it 'contains started' do
     expect(subject).to include(:started)
-    expect(subject[:started]).to eq(true)
+    expect(subject[:started]).to be(true)
   end
 
   it 'contains complete to indicate if a pipeline is completed' do

@@ -34,6 +34,7 @@ export default {
       return splitArray.map((p) => encodeURIComponent(p)).join('/');
     },
     parentRoute() {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
       const path = joinPaths('/-/tree', this.commitRef, this.parentPath);
 
       return buildURLwithRefType({ path, refType: this.refType });

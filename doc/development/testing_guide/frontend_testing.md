@@ -204,7 +204,7 @@ For example, it's better to use the generated markup to trigger a button click a
 
 ## Common practices
 
-These some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
+These are some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
 
 ### How to query DOM elements
 
@@ -503,7 +503,7 @@ Sometimes a test needs to wait for something to happen in the application before
 You should try to avoid:
 
 - [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) because it makes the reason for waiting unclear. Additionally, it is faked in our tests so its usage is tricky.
-- [`setImmediate`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate) because it is no longer supported in Jest 27 and later. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7002) for details.
+- [`setImmediate`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate) because it is no longer supported in Jest 27 and later. See [this epic](https://gitlab.com/groups/gitlab-org/-/work_items/7002) for details.
 
 #### Promises and Ajax calls
 
@@ -1025,7 +1025,7 @@ You can generate fixtures by running:
 - `bin/rake frontend:fixtures` to generate all fixtures
 - `bin/rspec spec/frontend/fixtures/merge_requests.rb` to generate specific fixtures (in this case for `merge_request.rb`)
 
-You can find generated fixtures are in `tmp/tests/frontend/fixtures-ee`.
+You can find generated fixtures in `tmp/tests/frontend/fixtures-ee`.
 
 To generate a single fixture for a _spec.js file identify the import from `test_fixtures/` directory:
 
@@ -1249,7 +1249,7 @@ Main information on frontend testing levels can be found in the [Testing Levels 
 Tests relevant for frontend development can be found at the following places:
 
 - `spec/frontend/`, for Jest unit, component, and integration tests
-- `spec/frontend/msw_integration/`, for MSW integration tests
+- `ee/spec/frontend/msw_integration/`, for MSW integration tests (EE-only)
 - `spec/features/`, for Capybara feature tests
 
 `spec/frontend/` contains [frontend unit tests](testing_levels.md#frontend-unit-tests), [frontend component tests](testing_levels.md#frontend-component-tests), and [frontend integration tests](testing_levels.md#frontend-integration-tests). Capybara runs [frontend feature tests](testing_levels.md#frontend-feature-tests) in `spec/features/`.
@@ -1268,36 +1268,52 @@ realistic UI interaction testing at a fraction of the cost of Capybara.
 
 ### Directory structure
 
-MSW integration tests live in `spec/frontend/msw_integration/`. The structure is:
+MSW integration tests are EE-only. All specs and the shared harness live under
+`ee/spec/frontend/msw_integration/`.
 
 ```plaintext
-spec/frontend/msw_integration/
-├── constants.js            # Shared constants (for example, base metadata)
-├── fixture_utils.js        # Helpers for building dynamic mutation responses
-├── handlers.js             # GraphQL router: composes feature handlers
-├── handlers/
-│   └── work_items.js       # Work item resolver and operation overrides
-├── server.js               # MSW server setup (imported by test_setup.js)
-├── setup_utils.js          # Router and lifecycle helpers used by test_setup.js
-├── test_helpers.js         # Test utilities: assignRouter, fullMount, waitForElement, getText
-├── test_setup.js           # Global setup: polyfills, server lifecycle, router reset
-├── polyfills.js            # TextEncoder/TextDecoder polyfills for jsdom
+ee/spec/frontend/msw_integration/
+├── constants.js          # Shared constants for the harness
+├── fixture_utils.js      # Provides loadFixturesMap, the single fixtures loader
+├── handlers.js           # Aggregates the per-feature GraphQL handlers
+├── operation_helpers.js  # Helpers for GraphQL operations
+├── polyfills.js          # Environment polyfills
+├── server.js             # MSW server setup
+├── setup_utils.js        # Setup utilities for the harness
+├── test_helpers.js       # Helper utilities exported for global use
+├── test_setup.js         # Wires helpers into the global scope
 └── work_items/
-    └── work_item_spec.js   # Integration test file
+    ├── agent_plan_spec.js # Per-feature integration spec
+    └── handlers.js        # Per-feature GraphQL handlers
 ```
 
-The shared files (`handlers.js`, `server.js`, `test_setup.js`,
-`polyfills.js`, `test_helpers.js`) are configured automatically through
-`jest.config.msw_integration.js`. Test files import fixture data
-directly from the relevant feature handler file
-(for example, `handlers/work_items.js`).
+The shared files are configured automatically through
+`jest.config.msw_integration.js`.
 
-All test helper utilities exported from `test_helpers.js` are
-auto-imported globally through `test_setup.js` using
-`Object.assign(global, testHelpers)`, so you do not need to import
-them explicitly in your test files. To add a new helper, export it
-from `test_helpers.js` and it becomes available globally in all MSW
-integration tests.
+All helper utilities exported from `test_helpers.js` are auto-imported globally
+through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new
+helper, export it from `test_helpers.js` and it becomes available globally in
+all MSW integration tests.
+
+### Why MSW integration tests are EE-only
+
+MSW mocks the network layer, including authentication headers and session
+state, which means it also implicitly mocks licensing. As a result, these tests
+cannot assert differences between CE (FOSS) and EE behavior. When you must
+verify FOSS-versus-licensed behavior, use Capybara feature specs instead.
+
+### CE path lint guard
+
+Adding any file under `spec/frontend/msw_integration/` fails ESLint with the
+message: "MSW integration tests are EE-only; use Capybara for FOSS/licensed
+behavior." This is intentional. Place the file under
+`ee/spec/frontend/msw_integration/` instead.
+
+### Community contributors
+
+MSW integration specs require EE fixture-generation infrastructure. If you
+cannot run EE locally, open an issue or ask a GitLab team member to add the
+spec.
 
 ### Handler architecture
 
@@ -1522,7 +1538,7 @@ Take a snapshot before the action, perform the action, then assert inside
 operation families:
 
 ```javascript
-import { snapshotRequests, expectGraphQLCalls } from 'jest/msw_integration/operation_helpers';
+import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/msw_integration/operation_helpers';
 
 it('updates the comment count without refetching the list', async () => {
   const baseline = snapshotRequests();
@@ -1548,7 +1564,7 @@ where creating a comment triggered an unnecessary list refetch.
 
 ### Write a test file
 
-Test files live under `spec/frontend/msw_integration/` in a subdirectory that
+Test files live under `ee/spec/frontend/msw_integration/` in a subdirectory that
 mirrors the feature area. Each file should:
 
 1. Create a router with `assignRouter` from `test_helpers.js` instead of
@@ -1679,7 +1695,7 @@ yarn jest:msw-integration
 Run a single file:
 
 ```shell
-yarn jest:msw-integration spec/frontend/msw_integration/work_items/work_item_spec.js
+yarn jest:msw-integration ee/spec/frontend/msw_integration/work_items/agent_plan_spec.js
 ```
 
 In CI, these tests run in the `jest-msw-integration` job (tier-2+ pipelines).
@@ -2043,11 +2059,12 @@ Once you decide a feature test is appropriate, there are two types at
 GitLab. Default to MSW integration tests because they are
 **significantly** faster.
 
-Use an **MSW integration test** (`spec/frontend/msw_integration/`) when:
+Use an **MSW integration test** (`ee/spec/frontend/msw_integration/`, EE-only) when:
 
 - The test covers multi-component interaction on a single page (for example, list + drawer).
 - The backend responses can be represented with auto-generated fixtures.
 - You do not need to verify database state, authorization, server-side validations, or real-time updates.
+- The behavior does not differ between FOSS and EE. MSW mocks licensing, so it cannot assert FOSS-versus-licensed differences; use Capybara for those.
 
 Use a **Capybara feature test** (`spec/features/`) when:
 
@@ -2210,7 +2227,7 @@ However, we have not done anything with this user yet because it's just a variab
 
 Now that we have a user, we should look at what else we'd need before asserting anything on a pipeline page. If you look at the route `/namespace/project/-/pipelines/:id/` we can determine we need a project and a pipeline.
 
-So we'd create a project and pipeline, and link them together. Usually in factories, the child element requires its parent as an argument. In this case, a pipeline is a child of a project. So we can create the project first, and then when we create the pipeline, we are pass the project as an argument which "binds" the pipeline to the project. A pipeline is also owned by a user, so we need the user as well. For example, this creates a project and a pipeline:
+So we'd create a project and pipeline, and link them together. Usually in factories, the child element requires its parent as an argument. In this case, a pipeline is a child of a project. So we can create the project first, and then when we create the pipeline, we pass the project as an argument which "binds" the pipeline to the project. A pipeline is also owned by a user, so we need the user as well. For example, this creates a project and a pipeline:
 
 ```ruby
   let(:user) { create(:user) }
@@ -2224,7 +2241,7 @@ In the same spirit, you could then create a job (build) by using the build facto
   create(:ci_build, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'CentOS')
 ```
 
-There are many factories that already exists, so make sure to look at other existing files to see if what you need is available.
+There are many factories that already exist, so make sure to look at other existing files to see if what you need is available.
 
 #### Navigation
 
@@ -2263,7 +2280,7 @@ You can find a more comprehensive list of actions in the [feature tests actions]
 
 #### Assertions
 
-To assert anything in a page, you can always access `page` variable, which is automatically defines and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
+To assert anything in a page, you can always access `page` variable, which is automatically defined and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
 
 ```ruby
   # Finding a button
@@ -2316,7 +2333,9 @@ You can also create a sub-block to look into, to:
 
 You can find a more comprehensive list of matchers in the [feature tests matchers](best_practices.md#matchers) documentation.
 
-Before asserting on any backend attributes, assert on a visible element first to confirm the operation has completed. Avoid using `wait_for_requests`, as race conditions can occur when the wait is called before the request is made.
+Before asserting on any backend attributes, assert on a visible element first to
+confirm the operation has completed. Do not use `wait_for_requests` or
+`wait_for_all_requests`. For the reasons and alternatives, see [Never use `wait_for_requests` or `wait_for_all_requests`](best_practices.md#never-use-wait_for_requests-or-wait_for_all_requests).
 
 ```ruby
   click_button 'Leave project'
@@ -2381,11 +2400,13 @@ end
 ```
 
 Update the `BROWSER_CONSOLE_ERROR_FILTER` constant in `spec/support/helpers/browser_console_helpers.rb` to change
-the list of console errors that should be globally ignored.
+the list of console errors that should be globally ignored. This filter is shared with the automatic check that
+runs after any failed `:js` example, so updating it changes both what `expect_page_to_have_no_console_errors`
+allows and what can raise a `BrowserConsoleError` alongside an unrelated failure.
 
 ### Debugging
 
-You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs goes though the commands quickly and leaves you no time to look around.
+You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs go through the commands quickly and leave you no time to look around.
 
 To avoid this problem, you can write `binding.pry` on the line where you want Capybara to stop execution. You are then inside the browser with standard usage. To understand why you cannot find certain elements, you can:
 
@@ -2402,7 +2423,7 @@ Running the Jest test suite, the number of workers is set to use 60% of the avai
 ### Updating ChromeDriver
 
 Starting from `Selenium` 4.6, ChromeDriver can be automatically managed by `Selenium Manager` which comes with the `selenium-webdriver` gem.
-You are no longer required to manually keeping chromedriver in sync.
+You are no longer required to manually keep chromedriver in sync.
 
 ---
 

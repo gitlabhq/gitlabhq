@@ -139,7 +139,7 @@ export default {
       default: false,
     },
   },
-  emits: ['add-child', 'show-modal'],
+  emits: ['add-child', 'select-child'],
   data() {
     return {
       error: undefined,
@@ -251,7 +251,7 @@ export default {
       return this.$apollo.queries.hierarchyWidget.loading;
     },
     showEmptyMessage() {
-      return this.children.length === 0 && !this.isLoadingChildren;
+      return this.children.length === 0 && !this.isLoadingChildren && !this.error;
     },
     pageInfo() {
       return this.hierarchyWidget?.pageInfo;
@@ -348,9 +348,10 @@ export default {
     },
     hideAddForm() {
       this.$refs.workItemTree.hideForm();
+      this.formType = null;
     },
-    showModal({ event, child }) {
-      this.$emit('show-modal', { event, modalWorkItem: child });
+    selectChild({ event, child }) {
+      this.$emit('select-child', { event, child });
     },
     toggleShowClosed() {
       this.showClosed = !this.showClosed;
@@ -383,15 +384,15 @@ export default {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
       if (!queryParam) {
-        this.$emit('show-modal', { modalWorkItem: null });
+        this.$emit('select-child', { child: null });
         return;
       }
 
       const params = JSON.parse(atob(queryParam));
       if (params.id) {
-        const modalWorkItem = this.children.find((i) => getIdFromGraphQLId(i.id) === params.id);
-        if (modalWorkItem) {
-          this.$emit('show-modal', { modalWorkItem });
+        const child = this.children.find((i) => getIdFromGraphQLId(i.id) === params.id);
+        if (child) {
+          this.$emit('select-child', { child });
         }
       }
     },
@@ -421,6 +422,7 @@ export default {
     :is-loading="isLoadingChildren && !fetchNextPageInProgress"
     is-collapsible
     persist-collapsed-state
+    :collapsed="showEmptyMessage && !formType"
     data-testid="work-item-tree"
     @click-collapsed="handleCrudCollapsed(true)"
     @click-expanded="handleCrudCollapsed(false)"
@@ -520,7 +522,7 @@ export default {
           @drag="draggedItemType = $event"
           @drop="draggedItemType = null"
           @error="error = $event"
-          @show-modal="showModal"
+          @select-child="selectChild"
         />
         <work-item-children-load-more
           v-if="hasNextPage"

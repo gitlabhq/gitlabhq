@@ -9,100 +9,100 @@ RSpec.describe QA::Page::Element do
   end
 
   context 'when pattern is an expression' do
-    subject { described_class.new(:something, /button 'Sign in'/) }
+    subject(:element) { described_class.new(:something, /button 'Sign in'/) }
 
     it 'matches when there is a match' do
-      expect(subject.matches?("button 'Sign in'")).to be true
+      expect(element.matches?("button 'Sign in'")).to be true
     end
 
     it 'does not match if pattern is not present' do
-      expect(subject.matches?("button 'Sign out'")).to be false
+      expect(element.matches?("button 'Sign out'")).to be false
     end
   end
 
   context 'when pattern is a string' do
-    subject { described_class.new(:something, 'button') }
+    subject(:element) { described_class.new(:something, 'button') }
 
     it 'matches when there is match' do
-      expect(subject.matches?('some button in the view')).to be true
+      expect(element.matches?('some button in the view')).to be true
     end
 
     it 'does not match if pattern is not present' do
-      expect(subject.matches?('text_field :name')).to be false
+      expect(element.matches?('text_field :name')).to be false
     end
   end
 
   context 'when pattern is not provided' do
-    subject { described_class.new(:some_name) }
+    subject(:element) { described_class.new(:some_name) }
 
     it 'does not match if QA selector is not there' do
-      expect(subject.matches?('some_name selector')).to be false
+      expect(element.matches?('some_name selector')).to be false
     end
 
     it 'matches when element name is specified' do
-      expect(subject.matches?('data:{qa:{selector:"some_name"}}')).to be true
+      expect(element.matches?('data:{qa:{selector:"some_name"}}')).to be true
     end
 
     it 'matches when element name is specified (single quotes)' do
-      expect(subject.matches?("data:{qa:{selector:'some_name'}}")).to be true
+      expect(element.matches?("data:{qa:{selector:'some_name'}}")).to be true
     end
   end
 
   describe 'attributes' do
     context 'element with no args' do
-      subject { described_class.new(:something) }
+      subject(:element) { described_class.new(:something) }
 
       it 'has no attribute[pattern]' do
-        expect(subject.attributes[:pattern]).to be_nil
+        expect(element.attributes[:pattern]).to be_nil
       end
 
       it 'is not required by default' do
-        expect(subject.required?).to be false
+        expect(element.required?).to be false
       end
     end
 
     context 'element with a pattern' do
-      subject { described_class.new(:something, /link_to 'something'/) }
+      subject(:element) { described_class.new(:something, /link_to 'something'/) }
 
       it 'has an attribute[pattern] of the pattern' do
-        expect(subject.attributes[:pattern]).to eq(/link_to 'something'/)
+        expect(element.attributes[:pattern]).to eq(/link_to 'something'/)
       end
 
       it 'is not required by default' do
-        expect(subject.required?).to be false
+        expect(element.required?).to be false
       end
     end
 
     context 'element with requirement; no pattern' do
-      subject { described_class.new(:something, required: true) }
+      subject(:element) { described_class.new(:something, required: true) }
 
       it 'is required' do
-        expect(subject.required?).to be true
+        expect(element.required?).to be true
       end
     end
 
     context 'element with requirement and pattern' do
-      subject { described_class.new(:something, /link_to 'something_else_entirely'/, required: true) }
+      subject(:element) { described_class.new(:something, /link_to 'something_else_entirely'/, required: true) }
 
       it 'has an attribute[pattern] of the passed pattern' do
-        expect(subject.attributes[:pattern]).to eq(/link_to 'something_else_entirely'/)
+        expect(element.attributes[:pattern]).to eq(/link_to 'something_else_entirely'/)
       end
 
       it 'is required' do
-        expect(subject.required?).to be true
+        expect(element.required?).to be true
       end
     end
   end
 
   describe 'data-testid selectors' do
-    subject { described_class.new(:my_element) }
+    subject(:element) { described_class.new(:my_element) }
 
     it 'does not translate to a deprecated qa selector' do
-      expect(subject.selector_css).not_to include(%q([data-qa-selector="my_element"]))
+      expect(element.selector_css).not_to include(%q([data-qa-selector="my_element"]))
     end
 
     it 'properly translates to a data-testid' do
-      expect(subject.selector_css).to include(%q([data-testid="my_element"]))
+      expect(element.selector_css).to include(%q([data-testid="my_element"]))
     end
 
     context 'additional selectors' do

@@ -46,7 +46,10 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
 
         shared_examples 'sets the namespace_id from the noteable' do
           before do
-            note.update_column(:namespace_id, nil)
+            # Clear only the in-memory namespace_id: persisting a nil sharding
+            # key would violate the notes check constraints, and NoteMetadata
+            # derives its namespace_id from the in-memory note anyway.
+            note.namespace_id = nil
           end
 
           it 'sets namespace_id from noteable' do
@@ -71,7 +74,7 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
         context 'when noteable belongs to a group' do
           context 'when note has a noteable' do
             let_it_be(:noteable) { create(:issue, :group_level, namespace: group) }
-            let_it_be(:note, freeze: false) { create(:note, noteable: noteable) }
+            let_it_be(:note, freeze: false) { create(:note, noteable: noteable, project: nil) }
 
             let(:expected_namespace_id) { group.id }
 
@@ -117,10 +120,9 @@ RSpec.describe Notes::NoteMetadata, feature_category: :team_planning do
     let_it_be(:note, freeze: false) { create(:note, project: project) }
 
     context 'when note has a namespace_id' do
-      before do
-        note.update_column(:namespace_id, project.project_namespace_id)
-        note.reload
-      end
+      let_it_be(:group) { create(:group) }
+      let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
+      let_it_be(:note, freeze: false) { create(:note, noteable: work_item, project: nil) }
 
       it 'inherits the sharding key from the note' do
         note_metadata = create(:note_metadata, note: note)

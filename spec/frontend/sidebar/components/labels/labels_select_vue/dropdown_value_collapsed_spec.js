@@ -34,14 +34,14 @@ describe('DropdownValueCollapsedComponent', () => {
       expect(findGlIcon().exists()).toBe(true);
     });
 
-    it('emits onValueClick event on click', async () => {
+    it('emits on-value-click event on click', async () => {
       createComponent();
 
       wrapper.trigger('click');
 
       await nextTick();
 
-      expect(wrapper.emitted('onValueClick')[0]).toBeDefined();
+      expect(wrapper.emitted('on-value-click')[0]).toBeDefined();
     });
 
     describe.each`

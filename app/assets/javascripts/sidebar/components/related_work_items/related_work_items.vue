@@ -8,14 +8,17 @@ import {
   GlPopover,
   GlTooltipDirective,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
+import createMergeRequestWorkItemRelationMutation from '~/sidebar/queries/create_merge_request_work_item_relation.mutation.graphql';
+import destroyMergeRequestWorkItemRelationMutation from '~/sidebar/queries/destroy_merge_request_work_item_relation.mutation.graphql';
 import { DETAIL_VIEW_QUERY_PARAM_NAME, VIEW_CONTEXT } from '~/work_items/constants';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { MR_WORK_ITEM_RELATIONSHIP_TYPES } from '~/sidebar/constants';
@@ -35,10 +38,15 @@ export default {
     RelatedWorkItemsAddForm,
   },
   viewContext: VIEW_CONTEXT.drawerMergeRequest,
+  i18n: {
+    fromDescriptionTooltip: s__(
+      'WorkItem|This link comes from the merge request description. Edit the description to remove it.',
+    ),
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: ['fullPath', 'id'],
   data() {
     return {
@@ -75,34 +83,49 @@ export default {
     isLoading() {
       return this.$apollo.queries.mergeRequest.loading;
     },
+    mergeRequestGid() {
+      return convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.id);
+    },
     allItems() {
-      return (this.mergeRequest?.linkedWorkItems || []).filter((i) => i.workItem);
+      const relations = this.glFeatures.explicitMrWorkItemRelations
+        ? this.mergeRequest?.workItemRelations?.nodes
+        : this.mergeRequest?.linkedWorkItems;
+      return (relations || []).filter((i) => i.workItem);
     },
     canAdminMergeRequest() {
       return this.mergeRequest?.userPermissions?.adminMergeRequest || false;
     },
-    closingWorkItems() {
-      return this.allItems
-        .filter((i) => i.linkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.closing)
-        .map((i) => i.workItem);
+    closingRelations() {
+      return this.allItems.filter((i) => i.linkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.closing);
     },
-    mentionedWorkItems() {
-      return this.allItems
-        .filter((i) => i.linkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.mentioned)
-        .map((i) => i.workItem);
+    relatedRelations() {
+      return this.allItems.filter((i) => i.linkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.related);
+    },
+    mentionedRelations() {
+      return this.allItems.filter((i) => i.linkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.mentioned);
     },
     showCollapsedState() {
       return this.allItems.length > 2;
     },
+    /**
+     * The three relationship groups render identically, so they are driven from
+     * a single list. Empty groups are dropped so the summary and the rendered
+     * sections always stay in sync.
+     */
+    relationSections() {
+      return [
+        { key: 'closing', title: __('Closing'), relations: this.closingRelations },
+        { key: 'related', title: __('Related'), relations: this.relatedRelations },
+        { key: 'mentioned', title: __('Mentioned'), relations: this.mentionedRelations },
+      ].filter((section) => section.relations.length > 0);
+    },
     collapsedSummary() {
-      const parts = [];
-      if (this.closingWorkItems.length > 0) {
-        parts.push(`${__('Closing')} ${this.closingWorkItems.length}`);
-      }
-      if (this.mentionedWorkItems.length > 0) {
-        parts.push(`${__('Mentioned')} ${this.mentionedWorkItems.length}`);
-      }
-      return parts.join(', ');
+      return this.relationSections
+        .map((section) => `${section.title} ${section.relations.length}`)
+        .join(', ');
+    },
+    canRemoveRelations() {
+      return this.canAdminMergeRequest && Boolean(this.glFeatures.explicitMrWorkItemRelations);
     },
   },
   watch: {
@@ -126,6 +149,195 @@ export default {
     window.removeEventListener('popstate', this.checkDetailPanelParams);
   },
   methods: {
+    getIdFromGraphQLId,
+    async handleLink({ workItems = [], linkType } = {}) {
+      if (!workItems.length) {
+        this.isAddModalVisible = false;
+        return;
+      }
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: createMergeRequestWorkItemRelationMutation,
+          variables: {
+            projectPath: this.fullPath,
+            iid: this.mergeRequest.iid,
+            workItemIds: workItems.map((item) => item.id),
+            linkType,
+          },
+          update: (cache, { data: result }) => this.updateLinkedWorkItemsCache(cache, result),
+        });
+
+        const errors = data?.mergeRequestCreateWorkItemRelations?.errors || [];
+        if (errors.length) {
+          createAlert({ message: errors.join(' ') });
+          return;
+        }
+
+        /**
+         * Close the modal only after a successful response so a failed link
+         * keeps the modal open and the user can retry without reopening it.
+         */
+        this.isAddModalVisible = false;
+        this.$toast.show(
+          n__('WorkItem|Linked item added', 'WorkItem|Linked items added', workItems.length),
+        );
+      } catch (error) {
+        createAlert({
+          message: __('Something went wrong while linking the work item.'),
+          error,
+          captureError: true,
+        });
+      }
+    },
+    async handleCreated() {
+      this.isAddModalVisible = false;
+
+      /**
+       * workItemCreate does not return the MergeRequestWorkItemRelation node
+       * (id, fromMrDescription) that the query is keyed on, so refetch to pick
+       * up the new relation.
+       */
+      await this.$apollo.queries.mergeRequest.refetch();
+
+      /**
+       * Show the toast only after the refetch has resolved, so a failed refetch
+       * does not show a success message.
+       */
+      this.$toast.show(s__('WorkItem|Linked item added'));
+    },
+    updateLinkedWorkItemsCache(cache, result) {
+      const created = result?.mergeRequestCreateWorkItemRelations?.workItemRelations || [];
+      if (!created.length) {
+        return;
+      }
+
+      const variables = {
+        id: this.mergeRequestGid,
+        explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
+      };
+
+      const existing = cache.readQuery({ query: mergeRequestRelatedWorkItemsQuery, variables });
+      if (!existing?.mergeRequest) {
+        return;
+      }
+
+      if (this.glFeatures.explicitMrWorkItemRelations) {
+        const existingNodes = existing.mergeRequest.workItemRelations?.nodes || [];
+        const existingIds = new Set(existingNodes.map((node) => node.workItem?.id));
+        const newNodes = created.filter(
+          (relation) => relation.workItem && !existingIds.has(relation.workItem.id),
+        );
+
+        cache.writeQuery({
+          query: mergeRequestRelatedWorkItemsQuery,
+          variables,
+          data: {
+            mergeRequest: {
+              ...existing.mergeRequest,
+              workItemRelations: {
+                __typename: 'MergeRequestWorkItemRelationConnection',
+                nodes: [...existingNodes, ...newNodes],
+              },
+            },
+          },
+        });
+        return;
+      }
+
+      const existingLinks = existing.mergeRequest.linkedWorkItems || [];
+      const existingIds = new Set(existingLinks.map((link) => link.workItem?.id));
+      const newLinks = created
+        .filter((relation) => relation.workItem && !existingIds.has(relation.workItem.id))
+        .map((relation) => ({
+          __typename: 'LinkedWorkItem',
+          linkType: relation.linkType,
+          workItem: relation.workItem,
+        }));
+
+      cache.writeQuery({
+        query: mergeRequestRelatedWorkItemsQuery,
+        variables,
+        data: {
+          mergeRequest: {
+            ...existing.mergeRequest,
+            linkedWorkItems: [...existingLinks, ...newLinks],
+          },
+        },
+      });
+    },
+    canRemoveRelation(relation) {
+      return this.canRemoveRelations && Boolean(relation.id) && !relation.fromMrDescription;
+    },
+    /**
+     * Relations generated from the description cannot be removed here, so we
+     * explain why instead of silently hiding the remove button. Only shown to
+     * users who can remove the other relations, since the tooltip would
+     * otherwise point at an action they never have.
+     */
+    showFromDescriptionIndicator(relation) {
+      return this.canRemoveRelations && Boolean(relation.fromMrDescription);
+    },
+    async handleRemove(relation) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: destroyMergeRequestWorkItemRelationMutation,
+          variables: {
+            projectPath: this.fullPath,
+            iid: this.mergeRequest.iid,
+            ids: [relation.id],
+          },
+          update: (cache, { data: result }) => this.removeRelationsFromCache(cache, result),
+        });
+
+        const errors = data?.mergeRequestDestroyWorkItemRelations?.errors || [];
+        if (errors.length) {
+          createAlert({ message: errors.join(' ') });
+          return;
+        }
+
+        this.$toast.show(s__('WorkItem|Linked item removed'));
+      } catch (error) {
+        createAlert({
+          message: s__('WorkItem|Something went wrong while removing the work item.'),
+          error,
+          captureError: true,
+        });
+      }
+    },
+    removeRelationsFromCache(cache, result) {
+      const removedIds = result?.mergeRequestDestroyWorkItemRelations?.removedRelationIds || [];
+      if (!removedIds.length) {
+        return;
+      }
+
+      const variables = {
+        id: this.mergeRequestGid,
+        explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
+      };
+
+      const existing = cache.readQuery({ query: mergeRequestRelatedWorkItemsQuery, variables });
+      if (!existing?.mergeRequest) {
+        return;
+      }
+
+      const removed = new Set(removedIds);
+      const existingNodes = existing.mergeRequest.workItemRelations?.nodes || [];
+
+      cache.writeQuery({
+        query: mergeRequestRelatedWorkItemsQuery,
+        variables,
+        data: {
+          mergeRequest: {
+            ...existing.mergeRequest,
+            workItemRelations: {
+              __typename: 'MergeRequestWorkItemRelationConnection',
+              nodes: existingNodes.filter((node) => !removed.has(node.id)),
+            },
+          },
+        },
+      });
+    },
     openDetailPanel(event, item) {
       if (event.metaKey || event.ctrlKey) {
         return;
@@ -201,39 +413,65 @@ export default {
         </gl-link>
       </div>
       <gl-collapse :visible="!showCollapsedState || !isCollapsed" class="hide-collapsed">
-        <div v-if="closingWorkItems.length > 0" class="gl-mt-2">
-          <span class="gl-text-sm gl-font-bold gl-text-subtle">{{ __('Closing') }}</span>
+        <div v-for="section in relationSections" :key="section.key" class="gl-mt-3 first:gl-mt-2">
+          <span class="gl-text-sm gl-font-bold gl-text-subtle">{{ section.title }}</span>
           <ul class="gl-m-0 gl-list-none gl-p-0">
-            <li v-for="item in closingWorkItems" :key="item.id" class="gl-mt-1">
+            <li
+              v-for="relation in section.relations"
+              :key="relation.workItem.id"
+              class="gl-group gl-mt-1 gl-flex gl-items-center gl-gap-2"
+            >
               <gl-link
-                :href="item.webPath"
-                class="has-popover gl-block gl-truncate"
+                :href="relation.workItem.webPath"
+                class="has-popover gl-block gl-min-w-0 gl-flex-1 gl-truncate"
                 data-reference-type="work_item"
                 data-placement="top"
-                :data-iid="item.iid"
-                :data-project-path="item.namespace.fullPath"
-                @click="openDetailPanel($event, item)"
+                :data-iid="relation.workItem.iid"
+                :data-project-path="relation.workItem.namespace.fullPath"
+                @click="openDetailPanel($event, relation.workItem)"
               >
-                {{ item.title }}
+                {{ relation.workItem.title }}
               </gl-link>
-            </li>
-          </ul>
-        </div>
-        <div v-if="mentionedWorkItems.length > 0" class="gl-mt-3">
-          <span class="gl-text-sm gl-font-bold gl-text-subtle">{{ __('Mentioned') }}</span>
-          <ul class="gl-m-0 gl-list-none gl-p-0">
-            <li v-for="item in mentionedWorkItems" :key="item.id" class="gl-mt-1">
-              <gl-link
-                :href="item.webPath"
-                class="has-popover gl-block gl-truncate"
-                data-reference-type="work_item"
-                data-placement="top"
-                :data-iid="item.iid"
-                :data-project-path="item.namespace.fullPath"
-                @click="openDetailPanel($event, item)"
+              <!--
+                Both trailing elements share one fixed-width, centred slot so the
+                indicator and the remove button line up in a single column, no
+                matter which one a row renders. The slot keeps its width at all
+                times so revealing it on hover never shifts the title.
+
+                We fade rather than hide so the control stays in the tab order,
+                and focus-within brings it back for keyboard users.
+              -->
+              <span
+                v-if="canRemoveRelations"
+                class="gl-flex gl-w-5 gl-shrink-0 gl-justify-center gl-opacity-0 gl-transition-opacity focus-within:gl-opacity-10 group-hover:gl-opacity-10"
+                data-testid="relation-action-slot"
               >
-                {{ item.title }}
-              </gl-link>
+                <gl-button
+                  v-if="showFromDescriptionIndicator(relation)"
+                  v-gl-tooltip
+                  :title="$options.i18n.fromDescriptionTooltip"
+                  :aria-label="$options.i18n.fromDescriptionTooltip"
+                  category="tertiary"
+                  icon="information-o"
+                  size="small"
+                  class="!gl-p-0"
+                  :data-testid="`from-description-indicator-${getIdFromGraphQLId(
+                    relation.workItem.id,
+                  )}`"
+                />
+                <gl-button
+                  v-else-if="canRemoveRelation(relation)"
+                  v-gl-tooltip
+                  :title="__('Remove')"
+                  :aria-label="s__('WorkItem|Remove work item')"
+                  category="tertiary"
+                  icon="close"
+                  size="small"
+                  class="!gl-p-0"
+                  :data-testid="`remove-work-item-${getIdFromGraphQLId(relation.workItem.id)}`"
+                  @click="handleRemove(relation)"
+                />
+              </span>
             </li>
           </ul>
         </div>
@@ -271,9 +509,13 @@ export default {
     <related-work-items-add-form
       v-if="canAdminMergeRequest"
       :full-path="fullPath"
+      :merge-request-id="mergeRequestGid"
+      :merge-request-title="mergeRequest.title"
+      :merge-request-reference="mergeRequest.reference"
       :visible="isAddModalVisible"
       @hide="isAddModalVisible = false"
-      @link="isAddModalVisible = false"
+      @link="handleLink"
+      @created="handleCreated"
     />
   </div>
 </template>

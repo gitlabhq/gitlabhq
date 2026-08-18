@@ -6,6 +6,7 @@ module Ci
       include Gitlab::Utils::StrongMemoize
 
       OBSERVABILITY_VARIABLE = 'GITLAB_OBSERVABILITY_EXPORT'
+      OBSERVABILITY_TOKEN_VARIABLE = 'GITLAB_OBSERVABILITY_TOKEN'
       VALID_VARIABLE_VALUES = %w[traces metrics logs].freeze
 
       def initialize(pipeline)
@@ -43,22 +44,41 @@ module Ci
       end
       strong_memoize_attr :observability_settings
 
-      def export_types
+      def scoped_variables
         build = pipeline.builds.first
-        return [] unless build
+        return unless build
 
-        variables = pipeline.variables_builder.scoped_variables(
+        pipeline.variables_builder.scoped_variables(
           build,
           environment: nil,
           dependencies: false
         )
+      end
+      strong_memoize_attr :scoped_variables
 
-        export_variable = variables.find { |var| var.key == OBSERVABILITY_VARIABLE }
+      def export_types
+        return [] unless scoped_variables
+
+        export_variable = scoped_variables[OBSERVABILITY_VARIABLE]
         return [] unless export_variable.present?
 
         export_variable.value.to_s.downcase.split(',').map(&:strip) & VALID_VARIABLE_VALUES
       end
       strong_memoize_attr :export_types
+
+      def observability_token
+        return unless scoped_variables
+
+        token_variable = scoped_variables[OBSERVABILITY_TOKEN_VARIABLE]
+        return unless token_variable.present?
+
+        token = token_variable.value.to_s.strip
+        return if token.blank?
+        return if token.match?(/[[:cntrl:]]/)
+
+        token
+      end
+      strong_memoize_attr :observability_token
 
       def export_data
         pipeline_data = Gitlab::DataBuilder::Pipeline.build(pipeline)
@@ -116,11 +136,13 @@ module Ci
       strong_memoize_attr :exporter
 
       def otel_endpoint_url
-        observability_settings.otel_http_endpoint
+        observability_settings.otel_https_endpoint
       end
 
       def otel_headers
-        {}
+        return {} unless observability_token
+
+        { 'Authorization' => "Bearer #{observability_token}" }
       end
     end
   end

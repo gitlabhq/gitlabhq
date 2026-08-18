@@ -30,8 +30,8 @@ module API
       helpers Helpers::SnippetsHelpers
       helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 
-      desc 'Get a snippets list for an authenticated user' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'List all snippets for current user' do
+        detail 'Lists all snippets for the currently authenticated user.'
         success Entities::Snippet
         failure [
           { code: 404, message: 'Not found' }
@@ -54,8 +54,8 @@ module API
         present paginate(find_snippets(params: filter_params)), with: Entities::Snippet, current_user: current_user
       end
 
-      desc 'List all public personal snippets current_user has access to' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'List all public snippets' do
+        detail 'Lists all public snippets accessible to the currently authenticated user.'
         success Entities::PersonalSnippet
         failure [
           { code: 404, message: 'Not found' }
@@ -82,8 +82,10 @@ module API
         )
       end
 
-      desc 'List all snippets current_user has access to' do
-        detail 'This feature was introduced in GitLab 16.3.'
+      desc 'List all snippets' do
+        detail 'Lists all snippets available to the currently authenticated user. Users with Administrator or ' \
+          'Auditor access levels can see all snippets (both personal and project). This feature was introduced in ' \
+          'GitLab 16.3.'
         success Entities::Snippet
         failure [
           { code: 404, message: 'Not found' }
@@ -107,8 +109,8 @@ module API
         present paginate(find_snippets(params: filter_params)), with: Entities::Snippet, current_user: current_user
       end
 
-      desc 'Get a single snippet' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'Retrieve a snippet' do
+        detail 'Retrieves a specified snippet.'
         success Entities::PersonalSnippet
         failure [
           { code: 404, message: 'Not found' }
@@ -127,8 +129,8 @@ module API
         present snippet, with: Entities::PersonalSnippet, current_user: current_user
       end
 
-      desc 'Create new snippet' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'Create a snippet' do
+        detail 'Creates a snippet.'
         success Entities::PersonalSnippet
         failure [
           { code: 400, message: 'Validation error' },
@@ -171,8 +173,8 @@ module API
         end
       end
 
-      desc 'Update an existing snippet' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'Update snippet' do
+        detail 'Updates a specified snippet.'
         success Entities::PersonalSnippet
         failure [
           { code: 400, message: 'Validation error' },
@@ -225,8 +227,8 @@ module API
         end
       end
 
-      desc 'Remove snippet' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'Delete snippet' do
+        detail 'Deletes a specified snippet.'
         success Entities::PersonalSnippet
         failure [
           { code: 400, message: 'Validation error' },
@@ -257,8 +259,8 @@ module API
         end
       end
 
-      desc 'Get a raw snippet' do
-        detail 'This feature was introduced in GitLab 8.15.'
+      desc 'Retrieve a raw snippet' do
+        detail 'Retrieves the raw contents of a specified snippet as plain text'
         failure [
           { code: 404, message: 'Not found' }
         ]
@@ -275,7 +277,8 @@ module API
         present content_for(snippet)
       end
 
-      desc 'Get raw snippet file contents from the repository' do
+      desc 'Retrieve snippet file content' do
+        detail 'Retrieves the raw file content from a snippet as plain text.'
         failure [
           { code: 404, message: 'Not found' }
         ]
@@ -288,14 +291,15 @@ module API
         use :raw_file_params
       end
       route_setting :authorization, permissions: :read_snippet, boundary_type: :user
-      get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+      get ":id/files/:ref/:file_path/raw", requirements: { file_path: ::API::NO_SLASH_URL_PART_REGEX } do
         snippet = find_snippet(params.delete(:id))
         not_found!('Snippet') unless snippet&.repo_exists?
 
         present file_content_for(snippet)
       end
 
-      desc 'Get the user agent details for a snippet' do
+      desc 'Retrieve user agent details for a snippet' do
+        detail 'Retrieves user agent details for a specified snippet.'
         success Entities::UserAgentDetail
         failure [
           { code: 404, message: 'Not found' }

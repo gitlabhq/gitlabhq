@@ -1,12 +1,14 @@
 <script>
 import { GlFormGroup } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ParameterFormGroup',
   components: {
     GlFormGroup,
   },
+  mixins: [glSlotsMixin],
   props: {
     inputId: {
       required: false,
@@ -18,6 +20,6 @@ export default {
 </script>
 <template>
   <gl-form-group :label-for="inputId" v-bind="$attrs">
-    <slot v-bind="{ inputId }"></slot>
+    <template v-if="glSlots().default" #default><slot v-bind="{ inputId }"></slot></template>
   </gl-form-group>
 </template>

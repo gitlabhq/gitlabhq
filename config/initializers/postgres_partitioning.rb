@@ -31,6 +31,7 @@ Gitlab::Application.config.to_prepare do
       Ci::JobDefinitionInstance,
       Ci::JobInput,
       Ci::JobMessage,
+      Ci::JobRuntimeEnvironment,
       Ci::Pipeline,
       Ci::PipelineVariable,
       Ci::RunnerManagerBuild,
@@ -93,6 +94,7 @@ Gitlab::Application.config.to_prepare do
         Ai::ActiveContext::Code::Repository,
         Ai::DuoWorkflows::Checkpoint,
         Ai::DuoWorkflows::CheckpointBlob,
+        Ai::DuoWorkflows::CheckpointHeader,
         Analytics::KnowledgeGraph::CodeIndexingTask,
         AuditEvents::AiAuditEvent
       ])
@@ -132,6 +134,7 @@ Gitlab::Application.config.to_prepare do
   # Enable partition management for the backfill table during merge_request_diff_files
   # partitioning. This way new partitions will be created as the trigger syncs new
   # rows across to this table.
+  # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
   Gitlab::Database::Partitioning.register_tables(
     [
       {
@@ -149,6 +152,7 @@ Gitlab::Application.config.to_prepare do
       }
     ]
   )
+  # rubocop:enable Database/AvoidIntRangePartitioning
 end
 
 # Sync partitions after models/tables are registered when `to_prepare` is executed

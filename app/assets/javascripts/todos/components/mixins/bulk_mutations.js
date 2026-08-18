@@ -1,10 +1,11 @@
+import { GlToastMixin } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { INSTRUMENT_TODO_BULK_CLICK } from '~/todos/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 export const bulkMutationsMixin = {
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   methods: {
     async handleBulkMutation({
       mutation,

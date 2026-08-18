@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab/heading_slug'
+
 module Banzai
   module Filter
     # Adds heading IDs and anchor links to markup output
@@ -64,7 +66,7 @@ module Banzai
 
       def generate_unique_slug(text, heading_name, used_slugs)
         # Fall back to tag name when the slug is blank
-        base_slug = generate_slug(text).presence || heading_name
+        base_slug = Gitlab::HeadingSlug.from_text(text).presence || heading_name
         base_slug = "#{filename_prefix}#{base_slug}" if filename_prefix
 
         if used_slugs.key?(base_slug)
@@ -77,24 +79,11 @@ module Banzai
       end
 
       def filename_prefix
-        path = context[:requested_path] if context[:use_filename_in_anchor]
-        return unless path
+        return unless context[:use_filename_in_anchor]
 
-        name = File.basename(path, File.extname(path))
-
-        slug = generate_slug(name)
-        return if slug.blank?
-
-        "#{slug}-"
+        Gitlab::HeadingSlug.prefix_from_file_path(context[:requested_path])
       end
       strong_memoize_attr :filename_prefix
-
-      # Mimics Comrak's anchorize(): https://github.com/kivikakk/comrak/blob/v0.52.0/src/html/anchorizer.rs
-      def generate_slug(text)
-        text.downcase
-          .gsub(/[^\p{L}\p{M}\p{N}\p{Pc} -]/, '')
-          .tr(' ', '-')
-      end
     end
   end
 end

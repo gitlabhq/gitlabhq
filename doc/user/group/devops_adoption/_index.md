@@ -12,12 +12,6 @@ title: DevOps adoption by group
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/367093) to the [Registration Features Program](../../../administration/settings/usage_statistics.md#registration-features-program) in GitLab 16.6.
-
-{{< /history >}}
-
 DevOps adoption shows you how groups in your organization adopt and use GitLab features.
 This information is available for groups and [instances](../../../administration/analytics/devops_adoption.md).
 

@@ -4,6 +4,7 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: License scanning of CycloneDX files
 ---
+
 {{< details >}}
 
 - Tier: Ultimate
@@ -13,8 +14,6 @@ title: License scanning of CycloneDX files
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab.com [with two feature flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 - The legacy license compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 - GitLab 17.5 introduced support for using a CycloneDX report artifact as a source of
   data for license information. This feature was released behind the feature flag
@@ -43,7 +42,7 @@ To enable License scanning of CycloneDX files:
 
 - Using the dependency scanning template
   - Turn on [dependency scanning](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#turn-on-dependency-scanning)
-      and ensure that its prerequisites are met.
+    and ensure that its prerequisites are met.
   - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.
 

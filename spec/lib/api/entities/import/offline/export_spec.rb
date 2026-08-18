@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Import::Offline::Export, feature_category: :importers do
-  let_it_be(:export) { build_stubbed(:offline_export) }
+  let_it_be(:export) { build_stubbed(:offline_export, :with_configuration) }
 
   subject(:entity) { described_class.new(export).as_json }
 

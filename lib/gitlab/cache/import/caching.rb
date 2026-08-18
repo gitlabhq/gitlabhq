@@ -353,6 +353,21 @@ module Gitlab
           end
         end
 
+        # Deletes multiple keys.
+        #
+        # raw_keys - Array of cache keys to delete.
+        def self.del_multiple(raw_keys)
+          return if raw_keys.empty?
+
+          with_redis do |redis|
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              redis.pipelined do |pipeline|
+                raw_keys.each { |raw_key| pipeline.del(cache_key_for(raw_key)) }
+              end
+            end
+          end
+        end
+
         def self.cache_key_for(raw_key)
           "#{Redis::Cache::CACHE_NAMESPACE}:#{raw_key}"
         end

@@ -338,7 +338,7 @@ Running workspace is restarted by the user which results in a Running actual sta
 
 ### No update for workspace from `agentk` or from user
 
-Since Rails does not information about this workspace in the response to `agentk`:
+Since Rails does not have information about this workspace in the response to `agentk`:
 
 - `include deployment_resource_version in workspace_rails_info response?` is set to `N`
 - `responded_to_agent_at` is not updated

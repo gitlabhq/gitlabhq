@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { RUNNER_TAG_BG_CLASS } from '../../constants';
 
 export default {
@@ -14,6 +15,7 @@ export default {
     GlFilteredSearchSuggestion,
     GlToken,
   },
+  mixins: [glListenersMixin],
   inject: ['tagSuggestionsPath'],
   props: {
     config: {
@@ -69,7 +71,7 @@ export default {
     :suggestions-loading="loading"
     :suggestions="tags"
     @fetch-suggestions="fetchTags"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view-token="{ viewTokenProps: { listeners = {}, inputValue, activeTokenValue } }">
       <gl-token variant="search-value" :class="$options.RUNNER_TAG_BG_CLASS" v-on="listeners">

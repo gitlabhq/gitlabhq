@@ -1,0 +1,14 @@
+---
+api_type: string
+attr: sidekiq_timezone_override
+clusterwide: true
+column: sidekiq_timezone_override
+db_type: text
+default:
+description: IANA timezone identifier (for example, `America/Chicago`) applied to
+  all Sidekiq cron jobs. When blank, no override is applied and cron jobs use the
+  Rails application timezone.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

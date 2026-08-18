@@ -14,7 +14,7 @@ Historically, job tokens have provided broad access to resources by default. Wit
 fine-grained permissions for job tokens, we can enable granular access controls while adhering to the
 principle of least privilege.
 
-This topic provide guidance on the requirements and contribution guidelines for new job token permissions.
+This topic provides guidance on the requirements and contribution guidelines for new job token permissions.
 
 ## Requirements
 

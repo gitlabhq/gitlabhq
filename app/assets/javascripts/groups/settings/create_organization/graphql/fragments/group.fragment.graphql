@@ -1,0 +1,19 @@
+fragment Group on Group {
+  id
+  path
+  fullName
+  avatarUrl
+  groupMembersCount
+  projectsCount
+  descendantGroupsCount
+  visibility
+  groupMembers(accessLevels: OWNER) {
+    nodes {
+      id
+      user {
+        id
+        name
+      }
+    }
+  }
+}

@@ -33,7 +33,11 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
         described_class::SCOPE_APP_MENTIONS_READ,
         described_class::SCOPE_CHANNELS_HISTORY,
         described_class::SCOPE_GROUPS_HISTORY,
-        described_class::SCOPE_REACTIONS_WRITE
+        described_class::SCOPE_REACTIONS_WRITE,
+        described_class::SCOPE_CHANNELS_READ,
+        described_class::SCOPE_GROUPS_READ,
+        described_class::SCOPE_IM_READ,
+        described_class::SCOPE_MPIM_READ
       )
     end
   end

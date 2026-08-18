@@ -1,6 +1,6 @@
 ---
-source_checksum: 86de137923c89ec6
-distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
+source_checksum: 47694b6e4e905438
+distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -101,6 +101,11 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 - When adding a new column to a PostgreSQL table that is synchronised to ClickHouse via Siphon, generate a corresponding ClickHouse migration to add the matching column to the `siphon_`-prefixed table.
 - Check `Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP` for the correct ClickHouse type mapping when adding Siphon columns; using the wrong type triggers a CI error.
 - Prefer `LowCardinality` where appropriate and use `Nullable` sparingly — prefer default values over `Nullable` columns in Siphon tables.
+- Always list sensitive columns (tokens, encrypted attributes) in `ignored_columns` in `db/siphon/tables/<table>.yml` — tests fail when such a column is missing from the configuration file.
+- When excluding a column from replication, add it to `ignored_columns` in `db/siphon/tables/<table>.yml` AND add the column name to the `skip_fields` list in `spec/db/clickhouse_siphon_tables_spec.rb`.
+- When renaming or swapping a replicated PostgreSQL table, update `db/siphon/tables/<table>.yml` across two releases: before the required stop set `renamed_table_name` and `original_table_name`; after the required stop set `table` to the new name and remove `renamed_table_name` (keep `original_table_name` to preserve the NATS subject).
+- DO NOT configure both a parent table and its partitions at the same time — the partitions are replicated twice and the initial snapshot runs twice for each of them.
+- Rely on the parent's configuration file for partitions named `<parent>_<suffix>`; add a dedicated configuration file only for a partition whose name does not start with the parent's name, setting `table` and `renamed_table_name` to the partition names before and after the rename, `schema` to the schema holding the partition (the default is `public`), and `original_table_name` to the parent table name so all partitions publish to the same subject.
 
 ### Testing
 

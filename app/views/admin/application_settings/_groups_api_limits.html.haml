@@ -14,6 +14,11 @@
 
       %fieldset
         .form-group
+          = f.label :group_create_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'), api_name: tag.code('POST /groups'), timeframe: 'day'), class: 'label-bold'
+          = f.number_field :group_create_limit, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
           = f.label :groups_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /groups'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :groups_api_limit, min: 0, class: 'form-control gl-form-input'
 

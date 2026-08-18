@@ -6,6 +6,7 @@ module Explore
 
     feature_category :pipeline_composition
     before_action :check_resource_access, only: :show
+    before_action :check_cells_available, only: :cells
     track_internal_event :index, name: 'unique_users_visiting_ci_catalog', conditions: :current_user
 
     def show; end
@@ -14,7 +15,15 @@ module Explore
       render 'show'
     end
 
+    def cells
+      render 'show'
+    end
+
     private
+
+    def check_cells_available
+      render_404 unless ::Feature.enabled?(:ci_catalog_bundled_components, current_user)
+    end
 
     def check_resource_access
       render_404 unless catalog_resource.present?

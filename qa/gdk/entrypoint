@@ -4,19 +4,6 @@ set -e
 
 unset BUNDLE_PATH BUNDLE_WITHOUT
 
-if [[ "${WITH_LOAD_BALANCER}" == "true" ]]; then
-  gdk config set postgresql.replica.enabled true
-  gdk config set postgresql.replica_2.enabled true
-  gdk config set load_balancing.enabled true
-  gdk reconfigure
-fi
-
-if [[ "${QA_GITALY_TRANSACTIONS_ENABLED}" == "true" ]]; then
-  gdk config set gitaly.transactions.enabled true
-  gdk config set praefect.enabled false
-  gdk reconfigure
-fi
-
 if [[ "${WITH_SECRETS_MANAGER}" == "true" ]]; then
   gdk config set openbao.enabled true
   gdk reconfigure

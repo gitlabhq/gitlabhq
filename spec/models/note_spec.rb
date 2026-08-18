@@ -437,6 +437,17 @@ RSpec.describe Note, feature_category: :team_planning do
 
           expect(note.organization_id).to eq(snippet.organization_id)
         end
+
+        it 'clears a stray project_id and namespace_id', :aggregate_failures do
+          project = create(:project)
+          note = build(:note, noteable: snippet, project: project, namespace_id: project.project_namespace_id)
+
+          note.valid?
+
+          expect(note.organization_id).to eq(snippet.organization_id)
+          expect(note.project_id).to be_nil
+          expect(note.namespace_id).to be_nil
+        end
       end
     end
 
@@ -516,6 +527,31 @@ RSpec.describe Note, feature_category: :team_planning do
           expect(note.namespace_id).to be_nil
           expect(note.project_id).to eq(merge_request.project.id)
         end
+
+        it 'repairs a pre-existing dual-populated row on save', :aggregate_failures do
+          note = create(:note, noteable: merge_request, project: merge_request.project)
+
+          note.update_columns(namespace_id: merge_request.project.project_namespace_id)
+
+          note.update!(note: 'edited')
+
+          expect(note.reload.namespace_id).to be_nil
+          expect(note.project_id).to eq(merge_request.project.id)
+        end
+      end
+
+      context 'for a project wiki page note' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:wiki_page_meta) { create(:wiki_page_meta, project: project) }
+
+        it 'does not set namespace_id and keeps project_id set', :aggregate_failures do
+          note = build(:note, noteable: wiki_page_meta, project: project)
+
+          note.valid?
+
+          expect(note.namespace_id).to be_nil
+          expect(note.project_id).to eq(project.id)
+        end
       end
 
       context 'for a personal snippet note' do
@@ -536,6 +572,35 @@ RSpec.describe Note, feature_category: :team_planning do
 
           expect { note.valid? }.not_to raise_error
         end
+      end
+
+      context 'when project_id is set but the noteable is not loaded' do
+        let_it_be(:project) { create(:project) }
+
+        it 'keeps project_id and does not treat the note as group-level', :aggregate_failures do
+          note = build(:note, noteable: nil, noteable_type: 'Issue', project: project)
+
+          note.valid?
+
+          expect(note.project_id).to eq(project.id)
+          expect(note.namespace_id).to be_nil
+        end
+      end
+    end
+
+    describe '#save_markdown' do
+      let_it_be(:merge_request) { create(:merge_request) }
+
+      it 'repairs a legacy dual-populated row during a markdown cache refresh', :aggregate_failures do
+        note = create(:note, noteable: merge_request, project: merge_request.project)
+
+        note.update_columns(namespace_id: merge_request.project.project_namespace_id)
+
+        note.reload
+
+        expect { note.refresh_markdown_cache! }.not_to raise_error
+        expect(note.reload.namespace_id).to be_nil
+        expect(note.project_id).to eq(merge_request.project.id)
       end
     end
   end

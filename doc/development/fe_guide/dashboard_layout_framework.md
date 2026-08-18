@@ -19,7 +19,7 @@ title: Dashboard layout framework
 {{< /history >}}
 
 The dashboard layout framework is part of a broader effort to standardize dashboards across the platform
-as described in [Epic #13801](https://gitlab.com/groups/gitlab-org/-/epics/13801).
+as described in [Epic #13801](https://gitlab.com/groups/gitlab-org/-/work_items/13801).
 
 For more in depth details on the dashboard layout framework, see the [architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/dashboard_layout_framework/).
 

@@ -8,10 +8,24 @@ module MergeRequests
 
       return if merge_request.merged?
 
-      merge_request.log_approval_deletion_on_merged_or_locked_mr(
-        source: 'MergeRequests::RemoveApprovalService',
-        current_user: current_user
-      )
+      # Refuse to remove an approval while the MR is locked, i.e. while the git merge
+      # is being performed inside MergeService#in_locked_state. The merge re-checks
+      # approval one last time inside that lock (see EE::MergeRequests::MergeService),
+      # so holding the approval stable for the duration of the lock prevents a
+      # merged-but-unapproved MR. Surfaced as a 404 by the API, mirroring the merged?
+      # guard above. https://gitlab.com/gitlab-org/gitlab/-/issues/604469
+      #
+      # Gated behind :prevent_approval_removal_during_merge for a safe rollout. When
+      # the flag is disabled we keep the previous behaviour: allow the removal but log
+      # it, so the merged-but-unapproved case stays observable.
+      if Feature.enabled?(:prevent_approval_removal_during_merge, merge_request.project)
+        return if merge_request.locked?
+      else
+        merge_request.log_approval_deletion_on_merged_or_locked_mr(
+          source: 'MergeRequests::RemoveApprovalService',
+          current_user: current_user
+        )
+      end
 
       # paranoid protection against running wrong deletes
       return unless merge_request.id && current_user.id

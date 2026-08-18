@@ -13,14 +13,6 @@ description: Vulnerabilities, licenses, filtering, and exporting.
 
 {{< /details >}}
 
-{{< history >}}
-
-- Dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) for groups in GitLab 16.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `group_level_dependencies`. Disabled by default.
-- Dependency list for groups [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/411257) in GitLab 16.4.
-- Dependency list for groups [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132015) in GitLab 16.5. Feature flag `group_level_dependencies` removed.
-
-{{< /history >}}
-
 Use the dependency list to review your project or group's dependencies and key details about those
 dependencies, including their known vulnerabilities. This list is a collection of dependencies in your
 project, including existing and new findings. This information is sometimes referred to as a
@@ -81,8 +73,6 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) dependency filtering for groups in GitLab 16.7 [with a feature flag](../../../administration/feature_flags/_index.md) named `group_level_dependencies_filtering`. Disabled by default.
-- Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags/_index.md). Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513321) in GitLab 17.10. Feature flag `project_component_filter` removed.
 - Dependency version filtering introduced for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags/_index.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.

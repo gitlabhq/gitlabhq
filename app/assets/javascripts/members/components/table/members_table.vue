@@ -1,5 +1,6 @@
 <script>
-import { GlTable, GlBadge, GlButton } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
+import { GlTable, GlBadge, GlButton, GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
@@ -42,6 +43,7 @@ export default {
     GlTable,
     GlBadge,
     GlButton,
+    GlLoadingIcon,
     EmptyResult,
     MemberAvatar,
     CreatedAt,
@@ -55,13 +57,18 @@ export default {
     MemberActivity,
     MembersPagination,
     RoleDetailsDrawer,
-    DisableTwoFactorModal: () =>
-      import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
-    LdapOverrideConfirmationModal: () =>
-      import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
-    UserLimitReachedAlert: () =>
-      import('ee_component/members/components/table/user_limit_reached_alert.vue'),
-    RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
+    DisableTwoFactorModal: defineAsyncComponent(
+      () => import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
+    ),
+    LdapOverrideConfirmationModal: defineAsyncComponent(
+      () => import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
+    ),
+    UserLimitReachedAlert: defineAsyncComponent(
+      () => import('ee_component/members/components/table/user_limit_reached_alert.vue'),
+    ),
+    RoleBadges: defineAsyncComponent(
+      () => import('ee_component/members/components/table/role_badges.vue'),
+    ),
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['namespace', 'currentUserId', 'canManageMembers'],
@@ -96,6 +103,9 @@ export default {
       },
       pagination(state) {
         return state[this.namespace].pagination;
+      },
+      loading(state) {
+        return state[this.namespace].loading;
       },
     }),
     filteredAndModifiedFields() {
@@ -240,8 +250,9 @@ export default {
 <template>
   <div>
     <user-limit-reached-alert v-if="onAccessRequestTab" />
+    <gl-loading-icon v-if="loading" size="md" class="gl-my-5" data-testid="members-loading-icon" />
     <gl-table
-      v-if="members.length > 0"
+      v-else-if="members.length > 0"
       v-bind="tableAttrs.table"
       class="members-table"
       data-testid="members-table"
@@ -330,7 +341,7 @@ export default {
         <span data-testid="col-actions" class="gl-sr-only">{{ label }}</span>
       </template>
     </gl-table>
-    <empty-result v-else />
+    <empty-result v-else-if="!loading" />
     <members-pagination :pagination="pagination" :tab-query-param-value="tabQueryParamValue" />
     <disable-two-factor-modal />
     <remove-group-link-modal />

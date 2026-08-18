@@ -75,15 +75,15 @@ describe('GroupRegisterRunnerApp', () => {
       });
 
       it('does not track event for platforms', () => {
-        findRegistrationInstructions().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
-        findRegistrationInstructions().vm.$emit('runnerRegistered');
+        findRegistrationInstructions().vm.$emit('select-platform', WINDOWS_PLATFORM);
+        findRegistrationInstructions().vm.$emit('runner-registered');
 
         expect(InternalEvents.trackEvent).toHaveBeenCalledTimes(0);
       });
 
       it('tracks event for google cloud platform', () => {
-        findRegistrationInstructions().vm.$emit('selectPlatform', GOOGLE_CLOUD_PLATFORM);
-        findRegistrationInstructions().vm.$emit('runnerRegistered');
+        findRegistrationInstructions().vm.$emit('select-platform', GOOGLE_CLOUD_PLATFORM);
+        findRegistrationInstructions().vm.$emit('runner-registered');
 
         expect(InternalEvents.trackEvent).toHaveBeenCalledTimes(1);
         expect(InternalEvents.trackEvent).toHaveBeenCalledWith(
@@ -127,7 +127,7 @@ describe('GroupRegisterRunnerApp', () => {
     beforeEach(async () => {
       createComponent();
 
-      findRegistrationInstructions().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
+      findRegistrationInstructions().vm.$emit('select-platform', WINDOWS_PLATFORM);
       await nextTick();
     });
 

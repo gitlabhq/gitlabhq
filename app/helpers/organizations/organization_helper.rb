@@ -19,6 +19,13 @@ module Organizations
       }.to_json
     end
 
+    def group_settings_create_organization_app_data(group)
+      {
+        group_full_path: group.full_path,
+        group_gid: group.to_global_id
+      }.to_json
+    end
+
     def organization_new_app_data
       {
         organizations_path: organizations_path

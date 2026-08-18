@@ -11,6 +11,10 @@ module API
       end
 
       namespace 'admin' do
+        params do
+          requires :database_name, type: String, desc: 'The database name'
+          requires :table_name, type: String, desc: 'The table name'
+        end
         resources 'databases/:database_name/dictionary/tables/:table_name' do
           desc 'Retrieve dictionary details' do
             success ::API::Entities::Dictionary::Table

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { reportToSentry } from '~/ci/utils';
 import { sanitize } from '~/lib/dompurify';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -24,8 +25,10 @@ export default {
     DeploymentList,
     MrWidgetContainer,
     MrWidgetPipeline,
-    MergeTrainPositionIndicator: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
+    MergeTrainPositionIndicator: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
+    ),
   },
   props: {
     mr: {

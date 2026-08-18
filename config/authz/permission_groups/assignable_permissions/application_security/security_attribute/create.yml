@@ -1,0 +1,10 @@
+---
+name: create_security_attribute
+description: Grants the ability to create security attributes
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_security_attribute
+  - create_security_category

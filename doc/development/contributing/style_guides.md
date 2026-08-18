@@ -185,7 +185,7 @@ Consider the following guidelines when offering examples:
 
 - First, offer the "Bad" example, and then the "Good" one.
 - When only one bad case and one good case is given, use the same code block.
-- When more than one bad case or one good case is offered, use separated code
+- When more than one bad case or one good case is offered, use separate code
   blocks for each. With many examples being presented, a clear separation helps
   the reader to go directly to the good part. Consider offering an explanation
   (for example, a comment, or a link to a resource) on why something is bad

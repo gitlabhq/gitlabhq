@@ -38,7 +38,7 @@ Use if your infrastructure is on Kubernetes and you're familiar with how it work
 Before you use this installation method, consider that:
 
 - Management, observability, and some other concepts are different than traditional deployments.
-- Administration and troubleshooting requires Kubernetes knowledge.
+- Administration and troubleshooting require Kubernetes knowledge.
 - It can be more expensive for smaller installations.
 - The default installation requires more resources than a single node Linux package deployment, because most services are deployed in a redundant fashion.
 
@@ -69,7 +69,7 @@ For more information, see [Docker](docker/_index.md).
 
 Installs GitLab and its components from scratch.
 
-Use if none of the previous methods are available for your platform. Can use for unsupported systems like \*BSD.
+Use if none of the previous methods are available for your platform. You can use it for unsupported systems like \*BSD.
 
 For more information, see [self-compiled installation](self_compiled/_index.md).
 
@@ -79,7 +79,7 @@ For more information, see [self-compiled installation](self_compiled/_index.md).
 
 You can use GET to deploy scaled GitLab environments following the [reference architecture](../administration/reference_architectures/_index.md) on selected major cloud providers (GCP, AWS, and Azure).
 
-This installation methods has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
+This installation method has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
 
 ## Unsupported Linux distributions and Unix-like operating systems
 

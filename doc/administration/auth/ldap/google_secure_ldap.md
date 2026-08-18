@@ -46,11 +46,9 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
 1. Download the generated certificate. This is required for GitLab to
    communicate with the Google Secure LDAP service. Save the downloaded certificates
    for later use. After downloading, select **Continue to Client Details**.
-
 1. Expand the **Service Status** section and turn the LDAP client `ON for everyone`.
    After selecting **Save**, select the **Service Status** bar again to collapse
    and return to the rest of the settings.
-
 1. Expand the **Authentication** section and choose **Generate New Credentials**.
    Copy/note these credentials for later use. After selecting **Close**, select
    the **Authentication** bar again to collapse and return to the rest of the settings.

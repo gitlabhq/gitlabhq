@@ -8,6 +8,7 @@ import {
   I18N_RESUME,
   I18N_RESUME_TOOLTIP,
 } from '~/ci/runner/constants';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 
 import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
 import RunnerPauseAction from '~/ci/runner/components/runner_pause_action.vue';
@@ -35,8 +36,11 @@ describe('RunnerPauseButton', () => {
       },
       stubs: {
         RunnerPauseAction: stubComponent(RunnerPauseAction, {
+          // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+          // render-function emulation, which misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
           render() {
-            return this.$scopedSlots.default({
+            return getSlotFunction(this)({
               loading,
               onClick,
             });
@@ -150,11 +154,11 @@ describe('RunnerPauseButton', () => {
     expect(mockOnClick).toHaveBeenCalled();
   });
 
-  it('Emits toggledPaused when done', () => {
+  it('Emits toggled-paused when done', () => {
     createComponent();
 
     findRunnerPauseAction().vm.$emit('done');
 
-    expect(wrapper.emitted('toggledPaused')).toHaveLength(1);
+    expect(wrapper.emitted('toggled-paused')).toHaveLength(1);
   });
 });

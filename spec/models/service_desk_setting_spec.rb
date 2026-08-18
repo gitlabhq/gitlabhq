@@ -9,17 +9,31 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
     subject_key: :project_id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_SERVICE_DESK_SETTINGS,
-    claiming_attributes: [:custom_email]
+    claiming_attributes: [:custom_email, :project_key_address_slug]
+
+  describe '#handle_grpc_error' do
+    context 'when error is ALREADY_EXISTS' do
+      let(:grpc_error) { GRPC::AlreadyExists.new('conflict') }
+
+      it 'assigns attribute-specific message' do
+        setting.handle_grpc_error(grpc_error)
+
+        expect(setting.errors[:base])
+          .to include('custom_email or project_key_address_slug has already been taken')
+      end
+    end
+  end
 
   describe '.cells_claims_scope' do
     let!(:with_email) { create(:service_desk_setting, custom_email: 'support@example.com') }
-    let!(:without_email) { create(:service_desk_setting, custom_email: nil) }
+    let!(:with_project_key) { create(:service_desk_setting, project_key: 'key1') }
+    let!(:without_claimable_attributes) { create(:service_desk_setting, custom_email: nil, project_key: nil) }
 
-    it 'returns only settings with a non-nil custom_email' do
+    it 'returns only settings with a non-nil custom_email or project_key_address_slug' do
       scope = described_class.cells_claims_scope
 
-      expect(scope).to include(with_email)
-      expect(scope).not_to include(without_email)
+      expect(scope).to include(with_email, with_project_key)
+      expect(scope).not_to include(without_claimable_attributes)
     end
   end
 
@@ -166,6 +180,111 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
 
         expect(settings).to be_invalid
         expect(settings.errors[:project_key].first).to eq('already in use for another service desk address.')
+      end
+    end
+  end
+
+  describe '#project_key_address_slug_conflict?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group, name: 'test') }
+    let_it_be(:project1) { create(:project, path: 'test-one', group: group) }
+    let_it_be(:project2) { create(:project, path: 'one', group: subgroup) }
+
+    before do
+      create(:service_desk_setting, project: project1, project_key: 'key')
+    end
+
+    it 'is true when another project shares the same slug and key' do
+      setting = build(:service_desk_setting, project: project2, project_key: 'key')
+
+      expect(setting.project_key_address_slug_conflict?).to be(true)
+    end
+
+    it 'is false when the key is unique for the slug' do
+      setting = build(:service_desk_setting, project: project2, project_key: 'otherkey')
+
+      expect(setting.project_key_address_slug_conflict?).to be(false)
+    end
+
+    it 'is false when no project_key is set' do
+      setting = build(:service_desk_setting, project: project2, project_key: nil)
+
+      expect(setting.project_key_address_slug_conflict?).to be(false)
+    end
+  end
+
+  describe '#refresh_project_key_address_slug!' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    it 'recomputes and persists the slug from the current full path' do
+      setting = create(:service_desk_setting, project: project, project_key: 'mykey')
+      project.update!(path: 'renamed-project')
+
+      setting.refresh_project_key_address_slug!
+
+      expect(setting.reload.project_key_address_slug).to eq("#{project.reload.full_path_slug}-mykey")
+    end
+
+    it 'does nothing when there is no project_key' do
+      setting = create(:service_desk_setting, project: project, project_key: nil)
+
+      expect(setting).not_to receive(:save!)
+
+      setting.refresh_project_key_address_slug!
+    end
+  end
+
+  describe '#set_project_key_address_slug' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    let(:setting) { build(:service_desk_setting, project: project, project_key: project_key) }
+
+    context 'when project_key is present' do
+      let(:project_key) { 'mykey' }
+
+      it 'stores the composite slug and project_key on save' do
+        setting.save!
+
+        expect(setting.project_key_address_slug).to eq("#{project.full_path_slug}-mykey")
+      end
+
+      it 'recomputes the value when the project path changes' do
+        setting.save!
+
+        project.update!(path: 'renamed-project')
+        setting.save!
+
+        expect(setting.project_key_address_slug).to eq("#{project.reload.full_path_slug}-mykey")
+      end
+
+      it 'recomputes the value on save even when the setting has no dirty attributes' do
+        setting.save!
+        setting.update_column(:project_key_address_slug, 'stale-value')
+        setting.reload
+
+        expect(setting.changed?).to be(false)
+        expect { setting.save! }
+          .to change { setting.project_key_address_slug }
+          .from('stale-value')
+          .to("#{project.full_path_slug}-mykey")
+      end
+
+      it 'clears the value when the project_key is removed' do
+        setting.save!
+
+        setting.update!(project_key: nil)
+
+        expect(setting.project_key_address_slug).to be_nil
+      end
+    end
+
+    context 'when project_key is blank' do
+      let(:project_key) { nil }
+
+      it 'leaves the value nil' do
+        setting.save!
+
+        expect(setting.project_key_address_slug).to be_nil
       end
     end
   end

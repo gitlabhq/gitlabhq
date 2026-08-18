@@ -49,7 +49,7 @@ describe('WorkItemCard', () => {
   const findDueDate = () => wrapper.findComponent(IssueDueDate);
   const findWeight = () => wrapper.findByTestId('work-item-weight');
   const findIteration = () => wrapper.findByTestId('work-item-iteration');
-  const findHealthStatus = () => wrapper.findByTestId('work-item-health-status');
+  const findHealthStatus = () => wrapper.findComponentByTestId('work-item-health-status');
   const findParent = () => wrapper.findComponent(WorkItemParentMetadata);
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
 

@@ -54,7 +54,7 @@ Prerequisites:
 - You must have at least the Developer role for the project.
 - You must [configure security scanning](../../application_security/detect/security_configuration.md)
   for the project.
-- Security scanning must be enabled on the default branch.
+- Security scanning must have run and generated a report on the latest pipeline for the source branch of a merge request.
 
 To view security scan findings:
 

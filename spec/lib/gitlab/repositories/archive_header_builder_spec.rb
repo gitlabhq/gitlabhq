@@ -40,6 +40,26 @@ RSpec.describe Gitlab::Repositories::ArchiveHeaderBuilder, feature_category: :so
 
       2.times { builder.metadata }
     end
+
+    context 'with a storage path' do
+      subject(:builder) do
+        described_class.new(repository, ref: ref, format: format, append_sha: append_sha, path: path,
+          storage_path: '/var/downloads')
+      end
+
+      it 'passes the storage path to repository.archive_metadata' do
+        expect(repository).to receive(:archive_metadata).with(
+          ref,
+          '/var/downloads',
+          format,
+          append_sha: append_sha,
+          path: path,
+          ref_type: nil
+        ).and_return(metadata)
+
+        builder.metadata
+      end
+    end
   end
 
   describe '#filename' do

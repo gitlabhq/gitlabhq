@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Zoekt
@@ -15,9 +15,9 @@ title: Zoekt
 
 {{< history >}}
 
-- GitLab 15.9で`index_code_with_zoekt`および`search_code_with_zoekt`[フラグ](../../administration/feature_flags/_index.md)とともに[ベータ](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049)されました。デフォルトでは無効になっています。
+- GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049)された[ベータ](../../policy/development_stages_support.md#beta)版として、[機能フラグ](../../administration/feature_flags/_index.md) `index_code_with_zoekt`および`search_code_with_zoekt`という名前で提供されました。デフォルトでは無効になっています。
 - GitLab 16.6で[GitLab.comとGitLabセルフマネージドで有効化されました](https://gitlab.com/gitlab-org/gitlab/-/issues/388519)。
-- GitLab 16.11でグローバルコード検索が[導入され](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077)、`zoekt_cross_namespace_search`という名前の[フラグ](../../administration/feature_flags/_index.md)が追加されました。デフォルトでは無効になっています。
+- グローバルコード検索は、GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077)され、`zoekt_cross_namespace_search`という名前の[機能フラグ](../../administration/feature_flags/_index.md)が付属しています。デフォルトでは無効になっています。
 - 機能フラグ`index_code_with_zoekt`および`search_code_with_zoekt`は、GitLab 17.1で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378)されました。
 - GitLab 17.9で機能フラグ`zoekt_rollout_worker`が[追加されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175666)。デフォルトでは無効になっています。
 - GitLab 18.6でベータ版から[制限付き提供](https://gitlab.com/groups/gitlab-org/-/epics/17918)に変わりました。
@@ -26,20 +26,34 @@ title: Zoekt
 {{< /history >}}
 
 > [!warning]
-> この機能は[限定的な利用](../../policy/development_stages_support.md#limited-availability)です。詳細については、[エピック9404](https://gitlab.com/groups/gitlab-org/-/epics/9404)を参照してください。[イシュー420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920)でフィードバックを提供してください。
+> この機能は[限定提供中](../../policy/development_stages_support.md#limited-availability)です。詳細については、[エピック9404](https://gitlab.com/groups/gitlab-org/-/epics/9404)を参照してください。[イシュー420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920)でフィードバックを提供してください。
 
 Zoektは、コード検索に特化して設計されたオープンソースの検索エンジンです。
 
 このインテグレーションを使用すると、GitLabでコードを検索するために、[完全一致コードの検索](../../user/search/exact_code_search.md)を、[高度な検索](../../user/search/advanced_search.md)の代わりに使用できます。グループまたはリポジトリ内でコードを検索するには、完全一致と正規表現モードを使用できます。
 
 > [!note]
-> Zoektはコード検索のみを処理し、[ElasticsearchまたはOpenSearch](../advanced_search/elasticsearch.md)を置き換えるものではありません。コメント、コミット、エピック、イシュー、マージリクエスト、マイルストーン、プロジェクト、ユーザー、Wikiを含む他のすべての検索スコープでは、ElasticsearchまたはOpenSearchが依然として必要です。
+> Zoektはコード検索のみを扱い、[ElasticsearchやOpenSearch](../advanced_search/elasticsearch.md)を置き換えるものではありません。コメント、コミット、エピック、イシュー、マージリクエスト、マイルストーン、プロジェクト、ユーザー、Wikiを含む他のすべての検索スコープでは、ElasticsearchまたはOpenSearchが依然として必要です。
+
+## バージョンの互換性 {#version-compatibility}
+
+各GitLabバージョンには、特定の`gitlab-zoekt-indexer`と`gitlab-zoekt`チャートバージョンが付属しています。
+
+| GitLabのバージョン | `gitlab-zoekt-indexer`のバージョン | `gitlab-zoekt`チャートバージョン |
+|----------------|--------------------------------|------------------------------|
+| 19.1           | 1.16.1                         | 4.1.0                        |
+| 19.0           | 1.14.2                         | 4.0.0                        |
+| 18.11          | 1.13.1                         | 3.11.0                       |
+| 18.10          | 1.11.2                         | 3.10.0                       |
+| 18.9           | 1.8.2                          | 3.9.0                        |
+| 18.8           | 1.8.0                          | 3.8.0                        |
+| 18.6および18.7  | 1.7.6                          | 3.7.1                        |
 
 ## Zoektをインストールする {#install-zoekt}
 
 前提条件: 
 
-- インスタンスの管理者であること。
+- 管理者アクセス権。
 
 GitLabで[完全一致コードの検索](#enable-exact-code-search)を有効にするには、少なくとも1つのZoektノードがインスタンスに接続されている必要があります。Zoektでは次のインストール方法がサポートされています:
 
@@ -57,14 +71,14 @@ GitLabで[完全一致コードの検索](#enable-exact-code-search)を有効に
 
 前提条件: 
 
-- インスタンスの管理者であること。
-- Zoektが[インストールされている](#install-zoekt)こと。
+- 管理者アクセス権。
+- Zoektが[インストール](#install-zoekt)されている。
 
 GitLab UIから[完全一致コードの検索](../../user/search/exact_code_search.md)を有効にするには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **インデックス作成を有効にする**と**検索を有効にする**のチェックボックスを選択します。
 1. **変更を保存**を選択します。
 
@@ -78,14 +92,14 @@ GitLab UIから[完全一致コードの検索](../../user/search/exact_code_sea
 
 前提条件: 
 
-- インスタンスの管理者であること。
-- Zoektが[インストールされている](#install-zoekt)こと。
+- 管理者アクセス権。
+- Zoektが[インストール](#install-zoekt)されている。
 
 [完全一致コードの検索](../../user/search/exact_code_search.md)をRakeタスクで管理できます。
 
 #### インデックス作成と検索を有効にする {#enable-indexing-and-search}
 
-インデックス作成と検索を有効にするには、このタスクを実行します:
+インデックス作成と検索を有効にするには、このRakeタスクを実行します:
 
 ```shell
 gitlab-rake gitlab:zoekt:index
@@ -95,7 +109,7 @@ gitlab-rake gitlab:zoekt:index
 
 #### インデックス作成と検索を無効にする {#disable-indexing-and-search}
 
-インデックス作成と検索を無効にするには、このタスクを実行します:
+インデックス作成と検索を無効にするには、このRakeタスクを実行します:
 
 ```shell
 gitlab-rake gitlab:zoekt:disable
@@ -105,13 +119,13 @@ gitlab-rake gitlab:zoekt:disable
 
 #### インデックス作成を一時停止および再開する {#pause-and-resume-indexing}
 
-インデックス作成を一時停止するには（例えば、メンテナンス中）、このタスクを実行します:
+インデックス作成を一時停止する（例: メンテナンス中）には、このRakeタスクを実行します:
 
 ```shell
 gitlab-rake gitlab:zoekt:pause_indexing
 ```
 
-インデックス作成を再開するには、このタスクを実行します:
+インデックス作成を再開するには、このRakeタスクを実行します:
 
 ```shell
 gitlab-rake gitlab:zoekt:resume_indexing
@@ -119,19 +133,41 @@ gitlab-rake gitlab:zoekt:resume_indexing
 
 #### ストレージ要件を推定する {#estimate-storage-requirements}
 
-Zoektノードに必要なストレージを推定するには、このタスクを実行します:
+Zoektノードに必要なストレージを見積もるには、このRakeタスクを実行します:
 
 ```shell
 sudo gitlab-rake gitlab:zoekt:estimate_storage
 ```
 
-詳細については、[ストレージの見積もり](#estimate-storage)を参照してください。
+詳細については、[ストレージ要件の見積もり](#estimate-requirements)を参照してください。
+
+#### 失敗したリポジトリのインデックス作成を再試行する {#retry-indexing-of-failed-repositories}
+
+{{< history >}}
+
+- GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239608)されました。
+
+{{< /history >}}
+
+すべての`failed`状態のZoektリポジトリレコードのインデックス作成を再試行するには、このRakeタスクを実行します:
+
+```shell
+gitlab-rake gitlab:zoekt:reindex_failed_projects
+```
+
+このタスクは、すべての`failed` `zoekt_repository`レコードを`pending`状態に移動し、`retries_left`を`1`に設定します。これにより、次のインデックス作成サイクルでそれらが処理されます。
+
+特定のプロジェクトのみを再試行するには、プロジェクトIDをコンマ区切りで渡します:
+
+```shell
+gitlab-rake "gitlab:zoekt:reindex_failed_projects[1,2,3]"
+```
 
 ## インデックス作成状態を確認する {#check-indexing-status}
 
 {{< history >}}
 
-- Zoektノードのストレージがクリティカルなウォーターマークを超えた場合のインデックス作成の停止は、GitLab 17.7で[導入され](https://gitlab.com/gitlab-org/gitlab/-/issues/504945)、`zoekt_critical_watermark_stop_indexing`という名前の[フラグ](../../administration/feature_flags/_index.md)が追加されました。デフォルトでは無効になっています。
+- Zoektノードのストレージがクリティカルなウォーターマークを超えた場合のインデックス作成停止は、GitLab 17.7で`zoekt_critical_watermark_stop_indexing`という名前の[機能フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/504945)されました。デフォルトでは無効になっています。
 - GitLab 18.0 [でGitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505334)で有効になりました。
 - GitLab 18.1で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/505334)になりました。機能フラグ`zoekt_critical_watermark_stop_indexing`は削除されました。
 
@@ -139,7 +175,7 @@ sudo gitlab-rake gitlab:zoekt:estimate_storage
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 インデックス作成のパフォーマンスは、ZoektインデクサーノードのCPUとメモリ制限に依存します。インデックス作成状態を確認するには、次の手順に従います。
 
@@ -153,7 +189,7 @@ sudo gitlab-rake gitlab:zoekt:estimate_storage
 gitlab-rake gitlab:zoekt:info
 ```
 
-データを10秒ごとに自動的に更新するには、代わりにこのタスクを実行します:
+データを10秒ごとに自動的に更新するには、代わりにこのRakeタスクを実行します:
 
 ```shell
 gitlab-rake "gitlab:zoekt:info[10]"
@@ -181,29 +217,31 @@ Search::Zoekt::Task.group(:state).count
 
 ```console
 Exact Code Search
-GitLab version:                                      18.9.0
-Enable indexing:                                     yes
-Enable searching:                                    yes
-Pause indexing:                                      no
-Index root namespaces automatically:                 yes
-Cache search results for five minutes:               yes
-Indexing CPU to tasks multiplier:                    1.0
-Probability of random force reindexing (percentage): 0.25
-Number of parallel processes per indexing task:      1
-Number of namespaces per indexing rollout:           32
-Offline nodes automatically deleted after:           20m
-Indexing timeout per project:                        30m
-Maximum number of files per project to be indexed:   500000
-Maximum file size for indexing:                      1MB
-Maximum trigrams per file:                           20000
-Retry interval for failed namespaces:                1d
-Number of replicas per namespace:                    1
+GitLab version:                                                 19.1.0
+Enable indexing:                                                yes
+Enable searching:                                               yes
+Pause indexing:                                                 no
+Index root namespaces automatically:                            yes
+Cache search results for five minutes:                          yes
+Indexing CPU to tasks multiplier:                               1.0
+Probability of random force reindexing (percentage):            0.25
+Number of parallel processes per indexing task:                 1
+Number of namespaces per indexing rollout:                      32
+Offline nodes automatically deleted after:                      20m
+Indexing timeout per project:                                   30m
+Maximum number of files per project to be indexed:              500000
+Maximum file size for indexing:                                 1MB
+Maximum trigrams per file:                                      20000
+Retry interval for failed namespaces:                           1d
+Number of replicas per namespace:                               1
+Maximum number of projects for legacy search:                   1000
+Maximum number of process restarts within 15 minutes for nodes: 3
 
 Nodes
 # Number of Zoekt nodes and their status
 Node count:                   2 (online: 2, offline: 0)
-Last seen at:                 2025-11-21 22:58:09 UTC (less than a minute ago)
-Max schema_version:           2531
+Last seen at:                 2026-04-16 22:58:09 UTC (less than a minute ago)
+Max schema_version:           2601
 Storage reserved / usable:    71.1 MiB / 124 GiB (0.06%)
 Storage indexed / reserved:   42.7 MiB / 71.1 MiB (60.0%)
 Storage used / total:         797 GiB / 921 GiB (86.54%)
@@ -225,27 +263,30 @@ Repositories count:               10
 Tasks count:                      10
   - done: 10
 Tasks pending/processing by type: (none)
-Storage buffer factor:            0.831× [static fallback (FF disabled)]
+Storage buffer factor:            0.831× [dynamic (observed)]
+
+Feature Flags (Non-Default Values)
+Feature flags:  none
 
 Feature Flags (Default Values)
-- zoekt_too_many_replicas_event: disabled
+Feature flags:  none
 
 Node Details
 Node 1 - test-zoekt-hostname-1:
   Status:                       Online
-  Last seen at:                 2025-11-21 22:58:09 UTC (less than a minute ago)
+  Last seen at:                 2026-04-16 22:58:09 UTC (less than a minute ago)
   Disk utilization:             86.54%
   Unclaimed storage:            62 GiB
   # Zoekt build version on the node. Must match GitLab version.
-  Zoekt version:                2025.11.20-v1.7.6-28-gb9a0fd8
-  Schema version:               2531
+  Zoekt version:                2026.04.15-v1.4.0-1-g89a8871
+  Schema version:               2601
 Node 2 - test-zoekt-hostname-2:
   Status:                       Online
-  Last seen at:                 2025-11-21 22:58:09 UTC (less than a minute ago)
+  Last seen at:                 2026-04-16 22:58:09 UTC (less than a minute ago)
   Disk utilization:             86.54%
   Unclaimed storage:            62 GiB
-  Zoekt version:                2025.11.20-v1.7.6-28-gb9a0fd8
-  Schema version:               2531
+  Zoekt version:                2026.04.15-v1.4.0-1-g89a8871
+  Schema version:               2601
 ```
 
 ## ヘルスチェックを実行する {#run-a-health-check}
@@ -258,7 +299,7 @@ Node 2 - test-zoekt-hostname-2:
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 Zoektインフラストラクチャのステータスを理解するためにヘルスチェックを実行します。これには次のものが含まれます:
 
@@ -294,7 +335,7 @@ gitlab-rake "gitlab:zoekt:health[10]"
 - 組み合わせたヘルス評価を含む全体的なステータス: `HEALTHY`、`DEGRADED`、または`UNHEALTHY`
 - イシューを解決するための推奨事項
 
-## 強制再インデックス作成を実行する {#perform-force-reindexing}
+## プロジェクトの再インデックス作成を強制する {#force-reindex-projects}
 
 {{< history >}}
 
@@ -304,29 +345,29 @@ gitlab-rake "gitlab:zoekt:health[10]"
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
-プロジェクトの範囲で強制再インデックス作成を実行します。
-
-このRakeタスクを実行します:
+複数のプロジェクト範囲を強制的にインデックス再作成するには、このRakeタスクを実行します:
 
 ```shell
 gitlab-rake gitlab:zoekt:reindex_projects ID_FROM=10 ID_TO=20
 ```
 
-`ID_FROM`と`ID_TO`の環境変数を使用すると、限られた数のプロジェクトを強制的に再インデックス作成できます。1つのプロジェクトだけを再インデックス作成するには、`ID_FROM`と`ID_TO`を再インデックス作成するプロジェクトIDと同じ値にしてください。すべてのプロジェクトを再インデックス作成するには、環境変数を省略します。
+`ID_FROM`と`ID_TO`はプロジェクトIDの範囲を表します。
+
+1つのプロジェクトのみを強制的に再インデックス作成するには、`ID_FROM`と`ID_TO`の両方に同じ値を使用します。すべてのプロジェクトを強制的にインデックス再作成するには、これらの環境変数を使用しないでください。
 
 ## インデックス作成の一時停止 {#pause-indexing}
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 [完全一致コードの検索](../../user/search/exact_code_search.md)のインデックス作成を一時停止するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **インデックス作成を一時停止**のチェックボックスを選択します。
 1. **変更を保存**を選択します。
 
@@ -342,13 +383,13 @@ gitlab-rake gitlab:zoekt:reindex_projects ID_FROM=10 ID_TO=20
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 既存および新規のルートネームスペースの両方を自動的にインデックス作成できます。すべてのルートネームスペースを自動的にインデックス作成するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **ルートネームスペースを自動的にインデックス化する**のチェックボックスを選択します。
 1. **変更を保存**を選択します。
 
@@ -357,12 +398,12 @@ gitlab-rake gitlab:zoekt:reindex_projects ID_FROM=10 ID_TO=20
 - すべてのグループとサブグループ
 - 新しいルートネームスペース
 
-プロジェクトがインデックス作成されると、GitLabはリポジトリの変更が検出された場合にのみ増分インデックス作成を作成します。
+プロジェクトのインデックス作成後は、リポジトリの変更が検出された場合にのみ、GitLabは増分インデックス作成を作成します。
 
 この設定を無効にすると:
 
-- 既存のルートネームスペースはインデックス作成されたままです。
-- 新しいルートネームスペースはインデックス作成されなくなります。
+- 既存のルートネームスペースのインデックスは維持されます。
+- 新しいルートネームスペースのインデックスは作成されなくなります。
 
 ## 検索結果をキャッシュする {#cache-search-results}
 
@@ -374,15 +415,15 @@ gitlab-rake gitlab:zoekt:reindex_projects ID_FROM=10 ID_TO=20
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 パフォーマンス向上のため、検索結果をキャッシュできます。この機能はデフォルトで有効になっており、結果を5分間キャッシュします。
 
 検索結果をキャッシュするには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **Cache search results for five minutes**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
@@ -396,7 +437,7 @@ gitlab-rake gitlab:zoekt:reindex_projects ID_FROM=10 ID_TO=20
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 ZoektノードのCPU容量に対して、同時インデックス作成タスクの数を設定できます。
 
@@ -405,8 +446,8 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 ノードのパフォーマンスとワークロードに基づいて、この値を調整できます。同時インデックス作成タスクの数を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **CPUをタスク乗算にインデックスする**テキストボックスに値を入力します。
 
    例えば、Zoektノードに`4`個のCPUコアがあり、乗算が`1.5`の場合、そのノードの同時タスク数は`6`になります。
@@ -422,18 +463,18 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
-プロジェクトが段階的にインデックス作成されるのではなく、強制的に再インデックス作成される確率を定義できます。デフォルト値は`0.25`（0.25%）です。
+プロジェクトについて、増分インデックスを作成するのではなく強制的にインデックスを再作成する確率を定義できます。デフォルト値は`0.25`（0.25%）です。
 
 強制再インデックス作成は、インデックスを定期的にゼロから再構築することで、メモリマップ（mmap）ハンドラーが枯渇するのを防ぐのに役立ちます。割合が高いほど、特に非常に大規模なリポジトリでは、インデックス作成の負荷が増加します。
 
 ランダムな強制再インデックス作成の確率を定義するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
-1. **ランダムな強制再インデックスの確率(パーセンテージ)** テキストボックスに、`0`から`100`までの数値を入力します。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
+1. **ランダム強制再インデックスの確率(パーセンテージ)** テキストボックスに、`0`から`100`までの数値を入力します。
 1. **変更を保存**を選択します。
 
 ## インデックス作成タスクあたりの並列プロセス数を設定する {#set-the-number-of-parallel-processes-per-indexing-task}
@@ -446,7 +487,7 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 インデックス作成タスクあたりの並列プロセス数を設定できます。
 
@@ -455,8 +496,8 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 ノードのパフォーマンスとワークロードに基づいて、この値を調整できます。インデックス作成タスクあたりの並列プロセス数を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **インデックスタスクごとの並列プロセス数**テキストボックスに値を入力します。
 1. **変更を保存**を選択します。
 
@@ -470,15 +511,15 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 最初のインデックス作成のために、`RolloutWorker`ジョブあたりのネームスペース数を設定できます。デフォルト値は`32`です。ノードのパフォーマンスとワークロードに基づいて、この値を調整できます。
 
 インデックス作成ロールアウトあたりのネームスペース数を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **インデックスロールアウトごとのネームスペースの数**テキストボックスに、ゼロより大きい数値を入力します。
 1. **変更を保存**を選択します。
 
@@ -493,15 +534,15 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 オフラインのZoektノードは、関連するインデックス、リポジトリ、およびタスクとともに、特定の期間後に自動的に削除できます。デフォルト値は`12h`（12時間）です。
 
 この設定を使用して、Zoektインフラストラクチャを管理し、孤立したリソースを防ぎます。オフラインノードが自動的に削除されるタイミングを定義するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **オフラインノードを削除するまでの時間**テキストボックスに値を入力します（例: `30m`（30分）、`2h`（2時間）、または`1d`（1日））。自動削除を無効にするには、`0`に設定します。
 1. **変更を保存**を選択します。
 
@@ -515,15 +556,15 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 プロジェクトのインデックス作成タイムアウトを定義できます。デフォルト値は`30m`（30分）です。
 
 プロジェクトのインデックス作成タイムアウトを定義するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **プロジェクトごとのインデックス作成タイムアウト**テキストボックスに値を入力します（例: `30m`（30分）、`2h`（2時間）、または`1d`（1日））。
 1. **変更を保存**を選択します。
 
@@ -537,17 +578,15 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
-プロジェクトでインデックス作成できるファイルの最大数を設定できます。デフォルトブランチでこの制限を超えるファイルを持つプロジェクトは、インデックス作成されません。
-
-デフォルト値は`500,000`です。
+プロジェクトでインデックス作成できるファイルの最大数を設定できます。デフォルトブランチのファイル数がこの制限を超えるプロジェクトでは、インデックスは作成されません。デフォルト値は`500,000`です。
 
 ノードのパフォーマンスとワークロードに基づいて、この値を調整できます。プロジェクトでインデックス作成するファイルの最大数を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **プロジェクトごとにインデックス化されるファイルの最大数**テキストボックスに、ゼロより大きい数値を入力します。
 1. **変更を保存**を選択します。
 
@@ -561,15 +600,17 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 インデックス作成するファイルの最大サイズを設定できます。デフォルト値は`1MB`です。
 
-指定されたサイズを超えるファイルでは、ファイル名のみがインデックス作成されます。これらのファイルはファイル名でのみ検索できます。インデックス作成の最大ファイルサイズを設定するには:
+指定されたサイズを超えるファイルでは、ファイル名のみがインデックスに登録されます。これらのファイルはファイル名でのみ検索できます。
+
+インデックス作成の最大ファイルサイズを設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **インデックス化のための最大ファイルサイズ**テキストボックスに値を入力します（例: `512B`、`50KB`、`2MB`、または`1GB`）。値は小文字でも指定できます。
 1. **変更を保存**を選択します。
 
@@ -583,17 +624,17 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 インデックス作成するファイルの最大トライグラム数を設定できます。デフォルト値は`20,000`です。
 
-トライグラムは、Zoektが効率的なコード検索に使用する3文字のシーケンスです。このトライグラム制限を超えるファイルの場合、ファイル名のみがインデックス作成されます。制限が高いほど、インデックス作成と検索のパフォーマンスの両方に影響します。
+トライグラムは、Zoektが効率的なコード検索に使用する3文字のシーケンスです。このトライグラム制限を超えるファイルでは、ファイル名のみがインデックスに登録されます。制限が高いほど、インデックス作成と検索のパフォーマンスの両方に影響します。
 
 インデックス作成の最大トライグラム数を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **ファイルあたりの最大トライグラム数**テキストボックスに、ゼロより大きい数値を入力します。
 1. **変更を保存**を選択します。
 
@@ -607,15 +648,15 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 以前に失敗したネームスペースの再試行間隔を定義できます。デフォルト値は`1d`（1日）です。`0`の値は、失敗したネームスペースは決して再試行されないことを意味します。
 
 失敗したネームスペースの再試行間隔を定義するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **失敗したネームスペースを再試行する間隔**テキストボックスに値を入力します（例: `30m`（30分）、`2h`（2時間）、または`1d`（1日））。
 1. **変更を保存**を選択します。
 
@@ -629,7 +670,7 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 
 前提条件: 
 
-- インスタンスへの管理者アクセス権が必要です。
+- 管理者アクセス権。
 
 ネームスペースあたりのレプリカ数を設定できます。デフォルト値は`1`（ネームスペースあたり1レプリカ）です。
 
@@ -638,22 +679,67 @@ ZoektノードのCPU容量に対して、同時インデックス作成タスク
 ネームスペースあたりのレプリカ数を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **設定** > **検索**を選択します。
-1. 展開する**完全一致コードの検索**。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
 1. **ネームスペースごとのレプリカの数**テキストボックスに、ゼロより大きい数値を入力します。
 1. **変更を保存**を選択します。
 
-## Zoektを別のサーバーで実行する {#run-zoekt-on-a-separate-server}
+## レガシー検索の最大プロジェクト数を設定する {#set-the-maximum-number-of-projects-for-legacy-search}
 
 {{< history >}}
 
-- Zoektの認証は、GitLab 16.3で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/389749)。
+- GitLab 18.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224337)されました。
 
 {{< /history >}}
 
 前提条件: 
 
-- インスタンスの管理者であること。
+- 管理者アクセス権。
+
+トラバーサルIDインデックス作成がまだ進行中の場合に、グループで検索する最大プロジェクト数を設定できます。デフォルト値は`1,000`です。
+
+トラバーサルIDインデックス作成が完了する前にグループ内で検索すると、GitLabは、この制限までの最初のプロジェクト（プロジェクトID別）のみを検索し、一部のプロジェクトが結果に含まれていないという警告を表示します。トラバーサルIDインデックス作成が完了した後、GitLabはグループ内のすべてのプロジェクトを検索します。
+
+レガシー検索の最大プロジェクト数を設定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
+1. **レガシー検索の最大プロジェクト数**テキストボックスに、ゼロより大きい数値を入力します。
+1. **変更を保存**を選択します。
+
+## ノードのプロセス再起動の最大回数を設定する {#set-the-maximum-number-of-process-restarts-for-nodes}
+
+{{< history >}}
+
+- GitLab 19.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/593556)されました。
+- Zoekt 1.16.0で[導入](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/merge_requests/911)されました。
+
+{{< /history >}}
+
+前提条件: 
+
+- 管理者アクセス権。
+
+ノードが検索ルーティングから除外される前に、15分以内にプロセスを再起動できる最大回数を設定できます。デフォルト値は`2`です。
+
+GitLabはこの設定を使用して、クラッシュループ状態のインデクサーまたはウェブサーバープロセスを検出します。15分以内にノードでプロセス再起動が規定数を超えた場合、再起動回数が範囲内に戻るまで、そのノードは検索から除外されます。`0`の値は、そのノードが1回の再起動後に除外されることを意味します。
+
+すべてのオンラインノードが除外された場合、GitLabは、検索停止を回避するために、オンラインノードの完全なセットにフォールバックします。
+
+ノードのプロセス再起動の最大回数を設定するには:
+
+1. 右上隅で、**管理者**を選択します。
+1. 左サイドバーで、**設定** > **検索**を選択します。
+1. **完全一致コードの検索**を展開する。
+1. **15分以内にノードでプロセスを再起動できる最大回数**テキストボックスに、ゼロ以上の数値を入力します。
+1. **変更を保存**を選択します。
+
+## Zoektを別のサーバーで実行する {#run-zoekt-on-a-separate-server}
+
+前提条件: 
+
+- 管理者アクセス権。
 
 GitLabとは異なるサーバーでZoektを実行するには:
 
@@ -681,7 +767,7 @@ GitLabとは異なるサーバーでZoektを実行するには:
 
 ウェブサーバーは、ディスクから仮想メモリにインデックスシャードをメモリマップします。オペレーティングシステムは、検索が処理される際に、シャードデータを物理メモリにページインおよびページアウトします。常駐メモリ使用量は、アクティブなワーキングセットとともに増加します。より大きなインデックスまたはより高いクエリボリュームを持つノードは、ページスラッシングやメモリ不足状態を回避するためにより多くのウェブサーバーメモリを必要とします。
 
-インデクサーは、インデックスを構築または再構築する際に、Gitオブジェクトデータをメモリ内で処理します。大規模なリポジトリをインデックス作成しているときや、複数のタスクが並行して実行されているときに、メモリ使用量が急増します。[インデックス作成タスクあたりの並列プロセス数](#set-the-number-of-parallel-processes-per-indexing-task)と[インデックス作成CPU-タスク乗算](#set-concurrent-indexing-tasks)を調整することで、インデクサーのピークメモリを制御できます。
+インデクサーがインデックスをビルドするか再ビルドする際、インデクサーはGitオブジェクトデータをメモリ内で処理します。大規模なリポジトリのインデックスを作成する場合や、複数のタスクを並行実行する場合、メモリ使用量が急増します。インデクサーのピークメモリは、[インデックス作成タスクあたりの並列プロセス数](#set-the-number-of-parallel-processes-per-indexing-task)と[同時インデックス作成タスク数](#set-concurrent-indexing-tasks)を調整することで制御できます。
 
 VMおよびベアメタルデプロイでは、ウェブサーバーとインデクサーが同じシステムメモリを共有します。
 
@@ -733,9 +819,9 @@ VMおよびベアメタルデプロイの場合:
 
 Zoektのストレージ要件は、Gitリポジトリのサイズとレプリカ設定によって異なります。ZoektはGitオブジェクトデータ（ソースコードとコミット履歴）のみをインデックスします。LFSオブジェクト、Wiki、アーティファクト、パッケージ、またはその他のストレージコンポーネントはインデックスしません。
 
-#### ストレージを見積もる {#estimate-storage}
+#### 要件の見積もり {#estimate-requirements}
 
-ストレージ要件を見積もるには、Rakeタスクを実行します:
+ストレージ要件を見積もるには、このRakeタスクを実行します:
 
 ```shell
 sudo gitlab-rake gitlab:zoekt:estimate_storage
@@ -743,19 +829,19 @@ sudo gitlab-rake gitlab:zoekt:estimate_storage
 
 このタスクはGitLabデータベースをクエリし、現在のリポジトリサイズとレプリカ設定に基づいたストレージ見積もりを出力します。
 
-手動で計算したい場合は、以下を使用します:
+ストレージ要件を手動で計算するには、代わりに以下の式を使用します:
 
 ```plaintext
 storage_per_replica = sum(repository_git_size) × buffer_factor
 total_cluster_storage = storage_per_replica × number_of_replicas
 ```
 
-ここで`repository_git_size`は、各リポジトリのGitオブジェクトサイズです。この値には、LFSオブジェクト、Wiki、アーティファクト、またはパッケージは含まれません。また`buffer_factor`は、最初のインデックス作成中のヘッドルームです。これは`Search::Zoekt::Index.global_buffer_factor`として計算できますが、デフォルトではほとんど`3`です。
+`repository_git_size`は、各リポジトリのGitオブジェクトサイズです。この値には、LFSオブジェクト、Wiki、アーティファクト、パッケージは含まれません。`buffer_factor`は、初期インデックス作成中のバッファです。この値は`Search::Zoekt::Index.global_buffer_factor`として計算でき、ほとんどの場合、`3`がデフォルトです。
 
 `repository_git_size`を表示するには:
 
 1. 右上隅で、**管理者**を選択します。
-1. **概要** > **プロジェクト**を選択します。
+1. 左サイドバーで、**概要** > **プロジェクト**を選択します。
 1. **リポジトリ**列で、Gitオブジェクトサイズを表示します。
 
 最初のプロビジョニングターゲットでは、合計`repository_git_size`の3倍にレプリカ数を乗じた値から開始します。例: 
@@ -763,17 +849,17 @@ total_cluster_storage = storage_per_replica × number_of_replicas
 - 100 GBのGitリポジトリデータと1つのレプリカ: 300 GBのZoektストレージ。
 - 100 GBのGitリポジトリデータと2つのレプリカ: 600 GBのZoektストレージ。
 
-GitLabは、インデックス作成中にZoektがヘッドルームを持つことを保証するために、このバッファを内部的に予約します。最初のインデックス作成が完了すると、実際のディスク使用量は、観察されたGitLab.comのデータに基づいて、`repository_git_size`の半分に近くなります。必要な場合にのみ、垂直または水平にスケールする。
+GitLabは、インデックス作成中にZoektがヘッドルームを持つことを保証するために、このバッファを内部的に予約します。初期インデックス作成が完了すると、GitLab.comで観測されたデータに基づき、実際のディスク使用量は通常、`repository_git_size`の半分程度になります。必要な場合にのみ、垂直または水平にスケールする。
 
-実行することで、現在使用中のバッファ係数を表示できます:
+現在のバッファ係数を表示するには、このRakeタスクを実行します:
 
 ```shell
 sudo gitlab-rake gitlab:zoekt:info
 ```
 
-出力には、`Storage buffer factor`行が含まれており、プランナーが現在使用している値と、それが動的であるか静的フォールバックであるかが示されます。
+出力には**Storage buffer factor**が含まれており、これはプランナーが使用している動的な値を示します。
 
-Zoektノードのストレージを監視するには、[インデックス作成ステータスの確認](#check-indexing-status)を参照してください。ディスク容量不足のためネームスペースがインデックス作成されない場合は、ノードを追加するか、ディスク容量を増やしてください。
+Zoektノードのストレージを監視するには、[インデックス作成ステータスの確認](#check-indexing-status)を参照してください。ディスク容量不足によりネームスペースのインデックスが作成されない場合は、ノードを追加するか、ディスク容量を増やしてください。
 
 ## セキュリティと認証 {#security-and-authentication}
 
@@ -783,9 +869,9 @@ Zoektは、GitLab、Zoektインデクサー、Zoektウェブサーバーコン�
 
 ### ZoektインデクサーからGitLabへ {#zoekt-indexer-to-gitlab}
 
-Zoektインデクサーは、GitLabにJSON Webトークン（JWT）で認証することで、インデックス作成タスクを取得するし、完了コールバックを送信します。
+Zoektインデクサーは、GitLabにJSON Webトークン（JWT）で認証することで、インデックス作成タスクを取得し、完了コールバックを送信します。
 
-このメソッドは、署名と検証に`.gitlab_shell_secret`を使用します。トークンは`Gitlab-Shell-Api-Request`ヘッダーで送信されます。エンドポイントには以下が含まれます:
+このメソッドは、署名と検証に`.gitlab_shell_secret`を使用します。トークンは`Gitlab-Shell-Api-Request`ヘッダーで送信されます。以下のエンドポイントが利用可能です:
 
 - タスクの取得のための`GET /internal/search/zoekt/:uuid/heartbeat`
 - ステータス更新のための`POST /internal/search/zoekt/:uuid/callback`

@@ -600,7 +600,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     context 'when @project is set' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
 
       before do
@@ -624,7 +624,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       context 'when @project is owned by a group' do
-        let_it_be(:project) { create(:project, :repository, group: create(:group)) }
+        let_it_be(:project) { create(:project, group: create(:group)) }
 
         it 'includes all possible body data elements and associates the project elements with project' do
           expect(helper.body_data).to eq(
@@ -831,6 +831,20 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
         it { is_expected.to include('user-logged-out') }
         it { is_expected.not_to include('user-logged-in') }
+      end
+    end
+
+    describe 'aura-tinted-themes' do
+      context 'when the aura_tinted_themes feature flag is enabled' do
+        it { is_expected.to include('aura-tinted-themes') }
+      end
+
+      context 'when the aura_tinted_themes feature flag is disabled' do
+        before do
+          stub_feature_flags(aura_tinted_themes: false)
+        end
+
+        it { is_expected.not_to include('aura-tinted-themes') }
       end
     end
   end

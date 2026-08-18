@@ -10,7 +10,7 @@ Use groups to manage one or more related projects at the same time.
 > [!note]
 > On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
 > For more information about efforts to create an organization view of all groups,
-> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/work_items/9266).
 > A top-level group offers insights in your entire organization through a complete
 > [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
 > [Vulnerability report](../application_security/vulnerability_report/_index.md),
@@ -623,13 +623,6 @@ To enable group file templates:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a feature flag](../../administration/feature_flags/_index.md) name `support_group_level_merge_checks_setting`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
-
-{{< /history >}}
-
 Group Owners can set up merge request checks on a top-level group, which apply to all subgroups and projects.
 
 If the settings are inherited by a subgroup or project, they cannot be changed in the subgroup or project
@@ -691,6 +684,61 @@ To enable this setting:
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
 
+## Require a commit SHA on the merge requests API
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421) in GitLab 19.2. Enabled by default for new groups.
+- Group and instance settings UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243465) in GitLab 19.3.
+
+{{< /history >}}
+
+Require a commit SHA on the merge requests API to ensure that only reviewed commits are merged. When this
+setting is enabled, GitLab rejects calls to the
+[merge a merge request](../../api/merge_requests.md#merge-a-merge-request) endpoint that omit the
+`sha` parameter, and returns a `400` error. The merge fails if the `sha` parameter doesn't match the
+current HEAD of the source branch.
+
+This setting is enabled by default for groups created in GitLab 19.2 or later.
+
+Prerequisites:
+
+- The Owner role for the group.
+
+To require a commit SHA on the merge requests API:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Merge requests**.
+1. Select the **Require commit SHA on merge requests API** checkbox.
+1. Optional. To enforce this setting for all subgroups and prevent subgroups from changing it, select
+   the **Enforce for all subgroups** checkbox.
+1. Select **Save changes**.
+
+Administrators can set an instance-wide default for all groups. New groups inherit this value
+unless a parent group overrides it.
+
+Prerequisites:
+
+- Administrator access to the instance.
+
+To set the default for all groups:
+
+1. In the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Merge requests**.
+1. Select the **Require commit SHA on merge requests API** checkbox.
+1. Optional. To enforce this setting for all groups on the instance and prevent groups from
+   changing it, select the **Enforce this setting for all groups on this instance** checkbox.
+1. Select **Save changes**.
+
 ## Group merge request approval settings
 
 {{< details >}}
@@ -718,7 +766,7 @@ To view the merge request approval settings for a group:
 
 Approval settings should not be confused with [approval rules](../project/merge_requests/approvals/rules.md). Support
 for the ability to set merge request approval rules for groups is tracked in
-[epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
+[epic 4367](https://gitlab.com/groups/gitlab-org/-/work_items/4367).
 
 ## Group activity analytics
 

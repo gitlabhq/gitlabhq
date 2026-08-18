@@ -197,6 +197,53 @@ through generated per-file CODEOWNERS rules. When reviewing one:
   unsupported rule was added.
 - Confirm the front matter checksums were updated by the tool, not by hand.
 
+### Acting on automated review feedback
+
+GitLab Duo reviews these merge requests like any other. Because the diff is
+machine-generated from documentation prose rather than hand-written code, its
+findings are unusually high-signal. Treat them as a review queue to work
+through, not as noise to dismiss.
+
+Classify each finding into exactly one of four outcomes before acting on it:
+
+| Outcome          | Meaning                                                           | Action                                                  |
+| ---------------- | ----------------------------------------------------------------- | ------------------------------------------------------- |
+| Content defect   | The distilled text misstates, garbles, or contradicts the source. | Fix it on the sync branch.                              |
+| Content gap      | The distillation dropped a rule the source supports.              | Restore it on the sync branch.                          |
+| Distiller defect | The root cause is the tooling, not this run's output.             | Fix the output and open an issue against the distiller. |
+| Judgment call    | The output is correct but could be closer to the source.          | Record it. It does not necessarily need action.         |
+
+When fixing, the standard depends on where the rule came from:
+
+- Restore a baseline-derived rule verbatim. Baseline rules are exempt from
+  rephrasing, and the sync tooling mechanically rejects and retries any output
+  that alters, duplicates, or omits one, so a paraphrase can never be published.
+- Make a source-derived fix faithful and traceable, but do not copy the
+  source wording. Distilled files hold concrete, checkable rules rather than
+  documentation prose, so a verbatim copy both breaks that contract and is
+  rephrased on the next run, producing a spurious diff.
+
+Prefer a targeted fix on the sync branch when a small number of findings are
+localized. Re-running distillation is slow and non-deterministic, so it can
+regress rules unrelated to the finding. Re-run when the output is broadly
+wrong rather than locally wrong. Either way, a hand-fix on a distilled file
+must be called out explicitly in the merge request.
+
+Batch a branch's fixes into a single push. Because the project enables
+selective code owner removals, pushing a file revokes that file's code owner
+approval, so an unbatched sequence of pushes can repeatedly invalidate a review
+that is already underway.
+
+Close the loop on any finding whose root cause is the tooling, because it
+otherwise recurs every week:
+
+- Open an issue against the distiller describing the mechanism, not only the
+  symptom: which component produced the wrong output, and for what input.
+- Record each instance of dropped content on
+  [issue 604659](https://gitlab.com/gitlab-org/gitlab/-/issues/604659), which
+  tracks distillation content loss, so the failure rate is measurable rather
+  than anecdotal.
+
 The daily fence-reconcile job opens a separate merge request that changes only
 `.gitlab/duo/mr-review-instructions.yaml`. When reviewing one, confirm the
 fence directives match the front matter of the distilled files on `master`. The

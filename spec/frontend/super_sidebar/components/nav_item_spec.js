@@ -1,8 +1,9 @@
-import { nextTick } from 'vue';
+import { h, nextTick } from 'vue';
 import { GlButton, GlAvatar, GlNavItem } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -37,8 +38,12 @@ describe('NavItem component', () => {
       stubs: {
         RouterLink: {
           ...RouterLinkStub,
-          render(h) {
-            const children = this.$scopedSlots.default({
+          // Vue 3-style zero-arg render (h comes from the vue import); opt
+          // out of @vue/compat's legacy render-function emulation, which
+          // misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
+          render() {
+            const children = getSlotFunction(this)({
               href: '/foo',
               isActive: false,
               navigate: jest.fn(),
@@ -243,6 +248,33 @@ describe('NavItem component', () => {
         expect(pinButton.classes()).toContain('gl-pointer-events-none');
       });
     });
+
+    describe('when sidebar is in icon-only mode', () => {
+      it('does not render pin button', () => {
+        createWrapper({
+          item: { title: 'Foo' },
+          provide: {
+            panelSupportsPins: true,
+            isIconOnly: true,
+          },
+        });
+
+        expect(findPinButton().exists()).toBe(false);
+      });
+
+      it('renders pin button in a flyout menu', () => {
+        createWrapper({
+          item: { title: 'Foo' },
+          props: { isFlyout: true },
+          provide: {
+            panelSupportsPins: true,
+            isIconOnly: true,
+          },
+        });
+
+        expect(findPinButton().exists()).toBe(true);
+      });
+    });
   });
 
   it('applies correct aria-label', () => {
@@ -363,6 +395,67 @@ describe('NavItem component', () => {
         item: { is_active: false },
       });
       expect(wrapper.element.scrollIntoView).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('drag icon behavior in pinned section', () => {
+    const pinnedItem = { title: 'Issues', icon: 'issues', library_icon: 'issues' };
+
+    describe('when hideUnpinnedSidebarItems is enabled', () => {
+      beforeEach(() => {
+        createWrapper({
+          item: pinnedItem,
+          props: { isInPinnedSection: true },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+      });
+
+      it('renders both item icon and grip icon', () => {
+        expect(wrapper.findByTestId('issues-icon').exists()).toBe(true);
+        expect(wrapper.findByTestId('grip-icon').exists()).toBe(true);
+      });
+
+      it('swaps item icon for grip icon on hover', () => {
+        expect(wrapper.findByTestId('issues-icon').classes()).toContain(
+          'hide-on-focus-or-hover--target',
+        );
+        expect(wrapper.findByTestId('grip-icon').classes()).toContain(
+          'show-on-focus-or-hover--target',
+        );
+        expect(wrapper.findByTestId('grip-icon').classes()).toContain('js-draggable-icon');
+      });
+
+      describe('when in icon-only mode', () => {
+        beforeEach(() => {
+          createWrapper({
+            item: pinnedItem,
+            props: { isInPinnedSection: true },
+            provide: { glFeatures: { hideUnpinnedSidebarItems: true }, isIconOnly: true },
+          });
+        });
+
+        it('renders only the item icon without drag swap', () => {
+          expect(wrapper.findByTestId('issues-icon').exists()).toBe(true);
+          expect(wrapper.findByTestId('grip-icon').exists()).toBe(false);
+          expect(wrapper.findByTestId('issues-icon').classes()).not.toContain(
+            'hide-on-focus-or-hover--target',
+          );
+        });
+      });
+    });
+
+    describe('when hideUnpinnedSidebarItems is disabled', () => {
+      it('renders only the item icon without hover swap', () => {
+        createWrapper({
+          item: { title: 'Issues', icon: 'issues' },
+          props: { isInPinnedSection: true },
+        });
+
+        expect(wrapper.findByTestId('issues-icon').exists()).toBe(true);
+        expect(wrapper.findByTestId('issues-icon').classes()).not.toContain(
+          'hide-on-focus-or-hover--target',
+        );
+      });
     });
   });
 

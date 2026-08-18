@@ -1,9 +1,17 @@
 <script>
-import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlModal,
+  GlDisclosureDropdownItem,
+  GlTooltipDirective,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { MR_WORK_ITEM_RELATIONSHIP_TYPES } from '~/sidebar/constants';
 import { newWorkItemPath, canRouterNav, getDraftWorkItemType } from '~/work_items/utils';
 
 import {
@@ -21,13 +29,14 @@ export default {
     CreateWorkItem,
     CreateWorkItemCancelConfirmationModal,
     GlButton,
+    GlIcon,
     GlModal,
     GlDisclosureDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   props: {
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,
@@ -93,6 +102,26 @@ export default {
       validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    mergeRequestLinkType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    mergeRequestTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    mergeRequestReference: {
+      type: String,
+      required: false,
+      default: '',
+    },
     namespaceFullName: {
       type: String,
       required: false,
@@ -103,7 +132,12 @@ export default {
       required: false,
       default: false,
     },
-    fromGlobalMenu: {
+    allowAnyNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    allowProjectsOnly: {
       type: Boolean,
       required: false,
       default: false,
@@ -113,8 +147,13 @@ export default {
       required: false,
       default: null,
     },
+    suppressCreatedToast: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['hideModal', 'work-item-created'],
+  emits: ['hide-modal', 'work-item-created'],
   data() {
     const draftWorkItemType = getDraftWorkItemType({
       fullPath: this.fullPath,
@@ -173,6 +212,18 @@ export default {
         workItemType: this.selectedWorkItemTypeName,
       });
     },
+    showMergeRequestRelationshipNote() {
+      return Boolean(this.mergeRequestLinkType && this.mergeRequestTitle);
+    },
+    mergeRequestRelationshipIntro() {
+      if (this.mergeRequestLinkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.closing) {
+        return s__('WorkItem|Item will be closed by:');
+      }
+      if (this.mergeRequestLinkType === MR_WORK_ITEM_RELATIONSHIP_TYPES.related) {
+        return s__('WorkItem|Item will be related to:');
+      }
+      return '';
+    },
   },
   watch: {
     visible: {
@@ -184,7 +235,7 @@ export default {
   },
   methods: {
     hideCreateModal() {
-      this.$emit('hideModal');
+      this.$emit('hide-modal');
       this.isCreateModalVisible = false;
     },
     showCreateModal(event) {
@@ -237,46 +288,49 @@ export default {
       }
     },
     /*
-     End of the methods for the confirmation modal when enabled
+    End of the methods for the confirmation modal when enabled
     */
     handleCreated({ workItem }) {
-      const createdWorkItemTypeName = workItem?.workItemType?.name || this.selectedWorkItemTypeName;
-      const workItemCreatedText = sprintf(s__('WorkItem|%{workItemType} created.'), {
-        workItemType: createdWorkItemTypeName,
-      });
+      if (!this.suppressCreatedToast) {
+        const createdWorkItemTypeName =
+          workItem?.workItemType?.name || this.selectedWorkItemTypeName;
+        const workItemCreatedText = sprintf(s__('WorkItem|%{workItemType} created.'), {
+          workItemType: createdWorkItemTypeName,
+        });
 
-      this.$toast.show(workItemCreatedText, {
-        autoHideDelay: 10000,
-        action: {
-          text: __('View details'),
-          href: workItem.webUrl,
-          onClick: (e) => {
-            e?.preventDefault();
-            // Take incidents to the legacy detail view with a full page load
-            if (
-              this.useVueRouter &&
-              workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
-              this.$router.getRoutes().some((route) => route.name === 'workItem') &&
-              canRouterNav({
-                fullPath: this.fullPath,
-                isGroup: this.isGroup,
-                webUrl: workItem.webUrl,
-                issueAsWorkItem: true,
-              })
-            ) {
-              this.$router.push({
-                name: 'workItem',
-                params: {
-                  iid: workItem.iid,
-                  type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-                },
-              });
-            } else {
-              visitUrl(workItem.webUrl);
-            }
+        this.$toast.show(workItemCreatedText, {
+          autoHideDelay: 10000,
+          action: {
+            text: __('View details'),
+            href: workItem.webUrl,
+            onClick: (e) => {
+              e?.preventDefault();
+              // Take incidents to the legacy detail view with a full page load
+              if (
+                this.useVueRouter &&
+                workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
+                this.$router.getRoutes().some((route) => route.name === 'workItem') &&
+                canRouterNav({
+                  fullPath: this.fullPath,
+                  isGroup: this.isGroup,
+                  webUrl: workItem.webUrl,
+                  issueAsWorkItem: true,
+                })
+              ) {
+                this.$router.push({
+                  name: 'workItem',
+                  params: {
+                    iid: workItem.iid,
+                    type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+                  },
+                });
+              } else {
+                visitUrl(workItem.webUrl);
+              }
+            },
           },
-        },
-      });
+        });
+      }
       this.$emit('work-item-created', workItem);
       this.hideCreateModal();
     },
@@ -350,6 +404,20 @@ export default {
           />
         </div>
       </template>
+      <div
+        v-if="showMergeRequestRelationshipNote"
+        class="gl-mb-5 gl-inline-block gl-rounded-base gl-bg-blue-50 gl-px-4 gl-py-3"
+        data-testid="merge-request-relationship-note"
+      >
+        <span class="gl-text-sm gl-text-subtle">{{ mergeRequestRelationshipIntro }}</span>
+        <div class="gl-flex gl-items-start gl-gap-2">
+          <gl-icon name="merge-request" class="gl-icon-subtle" />
+          <span class="gl-text-sm gl-font-bold">{{ mergeRequestTitle }}</span>
+          <span v-if="mergeRequestReference" class="gl-text-sm gl-text-subtle">{{
+            mergeRequestReference
+          }}</span>
+        </div>
+      </div>
       <create-work-item
         :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :creation-context="creationContext"
@@ -363,11 +431,14 @@ export default {
         :title="title"
         :preselected-work-item-type="selectedWorkItemTypeName"
         :related-item="relatedItem"
+        :merge-request-id="mergeRequestId"
+        :merge-request-link-type="mergeRequestLinkType"
         :should-discard-draft="shouldDiscardDraft"
         :namespace-full-name="namespaceFullName"
         :is-modal="true"
         :is-epics-list="isEpicsList"
-        :from-global-menu="fromGlobalMenu"
+        :allow-any-namespace="allowAnyNamespace"
+        :allow-projects-only="allowProjectsOnly"
         :create-source="createSource"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"

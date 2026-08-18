@@ -8,7 +8,7 @@ title: Cloud Connector
 GitLab Cloud Connector is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a
 dedicated service itself, but rather a collection of APIs and code that standardizes the approach to authentication and
-other items when integrating Cloud based services with the GitLab instance. This page aims to explain how to use
+other items when integrating cloud-based services with the GitLab instance. This page aims to explain how to use
 Cloud Connector to link GitLab Rails to a service.
 
 ## Ownership
@@ -57,13 +57,13 @@ To register a new feature:
 
 As an example, the feature is delivered as new Unit Primitive called `new_feature`.
 
-Call to `Gitlab::AiGateway.headers(user: user, unit_primitive_name: :new_feature, ai_feature_name: ai_feature_name_from_catalog)`
+A call to `Gitlab::AiGateway.headers(user: user, unit_primitive_name: :new_feature, ai_feature_name: ai_feature_name_from_catalog)`
 will give you a set of headers you need to attach to every request to **AI Gateway**.
 Refer to [AiFeaturesCatalogue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/utils/ai_features_catalogue.rb) to
 pick the appropriate value of `ai_feature_name_from_catalog`.
 
 The headers set has everything needed to authenticate your AI request with the **AI Gateway**.
-In particular, it includes access token in the `Authorization` field:
+In particular, it includes an access token in the `Authorization` field:
 
 - On GitLab.com, it will self-issue a token with scopes that depend on the provided resource:
   - For a user: scopes will be based on the user's seat assignment

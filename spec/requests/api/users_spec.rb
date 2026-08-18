@@ -991,7 +991,9 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           get api(path, user)
 
           expect(response).to have_gitlab_http_status(:too_many_requests)
-          expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:users_get_by_id))
+          expect(response.headers).to include(
+            'Retry-After' => Gitlab::ApplicationRateLimiter.period_for(:users_get_by_id)
+          )
         end
 
         it 'still allows admin users' do
@@ -2957,7 +2959,9 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         get api(path), env: { REMOTE_ADDR: ip }
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
-        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:user_ssh_keys))
+        expect(response.headers).to include(
+          'Retry-After' => Gitlab::ApplicationRateLimiter.period_for(:user_ssh_keys)
+        )
       end
     end
   end
@@ -5836,7 +5840,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           end
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(query_recorder).not_to exceed_query_limit(1).for_query(
+          expect(query_recorder).not_to exceed_query_limit(1).allow_skip_cache_inconsistency.for_query(
             /FROM "namespaces" WHERE "namespaces"\."type" = 'Project' AND "namespaces"\."id" IN/
           )
         end
@@ -6102,6 +6106,39 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response.size).to eq(2)
     end
 
+    it 'avoids N+1 queries when rendering last_used_ips' do
+      impersonation_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.30')
+
+      get api(path, admin, admin_mode: true) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, admin, admin_mode: true) }
+
+      extra_token = create(:personal_access_token, :impersonation, user: user)
+      extra_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.31')
+
+      expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
+    end
+
+    # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
+    # Delete this whole context when the flag is removed - there's no more current_user-vs-token-owner
+    # mismatch to guard against once everyone is on the same (unconditional) code path.
+    context 'when the flag differs between current_user and a token owner' do
+      it 'avoids N+1 queries' do
+        # Enables the flag only for the token owner (user), not the requester (admin).
+        stub_feature_flags(expose_last_used_ips_for_access_tokens: user)
+        impersonation_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.30')
+
+        get api(path, admin, admin_mode: true) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, admin, admin_mode: true) }
+
+        extra_token = create(:personal_access_token, :impersonation, user: user)
+        extra_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.31')
+
+        expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
+      end
+    end
+
     context 'when expose_last_used_ips_for_access_tokens feature flag is enabled' do
       before do
         stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
@@ -6127,19 +6164,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           token_response = json_response.find { |t| t['id'] == impersonation_token.id }
           expect(token_response['last_used_ips']).to include(ip_address)
         end
-      end
-
-      it 'does not have N+1 queries for last_used_ips' do
-        get api(path, admin, admin_mode: true)
-
-        control = ActiveRecord::QueryRecorder.new do
-          get api(path, admin, admin_mode: true)
-        end
-
-        extra_token = create(:personal_access_token, :impersonation, user: user)
-        extra_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.20')
-
-        expect { get api(path, admin, admin_mode: true) }.not_to exceed_query_limit(control)
       end
     end
 
@@ -6861,7 +6885,7 @@ RSpec.describe API::Users, '(API behavior when Current.organization is nil)', fe
       post api("/users", admin_no_org_context, admin_mode: true), params: user_creation_params
 
       expect(response).to have_gitlab_http_status(:internal_server_error)
-      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil/)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method [`']id' for nil/)
     end
   end
 
@@ -6873,7 +6897,7 @@ RSpec.describe API::Users, '(API behavior when Current.organization is nil)', fe
         params: { name: 'Test Token For Target No Org', scopes: ['api'] }
 
       expect(response).to have_gitlab_http_status(:internal_server_error)
-      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil/)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method [`']id' for nil/)
     end
   end
 
@@ -6888,7 +6912,7 @@ RSpec.describe API::Users, '(API behavior when Current.organization is nil)', fe
         }
 
       expect(response).to have_gitlab_http_status(:internal_server_error)
-      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil/)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method [`']id' for nil/)
     end
   end
 end

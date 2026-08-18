@@ -56,19 +56,6 @@ RSpec.describe Mutations::Achievements::Update, feature_category: :user_profile 
       end
     end
 
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(achievements: false)
-      end
-
-      it 'returns the relevant permission error' do
-        subject
-
-        expect(graphql_errors.to_s)
-          .to include("The resource that you are attempting to access does not exist or you don't have permission")
-      end
-    end
-
     context 'with a new avatar' do
       let(:avatar) { fixture_file_upload("spec/fixtures/dk.png") }
 

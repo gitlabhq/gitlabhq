@@ -13,7 +13,7 @@ describe('~/environments/components/empty_state.vue', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findDocsLink = () => wrapper.findComponent(GlLink);
   const findNewEnvironmentButton = () => wrapper.findByTestId('new-environment-button');
-  const findEnablingReviewButton = () => wrapper.findByTestId('enable-review-button');
+  const findEnablingReviewButton = () => wrapper.findComponentByTestId('enable-review-button');
 
   const createWrapper = ({ propsData = {} } = {}) =>
     shallowMountExtended(EmptyState, {

@@ -1,19 +1,14 @@
 fragment DuoPipelinesRateItem on Analytics {
-  duoPipelines: finishedPipelines(
-    source: ["duo_workflow"]
+  pipelines(
+    # Mirrors Ci::HasStatus::COMPLETED_STATUSES
+    status: ["success", "failed", "canceled", "skipped"]
     startedAtFrom: $startDate
     startedAtTo: $endDate
   ) {
     aggregated {
       nodes {
-        totalCount
-      }
-    }
-  }
-  allPipelines: finishedPipelines(startedAtFrom: $startDate, startedAtTo: $endDate) {
-    aggregated {
-      nodes {
-        totalCount
+        allPipelinesCount: totalCount
+        duoPipelinesCount: totalCount(source: ["duo_workflow"])
       }
     }
   }

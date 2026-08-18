@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Settings::IntegrationHookLogsController, feature_category: :webhooks do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
   let(:integration) { create(:drone_ci_integration, project: project) }
   let(:log) { create(:web_hook_log, web_hook: integration.service_hook) }
   let(:log_params) do
@@ -16,9 +16,12 @@ RSpec.describe Projects::Settings::IntegrationHookLogsController, feature_catego
     }
   end
 
+  before_all do
+    project.add_maintainer(user)
+  end
+
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe 'GET #show' do

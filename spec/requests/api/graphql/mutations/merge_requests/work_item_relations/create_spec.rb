@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe 'Creating merge request work item relations', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project) }
 
-  let(:link_type) { 'MENTIONED' }
+  let(:link_type) { 'RELATED' }
   let(:work_item_ids) { [global_id_of(work_item).to_s] }
   let(:input) { { work_item_ids: work_item_ids, link_type: link_type } }
 
@@ -41,9 +41,33 @@ RSpec.describe 'Creating merge request work item relations', feature_category: :
 
     expect(response).to have_gitlab_http_status(:success)
     relation = mutation_response['workItemRelations'].first
-    expect(relation['linkType']).to eq('MENTIONED')
+    expect(relation['linkType']).to eq('RELATED')
     expect(relation['fromMrDescription']).to be(false)
     expect(relation.dig('workItem', 'id')).to eq(global_id_of(work_item, model_name: 'WorkItem').to_s)
+  end
+
+  context 'when link type is omitted' do
+    let(:input) { { work_item_ids: work_item_ids } }
+
+    it 'defaults to RELATED', :aggregate_failures do
+      expect { post_graphql_mutation(mutation, current_user: current_user) }
+        .to change { merge_request.merge_request_issues.count }.by(1)
+
+      expect(mutation_response['workItemRelations'].first['linkType']).to eq('RELATED')
+    end
+  end
+
+  context 'when link type is MENTIONED' do
+    let(:link_type) { 'MENTIONED' }
+
+    it 'does not create a relation and surfaces an error', :aggregate_failures do
+      expect { post_graphql_mutation(mutation, current_user: current_user) }
+        .not_to change { merge_request.merge_request_issues.count }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors'])
+        .to contain_exactly('Mentioned relations are managed automatically and cannot be created.')
+    end
   end
 
   it 'returns an error when the user cannot admin the merge request' do

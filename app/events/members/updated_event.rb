@@ -2,6 +2,10 @@
 
 module Members
   class UpdatedEvent < ::Gitlab::EventStore::Event
+    # TODO: Remove in milestone 19.4 after CloudEvent migration is complete.
+    # Dual-published alongside UpdatedCloudEvent in gitlab/app/services/members/update_service.rb
+    # To allow in-flight events to drain.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/605666
     def schema
       {
         'type' => 'object',

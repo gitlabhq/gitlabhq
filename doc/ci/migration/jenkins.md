@@ -12,7 +12,7 @@ title: Migrate from Jenkins
 
 {{< /details >}}
 
-If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
+If you're migrating from Jenkins to GitLab CI/CD, you can create CI/CD
 pipelines that replicate and enhance your Jenkins workflows.
 
 ## Key similarities and differences
@@ -108,7 +108,7 @@ This section goes over commonly used CI/CD configurations, showing how they can 
 from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
-that are triggered when certain event take place, such as a new commit being pushed.
+that are triggered when certain events take place, such as a new commit being pushed.
 A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../yaml/_index.md).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
@@ -316,7 +316,7 @@ deploy-job:
     - echo "Testing $PLATFORM for $ARCH"
 ```
 
-#### Container Images
+#### Container images
 
 In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
 using the [image](../yaml/_index.md#image) keyword.
@@ -485,7 +485,7 @@ your own runners.
 
 To convert a Jenkins agent for use with GitLab CI/CD, uninstall the agent and then
 [install and register a runner](../runners/_index.md). Runners do not require much overhead,
-so you might be able to use similar provisioning as the Jenkins agents you were using.
+so you can likely use similar provisioning as the Jenkins agents you were using.
 
 Some key details about runners:
 
@@ -634,7 +634,7 @@ in GitLab with keywords and features that offer similar functionality. For examp
 | [Role-based Authorization Strategy](https://plugins.jenkins.io/role-strategy/)    | GitLab [permissions and roles](../../user/permissions.md) |
 | [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/_index.md) logs are time stamped by default |
 
-### Security Scanning features
+### Security scanning features
 
 You might have used plugins for things like code quality, security, or static application scanning in Jenkins.
 GitLab provides [security scanners](../../user/application_security/_index.md) out-of-the-box to detect
@@ -649,7 +649,7 @@ include:
 You can customize the behavior of security scanners by using CI/CD variables, for example
 with the [SAST scanners](../../user/application_security/sast/_index.md#available-cicd-variables).
 
-### Secrets Management
+### Secrets management
 
 Privileged information, often referred to as "secrets", is sensitive information
 or credentials you need in your CI/CD workflow. You might use secrets to unlock protected resources
@@ -679,12 +679,11 @@ only be done in [the project, group, or instance settings](../variables/_index.m
 Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
-## Planning and Performing a Migration
+## Planning and performing a migration
 
-The following list of recommended steps was created after observing organizations
-that were able to quickly complete this migration.
+The following steps help you plan and perform this migration.
 
-### Create a Migration Plan
+### Create a migration plan
 
 Before starting a migration you should create a [migration plan](plan_a_migration.md) to make preparations for the migration. For a migration from Jenkins, ask yourself the following questions in preparation:
 
@@ -710,7 +709,7 @@ Before doing any migration work, you should first:
 1. Test your GitLab instance.
    - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
-### Migration Steps
+### Migration steps
 
 1. Migrate projects from your SCM solution to GitLab.
    - (Recommended) You can use the available [importers](../../user/import/_index.md)
@@ -725,7 +724,7 @@ Before doing any migration work, you should first:
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
    to learn how to make your GitLab CI/CD pipelines faster and more efficient.
 
-### Additional Resources
+### Additional resources
 
 - You can use the [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/)
   to run a complete Jenkins instance inside of a GitLab CI/CD job, including plugins. Use this tool to help ease the transition to GitLab CI/CD, by delaying the migration of less urgent pipelines.
@@ -733,5 +732,3 @@ Before doing any migration work, you should first:
   > [!note]
   > The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
   > For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
-
-If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

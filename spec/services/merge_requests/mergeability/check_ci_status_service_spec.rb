@@ -175,6 +175,61 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
         end
       end
     end
+
+    context 'when skip_branch_pipelines_for_mrs is enabled' do
+      let_it_be_with_refind(:project) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
+
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:params) { {} }
+
+      before do
+        project.ci_cd_settings.update!(skip_branch_pipelines_for_mrs: true)
+      end
+
+      context 'when only a branch pipeline exists' do
+        let!(:branch_pipeline) do
+          create(
+            :ci_pipeline,
+            :success,
+            project: project,
+            sha: merge_request.diff_head_sha,
+            ref: merge_request.source_branch
+          )
+        end
+
+        before do
+          merge_request.update_head_pipeline
+        end
+
+        it 'ignores the branch pipeline and returns failure' do
+          expect(merge_request.head_pipeline).to be_nil
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        end
+      end
+
+      context 'when an MR pipeline exists and succeeds' do
+        let!(:mr_pipeline) do
+          create(
+            :ci_pipeline,
+            :success,
+            source: :merge_request_event,
+            project: project,
+            ref: merge_request.ref_path,
+            sha: merge_request.diff_head_sha,
+            merge_request: merge_request
+          )
+        end
+
+        before do
+          merge_request.update_head_pipeline
+        end
+
+        it 'uses the MR pipeline and returns success' do
+          expect(merge_request.head_pipeline).to eq(mr_pipeline)
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        end
+      end
+    end
   end
 
   describe '#skip?' do

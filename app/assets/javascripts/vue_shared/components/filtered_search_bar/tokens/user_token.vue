@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 
 import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
@@ -19,6 +20,7 @@ export default {
     GlIntersperse,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -57,6 +59,10 @@ export default {
   },
   methods: {
     getActiveUser(users, data) {
+      // Case-sensitive matches to default users (generally wildcard values) take
+      // priority over case-insensitive matches to all users. Allows `Me` wildcard
+      // to be matched before a `me` user.
+      if (this.defaultUsers.some(({ value }) => value === data)) return undefined;
       return users.find((user) => this.getUsername(user).toLowerCase() === data.toLowerCase());
     },
     getAvatarUrl(user) {
@@ -125,7 +131,7 @@ export default {
     :value-identifier="getUsername"
     v-bind="$attrs"
     @fetch-suggestions="fetchUsers"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue, selectedTokens } }">
       <gl-intersperse v-if="selectedTokens.length > 0" separator=",">

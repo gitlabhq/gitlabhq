@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/application_settings/_account_and_limit.html.haml', feature_category: :settings do
+RSpec.describe 'admin/application_settings/_account_and_limit.html.haml', :with_current_organization, feature_category: :settings do
   let(:app_settings) { build(:application_setting) }
   let(:user) { build_stubbed(:admin) }
 
@@ -20,6 +20,58 @@ RSpec.describe 'admin/application_settings/_account_and_limit.html.haml', featur
         expect(rendered).to have_field('Expire from time of session creation',
           type: 'radio')
       end
+    end
+  end
+
+  describe ':dynamic_client_registration_enabled' do
+    it 'renders the dynamic client registration checkbox', :aggregate_failures do
+      render
+
+      expect(rendered).to have_field('application_setting[dynamic_client_registration_enabled]', type: 'checkbox')
+      expect(rendered).to have_text('OAuth dynamic client registration')
+    end
+
+    # The warning is a future-tense, destructive-action prompt shown only when the admin
+    # actively unchecks the box (handled by JS on the `change` event). It should always
+    # start hidden on page load, regardless of the persisted setting value.
+    shared_examples 'renders the destructive warning hidden' do
+      it 'renders the destructive warning hidden', :aggregate_failures do
+        render
+
+        expect(rendered).to have_css('.js-dcr-disabled-warning.gl-hidden')
+        expect(rendered).to have_text(
+          'Turning off this setting will delete all dynamically registered ' \
+            'OAuth applications and revoke their access tokens.'
+        )
+      end
+    end
+
+    context 'when dynamic_client_registration_enabled setting is on' do
+      before do
+        app_settings.dynamic_client_registration_enabled = true
+      end
+
+      it 'checks the checkbox' do
+        render
+
+        expect(rendered).to have_checked_field('application_setting[dynamic_client_registration_enabled]')
+      end
+
+      it_behaves_like 'renders the destructive warning hidden'
+    end
+
+    context 'when dynamic_client_registration_enabled setting is off' do
+      before do
+        app_settings.dynamic_client_registration_enabled = false
+      end
+
+      it 'unchecks the checkbox' do
+        render
+
+        expect(rendered).to have_unchecked_field('application_setting[dynamic_client_registration_enabled]')
+      end
+
+      it_behaves_like 'renders the destructive warning hidden'
     end
   end
 

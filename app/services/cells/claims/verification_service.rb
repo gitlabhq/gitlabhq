@@ -126,7 +126,7 @@ module Cells
         Retriable.retriable(on: GRPC_RETRIABLE_ERRORS, tries: GRPC_RETRIES, base_interval: GRPC_RETRY_BASE_INTERVAL) do
           claim_service.list_records(
             source_type: model.cells_claims_source_type,
-            bucket_types: model.cells_claims_attributes.values.pluck(:type), # rubocop:disable Database/AvoidUsingPluckWithoutLimit,CodeReuse/ActiveRecord -- not an ActiveRecord relation
+            claim_types: model.cells_claims_attributes.values.pluck(:type), # rubocop:disable Database/AvoidUsingPluckWithoutLimit,CodeReuse/ActiveRecord -- not an ActiveRecord relation
             source_id_gt: start_id_bytes,
             source_id_lte: end_id_bytes,
             deadline: grpc_deadline
@@ -172,7 +172,7 @@ module Cells
           ts_records.each do |r|
             next if recently_changed_record?(r)
 
-            log_drift(:missing_record_in_local, nil, r.metadata.bucket.type, nil, metadata_from_ts_record(r))
+            log_drift(:missing_record_in_local, nil, r.metadata.claim&.claim, nil, metadata_from_ts_record(r))
             destroys << metadata_from_ts_record(r)
           end
         end
@@ -186,13 +186,11 @@ module Cells
         creates = []
         destroys = []
 
-        local_metadata_by_bucket = local_record.cells_claims_metadata.index_by { |m| m[:bucket][:type] }
-        ts_records_by_bucket = ts_records.index_by do |r|
-          Cells::Claimable::CLAIMS_BUCKET_TYPE.resolve(r.metadata.bucket.type)
-        end
+        local_metadata_by_claim = local_record.cells_claims_metadata.index_by { |m| m[:claim].each_key.first }
+        ts_records_by_claim = ts_records.index_by { |r| r.metadata.claim&.claim }
 
-        local_metadata_by_bucket.each do |bucket_type, local_meta|
-          ts_record = ts_records_by_bucket.delete(bucket_type)
+        local_metadata_by_claim.each do |claim_type, local_meta|
+          ts_record = ts_records_by_claim.delete(claim_type)
 
           if ts_record.nil?
             creates << local_meta
@@ -203,15 +201,15 @@ module Cells
           next if local_meta.except(:record) == ts_meta
 
           # metadata has changed - destroy old, create new
-          log_drift(:changed, local_record, bucket_type, local_meta, ts_meta)
+          log_drift(:changed, local_record, claim_type, local_meta, ts_meta)
           destroys << ts_meta
           creates << local_meta
         end
 
         # remaining TS records have no matching local claim attribute
-        ts_records_by_bucket.each do |bucket_type, ts_record|
+        ts_records_by_claim.each do |claim_type, ts_record|
           ts_meta = metadata_from_ts_record(ts_record)
-          log_drift(:missing_attribute_in_local, local_record, bucket_type, nil, ts_meta)
+          log_drift(:missing_attribute_in_local, local_record, claim_type, nil, ts_meta)
           destroys << ts_meta
         end
 
@@ -225,14 +223,14 @@ module Cells
         record.updated_at.to_time.after?(RECENTLY_CHANGED_THRESHOLD.ago)
       end
 
-      def log_drift(kind, local_record, bucket_type, local_meta, ts_meta)
+      def log_drift(kind, local_record, claim_type, local_meta, ts_meta)
         error = DriftError.new("Claims drift detected: #{kind}")
         extra = {
           model: model.name,
           record_id: local_record&.read_attribute(model.primary_key),
-          bucket_type: bucket_type,
-          local_value: local_meta&.dig(:bucket, :value),
-          ts_value: ts_meta&.dig(:bucket, :value),
+          claim_type: claim_type,
+          local_value: local_meta&.dig(:claim)&.values&.first,
+          ts_value: ts_meta&.dig(:claim)&.values&.first,
           feature_category: :cell
         }
 
@@ -241,11 +239,10 @@ module Cells
 
       def metadata_from_ts_record(record)
         meta = record.metadata
+        claim_field = meta.claim&.claim
         {
-          bucket: {
-            type: Cells::Claimable::CLAIMS_BUCKET_TYPE.resolve(meta.bucket.type),
-            value: meta.bucket.value
-          },
+          # Read the set oneof variant by name; [] is the protobuf field accessor (not user input).
+          claim: claim_field ? { claim_field => meta.claim[claim_field.to_s] } : {},
           subject: {
             type: Cells::Claimable::CLAIMS_SUBJECT_TYPE.resolve(meta.subject.type),
             id: meta.subject.id

@@ -52,7 +52,7 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   };
 
-  const findFailedJobsButton = () => wrapper.findByTestId('toggle-button');
+  const findFailedJobsButton = () => wrapper.findComponentByTestId('toggle-button');
   const findFailedJobsList = () => wrapper.findComponent(FailedJobsList);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findCount = () => wrapper.findComponent(GlBadge);

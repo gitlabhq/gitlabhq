@@ -117,6 +117,7 @@ export const listIssuablesQueries = {
       severity: 'UNKNOWN',
       timeEstimate: 0,
       title: '',
+      titleHtml: '',
       totalTimeSpent: 0,
       type: 'ISSUE',
       webUrl: '',

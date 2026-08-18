@@ -1,0 +1,24 @@
+- title: "REST API returns 400 for non-numeric IDs on integer path parameters"
+  removal_milestone: "19.3"
+  announcement_milestone: "19.3"
+  breaking_change: true
+  window:
+  reporter: abignotti
+  stage: Developer Experience
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605824
+  check_impact:
+  impact: low
+  impact_details:
+  impact_offering: GitLab.com, Dedicated, self-managed
+  scope: [instance, group, project]
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Several REST API endpoints previously accepted non-numeric or multi-value
+    input on integer-typed path parameters without validating it up front.
+    Instead of a clear error, these requests returned inconsistent responses
+    (`401 Unauthorized`, `404 Not Found`, or in rare latent-bug cases `200 OK`).
+    They now validate the parameter type and return `400 Bad Request`.
+
+    To migrate, send a single numeric ID with each request. Legitimate clients
+    already do this, so no action is required for well-formed requests.

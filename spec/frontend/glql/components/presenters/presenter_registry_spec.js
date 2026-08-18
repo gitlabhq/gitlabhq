@@ -7,6 +7,7 @@ import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
 import CodePresenter from '~/glql/components/presenters/code.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
+import DurationMsPresenter from '~/glql/components/presenters/duration_ms.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
@@ -35,6 +36,7 @@ import {
   MOCK_ASSIGNEES,
   MOCK_CI_STAGE,
   MOCK_DIMENSIONS,
+  MOCK_DUO_USAGE_EVENTS_DIMENSIONS,
   MOCK_EPIC,
   MOCK_GROUP,
   MOCK_ISSUE,
@@ -95,30 +97,35 @@ describe('presenter_registry', () => {
 
     describe('field-key dispatch', () => {
       it.each`
-        fieldKey               | field            | presenter
-        ${'user'}              | ${MOCK_USER}     | ${UserPresenter}
-        ${'health'}            | ${'onTrack'}     | ${HealthPresenter}
-        ${'healthStatus'}      | ${'onTrack'}     | ${HealthPresenter}
-        ${'state'}             | ${'opened'}      | ${StatePresenter}
-        ${'lastComment'}       | ${'lastComment'} | ${HtmlPresenter}
-        ${'type'}              | ${'TASK'}        | ${TypePresenter}
-        ${'duration'}          | ${3600}          | ${DurationPresenter}
-        ${'webPath'}           | ${'/foo'}        | ${UrlPresenter}
-        ${'shortSha'}          | ${'abc123'}      | ${CodePresenter}
-        ${'refName'}           | ${'main'}        | ${CodePresenter}
-        ${'acceptanceRate'}    | ${0.75}          | ${PercentagePresenter}
-        ${'successRate'}       | ${0.95}          | ${PercentagePresenter}
-        ${'failureRate'}       | ${0.04}          | ${PercentagePresenter}
-        ${'canceledRate'}      | ${0.005}         | ${PercentagePresenter}
-        ${'skippedRate'}       | ${0.001}         | ${PercentagePresenter}
-        ${'acceptedCount'}     | ${1234}          | ${NumberPresenter}
-        ${'rejectedCount'}     | ${567}           | ${NumberPresenter}
-        ${'shownCount'}        | ${1801}          | ${NumberPresenter}
-        ${'totalCount'}        | ${10000}         | ${NumberPresenter}
-        ${'usersCount'}        | ${42}            | ${NumberPresenter}
-        ${'suggestionSizeSum'} | ${500000}        | ${NumberPresenter}
-        ${'durationQuantile'}  | ${3661}          | ${DurationPresenter}
-        ${'queuedDuration'}    | ${90}            | ${DurationPresenter}
+        fieldKey                      | field            | presenter
+        ${'user'}                     | ${MOCK_USER}     | ${UserPresenter}
+        ${'health'}                   | ${'onTrack'}     | ${HealthPresenter}
+        ${'healthStatus'}             | ${'onTrack'}     | ${HealthPresenter}
+        ${'state'}                    | ${'opened'}      | ${StatePresenter}
+        ${'lastComment'}              | ${'lastComment'} | ${HtmlPresenter}
+        ${'type'}                     | ${'TASK'}        | ${TypePresenter}
+        ${'duration'}                 | ${3600}          | ${DurationPresenter}
+        ${'webPath'}                  | ${'/foo'}        | ${UrlPresenter}
+        ${'shortSha'}                 | ${'abc123'}      | ${CodePresenter}
+        ${'refName'}                  | ${'main'}        | ${CodePresenter}
+        ${'acceptanceRate'}           | ${0.75}          | ${PercentagePresenter}
+        ${'successRate'}              | ${0.95}          | ${PercentagePresenter}
+        ${'failureRate'}              | ${0.04}          | ${PercentagePresenter}
+        ${'canceledRate'}             | ${0.005}         | ${PercentagePresenter}
+        ${'skippedRate'}              | ${0.001}         | ${PercentagePresenter}
+        ${'acceptedCount'}            | ${1234}          | ${NumberPresenter}
+        ${'rejectedCount'}            | ${567}           | ${NumberPresenter}
+        ${'shownCount'}               | ${1801}          | ${NumberPresenter}
+        ${'totalCount'}               | ${10000}         | ${NumberPresenter}
+        ${'usersCount'}               | ${42}            | ${NumberPresenter}
+        ${'suggestionSizeSum'}        | ${500000}        | ${NumberPresenter}
+        ${'throughputCount'}          | ${25}            | ${NumberPresenter}
+        ${'featuresCount'}            | ${3}             | ${NumberPresenter}
+        ${'returningUsersCount'}      | ${12}            | ${NumberPresenter}
+        ${'previousPeriodUsersCount'} | ${8}             | ${NumberPresenter}
+        ${'durationQuantile'}         | ${3661}          | ${DurationPresenter}
+        ${'timeToMergeQuantile'}      | ${250000}        | ${DurationMsPresenter}
+        ${'queuedDuration'}           | ${90}            | ${DurationPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {
@@ -140,10 +147,10 @@ describe('presenter_registry', () => {
         );
       });
 
-      it('resolves status on FinishedPipelinesAggregationResponseDimensions to CiStatusPresenter', () => {
+      it('resolves status on PipelinesAggregationResponseDimensions to CiStatusPresenter', () => {
         expect(
           presenterFor(
-            { __typename: 'FinishedPipelinesAggregationResponseDimensions', status: 'SUCCESS' },
+            { __typename: 'PipelinesAggregationResponseDimensions', status: 'SUCCESS' },
             'status',
           ),
         ).toBe(CiStatusPresenter);
@@ -161,6 +168,10 @@ describe('presenter_registry', () => {
         );
       });
 
+      it('resolves user on Duo usage events dimensions to UserAvatarPresenter', () => {
+        expect(presenterFor(MOCK_DUO_USAGE_EVENTS_DIMENSIONS, 'user')).toBe(UserAvatarPresenter);
+      });
+
       it('resolves user on other typenames to UserPresenter', () => {
         expect(presenterFor({ user: MOCK_USER }, 'user')).toBe(UserPresenter);
       });
@@ -171,7 +182,7 @@ describe('presenter_registry', () => {
     });
 
     describe('variant dispatch', () => {
-      const compact = 'compact';
+      const compact = { variant: 'compact' };
 
       it('resolves user field key with compact variant to UserPresenter', () => {
         expect(presenterFor({ user: MOCK_USER }, 'user', compact)).toBe(UserPresenter);
@@ -195,6 +206,29 @@ describe('presenter_registry', () => {
 
       it('resolves a Project with default variant to ProjectPresenter', () => {
         expect(presenterFor({ key: MOCK_PROJECT }, 'key')).toBe(ProjectPresenter);
+      });
+    });
+
+    describe('decoupled data and presenter keys', () => {
+      it('resolves data by the data key while dispatching by the presenter key', () => {
+        const presenter = presenterFor({ p50: 3661 }, 'p50', {
+          presenterKey: 'durationQuantile',
+        });
+
+        expect(presenter).not.toBe(NullPresenter);
+        expect(presenter).toBe(DurationPresenter);
+      });
+
+      it('routes aliased fields without a registered presenter by primitive type of the data', () => {
+        expect(
+          presenterFor({ Monthly: '2026-06-01' }, 'Monthly', { presenterKey: 'timestamp' }),
+        ).toBe(TimePresenter);
+      });
+
+      it('returns NullPresenter when the value under the data key is null', () => {
+        expect(presenterFor({ p50: null }, 'p50', { presenterKey: 'durationQuantile' })).toBe(
+          NullPresenter,
+        );
       });
     });
 

@@ -313,7 +313,7 @@ Format the `success` value based on what the endpoint returns:
   ```
 
 - If no `example:` or `examples:` is provided, and a `model:` is defined, an example is
-generated automatically — either from `documentation: { example: ... }` values on the
+generated automatically - either from `documentation: { example: ... }` values on the
 entity fields, or from field types if no field-level examples are defined.
 - If the endpoint responds with an object and you want to illustrate a complete response
   body or provide multiple possible response body examples, use `example:` for a single
@@ -482,6 +482,28 @@ end
 The `limit:` validator is implemented in
 [`API::Validations::Validators::Limit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/limit.rb)
 and rejects values longer than the configured size.
+
+### Shared route requirements
+
+Route requirement constants such as `NAMESPACE_OR_PROJECT_REQUIREMENTS` live on
+the `API` module in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api.rb),
+not on the `API::API` class in `lib/api/api.rb`. Always reference them with a
+leading `::`:
+
+```ruby
+# good
+resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+end
+
+# bad - without the leading ::, `API` resolves to the `API::API` class
+resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+end
+```
+
+`API::API` mounts every endpoint, so resolving a constant on it from an
+endpoint's class body autoloads the entire API surface. When a previously
+mounted endpoint reads back a constant from the endpoint that is still loading,
+this raises a `NameError`.
 
 ## Breaking changes
 
@@ -822,7 +844,7 @@ be seen in
 [the `Issue` model](https://gitlab.com/gitlab-org/gitlab/-/blob/2fedc47b97837ea08c3016cf2fb773a0300a4a25/app%2Fmodels%2Fissue.rb#L62).
 
 In situations where the same model has multiple entities in the API
-(for instance, `UserBasic`, `User` and `UserPublic`) you should use your
+(for instance, `UserBasic`, `User`, and `UserPublic`) you should use your
 discretion with applying this scope. It may be that you optimize for the
 most basic entity, with successive entities building upon that scope.
 

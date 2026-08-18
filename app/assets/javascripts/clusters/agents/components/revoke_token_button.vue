@@ -7,6 +7,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import { REVOKE_TOKEN_MODAL_ID } from '../constants';
@@ -15,6 +16,7 @@ import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.gra
 import { removeTokenFromStore } from '../graphql/cache_update';
 
 export default {
+  name: 'RevokeTokenButton',
   components: {
     GlButton,
     GlTooltip,
@@ -26,6 +28,7 @@ export default {
   directives: {
     GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['agentName', 'projectPath', 'canAdminCluster'],
   props: {
     token: {

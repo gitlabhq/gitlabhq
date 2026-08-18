@@ -35,7 +35,7 @@ describe('CsvImportExportButtons', () => {
 
   const findExportCsvButton = () => wrapper.findByTestId('export-as-csv-button');
   const findImportCsvButton = () => wrapper.findByTestId('import-from-csv-button');
-  const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
+  const findImportFromJiraLink = () => wrapper.findComponentByTestId('import-from-jira-link');
   const findExportCsvModal = () => wrapper.findComponent(CsvExportModal);
   const findImportCsvModal = () => wrapper.findComponent(CsvImportModal);
 

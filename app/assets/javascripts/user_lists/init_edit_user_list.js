@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import EditUserList from './components/edit_user_list.vue';
 import { useEditUserList } from './store/edit';
@@ -14,13 +14,11 @@ export const initEditUserList = () => {
 
   useEditUserList(pinia).$patch({ projectId, userListIid });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'FeatureFlagsEditUserListRoot',
     pinia,
     provide: { userListsDocsPath },
-    render(h) {
-      return h(EditUserList, {});
-    },
+    component: EditUserList,
   });
 };

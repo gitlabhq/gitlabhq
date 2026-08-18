@@ -43,8 +43,8 @@ Rails.application.configure do
   config.action_view.annotate_rendered_view_with_filenames = true
 
   # ViewComponent & Lookbook previews
-  config.view_component.default_preview_layout = "component_preview"
-  config.view_component.preview_route = "/-/view_component/previews"
+  config.view_component.previews.default_layout = "component_preview"
+  config.view_component.previews.route = "/-/view_component/previews"
   config.lookbook.preview_paths = ["#{config.root}/spec/components/previews"]
   # Push preview path now to prevent FrozenError during initialzer
   config.autoload_paths.push("#{config.root}/spec/components/previews")

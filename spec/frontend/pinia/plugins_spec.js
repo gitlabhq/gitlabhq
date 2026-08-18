@@ -1,8 +1,9 @@
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Vue from 'vue';
-import { createPinia, defineStore, setActivePinia } from 'pinia';
+import { defineStore, setActivePinia } from 'pinia';
 import { syncWithVuex } from '~/pinia/plugins';
+import { createTestPinia } from 'helpers/pinia_helpers';
 import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(Vuex);
@@ -125,7 +126,7 @@ describe('Pinia plugins', () => {
         () => {
           createVuexStore();
           createPiniaStore();
-          setActivePinia(createPinia().use(syncWithVuex));
+          setActivePinia(createTestPinia().use(syncWithVuex));
         },
       ],
       [
@@ -135,7 +136,7 @@ describe('Pinia plugins', () => {
           namespaced = true;
           createVuexStoreWithModule();
           createPiniaStore();
-          setActivePinia(createPinia().use(syncWithVuex));
+          setActivePinia(createTestPinia().use(syncWithVuex));
         },
       ],
       [
@@ -145,7 +146,7 @@ describe('Pinia plugins', () => {
           namespaced = false;
           createVuexStoreWithModule();
           createPiniaStore();
-          setActivePinia(createPinia().use(syncWithVuex));
+          setActivePinia(createTestPinia().use(syncWithVuex));
         },
       ],
       [
@@ -155,7 +156,7 @@ describe('Pinia plugins', () => {
           namespaced = false;
           createVuexStoreWithModule();
           createPiniaStore(undefined);
-          setActivePinia(createPinia().use(syncWithVuex));
+          setActivePinia(createTestPinia().use(syncWithVuex));
           usePiniaStore().syncWith(createSyncWithConfig());
           // attach twice to test proper unsubscribe
           usePiniaStore().syncWith(createSyncWithConfig());

@@ -283,10 +283,15 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         deployment.block!
       end
 
-      it 'does not execute Deployments::HooksWorker' do
-        expect(Deployments::HooksWorker).not_to receive(:perform_async)
+      it 'executes Deployments::HooksWorker asynchronously' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async)
+                  .with(hash_including({ 'deployment_id' => deployment.id, 'status' => 'blocked',
+                                         'status_changed_at' => Time.current.to_s }))
 
-        deployment.block!
+          deployment.block!
+        end
       end
     end
 
@@ -1070,12 +1075,12 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     let(:user) { create(:user) }
     let(:deployment) { create(:deployment, user: user) }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     context 'when deployment triggerer is different' do
       let(:deployment) { create(:deployment) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -1231,7 +1236,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       expect(Deployments::ArchiveInProjectWorker).to receive(:perform_async)
       expect(Deployments::HooksWorker).to receive(:perform_async)
 
-      expect(deploy.update_status('success')).to eq(true)
+      expect(deploy.update_status('success')).to be(true)
     end
 
     it 'updates finished_at when transitioning to a finished status' do
@@ -1248,7 +1253,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         .to receive(:track_exception)
         .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
 
-        expect(deploy.update_status('running')).to eq(false)
+        expect(deploy.update_status('running')).to be(false)
       end
 
       it 'tracks an exception' do
@@ -1258,7 +1263,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         .to receive(:track_exception)
         .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
 
-        expect(deploy.update_status('created')).to eq(false)
+        expect(deploy.update_status('created')).to be(false)
       end
     end
 
@@ -1267,7 +1272,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         .to receive(:track_exception)
         .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
 
-      expect(deploy.update_status('recreate')).to eq(false)
+      expect(deploy.update_status('recreate')).to be(false)
     end
 
     context 'when mapping status to event' do
@@ -1327,7 +1332,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         it 'changes deployment status' do
           expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-          is_expected.to eq(true)
+          is_expected.to be(true)
 
           expect(deployment.status).to eq(expected_deployment_status)
           expect(deployment.errors).to be_empty
@@ -1346,7 +1351,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             end
           )
 
-          is_expected.to eq(false)
+          is_expected.to be(false)
 
           expect(deployment.status).to eq(deployment_status.to_s)
           expect(deployment.errors.full_messages).to include(error_message)
@@ -1357,7 +1362,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         it 'does not change deployment status' do
           expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-          is_expected.to eq(false)
+          is_expected.to be(false)
 
           expect(deployment.status).to eq(deployment_status.to_s)
           expect(deployment.errors).to be_empty

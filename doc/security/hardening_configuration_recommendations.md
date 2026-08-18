@@ -18,7 +18,7 @@ change to ensure everything is working.
 
 NGINX is used to serve up the web interface used to access the GitLab instance. As
 NGINX is controlled and integrated into GitLab, modification of the
-`/etc/gitlab/gitlab.rb` file used for adjustments. Here are a few recommendations for helping to improve
+`/etc/gitlab/gitlab.rb` file is used for adjustments. Here are a few recommendations for helping to improve
 the security of NGINX itself:
 
 1. Create the [Diffie-Hellman key](https://nginx.org/en/docs/http/ngx_http_ssl_module.html#ssl_dhparam):
@@ -149,7 +149,7 @@ legitimate. Follow the instructions on [signing outgoing email](../administratio
 
 ## Container registry
 
-If Lets Encrypt is configured, the container registry is enabled by default. This
+If Let's Encrypt is configured, the container registry is enabled by default. This
 allows projects to store their own Docker images. Follow the instructions for
 configuring the [container registry](../administration/packages/container_registry.md),
 so you can do things like restrict automatic enablement on new projects and

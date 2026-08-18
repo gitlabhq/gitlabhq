@@ -50,7 +50,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
         before { authorize_admin_project_integrations }
 
@@ -75,9 +75,9 @@ module API
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
-        resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc "Trigger a slash command for #{integration_slug}" do
-            detail 'Added in GitLab 8.13'
+            detail "Triggers a slash command for #{integration_slug}."
             failure [
               { code: 401, message: 'Unauthorized' },
               { code: 404, message: 'Not found' }
@@ -86,7 +86,9 @@ module API
           end
           params do
             settings.each do |setting|
+              # rubocop:disable API/ParameterType -- `setting[:type]` is a dynamic value, cop does not recognise this pattern
               requires setting[:name], type: setting[:type], desc: setting[:desc]
+              # rubocop:enable API/ParameterType
             end
           end
           route_setting :authorization, skip_granular_token_authorization: :integration_token_auth
@@ -116,7 +118,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
       end
 
-      resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
         before { authorize_admin_group_integrations }
 
@@ -130,8 +132,8 @@ module API
       end
     end
 
-    desc "Trigger a global slack command" do
-      detail 'Added in GitLab 9.4'
+    desc 'Trigger a global slack command' do
+      detail 'Triggers a global slack command.'
       failure [
         { code: 401, message: 'Unauthorized' }
       ]

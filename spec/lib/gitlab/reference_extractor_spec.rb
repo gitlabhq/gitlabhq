@@ -135,6 +135,19 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
     expect(subject.issues).to match_array([@i0, @i1])
   end
 
+  describe '#issues_and_work_items' do
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:task) { create(:work_item, :task, project: project) }
+
+    it 'combines issues and work items and removes duplicates by ID' do
+      subject.analyze(
+        "#{issue.to_reference}, #{Gitlab::UrlBuilder.build(issue)}, and #{Gitlab::UrlBuilder.build(task)}"
+      )
+
+      expect(subject.issues_and_work_items).to contain_exactly(issue, task)
+    end
+  end
+
   it 'accesses valid merge requests' do
     @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'markdown')
     @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'feature_conflict')

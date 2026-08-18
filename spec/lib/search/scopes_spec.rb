@@ -130,6 +130,17 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
         expect(scopes).to include('merge_requests', 'milestones', 'projects', 'users', 'work_items')
         expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
       end
+
+      it 'excludes API-only scopes when requested' do
+        scopes = described_class.available_for_context(
+          context: :global,
+          requested_search_type: :basic,
+          include_api_only: false
+        )
+
+        expect(scopes).to include('work_items')
+        expect(scopes).not_to include('issues')
+      end
     end
 
     context 'for project context' do
@@ -148,7 +159,7 @@ RSpec.describe Search::Scopes, feature_category: :global_search do
         scopes = described_class.available_for_context(context: :group, requested_search_type: :basic)
 
         expect(scopes).to include('work_items', 'merge_requests', 'milestones', 'projects', 'users')
-        expect(scopes).not_to include('blobs', 'commits', 'notes', 'wiki_blobs')
+        expect(scopes).not_to include('blobs', 'commits', 'notes', 'snippet_titles', 'wiki_blobs')
       end
     end
 

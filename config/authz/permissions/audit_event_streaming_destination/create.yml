@@ -1,0 +1,3 @@
+---
+name: create_audit_event_streaming_destination
+description: Grants the ability to create audit event streaming destinations

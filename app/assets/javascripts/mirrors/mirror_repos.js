@@ -22,6 +22,11 @@ export default class MirrorRepos {
   init() {
     this.initMirrorPush();
     this.registerUpdateListeners();
+    if (this.hasLegacyTable()) this.registerTableListeners();
+  }
+
+  hasLegacyTable() {
+    return this.$table.length > 0;
   }
 
   initMirrorPush() {
@@ -88,6 +93,9 @@ export default class MirrorRepos {
     this.debouncedUpdateUrl = debounce(() => this.updateUrl(), 200);
     this.$urlInput.on('input', () => this.debouncedUpdateUrl());
     this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
+  }
+
+  registerTableListeners() {
     this.$table.on('click', '.js-delete-mirror', (event) => this.deleteMirror(event));
   }
 

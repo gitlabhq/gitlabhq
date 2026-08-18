@@ -1,0 +1,13 @@
+---
+table_name: security_scan_profile_configurations
+classes:
+- Security::ScanProfiles::Configuration
+feature_categories:
+- security_asset_inventories
+description: Stores trigger-level configuration for security scan profiles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245440
+milestone: '19.3'
+gitlab_schema: gitlab_sec
+sharding_key:
+  namespace_id: namespaces
+table_size: small

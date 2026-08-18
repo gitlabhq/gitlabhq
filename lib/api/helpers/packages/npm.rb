@@ -9,7 +9,7 @@ module API
         extend ::Gitlab::Utils::Override
 
         NPM_ENDPOINT_REQUIREMENTS = {
-          package_name: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
+          package_name: ::API::NO_SLASH_URL_PART_REGEX
         }.freeze
 
         def project_or_nil
@@ -23,6 +23,13 @@ module API
 
         def enqueue_sync_npm_metadata_cache_worker(project, package_name)
           ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project.id, package_name)
+        end
+
+        # npm tarball filenames are `<unscoped-name>-<version>.tgz`.
+        def version_from_filename(package_name, file_name)
+          unscoped = package_name.split('/').last
+
+          file_name[/\A#{Regexp.escape(unscoped)}-(.+)\.tgz\z/, 1]
         end
 
         private

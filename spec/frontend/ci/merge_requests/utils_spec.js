@@ -1,114 +1,104 @@
-import { updateDownstreamPipelineInList } from '~/ci/merge_requests/utils';
-import { generateMockPipeline, generateMockDownstreamPipeline } from './mock_data';
+import { createSubscriptionsCollection } from '~/ci/merge_requests/utils';
 
-describe('Pipelines utility functions', () => {
-  describe('updateDownstreamPipelineInList', () => {
-    const downstreamRunning = generateMockDownstreamPipeline({ id: '100', status: 'RUNNING' });
-    const downstreamPending = generateMockDownstreamPipeline({ id: '200', status: 'PENDING' });
+describe('ci merge_requests utils', () => {
+  describe('createSubscriptionsCollection', () => {
+    let collection;
+    let unsubscribeMocks;
+    let factory;
 
-    const parentPipeline = {
-      ...generateMockPipeline({ id: '1' }),
-      graphqlId: 'gid://gitlab/Ci::Pipeline/1',
-      downstream: {
-        nodes: [downstreamRunning, downstreamPending],
-        __typename: 'PipelineConnection',
-      },
-    };
-
-    const otherPipeline = {
-      ...generateMockPipeline({ id: '2' }),
-      graphqlId: 'gid://gitlab/Ci::Pipeline/2',
-    };
-
-    const pipelines = [parentPipeline, otherPipeline];
-
-    const newStatus = {
-      id: 'success-100-100',
-      name: 'SUCCESS',
-      icon: 'status_success',
-      text: 'Passed',
-      tooltip: 'passed',
-      label: 'passed',
-      __typename: 'DetailedStatus',
-    };
-
-    const updatedDownstream = { id: downstreamRunning.id, detailedStatus: newStatus };
-
-    it('updates the correct downstream pipeline status', () => {
-      const result = updateDownstreamPipelineInList(pipelines, {
-        parentGraphqlId: parentPipeline.graphqlId,
-        updatedDownstream,
+    beforeEach(() => {
+      unsubscribeMocks = new Map();
+      factory = jest.fn((id) => {
+        const unsubscribe = jest.fn();
+        unsubscribeMocks.set(id, unsubscribe);
+        return unsubscribe;
       });
-
-      const updatedNodes = result[0].downstream.nodes;
-      expect(updatedNodes[0].detailedStatus).toEqual(newStatus);
-      expect(updatedNodes[1]).toEqual(downstreamPending);
-      expect(result[1]).toBe(otherPipeline);
+      collection = createSubscriptionsCollection();
     });
 
-    it('returns the input unchanged when parent not found', () => {
-      const result = updateDownstreamPipelineInList(pipelines, {
-        parentGraphqlId: 'gid://gitlab/Ci::Pipeline/999',
-        updatedDownstream,
+    describe('syncSubscriptions', () => {
+      it('subscribes to every id when there are no existing subscriptions', () => {
+        collection.syncSubscriptions(['1', '2'], factory);
+
+        expect(factory).toHaveBeenCalledTimes(2);
+        expect(factory).toHaveBeenCalledWith('1');
+        expect(factory).toHaveBeenCalledWith('2');
       });
 
-      expect(result).toEqual(pipelines);
+      it('does not resubscribe to ids that are already subscribed', () => {
+        collection.syncSubscriptions(['1', '2'], factory);
+        factory.mockClear();
+
+        collection.syncSubscriptions(['1', '2'], factory);
+
+        expect(factory).not.toHaveBeenCalled();
+      });
+
+      it('subscribes only to newly added ids', () => {
+        collection.syncSubscriptions(['1'], factory);
+        factory.mockClear();
+
+        collection.syncSubscriptions(['1', '2'], factory);
+
+        expect(factory).toHaveBeenCalledTimes(1);
+        expect(factory).toHaveBeenCalledWith('2');
+      });
+
+      it('unsubscribes from ids that are no longer desired', () => {
+        collection.syncSubscriptions(['1', '2'], factory);
+
+        collection.syncSubscriptions(['1'], factory);
+
+        expect(unsubscribeMocks.get('2')).toHaveBeenCalledTimes(1);
+        expect(unsubscribeMocks.get('1')).not.toHaveBeenCalled();
+      });
+
+      it('resubscribes to an id that was removed and then desired again', () => {
+        collection.syncSubscriptions(['1'], factory);
+
+        collection.syncSubscriptions([], factory);
+        factory.mockClear();
+
+        collection.syncSubscriptions(['1'], factory);
+
+        expect(factory).toHaveBeenCalledTimes(1);
+        expect(factory).toHaveBeenCalledWith('1');
+      });
+
+      it('unsubscribes from all ids when synced with an empty list', () => {
+        collection.syncSubscriptions(['1', '2'], factory);
+
+        collection.syncSubscriptions([], factory);
+
+        expect(unsubscribeMocks.get('1')).toHaveBeenCalledTimes(1);
+        expect(unsubscribeMocks.get('2')).toHaveBeenCalledTimes(1);
+      });
     });
 
-    it('returns the input unchanged when downstream not found', () => {
-      const result = updateDownstreamPipelineInList(pipelines, {
-        parentGraphqlId: parentPipeline.graphqlId,
-        updatedDownstream: { id: 'gid://gitlab/Ci::Pipeline/999', detailedStatus: newStatus },
+    describe('unsubscribeAll', () => {
+      it('unsubscribes from every current subscription', () => {
+        collection.syncSubscriptions(['1', '2'], factory);
+
+        collection.unsubscribeAll();
+
+        expect(unsubscribeMocks.get('1')).toHaveBeenCalledTimes(1);
+        expect(unsubscribeMocks.get('2')).toHaveBeenCalledTimes(1);
       });
 
-      expect(result).toEqual(pipelines);
-    });
+      it('clears the collection so a subsequent sync resubscribes', () => {
+        collection.syncSubscriptions(['1'], factory);
+        collection.unsubscribeAll();
+        factory.mockClear();
 
-    it('does not mutate the original pipelines array', () => {
-      const originalStatus = { ...downstreamRunning.detailedStatus };
+        collection.syncSubscriptions(['1'], factory);
 
-      updateDownstreamPipelineInList(pipelines, {
-        parentGraphqlId: parentPipeline.graphqlId,
-        updatedDownstream,
+        expect(factory).toHaveBeenCalledTimes(1);
+        expect(factory).toHaveBeenCalledWith('1');
       });
 
-      expect(pipelines[0].downstream.nodes[0].detailedStatus).toEqual(originalStatus);
-    });
-
-    it('preserves other properties of the downstream pipeline', () => {
-      const result = updateDownstreamPipelineInList(pipelines, {
-        parentGraphqlId: parentPipeline.graphqlId,
-        updatedDownstream,
+      it('does not throw when there are no subscriptions', () => {
+        expect(() => collection.unsubscribeAll()).not.toThrow();
       });
-
-      const downstream = result[0].downstream.nodes[0];
-      expect(downstream.id).toBe(downstreamRunning.id);
-      expect(downstream.name).toBe(downstreamRunning.name);
-      expect(downstream.project).toEqual(downstreamRunning.project);
-    });
-
-    it('returns the input unchanged for empty array', () => {
-      const result = updateDownstreamPipelineInList([], {
-        parentGraphqlId: parentPipeline.graphqlId,
-        updatedDownstream,
-      });
-
-      expect(result).toEqual([]);
-    });
-
-    it('handles a pipeline with no downstream nodes', () => {
-      const pipelineNoDownstream = {
-        ...generateMockPipeline({ id: '3' }),
-        graphqlId: 'gid://gitlab/Ci::Pipeline/3',
-        downstream: { nodes: [], __typename: 'PipelineConnection' },
-      };
-
-      const result = updateDownstreamPipelineInList([pipelineNoDownstream], {
-        parentGraphqlId: pipelineNoDownstream.graphqlId,
-        updatedDownstream: { id: 'gid://gitlab/Ci::Pipeline/100', detailedStatus: newStatus },
-      });
-
-      expect(result).toEqual([pipelineNoDownstream]);
     });
   });
 });

@@ -2,11 +2,7 @@
 
 module QA
   RSpec.describe 'Tenant Scale', feature_category: :organization do
-    describe 'Invite group', quarantine: {
-      type: :bug,
-      issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24033",
-      only: { pipeline: %i[canary production] }
-    } do
+    describe 'Invite group' do
       shared_examples 'invites group to project' do
         it 'grants group and members correct access level' do
           Page::Project::Menu.perform(&:go_to_members)
@@ -40,8 +36,7 @@ module QA
         project.visit!
       end
 
-      context 'with a personal namespace project',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349223' do
+      context 'with a personal namespace project' do
         let(:group) { create(:group, path: "group-for-personal-project-#{SecureRandom.hex(8)}") }
 
         let(:project) do
@@ -55,7 +50,7 @@ module QA
         it_behaves_like 'invites group to project'
       end
 
-      context 'with a group project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349340' do
+      context 'with a group project' do
         let(:group) { create(:group, path: "group-for-group-project-#{SecureRandom.hex(8)}") }
         let(:project) { create(:project, :private, name: 'group-project', description: 'test group project') }
 

@@ -15,7 +15,7 @@ title: Experiments API
 Use this API to interact with A/B experiments. This API is for internal use only.
 It cannot be used with anonymous or unauthenticated users. For experiments
 involving anonymous users, use the
-[`glex_force` query parameter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment#forced-variant-assignment-qauat)
+[`glex_force` query parameter](../development/experiment_guide/implementing_experiments.md#client-side-glex_force-query-parameter)
 instead.
 
 Prerequisites:
@@ -24,8 +24,20 @@ Prerequisites:
 
 ## List all experiments
 
+{{< history >}}
+
+- `context` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248274) in GitLab 19.3.
+
+{{< /history >}}
+
 Lists all experiments on the GitLab instance. Each experiment has an `enabled` status that indicates
 whether the experiment is enabled globally, or only in specific contexts.
+
+Each experiment also exposes a `context` array with the context keys the experiment declares:
+`user`, `namespace`, `project`, or `actor`. Pass these keys when you
+[force, read, or clear a variant assignment](#experiment-assignments). For an `actor` key, pass the
+`context[user]` parameter, because GitLab resolves the actor from the user. The array is empty for
+experiments that declare no context keys.
 
 ```plaintext
 GET /experiments
@@ -43,6 +55,7 @@ Example response:
 [
   {
     "key": "code_quality_walkthrough",
+    "context": ["user"],
     "definition": {
       "name": "code_quality_walkthrough",
       "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58900",
@@ -68,6 +81,7 @@ Example response:
   },
   {
     "key": "ci_runner_templates",
+    "context": ["user", "namespace"],
     "definition": {
       "name": "ci_runner_templates",
       "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58357",
@@ -129,13 +143,52 @@ curl --request DELETE \
 
 ## Experiment assignments
 
-Use this endpoint to read experiment variant assignments
+Use these endpoints to force and read experiment variant assignments
 in the GLEX Redis cache. This is useful for backend-only experiments that run
 outside of a request/response cycle, where the `glex_force` query parameter
 is not available.
 
 The experiment must declare `context_keys` in its experiment class in
-`app/experiments`.
+`app/experiments`. For more information, see
+[Force variant assignment](../development/experiment_guide/implementing_experiments.md#force-variant-assignment).
+
+### Force a variant assignment
+
+Write a variant assignment to the experiment cache for a given context.
+
+```plaintext
+POST /experiments/:experiment_name/assignments
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `experiment_name` | string | Yes | Name of the experiment. |
+| `variant` | string | Yes | Variant name to assign (for example, `control`, `candidate`). |
+| `context[user]` | string | No | Username for context. |
+| `context[namespace]` | string | No | Full path of the namespace for context. |
+| `context[project]` | string | No | Full path of the project for context. |
+
+If you omit the `context` parameter, the API uses the authenticated user.
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments" \
+  --data "variant=candidate" \
+  --data "context[user]=sidney-jones"
+```
+
+Example response:
+
+```json
+{
+  "experiment": "my_experiment",
+  "variant": "candidate",
+  "context_key": "my_experiment:a1b2c3d4e5f6"
+}
+```
 
 ### Get the current assignment
 
@@ -169,7 +222,7 @@ Example request for an experiment with a `user` context:
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=john-doe"
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=sidney-jones"
 ```
 
 Example request for an experiment with a `namespace` context:
@@ -185,7 +238,7 @@ Example request for an experiment that declares `context_keys :user, :namespace`
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=john-doe&context[namespace]=my-group"
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=sidney-jones&context[namespace]=my-group"
 ```
 
 Example response:
@@ -197,4 +250,38 @@ Example response:
   "context_key": "my_experiment:a1b2c3d4e5f6",
   "cached": true
 }
+```
+
+### Clear a variant assignment
+
+Remove a forced variant assignment from the experiment cache for a given context,
+returning the actor to normal rollout assignment.
+
+```plaintext
+DELETE /experiments/:experiment_name/assignments
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `experiment_name` | string | Yes | Name of the experiment. |
+| `context[user]` | string | No | Username for context. |
+| `context[namespace]` | string | No | Full path of the namespace for context. |
+| `context[project]` | string | No | Full path of the project for context. |
+
+Context resolution matches [Get the current assignment](#get-the-current-assignment):
+if you omit `context[user]`, the API uses the authenticated user, and if the
+experiment declares `actor`, the actor is resolved from `context[user]`.
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+The operation is idempotent: clearing a context that has no cached assignment also returns `204 No Content`.
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=sidney-jones"
 ```

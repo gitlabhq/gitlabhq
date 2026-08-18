@@ -22,6 +22,17 @@ RSpec.describe 'Updating a squash option', feature_category: :source_code_manage
     stub_licensed_features(branch_rule_squash_options: true)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_squash_option do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:branch_rule_squash_option_update,
+          { branch_rule_id: branch_rule.to_global_id.to_s, squash_option: 'NEVER' }, 'errors'),
+        token: { personal_access_token: pat })
+    end
+  end
+
   context 'when the user does not have permission' do
     it_behaves_like 'a mutation that returns top-level errors',
       errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]

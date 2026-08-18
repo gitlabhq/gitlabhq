@@ -112,9 +112,17 @@ module Gitlab
           end
 
           nil
-        rescue StandardError
-          # if bad regex or something goes wrong we dont want to interrupt transition
-          # so we just silently ignore error for now
+        rescue StandardError => e
+          # Extraction must not interrupt the build transition, but the failure is not
+          # necessarily a bad regex: the scan reads the whole trace, so a timeout against
+          # object storage ends up here too. Track it instead of discarding it.
+          #
+          # Returning nil explicitly: the tracking call returns a truthy value, and
+          # callers write the result to Ci::Build#coverage.
+          metrics.increment_error_counter(error_reason: :coverage_extraction_failed)
+          Gitlab::ErrorTracking.track_exception(e, stream_class: stream.class.name)
+
+          nil
         end
 
         def extract_sections
@@ -155,33 +163,35 @@ module Gitlab
           result
         end
 
-        def reverse_line_with_max_size(max_size)
+        def reverse_line_with_max_size(max_size, &block)
+          each_line_backward(max_size, &block)
+        end
+
+        def reverse_line(&block)
+          each_line_backward(&block)
+        end
+
+        def each_line_backward(max_size = nil)
           stream.seek(0, IO::SEEK_END)
-          debris = ''
-          sizeleft = max_size
+          # Chunks are accumulated (in reverse file order) and joined only
+          # once a chunk contains a newline: joining on every step would be
+          # quadratic across newline-free segments such as progress bars.
+          chunks = []
+          sizeleft = max_size || stream.tell
 
           until sizeleft <= 0 || (buf = read_backward([BUFFER_SIZE, sizeleft].min)).empty?
             sizeleft -= buf.bytesize
-            debris, *lines = (buf + debris).each_line.to_a
+            chunks << buf
+            next unless buf.include?("\n")
+
+            debris, *lines = chunks.reverse!.join.each_line.to_a
+            chunks = [debris]
             lines.reverse_each do |line|
               yield(line.force_encoding(Encoding.default_external))
             end
           end
 
-          yield(debris.force_encoding(Encoding.default_external)) unless debris.empty?
-        end
-
-        def reverse_line
-          stream.seek(0, IO::SEEK_END)
-          debris = ''
-
-          until (buf = read_backward(BUFFER_SIZE)).empty?
-            debris, *lines = (buf + debris).each_line.to_a
-            lines.reverse_each do |line|
-              yield(line.force_encoding(Encoding.default_external))
-            end
-          end
-
+          debris = chunks.reverse!.join
           yield(debris.force_encoding(Encoding.default_external)) unless debris.empty?
         end
 

@@ -58,6 +58,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expected_annotations = {
         # write, non-destructive
+        'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_merge_request_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
@@ -65,6 +66,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         # write, destructive
         'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
+        'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         # read-only
         'get_issue' => { 'readOnlyHint' => true },
         'get_job_log' => { 'readOnlyHint' => true },
@@ -75,12 +77,17 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_merge_request_diffs' => { 'readOnlyHint' => true },
         'get_merge_request_notes' => { 'readOnlyHint' => true },
         'get_merge_request_pipelines' => { 'readOnlyHint' => true },
+        'get_pipeline' => { 'readOnlyHint' => true },
         'get_pipeline_jobs' => { 'readOnlyHint' => true },
+        'get_repository_file' => { 'readOnlyHint' => true },
         'get_saved_view_work_items' => { 'readOnlyHint' => true },
         'get_work_item_types' => { 'readOnlyHint' => true },
         'get_workitem_notes' => { 'readOnlyHint' => true },
+        'list_merge_requests' => { 'readOnlyHint' => true },
+        'list_pipelines' => { 'readOnlyHint' => true },
         'search' => { 'readOnlyHint' => true },
-        'search_labels' => { 'readOnlyHint' => true }
+        'search_labels' => { 'readOnlyHint' => true },
+        'list_wiki_pages' => { 'readOnlyHint' => true }
       }
 
       actual_annotations = json_response['result']['tools'].to_h { |tool| [tool['name'], tool['annotations']] }
@@ -129,6 +136,21 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    it 'derives enum for list_pipelines status, source, order_by, and sort from their Grape values: constraint',
+      :aggregate_failures do
+      post_list_tools
+
+      list_pipelines = json_response['result']['tools'].find { |tool| tool['name'] == 'list_pipelines' }
+      properties = list_pipelines.dig('inputSchema', 'properties')
+
+      expect(properties.dig('status', 'enum')).to eq(::Ci::HasStatus::AVAILABLE_STATUSES)
+      expect(properties.dig('source', 'enum')).to eq(::Ci::Pipeline.sources.keys)
+      expect(properties.dig('order_by', 'enum')).to eq(::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS)
+      expect(properties.dig('sort', 'enum')).to eq(%w[asc desc])
+      expect(properties.dig('created_after', 'type')).to eq('string')
+      expect(properties.dig('created_before', 'type')).to eq('string')
+    end
+
     it 'exposes a well-formed JSON Schema envelope for every tool' do
       post_list_tools
 
@@ -145,7 +167,14 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
           "Tool '#{name}' inputSchema 'properties' must be an object: #{schema.inspect}"
 
         expect(schema['required']).to be_an(Array) if schema.key?('required')
-        expect(schema['additionalProperties']).to be_in([true, false]) if schema.key?('additionalProperties')
+
+        composition_keys = %w[oneOf anyOf allOf $ref]
+        next if composition_keys.any? { |k| schema.key?(k) }
+
+        expect(schema).to have_key('additionalProperties'),
+          "Tool '#{name}' inputSchema must set additionalProperties: #{schema.inspect}"
+        expect(schema['additionalProperties']).to be_in([true, false]),
+          "Tool '#{name}' inputSchema additionalProperties must be a boolean: #{schema.inspect}"
       end
     end
 
@@ -156,7 +185,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expect(tools).not_to be_empty, 'No tools returned'
 
-      expected_icon = Mcp::Tools::IconConfig.gitlab_icons.first.stringify_keys
+      expected_icon = Mcp::Tools::Base::IconConfig.gitlab_icons.first.stringify_keys
 
       tools.each do |tool|
         expect(tool).to have_key('icons')

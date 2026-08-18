@@ -83,11 +83,7 @@ To turn this feature off and remove the **Analyze** item from the left sidebar:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
-
-{{< /history >}}
+This feature is available only for public projects on GitLab.com.
 
 In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
 
@@ -169,6 +165,10 @@ To set this default:
 1. In the left sidebar, select **Settings** > **Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
+
+This setting applies to merge requests with a source branch in this project.
+For merge requests from a fork, the default comes from the fork's setting, not this project's.
+Forks do not inherit this setting when they are created.
 
 ## Add additional webhook triggers for project access token expiration
 

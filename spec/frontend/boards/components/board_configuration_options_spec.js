@@ -16,8 +16,8 @@ describe('BoardConfigurationOptions', () => {
     });
   };
 
-  const backlogListCheckbox = () => wrapper.find('[data-testid="backlog-list-checkbox"]');
-  const closedListCheckbox = () => wrapper.find('[data-testid="closed-list-checkbox"]');
+  const backlogListCheckbox = () => wrapper.findComponent('[data-testid="backlog-list-checkbox"]');
+  const closedListCheckbox = () => wrapper.findComponent('[data-testid="closed-list-checkbox"]');
 
   const checkboxAssert = (backlogCheckbox, closedCheckbox) => {
     expect(backlogListCheckbox().attributes('checked')).toEqual(

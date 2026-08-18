@@ -146,20 +146,18 @@ Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 You can disable the PostgreSQL statement timeout for the current Rails console
 session.
 
-In GitLab 15.11 and earlier, to disable the database statement timeout, run:
-
-```ruby
-ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
-```
-
-In GitLab 16.0 and later, [GitLab uses two database connections by default](../../update/versions/gitlab_16_changes.md#1600). To disable the database statement timeout, run:
+By default, GitLab uses two database connections. To disable the database statement timeout, run:
 
 ```ruby
 ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
 Ci::ApplicationRecord.connection.execute('SET statement_timeout TO 0')
 ```
 
-Instances running GitLab 16.0 and later reconfigured to use a single database connection should disable the database statement timeout using the code for GitLab 15.11 and earlier.
+Instances reconfigured to use a single database connection should disable the database statement timeout by running:
+
+```ruby
+ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
+```
 
 Disabling the database statement timeout affects only the current Rails console session and is
 not persisted in the GitLab production environment or in the next Rails
@@ -460,7 +458,7 @@ a background job to deliver an email notification. This is an example of an
 [Active Record callback](https://guides.rubyonrails.org/active_record_callbacks.html)
 -- code which is designated to run in response to events in the Active Record
 object lifecycle. This is also why using the Rails console is preferred when
-direct changes to data is necessary as changes made via direct database queries
+direct changes to data are necessary as changes made via direct database queries
 do not trigger these callbacks.
 
 It's also possible to update attributes in a single line:

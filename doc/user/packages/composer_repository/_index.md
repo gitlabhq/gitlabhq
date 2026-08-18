@@ -15,7 +15,7 @@ title: Composer packages in the package registry
 
 > [!warning]
 > The Composer package registry for GitLab is under development and isn't ready for production use due to
-> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/work_items/6817) details the remaining
 > work and timelines to make it production ready.
 
 Publish [Composer](https://getcomposer.org/) packages in your project's package registry.
@@ -333,14 +333,6 @@ You can install from source by pulling the Git repository directly. To do so, ei
   ```
 
 #### SSH access
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `composer_use_ssh_source_urls`. Disabled by default.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329246) GitLab 16.5.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135467) in GitLab 16.6. Feature flag `composer_use_ssh_source_urls` removed.
-
-{{< /history >}}
 
 When you install from source, the `composer` configures an
 access to the project's Git repository.

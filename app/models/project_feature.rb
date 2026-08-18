@@ -2,8 +2,14 @@
 
 class ProjectFeature < ApplicationRecord
   include Featurable
+  include SafelyChangeColumnDefault
   extend Gitlab::ConfigHelper
   extend ::Gitlab::Utils::Override
+
+  # The DB default on these columns is being dropped (see the post-deploy migration).
+  # Remove this and the SafelyChangeColumnDefault include in the next minor release:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/603381
+  columns_changing_default :model_registry_access_level, :model_experiments_access_level
 
   # When updating this array, make sure to update rubocop/cop/gitlab/feature_available_usage.rb as well.
   FEATURES = %i[
@@ -30,7 +36,14 @@ class ProjectFeature < ApplicationRecord
     model_registry
   ].freeze
 
-  EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages, :metrics_dashboard]).freeze
+  # model_registry and model_experiments carry no exportable content: the ML relations
+  # (ml_models, ml_experiments, ml_candidates, model versions) are not in the project
+  # import/export tree, only their access-level settings are. Gating custom-template
+  # availability on them would exclude projects without preventing any leak -- the same
+  # reason pages/security_and_compliance/metrics_dashboard are excluded. See
+  # CustomProjectTemplatesFinder.
+  EXPORTABLE_FEATURES =
+    (FEATURES - [:security_and_compliance, :pages, :metrics_dashboard, :model_registry, :model_experiments]).freeze
 
   set_available_features(FEATURES)
 
@@ -81,8 +94,6 @@ class ProjectFeature < ApplicationRecord
   attribute :infrastructure_access_level, default: ENABLED
   attribute :feature_flags_access_level, default: ENABLED
   attribute :environments_access_level, default: ENABLED
-  attribute :model_experiments_access_level, default: ENABLED
-  attribute :model_registry_access_level, default: ENABLED
 
   attribute :package_registry_access_level, default: -> do
     if ::Gitlab.config.packages.enabled
@@ -101,6 +112,7 @@ class ProjectFeature < ApplicationRecord
   end
 
   after_initialize :set_pages_access_level, if: :new_record?
+  after_initialize :set_model_features_access_level, if: :new_record?
   after_initialize :set_default_values, unless: :new_record?
 
   # "enabled" here means "not disabled". It includes private features!
@@ -189,6 +201,20 @@ class ProjectFeature < ApplicationRecord
                                 else
                                   self.project&.public? ? ENABLED : PRIVATE
                                 end
+  end
+
+  # Most project features default to ENABLED regardless of visibility. Model
+  # registry and experiments instead default to ENABLED for public projects and
+  # PRIVATE (member-only) otherwise, matching the member-only access ProjectPolicy
+  # already enforced on non-public projects before this default moved out of the policy.
+  def set_model_features_access_level
+    default_access_level = project&.public? ? ENABLED : PRIVATE
+
+    %w[model_registry_access_level model_experiments_access_level].each do |attr_name|
+      next if @attributes[attr_name].came_from_user?
+
+      write_attribute(attr_name, default_access_level)
+    end
   end
 
   def set_default_values

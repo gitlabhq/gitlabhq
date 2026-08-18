@@ -24,7 +24,7 @@
     user-select: text;
   }
 
-  &:focus {
+  &:focus-visible {
     @apply gl-focus;
   }
 
@@ -308,6 +308,16 @@
     }
   }
 
+  .content-editor-code-block {
+    .hljs-addition {
+      background-color: var(--diff-addition-color);
+    }
+
+    .hljs-deletion {
+      background-color: var(--diff-deletion-color);
+    }
+  }
+
   .dl-content {
     width: 100%;
 
@@ -395,7 +405,7 @@
     border-width: 2px;
   }
 
-  &:focus {
+  &:focus-visible {
     box-shadow: none !important;
   }
 }
@@ -465,7 +475,7 @@
     max-width: var(--immersive-editor-text-width, $immersive-editor-text-width);
   }
 
-  .rte-text-box:focus {
+  .rte-text-box:focus-visible {
     background: inherit;
     box-shadow: none;
   }

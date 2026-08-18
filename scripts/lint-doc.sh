@@ -7,7 +7,7 @@ INFO_COLOR_SET="\e[1;32m"
 COLOR_RESET="\e[0m"
 
 # Directories for projects that are included on the GitLab Docs website in addition to the 'gitlab' project
-EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator cli"
+EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator cli artifact-registry"
 
 cd "$(dirname "$0")/.." || exit 1
 printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Linting '$(pwd)' as $(whoami)...\n"
@@ -87,12 +87,12 @@ elif [ -n "${CI_MERGE_REQUEST_IID}" ]; then
   ruby -r './tooling/lib/tooling/find_changes' -e "Tooling::FindChanges.new(
       from: :api,
       changed_files_pathname: '${DOC_CHANGES_FILE}',
-      file_filter: ->(file) { !file['deleted_file'] && file['new_path'] =~ %r{\A(?:doc/(.*\.md|\.markdownlint|\.vale)|\.vale\.ini|\.markdownlint-cli2.yaml|scripts/lint-doc\.sh|\.gitlab/ci/docs\.gitlab-ci\.yml)} },
+      file_filter: ->(file) { !file['deleted_file'] && file['new_path'] =~ %r{\A(?:doc/(.*\.md|\.markdownlint|\.vale)|tooling/docs/api/tags/(.*\.md|\.markdownlint-cli2\.yaml)|\.vale\.ini|\.markdownlint-cli2.yaml|scripts/lint-doc\.sh|\.gitlab/ci/docs\.gitlab-ci\.yml)} },
       only_new_paths: true
     ).execute"
   if grep -qE "\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml" < $DOC_CHANGES_FILE; then
-    MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md'}
-    MD_DOC_PATH_VALE=${MD_DOC_PATH_VALE:-'doc/'}
+    MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md tooling/docs/api/tags/*.md'}
+    MD_DOC_PATH_VALE=${MD_DOC_PATH_VALE:-'doc/ tooling/docs/api/tags/'}
     printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Vale, Markdownlint, lint-doc.sh, or pipeline configuration changed. Testing all files.\n"
   else
     MD_DOC_PATH=$(cat $DOC_CHANGES_FILE)
@@ -103,8 +103,8 @@ elif [ -n "${CI_MERGE_REQUEST_IID}" ]; then
   fi
   rm $DOC_CHANGES_FILE
 else
-  MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md'}
-  MD_DOC_PATH_VALE=${MD_DOC_PATH_VALE:-'doc/'}
+  MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md tooling/docs/api/tags/*.md'}
+  MD_DOC_PATH_VALE=${MD_DOC_PATH_VALE:-'doc/ tooling/docs/api/tags/'}
   printf "${INFO_COLOR_SET}INFO${COLOR_RESET} No merge request pipeline detected. Running Markdownlint and Vale on all files...\n"
 fi
 

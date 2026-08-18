@@ -589,7 +589,7 @@ To resolve this issue, increase the `max_http_decompressed_size` limit.
 Use one of the following methods:
 
 - Run the following in a
-   [Rails console session](../operations/rails_console.md#starting-a-rails-console-session):
+  [Rails console session](../operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
   ApplicationSetting.update(max_http_decompressed_size: 1000)

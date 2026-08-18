@@ -40,7 +40,7 @@ more flexibility for complex cases.
    {
      id: 3,
      reference: '<agent-reference>',
-     version: 'experimental',
+     version: 'v1',
      name: 'Test Agent',
      description: "An agent for testing"
    }
@@ -127,8 +127,46 @@ Tips:
    Create a new private agent in the AI Catalog with the same prompt and same tools, and enable it on your test project.
    Once results reach desired levels, add to GitLab Duo Workflow Service.
 1. Add prompts to the GitLab Duo Workflow Service to enable testing the agent in your local GDK.
-1. When using AI catalog, the version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `experimental`.
-   When creating the definition in GitLab Duo Workflow Service, the version should be `v1`.
+1. The version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `v1`, regardless of whether
+   the agent is defined in AI Catalog or GitLab Duo Workflow Service.
+
+## Update a foundational agent
+
+Use this process when you change an existing foundational agent's prompt, toolset, or flow
+configuration:
+
+1. Develop and test locally. Make the change in your GDK's `gitlab-ai-gateway` checkout,
+   restart the service with `gdk restart duo-workflow-service`, and iterate on the agent in
+   chat until it behaves as intended. This step is exploratory and shapes the change. See
+   [Developing foundational agents locally](#developing-foundational-agents-locally).
+1. Propose the change. Open a merge request to the
+   [ai-assist repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
+   that updates the flow configuration. Bump the flow version according to the
+   [versioning guidance](#versioning): patch for bug fixes, minor for backwards-compatible
+   additions, major for breaking changes.
+1. Evaluate the change. Unlike exploratory local testing, this step produces objective
+   evidence that the change does not regress the agent. Where the agent has a benchmark or
+   integration test suite, run it, compare the scores against the previous baseline, and
+   record the results in the merge request. See
+   [Integration testing foundational agents](#integration-testing-foundational-agents).
+   Validate the change in at least one full chat session before merging.
+1. Merge the change. The change follows the ai-assist
+   [code review process](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/CONTRIBUTING.md#code-review-process).
+   If the change is a major version, or changes the agent's name or description, open a paired
+   merge request to the GitLab application (`gitlab-org/gitlab`) updating
+   [`FoundationalChatAgentsDefinitions.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb).
+   This is required because the GitLab application pins each agent to a flow version range
+   with the `flow_version` attribute: a major version is a breaking change, so GitLab Duo
+   Workflow Service does not serve it to instances whose pin excludes it. Updating the pin
+   deliberately releases the new major version while older GitLab Self-Managed and
+   GitLab Dedicated versions keep resolving a compatible flow config. See
+   [Versioning](#versioning).
+1. Update the documentation. If the agent's behavior or capabilities changed, update both the
+   [list of foundational agents](../../user/duo_agent_platform/agents/foundational_agents/_index.md)
+   and the agent's dedicated page in the same directory, which describes what the agent does
+   in depth. Add a history entry to the agent's page for the release where the change ships.
+1. Communicate the change. Announce the change and the affected capabilities in your group's Slack
+   channel, and add a release post item for user-facing changes.
 
 ## Secret-safety requirements for agent prompts
 
@@ -190,7 +228,7 @@ Not every agent is useful in every area. For example, some agents operate in pro
 ## Triggers
 
 Triggers are not supported for foundational chat agents. However, if they are defined on AI Catalog, users can
-still add it to their project at which point they can be used through triggers.
+still add them to their project at which point they can be used through triggers.
 
 ## Versioning
 
@@ -238,7 +276,7 @@ Consider potential breaking changes to older GitLab versions before changing an 
 ## Context variables
 
 Context variables let you inject runtime information into a Duo Workflow Service agent's system prompt.
-Use them to make prompt sections conditional or pass more information — for example, customizing the prompt based
+Use them to make prompt sections conditional or pass more information - for example, customizing the prompt based
 on the user location, or pass data from a form.
 
 > [!note]
@@ -660,7 +698,7 @@ With the changes to `FoundationalChatAgentsDefinitions.rb` and the fetched confi
 
 Foundational agents have an integration test harness that runs the full agent loop end-to-end using real LLM calls.
 Use it to verify that an agent correctly selects tools, passes the right arguments,
-and produces valid responses — without needing a live GitLab instance or real tool backends.
+and produces valid responses - without needing a live GitLab instance or real tool backends.
 
 The tests live in the [ai-assist](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/agent_tests)
 repository and run as CI jobs (for example, the Data Analyst agent tests run on changes to the agent prompt, otherwise manual).
@@ -731,10 +769,8 @@ This design could also be extended to support
 
 Defining foundational agents in the monolith serves two purposes: backwards compatibility support and release control.
 
-With [`FoundationalChatAgentsDefinitions`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb)
 The [`FoundationalChatAgentsDefinitions`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb)
-module manages agent versioning based on the GitLab instance version.
-affecting older GitLab versions, similar to [prompt versioning](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/prompts_migration/#versioning).
+module manages agent versioning based on the GitLab instance version, affecting older GitLab versions, similar to [prompt versioning](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/prompts_migration/#versioning).
 
 Additionally, on [`FoundationalChatAgentsResolver`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb),
 teams are able to select which conditions can make a foundational chat agent available, for situations like:
@@ -775,7 +811,7 @@ but that comes with
 the downside of not being able to quickly ship fixes to cloud-connected self-managed instances.
 
 Eventually, if labels are implemented on AI Catalog,
-teams wouldn't need to add their entries to the Dockerfile, versions
+teams wouldn't need to add their entries to the Dockerfile. Versions
 could be fetched by the correct labels.
 
 ### Creation flow

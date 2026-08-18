@@ -14,9 +14,9 @@ describe('Header actions', () => {
   let glModalDirective;
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findRetryButton = () => wrapper.findByTestId('retry-pipeline');
-  const findCancelButton = () => wrapper.findByTestId('cancel-pipeline');
-  const findDeleteButton = () => wrapper.findByTestId('delete-pipeline');
+  const findRetryButton = () => wrapper.findComponentByTestId('retry-pipeline');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-pipeline');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-pipeline');
 
   const defaultProps = {
     isRetrying: false,
@@ -54,33 +54,33 @@ describe('Header actions', () => {
   });
 
   describe('events', () => {
-    it('emits the cancelPipeline event', () => {
+    it('emits the cancel-pipeline event', () => {
       createComponent({ pipeline: pipelineHeaderRunning.data.project.pipeline });
 
       findCancelButton().vm.$emit('click');
 
       expect(wrapper.emitted()).toEqual({
-        cancelPipeline: [[pipelineHeaderRunning.data.project.pipeline.id]],
+        'cancel-pipeline': [[pipelineHeaderRunning.data.project.pipeline.id]],
       });
     });
 
-    it('emits the deletePipeline event', () => {
+    it('emits the delete-pipeline event', () => {
       createComponent({ pipeline: pipelineHeaderFailed.data.project.pipeline });
 
       findModal().vm.$emit('primary');
 
       expect(wrapper.emitted()).toEqual({
-        deletePipeline: [[pipelineHeaderFailed.data.project.pipeline.id]],
+        'delete-pipeline': [[pipelineHeaderFailed.data.project.pipeline.id]],
       });
     });
 
-    it('emits the retryPipeline event', () => {
+    it('emits the retry-pipeline event', () => {
       createComponent({ pipeline: pipelineHeaderFailed.data.project.pipeline });
 
       findRetryButton().vm.$emit('click');
 
       expect(wrapper.emitted()).toEqual({
-        retryPipeline: [[pipelineHeaderFailed.data.project.pipeline.id]],
+        'retry-pipeline': [[pipelineHeaderFailed.data.project.pipeline.id]],
       });
     });
   });

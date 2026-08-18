@@ -44,7 +44,7 @@ export const mockGroupsResponse = {
   },
 };
 
-export const mockGroupsPage2 = [
+const mockGroupsPage2 = [
   {
     id: 'gid://glab/Group/4',
     fullName: 'Comet',
@@ -100,6 +100,22 @@ export const mockGroupsPage2Response = {
         hasPreviousPage: true,
         startCursor: 'page-2-start-cursor',
         endCursor: 'page-2-end-cursor',
+        __typename: 'PageInfo',
+      },
+      __typename: 'GroupConnection',
+    },
+  },
+};
+
+export const emptyGroupsResponse = {
+  data: {
+    groups: {
+      nodes: [],
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null,
         __typename: 'PageInfo',
       },
       __typename: 'GroupConnection',

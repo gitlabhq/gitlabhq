@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: Agent Foundations
+group: Agent Developer
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: AGENTS.md customization files
 ---
@@ -66,7 +66,7 @@ instructions. Previously existing conversations do not.
   - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.60 or later.
   - [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md) 3.26.0
     or later.
-  - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.47.0 or later.
+  - [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md) 8.47.0 or later.
 - For custom flows, update the flow's configuration file to access the `user_rule` context passed
   from the executor:
 
@@ -170,6 +170,10 @@ Project-level `AGENTS.md` files apply only to a specific project.
 1. In the root of your project, create an `AGENTS.md` file.
 1. Add instructions to the file. For example:
 
+   {{< tabs >}}
+
+   {{< tab title="Project guidelines" >}}
+
    ```markdown
    # Project-specific guidelines
 
@@ -178,6 +182,23 @@ Project-level `AGENTS.md` files apply only to a specific project.
    - Use our custom hooks from /src/hooks
    - State management uses Redux Toolkit
    ```
+
+   {{< /tab >}}
+
+   {{< tab title="Database migrations" >}}
+
+   ```markdown
+   # Database migrations
+
+   - To run database migrations, use `bin/rails db:migrate` from the project root
+   - Do not run `rake db:migrate` directly
+   - If a migration fails with a lock timeout, wait and retry once. Do not attempt
+     a schema workaround
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Save the file.
 1. To apply the instructions, start a new conversation or flow. You must do this every time you

@@ -24,6 +24,25 @@ RSpec.describe MergeRequests::Mergeability::CheckBaseService, feature_category: 
     end
   end
 
+  describe '.failure_explanation' do
+    it 'sets the failure explanation' do
+      described_class.set_failure_explanation("test")
+
+      expect(described_class.failure_explanation).to eq("test")
+    end
+  end
+
+  describe 'every mergeability check' do
+    it 'defines a failure explanation' do
+      checks_without_explanation = MergeRequest.all_mergeability_checks.reject(&:failure_explanation)
+
+      expect(checks_without_explanation).to be_empty,
+        "Expected every mergeability check to define a failure explanation via " \
+          "`set_failure_explanation`, but these do not: " \
+          "#{checks_without_explanation.map(&:identifier).inspect}"
+    end
+  end
+
   describe '#merge_request' do
     it 'returns the merge_request' do
       expect(check_base_service.merge_request).to eq merge_request

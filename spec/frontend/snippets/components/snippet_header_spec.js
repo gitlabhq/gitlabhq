@@ -14,6 +14,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import {
   VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PRIVATE_STRING,
@@ -109,23 +110,26 @@ describe('Snippet header component', () => {
   const findSpamAction = () => wrapper.findByText('Submit as spam');
   const findDeleteAction = () => wrapper.findByText('Delete');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
-  const findDeleteModalDeleteAction = () => wrapper.findByTestId('delete-snippet-button');
+  const findDeleteModalDeleteAction = () => wrapper.findComponentByTestId('delete-snippet-button');
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
   const findSpamIcon = () => wrapper.findByTestId('snippets-spam-icon');
   const findCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
+  const findTitle = () => wrapper.findByTestId('snippet-title-content');
 
   const webUrl = 'http://foo.bar';
   const dummyHTTPUrl = webUrl;
   const dummySSHUrl = 'ssh://foo.bar';
   const title = 'The property of Thor';
 
+  useConfigurePathHelpers('/foo');
+
   beforeEach(() => {
-    gon.relative_url_root = '/foo/';
     snippet = {
       id: 'gid://gitlab/PersonalSnippet/50',
       title,
+      titleHtml: title,
       visibilityLevel: 'private',
       webUrl: 'http://personal.dev.null/42',
       userPermissions: {
@@ -160,6 +164,24 @@ describe('Snippet header component', () => {
     createComponent();
 
     expect(wrapper.text().trim()).toContain(title);
+  });
+
+  it('renders inline markup in the title', () => {
+    snippet.titleHtml = 'hello <code>friend</code>';
+    createComponent();
+
+    expect(findTitle().find('code').exists()).toBe(true);
+    expect(findTitle().find('code').text()).toBe('friend');
+  });
+
+  it('sanitises unsafe HTML in the title', () => {
+    // The backend is not expected to ever send this; this prevents v-safe-html
+    // being removed/replaced with something weaker.
+    snippet.titleHtml = "<script>alert(1)</script><span\nonclick='alert(1)'>friend";
+    createComponent();
+
+    expect(findTitle().find('script').exists()).toBe(false);
+    expect(findTitle().find('[onclick]').exists()).toBe(false);
   });
 
   it('does not render spam icon when author is not banned', () => {
@@ -197,7 +219,7 @@ describe('Snippet header component', () => {
   it('renders an edit button on sm and up screens', () => {
     createComponent();
 
-    expect(findEditButton().attributes('href')).toEqual(`${snippet.webUrl}/edit`);
+    expect(findEditButton().attributes('href')).toEqual('/foo/-/snippets/50/edit');
     expect(findEditButton().attributes('class')).toContain('gl-hidden');
     expect(findEditButton().attributes('class')).toContain('@sm/panel:gl-inline-flex');
   });
@@ -206,7 +228,7 @@ describe('Snippet header component', () => {
     createComponent();
 
     expect(findDropdownItemAt(0).text).toBe('Edit');
-    expect(findDropdownItemAt(0).href).toBe(`${snippet.webUrl}/edit`);
+    expect(findDropdownItemAt(0).href).toBe('/foo/-/snippets/50/edit');
     expect(findDropdownItemAt(1).text).toBe('Submit as spam');
     expect(findDropdownItemAt(2).text).toBe('Delete');
   });
@@ -328,7 +350,7 @@ describe('Snippet header component', () => {
         blobs,
       },
     });
-    expect(wrapper.find('[href*="edit"]').props('disabled')).toBe(isDisabled);
+    expect(wrapper.findComponent('[href*="edit"]').props('disabled')).toBe(isDisabled);
   });
 
   describe('Delete mutation', () => {
@@ -399,7 +421,7 @@ describe('Snippet header component', () => {
         // Check that the modal is hidden after deleting the snippet
         expect(findDeleteModal().props().visible).toBe(false);
 
-        expect(window.location.pathname).toBe(`${gon.relative_url_root}dashboard/snippets`);
+        expect(window.location.pathname).toBe('/foo/dashboard/snippets');
       });
 
       it('redirects to project snippets for project snippet', async () => {
@@ -413,7 +435,7 @@ describe('Snippet header component', () => {
         // Check that the modal is hidden after deleting the snippet
         expect(findDeleteModal().props().visible).toBe(false);
 
-        expect(window.location.pathname).toBe(`${fullPath}/-/snippets`);
+        expect(window.location.pathname).toBe('/foo/foo/bar/-/snippets');
       });
     });
   });
@@ -481,6 +503,7 @@ describe('Snippet header component', () => {
             visibilityLevel: snippetVisibility,
             webUrl,
             project: {
+              fullPath: 'acme/monolith',
               visibility: projectVisibility,
             },
           },

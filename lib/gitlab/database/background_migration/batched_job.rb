@@ -5,6 +5,7 @@ module Gitlab
     module BackgroundMigration
       SplitAndRetryError = Class.new(StandardError)
       ReduceSubBatchSizeError = Class.new(StandardError)
+      ResetAttemptsError = Class.new(StandardError)
 
       class BatchedJob < SharedModel
         include EachBatch
@@ -161,6 +162,12 @@ module Gitlab
 
         def can_reduce_sub_batch_size?
           still_retryable? && within_batch_size_boundaries?
+        end
+
+        def reset_attempts!
+          raise ResetAttemptsError, 'Only failed jobs can have attempts reset' unless failed?
+
+          update!(attempts: 0)
         end
 
         def split_and_retry!

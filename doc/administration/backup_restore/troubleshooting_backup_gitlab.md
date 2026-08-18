@@ -320,7 +320,7 @@ Truncate the filenames in the `uploads` table:
 
 1. Search the `uploads` table for filenames longer than 246 characters:
 
-   The following query selects the `uploads` records with filenames longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousand of records.
+   The following query selects the `uploads` records with filenames longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousands of records.
 
    ```sql
    CREATE TEMP TABLE uploads_with_long_filenames AS
@@ -465,7 +465,7 @@ After following all the previous steps, re-run the backup task.
 ## Error: `pack-objects died` during server-side backup of a large repository
 
 When you run a server-side backup (with `REPOSITORIES_SERVER_SIDE=true`), and one or more large
-repositories fail consistently, you might see error this error:
+repositories fail consistently, you might see this error:
 
 ```plaintext
 backup repository: manager: write bundle: local repository: create bundle:
@@ -603,7 +603,7 @@ Tasks: TOP => gitlab:db:drop_tables
 (See full trace by running task with --trace)
 ```
 
-### Prevent the dump file to include `pg_stat_statements`
+### Prevent the dump file from including `pg_stat_statements`
 
 To prevent the inclusion of the extension in the PostgreSQL dump file that is part of the backup bundle,
 enable the extension in any schema except the `public` schema:

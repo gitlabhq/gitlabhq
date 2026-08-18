@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Argo Rollouts: Environment configuration",
+  "description": "Configuration the Argo Rollouts driver needs to reach one Environment's cluster, where Argo CD Core and the Argo Rollouts controller run.",
+  "required": ["cluster_agent_id"],
+  "additionalProperties": false,
+  "properties": {
+    "cluster_agent_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "GitLab agent for Kubernetes (agentk) used to reach the cluster running Argo CD Core and the Argo Rollouts controller. The driver resolves it to a connection and drives Argo CD syncs and Rollout promotions through it.",
+      "gitlab": {
+        "type": "com.gitlab.cd.agent_id"
+      }
+    }
+  }
+}

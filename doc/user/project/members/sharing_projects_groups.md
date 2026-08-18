@@ -70,7 +70,7 @@ When you invite a group to a project, the following members get access to the pr
 
 - Direct group members.
 - Inherited group members.
-- Members of other [groups that are shared](sharing_projects_groups.md#invite-a-group-to-a-group) with the invited group.
+- Members of other [groups that are shared](#invite-a-group-to-a-group) with the invited group.
 
 Each member's access depends on:
 
@@ -88,8 +88,7 @@ In addition:
 - On the project's **Members** page, the members of the invited group are listed on the **Members** tab.
 - On the usage quota page, members who have the **Project Invite** badge next to their profile count towards the billable members of the shared project's top-level group.
 
-[In GitLab 16.11 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144638),
-the invited group's name and membership source are masked on the **Members** and the **Groups** tabs,
+The invited group's name and membership source are [masked](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144638) on the **Members** and the **Groups** tabs,
 unless one of the following applies:
 
 - The invited group is public.
@@ -230,7 +229,7 @@ When you want another group's members to have access to your group,
 you can invite the [group](../../group/_index.md) to your group.
 The group's direct members get access to the group, which becomes a **shared group**.
 
-Only direct members of the invited group get access to the shared group, not inherited, shared or subgroup members. To grant subgroup members access, invite the subgroup directly.
+Only direct members of the invited group get access to the shared group, not inherited, shared, or subgroup members. To grant subgroup members access, invite the subgroup directly.
 
 The following table provides an overview of the group members that get access to a shared group:
 
@@ -259,8 +258,7 @@ After you invite a group to your group:
 - On the group's **Members** page, the members of the invited group are listed on the **Members** tab.
 - On the group's usage quota page, direct members of the invited group who have the **Group Invite** badge next to their profile count towards the billable members of the inviting group.
 
-[In GitLab 16.11 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144638),
-the invited group's name and membership source are masked on the **Members** and the **Groups** tabs,
+The invited group's name and membership source are [masked](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144638) on the **Members** and the **Groups** tabs,
 unless one of the following applies:
 
 - The invited group is public.
@@ -293,7 +291,7 @@ Similar to how you invite a group to a project, you can invite a group to anothe
 Prerequisites:
 
 - You must have the Owner role for the group you want to invite others to.
-- You must be a direct member of the group you want to invite, with at least the Guest role.
+- You must be able to access the group you want to invite.
 
 To invite a group to your group:
 

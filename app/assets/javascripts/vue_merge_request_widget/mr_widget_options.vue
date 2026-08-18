@@ -17,7 +17,6 @@ import { setFaviconOverlay } from '~/lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
@@ -49,16 +48,13 @@ import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
 export default {
-  // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  name: 'MRWidget',
+  name: 'MRWidgetRoot',
   directives: {
     SafeHtml,
   },
   components: {
     Loading,
     WidgetContainer,
-    MrWidgetSuggestPipeline: WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
     MrWidgetMerged: MergedState,
@@ -218,11 +214,6 @@ export default {
     shouldRenderPipelines() {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
-    shouldSuggestPipelines() {
-      const { hasCI, mergeRequestAddCiConfigPath, commitsCount } = this.mr;
-
-      return !hasCI && Boolean(mergeRequestAddCiConfigPath) && commitsCount > 0;
-    },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
@@ -253,9 +244,6 @@ export default {
         },
         false,
       );
-    },
-    formattedHumanAccess() {
-      return (this.mr.humanAccess || '').toLowerCase();
     },
     hasMergeError() {
       return this.mr.mergeError && this.state !== STATUS_CLOSED;
@@ -488,10 +476,14 @@ export default {
 
       const { label } = pipeline.details.status;
       const title = sprintf(__('Pipeline %{label}'), { label });
-      const message = sprintf(__('Pipeline %{label} for "%{dataTitle}"'), {
-        dataTitle: this.mr.title,
-        label,
-      });
+      const message = sprintf(
+        __('Pipeline %{label} for "%{dataTitle}"'),
+        {
+          dataTitle: this.mr.title,
+          label,
+        },
+        false,
+      );
 
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },
@@ -574,10 +566,6 @@ export default {
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
       </mr-widget-alert-message>
     </header>
-    <mr-widget-suggest-pipeline
-      v-if="shouldSuggestPipelines"
-      :human-access="formattedHumanAccess"
-    />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
       :mr="mr"

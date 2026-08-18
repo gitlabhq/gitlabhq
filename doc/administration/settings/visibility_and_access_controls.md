@@ -92,8 +92,7 @@ To disable the restriction:
 
 {{< history >}}
 
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
 
 {{< /history >}}
 
@@ -182,14 +181,6 @@ For more details on group visibility, see
 [group visibility](../../user/group/_index.md#group-visibility).
 
 ## Restrict visibility levels
-
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124649) in GitLab 16.3 to prevent restricting default project and group visibility, [with a feature flag](../feature_flags/_index.md) named `prevent_visibility_restriction`. Disabled by default.
-- `prevent_visibility_restriction` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) by default in GitLab 16.4.
-- `prevent_visibility_restriction` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/433280) in GitLab 16.7.
-
-{{< /history >}}
 
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from

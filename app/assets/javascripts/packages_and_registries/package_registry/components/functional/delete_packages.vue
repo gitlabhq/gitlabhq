@@ -1,7 +1,7 @@
 <script>
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 import {
   DELETE_PACKAGE_ERROR_MESSAGE,
@@ -24,6 +24,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['start', 'end', 'success'],
   i18n: {
     errorMessage: DELETE_PACKAGE_ERROR_MESSAGE,
     errorMessageMultiple: DELETE_PACKAGES_ERROR_MESSAGE,
@@ -74,7 +75,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({ deletePackages: this.deletePackages });
+    return getSlotFunction(this)({ deletePackages: this.deletePackages });
   },
 });
 </script>

@@ -6,6 +6,7 @@ module Users
     include Gitlab::Utils::StrongMemoize
 
     SEARCH_LIMIT = 10
+    MENTIONED_USERS_LIMIT = 10
 
     included do
       attr_reader :noteable
@@ -46,6 +47,24 @@ module Users
 
     def sorted(users)
       users.uniq.to_a.compact.sort_by(&:username).tap do |users|
+        preload_associations(users)
+      end
+    end
+
+    # Returns the members named in the `mentioned` param, scoped to the given
+    # member relation. This guarantees that users already @-mentioned in the
+    # editor are present in the suggestion payload even when they fall outside
+    # the search-limited default set; the frontend floats them to the top.
+    def mentioned_users(users_relation)
+      return [] unless users_relation
+
+      usernames = Array(params[:mentioned])
+        .map(&:to_s)
+        .reject { |username| username.blank? || username.length > Namespace::URL_MAX_LENGTH }
+        .first(MENTIONED_USERS_LIMIT)
+      return [] if usernames.empty?
+
+      users_relation.by_username(usernames).tap do |users|
         preload_associations(users)
       end
     end

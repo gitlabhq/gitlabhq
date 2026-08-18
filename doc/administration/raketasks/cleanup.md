@@ -209,7 +209,7 @@ This command:
 
 - Scans through the entire artifacts folder.
 - Checks which files still have a record in the database.
-- If no database record is found, the file and directory is deleted from disk.
+- If no database record is found, the file and directory are deleted from disk.
 
 By default, this task does not delete anything but shows what it can
 delete. Run the command with `DRY_RUN=false` if you actually want to

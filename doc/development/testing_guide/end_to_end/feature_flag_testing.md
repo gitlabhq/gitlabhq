@@ -32,7 +32,7 @@ When a feature flag definition file has been added or changed in a merge request
 
 - The `pipeline:tier-3` label is automatically added.
 - E2E tests run through downstream pipelines that are named `e2e:test-on-cng` and `e2e:test-on-gdk`.
-- If any of these E2E jobs fail, they block the pipeline from moving forward. Test results are posted as a comment by the E2E bot on the merge request, review them carefully before proceeding.
+- If any of these E2E jobs fail, they block the pipeline from moving forward. Test results are posted as a comment by the E2E bot on the merge request. Review them carefully before proceeding.
 
 ##### When the MR is merged
 

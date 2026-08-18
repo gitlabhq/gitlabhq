@@ -49,7 +49,7 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 - [To create or upload an SSH key](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
   to connect to the instance via SSH
 - A domain name for the GitLab instance
-- An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)(ACM) for use with the [Elastic Load Balancer](#load-balancer) we create.
+- An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/) (ACM) for use with the [Elastic Load Balancer](#load-balancer) we create.
 
 > [!note]
 > It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
@@ -80,7 +80,7 @@ GitLab uses the following AWS services, with links to pricing information:
 
 ## Create an IAM EC2 instance role and profile
 
-As we are using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2 instances must have read, write, and list permissions for our S3 buckets. To avoid embedding AWS keys in our GitLab configuration, we make use of an [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) to allow our GitLab instance with this access. We must create an IAM policy to attach to our IAM role:
+As we are using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2 instances must have read, write, and list permissions for our S3 buckets. To avoid embedding AWS keys in our GitLab configuration, we make use of an [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) to grant our GitLab instance this access. We must create an IAM policy to attach to our IAM role.
 
 ### Create an IAM Policy
 
@@ -141,7 +141,7 @@ We use this role when we [create a launch template](#create-a-launch-template) l
 
 We start by creating a VPC for our GitLab cloud infrastructure, then
 we can create subnets to have public and private instances in at least
-two [Availability Zones (AZs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html). Public subnets require a Route Table keep and an associated
+two [Availability Zones (AZs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html). Public subnets require a Route Table entry and an associated
 Internet Gateway.
 
 ### Creating the Virtual Private Cloud (VPC)
@@ -161,7 +161,7 @@ We now create a VPC, a virtual networking environment that you control:
 ### Subnets
 
 Now, let's create some subnets in different Availability Zones. Make sure
-that each subnet is associated to the VPC we just created and
+that each subnet is associated with the VPC we just created and
 that CIDR blocks don't overlap. This also
 allows us to enable multi AZ for redundancy.
 
@@ -469,7 +469,7 @@ Create the target groups:
    | Health check path | `/-/readiness` |
 
    > [!note]
-   > You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md).
+   > You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md).
 
    Select **Next**, choose **Register Later**, then **Next** twice and **Create target group**.
 
@@ -563,7 +563,7 @@ On the Route 53 dashboard, select **Hosted zones** in the left navigation bar:
    1. Select **Hosted zones** and select the domain you added previously.
    1. You see a list of `NS` records. From your domain registrar's administrator panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add DNS records** and you should find a help article specific to your domain registrar.
 
-The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
+The steps for doing this vary depending on which registrar you use and are beyond the scope of this guide.
 
 ## PostgreSQL with RDS
 
@@ -869,7 +869,7 @@ Verify the installed extensions with `\dx`.
    ```
 
 1. You can also run a check and a service status to make sure
-   everything has been setup correctly:
+   everything has been set up correctly:
 
    ```shell
    sudo gitlab-rake gitlab:check
@@ -904,7 +904,7 @@ Let's create an EC2 instance where we install Gitaly:
          - **Hybrid NLB->ALB**: `gitlab-rails-sec-group`
       1. Also add an inbound rule for SSH from the `bastion-sec-group` so that we can connect using [SSH Agent Forwarding](#use-ssh-agent-forwarding) from the Bastion hosts.
 1. Increase the Root volume size to `20 GiB` and change the **Volume Type** to `Provisioned IOPS SSD (io1)`. (The volume size is an arbitrary value. Create a volume big enough for your repository storage requirements.)
-   1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisioned IOPS SSD (io1)`.
+   1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, require performant storage, hence the choice of `Provisioned IOPS SSD (io1)`.
 1. Review all your settings and, if you're happy, select **Launch Instance**.
 
 > [!note]
@@ -920,8 +920,8 @@ Now that we have our EC2 instance ready, follow the [documentation to install Gi
 > [documentation about avoiding cloud-based file systems](../../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 If you do decide to use EFS, ensure that the [PosixUser](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-efs-accesspoint.html#cfn-efs-accesspoint-posixuser)
-attribute is either omitted or correctly specified with the UID and GID of the `git` user on the system that Gitaly is
-installed. The UID and GID can be retrieved with the following commands:
+attribute is either omitted or correctly specified with the UID and GID of the `git` user on the system that Gitaly is installed on.
+The UID and GID can be retrieved with the following commands:
 
 ```shell
 # UID
@@ -1051,7 +1051,7 @@ On the EC2 dashboard:
 1. Give your image a name and description (we use `GitLab-Source` for both).
 1. Leave everything else as default and select **Create Image**
 
-Now we have a custom AMI that we use to create our launch configuration the next step.
+Now we have a custom AMI that we use to create our launch configuration in the next step.
 
 ## Deploy GitLab inside an auto scaling group
 
@@ -1061,7 +1061,7 @@ From the EC2 dashboard:
 
 1. Select **Launch Templates** from the left menu and select **create launch template**.
 1. Enter a name for your launch template (we use `gitlab-launch-template`).
-1. Select **Launch template contents** and select **My AMIs** tab/
+1. Select **Launch template contents** and select **My AMIs** tab.
 1. Select **Owned by me** and select the `GitLab-Source` custom AMI we created previously.
 1. Select an instance type best suited for your needs (at least a `c5.2xlarge`).
 1. In the **Key pair** section, select **Create new key pair**.
@@ -1119,7 +1119,7 @@ From the EC2 dashboard:
 
    1. Assign the new dynamic scaling policy to the auto scaling group we created earlier.
 
-As the auto scaling group is created, you see your new instances spinning up in your EC2 dashboard. You also see the new instances added to your load balancer. After the instances pass the heath check, they are ready to start receiving traffic from the load balancer.
+As the auto scaling group is created, you see your new instances spinning up in your EC2 dashboard. You also see the new instances added to your load balancer. After the instances pass the health check, they are ready to start receiving traffic from the load balancer.
 
 Because our instances are created by the auto scaling group, go back to your instances and terminate the [instance we previously created manually](#install-gitlab). We only needed this instance to create our custom AMI.
 
@@ -1152,7 +1152,7 @@ Some important things to know:
   must [configure this yourself](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
   [backup GitLab using S3](../../administration/backup_restore/backup_gitlab.md#using-amazon-s3).
-- You can [exclude specific directories form the backup](../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup).
+- You can [exclude specific directories from the backup](../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup).
 
 ### Backing up GitLab
 
@@ -1198,8 +1198,7 @@ Read more on how to use [GitLab releases as AMIs](../../solutions/cloud/aws/gitl
 
 ## Conclusion
 
-In this guide, we went mostly through scaling and some redundancy options,
-your mileage may vary.
+In this guide, we went mostly through scaling and some redundancy options.
 
 Keep in mind that all solutions come with a trade-off between
 cost/complexity and uptime. The more uptime you want, the more complex the solution.

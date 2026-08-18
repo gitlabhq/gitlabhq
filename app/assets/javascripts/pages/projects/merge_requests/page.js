@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import initMrNotes from 'ee_else_ce/mr_notes';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
@@ -60,7 +60,9 @@ const initMrStickyHeader = (store) => {
       pinia,
       apolloProvider,
       components: {
-        StickyHeader: () => import('~/merge_requests/components/sticky_header.vue'),
+        StickyHeader: defineAsyncComponent(
+          () => import('~/merge_requests/components/sticky_header.vue'),
+        ),
       },
       provide: {
         query: getStateQuery,
@@ -87,7 +89,7 @@ const initMrStickyHeader = (store) => {
   }
 };
 
-const initReviewDrawer = () => {
+const initReviewDrawer = (navigateToNote) => {
   // Review drawer has to be located outside the MR sticky/non-sticky header
   // Otherwise it will disappear when header switches between sticky/non-sticky components
   const el = document.querySelector('#js-review-drawer');
@@ -100,11 +102,12 @@ const initReviewDrawer = () => {
     apolloProvider,
     provide: {
       newCommentTemplatePaths: JSON.parse(el.dataset.newCommentTemplatePaths),
-      diffsPath: el.dataset.diffsPath,
       canSummarize: parseBoolean(el.dataset.canSummarize),
     },
     render(h) {
-      return h(ReviewDrawer);
+      return h(ReviewDrawer, {
+        on: { 'draft-click': navigateToNote },
+      });
     },
   });
 };
@@ -123,7 +126,9 @@ const initStackedDropdown = () => {
     pinia,
     apolloProvider,
     components: {
-      StackDropdown: () => import('~/merge_requests/components/stack_dropdown.vue'),
+      StackDropdown: defineAsyncComponent(
+        () => import('~/merge_requests/components/stack_dropdown.vue'),
+      ),
     },
     provide: {
       defaultBranch,
@@ -135,7 +140,7 @@ const initStackedDropdown = () => {
 };
 
 export function initMrPage(createRapidDiffsApp) {
-  initMrNotes(createRapidDiffsApp);
+  const mergeRequest = initMrNotes(createRapidDiffsApp);
   initShow();
   initMrMoreDropdown();
   startCodeReviewMessaging({ signalBus: diffsEventHub });
@@ -175,7 +180,7 @@ export function initMrPage(createRapidDiffsApp) {
       ? useMergeRequestDiscussions(pinia)
       : useMrNotes(pinia);
     initMrStickyHeader(stickyHeaderStore);
-    initReviewDrawer();
+    initReviewDrawer(mergeRequest.tabs.navigateToNote);
     initStackedDropdown();
   });
 }

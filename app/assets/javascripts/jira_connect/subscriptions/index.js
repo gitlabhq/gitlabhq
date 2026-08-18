@@ -2,6 +2,7 @@ import '~/webpack';
 
 import setConfigs from '@gitlab/ui/src/config';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import Translate from '~/vue_shared/translate';
 
@@ -30,7 +31,7 @@ export function initJiraConnect() {
 
   useJiraConnectSubscriptions(pinia).$patch({ subscriptions: JSON.parse(subscriptions) });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'JiraConnectAppRoot',
     pinia,
@@ -41,9 +42,7 @@ export function initJiraConnect() {
       oauthMetadata: oauthMetadata ? JSON.parse(oauthMetadata) : null,
       publicKeyStorageEnabled,
     },
-    render(createElement) {
-      return createElement(JiraConnectApp);
-    },
+    component: JiraConnectApp,
   });
 }
 

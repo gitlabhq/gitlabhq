@@ -10,8 +10,8 @@ module QA
       let(:tag_name) { 'v0.0.1' }
       let(:tag_message) { 'Version 0.0.1' }
 
-      shared_examples 'successful tag creation' do |user, testcase|
-        it "can be created by #{user}", testcase: testcase do
+      shared_examples 'successful tag creation' do |user|
+        it "can be created by #{user}" do
           Flow::Login.sign_in(as: send(user))
 
           create_tag_for_project(project, tag_name, tag_message)
@@ -24,8 +24,8 @@ module QA
         end
       end
 
-      shared_examples 'unsuccessful tag creation' do |user, testcase|
-        it "cannot be created by an unauthorized #{user}", testcase: testcase do
+      shared_examples 'unsuccessful tag creation' do |user|
+        it "cannot be created by an unauthorized #{user}" do
           Flow::Login.sign_in(as: send(user))
 
           create_tag_for_project(project, tag_name, tag_message)
@@ -42,8 +42,8 @@ module QA
           add_members_to_project(project)
         end
 
-        it_behaves_like 'successful tag creation', :developer_user, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347930'
-        it_behaves_like 'successful tag creation', :maintainer_user, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347929'
+        it_behaves_like 'successful tag creation', :developer_user
+        it_behaves_like 'successful tag creation', :maintainer_user
       end
 
       context 'when protected' do
@@ -57,8 +57,8 @@ module QA
           Page::Main::Menu.perform(&:sign_out)
         end
 
-        it_behaves_like 'unsuccessful tag creation', :developer_user, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347927'
-        it_behaves_like 'successful tag creation', :maintainer_user, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347928'
+        it_behaves_like 'unsuccessful tag creation', :developer_user
+        it_behaves_like 'successful tag creation', :maintainer_user
       end
 
       def create_tag_for_project(project, name, message)

@@ -1,0 +1,9 @@
+---
+name: create_verified_namespace
+description: Grants the ability to create a verified namespace.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_verified_namespace

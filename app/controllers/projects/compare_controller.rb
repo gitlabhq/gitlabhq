@@ -152,7 +152,10 @@ class Projects::CompareController < Projects::ApplicationController
   def compare
     return @compare if defined?(@compare)
 
-    @compare = CompareService.new(source_project, head_ref).execute(target_project, start_ref, straight: straight)
+    @compare = CompareService.new(source_project, head_ref).execute(
+      target_project, start_ref,
+      straight: straight
+    )
 
     # CompareService returns nil both when there's nothing to compare AND when Gitaly is unavailable
     # (because Gitlab::Git::Commit.find swallows errors). If we got nil, verify Gitaly is actually
@@ -191,14 +194,18 @@ class Projects::CompareController < Projects::ApplicationController
   def define_commits
     strong_memoize(:commits) do
       if compare.present?
-        commits = compare.commits
+        commits_limit = gitaly_commits_limit
+        commits = compare.commits(limit: commits_limit)
+        commits_count = commits.size
+        @commits_overflow = commits_limit.present? && commits_count >= commits_limit
 
         # Only fetch pipeline information when we have fewer than the display limit
-        commits = commits.with_latest_pipeline(head_ref) if commits.count < MergeRequestDiff::COMMITS_SAFE_SIZE
+        commits = commits.with_latest_pipeline(head_ref) if commits_count < MergeRequestDiff::COMMITS_SAFE_SIZE
 
-        limited, _ = limited_commits(commits, commits.count)
+        limited, _ = limited_commits(commits, commits_count)
+        @commits_count_label = "#{MergeRequestDiff::COMMITS_SAFE_SIZE}+" if @commits_overflow
 
-        set_commits_for_rendering(Commit.preload_markdown_cache!(limited), commits_count: commits.count)
+        set_commits_for_rendering(Commit.preload_markdown_cache!(limited), commits_count: commits_count)
       else
         []
       end
@@ -207,6 +214,11 @@ class Projects::CompareController < Projects::ApplicationController
 
   def define_diffs
     @diffs = compare.present? ? compare.diffs(diff_options) : []
+  end
+
+  # Caps anonymous ListCommits RPCs; nil keeps authenticated requests unlimited.
+  def gitaly_commits_limit
+    MergeRequestDiff::COMMITS_SAFE_SIZE + 1 unless current_user
   end
 
   def define_environment
@@ -246,7 +258,8 @@ class Projects::CompareController < Projects::ApplicationController
       :to_project_id,
       :old_path,
       :new_path,
-      :file_path
+      :file_path,
+      :line
     )
   end
 end

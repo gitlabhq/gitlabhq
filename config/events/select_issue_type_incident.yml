@@ -1,7 +1,7 @@
 ---
 description: tracks when a user selects "Incident" as the issue type from the dropdown.
 action: select_issue_type_incident
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '15.11'

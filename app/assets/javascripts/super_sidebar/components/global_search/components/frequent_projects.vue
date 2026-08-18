@@ -1,7 +1,9 @@
 <script>
 import { s__ } from '~/locale';
+import { dashboardProjectsPath } from '~/lib/utils/path_helpers/dashboard';
 import currentUserFrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
 import { FREQUENTLY_VISITED_PROJECTS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import FrequentItems from './frequent_items.vue';
 
 export default {
@@ -9,7 +11,7 @@ export default {
   components: {
     FrequentItems,
   },
-  inject: ['projectsPath'],
+  mixins: [glListenersMixin],
   emits: ['action', 'nothing-to-render'],
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -35,6 +37,9 @@ export default {
     items() {
       return this.frecentProjects || [];
     },
+    viewAllItemsPath() {
+      return dashboardProjectsPath();
+    },
   },
   created() {
     if (!this.isLoggedIn) {
@@ -54,9 +59,9 @@ export default {
     :items="items"
     view-all-items-icon="project"
     :view-all-items-text="$options.i18n.viewAllText"
-    :view-all-items-path="projectsPath"
+    :view-all-items-path="viewAllItemsPath"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @action="$emit('action', $options.FREQUENTLY_VISITED_PROJECTS_HANDLE)"
   />
 </template>

@@ -26,7 +26,7 @@ Permissions are referenced by [role definition YAML files](role_definitions.md) 
 
 ## Naming Permissions
 
-Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but most strictly be followed with Assignable Permissions as they are public facing.
+Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but must be most strictly followed with Assignable Permissions as they are public facing.
 
 ### Preferred Actions
 
@@ -45,7 +45,7 @@ We recognize that this set of actions is limited and not applicable to every fea
 
 The following action patterns are examples of those that should not be introduced into the permission catalog:
 
-| Action     | Why it’s disallowed |
+| Action     | Why it's disallowed |
 |-----------|--------------------|
 | `admin`   | Implies broad, undefined authority with unclear scope |
 | `change`  | Redundant with `update` |

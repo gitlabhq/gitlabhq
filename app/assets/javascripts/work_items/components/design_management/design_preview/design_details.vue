@@ -408,7 +408,7 @@ export default {
           :can-update-design="canUpdateDesign"
           @toggle-sidebar="toggleSidebar"
           @archive-design="onArchiveDesign"
-          @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"
+          @todos-updated="updateWorkItemDesignCurrentTodosWidgetCache"
         />
         <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
           <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">
@@ -427,8 +427,8 @@ export default {
               :is-sidebar-open="isSidebarOpen"
               :is-loading="isLoading"
               :disable-commenting="!isSidebarOpen"
-              @openCommentForm="openCommentForm"
-              @moveNote="onMoveNote"
+              @open-comment-form="openCommentForm"
+              @move-note="onMoveNote"
               @setMaxScale="setMaxScale"
             />
           </div>

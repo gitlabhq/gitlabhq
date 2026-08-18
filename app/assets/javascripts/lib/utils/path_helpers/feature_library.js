@@ -28,3 +28,25 @@ export const onboardingFeatureLibrarySearchPath = /*#__PURE__*/ (...args) => {
   return _onboardingFeatureLibrarySearchPath(...args);
 };
 
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/-/onboarding/feature_library/ai_search(.:format)`
+ * - Path helper: `onboarding_feature_library_ai_search_path`
+ * - URL helper: `onboarding_feature_library_ai_search_url`
+ * - controller#action: `onboarding/feature_library#ai_search`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const onboardingFeatureLibraryAiSearchPath = /*#__PURE__*/ (...args) => {
+  const _organizationOnboardingFeatureLibraryAiSearchPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"onboarding"],[2,[7,"/"],[2,[6,"feature_library"],[2,[7,"/"],[2,[6,"ai_search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+  const _onboardingFeatureLibraryAiSearchPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"onboarding"],[2,[7,"/"],[2,[6,"feature_library"],[2,[7,"/"],[2,[6,"ai_search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationOnboardingFeatureLibraryAiSearchPath(gon.current_organization.path, ...args);
+  }
+
+  return _onboardingFeatureLibraryAiSearchPath(...args);
+};
+

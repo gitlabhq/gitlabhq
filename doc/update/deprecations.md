@@ -244,17 +244,20 @@ locally before the due date.
 
 ## GitLab 19.3
 
-### The `glab duo ask` command
+### REST API returns 400 for non-numeric IDs on integer path parameters
 
-- Announced in GitLab 19.0
+- Announced in GitLab 19.3
 - Removal in GitLab 19.3 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/597732).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/605824).
 
-The `glab duo ask` command in the GitLab CLI is deprecated in GitLab 19.0
-and will be removed in GitLab 19.3. The command generates Git commands from
-natural language descriptions.
+Several REST API endpoints previously accepted non-numeric or multi-value
+input on integer-typed path parameters without validating it up front.
+Instead of a clear error, these requests returned inconsistent responses
+(`401 Unauthorized`, `404 Not Found`, or in rare latent-bug cases `200 OK`).
+They now validate the parameter type and return `400 Bad Request`.
 
-Use [`glab duo cli`](https://docs.gitlab.com/cli/duo/cli/) instead for AI-powered assistance in the CLI.
+To migrate, send a single numeric ID with each request. Legitimate clients
+already do this, so no action is required for well-formed requests.
 
 ## GitLab 19.2
 
@@ -452,7 +455,7 @@ GitLab has [required client authentication for ROPC on GitLab.com](https://about
 ### S3 storage driver (AWS SDK v1) for the container registry
 
 - Announced in GitLab 17.10
-- Removal in GitLab 19.0
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
 
 The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0.
@@ -468,6 +471,13 @@ To migrate to the `s3_v2` driver:
 1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
 1. Move from Signature Version 2 to Signature Version 4 for authentication if you haven't already, as AWS SDK v2 only supports Signature Version 4.
 1. Test the configuration in a non-production environment before deploying to production.
+
+On AWS S3, the driver change can also alter the hostname in the presigned URLs that clients use to
+download registry blobs. AWS SDK v2 resolves the S3 endpoint for your configured region, so presigned
+URLs can use a regional hostname such as `s3.us-east-1.amazonaws.com` instead of the global
+`s3.amazonaws.com` hostname. If your network restricts outbound traffic, update your proxy or firewall
+allowlist to include the regional hostname before you upgrade. Otherwise, image pulls fail with
+`403 Forbidden` responses.
 
 For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
 
@@ -572,7 +582,7 @@ See the following resources for migrating an external Redis 6 deployment:
 - **AWS ElastiCache**: ElastiCache for Redis 7.2 is not available on AWS. Migrate to
   [Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/), which is recommended.
   ElastiCache for Redis 7.1 is built on Redis 7.0 and is known to work.
-  For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
+  For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/engine-versions.html).
 - **GCP Memorystore**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
   [GCP Memorystore documentation](https://docs.cloud.google.com/memorystore/docs/redis/supported-versions).
 - **Azure Cache for Redis**: A managed Redis 7.2 or Valkey 7.2 option is not currently available on Azure. You can
@@ -3585,7 +3595,7 @@ The Phabricator task importer is being deprecated. Phabricator itself as a proje
 
 With every major GitLab version, we update the stable Terraform templates with the current latest templates.
 This change affects the [quickstart](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
-and the [base](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) templates.
+and the [base templates](https://docs.gitlab.com/update/deprecations/#deprecate-terraform-cicd-templates).
 
 Because the new templates ship with default rules, the update might break your Terraform pipelines.
 For example, if your Terraform jobs are triggered as a downstream pipeline, the rules won't trigger your jobs

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { DUO_CHAT_QUICK_ACTION_SUMMARIZE, DUO_CHAT_AGENT_PLANNER } from '~/ai/constants';
 import { s__ } from '~/locale';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
@@ -8,10 +9,12 @@ import DiscussionFilter from './discussion_filter.vue';
 export default {
   name: 'NotesActivityHeader',
   components: {
-    TimelineToggle: () => import('./timeline_toggle.vue'),
+    TimelineToggle: defineAsyncComponent(() => import('./timeline_toggle.vue')),
     DiscussionFilter,
-    DuoChatQuickAction: () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
-    MrDiscussionFilter: () => import('./mr_discussion_filter.vue'),
+    DuoChatQuickAction: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
+    ),
+    MrDiscussionFilter: defineAsyncComponent(() => import('./mr_discussion_filter.vue')),
   },
   mixins: [glAbilitiesMixin(), glLicensedFeaturesMixin()],
   inject: {

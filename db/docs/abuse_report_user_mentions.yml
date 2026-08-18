@@ -1,7 +1,6 @@
 ---
 table_name: abuse_report_user_mentions
-classes:
-- AntiAbuse::Reports::UserMention
+classes: []
 feature_categories:
 - insider_threat
 description: User mentions in abuse report notes
@@ -10,5 +9,4 @@ milestone: '16.5'
 gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
-organization_transfer_support: todo
 table_size: small

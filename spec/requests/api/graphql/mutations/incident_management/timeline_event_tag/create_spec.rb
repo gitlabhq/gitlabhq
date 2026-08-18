@@ -30,6 +30,11 @@ RSpec.describe 'Creating a timeline event tag', feature_category: :incident_mana
       project.add_maintainer(user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_timeline_event_tag do
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates timeline event tag', :aggregate_failures do
       post_graphql_mutation(mutation, current_user: user)
 

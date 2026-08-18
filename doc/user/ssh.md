@@ -53,12 +53,6 @@ To use SSH to communicate with GitLab, you need:
 
 ## Supported SSH key types
 
-{{< history >}}
-
-- Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
-
-{{< /history >}}
-
 To communicate with GitLab, you can use the following SSH key types:
 
 | Algorithm           | Notes |
@@ -140,13 +134,6 @@ If you do not have an existing SSH key pair, generate a new one:
    ```
 
 ## Add an SSH key to your GitLab account
-
-{{< history >}}
-
-- Suggested default expiration date for keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4.
-- Usage types for SSH keys [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383046) in GitLab 15.7.
-
-{{< /history >}}
 
 To use SSH with GitLab, copy your public key to your GitLab account. GitLab cannot
 access your private key.
@@ -265,12 +252,6 @@ You can revoke or delete your SSH key to permanently remove it from your account
 Removing your SSH key has additional implications if you sign your commits with the key. For more information, see [Signed commits with removed SSH keys](project/repository/signed_commits/ssh.md#signed-commits-with-removed-ssh-keys).
 
 ### Revoke an SSH key
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
-
-{{< /history >}}
 
 If your SSH key becomes compromised, revoke the key.
 

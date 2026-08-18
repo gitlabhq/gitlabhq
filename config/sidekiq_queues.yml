@@ -57,6 +57,8 @@
   - 1
 - - ai_catalog_flows_execute_merge_request_approved_workflow_triggers
   - 1
+- - ai_catalog_flows_execute_merge_request_merged_workflow_triggers
+  - 1
 - - ai_catalog_flows_execute_merge_request_ready_workflow_triggers
   - 1
 - - ai_catalog_flows_execute_work_item_created_workflow_triggers
@@ -66,6 +68,8 @@
 - - ai_catalog_flows_sync_project_foundational_flows
   - 1
 - - ai_catalog_item_consumers_bulk_create
+  - 1
+- - ai_daily_flow_on_push
   - 1
 - - ai_duo_workflows_cancel_associated_pipelines
   - 1
@@ -84,8 +88,6 @@
 - - ai_duo_workflows_update_workflow_status_event
   - 1
 - - ai_messaging_callback
-  - 1
-- - ai_messaging_callback_dispatch
   - 1
 - - ai_messaging_progress_delivery
   - 1
@@ -134,6 +136,8 @@
 - - auth_saml_group_sync
   - 1
 - - authn_cleanup_scim_group_memberships
+  - 1
+- - authn_oauth_applications_cleanup_dynamic_applications
   - 1
 - - authn_sync_group_scim_identity_record
   - 1
@@ -417,6 +421,8 @@
   - 1
 - - database_lock_tables
   - 1
+- - database_loose_foreign_keys_backlog_checker
+  - 1
 - - database_schema_checker
   - 1
 - - default
@@ -442,6 +448,8 @@
 - - dependency_management_security_update_track_closed_mr
   - 1
 - - dependency_management_security_update_track_merged_mr
+  - 1
+- - dependency_management_security_update_track_resolve_dependency_bump_pipeline
   - 1
 - - dependency_management_security_update_trigger_resolve_dependency_bump_workflow
   - 1
@@ -527,6 +535,8 @@
   - 1
 - - geo_bulk_registry_reverification
   - 1
+- - geo_verification_failure_report
+  - 1
 - - github_gists_importer
   - 1
 - - github_import_advance_stage
@@ -564,10 +574,6 @@
 - - gitlab_subscriptions_members_record_last_activity
   - 1
 - - gitlab_subscriptions_refresh_seats
-  - 1
-- - gitlab_subscriptions_seat_assignments_member_transfers_create_group_seats
-  - 1
-- - gitlab_subscriptions_seat_assignments_member_transfers_create_project_seats
   - 1
 - - gitlab_subscriptions_self_managed_duo_core_todo_notification
   - 1
@@ -847,6 +853,8 @@
   - 1
 - - organizations_root_group_organization_backfill
   - 1
+- - organizations_transfer_topic_avatar
+  - 1
 - - package_cleanup
   - 1
 - - package_metadata_global_advisory_scan
@@ -1086,6 +1094,8 @@
 - - search_zoekt_too_many_replicas_event
   - 1
 - - search_zoekt_update_index_used_storage_bytes_event
+  - 1
+- - secrets_management_audit_log
   - 1
 - - secrets_management_deprovision_group_secrets_manager
   - 1
@@ -1331,6 +1341,8 @@
   - 1
 - - todos_destroyer
   - 1
+- - todos_push_notification
+  - 1
 - - unassign_issuables
   - 1
 - - update_external_pull_requests
@@ -1410,6 +1422,10 @@
 - - vulnerabilities_update_archived_attribute_of_vulnerability_reads
   - 1
 - - vulnerabilities_update_archived_attribute_of_vulnerability_statistics
+  - 1
+- - vulnerabilities_update_ascp_associations
+  - 1
+- - vulnerabilities_update_ascp_associations_batch
   - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads
   - 1

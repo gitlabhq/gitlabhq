@@ -13,6 +13,7 @@ export const createGQLSnippet = () => ({
   __typename: 'Snippet',
   id: 7,
   title: 'Snippet Title',
+  titleHtml: 'Snippet Title',
   description: 'Lorem ipsum snippet desc',
   descriptionHtml: '<p>Lorem ipsum snippet desc</p>',
   createdAt: new Date(Date.now() - 1e6),

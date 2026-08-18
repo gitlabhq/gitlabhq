@@ -19,6 +19,10 @@ RSpec.describe Organizations::CheckOrganizationIsolationStatusWorker, feature_ca
     context 'when the state of the record matches the changes argument' do
       let(:status_service) { instance_double(Gitlab::Organizations::IsolationStatus) }
 
+      before do
+        model.organization.mark_as_isolated!
+      end
+
       context 'and the model has a single column as primary key' do
         let_it_be(:another_issue) { create(:issue) }
         let(:duplicated_to_id) { another_issue.id }
@@ -82,6 +86,21 @@ RSpec.describe Organizations::CheckOrganizationIsolationStatusWorker, feature_ca
 
           worker.perform(*job_args)
         end
+      end
+    end
+
+    context 'when the organization is not marked as isolated' do
+      let_it_be(:another_issue) { create(:issue) }
+      let(:duplicated_to_id) { another_issue.id }
+
+      before do
+        model.update!(duplicated_to: another_issue)
+      end
+
+      it 'does not call the service' do
+        expect(::Gitlab::Organizations::IsolationStatus).not_to receive(:new)
+
+        worker.perform(*job_args)
       end
     end
 

@@ -134,7 +134,6 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
   describe '#clear_transfer_data' do
     where(:initial_state, :event) do
       :transfer_scheduled   | :cancel_transfer
-      :transfer_in_progress | :cancel_transfer
       :transfer_in_progress | :complete_transfer
     end
 
@@ -167,6 +166,37 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
         expect(metadata['transfer_attempt_count']).to be_nil
         expect(metadata['transfer_last_error']).to be_nil
       end
+    end
+  end
+
+  describe '#clear_transfer_data_preserving_target' do
+    before do
+      namespace.update!(state: :transfer_in_progress)
+      namespace.state_metadata.merge!(
+        transfer_scheduled_at: 1.day.ago.as_json,
+        transfer_scheduled_by_user_id: user.id,
+        transfer_initiated_at: 1.day.ago.as_json,
+        transfer_initiated_by_user_id: user.id,
+        transfer_target_parent_id: 123,
+        transfer_attempt_count: 1,
+        transfer_last_error: 'some error'
+      )
+      namespace.namespace_details.save!
+    end
+
+    it 'clears transfer data but preserves transfer_target_parent_id when cancelling from transfer_in_progress' do
+      namespace.cancel_transfer!(transition_user: user)
+
+      namespace.reload
+      metadata = namespace.state_metadata
+
+      expect(metadata['transfer_scheduled_at']).to be_nil
+      expect(metadata['transfer_scheduled_by_user_id']).to be_nil
+      expect(metadata['transfer_initiated_at']).to be_nil
+      expect(metadata['transfer_initiated_by_user_id']).to be_nil
+      expect(metadata['transfer_target_parent_id']).to eq(123)
+      expect(metadata['transfer_attempt_count']).to be_nil
+      expect(metadata['transfer_last_error']).to be_nil
     end
   end
 

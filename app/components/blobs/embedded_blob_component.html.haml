@@ -1,0 +1,11 @@
+.blob-embed.file-holder
+  .blob-embed-header.file-title
+    = link_to title_text, permalink(range_anchor), class: 'blob-embed-title gl-font-monospace', target: '_blank', rel: 'noopener noreferrer'
+    %span.blob-embed-range.gl-text-subtle= range_text
+  .file-content.code.code-syntax-highlight-theme
+    .line-numbers
+      - (from..to).each do |number|
+        = link_to number, permalink("L#{number}"), class: 'diff-line-num'
+    .blob-content
+      %pre.code.highlight
+        %code= highlighted_lines

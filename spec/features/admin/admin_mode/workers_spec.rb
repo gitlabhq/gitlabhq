@@ -45,8 +45,6 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
         page.within '.modal-dialog' do
           find("input[name='username']").send_keys(user_to_delete.name)
           click_button 'Delete user'
-
-          wait_for_requests
         end
 
         expect(page).to have_content('The user is being deleted.')

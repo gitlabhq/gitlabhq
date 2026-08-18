@@ -77,6 +77,16 @@ RSpec.describe ::Gitlab::RepoPath do
     it 'returns the default type for non existent paths' do
       expect(described_class.parse('path/non-existent.git')).to eq([nil, nil, Gitlab::GlRepository.default_type, nil])
     end
+
+    it 'returns the default type for non existent design paths' do
+      expect(described_class.parse('path/non-existent.design.git')).to eq([nil, nil, Gitlab::GlRepository.default_type, nil])
+    end
+
+    it 'returns the default type for design paths when the project does not have a design repository' do
+      project_without_design = create(:project)
+
+      expect(described_class.parse(project_without_design.full_path + '.design.git')).to eq([nil, nil, Gitlab::GlRepository.default_type, nil])
+    end
   end
 
   describe '.find_project' do

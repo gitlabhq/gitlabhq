@@ -27,10 +27,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 
-  before_action only: [:index, :show] do
-    push_frontend_feature_flag(:vue3_migrate_pipelines, current_user)
-  end
-
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   track_event :charts,
@@ -247,7 +243,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def enqueue_ai_pipeline_results_viewed_tracking
     return unless current_user
-    return unless Feature.enabled?(:track_ai_pipeline_results_viewed, @pipeline.project)
 
     ::Ci::TrackAiPipelineResultsViewedService.new(@pipeline).execute(current_user.id)
   end

@@ -43,7 +43,9 @@ class CreatePartitionedMergeRequestDiffCommitsV2 < Gitlab::Database::Migration[2
       end
     end
 
+    # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
     create_int_range_partitions(partitioned_table_name, PARTITION_SIZE, min_id, max_id)
+    # rubocop:enable Database/AvoidIntRangePartitioning
   end
 
   def partitioned_table_name

@@ -1,0 +1,5 @@
+---
+event: Members::UpdatedCloudEvent
+description: CloudEvent published after one or more member access levels are updated.
+  Skipped on no-op updates (empty members array).
+feature_category: user_management

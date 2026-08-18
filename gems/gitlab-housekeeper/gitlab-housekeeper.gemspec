@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Housekeeping following https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134487"
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.2"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']
@@ -21,7 +21,9 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'activesupport'
   spec.add_runtime_dependency 'amazing_print'
-  spec.add_runtime_dependency 'httparty'
+  # httparty >= 0.22.0 declares its `csv` dependency (jnunemaker/httparty#796);
+  # csv is no longer a default gem on Ruby 3.4.
+  spec.add_runtime_dependency 'httparty', '>= 0.22.0'
   spec.add_runtime_dependency 'rubocop'
 
   spec.add_development_dependency 'gitlab-styles'

@@ -19,13 +19,14 @@ describe('WikiNoteActions', () => {
   const findUserAccessRoleBadge = () => wrapper.findByTestId('wiki-note-user-access-role-badge');
   const findUserAccessRoleBadgeText = () => findUserAccessRoleBadge().text().trim();
   const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
-  const findReportAbuseButton = () => wrapper.findByTestId('wiki-note-report-abuse-button');
-  const findEditButton = () => wrapper.findByTestId('wiki-note-edit-button');
-  const findReplyButton = () => wrapper.findByTestId('wiki-note-reply-button');
+  const findReportAbuseButton = () =>
+    wrapper.findComponentByTestId('wiki-note-report-abuse-button');
+  const findEditButton = () => wrapper.findComponentByTestId('wiki-note-edit-button');
+  const findReplyButton = () => wrapper.findComponentByTestId('wiki-note-reply-button');
   const findCopyNoteButton = () => wrapper.findByTestId('wiki-note-copy-note');
-  const findDeleteButton = () => wrapper.findByTestId('wiki-note-delete-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('wiki-note-delete-button');
   const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
-  const findResolveButton = () => wrapper.findByTestId('wiki-note-resolve-button');
+  const findResolveButton = () => wrapper.findComponentByTestId('wiki-note-resolve-button');
 
   const createWrapper = (propsData, injectData) => {
     mockApollo = createMockApollo();

@@ -8,8 +8,8 @@ RSpec.describe Gitlab::Ci::Config::External::Header::Processor, feature_category
 
   let_it_be(:user) { create(:user) }
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be_with_reload(:another_project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
+  let_it_be_with_reload(:another_project) { create(:project, :small_repo) }
 
   let(:project_files) { {} }
   let(:other_project_files) { {} }

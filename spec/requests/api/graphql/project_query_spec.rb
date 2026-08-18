@@ -6,7 +6,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
 

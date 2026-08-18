@@ -58,6 +58,24 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
     end
   end
 
+  context 'when JSON::ParserError is raised during parsing' do
+    config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure.md')
+    let(:docs_link_start) { format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe, url: config_docs_link_url) }
+
+    context 'with severely malformed JSON' do
+      let(:body) { '{{invalid json}}' }
+
+      before do
+        stub_client_and_raise(JIRA::HTTPError, 'Bad Request', body)
+      end
+
+      it 'catches the JSON::ParserError and returns the default error message' do
+        error_message = format('An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration</a> and try again.', docs_link_start: docs_link_start)
+        expect(subject.message).to eq(error_message)
+      end
+    end
+  end
+
   it 'allows unknown exception classes to bubble' do
     stub_client_and_raise(StandardError)
 

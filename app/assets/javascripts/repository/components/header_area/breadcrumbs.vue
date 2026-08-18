@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlBreadcrumb } from '@gitlab/ui';
 import { joinPaths, escapeFileUrl, buildURLwithRefType } from '~/lib/utils/url_utility';
@@ -56,10 +55,12 @@ export default {
           (acc, name, i) => {
             const path = joinPaths(i > 0 ? acc[i].path : '', escapeFileUrl(name));
             const isLastPath = i === this.currentPath.split('/').length - 1;
+            /* eslint-disable @gitlab/no-hardcoded-urls -- these are Vue router routes defined in app/assets/javascripts/repository/router.js, acceptable in this case */
             const to =
               this.isBlobPath && isLastPath
                 ? `/-/blob/${joinPaths(this.escapedRef, path)}`
                 : `/-/tree/${joinPaths(this.escapedRef, path)}`;
+            /* eslint-enable @gitlab/no-hardcoded-urls */
             return acc.concat({
               name,
               path,
@@ -71,6 +72,7 @@ export default {
               name: this.projectShortPath,
               path: '/',
               to: buildURLwithRefType({
+                // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
                 path: joinPaths('/-/tree', this.escapedRef),
                 refType: this.refType,
               }),

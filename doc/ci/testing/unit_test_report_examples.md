@@ -92,7 +92,7 @@ cpp:
       junit: report.xml
 ```
 
-If there are multiple `gtest` executables created for different architectures (`x86`, `x64` or `arm`),
+If there are multiple `gtest` executables created for different architectures (`x86`, `x64`, or `arm`),
 make sure each test has a unique filename. The results are then aggregated together.
 
 ### CUnit

@@ -4,6 +4,7 @@ import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import UserAvatar from './user_avatar.vue';
 import {
   FIELD_NAME,
@@ -24,6 +25,7 @@ export default {
     UserDate,
     EmptyResult,
   },
+  mixins: [glSlotsMixin],
   props: {
     users: {
       type: Array,
@@ -148,7 +150,7 @@ export default {
       <user-avatar :user="user" :admin-user-path="adminUserPath" class="gl-font-normal" />
     </template>
 
-    <template v-if="$scopedSlots['organization-role']" #cell(organizationRole)="{ item: user }">
+    <template v-if="glSlots()['organization-role']" #cell(organizationRole)="{ item: user }">
       <slot name="organization-role" :user="user"></slot>
     </template>
 
@@ -174,7 +176,7 @@ export default {
       </div>
     </template>
 
-    <template #cell(settings)="{ item: user }">
+    <template v-if="glSlots()['user-actions']" #cell(settings)="{ item: user }">
       <slot name="user-actions" :user="user"></slot>
     </template>
   </gl-table>

@@ -49,9 +49,9 @@ describe('IssuableMoveDropdown', () => {
     mock.restore();
   });
 
-  const findDropdownButton = () => wrapper.findByTestId('dropdown-button');
+  const findDropdownButton = () => wrapper.findComponentByTestId('dropdown-button');
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findDropdownMoveButton = () => wrapper.findByTestId('dropdown-move-button');
+  const findDropdownMoveButton = () => wrapper.findComponentByTestId('dropdown-move-button');
   const findDropdownItemsText = () =>
     wrapper.findAllComponents(GlListboxItem).wrappers.map((item) => item.text());
 

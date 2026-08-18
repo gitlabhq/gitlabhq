@@ -4,54 +4,17 @@ module BrowserConsoleHelpers
   # Define an error class for browser console messages
   BrowserConsoleError = Class.new(StandardError)
 
-  # Filter out noisy browser console messages
-  #
-  # This is used when printing out the full console messages in failed tests
-  BROWSER_CONSOLE_FILTER = Regexp.union(
-    [
-      '"[HMR] Waiting for update signal from WDS..."',
-      '"[WDS] Hot Module Replacement enabled."',
-      '"[WDS] Live Reloading enabled."',
-      'Download the Vue Devtools extension',
-      'Download the Apollo DevTools',
-      "Unrecognized feature: 'interest-cohort'",
-      'Does this page need fixes or improvements?',
-      '[vite] connecting...',
-      '[vite] connected.',
-
-      # Needed after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933
-      # which opts out gitlab from FloC by default
-      # see https://web.dev/floc/ for more info on FloC
-      "Origin trial controlled feature not enabled: 'interest-cohort'",
-
-      # Font warning
-      /The resource .* was preloaded using link preload but not used/,
-
-      # ERR_CONNECTION error could happen due to automated test session disabling browser network request
-      'net::ERR_CONNECTION',
-
-      # GitLab owned deps translation fallback warnings, matches warnings at:
-      # - https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/blob/main/packages/gitlab-ui/src/config.js
-      # - https://gitlab.com/gitlab-org/duo-ui/-/blob/main/src/config.js
-      'The following translations have not been given, so will fall back',
-
-      # ProjectSelect initialization warning when element is not present on the page
-      'Attempted to initialize ProjectSelect',
-
-      # Browser security restriction: autofocus is blocked when the URL contains a fragment.
-      # This is expected behavior when navigating directly to a URL with a hash (e.g. #create-group-pane).
-      /Autofocus processing was blocked because a document's URL has a fragment/
-    ]
-  )
-
   # Filter out noisy browser console **error** messages
   #
-  # This is used for expect_page_to_have_no_console_errors
+  # This is used for both expect_page_to_have_no_console_errors and
+  # raise_if_unexpected_browser_console_output, which only ever consider SEVERE-level output.
   BROWSER_CONSOLE_ERROR_FILTER = Regexp.union(
     [
-      /buttonTextClasses/, # TODO: Remove this filter with gitlab-ui version 121.0.1
       /gravatar\.com.*Failed to load resource/,
-      /snowplowanalytics.*Failed to load resource/
+      /snowplowanalytics.*Failed to load resource/,
+
+      # ERR_CONNECTION error could happen due to automated test session disabling browser network request
+      'net::ERR_CONNECTION'
     ]
   )
 
@@ -89,7 +52,7 @@ module BrowserConsoleHelpers
   end
 
   def raise_if_unexpected_browser_console_output
-    console = browser_logs.reject { |log| log.message =~ BROWSER_CONSOLE_FILTER }
+    console = browser_logs.select { |log| log.level == 'SEVERE' && log.message !~ BROWSER_CONSOLE_ERROR_FILTER }
 
     return unless console.present?
 

@@ -106,7 +106,7 @@ RSpec.describe MergeRequests::Refresh::WebHooksService, feature_category: :code_
       )
 
       expect { described_class.new(project: project, current_user: user).execute(oldrev, newrev, ref) }
-        .not_to exceed_query_limit(control).for_model(MergeRequest::Metrics)
+        .not_to exceed_query_limit(control).allow_skip_cache_inconsistency.for_model(MergeRequest::Metrics)
     end
 
     context 'with closed merge requests' do

@@ -17,6 +17,9 @@ RSpec.describe Gitlab::Tracking::BillingAuthEmitter, feature_category: :applicat
   let(:token) { 'oidc-id-token' }
 
   before do
+    # In EE the OIDC token source is only used on SaaS
+    allow(CloudConnector).to receive(:gitlab_realm).and_return(CloudConnector::GITLAB_REALM_SAAS) if Gitlab.ee?
+
     allow(Gitlab::Tracking::Destinations::BillingOidcTokenSource)
       .to receive(:new).with('billing.stgsub.gitlab.net').and_return(token_source)
     allow(token_source).to receive(:token).and_return(token)
@@ -56,7 +59,7 @@ RSpec.describe Gitlab::Tracking::BillingAuthEmitter, feature_category: :applicat
       let(:token) { nil }
 
       it 'sends the request without an Authorization header and logs a warning' do
-        expect(emitter.logger).to receive(:warn).with(/no OIDC token available/)
+        expect(emitter.logger).to receive(:warn).with(/no auth token available/)
 
         emitter.send(:http_post, payload)
 

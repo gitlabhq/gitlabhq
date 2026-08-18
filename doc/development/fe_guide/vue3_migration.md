@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Migration to Vue 3
 ---
 
-The migration from Vue 2 to 3 is tracked in epic [&6252](https://gitlab.com/groups/gitlab-org/-/epics/6252).
+The migration from Vue 2 to 3 is tracked in epic [&6252](https://gitlab.com/groups/gitlab-org/-/work_items/6252).
 
 To ease migration to Vue 3.x, we have added [ESLint rules](https://gitlab.com/gitlab-org/frontend/eslint-plugin/-/merge_requests/50)
 that prevent us from using the following deprecated features in the codebase.
@@ -271,7 +271,7 @@ also access injections.
 **Why?**
 
 `Vue.observable` creates reactive state that is tied to the Vue version that created it.
-In the hybrid Vue 2/Vue 3 infection system, modules can be duplicated — one copy for
+In the hybrid Vue 2/Vue 3 infection system, modules can be duplicated - one copy for
 each Vue version. When these modules use `Vue.observable()`, each copy creates its own
 separate reactive object, so state changes in one are invisible to the other.
 
@@ -299,7 +299,7 @@ The `observable(key, defaults)` function:
 The `key` must be a unique string identifier (for example, `'super_sidebar_state'`). It ensures
 both module copies share the same underlying state.
 
-An ESLint rule (`no-restricted-properties`) enforces this — direct `Vue.observable` usage
+An ESLint rule (`no-restricted-properties`) enforces this - direct `Vue.observable` usage
 produces a lint error.
 
 **Limitations**
@@ -326,116 +326,165 @@ Some libraries rely on Vue.js 2 internals. They might not work with `@vue/compat
 - Switching between new and old versions should be hidden inside tooling (webpack / jest) and should not be exposed to the code
 - All facades specific to migration should live in the same directory to simplify future migration steps
 
-## Migrating page entrypoints to `@vue/compat`
+## Migrate to Vue 3
 
-`@vue/compat` guide covers patterns for migrating GitLab page entrypoints to support Vue 3 using compat mode.
-In compat hybrid mode, both Vue 2 and Vue 3 can render on the same page simultaneously. Feature flags
-control which modules load in which version.
+For general Vue 3 migration information, see the
+[Vue 3 official migration guide](https://v3-migration.vuejs.org/).
 
-For general Vue 3 migration information, see the [Vue 3 official migration guide](https://v3-migration.vuejs.org/).
+### Option 1 (recommended): Migrate your page entrypoint using a feature flag and `vue3_migration.yml`
 
-### Understanding the webpack infection mechanism
-
-The `?vue3` query parameter in dynamic imports triggers webpack to resolve Vue and related libraries
-to their Vue 3 versions.
-
-When webpack processes `await import('~/my_feature/init_my_app?vue3')`:
-
-1. Webpack creates a separate chunk for this module.
-1. The `?vue3` query triggers webpack aliases configured in `webpack.config.js`.
-1. All imports of `vue`, `vue-apollo`, `vuex`, and `vue-router` in that module and its dependencies
-   resolve to Vue 3 versions.
-1. The entire dependency tree gets "infected" with Vue 3 shims.
-
-The infection applies to the entire module dependency chain, not just the entry point.
-
-### Feature flag controlled loading
-
-Pages use feature flags to decide which version to load. This allows gradual rollout without
-reconfiguring GDK.
-
-We recommend using `user` as the feature flag actor, unless you have a specific use case for `project` or `group` actors. An example could be the Compliance Center, which isn't heavily used internally. In such case, enabling it for groups would give more data during the roll out.
-
-**Entrypoint pattern:**
-
-```javascript
-// pages/projects/blob/show/index.js
-import { initBlobShow } from '~/blob/show';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
-
-if (gon.features?.vue3MigrateRepository) {
-  (async () => {
-    try {
-      const { initBlobShow } = await import('~/blob/show?vue3');
-      initBlobShow();
-      return;
-    } catch (e) {
-      Sentry.captureException(e);
-    }
-
-    initBlobShow();  // Fallback to Vue 2 on error
-  })();
-} else {
-  initBlobShow();  // Use Vue 2
-}
-```
-
-### File structure
-
-Separate entrypoint (minimal loader) from a bundle file (initialization logic):
+GitLab declares the migration state of every page entry under `app/assets/javascripts/pages` (and
+the EE and JH equivalents) in a `vue3_migration.yml` file co-located with the page's entrypoint,
+called `index.js`.
 
 ```plaintext
-app/assets/javascripts/
-├── [feature]/
-│   └── [page]/
-│       └── index.js          # Bundle: all initialization logic
 └── pages/
     └── [area]/
         └── [page]/
-            └── index.js      # Entrypoint: minimal loader (under 20 lines)
+            ├── index.js              # Entrypoint: imports and calls the initializer
+            └── vue3_migration.yml    # Declares the page's migration status
 ```
 
-### Extract Vue apps to separate init functions
+The bundler reads these files to decide whether to emit a Vue 3 chunk, and Rails decides at
+request time which chunk to render depending on the feature flag.
 
-Move inline Vue app creation from entrypoints to dedicated init functions.
-
-```javascript
-// bad
-// pages/projects/blob/show/index.js
-new Vue({
-  el: '#js-my-app',
-  apolloProvider,
-  render(h) {
-    return h(MyComponent);
-  },
-});
-
-// good
-// blob/init_my_app.js
-import Vue from 'vue';
-import apolloProvider from '~/repository/graphql';
-
-export default function initMyApp() {
-  const el = document.getElementById('js-my-app');
-  if (!el) return null;
-
-  return new Vue({ el, apolloProvider, /* ... */ });
-}
-
-// pages/projects/blob/show/index.js
-import initMyApp from '~/blob/init_my_app.js';
-
-export default function initBlobShow() {
-  initMyApp()
-}
-
+```yaml
+status: rollout
+feature_flag: vue3_migrate_jobs # we recommend naming the flag `vue3_migrate_<page>`
+group: group::pipeline authoring # optional
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/... # optional
 ```
 
-## Common migration patterns
+When the file exists, it must declare a `status` field with one of two values:
+
+- `rollout`: both Vue 2 and Vue 3 chunks are built (the Vue 3 chunk as a `.vue3` sibling
+  entrypoint). Rails serves the Vue 3 chunk when the declared feature flag is enabled, and the
+  Vue 2 chunk otherwise. A `feature_flag` field is required.
+- `migrated`: only the Vue 3 chunk is built, under the original entrypoint name, so Rails serves
+  it with no lookup at all. Use this after the feature flag has been fully rolled out and removed.
+
+Optional fields `group` and `migration_issue` are accepted for documentation. The schema is
+defined in `config/helpers/vue3_migration_file_validation.js`.
+
+#### How the metadata reaches production
+
+Rails does not read the `vue3_migration.yml` files at runtime in production: packaged builds
+(for example, Omnibus) strip `app/assets` from the Rails application, so the files do not exist
+there. Instead, the webpack build compiles the `rollout` entries into a single
+`public/assets/webpack/vue3_migration.json` manifest
+(see `config/plugins/vue3_migration_manifest_plugin.js`), which ships with the compiled assets in
+every distribution.
+
+To verify which apps run under Vue 3 on any environment, query the DOM marker set by the Vue 3
+runtime: `document.querySelectorAll('[data-gitlab-vue3-app]')`.
+
+#### Migration steps
+
+1. Identify your page's entrypoint under `app/assets/javascripts/pages` (or `ee/...`).
+   For example, `app/assets/javascripts/pages/projects/jobs/show/index.js`.
+1. Create or update the feature flag in `config/feature_flags/`. The migration mechanism uses
+   the current user as the actor.
+1. Create a `vue3_migration.yml` file next to the page's `index.js`, declaring `status: rollout`
+   with the feature flag name:
+
+   ```yaml
+   # app/assets/javascripts/pages/projects/jobs/show/vue3_migration.yml
+   status: rollout
+   feature_flag: vue3_migrate_jobs
+   ```
+
+   If the page is shadowed across CE and EE, add the file to whichever directory currently owns
+   the `index.js`, or to both if both directories contain an `index.js`. CE and EE YAMLs for the
+   same page must agree on `status` and `feature_flag`.
+1. Restart Vite with `gdk restart vite`. Vite builds its page entry map at startup, so it does not
+   serve an entrypoint added while it was running.
+1. Enable the feature flag and load the page locally.
+1. Verify that the console shows
+   `[gitlab] [V] Using Vue.js 3 (with @vue/compat) for <your app name>`.
+1. Verify that `document.querySelectorAll('[data-gitlab-vue3-app]')` returns your app.
+1. **Verify the app works correctly locally**.
+1. Open an MR with your changes and get them merged!
+1. Proceed with the feature flag rollout with the `user` actor.
+1. Upon removing the feature flag, change the YAML to `status: migrated` and
+   remove the `feature_flag` line. You are done!
+
+### Option 2: Migrate your page partially using `?vue3`
+
+A `vue3_migration.yml` file applies to the entire page entry, so it moves every app that the
+entrypoint initializes. Some entrypoints mount many independent apps owned by different teams.
+Settings pages are a common case, where a single `index.js` initializes a dozen unrelated apps.
+
+If you own one app on such a page, `Option 1` is too wide: enabling your feature flag would also
+move apps you do not own.
+
+Instead, add `?vue3` to the import of your own app. Every module below that import is built for
+Vue 3, and the rest of the page stays on Vue 2. Use this option when Option 1 does not fit,
+because it costs more code: a feature flag wired through your controller, and a conditional in the
+page entrypoint.
+
+#### Migration steps
+
+1. Create or update the feature flag in `config/feature_flags/`.
+1. Push the flag to the frontend from the controller that renders the page:
+
+   ```ruby
+   # app/controllers/projects/settings/ci_cd_controller.rb
+   before_action do
+     push_frontend_feature_flag(:vue3_migrate_my_app, current_user)
+   end
+   ```
+
+1. In the page entrypoint, import the Vue 3 build of your app dynamically when the flag is
+   enabled, and fall back to the Vue 2 build if that import fails:
+
+   ```javascript
+   // app/assets/javascripts/pages/projects/settings/ci_cd/show/index.js
+   import { initMyApp } from '~/my_app';
+   import { initOtherApp } from '~/other_app';
+   import * as Sentry from '~/sentry/sentry_browser_wrapper';
+
+   // Other apps on this page stay on Vue 2.
+   initOtherApp();
+
+   if (gon.features?.vue3MigrateMyApp) {
+     (async () => {
+       try {
+         // eslint-disable-next-line no-shadow -- Override with Vue 3 app
+         const { initMyApp } = await import('~/my_app?vue3');
+         initMyApp();
+         return;
+       } catch (e) {
+         Sentry.captureException(e);
+       }
+
+       initMyApp();
+     })();
+   } else {
+     initMyApp();
+   }
+   ```
+
+   Keep the `?vue3` path a string literal, because the bundler cannot see a path built at runtime.
+   Point the `?vue3` import at the module that creates the Vue instance: infection propagates downward, so an
+   import higher in the tree also moves every other app below it. Declare the import inside the
+   `try` block so the outer Vue 2 import stays in scope for the fallback.
+
+1. Enable the feature flag and load the page locally.
+1. Verify that the console shows
+   `[gitlab] [V] Using Vue.js 3 (with @vue/compat) for <your app name>`.
+1. Verify that `document.querySelectorAll('[data-gitlab-vue3-app]')` returns your app.
+1. **Verify the app works correctly locally**.
+1. Open an MR with your changes and get them merged.
+1. Proceed with the feature flag rollout with the `user` actor.
+1. Upon removing the feature flag, import `~/my_app?vue3` directly and delete both the conditional
+   and the Vue 2 import.
+
+## Common migration issues
 
 ### Vue Router props reactivity
 
-Router props passed with the `props` function are not reactive in Vue 3. Use computed properties that read from `this.$route` instead.
+Router props passed with the `props` function are not reactive in Vue 3. Use computed properties
+that read from `this.$route` instead.
 
 ```javascript
 // Component - use computed property instead of props
@@ -448,9 +497,9 @@ computed: {
 
 ### Watch expressions
 
-Watch specific route properties using string paths, not the entire `$route` object.
-While you can still use `deep: true` with `$route`, it's unnecessary and creates performance overhead.
-Watching specific properties is more efficient and explicit about your component's dependencies.
+Watch specific route properties using string paths, not the entire `$route` object. You can still
+use `deep: true` with `$route`, but it adds performance overhead. Watching specific properties is
+more efficient and explicit about your component's dependencies.
 
 ```javascript
 watch: {
@@ -459,36 +508,6 @@ watch: {
   }
 }
 ```
-
-### Error handling with Vue 2 fallback
-
-Provide automatic fallback to Vue 2 if Vue 3 initialization fails.
-
-```javascript
-if (gon.features?.vue3MigrateFeature) {
-  (async () => {
-    try {
-      const { init } = await import('~/feature?vue3');
-      init();
-      return;
-    } catch (e) {
-      Sentry.captureException(e);
-    }
-    init(); // Vue 2 fallback
-  })();
-} else {
-  init();
-}
-```
-
-### Migration checklist
-
-- [ ] Create bundle file with all initialization logic.
-- [ ] Extract inline Vue apps to separate init functions.
-- [ ] Update imports to use shared apollo provider, router, and store.
-- [ ] Create minimal entrypoint with feature flag conditional loading.
-- [ ] Provide Vue 2 fallback.
-- [ ] Use named exports for init functions.
 
 ## Testing
 

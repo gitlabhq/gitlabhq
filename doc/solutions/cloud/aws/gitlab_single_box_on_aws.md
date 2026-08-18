@@ -49,4 +49,4 @@ Instances running on Community Edition (CE) require a migration to Enterprise Ed
 
 1. AMI IDs are unique per region. After you've loaded any of these editions, in the upper-right corner, select the desired target region of the console to see the appropriate AMIs.
 1. After the console is loaded, you can add additional search criteria to narrow further. For instance, type `13.` to find only 13.x versions.
-1. To launch an EC2 Machine with one of the listed AMIs, check the box at the start of the relevant row, and select **Launch** near the top of left of the page.
+1. To launch an EC2 Machine with one of the listed AMIs, check the box at the start of the relevant row, and select **Launch** near the top left of the page.

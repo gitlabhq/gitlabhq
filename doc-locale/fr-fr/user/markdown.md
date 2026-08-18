@@ -13,7 +13,7 @@ description: "Mise en forme, HTML intégré, références spécifiques à GitLab
 
 {{< /details >}}
 
-GitLab Flavored Markdown (GLFM) est un puissant langage de balisage qui met en forme le texte dans l'interface utilisateur de GitLab. GLFM :
+GitLab Flavored Markdown (GLFM) est un langage de balisage qui formate le texte dans l'interface utilisateur de GitLab. GLFM :
 
 - Crée du contenu enrichi avec prise en charge du code, des diagrammes, des équations mathématiques et des contenus multimédias.
 - Relie les tickets, les merge requests et d'autres contenus GitLab par des références croisées.
@@ -25,17 +25,17 @@ Lorsque vous saisissez du texte dans l'interface utilisateur GitLab, GitLab supp
 
 Vous pouvez utiliser GitLab Flavored Markdown dans :
 
-- Commentaires
-- Tickets
-- Epics
-- Merge requests
-- Jalons
-- Snippets (le snippet doit être nommé avec une extension `.md`)
-- Pages wiki
-- Documents Markdown dans les dépôts
-- Releases
+- Les commentaires
+- Les tickets
+- Les epics
+- Les merge requests
+- Les jalons
+- Les extraits de code (l'extrait de code doit être nommé avec une extension `.md`)
+- Les pages wiki
+- Les documents Markdown dans les dépôts
+- Les releases
 
-Vous pouvez également utiliser d'autres fichiers en texte enrichi dans GitLab. Vous devrez peut-être installer une dépendance pour ce faire. Pour plus d'informations, consultez le [projet gem `gitlab-markup`](https://gitlab.com/gitlab-org/gitlab-markup).
+Vous pouvez également utiliser d'autres fichiers en texte enrichi dans GitLab. Vous devrez peut-être installer une dépendance pour ce faire. Pour plus d'informations, consultez le [projet de la gemme `gitlab-markup`](https://gitlab.com/gitlab-org/gitlab-markup).
 
 > [!note]
 > Cette spécification Markdown est valide pour GitLab uniquement. Nous faisons de notre mieux pour restituer fidèlement le Markdown ici, cependant le [site de documentation GitLab](https://docs.gitlab.com) et le [manuel GitLab](https://handbook.gitlab.com) utilisent un moteur de rendu Markdown différent.
@@ -56,9 +56,9 @@ reason, like in "Newlines".
 
 GitLab Flavored Markdown comprend les éléments suivants :
 
-- Fonctionnalités Markdown de base, basées sur la [spécification CommonMark](https://spec.commonmark.org/current/).
-- Extensions de [GitHub Flavored Markdown](https://github.github.com/gfm/).
-- Extensions créées spécifiquement pour GitLab.
+- Fonctionnalités Markdown de base, basées sur la [spécification CommonMark](https://spec.commonmark.org/current/)
+- Extensions de [GitHub Flavored Markdown](https://github.github.com/gfm/)
+- Extensions créées spécifiquement pour GitLab
 
 Toute la mise en forme Markdown standard devrait fonctionner comme prévu dans GitLab. Certaines fonctionnalités standard sont étendues avec des fonctionnalités supplémentaires, sans affecter l'utilisation standard.
 
@@ -71,7 +71,7 @@ Les fonctionnalités suivantes ne se trouvent pas dans le Markdown standard :
 - [Emoji](#emoji)
 - [Notes de bas de page](#footnotes)
 - [En-tête de document](#front-matter)
-- [Références spécifiques à GitLab](#gitlab-specific-references) (Non prises en charge dans les fichiers snippet Markdown.)
+- [Références spécifiques à GitLab](#gitlab-specific-references) (non prises en charge dans les fichiers d'extrait de code Markdown)
 - [Inclusions](#includes)
 - [Espaces réservés](#placeholders)
 - [Diffs inline](#inline-diff)
@@ -88,9 +88,9 @@ Les fonctionnalités suivantes sont étendues par rapport au Markdown standard :
 |---------------------------------------|-----------------------------|
 | [Citations](#blockquotes)           | [Citations multilignes](#multiline-blockquote) |
 | [Blocs de code](#code-spans-and-blocks) | [Code coloré et coloration syntaxique](#syntax-highlighting) |
-| [Titres](#headings)                 | [IDs de titres avec liens](#heading-ids-and-links) |
+| [Titres](#headings)                 | [Ancres de titres avec lien](#heading-anchors) |
 | [Images](#images)                     | [Vidéos intégrées](#videos) et [audio](#audio) |
-| [Liens](#links)                       | [Liaison automatique des URL](#url-auto-linking) |
+| [Liens](#links)                       | [Liens automatiques sur les URL](#url-auto-linking) |
 
 ## Markdown et accessibilité {#markdown-and-accessibility}
 
@@ -106,7 +106,7 @@ Pour que les tableaux restent accessibles et lisibles, ils ne doivent pas avoir 
 
 ### Images et vidéos accessibles {#accessible-images-and-videos}
 
-Décrivez l'image ou la vidéo dans le `[alt text]`. Rendez la description précise, concise et unique. N'utilisez pas `image of` ou `video of` dans la description. Pour plus d'informations, voir [WebAim Alternative Text](https://webaim.org/techniques/alttext/).
+Décrivez l'image ou la vidéo dans le `[alt text]`. Assurez-vous que la description est précise, concise et unique. N'utilisez pas `image of` ou `video of` dans la description. Pour plus d'informations, consultez [WebAim Alternative Text](https://webaim.org/techniques/alttext/).
 
 ## Titres des éléments de travail et des merge requests {#work-item-and-merge-request-titles}
 
@@ -119,11 +119,12 @@ Décrivez l'image ou la vidéo dans le `[alt text]`. Rendez la description préc
 
 Les titres des tickets, des merge requests, des epics et des autres éléments de travail ne prennent pas en charge le GitLab Flavored Markdown complet. Les titres prennent uniquement en charge :
 
+- Plages de code (`` `code` ``), sans prise en charge de [l'utilisation de backticks supplémentaires](#use-additional-backticks) ni d'échappement.
 - Les emoji (codes courts `:emoji:` et emoji personnalisés)
 - Les URL auto-liées
 - Les [références spécifiques à GitLab](#gitlab-specific-references) comme `#123`, `@user` et `!456`
 
-La syntaxe Markdown standard telle que le gras, l'italique, le code en ligne, les liens, les titres, les listes et toute autre mise en forme au niveau bloc n'est pas traitée dans les titres. Par exemple, le titre `` **Merge request title** `` n'est pas affiché en gras et s'affiche avec les astérisques.
+La syntaxe Markdown standard telle que le gras, l'italique, les liens, les titres, les listes et tout autre formatage de niveau bloc n'est pas traitée dans les titres. Par exemple, le titre `` **Merge request title** `` n'est pas affiché en gras et s'affiche avec les astérisques.
 
 ## Titres {#headings}
 
@@ -148,7 +149,7 @@ Alt-H2
 ------
 ```
 
-### IDs et liens de titres {#heading-ids-and-links}
+### Ancres de titres {#heading-anchors}
 
 {{< history >}}
 
@@ -156,23 +157,22 @@ Alt-H2
 
 {{< /history >}}
 
-Tous les titres rendus en Markdown reçoivent automatiquement des IDs qui peuvent être liés, sauf dans les commentaires.
+GitLab ajoute automatiquement une ancre à chaque titre Markdown, ce qui vous permet d'y créer un lien.
 
-Au survol, un lien vers ces IDs devient visible pour faciliter la copie du lien vers le titre afin de l'utiliser ailleurs.
+Au survol, un lien vers ces ancres devient visible afin de faciliter la copie du lien vers le titre pour l'utiliser ailleurs.
 
-Les IDs sont générés à partir du contenu du titre selon les règles suivantes :
+Les ancres sont générées à partir du contenu du titre selon les règles suivantes :
 
 1. Tout le texte est converti en minuscules.
-1. Tout le texte non verbal (comme la ponctuation ou le HTML) est supprimé.
+1. Tous les caractères autres que les lettres, les chiffres, les tirets et les traits de soulignement sont supprimés.
 1. Tous les espaces sont convertis en tirets.
-1. Deux tirets ou plus consécutifs sont convertis en un seul.
-1. Si un titre avec le même ID a déjà été généré, un numéro incrémentiel unique est ajouté, en commençant à 1.
+1. Si un titre avec la même ancre a déjà été généré, un numéro incrémentiel unique est ajouté, en commençant à 1.
 
 Exemple :
 
 <!--
 Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
-to stay in sync with the example link IDs.
+to stay in sync with the example anchors.
 -->
 
 ```markdown
@@ -182,18 +182,20 @@ to stay in sync with the example link IDs.
 ## This heading has spaces in it
 ### This heading has spaces in it
 ## This heading has 3.5 in it (and parentheses)
-## This heading has multiple spaces and --- hyphens
+## This heading has multiple spaces and --- hyphens_and_underscores
 ```
 
-Génèrerait les IDs de liens suivants :
+Générerait les ancres de titres suivantes :
 
-1. `this-heading-has-spaces-in-it`
-1. `this-heading-has-a-thumbsup-in-it`
-1. `this-heading-has-unicode-in-it-한글`
-1. `this-heading-has-spaces-in-it-1`
-1. `this-heading-has-spaces-in-it-2`
-1. `this-heading-has-35-in-it-and-parentheses`
-1. `this-heading-has--multiple-spaces-and-----hyphens`
+1. `#this-heading-has-spaces-in-it`
+1. `#this-heading-has-a-thumbsup-in-it`
+1. `#this-heading-has-unicode-in-it-한글`
+1. `#this-heading-has-spaces-in-it-1`
+1. `#this-heading-has-spaces-in-it-2`
+1. `#this-heading-has-35-in-it-and-parentheses`
+1. `#this-heading-has--multiple-spaces-and-----hyphens_and_underscores`
+
+Dans un snippet, les titres reçoivent également un préfixe dérivé du nom de fichier, afin d'éviter les collisions d'ancres entre plusieurs fichiers. Par exemple, un titre `## TL;DR` dans un fichier nommé `README.md` obtient l'ancre `#readme-tldr` au lieu de `#tldr`.
 
 ## Sauts de ligne {#line-breaks}
 
@@ -362,7 +364,7 @@ to stay in sync with the image.
 
 ![Diff inline avec mise en forme mixte, tel que rendu par l'interface GitLab](img/inline_diff_02_v13_3.png)
 
-### Règle horizontale {#horizontal-rule}
+## Règle horizontale {#horizontal-rule}
 
 Créez une règle horizontale en utilisant trois tirets, astérisques ou tirets bas ou plus :
 
@@ -376,7 +378,7 @@ ___
 
 Lors du rendu, toutes les règles horizontales ressemblent à :
 
----
+> ---
 
 ## Listes {#lists}
 
@@ -505,7 +507,7 @@ Les listes ordonnées qui sont le premier sous-élément d'un élément de liste
 Par exemple, avec une ligne vide :
 
 ```markdown
-- Élément de liste non ordonnée 
+- Élément de liste non ordonnée
 
   5. Premier élément de liste ordonnée
 ```
@@ -514,7 +516,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 
 <!-- markdownlint-disable MD029 -->
 
-> - Élément de liste non ordonnée 
+> - Élément de liste non ordonnée
 >
 >   5. Premier élément de liste ordonnée
 
@@ -631,32 +633,32 @@ Vous pouvez également ajouter des listes de tâches aux [cellules de tableau](#
 Vous pouvez créer des liens de plusieurs façons :
 
 ```markdown
-- Cette ligne montre un [lien de style inline](https://www.google.com)
+- Cette ligne montre un [lien de style inline](https://example.com)
 - Cette ligne montre un [lien vers un fichier du dépôt dans le même répertoire](permissions.md)
 - Cette ligne montre un [lien relatif vers un fichier un répertoire plus haut](../_index.md)
-- Cette ligne montre un [lien qui a aussi un texte de titre](https://www.google.com "This link takes you to Google!")
+- Cette ligne montre un [lien qui a aussi un texte de titre](https://example.com "Ce lien vous amène vers Example !")
 ```
 
 Lors du rendu, les exemples ressemblent à :
 
-> - Cette ligne montre un [lien de style inline](https://www.google.com)
+> - Cette ligne montre un [lien de style inline](https://example.com)
 > - Cette ligne montre un [lien vers un fichier du dépôt dans le même répertoire](permissions.md)
 > - Cette ligne montre un [lien relatif vers un fichier un répertoire plus haut](../_index.md)
-> - Cette ligne montre un [lien qui a aussi un texte de titre](https://www.google.com "Ce lien vous amène à Google !")
+> - Cette ligne affiche un [lien qui possède également un texte de titre](https://example.com "Ce lien vous amène vers Example !")
 
 Vous ne pouvez pas utiliser de liens relatifs pour référencer des fichiers de projet dans une page wiki, ni une page wiki dans un fichier de projet. Cette limitation existe parce que les wikis sont toujours dans des dépôts Git séparés dans GitLab. Par exemple, `[I'm a reference-style link](style)` pointe vers `wikis/style` uniquement lorsque le lien se trouve dans un fichier Markdown de wiki. Pour plus d'informations, voir [Markdown spécifique aux wikis](project/wiki/markdown.md).
 
-Utilisez des ancres d'ID de titre pour créer un lien vers une section spécifique d'une page :
+Utilisez des ancres de titres pour créer un lien vers une section spécifique d'une page :
 
 ```markdown
-- Cette ligne renvoie vers [une section sur une autre page Markdown, en utilisant un `#` et l'ID de titre](permissions.md#project-permissions)
-- Cette ligne renvoie vers [une section différente sur la même page, en utilisant un `#` et l'ID de titre](#heading-ids-and-links)
+- Cette ligne renvoie vers [une section d'une autre page Markdown, en utilisant un `#` et l'ancre de titre](permissions.md#project-permissions)
+- Cette ligne renvoie vers [une autre section de la même page, en utilisant un `#` et l'ancre de titre](#heading-anchors)
 ```
 
 Lors du rendu, les exemples ressemblent à :
 
-> - Cette ligne renvoie vers [une section sur une autre page Markdown, en utilisant un `#` et l'ID de titre](permissions.md#project-permissions)
-> - Cette ligne renvoie vers [une section différente sur la même page, en utilisant un `#` et l'ID de titre](#heading-ids-and-links)
+> - Cette ligne renvoie vers [une section d'une autre page Markdown, en utilisant un `#` et l'ancre de titre](permissions.md#project-permissions)
+> - Cette ligne renvoie vers [une autre section de la même page, en utilisant un `#` et l'ancre de titre](#heading-anchors)
 
 Utilisation des références de liens :
 
@@ -666,13 +668,13 @@ Do not remove the two-space nesting.
 -->
 
   ```markdown
-  - Cette ligne est un [lien de style référence, voir ci-dessous][Arbitrary case-insensitive reference text]
+  - Cette ligne montre un [lien de style référence, voir ci-dessous][Texte de référence arbitraire insensible à la casse]
   - Vous pouvez [utiliser des numéros pour les définitions de liens de style référence, voir ci-dessous][1]
   - Ou laissez-le vide et utilisez le [texte du lien lui-même][], voir ci-dessous
 
   Un peu de texte pour montrer que les liens de référence peuvent suivre plus tard.
 
-  [arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+  [Texte de référence arbitraire insensible à la casse]: https://www.mozilla.org/en-US/
   [1]: https://slashdot.org
   [link text itself]: https://about.gitlab.com/
   ```
@@ -686,7 +688,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 
 > - Cette ligne est un [lien de style référence, voir ci-dessous](https://www.mozilla.org/en-US/)
 > - Vous pouvez [utiliser des numéros pour les définitions de liens de style référence, voir ci-dessous](https://slashdot.org)
-> - Ou laissez-le vide et utilisez le [texte du lien lui-même](https://about.gitlab.com/), voir ci-dessous
+> - Ou laissez-le vide et utilisez le [texte du lien lui-même](https://about.gitlab.com/), voir ci-dessous.
 >
 > Un peu de texte pour montrer que les liens de référence peuvent suivre plus tard.
 
@@ -695,8 +697,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 Presque toute URL que vous placez dans votre texte est automatiquement liée :
 
 ```markdown
-- https://www.google.com
-- https://www.google.com
+- https://example.com
 - ftp://ftp.us.debian.org/debian/
 - smb://foo/bar/baz
 - irc://irc.freenode.net/
@@ -705,8 +706,7 @@ Presque toute URL que vous placez dans votre texte est automatiquement liée :
 
 Lorsqu'il est affiché, l'exemple ressemble à :
 
-> - <https://www.google.com>
-> - <https://www.google.com>
+> - <https://example.com>
 > - <ftp://ftp.us.debian.org/debian/>
 > - <a href="smb://foo/bar/baz/">smb://foo/bar/baz</a>
 > - <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
@@ -719,9 +719,12 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 - La saisie semi-automatique pour les pages wiki a été [introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) dans GitLab 16.11.
 - L'option de référencer des labels à partir de groupes a été [introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) dans GitLab 17.1.
 - Option de référencer des tickets, des epics et des éléments de travail avec la syntaxe `[work_item:123]` :
-  - [Introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) dans GitLab 18.1 [avec un indicateur](../administration/feature_flags/_index.md) nommé `extensible_reference_filters`. Désactivé par défaut.
-  - [Généralement disponible](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) dans GitLab 18.2. L'indicateur de fonctionnalité `extensible_reference_filters` a été supprimé.
+  - [Introduction](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) dans GitLab 18.1 [avec le feature flag](../administration/feature_flags/_index.md) `extensible_reference_filters`. Désactivé par défaut.
+  - [En disponibilité générale](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) dans GitLab 18.2. L'indicateur de fonctionnalité `extensible_reference_filters` a été supprimé.
 - Option de référencer des epics avec la syntaxe `[epic:123]` [introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/352864) dans GitLab 18.4.
+- Possibilité de référencer des snippets personnels :
+  - [Introduit](https://gitlab.com/gitlab-org/gitlab/-/work_items/217306) dans GitLab 19.0 [avec le feature flag](../administration/feature_flags/_index.md) `personal_snippet_reference_filters`. Désactivé par défaut.
+  - [Passage en disponibilité générale](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241935) dans GitLab 19.2. Suppression du feature flag `personal_snippet_reference_filters`.
 
 {{< /history >}}
 
@@ -743,7 +746,8 @@ GitLab Flavored Markdown reconnaît les éléments suivants :
 | Ticket                                                                                | ``#123``, `GL-123` ou `[issue:123]`                  | `namespace/project#123` ou `[issue:namespace/project/123]` | `project#123` ou `[issue:project/123]` |
 | [Élément de travail](work_items/_index.md)                                                    | `[work_item:123]`                                     | `[work_item:namespace/project/123]`            | `[work_item:project/123]`          |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
-| Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| Snippet <sup>3</sup>                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| Snippet personnel <sup>3</sup>                                                                     | `$123`                                                |                                                |                                    |
 | [Epic](group/epics/_index.md)                                                        | `#123`, `&123`, `[work_item:123]` ou `[epic:123]`    | `group1/subgroup#123`, `group1/subgroup&123`, `[work_item:group1/subgroup/123]` ou `[epic:group1/subgroup/123]` |  |
 | [Itération](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Cadence d'itération](group/iterations/_index.md) par ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
@@ -771,6 +775,7 @@ GitLab Flavored Markdown reconnaît les éléments suivants :
 
 1. [Introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) dans GitLab 16.9. Les références de cadence d'itération sont toujours rendues suivant le format `[cadence:<ID>]`. Par exemple, la référence textuelle `[cadence:"plan"]` est rendue sous la forme `[cadence:1]` si l'ID de la cadence d'itération référencée est `1`.
 1. Pour les labels ou les jalons, ajoutez un `/` avant `namespace/project` pour spécifier le label ou le jalon exact, éliminant toute ambiguïté possible.
+1. Les ID de snippet sont uniques pour les snippets personnels et les snippets de projet. Ainsi, un ID donné identifie toujours un seul snippet.
 
 Par exemple, référencer un ticket en utilisant `#123` formate la sortie sous forme de lien vers le ticket numéro 123 avec le texte `#123`. De même, un lien vers le ticket numéro 123 est reconnu et mis en forme avec le texte `#123`. Si vous ne souhaitez pas que `#123` renvoie vers un ticket, ajoutez une barre oblique inversée en début `\#123`.
 
@@ -786,7 +791,7 @@ En plus de cela, les liens vers certains objets sont également reconnus et mis 
 
 - Prise en charge des éléments de travail (tâches, objectifs et résultats clés) [introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) dans GitLab 16.0.
 - Prise en charge des epics introduite dans GitLab 17.7, avec l'indicateur nommé `work_item_epics`, activé par défaut.
-- Généralement disponible pour les epics dans GitLab 18.1. L'indicateur de fonctionnalité `work_item_epics` a été supprimé.
+- En disponibilité générale pour les epics dans GitLab 18.1. Suppression du feature flag `work_item_epics`.
 
 {{< /history >}}
 
@@ -804,7 +809,7 @@ Les références d'URL comme `https://gitlab.com/gitlab-org/gitlab/-/issues/1234
 
 - Prise en charge des éléments de travail (tâches, objectifs et résultats clés) [introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) dans GitLab 16.0.
 - Prise en charge des epics introduite dans GitLab 17.7, avec l'indicateur nommé `work_item_epics`, activé par défaut.
-- Généralement disponible pour les epics dans GitLab 18.1. L'indicateur de fonctionnalité `work_item_epics` a été supprimé.
+- En disponibilité générale pour les epics dans GitLab 18.1. Suppression du feature flag `work_item_epics`.
 
 {{< /history >}}
 
@@ -826,7 +831,7 @@ Pour mettre à jour les références rendues si la personne assignée, le jalon 
 
 {{< history >}}
 
-- [Introduit](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) dans GitLab 17.3 [avec un indicateur](../administration/feature_flags/_index.md) nommé `comment_tooltips`. Désactivé par défaut.
+- [Introduit](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) dans GitLab 17.3 [avec un feature flag](../administration/feature_flags/_index.md) nommé `comment_tooltips`. Désactivé par défaut.
 - Indicateur de fonctionnalité supprimé dans GitLab 17.6
 
 {{< /history >}}
@@ -856,7 +861,7 @@ Lors de la création de tableaux :
   - Les tailles des cellules **n'ont pas** à correspondre les unes aux autres. Elles sont flexibles, mais doivent être séparées par des barres verticales (`|`).
   - Vous **pouvez** avoir des cellules vides.
 - Les largeurs des colonnes sont calculées dynamiquement en fonction du contenu des cellules.
-- Pour utiliser le caractère barre verticale (`|`) dans le texte et non comme délimiteur de tableau, vous devez l'[échapper](#escape-characters) avec une barre oblique inversée (`\|`).
+- Pour utiliser la barre verticale (`|`) dans le texte et non comme délimiteur de tableau, vous devez l'[échapper](#escape-characters) avec une barre oblique inversée (`\|`).
 
 Exemple :
 
@@ -864,7 +869,7 @@ Exemple :
 | Titre 1 | Titre 2 | Titre 3 |
 | ---      | ------   | -------- |
 | Cellule 1 | Cellule 2 | Cellule 3 |
-| Cellule 4 | Cellule 5 est plus longue | Cellule 6 est bien plus longue que les autres, mais ce n'est pas grave. Le texte est renvoyé à la ligne lorsque la cellule est trop large pour l'affichage de l'écran. |
+| Cellule 4 | Cellule 5 est plus longue | Cellule 6 est bien plus longue que les autres, mais ce n'est pas grave. Le texte est renvoyé à la ligne lorsque la cellule est trop large pour l'affichage de l'écran. Le texte est renvoyé à la ligne lorsque la cellule est trop large pour l'affichage de l'écran.
 | Cellule 7 | | Cellule 9 |
 ```
 
@@ -873,7 +878,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 > | Titre 1 | Titre 2 | Titre 3 |
 > | ---      | ------   | -------- |
 > | Cellule 1   | Cellule 2   | Cellule 3   |
-> | Cellule 4 | Cellule 5 est plus longue | Cellule 6 est bien plus longue que les autres, mais ce n'est pas grave. Le texte est renvoyé à la ligne lorsque la cellule est trop large pour l'affichage de l'écran. |
+> | Cellule 4 | Cellule 5 est plus longue | Cellule 6 est bien plus longue que les autres, mais ce n'est pas grave.  Le texte est renvoyé à la ligne lorsque la cellule est trop large pour l'affichage de l'écran. |
 > | Cellule 7   |          | Cellule 9   |
 
 ### Alignement {#alignment}
@@ -904,7 +909,7 @@ Vous pouvez utiliser le formatage HTML pour ajuster le rendu des tableaux. Par e
 | Nom | Détails |
 | ----- | ------- |
 | Élément1 | Ce texte est sur une ligne |
-| Élément2 | Cet élément a :- Plusieurs éléments- Que nous souhaitons afficher séparément |
+| Élément2 | Cet élément a :- Plusieurs éléments- Que nous souhaitons afficher séparément |
 ```
 
 Lorsqu'il est affiché, l'exemple ressemble à :
@@ -912,7 +917,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 > | Nom  | Détails |
 > | ----- | ------- |
 > | Élément1 | Ce texte est sur une ligne |
-> | Élément2 | Cet élément a:<br>\- Plusieurs éléments<br>\- Que nous souhaitons afficher séparément |
+> | Élément2 | Cet élément a :<br>\- Plusieurs éléments<br>\- Que nous souhaitons afficher séparément |
 
 ### Listes de tâches dans les tableaux {#task-lists-in-tables}
 
@@ -1288,7 +1293,7 @@ vous pouvez le citer sans avoir à ajouter manuellement `>` au début de chaque 
 
 Mettez en évidence tout ce qui doit être affiché comme du code et non comme du texte standard.
 
-Le code en ligne est formaté avec des backticks (accents graves) simples `` ` `` :
+Le code inline est formaté avec des backticks (accents graves) simples `` ` `` :
 
 ```markdown
 Le `code` inline possède des `back-ticks` autour de lui.
@@ -1296,7 +1301,7 @@ Le `code` inline possède des `back-ticks` autour de lui.
 
 Lorsqu'il est affiché, l'exemple ressemble à :
 
-> Le code `code` inline possède des `back-ticks` autour de lui.
+> Le code `code` en ligne a `back-ticks around` autour de lui.
 
 Pour un effet similaire avec un exemple de code plus grand, vous pouvez utiliser un bloc de code. Pour créer un bloc de code :
 
@@ -1313,7 +1318,7 @@ Bloc de code Python :
 def function(): 
     #L'indentation fonctionne parfaitement dans le bloc de code délimité
     s = "code Python"
-    print s
+    print(s)
 ```
 
 Bloc de code Markdown avec 4 espaces : 
@@ -1325,7 +1330,7 @@ Bloc de code Markdown avec 4 espaces :
 Bloc de code JavaScript avec des tildes : 
 
 ~~~javascript
-var s = "syntaxe JavaScript avec coloration";
+const s = "JavaScript syntax highlighting";
 alert(s);
 ~~~
 ````
@@ -1336,9 +1341,9 @@ Les trois exemples précédents sont rendus comme suit :
 >
 > ```python
 > def function(): 
-> #L'indentation fonctionne parfaitement dans le bloc de code délimité
+>> #L'indentation fonctionne parfaitement dans le bloc de code délimité
 > s = "code Python"
-> print s
+> print(s)
 > ```
 >
 > Bloc de code Markdown avec 4 espaces : 
@@ -1352,13 +1357,13 @@ Les trois exemples précédents sont rendus comme suit :
 > Bloc de code JavaScript avec des tildes : 
 >
 > ```javascript
-> var s = "Syntaxe JavaScript avec coloration";
+> const s = "JavaScript syntax highlighting";
 > alert(s);
 > ```
 
 ### Coloration syntaxique {#syntax-highlighting}
 
-GitLab utilise la [bibliothèque Rouge Ruby](https://github.com/rouge-ruby/rouge) pour une coloration syntaxique plus colorée dans les blocs de code. Pour obtenir une liste des langages pris en charge, consultez le [wiki du projet Rouge](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers). La coloration syntaxique n'est prise en charge que dans les blocs de code, vous ne pouvez donc pas mettre en évidence du code en ligne.
+GitLab utilise la [bibliothèque Rouge Ruby](https://github.com/rouge-ruby/rouge) pour une coloration syntaxique plus colorée dans les blocs de code. Pour obtenir une liste des langages pris en charge, consultez le [wiki du projet Rouge](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers). La coloration syntaxique n'est prise en charge que dans les blocs de code, vous ne pouvez donc pas mettre en évidence du code inline.
 
 Pour délimiter un bloc de code et lui appliquer la coloration syntaxique, ajoutez le langage du code à la déclaration d'ouverture du code, après les trois backticks (accents graves) (```` ``` ````) ou les trois tildes (`~~~`).
 
@@ -1500,9 +1505,9 @@ Pour rendre Kroki disponible dans GitLab, un administrateur GitLab doit l'active
 
 ## Équations mathématiques {#math-equations}
 
-Les formules mathématiques écrites en syntaxe LaTeX sont rendues avec [KaTeX](https://github.com/KaTeX/KaTeX). _KaTeX ne prend en charge qu'un [sous-ensemble](https://katex.org/docs/supported.html) de LaTeX._ Cette syntaxe fonctionne également dans les wikis AsciiDoc et les fichiers utilisant `:stem: latexmath`. Pour plus d'informations, consultez le [manuel utilisateur d'Asciidoctor](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
+Les formules mathématiques écrites en syntaxe LaTeX sont rendues avec [KaTeX](https://github.com/KaTeX/KaTeX). KaTeX ne prend en charge qu'un [sous-ensemble](https://katex.org/docs/supported.html) de LaTeX. Cette syntaxe fonctionne également dans les wikis AsciiDoc et les fichiers utilisant `:stem: latexmath`. Pour plus d'informations, consultez le [manuel utilisateur d'Asciidoctor](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
-Pour prévenir toute activité malveillante, GitLab n'affiche que les 50 premières instances de mathématiques en ligne. Vous pouvez désactiver cette limite [pour un groupe](../api/graphql/reference/_index.md#mutationgroupupdate) ou pour l'ensemble de [l'instance GitLab Self-Managed](../administration/instance_limits.md#math-rendering-limits).
+Pour prévenir les activités malveillantes, GitLab n'affiche que les 1 000 premières instances de formules mathématiques en ligne. Vous pouvez désactiver cette limite [pour un groupe](../api/graphql/reference/_index.md#mutationgroupupdate) ou pour l'ensemble de [l'instance GitLab Self-Managed](../administration/instance_limits.md#math-rendering-limits).
 
 Le nombre de blocs mathématiques est également limité en fonction du temps de rendu. Si la limite est dépassée, GitLab affiche les instances mathématiques excédentaires sous forme de texte. Les fichiers wiki et de dépôt ne sont pas soumis à ces limites.
 
@@ -1729,21 +1734,23 @@ Vous pouvez utiliser des emoji partout où GitLab Flavored Markdown est pris en 
 
 ```markdown
 Parfois, nous avons envie de faire le :monkey: et d'ajouter un peu de :star2: à ses
-:speech_balloon:. Bonne nouvelle, nous avons un cadeau pour vous : les emoji !
+:speech_balloon:. Bonne nouvelle, nous avons un cadeau pour vous : les emoji !
+
 Vous pouvez les utiliser pour signaler un :bug: ou prévenir les correctifs :speak_no_evil:.
 Et si quelqu'un améliore votre code vraiment :snail:, envoyez-lui un :birthday:.
 Les gens vous :heart: pour ça.
+
 Si c'est nouveau pour vous, n'ayez pas :fearful:. Vous pouvez rejoindre la :family: des emoji.
 Consultez l'un des codes pris en charge.
 ```
 
 Lorsqu'il est affiché, l'exemple ressemble à :
 
-> Parfois, nous avons envie de faire le <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:"> et d'ajouter un peu de <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:"> à ses <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">. Bonne nouvelle, nous avons un cadeau pour vous : les emoji !
+> Parfois, nous avons envie de faire le <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:"> et d'ajouter un peu de <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:"> à ses <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">. Bonne nouvelle, nous avons un cadeau pour vous : les emoji !
 >
-> Vous pouvez les utiliser pour signaler un <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/bug.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":bug:" alt=":bug:"> ou prévenir les correctifs <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speak_no_evil:" alt=":speak_no_evil:">. Et si quelqu'un améliore votre code vraiment <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/snail.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":snail:" alt=":snail:">, envoyez-lui un <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":birthday:" alt=":birthday:">. Les gens vous <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/heart.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":heart:" alt=":heart:"> pour ça.
+> Vous pouvez les utiliser pour signaler un <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/bug.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":bug:" alt=":bug:"> ou prévenir les correctifs <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speak_no_evil:" alt=":speak_no_evil:">. Et si quelqu'un améliore votre code vraiment <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/snail.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":snail:" alt=":snail:"> envoyez-lui un<img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":birthday:" alt=":birthday:">. Les gens vous <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/heart.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":heart:" alt=":heart:"> pour ça.
 >
-> Si c'est nouveau pour vous, n'ayez pas <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":fearful:" alt=":fearful:">. Vous pouvez rejoindre la <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:"> des emoji. Consultez l'un des codes pris en charge.
+> Si c'est nouveau pour vous, n'ayez pas <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":fearful:" alt=":fearful:">. Vous pouvez rejoindre la <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:">. Consultez l'un des codes pris en charge.
 
 Pour plus d'informations, consultez le [tableau de référence des emoji](https://www.webfx.com/tools/emoji-cheat-sheet/) pour une liste de tous les codes emoji pris en charge.
 
@@ -1775,7 +1782,7 @@ Les délimiteurs suivants sont pris en charge :
 
   ```yaml
   ---
-  title: "À propos du Front Matter"
+  title: À propos du Front Matter
   example:
     language: yaml
   ---
@@ -1808,7 +1815,7 @@ D'autres langages sont pris en charge en ajoutant un spécificateur à l'un des 
 
 ```php
 ---php
-$title = "About Front Matter";
+$title = "À propos du Front Matter";
 $example = array(
   'language' => "php",
 );
@@ -1871,7 +1878,7 @@ Pour utiliser des includes depuis des pages wiki distinctes ou des URL externes,
 Vous pouvez utiliser la directive `::include` dans des blocs de code pour ajouter du contenu à partir de fichiers de votre dépôt. Par exemple, si votre dépôt contient un fichier `javascript_code.js` :
 
 ```javascript
-var s = "Syntaxe JavaScript avec coloration";
+const s = "JavaScript syntax highlighting";
 alert(s);
 ```
 
@@ -1890,7 +1897,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 > Notre script contient :
 >
 > ```javascript
-> var s = "Syntaxe JavaScript avec coloration";
+> const s = "JavaScript syntax highlighting";
 > alert(s);
 > ```
 
@@ -1898,7 +1905,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 
 {{< history >}}
 
-- [Introduit](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) dans GitLab 18.2 [avec un indicateur](../administration/feature_flags/_index.md) nommé `markdown_placeholders`. Désactivé par défaut.
+- [Introduit](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) dans GitLab 18.2 [avec un feature flag](../administration/feature_flags/_index.md) nommé `markdown_placeholders`. Désactivé par défaut.
 
 {{< /history >}}
 
@@ -1932,7 +1939,7 @@ Markdown réserve les caractères ASCII suivants pour mettre en forme la page :
 ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
 ```
 
-Pour utiliser l'un de ces caractères réservés dans votre texte, ajoutez le caractère barre oblique inversée (` \ `) immédiatement avant le caractère réservé. Lorsque vous placez la barre oblique inversée avant un caractère réservé, l'analyseur Markdown omet la barre oblique inversée et traite le caractère réservé comme du texte ordinaire.
+Pour utiliser l'un de ces caractères réservés dans votre texte, ajoutez la barre oblique inversée (` \ `) immédiatement avant le caractère réservé. Lorsque vous placez la barre oblique inversée avant un caractère réservé, l'analyseur Markdown omet la barre oblique inversée et traite le caractère réservé comme du texte ordinaire.
 
 Exemples :
 
@@ -1996,7 +2003,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 Pour inclure un ou plusieurs backticks (accents graves) dans un code en ligne, utilisez un nombre plus élevé de backticks (accents graves) correspondants pour créer le code en ligne. Si le contenu commence et se termine par un espace, ces espaces sont également supprimés :
 
 ```markdown
-Pour créer un code en ligne en Markdown, utilisez des backticks (accents graves) correspondants : `` `hello, world` ``
+Pour créer un code en ligne en Markdown, utilisez des backticks (accents graves) correspondants : `` `hello, world` ``
 ```
 
 Lorsqu'il est affiché, l'exemple ressemble à :
@@ -2005,7 +2012,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 
 ### Utiliser la barre oblique inversée avec des backticks (accents graves) {#use-backslash-with-backticks}
 
-Lorsque le caractère barre oblique inversée (` \ `) se trouve à la fin d'un exemple de code en ligne, la barre oblique inversée peut échapper le dernier backtick (accent grave). Dans ce cas, ajoutez des espaces supplémentaires autour du code en ligne, par exemple :
+Lorsque la barre oblique inversée (` \ `) se trouve à la fin d'un exemple de code inline, la barre oblique inversée peut échapper le dernier backtick (accent grave). Dans ce cas, ajoutez des espaces supplémentaires autour du code inline, par exemple :
 
 ```markdown
 Utilisez la barre oblique inversée ` \ ` pour échapper le code en ligne qui se termine par ` backslash\ `.
@@ -2013,7 +2020,7 @@ Utilisez la barre oblique inversée ` \ ` pour échapper le code en ligne qui se
 
 Lorsqu'il est affiché, l'exemple ressemble à :
 
-> Utilisez la barre oblique inversée ` \ ` pour échapper le code en ligne qui se termine par ` backslash\ `.
+> Utilisez la barre oblique inversée ` \ ` pour échapper le code inline qui se termine par ` backslash\ `.
 
 ## Notes de bas de page {#footnotes}
 
@@ -2033,7 +2040,7 @@ Par exemple :
 - Référencer des notes de bas de page :
 
   ```markdown
-  Une balise de référence de note de bas de page ressemble à ceci :[^1]
+  Une balise de référence de note de bas de page ressemble à ceci :[^1]
 
   Cette balise de référence est un mélange de lettres et de chiffres. [^footnote-42]
   ```
@@ -2047,7 +2054,7 @@ Par exemple :
 
 Lorsqu'elles sont affichées, les notes de bas de page ressemblent à :
 
-> Une balise de référence de note de bas de page ressemble à ceci :[^1]
+> Une balise de référence de note de bas de page ressemble à ceci :[^1]
 >
 > Cette balise de référence est un mélange de lettres et de chiffres.[^footnote-42]
 >
@@ -2055,7 +2062,7 @@ Lorsqu'elles sont affichées, les notes de bas de page ressemblent à :
 >
 > [^footnote-42]:  Ce texte est une autre note de bas de page.
 
-## HTML en ligne {#inline-html}
+## HTML inline {#inline-html}
 
 Vous pouvez également utiliser du HTML brut dans votre Markdown, et cela fonctionne généralement assez bien.
 
@@ -2078,7 +2085,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 >   <dd>C'est quelque chose que les gens utilisent parfois.</dd>
 >
 >   <dt>Markdown dans du HTML</dt>
->   <dd>Ne fonctionne *pas* **très** bien. Les balises HTML <em>fonctionnent</em> <b>bien</b>, dans la plupart des cas.</dd>
+>   <dd>Ne fonctionne *pas* **très** bien. Les <em>balises</em> HTML <b>fonctionnent</b>, dans la plupart des cas.</dd>
 > </dl>
 
 Il est toujours possible d'utiliser Markdown dans des balises HTML, mais uniquement si les lignes contenant du Markdown sont séparées sur leurs propres lignes :
@@ -2115,7 +2122,7 @@ Markdown is fine in GitLab.
 
 ### Section repliable {#collapsible-section}
 
-Le contenu peut être réduit à l'aide des balises HTML [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details) et [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary). Par exemple, réduisez un long fichier journal pour qu'il occupe moins d'espace à l'écran.
+Le contenu peut être réduit à l'aide des balises HTML [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details) et [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/summary). Par exemple, réduisez un long fichier journal pour qu'il occupe moins d'espace à l'écran.
 
 ```html
 <details>
@@ -2195,7 +2202,7 @@ Lorsqu'il est affiché, l'exemple ressemble à :
 GitLab Flavored Markdown ne prend pas en charge la syntaxe d'exposant Redcarpet ( `x^2` ). Pour les exposants et les indices, utilisez la syntaxe HTML standard :
 
 ```html
-La formule de l'eau est H<sub>2</sub>O,
+La formule de l'eau est H<sub>2</sub>O
 tandis que l'équation de la théorie de la relativité est E = mc<sup>2</sup>.
 ```
 

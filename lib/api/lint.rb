@@ -12,14 +12,14 @@ module API
     rescue_from ::Gitlab::Ci::Lint::RateLimitError do
       too_many_requests!(
         { error: _('This endpoint has been requested too many times. Try again later.') },
-        retry_after: ::Gitlab::ApplicationRateLimiter.interval(:ci_lint)
+        retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:ci_lint)
       )
     end
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Validate existing CI/CD configuration' do
         detail 'Validates the `.gitlab-ci.yml` configuration for a specified project.'
         success Entities::Ci::Lint::Result
@@ -68,7 +68,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Validate a CI/CD configuration' do
         detail 'Validates a provided CI/CD configuration in the context of a specified project.'
         success code: 200, model: Entities::Ci::Lint::Result

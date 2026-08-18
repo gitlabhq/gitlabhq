@@ -47,7 +47,6 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
 
   describe '.recent' do
     let_it_be_with_reload(:hook) { create(:project_hook) }
-    let_it_be(:too_old_log) { create(:web_hook_log, web_hook: hook, created_at: 8.days.ago) }
     let_it_be(:oldest_log)  { create(:web_hook_log, web_hook: hook, created_at: 3.days.ago) }
     let_it_be(:middle_log)  { create(:web_hook_log, web_hook: hook, created_at: 2.hours.ago) }
     let_it_be(:newest_log)  { create(:web_hook_log, web_hook: hook, created_at: 1.hour.ago) }
@@ -73,22 +72,6 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
     end
   end
 
-  describe '#outside_recent_window?' do
-    subject { build(:web_hook_log, created_at: created_at).outside_recent_window? }
-
-    context 'when created within the last 7 days' do
-      let(:created_at) { described_class.max_recent_days_ago }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when created more than 7 days ago' do
-      let(:created_at) { described_class.max_recent_days_ago - 1.second }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
   describe '#save' do
     let(:hook) { build(:project_hook) }
 
@@ -97,7 +80,7 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
 
       subject { web_hook_log.save! }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       it 'obfuscates the basic auth credentials' do
         subject
@@ -111,7 +94,7 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
 
       subject { web_hook_log.save! }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       it 'obfuscates the basic auth credentials' do
         subject
@@ -421,7 +404,7 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
       web_hook_logs_daily_entry = web_hook_logs_daily_entries.first
       expect(web_hook_logs_daily_entry.partitioning_strategy)
         .to be_a(Gitlab::Database::Partitioning::Time::DailyStrategy)
-      expect(web_hook_logs_daily_entry.partitioning_strategy.retain_for).to eq(14.days)
+      expect(web_hook_logs_daily_entry.partitioning_strategy.retain_for).to eq(7.days)
       expect(web_hook_logs_daily_entry.partitioning_strategy.retain_detached_partitions_for).to eq(2.days)
     end
   end

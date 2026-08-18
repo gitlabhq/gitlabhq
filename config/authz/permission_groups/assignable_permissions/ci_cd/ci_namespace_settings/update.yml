@@ -1,0 +1,9 @@
+---
+name: update_ci_namespace_settings
+description: Grants the ability to update CI/CD settings for a namespace.
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_ci_namespace_settings

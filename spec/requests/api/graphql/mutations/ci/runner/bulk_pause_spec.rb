@@ -160,6 +160,8 @@ RSpec.describe 'RunnerBulkPause', feature_category: :runner_core do
 
   context 'for N+1 Query', :request_store do
     let_it_be(:user) { non_admin_user }
+    let_it_be(:pat) { create(:personal_access_token, user: user, organization: user.organization) }
+    let_it_be(:admin_pat) { create(:personal_access_token, user: admin, organization: admin.organization) }
 
     # update with collection itself triggers N+1 queries, so we are patching this method to
     # ensure that the select calls (specifically authorization checks) that are being tested are not impacted by this
@@ -189,16 +191,58 @@ RSpec.describe 'RunnerBulkPause', feature_category: :runner_core do
       )
     end
 
+    def post_mutation(runners, current_user = user)
+      token = current_user == admin ? { personal_access_token: admin_pat } : { personal_access_token: pat }
+      post_graphql_mutation(mutation_with_runners(runners), current_user: current_user, token: token)
+    end
+
     def expect_constant_queries(runners, current_user = user)
       single_runner = [runners.first]
 
+      # Warm up: ensure last_used_at is set on the PAT so that
+      # PersonalAccessTokens::LastUsedService skips its conditional writes
+      # (last_used_at_needs_update? and last_used_ip_needs_update? both return
+      # false for 10 minutes / 1 minute after the first use). Without this,
+      # each QueryRecorder block would include extra INSERT/UPDATE queries from
+      # the service, making the baseline non-deterministic.
+      #
+      # Also warm up every runner (not just single_runner) so both the control
+      # and actual runs toggle already-paused/unpaused runners: this keeps the
+      # comparison isolated to authorization/read queries instead of mixing in
+      # the per-record UPDATE + callback cost of a genuine state change, which
+      # scales with the number of runners regardless of any N+1 fix.
+      post_mutation(runners, current_user)
+      # Read the authorized count from the mutation's own response rather than
+      # re-deriving it via Ability.allowed? in the spec: the mutation runs inside the
+      # GraphQL request's admin-mode/sessionless-token bypass context, which a plain
+      # Ability check here wouldn't replicate (e.g. it under-counts admin users).
+      authorized_count = mutation_response['updatedCount']
+      post_mutation(single_runner, current_user)
+
       control = ActiveRecord::QueryRecorder.new do
-        post_graphql_mutation(mutation_with_runners(single_runner), current_user: current_user)
+        post_mutation(single_runner, current_user)
       end
 
+      # Each authorized runner beyond the control's single runner still needs its own
+      # ActiveRecord#update call, which wraps a SAVEPOINT/RELEASE SAVEPOINT pair and runs the
+      # tag_list audit-logging callback, regardless of whether the row's value actually changes.
+      # That per-record cost is inherent to updating multiple records individually (the same is
+      # true of the pre-existing Relation#update behavior) and isn't itself an N+1 to preload
+      # away, so scale the allowed threshold with how many extra runners will be authorized.
+      #
+      # A small fixed allowance also covers the (non-scaling) root-ancestor and granular-token
+      # enforcement-cache lookups, which run once more for a batch spanning more than one
+      # project/namespace than for the control's single runner. This is a small margin above
+      # the minimum observed in CI (rather than an exact count), since it varies slightly by a
+      # query or two between otherwise-identical runs (e.g. across separate rspec jobs).
+      extra_authorized_runners = authorized_count - 1
+      per_record_update_overhead = 3 # SAVEPOINT + RELEASE SAVEPOINT + tag_list callback query
+      fixed_overhead = 6 # root-ancestor preloader + granular-token enforcement-cache lookups
+
       expect do
-        post_graphql_mutation(mutation_with_runners(runners), current_user: current_user)
+        post_mutation(runners, current_user)
       end.not_to exceed_query_limit(control)
+        .with_threshold(fixed_overhead + (extra_authorized_runners * per_record_update_overhead))
     end
 
     context 'with project runners' do

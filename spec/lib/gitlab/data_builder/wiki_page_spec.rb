@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::WikiPage, feature_category: :wiki do
-  let_it_be_with_reload(:project) { create(:project, :repository, :wiki_repo) }
+  let_it_be_with_reload(:project) { create(:project, :wiki_repo) }
   let_it_be_with_reload(:wiki_page) { create(:wiki_page, wiki: project.wiki) }
   let_it_be(:user) { create(:user) }
 

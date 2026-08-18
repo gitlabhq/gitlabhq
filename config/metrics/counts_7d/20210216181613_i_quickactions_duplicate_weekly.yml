@@ -3,7 +3,7 @@ data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_duplicate_weekly
 description: Count of WAU using the `/duplicate` quick action to mark an issue as
   a duplicate of another
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 value_type: number

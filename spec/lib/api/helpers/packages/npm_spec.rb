@@ -23,4 +23,26 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
       subject { object.enqueue_sync_npm_metadata_cache_worker(project, package_name) }
     end
   end
+
+  describe '#version_from_filename' do
+    it 'parses the version from an unscoped filename' do
+      expect(object.version_from_filename('lodash', 'lodash-4.17.21.tgz')).to eq('4.17.21')
+    end
+
+    it 'parses the version from a scoped filename (filename is unscoped)' do
+      expect(object.version_from_filename('@babel/core', 'core-7.0.0.tgz')).to eq('7.0.0')
+    end
+
+    it 'returns nil when the filename does not match the package name' do
+      expect(object.version_from_filename('lodash', 'evil-1.0.0.tgz')).to be_nil
+    end
+
+    it 'returns nil for a blank version' do
+      expect(object.version_from_filename('lodash', 'lodash-.tgz')).to be_nil
+    end
+
+    it 'returns nil when the filename does not end in .tgz' do
+      expect(object.version_from_filename('lodash', 'lodash-4.17.21.tar.gz')).to be_nil
+    end
+  end
 end

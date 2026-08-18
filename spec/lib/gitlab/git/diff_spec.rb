@@ -380,6 +380,25 @@ DIFF
         it { is_expected.to include '+class Feature' }
       end
     end
+
+    context 'when a merge base is provided' do
+      it 'uses it instead of computing the merge base' do
+        expect(repository).not_to receive(:merge_base)
+
+        expect(described_class.between(repository, 'feature', 'master', merge_base: 'master'))
+          .to be_kind_of(Gitlab::Git::DiffCollection)
+      end
+
+      it 'produces the same diff as computing the merge base', :aggregate_failures do
+        merge_base = repository.merge_base('feature', 'master')
+
+        provided = described_class.between(repository, 'feature', 'master', merge_base: merge_base)
+        computed = described_class.between(repository, 'feature', 'master')
+
+        expect(provided.map(&:new_path)).to eq(computed.map(&:new_path))
+        expect(provided.map(&:diff)).to eq(computed.map(&:diff))
+      end
+    end
   end
 
   describe '.filter_diff_options' do

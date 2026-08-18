@@ -79,6 +79,10 @@ module Packages
     scope :preload_debian_file_metadata, -> { preload(:debian_file_metadatum) }
     scope :preload_helm_file_metadata, -> { preload(:helm_file_metadatum) }
 
+    def self.pluck_file_names
+      pluck(:file_name) # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- caller is responsible for scoping this to a single package
+    end
+
     scope :order_by, ->(column, order = 'asc') do
       if SORTABLE_COLUMNS.include?(column) && %w[asc desc].include?(order)
         reorder(arel_table[column].method(order).call)

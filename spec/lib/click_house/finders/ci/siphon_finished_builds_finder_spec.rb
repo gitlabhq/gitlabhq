@@ -43,10 +43,13 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder, :click_house
 
       it 'joins siphon_p_ci_stages scoped by traversal_path', :aggregate_failures do
         is_expected.to include('LEFT OUTER JOIN')
-        is_expected.to include('`finished_builds`.`stage_id` = `stages`.`id`')
+        is_expected.to include(
+          '`finished_builds`.`stage_id` = `stages`.`id` AND `finished_builds`.`partition_id` = `stages`.`partition_id`'
+        )
         is_expected.to include('`stages`.`name` AS stage_name')
         is_expected.to include("`siphon_p_ci_stages`.`traversal_path` = '#{project_path}'")
         is_expected.not_to include('IN (SELECT `finished_builds`.`stage_id`')
+        is_expected.not_to include('`siphon_p_ci_stages`.`pipeline_id` IN')
       end
     end
 
@@ -268,6 +271,37 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder, :click_house
           is_expected.to include("`pipelines`.`ref` = 'main'")
         end
       end
+
+      context 'with source filter and stages joined' do
+        let(:source) { 'push' }
+        let(:query) do
+          instance.for_container(project)
+            .filter_by_pipeline_attrs(container: project, from_time: 30.days.ago, source: source, ref: ref)
+            .with_stages(project).select(:name, :stage_name)
+        end
+
+        it 'hoists pipelines into a single CTE, before finished_builds, shared by builds and stages',
+          :aggregate_failures do
+          expect(sql).to include(
+            'WITH pipelines AS (',
+            '`siphon_p_ci_builds`.`commit_id` IN (SELECT `pipelines`.`id` FROM `pipelines`)',
+            '`siphon_p_ci_stages`.`pipeline_id` IN (SELECT `pipelines`.`id` FROM `pipelines`)'
+          )
+          expect(sql.scan('FROM `siphon_p_ci_pipelines`').size).to eq(1)
+          expect(sql.index('pipelines AS (')).to be < sql.index('finished_builds AS (')
+        end
+
+        context 'when with_stages is called before the pipeline filter' do
+          let(:query) do
+            instance.for_container(project).with_stages(project).select(:name, :stage_name)
+              .filter_by_pipeline_attrs(container: project, from_time: 30.days.ago, source: source, ref: ref)
+          end
+
+          it 'does not scope the already-built stages join by the pipelines CTE' do
+            is_expected.not_to include('`siphon_p_ci_stages`.`pipeline_id` IN')
+          end
+        end
+      end
     end
 
     describe '#where applies arbitrary conditions to the inner subquery' do
@@ -317,7 +351,7 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder, :click_house
     let(:to_time) { Time.utc(2026, 2, 1) }
 
     it 'replaces literals with positional placeholders', :aggregate_failures do
-      expect(redacted_sql).to include('$1')
+      expect(redacted_sql).to include('?')
       expect(redacted_sql).not_to include(project_path)
       expect(redacted_sql).not_to include('2026-01-01')
     end
@@ -418,6 +452,29 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder, :click_house
       end
     end
 
+    context 'with a pipeline ref filter and stage names joined' do
+      let(:finder) do
+        instance.for_container(project)
+          .filter_by_pipeline_attrs(container: project, from_time: 1.day.ago, ref: 'feature-branch')
+          .with_stages(project).select(:name, :stage_name).total_count
+      end
+
+      it 'resolves stage_name through the pipeline-scoped stages join' do
+        expect(row_for('ref-build')['stage_name']).to eq('ref-stage')
+      end
+
+      context 'when with_stages is called before the pipeline filter' do
+        let(:finder) do
+          instance.for_container(project).with_stages(project).select(:name, :stage_name).total_count
+            .filter_by_pipeline_attrs(container: project, from_time: 1.day.ago, ref: 'feature-branch')
+        end
+
+        it 'still resolves stage_name without stages-side pruning' do
+          expect(row_for('ref-build')['stage_name']).to eq('ref-stage')
+        end
+      end
+    end
+
     context 'with a date window' do
       let(:finder) do
         instance.for_container(project).select(:name).total_count.within_dates(from_time, to_time)
@@ -463,6 +520,71 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder, :click_house
 
       it 'excludes it, mirroring the legacy finished-only seeding flow' do
         expect(row_names).not_to include('deploy-running')
+      end
+    end
+
+    context 'when the same id exists under a different partition_id' do
+      context 'in siphon_p_ci_builds' do
+        let(:other_partition) do
+          failed_builds.first.dup.tap do |build|
+            build.id = failed_builds.first.id
+            build.partition_id = build.partition_id + 1
+          end
+        end
+
+        before do
+          insert_ci_builds_to_siphon([other_partition])
+        end
+
+        it 'treats each (id, partition_id) as a distinct build' do
+          expect(row_for('rspec')['total_count']).to eq(4)
+        end
+      end
+
+      context 'in siphon_p_ci_stages' do
+        let(:finder) do
+          instance.for_container(project).with_stages(project).select(:name, :stage_name).total_count
+        end
+
+        let(:other_partition) do
+          stage2.dup.tap do |stage|
+            stage.id = stage2.id
+            stage.partition_id = stage.partition_id + 1
+            stage.name = 'other-partition-test'
+          end
+        end
+
+        before do
+          insert_ci_stages_to_siphon([other_partition])
+        end
+
+        it 'joins builds only to the stage in their own partition, without fan-out', :aggregate_failures do
+          expect(row_names.count('rspec')).to eq(1)
+          expect(row_for('rspec')['stage_name']).to eq('test')
+          expect(row_for('rspec')['total_count']).to eq(3)
+        end
+      end
+
+      context 'in siphon_p_ci_pipelines' do
+        let(:finder) do
+          instance.for_container(project).select(:name).total_count
+            .filter_by_pipeline_attrs(container: project, from_time: 1.day.ago, source: 'web')
+        end
+
+        let(:other_partition) do
+          source_pipeline.dup.tap do |p|
+            p.id = source_pipeline.id
+            p.partition_id = p.partition_id + 1
+          end
+        end
+
+        before do
+          insert_ci_pipelines_to_siphon([other_partition])
+        end
+
+        it 'does not double count builds whose pipeline id appears in multiple partitions' do
+          expect(row_for('source-build')['total_count']).to eq(2)
+        end
       end
     end
 

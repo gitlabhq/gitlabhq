@@ -1,4 +1,5 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import { parseRailsFormFields } from '~/lib/utils/forms';
 import LoggingFieldSettings from './components/logging_field_settings.vue';
 
 export const initLoggingFieldSettings = () => {
@@ -16,22 +17,23 @@ export const initLoggingFieldSettings = () => {
     fieldChanges,
   } = el.dataset;
 
-  return new Vue({
+  const { schemaVersion, dualEmitTarget } = parseRailsFormFields(el);
+
+  return initVueApp({
     el,
     name: 'LoggingFieldSettingsRoot',
-    render(createElement) {
-      return createElement(LoggingFieldSettings, {
-        props: {
-          persistedVersion: parseInt(persistedVersion, 10),
-          persistedDualEmitTarget:
-            persistedDualEmitTarget === '' || persistedDualEmitTarget == null
-              ? null
-              : parseInt(persistedDualEmitTarget, 10),
-          latestVersion: parseInt(latestVersion, 10),
-          availableVersions: JSON.parse(availableVersions),
-          fieldChanges: JSON.parse(fieldChanges || '{}'),
-        },
-      });
+    component: LoggingFieldSettings,
+    props: {
+      persistedVersion: parseInt(persistedVersion, 10),
+      persistedDualEmitTarget:
+        persistedDualEmitTarget === '' || persistedDualEmitTarget == null
+          ? null
+          : parseInt(persistedDualEmitTarget, 10),
+      latestVersion: parseInt(latestVersion, 10),
+      availableVersions: JSON.parse(availableVersions),
+      fieldChanges: JSON.parse(fieldChanges || '{}'),
+      schemaFieldName: schemaVersion.name,
+      dualEmitFieldName: dualEmitTarget.name,
     },
   });
 };

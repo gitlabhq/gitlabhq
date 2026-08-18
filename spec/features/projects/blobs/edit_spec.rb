@@ -75,6 +75,24 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
       expect(find_by_id('file_path').value).to eq('ci/.gitlab-ci.yml')
     end
 
+    it 'shows a diagnostic from the JSON language worker when editing an invalid JSON file', :aggregate_failures do
+      project.repository.create_file(user, 'invalid.json', '{ "key": }', message: 'Add invalid JSON file', branch_name: branch)
+      visit project_edit_blob_path(project, tree_join(branch, 'invalid.json'))
+
+      expect(page).to have_selector('#editor[data-mode-id="json"]')
+
+      page.within('#editor') do
+        # The worker computes diagnostics asynchronously, so retry the
+        # "go to next problem" shortcut until they arrive
+        wait_for('JSON worker diagnostic') do
+          find('textarea').send_keys(:f8)
+          page.has_content?('Value expected', wait: 1)
+        end
+      end
+
+      expect(page).to have_content('Value expected')
+    end
+
     it 'updating file path updates syntax highlighting' do
       visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
       expect(page).to have_selector('#editor[data-mode-id="markdown"]')

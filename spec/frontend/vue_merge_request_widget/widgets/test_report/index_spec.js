@@ -38,7 +38,7 @@ describe('Test report extension', () => {
   const defaultProps = {
     testResultsPath: endpoint,
     headBlobPath: 'head/blob/path',
-    pipeline: { path: 'pipeline/path' },
+    pipeline: { path: 'pipeline/path', project_full_path: 'foo/bar', id: 1 },
   };
 
   const mockApi = (statusCode, data = mixedResultsTestReports) => {
@@ -120,7 +120,9 @@ describe('Test report extension', () => {
 
         it('displays a link to view the partial report with tooltip text', () => {
           expect(findFullReportLink().text()).toBe('View partial report');
-          expect(findFullReportLink().attributes('href')).toBe('pipeline/path/test_report');
+          expect(findFullReportLink().attributes('href')).toBe(
+            '/foo/bar/-/pipelines/1/test_report',
+          );
           expect(findFullReportLink().attributes('title')).toBe(
             'See test results while the pipeline is running',
           );
@@ -171,7 +173,7 @@ describe('Test report extension', () => {
       await waitForPromises();
 
       expect(findFullReportLink().text()).toBe('Full report');
-      expect(findFullReportLink().attributes('href')).toBe('pipeline/path/test_report');
+      expect(findFullReportLink().attributes('href')).toBe('/foo/bar/-/pipelines/1/test_report');
     });
 
     it('hides copy failed tests button when there are no failing tests', async () => {

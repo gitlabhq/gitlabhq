@@ -1,12 +1,14 @@
 <script>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
+import { PortalTarget } from 'portal-vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { JS_TOGGLE_EXPAND_CLASS } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { JS_TOGGLE_EXPAND_CLASS, SETTINGS_DISCLOSURE_PORTAL_NAME } from '../constants';
 import { sidebarState } from '../state';
 import {
   isCollapsed,
@@ -28,9 +30,13 @@ export default {
     SidebarMenu,
     SidebarPortalTarget,
     ScrollScrim,
-    TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    PortalTarget,
+    TrialWidget: defineAsyncComponent(
+      () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    ),
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  settingsDisclosurePortalName: SETTINGS_DISCLOSURE_PORTAL_NAME,
   i18n: {
     primaryNavigation: s__('Navigation|Primary navigation'),
   },
@@ -142,7 +148,9 @@ export default {
       }
     },
     firstFocusableElement() {
-      return this.$refs.sidebarMenu.$el.querySelector('a');
+      // Falls back to the always-present Help Center toggle, so focus lands
+      // somewhere even when the menu has no links (e.g. unpinned items hidden).
+      return this.$refs.sidebarMenu.$el.querySelector('a') || this.lastFocusableElement();
     },
     lastFocusableElement() {
       return this.$refs.helpCenter.$el.querySelector('button');
@@ -206,9 +214,15 @@ export default {
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"
             :show-feedback-link="sidebarData.show_feature_library_feedback"
+            :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
           />
           <sidebar-portal-target />
         </scroll-scrim>
+        <portal-target
+          v-if="glFeatures.hideUnpinnedSidebarItems"
+          :name="$options.settingsDisclosurePortalName"
+          class="gl-px-3"
+        />
         <div v-if="showTrialWidget && !isIconOnly" class="gl-p-2">
           <trial-widget
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-[.75rem] gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
@@ -219,6 +233,7 @@ export default {
           ref="helpCenter"
           :sidebar-data="sidebarData"
           class="gl-p-3"
+          :class="{ 'gl-pt-0': glFeatures.hideUnpinnedSidebarItems }"
         />
         <div v-else class="gl-p-2">
           <div class="gl-flex gl-flex-col gl-justify-end">

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AllBranchesRule, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   subject(:all_branches_rule) { described_class.new(project) }
 

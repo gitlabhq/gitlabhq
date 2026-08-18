@@ -357,4 +357,48 @@ RSpec.describe RapidDiffs::DiffTargetVersionEntity, feature_category: :code_revi
       end
     end
   end
+
+  describe 'is_head and is_base' do
+    context 'when diff is latest but not merge_head' do
+      before do
+        allow(merge_request_diff).to receive_messages(
+          latest?: true,
+          merge_head?: false
+        )
+      end
+
+      it 'marks the entry as base', :aggregate_failures do
+        expect(serialized[:is_head]).to be(false)
+        expect(serialized[:is_base]).to be(true)
+      end
+    end
+
+    context 'when diff is merge_head' do
+      before do
+        allow(merge_request_diff).to receive_messages(
+          latest?: false,
+          merge_head?: true
+        )
+      end
+
+      it 'marks the entry as head', :aggregate_failures do
+        expect(serialized[:is_head]).to be(true)
+        expect(serialized[:is_base]).to be(false)
+      end
+    end
+
+    context 'when diff is neither latest nor merge_head' do
+      before do
+        allow(merge_request_diff).to receive_messages(
+          latest?: false,
+          merge_head?: false
+        )
+      end
+
+      it 'exposes neither key', :aggregate_failures do
+        expect(serialized).not_to have_key(:is_head)
+        expect(serialized).not_to have_key(:is_base)
+      end
+    end
+  end
 end

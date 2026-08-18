@@ -208,6 +208,13 @@ module Types
       method: :self_deletion_scheduled?,
       experiment: { milestone: '18.3' }
 
+    field :transfer_in_progress,
+      GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if the project is currently being transferred.',
+      resolver_method: :project_transfer_in_progress?,
+      experiment: { milestone: '19.3' }
+
     field :marked_for_deletion, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if the project or any ancestor is scheduled for deletion.',
@@ -1201,6 +1208,10 @@ module Types
 
     def permanent_deletion_date
       permanent_deletion_date_formatted(project) || permanent_deletion_date_formatted
+    end
+
+    def project_transfer_in_progress?
+      project.project_namespace&.transfer_in_progress? || false
     end
 
     def web_path

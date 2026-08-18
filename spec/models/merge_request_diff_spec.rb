@@ -488,6 +488,81 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#ensure_diff_files_project_id' do
+    let_it_be(:merge_request) { create(:merge_request, :without_diffs) }
+
+    let(:diff) { build(:merge_request_diff, merge_request: merge_request) }
+
+    context 'when diff files are built in memory' do
+      before do
+        diff.merge_request_diff_files.build(
+          relative_order: 0,
+          new_file: true,
+          renamed_file: false,
+          deleted_file: false,
+          too_large: false,
+          new_path: 'test.rb',
+          old_path: 'test.rb',
+          diff: '',
+          a_mode: '0',
+          b_mode: '100644'
+        )
+      end
+
+      it 'sets project_id on diff files from the parent diff', :aggregate_failures do
+        expect(diff.merge_request_diff_files.first.project_id).to be_nil
+
+        diff.save!
+
+        expect(diff.merge_request_diff_files.first.project_id).to eq(diff.project_id)
+      end
+    end
+
+    context 'when diff files association is not loaded' do
+      it 'does not load the association from the database' do
+        diff.save!
+
+        # Reset the association to simulate a persisted record with unloaded association
+        diff.association(:merge_request_diff_files).reset
+
+        # Directly call the method to verify it doesn't load the association
+        diff.send(:ensure_diff_files_project_id)
+
+        expect(diff.association(:merge_request_diff_files).loaded?).to be false
+      end
+    end
+
+    context 'when project_id is nil on the diff' do
+      let(:diff) { build(:merge_request_diff, merge_request: merge_request, project_id: nil) }
+
+      before do
+        diff.merge_request_diff_files.build(
+          relative_order: 0,
+          new_file: true,
+          renamed_file: false,
+          deleted_file: false,
+          too_large: false,
+          new_path: 'test.rb',
+          old_path: 'test.rb',
+          diff: '',
+          a_mode: '0',
+          b_mode: '100644'
+        )
+      end
+
+      it 'sets project_id on diff files after ensure_project_id runs' do
+        # project_id starts as nil but gets set by ensure_project_id callback
+        expect(diff.project_id).to be_nil
+
+        diff.save!
+
+        # Both the diff and its files should have project_id set
+        expect(diff.project_id).to eq(merge_request.target_project_id)
+        expect(diff.merge_request_diff_files.first.project_id).to eq(merge_request.target_project_id)
+      end
+    end
+  end
+
   describe '#update_external_diff_store' do
     let_it_be_with_refind(:merge_request) { create(:merge_request) }
 
@@ -1840,16 +1915,16 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     it 'returns true when the sha exists in merge_request_commits_metadata' do
-      expect(merge_request_diff.includes_any_commits?(['abc123'])).to eq(true)
+      expect(merge_request_diff.includes_any_commits?(['abc123'])).to be(true)
     end
 
     it 'returns false when the sha exists only in merge_request_diff_commits (unmigrated)' do
-      expect(merge_request_diff.includes_any_commits?(['def456'])).to eq(false)
+      expect(merge_request_diff.includes_any_commits?(['def456'])).to be(false)
     end
 
     it 'returns false if passed commits do not exist' do
-      expect(merge_request_diff.includes_any_commits?([])).to eq(false)
-      expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
+      expect(merge_request_diff.includes_any_commits?([])).to be(false)
+      expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to be(false)
     end
 
     it 'does not reference columns missing from the new diff commits table' do
@@ -1893,12 +1968,12 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
 
         it 'returns false if passed commits do not exist' do
-          expect(merge_request_diff.includes_any_commits?([])).to eq(false)
-          expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
+          expect(merge_request_diff.includes_any_commits?([])).to be(false)
+          expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to be(false)
         end
 
         it 'returns true if passed commits exists' do
-          expect(merge_request_diff.includes_any_commits?(args_with_existing_commits)).to eq(true)
+          expect(merge_request_diff.includes_any_commits?(args_with_existing_commits)).to be(true)
         end
       end
 
@@ -1933,11 +2008,11 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'returns true for a commit present in merge_request_commits_metadata' do
-        expect(merge_request_diff.includes_any_commits?(['abc123'])).to eq(true)
+        expect(merge_request_diff.includes_any_commits?(['abc123'])).to be(true)
       end
 
       it 'returns false for a commit only in merge_request_diff_commits' do
-        expect(merge_request_diff.includes_any_commits?(['def456'])).to eq(false)
+        expect(merge_request_diff.includes_any_commits?(['def456'])).to be(false)
       end
 
       it 'omits the project_id filter on merge_request_diff_commits' do
@@ -2228,9 +2303,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         context 'when diff is not cached' do
           it 'caches external diff in tmp storage' do
             expect(diff).to receive(:cache_external_diff).and_call_original
-            expect(File.exist?(cache_filepath)).to eq(false)
+            expect(File.exist?(cache_filepath)).to be(false)
             expect { |b| diff.cached_external_diff(&b) }.to yield_with_args(File)
-            expect(File.exist?(cache_filepath)).to eq(true)
+            expect(File.exist?(cache_filepath)).to be(true)
             expect(File.read(cache_filepath)).to eq(external_diff_content)
           end
         end
@@ -2251,11 +2326,11 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'removes external diff cache diff' do
-        expect(Dir.exist?(cache_dir)).to eq(true)
+        expect(Dir.exist?(cache_dir)).to be(true)
 
         diff.remove_cached_external_diff
 
-        expect(Dir.exist?(cache_dir)).to eq(false)
+        expect(Dir.exist?(cache_dir)).to be(false)
       end
 
       context 'when path is traversed' do
@@ -2278,7 +2353,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         it 'returns' do
           FileUtils.rm_rf(cache_dir)
 
-          expect(Dir.exist?(cache_dir)).to eq(false)
+          expect(Dir.exist?(cache_dir)).to be(false)
           expect(FileUtils).not_to receive(:rm_rf).with(cache_dir)
 
           diff.remove_cached_external_diff
@@ -2299,7 +2374,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'returns true' do
-        expect(merge_request_diff.has_encoded_file_paths?).to eq(true)
+        expect(merge_request_diff.has_encoded_file_paths?).to be(true)
       end
     end
 
@@ -2314,7 +2389,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'returns false' do
-        expect(merge_request_diff.has_encoded_file_paths?).to eq(false)
+        expect(merge_request_diff.has_encoded_file_paths?).to be(false)
       end
     end
   end

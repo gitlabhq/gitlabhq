@@ -20,6 +20,23 @@ if [[ "$BRANCH_TAG" =~ $STABLE_BRANCH_PATTERN || "$CI_MERGE_REQUEST_TARGET_BRANC
   GDK_BASE_TAG_PREFIX="stable-"
 fi
 
+# Asset builds exceed the 10 GiB CI default heap limit. Raise to 16 GiB on machines
+# with >= 24 GiB total memory, unless NODE_OPTIONS already requests at least that.
+# A larger heap makes V8 collect garbage less often, increasing peak memory use;
+# the conditional raise prevents OOM on smaller machines.
+NODE_HEAP_TARGET_MIB=16384
+NODE_HEAP_REQUIRED_MEMORY_KIB=$((24 * 1024 * 1024))
+MEMORY_TOTAL_KIB=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo 2>/dev/null || true)
+NODE_HEAP_CURRENT_MIB=$(grep -oE -- '--max[-_]old[-_]space[-_]size=[0-9]+' <<< "${NODE_OPTIONS:-}" | tail -1 | cut -d= -f2)
+
+if [[ "${MEMORY_TOTAL_KIB:-0}" -lt "${NODE_HEAP_REQUIRED_MEMORY_KIB}" ]]; then
+  echoinfo "MemTotal ${MEMORY_TOTAL_KIB:-unknown} KiB is below $((NODE_HEAP_REQUIRED_MEMORY_KIB / 1024 / 1024)) GiB; keeping NODE_OPTIONS='${NODE_OPTIONS}'"
+elif [[ "${NODE_HEAP_CURRENT_MIB:-0}" -lt "${NODE_HEAP_TARGET_MIB}" ]]; then
+  # Appended rather than assigned: Node applies the last duplicate flag, so this
+  # overrides the heap limit while preserving any other externally set options.
+  NODE_OPTIONS="${NODE_OPTIONS:+${NODE_OPTIONS} }--max-old-space-size=${NODE_HEAP_TARGET_MIB}"
+fi
+
 echoinfo "Building GDK image" "yes"
 
 docker buildx build \

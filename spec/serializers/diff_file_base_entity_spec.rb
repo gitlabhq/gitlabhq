@@ -17,7 +17,7 @@ RSpec.describe DiffFileBaseEntity do
     end
 
     specify do
-      expect(entity[key]).to eq(nil)
+      expect(entity[key]).to be_nil
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe DiffFileBaseEntity do
       let(:commit_sha) { "cfe32cf61b73a0d5e9f13e774abde7ff789b1660" }
 
       it 'says it is a submodule and contains links' do
-        expect(entity[:submodule]).to eq(true)
+        expect(entity[:submodule]).to be(true)
         expect(entity[:submodule_link]).to eq("https://github.com/randx/six")
         expect(entity[:submodule_tree_url]).to eq(
           "https://github.com/randx/six/tree/409f37c4f05865e4fb208c771485f211a22c4c2d"
@@ -39,7 +39,7 @@ RSpec.describe DiffFileBaseEntity do
       end
 
       it 'has no compare url because the submodule was newly added' do
-        expect(entity[:submodule_compare]).to eq(nil)
+        expect(entity[:submodule_compare]).to be_nil
       end
     end
 
@@ -62,8 +62,8 @@ RSpec.describe DiffFileBaseEntity do
       let(:commit_sha) { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
 
       it 'sets submodule to false' do
-        expect(entity[:submodule]).to eq(false)
-        expect(entity[:submodule_compare]).to eq(nil)
+        expect(entity[:submodule]).to be(false)
+        expect(entity[:submodule_compare]).to be_nil
       end
     end
 
@@ -77,10 +77,10 @@ RSpec.describe DiffFileBaseEntity do
       it 'does not raise and omits submodule links' do
         expect { entity }.not_to raise_error
 
-        expect(entity[:submodule]).to eq(true)
-        expect(entity[:submodule_link]).to eq(nil)
-        expect(entity[:submodule_tree_url]).to eq(nil)
-        expect(entity[:submodule_compare]).to eq(nil)
+        expect(entity[:submodule]).to be(true)
+        expect(entity[:submodule_link]).to be_nil
+        expect(entity[:submodule_tree_url]).to be_nil
+        expect(entity[:submodule_compare]).to be_nil
       end
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe DiffFileBaseEntity do
         end
 
         it do
-          expect(entity[:edit_path]).to eq(nil)
+          expect(entity[:edit_path]).to be_nil
         end
       end
     end

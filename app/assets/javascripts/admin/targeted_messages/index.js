@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import TargetedMessageForm from './components/targeted_message_form.vue';
 
 export default () => {
@@ -21,24 +21,21 @@ export default () => {
     initialRoles,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'TargetedMessageFormRoot',
-    render(h) {
-      return h(TargetedMessageForm, {
-        props: {
-          targetTypes: JSON.parse(targetTypes),
-          formAction,
-          isAddForm: isAddForm === 'true',
-          initialTargetType,
-          initialStartsAt,
-          initialEndsAt,
-          maxNamespaceIds: parseInt(maxNamespaceIds, 10),
-          messagesPath,
-          roleOptions: JSON.parse(roleOptions || '[]'),
-          initialRoles: JSON.parse(initialRoles || '[]'),
-        },
-      });
+    component: TargetedMessageForm,
+    props: {
+      targetTypes: JSON.parse(targetTypes),
+      formAction,
+      isAddForm: isAddForm === 'true',
+      initialTargetType,
+      initialStartsAt,
+      initialEndsAt,
+      maxNamespaceIds: parseInt(maxNamespaceIds, 10),
+      messagesPath,
+      roleOptions: JSON.parse(roleOptions || '[]'),
+      initialRoles: JSON.parse(initialRoles || '[]'),
     },
   });
 };

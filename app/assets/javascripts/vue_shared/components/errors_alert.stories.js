@@ -29,5 +29,5 @@ ErrorsList.args = {
 export const WithTitle = Template.bind({});
 WithTitle.args = {
   ...defaultArgs,
-  title: 'Following errors occured:',
+  title: 'Following errors occurred:',
 };

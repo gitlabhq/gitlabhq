@@ -281,39 +281,6 @@ RSpec.describe Bitbucket::Client do
     end
   end
 
-  describe '#repos' do
-    let(:path) { "/repositories?role=member&sort=created_on" }
-    let(:repo_name_filter) { 'my' }
-
-    it 'requests a collection without a filter' do
-      expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path, :repo, page_number: nil, limit: nil, after_cursor: nil
-      )
-
-      client.repos
-    end
-
-    it 'requests a collection with a filter' do
-      path_with_filter = "#{path}&q=name~\"#{repo_name_filter}\""
-
-      expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path_with_filter, :repo, page_number: nil, limit: nil, after_cursor: nil
-      )
-
-      client.repos(filter: repo_name_filter)
-    end
-
-    it 'requests a collection with after_cursor' do
-      after_cursor = '2025-12-10T12:13:37.393445+00:00'
-
-      expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path, :repo, page_number: nil, limit: nil, after_cursor: after_cursor
-      )
-
-      client.repos(after_cursor: after_cursor)
-    end
-  end
-
   describe '#multi_workspace_repos' do
     let(:workspaces) do
       [

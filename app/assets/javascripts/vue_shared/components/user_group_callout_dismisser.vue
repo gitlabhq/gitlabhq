@@ -5,7 +5,7 @@ import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A renderless component for querying/dismissing Users::GroupCallouts via GraphQL.
@@ -178,7 +178,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default(this.slotProps);
+    return getSlotFunction(this)(this.slotProps);
   },
 });
 </script>

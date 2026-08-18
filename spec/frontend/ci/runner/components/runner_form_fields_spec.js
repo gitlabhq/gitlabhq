@@ -6,6 +6,7 @@ import {
   ACCESS_LEVEL_NOT_PROTECTED,
   ACCESS_LEVEL_REF_PROTECTED,
   PROJECT_TYPE,
+  RUNNER_MAX_TIMEOUT_MIN_SECS,
 } from '~/ci/runner/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -187,6 +188,12 @@ describe('RunnerFormFields', () => {
         }),
       );
       expect(link.attributes('target')).toBe('_blank');
+    });
+
+    it('does not accept a value below the minimum the runner accepts', () => {
+      createComponent();
+
+      expect(findInput('max-timeout').attributes('min')).toBe(`${RUNNER_MAX_TIMEOUT_MIN_SECS}`);
     });
   });
 });

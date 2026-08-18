@@ -12,7 +12,7 @@ To get the extension, use any of these methods:
 - From the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 - From GitLab, either from the
   [list of releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases), or by
-  [downloading the latest version](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases/permalink/latest/downloads/GitLab.Extension.vsix)
+  [downloading the latest `GitLab.Extension.vsix` package](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases)
   directly.
 
 The extension requires:

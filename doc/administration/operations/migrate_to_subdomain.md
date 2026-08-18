@@ -34,23 +34,23 @@ To migrate from a relative URL to a subdomain:
 
    {{< tab title="Linux package (Omnibus)" >}}
 
-      Edit `/etc/gitlab/gitlab.rb` and update `external_url` to use the new subdomain:
+   Edit `/etc/gitlab/gitlab.rb` and update `external_url` to use the new subdomain:
 
-      ```ruby
-      external_url "https://gitlab.example.com"
-      ```
+   ```ruby
+   external_url "https://gitlab.example.com"
+   ```
 
    {{< /tab >}}
 
    {{< tab title="Helm chart (Kubernetes)" >}}
 
-      Update the [`global.hosts`](https://docs.gitlab.com/charts/charts/globals/#configure-host-settings) configuration to use your new subdomain.
+   Update the [`global.hosts`](https://docs.gitlab.com/charts/charts/globals/#configure-host-settings) configuration to use your new subdomain.
 
    {{< /tab >}}
 
    {{< tab title="Self-compiled (source)" >}}
 
-      Follow [Disable relative URL in GitLab](../../install/relative_url.md#disable-relative-url-in-gitlab).
+   Follow [Disable relative URL in GitLab](../../install/relative_url.md#disable-relative-url-in-gitlab).
 
    {{< /tab >}}
 

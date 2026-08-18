@@ -24,7 +24,7 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:update, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :export, :download_export, :create_organization_from_group]
   before_action :authorize_change_group!, only: [:transfer]
   before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_remove_group!, only: [:destroy, :restore]
@@ -44,16 +44,13 @@ class GroupsController < Groups::ApplicationController
 
   before_action :set_group_markdown_flags
 
-  before_action only: [:issues] do
-    push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
-  end
-
   before_action :group_projects, only: [:activity, :merge_requests] # rubocop:disable Rails/LexicallyScopedActionFilter -- merge_requests defined in IssuableCollectionsAction concern
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show]
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
+  before_action :check_create_rate_limit!, only: [:create]
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
   # When loading show as an atom feed, we render events that could leak cross
@@ -66,12 +63,13 @@ class GroupsController < Groups::ApplicationController
     :index, :new, :create, :show, :edit, :update,
     :destroy, :details, :transfer, :activity, :restore
   ]
-  feature_category :portfolio_management, [:issues, :issues_calendar]
+  feature_category :planning_views, [:issues, :issues_calendar]
   feature_category :team_planning, [:preview_markdown]
   feature_category :code_review_workflow, [:merge_requests]
   feature_category :importers, [:export, :download_export]
   feature_category :continuous_delivery, [:unfoldered_environment_names]
-  urgency :low, [:export, :download_export]
+  feature_category :organization, [:create_organization_from_group]
+  urgency :low, [:export, :download_export, :create_organization_from_group]
 
   urgency :high, [:unfoldered_environment_names]
 
@@ -150,6 +148,20 @@ class GroupsController < Groups::ApplicationController
 
   def edit
     @badge_api_endpoint = expose_path(api_v4_groups_badges_path(id: @group.id))
+  end
+
+  def create_organization_from_group
+    return render_404 unless Organizations::Release.enabled?(:create_org_from_group_settings, @group)
+
+    result = Organizations::CreateFromGroupService.new(group: @group, current_user: current_user).execute
+
+    if result.success?
+      organization = result.payload[:organization]
+
+      render json: Organizations::OrganizationSerializer.new.represent(organization), status: :created
+    else
+      render json: { message: Array(result.message) }, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -364,6 +376,12 @@ class GroupsController < Groups::ApplicationController
     scope = params[:action] == :download_export ? @group : nil
 
     check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
+  end
+
+  def check_create_rate_limit!
+    return unless Feature.enabled?(:namespace_create_rate_limit, current_user)
+
+    check_rate_limit!(:groups_create, scope: [current_user])
   end
 
   private

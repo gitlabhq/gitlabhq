@@ -33,6 +33,25 @@ RSpec.describe "projectBlobsRemove", feature_category: :source_code_management d
     end
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :rewrite_repository_history do
+    let(:user) { create(:user, owner_of: project) }
+    let(:boundary_object) { project }
+
+    before do
+      allow(::Repositories::RewriteHistoryWorker).to receive(:perform_async)
+    end
+
+    let(:mutation) do
+      graphql_mutation(
+        :project_blobs_remove,
+        { project_path: project.full_path, blob_oids: ['53855584db773c3df5b5f61f72974cb298822fbb'] },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   describe 'Invalid requests:' do
     context 'when the current_user is a maintainer' do
       let(:current_user) { create(:user, maintainer_of: project) }

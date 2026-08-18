@@ -1,7 +1,7 @@
 ---
 description: Tracks updates to the assignees of a work item or merge request.
 action: updated_assignees
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '16.9'

@@ -17,7 +17,7 @@ title: Principles of Importer Design
   - Ensures that [network settings](../../security/webhooks.md) are enforced for HTTP calls.
   - Has additional [security hardening](../../security/webhooks.md#enforce-dns-rebinding-attack-protection) features.
   - Is our single source of truth for making secure HTTP calls.
-  - Ensure all response sizes are validated.
+  - Ensures all response sizes are validated.
 
 ## Logging
 

@@ -1,0 +1,12 @@
+---
+name: regenerate_merge_request_cached_html
+description: Force merge request title_html/description_html to always be treated
+  as stale so they are regenerated and re-persisted on every read/write for the selected
+  project
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602026
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243598
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604828
+milestone: '19.2'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

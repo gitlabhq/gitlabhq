@@ -1,0 +1,125 @@
+# @feature_category: mcp_server
+query getMergeRequest(
+  $fullPath: ID!
+  $iid: String!
+  $includeDiffs: Boolean = false
+  $includeCommits: Boolean = false
+  $includeNotes: Boolean = false
+  $includePipelines: Boolean = false
+  $includeDiscussions: Boolean = false
+  $notesAfter: String
+  $notesFirst: Int
+) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      iid
+      title
+      description
+      state
+      draft
+      webUrl
+      sourceBranch
+      targetBranch
+      createdAt
+      updatedAt
+      mergedAt
+      conflicts
+      author {
+        id
+        username
+        name
+      }
+      diffStatsSummary @include(if: $includeDiffs) {
+        additions
+        deletions
+        changes
+        fileCount
+      }
+      diffStats @include(if: $includeDiffs) {
+        path
+        additions
+        deletions
+      }
+      commits(first: 100) @include(if: $includeCommits) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          sha
+          shortId
+          title
+          authoredDate
+          authorName
+          webUrl
+        }
+      }
+      pipelines(first: 100) @include(if: $includePipelines) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          iid
+          sha
+          ref
+          status
+          source
+          path
+          createdAt
+          updatedAt
+        }
+      }
+      discussions(first: 50) @include(if: $includeDiscussions) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          resolvable
+          resolved
+          notes {
+            nodes {
+              id
+              body
+              system
+              internal
+              createdAt
+              author {
+                id
+                username
+                name
+              }
+            }
+          }
+        }
+      }
+      notes(after: $notesAfter, first: $notesFirst) @include(if: $includeNotes) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        count
+        nodes {
+          id
+          webUrl: url
+          body
+          system
+          internal
+          createdAt
+          updatedAt
+          author {
+            id
+            username
+            name
+          }
+        }
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@ RSpec.describe Sidebars::Admin::Menus::AdminOverviewMenu, :enable_admin_mode, fe
 
   it_behaves_like 'Admin menu',
     link: '/admin',
-    title: s_('Admin|Overview'),
+    title: s_('Admin|Instance overview'),
     icon: 'overview'
 
   it_behaves_like 'Admin menu with sub menus'

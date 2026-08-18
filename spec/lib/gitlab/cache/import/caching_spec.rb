@@ -421,4 +421,24 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
       expect { described_class.del('foo') }.to change { described_class.read('foo') }.from('value').to(nil)
     end
   end
+
+  describe '.del_multiple' do
+    it 'deletes all the given keys' do
+      described_class.write('foo', 'value')
+      described_class.write('bar', 'value')
+
+      described_class.del_multiple(%w[foo bar])
+
+      expect(described_class.read('foo')).to be_nil
+      expect(described_class.read('bar')).to be_nil
+    end
+
+    it 'does nothing when given an empty array' do
+      described_class.write('foo', 'value')
+
+      described_class.del_multiple([])
+
+      expect(described_class.read('foo')).to eq('value')
+    end
+  end
 end

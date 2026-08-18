@@ -1,7 +1,9 @@
 import { GlLink, GlFormCheckbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import NoteForm from '~/notes/components/note_form.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
@@ -14,11 +16,13 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
+import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
 Vue.use(PiniaVuePlugin);
+Vue.use(VueApollo);
 
 describe('issue_note_form component', () => {
   let pinia;
@@ -30,6 +34,9 @@ describe('issue_note_form component', () => {
   const createComponentWrapper = (propsData = {}, provide = {}, stubs = {}) => {
     wrapper = mountExtended(NoteForm, {
       pinia,
+      apolloProvider: createMockApollo([
+        [currentUserQuery, jest.fn().mockResolvedValue({ data: { currentUser: null } })],
+      ]),
       propsData: {
         ...props,
         ...propsData,
@@ -37,23 +44,14 @@ describe('issue_note_form component', () => {
       provide: {
         glFeatures: provide,
       },
-      mocks: {
-        $apollo: {
-          queries: {
-            currentUser: {
-              loading: false,
-            },
-          },
-        },
-      },
       stubs,
     });
 
     textarea = wrapper.find('textarea');
   };
 
-  const findCancelButton = () => wrapper.findByTestId('cancel');
-  const findCancelCommentButton = () => wrapper.findByTestId('cancelBatchCommentsEnabled');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel');
+  const findCancelCommentButton = () => wrapper.findComponentByTestId('cancelBatchCommentsEnabled');
   const findAddToStartReviewButton = () => wrapper.findByTestId('start-review-button');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
@@ -206,7 +204,7 @@ describe('issue_note_form component', () => {
 
         findCancelButton().vm.$emit('click');
 
-        expect(wrapper.emitted('cancelForm')).toHaveLength(1);
+        expect(wrapper.emitted('cancel-form')).toHaveLength(1);
       });
 
       it('will not cancel form if there is an active at-who-active class', async () => {
@@ -218,14 +216,14 @@ describe('issue_note_form component', () => {
         cancelButton.vm.$emit('click');
         await nextTick();
 
-        expect(wrapper.emitted('cancelForm')).toBeUndefined();
+        expect(wrapper.emitted('cancel-form')).toBeUndefined();
       });
 
       it('should be possible to update the note', () => {
         createComponentWrapper();
 
         textarea.setValue('Foo');
-        const saveButton = wrapper.find('.js-vue-issue-save');
+        const saveButton = wrapper.findComponent('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
         expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
@@ -235,7 +233,7 @@ describe('issue_note_form component', () => {
         createComponentWrapper();
 
         textarea.setValue('Foo');
-        const saveButton = wrapper.find('.js-vue-issue-save');
+        const saveButton = wrapper.findComponent('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
@@ -304,7 +302,7 @@ describe('issue_note_form component', () => {
     it('should be possible to cancel', () => {
       findCancelCommentButton().vm.$emit('click');
 
-      expect(wrapper.emitted('cancelForm')).toEqual([[true, false]]);
+      expect(wrapper.emitted('cancel-form')).toEqual([[true, false]]);
     });
 
     it('hides actions for commits', () => {

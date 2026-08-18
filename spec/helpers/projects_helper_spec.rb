@@ -985,7 +985,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#fork_button_data_attributes' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:project) { create(:project, :small_repo, :public) }
 
     project_forks_path = '/project/forks'
     project_new_fork_path = '/project/new/fork'
@@ -1650,17 +1650,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.can_view_branch_rules? }
 
     context 'when user is a maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
+      before_all { project.add_maintainer(user) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when user is a developer' do
-      before do
-        project.add_developer(user)
-      end
+      before_all { project.add_developer(user) }
 
       it { is_expected.to be_falsey }
     end
@@ -1676,17 +1672,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when user is a developer on the project' do
-      before do
-        project.add_developer(user)
-      end
+      before_all { project.add_developer(user) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when user is a reporter on the project' do
-      before do
-        project.add_reporter(user)
-      end
+      before_all { project.add_reporter(user) }
 
       it { is_expected.to be_falsey }
     end
@@ -1922,6 +1914,41 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it { is_expected.to match(hash_including(marked_for_deletion: 'true')) }
+    end
+  end
+
+  describe '#project_general_settings_data' do
+    subject(:data) { helper.project_general_settings_data(project) }
+
+    it 'returns the general settings data' do
+      expect(data).to include(
+        project_id: project.id,
+        project_name: project.name,
+        project_description: project.description,
+        project_avatar_removable: 'false',
+        max_description_length: Project::MAX_DESCRIPTION_LENGTH,
+        form_action: project_path(project),
+        organization_id: project.organization.id,
+        external_authorization_enabled: 'false'
+      )
+    end
+
+    context 'when the project has an uploaded avatar' do
+      before do
+        project.update!(avatar: fixture_file_upload('spec/fixtures/dk.png'))
+      end
+
+      it 'marks the avatar as removable' do
+        expect(data).to include(project_avatar_removable: 'true')
+      end
+    end
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let_it_be(:user) { create(:admin) }
+
+      it 'includes the service ping settings path' do
+        expect(data[:service_ping_settings_path]).to be_present
+      end
     end
   end
 

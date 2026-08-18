@@ -32,12 +32,28 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteNullProjectIdPushRules, featur
     push_rules.create!(project_id: project.id, created_at: Time.current, updated_at: Time.current)
   end
 
-  let!(:push_rule_null_project) do
+  let(:push_rule_null_project) do
     push_rules.create!(project_id: nil, created_at: Time.current, updated_at: Time.current)
   end
 
-  let!(:push_rule_null_project_sample) do
+  let(:push_rule_null_project_sample) do
     push_rules.create!(project_id: nil, is_sample: true, created_at: Time.current, updated_at: Time.current)
+  end
+
+  let(:constraint_name) { 'check_1d23f0a102' }
+
+  before do
+    # push_rules.project_id has a NOT NULL constraint (check_1d23f0a102), so we
+    # cannot insert NULL rows directly. Temporarily drop it to seed the NULL rows
+    # this BBM is responsible for deleting, then restore it as NOT VALID in an
+    # after hook so it is never left dropped if an example raises.
+    drop_project_id_not_null_constraint
+    push_rule_null_project
+    push_rule_null_project_sample
+  end
+
+  after do
+    recreate_project_id_not_null_constraint
   end
 
   describe '#perform' do
@@ -70,6 +86,19 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteNullProjectIdPushRules, featur
   end
 
   private
+
+  def drop_project_id_not_null_constraint
+    ApplicationRecord.connection.execute(
+      "ALTER TABLE push_rules DROP CONSTRAINT IF EXISTS #{constraint_name}"
+    )
+  end
+
+  def recreate_project_id_not_null_constraint
+    ApplicationRecord.connection.execute(<<~SQL)
+      ALTER TABLE push_rules
+        ADD CONSTRAINT #{constraint_name} CHECK ((project_id IS NOT NULL)) NOT VALID
+    SQL
+  end
 
   def migration_args
     min, max = push_rules.pick('MIN(id)', 'MAX(id)')

@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_ci_cd_analytics
+description: Enables Vue 3 in compatibility mode for the group CI/CD analytics page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/614009
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250219
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/614053
+milestone: '19.3'
+group: group::optimize
+type: beta
+default_enabled: false

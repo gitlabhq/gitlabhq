@@ -101,6 +101,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup, feature_category: :databa
     subject { model.connection }
 
     it_behaves_like 'connection proxy with skippable load balancer'
+
+    it 'is also available on instances' do
+      # `allocate` avoids the schema load that `new` would trigger for a table-less model.
+      expect(model.allocate.connection).to be(model.connection)
+    end
   end
 
   describe '#lease_connection' do
@@ -129,6 +134,34 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup, feature_category: :databa
     context 'when no block is given' do
       it 'returns nil' do
         expect(model.with_connection).to be_nil
+      end
+    end
+  end
+
+  describe '#schema_cache' do
+    before do
+      described_class.new(model).setup_connection_proxy
+    end
+
+    let(:model) { Class.new(ActiveRecord::Base) }
+
+    context 'when uses_load_balancer is true (default)' do
+      it 'routes schema cache lookups through the connection proxy' do
+        schema_cache = instance_double(ActiveRecord::ConnectionAdapters::BoundSchemaReflection)
+
+        expect(model.connection).to receive(:schema_cache).and_return(schema_cache)
+
+        expect(model.schema_cache).to eq(schema_cache)
+      end
+    end
+
+    context 'when uses_load_balancer is false' do
+      before do
+        model.uses_load_balancer = false
+      end
+
+      it 'returns the connection pool schema cache' do
+        expect(model.schema_cache).to eq(model.connection_pool.schema_cache)
       end
     end
   end

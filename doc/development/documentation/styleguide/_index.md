@@ -226,7 +226,7 @@ In this case, use passive voice instead. For example, `The report is exported`.
 
 ### Customer perspective
 
-Focus on the functionality and benefits that GitLab brings to customer,
+Focus on the functionality and benefits that GitLab brings to customers,
 rather than what GitLab has created.
 
 For example, use:
@@ -469,6 +469,7 @@ follow these best practices.
 
 - Split long lines at approximately 100 characters, but do not split links.
 - Try to avoid splitting lines between logical word groupings, keep them together on the same line.
+- Start each new sentence on a new line.
 
 For example:
 
@@ -525,6 +526,24 @@ Do not use these punctuation characters:
 - `;` (semicolon): Use two sentences instead.
 - `–` (en dash) or `—` (em dash): Use separate sentences, or commas, instead.
 - `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/NonStandardQuotes.yml).)
+
+### Ellipses
+
+Avoid using ellipses. If you must use them, for example, in a [code block](#code-blocks) or CLI response,
+use three periods with no space (`...`).
+
+Do not use the `&hellip;` HTML entity or the `&#8230;` HTML code because these
+cause issues with how code blocks render.
+
+Do not include any ellipses when documenting UI text. For example, use:
+
+- **Search or go to**
+
+Instead of:
+
+- **Search or go to...**
+
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 ### Placeholder text
 
@@ -657,7 +676,7 @@ When you use code blocks:
   which has triple backticks already. The example above uses quadruple backticks internally
   to illustrate the code block format.
 
-To represent missing information in a code block, use a comment or an [ellipsis](word_list.md#ellipsis-ellipses). For example:
+To represent missing information in a code block, use a comment or an [ellipsis](#ellipses). For example:
 
 - `# Removed for readability`
 - `// ...`
@@ -749,7 +768,7 @@ Follow these steps to do something.
 1. Finally, do the last step.
 ```
 
-Use an unordered lists when the steps do not need to be completed in order. For example:
+Use an unordered list when the steps do not need to be completed in order. For example:
 
 ```markdown
 These things are imported:
@@ -1559,10 +1578,10 @@ To emphasize an area in a screenshot, use an arrow.
   or concept in the image:
   - If the image is of the GitLab interface, append the GitLab version to the filename,
     based on this format: `image-name-vX_Y.png`. For example, for a screenshot taken
-    from the pipelines page of GitLab 11.1, a valid name is `pipelines-v11_1.png`.
+    from the pipelines page of GitLab 19.2, a valid name is `pipelines-v19_2.png`.
   - If you're adding an illustration that doesn't include parts of the user interface,
     add the release number corresponding to the release the image was added to.
-    For an MR added to 11.1's milestone, a valid name for an illustration is `devops-diagram-v11_1.png`.
+    For an MR added in the 19.2 milestone, a valid name for an illustration is `devops-diagram-v19_2.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
   - Do not link to externally-hosted images. Download a copy and store it in the appropriate `img` directory within the docs directory.
@@ -2473,7 +2492,7 @@ Configuration procedures can require users to edit configuration files, reconfig
 GitLab, or restart GitLab. In this case:
 
 - Use [tabs](#tabs) to differentiate among the various installation methods.
-- Use the installation methods names exactly as described in the previous list.
+- Use the installation method names exactly as described in the previous list.
 - Use them in the order described below.
 - Indent the code blocks to line up with the list item they belong to.
 - Use the appropriate syntax highlighting for each code block (`ruby`, `shell`, or `yaml`).

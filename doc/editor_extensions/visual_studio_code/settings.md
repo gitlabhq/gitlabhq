@@ -49,7 +49,6 @@ This extension provides several sets of commands that you can trigger in the
 ### AI-assisted features
 
 - `GitLab: Restart GitLab Language Server`
-- `GitLab: Show Duo Workflow`
 - `GitLab: Toggle Code Suggestions`
 - `GitLab: Toggle Code Suggestions for current language`
 
@@ -64,7 +63,6 @@ This extension provides several sets of commands that you can trigger in the
 - `GitLab: Publish Workspace to GitLab`
 - `GitLab: Refresh Sidebar`
 - `GitLab: Show Extension Logs`
-- `GitLab: View Security Finding Details`
 - `GitLab: Focus on For current branch View`
 - `GitLab: Focus on Issues and Merge Requests View`
 - `GitLab: Diagnostics`: Open a detailed settings page for the GitLab for VS Code extension.
@@ -89,7 +87,7 @@ If you use self-signed certificates to connect to your GitLab instance, see [con
 
 | Setting | Default | Information |
 | ------- | ------- | ----------- |
-| `gitlab.customQueries` | Not applicable | Defines the search queries that retrieves the items shown on the GitLab Panel. For more information, see [Custom Queries documentation](custom_queries.md). |
+| `gitlab.customQueries` | Not applicable | Defines the search queries that retrieve the items shown on the GitLab Panel. For more information, see [Custom Queries documentation](custom_queries.md). |
 | `gitlab.authentication.oauthClientIds` | Not applicable | The OAuth client ID to use (by GitLab instance URL) during [setup](setup.md#authenticate-with-gitlab). |
 | `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-debug-logs). |
 | `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |

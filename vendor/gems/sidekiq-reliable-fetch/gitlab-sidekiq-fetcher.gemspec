@@ -11,5 +11,6 @@ Gem::Specification.new do |s|
   s.files         = Dir.glob('lib/**/*.*')
   s.test_files    = Dir.glob('{spec,tests}/**/*.*')
   s.add_dependency 'sidekiq', '~> 7.0'
+  s.add_runtime_dependency 'base64'
   s.add_runtime_dependency 'json', '>= 2.5'
 end

@@ -18,7 +18,7 @@ describe('Diffs tree list component', () => {
   let wrapper;
   let pinia;
   const getScroller = () => wrapper.findComponent({ name: 'RecycleScroller' });
-  const findDiffTreeSearch = () => wrapper.findByTestId('diff-tree-search');
+  const findDiffTreeSearch = () => wrapper.findComponentByTestId('diff-tree-search');
 
   const createComponent = ({ hideFileStats = false, ...rest } = {}, { stubs } = {}) => {
     wrapper = shallowMountExtended(TreeList, {
@@ -127,25 +127,25 @@ describe('Diffs tree list component', () => {
       ]);
     });
 
-    it('re-emits clickFile event', () => {
+    it('re-emits click-file event', () => {
       const row = wrapper.findComponent(FileRow);
       const item = row.props('file');
-      row.vm.$emit('clickFile', { stopPropagation: jest.fn() });
-      expect(wrapper.emitted('clickFile')).toMatchObject([[item]]);
+      row.vm.$emit('click-file', { stopPropagation: jest.fn() });
+      expect(wrapper.emitted('click-file')).toMatchObject([[item]]);
     });
 
-    it('re-emits clickSubmodule as clickFile event', () => {
+    it('re-emits click-submodule as click-file event', () => {
       const row = wrapper.findComponent(FileRow);
       const item = row.props('file');
-      row.vm.$emit('clickSubmodule', { stopPropagation: jest.fn() });
-      expect(wrapper.emitted('clickFile')).toMatchObject([[item]]);
+      row.vm.$emit('click-submodule', { stopPropagation: jest.fn() });
+      expect(wrapper.emitted('click-file')).toMatchObject([[item]]);
     });
 
-    it('re-emits clickTree event as toggleFolder', () => {
+    it('re-emits click-tree event as toggle-folder', () => {
       const row = wrapper.findComponent(FileRow);
       const item = row.props('file');
-      row.vm.$emit('clickTree', { stopPropagation: jest.fn() });
-      expect(wrapper.emitted('toggleFolder')).toMatchObject([[item.path]]);
+      row.vm.$emit('click-tree', { stopPropagation: jest.fn() });
+      expect(wrapper.emitted('toggle-folder')).toMatchObject([[item.path]]);
     });
 
     describe('when renderTreeList is false', () => {
@@ -328,7 +328,7 @@ describe('Diffs tree list component', () => {
       ({ toggle, renderTreeList }) => {
         createComponent();
 
-        wrapper.findByTestId(toggle).vm.$emit('click');
+        wrapper.findComponentByTestId(toggle).vm.$emit('click');
 
         expect(useFileBrowser().setRenderTreeList).toHaveBeenCalledWith(renderTreeList);
       },
@@ -345,8 +345,8 @@ describe('Diffs tree list component', () => {
 
         createComponent();
 
-        expect(wrapper.findByTestId(deselectedToggle).props('selected')).toBe(false);
-        expect(wrapper.findByTestId(selectedToggle).props('selected')).toBe(true);
+        expect(wrapper.findComponentByTestId(deselectedToggle).props('selected')).toBe(false);
+        expect(wrapper.findComponentByTestId(selectedToggle).props('selected')).toBe(true);
       },
     );
 
@@ -404,8 +404,8 @@ describe('Diffs tree list component', () => {
       const loadedFile = getLoadingFile();
       createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
       const loadingItemIndex = getScroller().props('items').indexOf(findLoadingItem(loadedFile));
-      wrapper.findAllComponents(FileRow).at(loadingItemIndex).vm.$emit('clickFile', {});
-      expect(wrapper.emitted('clickFile')).toBe(undefined);
+      wrapper.findAllComponents(FileRow).at(loadingItemIndex).vm.$emit('click-file', {});
+      expect(wrapper.emitted('click-file')).toBe(undefined);
     });
   });
 });

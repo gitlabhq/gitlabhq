@@ -92,8 +92,8 @@ describe('PlaceholdersTabApp', () => {
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findTabAt = (index) => wrapper.findAllComponents(GlTab).at(index);
-  const findUnassignedTable = () => wrapper.findByTestId('placeholders-table-unassigned');
-  const findReassignedTable = () => wrapper.findByTestId('placeholders-table-reassigned');
+  const findUnassignedTable = () => wrapper.findComponentByTestId('placeholders-table-unassigned');
+  const findReassignedTable = () => wrapper.findComponentByTestId('placeholders-table-reassigned');
   const findReassignCsvButton = () => wrapper.findByTestId('reassign-csv-button');
   const findCsvModal = () => wrapper.findComponent(CsvUploadModal);
   const findKeepAllAsPlaceholderButton = () =>

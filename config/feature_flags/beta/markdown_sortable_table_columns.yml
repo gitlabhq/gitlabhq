@@ -1,0 +1,10 @@
+---
+name: markdown_sortable_table_columns
+description: Enable sortable table columns for markdown tables in view and preview
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/585266
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228795
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/597031
+milestone: '19.3'
+group: group::planner intelligence
+type: beta
+default_enabled: false

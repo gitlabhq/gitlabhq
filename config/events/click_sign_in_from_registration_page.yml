@@ -1,6 +1,8 @@
 description: Tracks clicks on the sign-in link from the registration page.
 action: click_sign_in_from_registration_page
 product_group: acquisition
+product_categories:
+- acquisition
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149054
 tiers:

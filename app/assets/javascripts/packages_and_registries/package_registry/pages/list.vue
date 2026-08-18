@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -116,8 +115,8 @@ export default {
       },
       update(data) {
         return this.isGroupPage
-          ? data[this.graphqlResource].packageSettings ?? {}
-          : data[this.graphqlResource].group?.packageSettings ?? {};
+          ? (data[this.graphqlResource].packageSettings ?? {})
+          : (data[this.graphqlResource].group?.packageSettings ?? {});
       },
       skip() {
         return !(this.packagesCount > 0 && this.canDeletePackages);

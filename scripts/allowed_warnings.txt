@@ -3,11 +3,6 @@
 # `grep --invert-match --extended-regexp --file`.
 # Comments and empty lines are ignored.
 
-# https://github.com/browserslist/browserslist/blob/d0ec62eb48c41c218478cd3ac28684df051cc865/node.js#L329
-# warns if caniuse-lite package is older than 6 months. Ignore this
-# warning message so that GitLab backports don't fail.
-Browserslist: caniuse-lite is outdated\. Please run next command `yarn upgrade`
-
 # This warning is emitted by scripts/static-analysis.
 \*\*\*\* .+ had the following warning\(s\):
 
@@ -19,41 +14,14 @@ ExperimentalWarning: CommonJS module .+ is loading ES Module .+ using require\(\
 Support for loading ES Module in require\(\) is an experimental feature and might change at any time
 \(Use `node --trace-warnings \.\.\.` to show where the warning was created\)
 
-# As of Ruby 3.1, one-line typesafe/destructuring pattern matching via "rightward assignment" has
-# been included for multiple years with no significant negative feedback or indications of removal.
-# In the event that it is removed in a future Ruby release, the changes required to fix it are
-# isolated and minor, and will have no fundamental effect on the logic. See the section
-# "Rightward assignment pattern matching and destructuring with types" in
-# ee/lib/remote_development/README.md for more information and context.
-warning: One-line pattern matching is experimental, and the behavior may change in future versions of Ruby!
-
 # The `io-event` gem is using an experimental feature of Ruby called `IO::Buffer`.
 # The maintainer of the gem is also the maintainer of Ruby language and `IO::Buffer` implementation, therefore,
 # it's really unlikelly that we will not be able to find a compatible version of the `io-event` gem if the
 # experimental `IO::Buffer` feature changes in Ruby.
 warning: IO::Buffer is experimental and both the Ruby and C interface may change in the future!
 
-# We need to build the Tailwind CSS bundle before running Stylelint so that we can lint against
-# forbidden syntax within the compiled tailwind.css. The Tailwind CSS builder logs some messages
-# with `console.error()` which need to be ignored here.
-Rebuilding...
-Done in [0-9]+ms.
-
-# The next major version of the view_component gem will require Rails >= 7.1
-Support for Rails versions < 7.1 is deprecated and will be removed from ViewComponent 4.0.0
-
-# Migration to the new cache version is in progress
-DEPRECATION WARNING: Support for `config.active_support.cache_format_version = 6.1` has been deprecated and will be removed in Rails 7.2.
-Check the Rails upgrade guide at https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-activesupport-cache-serialization-format
-for more information on how to upgrade.
-called from
-
-# Ignore labkit-ruby's baseline-mode banner. The gem logs deprecated logging fields without failing CI.
-LabKit Logging: Baseline generation mode active
-Deprecated fields detected but skip_ci_failure is enabled\.
-Offenses are being logged for collection\.
-To establish baseline:
-  bundle exec labkit-logging fetch <project> <pipeline_id>
-Documentation: https://gitlab\.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/doc/FIELD_STANDARDIZATION\.md
---- Offenses Summary ---
-Total offenses: [0-9]+ across [0-9]+ file\(s\)
+# Rails 8.1 deprecates ActiveSupport::Configurable, which is required at load time by
+# third-party gems (grape, view_component). We cannot fix this from our side; remove these
+# entries once the gems stop using it.
+DEPRECATION WARNING: ActiveSupport::Configurable is deprecated without replacement, and will be removed in Rails 8\.2\.
+You can emulate the previous behavior with `class_attribute`\.

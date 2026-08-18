@@ -27,7 +27,7 @@ Review the [CI/CD limits and settings for GitLab.com](../../user/gitlab_com/_ind
 {{< /history >}}
 
 The number of [CI/CD variables](../../ci/variables/_index.md) that can be defined in
-instance settings is limited. This limits is checked each time a new variable is created.
+instance settings is limited. This limit is checked each time a new variable is created.
 If a new variable would cause the total number of variables to exceed the limit,
 the new variable is not created.
 
@@ -84,6 +84,29 @@ Set the limit to `0` to disable it. Defaults to `20`.
 
 You can also set this limit by using the [Plan limits API](../../api/plan_limits.md).
 
+## Limit CycloneDX artifact size
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248527) in GitLab 19.3.
+
+{{< /history >}}
+
+You can set a limit on the maximum size of a
+[CycloneDX SBOM](../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) artifact.
+This limit is checked every time a CycloneDX report is uploaded as an artifact.
+
+To configure this limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Under **CI/CD limits**, set a value for **Maximum size of a CycloneDX artifact in MB**.
+1. Select **Save changes**.
+
+Set the limit to `0` to use the [maximum artifacts size](#maximum-artifacts-size) instead.
+Defaults to `1` MB.
+
 ## Maximum number of jobs in a pipeline
 
 {{< history >}}
@@ -133,7 +156,7 @@ Set the limit to `0` to disable it. Disabled by default.
 The total number of subscriptions can be limited per project. This limit is
 checked each time a new subscription is created.
 
-If a new subscription would cause the total number of subscription to exceed the
+If a new subscription would cause the total number of subscriptions to exceed the
 limit, the subscription is considered invalid.
 
 To configure this limit:
@@ -312,8 +335,8 @@ These limits can help save resources and improve stability.
 GitLab enforces two types of rate limits for pipeline creation:
 
 - **Per project, commit, and user**: Limits pipelines created for the same combination of project,
-  commit SHA, and user. Disabled by default.
-- **Per user**: Limits total pipelines created by a user across all projects. Disabled by default.
+  commit SHA, and user. Set to `0` (no limit) by default.
+- **Per user**: Limits total pipelines created by a user across all projects. Set to `0` (no limit) by default.
 
 For example, if you set a per-user limit of `100`, and a user sends `101` pipeline creation requests
 to the [trigger API](../../ci/triggers/_index.md) within one minute across different projects,
@@ -335,7 +358,7 @@ To limit the number of pipeline requests:
 1. In the left sidebar, select **Settings** > **Network**.
 1. Expand **Pipelines Rate Limits**.
    - Under **Max requests per minute per project, user, and commit**, enter a value greater than `0` to limit pipelines
-     for the same project, commit, and user combination.
+     for the same project, commit, and user combination. Set to `0` for unlimited requests per minute.
    - Under **Max requests per minute per user**, enter a value greater than `0` to limit total pipelines created by each user.
      Set to `0` for unlimited requests per minute.
 1. Select **Save changes**.
@@ -406,6 +429,27 @@ To set the maximum number of included files per pipeline:
 1. Enter a value in the **Maximum includes** text box.
 1. Select **Save changes**.
 
+## Maximum size of the CI artifacts archive
+
+This setting restricts YAML sizes for [dynamic child pipelines](../../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+
+The default maximum size of the CI artifacts archive is 5 megabytes.
+
+To change this limit in the Admin area:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Enter a value in the **Maximum artifact size for dynamic child pipelines (bytes)** text box.
+1. Select **Save changes**.
+
+To change this limit using the [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session),
+update `max_artifacts_content_include_size` with the new value. For example, to set it to 20 MB:
+
+```ruby
+ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
+```
+
 ## Maximum number of caches per job
 
 {{< history >}}
@@ -439,7 +483,7 @@ To change the maximum number of caches per job:
 
 {{< /details >}}
 
-Some CI/CD limits can be only be changed by editing the instance configuration.
+Some CI/CD limits can only be changed by editing the instance configuration.
 
 Prerequisites:
 
@@ -548,8 +592,8 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 
 ### Group and project CI/CD variable limits
 
-The number of [CI/CD variables](../../ci/variables/_index.md) that can be defined in groups and projects,
-are limited for the entire instance. These limits are checked each time a new variable is created.
+The number of [CI/CD variables](../../ci/variables/_index.md) that can be defined in groups and projects
+is limited for the entire instance. These limits are checked each time a new variable is created.
 If a new variable would cause the total number of variables to exceed the respective limit,
 the new variable is not created.
 
@@ -572,7 +616,6 @@ To update the `default` plan of one of these limits, in the
 
 {{< history >}}
 
-- `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 - `ci_max_artifact_size_jacoco` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159696) in GitLab 17.3
 - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
 
@@ -618,11 +661,12 @@ setting is used:
 | `ci_max_artifact_size_performance`          | 0             |
 | `ci_max_artifact_size_requirements`         | 0             |
 | `ci_max_artifact_size_requirements_v2`      | 0             |
+| `ci_max_artifact_size_sarif`                | 10 MB         |
 | `ci_max_artifact_size_sast`                 | 0             |
 | `ci_max_artifact_size_secret_detection`     | 0             |
 | `ci_max_artifact_size_terraform`            | 5 MB          |
 | `ci_max_artifact_size_trace`                | 0             |
-| `ci_max_artifact_size_cyclonedx`            | 5 MB          |
+| `ci_max_artifact_size_cyclonedx`            | 1 MB          |
 
 For example, to set the `ci_max_artifact_size_junit` limit to 10 MB on
 GitLab Self-Managed, run the following in the [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session):
@@ -630,6 +674,9 @@ GitLab Self-Managed, run the following in the [GitLab Rails console](../operatio
 ```ruby
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
+
+You can also set `ci_max_artifact_size_cyclonedx` in the **Admin** area. For more information, see
+[Limit CycloneDX artifact size](#limit-cyclonedx-artifact-size).
 
 ### Maximum file size for job logs
 
@@ -656,20 +703,6 @@ Update `dast_profile_schedules` with the new value:
 
 ```ruby
 Plan.default.actual_limits.update!(dast_profile_schedules: 50)
-```
-
-### Maximum size of the CI artifacts archive
-
-This setting is used to restrict YAML sizes for [dynamic child pipelines](../../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines).
-
-The default maximum size of the CI artifacts archive is 5 megabytes.
-
-You can change this limit by using the [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-To update the maximum size of the CI artifacts archive,
-update `max_artifacts_content_include_size` with the new value. For example, to set it to 20 MB:
-
-```ruby
-ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
 ```
 
 ### Maximum size and depth of CI/CD configuration YAML files
@@ -730,12 +763,6 @@ A single job's configuration is always a subset of the entire pipeline configura
 
 ### Limit CI/CD job annotations
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
-
-{{< /history >}}
-
 You can set a limit on the maximum number of [annotations](../../ci/yaml/artifacts_reports.md#artifactsreportsannotations)
 per CI/CD job.
 
@@ -749,12 +776,6 @@ Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
 ```
 
 ### Limit CI/CD job annotations file size
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
-
-{{< /history >}}
 
 You can set a limit on the maximum size of a CI/CD job [annotation](../../ci/yaml/artifacts_reports.md#artifactsreportsannotations).
 

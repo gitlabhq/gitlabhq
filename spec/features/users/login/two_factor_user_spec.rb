@@ -273,47 +273,56 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
       let(:user) { create(:user, :two_factor_via_webauthn, organization: current_organization) }
       let(:email_otp_enabled) { false }
 
-      # The email OTP fallback is not migrated to Vue yet, so it stays on the legacy form. (The
-      # relaxed guard also keeps any email-OTP-eligible user on legacy regardless of the flag.)
-      before do
-        stub_feature_flags(two_factor_vue: false)
-        stub_application_setting(email_otp_enabled: email_otp_enabled)
-        allow(WebAuthn.configuration.relying_party).to receive(:allowed_origins).and_return([app_id])
+      # The email OTP fallback renders the redesigned Vue email screen with the flag on and the
+      # legacy HAML footer with it off. verify_email_otp_fallback_workflow drives whichever UI
+      # renders.
+      with_and_without_ff(:two_factor_vue) do
+        before do
+          stub_application_setting(email_otp_enabled: email_otp_enabled)
+          allow(WebAuthn.configuration.relying_party).to receive(:allowed_origins).and_return([app_id])
 
-        visit new_user_session_path
-        fill_in 'user_login', with: user.username
-        fill_in 'user_password', with: user.password
-        click_button 'Sign in'
-      end
+          visit new_user_session_path
+          fill_in 'user_login', with: user.username
+          fill_in 'user_password', with: user.password
+          click_button 'Sign in'
+        end
 
-      it 'does not show the email OTP fallback footer' do
-        expect(page).not_to have_content('Having trouble signing in?')
-        expect(page).not_to have_link('send code to email address')
-      end
+        it 'does not offer the email OTP fallback' do
+          # The WebAuthn screen renders in both UIs and surfaces this error once the fake device
+          # fails; it is the shared anchor confirming the page mounted. Neither UI should then
+          # offer an email-OTP option.
+          expect(page).to have_content('Failed to connect to your device. Try again.')
 
-      context 'when email_otp_enabled application setting is enabled' do
-        let(:email_otp_enabled) { true }
+          expect(page).not_to have_button(s_('TwoFactorAuth|Email code'))
+          expect(page).not_to have_button('send code to email address')
+          expect(page).not_to have_link('send code to email address')
+          expect(page).not_to have_content('Authenticate with your email')
+        end
 
-        # we will not be testing different email_otp_required_after values
-        # since this is covered in the unit test level
-        context 'when user has email_otp_required_after set to past date' do
-          let(:user) { create(:user, :two_factor_via_webauthn, email_otp_required_after: 1.day.ago) }
+        context 'when email_otp_enabled application setting is enabled' do
+          let(:email_otp_enabled) { true }
 
-          context 'when WebAuthn authentication fails' do
-            before do
-              ActionMailer::Base.deliveries.clear
-            end
+          # we will not be testing different email_otp_required_after values
+          # since this is covered in the unit test level
+          context 'when user has email_otp_required_after set to past date' do
+            let(:user) { create(:user, :two_factor_via_webauthn, email_otp_required_after: 1.day.ago) }
 
-            it 'shows the email OTP fallback footer with helpful links' do
-              expect(page).to have_content('Having trouble signing in?')
-              expect(page).to have_link('Enter recovery code')
-              expect(page).to have_button('send code to email address')
+            context 'when WebAuthn authentication fails' do
+              before do
+                ActionMailer::Base.deliveries.clear
+              end
 
-              expect(authentication_metrics)
-                .to increment(:user_authenticated_counter)
-                .and increment(:user_session_override_counter)
+              it 'completes the email OTP fallback workflow' do
+                # WebAuthn is the default for this user; the email fallback is reachable from
+                # the WebAuthn screen, and verify_email_otp_fallback_workflow switches to it.
+                expect_email_otp_fallback_available(user)
 
-              verify_email_otp_fallback_workflow(user)
+                expect(authentication_metrics)
+                  .to increment(:user_authenticated_counter)
+                  .and increment(:user_session_override_counter)
+
+                verify_email_otp_fallback_workflow(user)
+              end
             end
           end
         end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :code_review_workflow do
   include RepoHelpers
@@ -73,7 +74,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
       draft_note = DraftNote.find_by(author: user)
 
-      expect(draft_note.internal).to eq(true)
+      expect(draft_note.internal).to be(true)
     end
 
     it 'creates draft note with position' do
@@ -165,7 +166,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
         expect(draft_note).to be_valid
         expect(draft_note.discussion_id).to eq(discussion.reply_id)
-        expect(draft_note.resolve_discussion).to eq(true)
+        expect(draft_note.resolve_discussion).to be(true)
       end
 
       it 'cannot create more than one draft note per thread' do
@@ -325,6 +326,29 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
   end
 
   describe 'POST #publish' do
+    it 'starts the submit_mr_review_ui user experience' do
+      create(:draft_note, merge_request: merge_request, author: user)
+
+      expect { post :publish, params: params }
+        .to start_user_experience(:submit_mr_review_ui)
+    end
+
+    context 'when review delivery is scheduled asynchronously' do
+      it 'leaves the submit_mr_review_ui experience to be completed by the worker' do
+        create(:draft_note, merge_request: merge_request, author: user)
+
+        expect { post :publish, params: params }
+          .not_to complete_user_experience(:submit_mr_review_ui)
+      end
+    end
+
+    context 'when nothing is delivered asynchronously' do
+      it 'completes the submit_mr_review_ui user experience in the request' do
+        expect { post :publish, params: params }
+          .to complete_user_experience(:submit_mr_review_ui)
+      end
+    end
+
     context 'without permissions' do
       shared_examples_for 'action that does not allow publishing draft note' do
         it 'does not allow publishing draft note' do
@@ -379,6 +403,17 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(response).to have_gitlab_http_status(:error)
         expect(json_response["message"]).to include(error_message)
       end
+
+      it 'completes the submit_mr_review_ui user experience with an error' do
+        create(:draft_note, merge_request: merge_request, author: user)
+
+        expect_next_instance_of(DraftNotes::PublishService) do |service|
+          allow(service).to receive(:execute).and_return({ message: 'boom', status: :error })
+        end
+
+        expect { post :publish, params: params }
+          .to complete_user_experience(:submit_mr_review_ui, error: true)
+      end
     end
 
     it 'publishes draft notes with position' do
@@ -427,7 +462,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     it 'publishes all draft notes for an MR' do
       draft_params = { merge_request: merge_request, author: user }
 
-      drafts = create_list(:draft_note, 4, draft_params)
+      drafts = create_list(:draft_note, 2, draft_params)
 
       note = create(:discussion_note_on_merge_request, noteable: merge_request, project: project)
       draft_reply = create(:draft_note, draft_params.merge(discussion_id: note.discussion_id))
@@ -435,8 +470,8 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       diff_note = create(:diff_note_on_merge_request, noteable: merge_request, project: project)
       diff_draft_reply = create(:draft_note, draft_params.merge(discussion_id: diff_note.discussion_id))
 
-      expect { post :publish, params: params }.to change { Note.count }.by(6)
-        .and change { DraftNote.count }.by(-6)
+      expect { post :publish, params: params }.to change { Note.count }.by(4)
+        .and change { DraftNote.count }.by(-4)
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -462,7 +497,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     it 'can publish just a single draft note' do
       draft_params = { merge_request: merge_request, author: user }
 
-      drafts = create_list(:draft_note, 4, draft_params)
+      drafts = create_list(:draft_note, 2, draft_params)
 
       expect { post :publish, params: params.merge(id: drafts.first.id) }.to change { Note.count }.by(1)
         .and change { DraftNote.count }.by(-1)
@@ -489,13 +524,13 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         discussion = note.discussion
 
         expect(discussion.notes.last.note).to eq(draft_reply.note)
-        expect(discussion.resolved?).to eq(true)
+        expect(discussion.resolved?).to be(true)
         expect(discussion.resolved_by.id).to eq(user.id)
       end
 
       it 'unresolves a thread if the draft note unresolves it' do
         note.discussion.resolve!(user)
-        expect(note.discussion.resolved?).to eq(true)
+        expect(note.discussion.resolved?).to be(true)
 
         draft_reply = create_reply(note.discussion_id, resolves: false)
 
@@ -505,7 +540,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         discussion = Note.find(note.id).discussion
 
         expect(discussion.notes.last.note).to eq(draft_reply.note)
-        expect(discussion.resolved?).to eq(false)
+        expect(discussion.resolved?).to be(false)
       end
     end
 
@@ -657,9 +692,9 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
   describe 'DELETE #discard' do
     it 'deletes all DraftNotes belonging to a user in a Merge Request' do
-      create_list(:draft_note, 6, merge_request: merge_request, author: user)
+      create_list(:draft_note, 3, merge_request: merge_request, author: user)
 
-      expect { delete :discard, params: params }.to change { DraftNote.count }.by(-6)
+      expect { delete :discard, params: params }.to change { DraftNote.count }.by(-3)
       expect(response).to have_gitlab_http_status(:ok)
     end
 

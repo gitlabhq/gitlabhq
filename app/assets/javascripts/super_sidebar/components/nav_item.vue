@@ -1,5 +1,6 @@
 <script>
 import { GlAvatar, GlBadge, GlButton, GlIcon, GlNavItem, GlTooltipDirective } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, sprintf } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -27,6 +28,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     pinnedItemIds: { default: { ids: [] } },
     panelSupportsPins: { default: false },
@@ -54,6 +56,11 @@ export default {
       default: () => ({}),
     },
     isSubitem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideIcon: {
       type: Boolean,
       required: false,
       default: false,
@@ -97,6 +104,9 @@ export default {
     },
     isPinned() {
       return this.pinnedItemIds.ids.includes(this.item.id);
+    },
+    showPinButton() {
+      return this.isPinnable && (!this.isIconOnly || this.isFlyout);
     },
     trackingProps() {
       // Set extra event data to debug missing IDs / Panel Types
@@ -177,6 +187,12 @@ export default {
     hasBadge() {
       return Boolean(this.item.badge);
     },
+    itemIcon() {
+      if (this.glFeatures.hideUnpinnedSidebarItems) {
+        return this.item.library_icon || this.item.icon;
+      }
+      return this.item.icon;
+    },
   },
   mounted() {
     if (this.isActive && !this.isFlyout) {
@@ -227,15 +243,26 @@ export default {
     >
       <template v-if="!isFlyout" #icon>
         <span
-          class="gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center"
+          class="gl-relative gl-flex gl-h-6 gl-w-6 gl-items-center gl-justify-center"
           :class="{
             'gl-self-start': hasAvatar,
             'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
-            '-gl-mr-2': hasAvatar && isIconOnly,
           }"
         >
-          <slot name="icon">
-            <gl-icon v-if="item.icon" :name="item.icon" />
+          <slot v-if="!hideIcon" name="icon">
+            <template
+              v-if="
+                isInPinnedSection && glFeatures.hideUnpinnedSidebarItems && itemIcon && !isIconOnly
+              "
+            >
+              <gl-icon :name="itemIcon" class="hide-on-focus-or-hover--target" />
+              <gl-icon
+                name="grip"
+                class="js-draggable-icon show-on-focus-or-hover--target gl-absolute gl-cursor-grab"
+                variant="subtle"
+              />
+            </template>
+            <gl-icon v-else-if="itemIcon" :name="itemIcon" />
             <gl-icon
               v-else-if="isInPinnedSection"
               name="grip"
@@ -249,13 +276,14 @@ export default {
               :entity-name="item.title"
               :entity-id="item.entity_id"
               :src="item.avatar"
+              :alt="item.title"
             />
           </slot>
         </span>
       </template>
       <span
         v-show="!isIconOnly"
-        class="gl-grow gl-break-anywhere"
+        class="gl-inline-block gl-grow gl-py-2 gl-leading-16 gl-break-anywhere"
         :class="{ 'nav-item-link-label': !isFlyout }"
         data-testid="nav-item-link-label"
       >
@@ -287,7 +315,7 @@ export default {
       </template>
     </gl-nav-item>
     <gl-button
-      v-if="isPinnable"
+      v-if="showPinButton"
       v-gl-tooltip.noninteractive.right.viewport="
         isPinned ? $options.i18n.unpinItem : $options.i18n.pinItem
       "

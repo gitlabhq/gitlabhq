@@ -25,6 +25,7 @@ query groupWorkItems(
         id
         iid
         title
+        titleHtml
         confidential
         webUrl
         namespace {
@@ -71,6 +72,7 @@ query groupWorkItems(
         id
         iid
         title
+        titleHtml
         confidential
         webUrl
         namespace {

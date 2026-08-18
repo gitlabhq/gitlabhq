@@ -170,6 +170,29 @@ export const transferGroupPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
+ * - href: `/groups/*id/-/create_organization_from_group(.:format)`
+ * - Path helper: `create_organization_from_group_path`
+ * - URL helper: `create_organization_from_group_url`
+ * - controller#action: `groups#create_organization_from_group`
+ *
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const createOrganizationFromGroupPath = /*#__PURE__*/ (...args) => {
+  const _organizationCreateOrganizationFromGroupPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"create_organization_from_group"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+  const _createOrganizationFromGroupPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"create_organization_from_group"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationCreateOrganizationFromGroupPath(gon.current_organization.path, ...args);
+  }
+
+  return _createOrganizationFromGroupPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/groups/*id/-/export(.:format)`
  * - Path helper: `export_group_path`
  * - URL helper: `export_group_url`
@@ -418,6 +441,29 @@ export const groupSavedViewPath = /*#__PURE__*/ (...args) => {
   }
 
   return _groupSavedViewPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/groups/*group_id/-/settings/merge_requests(.:format)`
+ * - Path helper: `group_settings_merge_requests_path`
+ * - URL helper: `group_settings_merge_requests_url`
+ * - controller#action: `groups/settings/merge_requests#update`
+ *
+ * @param {any} groupId
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const groupSettingsMergeRequestsPath = /*#__PURE__*/ (...args) => {
+  const _organizationGroupSettingsMergeRequestsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"merge_requests"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+  const _groupSettingsMergeRequestsPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"merge_requests"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationGroupSettingsMergeRequestsPath(gon.current_organization.path, ...args);
+  }
+
+  return _groupSettingsMergeRequestsPath(...args);
 };
 
 /**
@@ -2803,6 +2849,29 @@ export const groupObservabilityAccessRequestsPath = /*#__PURE__*/ (...args) => {
   }
 
   return _groupObservabilityAccessRequestsPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/groups/*group_id/-/observability/session(.:format)`
+ * - Path helper: `group_observability_session_path`
+ * - URL helper: `group_observability_session_url`
+ * - controller#action: `groups/observability/sessions#create`
+ *
+ * @param {any} groupId
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const groupObservabilitySessionPath = /*#__PURE__*/ (...args) => {
+  const _organizationGroupObservabilitySessionPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"session"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+  const _groupObservabilitySessionPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"session"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationGroupObservabilitySessionPath(gon.current_organization.path, ...args);
+  }
+
+  return _groupObservabilitySessionPath(...args);
 };
 
 /**

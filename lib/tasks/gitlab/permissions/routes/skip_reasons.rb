@@ -8,6 +8,7 @@ module Tasks
           REASON_LABELS = {
             ai_workflows_oauth_auth: 'AI workflows OAuth token',
             catch_all: 'Catch-all fallback',
+            cd_rollout_workflow_event: 'CD rollout deploy driver callback token',
             compliance_external_auth: 'Compliance external control token',
             container_registry_event_auth: 'Container registry event token',
             deprecated_endpoint: 'Deprecated endpoint',
@@ -26,7 +27,7 @@ module Tasks
             openbao_token_auth: 'OpenBao token',
             external_registry_redirect: 'External registry redirect',
             ai_workflows_token_auth: 'AI Workflows OAuth token',
-            orbit_internal_auth: 'Orbit internal token',
+            orbit_internal_auth: 'GitLab Orbit internal token',
             pages_token_auth: 'GitLab Pages token',
             public_endpoint: 'Public endpoint',
             runner_token_auth: 'Runner token',

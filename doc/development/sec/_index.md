@@ -54,7 +54,7 @@ The Analyzers are mainly written in Go.
 
 Some 3rd party integrators also make additional Scanners available by following our [integration documentation](../integrations/secure.md), which leverages the same architecture.
 
-The results of the scans are exported as JSON reports that must comply with the [Secure report format](../../user/application_security/terminology/_index.md#secure-report-format) and are uploaded as [CI/CD Job Report artifacts](../../ci/jobs/job_artifacts.md) to make them available for processing after the pipelines completes.
+The results of the scans are exported as JSON reports that must comply with the [Secure report format](../../user/application_security/terminology/_index.md#secure-report-format) and are uploaded as [CI/CD Job Report artifacts](../../ci/jobs/job_artifacts.md) to make them available for processing after the pipeline completes.
 
 ### Processing, visualization, and management
 

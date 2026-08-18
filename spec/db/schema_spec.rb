@@ -20,8 +20,7 @@ RSpec.describe 'Database schema',
   let(:removed_fks_map) do
     {
       # example_table: %w[example_column]
-      search_namespace_index_assignments: [%w[search_index_id index_type]],
-      work_item_descriptions: %w[work_item_id namespace_id last_edited_by_id]
+      search_namespace_index_assignments: [%w[search_index_id index_type]]
     }.with_indifferent_access.freeze
   end
 
@@ -45,6 +44,9 @@ RSpec.describe 'Database schema',
       approvals: %w[user_id],
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],
+      # ar_namespace_id is the Artifact Registry service's namespace UUID, not a GitLab
+      # namespaces reference, so it has no foreign key by design (ADR-022).
+      artifact_registry_namespace_mappings: %w[ar_namespace_id],
       analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id
         last_incremental_issues_id
         last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id
@@ -56,10 +58,14 @@ RSpec.describe 'Database schema',
         stage_event_hash_id state_id sprint_id],
       analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
       audit_events: %w[author_id entity_id target_id],
+      # organization_id FK dropped in gitlab-org/gitlab#604997 (unnecessary sharding key).
+      # Column removal follows in https://gitlab.com/gitlab-org/gitlab/-/issues/606167
+      bulk_import_exports: %w[organization_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
       iam_outbox: %w[entity_id], # generic source-row id (entity_type, entity_id), not a single-table FK
+      govern_policy_enforcements: %w[project_id], # No FK: the Policy Store owns its integrity so it can be extracted, per GOVERN-008
       instance_audit_events: %w[author_id target_id],
       project_compliance_violations: %w[audit_event_id], # audit_events table doesn't have id as the primary key instead the primary key is btree (id, created_at)
       award_emoji: %w[awardable_id user_id],
@@ -85,8 +91,11 @@ RSpec.describe 'Database schema',
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id trigger_id],
-      ci_build_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
+      # Table is unused and awaiting removal in a later milestone
+      ci_build_runtime_environments: %w[build_id partition_id runtime_environment_id runner_machine_id project_id],
+      p_ci_job_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
       p_ci_runner_machine_builds: %w[project_id],
+      ci_pending_builds: %w[runner_machine_id], # runner_machine_id has no FK: ci_runner_machines is gitlab_ci_cell_local, a different schema from gitlab_ci; cross-schema FKs are disallowed
       ci_runner_taggings: %w[runner_id organization_id], # The organization_id value is meant to populate the partitioned table, no other usage.
       ci_runner_taggings_instance_type: %w[tag_id organization_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings.
       ci_runner_taggings_group_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings.
@@ -112,6 +121,7 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
+      duo_workflows_workflows: %w[trigger_flow_trigger_id], # No FK to preserve attribution when the trigger is deleted
       epics: %w[updated_by_id last_edited_by_id state_id],
       events: %w[target_id],
       forked_project_links: %w[forked_from_project_id],
@@ -156,8 +166,7 @@ RSpec.describe 'Database schema',
       packages_nuget_symbol_states: %w[project_id],
       packages_package_file_states: %w[project_id],
       p_ci_build_needs: %w[project_id],
-      p_ci_builds: %w[erased_by_id execution_config_id scoped_user_id],
-      p_ci_builds_metadata: %w[project_id],
+      p_ci_builds: %w[erased_by_id scoped_user_id],
       p_ci_build_trace_metadata: %w[project_id],
       p_batched_git_ref_updates_deletions: %w[project_id partition_id],
       p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
@@ -172,6 +181,7 @@ RSpec.describe 'Database schema',
       p_ci_pipelines_config: %w[partition_id project_id],
       p_ci_stages: %w[project_id],
       p_duo_workflows_checkpoint_blobs: %w[project_id namespace_id],
+      p_duo_workflows_checkpoint_headers: %w[project_id namespace_id],
       p_duo_workflows_checkpoints: %w[project_id namespace_id],
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
@@ -230,7 +240,7 @@ RSpec.describe 'Database schema',
       vulnerability_flags: %w[project_id workflow_id],
       vulnerability_historical_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_identifiers: %w[external_id partition_id],
-      vulnerability_occurrences: %w[security_project_tracked_context_id partition_id], # cannot be a foreign key yet
+      vulnerability_occurrences: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
@@ -289,6 +299,7 @@ RSpec.describe 'Database schema',
       virtual_registries_packages_maven_local_upstreams: %w[local_group_id local_project_id], # local upstreams need asynchronous deletion
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
+      work_item_positions: %w[relative_positioning_namespace_id], # denormalized positioning root; row lifecycle is tied to work_item_id (cascade), so no FK needed
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
       p_knowledge_graph_replicas: %w[namespace_id],
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
@@ -328,11 +339,11 @@ RSpec.describe 'Database schema',
       group_type_ci_runners: 17,
       instance_type_ci_runners: 17,
       issues: 35,
-      members: 19,
+      members: 20, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235857
       merge_requests: 29,
       namespaces: 23,
-      notes: 16,
-      p_ci_builds: 24,
+      notes: 17, # Increased by one for the temporary cleanup BBM index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238033
+      p_ci_builds: 23,
       p_ci_pipelines: 25,
       packages_package_files: 16,
       packages_packages: 28,
@@ -594,6 +605,8 @@ RSpec.describe 'Database schema',
       {
         "Ai::Conversation::Message" => %w[extras error_details],
         "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+        "Ai::DuoWorkflows::CheckpointHeader" => %w[checkpoint metadata], # slim langgraph checkpoint header; schema is externally defined
+
         "ApplicationSetting" => %w[repository_storages_weighted oauth_provider rate_limits_unauthenticated_git_http],
         "AlertManagement::Alert" => %w[payload],
         "AlertManagement::HttpIntegration" => %w[payload_example],

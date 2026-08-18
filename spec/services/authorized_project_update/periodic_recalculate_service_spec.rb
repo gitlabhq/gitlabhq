@@ -8,7 +8,7 @@ RSpec.describe AuthorizedProjectUpdate::PeriodicRecalculateService, feature_cate
   describe '#execute' do
     let(:batch_size) { 2 }
 
-    let_it_be(:users) { create_list(:user, 6) }
+    let_it_be(:users) { create_list(:user, 5) }
 
     before do
       stub_const('AuthorizedProjectUpdate::PeriodicRecalculateService::BATCH_SIZE', batch_size)

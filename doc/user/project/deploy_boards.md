@@ -28,8 +28,8 @@ progress and status of a rollout, pod by pod, in the workflow they already use
 without any need to access Kubernetes.
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-> [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
+> [Epic 2493 exists](https://gitlab.com/groups/gitlab-org/-/work_items/2493)
 > to add this functionality to the [agent](../clusters/agent/_index.md).
 
 If you have a Kubernetes cluster, you can Auto Deploy applications to production

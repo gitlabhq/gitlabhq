@@ -7,7 +7,7 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) do
-    create(:project, :repository, :public, creator: user, namespace: user.namespace)
+    create(:project, :public, creator: user, namespace: user.namespace)
   end
 
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }

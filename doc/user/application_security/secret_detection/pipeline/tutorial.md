@@ -162,7 +162,7 @@ status in the vulnerability report:
    - Details about the secret type.
    - Remediation guidance.
    - Information about when and where the vulnerability was detected.
-1. Select **Edit vulnerability** > **Change status**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
    1. From the **Status** dropdown list, select **Dismiss as... Used in tests**.
    1. Add a comment that explains why you added the fake secret to your project.
    1. Select **Change status**.

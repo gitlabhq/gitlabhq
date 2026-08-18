@@ -207,12 +207,6 @@ After a session ends, a window prompts the user to sign in again.
 
 ### Configure the Remember me option
 
-{{< history >}}
-
-- Enabling and disabling the **Remember me** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
-
-{{< /history >}}
-
 Users can select the **Remember me** checkbox on sign-in. Their session remains active for an indefinite
 period of time when accessed from that specific browser. Turn off this setting to expire sessions for
 security or compliance purposes. Turning off this setting ensures users' sessions expire after the
@@ -599,6 +593,39 @@ To set a lifetime for OAuth access tokens:
 You can also configure this setting by using the
 [application settings API](../../api/settings.md) with the `oauth_access_token_expires_in` attribute.
 
+### Turn off OAuth dynamic client registration
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248615) in GitLab 19.3.
+
+{{< /history >}}
+
+OAuth clients, such as MCP clients and AI tools, use OAuth dynamic client registration (DCR)
+to automatically register applications by sending a request to `POST /oauth/register`.
+By default, DCR is enabled.
+
+When you turn off DCR, the following outcomes apply to OAuth clients:
+
+- OAuth clients cannot register applications automatically.
+  Clients must use a pre-registered OAuth application instead.
+- GitLab deletes dynamically registered OAuth applications and revokes their access tokens and grants.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn off OAuth dynamic client registration, use the
+[application settings API](../../api/settings.md) to set the
+`dynamic_client_registration_enabled` attribute to `false`.
+
 ## Disable user profile name changes
 
 {{< details >}}
@@ -665,12 +692,6 @@ By default, new users can create top-level groups. GitLab administrators can pre
 > can still create top-level groups.
 
 ## Prevent non-members from creating projects and groups
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426279) in GitLab 16.8.
-
-{{< /history >}}
 
 By default, users with the Guest role can create projects and groups.
 GitLab administrators can prevent this behavior:
@@ -739,12 +760,6 @@ By default, newly created users have a public profile. GitLab administrators can
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a feature flag](../feature_flags/_index.md) named `deleting_account_disabled_for_users`. Enabled by default.
-
-{{< /history >}}
 
 By default, users can delete their own accounts. GitLab administrators can prevent
 users from deleting their own accounts:

@@ -40,8 +40,7 @@ module QA
       end
 
       context 'with a new file' do
-        context 'when the file is an image',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
+        context 'when the file is an image' do
           let(:file_name) { 'dk.png' }
 
           it_behaves_like 'upload a file'

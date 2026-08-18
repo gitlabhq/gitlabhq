@@ -5,6 +5,7 @@
 <script>
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'ClearIconButton',
@@ -14,6 +15,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glListenersMixin],
   props: {
     title: {
       type: String,
@@ -41,6 +43,6 @@ export default {
     icon="clear"
     :title="title"
     :aria-label="title"
-    v-on="$listeners"
+    v-on="glListeners()"
   />
 </template>

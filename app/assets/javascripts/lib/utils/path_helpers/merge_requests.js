@@ -269,6 +269,32 @@ export const discussionsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath
 /**
  * Generates the Rails route:
  *
+ * - href: `/:project_full_path/-/merge_requests/:id/rebase(.:format)`
+ * - Path helper: `rebase_project_merge_request_path`
+ * - URL helper: `rebase_project_merge_request_url`
+ * - controller#action: `projects/merge_requests#rebase`
+ *
+ * @param {string} projectFullPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rebaseProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
+  const _rebaseOrganizationNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"rebase"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
+  const _rebaseNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"rebase"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+
+  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+
+  if (hasOrganizationScopedPaths()) {
+    return _rebaseOrganizationNamespaceProjectMergeRequestPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  }
+
+  return _rebaseNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/:project_full_path/-/merge_requests/:id/test_reports(.:format)`
  * - Path helper: `test_reports_project_merge_request_path`
  * - URL helper: `test_reports_project_merge_request_url`

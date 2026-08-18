@@ -191,6 +191,198 @@ RSpec.describe QA::Page::Base do
     end
   end
 
+  describe 'reads interrupted by a swapped document' do
+    subject(:page) { Class.new(described_class).new }
+
+    let(:swapped_document_error) do
+      Selenium::WebDriver::Error::UnknownError.new(
+        'unknown error: unhandled inspector error: {"code":-32000,' \
+          '"message":"Node with given id does not belong to the document"}'
+      )
+    end
+
+    let(:max_attempts) { described_class::SWAPPED_DOCUMENT_MAX_ATTEMPTS }
+
+    before do
+      allow(page).to receive(:wait_for_requests)
+      # The retry sleeps between attempts, which would only slow this suite down
+      allow(page).to receive(:sleep)
+    end
+
+    describe '#has_element?' do
+      it 'retries until the incoming document answers' do
+        attempts = 0
+        allow(page).to receive(:has_css?) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          true
+        end
+
+        expect(page.has_element?(:foo, wait: 0)).to be(true)
+        expect(attempts).to eq(max_attempts)
+      end
+
+      it 'gives up once the attempts are exhausted' do
+        allow(page).to receive(:has_css?).and_raise(swapped_document_error)
+
+        expect { page.has_element?(:foo, wait: 0) }.to raise_error(swapped_document_error)
+        expect(page).to have_received(:has_css?).exactly(max_attempts).times
+      end
+
+      it 'does not retry an UnknownError raised for any other reason' do
+        crash = Selenium::WebDriver::Error::UnknownError.new(
+          'unknown error: session deleted because of page crash'
+        )
+        allow(page).to receive(:has_css?).and_raise(crash)
+
+        expect { page.has_element?(:foo, wait: 0) }.to raise_error(crash)
+        expect(page).to have_received(:has_css?).once
+      end
+
+      it 'still converts Capybara::ElementNotFound to false without retrying' do
+        allow(page).to receive(:has_css?).and_raise(Capybara::ElementNotFound)
+
+        expect(page.has_element?(:foo, wait: 0)).to be(false)
+        expect(page).to have_received(:has_css?).once
+      end
+    end
+
+    describe '#has_no_element?' do
+      it 'retries' do
+        attempts = 0
+        allow(page).to receive(:has_no_css?) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          true
+        end
+
+        expect(page.has_no_element?(:foo, wait: 0)).to be(true)
+        expect(attempts).to eq(max_attempts)
+      end
+    end
+
+    describe '#find_element' do
+      let(:element) { instance_double(Capybara::Node::Element) }
+
+      it 'retries' do
+        attempts = 0
+        allow(page).to receive(:find) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          element
+        end
+
+        expect(page.find_element(:foo)).to be(element)
+        expect(attempts).to eq(max_attempts)
+      end
+    end
+
+    describe '#all_elements' do
+      let(:element) { instance_double(Capybara::Node::Element) }
+
+      it 'retries' do
+        attempts = 0
+        allow(page).to receive(:all) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          [element]
+        end
+
+        expect(page.all_elements(:foo, count: 1)).to eq([element])
+        expect(attempts).to eq(max_attempts)
+      end
+    end
+
+    # #has_text? and #has_no_text? read through Capybara's session rather than the page object,
+    # so the transient error has to be raised from there
+    describe '#has_text?' do
+      let(:capybara_session) { double('Capybara::Session') }
+
+      before do
+        allow(page).to receive(:page).and_return(capybara_session)
+      end
+
+      it 'retries' do
+        attempts = 0
+        allow(capybara_session).to receive(:has_text?) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          true
+        end
+
+        expect(page.has_text?('some text')).to be(true)
+        expect(attempts).to eq(max_attempts)
+      end
+    end
+
+    describe '#has_no_text?' do
+      let(:capybara_session) { double('Capybara::Session') }
+
+      before do
+        allow(page).to receive(:page).and_return(capybara_session)
+      end
+
+      it 'retries' do
+        attempts = 0
+        allow(capybara_session).to receive(:has_no_text?) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          true
+        end
+
+        expect(page.has_no_text?('some text')).to be(true)
+        expect(attempts).to eq(max_attempts)
+      end
+    end
+
+    describe '#wait_for_gitlab_to_respond' do
+      let(:capybara_session) { double('Capybara::Session') }
+
+      before do
+        allow(Capybara).to receive(:page).and_return(capybara_session)
+      end
+
+      it 'retries' do
+        attempts = 0
+        allow(capybara_session).to receive(:has_no_text?) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          true
+        end
+
+        page.send(:wait_for_gitlab_to_respond)
+
+        expect(attempts).to eq(max_attempts)
+      end
+    end
+
+    describe '#click_element' do
+      let(:element) { instance_double(Capybara::Node::Element, click: nil) }
+
+      it 'retries the lookup without repeating the click' do
+        attempts = 0
+        allow(page).to receive(:find) do
+          attempts += 1
+          raise swapped_document_error if attempts < max_attempts
+
+          element
+        end
+
+        page.click_element(:foo)
+
+        expect(attempts).to eq(max_attempts)
+        expect(element).to have_received(:click).once
+      end
+    end
+  end
+
   describe 'elements' do
     subject do
       Class.new(described_class) do

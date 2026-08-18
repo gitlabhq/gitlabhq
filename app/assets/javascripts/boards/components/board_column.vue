@@ -70,11 +70,11 @@ export default {
   emits: [
     'cannot-find-active-item',
     'drag-start',
-    'dragStop',
+    'drag-stop',
     'focus-adjacent',
     'highlight-list',
-    'setActiveList',
-    'setFilters',
+    'set-active-list',
+    'set-filters',
   ],
   data() {
     return {
@@ -141,8 +141,8 @@ export default {
           :list="list"
           :filter-params="filters"
           :board-id="boardId"
-          @toggleNewForm="toggleNewForm"
-          @setActiveList="$emit('setActiveList', $event)"
+          @toggle-new-form="toggleNewForm"
+          @set-active-list="$emit('set-active-list', $event)"
         />
         <board-list
           ref="board-list"
@@ -153,10 +153,10 @@ export default {
           :column-index="columnIndex"
           :dragged-item-id="draggedItemId"
           :focused="focused"
-          @dragStop="$emit('dragStop')"
+          @drag-stop="$emit('drag-stop')"
           @drag-start="$emit('drag-start', $event)"
-          @toggleNewForm="toggleNewForm"
-          @setFilters="$emit('setFilters', $event)"
+          @toggle-new-form="toggleNewForm"
+          @set-filters="$emit('set-filters', $event)"
           @cannot-find-active-item="$emit('cannot-find-active-item')"
           @focus-adjacent="$emit('focus-adjacent', $event)"
         />
@@ -166,7 +166,7 @@ export default {
       v-if="showAddNewListBetween"
       class="gl-absolute gl-bottom-0 gl-right-0 gl-top-0 gl-z-1 gl-translate-x-4"
     >
-      <board-add-new-column-between @setAddColumnFormVisibility="setShowNewListAfter" />
+      <board-add-new-column-between @set-add-column-form-visibility="setShowNewListAfter" />
     </div>
     <div v-if="showNewListForm" class="gl-pl-2 gl-pr-3">
       <board-add-new-column
@@ -174,7 +174,7 @@ export default {
         :list-query-variables="listQueryVariablesWithCreateNewPosition"
         :lists="lists"
         :position="createNewPosition"
-        @setAddColumnFormVisibility="setShowNewListAfter"
+        @set-add-column-form-visibility="setShowNewListAfter"
         @highlight-list="$emit('highlight-list', $event)"
       />
     </div>

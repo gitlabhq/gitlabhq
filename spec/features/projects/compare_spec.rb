@@ -101,8 +101,6 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
 
       before do
         visit project_compare_path(project, from: from, to: to)
-
-        wait_for_requests
       end
 
       it_behaves_like 'Rapid Diffs application'

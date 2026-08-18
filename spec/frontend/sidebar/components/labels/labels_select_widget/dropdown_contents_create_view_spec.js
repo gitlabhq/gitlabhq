@@ -44,8 +44,8 @@ describe('DropdownContentsCreateView', () => {
   let wrapper;
 
   const findSidebarColorPicker = () => wrapper.findComponent(SidebarColorPicker);
-  const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
-  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
+  const findCreateButton = () => wrapper.findComponent('[data-testid="create-button"]');
+  const findCancelButton = () => wrapper.findComponent('[data-testid="cancel-button"]');
   const findLabelTitleInput = () => wrapper.findComponent(GlFormInput);
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);

@@ -21,6 +21,7 @@ import { isObject } from 'lodash-es';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
 import { placeholderImage } from '~/lazy_loader';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'UserAvatarImage',
@@ -28,6 +29,7 @@ export default {
     GlTooltip,
     GlAvatar,
   },
+  mixins: [glSlotsMixin],
   props: {
     lazy: {
       type: Boolean,
@@ -110,7 +112,7 @@ export default {
       data-testid="user-avatar-image"
     /><!-- this comment eliminates a `whitespace` node, and thus a layout bug: https://gitlab.com/gitlab-org/gitlab/-/issues/507713
     --><gl-tooltip
-      v-if="tooltipText || $scopedSlots.default"
+      v-if="tooltipText || glSlots().default"
       :target="() => $refs.userAvatar"
       :placement="tooltipPlacement"
       boundary="window"

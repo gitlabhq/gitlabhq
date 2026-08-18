@@ -1,0 +1,10 @@
+---
+name: incremental_database_health_defer_delay
+description: Apply exponential backoff, capped at 30 minutes, to the re-enqueue delay of Sidekiq jobs repeatedly deferred by the database health check, instead of re-enqueuing at the worker's fixed delay_by interval.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536042
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248670
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/608150
+milestone: '19.3'
+type: gitlab_com_derisk
+group: group::database health
+default_enabled: false

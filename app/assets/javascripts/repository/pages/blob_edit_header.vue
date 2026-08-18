@@ -53,7 +53,6 @@ export default {
   ],
   data() {
     return {
-      isCommitChangeModalOpen: false,
       fileContent: null,
       filePath: null,
       originalFilePath: null,

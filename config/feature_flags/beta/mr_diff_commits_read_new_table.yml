@@ -1,0 +1,13 @@
+---
+name: mr_diff_commits_read_new_table
+description: |
+  Shapes merge request diff commit queries to support only the new table structure, dropping support for the
+  legacy structure. Correctness depends on the BackfillMergeRequestDiffCommitsToPartitioned background
+  migration having finished.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600540
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237028
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600673
+milestone: '19.3'
+group: group::code review
+type: beta
+default_enabled: false

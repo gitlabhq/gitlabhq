@@ -13,13 +13,6 @@ description: External status checks integrate with third-party tools to display 
 
 {{< /details >}}
 
-{{< history >}}
-
-- `pending` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
-- Timeout interval of two minutes for `pending` status checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388725) in GitLab 16.6.
-
-{{< /history >}}
-
 Status checks are API calls to external systems that request the status of an external requirement.
 
 You can create a status check that sends merge request data to third-party tools.
@@ -49,14 +42,6 @@ For more information about use cases, feature discovery, and development timelin
 see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
 ## Block merges of merge requests unless all status checks have passed
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372340) in GitLab 15.8.
-- Enabled on GitLab Self-Managed and feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111492) in GitLab 15.9.
-
-{{< /history >}}
 
 By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail:
 
@@ -188,14 +173,6 @@ To complete the deletion of the status check you must select the
 the status check and it **is not** recoverable.
 
 ## Status checks widget
-
-{{< history >}}
-
-- UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
-- Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
-- Widget [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111763) to poll for updates when there are pending status checks in GitLab 15.11.
-
-{{< /history >}}
 
 The status checks widget displays in merge requests and displays the following statuses:
 

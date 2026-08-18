@@ -1,7 +1,7 @@
 ---
 description: Tracks the view of a design detail
 action: view_design
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - design_management
 milestone: '13.5'

@@ -159,7 +159,7 @@ The layout organizes the data among the nav in containers properly [styled](#css
 The data file describes the structure of the navigation for the applicable project.
 It is stored at <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml>.
 
-Each entry comprises of three main components:
+Each entry comprises three main components:
 
 - `title`
 - `url`
@@ -241,6 +241,7 @@ The [global nav URL](#urls) has a different prefix depending on the documentatio
 | <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc> | `operator`  | `https://docs.gitlab.com/operator/` |
 | <https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs>                 | `runner/`   | `https://docs.gitlab.com/runner/` |
 | <https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source>                    | `cli/`      | `https://docs.gitlab.com/cli/` |
+| <https://gitlab.com/gitlab-org/ops/artifact-registry/-/tree/main/docs>                    | `artifact-registry/`      | `https://docs.gitlab.com/artifact-registry/` |
 
 ### CSS classes
 

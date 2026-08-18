@@ -18,7 +18,9 @@ import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
 import { entries } from './rspack/entries.js';
 import GraphqlKnownOperationsPlugin from './plugins/graphql_known_operations_plugin.js';
+import Vue3MigrationManifestPlugin from './plugins/vue3_migration_manifest_plugin.js';
 import { buildLoaderRules } from './rspack/loader_rules.js';
+import { slimManifest } from './rspack/manifest_plugin.js';
 import {
   DEVTOOL,
   HASHED_CHUNKS,
@@ -27,6 +29,11 @@ import {
   RSDOCTOR,
   RSDOCTOR_LEAN,
 } from './rspack/settings.js';
+import vue from './rspack/vue.js';
+import {
+  vue3InfectionResolveRegExp,
+  createVue3InfectionResolver,
+} from './rspack/vue3_infection_resolve_plugin.js';
 import {
   IS_EE,
   IS_JH,
@@ -59,8 +66,15 @@ const replaceWithEmptyComponent = (pattern) =>
   });
 
 const plugins = [
+  new vue.VueLoaderPlugin(),
+  new rspack.NormalModuleReplacementPlugin(
+    vue3InfectionResolveRegExp,
+    createVue3InfectionResolver(),
+  ),
+  slimManifest(),
   new rspack.CopyRspackPlugin({ patterns: copyFilesPatterns }),
   new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
+  new Vue3MigrationManifestPlugin({ filename: 'vue3_migration.json' }),
   new rspack.ProvidePlugin({
     $: 'jquery',
     jQuery: 'jquery',
@@ -129,7 +143,12 @@ export default {
     fallback: { fs: false, path: false, 'graphql-ws': false },
   },
   module: {
-    rules: buildLoaderRules(),
+    rules: [
+      ...vue.infectionRules,
+      ...buildLoaderRules({
+        vueLoaderOptions: { ...vue.vueRule.options, __loaderModule: vue.VUE_LOADER_MODULE },
+      }),
+    ].filter(Boolean),
   },
   optimization: {
     runtimeChunk: 'single',
@@ -143,9 +162,6 @@ export default {
       automaticNameDelimiter: '-',
       cacheGroups,
     },
-  },
-  experiments: {
-    css: false,
   },
   node: {
     __dirname: 'mock',
@@ -190,7 +206,7 @@ export default {
         buildDependencies: [configPath],
         storage: {
           type: 'filesystem',
-          directory: path.join(ROOT_PATH, 'tmp/cache/rspack'),
+          location: path.join(ROOT_PATH, 'tmp/cache/rspack'),
         },
       },
   stats: {

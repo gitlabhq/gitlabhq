@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - media' do
   include RichTextEditorHelpers
 
-  describe 'media elements bubble menu' do
+  describe 'media elements bubble menu', feature_category: :markdown do
     before do
       switch_to_content_editor
 
@@ -25,7 +25,7 @@ RSpec.shared_examples 'rich text editor - media' do
     end
   end
 
-  describe 'resizing images' do
+  describe 'resizing images', feature_category: :markdown do
     it 'renders correctly with an image as initial content after image is resized' do
       page.driver.browser.manage.window.resize_to(1280, 720)
       click_attachment_button

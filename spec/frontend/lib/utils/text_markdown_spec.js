@@ -661,6 +661,86 @@ describe('init markdown', () => {
       });
     });
 
+    describe('Tab / Shift+Tab indent and outdent via keypressNoteText', () => {
+      beforeAll(() => {
+        const $textArea = $(textArea);
+        $textArea.on('keydown', keypressNoteText);
+      });
+
+      afterAll(() => {
+        const $textArea = $(textArea);
+        $textArea.off('keydown', keypressNoteText);
+      });
+
+      describe('when text is selected', () => {
+        describe('when Tab is pressed', () => {
+          it('indents by delegating to indentLines', () => {
+            const text = 'line one\nline two';
+            textArea.value = text;
+            textArea.setSelectionRange(0, text.length);
+
+            const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', cancelable: true });
+            textArea.dispatchEvent(tabEvent);
+
+            expect(textArea.value).toBe('  line one\n  line two');
+            expect(tabEvent.defaultPrevented).toBe(true);
+          });
+        });
+
+        describe('when Shift+Tab is pressed', () => {
+          it('outdents by delegating to outdentLines', () => {
+            const text = '  line one\n  line two';
+            textArea.value = text;
+            textArea.setSelectionRange(0, text.length);
+
+            const shiftTabEvent = new KeyboardEvent('keydown', {
+              key: 'Tab',
+              shiftKey: true,
+              cancelable: true,
+            });
+            textArea.dispatchEvent(shiftTabEvent);
+
+            expect(textArea.value).toBe('line one\nline two');
+            expect(shiftTabEvent.defaultPrevented).toBe(true);
+          });
+        });
+      });
+
+      describe('when no text is selected', () => {
+        describe('when Tab is pressed', () => {
+          it('does not indent and does not prevent default', () => {
+            const text = 'line one\nline two';
+            textArea.value = text;
+            textArea.setSelectionRange(4, 4);
+
+            const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', cancelable: true });
+            textArea.dispatchEvent(tabEvent);
+
+            expect(textArea.value).toBe(text);
+            expect(tabEvent.defaultPrevented).toBe(false);
+          });
+        });
+
+        describe('when Shift+Tab is pressed', () => {
+          it('does not outdent and does not prevent default', () => {
+            const text = '  line one\n  line two';
+            textArea.value = text;
+            textArea.setSelectionRange(2, 2);
+
+            const shiftTabEvent = new KeyboardEvent('keydown', {
+              key: 'Tab',
+              shiftKey: true,
+              cancelable: true,
+            });
+            textArea.dispatchEvent(shiftTabEvent);
+
+            expect(textArea.value).toBe(text);
+            expect(shiftTabEvent.defaultPrevented).toBe(false);
+          });
+        });
+      });
+    });
+
     describe('with selection', () => {
       let text = 'initial selected value';
       let selected = 'selected';

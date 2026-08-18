@@ -670,6 +670,75 @@ RSpec.describe Issue, feature_category: :team_planning do
       expect(project.issues.order_by_relative_position)
         .to match [issue3, issue4, issue1, issue2]
     end
+
+    # Reads come from `work_item_positions.relative_position` (step 5 of the
+    # work_item_positions cutover, see
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/594236). The forward
+    # trigger populates `work_item_positions` when `issues.relative_position`
+    # is written, so ordering must reflect the value stored on the new table.
+    it 'left-joins work_item_positions and orders by its relative_position' do
+      sql = project.issues.order_by_relative_position.to_sql
+
+      expect(sql).to include('LEFT OUTER JOIN "work_item_positions"')
+      expect(sql).to include('ORDER BY "work_item_positions"."relative_position" ASC NULLS LAST')
+    end
+
+    it 'reflects updates that only landed in work_item_positions' do
+      # Simulate the future write path: bypass the issues column entirely and
+      # update only the new table. With reads on `work_item_positions`, the
+      # ordering must follow the new value.
+      issue4.work_item_position.update_column(:relative_position, -300)
+
+      expect(project.issues.order_by_relative_position)
+        .to match [issue4, issue3, issue1, issue2]
+    end
+
+    context 'when read_relative_positions_from_work_item_positions is disabled' do
+      before do
+        stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+      end
+
+      it 'orders by issues.relative_position without joining work_item_positions' do
+        sql = project.issues.order_by_relative_position.to_sql
+
+        expect(sql).not_to include('work_item_positions')
+        expect(sql).to include('ORDER BY "issues"."relative_position" ASC NULLS LAST')
+      end
+
+      it 'still returns the ordered list' do
+        expect(project.issues.order_by_relative_position)
+          .to match [issue3, issue4, issue1, issue2]
+      end
+    end
+  end
+
+  describe '.with_null_relative_position / .with_non_null_relative_position' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:positioned)   { create(:issue, project: project, relative_position: 10) }
+    let_it_be(:unpositioned) { create(:issue, project: project, relative_position: nil) }
+
+    it 'returns issues without a paired work_item_positions row as null', :aggregate_failures do
+      expect(described_class.with_null_relative_position).to include(unpositioned)
+      expect(described_class.with_null_relative_position).not_to include(positioned)
+    end
+
+    it 'returns issues with a populated work_item_positions row as non-null', :aggregate_failures do
+      expect(described_class.with_non_null_relative_position).to include(positioned)
+      expect(described_class.with_non_null_relative_position).not_to include(unpositioned)
+    end
+
+    context 'when read_relative_positions_from_work_item_positions is disabled' do
+      before do
+        stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+      end
+
+      it 'filters on issues.relative_position instead of work_item_positions', :aggregate_failures do
+        expect(described_class.with_null_relative_position).to include(unpositioned)
+        expect(described_class.with_null_relative_position).not_to include(positioned)
+        expect(described_class.with_non_null_relative_position).to include(positioned)
+        expect(described_class.with_null_relative_position.to_sql).not_to include('work_item_positions')
+      end
+    end
   end
 
   context 'order by escalation status' do
@@ -1063,7 +1132,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     subject { issue.can_move?(user) }
 
     context 'user is not a member of project issue belongs to' do
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'user is reporter in project issue belongs to' do
@@ -1073,12 +1142,12 @@ RSpec.describe Issue, feature_category: :team_planning do
         reusable_project.add_reporter(user)
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
 
       context 'issue not persisted' do
         let(:issue) { build(:issue, project: reusable_project) }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
 
       context 'checking destination project also' do
@@ -1091,7 +1160,7 @@ RSpec.describe Issue, feature_category: :team_planning do
             to_project.add_reporter(user)
           end
 
-          it { is_expected.to eq true }
+          it { is_expected.to be true }
         end
 
         context 'destination project not allowed' do
@@ -1099,7 +1168,7 @@ RSpec.describe Issue, feature_category: :team_planning do
             to_project.add_guest(user)
           end
 
-          it { is_expected.to eq false }
+          it { is_expected.to be false }
         end
       end
     end
@@ -1125,14 +1194,14 @@ RSpec.describe Issue, feature_category: :team_planning do
     subject { issue.duplicated? }
 
     context 'issue not duplicated' do
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'issue already duplicated' do
       let(:duplicated_to_issue) { create(:issue, project: reusable_project) }
       let(:issue) { create(:issue, project: reusable_project, duplicated_to: duplicated_to_issue) }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
   end
 
@@ -1142,14 +1211,14 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when issue belongs to a group' do
       let(:issue) { build_stubbed(:issue, :group_level, namespace: build_stubbed(:group)) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when issue belongs to a project' do
       let(:issue) { build_stubbed(:issue, project: reusable_project) }
 
       context 'when autoclose_referenced_issues is enabled for the project' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when autoclose_referenced_issues is disabled for the project' do
@@ -1157,7 +1226,7 @@ RSpec.describe Issue, feature_category: :team_planning do
           issue.project.update!(autoclose_referenced_issues: false)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -1210,6 +1279,31 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
       end
     end
+
+    context 'with current_user given' do
+      subject(:issue) { create(:issue) }
+
+      let(:user) { build_stubbed(:user, username: 'jane_doe') }
+
+      before do
+        subject.project.project_setting.update!(issue_branch_template: '%{branch_creator}-%{id}')
+      end
+
+      it 'threads current_user through to #to_branch_name' do
+        allow(repository).to receive(:branch_exists?).and_return(false)
+
+        expect(subject.suggested_branch_name(current_user: user)).to eq(subject.to_branch_name(current_user: user))
+      end
+
+      it 'threads current_user through when de-duplicating the suggested name' do
+        allow(repository).to receive(:branch_exists?).and_return(true)
+        allow(repository).to receive(:branch_exists?)
+          .with(/#{subject.to_branch_name(current_user: user)}-\d/).and_return(false)
+
+        expect(subject.suggested_branch_name(current_user: user))
+          .to eq("#{subject.to_branch_name(current_user: user)}-2")
+      end
+    end
   end
 
   it_behaves_like 'a time trackable' do
@@ -1257,6 +1351,36 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       expect(described_class.to_branch_name(123, 'issue title', project: project)).to eq('feature-123-issue-title')
     end
+
+    context 'with %{branch_creator} in the issue branch template' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { create(:user, username: 'jane.doe_1') }
+
+      before do
+        project.project_setting.update!(issue_branch_template: 'feature-%{id}-%{branch_creator}-%{title}')
+      end
+
+      it 'substitutes it with the parameterized username of the given current_user' do
+        branch_name = described_class.to_branch_name(123, 'issue title', project: project, current_user: user)
+
+        expect(branch_name).to eq('feature-123-jane-doe_1-issue-title')
+      end
+
+      it 'substitutes it with an empty string when no current_user is given' do
+        branch_name = described_class.to_branch_name(123, 'issue title', project: project)
+
+        expect(branch_name).to eq('feature-123--issue-title')
+        expect(branch_name).not_to include('branch_creator')
+      end
+    end
+
+    it 'does not include the branch creator in the default branch name when no template is set' do
+      user = build_stubbed(:user, username: 'jane_doe')
+
+      branch_name = described_class.to_branch_name(123, 'issue title', current_user: user)
+
+      expect(branch_name).to eq('123-issue-title')
+    end
   end
 
   describe '#to_branch_name' do
@@ -1269,6 +1393,20 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'returns a generic branch name if confidential' do
       issue.confidential = true
       expect(issue.to_branch_name).to eq('123-confidential-issue')
+    end
+
+    it 'ignores current_user when the issue is confidential' do
+      issue.confidential = true
+      user = build_stubbed(:user, username: 'jane_doe')
+
+      expect(issue.to_branch_name(current_user: user)).to eq('123-confidential-issue')
+    end
+
+    it 'substitutes %{branch_creator} when the project template references it' do
+      issue.project.project_setting.update!(issue_branch_template: '%{branch_creator}-%{id}')
+      user = build_stubbed(:user, username: 'jane_doe')
+
+      expect(issue.to_branch_name(current_user: user)).to eq('jane_doe-123')
     end
   end
 
@@ -1388,14 +1526,14 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     context 'when the `allow_possible_spam` application setting is turned off' do
       context 'when the issue is private' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
 
         context 'when the user is the support bot' do
           before do
             allow(issue.author).to receive(:support_bot?).and_return(true)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
       end
 
@@ -1404,7 +1542,7 @@ RSpec.describe Issue, feature_category: :team_planning do
           allow(issue).to receive(:publicly_visible?).and_return(true)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
 
@@ -1413,7 +1551,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         stub_application_setting(allow_possible_spam: true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -1556,7 +1694,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     it 'is not blocked for repositioning by default' do
-      expect(issue1.blocked_for_repositioning?).to eq(false)
+      expect(issue1.blocked_for_repositioning?).to be(false)
     end
 
     context 'when block_issue_repositioning flag is enabled for group' do
@@ -1565,7 +1703,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       it 'is blocked for repositioning' do
-        expect(issue1.blocked_for_repositioning?).to eq(true)
+        expect(issue1.blocked_for_repositioning?).to be(true)
       end
 
       it 'does not move issues with null position' do
@@ -1596,39 +1734,68 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(scope).to include(project_issue, subgroup_project_issue)
         expect(scope).not_to include(other_group_issue)
       end
+
+      context 'when read_relative_positions_from_work_item_positions is enabled' do
+        it 'joins work_item_positions while keeping the namespace scope' do
+          sql = described_class.relative_positioning_query_base(project_issue).to_sql
+
+          expect(sql).to include('INNER JOIN "work_item_positions"')
+          expect(sql).to include('"issues"."namespace_id" IN')
+        end
+      end
+
+      context 'when read_relative_positions_from_work_item_positions is disabled' do
+        before do
+          stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+        end
+
+        it 'does not join work_item_positions' do
+          sql = described_class.relative_positioning_query_base(project_issue).to_sql
+
+          expect(sql).not_to include('work_item_positions')
+          expect(sql).to include('"issues"."namespace_id" IN')
+        end
+
+        it 'still scopes to the root namespace hierarchy' do
+          scope = described_class.relative_positioning_query_base(project_issue)
+
+          expect(scope).to include(project_issue, subgroup_project_issue)
+          expect(scope).not_to include(other_group_issue)
+        end
+      end
+    end
+
+    describe '.relative_positioning_column' do
+      let_it_be(:issue) { create(:issue, project: project, relative_position: 100) }
+
+      context 'when read_relative_positions_from_work_item_positions is enabled' do
+        it 'resolves to the joined work_item_positions.relative_position column' do
+          expect(described_class.relative_positioning_column(issue))
+            .to eq(WorkItems::Position.arel_table[:relative_position])
+        end
+      end
+
+      context 'when read_relative_positions_from_work_item_positions is disabled' do
+        before do
+          stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+        end
+
+        it 'resolves to issues.relative_position' do
+          expect(described_class.relative_positioning_column(issue))
+            .to eq(described_class.arel_table[:relative_position])
+        end
+      end
+
+      it 'resolves to issues.relative_position when called without an object' do
+        stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+
+        expect(described_class.relative_positioning_column)
+          .to eq(described_class.arel_table[:relative_position])
+      end
     end
   end
 
   it_behaves_like 'versioned description'
-
-  describe "#previous_updated_at" do
-    let_it_be(:updated_at) { Time.zone.local(2012, 01, 06) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project, updated_at: updated_at) }
-
-    it 'returns updated_at value if updated_at did not change at all' do
-      allow(issue).to receive(:previous_changes).and_return({})
-
-      expect(issue.previous_updated_at).to eq(updated_at)
-    end
-
-    it 'returns updated_at value if `previous_changes` has nil value for `updated_at`' do
-      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => nil })
-
-      expect(issue.previous_updated_at).to eq(updated_at)
-    end
-
-    it 'returns updated_at value if previous updated_at value is not present' do
-      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [nil, Time.zone.local(2013, 02, 06)] })
-
-      expect(issue.previous_updated_at).to eq(updated_at)
-    end
-
-    it 'returns previous updated_at when present' do
-      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [Time.zone.local(2013, 02, 06), Time.zone.local(2013, 03, 06)] })
-
-      expect(issue.previous_updated_at).to eq(Time.zone.local(2013, 02, 06))
-    end
-  end
 
   describe '#design_collection' do
     it 'returns a design collection' do
@@ -1826,17 +1993,6 @@ RSpec.describe Issue, feature_category: :team_planning do
       specify do
         expect(issue.supports_move_and_clone?).to eq(supports_move_and_clone)
       end
-    end
-  end
-
-  describe '#email_participants_emails' do
-    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project) }
-
-    it 'returns a list of emails' do
-      participant1 = issue.issue_email_participants.create!(email: 'a@gitlab.com')
-      participant2 = issue.issue_email_participants.create!(email: 'b@gitlab.com')
-
-      expect(issue.email_participants_emails).to contain_exactly(participant1.email, participant2.email)
     end
   end
 
@@ -2231,41 +2387,41 @@ RSpec.describe Issue, feature_category: :team_planning do
     let(:issue) { build_stubbed(:issue, project: reusable_project) }
 
     it 'returns false when comparing with a non-ActiveRecord object' do
-      expect(issue == :some_symbol).to eq(false)
+      expect(issue == :some_symbol).to be(false)
     end
 
     it 'returns false when comparing with an unrelated ActiveRecord object' do
       user = build_stubbed(:user, id: issue.id)
 
-      expect(issue == user).to eq(false)
+      expect(issue == user).to be(false)
     end
 
     it 'returns false when issues have different ids' do
       other_issue = build_stubbed(:issue, project: reusable_project)
 
-      expect(issue == other_issue).to eq(false)
+      expect(issue == other_issue).to be(false)
     end
 
     it 'returns false when comparing different unpersisted issues' do
-      expect(build(:issue) == build(:issue)).to eq(false)
+      expect(build(:issue) == build(:issue)).to be(false)
     end
 
     it 'returns true when comparing the same unpersisted issue' do
       new_issue = build(:issue)
 
-      expect(new_issue == new_issue).to eq(true)
+      expect(new_issue == new_issue).to be(true)
     end
 
     it 'returns true when ids are the same' do
       other_issue_instance = build_stubbed(:issue, project: reusable_project, id: issue.id)
 
-      expect(issue == other_issue_instance).to eq(true)
+      expect(issue == other_issue_instance).to be(true)
     end
 
     it 'returns true when compared with subclass having the same id' do
       work_item = build_stubbed(:work_item, project: reusable_project, id: issue.id)
 
-      expect(issue == work_item).to eq(true)
+      expect(issue == work_item).to be(true)
     end
   end
 

@@ -72,7 +72,7 @@ You can't reserve the pool for a subset of users or isolate consumption to speci
 To limit how much individual users consume, use usage caps.
 
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
-The number of credits purchased for the year is divided in 12.
+The number of credits purchased for the year is divided by 12.
 
 For example, when you purchase a monthly commitment pool of 1,000 credits,
 you will have 1,000 credits available each month for the contract term.
@@ -119,7 +119,7 @@ GitLab Credits are consumed in the following order:
 
 1. Temporary evaluation credits are used first.
 1. Included credits are consumed by each user before any shared credits.
-1. Monthly Commitment Pool of credits are used after all included credits have been consumed.
+1. Monthly Commitment Pool of credits is used after all included credits have been consumed.
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
 
@@ -276,37 +276,41 @@ For premium models with optimized integration:
 
 | Model | Calls with one credit |
 |-------|------------------------|
+| `gpt-5.6-luna` | 8.0 |
 | `claude-4.5-haiku` | 6.7 |
+| `gemini-3.6-flash` <sup>1</sup> | 6.7 |
+| `gemini-3.7-flash` <sup>1</sup> | 6.7 |
 | `gpt-5-4-mini` | 6.7 |
-| `gpt-5.6-luna` <sup>2</sup> | 5.0 |
 | `gemini-3.5-flash` | 3.3 |
 | `gpt-5` | 3.3 |
 | `gpt-5-codex` | 3.3 |
-| `claude-sonnet-5` <sup>1</sup> | 3.2 |
-| `gpt-5.6-luna` <sup>3</sup> | 2.86 |
+| `claude-sonnet-5` <sup>2</sup> | 3.2 |
 | `gpt-5.2` | 2.5 |
 | `gpt-5.2-codex` | 2.5 |
 | `gpt-5.3-codex` | 2.5 |
+| `gpt-5.6-terra` <sup>3</sup> | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
 | `claude-sonnet-4.5` | 2.0 |
 | `claude-sonnet-4.6` | 2.0 |
-| `gpt-5.4` <sup>2</sup> | 2.0 |
-| `gpt-5.6-terra` <sup>2</sup> | 2.0 |
+| `gpt-5.4` <sup>3</sup> | 2.0 |
+| `gpt-5.6-terra` <sup>4</sup> | 1.43 |
 | `claude-opus-4.5` | 1.2 |
-| `gpt-5.4` <sup>3</sup> | 1.11 |
-| `gpt-5.6-terra` <sup>3</sup> | 1.11 |
+| `gpt-5.4` <sup>4</sup> | 1.11 |
 | `claude-opus-4.6` | 1.1 |
 | `claude-opus-4.7` | 1.1 |
 | `claude-opus-4.8` | 1.1 |
-| `gpt-5.5` <sup>2</sup> | 1.0 |
-| `gpt-5.6-sol` <sup>2</sup> | 1.0 |
+| `claude-opus-5` | 1.1 |
+| `gpt-5.5` <sup>3</sup> | 1.0 |
+| `gpt-5.6-sol` <sup>3</sup> | 1.0 |
 | `claude-fable-5` | 0.6 |
-| `gpt-5.5` <sup>3</sup> | 0.57 |
-| `gpt-5.6-sol` <sup>3</sup> | 0.57 |
+| `gpt-5.5` <sup>4</sup> | 0.57 |
+| `gpt-5.6-sol` <sup>4</sup> | 0.57 |
 
 **Footnotes**:
 
+1. Promotional pricing through December 31, 2026.
+   Afterwards, the rate changes to approximately 3.3 calls per credit.
 1. Promotional pricing through August 31, 2026.
    Afterwards, the rate changes to approximately 2.1 calls per credit.
 1. Short context window of up to 272,000 tokens.
@@ -496,21 +500,12 @@ and [instances](../administration/settings/visibility_and_access_controls.md#dis
 
 ### Usage caps
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19881) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `budget_caps_graphql_api`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/607551) in GitLab 19.3. Feature flag `budget_caps_graphql_api` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can set a monthly GitLab Credits cap at the subscription and user level to prevent
 unexpected overage charges. When credit consumption reaches the configured cap,
@@ -524,12 +519,17 @@ The following cap types are available:
 |---|---|---|---|
 | Subscription cap | All users on the subscription | On-Demand only | Customers Portal |
 | Flat user cap | Individual users (default limit) | All | GraphQL API |
-| Per-user override | Specific users (overrides the flat cap) | All | GraphQL API |
+| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | GraphQL API |
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
 all Agent Platform features (Duo Chat, Code Suggestions, Flows, and Agents)
-are suspended for all users on that subscription or instance. For user-level caps,
+are suspended for all users on that subscription or instance, and GitLab sends an email notification to billing account managers. For user-level caps,
 only the individual user who reached their cap is suspended.
+
+Flat user caps and per-user override caps apply to usage beyond a user's included allocation.
+While a user still has included credits, they can continue to consume their included credits
+even after their usage reaches the cap.
+The cap is enforced only after the user's included credits are exhausted.
 
 Users who have reached their cap are unable to access Agent Platform features
 until the cap is raised or the next billing period begins.
@@ -541,8 +541,27 @@ Caps are enforced using the most recent usage data available. Because data
 is not real time, limited additional GitLab Credits usage may occur before
 enforcement takes effect.
 
-When subscription on-demand usage reaches the configured cap, GitLab sends an
-email notification to billing account managers.
+Caps do not stop users from consuming their included GitLab Credits. Enforcement begins per user, and only after that user's included allocation is exhausted. Until then, the user retains full GitLab Duo Agent Platform access regardless of the cap value, including a cap of `0`.
+
+To stop all GitLab Credits consumption immediately, regardless of included
+balances, disable GitLab Duo for the affected users or namespace.
+
+How the cap value is applied then depends on the cap type:
+
+- A **subscription-level cap** applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
+- A **per-user cap** applies to a user's total usage, including their included credits. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+
+#### Examples
+
+For a subscription-level cap, consider a subscription that has 10 users, each with 100 included GitLab Credits. The billing account manager sets the subscription-level on-demand cap to `0`.
+
+- A user who has already used all 100 of their included credits is blocked from Agent Platform features immediately (on the next enforcement check), because any further usage would be on-demand.
+- A user who has only used 40 of their included credits can continue using Agent Platform features and consume their remaining 60 included credits. The `0` cap does not apply to them yet.
+
+For a per-user cap, consider a user that has 24 included GitLab Credits.
+
+- With a per-user cap of `50`, the user is blocked after 50 credits in total, 26 credits beyond their included allocation.
+- With a per-user cap of `10`, the user is blocked after 24 credits, when their included allocation is exhausted.
 
 #### Set a subscription-level usage cap
 
@@ -552,15 +571,16 @@ Prerequisites:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
-1. In the **On-demand Credit Cap** panel, turn on the **Monthly On-demand Credits cap** toggle.
+1. Select **Spend controls**.
+1. In the **On-demand credit cap** panel, turn on the **Set on-demand credit cap** toggle.
 1. Enter the maximum number of on-demand GitLab Credits allowed per billing period.
-1. Select **Save**.
+1. Select **Save Changes**.
 
 If the cap is set below the currently reported total on-demand usage
 for the current billing period, the cap is considered reached immediately on
 the next enforcement check.
 
-To disable the cap, turn off the **Monthly On-demand Credits cap** toggle. When disabled,
+To disable the cap, turn off the **Set on-demand credit cap** toggle. When disabled,
 no subscription-level on-demand GitLab Credits cap is enforced, and behavior falls back to
 existing billing behavior.
 
@@ -580,11 +600,16 @@ This column shows whether each user can access
 [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md) features
 or is blocked because they reached their credit cap.
 
+The **Usage control status** column displays the status **Blocked** only when GitLab enforces the cap against the user.
+GitLab enforces the cap after the user's included credits are exhausted.
+A user who has reached their cap but still has included credits has the status **Regular**,
+because they can continue to consume their included credits.
+
 The column displays one of the following statuses:
 
 | Status | Description |
 |--------|-------------|
-| **Regular** | The user has not reached their credit cap and can use GitLab Duo Agent Platform features. |
+| **Regular** | The user has not reached their credit cap, or has reached their cap but still has included credits, and can use GitLab Duo Agent Platform features. |
 | **Blocked - subscription cap reached** | The user reached the flat per-user cap set at the subscription level. |
 | **Blocked - user cap reached** | The user reached a per-user override cap set specifically for them. |
 

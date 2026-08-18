@@ -69,6 +69,7 @@ const initBrowserComponent = async (el, shouldSort) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'FileBrowserRoot',
     pinia,
     render(h) {
       return h(useMainContainer().isCompact ? FileBrowserDrawer : FileBrowser, {
@@ -77,7 +78,7 @@ const initBrowserComponent = async (el, shouldSort) => {
           linkedFilePath: useDiffsList().linkedFilePath,
         },
         on: {
-          clickFile(file) {
+          'click-file': (file) => {
             const diffsView = useDiffsView(pinia);
 
             if (diffsView.singleFileMode) {

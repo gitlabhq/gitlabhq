@@ -43,7 +43,7 @@ export default {
 <template>
   <gl-search-box-by-click
     v-model="searchTerm"
-    :placeholder="s__('Observability|Filter by group ID')"
+    :placeholder="s__('Observability|Filter by namespace ID')"
     class="gl-mb-4"
     @submit="onSubmit"
     @clear="onClear"

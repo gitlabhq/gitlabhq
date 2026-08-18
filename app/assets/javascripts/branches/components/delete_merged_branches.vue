@@ -33,6 +33,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'DeleteMergedBranches',
   csrf,
   components: {
     GlDisclosureDropdown,

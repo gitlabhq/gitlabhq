@@ -19,6 +19,7 @@ module API
         ]
       end
       params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         optional :wiki, type: Boolean, desc: 'Set to true to receive the wiki repository'
       end
       route_setting :authorization, permissions: :read_snapshot, boundary_type: :project

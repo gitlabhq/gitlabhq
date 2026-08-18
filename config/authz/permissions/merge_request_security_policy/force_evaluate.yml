@@ -1,0 +1,3 @@
+---
+name: force_evaluate_merge_request_security_policy
+description: Grants the ability to force evaluate merge request security policy

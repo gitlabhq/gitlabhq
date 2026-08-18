@@ -200,7 +200,7 @@ Be aware that strace can have major impacts to system performance when it is run
 
 ### The Strace Parser tool
 
-Our [strace-parser tool](https://gitlab.com/wchandler/strace-parser) can be used to
+Our [strace-parser tool](https://gitlab.com/gitlab-com/support/toolbox/strace-parser) can be used to
 provide a high level summary of the `strace` output. It is similar to `strace -C`,
 but provides much more detailed statistics.
 

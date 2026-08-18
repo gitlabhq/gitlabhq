@@ -185,6 +185,28 @@ $command-palette-spacing: px-to-rem(14px);
   @apply xl:gl-w-auto;
   @apply xl:gl-ml-0;
   @apply gl-min-h-0;
+
+  // Prevent the active nav item's background from breaking out past the rail
+  // while the sidebar collapses. Applied as a one-shot animation rather than a
+  // plain `clip-path`, because the clip also applies to the fixed-position
+  // flyout menus, and `.super-sidebar-toggled-manually` sticks around whenever
+  // `transitionend` doesn't fire (for example when transitions are disabled).
+  // Tying it to the animation means the clip can never outlive the collapse.
+  // stylelint-disable-next-line gitlab/no-has -- scoped to the animating sidebar
+  &:has(.super-sidebar-toggled-manually) {
+    // Duration matches the sidebar width transition in layout.scss.
+    animation: super-sidebar-collapse-clip 0.25s;
+  }
+}
+
+@keyframes super-sidebar-collapse-clip {
+  // The left stays open because the sidebar's negative margin puts the active
+  // item's left edge outside the wrapper, and clipping it there makes the accent
+  // flicker mid-collapse.
+  from,
+  to {
+    clip-path: inset(0 0 0 -#{$gl-spacing-scale-3});
+  }
 }
 
 /**
@@ -379,7 +401,49 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   .feature-library-scroll-area {
-    min-height: 20rem;
+    // Keeps the modal from collapsing on empty results, while staying small
+    // enough not to overflow short viewports.
+    min-height: min(20rem, 40vh);
+  }
+
+  // Let the scroll area (and its top/bottom scrim gradients) bleed to the
+  // modal body edges by cancelling the body's horizontal padding, then
+  // re-inset the actual content so it stays aligned with the search box.
+  .feature-library-scroll-bleed {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+  }
+
+  .feature-library-scroll-inset {
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
+  }
+
+  &.gl-modal .modal-footer {
+    padding-top: 0;
+    padding-bottom: $gl-spacing-scale-3;
+  }
+
+  .feature-library-gemini-button {
+    &.gl-button.gl-button {
+      background-color: var(--gl-background-color-default);
+      background-image: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--gl-color-purple-500) 12%, transparent),
+        color-mix(in srgb, var(--gl-color-blue-500) 12%, transparent)
+      );
+      border-color: color-mix(in srgb, var(--gl-color-purple-500) 60%, transparent);
+    }
+
+    &.gl-button.gl-button:hover,
+    &.gl-button.gl-button:focus,
+    &.gl-button.gl-button:active {
+      background-image: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--gl-color-purple-500) 24%, transparent),
+        color-mix(in srgb, var(--gl-color-blue-500) 24%, transparent)
+      );
+    }
   }
 }
 
@@ -408,7 +472,7 @@ $command-palette-spacing: px-to-rem(14px);
 
 
   .show-focus-layover {
-    &:focus,
+    &:focus-visible,
     &:focus-within {
       .show-focus-layover-hint {
         @apply gl-opacity-10;
@@ -523,7 +587,7 @@ $command-palette-spacing: px-to-rem(14px);
     opacity: 0;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       opacity: 1;
     }
   }
@@ -537,7 +601,7 @@ $command-palette-spacing: px-to-rem(14px);
 
   .show-on-focus-or-hover--control {
     &:hover,
-    &:focus {
+    &:focus-visible {
       + .show-on-focus-or-hover--target {
         opacity: 1;
       }
@@ -559,7 +623,7 @@ $command-palette-spacing: px-to-rem(14px);
 
   .hide-on-focus-or-hover--control {
     &:hover,
-    &:focus {
+    &:focus-visible {
       .hide-on-focus-or-hover--target {
         opacity: 0;
       }
@@ -642,7 +706,8 @@ $scroll-scrim-height: 2.25rem;
 .super-sidebar-mr-menu-dropdown .gl-new-dropdown-panel,
 .super-sidebar-new-menu-dropdown .gl-new-dropdown-panel,
 .super-sidebar-user-dropdown .gl-new-dropdown-panel,
-.super-sidebar-help-center-dropdown .gl-new-dropdown-panel {
+.super-sidebar-help-center-dropdown .gl-new-dropdown-panel,
+.super-sidebar-settings-dropdown .gl-new-dropdown-panel {
   @apply gl-min-w-28 #{!important};
   @apply gl-w-28 #{!important};
 }
@@ -699,5 +764,78 @@ $scroll-scrim-height: 2.25rem;
         opacity: 0;
       }
     }
+  }
+}
+
+.feature-library-shimmer {
+  --super-sidebar-shimmer-base-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 32%);
+  --super-sidebar-shimmer-peak-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 8%);
+  --super-sidebar-shimmer-border-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 24%);
+
+  position: relative;
+
+  // Raise the nav item's icon and label above the overlay so the content stays
+  // visible while the pseudo-element is drawn on top of the nav item's own
+  // background.
+  .gl-nav-item-slot,
+  .gl-nav-item-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  // Static outline, drawn regardless of motion preference so users who prefer
+  // reduced motion still get a motion-free highlight on the nav item. Inset
+  // box-shadow renders the outline inside the element's edge so it does not add
+  // to the box and shift the nav item's layout.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--gl-border-radius-lg);
+    pointer-events: none;
+    box-shadow: inset 0 0 0 2px var(--super-sidebar-shimmer-border-color);
+  }
+
+  // Only the animated gradient sweep depends on motion preference. It lives on
+  // the same pseudo-element so the whole treatment can be faded out by
+  // animating `opacity`; fading the gradient directly is not possible because
+  // `background-image` is a discrete property and cannot be interpolated.
+  @media (prefers-reduced-motion: no-preference) {
+    &::before {
+      background-image: linear-gradient(
+        90deg,
+        var(--super-sidebar-shimmer-base-color),
+        var(--super-sidebar-shimmer-peak-color),
+        var(--super-sidebar-shimmer-base-color)
+      );
+      background-size: 200% 100%;
+      background-position: 50% 0;
+      // Sweep the gradient for several iterations, then fade the whole
+      // treatment out. `forwards` holds the final (transparent) frame so the
+      // nav item reverts to its default tertiary styling once complete.
+      animation:
+        super-sidebar-shimmer 2s linear 4,
+        super-sidebar-shimmer-fade-out 1s ease-out 8s forwards;
+    }
+  }
+}
+
+@keyframes super-sidebar-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes super-sidebar-shimmer-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
   }
 }

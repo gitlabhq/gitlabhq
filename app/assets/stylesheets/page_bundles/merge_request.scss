@@ -230,7 +230,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 }
 
 .merge-request-tabs.merge-request-tabs li a,
-.merge-request-tabs.merge-request-tabs li a:focus {
+.merge-request-tabs.merge-request-tabs li a:focus-visible {
   outline: none;
 }
 
@@ -250,7 +250,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 }
 
 .merge-request-tabs.merge-request-tabs li a:focus-visible::before,
-.merge-request-tabs.merge-request-tabs li.active a:focus::before {
+.merge-request-tabs.merge-request-tabs li.active a:focus-visible::before {
   border: var(--mr-tab-border-width) solid var(--gl-focus-ring-color, var(--gl-tab-selected-indicator-color-default));
 }
 

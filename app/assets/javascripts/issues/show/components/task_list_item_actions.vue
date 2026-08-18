@@ -48,21 +48,29 @@ export default {
         sourcepos: this.$el.closest('li').dataset.sourcepos,
       };
     },
+    // The checklist item is a markdown-rendered <li> outside this component's tree, so toggle
+    // the active-row class on it imperatively when the actions menu opens and closes.
+    setRowActive(active) {
+      this.$el.closest('li')?.classList.toggle('task-list-item-active', active);
+    },
   },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip.left="s__('WorkItem|Task actions')"
+    v-gl-tooltip.left="s__('WorkItem|Checklist item actions')"
     class="task-list-item-actions-wrapper"
     category="tertiary"
     icon="ellipsis_v"
     no-caret
     placement="bottom-end"
+    size="small"
     text-sr-only
     toggle-class="task-list-item-actions gl-opacity-0 !gl-p-2"
-    :toggle-text="s__('WorkItem|Task actions')"
+    :toggle-text="s__('WorkItem|Checklist item actions')"
+    @shown="setRowActive(true)"
+    @hidden="setRowActive(false)"
   >
     <gl-disclosure-dropdown-item
       v-if="showConvertToTaskItem && isEnabledTaskListItem"

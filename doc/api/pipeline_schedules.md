@@ -156,7 +156,7 @@ Supported attributes:
 | `pipeline_schedule_id` | integer           | Yes      | ID of the pipeline schedule. |
 | `scope`                | string            | No       | Scope of pipelines. One of: `running`, `pending`, `finished`, `branches`, `tags`. |
 | `sort`                 | string            | No       | Sort pipelines in `asc` or `desc` order. Default is `asc`. |
-| `status`               | string            | No       | Status of pipelines. One of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled`. |
+| `status`               | string            | No       | Status of pipelines. One of: `created`, `waiting_for_resource`, `preparing`, `waiting_for_callback`, `pending`, `running`, `success`, `failed`, `canceling`, `canceled`, `skipped`, `manual`, `scheduled`. |
 | `updated_after`        | datetime          | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before`       | datetime          | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `created_after`        | datetime          | No       | Return pipelines created after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -210,7 +210,7 @@ Example response:
 
 {{< /history >}}
 
-Create a new pipeline schedule of a project.
+Create a new pipeline schedule for a project.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules

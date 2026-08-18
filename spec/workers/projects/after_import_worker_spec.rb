@@ -6,7 +6,7 @@ RSpec.describe Projects::AfterImportWorker, feature_category: :importers do
   subject { worker.perform(project.id) }
 
   let(:worker) { described_class.new }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
   let(:sha) { project.commit.sha }
   let(:housekeeping_service) { double(:housekeeping_service) }

@@ -15,11 +15,11 @@ function createAlert(krokiImage) {
     render(createElement) {
       return createElement(DiagramPerformanceWarning, {
         on: {
-          closeAlert() {
+          'close-alert': () => {
             app.$destroy();
             app.$el.remove();
           },
-          showImage() {
+          'show-image': () => {
             krokiImage.removeAttribute('hidden');
             app.$destroy();
             app.$el.remove();

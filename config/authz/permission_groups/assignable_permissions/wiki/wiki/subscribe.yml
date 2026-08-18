@@ -1,0 +1,9 @@
+---
+name: subscribe_wiki
+description: Grants the ability to subscribe to wikis
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - subscribe_wiki

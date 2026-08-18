@@ -12,12 +12,6 @@ title: Squash TM
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
-
-{{< /history >}}
-
 When [Squash TM](https://www.squashtest.com/en/squash-gitlab-platform) (Test Management)
 integration is enabled and configured in GitLab, issues (typically user stories) created in GitLab
 are synchronized as requirements in Squash TM and test progress is reported in GitLab issues.

@@ -96,6 +96,12 @@ describe('ProjectDropdown', () => {
       );
     });
 
+    it('requests active projects', () => {
+      expect(mockGetProjectsQuerySuccess).toHaveBeenCalledWith(
+        expect.objectContaining({ active: true }),
+      );
+    });
+
     describe('when selecting a dropdown item', () => {
       it('emits `change` event with the selected project', async () => {
         const mockProject = mockProjects[0];
@@ -219,6 +225,7 @@ describe('ProjectDropdown', () => {
         search: mockSearchTerm,
         searchNamespaces: true,
         sort: 'similarity',
+        active: true,
       });
     });
   });

@@ -67,7 +67,7 @@ The availability objectives for Gitaly Cluster (Praefect) assuming a single node
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
 
-Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/epics/8903).
+Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/work_items/8903).
 
 > [!warning]
 > If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
@@ -103,7 +103,7 @@ the current status of these issues, refer to the referenced issues and epics.
 | Gitaly Cluster (Praefect) + Geo - Issues retrying failed syncs                                        | If Gitaly Cluster (Praefect) is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default.                                                                                                                                                                                                           |
 | Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operations.                                                                                                         | Make sure the Praefect database is up and running with all migrations completed. For example, this command should show a list of all applied migrations: `sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status`. Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster (Praefect) node from a snapshot in a running cluster                       | Because the Gitaly Cluster (Praefect) runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the node's data with data of other nodes.                                    | Don't restore a single Gitaly Cluster (Praefect) node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster (Praefect) nodes at the same time.<br/>3. Take a database dump of the Praefect database.                                                                                              |
-| Limitations when running in Kubernetes, Amazon ECS, or similar                                        | Gitaly Cluster (Praefect) is not supported and Gitaly has known limitations. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).                                                                     | Use our [reference architectures](../../reference_architectures/_index.md).                                                                                                                                                                                                                                                                                                                                                |
+| Limitations when running in Kubernetes, Amazon ECS, or similar                                        | On Kubernetes, Gitaly Cluster (Praefect) is in beta and not generally available, and Gitaly has known limitations. For more information, see [Gitaly Cluster on Kubernetes](#gitaly-cluster-on-kubernetes) and [epic 6127](https://gitlab.com/groups/gitlab-org/-/work_items/6127). On Amazon ECS or similar, Gitaly Cluster (Praefect) is not supported.                                                                     | For production deployments, use our [reference architectures](../../reference_architectures/_index.md).                                                                                                                                                                                                                                                                                                                                                |
 | `PostReceiveHook` invoked before write has been recorded by Praefect                                  | A race condition allows `PostReceiveHook` to execute before writes are replicated to all nodes. When CI/CD pipelines target replicas that haven't received the write yet, this race condition causes pipelines to fail with a `couldn't find remote ref refs/merge-requests/$iid/{head,merge}` error. For more information, see [issue 5406](https://gitlab.com/gitlab-org/gitaly/-/issues/5406) | Retry the whole job or just retry the fetch sources stage. For more information, see [job stages attempts](../../../ci/runners/configure_runners.md#job-stages-attempts). |
 | HPA auto-scaling can cause storage moves to fail silently                                             | When using Horizontal Pod Autoscaler (HPA) with Sidekiq pods, repository storage moves can fail silently due to pod scaling during job execution.                                                                                                | Before performing repository storage moves, configure HPA with fixed replicas, setting `minReplicas` = `maxReplicas` to prevent scaling during migration.                                                                                                                                                                                                                                                                        |
 
@@ -161,7 +161,7 @@ The number of repository replicas can be configured using a
 It can
 be uneconomical to have the same replication factor for all repositories.
 To provide greater flexibility for extremely large GitLab instances,
-variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/epics/3372).
+variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/work_items/3372).
 
 As with standard Gitaly storages, virtual storages can be sharded.
 
@@ -409,8 +409,8 @@ Gitaly Cluster (Praefect) provides the following features:
   primary Gitaly node to secondary Gitaly nodes.
 - Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
 
-Follow the [epic 1489](https://gitlab.com/groups/gitlab-org/-/epics/1489) for proposed improvements
-including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+Follow the [epic 1489](https://gitlab.com/groups/gitlab-org/-/work_items/1489) for proposed improvements
+including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/work_items/2013).
 
 ### Distributed reads
 
@@ -442,7 +442,7 @@ replica is outdated or unhealthy at the time of the transaction, the write is as
 
 Strong consistency is the primary replication method. A subset of operations still use replication jobs
 (eventual consistency) instead of strong consistency. Refer to the
-[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189) for more information.
+[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/work_items/1189) for more information.
 
 If strong consistency is unavailable, Gitaly Cluster (Praefect) guarantees eventual consistency. In this case,
 Gitaly Cluster (Praefect) replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.

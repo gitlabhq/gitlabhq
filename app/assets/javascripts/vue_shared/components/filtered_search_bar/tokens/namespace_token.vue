@@ -4,6 +4,7 @@ import API from '~/api';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { camelizeKeys } from '~/lib/utils/object_utils';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import BaseToken from './base_token.vue';
 
 export default {
@@ -12,6 +13,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -61,7 +63,7 @@ export default {
     :suggestions="namespaces"
     :get-active-token-value="getActiveNamespace"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @fetch-suggestions="fetchNamespaces"
   >
     <template #suggestions-list="{ suggestions }">

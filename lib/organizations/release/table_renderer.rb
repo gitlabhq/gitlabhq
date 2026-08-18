@@ -50,7 +50,7 @@ module Organizations
       def generated_notice
         <<~MARKDOWN
           <!-- This file is generated from config/organizations_release.yml. Do not edit it manually. -->
-          <!-- Regenerate it with: bin/rake gitlab:organizations:release:docs -->
+          <!-- Regenerate it with: `bin/rake gitlab:organizations:release:docs` -->
         MARKDOWN
       end
 

@@ -107,8 +107,7 @@ export default {
                   :id="modalInfoCopyId"
                   class="gl-w-full"
                   data-testid="enable-review-app-copy-string"
-                  >{{ modalInfoCopyStr }}</pre
-                >
+                  >{{ modalInfoCopyStr }}</pre>
                 <simple-copy-button
                   :title="$options.i18n.copyToClipboardText"
                   class="!gl-border-0"

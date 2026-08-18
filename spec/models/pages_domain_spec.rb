@@ -7,6 +7,12 @@ RSpec.describe PagesDomain, feature_category: :pages do
 
   subject(:pages_domain) { described_class.new }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
+    subject_key: :project_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_PAGES_DOMAINS,
+    claiming_attributes: [:domain]
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end

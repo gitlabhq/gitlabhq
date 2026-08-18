@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlAlert,
   GlButton,
@@ -7,6 +8,7 @@ import {
   GlFormRadio,
   GlFormRadioGroup,
   GlIcon,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { partition, isString, uniqueId, isEmpty } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -60,13 +62,14 @@ export default {
     InviteModalBase,
     MembersTokenSelect,
     UserLimitNotification,
-    ActiveTrialNotification: () =>
-      import('ee_component/invite_members/components/active_trial_notification.vue'),
+    ActiveTrialNotification: defineAsyncComponent(
+      () => import('ee_component/invite_members/components/active_trial_notification.vue'),
+    ),
   },
   directives: {
     SafeHtml,
   },
-  mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
+  mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY }), GlToastMixin],
   inject: {
     addSeatsHref: {
       default: '',

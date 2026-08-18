@@ -235,7 +235,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `aws_access_key_id`                         | AWS credentials, or compatible.    | |
 | `aws_secret_access_key`                     | AWS credentials, or compatible.    | |
 | `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Some S3-compatible providers may need `2`. | `4` |
-| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Some S3-compatible providers require this to be `false`. GitLab 17.4 changed the default from `true` to `false`. | `false` |
+| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/developerguide/sigv4-streaming.html). Some S3-compatible providers require this to be `false`. GitLab 17.4 changed the default from `true` to `false`. | `false` |
 | `region`                                    | AWS region.                        | |
 | `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
 | `endpoint`                                  | Can be used when configuring an S3-compatible service, by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
@@ -744,7 +744,7 @@ The following are the valid connection parameters for Azure. For more informatio
            gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
-    If you are using [a managed identity](#azure-workload-and-managed-identities), omit `azure_storage_access_key`.
+   If you are using [a managed identity](#azure-workload-and-managed-identities), omit `azure_storage_access_key`.
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -1416,7 +1416,7 @@ might generate `ETag mismatch` errors.
 #### Amazon S3 encryption
 
 If you are seeing this ETag mismatch error with Amazon Web Services S3,
-it's likely this is due to [encryption settings on your bucket](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTCommonResponseHeaders.html).
+it's likely this is due to [encryption settings on your bucket](https://docs.aws.amazon.com/AmazonS3/latest/developerguide/RESTCommonResponseHeaders.html).
 To fix this issue, you have two options:
 
 - [Use the consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
@@ -1443,12 +1443,6 @@ When the consolidated form is:
   pre-signed URLs.
 
 #### Google Cloud Storage encryption
-
-{{< history >}}
-
-- [Introduced in GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441782).
-
-{{< /history >}}
 
 ETag mismatch errors occur also in Google Cloud Storage (GCS) when enabling [data encryption with customer-managed encryption keys (CMEK)](https://docs.cloud.google.com/storage/docs/encryption/using-customer-managed-keys).
 

@@ -13,6 +13,7 @@ import {
   TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_TRANSFER_FAILED,
 } from '~/todos/constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { DESIGN_TODO, MR_BUILD_FAILED_TODO } from '../mock_data';
@@ -64,6 +65,21 @@ describe('TodoItemTitle', () => {
         'to-do for duo pro access granted',
         'Getting started with GitLab Duo',
         { ...mockToDo, action: TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED },
+      ],
+      [
+        'to-do for transfer failed',
+        'Engineering Team · ops-hub / engineering-team',
+        {
+          ...mockToDo,
+          action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+          body: 'ops-hub/engineering-team',
+          targetEntity: {
+            name: 'Engineering Team',
+          },
+          group: {
+            fullName: 'Ops Hub / Engineering Team',
+          },
+        },
       ],
     ])(`renders %s as %s`, (_a, b, c) => {
       createComponent(c);

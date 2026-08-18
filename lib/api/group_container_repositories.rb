@@ -15,14 +15,14 @@ module API
     feature_category :container_registry
     urgency :low
 
-    REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
-      tag_name: API::NO_SLASH_URL_PART_REGEX)
+    REPOSITORY_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      tag_name: ::API::NO_SLASH_URL_PART_REGEX)
 
     params do
       requires :id, types: [String, Integer],
         desc: 'The ID or URL-encoded path of the group accessible by the authenticated user'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all registry repositories for a group' do
         detail 'Lists all registry repositories for a specified group.'
         success Entities::ContainerRegistry::Repository

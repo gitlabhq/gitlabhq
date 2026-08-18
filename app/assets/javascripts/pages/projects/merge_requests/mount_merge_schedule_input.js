@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import MergeScheduleInput from '~/merge_requests/components/merge_schedule_input.vue';
 
 export default () => {
@@ -8,16 +8,13 @@ export default () => {
 
   const { mergeAfter, paramKey } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MergeScheduleInputRoot',
-    render(h) {
-      return h(MergeScheduleInput, {
-        props: {
-          mergeAfter,
-          paramKey,
-        },
-      });
+    component: MergeScheduleInput,
+    props: {
+      mergeAfter,
+      paramKey,
     },
   });
 };

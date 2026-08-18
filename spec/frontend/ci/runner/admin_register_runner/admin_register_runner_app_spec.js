@@ -72,7 +72,7 @@ describe('AdminRegisterRunnerApp', () => {
     beforeEach(async () => {
       createComponent();
 
-      findRegistrationInstructions().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
+      findRegistrationInstructions().vm.$emit('select-platform', WINDOWS_PLATFORM);
       await nextTick();
     });
 

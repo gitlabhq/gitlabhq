@@ -19,6 +19,25 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
       expect(response).to redirect_to(new_user_session_path)
     end
+
+    # An already-signed-in user who navigates "back" to a cached sign-in/2FA page and
+    # resubmits sends a stale CSRF token. They are redirected to their destination instead
+    # of hitting an InvalidAuthenticityToken error.
+    it 'redirects an already-signed-in user submitting a stale csrf token' do
+      login_as(user)
+
+      post(user_session_path, headers: { 'X-CSRF-Token' => 'invalid' },
+        params: { user: { login: user.username, password: user.password } })
+
+      expect(response).to redirect_to(root_path)
+    end
+
+    it 'still verifies the csrf token for an unauthenticated sign-in' do
+      expect do
+        post(user_session_path, headers: { 'X-CSRF-Token' => 'invalid' },
+          params: { user: { login: user.username, password: user.password } })
+      end.to raise_error(ActionController::InvalidAuthenticityToken)
+    end
   end
 
   context 'when user has pending invitations' do
@@ -130,7 +149,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
       before do
         allow_next_instance_of(Authn::IamService::AcceptLoginChallengeService) do |service|
           allow(service).to receive(:execute).and_return(
-            ServiceResponse.error(message: 'IAM login accept failed: HTTP 500', reason: :iam_request_failed)
+            ServiceResponse.error(message: 'IAM login accept failed: unavailable', reason: :service_unavailable)
           )
         end
       end

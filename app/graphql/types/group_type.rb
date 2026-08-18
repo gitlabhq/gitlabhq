@@ -430,6 +430,13 @@ module Types
       method: :self_deletion_scheduled?,
       experiment: { milestone: '18.2' }
 
+    field :transfer_in_progress,
+      GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if the group is currently being transferred.',
+      method: :transfer_in_progress?,
+      experiment: { milestone: '19.3' }
+
     field :project_statistics, Types::Namespaces::ProjectStatisticsType,
       method: :itself,
       null: true,

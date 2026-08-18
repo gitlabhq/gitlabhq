@@ -91,6 +91,42 @@ RSpec.describe Gitlab::SlashCommands::GlobalSlackHandler, feature_category: :int
       ).trigger
     end
 
+    context 'when the user cannot use slash commands' do
+      before do
+        slack_integration.update!(alias: project.full_path)
+
+        allow_next(ChatNames::FindUserService).to receive(:execute).and_return(chat_name)
+      end
+
+      context 'when the user is deactivated' do
+        let_it_be(:user) { create(:user, :deactivated) }
+
+        it 'asks the user to reactivate their account' do
+          expect_next(Gitlab::SlashCommands::Command).not_to receive(:execute)
+          expect_next(Gitlab::SlashCommands::Presenters::Access).to receive(:deactivated)
+
+          handler_with_valid_token(
+            text: "#{project.full_path} issue new title",
+            team_id: slack_integration.team_id
+          ).trigger
+        end
+      end
+
+      context 'when the user is blocked' do
+        let_it_be(:user) { create(:user, :blocked) }
+
+        it 'returns access denied' do
+          expect_next(Gitlab::SlashCommands::Command).not_to receive(:execute)
+          expect_next(Gitlab::SlashCommands::Presenters::Access).to receive(:access_denied).with(project)
+
+          handler_with_valid_token(
+            text: "#{project.full_path} issue new title",
+            team_id: slack_integration.team_id
+          ).trigger
+        end
+      end
+    end
+
     context 'when integration is group-level' do
       let_it_be(:group) { create(:group) }
 

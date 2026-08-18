@@ -11,6 +11,7 @@ export default {
     'app/assets/javascripts/security_configuration/components/app.vue',
     'app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue',
     'app/assets/javascripts/work_items/pages/planning_view.vue',
+    'app/assets/javascripts/security_configuration/components/ref_tracking_list.vue',
   ],
   rules: {
     'local-rules/no-orphaned-feature-flag-references': 'off',

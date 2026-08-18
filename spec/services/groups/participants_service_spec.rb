@@ -92,6 +92,27 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
         end
       end
     end
+
+    context 'when the mentioned param is given' do
+      let_it_be(:mentioned_member) { create(:user, username: 'zzz_mentioned', guest_of: group) }
+      let_it_be(:non_member) { create(:user, username: 'zzz_outsider') }
+
+      it 'includes a mentioned group member that does not match the search' do
+        params = { search: 'johnd', mentioned: [mentioned_member.username] }
+
+        usernames = described_class.new(group, developer, params).execute(nil).pluck(:username)
+
+        expect(usernames).to include('zzz_mentioned')
+      end
+
+      it 'does not include a mentioned username that is not a group member' do
+        params = { mentioned: [non_member.username] }
+
+        usernames = described_class.new(group, developer, params).execute(nil).pluck(:username)
+
+        expect(usernames).not_to include('zzz_outsider')
+      end
+    end
   end
 
   def user_to_autocompletable(user)

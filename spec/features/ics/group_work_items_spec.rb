@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Work Items Calendar Feed', feature_category: :team_planning do
+RSpec.describe 'Group Work Items Calendar Feed', feature_category: :planning_views do
   describe 'GET /work_items' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

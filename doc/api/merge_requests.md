@@ -22,7 +22,6 @@ title: Merge requests API
 - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
 - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a feature flag](../administration/feature_flags/_index.md) named `restrict_merge_status_recheck` to be ignored for requests from users with insufficient permissions. Disabled by default.
 - `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
-- `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
 - `merge_user_id` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0.
 - `merge_user_username` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0.
 - `merged_at` value of `order_by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147052) in GitLab 17.2.
@@ -88,6 +87,8 @@ Supported attributes:
 | `created_before`            | datetime      | No       | Returns merge requests created on or before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `deployed_after`            | datetime      | No       | Returns merge requests deployed after the given date/time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `deployed_before`           | datetime      | No       | Returns merge requests deployed before the given date/time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `merged_after`             | datetime      | No       | Returns merge requests merged on or after the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `merged_before`            | datetime      | No       | Returns merge requests merged on or before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`               | string        | No       | Returns merge requests deployed to the given environment. |
 | `in`                        | string        | No       | Change the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`. |
 | `labels`                    | string        | No       | Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive. |
@@ -156,7 +157,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `description`                            | string   | Description of the merge request. Contains Markdown rendered as HTML for caching. |
 | `description_html`                       | string   | If `render_html` is set, the rendered HTML version of the description. |
 | `detailed_merge_status`                  | string   | Detailed merge status information. See [merge status](#merge-status) for a list of potential values. |
-| `discussion_locked`                      | boolean  | If `true`, discussions are locked. Only project members can add, edit or resolve comments in locked discussions. |
+| `discussion_locked`                      | boolean  | If `true`, discussions are locked. Only project members can add, edit, or resolve comments in locked discussions. |
 | `downvotes`                              | integer  | Number of downvotes for the merge request. |
 | `draft`                                  | boolean  | If `true`, the merge request is marked in a `draft` state. |
 | `force_remove_source_branch`             | boolean  | If `true`, the project settings force the deletion of the source branch after merge. |
@@ -165,7 +166,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `iid`                                    | integer  | The internal ID of the merge request in the project. |
 | `imported`                               | boolean  | If `true`, the merge request was imported. |
 | `imported_from`                          | string   | Source of import, such as `Bitbucket`. |
-| `labels[]`                               | array    | Array of label assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
+| `labels[]`                               | array    | Array of labels assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
 | `labels.archived`                        | boolean  | If `with_labels_details` is `true`, the label is archived. |
 | `labels.color`                           | string   | If `with_labels_details` is `true`, the background color of the label. |
 | `labels.description`                     | string   | If `with_labels_details` is `true`, the description text of the label. If `null`, the label has no description. |
@@ -408,6 +409,8 @@ Supported attributes:
 | `created_before`                | datetime       | No       | Returns merge requests created on or before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `deployed_after`                | datetime       | No       | Returns merge requests deployed after the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `deployed_before`               | datetime       | No       | Returns merge requests deployed before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `merged_after`             | datetime      | No       | Returns merge requests merged on or after the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `merged_before`            | datetime      | No       | Returns merge requests merged on or before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`                   | string         | No       | Returns merge requests deployed to the given environment. |
 | `in`                            | string         | No       | Change the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`. |
 | `labels`                        | string         | No       | Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive. |
@@ -444,7 +447,7 @@ response attributes:
 | `[].assignee`                      | object   | First assignee of the merge request. |
 | `[].assignees`                     | array    | Assignees of the merge request. |
 | `[].author`                        | object   | User who created this merge request. |
-| `[].blocking_discussions_resolved` | boolean  | Indicates if all discussions are resolved only if all are required before merge request can be merged. |
+| `[].blocking_discussions_resolved` | boolean  | Indicates if all discussions are resolved only if all are required before the merge request can be merged. |
 | `[].closed_at`                     | datetime | Timestamp of when the merge request was closed. |
 | `[].closed_by`                     | object   | User who closed this merge request. |
 | `[].created_at`                    | datetime | Timestamp of when the merge request was created. |
@@ -461,12 +464,12 @@ response attributes:
 | `[].merge_user`                    | object   | User who merged this merge request, the user who set it to auto-merge, or `null`. |
 | `[].merge_when_pipeline_succeeds`  | boolean  | Indicates if the merge request is set to auto-merge. |
 | `[].merged_at`                     | datetime | Timestamp of when the merge request was merged. |
-| `[].merged_by`                     | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. <!-- Do not remove line until field is actually removed --> |
+| `[].merged_by`                     | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115). Use `merge_user` instead. <!-- Do not remove line until field is actually removed --> |
 | `[].milestone`                     | object   | Milestone of the merge request. |
 | `[].prepared_at`                   | datetime | Timestamp of when the merge request was prepared. This field is populated one time, only after all the [preparation steps](#preparation-steps) are completed, and is not updated if more changes are added. |
 | `[].project_id`                    | integer  | ID of the project where the merge request resides. Always equal to `target_project_id`. |
-| `[].reference`                     | string   | Internal reference of the merge request. Returned in shortened format by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. <!-- Do not remove line until field is actually removed --> |
-| `[].references`                    | object   | Internal references of the merge request. Includes `short`, `relative`, and `full` references. `references.relative` is relative to the merge request's group or project. When fetched from the merge request's project, `relative` and `short` formats are identical. When requested across groups or projects, `relative` and `full` formats are identical.|
+| `[].reference`                     | string   | Internal reference of the merge request. Returned in shortened format by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115). Use `references` instead. <!-- Do not remove line until field is actually removed --> |
+| `[].references`                    | object   | Internal references of the merge request. Includes `short`, `relative`, and `full` references. `references.relative` is relative to the merge request's group or project. When fetched from the merge request's project, `relative` and `short` formats are identical. When requested across groups or projects, `relative` and `full` formats are identical. |
 | `[].reviewers`                     | array    | Reviewers of the merge request. |
 | `[].sha`                           | string   | Diff head SHA of the merge request. |
 | `[].should_remove_source_branch`   | boolean  | Indicates if the source branch of the merge request should be deleted after merge. |
@@ -659,6 +662,8 @@ Supported attributes:
 | `created_before`            | datetime          | No       | Returns merge requests created on or before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `deployed_after`            | datetime          | No       | Returns merge requests deployed after the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `deployed_before`           | datetime          | No       | Returns merge requests deployed before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `merged_after`             | datetime      | No       | Returns merge requests merged on or after the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `merged_before`            | datetime      | No       | Returns merge requests merged on or before the given date and time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`               | string            | No       | Returns merge requests deployed to the given environment. |
 | `in`                        | string            | No       | Change the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`. |
 | `labels`                  | string             | No       | Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive. |
@@ -729,7 +734,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `created_at`                             | dateTime | Timestamp of when the merge request was created. |
 | `description`                            | string   | Description of the merge request. Contains Markdown rendered as HTML for caching. |
 | `detailed_merge_status`                  | string   | Detailed merge status information. See [merge status](#merge-status) for a list of potential values. |
-| `discussion_locked`                      | boolean  | If `true`, discussions are locked. Only project members can add, edit or resolve comments in locked discussions. |
+| `discussion_locked`                      | boolean  | If `true`, discussions are locked. Only project members can add, edit, or resolve comments in locked discussions. |
 | `downvotes`                              | integer  | Number of downvotes for the merge request. |
 | `draft`                                  | boolean  | If `true`, the merge request is marked in a `draft` state. |
 | `force_remove_source_branch`             | boolean  | If `true`, the project settings force the deletion of the source branch after merge. |
@@ -738,7 +743,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `iid`                                    | integer  | The internal ID of the merge request in the project. |
 | `imported`                               | boolean  | If `true`, the merge request was imported. |
 | `imported_from`                          | string   | Source of import, such as `Bitbucket`. |
-| `labels[]`                               | array    | Array of label assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
+| `labels[]`                               | array    | Array of labels assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
 | `labels.archived`                        | boolean  | If `with_labels_details` is `true`, the label is archived. |
 | `labels.color`                           | string   | If `with_labels_details` is `true`, the background color of the label. |
 | `labels.description`                     | string   | If `with_labels_details` is `true`, the description text of the label. If `null`, the label has no description. |
@@ -1016,7 +1021,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `diff_refs.base_sha`                                        | string   | SHA of the merge base commit where the source and target branches diverged. |
 | `diff_refs.start_sha`                                       | string   | SHA of the target branch commit. The starting point for the diff. Usually the same as `base_sha`. |
 | `diff_refs.head_sha`                                        | string   | SHA of the head commit in the source branch. The latest commit in the merge request. |
-| `discussion_locked`                                         | boolean  | If `true`, discussions are locked. Only project members can add, edit or resolve comments in locked discussions. |
+| `discussion_locked`                                         | boolean  | If `true`, discussions are locked. Only project members can add, edit, or resolve comments in locked discussions. |
 | `diverged_commits_count`                                    | integer  | If set, contains the number of commits the source branch is behind the target branch. |
 | `downvotes`                                                 | integer  | Number of downvotes for the merge request. |
 | `draft`                                                     | boolean  | If `true`, the merge request is marked in a `draft` state. |
@@ -1077,7 +1082,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `iid`                                                       | integer  | Internal ID of the merge request. |
 | `imported`                                                  | boolean  | If `true`, the merge request was imported. |
 | `imported_from`                                             | string   | Source of import, such as `Bitbucket`. |
-| `labels[]`                                                  | array    | Array of label assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
+| `labels[]`                                                  | array    | Array of labels assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
 | `labels.archived`                                           | boolean  | If `with_labels_details` is `true`, the label is archived. |
 | `labels.color`                                              | string   | If `with_labels_details` is `true`, the background color of the label. |
 | `labels.description`                                        | string   | If `with_labels_details` is `true`, the description text of the label. If `null`, the label has no description. |
@@ -1094,7 +1099,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `merge_user[]`                                              | object   | The user who merged this merge request, the user who set it to auto-merge, or `null`. |
 | `merge_when_pipeline_succeeds`                              | boolean  | If `true`, the merge request is set to auto-merge. |
 | `merged_at`                                                 | dateTime | Timestamp of when the merge request merged. |
-| `merged_by[]`                                               | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. <!-- Do not remove line until field is actually removed --> |
+| `merged_by[]`                                               | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115). Use `merge_user` instead. <!-- Do not remove line until field is actually removed --> |
 | `milestone[]`                                               | object   | Object with information about the milestone assigned to the merge request. |
 | `milestone.created_at`                                      | dateTime | Timestamp when the milestone was created. |
 | `milestone.description`                                     | string   | Description text of the milestone. If `null`, the milestone has no description. |
@@ -1113,7 +1118,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `prepared_at`                                               | dateTime | Timestamp of when the merge request was prepared. This field populates one time, only after all the [preparation steps](#preparation-steps) complete, and is not updated if more changes are added. |
 | `project_id`                                                | integer  | The ID of the project containing the merge request. |
 | `rebase_in_progress`                                        | boolean  | If `true`, Sidekiq is running a rebase operation on this branch. |
-| `reference`                                                 | string   | Deprecated. Use `references` instead. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. <!-- Do not remove line until field is actually removed --> |
+| `reference`                                                 | string   | Deprecated. Use `references` instead. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115). Use `references` instead. <!-- Do not remove line until field is actually removed --> |
 | `references[]`                                              | object   | Object with all internal references of the merge request. |
 | `references.full`                                           | string   | Complete reference to a merge request, including full project path, like `gitlab-org/gitlab!123`. When requested across groups or projects, identical to `references.relative`. |
 | `references.relative`                                       | string   | Reference relative to a specific project or group: `!123` for a merge request in the current project, or `other-project!123` for another project in the same group. |
@@ -2194,7 +2199,7 @@ Supported attributes:
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
 | `access_raw_diffs`  | boolean           | No       | Retrieve change diffs through Gitaly. |
-| `unidiff`           | boolean           | No       | Present change diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
+| `unidiff`           | boolean           | No       | Present change diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. |
 
 Diffs associated with the set of changes have the same size limitations applied as other diffs
 returned by the API or viewed through the UI. When these limits impact the results, the `overflow`
@@ -2317,9 +2322,6 @@ Example response:
 
 {{< history >}}
 
-- `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a feature flag](../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
-- `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 - `collapsed` and `too_large` response attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633) in GitLab 18.4.
 
 {{< /history >}}
@@ -2338,7 +2340,7 @@ Supported attributes:
 | `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
 | `page`              | integer           | No       | The page of results to return. Defaults to 1. |
 | `per_page`          | integer           | No       | The number of results per page. Defaults to 20. |
-| `unidiff`           | boolean           | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
+| `unidiff`           | boolean           | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
@@ -2734,7 +2736,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `assignee_id`              | integer           | No       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
 | `assignee_ids`             | integer array     | No       | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
 | `description`              | string            | No       | Description of the merge request. Limited to 1,048,576 characters. |
-| `discussion_locked`        | boolean           | No       | Flag indicating if the merge request's discussion is locked. Only project members can add, edit or resolve comments to locked discussions. |
+| `discussion_locked`        | boolean           | No       | Flag indicating if the merge request's discussion is locked. Only project members can add, edit, or resolve comments to locked discussions. |
 | `labels`                   | string            | No       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels. If a label does not already exist, this creates a new project label and assigns it to the merge request. |
 | `merge_after`              | string            | No       | Date after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8. |
 | `milestone_id`             | integer           | No       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone. Mutually exclusive with `milestone`. |
@@ -2922,10 +2924,11 @@ curl --request DELETE \
   `fix_merge_api_train_bypass`. Disabled by default. The merge request is added to the merge
   train instead of merging directly.
 - Feature flag `fix_merge_api_train_bypass` removed in GitLab 19.1.
+- Setting to require a commit `sha` on the merge requests API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421) in GitLab 19.2.
 
 {{< /history >}}
 
-Accept and merge changes submitted with merge request using this API.
+Accepts and merges the changes submitted in a merge request.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/merge
@@ -2940,7 +2943,7 @@ Supported attributes:
 | `auto_merge`                   | boolean           | No       | If `true`, the merge request merges when checks pass. |
 | `merge_commit_message`         | string            | No       | Custom merge commit message. |
 | `merge_when_pipeline_succeeds` | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521291) in GitLab 17.11. Use `auto_merge` instead. |
-| `sha`                          | string            | No       | If present, this SHA must match the HEAD of the source branch. Use to ensure that only reviewed commits are merged. |
+| `sha`                          | string            | Conditional | If present, this SHA must match the HEAD of the source branch. Use to ensure that only reviewed commits are merged. Required if the [require a commit SHA on the merge requests API](../user/group/manage.md#require-a-commit-sha-on-the-merge-requests-api) setting is enabled for the group or instance. |
 | `should_remove_source_branch`  | boolean           | No       | If `true`, removes the source branch. |
 | `squash_commit_message`        | string            | No       | Custom squash commit message. |
 | `squash`                       | boolean           | No       | If `true`, squash all commits into a single commit on merge. |
@@ -2949,6 +2952,7 @@ This API returns specific HTTP status codes on failure:
 
 | HTTP Status | Message                                    | Reason |
 |-------------|--------------------------------------------|--------|
+| `400`       | `SHA must be provided when merging`        | [Require a commit SHA on the merge requests API](../user/group/manage.md#require-a-commit-sha-on-the-merge-requests-api) is enabled, but no `sha` parameter was provided. |
 | `401`       | `401 Unauthorized`                         | This user does not have permission to accept this merge request. |
 | `405`       | `405 Method Not Allowed`                   | The merge request cannot merge. |
 | `409`       | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source. |
@@ -3137,6 +3141,9 @@ Example response:
 ```
 
 ## Cancel merge when pipeline succeeds
+
+Cancels an active auto-merge for a merge request. If the merge request is on a
+[merge train](../ci/pipelines/merge_trains.md), this also removes it from the train.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
@@ -3612,7 +3619,7 @@ Example response when you use an external issue tracker, like Jira:
 
 ## Subscribe to a merge request
 
-Subscribes the authenticated user to a merge request to receive notification.
+Subscribes the authenticated user to a merge request to receive notifications.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/subscribe
@@ -4146,7 +4153,7 @@ Supported attributes:
 | `id`                | String  | Yes      | ID of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 | `version_id`        | integer | Yes      | ID of the merge request diff version. |
-| `unidiff`           | boolean | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
+| `unidiff`           | boolean | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:

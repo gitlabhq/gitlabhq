@@ -15,10 +15,14 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - create_govern_policy
   - delete_custom_attribute
+  - delete_govern_policy
   - lock_namespace_duo_feature
   - read_custom_attribute
+  - read_govern_policy
   - update_custom_attribute
+  - update_govern_policy
   - update_max_artifacts_size
 organization:
   permissions: []
@@ -26,6 +30,7 @@ organization:
   - access_organization_admin_area
   - create_group
   - delete_organization
+  - read_admin_users
   - read_artifact_registry
   - read_organization
   - read_organization_user

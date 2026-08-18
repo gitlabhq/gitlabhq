@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { encodeSaferUrl, joinPaths, visitUrl } from '~/lib/utils/url_utility';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import AuthorSelectApp from './components/author_select.vue';
 import DateRangeSelectApp from './components/date_range_select.vue';
 
@@ -11,19 +11,16 @@ export const mountCommits = (el) => {
 
   const { commitsPath, projectId } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AuthorSelectAppRoot',
     provide: {
       commitsPath,
       projectId,
     },
-    render(h) {
-      return h(AuthorSelectApp, {
-        props: {
-          projectCommitsEl: document.querySelector('.js-project-commits-show'),
-        },
-      });
+    component: AuthorSelectApp,
+    props: {
+      projectCommitsEl: document.querySelector('.js-project-commits-show'),
     },
   });
 };
@@ -33,14 +30,11 @@ export const mountDateRangeSelect = (el) => {
 
   const { commitsPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DateRangeSelectRoot',
-    render(h) {
-      return h(DateRangeSelectApp, {
-        props: { commitsPath },
-      });
-    },
+    component: DateRangeSelectApp,
+    props: { commitsPath },
   });
 };
 
@@ -60,28 +54,25 @@ export const initCommitsRefSwitcher = () => {
     return joinPaths(commitsPathPrefix, selectedRefURI, selectedTreePath) + commitsPathSuffix;
   };
   const useSymbolicRefNames = Boolean(refType);
-  return new Vue({
+  return initVueApp({
     el,
     name: 'RefSelectorRoot',
-    render(createElement) {
-      return createElement(RefSelector, {
-        props: {
-          projectId,
-          queryParams: { sort: 'updated_desc' },
-          value: useSymbolicRefNames ? `refs/${refType}/${ref}` : ref,
-          useSymbolicRefNames,
-        },
-        on: {
-          input(selected) {
-            const matches = selected.match(/refs\/(heads|tags)\/(.+)/);
-            if (useSymbolicRefNames && matches) {
-              visitUrl(generateRefDestinationUrl(matches[2], matches[1]));
-            } else {
-              visitUrl(generateRefDestinationUrl(selected));
-            }
-          },
-        },
-      });
+    component: RefSelector,
+    props: {
+      projectId,
+      queryParams: { sort: 'updated_desc' },
+      value: useSymbolicRefNames ? `refs/${refType}/${ref}` : ref,
+      useSymbolicRefNames,
+    },
+    events: {
+      input(selected) {
+        const matches = selected.match(/refs\/(heads|tags)\/(.+)/);
+        if (useSymbolicRefNames && matches) {
+          visitUrl(generateRefDestinationUrl(matches[2], matches[1]));
+        } else {
+          visitUrl(generateRefDestinationUrl(selected));
+        }
+      },
     },
   });
 };

@@ -65,7 +65,6 @@ RSpec.describe API::Helpers::WorkItemsFilterParams, feature_category: :team_plan
         {
           assignee_usernames: %w[user1 user2],
           assignee_wildcard_id: 'None',
-          types: %w[issue task],
           parent_ids: [1, 2, 3],
           parent_wildcard_id: 'None',
           release_tag_wildcard_id: 'None',
@@ -77,7 +76,6 @@ RSpec.describe API::Helpers::WorkItemsFilterParams, feature_category: :team_plan
         expected = {
           assignee_username: %w[user1 user2],
           assignee_id: 'None',
-          issue_types: %w[issue task],
           work_item_parent_ids: [1, 2, 3],
           parent_wildcard_id: 'None',
           release_tag: 'None',
@@ -99,8 +97,7 @@ RSpec.describe API::Helpers::WorkItemsFilterParams, feature_category: :team_plan
             milestone_wildcard_id: 'Started',
             my_reaction_emoji: 'thumbsup',
             parent_ids: [1, 2],
-            release_tag: ['tag1'],
-            types: ['issue']
+            release_tag: ['tag1']
           }
         }
       end
@@ -114,8 +111,7 @@ RSpec.describe API::Helpers::WorkItemsFilterParams, feature_category: :team_plan
           milestone_wildcard_id: 'Started',
           my_reaction_emoji: 'thumbsup',
           work_item_parent_ids: [1, 2],
-          release_tag: ['tag1'],
-          issue_types: ['issue']
+          release_tag: ['tag1']
         )
       end
     end

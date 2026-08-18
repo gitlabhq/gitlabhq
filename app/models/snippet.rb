@@ -31,7 +31,7 @@ class Snippet < ApplicationRecord
   # to avoid an N+1 when the verification worker resolves the org for project snippets in batches.
   cells_claims_scope { includes(:project) }
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::SNIPPET_IDS, feature_flag: :cells_claims_snippets
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SNIPPET_ID, feature_flag: :cells_claims_snippets
 
   # The snippets check constraint allows exactly one of organization_id/project_id: personal
   # snippets set organization_id directly, while project snippets keep it NULL and resolve the
@@ -88,14 +88,13 @@ class Snippet < ApplicationRecord
   scope :are_internal, -> { where(visibility_level: Snippet::INTERNAL) }
   scope :are_private, -> { where(visibility_level: Snippet::PRIVATE) }
   scope :are_public, -> { public_only }
-  scope :are_secret, -> { public_only.where(secret: true) }
   scope :fresh, -> { order("created_at DESC") }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> { includes(author: :status) }
   scope :inc_statistics, -> { includes(:statistics) }
   scope :with_statistics, -> { joins(:statistics) }
   scope :with_repository_storage_moves, -> { joins(:repository_storage_moves) }
-  scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
+  scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace, :group]) }
 
   scope :in_organization, ->(organization_id) do
     project_snippets_in_org = only_project_snippets
@@ -348,7 +347,7 @@ class Snippet < ApplicationRecord
     @storage ||= Storage::Hashed.new(self, prefix: Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX)
   end
 
-  # This is the full_path used to identify the the snippet repository.
+  # This is the full_path used to identify the snippet repository.
   override :full_path
   def full_path
     return unless persisted?

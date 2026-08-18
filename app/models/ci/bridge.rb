@@ -131,9 +131,7 @@ module Ci
         project = options&.dig(:trigger, :project)
         next unless project
 
-        scoped_variables.to_hash_variables.then do |all_variables|
-          ::ExpandVariables.expand(project, all_variables)
-        end
+        expand_with_scoped_variables(project)
       end
     end
 
@@ -236,9 +234,7 @@ module Ci
       branch = options&.dig(:trigger, :branch)
       return unless branch
 
-      scoped_variables.to_hash_variables.then do |all_variables|
-        ::ExpandVariables.expand(branch, all_variables)
-      end
+      expand_with_scoped_variables(branch)
     end
 
     def has_strategy?
@@ -308,6 +304,17 @@ module Ci
     end
 
     private
+
+    # Building the scoped variables collection is expensive: it reads project settings, cluster
+    # agents, protected branches, instance and pipeline variables, and more. Skip it when the value
+    # cannot reference a variable, in which case expansion would return the value unchanged.
+    def expand_with_scoped_variables(value)
+      return value unless ::ExpandVariables.possible_var_reference?(value)
+
+      scoped_variables.to_hash_variables.then do |all_variables|
+        ::ExpandVariables.expand(value, all_variables)
+      end
+    end
 
     def inherit_mirrored_status_from_downstream!(pipeline)
       case pipeline.status

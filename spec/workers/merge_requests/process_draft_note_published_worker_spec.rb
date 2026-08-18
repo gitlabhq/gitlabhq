@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
@@ -61,6 +62,49 @@ RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category:
       end
 
       consume_event(subscriber: described_class, event: approved_event)
+    end
+  end
+
+  describe 'submit_mr_review_ui user experience', :freeze_time do
+    context 'when the experience was started in the web request' do
+      before do
+        Labkit::UserExperienceSli.start(:submit_mr_review_ui)
+      end
+
+      it 'resumes and completes the experience' do
+        expect { consume_event(subscriber: described_class, event: approved_event) }
+          .to resume_user_experience(:submit_mr_review_ui)
+          .and complete_user_experience(:submit_mr_review_ui)
+      end
+
+      context 'when the current user does not exist' do
+        before do
+          allow(User).to receive(:find_by_id).with(user.id).and_return(nil)
+        end
+
+        it 'completes the experience' do
+          expect { consume_event(subscriber: described_class, event: approved_event) }
+            .to complete_user_experience(:submit_mr_review_ui)
+        end
+      end
+
+      context 'when the merge request does not exist' do
+        before do
+          allow(MergeRequest).to receive(:find_by_id).with(merge_request.id).and_return(nil)
+        end
+
+        it 'completes the experience' do
+          expect { consume_event(subscriber: described_class, event: approved_event) }
+            .to complete_user_experience(:submit_mr_review_ui)
+        end
+      end
+    end
+
+    context 'when the experience was not started' do
+      it 'does not resume the experience' do
+        expect { consume_event(subscriber: described_class, event: approved_event) }
+          .not_to resume_user_experience(:submit_mr_review_ui)
+      end
     end
   end
 

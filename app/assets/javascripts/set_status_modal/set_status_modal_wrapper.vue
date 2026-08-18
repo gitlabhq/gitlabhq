@@ -1,6 +1,5 @@
 <script>
-import { GlToast, GlTooltipDirective, GlModal } from '@gitlab/ui';
-import Vue from 'vue';
+import { GlTooltipDirective, GlModal, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
@@ -9,8 +8,6 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isUserBusy, computedClearStatusAfterValue } from './utils';
 import { AVAILABILITY_STATUS, SET_STATUS_MODAL_ID } from './constants';
 import SetStatusForm from './set_status_form.vue';
-
-Vue.use(GlToast);
 
 export default {
   name: 'SetStatusModalWrapper',
@@ -22,7 +19,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   props: {
     defaultEmoji: {
       type: String,

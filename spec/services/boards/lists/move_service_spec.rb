@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Lists::MoveService, feature_category: :portfolio_management do
+RSpec.describe Boards::Lists::MoveService, feature_category: :planning_views do
   describe '#execute' do
     context 'when board parent is a project' do
       let(:project) { create(:project) }

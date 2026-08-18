@@ -26,8 +26,7 @@ module QA
         end
 
         it(
-          'is allowed to push code to sub-group project via the CLI',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363345'
+          'is allowed to push code to sub-group project via the CLI'
         ) do
           expect do
             Resource::Repository::Push.fabricate! do |push|
@@ -42,8 +41,7 @@ module QA
         end
 
         it(
-          'is allowed to create a file in sub-group project via the API',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
+          'is allowed to create a file in sub-group project via the API'
         ) do
           # Retry is needed due to delays with project authorization updates
           # Long term solution to accessing the status of a project authorization update
@@ -59,8 +57,7 @@ module QA
         end
 
         it(
-          'is allowed to commit to sub-group project via the API',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
+          'is allowed to commit to sub-group project via the API'
         ) do
           # Retry is needed due to delays with project authorization updates
           # Long term solution to accessing the status of a project authorization update
@@ -96,8 +93,7 @@ module QA
         end
 
         it(
-          'is not allowed to push code to parent group project via the CLI',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363344'
+          'is not allowed to push code to parent group project via the CLI'
         ) do
           expect do
             Resource::Repository::Push.fabricate! do |push|
@@ -112,8 +108,7 @@ module QA
         end
 
         it(
-          'is not allowed to create a file in parent group project via the API',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363343'
+          'is not allowed to create a file in parent group project via the API'
         ) do
           expect do
             create(:file,
@@ -124,8 +119,7 @@ module QA
         end
 
         it(
-          'is not allowed to commit to parent group project via the API',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363342'
+          'is not allowed to commit to parent group project via the API'
         ) do
           expect do
             create(:commit,

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createRouter from '~/repository/router';
 import UploadButton from './details/upload_button.vue';
@@ -18,7 +18,7 @@ export const initUploadFileTrigger = () => {
     fullName,
   } = uploadFileTriggerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: uploadFileTriggerEl,
     name: 'UploadButtonRoot',
     router: createRouter(projectPath, originalBranch, fullName),
@@ -28,11 +28,8 @@ export const initUploadFileTrigger = () => {
       canPushCode: parseBoolean(canPushCode),
       canPushToBranch: parseBoolean(canPushToBranch),
       path,
-      projectPath,
       emptyRepo: true,
     },
-    render(h) {
-      return h(UploadButton);
-    },
+    component: UploadButton,
   });
 };

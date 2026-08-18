@@ -19,7 +19,6 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
   end
 
   before do
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 

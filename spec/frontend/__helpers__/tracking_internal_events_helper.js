@@ -1,10 +1,14 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 import yaml from 'js-yaml';
 import { InternalEvents } from '~/tracking';
 
-async function loadYamlFile(path) {
+/**
+ * Synchronously load and parse a YAML file.
+ * Returns null if the file does not exist; throws for any other error.
+ */
+function loadYamlFileSync(path) {
   try {
-    const fileData = await fs.readFile(path, 'utf8');
+    const fileData = fs.readFileSync(path, 'utf8');
     return yaml.safeLoad(fileData);
   } catch (err) {
     if (err.code === 'ENOENT') {
@@ -14,7 +18,15 @@ async function loadYamlFile(path) {
   }
 }
 
-export async function readEventDefinition(eventName) {
+/**
+ * Synchronously read and return the event definition for the given event name.
+ *
+ * Checks ee/config/events first for EE spec files, then falls back to
+ * config/events. Throws synchronously when no definition file is found so
+ * that the error is attributed to the test that triggered the missing event
+ * rather than surfacing as an unhandled promise rejection in an unrelated suite.
+ */
+export function readEventDefinitionSync(eventName) {
   const isEE = expect.getState().testPath.includes('/ee/');
   const eePath = `./ee/config/events/${eventName}.yml`;
   const cePath = `./config/events/${eventName}.yml`;
@@ -22,13 +34,17 @@ export async function readEventDefinition(eventName) {
   let eventDefinition;
 
   if (isEE) {
-    eventDefinition = (await loadYamlFile(eePath)) || (await loadYamlFile(cePath));
+    eventDefinition = loadYamlFileSync(eePath) || loadYamlFileSync(cePath);
   } else {
-    eventDefinition = await loadYamlFile(cePath);
+    eventDefinition = loadYamlFileSync(cePath);
   }
 
   if (!eventDefinition) {
-    throw new Error(`Event definition file not found for ${eventName}`);
+    throw new Error(
+      `Missing event definition for "${eventName}". ` +
+        `Create config/events/${eventName}.yml (or ee/config/events/${eventName}.yml for EE-only events). ` +
+        `Run: bundle exec rails generate gitlab:internal_events:event_definition ${eventName}`,
+    );
   }
 
   return eventDefinition;
@@ -38,10 +54,15 @@ export function useMockInternalEventsTracking() {
   let originalSnowplow;
   let trackEventSpy;
   let disposables = [];
-  let eventDefinition;
 
-  const validateEvent = async (eventName, properties) => {
-    eventDefinition = await readEventDefinition(eventName);
+  /**
+   * Validate the event synchronously so that any error is thrown inside the
+   * mock implementation and immediately fails the originating test rather than
+   * becoming an unhandled promise rejection attributed to a different suite.
+   */
+  const validateEventSync = (eventName, properties) => {
+    const eventDefinition = readEventDefinitionSync(eventName);
+
     if (eventDefinition.action !== eventName) {
       throw new Error(`Event "${eventName}" is not defined in event definitions.`);
     }
@@ -50,7 +71,7 @@ export function useMockInternalEventsTracking() {
     Object.keys(properties).forEach((prop) => {
       if (!definedProperties[prop]) {
         throw new Error(
-          `Property "${prop}" is not defined for event "${eventName} in event definition file".`,
+          `Property "${prop}" is not defined for event "${eventName}" in event definition file.`,
         );
       }
     });
@@ -74,8 +95,8 @@ export function useMockInternalEventsTracking() {
   beforeEach(() => {
     trackEventSpy = jest
       .spyOn(InternalEvents, 'trackEvent')
-      .mockImplementation(async (eventName, properties = {}) => {
-        await validateEvent(eventName, properties);
+      .mockImplementation((eventName, properties = {}) => {
+        validateEventSync(eventName, properties);
       });
 
     originalSnowplow = window.snowplow;

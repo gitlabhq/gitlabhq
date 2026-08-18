@@ -35,6 +35,7 @@ describe('Board list component', () => {
   let resolveMutation;
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
+  const findTreeRootWrapper = () => wrapper.findComponent('[data-testid="tree-root-wrapper"]');
   const findDraggable = () => wrapper.findComponent(Draggable);
   const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -60,11 +61,11 @@ describe('Board list component', () => {
       },
     },
   ) => {
-    findByTestId('tree-root-wrapper').vm.$emit('start', params);
+    findTreeRootWrapper().vm.$emit('start', params);
   };
 
   const endDrag = (params) => {
-    findByTestId('tree-root-wrapper').vm.$emit('end', params);
+    findTreeRootWrapper().vm.$emit('end', params);
   };
 
   useFakeRequestAnimationFrame();
@@ -330,10 +331,10 @@ describe('Board list component', () => {
           expect(document.removeEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
         });
 
-        it('emits the `dragStop` event with the item type to the parent', () => {
+        it('emits the `drag-stop` event with the item type to the parent', () => {
           endDrag(getDragEndParam(DraggableItemTypes.card));
 
-          expect(wrapper.emitted('dragStop')).toEqual([[]]);
+          expect(wrapper.emitted('drag-stop')).toEqual([[]]);
         });
       });
 
@@ -531,7 +532,7 @@ describe('Board list component', () => {
     }));
 
     expect(wrapper.findComponent(BoardNewIssue).exists()).toBe(true);
-    wrapper.findComponent(BoardNewIssue).vm.$emit('addNewIssue', { title: 'Foo' });
+    wrapper.findComponent(BoardNewIssue).vm.$emit('add-new-issue', { title: 'Foo' });
 
     await resolveMutation(issueCreateMutation);
 

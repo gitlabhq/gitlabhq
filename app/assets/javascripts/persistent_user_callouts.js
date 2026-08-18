@@ -11,7 +11,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-approaching-seat-count-threshold',
   '.js-reached-seat-count-threshold',
   '.js-overage-seat-count-threshold',
-  '.js-storage-pre-enforcement-alert',
   '.js-user-over-limit-free-plan-alert',
   '.js-minute-limit-banner',
   '.js-submit-license-usage-data-banner',

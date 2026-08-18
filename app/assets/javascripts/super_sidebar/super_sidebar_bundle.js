@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { registerNavShortcutLinks } from '~/lib/utils/navigation_utility';
 import { CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
@@ -50,13 +52,11 @@ export const getSuperSidebarData = () => {
   const el = document.querySelector('.js-super-sidebar');
   if (!el) return false;
 
-  const { rootPath, sidebar, commandPalette, isSaas } = el.dataset;
+  const { sidebar, commandPalette, isSaas } = el.dataset;
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
   const { searchContext } = searchData;
   const currentPath = sidebarData?.current_context?.item?.fullPath;
-  const projectsPath = sidebarData.projects_path;
-  const groupsPath = sidebarData.groups_path;
   const commandPaletteData = JSON.parse(commandPalette);
   const projectFilesPath = commandPaletteData.project_files_url;
   const projectBlobPath = commandPaletteData.project_blob_url;
@@ -67,13 +67,10 @@ export const getSuperSidebarData = () => {
 
   return {
     el,
-    rootPath,
     currentPath,
     isSaas,
     sidebarData,
     searchContext,
-    projectsPath,
-    groupsPath,
     projectFilesPath,
     projectBlobPath,
     commandPaletteCommands,
@@ -83,79 +80,35 @@ export const getSuperSidebarData = () => {
   };
 };
 
-export const initSuperSidebar = ({
-  el,
-  rootPath,
-  currentPath,
-  isSaas,
-  sidebarData,
-  searchContext,
-  projectsPath,
-  groupsPath,
-  projectFilesPath,
-  projectBlobPath,
-  commandPaletteCommands,
-  commandPaletteLinks,
-  isImpersonating,
-  isGroup,
-}) => {
+export const initSuperSidebar = ({ el, currentPath, isSaas, sidebarData }) => {
   if (!el) return false;
 
   bindSuperSidebarCollapsedEvents();
   initSuperSidebarCollapsedState();
 
-  return new Vue({
+  registerNavShortcutLinks(sidebarData.current_menu_items || []);
+
+  return initVueApp({
     el,
     name: 'SuperSidebarRoot',
     apolloProvider,
     provide: {
-      rootPath,
       currentPath,
-      isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
-      commandPaletteCommands,
-      commandPaletteLinks,
-      searchContext,
-      projectFilesPath,
-      projectBlobPath,
-      projectsPath,
-      groupsPath,
-      groupPath: groupsPath,
-      fullPath: sidebarData.work_items?.full_path,
-      hasIssuableHealthStatusFeature: sidebarData.work_items?.has_issuable_health_status_feature,
-      hasIssueWeightsFeature: sidebarData.work_items?.has_issue_weights_feature,
-      hasIterationsFeature: sidebarData.work_items?.has_iterations_feature,
-      issuesListPath: sidebarData.work_items?.issues_list_path,
-      canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
-      labelsManagePath: sidebarData.work_items?.labels_manage_path,
-      isGroup,
+      resourceId: sidebarData.current_context?.item?.id,
+      aiSearchAvailable: parseBoolean(sidebarData.ai_search_available),
       isSaas: parseBoolean(isSaas),
     },
-    store: createStore({
-      searchContext,
-      search: '',
-    }),
-    render(h) {
-      return h(SuperSidebar, {
-        props: {
-          sidebarData,
-        },
-      });
+    component: SuperSidebar,
+    props: {
+      sidebarData,
     },
   });
 };
 
-/**
- * This init function duplicates the args of `initSuperSidebar` for now.
- * TODO: When we clean up the `paneled_view` feature flag, we should remove the unused args from
- * both functions.
- */
 export const initSuperTopbar = ({
-  rootPath,
   sidebarData,
   searchContext,
-  projectsPath,
-  groupsPath,
   projectFilesPath,
   projectBlobPath,
   commandPaletteCommands,
@@ -167,23 +120,18 @@ export const initSuperTopbar = ({
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'SuperTopbarRoot',
     apolloProvider,
     provide: {
-      rootPath,
       isImpersonating,
       commandPaletteCommands,
       commandPaletteLinks,
       searchContext,
       projectFilesPath,
       projectBlobPath,
-      projectsPath,
-      groupsPath,
-      groupPath: groupsPath,
       fullPath: sidebarData.work_items?.full_path,
-      canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
       isGroup,
       isSaas: parseBoolean(isSaas),
     },
@@ -191,12 +139,9 @@ export const initSuperTopbar = ({
       searchContext,
       search: '',
     }),
-    render(h) {
-      return h(SuperTopbar, {
-        props: {
-          sidebarData,
-        },
-      });
+    component: SuperTopbar,
+    props: {
+      sidebarData,
     },
   });
 };

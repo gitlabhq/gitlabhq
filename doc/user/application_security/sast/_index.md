@@ -120,12 +120,6 @@ configuration file.
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
-
-{{< /history >}}
-
 You can enable and configure SAST by using the UI, either with the default settings or with
 customizations. The method you can use depends on your GitLab license tier.
 
@@ -319,14 +313,6 @@ For SAST results in a merge request, see [merge request reports](../../project/m
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags/_index.md) named `sast_reports_in_inline_diff`. Disabled by default.
-- Enabled by default in GitLab 16.8.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
-
-{{< /history >}}
-
 SAST results display in the merge request **Changes** view. Lines containing SAST
 issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
 
@@ -402,7 +388,7 @@ For more information about language support plans in SAST, see the [category dir
 
 {{< history >}}
 
-- Support for C/C++ [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
+- Support for C/C++ [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14271) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -417,9 +403,11 @@ These languages are supported by both GitLab Advanced SAST (Ultimate) and standa
 | Java<sup>3</sup>       | {{< yes >}}                      | {{< yes >}}                   |
 | Java Properties        | {{< yes >}}                      | {{< yes >}}                   |
 | JavaScript<sup>4</sup> | {{< yes >}}                      | {{< yes >}}                   |
+| Objective-C (iOS)<sup>7</sup> | {{< yes >}}               | {{< yes >}}                   |
 | PHP                    | {{< yes >}}                      | {{< yes >}}                   |
 | Python                 | {{< yes >}}                      | {{< yes >}}                   |
 | Ruby<sup>5</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| Swift (iOS)<sup>7</sup> | {{< yes >}}                     | {{< yes >}}                   |
 | TypeScript             | {{< yes >}}                      | {{< yes >}}                   |
 | YAML<sup>6</sup>       | {{< yes >}}                      | {{< yes >}}                   |
 
@@ -438,6 +426,11 @@ These languages are supported by both GitLab Advanced SAST (Ultimate) and standa
    - `application*.yaml`
    - `bootstrap*.yml`
    - `bootstrap*.yaml`
+7. GitLab Advanced SAST support for Swift and Objective-C is in
+   [beta](../../../policy/development_stages_support.md#beta). Analysis runs as a separate
+   `gitlab-advanced-sast-ext` job, which is enabled together with GitLab Advanced SAST by the
+   shared `GITLAB_ADVANCED_SAST_ENABLED` variable. For more information, see
+   [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
 <!-- markdownlint-enable MD029 -->
 
@@ -451,9 +444,7 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 | Elixir (Phoenix)   | {{< yes >}} [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                | None                         |
 | Groovy             | {{< yes >}} [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup>  | None                         |
 | Kotlin<sup>4</sup> | {{< yes >}}                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
-| Objective-C (iOS)  | {{< yes >}}                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 | Scala              | {{< yes >}}                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
-| Swift (iOS)        | {{< yes >}}                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 
 **Footnotes**:
 
@@ -513,14 +504,6 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 
 ## Automatic vulnerability resolution
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project flag](../../../administration/feature_flags/_index.md) named `sec_mark_dropped_findings_as_resolved`.
-- Enabled by default in GitLab 15.10.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2.
-
-{{< /history >}}
-
 To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:
 
 - You [disable a predefined rule](customize_rulesets.md#disable-default-rules).
@@ -562,7 +545,7 @@ A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgre
 
 Prerequisites:
 
-- The Developer, Maintainer or Owner role for the project.
+- The Developer, Maintainer, or Owner role for the project.
 
 Each SAST analyzer outputs a JSON report as a job artifact. The file contains details of all
 detected vulnerabilities. You can download the file for processing outside GitLab.
@@ -1296,6 +1279,7 @@ images from `registry.gitlab.com` into your
 
 ```plaintext
 registry.gitlab.com/security-products/gitlab-advanced-sast:2
+registry.gitlab.com/security-products/gitlab-advanced-sast-ext:0
 registry.gitlab.com/security-products/kubesec:6
 registry.gitlab.com/security-products/pmd-apex:6
 registry.gitlab.com/security-products/semgrep:6

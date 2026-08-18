@@ -84,7 +84,7 @@ The following guide assumes that:
 
 > [!warning]
 > Geo works with streaming replication. Logical replication is not supported,
-> but [epic 18022](https://gitlab.com/groups/gitlab-org/-/epics/18022) proposes to
+> but [epic 18022](https://gitlab.com/groups/gitlab-org/-/work_items/18022) proposes to
 > change this behavior.
 
 #### Step 1. Configure the primary site
@@ -202,7 +202,7 @@ The following guide assumes that:
    ##
    ## Private address
    ##
-   ip route get 255.255.255.255 | awk '{print "Private address:", $NF; exit}'
+   ip route get 255.255.255.255 | awk '{for (i=1; i<=NF; i++) if ($i == "src") { print "Private address:", $(i+1); exit }}'
 
    ##
    ## Public address

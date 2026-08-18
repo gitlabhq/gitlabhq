@@ -43,25 +43,6 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
       service.execute
     end
 
-    context 'when commit_notes_export_via_repo is disabled' do
-      before do
-        stub_feature_flags(commit_notes_export_via_repo: false)
-      end
-
-      it 'saves the models' do
-        saver_params = {
-          project: project,
-          current_user: user,
-          shared: shared,
-          params: {},
-          logger: an_instance_of(Gitlab::Export::Logger)
-        }
-        expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).with(saver_params).and_call_original
-
-        service.execute
-      end
-    end
-
     it 'saves the uploads' do
       expect(Gitlab::ImportExport::UploadsSaver).to receive(:new).and_call_original
 

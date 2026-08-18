@@ -24,11 +24,6 @@ title: GitLab Duo Non-Agentic Chat
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for GitLab.com in GitLab 16.0.
-- Changed to [beta](../../policy/development_stages_support.md#beta) for GitLab.com in GitLab 16.6.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a beta for GitLab Self-Managed in GitLab 16.8.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) from Ultimate to Premium tier in GitLab 16.9 while in beta.
-- [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
@@ -169,13 +164,6 @@ However, administrators can [change this expiration period](#configure-chat-conv
 
 ## Use GitLab Duo Chat in the Web IDE
 
-{{< history >}}
-
-- Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
-- Changed to generally available in GitLab 16.11.
-
-{{< /history >}}
-
 To use GitLab Duo Chat in the Web IDE on GitLab:
 
 1. Open the Web IDE:
@@ -205,8 +193,6 @@ system versioning, feature state management, and feature flags:
 
 {{< history >}}
 
-- Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
-- Changed to generally available in GitLab 16.11.
 - Status [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1712) in the GitLab for VS Code extension 5.29.0.
 
 {{< /history >}}
@@ -228,7 +214,7 @@ For example, you can select code and ask Chat, `Can you simplify this?`.
 
 {{< history >}}
 
-- Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab for VS Code extension 5.15.0.
+- Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/work_items/15218) in the GitLab for VS Code extension 5.15.0.
 - Insert Snippet [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2150) in the GitLab for VS Code extension 5.25.0.
 
 {{< /history >}}
@@ -285,12 +271,6 @@ If you have selected code in the editor, this selection is sent along with your 
 
 ## Use GitLab Duo Chat in JetBrains IDEs
 
-{{< history >}}
-
-- Introduced as generally available in GitLab 16.11.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You've [installed and configured the GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md).
@@ -332,7 +312,7 @@ After GitLab Duo Chat opens:
 
 {{< history >}}
 
-- Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab for VS Code extension 5.14.0](https://gitlab.com/groups/gitlab-org/-/epics/15218).
+- Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab for VS Code extension 5.14.0](https://gitlab.com/groups/gitlab-org/-/work_items/15218).
 
 {{< /history >}}
 

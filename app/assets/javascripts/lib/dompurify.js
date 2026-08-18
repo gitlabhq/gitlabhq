@@ -30,6 +30,15 @@ export const defaultConfig = {
   ALLOW_UNKNOWN_PROTOCOLS: true,
 };
 
+// Config for rendering already-sanitised HTML (e.g. `titleHtml`) in a context
+// that is itself a link, such as a work item listing, issue board card, system
+// note, or sticky header. Forbids `<a>` on top of the defaults to strip any
+// rendered links from within, avoiding unintuitive nested links.
+export const titleInLinkSafeHtmlConfig = {
+  ...defaultConfig,
+  FORBID_TAGS: [...defaultConfig.FORBID_TAGS, 'a'],
+};
+
 // Only icons urls from `gon` are allowed
 const getAllowedIconUrls = (gon = window.gon) =>
   [gon.sprite_file_icons, gon.sprite_icons]

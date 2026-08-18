@@ -493,6 +493,32 @@ SSH 키의 수명이 설정되면 GitLab은:
 1. **사용자 OAuth 응용 프로그램** 체크박스를 선택하거나 선택 해제합니다.
 1. **변경 사항 저장**을 선택합니다.
 
+### OAuth 액세스 토큰의 수명 제한 {#limit-the-lifetime-of-oauth-access-tokens}
+
+{{< history >}}
+
+- [GitLab 19.1에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237354)
+
+{{< /history >}}
+
+기본적으로 OAuth 액세스 토큰은 2시간(7200초) 후에 만료됩니다. 인스턴스 관리자는 OAuth 액세스 토큰의 사용자 지정 수명을 구성할 수 있습니다.
+
+최솟값은 300초(5분)입니다. 설정하지 않으면 기본값인 7200초(2시간)가 적용됩니다. 이 설정은 인스턴스에서 발급한 모든 새 OAuth 액세스 토큰에 적용됩니다.
+
+전제 조건:
+
+- 관리자(administrator) 권한이 있어야 합니다.
+
+OAuth 액세스 토큰의 수명을 설정하려면:
+
+1. 오른쪽 위 모서리에서 **Admin**을 선택합니다.
+1. 왼쪽 사이드바에서 **Settings** > **General**을 선택합니다.
+1. **계정과 제한** 섹션을 펼칩니다.
+1. **OAuth access token lifetime (seconds)** 필드를 채웁니다.
+1. **변경 사항 저장**을 선택합니다.
+
+[애플리케이션 설정 API](../../api/settings.md)에서 `oauth_access_token_expires_in` 속성을 사용하여 이 설정을 구성할 수도 있습니다.
+
 ## 사용자 프로필 이름 변경 비활성화 {#disable-user-profile-name-changes}
 
 {{< details >}}

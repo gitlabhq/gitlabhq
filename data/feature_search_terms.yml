@@ -92,7 +92,7 @@
   feature_key: group_issue_list
   panels: [group]
 - term: epic
-  feature_key: group_epic_list
+  feature_key: group_issue_list
   panels: [group]
 - term: backlog
   feature_key: project_issue_list

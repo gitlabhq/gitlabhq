@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { formatNumber } from '~/locale';
 
@@ -30,8 +31,9 @@ export default {
     RunnerTags,
     RunnerTypeBadge,
     RunnerManagersBadge,
-    RunnerUpgradeStatusIcon: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
+    RunnerUpgradeStatusIcon: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
+    ),
     TooltipOnTruncate,
   },
   directives: {

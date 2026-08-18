@@ -1,0 +1,9 @@
+---
+name: log_labkit_rack_divergence
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29362
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245389
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605893
+milestone: '19.2'
+type: ops
+group: "group::Networking & Incident Management"
+default_enabled: false

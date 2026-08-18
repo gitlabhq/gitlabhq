@@ -4,7 +4,9 @@
 # when an error is raised from within a Fiber.
 # https://bugs.ruby-lang.org/issues/16829
 module EnumeratorNextPatch
-  GITLAB_BACKTRACE_REGEX = %r{^(.*):[0-9]+:in `gitlab_patch_backtrace_marker'$}
+  # Ruby 3.4 renders backtrace labels as `:in '<Class>#<method>'` (single quotes,
+  # optional receiver-class prefix); Ruby 3.3 uses `:in `<method>'`. Accept both.
+  GITLAB_BACKTRACE_REGEX = %r{^(.*):[0-9]+:in ['`](?:[\w:]+#)?gitlab_patch_backtrace_marker'$}
 
   %w[next next_values peek peek_values].each do |name|
     define_method(name) do |*args|

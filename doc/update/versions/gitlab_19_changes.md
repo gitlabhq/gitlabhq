@@ -39,12 +39,19 @@ Each list item points to a specific section that holds more information.
 Items marked with an installation method, like `(Geo)` or `(Linux package)`,
 apply only to that method. All other items apply to all installation methods.
 
+### Upgrade to 19.2
+
+Before upgrading to GitLab 19.2, review the following:
+
+- [19.2.0] - [GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade](#gitlab-duo-self-hosted-ai-gateway-urls-cleared-after-upgrade) (Linux package)
+
 ### Upgrade to 19.0
 
 Before upgrading to GitLab 19.0, review the following:
 
 - [19.0.0 - 19.0.1] - [Container registry metadata database enabled by default in prefer mode](#container-registry-metadata-database-enabled-by-default-in-prefer-mode) (Linux package, self-compiled)
 - [19.0.0] - [Container registry S3 storage driver replaced by s3_v2](#container-registry-s3-storage-driver-replaced-by-s3_v2) (Linux package, self-compiled)
+- [19.0.0 - 19.1.0] - [Orphaned `.agents` and `.claude` directories on Linux package RPM installs](#orphaned-agents-and-claude-directories-on-linux-package-rpm-installs) (Linux package)
 - [19.0.0] - [PostgreSQL 17 minimum requirement](#postgresql-17-minimum-requirement)
 - [19.0.0] - [Linux package support for Ubuntu 20.04 discontinued](#linux-package-support-for-ubuntu-2004-discontinued) (Linux package)
 - [19.0.0] - [Redis 6 support removed](#redis-6-support-removed) (Linux package)
@@ -59,6 +66,30 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### GitLab Duo Self-Hosted AI Gateway URLs cleared after upgrade
+
+- Affects: Linux package
+- Affected versions: 19.2.0
+- Fixed versions: 19.2.1
+
+When upgrading an instance directly to GitLab 19.2.0,
+the GitLab Duo Self-Hosted service endpoint settings can be cleared.
+The following fields under **Admin area** > **GitLab Duo** > **Configuration** > **Service endpoints** may
+become empty after the upgrade:
+
+- **Local AI Gateway URL**
+- **Local URL for the GitLab Duo Agent Platform service**
+
+Other related settings may also revert to their defaults.
+GitLab Duo Self-Hosted features stop working until the URLs are manually re-entered.
+
+This issue does not occur when upgrading to GitLab 19.2.1 or later.
+
+If you have already upgraded to 19.2.0 and are affected, restore the correct
+AI Gateway endpoint URLs in **Admin area** > **GitLab Duo** > **Configuration** > **Service endpoints**
+and save the changes.
+For more information, see [issue 606458](https://gitlab.com/gitlab-org/gitlab/-/work_items/606458).
 
 ### Container registry metadata database enabled by default in prefer mode
 
@@ -110,9 +141,16 @@ For more information, see
 - Affects: Linux package, self-compiled
 - Affected versions: 19.0.0
 
-In GitLab 19.0, the legacy `s3` container registry storage driver (AWS SDK v1) is removed
-and aliased to the new `s3_v2` driver (AWS SDK v2). This change affects installations
-using S3-compatible object storage backends such as Ceph RGW, MinIO, or OVH S3.
+In GitLab 19.0, the legacy `s3` container registry storage driver (AWS SDK v1) is removed.
+The `s3` and `s3aws` driver names are now aliases for the `s3_v2` driver (AWS SDK v2).
+Because the previous driver names continue to work, instances that were never reconfigured
+also move to AWS SDK v2 when they upgrade.
+
+This change affects two groups of installations:
+
+- Installations that use S3-compatible object storage backends such as Ceph RGW, MinIO, or OVH S3.
+- Installations that use AWS S3 and restrict outbound network traffic.
+  For more information, see [presigned URL hostnames on AWS S3](#presigned-url-hostnames-on-aws-s3).
 
 The `s3_v2` driver introduces two breaking changes for non-AWS S3-compatible backends:
 
@@ -173,6 +211,45 @@ registry['storage'] = {
 For more information, see
 [the container registry object storage documentation](../../administration/packages/container_registry.md#use-object-storage).
 
+#### Presigned URL hostnames on AWS S3
+
+When the registry serves a blob, it redirects the client to a presigned S3 URL.
+AWS SDK v2 resolves the S3 endpoint for the region in your registry configuration,
+so these presigned URLs can use a regional hostname such as `s3.us-east-1.amazonaws.com`
+instead of the global `s3.amazonaws.com` hostname that AWS SDK v1 could return.
+
+The registry itself continues to work, but clients must be able to reach the new hostname.
+In environments that filter outbound traffic with a proxy, firewall, or secure web gateway,
+an allowlist that contains only `s3.amazonaws.com` blocks the redirect target.
+Image pulls then fail with `403 Forbidden` responses returned by the filtering device rather than by S3.
+
+Before you upgrade, add the regional hostname for your bucket region to the allowlist on any device
+that filters outbound traffic from your container image clients.
+Use the specific regional hostname for your region, such as `s3.eu-west-2.amazonaws.com`,
+rather than a wildcard that covers all of Amazon S3.
+
+If your instance uses an S3 VPC endpoint or another fixed endpoint, set `regionendpoint` to that
+endpoint so that presigned URLs use a hostname you control.
+For more information, see [use object storage](../../administration/packages/container_registry.md#use-object-storage).
+
+To validate blob pulls after you upgrade:
+
+1. Pull an image that is larger than a few megabytes, so that the pull is served by a blob redirect
+   rather than from a cache:
+
+   ```shell
+   docker pull gitlab.example.com:5050/mygroup/myproject/myimage:latest
+   ```
+
+1. If the pull fails, request a blob directly to see the redirect target:
+
+   ```shell
+   curl --head "https://gitlab.example.com:5050/v2/mygroup/myproject/myimage/blobs/<digest>"
+   ```
+
+   Check the `location` response header for the hostname the client is redirected to,
+   then confirm that hostname is allowed by your egress controls.
+
 ### Geo design management replication `NoMethodError` when project is `nil`
 
 - Affects: Geo
@@ -227,6 +304,32 @@ default). To repair affected repositories immediately,
 
 For more information, see [issue 600486](https://gitlab.com/gitlab-org/gitlab/-/work_items/600486).
 
+### Geo verification concurrency limit applied as a global total
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Geo
+- Affected versions: 19.3.0
+
+The **Verification concurrency limit** Geo site setting is now applied as a single global
+limit on the number of verification jobs that run concurrently on a site, across all data
+types combined. Previously, the configured value was divided by the number of data types
+before being applied, so the effective concurrency was lower and changed as data types were
+added or consolidated.
+
+To preserve the effective concurrency in use and avoid a spike in verification load, GitLab
+19.3 automatically rescales each site's stored **Verification concurrency limit** to
+`max(1, floor(previous_value / number_of_data_types))`. As a result, the value shown in the
+Admin UI and returned by the API decreases. Review and re-tune the setting after upgrading.
+If you manage this setting through the API or infrastructure-as-code, update your stored
+value to match.
+
+For more information, see [issue 596579](https://gitlab.com/gitlab-org/gitlab/-/work_items/596579).
+
 ### Linux package support for Ubuntu 20.04 discontinued
 
 - Affects: Linux package
@@ -266,10 +369,19 @@ is installed with:
 RuntimeError: Removed configurations found in gitlab.rb. Aborting reconfigure.
 ```
 
-> [!NOTE]
-> `gitlab-ctl check-config --version 19.0.x` does not currently detect this condition.
-> Do not rely on `check-config` to validate Mattermost key removal before upgrading.
-> See [issue 9916](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9916) for details.
+> [!warning]
+> The behavior when upgrading from certain 18.11.x versions differs:
+>
+> - 18.11.0 through 18.11.6: The upgrade does not detect stale Mattermost configuration,
+>   so the upgrade proceeds without warning even if cleanup is incomplete.
+>   Do not rely on `gitlab-ctl check-config --version 19.0.x` to validate
+>   Mattermost key removal before upgrading ([issue 9916](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9916)).
+> - 18.11.7: The upgrade is blocked, even when all `mattermost[...]` keys have been
+>   removed from `gitlab.rb`. The block is a false positive caused by stale Mattermost secrets
+>   that GitLab generated unconditionally in the node cache.
+>   To unblock the upgrade, use one of the following options:
+>   - Upgrade to 18.11.9 or later before upgrading to 19.0.
+>   - Apply the [manual workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/10001#workaround).
 
 ### Linux package support for SUSE distributions discontinued
 
@@ -318,3 +430,51 @@ for proof-of-concept and test environments and are not recommended for productio
 instance with any of these bundled services, follow the
 [migration guide](https://docs.gitlab.com/charts/installation/migration/bundled_chart_migration/)
 to configure external services before upgrading to GitLab 19.0.
+
+### Orphaned `.agents` and `.claude` directories on Linux package RPM installs
+
+- Affects: Linux package (RPM)
+- Affected versions:
+
+  | Release | Affected patch releases | Fixed patch level |
+  |:--------|:------------------------|:------------------|
+  | 19.0    | 19.0.0 - 19.0.2         | 19.0.3            |
+  | 19.1    | 19.1.0                  | 19.1.1            |
+
+Linux packages for the affected patch release mistakenly included two
+directories under `/opt/gitlab/embedded/service/gitlab-rails/`:
+
+- `.agents/`
+- `.claude/`
+
+These directories are excluded from the package payload starting with the fixed patch levels,
+and by default in GitLab 19.2 and later. For more information, see
+[issue 603547](https://gitlab.com/gitlab-org/gitlab/-/issues/603547).
+
+On RPM-based distributions, RPM does not remove a directory it no longer owns
+if the directory still contains files. Even after you upgrade a Linux
+package RPM install past a fixed version, these directories can be left
+behind on disk:
+
+- `/opt/gitlab/embedded/service/gitlab-rails/.agents`
+- `/opt/gitlab/embedded/service/gitlab-rails/.claude`
+
+RPM does not remove these orphaned directories automatically. Check for these directories and,
+if present, remove them manually:
+
+1. Check whether the directories exist:
+
+   ```shell
+   ls -la /opt/gitlab/embedded/service/gitlab-rails/.agents \
+          /opt/gitlab/embedded/service/gitlab-rails/.claude
+   ```
+
+1. If the directories are present, remove them:
+
+   ```shell
+   sudo rm -rf /opt/gitlab/embedded/service/gitlab-rails/.agents \
+               /opt/gitlab/embedded/service/gitlab-rails/.claude
+   ```
+
+DEB-based distributions are not affected because `dpkg` removes directories
+it no longer owns during the upgrade.

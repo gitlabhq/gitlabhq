@@ -17,6 +17,24 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def note_issue_email_for_internal_note
+    @user = project.first_owner
+    note_email(:note_issue_email) do
+      note = <<-MD.strip_heredoc
+        This is an internal note on an issue :lock:
+
+        In this notification email, we expect to see:
+
+        - An "Internal note" indicator above the author line
+        - The note contents (that's what you're looking at)
+        - A link to view this note on GitLab
+        - An explanation for why the user is receiving this notification
+      MD
+
+      create_note(noteable_type: 'Issue', noteable_id: issue.id, note: note, internal: true)
+    end
+  end
+
   def note_wiki_page_email_for_individual_note
     note_email(:note_wiki_page_email) do
       note = <<-MD.strip_heredoc
@@ -35,6 +53,14 @@ class NotifyPreview < ActionMailer::Preview
         note: note,
         project: wiki_page_meta.project
       )
+    end
+  end
+
+  def note_issue_email_for_confidential_work_item
+    note_email(:note_issue_email) do
+      issue.update!(confidential: true)
+
+      create_note(noteable_type: 'Issue', noteable_id: issue.id, note: 'This is a note on a confidential work item.')
     end
   end
 
@@ -174,6 +200,17 @@ class NotifyPreview < ActionMailer::Preview
 
   def new_gpg_key_email
     Notify.new_gpg_key_email(gpg_key.id).message
+  end
+
+  def new_release_email
+    cleanup do
+      release = project.releases.first || project.releases.create!(
+        tag: 'v1.0', name: 'v1.0', author: user, released_at: Time.zone.now,
+        description: 'Release notes are rendered here, with full **markdown** support.'
+      )
+
+      Notify.new_release_email(user.id, release).message
+    end
   end
 
   def closed_merge_request_email

@@ -1,0 +1,24 @@
+# @feature_category: mcp_server
+query getRepositoryFile(
+  $projectPath: ID!
+  $ref: String!
+  $filePaths: [String!]!
+  $refType: RefType
+) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      blobs(ref: $ref, paths: $filePaths, refType: $refType) {
+        nodes {
+          id
+          path
+          size
+          rawSize
+          rawTextBlob
+          storedExternally
+          externalStorage
+        }
+      }
+    }
+  }
+}

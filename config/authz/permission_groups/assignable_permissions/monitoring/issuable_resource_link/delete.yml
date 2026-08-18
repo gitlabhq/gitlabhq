@@ -1,0 +1,9 @@
+---
+name: delete_issuable_resource_link
+description: Grants the ability to delete issuable resource links
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_issuable_resource_link

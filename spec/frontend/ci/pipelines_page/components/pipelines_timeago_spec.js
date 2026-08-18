@@ -25,6 +25,10 @@ describe('PipelinesTimeago component', () => {
       expect(findDuration().findComponent(GlIcon).props('name')).toBe('timer');
       expect(findDuration().text()).toBe('00:00:10');
     });
+
+    it('should render a tooltip explaining the duration', () => {
+      expect(findDuration().attributes('title')).toBe('Total time to run');
+    });
   });
 
   describe('with duration equal to 0', () => {

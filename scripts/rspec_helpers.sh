@@ -136,6 +136,7 @@ function debug_rspec_variables() {
 
   echoinfo "GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED: ${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED:-}"
   echoinfo "RSPEC_TESTS_FILTER_FILE: ${RSPEC_TESTS_FILTER_FILE:-}"
+  echoinfo "RSPEC_DRY_RUN_TAGS: ${RSPEC_DRY_RUN_TAGS:-}"
 }
 
 function handle_retry_rspec_in_new_process() {
@@ -216,11 +217,17 @@ function rspec_parallelized_job() {
   debug_rspec_variables
   debug_shell_options
 
+  local parallel_rspec_opts=(--rspec_args "$(rspec_args "${rspec_opts}")")
+
   if [[ -n "${rspec_tests_mapping_enabled}" ]]; then
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
-  else
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?
+    parallel_rspec_opts+=(--filter "${RSPEC_TESTS_FILTER_FILE}")
   fi
+
+  if [[ -n "${RSPEC_DRY_RUN_TAGS:-}" ]]; then
+    parallel_rspec_opts+=(--dry_run_tags "${RSPEC_DRY_RUN_TAGS}")
+  fi
+
+  tooling/bin/parallel_rspec "${parallel_rspec_opts[@]}" || rspec_run_status=$?
 
   echoinfo "RSpec exited with ${rspec_run_status}."
 

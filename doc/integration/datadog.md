@@ -12,8 +12,8 @@ title: Datadog
 
 {{< /details >}}
 
-The Datadog integration enables you to connect your GitLab projects to [Datadog](https://www.datadoghq.com/),
-synchronizing repository metadata to enrich your Datadog telemetry, have Datadog comment on Merge Requests, and send CI/CD pipeline and job information to Datadog.
+The Datadog integration enables you to connect your GitLab projects to [Datadog](https://www.datadoghq.com/).
+With this integration, you can synchronize repository metadata to enrich your Datadog telemetry, have Datadog comment on merge requests, and send CI/CD pipeline and job information to Datadog.
 
 ## Connect your Datadog account
 
@@ -52,7 +52,7 @@ For more information, see the [Datadog CI Visibility documentation](https://docs
 This feature is based on [Webhooks](../user/project/integrations/webhooks.md),
 and only requires configuration in GitLab:
 
-1. Optional. Select **Enable Pipeline job logs collection** to enable logs collection for the output of jobs. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3.)
+1. Optional. Select **Enable Pipeline job logs collection** to enable logs collection for the output of jobs.
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
    <!-- vale gitlab_base.Spelling = NO -->

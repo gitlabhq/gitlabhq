@@ -136,7 +136,6 @@ module Gitlab
                 { service: 'gitaly.CommitService', method: 'CountCommits' },
                 { service: 'gitaly.CommitService', method: 'CountDivergingCommits' },
                 { service: 'gitaly.CommitService', method: 'FilterShasWithSignatures' },
-                { service: 'gitaly.CommitService', method: 'FindAllCommits' },
                 { service: 'gitaly.CommitService', method: 'FindCommit' },
                 { service: 'gitaly.CommitService', method: 'FindCommits' },
                 { service: 'gitaly.CommitService', method: 'GetCommitMessages' },
@@ -438,6 +437,7 @@ module Gitlab
       metadata['user_id'] = context_data['meta.user_id'].to_s if context_data['meta.user_id']
       metadata[Labkit::Fields::GL_USER_ID] = context_data['meta.gl_user_id'].to_s if context_data['meta.gl_user_id']
       metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data['meta.remote_ip']
+      metadata[Labkit::Fields::CALLER_ID] = context_data['meta.caller_id'] if context_data['meta.caller_id']
       metadata
     end
 

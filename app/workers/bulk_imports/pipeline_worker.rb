@@ -32,19 +32,27 @@ module BulkImports
       new.perform_failure(job['args'][0], job['args'][2], Import::Exceptions::SidekiqExhaustedInterruptionsError.new)
     end
 
-    defer_on_database_health_signal(:gitlab_main, [], DEFER_ON_HEALTH_DELAY) do |job_args, schema, tables|
-      pipeline_tracker = ::BulkImports::Tracker.find(job_args.first)
+    defer_on_database_health_signal(:gitlab_main, [], DEFER_ON_HEALTH_DELAY) do |job_args, schema|
+      pipeline_tracker = ::BulkImports::Tracker.find_by_id(job_args.first)
+
+      unless pipeline_tracker
+        ::BulkImports::Logger.build.warn(
+          class: 'BulkImports::PipelineWorker',
+          pipeline_tracker_id: job_args.first,
+          message: 'BulkImports::Tracker not found'
+        )
+        next [schema, []]
+      end
+
       pipeline_schema = ::BulkImports::PipelineSchemaInfo.new(
         pipeline_tracker.pipeline_class,
         pipeline_tracker.entity.portable_class
       )
 
-      if pipeline_schema.db_schema && pipeline_schema.db_table
-        schema = pipeline_schema.db_schema
-        tables = [pipeline_schema.db_table]
-      end
+      schema = pipeline_schema.db_schema || schema
 
-      [schema, tables]
+      # tables is always empty so the autovacuum indicator never fires
+      [schema, []]
     end
 
     def self.defer_on_database_health_signal?

@@ -1,6 +1,6 @@
 description: Tracks changes to the work item notes filter.
 action: work_item_notes_filter_changed
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '15.10'

@@ -24,7 +24,7 @@ jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
       },
       on: {
         click: () => {
-          this.$emit('clickFile', { fileHash: 'first' });
+          this.$emit('click-file', { fileHash: 'first' });
         },
       },
     });
@@ -42,7 +42,7 @@ jest.mock('~/rapid_diffs/app/file_browser/file_browser_drawer.vue', () => ({
       },
       on: {
         click: () => {
-          this.$emit('clickFile', { fileHash: 'first' });
+          this.$emit('click-file', { fileHash: 'first' });
         },
       },
     });

@@ -81,7 +81,7 @@ module Gitlab
       end
 
       def check_disk_path_mismatch(pool)
-        pool.member_projects.each do |member_project|
+        pool.member_projects.sort_by(&:id).each do |member_project|
           gitaly_pool = fetch_gitaly_pool(member_project)
           next unless gitaly_pool
 

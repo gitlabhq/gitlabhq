@@ -84,6 +84,16 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :api do
     end
   end
 
+  describe 'merge_requests field' do
+    subject(:field) { described_class.fields['mergeRequests'] }
+
+    it 'resolves instance-wide merge requests with a capped page size and no text search' do
+      is_expected.to have_graphql_resolver(Resolvers::MergeRequests::RootResolver)
+      expect(field.max_page_size).to eq(20)
+      expect(field.arguments.keys).not_to include('search', 'in')
+    end
+  end
+
   describe 'usage_trends_measurements field' do
     subject { described_class.fields['usageTrendsMeasurements'] }
 

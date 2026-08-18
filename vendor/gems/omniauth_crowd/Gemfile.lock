@@ -2,39 +2,56 @@ PATH
   remote: .
   specs:
     omniauth_crowd (2.4.0)
-      activesupport
+      activesupport (>= 7.2, < 9)
       nokogiri (>= 1.4.4)
       omniauth (~> 2.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (7.0.3.1)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
+    activesupport (7.2.3.1)
+      base64
+      benchmark (>= 0.3)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.3.1)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
-      minitest (>= 5.1)
-      tzinfo (~> 2.0)
+      logger (>= 1.4.2)
+      minitest (>= 5.1, < 6)
+      securerandom (>= 0.3)
+      tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    concurrent-ruby (1.1.10)
+    base64 (0.3.0)
+    benchmark (0.5.0)
+    bigdecimal (4.1.2)
+    concurrent-ruby (1.3.7)
+    connection_pool (3.0.2)
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
+    drb (2.2.3)
     hashdiff (1.0.1)
     hashie (5.0.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    mini_portile2 (2.8.0)
+    logger (1.7.0)
+    mini_portile2 (2.8.9)
     minitest (5.16.2)
-    nokogiri (1.13.8)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.19.4)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.19.4-aarch64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     omniauth (2.1.0)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
     public_suffix (4.0.7)
-    racc (1.6.0)
+    racc (1.8.1)
     rack (2.2.4)
     rack-protection (2.2.2)
       rack
@@ -55,6 +72,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
+    securerandom (0.4.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     webmock (3.0.1)
@@ -63,7 +81,9 @@ GEM
       hashdiff
 
 PLATFORMS
+  aarch64-linux-gnu
   ruby
+  x86_64-linux-gnu
 
 DEPENDENCIES
   bundler (> 1.0.0)
@@ -76,21 +96,29 @@ DEPENDENCIES
   webmock (~> 3.0.0)
 
 CHECKSUMS
-  activesupport (7.0.3.1) sha256=e73b0bbbf25b60a3f558791628f60c7e1896f42f55808b42c02622b291c08b96
+  activesupport (7.2.3.1) sha256=11ebed516a43a0bb47346227a35ebae4d9427465a7c9eb197a03d5c8d283cb34
   addressable (2.8.0) sha256=f76d29d2d1f54b6c6a49aec58f9583b08d97e088c227a3fcba92f6c6531d5908
-  concurrent-ruby (1.1.10) sha256=244cb1ca0d91ec2c15ca2209507c39fb163336994428e16fbd3f465c87bd8e68
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
+  bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
+  concurrent-ruby (1.3.7) sha256=4412caec3a5ea2e5fdc52076724c071a81f2c0593d83b2ac8cbb8ca63b3151b0
+  connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   crack (0.4.5) sha256=798416fb29b8c9f655d139d5559169b39c4a0a3b8f8f39b7f670eec1af9b21b3
   diff-lcs (1.5.0) sha256=49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
+  drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   hashdiff (1.0.1) sha256=2cd4d04f5080314ecc8403c4e2e00dbaa282dff395e2d031bc16c8d501bdd6db
   hashie (5.0.0) sha256=9d6c4e51f2a36d4616cbc8a322d619a162d8f42815a792596039fc95595603da
   i18n (1.12.0) sha256=91e3cc1b97616d308707eedee413d82ee021d751c918661fb82152793e64aced
-  mini_portile2 (2.8.0) sha256=1e06b286ff19b73cfc9193cb3dd2bd80416f8262443564b25b23baea74a05765
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
+  mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   minitest (5.16.2) sha256=c1be0c6b57fab451faa08e74ffa71e7d6a259b90f4bacb881c7f4808ec8b4991
-  nokogiri (1.13.8) sha256=79c279298b2f22fd4e760f49990c7930436bac1b1cfeff7bacff192f30edea3c
+  nokogiri (1.19.4) sha256=50c951611c92bca05c51411aef45f1cbc50f2821c4802758c5c6d34696533ab5
+  nokogiri (1.19.4-aarch64-linux-gnu) sha256=1269fb644a6de405057a53dd5c762b1209b43ca7424f839454d3dbc677c31a8f
+  nokogiri (1.19.4-x86_64-linux-gnu) sha256=379fae440b28915e3f19d752ce2dcf8465ed2b2fbefd2a7ca0dd497bc981a06a
   omniauth (2.1.0) sha256=bff7234f5ec9323622b217c7f26d52f850de0b0e2b8c807c3358fc79fe572300
   omniauth_crowd (2.4.0)
   public_suffix (4.0.7) sha256=8be161e2421f8d45b0098c042c06486789731ea93dc3a896d30554ee38b573b8
-  racc (1.6.0) sha256=2dede3b136eeabd0f7b8c9356b958b3d743c00158e2615acab431af141354551
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (2.2.4) sha256=ea2232b638cbd919129c8c8ad8012ecaccc09f848152a7e705d2139d0137ac2b
   rack-protection (2.2.2) sha256=fd41414dbabbec274af0bdb1f72a48504449de4d979782c9af38cbb5dfff3299
   rack-test (2.0.2) sha256=adadd0e957f63a34199a9fdf905a920a0b0a50795735095b4ac4bd3c13385466
@@ -101,8 +129,9 @@ CHECKSUMS
   rspec-expectations (3.11.0) sha256=a3c0859805bdfd88bef90bf050cbb4a04f01fe9e0ad24e5b77571e1abd823100
   rspec-mocks (3.11.1) sha256=5537dc069afabcea5cbc199a1432a2772ba3a465f3233f40d04695daba7c6a1f
   rspec-support (3.11.0) sha256=03284a86b74afbbdeff6c3dc19ac2e0fe650453a96b89f860d459ca3e825d375
+  securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   tzinfo (2.0.5) sha256=c5352fd901544d396745d013f46a04ae2ed081ce806d942099825b7c2b09a167
   webmock (3.0.1) sha256=53b2422e7b07a318f43d7bb9cbb3cf82ecfdaffa5f085c69b426db9e8efc463f
 
 BUNDLED WITH
-   2.7.1
+  4.0.10

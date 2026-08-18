@@ -28,7 +28,6 @@ There are two ways of creating a foundational flow: using the AI Catalog or GitL
 ### Using the AI Catalog
 
 1. Create your flow on the [AI Catalog](https://gitlab.com/explore/ai-catalog/flows/), and note its ID. Make sure the flow is set to public. Example: A flow with ID 123.
-
 1. Flows created on the AI Catalog need to be bundled into GitLab Duo Workflow Service, so they can be available to self-hosted setups that do not have access to our SaaS. To achieve this, open an MR to GitLab Duo Workflow Service adding the ID of the flow:
 
    ```diff
@@ -59,7 +58,6 @@ There are two ways of creating a foundational flow: using the AI Catalog or GitL
    ```
 
 1. If your flow requires a custom avatar, add the PNG file to the [GitLab SVGs repository](https://gitlab.com/gitlab-org/gitlab-svgs).
-
 1. Update [user-facing documentation](../../user/duo_agent_platform/flows/foundational_flows/_index.md) with information about your new flow.
 
 ### Using GitLab Duo Workflow Service
@@ -225,7 +223,6 @@ It is possible to test foundational flows locally in your GDK.
 For flows created in AI Catalog, you need to sync the flows locally:
 
 1. Create the flow in your local AI Catalog or on GitLab.com AI Catalog.
-
 1. On `$GDK/gitlab-ai-gateway`, run the following command:
 
    ```shell
@@ -247,9 +244,7 @@ For flows created in AI Catalog, you need to sync the flows locally:
 For flows defined directly in GitLab Duo Workflow Service:
 
 1. Create your flow YAML configuration in `duo_workflow_service/agent_platform/v1/flows/configs/` in your local `gitlab-ai-gateway` directory.
-
 1. Add the flow definition to `ee/app/models/ai/catalog/foundational_flow.rb` in your GitLab repository.
-
 1. Restart GitLab Duo Workflow Service:
 
    ```shell
@@ -329,9 +324,7 @@ The execution flows are the same whether the user is using a local monolith, Git
 ## Tips
 
 1. Test flows in AI Catalog before adding them to the codebase. Create a private flow with the same configuration, enable it on your test project, and iterate until results are satisfactory.
-
 1. Start with minimal agent privileges and add more only as needed.
-
 1. Use descriptive `foundational_flow_reference` names that clearly indicate the flow's purpose (example: `fix_pipeline/v1`, not `fp/v1`).
 
 ## Related documentation

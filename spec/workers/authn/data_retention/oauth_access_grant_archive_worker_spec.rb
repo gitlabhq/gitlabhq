@@ -94,7 +94,7 @@ RSpec.describe Authn::DataRetention::OauthAccessGrantArchiveWorker, feature_cate
             stub_const("#{described_class}::BATCH_SIZE", 10)
             stub_const("#{described_class}::SUB_BATCH_SIZE", 5)
 
-            create_list(:oauth_access_grant, 10,
+            create_list(:oauth_access_grant, 6,
               revoked_at: 2.months.ago,
               created_at: 3.months.ago)
           end

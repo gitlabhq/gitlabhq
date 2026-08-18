@@ -229,10 +229,6 @@ module ApplicationHelper
     'https://forum.gitlab.com'
   end
 
-  def university_url
-    'https://university.gitlab.com'
-  end
-
   # Convenient method for Rails helper
   def community_forum
     ApplicationHelper.community_forum
@@ -317,6 +313,7 @@ module ApplicationHelper
     class_names << 'with-gl-container-queries'
     class_names << system_message_class
     class_names << (current_user ? 'user-logged-in' : 'user-logged-out')
+    class_names << 'aura-tinted-themes' if Feature.enabled?(:aura_tinted_themes, current_user)
 
     class_names
   end

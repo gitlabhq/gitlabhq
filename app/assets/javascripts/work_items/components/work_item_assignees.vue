@@ -316,7 +316,7 @@ export default {
           },
         });
         if (errors.length > 0) {
-          this.throwUpdateError();
+          this.throwUpdateError(errors);
           return;
         }
         this.track('updated_assignees');
@@ -342,8 +342,8 @@ export default {
       this.setLocalAssigneeIdsOnEvent(assignees);
       this.setAssignees();
     },
-    throwUpdateError() {
-      this.$emit('error', i18n.updateError);
+    throwUpdateError(messages = []) {
+      this.$emit('error', messages.length > 0 ? messages.join('. ') : i18n.updateError);
       // If mutation is rejected, we're rolling back to initial state
       this.localAssigneeIds = this.assignees.map(({ id }) => id);
     },
@@ -377,11 +377,11 @@ export default {
     :shortcut="shortcut"
     clear-search-on-item-select
     data-testid="work-item-assignees"
-    @dropdownShown="onDropdownShown"
-    @searchStarted="setSearchKey"
-    @updateValue="handleAssigneesInput"
+    @dropdown-shown="onDropdownShown"
+    @search-started="setSearchKey"
+    @update-value="handleAssigneesInput"
     @updateSelected="handleAssigneeClick"
-    @dropdownHidden="onDropdownHide"
+    @dropdown-hidden="onDropdownHide"
   >
     <template #list-item="{ item }">
       <sidebar-participant v-if="item" :user="item" />

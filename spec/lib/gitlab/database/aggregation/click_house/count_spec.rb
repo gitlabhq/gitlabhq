@@ -13,6 +13,9 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Count, :click_house, f
         count
         count :finished, if: ->(_params) { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') }
         count :users, :integer, -> { Arel.sql('user_id') }, distinct: true
+        count :flows, parameters: { flow_type: { type: :string, in: %w[chat code_review] } }
+        count :finished_flows, if: ->(_params) { Arel.sql('anyIfMerge(finished_event_at) IS NOT NULL') },
+          parameters: { flow_type: { type: :string, in: %w[chat code_review] } }
       end
     end
   end
@@ -88,6 +91,89 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Count, :click_house, f
 
       expect(engine).to execute_aggregation(request).and_return([
         { finished_count: finished_timestamps.compact.count }
+      ])
+    end
+  end
+
+  describe "parameterized count" do
+    it 'returns total count when no parameters are passed' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :flows_count }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { flows_count: all_data_rows.count }
+      ])
+    end
+
+    it 'returns conditional count when parameters are passed' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :flows_count, parameters: { flow_type: 'chat' } }]
+      )
+
+      chat_rows = all_data_rows.select { |row| row[:flow_type] == 'chat' }
+      expect(chat_rows.count).not_to eq(all_data_rows.count)
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { flows_count_chat: chat_rows.count }
+      ])
+    end
+
+    it 'returns both counts when requested with and without parameters' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [
+          { identifier: :flows_count },
+          { identifier: :flows_count, parameters: { flow_type: 'chat' } }
+        ]
+      )
+
+      chat_rows = all_data_rows.select { |row| row[:flow_type] == 'chat' }
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { flows_count: all_data_rows.count, flows_count_chat: chat_rows.count }
+      ])
+    end
+
+    it 'returns an error for invalid parameter values' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :flows_count, parameters: { flow_type: 'invalid' } }]
+      )
+
+      response = engine.execute(request)
+
+      expect(response).to be_error
+      expect(response.message).to include('Invalid value(s) for parameter `flow_type`: invalid')
+    end
+  end
+
+  describe "parameterized count with a custom condition" do
+    it 'applies only the custom condition when no parameters are passed' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :finished_flows_count }]
+      )
+
+      finished_rows = all_data_rows.select { |row| row[:finished_event_at] }
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { finished_flows_count: finished_rows.count }
+      ])
+    end
+
+    it 'combines the custom condition with the parameter condition' do
+      chat_request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :finished_flows_count, parameters: { flow_type: 'chat' } }]
+      )
+      code_review_request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :finished_flows_count, parameters: { flow_type: 'code_review' } }]
+      )
+
+      finished_chat_rows = all_data_rows.select { |row| row[:finished_event_at] && row[:flow_type] == 'chat' }
+      # session3 is code_review but not finished, so the combined condition excludes it
+      expect(engine).to execute_aggregation(chat_request).and_return([
+        { finished_flows_count_chat: finished_chat_rows.count }
+      ])
+      expect(engine).to execute_aggregation(code_review_request).and_return([
+        { finished_flows_count_code_review: 0 }
       ])
     end
   end

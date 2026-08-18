@@ -16,6 +16,16 @@ RSpec.describe 'Deleting a BranchRule', feature_category: :source_code_managemen
 
   subject(:mutation_request) { post_graphql_mutation(mutation, current_user: current_user) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_branch_rule do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:branch_rule_delete, { id: branch_rule.to_global_id.to_s }, 'errors'),
+        token: { personal_access_token: pat })
+    end
+  end
+
   context 'when the user does not have permission' do
     it_behaves_like 'a mutation that returns top-level errors',
       errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]

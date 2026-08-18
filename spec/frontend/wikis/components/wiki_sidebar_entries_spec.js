@@ -204,7 +204,7 @@ describe('wikis/components/wiki_sidebar_entry', () => {
       });
 
       it('hides the wiki pages list', () => {
-        expect(wrapper.findByTestId('pages-list-collapse').props('visible')).toBe(false);
+        expect(wrapper.findComponentByTestId('pages-list-collapse').props('visible')).toBe(false);
       });
 
       it('displays the custom sidebar as rendered HTML', () => {
@@ -218,7 +218,7 @@ describe('wikis/components/wiki_sidebar_entry', () => {
       });
 
       it('shows the wiki pages list', () => {
-        expect(wrapper.findByTestId('pages-list-collapse').props('visible')).toBe(true);
+        expect(wrapper.findComponentByTestId('pages-list-collapse').props('visible')).toBe(true);
       });
     });
   });

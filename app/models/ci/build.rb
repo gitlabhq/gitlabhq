@@ -113,8 +113,8 @@ module Ci
       partition_foreign_key: :partition_id,
       autosave: true
     has_one :runner_manager, foreign_key: :runner_machine_id, through: :runner_manager_build, class_name: 'Ci::RunnerManager'
-    has_one :build_runtime_environment,
-      class_name: 'Ci::BuildRuntimeEnvironment',
+    has_one :job_runtime_environment,
+      class_name: 'Ci::JobRuntimeEnvironment',
       foreign_key: [:build_id, :partition_id],
       inverse_of: :build
 
@@ -716,6 +716,7 @@ module Ci
           .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_JOB_STARTED_AT', value: started_at&.iso8601)
           .append(key: 'CI_JOB_STARTED_AT_SLUG', value: started_at && Gitlab::Utils.slugify(started_at.iso8601))
+          .append(key: 'CI_JOB_RETRY_COUNT', value: retries_count.to_s)
           .append(key: 'CI_REGISTRY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
@@ -836,14 +837,6 @@ module Ci
 
     def has_trace?
       trace.exist?
-    end
-
-    def has_live_trace?
-      trace.live?
-    end
-
-    def has_archived_trace?
-      trace.archived?
     end
 
     def artifacts_file
@@ -1212,7 +1205,7 @@ module Ci
 
       ::Gitlab::Ci::Pipeline::Metrics
         .job_failure_reason_counter
-        .increment(reason: :data_integrity_failure)
+        .increment(reason: :data_integrity_failure, runner_type: runner&.runner_type || 'none')
 
       Gitlab::AppLogger.info(
         message: 'Build doomed',
@@ -1271,18 +1264,12 @@ module Ci
     # checks, plan lookups) before `super` enters the transaction. The
     # args are then read by UpdateBuildQueueService#push inside the
     # transaction via `build.pending_build_args`.
-    # The stick-build flag is also checked before `super` so the after_save
-    # callback does not perform feature flag IO inside the transaction.
     def save(...)
-      with_stick_build_flag_preloaded do
-        with_pending_build_args { super }
-      end
+      with_pending_build_args { super }
     end
 
     def save!(...)
-      with_stick_build_flag_preloaded do
-        with_pending_build_args { super }
-      end
+      with_pending_build_args { super }
     end
 
     def create_queuing_entry!
@@ -1400,16 +1387,6 @@ module Ci
 
     private
 
-    attr_accessor :stick_build_after_commit
-
-    def with_stick_build_flag_preloaded
-      prepare_stick_build_after_commit
-
-      yield
-    ensure
-      self.stick_build_after_commit = nil
-    end
-
     def with_pending_build_args
       prepare_pending_build_args
       yield
@@ -1422,15 +1399,6 @@ module Ci
       return unless status_event_transition&.to == 'pending'
 
       @pending_build_args = ::Ci::PendingBuild.args_from_build(self)
-    end
-
-    def prepare_stick_build_after_commit
-      self.stick_build_after_commit = false
-
-      return unless will_save_change_to_status?
-      return unless running?
-
-      self.stick_build_after_commit = Feature.enabled?(:ci_stick_build_after_commit, Project.actor_from_id(project_id))
     end
 
     def apply_jobs_cache_index(cache)
@@ -1479,18 +1447,15 @@ module Ci
     strong_memoize_attr :encoded_jwt
 
     def matrix_build?
-      options.dig(:parallel, :matrix).present?
+      # Jobs migrated from legacy data may store numeric `parallel` as a bare Integer.
+      options[:parallel].is_a?(Hash) && options.dig(:parallel, :matrix).present?
     end
 
     def stick_build_if_status_changed
       return unless saved_change_to_status?
       return unless running?
 
-      if stick_build_after_commit
-        run_after_commit { self.class.sticking.stick(:build, id) }
-      else
-        self.class.sticking.stick(:build, id)
-      end
+      run_after_commit { self.class.sticking.stick(:build, id) }
     end
 
     def status_commit_hooks

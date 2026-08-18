@@ -6,7 +6,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
   include Ci::PipelineVariableHelpers
 
   let_it_be(:user) { create(:user, :public_email) }
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
   let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline,
@@ -37,6 +37,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
       expect(attributes[:source]).to eq(pipeline.source)
       expect(attributes[:status]).to eq(pipeline.status)
       expect(attributes[:protected_ref]).to eq(pipeline.protected_ref?)
+      expect(attributes[:default_branch]).to eq(pipeline.default_branch?)
       expect(attributes[:ref_status_name]).to eq(pipeline.ref_status_name)
       expect(attributes[:url]).to eq(Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline))
       expect(attributes[:detailed_status]).to eq('passed')
@@ -112,6 +113,25 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
 
       it 'returns protected_ref as false' do
         expect(attributes[:protected_ref]).to be_falsy
+      end
+    end
+
+    context 'when pipeline is on the default branch' do
+      it 'returns default_branch as true' do
+        expect(attributes[:default_branch]).to be_truthy
+      end
+    end
+
+    context 'when pipeline is on a non-default branch' do
+      let_it_be(:non_default_pipeline) do
+        create(:ci_pipeline, project: project, ref: 'feature-branch', user: user)
+      end
+
+      let(:data) { described_class.build(non_default_pipeline) }
+      let(:attributes) { data[:object_attributes] }
+
+      it 'returns default_branch as false' do
+        expect(attributes[:default_branch]).to be_falsy
       end
     end
 

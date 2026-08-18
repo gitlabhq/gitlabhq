@@ -8,11 +8,14 @@ module Gitlab
       # Mirrors Gitlab::Email::Handler::ServiceDeskHandler (parsing portion).
       #   incoming+gitlab-org-gitlab-ce-20-issue-@incoming.gitlab.com
       #   incoming+gitlab-org/gitlab-ce@incoming.gitlab.com (legacy)
+      #   support+gitlab-org-gitlab-ce-abc123_def@service-desk.gitlab.com (project key)
       #
-      # The opaque service_desk_key (slug-key) and custom email forms cannot be
-      # resolved offline. The opaque key is not a claimed attribute yet, so it
-      # routes to the default cell. The custom email is resolvable via a
-      # Topology Service lookup.
+      # The opaque project key form (slug-key) is stored whole in
+      # `service_desk_settings.project_key_address_slug` and claimed as unique
+      # in the Topology Service, so it is identifiable without a database
+      # lookup. Resolving which project it belongs to remains an app-side
+      # concern (Project.with_service_desk_key). The custom email form is
+      # resolvable via a Topology Service lookup.
       class ServiceDesk < Base
         HANDLER_REGEX = /\A#{ReplyKey::HANDLER_ACTION_BASE_REGEX}-issue-\z/
         HANDLER_REGEX_LEGACY = /\A(?<project_path>[^+]*)\z/
@@ -34,9 +37,11 @@ module Gitlab
           end
 
           matched = HANDLER_REGEX_LEGACY.match(key)
-          return unless matched && can_handle_legacy_format?(matched[:project_path], key)
+          if matched && can_handle_legacy_format?(matched[:project_path], key)
+            return identification(project_path: matched[:project_path])
+          end
 
-          identification(project_path: matched[:project_path])
+          match_project_key(key)
         end
 
         def handler_name
@@ -47,6 +52,17 @@ module Gitlab
 
         def can_handle_legacy_format?(project_path, mail_key)
           project_path&.include?('/') && !mail_key.include?('+')
+        end
+
+        # An opaque `<slug>-<key>` project key. The whole concatenated string is
+        # what `service_desk_settings.project_key_address_slug` stores and the
+        # Topology Service claims, so no splitting is needed: both parts are
+        # already lowercase by validation, and the composite value is matched
+        # verbatim.
+        def match_project_key(key)
+          return unless PROJECT_KEY_PATTERN.match?(key)
+
+          identification(project_key_address_slug: key)
         end
       end
     end

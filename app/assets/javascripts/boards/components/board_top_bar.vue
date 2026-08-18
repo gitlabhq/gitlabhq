@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { s__ } from '~/locale';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
@@ -16,8 +17,9 @@ export default {
     IssueBoardFilteredSearch,
     ConfigToggle,
     ToggleFocus,
-    EpicBoardFilteredSearch: () =>
-      import('ee_component/boards/components/epic_filtered_search.vue'),
+    EpicBoardFilteredSearch: defineAsyncComponent(
+      () => import('ee_component/boards/components/epic_filtered_search.vue'),
+    ),
   },
   inject: [
     'swimlanesFeatureAvailable',
@@ -41,7 +43,7 @@ export default {
       required: true,
     },
   },
-  emits: ['setFilters', 'switchBoard', 'toggleSwimlanes', 'updateBoard'],
+  emits: ['set-filters', 'switch-board', 'toggle-swimlanes', 'update-board'],
   data() {
     return {
       board: {},
@@ -101,17 +103,17 @@ export default {
             :is-current-board-loading="isLoading"
             :board-modal-form="currentForm"
             class="gl-flex-grow"
-            @switchBoard="$emit('switchBoard', $event)"
-            @updateBoard="$emit('updateBoard', $event)"
-            @showBoardModal="setCurrentForm"
+            @switch-board="$emit('switch-board', $event)"
+            @update-board="$emit('update-board', $event)"
+            @show-board-modal="setCurrentForm"
           />
           <div class="gl-flex gl-items-center gl-gap-2 @md/panel:!gl-hidden">
             <board-options
               :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
               :is-swimlanes-on="isSwimlanesOn"
-              @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+              @toggle-swimlanes="$emit('toggle-swimlanes', $event)"
             />
-            <config-toggle @showBoardModal="setCurrentForm" />
+            <config-toggle @show-board-modal="setCurrentForm" />
           </div>
         </div>
 
@@ -121,23 +123,23 @@ export default {
           :is-swimlanes-on="isSwimlanesOn"
           :filters="filters"
           class="gl-min-w-0"
-          @setFilters="$emit('setFilters', $event)"
+          @set-filters="$emit('set-filters', $event)"
         />
         <epic-board-filtered-search
           v-else
           :board="board"
           :filters="filters"
           class="gl-min-w-0"
-          @setFilters="$emit('setFilters', $event)"
+          @set-filters="$emit('set-filters', $event)"
         />
       </div>
       <div class="gl-hidden gl-gap-2 @md/panel:gl-flex">
         <board-options
           :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
           :is-swimlanes-on="isSwimlanesOn"
-          @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+          @toggle-swimlanes="$emit('toggle-swimlanes', $event)"
         />
-        <config-toggle @showBoardModal="setCurrentForm" />
+        <config-toggle @show-board-modal="setCurrentForm" />
 
         <toggle-focus />
       </div>

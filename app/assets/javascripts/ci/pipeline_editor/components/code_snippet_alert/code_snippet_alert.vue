@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { CODE_SNIPPET_SOURCES, CODE_SNIPPET_SOURCE_SETTINGS } from './constants';
 
 export default {
@@ -7,6 +8,7 @@ export default {
   components: {
     GlAlert,
   },
+  mixins: [glListenersMixin],
   inject: ['configurationPaths'],
   props: {
     source: {
@@ -35,7 +37,7 @@ export default {
     :primary-button-text="__('Read documentation')"
     :secondary-button-link="configurationPath"
     :secondary-button-text="__('Go back to configuration')"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     {{ __('Before inserting code, be sure to read the comment that separated each code group.') }}
   </gl-alert>

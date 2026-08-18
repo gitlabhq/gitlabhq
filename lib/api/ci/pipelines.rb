@@ -20,7 +20,7 @@ module API
       params do
         requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: '11' }
       end
-      resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all project pipelines' do
           detail 'Lists all pipelines in a project. By default, child pipelines are not included in the results. To ' \
             'return child pipelines, set `source` to `parent_pipeline`.'
@@ -72,8 +72,7 @@ module API
 
         route_setting :mcp,
           tool_name: :list_pipelines,
-          params: [:id, :ref, :page, :per_page],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
+          params: [:id, :ref, :status, :source, :created_after, :created_before, :order_by, :sort, :page, :per_page],
           resource_name: "project"
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_pipelines,
@@ -104,11 +103,6 @@ module API
           use :create_pipeline_params
         end
 
-        route_setting :mcp,
-          tool_name: :create_pipeline,
-          params: [:id, :ref, :variables, :inputs],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
-          resource_name: "project"
         route_setting :authorization, permissions: :create_pipeline, boundary_type: :project
         route_setting :log_safety, { unsafe: %w[inputs] }
         post ':id/pipeline', urgency: :low, feature_category: :pipeline_composition do
@@ -415,11 +409,6 @@ module API
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
 
-        route_setting :mcp,
-          tool_name: :retry_pipeline,
-          params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
-          resource_name: "pipeline"
         route_setting :authorization, permissions: :retry_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/retry', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
@@ -447,11 +436,6 @@ module API
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
 
-        route_setting :mcp,
-          tool_name: :cancel_pipeline,
-          params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
-          resource_name: "pipeline"
         route_setting :authorization, permissions: :cancel_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize! :cancel_pipeline, pipeline

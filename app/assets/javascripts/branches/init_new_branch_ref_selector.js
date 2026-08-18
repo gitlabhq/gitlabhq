@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 
 export default function initNewBranchRefSelector() {
   const el = document.querySelector('.js-new-branch-ref-selector');
@@ -10,19 +10,16 @@ export default function initNewBranchRefSelector() {
 
   const { projectId, defaultBranchName, hiddenInputName } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'RefSelectorRoot',
-    render(createComponent) {
-      return createComponent(RefSelector, {
-        props: {
-          value: defaultBranchName,
-          name: hiddenInputName,
-          queryParams: { sort: 'updated_desc' },
-          projectId,
-          useSymbolicRefNames: true,
-        },
-      });
+    component: RefSelector,
+    props: {
+      value: defaultBranchName,
+      name: hiddenInputName,
+      queryParams: { sort: 'updated_desc' },
+      projectId,
+      useSymbolicRefNames: true,
     },
   });
 }

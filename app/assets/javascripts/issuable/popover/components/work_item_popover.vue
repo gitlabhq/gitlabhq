@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlIcon,
   GlPopover,
@@ -37,9 +38,12 @@ export default {
     GlAvatarsInline,
     IssueDueDate,
     IssueMilestone,
-    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
-    IssueStatus: () =>
-      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    IssueWeight: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_weight.vue'),
+    ),
+    IssueStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    ),
     StatusBadge,
     WorkItemTypeIcon,
   },
@@ -90,7 +94,14 @@ export default {
         return {
           fullPath: this.namespacePath,
           iid: this.iid,
-          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+          // We're reading the flag value additionally from `gon.features`
+          // as the component is mounted bare across GitLab when a work
+          // item is referenced in any GFM field (including Wikis), this
+          // ensures that popover query always sends the flag value to fetch
+          // correct sub-tree (i.e. `widgets[]` or `features`).
+          useWorkItemFeatures: Boolean(
+            this.glFeatures?.workItemFeaturesField || window.gon?.features?.workItemFeaturesField,
+          ),
         };
       },
       update: (data) => data.namespace?.workItem,

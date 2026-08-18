@@ -49,6 +49,7 @@ Migration/UpdateLargeTable:
   - :audit_events
   - :ci_job_artifact_states
   - :ci_pipeline_messages
+  - :ci_sources_pipelines
   - :deployment_merge_requests
   - :job_environments
   - :label_links
@@ -67,6 +68,7 @@ Migration/UpdateLargeTable:
   - :security_scans
   - :vulnerabilities
   - :vulnerability_occurrence_identifiers
+  - :vulnerability_state_transitions
   DeniedMethods:
   - :change_column_type_concurrently
   - :rename_column_concurrently

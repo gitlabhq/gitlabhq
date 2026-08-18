@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# Standalone, cells-routable mail_room identification + routing service. Loads
+# only the gitlab-email_handler gem and the Topology Service client - no Rails.
+gem "gitlab-mail_room", "~> 1.0"
+gem "mail", "~> 2.8"
+
+gem "gitlab-email_handler", path: "../gems/gitlab-email_handler"
+gem "gitlab-topology-service-client", path: "../vendor/gems/gitlab-topology-service-client"
+
+gem "grpc", "~> 1.0"
+gem "faraday", "~> 2.0"
+gem "jwt", ">= 2.0", "< 4"
+# Provides the standardised structured-logging field names (Labkit::Fields).
+gem "gitlab-labkit", "~> 2.6"
+
+group :test do
+  gem "rspec", "~> 3.0"
+end

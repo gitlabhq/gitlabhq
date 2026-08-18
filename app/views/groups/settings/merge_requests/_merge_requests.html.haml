@@ -1,0 +1,9 @@
+= render ::Layouts::SettingsBlockComponent.new(_('Merge requests'),
+  id: 'js-merge-requests-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = s_('GroupSettings|Configure merge request settings for projects in this group. These settings cascade to subgroups and projects.')
+  - c.with_body do
+    = gitlab_ui_form_for @group.namespace_settings, url: group_settings_merge_requests_path(@group), html: { multipart: true, class: 'merge-request-settings-form js-mr-settings-form' }, authenticity_token: true do |f|
+      = render 'groups/settings/merge_requests/require_sha_for_merge_settings', form: f
+      = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save_merge_request_changes' }

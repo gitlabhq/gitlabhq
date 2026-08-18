@@ -19,7 +19,7 @@ class MigrationSchemaValidator
 
   VERSION_DIGITS = 14
 
-  SKIP_VALIDATION_LABEL = 'pipeline:skip-check-migrations'
+  SKIP_VALIDATION_LABELS = %w[pipeline:skip-check-migrations pipeline::skip-check-migrations].freeze
 
   MIGRATION_METHODS = %w[
     cleanup_concurrent_column_rename
@@ -47,8 +47,8 @@ class MigrationSchemaValidator
     # validate_ignore_columns! should never be skipped, the ignore_column directive must always be present
     validate_ignore_columns!
 
-    if skip_validation?
-      puts "\e[32m Label #{SKIP_VALIDATION_LABEL} is present, skipping schema validation\e[0m"
+    if skip_validation_label
+      puts "\e[32m Label #{skip_validation_label} is present, skipping schema validation\e[0m"
       return
     end
 
@@ -59,8 +59,11 @@ class MigrationSchemaValidator
 
   private
 
-  def skip_validation?
-    ENV.fetch('CI_MERGE_REQUEST_LABELS', '').split(',').include?(SKIP_VALIDATION_LABEL)
+  def skip_validation_label
+    @skip_validation_label ||= begin
+      labels = ENV.fetch('CI_MERGE_REQUEST_LABELS', '').split(',')
+      SKIP_VALIDATION_LABELS.find { |skip_label| labels.include?(skip_label) }
+    end
   end
 
   def validate_ignore_columns!
@@ -168,7 +171,7 @@ class MigrationSchemaValidator
 
     git_command = "git diff #{diff_target} -- #{FILENAME}"
     base_message = "rollback of added migrations does not revert #{FILENAME} to previous state, " \
-      "please investigate. Apply the '#{SKIP_VALIDATION_LABEL}' label to skip this check if needed." \
+      "please investigate. Apply the '#{SKIP_VALIDATION_LABELS.join("' or '")}' label to skip this check if needed. " \
       "If you are unsure why this job is failing for your MR, then please refer to this page: " \
       "https://docs.gitlab.com/ee/development/database/dbcheck-migrations-job.html#false-positives"
 

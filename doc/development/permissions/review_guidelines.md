@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Authorization code review guidelines
 ---
 
-This page provides guidance from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization) on how to prepare a merge request that involve policy changes, permission definitions, and authorization logic for review.
+This page provides guidance from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization) on how to prepare a merge request that involves policy changes, permission definitions, and authorization logic for review.
 
 ## Role YAML files are the source of truth
 
@@ -38,7 +38,7 @@ This pattern makes role permissions:
 - **Predictable**: Roles always start with their full set of permissions.
   Conditions only remove access, never expand it.
 
-## File organisation
+## File organization
 
 All `prevent` rules for the same condition should be in one `.policy` block, not
 scattered across the file.
@@ -63,7 +63,7 @@ end
 
 ### Avoid dynamic permission definitions
 
-Dynamically defined permissions are difficult to trace in the codebase. When permissions are generated at runtime rather than declared explicitly, searching for a permission name yields no results — making it impossible to verify that a rename or removal is complete.
+Dynamically defined permissions are difficult to trace in the codebase. When permissions are generated at runtime rather than declared explicitly, searching for a permission name yields no results - making it impossible to verify that a rename or removal is complete.
 
 ```ruby
 # bad - permission name is constructed dynamically; cannot be searched,
@@ -87,13 +87,13 @@ end
 ### Avoid using the wrong `:scope` in conditions
 
 Every `condition` is cached. The `:scope` option tells DeclarativePolicy what
-the cache key is — if it is set incorrectly, the cached result is shared too
+the cache key is - if it is set incorrectly, the cached result is shared too
 broadly and causes bugs where one user's result leaks into another context.
 
 The rules are:
 
-- Use `scope: :user` only if the condition reads **user data only** — no subject data.
-- Use `scope: :subject` only if the condition reads **subject data only** — no user data.
+- Use `scope: :user` only if the condition reads **user data only** - no subject data.
+- Use `scope: :subject` only if the condition reads **subject data only** - no user data.
 - Use `scope: :global` only if the condition doesn't need either user or subject data.
 - Omit `:scope` (the default) if the condition reads both user and subject data.
 
@@ -195,7 +195,7 @@ end
 rule { ~model_registry_enabled }.prevent :write_model_registry
 ```
 
-### Avoid  `admin | owner` rules
+### Avoid `admin | owner` rules
 
 `admin` users return true for `condition(:owner)` so there is no need
 to define the rule for `admin | owner`. The same is true for organization

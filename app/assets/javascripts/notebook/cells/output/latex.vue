@@ -32,8 +32,6 @@ export default {
       const parsedCode = this.rawCode.replace(/\$\$/g, '');
       const svg = window.MathJax.tex2svg(parsedCode);
 
-      // NOTE: This is used with `v-html` and not `v-safe-html` due to an
-      // issue with dompurify stripping out xlink attributes from use tags
       return svg.outerHTML;
     },
   },

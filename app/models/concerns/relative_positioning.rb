@@ -36,6 +36,10 @@ module RelativePositioning
   include ::Gitlab::RelativePositioning
 
   class_methods do
+    def relative_positioning_column(_object = nil)
+      arel_table[:relative_position]
+    end
+
     def relative_positioning_min_position
       ::Gitlab::RelativePositioning::MIN_POSITION
     end
@@ -226,9 +230,14 @@ module RelativePositioning
   # This method is used during rebalancing - override it to customise the update
   # logic:
   def update_relative_siblings(relation, range, delta)
+    # The column must be table-qualified: when the relation has joins, the
+    # updated table also appears in the FROM clause, so a bare column name is
+    # ambiguous.
+    position = self.class.arel_table[:relative_position]
+
     relation
       .where(relative_position: range)
-      .update_all("relative_position = relative_position + #{delta}")
+      .update_all(relative_position: position + delta)
   end
 
   # This method is used to exclude the current self (or another object)

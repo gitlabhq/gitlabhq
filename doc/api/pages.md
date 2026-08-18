@@ -46,12 +46,6 @@ curl --request DELETE \
 
 ## Retrieve Pages settings for a project
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
-
-{{< /history >}}
-
 Retrieves Pages settings for a specified project.
 
 Prerequisites:

@@ -51,10 +51,10 @@ describe('PromoteRun', () => {
   };
 
   const findDescription = () => wrapper.findByTestId('page-heading-description');
-  const findPrimaryButton = () => wrapper.findByTestId('primary-button');
-  const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
-  const findVersionInput = () => wrapper.findByTestId('versionId');
-  const findDescriptionInput = () => wrapper.findByTestId('descriptionId');
+  const findPrimaryButton = () => wrapper.findComponentByTestId('primary-button');
+  const findSecondaryButton = () => wrapper.findComponentByTestId('secondary-button');
+  const findVersionInput = () => wrapper.findComponentByTestId('versionId');
+  const findDescriptionInput = () => wrapper.findComponentByTestId('descriptionId');
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const submitForm = async () => {
     findPrimaryButton().vm.$emit('click');

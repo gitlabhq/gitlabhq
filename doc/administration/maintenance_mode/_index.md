@@ -107,7 +107,7 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 | `POST` | `/users/sign_in` | To allow users to sign in. |
 | `POST` | `/users/sign_out`| To allow users to sign out. |
 | `POST` | `/oauth/token` | To allow users to sign in to a Geo secondary for the first time. |
-| `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
+| `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/work_items/2158) |
 | `POST` | Paths ending with `/compare`| Git revision routes. |
 | `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |
 | `POST` | `/api/v4/internal` | internal API routes |
@@ -116,12 +116,6 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 | `POST` | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
 
 ### GraphQL API
-
-{{< history >}}
-
-- The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
-
-{{< /history >}}
 
 `POST /api/graphql` requests are allowed but mutations are blocked with the error message `You cannot perform write operations on a read-only instance`.
 
@@ -201,7 +195,7 @@ When primary is in Maintenance Mode, secondary also automatically goes into Main
 
 It is important that you do not disable replication before enabling Maintenance Mode.
 
-Replication, verification and manual actions to resync and reverify registries through the Admin UI
+Replication, verification, and manual actions to resync and reverify registries through the Admin UI
 continue to work, but proxied Git pushes to primary don't.
 
 ### Secure features

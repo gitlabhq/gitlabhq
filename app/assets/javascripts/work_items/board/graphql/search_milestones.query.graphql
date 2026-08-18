@@ -1,0 +1,21 @@
+#import "~/work_items/graphql/milestone.fragment.graphql"
+
+# @feature_category: portfolio_management
+query boardInheritedMilestones($fullPath: ID!, $search: String, $isProject: Boolean = false) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    milestones(searchTitle: $search, includeAncestors: true, first: 20) {
+      nodes {
+        ...MilestoneFragment
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    milestones(searchTitle: $search, includeAncestors: true, first: 20) {
+      nodes {
+        ...MilestoneFragment
+      }
+    }
+  }
+}

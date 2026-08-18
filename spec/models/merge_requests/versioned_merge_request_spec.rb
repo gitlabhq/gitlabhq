@@ -349,6 +349,86 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
         it { expect(versioned.has_codequality_reports?).to be(false) }
       end
     end
+
+    describe '#has_sast_reports?' do
+      let(:report_builds) { instance_double(ActiveRecord::Relation, exists?: true) }
+
+      before do
+        allow(head_pipeline).to receive_messages(
+          complete_or_manual?: true,
+          latest_report_builds_in_self_and_project_descendants: report_builds
+        )
+      end
+
+      it 'resolves the head pipeline against the latest diff head' do
+        expect(versioned.has_sast_reports?).to be(true)
+        expect(head_pipeline).to have_received(:matches_sha_or_source_sha?).with('latest-sha')
+      end
+
+      it 'returns a boolean when there is no matching head pipeline' do
+        allow(merge_request).to receive(:head_pipeline).and_return(nil)
+
+        expect(versioned.has_sast_reports?).to be(false)
+      end
+
+      context 'when the diff target is not the latest version' do
+        before do
+          allow(diff_resolver).to receive(:latest?).and_return(false)
+        end
+
+        it { expect(versioned.has_sast_reports?).to be(false) }
+      end
+    end
+  end
+
+  describe '#files_count' do
+    context 'when compare is present' do
+      let(:compare) { instance_double(Compare) }
+
+      before do
+        allow(merge_request).to receive(:compare).and_return(compare)
+      end
+
+      it 'returns nil' do
+        expect(versioned.files_count).to be_nil
+      end
+    end
+
+    context 'when show_context_commits_diff? is true' do
+      before do
+        allow(merge_request).to receive(:show_context_commits_diff?).and_return(true)
+      end
+
+      it 'returns nil' do
+        expect(versioned.files_count).to be_nil
+      end
+    end
+
+    context 'when compare is not present' do
+      let(:diff_version) { instance_double(Gitlab::MergeRequests::DiffResolver) }
+      let(:resolved_diff) { merge_request_diff }
+
+      before do
+        allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
+          .with(merge_request, {})
+          .and_return(diff_version)
+        allow(diff_version).to receive(:resolve).and_return(resolved_diff)
+      end
+
+      it 'returns the resolved version files_count' do
+        allow(resolved_diff).to receive(:files_count).and_return(7)
+
+        expect(versioned.files_count).to eq(7)
+      end
+
+      context 'when the resolved version has no files_count' do
+        let(:resolved_diff) { instance_double(Compare) }
+
+        it 'returns nil' do
+          expect(versioned.files_count).to be_nil
+        end
+      end
+    end
   end
 
   it 'delegates other methods to the merge request', :aggregate_failures do

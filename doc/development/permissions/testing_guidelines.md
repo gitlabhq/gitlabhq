@@ -15,7 +15,7 @@ changes in GitLab.
 ### One `describe` block per permission
 
 Each permission should have its own `describe` block. Do not group multiple
-permissions into a single block — this makes it harder to identify which
+permissions into a single block - this makes it harder to identify which
 permission a failing test relates to.
 
 ```ruby
@@ -55,14 +55,14 @@ describe 'read_vulnerability' do
 end
 ```
 
-Always include every role in the table — do not omit roles that are expected
+Always include every role in the table - do not omit roles that are expected
 to be disallowed. Explicit `false` values are as important as `true` values
 because they document the intended access boundary.
 
 ### Specify the subject in every block
 
 Always define the subject explicitly inside each `describe` block using
-`let_it_be`. Do not rely on a subject defined at a higher scope — this avoids
+`let_it_be`. Do not rely on a subject defined at a higher scope - this avoids
 accidental test pollution and makes each block self-contained.
 
 ```ruby

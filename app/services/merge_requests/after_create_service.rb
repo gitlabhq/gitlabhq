@@ -34,7 +34,7 @@ module MergeRequests
       write_diffs_cache(merge_request)
       merge_request.create_cross_references!(current_user)
       todo_service.new_merge_request(merge_request, current_user)
-      merge_request.cache_merge_request_closes_issues!(current_user)
+      merge_request.persist_merge_request_issues!(current_user)
 
       Gitlab::InternalEvents.track_event(
         'create_merge_request',

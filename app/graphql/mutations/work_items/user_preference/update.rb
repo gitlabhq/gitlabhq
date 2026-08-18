@@ -10,7 +10,7 @@ module Mutations
         include Mutations::SpamProtection
         include FindsNamespace
 
-        authorize :read_namespace
+        authorize :update_work_item_user_preference
 
         argument :namespace_path,
           type: GraphQL::Types::ID,

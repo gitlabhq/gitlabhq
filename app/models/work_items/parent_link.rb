@@ -56,21 +56,21 @@ module WorkItems
       return unless work_item_parent && work_item_parent_id_changed?
 
       max = persisted? ? MAX_CHILDREN : MAX_CHILDREN - 1
-      if work_item_parent.child_links.count > max
-        errors.add :work_item_parent, _('parent already has maximum number of children.')
-      end
+      return unless work_item_parent.child_links.count > max
+
+      errors.add :work_item_parent, _('parent already has maximum number of children.')
     end
 
     def validate_confidentiality
       return unless work_item_parent && work_item
 
-      if work_item_parent.confidential? && !work_item.confidential?
-        errors.add :work_item, format(
-          _("cannot assign a non-confidential %{work_item_type} to a confidential " \
-                    "parent. Make the %{work_item_type} confidential and try again."),
-          work_item_type: work_item.work_item_type.name.downcase
-        )
-      end
+      return unless work_item_parent.confidential? && !work_item.confidential?
+
+      errors.add :work_item, format(
+        _("cannot assign a non-confidential %{work_item_type} to a confidential " \
+          "parent. Make the %{work_item_type} confidential and try again."),
+        work_item_type: work_item.work_item_type.name.downcase
+      )
     end
 
     def validate_hierarchy_restrictions
@@ -93,9 +93,9 @@ module WorkItems
       return unless depth
       return if resolved_type_id_for(work_item) != resolved_type_id_for(work_item_parent)
 
-      if work_item_parent.same_type_base_and_ancestors.count + work_item.same_type_descendants_depth > depth
-        errors.add :work_item, _('reached maximum depth')
-      end
+      return unless work_item_parent.same_type_base_and_ancestors.count + work_item.same_type_descendants_depth > depth
+
+      errors.add :work_item, _('reached maximum depth')
     end
 
     def resolved_type_id_for(item)
@@ -106,13 +106,11 @@ module WorkItems
     def validate_cyclic_reference
       return unless work_item_parent&.id && work_item&.id
 
-      if work_item.id == work_item_parent.id
-        errors.add :work_item, _('is not allowed to point to itself')
-      end
+      errors.add :work_item, _('is not allowed to point to itself') if work_item.id == work_item_parent.id
 
-      if work_item_parent.ancestors.detect { |ancestor| work_item.id == ancestor.id }
-        errors.add :work_item, _("it's already present in this item's hierarchy")
-      end
+      return unless work_item_parent.ancestors.any? { |ancestor| work_item.id == ancestor.id }
+
+      errors.add :work_item, _("it's already present in this item's hierarchy")
     end
 
     def check_existing_related_link

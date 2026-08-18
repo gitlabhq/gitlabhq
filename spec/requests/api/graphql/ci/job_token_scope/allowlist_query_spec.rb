@@ -194,7 +194,9 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           target_group: target_group_2
         )
 
-        expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+        expect do
+          post_graphql(query, current_user: current_user)
+        end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
       end
 
       context 'when a target project has been deleted' do

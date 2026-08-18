@@ -57,7 +57,7 @@ module Gitlab
       elsif type.design?
         design_management_repository = find_design_management_repository(full_path)
 
-        [design_management_repository, design_management_repository.project]
+        [design_management_repository, design_management_repository&.project]
       else
         project = find_project(full_path)
 

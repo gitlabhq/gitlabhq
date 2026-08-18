@@ -85,6 +85,6 @@ export default {
       @sortByChange="setSelectedSortOption"
       @sortDirectionChange="onSortDirectionChange"
     />
-    <!-- eslint-disable vue/v-on-event-hyphenation -->
+    <!-- eslint-enable vue/v-on-event-hyphenation -->
   </div>
 </template>

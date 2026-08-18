@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_instance_model_selection
+description: Enables Vue 3 in compatibility mode for the admin GitLab Duo model selection page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607799
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249743
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607799
+milestone: '19.3'
+group: group::custom models
+type: beta
+default_enabled: false

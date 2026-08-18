@@ -5,19 +5,19 @@
   "additionalProperties": false,
   "properties": {
     "id_tokens": {
-      "$ref": "./build_metadata_id_tokens.json"
+      "$ref": "./ci_job_definition_id_tokens.json"
     },
     "interruptible": {
       "type": "boolean"
     },
     "options": {
-      "$ref": "./build_metadata_config_options.json"
+      "$ref": "./ci_job_definition_options.json"
     },
     "run_steps": {
-      "$ref": "./ci_run_steps.json"
+      "$ref": "./ci_job_definition_run_steps.json"
     },
     "secrets": {
-      "$ref": "./build_metadata_secrets.json"
+      "$ref": "./ci_job_definition_secrets.json"
     },
     "tag_list": {
       "$ref": "#/definitions/tagsDefinition"

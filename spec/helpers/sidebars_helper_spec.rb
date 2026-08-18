@@ -76,6 +76,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         allow(user).to receive(:returned_to_you_merge_requests_count).and_return(0)
         allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
         allow(user).to receive(:todos_pending_count).and_return(3)
+        allow(helper).to receive(:show_feature_library_shimmer?).and_return(true)
         allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
       end
     end
@@ -87,14 +88,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     it_behaves_like 'shared super sidebar context'
     it { is_expected.to include({ is_logged_in: true }) }
 
-    it 'returns terms if defined' do
+    it 'returns has_terms as true if terms are defined' do
       stub_application_setting(terms: "My custom Terms of Use")
 
-      is_expected.to include({ terms: terms_path })
+      is_expected.to include({ has_terms: true })
     end
 
-    it 'does not return terms if not set' do
-      is_expected.to include({ terms: nil })
+    it 'returns has_terms as false if terms are not set' do
+      is_expected.to include({ has_terms: false })
     end
 
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
@@ -106,12 +107,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         admin_mode: {
           admin_mode_feature_enabled: true,
           admin_mode_active: false,
-          enter_admin_mode_url: new_admin_session_path,
-          leave_admin_mode_url: destroy_admin_session_path,
           user_is_admin: false
         },
         avatar_url: user.avatar_url,
-        has_link_to_profile: helper.current_user_menu?(:profile),
         status: {
           can_update: helper.can?(user, :update_user_status, user),
           busy: user.status&.busy?,
@@ -122,9 +120,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           message: user.status&.message&.html_safe,
           clear_after: nil
         },
-        settings: {
-          has_settings: helper.current_user_menu?(:settings)
-        },
         user_counts: {
           assigned_issues: 1,
           assigned_merge_requests: 4,
@@ -132,27 +127,20 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           todos: 3,
           last_update: 1609459200000
         },
-        can_sign_out: helper.current_user_menu?(:sign_out),
-        projects_path: dashboard_projects_path,
-        groups_path: dashboard_groups_path,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
         pinned_items: %w[foo bar],
         shortcut_links: global_shortcut_links,
         work_items: nil,
         has_multiple_organizations: false,
-        show_feature_library_feedback: true
+        show_feature_library_feedback: true,
+        show_feature_library_shimmer: true
       })
     end
 
     it 'returns sidebar values for work item context with group id', :use_clean_rails_memory_store_caching do
       expect(context_with_group_id).to include({
         work_items: {
-          full_path: group_with_id.full_path,
-          has_issuable_health_status_feature: "false",
-          has_issue_weights_feature: "false",
-          issues_list_path: issues_group_path(group_with_id),
-          labels_manage_path: group_labels_path(group_with_id),
-          can_admin_label: "true"
+          full_path: group_with_id.full_path
         }
       })
     end
@@ -175,8 +163,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           is_expected.to include({
             whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
             whats_new_version_digest: helper.whats_new_version_digest,
-            whats_new_read_articles: helper.whats_new_read_articles,
-            whats_new_mark_as_read_path: whats_new_mark_as_read_path
+            whats_new_read_articles: helper.whats_new_read_articles
           })
         end
       end
@@ -221,6 +208,22 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     describe 'show_feature_library_feedback' do
       it { is_expected.to include(show_feature_library_feedback: true) }
+    end
+
+    describe 'ai_search_available' do
+      it { is_expected.to include(ai_search_available: false) }
+
+      context 'without a project or group' do
+        let(:group) { nil }
+
+        it { is_expected.to include(ai_search_available: false) }
+      end
+
+      context 'with a project' do
+        let(:project) { build_stubbed(:project) }
+
+        it { is_expected.to include(ai_search_available: false) }
+      end
     end
 
     describe "shortcut links" do
@@ -680,7 +683,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
   describe '#command_palette_data' do
     it 'returns data for project files search' do
-      project = create(:project, :repository) # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      project = create(:project, :small_repo) # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       expect(helper.command_palette_data(project: project)).to eq(
         project_files_url: project_files_path(
@@ -759,50 +762,20 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#super_sidebar_default_pins' do
-    let(:user) { build_stubbed(:user) }
-
-    context 'when feature_library_modal is disabled' do
-      before do
-        stub_feature_flags(feature_library_modal: false)
-      end
-
-      it 'returns old project defaults' do
-        expect(helper.send(:super_sidebar_default_pins, 'project', user)).to eq(
-          %w[project_issue_list project_merge_request_list]
-        )
-      end
-
-      it 'returns old group defaults', unless: Gitlab.ee? do
-        expect(helper.send(:super_sidebar_default_pins, 'group', user)).to eq(
-          %w[group_issue_list group_merge_request_list]
-        )
-      end
-
-      it 'returns empty array for other panel types' do
-        expect(helper.send(:super_sidebar_default_pins, 'explore', user)).to eq([])
-      end
+    it 'returns project defaults' do
+      expect(helper.send(:super_sidebar_default_pins, 'project')).to eq(
+        %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
+      )
     end
 
-    context 'when feature_library_modal is enabled' do
-      before do
-        stub_feature_flags(feature_library_modal: true)
-      end
+    it 'returns group defaults', unless: Gitlab.ee? do
+      expect(helper.send(:super_sidebar_default_pins, 'group')).to eq(
+        %w[group_overview members group_issue_list issue_boards group_merge_request_list]
+      )
+    end
 
-      it 'returns enriched project defaults' do
-        expect(helper.send(:super_sidebar_default_pins, 'project', user)).to eq(
-          %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
-        )
-      end
-
-      it 'returns enriched group defaults', unless: Gitlab.ee? do
-        expect(helper.send(:super_sidebar_default_pins, 'group', user)).to eq(
-          %w[group_overview members group_issue_list issue_boards group_merge_request_list]
-        )
-      end
-
-      it 'returns empty array for other panel types' do
-        expect(helper.send(:super_sidebar_default_pins, 'explore', user)).to eq([])
-      end
+    it 'returns empty array for other panel types' do
+      expect(helper.send(:super_sidebar_default_pins, 'explore')).to eq([])
     end
   end
 end

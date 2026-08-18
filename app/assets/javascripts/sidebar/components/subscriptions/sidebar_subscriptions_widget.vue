@@ -1,44 +1,20 @@
 <script>
-import {
-  GlButton,
-  GlIcon,
-  GlLoadingIcon,
-  GlToggle,
-  GlTooltipDirective,
-  GlAnimatedNotificationIcon,
-} from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlAnimatedNotificationIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE, TYPE_EPIC, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
-import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { subscribedQueries } from '../../queries/constants';
-import { Tracking } from '../../constants';
-import SidebarEditableItem from '../sidebar_editable_item.vue';
-
-const ICON_ON = 'notifications';
-const ICON_OFF = 'notifications-off';
 
 export default {
   name: 'SidebarSubscriptionsWidget',
-  tracking: {
-    event: Tracking.editEvent,
-    label: Tracking.rightSidebarLabel,
-    property: 'subscriptions',
-  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   components: {
     GlButton,
-    GlIcon,
-    GlLoadingIcon,
-    GlToggle,
     GlAnimatedNotificationIcon,
-    SidebarEditableItem,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     iid: {
       type: String,
@@ -53,7 +29,7 @@ export default {
       type: String,
     },
   },
-  emits: ['expandSidebar', 'subscribedUpdated'],
+  emits: ['expand-sidebar'],
   data() {
     return {
       subscribed: false,
@@ -85,7 +61,6 @@ export default {
         this.emailsDisabled = this.parentIsGroup
           ? data.namespace?.emailsDisabled
           : data.namespace?.issuable?.emailsDisabled;
-        this.$emit('subscribedUpdated', data.namespace?.issuable?.subscribed);
       },
       error() {
         createAlert({
@@ -112,12 +87,6 @@ export default {
       }
       return this.subscribed ? this.$options.i18n.labelOn : this.$options.i18n.labelOff;
     },
-    notificationIcon() {
-      if (this.emailsDisabled || !this.subscribed) {
-        return ICON_OFF;
-      }
-      return ICON_ON;
-    },
     parentIsGroup() {
       return this.issuableType === TYPE_EPIC;
     },
@@ -126,17 +95,11 @@ export default {
         parent: this.parentIsGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT,
       });
     },
-    isLoggedIn() {
-      return isLoggedIn();
-    },
-    canSubscribe() {
-      return this.emailsDisabled || !this.isLoggedIn;
-    },
     isMergeRequest() {
       return this.issuableType === 'merge_request';
     },
-    isIconButton() {
-      return this.isMergeRequest || this.glFeatures.notificationsTodosButtons;
+    subscribedStateText() {
+      return this.subscribed ? 'true' : 'false';
     },
   },
   methods: {
@@ -188,11 +151,10 @@ export default {
       }
     },
     expandSidebar() {
-      this.$emit('expandSidebar');
+      this.$emit('expand-sidebar');
     },
   },
   i18n: {
-    notifications: __('Notifications'),
     labelOn: __('Notifications are on'),
     labelOff: __('Notifications are off'),
   },
@@ -200,7 +162,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="isIconButton" :class="{ 'inline-block': !isMergeRequest }">
+  <div :class="{ 'inline-block': !isMergeRequest }">
     <gl-button
       ref="tooltip"
       v-gl-tooltip.hover.top
@@ -208,15 +170,13 @@ export default {
       data-testid="subscribe-button"
       class="hide-collapsed btn-icon !gl-align-top"
       :title="notificationTooltip"
+      :aria-pressed="subscribedStateText"
+      :selected="subscribed"
       :disabled="isLoading"
       :class="{ 'gl-ml-2': isIssuable }"
       @click="toggleSubscribed"
     >
-      <gl-animated-notification-icon
-        :is-on="!subscribed"
-        :class="{ '!gl-text-status-info': subscribed }"
-        class="gl-button-icon"
-      />
+      <gl-animated-notification-icon :is-on="!subscribed" class="gl-button-icon" />
     </gl-button>
     <gl-button
       v-if="!isMergeRequest"
@@ -225,52 +185,11 @@ export default {
       category="tertiary"
       data-testid="subscribe-button"
       :title="notificationTooltip"
+      :aria-pressed="subscribedStateText"
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-border-0"
       @click="toggleSubscribed"
     >
-      <gl-animated-notification-icon
-        :is-on="!subscribed"
-        :class="{ '!gl-text-status-info': subscribed }"
-        class="gl-button-icon"
-      />
+      <gl-animated-notification-icon :is-on="!subscribed" class="gl-button-icon" />
     </gl-button>
   </div>
-  <sidebar-editable-item
-    v-else
-    ref="editable"
-    :title="$options.i18n.notifications"
-    :tracking="$options.tracking"
-    :loading="isLoading"
-    :can-edit="false"
-    class="block subscriptions"
-  >
-    <template #collapsed-right>
-      <gl-toggle
-        :value="subscribed"
-        :is-loading="isLoading"
-        :disabled="canSubscribe"
-        class="hide-collapsed gl-ml-auto"
-        data-testid="subscription-toggle"
-        :label="$options.i18n.notifications"
-        label-position="hidden"
-        @change="setSubscribed"
-      />
-    </template>
-    <template #collapsed>
-      <span
-        ref="tooltip"
-        v-gl-tooltip.viewport.left
-        :title="notificationTooltip"
-        class="sidebar-collapsed-icon"
-        @click="toggleSubscribed"
-      >
-        <gl-loading-icon v-if="isLoading" size="sm" class="sidebar-item-icon is-active" />
-        <gl-icon v-else :name="notificationIcon" :size="16" class="sidebar-item-icon is-active" />
-      </span>
-      <div v-show="emailsDisabled" class="hide-collapsed gl-mt-3 gl-text-subtle">
-        {{ subscribeDisabledDescription }}
-      </div>
-    </template>
-    <template #default> </template>
-  </sidebar-editable-item>
 </template>

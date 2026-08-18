@@ -1,6 +1,6 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { runnersAppProvide } from 'ee_else_ce/ci/runner/provide';
 
@@ -10,7 +10,6 @@ import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import { createLocalState } from '../graphql/list/local_state';
 import GroupRunnersApp from './group_runners_app.vue';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initGroupRunners = (selector = '#js-group-runners') => {
@@ -31,7 +30,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
     defaultClient: createDefaultClient({}, { cacheConfig, typeDefs }),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupRunnersAppRoot',
     apolloProvider,
@@ -40,15 +39,12 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
       groupId,
       localMutations,
     },
-    render(h) {
-      return h(GroupRunnersApp, {
-        props: {
-          groupFullPath,
-          newRunnerPath,
-          allowRegistrationToken: parseBoolean(allowRegistrationToken),
-          registrationToken,
-        },
-      });
+    component: GroupRunnersApp,
+    props: {
+      groupFullPath,
+      newRunnerPath,
+      allowRegistrationToken: parseBoolean(allowRegistrationToken),
+      registrationToken,
     },
   });
 };

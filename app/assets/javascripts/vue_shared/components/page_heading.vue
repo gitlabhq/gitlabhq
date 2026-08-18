@@ -1,6 +1,9 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+
 export default {
   name: 'PageHeading',
+  mixins: [glSlotsMixin],
   inject: {
     injectedHeadingTag: {
       from: 'panelHeadingTag',
@@ -43,11 +46,11 @@ export default {
       <slot name="heading-wrapper">
         <component :is="computedHeadingTag" class="gl-heading-1 !gl-m-0" data-testid="page-heading">
           <slot name="heading"></slot>
-          <template v-if="!$scopedSlots.heading">{{ heading }}</template>
+          <template v-if="!glSlots().heading">{{ heading }}</template>
         </component>
       </slot>
       <div
-        v-if="$scopedSlots.actions"
+        v-if="glSlots().actions"
         class="page-heading-actions gl-flex gl-shrink-0 gl-flex-wrap gl-items-center gl-gap-3 @md/panel:gl-mt-1 @lg/panel:gl-mt-2"
         :class="{ 'gl-w-full @sm/panel:gl-w-auto': !inlineActions, 'gl-w-auto': inlineActions }"
         data-testid="page-heading-actions"
@@ -56,7 +59,7 @@ export default {
       </div>
     </div>
     <div
-      v-if="$scopedSlots.description"
+      v-if="glSlots().description"
       class="gl-w-full gl-text-subtle"
       data-testid="page-heading-description"
     >

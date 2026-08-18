@@ -58,7 +58,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'using a group handle' do
-          let_it_be(:issuable_parent, freeze: false) { create(:project) }
+          let_it_be_with_reload(:issuable_parent) { create(:project) }
           let_it_be(:issuable_attributes, freeze: false) { { source_project: issuable_parent, target_project: issuable_parent } }
           let_it_be(:issuable_factory, freeze: false) { :merge_request }
           let_it_be(:factory_params, freeze: false) { [:simple, :unique_branches] }
@@ -663,7 +663,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       end
 
       context 'filter by deployment' do
-        let_it_be(:project_with_repo) { create(:project, :repository) }
+        let_it_be(:project_with_repo) { create(:project, :small_repo) }
 
         it 'returns the relevant merge requests' do
           deployment1 = create(
@@ -828,7 +828,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'using a group handle' do
-          let_it_be(:issuable_parent, freeze: false) { create(:project) }
+          let_it_be_with_reload(:issuable_parent) { create(:project) }
           let_it_be(:issuable_attributes, freeze: false) { { source_project: issuable_parent, target_project: issuable_parent } }
           let_it_be(:issuable_factory, freeze: false) { :merge_request }
           let_it_be(:factory_params, freeze: false) { [:simple, :unique_branches] }
@@ -1461,13 +1461,13 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
   end
 
   context 'when projects require different access levels for merge requests' do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     let_it_be(:public_project) { create(:project, :public) }
     let_it_be(:internal) { create(:project, :internal) }
     let_it_be(:private_project) { create(:project, :private) }
-    let_it_be(:public_with_private_repo) { create(:project, :public, :repository, :repository_private) }
-    let_it_be(:internal_with_private_repo) { create(:project, :internal, :repository, :repository_private) }
+    let_it_be(:public_with_private_repo) { create(:project, :public, :small_repo, :repository_private) }
+    let_it_be(:internal_with_private_repo) { create(:project, :internal, :small_repo, :repository_private) }
 
     let(:merge_requests) { described_class.new(user, {}).execute }
 
@@ -1478,7 +1478,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
     let!(:mr_internal_private_repo_access) { create(:merge_request, source_project: internal_with_private_repo) }
 
     context 'with admin user' do
-      let_it_be(:user, freeze: false) { create(:user, :admin) }
+      let_it_be_with_reload(:user) { create(:user, :admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'returns all merge requests' do
@@ -1497,7 +1497,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
     context 'when project restricts merge requests' do
       let(:non_member) { create(:user) }
-      let(:project) { create(:project, :repository, :public, :merge_requests_private) }
+      let(:project) { create(:project, :small_repo, :public, :merge_requests_private) }
       let!(:merge_request) { create(:merge_request, source_project: project) }
 
       it "returns nothing to to non members" do
@@ -1525,9 +1525,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       context 'being added to the private project' do
         context 'as a guest' do
-          before do
-            private_project.add_guest(user)
-          end
+          before_all { private_project.add_guest(user) }
 
           it 'does not return merge requests from the private project' do
             expect(merge_requests).to eq([mr_internal, mr_public])
@@ -1535,9 +1533,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'as a developer' do
-          before do
-            private_project.add_developer(user)
-          end
+          before_all { private_project.add_developer(user) }
 
           it 'returns merge requests from the private project' do
             expect(merge_requests).to eq([mr_internal, mr_private, mr_public])
@@ -1547,9 +1543,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       context 'being added to the public project with private repo access' do
         context 'as a guest' do
-          before do
-            public_with_private_repo.add_guest(user)
-          end
+          before_all { public_with_private_repo.add_guest(user) }
 
           it 'returns merge requests from the project' do
             expect(merge_requests).to eq([mr_internal, mr_public])
@@ -1557,9 +1551,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'as a reporter' do
-          before do
-            public_with_private_repo.add_reporter(user)
-          end
+          before_all { public_with_private_repo.add_reporter(user) }
 
           it 'returns merge requests from the project' do
             expect(merge_requests).to eq([mr_private_repo_access, mr_internal, mr_public])
@@ -1569,9 +1561,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       context 'being added to the internal project with private repo access' do
         context 'as a guest' do
-          before do
-            internal_with_private_repo.add_guest(user)
-          end
+          before_all { internal_with_private_repo.add_guest(user) }
 
           it 'returns merge requests from the project' do
             expect(merge_requests).to eq([mr_internal, mr_public])
@@ -1579,9 +1569,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         context 'as a reporter' do
-          before do
-            internal_with_private_repo.add_reporter(user)
-          end
+          before_all { internal_with_private_repo.add_reporter(user) }
 
           it 'returns merge requests from the project' do
             expect(merge_requests).to eq([mr_internal_private_repo_access, mr_internal, mr_public])
@@ -1591,8 +1579,8 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
     end
 
     describe '#count_by_state' do
-      let_it_be(:user, freeze: false) { create(:user) }
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:user) { create(:user) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let_it_be(:labels) { create_list(:label, 2, project: project) }
       let_it_be(:merge_requests) { create_list(:merge_request, 4, :unique_branches, author: user, target_project: project, source_project: project, labels: labels) }
 
@@ -1623,7 +1611,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
   end
 
   context 'when the author of a merge request is banned', feature_category: :insider_threat do
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:banned_user) { create(:user, :banned) }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:banned_merge_request) { create(:merge_request, author: banned_user, source_project: project) }
@@ -1633,7 +1621,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
     it { is_expected.not_to include(banned_merge_request) }
 
     context 'when the user is an admin', :enable_admin_mode do
-      let_it_be(:user, freeze: false) { create(:user, :admin) }
+      let_it_be_with_reload(:user) { create(:user, :admin) }
 
       it { is_expected.to include(banned_merge_request) }
     end

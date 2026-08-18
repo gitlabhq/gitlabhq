@@ -1,7 +1,11 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
-import { FORM_STEPPER_TAB_COLOR, FORM_STEPPER_TAB_BORDER_COLOR } from '../constants';
+import {
+  FORM_STEPPER_TAB_STATE,
+  FORM_STEPPER_TAB_COLOR,
+  FORM_STEPPER_ACTIVE_TAB_BORDER,
+} from '../constants';
 
 export default {
   name: 'FormStepper',
@@ -23,6 +27,26 @@ export default {
       type: String,
       required: true,
     },
+    canStart: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    isFormComplete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isSubmitting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isCompletionDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['validation-failed', 'complete', 'stepped-back', 'stepped-forward'],
 
@@ -30,7 +54,6 @@ export default {
     return {
       currentStepIndex: 0,
       isValidating: false,
-      isFormComplete: false,
     };
   },
   computed: {
@@ -40,37 +63,48 @@ export default {
     isLastStep() {
       return this.currentStepIndex === this.steps.length - 1;
     },
+    isFormLocked() {
+      return this.isFormComplete || this.isSubmitting;
+    },
     showBackButton() {
-      return !this.isFirstStep && !this.isFormComplete;
+      return !this.isFirstStep && !this.isFormLocked;
+    },
+    isStartingBlocked() {
+      return this.isFirstStep && !this.canStart;
     },
     showContinueButton() {
-      return !this.isLastStep;
+      return !this.isLastStep && !this.isStartingBlocked;
     },
     showCompletionButton() {
-      return this.isLastStep;
+      return this.isLastStep && !this.isFormComplete;
     },
   },
 
   methods: {
     getStepIcon(stepIndex) {
-      return this.getTabState(stepIndex) === 'completed' ? 'check' : null;
+      return this.getTabState(stepIndex) === FORM_STEPPER_TAB_STATE.COMPLETED ? 'check' : null;
+    },
+
+    getAriaCurrent(stepIndex) {
+      return stepIndex === this.currentStepIndex ? 'step' : null;
     },
 
     getTabState(stepIndex) {
+      if (this.isFormComplete) return FORM_STEPPER_TAB_STATE.COMPLETED;
       if (stepIndex === this.currentStepIndex) {
-        return 'active';
+        return FORM_STEPPER_TAB_STATE.ACTIVE;
       }
-      if (stepIndex < this.currentStepIndex) return 'completed';
-      return 'pending';
+      if (stepIndex < this.currentStepIndex) return FORM_STEPPER_TAB_STATE.COMPLETED;
+      return FORM_STEPPER_TAB_STATE.PENDING;
     },
 
     getTabClasses(stepIndex) {
       const state = this.getTabState(stepIndex);
 
       return [
-        'gl-pointer-events-none gl-border-0 gl-border-b-2 gl-pb-3 gl-border-solid gl-px-0 gl-mr-6',
+        'gl-pointer-events-none gl-border-0 gl-pb-3 gl-border-solid gl-px-0 gl-mr-6',
         FORM_STEPPER_TAB_COLOR[state],
-        FORM_STEPPER_TAB_BORDER_COLOR[state],
+        state === 'active' && FORM_STEPPER_ACTIVE_TAB_BORDER,
       ];
     },
 
@@ -130,14 +164,12 @@ export default {
       }
 
       this.$emit('complete');
-      this.isFormComplete = true;
     },
 
     // eslint-disable-next-line vue/no-unused-properties -- method triggered from outside of the component
     resetForm() {
       this.currentStepIndex = 0;
       this.isValidating = false;
-      this.isFormComplete = false;
     },
   },
 };
@@ -145,14 +177,20 @@ export default {
 
 <template>
   <div class="gl-flex gl-flex-col gl-pt-3">
-    <ul class="gl-mb-0 gl-flex gl-list-none gl-p-0">
+    <ul class="gl-border-b gl-mb-0 gl-flex gl-list-none gl-p-0">
       <li
         v-for="(step, index) in steps"
         :key="index"
         :class="getTabClasses(index)"
+        :aria-current="getAriaCurrent(index)"
         :data-testid="'step-nav-' + index"
       >
-        <gl-icon v-if="getStepIcon(index)" :name="getStepIcon(index)" class="gl-mr-2" />
+        <gl-icon
+          v-if="getStepIcon(index)"
+          :name="getStepIcon(index)"
+          :aria-label="__('Completed')"
+          class="gl-mr-2"
+        />
         <span v-else class="gl-mr-1">{{ index + 1 }}</span>
         {{ step }}
       </li>
@@ -187,7 +225,8 @@ export default {
       <gl-button
         v-if="showCompletionButton"
         variant="confirm"
-        :disabled="isValidating || isFormComplete"
+        :disabled="isValidating || isCompletionDisabled"
+        :loading="isSubmitting"
         data-testid="completion-button"
         @click="handleAllStepsComplete"
       >

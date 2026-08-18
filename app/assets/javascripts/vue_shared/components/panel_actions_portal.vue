@@ -1,12 +1,14 @@
 <script>
 import { MountingPortal } from 'portal-vue';
 import { uniqueId } from 'lodash-es';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'PanelActionsPortal',
   components: {
     MountingPortal,
   },
+  mixins: [glSlotsMixin],
   data() {
     return {
       resolvedSelector: null,
@@ -32,7 +34,7 @@ export default {
 
 <template>
   <mounting-portal v-if="resolvedSelector" :mount-to="resolvedSelector" append>
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </mounting-portal>
   <div v-else hidden></div>
 </template>

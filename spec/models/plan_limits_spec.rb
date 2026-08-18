@@ -81,26 +81,26 @@ RSpec.describe PlanLimits do
       context 'when limit for given name results to a disabled value' do
         let(:limit) { nil }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when limit for given name results to a non-disabled value' do
         context 'and given count is smaller than limit' do
           let(:limit) { project_hooks_count + 1 }
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'and given count is equal to the limit' do
           let(:limit) { project_hooks_count }
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
 
         context 'and given count is greater than the limit' do
           let(:limit) { project_hooks_count - 1 }
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
     end
@@ -143,7 +143,7 @@ RSpec.describe PlanLimits do
         plan_limits.update!(project_hooks: 0)
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
 
       context 'and alternate_limit is a non-zero integer' do
         let(:alternate_limit) { 1 }
@@ -154,7 +154,7 @@ RSpec.describe PlanLimits do
       context 'and alternate_limit is zero' do
         let(:alternate_limit) { 0 }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
 
       context 'and alternate_limit is a proc that returns non-zero integer' do
@@ -166,13 +166,13 @@ RSpec.describe PlanLimits do
       context 'and alternate_limit is a proc that returns zero' do
         let(:alternate_limit) { -> { 0 } }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
 
       context 'and alternate_limit is a proc that returns nil' do
         let(:alternate_limit) { -> { nil } }
 
-        it { is_expected.to eq(nil) }
+        it { is_expected.to be_nil }
       end
     end
 

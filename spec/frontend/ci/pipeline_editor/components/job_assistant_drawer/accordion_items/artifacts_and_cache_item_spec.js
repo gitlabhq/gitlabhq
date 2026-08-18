@@ -11,20 +11,23 @@ describe('Artifacts and cache item', () => {
 
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findArtifactsPathsInputByIndex = (index) =>
-    wrapper.findByTestId(`artifacts-paths-input-${index}`);
+    wrapper.findComponentByTestId(`artifacts-paths-input-${index}`);
   const findArtifactsExcludeInputByIndex = (index) =>
-    wrapper.findByTestId(`artifacts-exclude-input-${index}`);
-  const findCachePathsInputByIndex = (index) => wrapper.findByTestId(`cache-paths-input-${index}`);
-  const findCacheKeyInput = () => wrapper.findByTestId('cache-key-input');
+    wrapper.findComponentByTestId(`artifacts-exclude-input-${index}`);
+  const findCachePathsInputByIndex = (index) =>
+    wrapper.findComponentByTestId(`cache-paths-input-${index}`);
+  const findCacheKeyInput = () => wrapper.findComponentByTestId('cache-key-input');
   const findDeleteArtifactsPathsButtonByIndex = (index) =>
-    wrapper.findByTestId(`delete-artifacts-paths-button-${index}`);
+    wrapper.findComponentByTestId(`delete-artifacts-paths-button-${index}`);
   const findDeleteArtifactsExcludeButtonByIndex = (index) =>
-    wrapper.findByTestId(`delete-artifacts-exclude-button-${index}`);
+    wrapper.findComponentByTestId(`delete-artifacts-exclude-button-${index}`);
   const findDeleteCachePathsButtonByIndex = (index) =>
-    wrapper.findByTestId(`delete-cache-paths-button-${index}`);
-  const findAddArtifactsPathsButton = () => wrapper.findByTestId('add-artifacts-paths-button');
-  const findAddArtifactsExcludeButton = () => wrapper.findByTestId('add-artifacts-exclude-button');
-  const findAddCachePathsButton = () => wrapper.findByTestId('add-cache-paths-button');
+    wrapper.findComponentByTestId(`delete-cache-paths-button-${index}`);
+  const findAddArtifactsPathsButton = () =>
+    wrapper.findComponentByTestId('add-artifacts-paths-button');
+  const findAddArtifactsExcludeButton = () =>
+    wrapper.findComponentByTestId('add-artifacts-exclude-button');
+  const findAddCachePathsButton = () => wrapper.findComponentByTestId('add-cache-paths-button');
 
   const dummyArtifactsPath = 'dummyArtifactsPath';
   const dummyArtifactsExclude = 'dummyArtifactsExclude';

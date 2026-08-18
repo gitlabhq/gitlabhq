@@ -161,7 +161,7 @@ module Gitlab
         end
 
         def organization_transfer_support
-          data['organization_transfer_support']
+          Gitlab::Organizations::TransferSupportRegistry.status_for(key_name)
         end
 
         def validate!

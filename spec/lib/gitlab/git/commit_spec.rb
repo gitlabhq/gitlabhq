@@ -415,51 +415,6 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       end
     end
 
-    describe '.find_all' do
-      it 'returns a collection of commits' do
-        commits = described_class.find_all(repository)
-
-        expect(commits).to all(be_a_kind_of(described_class))
-      end
-
-      context 'max_count' do
-        subject do
-          commits = described_class.find_all(
-            repository,
-            max_count: 50
-          )
-
-          commits.map(&:id)
-        end
-
-        it 'has maximum elements' do
-          expect(subject.size).to eq(50)
-        end
-      end
-
-      context 'ref + max_count + skip' do
-        subject do
-          commits = described_class.find_all(
-            repository,
-            ref: 'master',
-            max_count: 50,
-            skip: 1
-          )
-
-          commits.map(&:id)
-        end
-
-        it 'has 36 elements' do
-          expect(subject.size).to eq(36)
-        end
-
-        it 'includes the expected commits' do
-          expect(subject).to include(SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID)
-          expect(subject).not_to include(TestEnv::BRANCH_SHA['master'])
-        end
-      end
-    end
-
     describe '.list_all' do
       subject(:commits) do
         described_class.list_all(

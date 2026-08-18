@@ -153,5 +153,60 @@ RSpec.describe Gitlab::HTTP_V2::NewConnectionAdapter, feature_category: :shared 
         )
       end
     end
+
+    describe 'candidate address exposure for connect-time fallback' do
+      let(:uri) { URI('http://example.org') }
+      let(:options) { { allow_local_requests: true } }
+
+      def stub_resolved(*ips)
+        addrs = ips.map { |ip| Addrinfo.tcp(ip, 80) }
+        allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with('example.org', anything, anything, :STREAM, any_args)
+          .and_return(addrs)
+      end
+
+      it 'caps to one address per family' do
+        stub_resolved('2001:db8::1', '2001:db8::2', '198.51.100.1', '198.51.100.2')
+
+        expect(connection.gitlab_candidate_addresses).to eq(['2001:db8::1', '198.51.100.1'])
+      end
+
+      it 'exposes a single address unchanged' do
+        stub_resolved('198.51.100.1')
+
+        expect(connection.gitlab_candidate_addresses).to eq(['198.51.100.1'])
+      end
+
+      context 'when the host is in the outbound allowlist' do
+        let(:options) { super().merge(outbound_local_requests_allowlist: ['example.org']) }
+
+        it 'exposes no candidates' do
+          stub_resolved('198.51.100.1', '198.51.100.2')
+
+          expect(connection.gitlab_candidate_addresses).to be_nil
+        end
+      end
+
+      context 'when the host is in extra_allowed_uris' do
+        let(:options) { super().merge(extra_allowed_uris: [uri]) }
+
+        it 'exposes no candidates' do
+          stub_resolved('198.51.100.1', '198.51.100.2')
+
+          expect(connection.gitlab_candidate_addresses).to be_nil
+        end
+      end
+
+      context 'when DNS rebinding protection is disabled' do
+        let(:options) { { dns_rebinding_protection_enabled: false } }
+
+        it 'exposes no candidates so the OS keeps selecting addresses' do
+          stub_resolved('198.51.100.1', '198.51.100.2')
+
+          expect(connection.gitlab_candidate_addresses).to be_nil
+        end
+      end
+    end
   end
 end

@@ -72,6 +72,17 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
 
         it_behaves_like 'renders observability iframe'
       end
+
+      it 'tracks the visit_group_observability_dashboard internal event', :clean_gitlab_redis_shared_state do
+        expect { services_page }
+          .to trigger_internal_events('visit_group_observability_dashboard')
+          .with(user: user, namespace: group, additional_properties: { label: 'services' },
+            category: 'Groups::ObservabilityController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_group_observability_dashboard_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_group_observability_dashboard_weekly'
+          )
+      end
     end
 
     context 'when the group has no observability settings' do
@@ -87,9 +98,13 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
 
     context 'with an invalid path parameter' do
       context 'with HTML format' do
-        subject { get group_observability_path(group, 'invalid-path') }
+        subject(:invalid_path_page) { get group_observability_path(group, 'invalid-path') }
 
         it_behaves_like 'redirects to 404'
+
+        it 'does not track the visit_group_observability_dashboard internal event' do
+          expect { invalid_path_page }.not_to trigger_internal_events('visit_group_observability_dashboard')
+        end
       end
 
       context 'with JSON format' do

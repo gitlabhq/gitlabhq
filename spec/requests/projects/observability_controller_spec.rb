@@ -79,6 +79,17 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
 
         it_behaves_like 'renders observability iframe'
       end
+
+      it 'tracks the visit_project_observability_dashboard internal event', :clean_gitlab_redis_shared_state do
+        expect { services_page }
+          .to trigger_internal_events('visit_project_observability_dashboard')
+          .with(user: user, project: project, namespace: project.namespace,
+            additional_properties: { label: 'services' }, category: 'Projects::ObservabilityController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_project_observability_dashboard_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_project_observability_dashboard_weekly'
+          )
+      end
     end
 
     context 'when no ancestor group has an observability setting' do
@@ -89,14 +100,93 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
 
         expect(response).to redirect_to(group_observability_setup_path(group))
       end
+
+      it 'does not track the visit_project_observability_dashboard internal event' do
+        expect { services_page }.not_to trigger_internal_events('visit_project_observability_dashboard')
+      end
     end
 
     context 'when project belongs to a personal namespace' do
-      it 'returns 404' do
-        personal_project = create(:project, :public, :in_user_namespace)
-        get project_observability_path(personal_project, 'alerts')
+      let_it_be(:personal_project) { create(:project, :public, :in_user_namespace) }
+      let_it_be(:owner) { personal_project.first_owner }
+      let_it_be(:developer) { create(:user) }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+      before_all do
+        personal_project.add_developer(developer)
+      end
+
+      before do
+        stub_feature_flags(observability_saas_features_user_namespace: personal_project.root_namespace)
+      end
+
+      subject(:personal_observability) { get project_observability_path(personal_project, 'services') }
+
+      context 'when the namespace has an observability setting' do
+        let!(:observability_setting) do
+          create(:observability_group_o11y_setting, group: personal_project.namespace,
+            o11y_service_url: 'https://observability.example.com')
+        end
+
+        before do
+          sign_in(developer)
+        end
+
+        it 'renders the iframe container markup' do
+          personal_observability
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('js-observability')
+          expect(response.body).to include('observability-container')
+        end
+      end
+
+      context 'when the namespace has no observability setting' do
+        using RSpec::Parameterized::TableSyntax
+
+        let_it_be(:guest) { create(:user) }
+
+        before_all do
+          personal_project.add_guest(guest)
+        end
+
+        where(:role, :expected_status, :expected_redirect, :expected_body) do
+          :owner     | :found     | lazy { project_observability_setup_path(personal_project) } | nil
+          :developer | :ok        | nil | 'Observability is not enabled'
+          :guest     | :not_found | nil | nil
+        end
+
+        with_them do
+          let(:acting_user) { { owner: owner, developer: developer, guest: guest }.fetch(role) }
+
+          before do
+            sign_in(acting_user)
+          end
+
+          it "responds correctly for #{params[:role]}" do
+            personal_observability
+
+            if expected_redirect
+              expect(response).to redirect_to(expected_redirect)
+            else
+              expect(response).to have_gitlab_http_status(expected_status)
+            end
+
+            expect(response.body).to include(expected_body) if expected_body
+          end
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(observability_saas_features_user_namespace: false)
+          sign_in(owner)
+        end
+
+        it 'returns 404' do
+          personal_observability
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

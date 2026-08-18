@@ -65,7 +65,7 @@ CI/CD job tokens can access the following resources:
 | [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | Can access only the `PUT /projects/:id/pipelines/:pipeline_id/metadata` endpoint. |
 | [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
 | [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
-| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint of public repositories. |
+| [Repositories API](../../api/repositories.md)                                                         | Can access the `GET /projects/:id/repository/archive` and `GET /projects/:id/repository/changelog` endpoints. |
 | [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` and `GET /projects/:id/repository/tags/:tag_name` endpoints. |
 
 An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
@@ -176,7 +176,7 @@ To set a feature to be only visible to project members:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Set the visibility to **Only project members** for the features you want to restrict access to.
-   - The ability to fetch artifacts is controlled by the CI/CD visibility setting.
+   - Access to fetch artifacts is controlled by the CI/CD visibility setting.
 1. Select **Save changes**.
 
 ### Allow any project to access your project
@@ -275,8 +275,8 @@ the [projects API](../../api/projects.md#update-a-project).
 {{< /history >}}
 
 You can allow CI/CD job tokens from allowlisted projects to push to your project repository.
-This is useful for GitOps workflows, submodule tagging, and cross-repository CI/CD pipelines
-without long-lived access tokens.
+A cross-project push avoids long-lived access tokens for GitOps workflows, submodule tagging,
+and cross-repository CI/CD pipelines.
 
 When a job token push succeeds, no CI/CD pipelines are triggered in the target project.
 
@@ -436,7 +436,7 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   demonstrates how to use GraphQL with Bash and cURL to:
   - Enable the inbound token access scope.
   - Give access to project B from project A, or add B to A's allowlist.
-  - To remove project access.
+  - Remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
 
@@ -452,7 +452,7 @@ For more information, see the [issue 891](https://github.com/semantic-release/gi
 
 ### JWT format job token errors
 
-There are some known issues with the JWT format for CI/CD job tokens.
+The JWT format for CI/CD job tokens has the following known issues.
 
 #### `Error when persisting the task ARN.` error with EC2 Fargate Runner custom executor
 

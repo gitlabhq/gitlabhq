@@ -1,6 +1,6 @@
 ---
-source_checksum: 34d3be0241af852b
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 8e44ac42b591a3cd
+distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -59,11 +59,14 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Sanitize and validate URL schemes when calling `link_to` or `redirect_to` with user-controlled parameters.
 - Reject input that fails allowlist validation — DO NOT sanitize and accept it.
 - Invalidate cached Markdown HTML after fixing a stored XSS vulnerability.
+- Send each model field to its matching sink (HTML field to HTML sink, text field to text sink); DO NOT fall back from the HTML field to the raw text field in an HTML sink (e.g., `raw(description_html || description)` is XSS).
 
 ### XSS (JavaScript / Vue)
 
+- DO NOT use `v-html` under any circumstances.
+- Only use `v-safe-html` with user-controlled data when it has already been sanitized through the backend.
+- DO NOT fall back from an HTML field to a raw text field in an HTML sink (e.g., `v-safe-html="item.descriptionHtml || item.description"` is XSS).
 - DO NOT use `innerHTML` with user-controlled values; use `textContent` or `nodeValue`.
-- DO NOT use `v-html` with user-controlled data; use `v-safe-html` instead.
 - Sanitize unsafe HTML with the project-internal `sanitize` wrapper (backed by `dompurify`) before inserting into the DOM.
 - Use `gl-sprintf` for interpolating translated strings that contain user-controlled values; DO NOT use `__()` for such strings.
 - Validate the `origin` of `postMessage` messages against an allowlist.
@@ -180,7 +183,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 ### Request Parameter Typing
 
-- Use `ActionController::StrongParameters` (`params.require(...).permit(...)`) in all Rails controllers; DO NOT use raw `params[:key]` where a typed value is expected.
+- Use `ActionController::StrongParameters` (`params.require(...).permit(...)`) in all Rails controllers; DO NOT use raw `params[:key]` where a typed value is expected (enforced by the `StrongParams` RuboCop cop).
 
 ### Local Storage
 

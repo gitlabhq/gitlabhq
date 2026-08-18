@@ -73,7 +73,7 @@ In the following example, three jobs are executed in a project's pipeline. Each 
 
 ![CI/CD pipeline stages running on separate isolated VMs: build, test, deploy.](img/build_isolation_v17_9.png)
 
-The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858` and deploy job on `runner-tmand5m-project-43717858`.
+The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858`, and deploy job on `runner-tmand5m-project-43717858`.
 
 GitLab sends the command to remove the ephemeral runner VM to the Google Compute API immediately after the CI job completes. The [Google Compute Engine hypervisor](https://cloud.google.com/blog/products/gcp/7-ways-we-harden-our-kvm-hypervisor-at-google-cloud-security-in-plaintext)
 takes over the task of securely deleting the virtual machine and associated data.
@@ -147,7 +147,7 @@ If you use beta images, you can provide feedback by creating an issue.
 
 ### General availability
 
-A image becomes generally available after it completes the beta phase and is considered stable.
+An image becomes generally available after it completes the beta phase and is considered stable.
 To become generally available, the image must fulfill the following requirements:
 
 - Successful completion of a beta phase by resolving all reported significant bugs

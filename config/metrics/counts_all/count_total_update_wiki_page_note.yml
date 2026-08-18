@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_update_wiki_page_note
 description: Count of updated wiki page notes
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

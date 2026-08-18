@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import createDefaultClient from '~/lib/graphql';
 import UserAchievements from './components/user_achievements.vue';
@@ -17,13 +18,11 @@ export const initUserAchievements = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     apolloProvider,
     name: 'UserAchievements',
     provide: { rootUrl, userId: parseInt(userId, 10) },
-    render(createElement) {
-      return createElement(UserAchievements);
-    },
+    component: UserAchievements,
   });
 };

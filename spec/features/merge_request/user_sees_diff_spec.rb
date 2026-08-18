@@ -105,8 +105,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
       let(:current_user) { project.first_owner }
       let(:branch_name) { "test_branch" }
 
-      it 'escapes any HTML special characters in the diff chunk header',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43335' do
+      it 'escapes any HTML special characters in the diff chunk header' do
         file_content =
           <<~CONTENT
           function foo<input> {

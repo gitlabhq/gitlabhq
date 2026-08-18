@@ -21,13 +21,7 @@ This functionality is based on the [doorkeeper Ruby gem](https://github.com/door
 
 ## Cross-origin resource sharing
 
-{{< history >}}
-
-- CORS preflight request support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
-
-{{< /history >}}
-
-Many `/oauth` endpoints support cross-origin resource sharing (CORS). From GitLab 15.1, the following endpoints also
+Many `/oauth` endpoints support cross-origin resource sharing (CORS). The following endpoints also
 support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS):
 
 - `/oauth/revoke`
@@ -46,11 +40,11 @@ For example, the `X-Requested-With` header can't be used for preflight requests.
 GitLab supports the following authorization flows:
 
 - **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636)**:
-  Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
-  and is recommended for both client and server apps.
+  Most secure. Without PKCE, you'd have to include client secrets on mobile clients.
+  This flow is recommended for both client and server apps.
 - **Authorization code**: Secure and common flow. Recommended option for secure
   server-side apps.
-- **Device Authorization Grant** (GitLab 17.1 and later) Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
+- **Device Authorization Grant** (GitLab 17.1 and later): Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
 Implicit grant and Resource Owner Password Credentials flows.
@@ -90,14 +84,6 @@ authorization with each flow.
 
 ### Authorization code with Proof Key for Code Exchange (PKCE)
 
-{{< history >}}
-
-- Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
-- Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561778) in GitLab 18.5. Feature flag `ff_oauth_redirect_to_sso_login` removed.
-
-{{< /history >}}
-
 The [PKCE RFC](https://www.rfc-editor.org/rfc/rfc7636#section-1.1) includes a
 detailed flow description, from authorization request through access token.
 The following steps describe our implementation of the flow.
@@ -110,7 +96,7 @@ from the user is a technical impossibility.
 
 Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `CODE_CHALLENGE`.
 
-- The `STATE` a value that can't be predicted used by the client to maintain
+- The `STATE` is an unpredictable value used by the client to maintain
   state between the request and callback. It should also be used as a CSRF token.
 - The `CODE_VERIFIER` is a random string, between 43 and 128 characters in length,
   which use the characters `A-Z`, `a-z`, `0-9`, `-`, `.`, `_`, and `~`.
@@ -192,14 +178,6 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
 You can now make requests to the API with the access token.
 
 ### Authorization code flow
-
-{{< history >}}
-
-- Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
-- Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561778) in GitLab 18.5. Feature flag `ff_oauth_redirect_to_sso_login` removed.
-
-{{< /history >}}
 
 > [!note]
 > Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a

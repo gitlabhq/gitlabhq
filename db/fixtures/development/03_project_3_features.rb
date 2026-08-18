@@ -17,14 +17,16 @@ class Gitlab::Seeder::ProjectFeatures
 
         Gitlab::Seeder.log_message("Creating project features: #{count}.")
         ActiveRecord::Base.connection.execute <<~SQL
-          INSERT INTO project_features (project_id, merge_requests_access_level, issues_access_level, wiki_access_level, pages_access_level)
+          INSERT INTO project_features (project_id, merge_requests_access_level, issues_access_level, wiki_access_level, pages_access_level, model_registry_access_level, model_experiments_access_level)
           SELECT
             id,
             #{ProjectFeature::ENABLED} AS merge_requests_access_level,
             #{ProjectFeature::ENABLED} AS issues_access_level,
             #{ProjectFeature::ENABLED} AS wiki_access_level,
-            #{ProjectFeature::ENABLED} AS pages_access_level
-          FROM projects 
+            #{ProjectFeature::ENABLED} AS pages_access_level,
+            CASE WHEN projects.visibility_level = 20 THEN #{ProjectFeature::ENABLED} ELSE #{ProjectFeature::PRIVATE} END AS model_registry_access_level,
+            CASE WHEN projects.visibility_level = 20 THEN #{ProjectFeature::ENABLED} ELSE #{ProjectFeature::PRIVATE} END AS model_experiments_access_level
+          FROM projects
           WHERE projects.id BETWEEN #{range.first} AND #{range.last}
           ON CONFLICT DO NOTHING;
         SQL

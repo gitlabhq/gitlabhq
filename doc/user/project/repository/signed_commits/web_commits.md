@@ -32,6 +32,11 @@ To sign these commits, GitLab uses a global key configured for the instance.
 Because GitLab doesn't have access to your private key, the created commit can't be signed by using
 the key associated with your account.
 
+> [!note]
+> Commits signed with a GitLab-verified signature can also appear from
+> [repository mirroring](../mirror/_index.md) operations. In both cases, Gitaly
+> cryptographically signs the commit using the instance's configured signing key.
+
 For example, if User A applies [suggestions](../../merge_requests/reviews/suggestions.md)
 authored by User B, the commit contains the following:
 
@@ -114,7 +119,11 @@ For example:
 - [Push rules](../push_rules.md): (`Reject unverified users` or `Commit author's email`).
 - [Merge request approval prevention](../../merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 
-When a commit is signed by the instance, GitLab relies on the `Author` field for those features.
+For commits signed by the instance, the `Committer` field contains an instance email address,
+so the `Commit author's email` push rule checks the `Author` field instead. The
+`Reject unverified users` push rule checks the `Author` field for commits created in the
+GitLab UI. For signed commits that arrive as a regular Git push, for example from a
+[push mirror](../mirror/push.md), GitLab skips that rule.
 
 ## Commits created using REST API
 

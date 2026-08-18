@@ -37,7 +37,7 @@ module Gitlab
               validates :run, json_schema: {
                 base_directory: 'app/validators/json_schemas',
                 detail_errors: true,
-                filename: 'ci_run_steps',
+                filename: 'ci_job_definition_run_steps',
                 hash_conversion: true
               }
             end

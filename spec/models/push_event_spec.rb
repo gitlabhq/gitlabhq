@@ -72,7 +72,7 @@ RSpec.describe PushEvent, feature_category: :source_code_management do
   end
 
   describe '.without_existing_merge_requests' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:event1) { create(:push_event, project: project) }
     let(:event2) { create(:push_event, project: project) }
     let(:event3) { create(:push_event, project: project) }

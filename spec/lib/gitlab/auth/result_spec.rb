@@ -83,6 +83,20 @@ RSpec.describe Gitlab::Auth::Result do
     end
   end
 
+  describe '#gitlab_shell?' do
+    it 'returns true when type is :gitlab_shell' do
+      result = described_class.new(actor, nil, :gitlab_shell, nil)
+
+      expect(result.gitlab_shell?).to be true
+    end
+
+    it 'returns false for other types' do
+      result = described_class.new(nil, nil, :ci, nil)
+
+      expect(result.gitlab_shell?).to be false
+    end
+  end
+
   describe '#can?' do
     it 'returns if actor can do perform given action on given project' do
       expect(actor).to receive(:can?).with(:push_code).and_return(true)

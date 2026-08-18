@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { pinia } from '~/pinia/instance';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import UserList from '~/user_lists/components/user_list.vue';
 import { useUserListShow } from '~/user_lists/store/show';
 
@@ -13,13 +13,13 @@ export default function featureFlagsUserListInit() {
   const store = useUserListShow();
   store.setInitialData(el.dataset);
 
-  return new Vue({
+  const { emptyStatePath } = el.dataset;
+
+  return initVueApp({
     el,
     name: 'UserListRoot',
     pinia,
-    render(h) {
-      const { emptyStatePath } = el.dataset;
-      return h(UserList, { props: { emptyStatePath } });
-    },
+    component: UserList,
+    props: { emptyStatePath },
   });
 }

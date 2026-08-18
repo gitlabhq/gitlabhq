@@ -159,4 +159,69 @@ RSpec.describe EnforcesAdminAuthentication, feature_category: :system_access do
       end
     end
   end
+
+  describe '.authorize! when authorization_subject is overridden' do
+    controller(ApplicationController) do
+      include EnforcesAdminAuthentication
+
+      authorize! :read_admin_users, only: :index
+
+      def index
+        head :ok
+      end
+
+      private
+
+      def authorization_subject
+        ::Current.organization
+      end
+    end
+
+    context 'when the user is an admin' do
+      let(:user) { admin }
+
+      context 'when not in admin mode' do
+        it 'renders redirect for re-authentication' do
+          get :index
+
+          expect(response).to redirect_to new_admin_session_path
+        end
+      end
+
+      context 'when in admin mode', :enable_admin_mode do
+        it 'checks the ability with the organization as subject and renders ok' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?).with(user, :read_admin_users, current_organization)
+            .and_call_original.at_least(:once)
+
+          get :index
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'when the ability is not allowed' do
+          before do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?)
+              .with(user, :read_admin_users, current_organization)
+              .and_return(false)
+          end
+
+          it 'renders a 404' do
+            get :index
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
+
+    context 'when the user is a regular user' do
+      it 'renders a 404' do
+        get :index
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

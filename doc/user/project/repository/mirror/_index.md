@@ -123,13 +123,6 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
-
-{{< /history >}}
-
 To mirror only branches with names matching an [RE2 regular expression](https://github.com/google/re2/wiki/Syntax),
 enter a regular expression into the **Mirror specific branches** field. Branches with names that
 do not match the regular expression are not mirrored.

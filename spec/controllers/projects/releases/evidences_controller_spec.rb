@@ -107,7 +107,7 @@ RSpec.describe Projects::Releases::EvidencesController, :with_license do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['release']['milestones']
-            .all? { |milestone| milestone['issues'].nil? }).to eq(true)
+            .all? { |milestone| milestone['issues'].nil? }).to be(true)
         end
 
         context 'when project is private' do

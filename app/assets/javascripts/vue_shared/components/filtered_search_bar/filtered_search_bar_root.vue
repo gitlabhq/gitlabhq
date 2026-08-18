@@ -1,5 +1,6 @@
 <script>
 import { GlFilteredSearch, GlSorting, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import { isEqual } from 'lodash-es';
 
 import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
@@ -8,6 +9,7 @@ import { createAlert } from '~/alert';
 import { stripQuotes } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { SORT_DIRECTION } from './constants';
 import { filterEmptySearchTerm, uniqueTokens } from './filtered_search_utils';
 
@@ -21,6 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     namespace: {
       type: [Number, String],
@@ -186,8 +189,10 @@ export default {
     },
   },
   watch: {
-    initialFilterValue(newValue) {
-      if (this.syncFilterAndSort) {
+    // Parents commonly rebuild this array on every render, so only sync when the filters
+    // themselves changed. Syncing otherwise discards the token the user is typing.
+    initialFilterValue(newValue, oldValue) {
+      if (this.syncFilterAndSort && !isEqual(newValue, oldValue)) {
         this.filterValue = newValue;
       }
     },
@@ -424,12 +429,10 @@ export default {
       </gl-filtered-search>
     </div>
     <div
-      v-if="
-        selectedSortOption || $scopedSlots['user-preference'] || $scopedSlots['time-range-filter']
-      "
+      v-if="selectedSortOption || glSlots()['user-preference'] || glSlots()['time-range-filter']"
       :class="{
         'gl-flex gl-items-center gl-justify-between gl-gap-3':
-          $scopedSlots['user-preference'] || $scopedSlots['time-range-filter'],
+          glSlots()['user-preference'] || glSlots()['time-range-filter'],
       }"
     >
       <slot name="user-preference"></slot>
@@ -441,7 +444,7 @@ export default {
         :is-ascending="sortDirectionAscending"
         :class="[
           'sort-dropdown-container !gl-m-0 gl-w-full @sm/panel:gl-w-auto',
-          { '!gl-w-auto @lg/panel:gl-w-full': $scopedSlots['time-range-filter'] },
+          { '!gl-w-auto @lg/panel:gl-w-full': glSlots()['time-range-filter'] },
         ]"
         dropdown-toggle-class="gl-grow"
         dropdown-class="gl-grow"

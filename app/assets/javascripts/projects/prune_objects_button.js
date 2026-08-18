@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import PruneUnreachableObjectsButton from './prune_unreachable_objects_button.vue';
 
 export default (selector = '#js-project-prune-unreachable-objects-button') => {
@@ -8,17 +8,13 @@ export default (selector = '#js-project-prune-unreachable-objects-button') => {
 
   const { pruneObjectsPath, pruneObjectsDocPath } = el.dataset;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'PruneUnreachableObjectsButtonRoot',
-    render(createElement) {
-      return createElement(PruneUnreachableObjectsButton, {
-        props: {
-          pruneObjectsPath,
-          pruneObjectsDocPath,
-        },
-      });
+    component: PruneUnreachableObjectsButton,
+    props: {
+      pruneObjectsPath,
+      pruneObjectsDocPath,
     },
   });
 };

@@ -1,4 +1,5 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import IssuableForm from './issuable_form.vue';
 
 export default {
@@ -6,6 +7,7 @@ export default {
   components: {
     IssuableForm,
   },
+  mixins: [glSlotsMixin],
   props: {
     allowScopedLabels: {
       type: Boolean,
@@ -47,7 +49,7 @@ export default {
       :labels-manage-path="labelsManagePath"
       :issuable-type="issuableType"
     >
-      <template #actions="{ issuableMeta }">
+      <template v-if="glSlots().actions" #actions="{ issuableMeta }">
         <slot name="actions" v-bind="{ issuableMeta }"></slot>
       </template>
     </issuable-form>

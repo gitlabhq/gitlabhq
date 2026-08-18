@@ -269,6 +269,14 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       execute_transfer
     end
 
+    it 'records a success transfer metric and duration' do
+      expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer).with(namespace_type: 'project', result: 'success')
+      expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
+        .with(duration_s: kind_of(Numeric), namespace_type: 'project')
+
+      execute_transfer
+    end
+
     it 'moves the disk path', :aggregate_failures do
       old_path = project.repository.disk_path
       old_full_path = project.repository.full_path
@@ -461,6 +469,12 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.'
     end
 
+    it 'records a failure transfer metric' do
+      expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer).with(namespace_type: 'project', result: 'failure')
+
+      execute_transfer
+    end
+
     context 'when project has an associated project namespace' do
       it 'keeps project namespace in sync with project' do
         transfer_result = execute_transfer
@@ -519,6 +533,32 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
           end
 
           it_behaves_like 'project transfer failed with a message', 'Project cannot be transferred because of a container registry error: Bad Request'
+        end
+
+        context 'when the registry becomes unreachable after the dry run succeeds' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:move_repository_to_namespace) do |_path, dry_run:, **|
+              raise Faraday::ConnectionFailed, 'end of file reached' unless dry_run
+
+              :accepted
+            end
+          end
+
+          it 'fails with an actionable error message', :aggregate_failures do
+            expect(execute_transfer).to be false
+            expect(project.errors[:new_namespace]).to include(include(Gitlab.config.registry.api_url))
+            expect(project.errors[:new_namespace]).to include(include('disable the integration'))
+          end
+
+          it 'tracks the exception and rolls back the transfer', :aggregate_failures do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(Faraday::ConnectionFailed),
+              project_id: project.id
+            )
+
+            expect(execute_transfer).to be false
+            expect(project.reload.namespace).to eq(group)
+          end
         end
       end
 
@@ -609,6 +649,33 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists')
+    end
+  end
+
+  context 'when the transfer would collide with a service desk address in the target' do
+    # Once transferred under `group`, the project's full path is "<group>/foo-bar".
+    # An existing project at "<group>/foo/bar" (via a subgroup named "foo")
+    # slugifies to the same value, so both share the service desk address
+    # "<group>-foo-bar-key" and the transfer must be blocked.
+    let_it_be(:subgroup) { create(:group, parent: group, path: 'foo') }
+    let_it_be(:existing_project) { create(:project, path: 'bar', namespace: subgroup) }
+    let_it_be_with_reload(:project) { create(:project, path: 'foo-bar', namespace: user.namespace) }
+
+    before do
+      group.add_owner(user)
+
+      create(:service_desk_setting, project: existing_project, project_key: 'key')
+      create(:service_desk_setting, project: project, project_key: 'key')
+    end
+
+    it 'does not allow the project transfer and surfaces a clear error' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to be false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include(
+        a_string_including('Service Desk address is already in use')
+      )
     end
   end
 
@@ -1109,8 +1176,11 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         service.schedule_async_transfer(new_namespace)
 
         expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-          message: 'Cancelling stale transfer state - no active worker lease found',
-          project_id: project.id
+          'message' => 'Cancelling stale transfer state - no active worker lease found',
+          'gl_project_id' => project.id,
+          'gl_namespace_id' => project.project_namespace.id,
+          'namespace_type' => 'project',
+          'correlation_id' => kind_of(String)
         ))
       end
     end

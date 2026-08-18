@@ -237,6 +237,41 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'observability configuration' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:field, :configured_value, :default_value) do
+      :enabled          | true | false
+      :certificate_file | '/test/observability-bff-client-cert.pem'    | nil
+      :private_key_file | '/test/observability-bff-client-key.pem'     | nil
+      :listener_host    | 'bff.o11y.example.com'                       | nil
+      :listener_port    | 8443                                         | nil
+    end
+
+    with_them do
+      context 'when configured' do
+        before do
+          stub_config(observability: { bff_mtls: { field => configured_value } })
+          load_settings
+        end
+
+        it 'uses the configured value' do
+          expect(Settings.observability.bff_mtls[field]).to eq(configured_value)
+        end
+      end
+
+      context 'when not configured' do
+        before do
+          load_settings
+        end
+
+        it 'falls back to the default value' do
+          expect(Settings.observability.bff_mtls[field]).to eq(default_value)
+        end
+      end
+    end
+  end
+
   describe 'Pages custom domains settings' do
     using RSpec::Parameterized::TableSyntax
 
@@ -464,6 +499,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         member_invitation_reminder_emails_worker
         members_expiring_worker
         merge_requests_process_scheduled_merge
+        mobile_push_prune_stale_subscriptions_worker
         namespaces_process_outdated_namespace_descendants_cron_worker
         namespaces_prune_aggregation_schedules_worker
         namespaces_stuck_transfers_cancel_cron_worker
@@ -502,7 +538,8 @@ RSpec.describe '1_settings', feature_category: :settings do
         users_deactivate_dormant_users_worker
         users_migrate_records_to_ghost_user_in_batches_worker
         users_migrate_human_records_to_ghost_user_in_batches_worker
-        users_migrate_non_human_records_to_ghost_user_in_batches_worker
+        users_migrate_service_account_records_to_ghost_user_in_batches_worker
+        users_migrate_project_bot_records_to_ghost_user_in_batches_worker
         user_status_cleanup_batch_worker
         version_version_check_cron
         work_items_traversal_ids_healing_cron_worker

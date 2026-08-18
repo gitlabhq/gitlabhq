@@ -688,18 +688,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
           get_show
         end
       end
-
-      context 'when the track_ai_pipeline_results_viewed feature flag is disabled' do
-        before do
-          stub_feature_flags(track_ai_pipeline_results_viewed: false)
-        end
-
-        it 'does not enqueue' do
-          expect(Ci::TrackAiPipelineResultsViewedWorker).not_to receive(:perform_async)
-
-          get_show
-        end
-      end
     end
 
     context 'when the project has no agent on record' do

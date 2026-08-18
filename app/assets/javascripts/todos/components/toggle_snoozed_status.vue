@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import Tracking from '~/tracking';
@@ -18,7 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   props: {
     todo: {
       type: Object,

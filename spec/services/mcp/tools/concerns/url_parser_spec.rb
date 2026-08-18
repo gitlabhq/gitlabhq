@@ -56,28 +56,46 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
       expect { service.send(:extract_path_from_url, 'not a valid url') }
         .to raise_error(ArgumentError, /Invalid URL format/)
     end
-  end
 
-  describe '#valid_url?' do
-    it 'returns true for HTTPS URL' do
-      expect(service.send(:valid_url?, 'https://gitlab.com/namespace/project')).to be true
+    it 'extracts path from an HTTP URL' do
+      url = 'http://gitlab.com/namespace/project'
+      expect(service.send(:extract_path_from_url, url)).to eq('namespace/project')
     end
 
-    it 'returns true for HTTP URL' do
-      expect(service.send(:valid_url?, 'http://gitlab.com/namespace/project')).to be true
+    it 'raises ArgumentError for URL without scheme' do
+      expect { service.send(:extract_path_from_url, 'gitlab.com/namespace/project') }
+        .to raise_error(ArgumentError, /Invalid URL format/)
     end
 
-    it 'returns false for URL without scheme' do
-      expect(service.send(:valid_url?, 'gitlab.com/namespace/project')).to be false
-    end
-
-    it 'returns false for invalid scheme' do
-      expect(service.send(:valid_url?, 'ftp://gitlab.com/file')).to be false
+    it 'raises ArgumentError for invalid scheme' do
+      expect { service.send(:extract_path_from_url, 'ftp://gitlab.com/file') }
+        .to raise_error(ArgumentError, /Invalid URL format/)
     end
 
     it 'raises ArgumentError for malformed URL' do
-      expect { service.send(:valid_url?, 'https://gitlab.com:invalid/path') }
+      expect { service.send(:extract_path_from_url, 'https://gitlab.com:invalid/path') }
         .to raise_error(ArgumentError, /Invalid URL format/)
+    end
+
+    context 'when the instance is served under a relative URL root' do
+      before do
+        stub_config_setting(relative_url_root: '/gitlab')
+      end
+
+      it 'strips the relative URL root from the path' do
+        url = 'https://gitlab.example.com/gitlab/namespace/project/-/work_items/42'
+        expect(service.send(:extract_path_from_url, url)).to eq('namespace/project/-/work_items/42')
+      end
+
+      it 'does not strip a path segment that merely matches the root name' do
+        url = 'https://gitlab.example.com/gitlab-org/project'
+        expect(service.send(:extract_path_from_url, url)).to eq('gitlab-org/project')
+      end
+
+      it 'strips the relative URL root from a group work item path' do
+        url = 'https://gitlab.example.com/gitlab/groups/namespace/group/-/work_items/42'
+        expect(service.send(:extract_path_from_url, url)).to eq('groups/namespace/group/-/work_items/42')
+      end
     end
   end
 
@@ -209,6 +227,155 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
     end
   end
 
+  describe '#parse_blob_url' do
+    context 'with valid file URLs' do
+      it 'parses a blob URL' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/app/models/user.rb'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to eq({
+          project_path: 'namespace/project',
+          id: 'main/app/models/user.rb',
+          ref_type: nil
+        })
+      end
+
+      it 'parses a nested project blob URL' do
+        url = 'https://gitlab.com/parent/child/project/-/blob/main/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to eq({
+          project_path: 'parent/child/project',
+          id: 'main/README.md',
+          ref_type: nil
+        })
+      end
+
+      it 'parses a raw URL' do
+        url = 'https://gitlab.com/namespace/project/-/raw/v1.0/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('v1.0/README.md')
+      end
+
+      it 'parses a blame URL' do
+        url = 'https://gitlab.com/namespace/project/-/blame/main/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/README.md')
+      end
+
+      it 'keeps a slashed ref and the path combined' do
+        url = 'https://gitlab.com/namespace/project/-/blob/feature/my-branch/app/x.rb'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('feature/my-branch/app/x.rb')
+      end
+
+      it 'splits on the first blob segment' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/docs/-/blob/nested.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to include(project_path: 'namespace/project', id: 'main/docs/-/blob/nested.md')
+      end
+
+      it 'ignores the fragment' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md#L10-20'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/README.md')
+      end
+
+      it 'decodes percent-encoded path segments' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/app/models/user%20copy.rb'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/app/models/user copy.rb')
+      end
+
+      it 'preserves a plus sign in the path' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/c++/main.cpp'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/c++/main.cpp')
+      end
+    end
+
+    context 'with a ref_type query parameter' do
+      it 'returns heads' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md?ref_type=heads'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to eq('heads')
+      end
+
+      it 'returns tags' do
+        url = 'https://gitlab.com/namespace/project/-/blob/v1.0/README.md?ref_type=tags'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to eq('tags')
+      end
+
+      it 'ignores an unrecognised ref_type' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md?ref_type=bogus'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to be_nil
+      end
+
+      it 'ignores other query parameters' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md?plain=1'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to be_nil
+      end
+    end
+
+    context 'with invalid URLs' do
+      it 'raises ArgumentError for a tree URL' do
+        url = 'https://gitlab.com/namespace/project/-/tree/main/app'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError when the blob segment is missing' do
+        url = 'https://gitlab.com/namespace/project'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError when nothing follows the blob segment' do
+        url = 'https://gitlab.com/namespace/project/-/blob/'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError when the project path is missing' do
+        url = 'https://gitlab.com/-/blob/main/README.md'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError for an invalid scheme' do
+        expect { service.send(:parse_blob_url, 'ftp://gitlab.com/ns/p/-/blob/main/README.md') }
+          .to raise_error(ArgumentError, /Invalid URL format/)
+      end
+    end
+
+    context 'when the instance is served under a relative URL root' do
+      before do
+        stub_config_setting(relative_url_root: '/gitlab')
+      end
+
+      it 'strips the relative URL root from the project path' do
+        url = 'https://gitlab.example.com/gitlab/namespace/project/-/blob/main/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to include(project_path: 'namespace/project', id: 'main/README.md')
+      end
+    end
+  end
+
   describe '#resolve_parent_from_url' do
     context 'with project URLs' do
       it 'resolves project from URL' do
@@ -218,15 +385,6 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
         expect(result[:type]).to eq(:project)
         expect(result[:full_path]).to eq(project.full_path)
         expect(result[:record]).to eq(project)
-      end
-
-      it 'raises ArgumentError when project not found' do
-        url = 'https://gitlab.com/nonexistent/project'
-
-        allow(service).to receive(:find_parent_by_id_or_path).and_return(nil)
-
-        expect { service.send(:resolve_parent_from_url, url) }
-          .to raise_error(ArgumentError, /Project not found/)
       end
     end
 
@@ -238,15 +396,6 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
         expect(result[:type]).to eq(:group)
         expect(result[:full_path]).to eq(group.full_path)
         expect(result[:record]).to eq(group)
-      end
-
-      it 'raises ArgumentError when group not found' do
-        url = 'https://gitlab.com/groups/nonexistent/group'
-
-        allow(service).to receive(:find_parent_by_id_or_path).and_return(nil)
-
-        expect { service.send(:resolve_parent_from_url, url) }
-          .to raise_error(ArgumentError, /Group not found/)
       end
     end
 
@@ -276,23 +425,12 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
       it 'resolves work item and returns global ID' do
         url = "https://gitlab.com/groups/#{group.full_path}/-/work_items/#{group_work_item.iid}"
 
-        allow(service).to receive(:find_work_item_in_parent).with(group, group_work_item.iid)
+        allow(service).to receive(:find_work_item_in_parent!).with(group, group_work_item.iid)
           .and_return(group_work_item)
 
         result = service.send(:resolve_work_item_from_url, url)
 
         expect(result).to eq(group_work_item.to_global_id.to_s)
-      end
-    end
-
-    context 'with invalid parent' do
-      it 'raises ArgumentError when parent not found' do
-        url = 'https://gitlab.com/nonexistent/project/-/work_items/42'
-
-        allow(service).to receive(:find_parent_by_id_or_path).and_return(nil)
-
-        expect { service.send(:resolve_work_item_from_url, url) }
-          .to raise_error(ArgumentError, /Project not found/)
       end
     end
 

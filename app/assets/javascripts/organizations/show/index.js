@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import App from './components/app.vue';
 
@@ -12,16 +12,13 @@ export const initOrganizationsShow = () => {
   } = el;
   const { organization, canAdminOrganization } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationShowRoot',
-    render(createElement) {
-      return createElement(App, {
-        props: {
-          organization,
-          canAdminOrganization,
-        },
-      });
+    component: App,
+    props: {
+      organization,
+      canAdminOrganization,
     },
   });
 };

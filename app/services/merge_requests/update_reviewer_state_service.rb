@@ -7,6 +7,10 @@ module MergeRequests
 
       reviewer = merge_request.find_reviewer(current_user)
 
+      # Capture old state before mutating so the webhook can show the reviewer state change.
+      # Only needed for states that fire the webhook, so skip the query otherwise.
+      old_reviewers_hook_attrs = merge_request.reviewers_hook_attrs if submitted_review?(state)
+
       create_requested_changes(merge_request) if state == 'requested_changes'
       destroy_requested_changes(merge_request) if state == 'approved'
       create_reviewed_system_note(merge_request) if state == 'reviewed'
@@ -19,6 +23,8 @@ module MergeRequests
         trigger_user_merge_request_updated(merge_request)
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
         current_user.invalidate_merge_request_cache_counts
+
+        execute_submit_review_hooks(merge_request, state, old_reviewers_hook_attrs)
 
         return success if state != 'requested_changes'
 
@@ -56,6 +62,22 @@ module MergeRequests
       return true unless current_user.respond_to?(:user_type)
 
       !current_user.duo_code_review_bot?
+    end
+
+    def execute_submit_review_hooks(merge_request, state, old_reviewers_hook_attrs)
+      return unless submitted_review?(state)
+
+      execute_hooks(
+        merge_request,
+        'update',
+        old_associations: { reviewers_hook_attrs: old_reviewers_hook_attrs }
+      )
+    end
+
+    def submitted_review?(state)
+      # review_started and unreviewed are automatic transitions (a draft note is created or
+      # destroyed, or reviewers are reset on push), not a review the user submitted.
+      %w[review_started unreviewed].exclude?(state)
     end
   end
 end

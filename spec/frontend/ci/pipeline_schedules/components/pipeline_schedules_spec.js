@@ -106,7 +106,7 @@ describe('Pipeline schedules app', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLink = () => wrapper.findComponent(GlLink);
   const findPlanLimitReachedAlert = () => wrapper.findByTestId('plan-limit-reached-alert');
-  const findNewButton = () => wrapper.findByTestId('new-schedule-button');
+  const findNewButton = () => wrapper.findComponentByTestId('new-schedule-button');
   const findAllTab = () => wrapper.findByTestId('pipeline-schedules-all-tab');
   const findActiveTab = () => wrapper.findByTestId('pipeline-schedules-active-tab');
   const findInactiveTab = () => wrapper.findByTestId('pipeline-schedules-inactive-tab');

@@ -11,6 +11,7 @@
 module Projects
   class TransferService < BaseService
     include Gitlab::ShellAdapter
+    include Namespaces::TransferLogging
 
     TransferError = Class.new(StandardError)
 
@@ -32,8 +33,8 @@ module Projects
       log_transfer(project, new_namespace, nil)
     end
 
-    def log_project_transfer_error(project, new_namespace, error_message)
-      log_transfer(project, new_namespace, error_message)
+    def log_project_transfer_error(project, new_namespace, error)
+      log_transfer(project, new_namespace, error)
     end
 
     def schedule_async_transfer(new_namespace)
@@ -45,7 +46,8 @@ module Projects
       project_namespace.state_metadata[:transfer_target_parent_id] = new_namespace.id
 
       unless project_namespace.schedule_transfer(transition_user: current_user)
-        raise TransferError, s_('TransferProject|Unable to initiate transfer. The project may already have a transfer in progress.')
+        raise TransferError, s_('TransferProject|Unable to initiate transfer. ' \
+          'The project may already have a transfer in progress.')
       end
 
       Projects::TransferWorker.perform_async(
@@ -61,7 +63,7 @@ module Projects
       project.reset
       project.errors.add(:new_namespace, ex.message)
 
-      log_project_transfer_error(project, @new_namespace, ex.message)
+      log_project_transfer_error(project, @new_namespace, ex)
 
       ServiceResponse.error(message: ex.message)
     end
@@ -71,17 +73,22 @@ module Projects
 
       @new_namespace = new_namespace
       @owner_of_personal_project_before_transfer = project.namespace.owner if project.personal?
+      start_time = Gitlab::Metrics::System.monotonic_time
 
       transfer(project)
 
+      duration_s = elapsed_seconds(start_time)
       log_project_transfer_success(project, @new_namespace)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'project', result: 'success')
+      ::Gitlab::Metrics::Transfers.observe_transfer_duration(duration_s: duration_s, namespace_type: 'project')
 
       true
     rescue Projects::TransferService::TransferError => ex
       project.reset
       project.errors.add(:new_namespace, ex.message)
 
-      log_project_transfer_error(project, @new_namespace, ex.message)
+      log_project_transfer_error(project, @new_namespace, ex)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'project', result: 'failure')
 
       false
     end
@@ -90,21 +97,27 @@ module Projects
 
     attr_reader :old_path, :new_path, :new_namespace, :old_namespace
 
-    def log_transfer(project, new_namespace, error_message = nil)
-      action = error_message.nil? ? "was" : "was not"
+    def log_transfer(project, new_namespace, error = nil)
+      action = error.nil? ? "was" : "was not"
+      # `old_namespace` is captured up front in `transfer` (before the namespace change is
+      # persisted), so it reflects the pre-transfer namespace consistently on both the success
+      # and failure paths. Falling back to `project.namespace` covers failures raised before
+      # `transfer` runs (e.g. from `ensure_allowed_transfer`), where nothing has changed yet.
+      pre_transfer_namespace = old_namespace || project.namespace
 
-      log_payload = {
+      log_payload = build_transfer_log_payload(
         message: "Project #{action} transferred to a new namespace",
-        project_id: project.id,
-        project_path: project.full_path,
-        project_namespace: project.namespace.full_path,
-        namespace_id: project.namespace_id,
+        namespace: project.project_namespace,
+        error: error,
+        gl_project_id: project.id,
+        gl_project_path: project.full_path,
+        old_project_namespace: pre_transfer_namespace&.full_path,
+        old_namespace_id: pre_transfer_namespace&.id,
         new_namespace_id: new_namespace&.id,
-        new_project_namespace: new_namespace&.full_path,
-        error_message: error_message
-      }
+        new_project_namespace: new_namespace&.full_path
+      )
 
-      if error_message.nil?
+      if error.nil?
         ::Gitlab::AppLogger.info(log_payload)
       else
         ::Gitlab::AppLogger.error(log_payload)
@@ -121,9 +134,11 @@ module Projects
       return if Gitlab::ExclusiveLease.get_uuid(lease_key)
 
       Gitlab::AppLogger.warn(
-        message: 'Cancelling stale transfer state - no active worker lease found',
-        state: project_namespace.state,
-        project_id: project.id
+        build_transfer_log_payload(
+          message: 'Cancelling stale transfer state - no active worker lease found',
+          namespace: project_namespace,
+          gl_project_id: project.id
+        )
       )
       project_namespace.cancel_transfer!
     end
@@ -154,7 +169,9 @@ module Projects
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
 
-      if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.name).exists?
+      if Project.where(namespace_id: @new_namespace.try(:id))
+                .where('path = ? or name = ?', project.path, project.name)
+                .exists?
         raise TransferError, s_("TransferProject|Project with same name or path in target namespace already exists")
       end
 
@@ -167,7 +184,8 @@ module Projects
       verify_if_container_registry_tags_can_be_handled(project)
 
       if !new_namespace_has_same_root?(project) && project_has_namespaced_npm_packages?
-        raise TransferError, s_("TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
+        raise TransferError, s_("TransferProject|Root namespace can't be updated if the project has NPM packages " \
+          "scoped to the current root level namespace.")
       end
 
       proceed_to_transfer
@@ -180,29 +198,36 @@ module Projects
       raise_error_due_to_tags_if_transfer_is_not_allowed
       raise_error_due_to_tags_if_not_in_same_root(project)
       raise_error_due_to_tags_if_transfer_dry_run_fails(project)
-    rescue Faraday::Error => e
-      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
-      raise TransferError,
-        s_('TransferProject|Cannot transfer project: failed to connect to the container registry. Please try again later.')
+    rescue Faraday::Error => error
+      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      raise TransferError, s_('TransferProject|Cannot transfer project: failed to connect to the container registry. ' \
+        'Please try again later.')
     end
 
     def raise_error_due_to_tags_if_transfer_is_not_allowed
       return if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
-      raise TransferError, s_('TransferProject|Project cannot be transferred, because image tags are present in its container registry')
+      raise TransferError, s_('TransferProject|Project cannot be transferred, ' \
+        'because image tags are present in its container registry')
     end
 
     def raise_error_due_to_tags_if_not_in_same_root(project)
       return if new_namespace_has_same_root?(project)
 
-      raise TransferError, s_('TransferProject|Project cannot be transferred to a different top-level namespace, because image tags are present in its container registry')
+      raise TransferError, s_('TransferProject|Project cannot be transferred to a different top-level namespace, ' \
+        'because image tags are present in its container registry')
     end
 
     def raise_error_due_to_tags_if_transfer_dry_run_fails(project)
-      dry_run = transfer_project_path_in_registry(project.full_path, new_namespace.full_path, project: project, dry_run: true)
+      dry_run = transfer_project_path_in_registry(
+        project.full_path, new_namespace.full_path, project: project, dry_run: true
+      )
       return if dry_run == :accepted
 
-      raise TransferError, format(s_('TransferProject|Project cannot be transferred because of a container registry error: %{error}'), error: dry_run.to_s.titleize)
+      raise TransferError, format(
+        s_('TransferProject|Project cannot be transferred because of a container registry error: %{error}'),
+        error: dry_run.to_s.titleize
+      )
     end
 
     def new_namespace_has_same_root?(project)
@@ -235,7 +260,7 @@ module Projects
             # Apply changes to the project
             update_namespace_and_visibility(@new_namespace)
             project.reconcile_shared_runners_setting!
-            project.save!
+            save_project!
 
             # Notifications
             project.send_move_instructions(@old_path)
@@ -246,9 +271,7 @@ module Projects
             move_project_uploads(project)
 
             # Update Container Registry
-            if project.has_container_registry_tags?
-              transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
-            end
+            update_container_registry_path(project)
 
             update_integrations
 
@@ -272,6 +295,34 @@ module Projects
       raise
     ensure
       refresh_permissions
+    end
+
+    # Translate the persistence error into the service's own TransferError so it
+    # is surfaced to the user via execute's rescue, consistent with the other
+    # transfer preconditions.
+    def save_project!
+      project.save!
+    rescue ActiveRecord::RecordInvalid => e
+      raise TransferError, e.record.errors.full_messages.to_sentence
+    end
+
+    def update_container_registry_path(project)
+      return unless project.has_container_registry_tags?
+
+      transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => error
+      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      raise TransferError, registry_unreachable_message(error)
+    end
+
+    def registry_unreachable_message(error)
+      format(
+        s_('TransferProject|Failed to transfer project. ' \
+          'The container registry at %{registry_url} could not be reached (%{error}). ' \
+          'If the container registry is not in use, disable the integration to allow the project to be transferred.'),
+        registry_url: Gitlab.config.registry.api_url,
+        error: error.message
+      )
     end
 
     def transfer_project_path_in_registry(old_project_path, new_namespace_path, project:, dry_run:)

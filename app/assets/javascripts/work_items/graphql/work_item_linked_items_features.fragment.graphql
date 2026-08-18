@@ -29,6 +29,7 @@ fragment WorkItemLinkedItemsFeaturesFragment on WorkItemFeatures {
             iconName
           }
           title
+          titleHtml
           state
           createdAt
           closedAt

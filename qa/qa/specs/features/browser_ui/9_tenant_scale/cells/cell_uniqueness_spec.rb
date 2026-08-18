@@ -11,7 +11,6 @@ module QA
 
       it(
         'projects are unique between cells',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/434090',
         only: :local
       ) do
         cell1_projects = cell1_db.projects
@@ -22,7 +21,6 @@ module QA
 
       it(
         'namespaces are unique between cells',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/434091',
         only: :local
       ) do
         cell1_namespaces = cell1_db.namespaces

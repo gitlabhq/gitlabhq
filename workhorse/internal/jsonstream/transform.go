@@ -7,22 +7,25 @@ package jsonstream
 
 import (
 	"io"
-	"strings"
 
 	"github.com/go-json-experiment/json/jsontext"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/prefixrewrite"
 )
 
-// Transform streams JSON from r to w, replacing the from prefix with the to
-// prefix in every string value whose enclosing object key equals key. Tokens
-// that are not strings, are not the value of a key named key, or whose value
-// does not carry the from prefix are copied through unchanged.
+// Transform streams JSON from r to w, replacing the first matching prefix in
+// froms with the to prefix, in every string value whose enclosing object key
+// equals key. Tokens that are not strings, are not the value of a key named key,
+// or whose value carries none of the prefixes are copied through unchanged.
+// Prefixes are matched case-insensitively; see prefixrewrite.
 //
 // The rewrite is structural: it uses the decoder's own object/array nesting to
 // distinguish a key from a value, so a string that merely equals key at a value
 // position is never treated as a key. Output JSON is canonically formatted;
 // insignificant whitespace from the input is not preserved.
-func Transform(r io.Reader, w io.Writer, key, from, to string) error {
-	if from == "" {
+func Transform(r io.Reader, w io.Writer, key string, froms []string, to string) error {
+	rewriter := prefixrewrite.New(froms, to)
+	if rewriter.Empty() {
 		_, err := io.Copy(w, r)
 		return err
 	}
@@ -54,9 +57,7 @@ func Transform(r io.Reader, w io.Writer, key, from, to string) error {
 		case isObjectKey(dec):
 			nextValueIsTarget = tok.String() == key
 		case nextValueIsTarget:
-			if s := tok.String(); strings.HasPrefix(s, from) {
-				tok = jsontext.String(to + strings.TrimPrefix(s, from))
-			}
+			tok = rewriteValue(tok, rewriter)
 			nextValueIsTarget = false
 		}
 
@@ -64,6 +65,16 @@ func Transform(r io.Reader, w io.Writer, key, from, to string) error {
 			return err
 		}
 	}
+}
+
+// rewriteValue swaps the first matching prefix, or returns tok unchanged.
+func rewriteValue(tok jsontext.Token, rewriter prefixrewrite.Rewriter) jsontext.Token {
+	rewritten, ok := rewriter.Apply(tok.String())
+	if !ok {
+		return tok
+	}
+
+	return jsontext.String(rewritten)
 }
 
 // isObjectKey reports whether the token just returned by dec.ReadToken sat at an

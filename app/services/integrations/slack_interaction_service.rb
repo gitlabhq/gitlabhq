@@ -6,7 +6,7 @@ module Integrations
 
     INTERACTIONS = {
       'view_closed' => SlackInteractions::IncidentManagement::IncidentModalClosedService,
-      'view_submission' => SlackInteractions::IncidentManagement::IncidentModalSubmitService,
+      'view_submission' => SlackInteractions::ViewSubmissionService,
       'block_actions' => SlackInteractions::BlockActionService
     }.freeze
 
@@ -20,9 +20,9 @@ module Integrations
         unless interaction?(interaction_type)
 
       service_class = INTERACTIONS[interaction_type]
-      service_class.new(params).execute
+      response = service_class.new(params).execute
 
-      ServiceResponse.success
+      ServiceResponse.success(payload: slack_response_payload(response))
     end
 
     private
@@ -31,6 +31,16 @@ module Integrations
 
     def interaction?(type)
       INTERACTIONS.key?(type)
+    end
+
+    # Slack acts on the interaction endpoint's HTTP response body (for example
+    # `response_action` on view_submission). Only propagate payloads that are
+    # explicitly meant for Slack; anything else stays an empty body.
+    def slack_response_payload(response)
+      return {} unless response.is_a?(ServiceResponse)
+      return {} unless response.payload.is_a?(Hash) && response.payload.key?(:response_action)
+
+      response.payload
     end
   end
 end

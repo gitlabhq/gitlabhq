@@ -96,6 +96,9 @@ on 2023-06-15. This suggests that most of these tokens were assigned by
 the migration. However, there is no way to know for sure whether other
 tokens were created manually with the same date.
 
+The top 10 dates can include dates in the past, and a `(none)` row for tokens with no expiration
+date. Read the dates and not only the counts when you look for an upcoming mass expiration.
+
 ## Update expiration dates in bulk
 
 Prerequisites:
@@ -177,6 +180,9 @@ Run the following Rake task to extend or remove expiration dates from tokens in 
 
 ### Extend expiration dates
 
+The task sets the selected expiration date on every token, including revoked tokens and
+impersonation tokens. The count shown before you confirm the action includes these tokens.
+
 To extend expiration dates on all tokens matching a given expiration date:
 
 1. Select option 1, `Extend expiration date`:
@@ -234,7 +240,7 @@ To extend expiration dates on all tokens matching a given expiration date:
    If you enter `y`, the tool extends the expiration date
    for all the tokens with the selected expiration date.
 
-   If you enter `N`, the tool aborts the update task and return to the
+   If you enter `N`, the tool aborts the update task and returns to the
    original analyze output.
 
 ### Remove expiration dates
@@ -288,6 +294,37 @@ a given expiration date:
    tokens with the selected expiration date.
 
    If you enter `N`, the tool aborts the update task and returns to the first menu.
+
+## Find tokens the Rake tasks do not report
+
+The `gitlab:tokens:analyze` task groups tokens by expiration date and reports how many share each
+date. It does not list individual tokens, and it reports only the 10 most common dates.
+
+For personal access tokens, use the
+[personal access tokens API](../../../api/personal_access_tokens.md) instead. Administrators can list
+every personal access token in the instance and filter with `expires_before` and `expires_after`.
+
+The project and group access token APIs filter by expiration date for a single project or group only.
+To sweep an entire instance for project and group access tokens, run the following script in the
+[Rails console](../../operations/rails_console.md).
+
+To list project and group access tokens that expire in a given date range:
+
+```ruby
+# Any duration works. For example: 1.week, 90.days, 6.months, 1.year.
+date_range = 1.month
+
+PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
+  token.user.members.each do |member|
+    type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+
+    puts "Expiring #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+  end
+end
+```
+
+To list project and group access tokens that have no expiration date, replace the `expires_at`
+condition with `expires_at: nil`, and change `Expiring` in the message to `No expiration date for`.
 
 ## Validate custom issuer URL configuration for CI/CD ID Tokens
 

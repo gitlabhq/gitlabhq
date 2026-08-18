@@ -1,6 +1,6 @@
 ---
-source_checksum: f4d52c00ddf0af9f
-distilled_at_sha: 867191c6c639fdc3de0084c84f0c3f8b054dae81
+source_checksum: ff77f559a9874ee0
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -44,14 +44,14 @@ distilled_at_sha: 867191c6c639fdc3de0084c84f0c3f8b054dae81
 - Add new EE licensed features to `PREMIUM_FEATURES` or `ULTIMATE_FEATURES` in `ee/app/models/gitlab_subscriptions/features.rb` based on the required plan.
 - Add global (instance-wide) EE features to `GLOBAL_FEATURES` in `ee/app/models/gitlab_subscriptions/features.rb`.
 - Guard SaaS-only features with `Gitlab::Saas.feature_available?(:feature_name)`; DO NOT use `Gitlab.com?` for new SaaS-only features.
-- Guard Dedicated-only features with `Gitlab::Dedicated.feature_available?(:feature_name)`; DO NOT use `Gitlab::CurrentSettings.gitlab_dedicated_instance?` directly in application code (migrations are an exception).
+- Guard Dedicated-only features with `Gitlab::Dedicated.feature_available?(:feature_name)`; DO NOT use `Gitlab::CurrentSettings.gitlab_dedicated_instance?` directly in application code (migrations are an exception). The `Gitlab/AvoidGitlabDedicatedInstanceChecks` RuboCop rule enforces this convention.
 - DO NOT use `Gitlab::Saas.feature_available?` in CE code.
 - Use `push_licensed_feature` in EE controllers to expose licensed features to the frontend via `gon.licensed_features`.
 
 ### SaaS and Dedicated Feature Definitions
 
 - Add new SaaS features to `FEATURES` in `ee/lib/gitlab/saas.rb` and create a YAML definition in `ee/config/saas_features/` using `bin/saas-feature.rb`.
-- Add new Dedicated features to `FEATURES` in `ee/lib/gitlab/dedicated.rb` and create a YAML definition in `ee/config/dedicated_features/`.
+- Add new Dedicated features to `FEATURES` in `ee/lib/gitlab/dedicated.rb` and create a YAML definition in `ee/config/dedicated_features/` using `bin/dedicated-feature.rb`.
 - Ensure every SaaS and Dedicated feature YAML definition includes at minimum the `name` field and has an owner (`group`).
 
 ### Testing EE Features

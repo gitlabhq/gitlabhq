@@ -69,13 +69,14 @@ module Gitlab
         @name = @context.fetch(:name, 'audit_operation')
         @is_audit_event_yaml_defined = Gitlab::Audit::Type::Definition.defined?(@name)
         @stream_only = stream_only?
-        @author = @context.fetch(:author)
         @scope = @context.fetch(:scope)
+        @author = resolve_author(@context.fetch(:author))
         @target = @context.fetch(:target)
         @created_at = @context.fetch(:created_at, DateTime.current)
         @message = @context.fetch(:message, '')
         @additional_details = @context.fetch(:additional_details, {})
         @additional_details[:event_name] = @name
+        @additional_details.merge!(human_author_details) if @human_author
         @ip_address = @context[:ip_address]
         @target_details = @context[:target_details]
         @authentication_event = @context.fetch(:authentication_event, false)
@@ -106,18 +107,11 @@ module Gitlab
 
       def log_events_and_stream(events)
         log_authentication_event
-        saved_events = log_to_database(events)
+        new_audit_events = log_to_new_tables(events, @name)
 
-        # When legacy writes are skipped (saved_events is nil), pass original events to log_to_new_tables.
-        # The new tables will generate their own IDs using the shared sequence.
-        events_for_new_tables = saved_events.presence || events
-        log_to_new_tables(events_for_new_tables, @name)
-
-        # we only want to override events with saved_events when it successfully saves into database.
-        # we are doing so to ensure events in memory reflects events saved in database and have id column.
-        events = saved_events if saved_events.present?
-
-        log_to_file_and_stream(events)
+        # Prefer the persisted scoped events so the file log carries the id column.
+        # Falls back to the in-memory events when the scoped write failed.
+        log_to_file_and_stream(new_audit_events.presence || events)
       end
 
       def log_to_file_and_stream(events)
@@ -192,22 +186,6 @@ module Gitlab
         AuditEvents::BuildService.new(**params).execute
       end
 
-      def log_to_database(events)
-        return if Feature.enabled?(:stop_legacy_audit_event_writes, feature_flag_actor)
-
-        if events.one?
-          events.first.save!
-          events
-        else
-          event_ids = AuditEvent.bulk_insert!(events, returns: :ids)
-          AuditEvent.id_in(event_ids)
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
-
-        nil
-      end
-
       def log_to_file(events)
         file_logger = ::Gitlab::AuditJsonLogger.build
 
@@ -215,6 +193,31 @@ module Gitlab
       end
 
       private
+
+      # When a service account authenticates via a composite identity (OAuth on
+      # behalf of a human in the :authentication context), the context author is
+      # the human (current_user). resolve_composite_identity_actor returns the
+      # service account, which is the true authenticating actor. We keep the SA
+      # as the author (so author_id stays correct) and remember the human so it
+      # can be recorded in the event details.
+      def resolve_author(author)
+        return author unless author.is_a?(::User)
+
+        actor = ::Gitlab::Auth::Identity.resolve_composite_identity_actor(author)
+
+        return author if actor.nil? || actor == author
+
+        @human_author = author
+        ::Gitlab::Audit::CompositeIdentityAuthor.new(actor, human_author: author)
+      end
+
+      def human_author_details
+        {
+          human_author_id: @human_author.id,
+          human_author_name: @human_author.name,
+          human_author_username: @human_author.username
+        }
+      end
 
       def log_payload(event)
         payload = event.as_json
@@ -225,14 +228,6 @@ module Gitlab
 
       def formatted_details(details)
         details.merge(details.slice(:from, :to).transform_values(&:to_s))
-      end
-
-      def feature_flag_actor
-        if defined?(::Gitlab::Audit::InstanceScope) && @scope.is_a?(::Gitlab::Audit::InstanceScope)
-          :instance
-        else
-          @scope
-        end
       end
     end
   end

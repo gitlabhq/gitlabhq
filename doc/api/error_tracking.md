@@ -49,12 +49,6 @@ Example response:
 
 ## Create Error Tracking settings
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393035/) in GitLab 15.10.
-
-{{< /history >}}
-
 Creates Error Tracking settings for a specified project.
 
 > [!note]

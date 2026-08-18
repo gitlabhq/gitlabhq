@@ -316,9 +316,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'with self or ancestor archived' do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
-    let_it_be_with_reload(:group_project) { create(:project, :repository, group: group, developers: developer, maintainers: maintainer) }
-    let_it_be_with_reload(:subgroup_project) { create(:project, :repository, group: subgroup, developers: developer, maintainers: maintainer) }
-    let_it_be_with_reload(:user_namespace_project) { create(:project, :repository, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:group_project) { create(:project, group: group, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:user_namespace_project) { create(:project, developers: developer, maintainers: maintainer) }
 
     let(:current_user) { maintainer }
 
@@ -437,7 +437,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:project_owner) { create(:user) }
     let_it_be_with_reload(:group_project) do
-      create(:project, :repository, group: group, developers: developer, maintainers: maintainer, owners: project_owner)
+      create(:project, group: group, developers: developer, maintainers: maintainer, owners: project_owner)
     end
 
     let(:current_user) { maintainer }
@@ -784,7 +784,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   it_behaves_like 'clusterable policies' do
-    let_it_be(:clusterable) { create(:project, :repository) }
+    let_it_be(:clusterable) { create(:project) }
     let_it_be(:cluster) do
       create(:cluster, :provided_by_gcp, :project, projects: [clusterable])
     end
@@ -1126,6 +1126,40 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           is_expected.to be_allowed(:update_pipeline_variable_override_setting)
         else
           is_expected.to be_disallowed(:update_pipeline_variable_override_setting)
+        end
+      end
+    end
+  end
+
+  describe 'update_feature_flags_minimum_role_setting' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_role, :minimum_role, :allowed) do
+      :guest      | :developer      | false
+      :planner    | :developer      | false
+      :reporter   | :developer      | false
+      :developer  | :developer      | false
+      :maintainer | :developer      | true
+      :maintainer | :maintainer     | true
+      :maintainer | :no_one_allowed | false
+      :owner      | :no_one_allowed | true
+      :owner      | :owner          | true
+      :developer  | :owner          | false
+      :maintainer | :owner          | false
+    end
+
+    with_them do
+      let(:current_user) { public_send(user_role) }
+
+      before do
+        project.project_setting.update!(feature_flags_minimum_role: minimum_role)
+      end
+
+      it 'allows/disallows update_feature_flags_minimum_role_setting based on the privileged state' do
+        if allowed
+          is_expected.to be_allowed(:update_feature_flags_minimum_role_setting)
+        else
+          is_expected.to be_disallowed(:update_feature_flags_minimum_role_setting)
         end
       end
     end
@@ -2176,6 +2210,95 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'managing feature flags with a minimum role' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.new(current_user, project) }
+
+    context 'when the feature_flag_management_permissions feature flag is disabled' do
+      let(:current_user) { developer }
+
+      before do
+        stub_feature_flags(feature_flag_management_permissions: false)
+        project.project_setting.update!(feature_flags_minimum_role: :owner)
+      end
+
+      it 'ignores the minimum role and keeps the role-based default' do
+        is_expected.to be_allowed(:update_feature_flag)
+        is_expected.to be_allowed(:create_feature_flag)
+        is_expected.to be_allowed(:admin_feature_flag)
+        is_expected.to be_allowed(:destroy_feature_flag)
+        is_expected.to be_allowed(:admin_feature_flags_user_lists)
+      end
+    end
+
+    context 'when the feature_flag_management_permissions feature flag is enabled' do
+      before do
+        project.project_setting.update!(feature_flags_minimum_role: minimum_role)
+      end
+
+      where(:user_role, :minimum_role, :allowed) do
+        :developer  | :developer      | true
+        :maintainer | :developer      | true
+        :owner      | :developer      | true
+        :developer  | :maintainer     | false
+        :maintainer | :maintainer     | true
+        :owner      | :maintainer     | true
+        :developer  | :owner          | false
+        :maintainer | :owner          | false
+        :owner      | :owner          | true
+        :developer  | :no_one_allowed | false
+        :maintainer | :no_one_allowed | false
+        :owner      | :no_one_allowed | false
+      end
+
+      with_them do
+        let(:current_user) { public_send(user_role) }
+
+        it 'allows/disallows managing feature flags based on the minimum role' do
+          if allowed
+            is_expected.to be_allowed(:update_feature_flag)
+            is_expected.to be_allowed(:create_feature_flag)
+            is_expected.to be_allowed(:admin_feature_flag)
+            is_expected.to be_allowed(:destroy_feature_flag)
+            is_expected.to be_allowed(:admin_feature_flags_user_lists)
+          else
+            is_expected.to be_disallowed(:update_feature_flag)
+            is_expected.to be_disallowed(:create_feature_flag)
+            is_expected.to be_disallowed(:admin_feature_flag)
+            is_expected.to be_disallowed(:destroy_feature_flag)
+            is_expected.to be_disallowed(:admin_feature_flags_user_lists)
+          end
+        end
+      end
+
+      context 'when a below-threshold user reads feature flags' do
+        let(:current_user) { developer }
+        let(:minimum_role) { :owner }
+
+        it 'still allows reading feature flags' do
+          is_expected.to be_allowed(:read_feature_flag)
+        end
+      end
+
+      context 'when an admin is in admin mode', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        context 'with a role threshold' do
+          let(:minimum_role) { :owner }
+
+          it { is_expected.to be_allowed(:update_feature_flag) }
+        end
+
+        context 'with no_one_allowed' do
+          let(:minimum_role) { :no_one_allowed }
+
+          it { is_expected.to be_disallowed(:update_feature_flag) }
+        end
+      end
+    end
+  end
+
   describe 'read_analytics' do
     context 'anonymous user' do
       let(:current_user) { anonymous }
@@ -2998,7 +3121,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context "when the project is public or internal and not on the allowlist" do
       let_it_be(:current_user) { create(:user) }
       let_it_be(:project) { public_project }
-      let_it_be(:scope_project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:scope_project) { create(:project, :private) }
       let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
 
       context 'with all features enabled' do
@@ -4382,7 +4505,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'link_forked_project' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:top_level_group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: top_level_group) }
     let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
@@ -4493,6 +4616,62 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     subject { described_class.new(service_account, project) }
 
     it_behaves_like 'subgroup/project-provisioned service account restriction', :create_service_account
+  end
+
+  describe ':request_access' do
+    let_it_be(:group_requester) { create(:user) }
+    let_it_be(:external_user) { create(:user, :external) }
+    let_it_be(:group_with_project) { create(:group, :public) }
+    let_it_be(:public_project_with_group) do
+      create(:project, :public, namespace: group_with_project)
+    end
+
+    before_all do
+      group_with_project.request_access(group_requester)
+    end
+
+    subject { described_class.new(current_user, project) }
+
+    context 'when user can request access' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:case_name, :current_user, :project) do
+        'public project, logged-in non-member'   | lazy { non_member }    | lazy { public_project_with_group }
+        'internal project, logged-in non-member' | lazy { non_member }    | lazy { internal_project }
+        'public project, external user'          | lazy { external_user } | lazy { public_project_with_group }
+      end
+
+      with_them do
+        it { expect_allowed(:request_access) }
+      end
+    end
+
+    context 'when user cannot request access' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:case_name, :current_user, :project) do
+        'anonymous user'                         | lazy { nil }                  | lazy { public_project_with_group }
+        'direct project owner'                   | lazy { owner }                | lazy { public_project }
+        'direct project guest'                   | lazy { guest }                | lazy { public_project }
+        'inherited group owner'                  | lazy { inherited_owner }      | lazy { public_project_in_group }
+        'inherited group developer'              | lazy { inherited_developer }  | lazy { public_project_in_group }
+        'inherited group guest'                  | lazy { inherited_guest }      | lazy { public_project_in_group }
+        'group requester'                        | lazy { group_requester }      | lazy { public_project_with_group }
+        'internal project, external user'        | lazy { external_user }        | lazy { internal_project }
+        'private project, non-member'            | lazy { non_member }           | lazy { private_project }
+      end
+
+      with_them do
+        it { expect_disallowed(:request_access) }
+      end
+    end
+
+    context 'when request_access_enabled is disabled on the project' do
+      let_it_be(:project) { create(:project, :public, request_access_enabled: false) }
+      let(:current_user) { non_member }
+
+      it { expect_disallowed(:request_access) }
+    end
   end
 
   private

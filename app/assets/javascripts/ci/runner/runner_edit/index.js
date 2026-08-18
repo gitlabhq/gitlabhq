@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import RunnerEditApp from './runner_edit_app.vue';
 
@@ -18,17 +19,14 @@ export const initRunnerEdit = (selector) => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'RunnerEditAppRoot',
     apolloProvider,
-    render(h) {
-      return h(RunnerEditApp, {
-        props: {
-          runnerId,
-          runnerPath,
-        },
-      });
+    component: RunnerEditApp,
+    props: {
+      runnerId,
+      runnerPath,
     },
   });
 };

@@ -36,6 +36,11 @@ module RuboCop
           (block (send nil? $/^let_it_be/ (sym %name) ...) ...)
         PATTERN
 
+        # @!method matching_let(node)
+        def_node_matcher :matching_let, <<~PATTERN
+          (block (send nil? {:let :let!} (sym %name) ...) ...)
+        PATTERN
+
         # @!method before_block?(node)
         def_node_matcher :before_block?, <<~PATTERN
           (block (send nil? :before ...) ...)
@@ -53,12 +58,11 @@ module RuboCop
           before_block = before_block_ancestor(node)
           return unless before_block
 
-          each_block_node_in_ancestor(node) do |child_node|
-            matching_let_it_be(child_node, name: object_calling_add_role) do |let_it_be|
-              message = format(MSG, let_it_be: let_it_be)
-              add_offense(node, message: message)
-            end
-          end
+          let_it_be = nearest_let_it_be(node, name: object_calling_add_role)
+          return unless let_it_be
+
+          message = format(MSG, let_it_be: let_it_be)
+          add_offense(node, message: message)
         end
 
         private
@@ -67,10 +71,39 @@ module RuboCop
           node.each_ancestor(:block).find { |block_node| before_block?(block_node) }
         end
 
-        def each_block_node_in_ancestor(node, &block)
-          node.each_ancestor do |parent_node|
-            parent_node.each_child_node(:block, &block)
+        # Finds the declaration of `name` that RSpec would actually resolve
+        # at runtime, walking outward from the nearest example group and
+        # taking the last declaration in each scope (last-definition-wins).
+        # We only flag it when that declaration is `let_it_be`-family; a
+        # nearer `let`/`let!` shadows it and makes the offense a false
+        # positive.
+        #
+        # @example
+        #   let_it_be(:project) { create(:project) }
+        #
+        #   describe '#foo' do
+        #     let(:project) { create(:project) } # shadows the let_it_be above
+        #
+        #     before { project.add_guest(guest) } # not flagged
+        #   end
+        def nearest_let_it_be(node, name:)
+          node.each_ancestor.each do |parent_node|
+            matches = parent_node.each_child_node(:block).filter_map do |child_node|
+              classify_declaration(child_node, name: name)
+            end
+            next if matches.empty?
+
+            declaration = matches.last
+            return declaration unless declaration == :let
+
+            return nil
           end
+
+          nil
+        end
+
+        def classify_declaration(child_node, name:)
+          matching_let_it_be(child_node, name: name) || (:let if matching_let(child_node, name: name))
         end
       end
     end

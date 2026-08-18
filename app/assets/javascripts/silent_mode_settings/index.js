@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import SilentModeSettingsApp from './components/app.vue';
@@ -14,15 +15,12 @@ export const initSilentModeSettings = () => {
 
   const { silentModeEnabled } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'SilentModeSettingsAppRoot',
-    render(createElement) {
-      return createElement(SilentModeSettingsApp, {
-        props: {
-          isSilentModeEnabled: parseBoolean(silentModeEnabled),
-        },
-      });
+    component: SilentModeSettingsApp,
+    props: {
+      isSilentModeEnabled: parseBoolean(silentModeEnabled),
     },
   });
 };

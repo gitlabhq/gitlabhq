@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLink, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLink, GlTab, GlBadge, GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
 
@@ -11,6 +11,7 @@ import RunnerName from '~/ci/runner/components/runner_name.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { getPaginationVariables } from '../../utils';
 
 export default {
@@ -26,6 +27,7 @@ export default {
     RunnerActionsCell,
     RunnerPagination,
   },
+  mixins: [glSlotsMixin, GlToastMixin],
   props: {
     projectFullPath: {
       type: String,
@@ -103,7 +105,7 @@ export default {
   },
   methods: {
     onDeleted({ message }) {
-      this.$root.$toast?.show(message);
+      this.$toast.show(message);
     },
     onPaginationInput(value) {
       this.pagination = value;
@@ -126,12 +128,12 @@ export default {
       </div>
     </template>
 
-    <div v-if="$scopedSlots.settings" class="gl-mx-5 gl-mb-5 gl-mt-3">
+    <div v-if="glSlots().settings" class="gl-mx-5 gl-mb-5 gl-mt-3">
       <slot name="settings"></slot>
     </div>
-    <div v-if="$scopedSlots.description" class="gl-mx-5 gl-mb-5">
+    <div v-if="glSlots().description" class="gl-mx-5 gl-mb-5">
       <gl-alert variant="tip" :dismissible="false">
-        <slot name="description"></slot>
+        <template v-if="glSlots().description" #default><slot name="description"></slot></template>
       </gl-alert>
     </div>
     <p v-if="isEmpty" data-testid="empty-message" class="gl-mx-5 gl-mb-5 gl-text-subtle">
@@ -151,7 +153,9 @@ export default {
           :edit-url="runner.editUrl"
           @deleted="onDeleted"
         >
-          <slot name="other-runner-actions" :runner="runner"></slot>
+          <template v-if="glSlots()['other-runner-actions']" #default
+            ><slot name="other-runner-actions" :runner="runner"></slot
+          ></template>
         </runner-actions-cell>
       </template>
     </runner-list>

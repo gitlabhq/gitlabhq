@@ -27,7 +27,7 @@ title: Implement an ActivityPub actor
 This feature requires two feature flags:
 
 - `activity_pub`: Enables or disables all ActivityPub-related features.
-- `activity_pub_project`: Enables and disable ActivityPub features specific to
+- `activity_pub_project`: Enables and disables ActivityPub features specific to
   projects. Requires the `activity_pub` flag to also be enabled.
 
 ActivityPub is based on three standard documents:
@@ -39,8 +39,8 @@ ActivityPub is based on three standard documents:
 - [Activity Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/)
   defines the various messages recognized by default.
 
-The first one is typically handled by controllers, while the two others are
-related to what happen in serializers.
+The first one is typically handled by controllers, while the other two are
+related to what happens in serializers.
 
 To implement an ActivityPub actor, you must:
 
@@ -49,13 +49,13 @@ To implement an ActivityPub actor, you must:
 - Handle incoming requests on the inbox.
 
 All requests are made using
-`application/ld+json; profile="https://www.w3.org/ns/activitystreams"` as `Accept` HTTP header.
+`application/ld+json; profile="https://www.w3.org/ns/activitystreams"` as the `Accept` HTTP header.
 
 The actors we've implemented for the social features:
 
 - [Releases](releases.md)
 
-For more information on planned actors, see [epic 11247](https://gitlab.com/groups/gitlab-org/-/epics/11247).
+For more information on planned actors, see [epic 11247](https://gitlab.com/groups/gitlab-org/-/work_items/11247).
 
 ## Profile page
 
@@ -109,7 +109,7 @@ ActivityPub type, with all the correct fields.
 
 Not yet implemented.
 
-The inbox is where the ActivityPub compatible third-parties makes their
+The inbox is where ActivityPub-compatible third parties make their
 requests, to subscribe to the actor or send it messages.
 
 ## ActivityStreams serializers
@@ -127,7 +127,7 @@ is an actor profile page. You don't need those if your serializer
 represents an object that is just meant to be embedded as part of actors,
 like the object representing the contact information for a user.
 
-Each resource serialized (included other objects embedded in your
+Each resource serialized (including other objects embedded in your
 actor) must provide an `id` and a `type` field.
 
 `id` is a URL. It's meant to be a unique identifier for the resource, and

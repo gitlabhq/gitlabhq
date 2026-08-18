@@ -13,6 +13,11 @@ title: Migrate to GitLab Dedicated with Geo
 
 {{< /details >}}
 
+> [!note]
+> GitLab Dedicated for Government does not support ongoing Geo replication or Geo-based
+> failover. Geo migration for onboarding new tenants is supported, but requires a VPN
+> connection. Contact your GitLab Dedicated for Government onboarding team to set this up.
+
 Geo migration requires secrets from your GitLab Self-Managed primary instance so that GitLab
 Dedicated can decrypt your data after migration. These secrets include database encryption keys,
 CI/CD variables, and other sensitive configuration details.
@@ -94,31 +99,37 @@ Use these optional flags with `collect_secrets_k8s.py` to override default value
 
 ### Offline environments
 
-If your GitLab Self-Managed instance doesn't have internet access,
-download the `age` binary manually before running the collection script.
+If your GitLab Self-Managed instance doesn't have internet access, embed the `age` binary in the
+collection script before you run it.
 
 To set up the collection script for offline environments:
 
-1. On a machine with internet access, download the `age` binary:
+1. On a machine with internet access, download `download_age_binaries.py` and `embed_age_binary.py` from the
+   [Geo secrets collection](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/geo-secrets-collection)
+   project, and put them in the same directory as the collection script you downloaded from Switchboard.
+1. Download and encode the `age` binaries:
 
    ```shell
-   python3 download_age_binaries.py
+   python3 download_age_binaries.py > age_binaries.txt
    ```
 
-   This generates an `age_binaries.tar.gz` file that contains the `age` binary for multiple platforms.
+   The script prints base64-encoded `age` binaries for Linux AMD64 and ARM64 to standard output, so you
+   must redirect the output to `age_binaries.txt`.
 
-1. Transfer the `age_binaries.tar.gz` file to your offline environment.
-1. Embed the binary into the collection script:
+1. Embed the binaries in the collection script:
 
    ```shell
-   python3 embed_age_binary.py --binaries age_binaries.tar.gz
+   python3 embed_age_binary.py
    ```
 
-   This creates a self-contained script that includes the `age` binary.
+   The script reads `age_binaries.txt` from the current directory,
+   and overwrites `collect_secrets_linux_package.py` and `collect_secrets_k8s.py`
+   with versions that include the embedded binaries.
 
-1. Run the embedded script on your GitLab Self-Managed instance as described in [collect and upload migration secrets](#collect-and-upload-migration-secrets).
+1. Transfer the updated collection script to your offline environment.
+1. Run the script on your GitLab Self-Managed instance as described in [collect and upload migration secrets](#collect-and-upload-migration-secrets).
 
-The embedded script automatically extracts and uses the included `age` binary.
+The updated script is self-contained and automatically extracts and uses the embedded `age` binary.
 
 ## Troubleshooting
 

@@ -227,18 +227,6 @@ To set a custom default CI/CD configuration file path:
 Individual projects can override this instance default by
 [specifying a custom CI/CD configuration file](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
-#### Display or hide the pipeline suggestion banner
-
-Control whether to display a guidance banner in merge requests that have no pipelines.
-This banner provides a walkthrough on how to add a `.gitlab-ci.yml` file.
-
-![A banner displays guidance on how to get started with GitLab pipelines.](img/suggest_pipeline_banner_v14_5.png)
-
-The pipeline suggestion banner is displayed by default. To hide it:
-
-1. Clear the **Enable pipeline suggestion banner** checkbox.
-1. Select **Save changes**.
-
 #### Display or hide the Jenkins migration banner
 
 {{< history >}}
@@ -360,12 +348,6 @@ By default, GitLab fetches runner version data. To stop fetching this data:
 1. Select **Save changes**.
 
 ### Control runner registration
-
-{{< history >}}
-
-- **Allow runner registration token** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11.
-
-{{< /history >}}
 
 Control who can register runners and whether to allow registration tokens.
 
@@ -541,7 +523,6 @@ Projects not in the allowlist receive a `not authorized to publish` error when a
 
 {{< history >}}
 
-- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 17.0.
 - [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) in GitLab 17.4 [with a feature flag](../feature_flags/_index.md) named `required_pipelines`. Disabled by default.
 

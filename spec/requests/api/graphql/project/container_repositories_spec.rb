@@ -230,7 +230,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
     end
 
     # In order to trigger the N+1 query, we need to create project with different container repository counts.
-    # In this case, project1 has 4 container repositories and project2 has 10 container repositories.
+    # In this case, project1 has 4 container repositories and project2 has 6 container repositories.
     describe "efficient database queries" do
       let_it_be(:project1) { create(:project, :private) }
       let_it_be(:user1) { create(:user, developer_of: project1) }
@@ -245,7 +245,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
 
       let_it_be(:project2) { create(:project, :private) }
       let_it_be(:user2) { create(:user, developer_of: project2) }
-      let_it_be(:project2_container_repositories) { create_list(:container_repository, 8, project: project2) }
+      let_it_be(:project2_container_repositories) { create_list(:container_repository, 6, project: project2) }
       let_it_be(:project2_container_repository_protected) { project2_container_repositories.first }
       let_it_be(:project2_npm_container_protection_rule) do
         create(:container_registry_protection_rule,

@@ -16,7 +16,7 @@ more convenient.
 
 We no longer allow new STI tables because they:
 
-- Lead to tables with large number of rows, when we should strive to keep tables small.
+- Lead to tables with a large number of rows, when we should strive to keep tables small.
 - Need additional indexes, increasing our usage of lightweight locks, whose saturation can cause incidents.
 - Add overhead by having to filter all of the data by a value, leading to more page accesses on read.
 - Use the `class_name` to load the correct class for an object, but storing

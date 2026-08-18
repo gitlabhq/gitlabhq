@@ -39,7 +39,6 @@ module QA
       end
 
       it 'exposes variable on protected branch',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348005',
         quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/28297',
                       type: 'flaky' } do
         [developer, maintainer].each do |user|
@@ -55,7 +54,6 @@ module QA
       end
 
       it 'does not expose variable on unprotected branch', :smoke,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347664',
         quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/28297',
                       type: 'flaky' } do
         [developer, maintainer].each do |user|

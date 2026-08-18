@@ -19,13 +19,13 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
       wait_for_requests
     end
 
-    it 'with an invalid name displays an error' do
+    it 'with a name containing spaces displays a specific error' do
       fill_in 'tag_name', with: 'v 1.0'
       select_ref(ref: 'master')
 
       click_button 'Create tag'
 
-      expect(page).to have_content 'Tag name invalid'
+      expect(page).to have_content 'Tag name invalid. Tag names cannot have spaces in them.'
     end
 
     it "doesn't allow to select invalid ref" do

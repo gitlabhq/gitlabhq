@@ -86,18 +86,12 @@ should have the concurrency tuned according to:
 
 Each thread requires a Redis connection, so adding threads may increase Redis
 latency and potentially cause client timeouts. See the
-[Sidekiq documentation about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis)
+[Sidekiq documentation about Redis](https://github.com/sidekiq/sidekiq/wiki/Using-Redis)
 for more details.
 
 #### Manage thread counts with concurrency field
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439687) in GitLab 16.9.
-
-{{< /history >}}
-
-In GitLab 16.9 and later, you can set the concurrency by setting `concurrency`. This value explicitly sets each process
+You can set the concurrency by setting `concurrency`. This value explicitly sets each process
 with this amount of concurrency.
 
 For example, to set the concurrency to `20`:

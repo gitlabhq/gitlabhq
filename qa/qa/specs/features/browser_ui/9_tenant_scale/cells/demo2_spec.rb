@@ -16,7 +16,6 @@ module QA
       end
 
       it('walkthrough',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/434421',
         only: { condition: -> { !Runtime::Env.running_in_ci? } }
       ) do
         # Sign in Cell 1

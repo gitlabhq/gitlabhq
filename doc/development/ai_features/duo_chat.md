@@ -17,14 +17,14 @@ the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
 
 To answer a user's question asked in the Chat interface, GitLab sends a
 [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb)
-to the Rails backend. Rails backend sends then instructions to the Large
+to the Rails backend. Rails backend then sends instructions to the Large
 Language Model (LLM) through the [AI Gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
 ## Which use cases lend themselves most to contributing to Chat?
 
 We aim to employ the Chat for all use cases and workflows that can benefit from a **conversational** interaction **between** **a user** and **an AI** that is driven by a large language model (LLM). Typically, these are:
 
-- **Creation and ideation** task as well as **Learning** tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
+- **Creation and ideation** tasks as well as **Learning** tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
 - **Tasks** that are typically satisfiable with one-shot interactions but **that might need refinement or could turn into a conversation**.
 - Among the latter are tasks where the **AI may not get it right the first time but** where **users can easily course correct** by telling the AI more precisely what they need. For instance, "Explain this code" is a common question that most of the time would result in a satisfying answer, but sometimes the user may have additional questions.
 - **Tasks that benefit from the history of a conversation**, so neither the user nor the AI need to repeat themselves.
@@ -37,7 +37,7 @@ To scale the context awareness and hence to scale creation, ideation, and learni
 
 Which use cases are better implemented as stand-alone AI features, or at least also as stand-alone AI features?
 
-- Narrowly scoped tasks that be can accelerated by deeply integrating AI into an existing workflow.
+- Narrowly scoped tasks that can be accelerated by deeply integrating AI into an existing workflow.
 - That can't benefit from conversations with AI.
 
 To make this more tangible, here is an example.
@@ -50,7 +50,7 @@ message writing workflow.
 
 Using Chat for commit message writing would probably take longer than writing the message oneself. The user would have to switch to the Chat window, type the request and then copy the result into the commit message field.
 
-That said, it does not mean that Chat can't write commit messages, nor that it would be prevented from doing so. If Chat has the commit context (which may be added at some point for reasons other than commit message writing), the user can certainly ask to do anything with this commit content, including writing a commit message. But users are certainly unlikely to do that with Chat as they would only loose time. Note: the resulting commit messages may be different if created from Chat with a prompt written by the user vs. a static prompt behind a purpose-built commit message creation.
+That said, it does not mean that Chat can't write commit messages, nor that it would be prevented from doing so. If Chat has the commit context (which may be added at some point for reasons other than commit message writing), the user can certainly ask to do anything with this commit content, including writing a commit message. But users are certainly unlikely to do that with Chat as they would only lose time. Note: the resulting commit messages may be different if created from Chat with a prompt written by the user vs. a static prompt behind a purpose-built commit message creation.
 
 ## Set up GitLab Duo Chat
 
@@ -70,7 +70,7 @@ to review, because they have significant experience with them.
 
 ### Troubleshooting
 
-When working with Chat locally, you might run into an error. Most commons
+When working with Chat locally, you might run into an error. Most common
 problems are documented in this section.
 If you find an undocumented issue, you should document it in this section after
 you find a solution.
@@ -82,17 +82,16 @@ you find a solution.
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no Chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `FactoryBot.create(:cloud_connector_access)`.                                                                                                              |
 
-For more information, see [interpreting GitLab Duo Chat error codes](#interpreting-gitlab-duo-chat-error-codes).
-that Chat sends to assist troubleshooting.
+For more information, see [interpreting GitLab Duo Chat error codes](#interpreting-gitlab-duo-chat-error-codes) that Chat sends to assist troubleshooting.
 
 ## Contributing to GitLab Duo Chat
 
-From the code perspective, Chat is implemented in the similar fashion as other
+From the code perspective, Chat is implemented in a similar fashion to other
 AI features. Read more about GitLab [AI Abstraction layer](_index.md#feature-development-abstraction-layer).
 
 The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/duo/chat/react_executor.rb)
 that sends user question and relevant context to the [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
-which construct a prompt and sends the request to the large language model.
+which constructs a prompt and sends the request to the large language model.
 
 Large language model decides if it can answer directly or if it needs to use
 one of the defined tools.
@@ -253,7 +252,7 @@ LangSmith integration works with any tools, including [GitLab Centralized Evalua
 
 ### Sharing your LangSmith traces (for internal team members)
 
-You can share your trace URL with team members directly by copying the entire URL from the web browser. This is the preferred way of sharing your traces instead of the ["share" trace feature present in the LangSmith UI](https://docs.langchain.com/langsmith/share-trace). Sharing a trace publicly will make it accessible to anyone with the link, even if they don’t have a LangSmith access via OKTA. Traces contain sensitive information such as CI tokens.
+You can share your trace URL with team members directly by copying the entire URL from the web browser. This is the preferred way of sharing your traces instead of the ["share" trace feature present in the LangSmith UI](https://docs.langchain.com/langsmith/share-trace). Sharing a trace publicly will make it accessible to anyone with the link, even if they don't have a LangSmith access via OKTA. Traces contain sensitive information such as CI tokens.
 
 ## Evaluate your merge request in one click
 
@@ -447,7 +446,7 @@ The implementation has three parts:
 
 1. A custom agent with its own tool that collects information from the user and
    returns structured data your component can consume. Each agent must define its
-   own tool — there is no shared generic tool.
+   own tool - there is no shared generic tool.
 1. A button that opens Duo Chat with that agent pre-selected and a few prompt suggestions.
 1. A component that listens for the tool completion event and applies the result.
 
@@ -673,7 +672,7 @@ Keep in mind that the `clientSubscriptionId` must be unique for every request. R
    ```
 
 If you can't fetch the response, check `graphql_json.log`,
-`sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
+`sidekiq_json.log`, `llm.log`, or `modelgateway_debug.log` if it contains error
 information.
 
 ### GitLab Duo Chat Conversation Threads GraphQL queries
@@ -808,9 +807,9 @@ return `true` in different contexts.
 
 | | GitLab.com | Dedicated or GitLab Self-Managed | All instances |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| for user outside of project or group (`user.can?(:access_duo_classic_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `duo_features_enabled` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on |  |
+| for user outside of project or group (`user.can?(:access_duo_classic_chat)`)  | User needs to belong to at least one group on Premium or Ultimate tier with `duo_features_enabled` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on |  |
 | for user in group context (`user.can?(:access_duo_classic_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and the group must have `duo_features_enabled` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
-| for user in project context (`user.can?(:access_duo_classic_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and project must have `duo_features_enabled` setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
+| for user in project context (`user.can?(:access_duo_classic_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and project must have `duo_features_enabled` setting switched on | - Instance needs to be on Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must have at least _read_ permission on the project |
 
 ### (Deprecated) Issue and epic experiments
 

@@ -11,7 +11,7 @@ RSpec.describe Admin::PlanLimitsController do
       {
         plan_limits: {
           plan_name_uid: plan.plan_name_uid_before_type_cast,
-          conan_max_file_size: file_size, id: plan_limits.id
+          conan_max_file_size: file_size
         }
       }
     end
@@ -30,7 +30,7 @@ RSpec.describe Admin::PlanLimitsController do
         expect(plan_limits.plan_id).to eq(plan.id)
       end
 
-      it 'falls back to plan_id when plan_name_uid is absent', :aggregate_failures do
+      it 'returns not_found when plan_name_uid is absent (no plan_id fallback)', :aggregate_failures do
         other_plan = create(:plan, name: 'free')
         other_plan_limits = create(:plan_limits, plan: other_plan)
 
@@ -38,12 +38,26 @@ RSpec.describe Admin::PlanLimitsController do
 
         post :create, params: { plan_limits: { plan_id: other_plan.id, conan_max_file_size: file_size } }
 
-        expect(response).to redirect_to(general_admin_application_settings_path)
-        expect(other_plan_limits.reload.conan_max_file_size).to eq(file_size)
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(other_plan_limits.reload.conan_max_file_size).not_to eq(file_size)
         expect(plan_limits.reload.conan_max_file_size).not_to eq(file_size)
       end
 
-      it 'prefers plan_name_uid when both plan_id and plan_name_uid are present' do
+      it 'returns not_found for a plan_name_uid with no matching plan', :aggregate_failures do
+        sign_in(create(:admin))
+
+        post :create, params: {
+          plan_limits: {
+            plan_name_uid: Plan::PLAN_NAME_UID_LIST[:gold],
+            conan_max_file_size: file_size
+          }
+        }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(plan_limits.reload.conan_max_file_size).not_to eq(file_size)
+      end
+
+      it 'ignores plan_id and resolves via plan_name_uid when both are present' do
         other_plan = create(:plan, name: 'free')
         other_plan_limits = create(:plan_limits, plan: other_plan)
 
@@ -68,7 +82,7 @@ RSpec.describe Admin::PlanLimitsController do
         {
           plan_limits: {
             plan_name_uid: plan.plan_name_uid_before_type_cast,
-            pipeline_hierarchy_size: 200, id: plan_limits.id
+            pipeline_hierarchy_size: 200
           }
         }
       end
@@ -87,8 +101,8 @@ RSpec.describe Admin::PlanLimitsController do
       let(:params) do
         {
           plan_limits: {
-            plan_id: plan.id,
-            max_pipelines_per_merge_train: 5, id: plan_limits.id
+            plan_name_uid: plan.plan_name_uid_before_type_cast,
+            max_pipelines_per_merge_train: 5
           }
         }
       end
@@ -100,6 +114,26 @@ RSpec.describe Admin::PlanLimitsController do
 
         expect(response).to redirect_to(general_admin_application_settings_path)
         expect(plan_limits.reload.max_pipelines_per_merge_train).to eq(5)
+      end
+    end
+
+    context "when ci_max_artifact_size_cyclonedx is passed in params" do
+      let(:params) do
+        {
+          plan_limits: {
+            plan_name_uid: plan.plan_name_uid_before_type_cast,
+            ci_max_artifact_size_cyclonedx: 5
+          }
+        }
+      end
+
+      it "updates the ci_max_artifact_size_cyclonedx plan limit" do
+        sign_in(create(:admin))
+
+        post :create, params: params
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(plan_limits.reload.ci_max_artifact_size_cyclonedx).to eq(5)
       end
     end
 

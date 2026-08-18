@@ -115,6 +115,10 @@ class WikiPage
   # new Page values before writing to the raw repository.
   attr_accessor :attributes
 
+  # Lets a caller set a last commit fetched in bulk, so we skip the per-page Gitaly
+  # lookup. See Wiki#last_commits_for_pages.
+  attr_writer :last_version
+
   def hook_attrs
     Gitlab::HookData::WikiPageBuilder.new(self).build
   end
@@ -494,13 +498,12 @@ class WikiPage
   def validate_reserved_slug
     return unless title.present?
 
-    # Only block exact matches of reserved slugs at the top level.
-    # Paths like "templates/my-template" are allowed because the wiki templates
-    # feature requires pages under the templates/ directory.
-    slug = title.downcase
-    return unless RESERVED_SLUGS.include?(slug)
+    normalized_title = title.downcase.delete_suffix('/')
+    return unless RESERVED_SLUGS.include?(normalized_title)
 
-    errors.add(:title, _("'%{slug}' is a reserved name") % { slug: slug })
+    errors.add(:title, _('is a reserved name. Reserved names are: %{reserved_names}') % {
+      reserved_names: RESERVED_SLUGS.join(', ')
+    })
   end
 end
 

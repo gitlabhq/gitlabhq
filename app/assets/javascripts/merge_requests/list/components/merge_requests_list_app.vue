@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
@@ -90,6 +91,7 @@ import MergeRequestReviewers from './merge_request_reviewers.vue';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 import EmptyState from './empty_state.vue';
+import MergeRequestByEmail from './merge_request_by_email.vue';
 import DiscussionsBadge from './discussions_badge.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -128,8 +130,10 @@ export default {
     EmptyState,
     IssuableMilestone,
     DiscussionsBadge,
-    NewResourceDropdown: () =>
-      import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
+    MergeRequestByEmail,
+    NewResourceDropdown: defineAsyncComponent(
+      () => import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -145,6 +149,7 @@ export default {
     isPublicVisibilityRestricted: { default: false },
     isSignedIn: { default: false },
     newMergeRequestPath: { default: '' },
+    initialEmail: { default: '' },
     releasesEndpoint: { default: '' },
     canBulkUpdate: { default: false },
     environmentNamesPath: { default: '' },
@@ -253,7 +258,7 @@ export default {
         fullPath: this.fullPath,
         hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
         isSignedIn: this.isSignedIn,
-        sort: this.sortKey,
+        sort: this.existingSortKey,
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
@@ -264,9 +269,9 @@ export default {
     hasSearch() {
       return Boolean(
         this.searchQuery ||
-          Object.keys(this.urlFilterParams).length ||
-          this.pageParams.afterCursor ||
-          this.pageParams.beforeCursor,
+        Object.keys(this.urlFilterParams).length ||
+        this.pageParams.afterCursor ||
+        this.pageParams.beforeCursor,
       );
     },
     apiFilterParams() {
@@ -573,6 +578,15 @@ export default {
     currentTabCount() {
       return this.tabCounts[this.state] || 0;
     },
+    existingSortKey() {
+      const hasSortKey = this.sortOptions.some(
+        (option) =>
+          option.sortDirection.ascending === this.sortKey ||
+          option.sortDirection.descending === this.sortKey,
+      );
+
+      return hasSortKey ? this.sortKey : CREATED_DESC;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -669,15 +683,15 @@ export default {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          variables: {
+            fullPath: this.fullPath,
+            search,
+            isProject: this.isProject,
+            searchIn: ['TITLE'],
+          },
           fetchPolicy,
         })
-        .then(({ data }) => (data.project || data.group).labels.nodes)
-        .then((labels) =>
-          // TODO remove once we can search by title-only on the backend
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
-          labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase())),
-        );
+        .then(({ data }) => (data.project || data.group).labels.nodes);
     },
     fetchLabels(search) {
       return this.fetchLabelsWithFetchPolicy(search);
@@ -835,7 +849,7 @@ export default {
       :has-scoped-labels-feature="hasScopedLabelsFeature"
       :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
-      :initial-sort-by="sortKey"
+      :initial-sort-by="existingSortKey"
       :issuables="mergeRequests"
       issuable-symbol="!"
       :error="mergeRequestsError"
@@ -999,5 +1013,9 @@ export default {
       </template>
     </issuable-list>
     <empty-state v-else :has-merge-requests="false" />
+    <merge-request-by-email
+      v-if="initialEmail && hasAnyMergeRequests"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+    />
   </div>
 </template>

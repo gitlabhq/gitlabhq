@@ -10,7 +10,7 @@ describe('UserDetails', () => {
 
   const { user } = mockAbuseReport;
 
-  const findUserDetail = (attribute) => wrapper.findByTestId(attribute);
+  const findUserDetail = (attribute) => wrapper.findComponentByTestId(attribute);
   const findUserDetailLabel = (attribute) => findUserDetail(attribute).props('label');
   const findUserDetailValue = (attribute) => findUserDetail(attribute).props('value');
   const findLinkIn = (component) => component.findComponent(GlLink);

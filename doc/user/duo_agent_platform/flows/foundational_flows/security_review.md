@@ -66,7 +66,7 @@ To use Security Review Flow:
 Security Review Flow uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md) each time it
 performs a review. Credit usage scales with diff complexity and the model you select.
 
-The following estimates apply to the [default model](../../../../user/duo_agent_platform/model_selection.md#default-models):
+The following estimates apply to the [default model](../../model_selection.md#default-models):
 
 | Review complexity                        | Approximate LLM calls | Estimated credits |
 |------------------------------------------|-----------------------|-------------------|
@@ -117,15 +117,9 @@ The flow sets the reviewer state based on the severity of findings. The flow nev
 {{< history >}}
 
 - Delivery of replies to mentions [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604317) in GitLab 19.2 [with a flag](../../../../administration/feature_flags/_index.md) named `ai_use_messaging_adapter_for_mentions`. Disabled by default.
+- Feature flag `ai_use_messaging_adapter_for_mentions` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/602269) in GitLab 19.3.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> When the flag is disabled, a mention starts a full review instead of a targeted reply.
-> For more information, see
-> [a mention starts a full review instead of a reply](#a-mention-starts-a-full-review-instead-of-a-reply).
 
 Mention the flow in a thread to ask clarifying questions about a finding, discuss remediation approaches, or
 flag a finding as a false positive. The flow does not perform a full re-review when mentioned.
@@ -176,7 +170,7 @@ To resolve a finding:
 - To dismiss the finding, select **Resolve thread** if you reviewed the finding and
   determined it is a false positive or accepted risk.
 - To track the vulnerability for future remediation, use the standard GitLab
-  [thread actions](../../../../user/project/merge_requests/_index.md#move-open-threads-to-an-issue)
+  [thread actions](../../../project/merge_requests/_index.md#move-open-threads-to-an-issue)
   to create an issue from the finding.
 - To rate the finding's usefulness, select **thumbs up** or **thumbs down**. This
   feedback helps improve the model. You can also share detailed feedback in
@@ -224,7 +218,7 @@ Confirm you meet all [prerequisites](#prerequisites), then check that the flow w
 
 - Verify that you mentioned the **Duo Security Review** account (its username begins with `@duo-security-review-`).
 - Verify [**Allow foundational flows**](_index.md#turn-foundational-flows-on-or-off)
-  and [**Code Review**](code_review.md) settings are turned on for the top-level group.
+  and [**Code Review**](code_review/_index.md) settings are turned on for the top-level group.
 - For GitLab Self-Managed, verify your instance is
   [configured for GitLab Duo](../../../../administration/gitlab_duo/configure/_index.md).
 
@@ -244,19 +238,6 @@ Note on large changes: For large merge requests, the flow operates within a boun
 budget. In these cases, the flow might report no findings or still output findings but fail to cover the full
 merge request, meaning important vulnerabilities could be missed. A completed review is not a guarantee of full
 coverage. For more information, see [Known limitations](#known-limitations).
-
-### A mention starts a full review instead of a reply
-
-The flow answers a mention with a targeted reply only when the
-`ai_use_messaging_adapter_for_mentions` feature flag is enabled.
-When the flag is disabled, a mention starts a full review of the merge request instead.
-
-- On GitLab Self-Managed and GitLab Dedicated, an administrator can
-  enable the feature flag named
-  `ai_use_messaging_adapter_for_mentions`.
-- On GitLab.com, this flag is disabled while GitLab rolls out support for replies.
-  Until the rollout is complete, a mention starts a full review.
-  For the rollout status, see [issue 602269](https://gitlab.com/gitlab-org/gitlab/-/issues/602269).
 
 ### Suggested changes do not apply cleanly
 

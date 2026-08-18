@@ -47,11 +47,6 @@ export default {
       default: ASC,
       required: false,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     markdownPreviewPath: {
       type: String,
       required: true,
@@ -129,6 +124,10 @@ export default {
     },
     hasReplies() {
       return Boolean(this.replies?.length);
+    },
+    // `replies` is null when a thread has none; the note prop wants an array.
+    replyNotes() {
+      return this.replies ?? [];
     },
     replies() {
       if (this.notes?.length > 1) {
@@ -272,8 +271,8 @@ export default {
                   :discussion-id="discussionId"
                   :full-path="fullPath"
                   :has-replies="hasReplies"
+                  :replies="replyNotes"
                   :work-item-type="workItemType"
-                  :is-modal="isModal"
                   :class="{ 'gl-mb-4': hasReplies }"
                   :autocomplete-data-sources="autocompleteDataSources"
                   :markdown-preview-path="markdownPreviewPath"
@@ -312,7 +311,6 @@ export default {
                       :full-path="fullPath"
                       :note="reply"
                       :work-item-type="workItemType"
-                      :is-modal="isModal"
                       :autocomplete-data-sources="autocompleteDataSources"
                       :markdown-preview-path="markdownPreviewPath"
                       :new-comment-template-paths="newCommentTemplatePaths"

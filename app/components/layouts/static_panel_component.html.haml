@@ -9,7 +9,8 @@
     .panel-content-inner.js-static-panel-inner
       = before_body
       %div{ @container_options }
-        %main#content-body.content.gl-pb-3{ **@main_options, class: "gl-@container/panel" }
+        -# No bottom padding here: inside the scroll container it traps sticky children (e.g. the detail-layout sidebar) above the bottom. The bottom gap comes from .panel-content.
+        %main#content-body.content{ **@main_options, class: "gl-@container/panel" }
           = body
       = after_body
     = footer

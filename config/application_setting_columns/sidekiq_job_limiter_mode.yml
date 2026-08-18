@@ -5,7 +5,7 @@ clusterwide: false
 column: sidekiq_job_limiter_mode
 db_type: smallint
 default: '1'
-description: "`track` or `compress`. Sets the behavior for [Sidekiq job size limits](../administration/settings/sidekiq_job_limits.md).
+description: "`track` or `compress`. Sets the behavior for [Sidekiq job size limits](../administration/settings/sidekiq.md).
   Default: 'compress'."
 encrypted: false
 gitlab_com_different_than_default: false

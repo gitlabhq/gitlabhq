@@ -4,6 +4,15 @@ module MergeRequests
   class RebaseService < MergeRequests::BaseService
     REBASE_ERROR = 'Rebase failed: Rebase locally, resolve all conflicts, then push the branch.'
 
+    # Machine-readable failure reasons surfaced on the #execute ServiceResponse
+    # (ServiceResponse#reason). Callers such as RebaseWorker's UX SLI reference
+    # these directly to tell an expected user outcome apart from a system fault.
+    REASON_CONFLICT = :conflict
+    REASON_SOURCE_BRANCH_MISSING = :source_branch_missing
+    REASON_PRE_RECEIVE = :pre_receive
+    REASON_COMMAND_ERROR = :command_error
+    REASON_UNKNOWN = :unknown
+
     SourceBranchMissingError = Class.new(Gitlab::Git::Repository::GitError)
 
     attr_reader :merge_request, :rebase_error
@@ -26,9 +35,9 @@ module MergeRequests
       @skip_ci = skip_ci
 
       if rebase
-        success
+        ServiceResponse.success
       else
-        error(rebase_error)
+        ServiceResponse.error(message: rebase_error, reason: @rebase_error_reason)
       end
     end
 
@@ -55,17 +64,23 @@ module MergeRequests
 
     private
 
+    # Categorises the failure into a machine-readable reason (see REASON_*) so
+    # callers such as RebaseWorker's UX SLI can tell an expected user outcome
+    # (conflict, push rules, missing branch) apart from an unexpected system
+    # failure. The reason is surfaced on the #execute ServiceResponse.
     def set_rebase_error(exception)
-      @rebase_error =
+      @rebase_error, @rebase_error_reason =
         case exception
         when SourceBranchMissingError
-          exception.message
+          [exception.message, REASON_SOURCE_BRANCH_MISSING]
         when Gitlab::Git::PreReceiveError
-          "The rebase pre-receive hook failed: #{exception.message}."
+          ["The rebase pre-receive hook failed: #{exception.message}.", REASON_PRE_RECEIVE]
         when Gitlab::Git::CommandError
-          "Rebase failed: #{exception.message}."
+          ["Rebase failed: #{exception.message}.", REASON_COMMAND_ERROR]
+        when Gitlab::Git::Repository::GitError
+          [REBASE_ERROR, REASON_CONFLICT]
         else
-          REBASE_ERROR
+          [REBASE_ERROR, REASON_UNKNOWN]
         end
     end
 

@@ -285,6 +285,12 @@ RSpec.describe Gitlab::SidekiqConfig::CronJobs, feature_category: :build do
     it 'returns nil by default' do
       expect(timezone_override).to be_nil
     end
+
+    it 'returns the value from application settings' do
+      stub_application_setting(sidekiq_timezone_override: 'America/Chicago')
+
+      expect(timezone_override).to eq('America/Chicago')
+    end
   end
 
   describe '#set_job' do

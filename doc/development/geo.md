@@ -81,6 +81,8 @@ For detailed information about the repository sync flow and lease mechanism, see
 
 For detailed information about the blob replication flows, see the [blob replication documentation](geo/blob_replication.md).
 
+To test Geo replication of upload partitions locally, see [test Geo replication of upload partitions](geo/upload_partition_replication_testing.md).
+
 ## Authentication
 
 To authenticate Git and file transfers, each `GeoNode` record has two fields:

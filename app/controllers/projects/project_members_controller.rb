@@ -14,6 +14,25 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @sort = pagination_params[:sort].presence || sort_value_name
+
+    respond_to do |format|
+      format.html { index_html }
+      # The Direct members tab fetches from this action rather than the public
+      # `GET /projects/:id/members` API because the members app consumes the
+      # internal `MemberSerializer`/`MemberEntity` shape (`can_update`,
+      # `can_remove`, `is_direct_member`, the `access_level` object, role
+      # metadata) that the public `Entities::Member` contract does not expose,
+      # and it rides the same members-page authorization and pagination.
+      format.json { render json: direct_members_list_data }
+    end
+  end
+
+  # MembershipActions concern
+  alias_method :membershipable, :project
+
+  private
+
+  def index_html
     @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 
     @group_member_links = group_member_links
@@ -24,14 +43,15 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_members = present_members(non_invited_members.page(pagination_params[:page]))
-
-    @direct_members = direct_members_collection
   end
 
-  # MembershipActions concern
-  alias_method :membershipable, :project
+  def direct_members_list_data
+    direct_members = present_members(non_invited_direct_members.page(direct_members_page))
 
-  private
+    ::Projects::ProjectMembers::AppDataSerializer
+      .new(@project, current_user: current_user)
+      .list_data(direct_members, { param_name: :direct_members_page, params: { search_groups: nil } })
+  end
 
   def members
     @members ||= MembersFinder
@@ -47,34 +67,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     members.non_invite
   end
 
-  def direct_members_collection
-    return paginated_direct_members if direct_members_query_requested?
-
-    direct_rows = @project_members.select { |member| member.type == ::ProjectMember.name }
-
-    Kaminari.paginate_array(direct_rows, total_count: direct_members_count)
-      .page(1)
-      .per(@project_members.limit_value)
-  end
-
-  def paginated_direct_members
-    present_members(non_invited_direct_members.page(direct_members_page || 1))
-  end
-
-  def direct_members_query_requested?
-    direct_members_searched? || direct_members_page.present?
-  end
-
   def direct_members_page
     params.permit(:direct_members_page)[:direct_members_page]
-  end
-
-  def direct_members_count
-    @project.namespace_members.non_invite.count
-  end
-
-  def direct_members_searched?
-    params.permit(:search_direct_members)[:search_direct_members].present?
   end
 
   def direct_members

@@ -3,9 +3,6 @@
 module Capybara
   MESSAGE = <<~MSG
     Timeout (%{timeout}s) reached while running a waiting Capybara finder.
-    Consider using a non-waiting finder.
-
-    See https://www.cloudbees.com/blog/faster-rails-tests
   MSG
 
   module Node

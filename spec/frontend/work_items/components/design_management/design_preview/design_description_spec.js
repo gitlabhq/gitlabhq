@@ -38,13 +38,14 @@ describe('DesignDescription', () => {
   const mockDesign = designDescriptionFactory();
 
   const findDesignContent = () => wrapper.findByTestId('design-description-content');
-  const findEditDescriptionButton = () => wrapper.findByTestId('edit-description');
-  const findSaveDescriptionButton = () => wrapper.findByTestId('save-description');
-  const findCancelDescriptionButton = () => wrapper.findByTestId('cancel');
+  const findEditDescriptionButton = () => wrapper.findComponentByTestId('edit-description');
+  const findSaveDescriptionButton = () => wrapper.findComponentByTestId('save-description');
+  const findCancelDescriptionButton = () => wrapper.findComponentByTestId('cancel');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCheckboxAtIndex = (index) => wrapper.findAll('input[type="checkbox"]').at(index);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findAddDesignDescriptionButton = () => wrapper.findByTestId('add-design-description');
+  const findAddDesignDescriptionButton = () =>
+    wrapper.findComponentByTestId('add-design-description');
 
   const updateDescriptionMutationSuccessHandler = jest
     .fn()

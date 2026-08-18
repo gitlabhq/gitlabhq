@@ -1,9 +1,0 @@
----
-name: gitlab_duo_note_callback_high_urgency
-description: Route messaging callbacks through the high-urgency Ai::Messaging::CallbackDispatchWorker (which delivers DB-only adapters inline and forwards external ones to CallbackWorker) instead of the legacy CallbackWorker subscriber. Also gates scheduling of the new worker until the Sidekiq fleet has the class.
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244213
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605184
-milestone: '19.2'
-group: group::code review
-type: gitlab_com_derisk
-default_enabled: false

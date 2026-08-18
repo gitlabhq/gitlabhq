@@ -1,5 +1,14 @@
 <script>
-import { GlCard, GlIcon, GlLink, GlButton, GlToggle, GlAlert, GlPopover } from '@gitlab/ui';
+import {
+  GlCard,
+  GlIcon,
+  GlLink,
+  GlButton,
+  GlToggle,
+  GlAlert,
+  GlPopover,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import SetValidityChecks from '~/security_configuration/graphql/set_validity_checks.graphql';
@@ -18,6 +27,7 @@ export default {
     GlPopover,
     ManageViaMr,
   },
+  mixins: [GlToastMixin],
   inject: [
     'projectFullPath',
     'userIsProjectAdmin',

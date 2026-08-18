@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import DefaultBranchSelector from './components/default_branch_selector.vue';
 
@@ -9,17 +9,14 @@ export default (el) => {
 
   const { projectId, defaultBranch, disabled } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DefaultBranchSelectorRoot',
-    render(createElement) {
-      return createElement(DefaultBranchSelector, {
-        props: {
-          disabled: parseBoolean(disabled),
-          persistedDefaultBranch: defaultBranch,
-          projectId,
-        },
-      });
+    component: DefaultBranchSelector,
+    props: {
+      disabled: parseBoolean(disabled),
+      persistedDefaultBranch: defaultBranch,
+      projectId,
     },
   });
 };

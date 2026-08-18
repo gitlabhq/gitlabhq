@@ -20,6 +20,11 @@ module Gitlab
       EXCLUDE_PARAMS = ALLOWLISTED_TAGS.map { |tag| "-#{tag}" }
       ALLOWED_MIME_TYPES = %w[image/jpeg image/tiff].freeze
 
+      # Part of the exiftool error emitted when an image carries a malformed
+      # OtherImageStart offset pointing outside the file (e.g.
+      # "Error reading OtherImageStart data in IFD0").
+      OFFSET_READ_ERROR_SIGNATURE = 'OtherImageStart'
+
       attr_reader :logger
 
       def initialize(logger: Gitlab::AppLogger)
@@ -84,15 +89,25 @@ module Gitlab
       end
 
       def exec_remove_exif!(path)
-        [
-          ["exiftool", "-IPTC=", "-XMP=", path],
-          ["exiftool", "-all=", "-tagsFromFile", "@", *EXCLUDE_PARAMS, path]
-        ].each do |cmd|
-          output, status = Gitlab::Popen.popen(cmd)
+        # First strip IPTC and XMP, which may contain unboundedly many tags, so the following
+        # tag-preserving copy cannot be forced into a CPU-overload DoS.
+        output, status = Gitlab::Popen.popen(["exiftool", "-IPTC=", "-XMP=", path])
 
-          if status != 0
+        if status != 0
+          # If the prestrip fails on a malformed offset it falls back to a plain full strip of the original bytes to
+          # avoid reading the IPTC/XMP data in which there can be unboundedly many tags
+          # Orientation is not preserved in the fallback case.
+          unless output.include?(OFFSET_READ_ERROR_SIGNATURE)
             raise "exiftool return code is #{status}: #{output}"
           end
+
+          logger.warn(
+            Labkit::Fields::ERROR_MESSAGE => output,
+            Labkit::Fields::LOG_MESSAGE => 'exif prestrip failed, falling back to full strip'
+          )
+          run_exiftool!(["exiftool", "-all=", path])
+        else
+          run_exiftool!(["exiftool", "-all=", "-tagsFromFile", "@", *EXCLUDE_PARAMS, path])
         end
 
         if File.size(path) == 0
@@ -104,6 +119,14 @@ module Gitlab
         if File.size(path) == File.size(old_path)
           raise "size of sanitized file is same as original size"
         end
+      end
+
+      def run_exiftool!(cmd)
+        output, status = Gitlab::Popen.popen(cmd)
+
+        return if status == 0
+
+        raise "exiftool return code is #{status}: #{output}"
       end
 
       def fetch_upload_to_file(uploader, dir)

@@ -42,6 +42,10 @@ module RapidDiffs
       codequality_reports_project_merge_request_path(resource.project, resource, format: :json)
     end
 
+    def sast_report_available
+      resource.has_sast_reports?
+    end
+
     override(:reload_stream_url)
     def reload_stream_url(offset: nil, diff_view: nil, skip_old_path: nil, skip_new_path: nil)
       diffs_stream_project_merge_request_path(
@@ -65,14 +69,6 @@ module RapidDiffs
       request_params&.dig(:only_context_commits) == 'true'
     end
 
-    override(:diffs_slice)
-    def diffs_slice
-      return if offset.to_i == 0
-
-      @diffs_slice ||= transform_file_collection(resource.first_diffs_slice(offset,
-        @diff_options.merge(only_context_commits: only_context_commits?)))
-    end
-
     def sorted?
       true
     end
@@ -80,6 +76,16 @@ module RapidDiffs
     def mr_path
       project_merge_request_path(resource.project, resource)
     end
+
+    def conflict_resolution_path
+      resource.present(current_user: current_user).conflict_resolution_path
+    end
+    strong_memoize_attr :conflict_resolution_path
+
+    def can_merge
+      resource.can_be_merged_by?(current_user)
+    end
+    strong_memoize_attr :can_merge
 
     def project_path
       resource.project.full_path
@@ -178,7 +184,36 @@ module RapidDiffs
       super
     end
 
+    override(:has_overflow?)
+    def has_overflow?
+      return super if files_count.nil?
+
+      offset < files_count
+    end
+
+    override(:stream_offset)
+    def stream_offset
+      return super if files_count.nil?
+
+      offset
+    end
+
+    override(:include_diff_stats?)
+    def include_diff_stats?
+      return false if @diff_options[:ignore_whitespace_change]
+
+      files_count.present?
+    end
+
     private
+
+    override(:loaded_diffs_slice)
+    def loaded_diffs_slice
+      return if offset.nil? || offset == 0
+
+      @loaded_diffs_slice ||= resource.first_diffs_slice(offset,
+        diff_options.merge(only_context_commits: only_context_commits?))
+    end
 
     def collection_unfolder
       ::Gitlab::Diff::CollectionUnfolder.new(resource, @current_user)

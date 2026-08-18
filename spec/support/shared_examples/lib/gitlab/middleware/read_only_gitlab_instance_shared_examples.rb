@@ -183,6 +183,32 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
         end
       end
 
+      context 'when a relative URL root is configured' do
+        let(:relative_url_root) { '/gitlab' }
+
+        before do
+          stub_config_setting(relative_url_root:)
+        end
+
+        where(:description, :path) do
+          'LFS request to batch'        | '/root/rouge.git/info/lfs/objects/batch'
+          'request to git-upload-pack'  | '/root/rouge.git/git-upload-pack'
+          'user sign out'               | '/users/sign_out'
+          'admin session'               | '/admin/session'
+          'admin session destroy'       | '/admin/session/destroy'
+        end
+
+        with_them do
+          it "expects a POST #{description} URL to be allowed" do
+            expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+            response = request.post(File.join(relative_url_root, path))
+
+            expect(response).not_to be_redirect
+            expect(subject).not_to disallow_request
+          end
+        end
+      end
+
       where(:description, :path) do
         'LFS request to locks verify' | '/root/rouge.git/info/lfs/locks/verify'
         'LFS request to locks create' | '/root/rouge.git/info/lfs/locks'

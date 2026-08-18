@@ -304,6 +304,8 @@ module Auth
     def can_access?(requested_project, requested_action)
       return false unless requested_project.container_registry_enabled?
 
+      return false if organization_read_only_write_denied?(requested_project, requested_action)
+
       case requested_action
       when 'pull'
         build_can_pull?(requested_project) || user_can_pull?(requested_project) || deploy_token_can_pull?(requested_project)
@@ -319,6 +321,21 @@ module Auth
       else
         false
       end
+    end
+
+    def organization_read_only_write_denied?(requested_project, requested_action)
+      return false if requested_action == 'pull'
+
+      organization = requested_project.organization
+
+      # Fail closed: an unresolvable organization cannot be proven safe to write to,
+      # so deny once enforcement is on. Uses the :instance actor because no
+      # organization is available; stays a no-op while the flag is off (default).
+      return Feature.enabled?(:organization_read_only_enforcement, :instance) unless organization
+
+      return false unless organization.read_only?
+
+      Feature.enabled?(:organization_read_only_enforcement, organization)
     end
 
     def build_can_delete?(requested_project)

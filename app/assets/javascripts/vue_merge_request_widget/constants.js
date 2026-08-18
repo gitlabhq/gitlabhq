@@ -19,16 +19,6 @@ export const PIPELINE_FAILED_STATE = 'failed';
 
 export const AUTO_MERGE_STRATEGIES = [MTWCP_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWCP_MERGE_STRATEGY];
 
-// SP - "Suggest Pipelines"
-export const SP_TRACK_LABEL = 'no_pipeline_noticed';
-export const SP_SHOW_TRACK_EVENT = 'click_button';
-export const SP_SHOW_TRACK_VALUE = 10;
-export const SP_HELP_CONTENT = s__(
-  `mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file.`,
-);
-export const SP_HELP_URL = helpPagePath('user/project/settings/_index');
-export const SP_ICON_NAME = 'information';
-
 export const MERGE_ACTIVE_STATUS_PHRASES = [
   {
     message: s__('mrWidget|%{boldStart}Merging!%{boldEnd} Drum roll, please…'),

@@ -50,7 +50,6 @@ class Projects::BlobController < Projects::ApplicationController
     push_frontend_feature_flag(:inline_blame, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:duo_convert_ci_use_developer_flow, @project)
-    push_frontend_feature_flag(:vue3_migrate_repository, current_user)
   end
 
   def new
@@ -173,7 +172,10 @@ class Projects::BlobController < Projects::ApplicationController
 
     render hunk_presenter.with_collection(
       diff_hunks,
-      file_hash: blob.short_file_hash
+      # Not blob.short_file_hash: Blob hashes the path with SHA256 while
+      # Gitlab::Diff::File uses SHA1, and the line IDs here must match the ones
+      # in the streamed diff or linked/expanded-line anchors won't resolve.
+      file_hash: ::Gitlab::Diff::File.short_file_hash(@path)
     ), layout: false
   end
 
@@ -183,6 +185,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def blob
     return unless commit
+    return if @path.end_with?('/')
 
     @blob = @repository.blob_at(commit.id, @path)
   end

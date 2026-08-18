@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import AnalyticsDashboardsBreadcrumbs from '~/analytics/shared/components/analytics_dashboards_breadcrumbs.vue';
 import createDefaultClient from '~/lib/graphql';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
@@ -7,8 +9,8 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { observable } from '~/lib/utils/observable';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import createRouter from 'ee_else_ce/explore/analytics_dashboards/router';
 import App from './pages/app.vue';
+import createRouter from './router';
 
 export default () => {
   const el = document.getElementById('js-explore-analytics-dashboards');
@@ -20,6 +22,7 @@ export default () => {
   const { exploreAnalyticsDashboardsPath } = convertObjectPropsToCamelCase(el.dataset);
 
   Vue.use(VueApollo);
+  Vue.use(GlToast);
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
@@ -39,7 +42,7 @@ export default () => {
   const router = createRouter(exploreAnalyticsDashboardsPath, breadcrumbState);
   injectVueAppBreadcrumbs(router, AnalyticsDashboardsBreadcrumbs);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AnalyticsDashboardsRoot',
     apolloProvider,
@@ -48,12 +51,9 @@ export default () => {
       exploreAnalyticsDashboardsPath,
       breadcrumbState,
     },
-    render(h) {
-      return h(App, {
-        props: {
-          currentUserId,
-        },
-      });
+    component: App,
+    props: {
+      currentUserId,
     },
   });
 };

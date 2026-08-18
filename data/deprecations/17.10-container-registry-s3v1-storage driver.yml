@@ -1,13 +1,15 @@
 - title: "S3 storage driver (AWS SDK v1) for the container registry"
   announcement_milestone: "17.10"
   removal_milestone: "19.0"
-  breaking_change: false
+  breaking_change: true
   reporter: trizzi
   stage: Package
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523095
-  impact: low
+  check_impact: https://docs.gitlab.com/update/versions/gitlab_19_changes/#container-registry-s3-storage-driver-replaced-by-s3_v2
+  impact: medium
+  impact_offering: Dedicated, self-managed
   scope: instance
-  resolution_role: maintainer
+  resolution_role: Admin
   manual_task: true
   window: "3"
   body: |
@@ -24,5 +26,12 @@
     1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
     1. Move from Signature Version 2 to Signature Version 4 for authentication if you haven't already, as AWS SDK v2 only supports Signature Version 4.
     1. Test the configuration in a non-production environment before deploying to production.
+
+    On AWS S3, the driver change can also alter the hostname in the presigned URLs that clients use to
+    download registry blobs. AWS SDK v2 resolves the S3 endpoint for your configured region, so presigned
+    URLs can use a regional hostname such as `s3.us-east-1.amazonaws.com` instead of the global
+    `s3.amazonaws.com` hostname. If your network restricts outbound traffic, update your proxy or firewall
+    allowlist to include the regional hostname before you upgrade. Otherwise, image pulls fail with
+    `403 Forbidden` responses.
 
     For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).

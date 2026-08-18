@@ -18,13 +18,6 @@ Every call to this API requires authentication.
 
 ## Create a dependency list export
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a feature flag](../administration/feature_flags/_index.md) named `merge_sbom_api`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425312) in GitLab 16.7. Feature flag `merge_sbom_api` removed.
-
-{{< /history >}}
-
 Creates a CycloneDX JSON export for all the project dependencies detected in a pipeline.
 
 If an authenticated user does not have the [read_dependency](../user/custom_roles/abilities.md#vulnerability-management)

@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/raw/master/config/user_experience_slis/schema.json
+description: "Submitting a merge request review in the web UI"
+feature_category: "code_review_workflow"
+urgency: "async_fast"

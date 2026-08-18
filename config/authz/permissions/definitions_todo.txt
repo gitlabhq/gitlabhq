@@ -5,7 +5,6 @@ access_advanced_vulnerability_management
 access_ai_review_mr
 access_api
 access_code_suggestions
-access_description_composer
 access_duo_agentic_chat
 access_duo_classic_chat
 access_duo_features
@@ -180,7 +179,6 @@ create_container_image
 create_container_registry_protection_immutable_tag_rule
 create_coverage_fuzzing_corpus
 create_custom_emoji
-create_design
 create_environment_terminal
 create_epic_tree_relation
 create_external_issue_link
@@ -202,7 +200,6 @@ create_observability_access_request
 create_on_demand_dast_scan
 create_package
 create_pages
-create_path_lock
 create_project_secrets
 create_projects
 create_protected_tags
@@ -220,7 +217,6 @@ create_virtual_registry
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal
-create_workspace
 daily_statistics
 decline_terms
 delete_admin_role
@@ -228,7 +224,6 @@ delete_conversation_thread
 delete_custom_emoji
 delete_group_link
 delete_group_stage
-delete_merge_train_car
 delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
@@ -396,7 +391,6 @@ read_cluster_environments
 read_commit_committer_check
 read_commit_committer_name_check
 read_compliance_adherence_report
-read_compliance_dashboard
 read_compliance_framework
 read_compliance_violations_report
 read_component
@@ -415,13 +409,11 @@ read_custom_field
 read_customizable_dashboards
 read_dedicated_hosted_runner_usage
 read_deploy_board
-read_design
 read_design_activity
 read_dora4_analytics
 read_duo_core_settings
 read_duo_workflow_event
 read_emoji
-read_enterprise_ai_analytics
 read_ephemeral_token
 read_epic_iid
 read_epic_link_relation
@@ -577,7 +569,6 @@ remove_fork_project
 remove_group
 remove_pages
 remove_project
-remove_user
 rename_project
 reopen_issue
 reopen_merge_request
@@ -628,7 +619,6 @@ update_container_image
 update_default_branch_protection
 update_deploy_key_title
 update_deploy_keys_project
-update_design
 update_escalation_status
 update_feature_flags_client
 update_git_access_protocol
@@ -663,7 +653,6 @@ update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback
 update_web_ide_terminal
-update_workspace
 upload_alert_management_metric_image
 upload_file
 upload_issuable_metric_image

@@ -1,6 +1,8 @@
 <script>
 import { GlPopover, GlLoadingIcon, GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { n__ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { WORK_ITEM_TYPE_NAME_ISSUE, STATE_CLOSED } from '~/work_items/constants';
 import WorkItemRelationshipPopoverMetadata from 'ee_else_ce/work_items/components/shared/work_item_relationship_popover_metadata.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
@@ -18,7 +20,9 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
+  titleInLinkSafeHtmlConfig,
   props: {
     linkedWorkItems: {
       type: Array,
@@ -112,7 +116,7 @@ export default {
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"
           >
-            {{ workItem.title }}
+            <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="workItem.titleHtml"></span>
           </gl-link>
           <work-item-relationship-popover-metadata
             :work-item="workItem"

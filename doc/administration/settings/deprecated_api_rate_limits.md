@@ -53,5 +53,5 @@ To override the general user and IP rate limits for requests to deprecated API e
 
 ## Related topics
 
-- [Rate limits](../../security/rate_limits.md)
+- [Rate limits](../../rate_limits/_index.md)
 - [User and IP rate limits](user_and_ip_rate_limits.md)

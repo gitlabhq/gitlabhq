@@ -1,0 +1,8 @@
+---
+name: repository_blobs_batch_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234457
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605934
+milestone: '19.3'
+type: beta
+group: group::gitaly
+default_enabled: false

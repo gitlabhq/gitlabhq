@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Rails Endpoints
 ---
 
-Rails Endpoints are used by different GitLab components, they cannot be
+Rails Endpoints are used by different GitLab components. They cannot be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
@@ -49,7 +49,7 @@ Response:
 }
 ```
 
-### List new, resolved and existing merge request code quality findings
+### List new, resolved, and existing merge request code quality findings
 
 Get a list of new, resolved, and existing code quality Findings, if any.
 

@@ -68,7 +68,7 @@ Why is this a problem?
 
 - Many of these columns are included in indexes, which leads to index write amplification.
   When the number of indexes on the table is more than 16, it affects query planning,
-  and may lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
+  and may lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/work_items/11543).
 - Updates in PostgreSQL are implemented as a combination of delete and insert. This means that each column,
   even if rarely used, is copied over and over again, on each update. This affects the amount of generated
   write ahead log (WAL).
@@ -93,7 +93,7 @@ discuss this topic in more depth - <https://postgres.fm/episodes/data-model-trad
 
 ### Example
 
-Lets look at the `users` table, which at of the time of writing has 75 columns.
+Let's look at the `users` table, which as of the time of writing has 75 columns.
 We can see a few groups of columns that match the above criteria, and are good candidates
 for extraction:
 
@@ -125,4 +125,4 @@ In order to extract it from `users` into a new table, we'll have to do the follo
 
 While this is a lengthy process, it's needed in order to do the extraction
 without disrupting the application. Once completed, the original column and the related index will
-no longer exists on the `users` table, which will result in improved performance.
+no longer exist on the `users` table, which will result in improved performance.

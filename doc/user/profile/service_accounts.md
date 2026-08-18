@@ -226,8 +226,11 @@ Service account access depends on the type of service account:
   descendant subgroups or projects.
 - Project service accounts: Can be invited only to the project where they were created.
 
-When a group is [shared with another group](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group),
-all members of that group, including service accounts, gain access to the shared group.
+When you [share a group with another group](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group),
+all members of the shared group, including service accounts, gain access to the group it's shared with.
+
+If you assign a service account the Owner role for a group, the service account's personal access
+tokens also have the Owner role for that group.
 
 You can assign service accounts to groups and projects using:
 
@@ -366,12 +369,12 @@ To revoke a personal access token for a service account:
 
 ## Rate limits
 
-[Rate limits](../../security/rate_limits.md) apply to service accounts:
+[Rate limits](../../rate_limits/_index.md) apply to service accounts:
 
 - On GitLab.com, [GitLab.com-specific rate limits](../gitlab_com/_index.md#rate-limits-on-gitlabcom) apply.
 - On GitLab Self-Managed and GitLab Dedicated, these rate limits apply:
-  - [Configurable rate limits](../../security/rate_limits.md#configurable-limits)
-  - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits)
+  - [Configurable rate limits](../../rate_limits/_index.md#configuration-options)
+  - [Non-configurable rate limits](../../rate_limits/non_configurable.md)
 
 ## Related topics
 

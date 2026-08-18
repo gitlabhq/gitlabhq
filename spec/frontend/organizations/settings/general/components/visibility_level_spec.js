@@ -68,7 +68,7 @@ describe('VisibilityLevel', () => {
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findVisibilityLevelRadioButtons = () => wrapper.findComponent(VisibilityLevelRadioButtons);
   const findFormErrorsAlert = () => wrapper.findComponent(FormErrorsAlert);
-  const findSubmitButton = () => wrapper.findByTestId('submit-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('submit-button');
   const submitForm = async () => {
     await findSubmitButton().trigger('click');
     await waitForPromises();

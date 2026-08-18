@@ -462,7 +462,7 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
     end
 
     context 'with batching' do
-      let_it_be(:batched_groups) { create_list(:group, 7, :private, organization: old_organization) }
+      let_it_be(:batched_groups) { create_list(:group, 4, :private, organization: old_organization) }
 
       let(:groups_param) { batched_groups }
 
@@ -475,7 +475,7 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
         result = service.execute
 
         expect(result).to be_success
-        expect(result.payload[:succeeded].size).to eq(7)
+        expect(result.payload[:succeeded].size).to eq(4)
         expect(result.payload[:failed]).to be_empty
         batched_groups.each do |g|
           expect(g.reload.organization_id).to eq(new_organization.id)
@@ -491,7 +491,7 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
 
         expect do
           described_class.new(
-            groups: batched_groups.first(7), new_organization: new_organization, current_user: user
+            groups: batched_groups.first(4), new_organization: new_organization, current_user: user
           ).execute
         end.not_to exceed_query_limit(control)
       end

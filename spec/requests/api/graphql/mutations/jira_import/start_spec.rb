@@ -119,4 +119,30 @@ RSpec.describe 'Starting a Jira Import', feature_category: :importers do
       end
     end
   end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_jira_import do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+
+    before do
+      create(:jira_integration, project: project)
+      project.reload
+
+      stub_jira_integration_test
+    end
+
+    let(:mutation) do
+      graphql_mutation(
+        :jira_import_start,
+        {
+          jira_project_key: 'AA',
+          project_path: project.full_path,
+          users_mapping: [{ jiraAccountId: 'abc', gitlabId: 5 }]
+        },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 end

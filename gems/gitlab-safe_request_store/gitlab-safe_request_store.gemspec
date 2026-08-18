@@ -18,12 +18,12 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "rack", "~> 2.2.8"
-  spec.add_runtime_dependency "request_store"
+  spec.add_dependency "rack", "~> 2.2.8"
+  spec.add_dependency "request_store"
 
-  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency "gitlab-styles", "~> 14.0"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop", "~> 1.50"
-  spec.add_development_dependency "rubocop-rspec", "~> 2.22"
+  spec.add_development_dependency "rubocop-rspec", "~> 3.0"
 end

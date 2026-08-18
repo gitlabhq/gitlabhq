@@ -8,10 +8,9 @@ module Gitlab
 
       ServiceError = Class.new(StandardError)
 
-      def initialize(archive_path:, max_bytes: DEFAULT_MAX_BYTES, limit_output: false)
+      def initialize(archive_path:, max_bytes: DEFAULT_MAX_BYTES)
         @archive_path = archive_path
         @max_bytes = max_bytes
-        @limit_output = limit_output
       end
 
       def valid?
@@ -71,18 +70,14 @@ module Gitlab
       end
 
       def command
-        if limit_output
-          # Capping the output at max_bytes + 1 still fails oversized
-          # archives (the count exceeds max_bytes), but head closes the pipe
-          # at the cap so gzip stops instead of decompressing the entire
-          # archive.
-          [['gzip', '-dc', archive_path], ['head', '-c', (max_bytes + 1).to_s], ['wc', '-c']]
-        else
-          [['gzip', '-dc', archive_path], ['wc', '-c']]
-        end
+        # Capping the output at max_bytes + 1 still fails oversized
+        # archives (the count exceeds max_bytes), but head closes the pipe
+        # at the cap so gzip stops instead of decompressing the entire
+        # archive.
+        [['gzip', '-dc', archive_path], ['head', '-c', (max_bytes + 1).to_s], ['wc', '-c']]
       end
 
-      attr_reader :archive_path, :max_bytes, :limit_output
+      attr_reader :archive_path, :max_bytes
     end
   end
 end

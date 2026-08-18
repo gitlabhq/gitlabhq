@@ -1,4 +1,5 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ImageViewer from '../../content_viewer/viewers/image_viewer.vue';
 import { diffModes, imageViewMode } from '../constants';
 import OnionSkinViewer from './image_diff/onion_skin_viewer.vue';
@@ -10,6 +11,7 @@ export default {
   components: {
     ImageViewer,
   },
+  mixins: [glSlotsMixin],
   props: {
     diffMode: {
       type: String,
@@ -84,7 +86,10 @@ export default {
     <div v-if="diffMode === $options.diffModes.replaced" class="diff-viewer">
       <div class="image js-replaced-image">
         <component :is="imageViewComponent" v-bind="$props">
-          <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
+          <template
+            v-if="glSlots()['image-overlay']"
+            #image-overlay="{ width, height, renderedWidth, renderedHeight }"
+          >
             <slot
               :width="width"
               :height="height"

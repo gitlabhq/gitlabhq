@@ -13,9 +13,9 @@ module API
           SEMVER_REGEX = Gitlab::Regex.semver_regex
 
           TERRAFORM_MODULE_REQUIREMENTS = {
-            module_namespace: API::NO_SLASH_URL_PART_REGEX,
-            module_name: API::NO_SLASH_URL_PART_REGEX,
-            module_system: API::NO_SLASH_URL_PART_REGEX
+            module_namespace: ::API::NO_SLASH_URL_PART_REGEX,
+            module_name: ::API::NO_SLASH_URL_PART_REGEX,
+            module_system: ::API::NO_SLASH_URL_PART_REGEX
           }.freeze
 
           TERRAFORM_MODULE_VERSION_REQUIREMENTS = {
@@ -33,8 +33,8 @@ module API
             include ::Gitlab::Utils::StrongMemoize
 
             params :module_name do
-              requires :module_name, type: String, desc: 'Name of the module', regexp: API::NO_SLASH_URL_PART_REGEX
-              requires :module_system, type: String, desc: 'System of the module', regexp: API::NO_SLASH_URL_PART_REGEX
+              requires :module_name, type: String, desc: 'Name of the module', regexp: ::API::NO_SLASH_URL_PART_REGEX
+              requires :module_system, type: String, desc: 'System of the module', regexp: ::API::NO_SLASH_URL_PART_REGEX
             end
 
             params :module_version do
@@ -85,8 +85,12 @@ module API
           end
 
           params do
-            requires :module_namespace, type: String, desc: "Group's ID or slug", regexp: API::NO_SLASH_URL_PART_REGEX
+            requires :module_namespace, type: String, desc: "Group's ID or slug", regexp: ::API::NO_SLASH_URL_PART_REGEX
             includes :module_name
+          end
+          params do
+            requires :module_name, type: String, desc: 'The module name'
+            requires :module_system, type: String, desc: 'The module system (provider)'
           end
 
           namespace 'packages/terraform/modules/v1/:module_namespace/:module_name/:module_system',
@@ -238,7 +242,7 @@ module API
 
               # This endpoint has to be the last within namespace '*module_version' block
               # due to how the route matching works in grape.
-              # The never-matching :format requirement (API::NO_FORMAT_SUFFIX_REQUIREMENT) stops grape
+              # The never-matching :format requirement (::API::NO_FORMAT_SUFFIX_REQUIREMENT) stops grape
               # from splitting the semver version into params[:module_version] and params[:format],
               # which would lead to an invalid/not found module version.
               desc 'Get details about specific version of a module' do
@@ -252,7 +256,7 @@ module API
               end
               route_setting :authorization, permissions: :read_terraform_module,
                 boundary_type: :group, boundary_param: :module_namespace
-              get requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+              get requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
                 presenter = ::Terraform::ModuleVersionPresenter.new(package, params[:module_system])
                 present presenter, with: ::API::Entities::Terraform::ModuleVersion
               end

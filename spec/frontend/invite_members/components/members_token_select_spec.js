@@ -89,7 +89,7 @@ describe('MembersTokenSelect', () => {
       findTokenSelector().vm.$emit('input', [user1]);
       await waitForPromises();
 
-      const warningMemberIcon = wrapper.findByTestId(`warning-icon-${user1.id}`);
+      const warningMemberIcon = wrapper.findComponentByTestId(`warning-icon-${user1.id}`);
 
       expect(warningMemberIcon.props('name')).toBe('warning');
     });

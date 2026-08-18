@@ -153,13 +153,6 @@ Use-cases:
 
 ### Skipping re-transfer of blobs
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a feature flag](../../feature_flags/_index.md) named `geo_skip_download_if_exists`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435788) in GitLab 16.9. Feature flag `geo_skip_download_if_exists` removed.
-
-{{< /history >}}
-
 When you add a secondary site which has preexisting blobs data, then the secondary Geo site will avoid re-transferring that data. This applies to:
 
 - CI job artifacts

@@ -66,9 +66,9 @@ describe('EmbeddedLabelsList', () => {
       expect(findScopedLabel().props('scoped')).toBe(true);
     });
 
-    it('emits `onLabelRemove` event with the correct ID', () => {
+    it('emits `label-removed` event with the correct ID', () => {
       findRegularLabel().vm.$emit('close');
-      expect(wrapper.emitted('onLabelRemove')).toStrictEqual([[mockRegularLabel.id]]);
+      expect(wrapper.emitted('label-removed')).toStrictEqual([[mockRegularLabel.id]]);
     });
 
     it('does not show close button if label is locked', () => {

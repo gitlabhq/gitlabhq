@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting group recent issue boards', feature_category: :portfolio_management do
+RSpec.describe 'getting group recent issue boards', feature_category: :planning_views do
   include GraphqlHelpers
 
   it_behaves_like 'querying a GraphQL type recent boards' do

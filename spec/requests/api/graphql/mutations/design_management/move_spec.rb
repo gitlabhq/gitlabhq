@@ -45,6 +45,23 @@ RSpec.describe "moving designs", feature_category: :design_management do
     issue.reset
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_design do
+    let(:user) { developer }
+    let(:boundary_object) { issue.project }
+    let(:request) do
+      input = {
+        id: current_design.to_global_id.to_s,
+        previous: previous_design&.to_global_id&.to_s,
+        next: next_design&.to_global_id&.to_s
+      }.compact
+
+      post_graphql_mutation(
+        graphql_mutation(:design_management_move, input, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   shared_examples 'a successful move' do
     it 'does not error, and reports the current order' do
       move_designs

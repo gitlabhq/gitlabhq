@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Duo Chat
+stage: Agent Foundations
+group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom rules
 ---
@@ -59,7 +59,7 @@ Prerequisites:
   - [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md) 3.12.2
     or later.
   - [GitLab for Visual Studio](../../../editor_extensions/visual_studio/setup.md) 0.60.0 or later.
-  - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.43.0 or later.
+  - [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md) 8.43.0 or later.
 
 > [!note]
 > Conversations that existed before you created any custom rules do not follow those rules.

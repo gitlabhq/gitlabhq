@@ -10,8 +10,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'user unregisters a runner with authentication token',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/510652' do
+      it 'user unregisters a runner with authentication token' do
         Flow::Login.sign_in
 
         runner.project.visit!

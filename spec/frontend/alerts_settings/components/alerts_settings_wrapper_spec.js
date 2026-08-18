@@ -53,7 +53,7 @@ describe('AlertsSettingsWrapper', () => {
   const findIntegrationsList = () => wrapper.findComponent(IntegrationsList);
   const findLoader = () => findIntegrationsList().findComponent(GlLoadingIcon);
   const findIntegrations = () => findIntegrationsList().findAll('table tbody tr');
-  const findAddIntegrationBtn = () => wrapper.findByTestId('crud-form-toggle');
+  const findAddIntegrationBtn = () => wrapper.findComponentByTestId('crud-form-toggle');
   const findAlertsSettingsForm = () => wrapper.findComponent(AlertsSettingsForm);
   const findAlert = () => wrapper.findComponent(GlAlert);
 

@@ -3,6 +3,16 @@
 // the super_sidebar directory.
 
 export const SIDEBAR_PORTAL_ID = 'sidebar-portal-mount';
+export const SETTINGS_DISCLOSURE_PORTAL_NAME = 'super-sidebar-settings-disclosure';
+export const SETTINGS_MENU_ITEM_ID = 'settings_menu';
+
+// Shared default for the pin context injected/passed into nav items.
+export const DEFAULT_PIN_CONTEXT = {
+  pinnedItemIds: { ids: [] },
+  panelSupportsPins: false,
+  panelType: '',
+};
+
 export const JS_TOGGLE_COLLAPSE_CLASS = 'js-super-sidebar-toggle-collapse';
 export const JS_TOGGLE_EXPAND_CLASS = 'js-super-sidebar-toggle-expand';
 
@@ -16,7 +26,19 @@ export const TRACKING_UNKNOWN_PANEL = 'nav_panel_unknown';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';
 export const CLICK_PINNED_MENU_ITEM_ACTION = 'click_pinned_menu_item';
 
-export const PANELS_WITH_PINS = ['group', 'project', 'organization'];
+export const PANEL_TYPES = {
+  GROUP: 'group',
+  PROJECT: 'project',
+  ORGANIZATION: 'organization',
+  YOUR_WORK: 'your_work',
+};
+
+export const PANELS_WITH_PINS = [PANEL_TYPES.GROUP, PANEL_TYPES.PROJECT, PANEL_TYPES.ORGANIZATION];
+
+// Marks nav items the backend still emits but the sidebar must not show (e.g.
+// duplicate "Work items" entries). Every place that lists nav items has to
+// filter these out.
+export const HIDDEN_NAV_ITEM_CLASS = 'js-super-sidebar-nav-item-hidden';
 
 export const USER_MENU_TRACKING_DEFAULTS = {
   'data-track-property': 'nav_user_menu',

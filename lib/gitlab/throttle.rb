@@ -9,6 +9,11 @@ module Gitlab
     # ideally be regular as well.
     REGULAR_THROTTLES = [:api, :packages_api, :files_api, :deprecated_api].freeze
 
+    # The value bypass_header must equal to actually bypass throttling.
+    # Single source of truth for ApplicationRateLimiter's bypass check and
+    # its synthetic labkit :skip rule match, so they can't drift apart.
+    BYPASS_HEADER_VALUE = '1'
+
     def self.settings
       Gitlab::CurrentSettings.current_application_settings
     end

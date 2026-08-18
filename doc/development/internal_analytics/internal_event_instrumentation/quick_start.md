@@ -18,11 +18,11 @@ In order to instrument your code with Internal Events Tracking you need to do th
 
 ## Defining event and metrics
 
-To create event and/or metric definitions, use the [gitlab_internal_events_cli gem](https://gitlab.com/gitlab-org/analytics-section/product-analytics/analytics-cli#installation).
+To create event and/or metric definitions, use the [`gitlab_internal_events_cli` gem](https://gitlab.com/gitlab-org/analytics-section/product-analytics/analytics-cli#installation).
 
 ```shell
-> gem install gitlab_internal_events_cli
-> gem exec gitlab_internal_events_cli
+gem install gitlab_internal_events_cli
+gem exec gitlab_internal_events_cli
 ```
 
 This CLI gem will help you create the correct definition files based on your specific use-case, then provide code examples for instrumentation and testing.
@@ -60,7 +60,7 @@ In addition, the name of the class triggering the event is saved in the `categor
 
 If you have defined a metric with a `unique` property such as `unique: project.id` it is required that you provide the `project` argument.
 
-It is encouraged to fill out as many of `user`, `namespace` and `project` as possible as it increases the data quality and make it easier to define metrics in the future.
+It is encouraged to fill out as many of `user`, `namespace`, and `project` as possible as it increases the data quality and makes it easier to define metrics in the future.
 
 If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
 
@@ -85,6 +85,11 @@ Tracking classes already have three built-in properties:
 - `label` (string)
 - `property` (string)
 - `value`(numeric)
+
+We recommend using these built-in properties first when possible.
+They correspond to dedicated unnested columns in Snowflake (`se_la`, `se_pr`, `se_va`), making them immediately queryable without any additional Data team work.
+
+Custom properties are stored in the nested `extra` field within the `gitlab_standard` Snowplow context and are not automatically available as flat columns in the data warehouse. Querying them may require Data team involvement.
 
 If the built-in properties are not suitable or descriptive, properties of any name can be used.
 
@@ -113,7 +118,7 @@ track_internal_event(
 ```
 
 > [!warning]
-> Make sure the additional properties don't contain any sensitive information. For more information, see the [Data Classification Standard](https://about.gitlab.com/handbook/security/data-classification-standard/).
+> Make sure the additional properties don't contain any sensitive information. For more information, see the [Data Classification Standard](https://handbook.gitlab.com/handbook/security/policies_and_standards/data-classification-standard/).
 
 #### Controller and API helpers
 
@@ -430,7 +435,10 @@ Sometimes we want to send internal events when the component is rendered or load
 
 #### Additional properties
 
-You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not suitable or descriptive for your use-case.
+You can include additional properties with events to save additional data. When included you must
+define each additional property in the `additional_properties` field. It is possible to send the
+three built-in additional properties with keys `label` (string), `property` (string) and `value` (numeric)
+and [custom additional properties](#additional-properties) if the built-in properties are not suitable or descriptive for your use-case.
 
 > [!note]
 > Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.

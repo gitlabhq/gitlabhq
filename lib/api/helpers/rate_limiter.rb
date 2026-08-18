@@ -15,7 +15,7 @@ module API
         # Execute custom logic if block is given
         yield if block_given?
 
-        interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.interval(key)
+        interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.period_for(key)
         error_message = message || _('This endpoint has been requested too many times. Try again later.')
 
         too_many_requests!({ error: error_message }, retry_after: interval_value)

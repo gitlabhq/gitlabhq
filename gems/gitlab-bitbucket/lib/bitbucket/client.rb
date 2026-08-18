@@ -134,13 +134,6 @@ module Bitbucket
       Representation::Repo.new(parsed_response)
     end
 
-    def repos(filter: nil, limit: nil, after_cursor: nil)
-      path = "/repositories?role=member&sort=created_on"
-      path += "&q=name~\"#{filter}\"" if filter
-
-      get_collection(path, :repo, page_number: nil, limit: limit, after_cursor: after_cursor)
-    end
-
     def multi_workspace_repos(filter: nil, limit: nil, workspace_paging_info: [])
       # On initial request (empty workspace_paging_info), fetch all workspaces
       # On subsequent requests, only process workspaces provided

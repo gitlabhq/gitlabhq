@@ -68,8 +68,7 @@ module QA
       end
 
       it(
-        'does not expose file variable content with echo',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791'
+        'does not expose file variable content with echo'
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_echo')[:id])
 
@@ -88,8 +87,7 @@ module QA
       end
 
       it(
-        'can read file variable content with cat',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386409'
+        'can read file variable content with cat'
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])
 

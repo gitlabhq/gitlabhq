@@ -31,11 +31,6 @@ export default {
       type: Object,
       required: true,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     canCreateMergeRequest: {
       type: Boolean,
       required: false,
@@ -63,10 +58,6 @@ export default {
   },
   methods: {
     copyToClipboard(text, message) {
-      if (this.isModal) {
-        // eslint-disable-next-line no-restricted-properties
-        navigator.clipboard.writeText(text);
-      }
       toast(message);
       this.closeDropdown();
     },

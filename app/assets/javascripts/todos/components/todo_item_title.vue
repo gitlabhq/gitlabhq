@@ -10,10 +10,14 @@ import {
   TODO_TARGET_TYPE_DESIGN,
   TODO_TARGET_TYPE_ISSUE,
   TODO_TARGET_TYPE_MERGE_REQUEST,
+  TODO_TARGET_TYPE_NAMESPACE,
   TODO_TARGET_TYPE_PIPELINE,
+  TODO_TARGET_TYPE_PROJECT,
   TODO_TARGET_TYPE_SSH_KEY,
+  TODO_ACTION_TYPE_TRANSFER_FAILED,
   DUO_ACCESS_GRANTED_ACTIONS,
 } from '../constants';
+import { getTransferFailedTarget } from '../utils/transfer_failed_todo';
 
 export default {
   name: 'TodoItemTitle',
@@ -56,6 +60,9 @@ export default {
     isDuoActionType() {
       return DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action);
     },
+    isTransferFailedAction() {
+      return this.todo.action === TODO_ACTION_TYPE_TRANSFER_FAILED;
+    },
     issuableType() {
       if (this.isMergeRequest) {
         return TYPE_MERGE_REQUEST;
@@ -96,8 +103,14 @@ export default {
      */
     todoTitle() {
       if (this.isDuoActionType) return s__('Todos|Getting started with GitLab Duo');
+      if (this.isTransferFailedAction) {
+        return [this.targetName, this.transferFailedTarget].filter(Boolean).join(' · ');
+      }
 
       return [this.targetName, this.targetFullReference].filter(Boolean).join(' · ');
+    },
+    transferFailedTarget() {
+      return getTransferFailedTarget(this.todo);
     },
     /**
      * Right half of a todo title: Full reference to the todo (parentPath + Target Reference)
@@ -149,6 +162,15 @@ export default {
     },
     icon() {
       if (this.isDuoActionType) return 'book';
+      if (this.isTransferFailedAction) {
+        if (this.todo.targetType === TODO_TARGET_TYPE_NAMESPACE) {
+          return 'group';
+        }
+
+        if (this.todo.targetType === TODO_TARGET_TYPE_PROJECT) {
+          return 'project';
+        }
+      }
 
       switch (this.todo.targetType) {
         case TODO_TARGET_TYPE_MERGE_REQUEST:
@@ -180,8 +202,10 @@ export default {
       show-tooltip-on-hover
       icon-variant="subtle"
     />
-    <gl-icon v-else-if="icon" :name="icon" class="gl-shrink-0" :size="12" />
-    <span class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
+    <gl-icon v-else-if="icon" :name="icon" class="gl-shrink-0" :size="12" /><span
+      class="gl-overflow-hidden gl-text-ellipsis"
+      data-testid="todo-title"
+    >
       {{ todoTitle }}
     </span>
   </div>

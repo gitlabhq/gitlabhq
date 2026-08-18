@@ -986,11 +986,11 @@ TEXT
           .and_return(true)
       end
 
-      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(true)
+      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to be(true)
     end
 
     it 'returns false if the commit has not been reverted' do
-      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(false)
+      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to be(false)
     end
   end
 
@@ -1139,7 +1139,7 @@ TEXT
       end
 
       it 'returns true' do
-        expect(commit.has_encoded_file_paths?).to eq(true)
+        expect(commit.has_encoded_file_paths?).to be(true)
       end
     end
 
@@ -1152,7 +1152,7 @@ TEXT
       end
 
       it 'returns false' do
-        expect(commit.has_encoded_file_paths?).to eq(false)
+        expect(commit.has_encoded_file_paths?).to be(false)
       end
     end
   end

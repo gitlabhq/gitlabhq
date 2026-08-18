@@ -54,10 +54,6 @@ RSpec.describe Banzai::Filter::MarkupHeadingAnchorFilter, :aggregate_failures, f
 
       where(:heading_text, :expected_slug, :case_name) do
         [
-          ['path/to/my_file.rb', 'pathtomy_filerb', 'removes non-permitted characters'],
-          ['(Tips & Tricks)', 'tips--tricks', 'converts spaces to dashes'],
-          ['Café', 'café', 'preserves accented characters'],
-          ['日本語の見出し', '日本語の見出し', 'preserves non-Latin heading text'],
           ['!#$%&*+,./:;=?@\^`|~<>[]{}()', 'h1', 'falls back to heading name when slug would be empty']
         ]
       end
@@ -160,33 +156,8 @@ RSpec.describe Banzai::Filter::MarkupHeadingAnchorFilter, :aggregate_failures, f
     context 'when use_filename_in_anchor is true' do
       let(:context) { { use_filename_in_anchor: true, requested_path: requested_path } }
 
-      describe 'file prefix slug generation' do
-        using RSpec::Parameterized::TableSyntax
-
-        where(:requested_path, :heading_text, :expected_slug, :case_name) do
-          [
-            ['README_ja.org', 'TL;DR', 'readme_ja-tldr', 'preserves underscores in filename'],
-            ['README.ja.org', 'TL;DR', 'readmeja-tldr', 'strips only the last extension'],
-            ['README', 'TL;DR', 'readme-tldr', 'handles filenames without extension'],
-            ['議事録.org', '要約', '議事録-要約', 'preserves non-Latin characters']
-          ]
-        end
-
-        with_them do
-          it 'prefixes heading slugs with the filename' do
-            doc = Nokogiri::HTML5.fragment('<h1>')
-            doc.at_css('h1').content = heading_text
-            result = filter(doc, context)
-            heading = result.at_css('h1')
-
-            expect(heading['id']).to eq("user-content-#{expected_slug}")
-            expect(heading.at_css('a.anchor')['href']).to eq("##{expected_slug}")
-          end
-        end
-      end
-
       context 'with duplicate headings in the same document' do
-        let(:requested_path) { 'file.rst' }
+        let(:requested_path) { 'file.org' }
 
         it 'appends suffix to duplicate slugs after prefix' do
           result = filter('<h1>Foo</h1><h2>Foo</h2><h3>Foo</h3>', context)
@@ -216,34 +187,36 @@ RSpec.describe Banzai::Filter::MarkupHeadingAnchorFilter, :aggregate_failures, f
 
         with_them do
           it 'allows slug collision from different file and heading combinations' do
-            doc = Nokogiri::HTML5.fragment('<h1>')
-            doc.at_css('h1').content = heading_text
-            result = filter(doc, use_filename_in_anchor: true, requested_path: requested_path)
+            doc = Nokogiri::HTML5.fragment('<h2>')
+            doc.at_css('h2').content = heading_text
+            result = filter(doc, context)
+            heading = result.at_css('h2')
 
-            expect(result.at_css('h1')['id']).to eq('user-content-file-1-overview')
-            expect(result.at_css('a.anchor')['href']).to eq('#file-1-overview')
+            expect(heading['id']).to eq('user-content-file-1-overview')
+            expect(heading.at_css('a.anchor')['href']).to eq('#file-1-overview')
           end
         end
       end
     end
 
-    context 'when use_filename_in_anchor is not set' do
-      it 'does not prefix heading slugs' do
-        result = filter('<h1>TL;DR</h1>', requested_path: 'file.wiki')
-        heading = result.at_css('h1')
+    describe 'when heading slugs should not be prefixed' do
+      using RSpec::Parameterized::TableSyntax
 
-        expect(heading['id']).to eq('user-content-tldr')
-        expect(heading.at_css('a.anchor')['href']).to eq('#tldr')
+      where(:context, :case_name) do
+        { requested_path: '!#$%&*+,./:;=?@\^`|~<>[]{}().org',
+          use_filename_in_anchor: true } | 'when slug would be empty'
+        { requested_path: 'docs/CONTRIBUTING.rst' } | 'when use_filename_in_anchor is not set'
+        { use_filename_in_anchor: true } | 'when requested_path is absent'
       end
-    end
 
-    context 'when use_filename_in_anchor is true but requested_path is absent' do
-      it 'does not prefix heading slugs' do
-        result = filter('<h1>TL;DR</h1>', use_filename_in_anchor: true)
-        heading = result.at_css('h1')
+      with_them do
+        it 'generates heading IDs without file prefix' do
+          result = filter('<h2>CoC</h2>', context)
+          heading = result.at_css('h2')
 
-        expect(heading['id']).to eq('user-content-tldr')
-        expect(heading.at_css('a.anchor')['href']).to eq('#tldr')
+          expect(heading['id']).to eq('user-content-coc')
+          expect(heading.at_css('a.anchor')['href']).to eq('#coc')
+        end
       end
     end
   end

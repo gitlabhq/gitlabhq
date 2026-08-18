@@ -125,7 +125,7 @@ Prerequisites:
 - You must be an administrator.
 
 > [!note]
-> Compute usage visualizations are not available, but an [epic](https://gitlab.com/groups/gitlab-com/gl-infra/gitlab-dedicated/-/epics/524) exists to add them for general availability.
+> Compute usage visualizations are not available, but an [epic](https://gitlab.com/groups/gitlab-com/gl-infra/gitlab-dedicated/-/work_items/524) exists to add them for general availability.
 
 To view hosted runners in GitLab:
 

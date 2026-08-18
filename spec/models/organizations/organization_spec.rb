@@ -423,7 +423,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   describe '#destroy' do
     context 'when trying to delete the last organization' do
       it 'returns false' do
-        expect(organization.destroy).to eq(false)
+        expect(organization.destroy).to be(false)
       end
     end
 
@@ -526,41 +526,6 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
-  describe '#read_only_enforced?' do
-    subject(:read_only_enforced?) { organization.read_only_enforced? }
-
-    context 'when the organization is read-only' do
-      before do
-        organization.update_column(:state, described_class.states[:read_only])
-      end
-
-      context 'when the enforcement feature flag is enabled' do
-        before do
-          stub_feature_flags(organization_read_only_enforcement: organization)
-        end
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'when the enforcement feature flag is disabled' do
-        before do
-          stub_feature_flags(organization_read_only_enforcement: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
-    end
-
-    context 'when the organization is active' do
-      before do
-        organization.update_column(:state, described_class.states[:active])
-        stub_feature_flags(organization_read_only_enforcement: organization)
-      end
-
-      it { is_expected.to be(false) }
-    end
-  end
-
   describe 'invalid state transitions' do
     let_it_be_with_reload(:user) { create(:user) }
 
@@ -590,11 +555,11 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         create :organization_user, organization: organization, user: user
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when user is not an organization user' do
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 
@@ -608,7 +573,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         create(:organization_user, :owner, organization: organization, user: user)
       end
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     context 'when user is not an owner' do
@@ -616,11 +581,11 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         create(:organization_user, organization: organization, user: user)
       end
 
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
 
     context 'when user is not an organization user' do
-      it { is_expected.to eq false }
+      it { is_expected.to be false }
     end
   end
 
@@ -632,7 +597,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
 
     it 'adds user as an owner', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463107' do
-      expect(organization.owner?(user)).to eq(true)
+      expect(organization.owner?(user)).to be(true)
     end
   end
 
@@ -646,7 +611,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
   end
 
   describe '#scoped_paths?' do
-    it { expect(organization.scoped_paths?).to eq(true) }
+    it { expect(organization.scoped_paths?).to be(true) }
   end
 
   describe '#root_path' do
@@ -725,13 +690,13 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     describe '.default?' do
       context 'when organization is default' do
         it 'returns true' do
-          expect(described_class.default?(default_organization.id)).to eq(true)
+          expect(described_class.default?(default_organization.id)).to be(true)
         end
       end
 
       context 'when organization is not default' do
         it 'returns false' do
-          expect(described_class.default?(organization.id)).to eq(false)
+          expect(described_class.default?(organization.id)).to be(false)
         end
       end
     end
@@ -796,7 +761,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     describe '#destroy' do
       context 'when trying to delete the default organization' do
         it 'returns false' do
-          expect(default_organization.destroy).to eq(false)
+          expect(default_organization.destroy).to be(false)
         end
       end
 
@@ -826,13 +791,13 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     describe '#default?' do
       context 'when organization is default' do
         it 'returns true' do
-          expect(default_organization.default?).to eq(true)
+          expect(default_organization.default?).to be(true)
         end
       end
 
       context 'when organization is not default' do
         it 'returns false' do
-          expect(organization.default?).to eq(false)
+          expect(organization.default?).to be(false)
         end
       end
     end
@@ -846,7 +811,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
 
     describe '#scoped_paths?' do
-      it { expect(default_organization.scoped_paths?).to eq(false) }
+      it { expect(default_organization.scoped_paths?).to be(false) }
     end
 
     describe '#root_path' do

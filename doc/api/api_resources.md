@@ -176,6 +176,7 @@ The following API resources are available outside of project and group contexts 
 | [Applications](applications.md)                                                              | `/applications` |
 | [Audit events](audit_events.md)                                                              | `/audit_events` |
 | [Avatar](avatar.md)                                                                          | `/avatar` |
+| [Batched background migrations](admin/batched_background_migrations.md)                      | `/admin/batched_background_migrations` |
 | [Broadcast messages](broadcast_messages.md)                                                  | `/broadcast_messages` |
 | [Code snippets](snippets.md)                                                                 | `/snippets` |
 | [Code Suggestions](code_suggestions.md)                                                      | `/code_suggestions` |
@@ -187,7 +188,7 @@ The following API resources are available outside of project and group contexts 
 | [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects) |
 | [Feature flags](features.md)                                                                 | `/features` |
 | [Geo Nodes](geo_nodes.md)                                                                    | `/geo_nodes` |
-| [GLQL](glql.md)                                                                              | `/glql` |
+| [GLQL](glql.md)                                                                              | `/glql`, `/glql/schema` |
 | [Group Activity Analytics](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
 | [Group repository storage moves](group_repository_storage_moves.md)                          | `/group_repository_storage_moves` |
 | [Import repository from GitHub](import.md#import-repository-from-github)                     | `/import/github` |

@@ -62,7 +62,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'milestoneUpdated', 'parentMilestone', 'update-widget-draft'],
+  emits: ['error', 'milestoneUpdated', 'parent-milestone', 'update-widget-draft'],
   data() {
     return {
       searchTerm: '',
@@ -160,7 +160,7 @@ export default {
 
       if (!selectedMilestoneId) {
         this.localMilestone = null;
-        this.$emit('parentMilestone', null);
+        this.$emit('parent-milestone', null);
       }
 
       this.localMilestone = selectedMilestoneId
@@ -238,9 +238,9 @@ export default {
     :reset-button-label="__('Clear')"
     :shortcut="shortcut"
     data-testid="work-item-milestone"
-    @dropdownShown="onDropdownShown"
-    @searchStarted="search"
-    @updateValue="updateMilestone"
+    @dropdown-shown="onDropdownShown"
+    @search-started="search"
+    @update-value="updateMilestone"
   >
     <template #list-item="{ item }">
       <div>{{ item.text }}{{ itemExpiredText(item) }}</div>

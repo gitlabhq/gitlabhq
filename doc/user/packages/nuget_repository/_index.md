@@ -366,12 +366,6 @@ nuget push MyPackage.1.0.0.nupkg -Source gitlab
 
 ### With .NET CLI
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) publishing a package with the `--api-key` in GitLab 16.1.
-
-{{< /history >}}
-
 Prerequisites:
 
 - [A NuGet package created with .NET CLI](https://learn.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
@@ -411,12 +405,6 @@ dotnet nuget push MyPackage.1.0.0.nupkg --source https://gitlab.example.com/api/
 ```
 
 ### With Chocolatey CLI
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) support for NuGet v2 and Chocolatey CLI in GitLab 16.2.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -555,8 +543,6 @@ for `development` and `production` environments:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293748) in GitLab 16.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `nuget_duplicates_option`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/419078) in GitLab 16.6. Feature flag `nuget_duplicates_option` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) the required role from Maintainer to Owner in GitLab 17.0.
 
 {{< /history >}}
@@ -637,12 +623,6 @@ dotnet add package <package_id> \
 
 ### With NuGet v2 feed
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) support for NuGet v2 install endpoints in GitLab 16.5.
-
-{{< /history >}}
-
 Prerequisites:
 
 - A [v2 feed source](#with-the-project-endpoint) for Chocolatey.
@@ -686,12 +666,6 @@ choco upgrade MyPackage -Source gitlab -Version 1.0.3
 
 ## Delete a package
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) support for NuGet package deletion in GitLab 16.5.
-
-{{< /history >}}
-
 > [!warning]
 > Deleting a package is a permanent action that cannot be undone.
 
@@ -733,12 +707,6 @@ nuget push My.Package.snupkg -Source <source_name>
 ```
 
 ### Use the GitLab endpoint for symbol files
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
-
-{{< /history >}}
 
 GitLab package registry provides a special `symbolfiles` endpoint that you can configure
 with your project or group endpoint:
@@ -799,12 +767,6 @@ Keep in mind that:
   The GitLab server requires the `signature` and `Symbolchecksum` to return the correct symbol file.
 
 ## Supported CLI commands
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) `nuget delete` and `dotnet nuget delete` commands in GitLab 16.5.
-
-{{< /history >}}
 
 The GitLab NuGet repository supports the following commands for the NuGet CLI (`nuget`) and the .NET
 CLI (`dotnet`):

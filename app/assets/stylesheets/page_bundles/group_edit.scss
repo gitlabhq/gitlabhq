@@ -1,0 +1,24 @@
+.organizations-reconciliation-draggable {
+  padding-bottom: 4.75rem;
+}
+
+// Add padding to draggable container and negative margin to the dropzone so it is correctly positioned.
+// The dropzone is absolutely positioned under the draggable area
+// so it does not obstruct the drag and drop functionality.
+.organizations-reconciliation-draggable-dropzone {
+  margin-top: -4rem;
+}
+
+.organizations-reconciliation-step-3-attributes-list {
+  > :last-child {
+    border: 0;
+  }
+}
+
+// This class is added to the body when dragging an element.
+// We cannot add `cursor` to the ghost element because it needs `pointer-events: none` which do not work together.
+// The workaround is to set the `cursor` on all elements when dragging an element.
+.organizations-reconciliation-draggable-dragging * {
+  user-select: none !important;
+  cursor: grabbing !important;
+}

@@ -41,8 +41,8 @@ RSpec.describe WorkItems::RelatedWorkItemLinks::DestroyService, feature_category
 
       it 'returns correct response message' do
         message = "Successfully unlinked IDs: #{linked_item1.id} and #{linked_item2.id}. IDs with errors: " \
-                  "#{no_access_item.id} could not be removed due to insufficient permissions, " \
-                  "#{not_linked_item.id} could not be removed due to not being linked."
+          "#{no_access_item.id} could not be removed due to insufficient permissions, " \
+          "#{not_linked_item.id} could not be removed due to not being linked."
 
         is_expected.to eq(
           status: :success,

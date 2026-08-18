@@ -57,7 +57,7 @@ describe('import table', () => {
   const findSomethingWentWrongEmptyState = () =>
     wrapper.findByTestId('something-went-wrong-empty-state');
   const findImportAllSelectedDropdown = () =>
-    wrapper.findByTestId('import-selected-groups-dropdown');
+    wrapper.findComponentByTestId('import-selected-groups-dropdown');
   const findRowImportDropdownAtIndex = (idx) =>
     wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
       idx
@@ -69,7 +69,7 @@ describe('import table', () => {
   const findSelectionCount = () => wrapper.findByTestId('selection-count');
   const findHistoryLink = () => wrapper.findByTestId('history-link');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
-  const findImportProjectsWarning = () => wrapper.findByTestId('import-projects-warning');
+  const findImportProjectsWarning = () => wrapper.findComponentByTestId('import-projects-warning');
   const findAllImportStatuses = () => wrapper.findAllComponents(ImportStatus);
 
   const findFirstImportTargetCell = () => wrapper.findAllComponents(ImportTargetCell).at(0);

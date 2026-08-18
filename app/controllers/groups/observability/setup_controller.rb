@@ -10,6 +10,10 @@ module Groups
       def observability_namespace
         group
       end
+
+      def observability_context_label
+        'group'
+      end
     end
   end
 end

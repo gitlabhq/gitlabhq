@@ -275,7 +275,7 @@ Replace the placeholders in the URL with your specific values:
 - `:id`: Your project ID or URL-encoded path
 - `:package_name`: Name of your package
 - `:package_version`: Version of your package
-- `:file_name`: Name of the file you're uploading
+- `:file_name`: Name of the file you're downloading
 
 For example:
 

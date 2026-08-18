@@ -10,6 +10,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
   GlToggle,
+  GlToastMixin,
 } from '@gitlab/ui';
 
 import { nextTick } from 'vue';
@@ -79,7 +80,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' }), GlToastMixin],
   isLoggedIn: isLoggedIn(),
   inject: {
     getWorkItemTypeConfiguration: {
@@ -172,7 +173,7 @@ export default {
       required: false,
       default: null,
     },
-    isModal: {
+    isDetailPanel: {
       type: Boolean,
       required: false,
       default: false,
@@ -246,12 +247,12 @@ export default {
     'error',
     'promotedToObjective',
     'toggleReportAbuseModal',
-    'toggleSidebar',
+    'toggle-sidebar',
     'toggleTruncationEnabled',
     'toggleWorkItemConfidentiality',
     'work-item-created',
-    'workItemStateUpdated',
-    'workItemTypeChanged',
+    'work-item-state-updated',
+    'work-item-type-changed',
   ],
   data() {
     return {
@@ -440,7 +441,7 @@ export default {
   },
   methods: {
     copyToClipboard(text, message) {
-      if (this.isModal) {
+      if (this.isDetailPanel) {
         // eslint-disable-next-line no-restricted-properties
         navigator.clipboard.writeText(text);
       }
@@ -617,12 +618,13 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="workItemsMoreActions"
-      v-gl-tooltip="showDropdownTooltip"
-      icon="ellipsis_v"
+      v-gl-tooltip.bottom="showDropdownTooltip"
+      icon="ellipsis_h"
       data-testid="work-item-actions-dropdown"
       text-sr-only
       :toggle-text="$options.i18n.moreActions"
       category="tertiary"
+      size="small"
       :auto-close="false"
       no-caret
       placement="bottom-end"
@@ -667,7 +669,7 @@ export default {
         :parent-id="parentId"
         show-as-dropdown-item
         @error="emitStateToggleError"
-        @workItemStateUpdated="$emit('workItemStateUpdated')"
+        @work-item-state-updated="$emit('work-item-state-updated')"
       />
 
       <gl-disclosure-dropdown-item
@@ -842,7 +844,7 @@ export default {
         <gl-disclosure-dropdown-item
           data-testid="sidebar-toggle-action"
           class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden @md/panel:gl-block"
-          @action="$emit('toggleSidebar')"
+          @action="$emit('toggle-sidebar')"
         >
           <template #list-item>
             <div class="gl-flex gl-items-center gl-justify-between">
@@ -882,7 +884,7 @@ export default {
       :is-group="isGroup"
       hide-button
       @work-item-created="$emit('work-item-created')"
-      @hideModal="isCreateWorkItemModalVisible = false"
+      @hide-modal="isCreateWorkItemModalVisible = false"
     />
     <work-item-change-type-modal
       v-if="showChangeType"
@@ -896,7 +898,7 @@ export default {
       :widgets="widgets"
       :allowed-child-types="allowedChildTypes"
       :namespace-full-name="namespaceFullName"
-      @workItemTypeChanged="$emit('workItemTypeChanged')"
+      @work-item-type-changed="$emit('work-item-type-changed')"
       @error="$emit('error', $event)"
     />
     <move-work-item-modal
@@ -907,7 +909,7 @@ export default {
       :work-item-type-id="currentWorkItemTypeId"
       :full-path="fullPath"
       :project-id="projectId"
-      @hideModal="isMoveWorkItemModalVisible = false"
+      @hide-modal="isMoveWorkItemModalVisible = false"
     />
   </div>
 </template>

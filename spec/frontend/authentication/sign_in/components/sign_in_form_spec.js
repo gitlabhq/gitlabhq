@@ -16,7 +16,6 @@ import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_fra
 import { useMockBoundingClientRect } from 'helpers/mock_bounding_client_rect';
 import { visitUrl } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
-import { showPasskeySignIn } from 'ee_else_ce/authentication/sign_in/utils';
 
 const csrfToken = 'mock-csrf-token';
 jest.mock('~/lib/utils/csrf', () => ({ token: csrfToken }));
@@ -25,9 +24,6 @@ jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
-}));
-jest.mock('ee_else_ce/authentication/sign_in/utils', () => ({
-  showPasskeySignIn: jest.fn(),
 }));
 
 describe('SignInForm', () => {
@@ -41,8 +37,6 @@ describe('SignInForm', () => {
   useMockBoundingClientRect();
 
   beforeEach(() => {
-    showPasskeySignIn.mockReturnValue(true);
-
     setHTMLFixture(htmlSessionsNew);
     const el = document.getElementById('js-sign-in-form');
 
@@ -76,6 +70,7 @@ describe('SignInForm', () => {
       newPasswordPath,
       showCaptcha,
       isRememberMeEnabled,
+      showPasskeyImmediately: true,
       railsFields,
     };
   });
@@ -101,7 +96,7 @@ describe('SignInForm', () => {
   const findRememberMeCheckbox = () => wrapper.findByLabelText('Remember me');
   const findPasskeysForm = () => wrapper.findByTestId('passkey-form');
   const findSignInForm = () => wrapper.findByTestId('sign-in-form');
-  const findSubmitButton = () => wrapper.findByTestId('sign-in-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('sign-in-button');
   const fillInLoginAndContinue = async () => {
     await findLoginField().setValue('foo@bar.com');
     await findSubmitButton().trigger('click');
@@ -320,10 +315,14 @@ describe('SignInForm', () => {
   });
 
   describe('passkeys button and remember me', () => {
-    describe('when showPasskeySignIn returns false', () => {
+    describe('when passkey sign-in should not be shown', () => {
       beforeEach(() => {
-        showPasskeySignIn.mockReturnValue(false);
-        createComponent();
+        // showPasskeyImmediately false + two-step flow with no prefilled login means
+        // the password field is hidden, so the passkey form should not render.
+        createComponent({
+          propsData: { showPasskeyImmediately: false },
+          provide: { glFeatures: { twoStepSignIn: true } },
+        });
       });
 
       it('does not render passkeys form', () => {
@@ -331,7 +330,7 @@ describe('SignInForm', () => {
       });
     });
 
-    describe('when showPasskeySignIn returns true', () => {
+    describe('when passkey sign-in should be shown', () => {
       beforeEach(() => {
         createComponent();
       });
@@ -390,10 +389,10 @@ describe('SignInForm', () => {
         expect(findSubmitButton().text()).toBe('Continue');
       });
 
-      it('calls showPasskeySignIn with showPasswordField as false', () => {
+      it('still renders passkeys form when showPasskeyImmediately is true', () => {
         createComponent({ provide });
 
-        expect(showPasskeySignIn).toHaveBeenCalledWith(false);
+        expect(findPasskeysForm().exists()).toBe(true);
       });
 
       describe('when user enters login and clicks Continue', () => {

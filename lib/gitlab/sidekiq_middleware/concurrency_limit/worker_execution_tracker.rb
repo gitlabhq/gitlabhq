@@ -8,6 +8,15 @@ module Gitlab
 
         TRACKING_KEY_TTL = 600.seconds
 
+        UNTRACK_PENDING_RESUMED_JOB_SCRIPT = ::Labkit::Redis::Script.new(<<~LUA)
+          local count = redis.call('decrby', KEYS[1], ARGV[2])
+          if count < 0 then
+            redis.call('set', KEYS[1], 0, 'EX', ARGV[1])
+            return 0
+          end
+          return count
+        LUA
+
         def initialize(worker_name:, prefix:)
           @worker_name = worker_name
           @prefix = prefix
@@ -49,6 +58,36 @@ module Gitlab
           with_redis { |r| r.hlen(worker_executing_hash_key).to_i }
         end
 
+        # Tracks jobs that have been resumed (enqueued for processing) but have not
+        # started executing yet, so they can be counted against the concurrency limit
+        # when deciding how many further jobs to resume. See QueueManager#num_jobs_to_resume.
+        def track_pending_resumed_jobs(count)
+          return if count <= 0
+
+          with_redis do |r|
+            r.pipelined do |pipeline|
+              pipeline.incrby(pending_resumed_jobs_key, count)
+              pipeline.expire(pending_resumed_jobs_key, TRACKING_KEY_TTL.to_i)
+            end
+          end
+        end
+
+        def untrack_pending_resumed_job(count = 1)
+          return if count <= 0
+
+          # Decrement and floor at zero atomically so a concurrent num_jobs_to_resume never
+          # observes a negative intermediate value, which would inflate the resume batch.
+          # The floor guards against drift (e.g. the counter expiring before the job starts).
+          with_redis do |r|
+            UNTRACK_PENDING_RESUMED_JOB_SCRIPT.eval(r,
+              keys: [pending_resumed_jobs_key], argv: [TRACKING_KEY_TTL.to_i, count])
+          end
+        end
+
+        def pending_resumed_jobs_count
+          with_redis { |r| r.get(pending_resumed_jobs_key).to_i }
+        end
+
         private
 
         attr_reader :worker_name
@@ -75,6 +114,10 @@ module Gitlab
 
         def worker_executing_hash_key
           "#{@prefix}:{#{worker_name.underscore}}:executing"
+        end
+
+        def pending_resumed_jobs_key
+          "#{@prefix}:{#{worker_name.underscore}}:pending_resumed"
         end
 
         def process_thread_id_key(pid, tid)

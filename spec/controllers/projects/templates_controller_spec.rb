@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::TemplatesController do
-  let_it_be(:project) { create(:project, :repository, :private) }
+  let_it_be(:project) { create(:project, :small_repo, :private) }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue_template_path_1) { '.gitlab/issue_templates/issue_template_1.md' }
   let_it_be(:issue_template_path_2) { '.gitlab/issue_templates/issue_template_2.md' }

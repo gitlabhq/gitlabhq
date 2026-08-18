@@ -15,7 +15,7 @@ module Profiles
     end
 
     def slack_link
-      project = disabled_projects.find(params[:project_id])
+      project = disabled_projects.find(params.permit(:project_id)[:project_id])
       link = add_to_slack_link(project, Gitlab::CurrentSettings.slack_app_id)
 
       render json: { add_to_slack_link: link }

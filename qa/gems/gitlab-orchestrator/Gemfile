@@ -9,5 +9,5 @@ group :test do
   gem "gitlab-styles", "~> 14.0.0"
   gem "pry", "~> 0.16.0"
   gem "rspec", "~> 3.13", ">= 3.13.2"
-  gem "simplecov", "~> 0.22.0"
+  gem "simplecov", "~> 1.0.3"
 end

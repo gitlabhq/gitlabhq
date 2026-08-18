@@ -225,4 +225,20 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
       described_class.bulk_insert_and_keep_commits!(drafts, batch_size: 10)
     end
   end
+
+  describe '#should_update_position?' do
+    subject(:draft_note) { build(:draft_note_on_text_diff, merge_request: merge_request, commit_id: commit_id) }
+
+    context 'when the draft is not associated with a commit' do
+      let(:commit_id) { nil }
+
+      it { is_expected.to be_should_update_position }
+    end
+
+    context 'when the draft is associated with a commit' do
+      let(:commit_id) { project.repository.commit.id }
+
+      it { is_expected.not_to be_should_update_position }
+    end
+  end
 end

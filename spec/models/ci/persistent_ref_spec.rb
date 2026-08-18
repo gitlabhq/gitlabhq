@@ -43,7 +43,7 @@ RSpec.describe Ci::PersistentRef, feature_category: :continuous_integration do
     subject { pipeline.persistent_ref.exist? }
 
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:sha) { project.repository.commit.sha }
 
     context 'when a persistent ref does not exist' do
@@ -63,7 +63,7 @@ RSpec.describe Ci::PersistentRef, feature_category: :continuous_integration do
     subject { pipeline.persistent_ref.create } # rubocop: disable Rails/SaveBang
 
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:sha) { project.repository.commit.sha }
 
     context 'when a persistent ref does not exist' do
@@ -101,7 +101,7 @@ RSpec.describe Ci::PersistentRef, feature_category: :continuous_integration do
     subject { pipeline.persistent_ref.delete }
 
     let(:pipeline) { create(:ci_pipeline, :success, sha: sha, project: project) }
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:sha) { project.repository.commit.sha }
 
     context 'when a persistent ref exists' do

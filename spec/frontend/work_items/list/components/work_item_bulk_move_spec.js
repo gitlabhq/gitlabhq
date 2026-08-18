@@ -77,7 +77,7 @@ describe('WorkItemBulkMove', () => {
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findButton = () => wrapper.find('[data-testid="submit-move-button"]');
+  const findButton = () => wrapper.findComponent('[data-testid="submit-move-button"]');
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
 
   it('renders a listbox', () => {
@@ -229,8 +229,8 @@ describe('WorkItemBulkMove', () => {
       findButton().vm.$emit('click');
     });
 
-    it('emits "moveStart" event when the button is clicked', () => {
-      expect(wrapper.emitted('moveStart')).toHaveLength(1);
+    it('emits "move-start" event when the button is clicked', () => {
+      expect(wrapper.emitted('move-start')).toHaveLength(1);
     });
 
     it('calls the bulk edit mutation with the correct variables', async () => {
@@ -245,16 +245,16 @@ describe('WorkItemBulkMove', () => {
     });
 
     describe('on success', () => {
-      it('emits "moveSuccess" event with toast message', async () => {
+      it('emits "move-success" event with toast message', async () => {
         await waitForPromises();
-        const events = wrapper.emitted('moveSuccess');
+        const events = wrapper.emitted('move-success');
         expect(events).toHaveLength(1);
         expect(events[0][0]).toEqual({ toastMessage: 'Moved 2 of 2 items' });
       });
 
-      it('emits "moveFinished" event', async () => {
+      it('emits "move-finish" event', async () => {
         await waitForPromises();
-        expect(wrapper.emitted('moveFinish')).toHaveLength(1);
+        expect(wrapper.emitted('move-finish')).toHaveLength(1);
       });
     });
 
@@ -276,16 +276,16 @@ describe('WorkItemBulkMove', () => {
         findButton().vm.$emit('click');
       });
 
-      it('emits "moveSuccess" event with toast message', async () => {
+      it('emits "move-success" event with toast message', async () => {
         await waitForPromises();
-        const events = wrapper.emitted('moveSuccess');
+        const events = wrapper.emitted('move-success');
         expect(events).toHaveLength(1);
         expect(events[0][0]).toEqual({ toastMessage: 'Moved 1 of 2 items' });
       });
 
-      it('emits "moveFinished" event', async () => {
+      it('emits "move-finish" event', async () => {
         await waitForPromises();
-        expect(wrapper.emitted('moveFinish')).toHaveLength(1);
+        expect(wrapper.emitted('move-finish')).toHaveLength(1);
       });
     });
 
@@ -309,8 +309,8 @@ describe('WorkItemBulkMove', () => {
         });
       });
 
-      it('emits "moveFinished" event', () => {
-        expect(wrapper.emitted('moveFinish')).toHaveLength(1);
+      it('emits "move-finish" event', () => {
+        expect(wrapper.emitted('move-finish')).toHaveLength(1);
       });
     });
 
@@ -341,8 +341,8 @@ describe('WorkItemBulkMove', () => {
         });
       });
 
-      it('emits "moveFinished" event', () => {
-        expect(wrapper.emitted('moveFinish')).toHaveLength(1);
+      it('emits "move-finish" event', () => {
+        expect(wrapper.emitted('move-finish')).toHaveLength(1);
       });
     });
   });

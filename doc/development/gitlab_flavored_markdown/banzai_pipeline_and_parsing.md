@@ -10,13 +10,13 @@ title: The Banzai pipeline and parsing
 
 Parsing and rendering [GitLab Flavored Markdown](_index.md) into HTML involves different components:
 
-- Banzai pipeline and it's various filters
+- Banzai pipeline and its various filters
 - Markdown parser
 
 The backend does all the processing for GLFM to HTML. This provides several benefits:
 
-- Security: We run robust sanitization which removes unknown tags, classes and ids.
-- References: Our reference syntax requires access to the database to resolve issues, etc, as well as redacting references in which the user has no access.
+- Security: We run robust sanitization which removes unknown tags, classes, and ids.
+- References: Our reference syntax requires access to the database, for example, to resolve issues, as well as redacting references in which the user has no access.
 - Consistency: We want to provide users with a consistent experience, which includes full support of the GLFM syntax and styling. Having a single place where the processing is done allows us to provide that.
 - Caching: We cache the HTML in our database when possible, such as for issue or MR descriptions, or comments.
 - Quick actions: We use a specialized pipeline to process quick actions, so that we can better detect them in Markdown text.
@@ -56,8 +56,8 @@ Of specific note is the `SanitizationFilter`. This is critical for providing saf
 
 ### `PostProcessPipeline`
 
-The output from the `FullPipeline` gets cached in the database. However references have already been resolved. Based on
-a users' permissions, they may not be able to see those references. `PostProcessPipeline` is responsible for redacting any
+The output from the `FullPipeline` gets cached in the database. However, references have already been resolved. Based on
+a user's permissions, they may not be able to see those references. `PostProcessPipeline` is responsible for redacting any
 confidential information based on user permissions. These changes are never cached, as they need to get recomputed each time
 they are displayed.
 
@@ -86,7 +86,7 @@ For this we use several techniques:
 - For certain filters that can take a long time, we use a Ruby timeout with `Gitlab::RenderTimeout.timeout` in [TimeoutFilterHandler](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/timeout_filter_handler.rb).
   This allows us to interrupt the actual processing if it takes too long.
   In general, using Ruby `timeout` is [not considered safe](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/).
-  We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather then using a timeout.
+  We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather than using a timeout.
 - [PipelineTimingCheck](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/pipeline_timing_check.rb) allows us to keep track of the cumulative amount of time the pipeline is taking. When we reach a maximum, we can then skip any remaining filters.
   For nearly all filters, it's generally ok to skip them in a case like this in order to show the user _something_, rather than nothing.
 
@@ -131,7 +131,7 @@ Bumping `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION` historically put heavy
 - The `CACHE_COMMONMARK_VERSION_PREVIOUS` constant in `lib/gitlab/markdown_cache.rb`. In steady state (no rollout in progress) this is `nil`, and the mechanism is dormant: `latest_cached_markdown_version` always returns the current shifted version, the feature flag below is ignored, and reads of stale rows are rewritten on the spot, as they were before the mechanism existed.
 - The `markdown_cache_stochastic_rollout_<version>` feature flag, a definition-less `markdown_cache`-type flag whose name embeds the target cache version (for example, `markdown_cache_stochastic_rollout_34`). While `CACHE_COMMONMARK_VERSION_PREVIOUS`
   is set, the flag's `percentage_of_time` value controls how aggressively the new version is exposed:
-  - At `n%`, the roll returns the new shifted version for approximately `n%` of reads and the previous shifted version otherwise. Different records roll independently; the roll is memoised per model instance.
+  - At `n%`, the roll returns the new shifted version for approximately `n%` of reads and the previous shifted version otherwise. Different records roll independently. The roll is memoised per model instance.
   - A read that rolls "current" against a row at the previous version triggers `refresh_markdown_cache!`, which rewrites the row.
   - A read that rolls "previous" against a row already at "current" is treated as fresh by `cached_html_up_to_date?`: a persisted version at least as new as the rolled version means no work is needed.
   - Writes always land at the new shifted version, regardless of the roll. This uses `cached_markdown_version_for_write`, which never consults the flag. The flag controls only which reads trigger a rewrite, not what version any given write produces. So new rows and content edits upgrade rows organically during a rollout, on top of the read-driven upgrades the flag controls.
@@ -144,9 +144,9 @@ You can view the `gitlab_markdown_cache_version_upgrades_total` counter using th
 The flag uses `percentage_of_time` (a "random" gate), not an actor-based gate, by design. The load-shedding goal is that at `n%`, approximately `n%` of read traffic triggers an upgrade write, so the migration progresses as a smooth, throttled stream proportional to read load. We considered two alternatives:
 
 - Per-request actor (`Feature.current_request`): sticky for the duration of one Rack request/Sidekiq job/ActionCable execution. A single request that touches many cached Markdown rows (issue list, MR list, search results) would upgrade _all_ of them in one window at `n%`, producing per-request write bursts proportional to row count rather than smooth load distribution.
-- Synthetic per-record actor (`def flipper_id = "...:#{record.id}"`): at `n%`, a fixed `n%` of rows are eligible for upgrade, and the remaining `(100−n)%` are excluded until the percentage is raised. At `1%`, `99%` of hot rows would never migrate. This breaks the desirable "low percentage means slow (but eventual) migration; high percentage means faster" property; instead, each increment of the percentage would eventually top out as all selected (hot) rows are written, meaning you'd want to bump the flag by very small increments all the way up to 100%!
+- Synthetic per-record actor (`def flipper_id = "...:#{record.id}"`): at `n%`, a fixed `n%` of rows are eligible for upgrade, and the remaining `(100−n)%` are excluded until the percentage is raised. At `1%`, `99%` of hot rows would never migrate. This breaks the desirable "low percentage means slow (but eventual) migration; high percentage means faster" property. Instead, each increment of the percentage would eventually top out as all selected (hot) rows are written, meaning you'd want to bump the flag by very small increments all the way up to 100%!
 
-Percentage-of-time randomness gives the desired "slow but eventually covers everything" semantics at any positive percentage: different records roll independently of one another, and a record that rolls "previous" in one request can roll "current" in a later one, so read rows converge over time. The `--random` chatops flag is deprecated for general use because callers usually want a stable answer per actor, and per-call inconsistency surprises most callers; here we use `--random` deliberately: independent rolls across records are what spread the migration load, so the deprecation rationale does not apply.
+Percentage-of-time randomness gives the desired "slow but eventually covers everything" semantics at any positive percentage: different records roll independently of one another, and a record that rolls "previous" in one request can roll "current" in a later one, so read rows converge over time. The `--random` chatops flag is deprecated for general use because callers usually want a stable answer per actor, and per-call inconsistency surprises most callers. Here we use `--random` deliberately: independent rolls across records are what spread the migration load, so the deprecation rationale does not apply.
 
 #### Rollout procedure for a `CACHE_COMMONMARK_VERSION` bump
 
@@ -172,10 +172,8 @@ Two MRs and feature flag adjustments are required for the rollout. The example b
    /chatops gitlab run feature set markdown_cache_stochastic_rollout_34 5 --random
    ```
 
-1. **Observe convergence.** At `100%`, every read of a row still at the previous version triggers a rewrite. The counter rises and then tapers as the hot population converges. Cold rows that are never read remain at the previous version indefinitely; this is intentional and harmless because nothing reads them, and they get picked up automatically on the next bump.
-
+1. **Observe convergence.** At `100%`, every read of a row still at the previous version triggers a rewrite. The counter rises and then tapers as the hot population converges. Cold rows that are never read remain at the previous version indefinitely. This is intentional and harmless because nothing reads them, and they get picked up automatically on the next bump.
 1. **MR2: finalize the rollout.** Set `CACHE_COMMONMARK_VERSION_PREVIOUS` back to `nil`. The system returns to steady state: with `CACHE_COMMONMARK_VERSION_PREVIOUS` at `nil` the flag is ignored, and any remaining row at the previous version is treated as stale and rewritten on first read at natural read rate.
-
 1. **Clean up the flag.** After MR2 is fully deployed, delete the version-stamped flag through chatops.
 
    ```slack

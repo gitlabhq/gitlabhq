@@ -5,6 +5,7 @@ import { INDIVIDUAL_CHART_HEIGHT } from '../constants';
 import ContributorAreaChart from './contributor_area_chart.vue';
 
 export default {
+  name: 'IndividualChart',
   INDIVIDUAL_CHART_HEIGHT,
   components: {
     ContributorAreaChart,

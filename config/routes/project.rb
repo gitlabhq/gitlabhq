@@ -521,6 +521,9 @@ constraints(Projects::ProjectUrlConstraint.new) do
         namespace :observability do
           resource :setup, only: [:show], controller: 'setup'
           resource :access_requests, only: [:create]
+          # Backend-for-frontend per-user SigNoz session exchange (gated by the
+          # observability_per_user_bff_auth feature flag).
+          resource :session, only: [:create], controller: 'sessions'
         end
         resources :observability, only: [:show], constraints: { id: %r{[a-zA-Z0-9._-]+} }, format: false
         get 'observability/*sub_path', to: 'observability#show', as: :observability_sub_path, format: false,
@@ -622,7 +625,7 @@ constraints(Projects::ProjectUrlConstraint.new) do
       end
 
       resources :runner_projects, only: [:create, :destroy] # rubocop: disable Cop/PutProjectRoutesUnderScope
-      resources :badges, only: [:index] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resources :badges, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do

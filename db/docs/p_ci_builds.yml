@@ -1,10 +1,10 @@
 ---
 table_name: p_ci_builds
 classes:
+- CommitStatus
 - Ci::Bridge
 - Ci::Build
 - Ci::Processable
-- CommitStatus
 - GenericCommitStatus
 feature_categories:
 - continuous_integration

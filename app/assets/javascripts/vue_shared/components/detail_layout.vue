@@ -1,9 +1,11 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import BaseLayout from './base_layout.vue';
 
 export default {
   name: 'DetailLayout',
   components: { BaseLayout },
+  mixins: [glSlotsMixin],
   props: {
     ...BaseLayout.props,
     showSidebar: {
@@ -23,20 +25,20 @@ export default {
     :page-heading-sr-only="pageHeadingSrOnly"
     :loading="loading"
   >
-    <template v-for="(_, name) in $scopedSlots" #[name]="slotProps">
+    <template v-for="(_, name) in glSlots()" #[name]="slotProps">
       <slot :name="name" v-bind="slotProps || {}"></slot>
     </template>
     <template #content>
       <div
         class="gl-detail-layout-container"
-        :class="{ 'gl-detail-layout-container-has-sidebar': $scopedSlots.sidebar && showSidebar }"
+        :class="{ 'gl-detail-layout-container-has-sidebar': glSlots().sidebar && showSidebar }"
         data-testid="detail-layout-container"
       >
         <div class="gl-detail-layout-content" data-testid="detail-layout-content">
           <slot></slot>
         </div>
         <div
-          v-if="$scopedSlots.sidebar"
+          v-if="glSlots().sidebar"
           class="gl-detail-layout-sidebar"
           :class="{ 'gl-contents': !showSidebar }"
           data-testid="detail-layout-sidebar"
@@ -47,14 +49,14 @@ export default {
           <slot name="sidebar"></slot>
         </div>
         <div
-          v-if="$scopedSlots.widgets"
+          v-if="glSlots().widgets"
           class="gl-detail-layout-widgets"
           data-testid="detail-layout-widgets"
         >
           <slot name="widgets"></slot>
         </div>
         <div
-          v-if="$scopedSlots.activity"
+          v-if="glSlots().activity"
           class="gl-detail-layout-activity"
           data-testid="detail-layout-activity"
         >

@@ -9,6 +9,7 @@ module Ci
     # rubocop:disable Scalability/CronWorkerContext
     # This worker does not perform work scoped to a context
     include CronjobQueue
+
     # rubocop:enable Scalability/CronWorkerContext
 
     feature_category :continuous_integration

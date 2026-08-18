@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import GroupImportHistory from './import_history.vue';
 
 export default () => {
@@ -8,15 +8,12 @@ export default () => {
 
   const { groupName } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupImportHistoryRoot',
-    render(h) {
-      return h(GroupImportHistory, {
-        props: {
-          groupName,
-        },
-      });
+    component: GroupImportHistory,
+    props: {
+      groupName,
     },
   });
 };

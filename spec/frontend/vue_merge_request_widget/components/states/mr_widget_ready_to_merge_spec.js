@@ -134,7 +134,7 @@ const createComponent = (customConfig = {}, createState = true) => {
   });
 };
 
-const findMergeButton = () => wrapper.find('[data-testid="merge-button"]');
+const findMergeButton = () => wrapper.findComponent('[data-testid="merge-button"]');
 const findMergeImmediatelyDropdown = () =>
   wrapper.find('[data-testid="merge-immediately-dropdown"');
 const findSourceBranchDeletedText = () =>
@@ -152,15 +152,15 @@ const findMergeCommitMessage = () => findCommitEditWithInputId('merge-message-ed
 const findSquashCommitMessage = () =>
   findCommitEditWithInputId('squash-message-edit').props('value');
 const findDeleteSourceBranchCheckbox = () =>
-  wrapper.find('[data-testid="delete-source-branch-checkbox"]');
+  wrapper.findComponent('[data-testid="delete-source-branch-checkbox"]');
 
 const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
 const triggerEditCommitInput = () =>
-  wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+  wrapper.findComponent('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 const triggerEditSquashInput = (text) =>
   findCommitEditWithInputId('squash-message-edit').vm.$emit('input', text);
 const triggerEditMergeInput = (text) =>
-  wrapper.find('[data-testid="merge-commit-message"]').vm.$emit('input', text);
+  wrapper.findComponent('[data-testid="merge-commit-message"]').vm.$emit('input', text);
 const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
 const findTextareas = () => wrapper.findAllComponents(GlFormTextarea);
 
@@ -1168,9 +1168,9 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      await wrapper.findByTestId('widget_edit_commit_message').vm.$emit('input', true);
+      await wrapper.findComponentByTestId('widget_edit_commit_message').vm.$emit('input', true);
 
-      expect(wrapper.findByTestId('merge-commit-message').props('value')).not.toEqual(
+      expect(wrapper.findComponentByTestId('merge-commit-message').props('value')).not.toEqual(
         'Updated commit message',
       );
 
@@ -1185,7 +1185,7 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      expect(wrapper.findByTestId('merge-commit-message').props('value')).toEqual(
+      expect(wrapper.findComponentByTestId('merge-commit-message').props('value')).toEqual(
         'Updated commit message',
       );
     });
@@ -1195,10 +1195,10 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      await wrapper.findByTestId('widget_edit_commit_message').vm.$emit('input', true);
+      await wrapper.findComponentByTestId('widget_edit_commit_message').vm.$emit('input', true);
 
       await wrapper
-        .findByTestId('merge-commit-message')
+        .findComponentByTestId('merge-commit-message')
         .vm.$emit('input', 'Manually updated commit message');
 
       mockedSubscription.next({
@@ -1212,7 +1212,7 @@ describe('ReadyToMerge', () => {
 
       await waitForPromises();
 
-      expect(wrapper.findByTestId('merge-commit-message').props('value')).toEqual(
+      expect(wrapper.findComponentByTestId('merge-commit-message').props('value')).toEqual(
         'Manually updated commit message',
       );
     });

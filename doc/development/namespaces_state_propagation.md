@@ -194,4 +194,4 @@ The propagation algorithm was built across several merge requests:
 - [Add `Namespaces::StatePropagationCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242221) adds the reconciliation worker.
 
 For the overall plan, see
-[epic 21607](https://gitlab.com/groups/gitlab-org/-/epics/21607).
+[epic 21607](https://gitlab.com/groups/gitlab-org/-/work_items/21607).

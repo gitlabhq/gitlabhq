@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe PipelineMetricsWorker, feature_category: :continuous_integration do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let!(:merge_request) do
     create(:merge_request, source_project: project, source_branch: pipeline.ref, head_pipeline: pipeline)

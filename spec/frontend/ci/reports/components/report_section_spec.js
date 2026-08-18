@@ -142,36 +142,6 @@ describe('ReportSection component', () => {
     });
   });
 
-  describe('snowplow events', () => {
-    it('does emit an event on issue toggle if the shouldEmitToggleEvent prop does exist', () => {
-      createComponent({ props: { hasIssues: true, shouldEmitToggleEvent: true } });
-
-      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
-
-      findExpandButton().trigger('click');
-
-      expect(wrapper.emitted('toggleEvent')).toEqual([[]]);
-    });
-
-    it('does not emit an event on issue toggle if the shouldEmitToggleEvent prop does not exist', () => {
-      createComponent({ props: { hasIssues: true } });
-
-      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
-
-      findExpandButton().trigger('click');
-
-      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
-    });
-
-    it('does not emit an event if always-open is set to true', () => {
-      createComponent({
-        props: { alwaysOpen: true, hasIssues: true, shouldEmitToggleEvent: true },
-      });
-
-      expect(wrapper.emitted('toggleEvent')).toBeUndefined();
-    });
-  });
-
   describe('with failed request', () => {
     it('should render error indicator', () => {
       createComponent({

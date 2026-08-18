@@ -2,12 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :continuous_integration, factory_default: :keep do
+RSpec.describe Ci::TimedOutBuilds::DropRunningService, :freeze_time, feature_category: :continuous_integration, factory_default: :keep do
   let_it_be(:ci_partition) { create(:ci_partition) }
   let_it_be(:namespace) { create_default(:namespace) }
   let_it_be(:project) { create_default(:project) }
   let_it_be(:runner) { create(:ci_runner) }
-  let!(:job) { create(:ci_build, :running, runner: runner, timeout: 600) }
+  let(:timeout) { 600 }
+  # A build is created (queued) before it transitions to running, so
+  # ci_builds.created_at is earlier than ci_running_builds.created_at. The
+  # timeout is measured from when the build started running, so it must be
+  # driven by running_build.created_at, not job.created_at.
+  let(:build_created_at) { 1.day.ago }
+  let(:running_created_at) { timeout.seconds.ago - described_class::MINUTE_BUFFER - 1.second }
+  let!(:job) { create(:ci_build, :running, runner: runner, timeout: timeout, created_at: build_created_at) }
+  let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: running_created_at) }
 
   subject(:service) { described_class.new }
 
@@ -16,9 +24,6 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
   end
 
   context 'when job timeout has been exceeded' do
-    let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: created_at) }
-    let(:created_at) { job.timeout.seconds.ago - described_class::MINUTE_BUFFER }
-
     it_behaves_like 'job is dropped with failure reason', 'server_timeout_running'
     it_behaves_like 'when invalid dooms the job bypassing validations'
 
@@ -35,11 +40,16 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
     end
 
     context 'when the job is complete' do
+      before do
+        job.success!
+      end
+
       it_behaves_like 'job is unchanged'
 
       context 'when the runtime_metadata record has not been removed' do
-        let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: created_at) }
-        let!(:job) { create(:ci_build, :success, runner: runner, timeout: 600) }
+        before do
+          create(:ci_running_build, runner: runner, build: job, created_at: running_created_at)
+        end
 
         it_behaves_like 'job is unchanged'
       end
@@ -82,8 +92,7 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
   end
 
   context 'when job timeout has not been exceeded' do
-    let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: created_at) }
-    let(:created_at) { rand(job.timeout.seconds.ago..Time.current) }
+    let(:running_created_at) { timeout.seconds.ago - described_class::MINUTE_BUFFER + 1.second }
 
     it_behaves_like 'job is unchanged'
   end

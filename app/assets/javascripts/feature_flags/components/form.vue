@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlFormTextarea } from '@gitlab/ui';
 import { cloneDeep, isNumber, uniqueId } from 'lodash-es';
@@ -149,34 +148,30 @@ export default {
 </script>
 <template>
   <form class="feature-flags-form">
-    <fieldset>
-      <div class="-gl-mx-5 gl-flex gl-flex-wrap">
-        <div class="gl-mb-5 gl-w-full gl-px-5 @md/panel:gl-basis-1/3">
-          <label for="feature-flag-name" class="gl-font-bold">
-            {{ s__('FeatureFlags|Name') }}
-          </label>
-          <input
-            id="feature-flag-name"
-            v-model="formName"
-            class="form-control"
-            required
-            aria-required="true"
-          />
-        </div>
+    <fieldset class="gl-flex gl-flex-col gl-gap-5">
+      <div class="gl-flex gl-flex-wrap gl-gap-2">
+        <label for="feature-flag-name" class="gl-mb-0 gl-font-bold">
+          {{ s__('FeatureFlags|Name') }}
+        </label>
+        <input
+          id="feature-flag-name"
+          v-model="formName"
+          class="form-control"
+          required
+          aria-required="true"
+        />
       </div>
-      <div class="-gl-mx-5 gl-flex gl-flex-wrap">
-        <div class="gl-mb-5 gl-w-full gl-px-5 @md/panel:gl-basis-1/3">
-          <label for="feature-flag-description" class="gl-font-bold">
-            {{ s__('FeatureFlags|Description (optional)') }}
-          </label>
-          <gl-form-textarea
-            id="feature-flag-description"
-            v-model="formDescription"
-            class="form-control"
-            rows="4"
-            aria-required="false"
-          />
-        </div>
+      <div class="gl-flex gl-flex-wrap gl-gap-2">
+        <label for="feature-flag-description" class="gl-mb-0 gl-font-bold">
+          {{ s__('FeatureFlags|Description (optional)') }}
+        </label>
+        <gl-form-textarea
+          id="feature-flag-description"
+          v-model="formDescription"
+          class="form-control"
+          rows="4"
+          aria-required="false"
+        />
       </div>
 
       <related-issues-root
@@ -184,16 +179,17 @@ export default {
         :endpoint="featureFlagIssuesEndpoint"
         :can-admin="true"
         :show-categorized-issues="false"
+        class="!gl-mt-0"
       />
-      <div class="-gl-mx-5 gl-flex gl-flex-wrap">
-        <div class="gl-mb-5 gl-w-full gl-px-5">
-          <h4>{{ s__('FeatureFlags|Strategies') }}</h4>
-          <div class="gl-flex gl-items-baseline gl-justify-between">
-            <p class="gl-mr-5">{{ $options.translations.newHelpText }}</p>
-            <gl-button variant="confirm" category="secondary" @click="addStrategy">
-              {{ s__('FeatureFlags|Add strategy') }}
-            </gl-button>
+      <div class="gl-flex gl-flex-wrap">
+        <div class="gl-flex gl-w-full gl-items-baseline gl-justify-between gl-gap-3">
+          <div class="gl-flex gl-flex-col gl-gap-2">
+            <h2 class="gl-heading-2 gl-my-0">{{ s__('FeatureFlags|Strategies') }}</h2>
+            <p class="gl-mb-0 gl-text-subtle">{{ $options.translations.newHelpText }}</p>
           </div>
+          <gl-button class="gl-shrink-0" @click="addStrategy">
+            {{ s__('FeatureFlags|Add strategy') }}
+          </gl-button>
         </div>
       </div>
       <div v-if="filteredStrategies.length > 0" data-testid="feature-flag-strategies">
@@ -206,17 +202,17 @@ export default {
           @delete="deleteStrategy(strategy)"
         />
       </div>
-      <div v-else class="gl-border-t gl-flex gl-w-full gl-justify-center gl-py-6">
+      <div v-else class="gl-flex gl-w-full gl-justify-center gl-py-6">
         <span>{{ $options.translations.noStrategiesText }}</span>
       </div>
     </fieldset>
 
-    <div class="gl-mr-6">
+    <div class="gl-flex gl-gap-3">
       <gl-button
         ref="submitButton"
         type="button"
         variant="confirm"
-        class="js-ff-submit gl-mr-2"
+        class="js-ff-submit"
         @click="handleSubmit"
         >{{ submitText }}</gl-button
       >

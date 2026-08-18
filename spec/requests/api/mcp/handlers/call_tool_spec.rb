@@ -124,6 +124,33 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    context 'when a tool receives an unknown argument' do
+      let(:invalid_params) do
+        {
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'get_work_item_types',
+            arguments: { unexpected_argument: 'value' }
+          },
+          id: '1'
+        }
+      end
+
+      subject(:call_tool) do
+        post api('/mcp', user, oauth_access_token: access_token), params: invalid_params
+      end
+
+      it 'rejects the argument via the default additionalProperties: false' do
+        call_tool
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text'])
+          .to eq('Validation error: unexpected_argument is invalid')
+      end
+    end
+
     context 'with unknown tool name' do
       let(:params) do
         {
@@ -153,16 +180,37 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
     describe '#get_merge_request' do
       let(:tool_params) do
-        { name: 'get_merge_request', arguments: { id: project.full_path, merge_request_iid: merge_request.iid } }
+        {
+          name: 'get_merge_request',
+          arguments: { project_id: project.full_path, merge_request_iid: merge_request.iid }
+        }
+      end
+
+      it 'returns success response' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['content'].first['text']).to include(merge_request.title)
+        expect(json_response['result']['structuredContent']['title']).to eq(merge_request.title)
+        expect(json_response['result']['isError']).to be_falsey
+      end
+    end
+
+    describe '#get_repository_file' do
+      let(:tool_params) do
+        {
+          name: 'get_repository_file',
+          arguments: { project_id: project.full_path, file_path: 'files/ruby/popen.rb', ref: project.default_branch }
+        }
       end
 
       it 'returns success response' do
         post api('/mcp', user, oauth_access_token: access_token), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['result']['content'].first['text']).to include(merge_request.title)
-        expect(json_response['result']['structuredContent']['title']).to eq(merge_request.title)
         expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['path']).to eq('files/ruby/popen.rb')
+        expect(json_response['result']['structuredContent']['content']).to include('module Popen')
       end
     end
 
@@ -259,16 +307,16 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
-  describe '#manage_pipeline' do
+  describe '#save_pipeline' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :running) }
     let_it_be(:cancelable_build) { create(:ci_build, :running, pipeline: pipeline) }
 
     context 'when creating a pipeline' do
       let(:tool_params) do
         {
-          name: 'manage_pipeline',
+          name: 'save_pipeline',
           arguments: {
-            id: project.full_path,
+            project_id: project.full_path,
             ref: project.default_branch
           }
         }
@@ -292,11 +340,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     context 'when canceling a pipeline' do
       let(:tool_params) do
         {
-          name: 'manage_pipeline',
+          name: 'save_pipeline',
           arguments: {
-            id: project.full_path,
             pipeline_id: pipeline.id,
-            cancel: true
+            action: 'cancel'
           }
         }
       end
@@ -316,11 +363,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
       let(:tool_params) do
         {
-          name: 'manage_pipeline',
+          name: 'save_pipeline',
           arguments: {
-            id: project.full_path,
             pipeline_id: failed_pipeline.id,
-            retry: true
+            action: 'retry'
           }
         }
       end
@@ -330,10 +376,68 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['isError']).to be_falsey
-        expect(json_response['result']['content'].first['text']).to include('Pipeline retried successfully')
+        expect(json_response['result']['structuredContent']).to include(
+          'action' => 'retry', 'id' => failed_pipeline.id
+        )
       end
     end
 
+    context 'with error handling' do
+      context 'with ambiguous parameters' do
+        let(:tool_params) do
+          { name: 'save_pipeline', arguments: { project_id: project.full_path } }
+        end
+
+        it 'returns clear error message' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include(
+            'Provide ref to create a pipeline, or pipeline_id and action'
+          )
+        end
+      end
+
+      context 'with pipeline_id but no action' do
+        let(:tool_params) do
+          { name: 'save_pipeline', arguments: { pipeline_id: pipeline.id } }
+        end
+
+        it 'returns clear error message' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include(
+            'Provide action: "retry" or "cancel" when pipeline_id is set'
+          )
+        end
+      end
+
+      context 'with non-existent ref' do
+        let(:tool_params) do
+          {
+            name: 'save_pipeline',
+            arguments: {
+              project_id: project.full_path,
+              ref: 'non-existent-branch'
+            }
+          }
+        end
+
+        it 'returns error for invalid reference' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include('Reference not found')
+        end
+      end
+    end
+  end
+
+  describe '#manage_pipeline' do
     context 'when deleting a pipeline' do
       let_it_be(:owner) { create(:user) }
       let_it_be(:owner_access_token) { create(:oauth_access_token, user: owner, scopes: [:mcp]) }
@@ -392,7 +496,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
 
     context 'with error handling' do
-      context 'with ambiguous parameters' do
+      context 'without pipeline_id' do
         let(:tool_params) do
           { name: 'manage_pipeline', arguments: { id: project.full_path } }
         end
@@ -402,28 +506,368 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
-          expect(json_response['result']['content'].first['text']).to include('Cannot determine operation')
+          expect(json_response['result']['content'].first['text']).to include('Validation error')
         end
       end
 
-      context 'with non-existent ref' do
+      context 'with non-existent pipeline_id' do
+        let_it_be(:owner) { create(:user) }
+        let_it_be(:owner_access_token) { create(:oauth_access_token, user: owner, scopes: [:mcp]) }
+
         let(:tool_params) do
           {
             name: 'manage_pipeline',
             arguments: {
               id: project.full_path,
-              ref: 'non-existent-branch'
+              pipeline_id: non_existing_record_id
             }
           }
         end
 
-        it 'returns error for invalid reference' do
-          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+        before_all do
+          project.add_owner(owner)
+        end
+
+        it 'returns a not found error' do
+          post api('/mcp', owner, oauth_access_token: owner_access_token), params: params, as: :json
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
-          expect(json_response['result']['content'].first['text']).to include('Reference not found')
+          expect(json_response['result']['content'].first['text']).to include('Pipeline Not Found')
         end
+      end
+    end
+  end
+
+  describe '#list_pipelines' do
+    let_it_be(:other_project) { create(:project, maintainers: [user]) }
+
+    let_it_be(:success_pipeline) do
+      create(:ci_pipeline, project: project, ref: 'master', status: :success, source: :push)
+    end
+
+    let_it_be(:failed_pipeline) do
+      create(:ci_pipeline, project: project, ref: 'feature', status: :failed, source: :web)
+    end
+
+    let_it_be(:canceled_pipeline) do
+      create(:ci_pipeline, project: project, ref: 'master', status: :canceled, source: :api)
+    end
+
+    let_it_be(:running_pipeline) do
+      create(:ci_pipeline, project: project, ref: 'feature', status: :running, source: :schedule)
+    end
+
+    let_it_be(:other_project_pipeline) do
+      create(:ci_pipeline, project: other_project, ref: 'master', status: :success, source: :push)
+    end
+
+    let(:tool_params) do
+      { name: 'list_pipelines', arguments: { id: project.full_path } }
+    end
+
+    it 'returns only the requesting project pipelines with compact metadata', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+
+      items = json_response['result']['structuredContent']['items']
+      expect(items.pluck('id')).to contain_exactly(
+        success_pipeline.id, failed_pipeline.id, canceled_pipeline.id, running_pipeline.id
+      )
+      expect(items.first.keys).to include('id', 'status', 'ref', 'sha', 'source', 'web_url')
+    end
+
+    context 'when filtering by status' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, status: 'failed' } }
+      end
+
+      it 'returns only pipelines matching the status' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        ids = json_response['result']['structuredContent']['items'].pluck('id')
+        expect(ids).to contain_exactly(failed_pipeline.id)
+      end
+    end
+
+    context 'when filtering by ref' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, ref: 'feature' } }
+      end
+
+      it 'returns only pipelines matching the ref' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        ids = json_response['result']['structuredContent']['items'].pluck('id')
+        expect(ids).to contain_exactly(failed_pipeline.id, running_pipeline.id)
+      end
+    end
+
+    context 'when filtering by source' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, source: 'web' } }
+      end
+
+      it 'returns only pipelines matching the source' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        ids = json_response['result']['structuredContent']['items'].pluck('id')
+        expect(ids).to contain_exactly(failed_pipeline.id)
+      end
+    end
+
+    context 'when filtering by created_after and created_before' do
+      let_it_be(:old_pipeline) do
+        create(:ci_pipeline, project: project, ref: 'master', created_at: 3.days.ago)
+      end
+
+      let(:tool_params) do
+        {
+          name: 'list_pipelines',
+          arguments: {
+            id: project.full_path,
+            created_after: 2.days.ago.iso8601,
+            created_before: 1.second.from_now.iso8601
+          }
+        }
+      end
+
+      it 'returns only pipelines created within the given range' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        ids = json_response['result']['structuredContent']['items'].pluck('id')
+        expect(ids).to contain_exactly(
+          success_pipeline.id, failed_pipeline.id, canceled_pipeline.id, running_pipeline.id
+        )
+      end
+
+      context 'with a tight created_before upper bound' do
+        let(:tool_params) do
+          { name: 'list_pipelines', arguments: { id: project.full_path, created_before: 2.days.ago.iso8601 } }
+        end
+
+        it 'returns only pipelines created before the given time' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          ids = json_response['result']['structuredContent']['items'].pluck('id')
+          expect(ids).to contain_exactly(old_pipeline.id)
+        end
+      end
+    end
+
+    context 'when sorting by order_by and sort' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, order_by: 'id', sort: 'asc' } }
+      end
+
+      it 'returns pipelines ordered accordingly' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        ids = json_response['result']['structuredContent']['items'].pluck('id')
+        expect(ids).to eq(
+          [success_pipeline.id, failed_pipeline.id, canceled_pipeline.id, running_pipeline.id].sort
+        )
+      end
+
+      context 'with a non-default order_by column' do
+        let(:tool_params) do
+          { name: 'list_pipelines', arguments: { id: project.full_path, order_by: 'status', sort: 'asc' } }
+        end
+
+        it 'orders by the given column instead of the default' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          ids = json_response['result']['structuredContent']['items'].pluck('id')
+          expect(ids).to eq(
+            [canceled_pipeline.id, failed_pipeline.id, running_pipeline.id, success_pipeline.id]
+          )
+        end
+      end
+    end
+
+    context 'when combining ref and status filters' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, ref: 'feature', status: 'running' } }
+      end
+
+      it 'returns only pipelines matching every filter' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        ids = json_response['result']['structuredContent']['items'].pluck('id')
+        expect(ids).to contain_exactly(running_pipeline.id)
+      end
+    end
+
+    context 'when no pipeline matches the filters' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, ref: 'does-not-exist' } }
+      end
+
+      it 'returns an empty list' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items']).to eq([])
+      end
+    end
+
+    context 'with pagination' do
+      let(:tool_params) do
+        { name: 'list_pipelines', arguments: { id: project.full_path, per_page: 2, page: 1 } }
+      end
+
+      it 'returns the requested page size' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['items'].size).to eq(2)
+      end
+
+      it 'returns a different page of pipelines for page 2', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+        first_page_ids = json_response['result']['structuredContent']['items'].pluck('id')
+
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.deep_merge(params: { arguments: { page: 2 } })
+        second_page_ids = json_response['result']['structuredContent']['items'].pluck('id')
+
+        all_ids = [success_pipeline.id, failed_pipeline.id, canceled_pipeline.id, running_pipeline.id]
+        expect(first_page_ids.size).to eq(2)
+        expect(second_page_ids.size).to eq(2)
+        expect(first_page_ids + second_page_ids).to match_array(all_ids)
+      end
+    end
+
+    context 'when caller does not have permission to read pipelines' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not found error' do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('404 Project Not Found')
+      end
+    end
+  end
+
+  describe '#add_branch' do
+    let(:tool_params) do
+      { name: 'add_branch', arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }
+    end
+
+    it 'creates the branch', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']['branch']['name']).to eq('my-feature')
+      expect(project.repository.branch_exists?('my-feature')).to be true
+    end
+
+    context 'when called as the create_branch alias' do
+      let(:tool_params) do
+        {
+          name: 'create_branch',
+          arguments: { project_id: project.full_path, branch: 'another-feature', ref: 'master' }
+        }
+      end
+
+      it 'creates the branch' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(project.repository.branch_exists?('another-feature')).to be true
+      end
+    end
+
+    context 'when called with a url instead of project_id' do
+      let(:tool_params) do
+        {
+          name: 'add_branch',
+          arguments: {
+            url: "https://gitlab.example.com/#{project.full_path}", branch: 'feature-via-url', ref: 'master'
+          }
+        }
+      end
+
+      it 'creates the branch' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(project.repository.branch_exists?('feature-via-url')).to be true
+      end
+    end
+
+    context 'when the ref does not exist' do
+      let(:tool_params) do
+        { name: 'add_branch',
+          arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'does-not-exist' } }
+      end
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+      end
+    end
+  end
+
+  # Facet, filter, and pagination behaviour is covered in the tool spec. These examples only cover
+  # what the tool spec cannot: that arguments survive the JSON-RPC round trip and that the endpoint
+  # enforces access.
+  describe '#get_pipeline' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :success, source: :push) }
+    let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline, name: 'rspec') }
+
+    let(:arguments) { { id: project.full_path, pipeline_id: pipeline.id } }
+    let(:tool_params) { { name: 'get_pipeline', arguments: arguments } }
+
+    it 'returns success response' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']).to include(
+        'id' => pipeline.id, 'status' => 'success', 'ref' => 'master'
+      )
+    end
+
+    context 'with an include facet and a filter' do
+      let(:arguments) { super().merge(include: ['jobs'], job_status: 'failed') }
+
+      it 'returns the filtered facet' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['jobs'].pluck('id')).to contain_exactly(build.id)
+      end
+    end
+
+    context 'when caller does not have permission to read the pipeline' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not-found error' do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('Project not found')
       end
     end
   end

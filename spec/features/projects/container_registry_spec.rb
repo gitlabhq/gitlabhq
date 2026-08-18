@@ -94,6 +94,8 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
       it 'user removes entire container repository' do
         visit_container_registry
 
+        expect(page).to have_content 'my/image'
+
         expect_any_instance_of(ContainerRepository).to receive(:delete_scheduled!).and_call_original
 
         find('[title="Remove repository"]').click
@@ -193,7 +195,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     context 'when there are more than 20 images' do
       before do
         project.container_repositories << container_repository
-        create_list(:container_repository, 22, project: project)
+        create_list(:container_repository, 20, project: project)
 
         visit_container_registry
       end
@@ -210,7 +212,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     context 'when there are more than 10 images' do
       before do
         project.container_repositories << container_repository
-        create_list(:container_repository, 12, project: project)
+        create_list(:container_repository, 10, project: project)
 
         visit_container_registry
       end
@@ -225,11 +227,12 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
 
   def visit_container_registry_details(name)
     visit_container_registry
+    expect(page).to have_link name
     click_link name
   end
 
   def visit_next_page
-    pagination = find '.gl-keyset-pagination'
-    pagination.click_button 'Next'
+    expect(page).to have_button 'Next'
+    click_button 'Next'
   end
 end

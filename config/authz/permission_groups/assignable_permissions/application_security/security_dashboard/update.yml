@@ -1,0 +1,9 @@
+---
+name: update_security_dashboard
+description: Grants the ability to add and remove projects from the security dashboard
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_security_dashboard

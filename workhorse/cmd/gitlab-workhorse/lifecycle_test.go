@@ -13,6 +13,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/goleak"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
@@ -72,6 +73,17 @@ func TestStartServerServesEveryListener(t *testing.T) {
 // a request, and then shuts down gracefully when a signal is delivered.
 func TestServeAndWaitServesThenShutsDown(t *testing.T) {
 	testhelper.ConfigureSecret()
+	goleakOptions := append(testhelper.GoleakOptions(),
+		goleak.IgnoreCurrent(),
+		// Other tests in this package keep cached Gitaly/Orbit gRPC
+		// connections open until TestMain teardown; ignore their reconnect
+		// goroutines so this check stays scoped to serveAndWait.
+		goleak.IgnoreTopFunction("google.golang.org/grpc.(*addrConn).resetTransportAndUnlock"),
+		goleak.IgnoreTopFunction("google.golang.org/grpc.(*addrConn).connect"),
+	)
+	t.Cleanup(func() {
+		goleak.VerifyNone(t, goleakOptions...)
+	})
 
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)

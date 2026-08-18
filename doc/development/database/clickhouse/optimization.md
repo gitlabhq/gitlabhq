@@ -9,7 +9,7 @@ ClickHouse Inc has listed a [variety of optimization strategies](https://clickho
 
 ClickHouse relies heavily on the structure of the primary index. However, in some cases, it's possible that queries rely on a column that's part of the primary index, but isn't the first column. See [Using multiple primary indexes](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-multiple) which offers several options in such cases. For example: using a data skipping index as a secondary index.
 
-In cases of compound primary indexes, it's helpful to understand the data characteristics of key columns is also very helpful. They can allow the index to be more efficient. [Ordering key columns efficiently](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-cardinality) goes into details on these concepts.
+In cases of compound primary indexes, understanding the data characteristics of key columns is also very helpful. They can allow the index to be more efficient. [Ordering key columns efficiently](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-cardinality) goes into details on these concepts.
 
 ClickHouse blog also has a very good post, [Super charging your ClickHouse queries](https://clickhouse.com/blog/clickhouse-faster-queries-with-projections-and-primary-indexes), that outlines almost all of the approaches listed above.
 

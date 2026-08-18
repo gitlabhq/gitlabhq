@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_roadmap
+description: Enables Vue 3 in compatibility mode for the group roadmap page
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23003
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247789
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607483
+milestone: '19.3'
+group: group::portfolio planning
+type: beta
+default_enabled: false

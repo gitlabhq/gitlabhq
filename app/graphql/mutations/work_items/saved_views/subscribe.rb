@@ -6,7 +6,7 @@ module Mutations
       class Subscribe < BaseMutation
         graphql_name 'WorkItemSavedViewSubscribe'
 
-        authorize :read_saved_view
+        authorize :subscribe_saved_view
 
         description "Subscribes the current user to a saved view."
 

@@ -7,9 +7,9 @@ module Mutations
         graphql_name 'UpdateTerraformStateProtectionRule'
         description 'Updates a protection rule for a Terraform state backend.'
 
-        authorize :admin_terraform_state
-        authorize_granular_token permissions: :update_terraform_state, boundary_argument: :id, boundary: :project,
-          boundary_type: :project
+        authorize :update_terraform_state_protection_rule
+        authorize_granular_token permissions: :update_terraform_state_protection_rule, boundary_argument: :id,
+          boundary: :project, boundary_type: :project
 
         argument :id,
           ::Types::GlobalIDType[::Terraform::StateProtectionRule],

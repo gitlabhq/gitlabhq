@@ -27,6 +27,8 @@ module Mutations
           description: 'IDs of excluded groups.'
 
         authorize :admin_all_resources
+        authorize_granular_token permissions: :delete_integration_exclusion, boundary: :instance,
+          boundary_type: :instance
 
         def resolve(integration_name:, project_ids: [], group_ids: [])
           authorize!(:global)

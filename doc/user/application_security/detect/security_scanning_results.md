@@ -32,8 +32,11 @@ Key terminology for understanding security scan results:
 Finding
 : A finding is a potential vulnerability identified in a development branch. A finding becomes a
   vulnerability when the branch is merged into the default branch.
-: Findings expire, either when the related CI/CD job artifact expires, or 90 days after the
-  pipeline is created, even if the related job artifacts are locked.
+: Findings expire either when the related CI/CD job artifact expires, or a set period after the
+  pipeline is created, even if the related job artifacts are locked. The period is 30 days on
+  GitLab.com. On GitLab Self-Managed and GitLab Dedicated, the default is 90 days. An
+  administrator can [change the retention period](../../../administration/settings/security_and_compliance.md#security-scan-retention-period)
+  to a value from 7 to 90 days.
 
 Vulnerability
 : A vulnerability is a software security weakness identified in the default branch.
@@ -54,8 +57,10 @@ are included in pipeline security reports and merge request reports.
 In a development (non-default) branch, findings include any vulnerabilities present in the target
 branch when the development branch was created.
 
-Findings expire either when the related CI/CD job artifact expires, or 90 days after the
-pipeline is created, even if the related job artifacts are locked.
+Findings expire either when the related CI/CD job artifact expires, or a set period after the
+pipeline is created, even if the related job artifacts are locked. The period is 30 days on
+GitLab.com. On GitLab Self-Managed and GitLab Dedicated, the default is 90 days, and an
+administrator can change the retention period to a value from 7 to 90 days.
 Expired findings are not shown in the pipeline's **Security** tab. To reproduce them, re-run the pipeline.
 
 ### Download a security report
@@ -93,16 +98,18 @@ The selected security report is downloaded to your device.
 
 {{< /details >}}
 
-The pipeline security report contains details of all findings or vulnerabilities detected in the
-branch. For a pipeline run against the default branch, all vulnerabilities in the pipeline security
-report are also in the vulnerability report.
+The pipeline security report contains details of all findings or vulnerabilities detected by that
+pipeline run. Results reflect the state of the branch at the commit the pipeline ran against, so
+different pipelines on the same branch can show different results. For a pipeline run against the
+default branch, all vulnerabilities in the pipeline security report are also in the vulnerability
+report.
 
-![List of findings in the branch](img/pipeline_security_report_v18_1.png)
+![List of findings detected by a pipeline run](img/pipeline_security_report_v18_1.png)
 
 ### View pipeline security report
 
-View the pipeline security report to see details of all findings or vulnerabilities detected in the
-branch.
+View the pipeline security report to see details of all findings or vulnerabilities detected by a
+pipeline run.
 
 Prerequisites:
 

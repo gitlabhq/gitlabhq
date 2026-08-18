@@ -3,14 +3,6 @@
 module NavHelper
   extend self
 
-  def header_links
-    @header_links ||= get_header_links
-  end
-
-  def header_link?(link)
-    header_links.include?(link)
-  end
-
   def page_with_sidebar_class
     class_name = page_gutter_class
 
@@ -57,32 +49,6 @@ module NavHelper
   end
 
   private
-
-  def get_header_links
-    links = if current_user
-              [:user_dropdown]
-            else
-              [:sign_in]
-            end
-
-    if can?(current_user, :read_cross_project)
-      links += [:issues, :merge_requests, :todos] if current_user.present?
-    end
-
-    if @project&.persisted? || can?(current_user, :read_cross_project)
-      links << :search
-    end
-
-    if session[:impersonator_id]
-      links << :admin_impersonation
-    end
-
-    if Gitlab::CurrentSettings.admin_mode && current_user_mode.admin_mode?
-      links << :admin_mode
-    end
-
-    links
-  end
 
   def merge_request_sidebar?
     current_controller?('merge_requests')

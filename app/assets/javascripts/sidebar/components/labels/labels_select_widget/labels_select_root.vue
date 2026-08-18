@@ -11,6 +11,7 @@ import {
   TYPE_TEST_CASE,
 } from '~/issues/constants';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { issuableLabelsQueries } from '../../../queries/constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
@@ -41,6 +42,7 @@ export default {
     GlDisclosureDropdown,
     GlLoadingIcon,
   },
+  mixins: [glSlotsMixin],
   inject: {
     allowLabelEdit: {
       default: false,
@@ -144,7 +146,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['onLabelRemove', 'toggleCollapse', 'updateSelectedLabels'],
+  emits: ['label-removed', 'toggle-collapse', 'update-selected-labels'],
   data() {
     return {
       issuable: null,
@@ -242,7 +244,7 @@ export default {
               id,
               labels: { nodes },
             } = issuableLabelsUpdated;
-            this.$emit('updateSelectedLabels', { id, labels: nodes });
+            this.$emit('update-selected-labels', { id, labels: nodes });
           }
         },
       },
@@ -290,7 +292,7 @@ export default {
       this.oldIid = null;
     },
     onCollapsedValueClick() {
-      this.$emit('toggleCollapse');
+      this.$emit('toggle-collapse');
       this.$nextTick(() => this.$refs.listbox?.open());
     },
     onSearch(value) {
@@ -317,7 +319,7 @@ export default {
       if (this.iid !== '') {
         this.updateSelectedLabels(this.getUpdateVariables(labels));
       } else {
-        this.$emit('updateSelectedLabels', { labels });
+        this.$emit('update-selected-labels', { labels });
       }
     },
     getUpdateVariables(labels) {
@@ -365,7 +367,7 @@ export default {
             throw new Error();
           }
 
-          this.$emit('updateSelectedLabels', {
+          this.$emit('update-selected-labels', {
             id: data.updateIssuableLabels?.issuable?.id,
             labels: data.updateIssuableLabels?.issuable?.labels?.nodes,
           });
@@ -415,7 +417,7 @@ export default {
         this.updateSelectedLabels(this.getRemoveVariables(labelId));
       }
 
-      this.$emit('onLabelRemove', labelId);
+      this.$emit('label-removed', labelId);
     },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
@@ -532,10 +534,10 @@ export default {
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-filter-param="labelsFilterParam"
         class="gl-pt-2"
-        @onCollapsedValueClick="onCollapsedValueClick"
-        @onLabelRemove="handleLabelRemove"
+        @on-collapsed-value-click="onCollapsedValueClick"
+        @label-removed="handleLabelRemove"
       >
-        <slot></slot>
+        <template v-if="glSlots().default" #default><slot></slot></template>
       </dropdown-value>
     </template>
     <template v-else>
@@ -554,7 +556,7 @@ export default {
         :workspace-type="workspaceType"
         :attr-workspace-path="attrWorkspacePath"
         :label-create-type="labelCreateType"
-        @setLabels="handleDropdownClose"
+        @set-labels="handleDropdownClose"
       />
       <embedded-labels-list
         v-if="isLabelListEnabled"
@@ -564,7 +566,7 @@ export default {
         :supports-lock-on-merge="isLockOnMergeSupported"
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-filter-param="labelsFilterParam"
-        @onLabelRemove="handleLabelRemove"
+        @label-removed="handleLabelRemove"
       />
     </template>
   </div>

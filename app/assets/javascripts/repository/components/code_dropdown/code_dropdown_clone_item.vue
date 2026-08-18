@@ -4,14 +4,12 @@ import {
   GlDisclosureDropdownItem,
   GlFormGroup,
   GlFormInputGroup,
-  GlToast,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
-import Vue from 'vue';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 
-Vue.use(GlToast);
 export default {
   name: 'CodeDropdownCloneItem',
   components: {
@@ -23,7 +21,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   props: {
     label: {
       type: String,

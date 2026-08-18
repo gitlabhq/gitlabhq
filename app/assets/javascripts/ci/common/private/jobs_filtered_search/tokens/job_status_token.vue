@@ -1,6 +1,7 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'JobStatusToken',
@@ -9,6 +10,7 @@ export default {
     GlFilteredSearchSuggestion,
     GlIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -98,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners">
+  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="glListeners()">
     <template #view>
       <div class="gl-flex gl-items-center">
         <div :class="findActiveStatus.class">

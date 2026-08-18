@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting a detailed sentry error', feature_category: :observability do
   include GraphqlHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:project_setting) { create(:project_error_tracking_setting, project: project) }
   let_it_be(:current_user) { project.first_owner }
   let_it_be_with_reload(:sentry_detailed_error) { build(:error_tracking_sentry_detailed_error) }

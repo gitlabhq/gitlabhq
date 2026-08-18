@@ -190,7 +190,7 @@ export default class SequentialCursorPaginator {
         // If we're continuing within this resource, use cached cursor
         // otherwise set to null to get first page of this resource
         const continuing = resourceIndex === this.resourceStartIndex;
-        const cursor = continuing ? resource.cachedPageInfo?.endCursor ?? null : null;
+        const cursor = continuing ? (resource.cachedPageInfo?.endCursor ?? null) : null;
 
         const paginationVariables = buildPaginationVariables({
           resource,
@@ -252,7 +252,7 @@ export default class SequentialCursorPaginator {
         // If we're continuing within this resource, use cached cursor
         // otherwise set to null to get last page of this resource
         const continuing = resourceIndex === this.resourceEndIndex;
-        const cursor = continuing ? resource.cachedPageInfo?.startCursor ?? null : null;
+        const cursor = continuing ? (resource.cachedPageInfo?.startCursor ?? null) : null;
 
         const paginationVariables = buildPaginationVariables({
           resource,

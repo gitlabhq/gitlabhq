@@ -19,7 +19,6 @@ RSpec.describe 'Dashboard Archived Project', :js, :with_current_organization, fe
     sign_in(user)
 
     visit member_dashboard_projects_path
-    wait_for_requests
   end
 
   it 'renders non archived projects' do

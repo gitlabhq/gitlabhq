@@ -14,8 +14,7 @@ module QA
           Page::Project::WebIDE::VSCode.perform(&:wait_for_ide_to_load)
         end
 
-        it 'shows successfully but not able to be committed',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761' do
+        it 'shows successfully but not able to be committed' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_folder(directory_name)
             ide.commit_toggle(directory_name)

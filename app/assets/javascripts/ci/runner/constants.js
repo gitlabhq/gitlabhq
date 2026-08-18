@@ -54,6 +54,9 @@ export const I18N_ALL = __('All');
 export const ONLINE_CONTACT_TIMEOUT_SECS = 2 * 60 * 60; // 2 hours
 export const STALE_TIMEOUT_SECS = 604800; // 7.days
 
+// Lowest maximum job timeout a runner accepts, mirrors the Ci::Runner model validation
+export const RUNNER_MAX_TIMEOUT_MIN_SECS = 600;
+
 // Registration dropdown
 export const I18N_REGISTER_INSTANCE_TYPE = s__('Runners|Register an instance runner');
 export const I18N_REGISTER_GROUP_TYPE = s__('Runners|Register a group runner');

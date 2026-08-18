@@ -18,10 +18,31 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
         idempotency_key: anything)
         .to receive(:execute).and_return(response)
       expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-      expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+      expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+      expect(subject).to receive(:log_hash_metadata_on_done)
+        .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
       expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
       subject.perform(project_hook.id, data, hook_name)
+    end
+
+    context 'when WebHookService returns an error response with an error type' do
+      let(:response) do
+        ServiceResponse.error(message: 'boom', payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'Net::OpenTimeout' })
+      end
+
+      it 'logs the error type metadata' do
+        expect_next(WebHookService, project_hook, data.with_indifferent_access, hook_name, anything,
+          idempotency_key: anything)
+          .to receive(:execute).and_return(response)
+        expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
+        expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+        expect(subject).to receive(:log_hash_metadata_on_done)
+          .with({ Labkit::Fields::ERROR_TYPE.to_sym => 'Net::OpenTimeout' })
+        expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
+
+        subject.perform(project_hook.id, data, hook_name)
+      end
     end
 
     context 'when the hook has a signing token' do
@@ -32,7 +53,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
           idempotency_key: anything)
           .to receive(:execute).and_return(response)
         expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-        expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+        expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+        expect(subject).to receive(:log_hash_metadata_on_done)
+          .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
         expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, true)
 
         subject.perform(project_hook.id, data, hook_name)
@@ -51,7 +74,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
         idempotency_key: anything)
         .to receive(:execute).and_return(response)
       expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-      expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+      expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+      expect(subject).to receive(:log_hash_metadata_on_done)
+        .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
       expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
       expect { subject.perform(project_hook.id, data, hook_name, params) }
@@ -91,7 +116,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
           idempotency_key: anything)
           .to receive(:execute).and_return(response)
         expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-        expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+        expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+        expect(subject).to receive(:log_hash_metadata_on_done)
+          .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
         expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
         subject.perform(project_hook.id, args, hook_name)
@@ -107,7 +134,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
             idempotency_key: anything)
             .to receive(:execute).and_return(response)
           expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+          expect(subject).to receive(:log_hash_metadata_on_done)
+            .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
           expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
           subject.perform(project_hook.id, args, hook_name)
@@ -124,7 +153,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
             idempotency_key: anything)
             .to receive(:execute).and_return(response)
           expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+          expect(subject).to receive(:log_hash_metadata_on_done)
+            .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
           expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
           subject.perform(project_hook.id, args, hook_name)
@@ -140,7 +171,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
             idempotency_key: anything)
             .to receive(:execute).and_return(response)
           expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+          expect(subject).to receive(:log_hash_metadata_on_done)
+            .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
           expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
           subject.perform(project_hook.id, args, hook_name)
@@ -157,7 +190,9 @@ RSpec.describe WebHookWorker, feature_category: :integrations do
             idempotency_key: anything)
             .to receive(:execute).and_return(response)
           expect(subject).to receive(:log_extra_metadata_on_done).with(:response_status, response.status)
-          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response[:http_status])
+          expect(subject).to receive(:log_extra_metadata_on_done).with(:http_status, response.payload[:http_status])
+          expect(subject).to receive(:log_hash_metadata_on_done)
+            .with(response.payload.slice(Labkit::Fields::ERROR_TYPE.to_sym))
           expect(subject).to receive(:log_extra_metadata_on_done).with(:signing_token_present, false)
 
           subject.perform(project_hook.id, args, hook_name)

@@ -166,7 +166,7 @@
       color: var(--gl-text-color-default);
     }
 
-    &:hover, &:focus, &:focus-within {
+    &:hover, &:focus-visible, &:focus-within {
       .wiki-list-create-child-button {
         display: inline-flex;
       }
@@ -318,6 +318,11 @@ ul.wiki-pages-list.content-list {
     max-height: none;
   }
 
+  .md-area:hover,
+  .md-area:focus-within {
+    @apply gl-shadow-none;
+  }
+
   .flexible-input-container {
     @apply gl-w-full;
   }
@@ -328,6 +333,7 @@ ul.wiki-pages-list.content-list {
       field-sizing: content;
       overflow-wrap: break-word;
       max-width: 100%;
+      @apply gl-overflow-auto;
     }
 
     .flexible-input-container {
@@ -397,6 +403,58 @@ ul.wiki-pages-list.content-list {
 
   .container-limited.limit-container-width {
     max-width: 100%;
+  }
+
+  // Table print overrides. Each table is zoomed to fit the page width, and
+  // these rules stop the containers from re-clipping the scaled content. The
+  // `data-print-scale-*` attributes are set at render time, and the scale
+  // factor is measured at `beforeprint` – see wikis/utils/print_table_scale.js.
+  //
+  // These live under `.md` (and name the `table` element) deliberately: they
+  // must override the Markdown table defaults in framework/typography.scss,
+  // so we match their specificity.
+  .md {
+    // The scale factor has to be measured on screen (at `beforeprint`), but
+    // must only take effect here, in print, so that hitting print leaves the
+    // screen layout alone. See wikis/utils/print_table_scale.js.
+    [data-print-scale-target] {
+      zoom: var(--print-table-scale, 1);
+    }
+
+    [data-print-scale-container] {
+      overflow: visible;
+      max-height: none;
+      animation: none;
+    }
+
+    // The rules above leave the container with nothing to scroll, so a sticky
+    // header has nothing to stick to. The browser still offsets it by however
+    // far the container was scrolled on screen, pushing the header down into
+    // the middle of the printed page. Unstick it and let the browser repeat
+    // `<thead>` across page breaks instead.
+    [data-print-scale-container][data-sticky-header] > table:not(.code) {
+      > thead th,
+      > tbody > tr:first-child > th {
+        position: static;
+      }
+    }
+
+    // Regular tables (where the target is its own container) render as
+    // `display: block; overflow-x: auto` on screen; restore `display: table`
+    // in print so the browser can repeat `<thead>` across page breaks, lay out
+    // columns correctly, and stop clipping the scaled table's right edge.
+    table[data-print-scale-target][data-print-scale-container] {
+      display: table;
+      overflow: visible;
+    }
+
+    // The mix-blend-mode trick used by .gl-table-shadow to render shadows in
+    // both light and dark mode relies on a white background layer; in print
+    // that layer can bleed through as an opaque white rectangle. Remove it.
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-table-shadow > table:not(.code) {
+      mix-blend-mode: normal;
+    }
   }
 }
 

@@ -18,7 +18,7 @@ RSpec.describe "Projects::Observability::Setup", feature_category: :observabilit
 
     context 'when feature flag is disabled' do
       before do
-        stub_feature_flags(observability_sass_features: false)
+        stub_feature_flags(observability_saas_features_user_namespace: false)
       end
 
       it 'returns 404' do
@@ -29,7 +29,7 @@ RSpec.describe "Projects::Observability::Setup", feature_category: :observabilit
 
     context 'when feature flag is enabled' do
       before do
-        stub_feature_flags(observability_sass_features: user_namespace)
+        stub_feature_flags(observability_saas_features_user_namespace: user_namespace)
       end
 
       it "returns http success and renders the setup page" do
@@ -39,6 +39,17 @@ RSpec.describe "Projects::Observability::Setup", feature_category: :observabilit
           expect(response).to have_gitlab_http_status(:success)
           expect(response.body).to include('GitLab Observability')
         end
+      end
+
+      it 'tracks the visit_observability_setup_page internal event', :clean_gitlab_redis_shared_state do
+        expect { get_setup_page }
+          .to trigger_internal_events('visit_observability_setup_page')
+          .with(user: user, namespace: user_namespace, additional_properties: { label: 'project' },
+            category: 'Projects::Observability::SetupController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_weekly'
+          )
       end
 
       context 'when project belongs to a group' do

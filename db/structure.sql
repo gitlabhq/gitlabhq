@@ -62,32 +62,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION assign_p_ci_build_tags_id_value() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."id" IS NOT NULL THEN
-  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
-END IF;
-NEW."id" := nextval('p_ci_build_tags_id_seq'::regclass);
-RETURN NEW;
-
-END
-$$;
-
-CREATE FUNCTION assign_p_ci_builds_execution_configs_id_value() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."id" IS NOT NULL THEN
-  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
-END IF;
-NEW."id" := nextval('p_ci_builds_execution_configs_id_seq'::regclass);
-RETURN NEW;
-
-END
-$$;
-
 CREATE FUNCTION assign_p_ci_builds_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -179,6 +153,19 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION assign_p_duo_workflows_checkpoint_headers_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('p_duo_workflows_checkpoint_headers_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_p_duo_workflows_checkpoints_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -227,28 +214,6 @@ BEGIN
     INTO NEW."organization_id", NEW."namespace_id", NEW."project_id"
     FROM "bulk_import_trackers"
     WHERE "bulk_import_trackers"."id" = NEW."tracker_id";
-  END IF;
-
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION bulk_import_exports_sharding_key() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF NEW."organization_id" IS NULL THEN
-    IF NEW."project_id" IS NOT NULL THEN
-      SELECT "organization_id"
-      INTO NEW."organization_id"
-      FROM "projects"
-      WHERE "projects"."id" = NEW."project_id";
-    ELSIF NEW."group_id" IS NOT NULL THEN
-      SELECT "organization_id"
-      INTO NEW."organization_id"
-      FROM "namespaces"
-      WHERE "namespaces"."id" = NEW."group_id";
-    END IF;
   END IF;
 
   RETURN NEW;
@@ -929,27 +894,116 @@ $$;
 
 CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
+    AS $_$
+DECLARE
+  targets JSONB := CASE WHEN TG_NARGS > 0 THEN TG_ARGV[0]::jsonb ELSE '[]'::jsonb END;
+  tracked_table_identifier TEXT := TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME;
+  target_table      TEXT;
+  target_column     TEXT;
+  source_column     TEXT;
+  cell_local_filter TEXT;
 BEGIN
-  INSERT INTO loose_foreign_keys_deleted_records
-  (fully_qualified_table_name, primary_key_value)
-  SELECT TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table;
+  -- Cell local: no routing targets configured
+  IF jsonb_array_length(targets) = 0 THEN
+    INSERT INTO loose_foreign_keys_deleted_records
+    (fully_qualified_table_name, primary_key_value)
+    SELECT tracked_table_identifier, old_table.id
+    FROM old_table;
+
+    RETURN NULL;
+  END IF;
+
+  -- Route every row to each target it carries a sharding key value for
+  FOR target_table, target_column, source_column IN
+    SELECT value ->> 'table', value ->> 'column', value ->> 'source'
+    FROM jsonb_array_elements(targets)
+  LOOP
+    EXECUTE format(
+      'INSERT INTO %I (fully_qualified_table_name, primary_key_value, %I)
+       SELECT $1, old_table.id, old_table.%I
+       FROM old_table
+       WHERE old_table.%I IS NOT NULL',
+       target_table, target_column, source_column, source_column
+     )
+    USING tracked_table_identifier;
+  END LOOP;
+
+  -- Rows carrying no sharding key value at all stay cell local. This filter is the exact
+  -- complement of the loop's, so every deleted row lands in one branch or the other
+  SELECT string_agg(format('old_table.%I IS NULL', value ->> 'source'), ' AND ')
+  INTO cell_local_filter
+  FROM jsonb_array_elements(targets);
+
+  EXECUTE format(
+    'INSERT INTO loose_foreign_keys_deleted_records
+     (fully_qualified_table_name, primary_key_value)
+     SELECT $1, old_table.id
+     FROM old_table
+     WHERE %s',
+     cell_local_filter
+   )
+  USING tracked_table_identifier;
 
   RETURN NULL;
 END
-$$;
+$_$;
 
 CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
+    AS $_$
+DECLARE
+  parent_table_name TEXT := TG_ARGV[0];
+  targets JSONB := CASE WHEN TG_NARGS > 1 THEN TG_ARGV[1]::jsonb ELSE '[]'::jsonb END;
+  tracked_table_identifier TEXT := current_schema() || '.' || parent_table_name;
+  target_table      TEXT;
+  target_column     TEXT;
+  source_column     TEXT;
+  cell_local_filter TEXT;
 BEGIN
-  INSERT INTO loose_foreign_keys_deleted_records
-  (fully_qualified_table_name, primary_key_value)
-  SELECT current_schema() || '.' || TG_ARGV[0], old_table.id FROM old_table;
+  -- Cell local: no routing targets configured
+  IF jsonb_array_length(targets) = 0 THEN
+    INSERT INTO loose_foreign_keys_deleted_records
+    (fully_qualified_table_name, primary_key_value)
+    SELECT tracked_table_identifier, old_table.id
+    FROM old_table;
+
+    RETURN NULL;
+  END IF;
+
+  -- Route every row to each target it carries a sharding key value for
+  FOR target_table, target_column, source_column IN
+    SELECT value ->> 'table', value ->> 'column', value ->> 'source'
+    FROM jsonb_array_elements(targets)
+  LOOP
+    EXECUTE format(
+      'INSERT INTO %I (fully_qualified_table_name, primary_key_value, %I)
+       SELECT $1, old_table.id, old_table.%I
+       FROM old_table
+       WHERE old_table.%I IS NOT NULL',
+       target_table, target_column, source_column, source_column
+     )
+    USING tracked_table_identifier;
+  END LOOP;
+
+  -- Rows carrying no sharding key value at all stay cell local. This filter is the exact
+  -- complement of the loop's, so every deleted row lands in one branch or the other
+  SELECT string_agg(format('old_table.%I IS NULL', value ->> 'source'), ' AND ')
+  INTO cell_local_filter
+  FROM jsonb_array_elements(targets);
+
+  EXECUTE format(
+    'INSERT INTO loose_foreign_keys_deleted_records
+     (fully_qualified_table_name, primary_key_value)
+     SELECT $1, old_table.id
+     FROM old_table
+     WHERE %s',
+     cell_local_filter
+   )
+  USING tracked_table_identifier;
 
   RETURN NULL;
 END
-$$;
+$_$;
 
 CREATE FUNCTION insert_namespaces_sync_event() RETURNS trigger
     LANGUAGE plpgsql
@@ -1433,8 +1487,21 @@ IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
   RETURN NEW;
 
 ELSIF (TG_OP = 'DELETE') THEN
+  WITH remaining AS (
+    SELECT project_id, user_id, MIN(access_level)::smallint AS access_level
+    FROM project_authorizations
+    WHERE project_id = OLD.project_id AND user_id = OLD.user_id
+    GROUP BY project_id, user_id
+  ), upsert AS (
+    INSERT INTO project_authorizations_for_migration (project_id, user_id, access_level)
+    SELECT project_id, user_id, access_level
+    FROM remaining
+    ON CONFLICT (project_id, user_id) DO UPDATE
+      SET access_level = EXCLUDED.access_level
+  )
   DELETE FROM project_authorizations_for_migration
-  WHERE project_id = OLD.project_id AND user_id = OLD.user_id;
+  WHERE project_id = OLD.project_id AND user_id = OLD.user_id
+    AND NOT EXISTS (SELECT 1 FROM remaining);
   RETURN OLD;
 END IF;
 
@@ -1509,6 +1576,7 @@ BEGIN
 INSERT INTO work_item_positions (
   work_item_id,
   namespace_id,
+  relative_positioning_namespace_id,
   relative_position,
   created_at,
   updated_at
@@ -1516,6 +1584,15 @@ INSERT INTO work_item_positions (
 VALUES (
   NEW.id,
   NEW.namespace_id,
+  (
+    SELECT CASE
+      WHEN p.type = 'User' OR p.type IS NULL THEN n.id
+      ELSE COALESCE(n.traversal_ids[1], n.id)
+    END
+    FROM namespaces n
+    LEFT JOIN namespaces p ON p.id = n.parent_id
+    WHERE n.id = NEW.namespace_id
+  ),
   NEW.relative_position,
   NOW(),
   NOW()
@@ -1524,6 +1601,7 @@ ON CONFLICT (work_item_id)
 DO UPDATE SET
   relative_position = EXCLUDED.relative_position,
   namespace_id = EXCLUDED.namespace_id,
+  relative_positioning_namespace_id = EXCLUDED.relative_positioning_namespace_id,
   updated_at = NOW();
 RETURN NULL;
 
@@ -2549,9 +2627,10 @@ CREATE FUNCTION trigger_2cb7e7147818() RETURNS trigger
     AS $$
 BEGIN
 IF NEW."namespace_id" IS NULL THEN
-  SELECT "namespace_id"
+  SELECT COALESCE("notes"."namespace_id", "projects"."project_namespace_id")
   INTO NEW."namespace_id"
   FROM "notes"
+  LEFT JOIN "projects" ON "projects"."id" = "notes"."project_id"
   WHERE "notes"."id" = NEW."note_id";
 END IF;
 
@@ -6315,7 +6394,6 @@ CREATE TABLE p_ci_builds (
     started_at timestamp without time zone,
     coverage double precision,
     name character varying,
-    options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage_idx integer,
     tag boolean,
@@ -6327,7 +6405,6 @@ CREATE TABLE p_ci_builds (
     artifacts_expire_at timestamp without time zone,
     environment character varying,
     "when" character varying,
-    yaml_variables text,
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
@@ -6351,7 +6428,6 @@ CREATE TABLE p_ci_builds (
     runner_id bigint,
     upstream_pipeline_id bigint,
     user_id bigint,
-    execution_config_id bigint,
     upstream_pipeline_partition_id bigint,
     scoped_user_id bigint,
     timeout integer,
@@ -6451,6 +6527,17 @@ CREATE TABLE p_ci_job_messages (
     severity smallint DEFAULT 0 NOT NULL,
     content text,
     CONSTRAINT check_6b838ff738 CHECK ((char_length(content) <= 10000))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_job_runtime_environments (
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    runtime_environment_id bigint,
+    runner_machine_id bigint,
+    project_id bigint NOT NULL,
+    suspend_on_success boolean DEFAULT false NOT NULL,
+    suspend_on_failure boolean DEFAULT false NOT NULL
 )
 PARTITION BY LIST (partition_id);
 
@@ -6880,6 +6967,27 @@ CREATE TABLE p_duo_workflows_checkpoint_blobs (
 )
 PARTITION BY RANGE (workflow_created_at);
 
+CREATE TABLE p_duo_workflows_checkpoint_headers (
+    id bigint NOT NULL,
+    workflow_id bigint NOT NULL,
+    project_id bigint,
+    namespace_id bigint,
+    workflow_created_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    current_thread integer DEFAULT 0 NOT NULL,
+    checkpoint jsonb NOT NULL,
+    metadata jsonb NOT NULL,
+    thread_ts text NOT NULL,
+    parent_ts text,
+    checkpoint_ns text,
+    CONSTRAINT check_71babcae59 CHECK ((char_length(thread_ts) <= 255)),
+    CONSTRAINT check_8fe91401d3 CHECK ((char_length(parent_ts) <= 255)),
+    CONSTRAINT check_duo_wf_checkpoint_headers_checkpoint_ns_limit CHECK ((char_length(checkpoint_ns) <= 4096)),
+    CONSTRAINT check_duo_wf_checkpoint_headers_sharding_key CHECK ((num_nonnulls(namespace_id, project_id) = 1))
+)
+PARTITION BY RANGE (workflow_created_at);
+
 CREATE TABLE p_duo_workflows_checkpoints (
     id bigint NOT NULL,
     workflow_id bigint NOT NULL,
@@ -6893,8 +7001,10 @@ CREATE TABLE p_duo_workflows_checkpoints (
     metadata jsonb NOT NULL,
     ui_chat_log jsonb,
     current_thread integer DEFAULT 0 NOT NULL,
+    checkpoint_ns text,
     CONSTRAINT check_70d1d05b50 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
     CONSTRAINT check_b55c120f3f CHECK ((char_length(thread_ts) <= 255)),
+    CONSTRAINT check_duo_wf_checkpoints_checkpoint_ns_limit_4k CHECK ((char_length(checkpoint_ns) <= 4096)),
     CONSTRAINT check_e63817afa6 CHECK ((char_length(parent_ts) <= 255))
 )
 PARTITION BY RANGE (created_at);
@@ -12200,787 +12310,6 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_packages_npm_cache_remo
     CONSTRAINT chk_rails_c878fc3684 CHECK ((octet_length(file_sha1) = 20))
 );
 
-CREATE TABLE work_item_descriptions (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-)
-PARTITION BY HASH (namespace_id);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_00 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_01 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_02 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_03 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_04 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_05 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_06 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_07 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_08 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_09 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_10 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_11 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_12 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_13 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_14 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_15 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_16 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_17 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_18 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_19 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_20 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_21 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_22 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_23 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_24 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_25 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_26 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_27 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_28 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_29 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_30 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_31 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_32 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_33 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_34 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_35 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_36 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_37 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_38 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_39 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_40 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_41 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_42 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_43 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_44 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_45 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_46 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_47 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_48 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_49 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_50 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_51 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_52 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_53 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_54 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_55 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_56 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_57 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_58 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_59 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_60 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_61 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_62 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
-CREATE TABLE gitlab_partitions_static.work_item_descriptions_63 (
-    work_item_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    last_edited_by_id bigint,
-    last_edited_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    cached_markdown_version integer,
-    search_vector tsvector,
-    description text,
-    description_html text
-);
-
 CREATE TABLE abuse_events (
     id bigint NOT NULL,
     user_id bigint,
@@ -13497,6 +12826,28 @@ CREATE SEQUENCE ai_active_context_tasks_id_seq
 
 ALTER SEQUENCE ai_active_context_tasks_id_seq OWNED BY ai_active_context_tasks.id;
 
+CREATE TABLE ai_agent_identities (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    revoked_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    agent_type text NOT NULL,
+    machine_fingerprint text NOT NULL,
+    CONSTRAINT check_0dd47fa572 CHECK ((char_length(machine_fingerprint) <= 64)),
+    CONSTRAINT check_4648ea2626 CHECK ((char_length(agent_type) <= 50))
+);
+
+CREATE SEQUENCE ai_agent_identities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_agent_identities_id_seq OWNED BY ai_agent_identities.id;
+
 CREATE SEQUENCE ai_audit_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -13628,6 +12979,25 @@ CREATE SEQUENCE ai_catalog_items_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_catalog_items_id_seq OWNED BY ai_catalog_items.id;
+
+CREATE TABLE ai_catalog_mcp_server_blocks (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    ai_catalog_mcp_server_id bigint NOT NULL,
+    created_by_id bigint
+);
+
+CREATE SEQUENCE ai_catalog_mcp_server_blocks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_mcp_server_blocks_id_seq OWNED BY ai_catalog_mcp_server_blocks.id;
 
 CREATE TABLE ai_catalog_mcp_servers (
     id bigint NOT NULL,
@@ -13768,6 +13138,7 @@ CREATE TABLE ai_flow_triggers (
     filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
+    CONSTRAINT check_ai_flow_triggers_user_consumer_mutually_exclusive CHECK ((num_nonnulls(ai_catalog_item_consumer_id, user_id) <= 1)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
 );
 
@@ -13897,6 +13268,7 @@ CREATE TABLE ai_settings (
     denied_domains text[] DEFAULT '{}'::text[] NOT NULL,
     organization_id bigint,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
+    CONSTRAINT check_6e16f4d23e CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_900d7a89b3 CHECK ((char_length(duo_agent_platform_service_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
@@ -13931,9 +13303,11 @@ CREATE TABLE ai_tool_rules (
     tool_source text,
     tool_arguments jsonb,
     project_id bigint,
+    background_access smallint,
     CONSTRAINT check_72f465d750 CHECK ((char_length(tool_source) <= 255)),
     CONSTRAINT check_d7f656466e CHECK ((char_length(tool_name) <= 255)),
-    CONSTRAINT chk_ai_tool_rules_has_permission CHECK (((web_access IS NOT NULL) OR (local_access IS NOT NULL))),
+    CONSTRAINT chk_ai_tool_rules_background_access_enum CHECK (((background_access IS NULL) OR (background_access = ANY (ARRAY[0, 2])))),
+    CONSTRAINT chk_ai_tool_rules_has_permission CHECK (((web_access IS NOT NULL) OR (local_access IS NOT NULL) OR (background_access IS NOT NULL))),
     CONSTRAINT chk_ai_tool_rules_local_access_enum CHECK (((local_access IS NULL) OR (local_access = ANY (ARRAY[0, 1, 2])))),
     CONSTRAINT chk_ai_tool_rules_web_access_enum CHECK (((web_access IS NULL) OR (web_access = ANY (ARRAY[0, 1, 2]))))
 );
@@ -15145,6 +14519,9 @@ CREATE TABLE application_settings (
     enabled_instance_verbose_ai_logs boolean DEFAULT false NOT NULL,
     duo_agent_platform_service_url text,
     self_hosted_duo_agent_platform_service_secure boolean DEFAULT true NOT NULL,
+    sidekiq_timezone_override text,
+    nats_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    o11y_oauth_application_id bigint,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -15215,6 +14592,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_integrations_is_hash CHECK ((jsonb_typeof(integrations) = 'object'::text)),
     CONSTRAINT check_application_settings_markdown_settings_is_hash CHECK ((jsonb_typeof(markdown_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_mcp_server_settings_is_hash CHECK ((jsonb_typeof(mcp_server_settings) = 'object'::text)),
+    CONSTRAINT check_application_settings_nats_settings_is_hash CHECK ((jsonb_typeof(nats_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_o11y_settings_is_hash CHECK ((jsonb_typeof(observability_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_oauth_settings_is_hash CHECK ((jsonb_typeof(oauth_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_package_registry_is_hash CHECK ((jsonb_typeof(package_registry) = 'object'::text)),
@@ -15238,6 +14616,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e2692d7523 CHECK ((char_length(default_preferred_language) <= 32)),
     CONSTRAINT check_e2dd6e290a CHECK ((char_length(jira_connect_application_key) <= 255)),
+    CONSTRAINT check_e361908ac8 CHECK ((char_length(sidekiq_timezone_override) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
     CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255)),
     CONSTRAINT check_identity_verification_settings_is_hash CHECK ((jsonb_typeof(identity_verification_settings) = 'object'::text)),
@@ -15684,6 +15063,23 @@ CREATE SEQUENCE arkose_sessions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE arkose_sessions_id_seq OWNED BY arkose_sessions.id;
+
+CREATE TABLE artifact_registry_namespace_mappings (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    ar_namespace_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE artifact_registry_namespace_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE artifact_registry_namespace_mappings_id_seq OWNED BY artifact_registry_namespace_mappings.id;
 
 CREATE TABLE ascp_component_dependencies (
     id bigint NOT NULL,
@@ -17024,6 +16420,80 @@ CREATE SEQUENCE burned_project_routes_id_seq
 
 ALTER SEQUENCE burned_project_routes_id_seq OWNED BY burned_project_routes.id;
 
+CREATE TABLE catalog_bundled_resource_components (
+    id bigint NOT NULL,
+    catalog_bundled_resource_id bigint NOT NULL,
+    catalog_bundled_version_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    spec jsonb DEFAULT '{}'::jsonb NOT NULL,
+    file_store smallint DEFAULT 1 NOT NULL,
+    file text,
+    CONSTRAINT check_79dda5d4b6 CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_da609233da CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE catalog_bundled_resource_components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE catalog_bundled_resource_components_id_seq OWNED BY catalog_bundled_resource_components.id;
+
+CREATE TABLE catalog_bundled_resource_versions (
+    id bigint NOT NULL,
+    catalog_bundled_resource_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    released_at timestamp with time zone,
+    semver_major integer NOT NULL,
+    semver_minor integer NOT NULL,
+    semver_patch integer NOT NULL,
+    semver_prefixed boolean DEFAULT false NOT NULL,
+    semver_prerelease text,
+    readme text,
+    readme_html text,
+    CONSTRAINT check_82c917cc60 CHECK ((char_length(semver_prerelease) <= 255))
+);
+
+CREATE SEQUENCE catalog_bundled_resource_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE catalog_bundled_resource_versions_id_seq OWNED BY catalog_bundled_resource_versions.id;
+
+CREATE TABLE catalog_bundled_resources (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    latest_released_at timestamp with time zone,
+    server_fqdn text NOT NULL,
+    full_path text NOT NULL,
+    name text NOT NULL,
+    description text,
+    search_vector tsvector GENERATED ALWAYS AS ((setweight(to_tsvector('english'::regconfig, COALESCE(name, ''::text)), 'A'::"char") || setweight(to_tsvector('english'::regconfig, COALESCE(description, ''::text)), 'B'::"char"))) STORED,
+    CONSTRAINT check_477b124aa9 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_88489344ae CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_a7f7ace410 CHECK ((char_length(server_fqdn) <= 255)),
+    CONSTRAINT check_a878d27127 CHECK ((char_length(full_path) <= 1024)),
+    CONSTRAINT check_catalog_bundled_resources_fqdn_lowercase CHECK ((server_fqdn = lower(server_fqdn))),
+    CONSTRAINT check_catalog_bundled_resources_full_path_lowercase CHECK ((full_path = lower(full_path)))
+);
+
+CREATE SEQUENCE catalog_bundled_resources_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE catalog_bundled_resources_id_seq OWNED BY catalog_bundled_resources.id;
+
 CREATE TABLE catalog_resource_component_last_usages (
     id bigint NOT NULL,
     component_id bigint NOT NULL,
@@ -17184,6 +16654,7 @@ CREATE TABLE cd_applications (
     name text NOT NULL,
     description text,
     organization_id bigint,
+    last_rollout_iid integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_5c9e2dc179 CHECK ((char_length(description) <= 2000)),
     CONSTRAINT check_66e220abb5 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_b0bed301c4 CHECK ((organization_id IS NOT NULL))
@@ -17207,7 +16678,9 @@ CREATE TABLE cd_artifact_sources (
     organization_id bigint,
     source_ref text,
     source_config jsonb DEFAULT '{}'::jsonb NOT NULL,
+    name text,
     CONSTRAINT check_892918d4b4 CHECK ((source_ref IS NOT NULL)),
+    CONSTRAINT check_af610d5f06 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd_artifact_sources_source_config_is_hash CHECK ((jsonb_typeof(source_config) = 'object'::text)),
     CONSTRAINT check_cec135cb4a CHECK ((char_length(source_ref) <= 255)),
     CONSTRAINT check_f9ef894005 CHECK ((organization_id IS NOT NULL))
@@ -17345,6 +16818,39 @@ CREATE SEQUENCE cd_rollout_environments_id_seq
 
 ALTER SEQUENCE cd_rollout_environments_id_seq OWNED BY cd_rollout_environments.id;
 
+CREATE TABLE cd_rollout_steps (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    rollout_id bigint NOT NULL,
+    rollout_environment_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone,
+    finished_at timestamp with time zone,
+    state smallint DEFAULT 0 NOT NULL,
+    path text NOT NULL,
+    parent_path text,
+    step_type text NOT NULL,
+    name text,
+    error text,
+    params jsonb,
+    CONSTRAINT check_2616ca32fc CHECK ((char_length(parent_path) <= 255)),
+    CONSTRAINT check_701f5f3b03 CHECK ((char_length(error) <= 2000)),
+    CONSTRAINT check_8664750c43 CHECK ((char_length(step_type) <= 255)),
+    CONSTRAINT check_b3c12cd6f7 CHECK ((char_length(path) <= 255)),
+    CONSTRAINT check_cd_rollout_steps_params_is_hash CHECK (((params IS NULL) OR (jsonb_typeof(params) = 'object'::text))),
+    CONSTRAINT check_d28e5591e2 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE cd_rollout_steps_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cd_rollout_steps_id_seq OWNED BY cd_rollout_steps.id;
+
 CREATE TABLE cd_rollout_transitions (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -17388,6 +16894,8 @@ CREATE TABLE cd_rollouts (
     application_id bigint,
     application_flow_definition_id bigint,
     workflow_ref text,
+    iid integer,
+    CONSTRAINT check_1eef9fc5c9 CHECK ((iid IS NOT NULL)),
     CONSTRAINT check_311909ffdc CHECK ((char_length(workflow_ref) <= 255)),
     CONSTRAINT check_4ca25c42db CHECK ((application_id IS NOT NULL)),
     CONSTRAINT check_a1261339a4 CHECK ((organization_id IS NOT NULL))
@@ -17476,9 +16984,12 @@ CREATE TABLE cd_version_sets (
     name text NOT NULL,
     entries_digest text,
     organization_id bigint,
+    description text,
+    created_by_id bigint,
     CONSTRAINT check_093aa0099e CHECK ((char_length(entries_digest) <= 64)),
     CONSTRAINT check_141e70e0e2 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_703e061dd2 CHECK ((organization_id IS NOT NULL))
+    CONSTRAINT check_703e061dd2 CHECK ((organization_id IS NOT NULL)),
+    CONSTRAINT check_d5a6b29f4a CHECK ((char_length(description) <= 2000))
 );
 
 CREATE SEQUENCE cd_version_sets_id_seq
@@ -17532,7 +17043,8 @@ CREATE TABLE chat_names (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     encrypted_token bytea,
-    encrypted_token_iv bytea
+    encrypted_token_iv bytea,
+    duo_privacy_notice_acknowledged_at timestamp with time zone
 );
 
 CREATE SEQUENCE chat_names_id_seq
@@ -17641,35 +17153,6 @@ CREATE SEQUENCE ci_builds_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_builds_id_seq OWNED BY p_ci_builds.id;
-
-CREATE TABLE p_ci_builds_metadata (
-    project_id bigint NOT NULL,
-    timeout integer,
-    timeout_source integer DEFAULT 1 NOT NULL,
-    interruptible boolean,
-    config_options jsonb,
-    config_variables jsonb,
-    has_exposed_artifacts boolean,
-    environment_auto_stop_in character varying(255),
-    expanded_environment_name character varying(255),
-    secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
-    build_id bigint NOT NULL,
-    id bigint NOT NULL,
-    id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
-    partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL,
-    exit_code smallint
-)
-PARTITION BY LIST (partition_id);
-
-CREATE SEQUENCE ci_builds_metadata_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_builds_metadata_id_seq OWNED BY p_ci_builds_metadata.id;
 
 CREATE TABLE ci_builds_runner_session (
     id bigint NOT NULL,
@@ -18054,7 +17537,8 @@ CREATE TABLE ci_pending_builds (
     namespace_traversal_ids bigint[] DEFAULT '{}'::bigint[],
     partition_id bigint NOT NULL,
     plan_id bigint,
-    plan_name_uid smallint
+    plan_name_uid smallint,
+    runner_machine_id bigint
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -18147,6 +17631,7 @@ CREATE TABLE ci_pipeline_metadata (
     auto_cancel_on_new_commit smallint DEFAULT 0 NOT NULL,
     auto_cancel_on_job_failure smallint DEFAULT 0 NOT NULL,
     partition_id bigint NOT NULL,
+    security_policy_protected_branch_bypassed boolean DEFAULT false NOT NULL,
     CONSTRAINT check_9d3665463c CHECK ((char_length(name) <= 255))
 );
 
@@ -21038,11 +20523,24 @@ CREATE TABLE duo_workflows_workflows (
     title text,
     model_metadata_json text,
     incremental_checkpoints_enabled boolean DEFAULT false NOT NULL,
+    agent_type text,
+    jsonl_sha256 text,
+    idempotency_key text,
+    sync_type smallint,
+    agent_identity_id bigint,
+    flow_metadata_json text,
+    web_search_enabled boolean DEFAULT false NOT NULL,
+    trigger_source smallint DEFAULT 0 NOT NULL,
+    trigger_flow_trigger_id bigint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
+    CONSTRAINT check_6d4d79a907 CHECK ((char_length(flow_metadata_json) <= 1024)),
+    CONSTRAINT check_733b5742d3 CHECK ((char_length(agent_type) <= 50)),
     CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_9903236764 CHECK ((char_length(idempotency_key) <= 255)),
+    CONSTRAINT check_9c1be2907a CHECK ((char_length(jsonl_sha256) <= 64)),
     CONSTRAINT check_e39af3a04c CHECK ((char_length(model_metadata_json) <= 1024)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255)),
     CONSTRAINT check_workflows_single_noteable CHECK ((num_nonnulls(issue_id, merge_request_id) <= 1))
@@ -21837,7 +21335,9 @@ CREATE TABLE geo_nodes (
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     sync_object_storage boolean DEFAULT false NOT NULL,
-    blob_download_timeout integer DEFAULT 28800 NOT NULL
+    blob_download_timeout integer DEFAULT 28800 NOT NULL,
+    checksum_mismatch_report_threshold integer DEFAULT 3 NOT NULL,
+    checksum_mismatch_self_heal_cooldown_minutes integer DEFAULT 60 NOT NULL
 );
 
 CREATE SEQUENCE geo_nodes_id_seq
@@ -21934,6 +21434,56 @@ CREATE SEQUENCE gitlab_subscriptions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE gitlab_subscriptions_id_seq OWNED BY gitlab_subscriptions.id;
+
+CREATE TABLE govern_policies (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    namespace_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    version integer DEFAULT 1 NOT NULL,
+    trigger_type smallint NOT NULL,
+    mode smallint DEFAULT 2 NOT NULL,
+    lifecycle_state smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    description text,
+    scope_rego text,
+    policy_scope jsonb,
+    rules jsonb DEFAULT '[]'::jsonb NOT NULL,
+    actions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    CONSTRAINT check_26b266355c CHECK ((char_length(description) <= 4096)),
+    CONSTRAINT check_6ed8686a5b CHECK ((char_length(scope_rego) <= 4096)),
+    CONSTRAINT check_dc911ab262 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE govern_policies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE govern_policies_id_seq OWNED BY govern_policies.id;
+
+CREATE TABLE govern_policy_enforcements (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    govern_policy_id bigint NOT NULL,
+    project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    last_evaluated_at timestamp with time zone,
+    state smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE govern_policy_enforcements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE govern_policy_enforcements_id_seq OWNED BY govern_policy_enforcements.id;
 
 CREATE TABLE gpg_key_subkeys (
     id bigint NOT NULL,
@@ -22740,7 +22290,7 @@ CREATE TABLE import_offline_exports (
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     has_failures boolean DEFAULT false NOT NULL,
-    source_hostname text NOT NULL,
+    source_hostname text,
     CONSTRAINT check_dcd47fbc18 CHECK ((char_length(source_hostname) <= 255))
 );
 
@@ -24058,7 +23608,7 @@ ALTER SEQUENCE lfs_objects_id_seq OWNED BY lfs_objects.id;
 
 CREATE TABLE lfs_objects_projects (
     id bigint NOT NULL,
-    lfs_object_id bigint NOT NULL,
+    lfs_object_id bigint,
     project_id bigint NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -24619,6 +24169,25 @@ CREATE SEQUENCE merge_request_reviewers_id_seq
 
 ALTER SEQUENCE merge_request_reviewers_id_seq OWNED BY merge_request_reviewers.id;
 
+CREATE TABLE merge_request_saved_views (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    filters jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_350966a17b CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE merge_request_saved_views_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_saved_views_id_seq OWNED BY merge_request_saved_views.id;
+
 CREATE TABLE merge_request_user_mentions (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
@@ -25153,6 +24722,35 @@ CREATE SEQUENCE ml_models_id_seq
 
 ALTER SEQUENCE ml_models_id_seq OWNED BY ml_models.id;
 
+CREATE TABLE mobile_device_push_subscriptions (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    platform smallint DEFAULT 0 NOT NULL,
+    apns_environment smallint DEFAULT 0 NOT NULL,
+    payload_mode smallint DEFAULT 0 NOT NULL,
+    device_token jsonb NOT NULL,
+    bundle_identifier text,
+    device_name text,
+    app_version text,
+    locale text,
+    CONSTRAINT check_2a42d22870 CHECK ((char_length(locale) <= 32)),
+    CONSTRAINT check_7822aaa873 CHECK ((char_length(app_version) <= 64)),
+    CONSTRAINT check_b73b87a4a0 CHECK ((char_length(bundle_identifier) <= 255)),
+    CONSTRAINT check_d597db7547 CHECK ((char_length(device_name) <= 255))
+);
+
+CREATE SEQUENCE mobile_device_push_subscriptions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE mobile_device_push_subscriptions_id_seq OWNED BY mobile_device_push_subscriptions.id;
+
 CREATE TABLE namespace_admin_notes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25359,6 +24957,8 @@ CREATE TABLE namespace_package_settings (
     terraform_module_duplicates_allowed boolean DEFAULT false NOT NULL,
     terraform_module_duplicate_exception_regex text DEFAULT ''::text NOT NULL,
     audit_events_enabled boolean DEFAULT false NOT NULL,
+    rubygems_package_requests_forwarding boolean,
+    lock_rubygems_package_requests_forwarding boolean DEFAULT false NOT NULL,
     CONSTRAINT check_31340211b1 CHECK ((char_length(generic_duplicate_exception_regex) <= 255)),
     CONSTRAINT check_d63274b2b6 CHECK ((char_length(maven_duplicate_exception_regex) <= 255)),
     CONSTRAINT check_eedcf85c48 CHECK ((char_length(nuget_duplicate_exception_regex) <= 255)),
@@ -25495,8 +25095,10 @@ CREATE TABLE namespace_settings (
     lock_ai_audit_events_storage_enabled boolean DEFAULT false NOT NULL,
     dependency_firewall_enabled boolean DEFAULT false NOT NULL,
     policy_store_experiment_enabled boolean DEFAULT false NOT NULL,
+    enterprise_user_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d9644d516f CHECK ((char_length(step_up_auth_required_oauth_provider) <= 255)),
+    CONSTRAINT check_namespace_settings_enterprise_user_settings_is_hash CHECK ((jsonb_typeof(enterprise_user_settings) = 'object'::text)),
     CONSTRAINT check_namespace_settings_pat_settings_is_hash CHECK ((jsonb_typeof(personal_access_token_settings) = 'object'::text)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT check_namespace_settings_usage_billing_is_hash CHECK ((jsonb_typeof(usage_billing) = 'object'::text)),
@@ -25954,7 +25556,11 @@ CREATE TABLE observability_group_o11y_settings (
     o11y_service_post_message_encryption_key jsonb NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    o11y_otel_url text,
+    o11y_mcp_url text,
     CONSTRAINT check_470a188df1 CHECK ((char_length(o11y_service_user_email) <= 255)),
+    CONSTRAINT check_4f0120e56d CHECK ((char_length(o11y_mcp_url) <= 255)),
+    CONSTRAINT check_5b6fcbe506 CHECK ((char_length(o11y_otel_url) <= 255)),
     CONSTRAINT check_9a69bf69bb CHECK ((char_length(o11y_service_url) <= 255))
 );
 
@@ -26437,42 +26043,6 @@ CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
 
 ALTER SEQUENCE p_catalog_resource_sync_events_id_seq OWNED BY p_catalog_resource_sync_events.id;
 
-CREATE TABLE p_ci_build_tags (
-    id bigint NOT NULL,
-    tag_id bigint NOT NULL,
-    build_id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    project_id bigint NOT NULL
-)
-PARTITION BY LIST (partition_id);
-
-CREATE SEQUENCE p_ci_build_tags_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_ci_build_tags_id_seq OWNED BY p_ci_build_tags.id;
-
-CREATE TABLE p_ci_builds_execution_configs (
-    id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    pipeline_id bigint NOT NULL,
-    run_steps jsonb DEFAULT '{}'::jsonb NOT NULL
-)
-PARTITION BY LIST (partition_id);
-
-CREATE SEQUENCE p_ci_builds_execution_configs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_ci_builds_execution_configs_id_seq OWNED BY p_ci_builds_execution_configs.id;
-
 CREATE SEQUENCE p_ci_job_annotations_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -26544,6 +26114,15 @@ CREATE SEQUENCE p_duo_workflows_checkpoint_blobs_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_duo_workflows_checkpoint_blobs_id_seq OWNED BY p_duo_workflows_checkpoint_blobs.id;
+
+CREATE SEQUENCE p_duo_workflows_checkpoint_headers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_duo_workflows_checkpoint_headers_id_seq OWNED BY p_duo_workflows_checkpoint_headers.id;
 
 CREATE SEQUENCE p_duo_workflows_checkpoints_id_seq
     START WITH 1
@@ -28013,7 +27592,6 @@ CREATE TABLE plan_limits (
     import_placeholder_user_limit_tier_4 integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_slsa_provenance_statement bigint DEFAULT 0 NOT NULL,
     cargo_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
-    ci_max_artifact_size_scip integer DEFAULT 200 NOT NULL,
     plan_name_uid smallint,
     ci_max_artifact_size_sarif integer DEFAULT 10 NOT NULL,
     max_pipelines_per_merge_train smallint DEFAULT 20 NOT NULL
@@ -29049,8 +28627,8 @@ CREATE TABLE project_features (
     feature_flags_access_level integer DEFAULT 20 NOT NULL,
     environments_access_level integer DEFAULT 20 NOT NULL,
     releases_access_level integer DEFAULT 20 NOT NULL,
-    model_experiments_access_level integer DEFAULT 20 NOT NULL,
-    model_registry_access_level integer DEFAULT 20 NOT NULL
+    model_experiments_access_level integer NOT NULL,
+    model_registry_access_level integer NOT NULL
 );
 
 CREATE SEQUENCE project_features_id_seq
@@ -29568,6 +29146,8 @@ CREATE TABLE project_settings (
     duo_dependency_bump_breaking_changes_enabled boolean DEFAULT false NOT NULL,
     ai_audit_events_storage_enabled boolean DEFAULT false NOT NULL,
     duo_dependency_bump_breaking_changes_enabled_by_id bigint,
+    feature_flags_minimum_role smallint DEFAULT 2 NOT NULL,
+    duo_vulnerability_context_analysis_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_237486989c CHECK ((char_length(merge_request_title_regex_description) <= 255)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
@@ -31125,7 +30705,8 @@ CREATE TABLE secrets_manager_namespace_enrollments (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    beta boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE secrets_manager_namespace_enrollments_id_seq
@@ -31528,6 +31109,25 @@ CREATE SEQUENCE security_scan_execution_project_schedules_id_seq
 
 ALTER SEQUENCE security_scan_execution_project_schedules_id_seq OWNED BY security_scan_execution_project_schedules.id;
 
+CREATE TABLE security_scan_profile_configurations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    security_scan_profile_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    configuration_version smallint DEFAULT 1 NOT NULL,
+    configuration jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE security_scan_profile_configurations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_scan_profile_configurations_id_seq OWNED BY security_scan_profile_configurations.id;
+
 CREATE TABLE security_scan_profile_project_statuses (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -31556,7 +31156,8 @@ CREATE TABLE security_scan_profile_triggers (
     updated_at timestamp with time zone NOT NULL,
     security_scan_profile_id bigint NOT NULL,
     namespace_id bigint NOT NULL,
-    trigger_type smallint NOT NULL
+    trigger_type smallint NOT NULL,
+    security_scan_profile_configuration_id bigint
 );
 
 CREATE SEQUENCE security_scan_profile_triggers_id_seq
@@ -31578,6 +31179,7 @@ CREATE TABLE security_scan_profiles (
     name text NOT NULL,
     description text,
     configuration jsonb DEFAULT '{}'::jsonb NOT NULL,
+    deleted_at timestamp with time zone,
     CONSTRAINT check_58c7066495 CHECK ((char_length(description) <= 2047)),
     CONSTRAINT check_f1e9f004bb CHECK ((char_length(name) <= 255))
 );
@@ -32176,6 +31778,7 @@ CREATE TABLE subscription_add_on_purchases (
     organization_id bigint NOT NULL,
     subscription_add_on_uid smallint,
     CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255)),
+    CONSTRAINT check_c4de34843d CHECK ((subscription_add_on_uid IS NOT NULL)),
     CONSTRAINT check_d79ce199b3 CHECK ((started_at IS NOT NULL))
 );
 
@@ -35063,7 +34666,9 @@ CREATE TABLE work_item_agent_plans (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     cached_markdown_version integer,
-    file_store smallint DEFAULT 1 NOT NULL
+    file_store smallint DEFAULT 1 NOT NULL,
+    readiness_score smallint,
+    ai_planning_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE work_item_colors (
@@ -35292,7 +34897,8 @@ CREATE TABLE work_item_positions (
     namespace_id bigint NOT NULL,
     relative_position bigint,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    relative_positioning_namespace_id bigint
 );
 
 CREATE TABLE work_item_progresses (
@@ -36598,134 +36204,6 @@ ALTER TABLE ONLY virtual_registries_packages_npm_cache_remote_entries ATTACH PAR
 
 ALTER TABLE ONLY virtual_registries_packages_npm_cache_remote_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_npm_cache_remote_entries_15 FOR VALUES WITH (modulus 16, remainder 15);
 
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00 FOR VALUES WITH (modulus 64, remainder 0);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01 FOR VALUES WITH (modulus 64, remainder 1);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02 FOR VALUES WITH (modulus 64, remainder 2);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03 FOR VALUES WITH (modulus 64, remainder 3);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04 FOR VALUES WITH (modulus 64, remainder 4);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05 FOR VALUES WITH (modulus 64, remainder 5);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06 FOR VALUES WITH (modulus 64, remainder 6);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07 FOR VALUES WITH (modulus 64, remainder 7);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08 FOR VALUES WITH (modulus 64, remainder 8);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09 FOR VALUES WITH (modulus 64, remainder 9);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10 FOR VALUES WITH (modulus 64, remainder 10);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11 FOR VALUES WITH (modulus 64, remainder 11);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12 FOR VALUES WITH (modulus 64, remainder 12);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13 FOR VALUES WITH (modulus 64, remainder 13);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14 FOR VALUES WITH (modulus 64, remainder 14);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15 FOR VALUES WITH (modulus 64, remainder 15);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16 FOR VALUES WITH (modulus 64, remainder 16);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17 FOR VALUES WITH (modulus 64, remainder 17);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18 FOR VALUES WITH (modulus 64, remainder 18);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19 FOR VALUES WITH (modulus 64, remainder 19);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20 FOR VALUES WITH (modulus 64, remainder 20);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21 FOR VALUES WITH (modulus 64, remainder 21);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22 FOR VALUES WITH (modulus 64, remainder 22);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23 FOR VALUES WITH (modulus 64, remainder 23);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24 FOR VALUES WITH (modulus 64, remainder 24);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25 FOR VALUES WITH (modulus 64, remainder 25);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26 FOR VALUES WITH (modulus 64, remainder 26);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27 FOR VALUES WITH (modulus 64, remainder 27);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28 FOR VALUES WITH (modulus 64, remainder 28);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29 FOR VALUES WITH (modulus 64, remainder 29);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30 FOR VALUES WITH (modulus 64, remainder 30);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31 FOR VALUES WITH (modulus 64, remainder 31);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32 FOR VALUES WITH (modulus 64, remainder 32);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33 FOR VALUES WITH (modulus 64, remainder 33);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34 FOR VALUES WITH (modulus 64, remainder 34);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35 FOR VALUES WITH (modulus 64, remainder 35);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36 FOR VALUES WITH (modulus 64, remainder 36);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37 FOR VALUES WITH (modulus 64, remainder 37);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38 FOR VALUES WITH (modulus 64, remainder 38);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39 FOR VALUES WITH (modulus 64, remainder 39);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40 FOR VALUES WITH (modulus 64, remainder 40);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41 FOR VALUES WITH (modulus 64, remainder 41);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42 FOR VALUES WITH (modulus 64, remainder 42);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43 FOR VALUES WITH (modulus 64, remainder 43);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44 FOR VALUES WITH (modulus 64, remainder 44);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45 FOR VALUES WITH (modulus 64, remainder 45);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46 FOR VALUES WITH (modulus 64, remainder 46);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47 FOR VALUES WITH (modulus 64, remainder 47);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48 FOR VALUES WITH (modulus 64, remainder 48);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49 FOR VALUES WITH (modulus 64, remainder 49);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50 FOR VALUES WITH (modulus 64, remainder 50);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51 FOR VALUES WITH (modulus 64, remainder 51);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52 FOR VALUES WITH (modulus 64, remainder 52);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53 FOR VALUES WITH (modulus 64, remainder 53);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54 FOR VALUES WITH (modulus 64, remainder 54);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55 FOR VALUES WITH (modulus 64, remainder 55);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56 FOR VALUES WITH (modulus 64, remainder 56);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57 FOR VALUES WITH (modulus 64, remainder 57);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58 FOR VALUES WITH (modulus 64, remainder 58);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59 FOR VALUES WITH (modulus 64, remainder 59);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60 FOR VALUES WITH (modulus 64, remainder 60);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61 FOR VALUES WITH (modulus 64, remainder 61);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62 FOR VALUES WITH (modulus 64, remainder 62);
-
-ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63 FOR VALUES WITH (modulus 64, remainder 63);
-
 ALTER TABLE ONLY uploads ATTACH PARTITION abuse_report_uploads FOR VALUES IN ('AbuseReport');
 
 ALTER TABLE ONLY uploads ATTACH PARTITION achievement_uploads FOR VALUES IN ('Achievements::Achievement');
@@ -36832,6 +36310,8 @@ ALTER TABLE ONLY ai_active_context_migrations ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY ai_active_context_tasks ALTER COLUMN id SET DEFAULT nextval('ai_active_context_tasks_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_agent_identities ALTER COLUMN id SET DEFAULT nextval('ai_agent_identities_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_audit_events ALTER COLUMN id SET DEFAULT nextval('ai_audit_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_catalog_item_consumers ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_consumers_id_seq'::regclass);
@@ -36843,6 +36323,8 @@ ALTER TABLE ONLY ai_catalog_item_version_dependencies ALTER COLUMN id SET DEFAUL
 ALTER TABLE ONLY ai_catalog_item_versions ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
+
+ALTER TABLE ONLY ai_catalog_mcp_server_blocks ALTER COLUMN id SET DEFAULT nextval('ai_catalog_mcp_server_blocks_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_catalog_mcp_servers ALTER COLUMN id SET DEFAULT nextval('ai_catalog_mcp_servers_id_seq'::regclass);
 
@@ -36949,6 +36431,8 @@ ALTER TABLE ONLY approval_project_rules_users ALTER COLUMN id SET DEFAULT nextva
 ALTER TABLE ONLY approvals ALTER COLUMN id SET DEFAULT nextval('approvals_id_seq'::regclass);
 
 ALTER TABLE ONLY arkose_sessions ALTER COLUMN id SET DEFAULT nextval('arkose_sessions_id_seq'::regclass);
+
+ALTER TABLE ONLY artifact_registry_namespace_mappings ALTER COLUMN id SET DEFAULT nextval('artifact_registry_namespace_mappings_id_seq'::regclass);
 
 ALTER TABLE ONLY ascp_component_dependencies ALTER COLUMN id SET DEFAULT nextval('ascp_component_dependencies_id_seq'::regclass);
 
@@ -37064,6 +36548,12 @@ ALTER TABLE ONLY bulk_imports ALTER COLUMN id SET DEFAULT nextval('bulk_imports_
 
 ALTER TABLE ONLY burned_project_routes ALTER COLUMN id SET DEFAULT nextval('burned_project_routes_id_seq'::regclass);
 
+ALTER TABLE ONLY catalog_bundled_resource_components ALTER COLUMN id SET DEFAULT nextval('catalog_bundled_resource_components_id_seq'::regclass);
+
+ALTER TABLE ONLY catalog_bundled_resource_versions ALTER COLUMN id SET DEFAULT nextval('catalog_bundled_resource_versions_id_seq'::regclass);
+
+ALTER TABLE ONLY catalog_bundled_resources ALTER COLUMN id SET DEFAULT nextval('catalog_bundled_resources_id_seq'::regclass);
+
 ALTER TABLE ONLY catalog_resource_component_last_usages ALTER COLUMN id SET DEFAULT nextval('catalog_resource_component_last_usages_id_seq'::regclass);
 
 ALTER TABLE ONLY catalog_resource_components ALTER COLUMN id SET DEFAULT nextval('catalog_resource_components_id_seq'::regclass);
@@ -37091,6 +36581,8 @@ ALTER TABLE ONLY cd_environment_driver_bindings ALTER COLUMN id SET DEFAULT next
 ALTER TABLE ONLY cd_environments ALTER COLUMN id SET DEFAULT nextval('cd_environments_id_seq'::regclass);
 
 ALTER TABLE ONLY cd_rollout_environments ALTER COLUMN id SET DEFAULT nextval('cd_rollout_environments_id_seq'::regclass);
+
+ALTER TABLE ONLY cd_rollout_steps ALTER COLUMN id SET DEFAULT nextval('cd_rollout_steps_id_seq'::regclass);
 
 ALTER TABLE ONLY cd_rollout_transitions ALTER COLUMN id SET DEFAULT nextval('cd_rollout_transitions_id_seq'::regclass);
 
@@ -37446,6 +36938,10 @@ ALTER TABLE ONLY gitlab_subscription_histories ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY gitlab_subscriptions ALTER COLUMN id SET DEFAULT nextval('gitlab_subscriptions_id_seq'::regclass);
 
+ALTER TABLE ONLY govern_policies ALTER COLUMN id SET DEFAULT nextval('govern_policies_id_seq'::regclass);
+
+ALTER TABLE ONLY govern_policy_enforcements ALTER COLUMN id SET DEFAULT nextval('govern_policy_enforcements_id_seq'::regclass);
+
 ALTER TABLE ONLY gpg_key_subkeys ALTER COLUMN id SET DEFAULT nextval('gpg_key_subkeys_id_seq'::regclass);
 
 ALTER TABLE ONLY gpg_keys ALTER COLUMN id SET DEFAULT nextval('gpg_keys_id_seq'::regclass);
@@ -37660,6 +37156,8 @@ ALTER TABLE ONLY merge_request_requested_changes ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY merge_request_reviewers ALTER COLUMN id SET DEFAULT nextval('merge_request_reviewers_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_saved_views ALTER COLUMN id SET DEFAULT nextval('merge_request_saved_views_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval('merge_request_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_requests ALTER COLUMN id SET DEFAULT nextval('merge_requests_id_seq'::regclass);
@@ -37703,6 +37201,8 @@ ALTER TABLE ONLY ml_model_version_metadata ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY ml_model_versions ALTER COLUMN id SET DEFAULT nextval('ml_model_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_models ALTER COLUMN id SET DEFAULT nextval('ml_models_id_seq'::regclass);
+
+ALTER TABLE ONLY mobile_device_push_subscriptions ALTER COLUMN id SET DEFAULT nextval('mobile_device_push_subscriptions_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
 
@@ -37803,8 +37303,6 @@ ALTER TABLE ONLY p_batched_git_ref_updates_deletions ALTER COLUMN id SET DEFAULT
 ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_build_needs ALTER COLUMN id SET DEFAULT nextval('ci_build_needs_id_seq'::regclass);
-
-ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_job_definitions ALTER COLUMN id SET DEFAULT nextval('p_ci_job_definitions_id_seq'::regclass);
 
@@ -38171,6 +37669,8 @@ ALTER TABLE ONLY security_policy_settings ALTER COLUMN id SET DEFAULT nextval('s
 ALTER TABLE ONLY security_project_tracked_contexts ALTER COLUMN id SET DEFAULT nextval('security_project_tracked_contexts_id_seq'::regclass);
 
 ALTER TABLE ONLY security_scan_execution_project_schedules ALTER COLUMN id SET DEFAULT nextval('security_scan_execution_project_schedules_id_seq'::regclass);
+
+ALTER TABLE ONLY security_scan_profile_configurations ALTER COLUMN id SET DEFAULT nextval('security_scan_profile_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY security_scan_profile_project_statuses ALTER COLUMN id SET DEFAULT nextval('security_scan_profile_project_statuses_id_seq'::regclass);
 
@@ -39578,201 +39078,6 @@ ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_npm_cache_
 ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_npm_cache_remote_entries_15
     ADD CONSTRAINT virtual_registries_packages_npm_cache_remote_entries_15_pkey PRIMARY KEY (group_id, iid);
 
-ALTER TABLE ONLY work_item_descriptions
-    ADD CONSTRAINT work_item_descriptions_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_00
-    ADD CONSTRAINT work_item_descriptions_00_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_01
-    ADD CONSTRAINT work_item_descriptions_01_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_02
-    ADD CONSTRAINT work_item_descriptions_02_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_03
-    ADD CONSTRAINT work_item_descriptions_03_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_04
-    ADD CONSTRAINT work_item_descriptions_04_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_05
-    ADD CONSTRAINT work_item_descriptions_05_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_06
-    ADD CONSTRAINT work_item_descriptions_06_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_07
-    ADD CONSTRAINT work_item_descriptions_07_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_08
-    ADD CONSTRAINT work_item_descriptions_08_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_09
-    ADD CONSTRAINT work_item_descriptions_09_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_10
-    ADD CONSTRAINT work_item_descriptions_10_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_11
-    ADD CONSTRAINT work_item_descriptions_11_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_12
-    ADD CONSTRAINT work_item_descriptions_12_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_13
-    ADD CONSTRAINT work_item_descriptions_13_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_14
-    ADD CONSTRAINT work_item_descriptions_14_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_15
-    ADD CONSTRAINT work_item_descriptions_15_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_16
-    ADD CONSTRAINT work_item_descriptions_16_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_17
-    ADD CONSTRAINT work_item_descriptions_17_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_18
-    ADD CONSTRAINT work_item_descriptions_18_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_19
-    ADD CONSTRAINT work_item_descriptions_19_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_20
-    ADD CONSTRAINT work_item_descriptions_20_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_21
-    ADD CONSTRAINT work_item_descriptions_21_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_22
-    ADD CONSTRAINT work_item_descriptions_22_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_23
-    ADD CONSTRAINT work_item_descriptions_23_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_24
-    ADD CONSTRAINT work_item_descriptions_24_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_25
-    ADD CONSTRAINT work_item_descriptions_25_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_26
-    ADD CONSTRAINT work_item_descriptions_26_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_27
-    ADD CONSTRAINT work_item_descriptions_27_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_28
-    ADD CONSTRAINT work_item_descriptions_28_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_29
-    ADD CONSTRAINT work_item_descriptions_29_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_30
-    ADD CONSTRAINT work_item_descriptions_30_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_31
-    ADD CONSTRAINT work_item_descriptions_31_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_32
-    ADD CONSTRAINT work_item_descriptions_32_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_33
-    ADD CONSTRAINT work_item_descriptions_33_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_34
-    ADD CONSTRAINT work_item_descriptions_34_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_35
-    ADD CONSTRAINT work_item_descriptions_35_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_36
-    ADD CONSTRAINT work_item_descriptions_36_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_37
-    ADD CONSTRAINT work_item_descriptions_37_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_38
-    ADD CONSTRAINT work_item_descriptions_38_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_39
-    ADD CONSTRAINT work_item_descriptions_39_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_40
-    ADD CONSTRAINT work_item_descriptions_40_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_41
-    ADD CONSTRAINT work_item_descriptions_41_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_42
-    ADD CONSTRAINT work_item_descriptions_42_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_43
-    ADD CONSTRAINT work_item_descriptions_43_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_44
-    ADD CONSTRAINT work_item_descriptions_44_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_45
-    ADD CONSTRAINT work_item_descriptions_45_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_46
-    ADD CONSTRAINT work_item_descriptions_46_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_47
-    ADD CONSTRAINT work_item_descriptions_47_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_48
-    ADD CONSTRAINT work_item_descriptions_48_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_49
-    ADD CONSTRAINT work_item_descriptions_49_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_50
-    ADD CONSTRAINT work_item_descriptions_50_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_51
-    ADD CONSTRAINT work_item_descriptions_51_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_52
-    ADD CONSTRAINT work_item_descriptions_52_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_53
-    ADD CONSTRAINT work_item_descriptions_53_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_54
-    ADD CONSTRAINT work_item_descriptions_54_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_55
-    ADD CONSTRAINT work_item_descriptions_55_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_56
-    ADD CONSTRAINT work_item_descriptions_56_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_57
-    ADD CONSTRAINT work_item_descriptions_57_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_58
-    ADD CONSTRAINT work_item_descriptions_58_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_59
-    ADD CONSTRAINT work_item_descriptions_59_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_60
-    ADD CONSTRAINT work_item_descriptions_60_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_61
-    ADD CONSTRAINT work_item_descriptions_61_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_62
-    ADD CONSTRAINT work_item_descriptions_62_pkey PRIMARY KEY (work_item_id, namespace_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_63
-    ADD CONSTRAINT work_item_descriptions_63_pkey PRIMARY KEY (work_item_id, namespace_id);
-
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT abuse_events_pkey PRIMARY KEY (id);
 
@@ -39842,6 +39147,9 @@ ALTER TABLE ONLY ai_active_context_migrations
 ALTER TABLE ONLY ai_active_context_tasks
     ADD CONSTRAINT ai_active_context_tasks_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ai_agent_identities
+    ADD CONSTRAINT ai_agent_identities_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ai_audit_events
     ADD CONSTRAINT ai_audit_events_pkey PRIMARY KEY (id, created_at);
 
@@ -39859,6 +39167,9 @@ ALTER TABLE ONLY ai_catalog_item_versions
 
 ALTER TABLE ONLY ai_catalog_items
     ADD CONSTRAINT ai_catalog_items_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_mcp_server_blocks
+    ADD CONSTRAINT ai_catalog_mcp_server_blocks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_catalog_mcp_servers
     ADD CONSTRAINT ai_catalog_mcp_servers_pkey PRIMARY KEY (id);
@@ -40048,6 +39359,9 @@ ALTER TABLE ONLY ar_internal_metadata
 
 ALTER TABLE ONLY arkose_sessions
     ADD CONSTRAINT arkose_sessions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY artifact_registry_namespace_mappings
+    ADD CONSTRAINT artifact_registry_namespace_mappings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ascp_component_dependencies
     ADD CONSTRAINT ascp_component_dependencies_pkey PRIMARY KEY (id);
@@ -40283,6 +39597,15 @@ ALTER TABLE ONLY bulk_imports
 ALTER TABLE ONLY burned_project_routes
     ADD CONSTRAINT burned_project_routes_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY catalog_bundled_resource_components
+    ADD CONSTRAINT catalog_bundled_resource_components_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY catalog_bundled_resource_versions
+    ADD CONSTRAINT catalog_bundled_resource_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY catalog_bundled_resources
+    ADD CONSTRAINT catalog_bundled_resources_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY catalog_resource_component_last_usages
     ADD CONSTRAINT catalog_resource_component_last_usages_pkey PRIMARY KEY (id);
 
@@ -40325,6 +39648,9 @@ ALTER TABLE ONLY cd_environments
 ALTER TABLE ONLY cd_rollout_environments
     ADD CONSTRAINT cd_rollout_environments_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT cd_rollout_steps_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY cd_rollout_transitions
     ADD CONSTRAINT cd_rollout_transitions_pkey PRIMARY KEY (id);
 
@@ -40363,6 +39689,9 @@ ALTER TABLE epic_issues
 
 ALTER TABLE web_hook_logs_daily
     ADD CONSTRAINT check_19dc80d658 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+
+ALTER TABLE push_rules
+    ADD CONSTRAINT check_1d23f0a102 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
@@ -41090,6 +40419,12 @@ ALTER TABLE ONLY gitlab_subscription_histories
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT gitlab_subscriptions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY govern_policies
+    ADD CONSTRAINT govern_policies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY govern_policy_enforcements
+    ADD CONSTRAINT govern_policy_enforcements_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY gpg_key_subkeys
     ADD CONSTRAINT gpg_key_subkeys_pkey PRIMARY KEY (id);
 
@@ -41486,6 +40821,9 @@ ALTER TABLE ONLY merge_request_requested_changes
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT merge_request_reviewers_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY merge_request_saved_views
+    ADD CONSTRAINT merge_request_saved_views_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT merge_request_user_mentions_pkey PRIMARY KEY (id);
 
@@ -41557,6 +40895,9 @@ ALTER TABLE ONLY ml_model_versions
 
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT ml_models_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY mobile_device_push_subscriptions
+    ADD CONSTRAINT mobile_device_push_subscriptions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT namespace_admin_notes_pkey PRIMARY KEY (id);
@@ -41759,17 +41100,8 @@ ALTER TABLE ONLY p_ci_build_needs
 ALTER TABLE ONLY p_ci_build_sources
     ADD CONSTRAINT p_ci_build_sources_pkey PRIMARY KEY (build_id, partition_id);
 
-ALTER TABLE ONLY p_ci_build_tags
-    ADD CONSTRAINT p_ci_build_tags_pkey PRIMARY KEY (id, partition_id);
-
 ALTER TABLE ONLY p_ci_build_trace_metadata
     ADD CONSTRAINT p_ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
-
-ALTER TABLE ONLY p_ci_builds_execution_configs
-    ADD CONSTRAINT p_ci_builds_execution_configs_pkey PRIMARY KEY (id, partition_id);
-
-ALTER TABLE ONLY p_ci_builds_metadata
-    ADD CONSTRAINT p_ci_builds_metadata_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_builds
     ADD CONSTRAINT p_ci_builds_pkey PRIMARY KEY (id, partition_id);
@@ -41801,6 +41133,9 @@ ALTER TABLE ONLY p_ci_job_inputs
 ALTER TABLE ONLY p_ci_job_messages
     ADD CONSTRAINT p_ci_job_messages_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_job_runtime_environments
+    ADD CONSTRAINT p_ci_job_runtime_environments_pkey PRIMARY KEY (build_id, partition_id);
+
 ALTER TABLE ONLY p_ci_pipeline_artifact_states
     ADD CONSTRAINT p_ci_pipeline_artifact_states_pkey PRIMARY KEY (pipeline_artifact_id, partition_id);
 
@@ -41827,6 +41162,9 @@ ALTER TABLE ONLY p_ci_workloads
 
 ALTER TABLE ONLY p_duo_workflows_checkpoint_blobs
     ADD CONSTRAINT p_duo_workflows_checkpoint_blobs_pkey PRIMARY KEY (id, workflow_created_at);
+
+ALTER TABLE ONLY p_duo_workflows_checkpoint_headers
+    ADD CONSTRAINT p_duo_workflows_checkpoint_headers_pkey PRIMARY KEY (id, workflow_created_at);
 
 ALTER TABLE ONLY p_duo_workflows_checkpoints
     ADD CONSTRAINT p_duo_workflows_checkpoints_pkey PRIMARY KEY (id, created_at);
@@ -42490,6 +41828,9 @@ ALTER TABLE ONLY security_project_tracked_contexts
 
 ALTER TABLE ONLY security_scan_execution_project_schedules
     ADD CONSTRAINT security_scan_execution_project_schedules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_scan_profile_configurations
+    ADD CONSTRAINT security_scan_profile_configurations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scan_profile_project_statuses
     ADD CONSTRAINT security_scan_profile_project_statuses_pkey PRIMARY KEY (id);
@@ -45296,266 +44637,6 @@ CREATE INDEX virtual_registries_packages_npm_cache_remote_relative_path_idx8 ON 
 
 CREATE INDEX virtual_registries_packages_npm_cache_remote_relative_path_idx9 ON gitlab_partitions_static.virtual_registries_packages_npm_cache_remote_entries_09 USING gin (relative_path gin_trgm_ops);
 
-CREATE INDEX index_work_item_descriptions_on_last_edited_by_id ON ONLY work_item_descriptions USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_00_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_00 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX index_work_item_descriptions_on_namespace_id ON ONLY work_item_descriptions USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_00_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_00 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_01_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_01 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_01_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_01 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_02_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_02 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_02_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_02 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_03_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_03 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_03_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_03 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_04_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_04 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_04_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_04 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_05_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_05 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_05_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_05 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_06_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_06 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_06_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_06 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_07_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_07 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_07_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_07 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_08_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_08 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_08_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_08 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_09_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_09 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_09_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_09 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_10_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_10 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_10_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_10 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_11_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_11 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_11_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_11 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_12_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_12 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_12_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_12 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_13_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_13 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_13_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_13 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_14_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_14 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_14_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_14 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_15_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_15 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_15_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_15 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_16_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_16 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_16_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_16 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_17_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_17 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_17_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_17 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_18_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_18 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_18_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_18 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_19_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_19 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_19_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_19 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_20_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_20 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_20_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_20 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_21_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_21 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_21_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_21 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_22_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_22 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_22_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_22 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_23_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_23 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_23_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_23 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_24_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_24 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_24_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_24 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_25_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_25 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_25_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_25 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_26_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_26 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_26_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_26 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_27_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_27 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_27_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_27 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_28_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_28 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_28_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_28 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_29_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_29 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_29_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_29 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_30_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_30 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_30_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_30 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_31_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_31 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_31_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_31 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_32_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_32 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_32_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_32 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_33_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_33 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_33_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_33 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_34_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_34 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_34_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_34 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_35_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_35 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_35_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_35 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_36_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_36 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_36_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_36 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_37_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_37 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_37_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_37 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_38_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_38 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_38_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_38 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_39_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_39 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_39_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_39 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_40_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_40 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_40_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_40 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_41_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_41 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_41_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_41 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_42_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_42 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_42_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_42 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_43_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_43 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_43_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_43 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_44_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_44 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_44_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_44 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_45_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_45 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_45_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_45 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_46_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_46 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_46_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_46 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_47_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_47 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_47_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_47 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_48_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_48 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_48_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_48 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_49_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_49 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_49_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_49 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_50_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_50 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_50_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_50 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_51_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_51 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_51_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_51 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_52_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_52 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_52_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_52 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_53_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_53 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_53_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_53 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_54_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_54 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_54_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_54 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_55_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_55 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_55_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_55 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_56_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_56 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_56_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_56 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_57_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_57 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_57_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_57 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_58_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_58 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_58_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_58 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_59_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_59 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_59_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_59 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_60_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_60 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_60_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_60 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_61_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_61 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_61_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_61 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_62_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_62 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_62_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_62 USING btree (namespace_id);
-
-CREATE INDEX work_item_descriptions_63_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_63 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
-
-CREATE INDEX work_item_descriptions_63_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_63 USING btree (namespace_id);
-
 CREATE INDEX index_uploads_9ba88c4165_on_checksum ON ONLY uploads USING btree (checksum);
 
 CREATE INDEX abuse_report_uploads_checksum_idx ON abuse_report_uploads USING btree (checksum);
@@ -45832,6 +44913,8 @@ CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree 
 
 CREATE UNIQUE INDEX i_pm_malware_advisories_xid_source ON pm_malware_advisories USING btree (advisory_xid, source_xid);
 
+CREATE INDEX i_pm_malware_affected_packages_on_purl_type_and_package_name ON pm_malware_affected_packages USING btree (purl_type, package_name);
+
 CREATE UNIQUE INDEX i_pm_malware_affected_packages_unique_for_upsert ON pm_malware_affected_packages USING btree (pm_malware_advisory_id, purl_type, package_name);
 
 CREATE UNIQUE INDEX i_pm_package_version_licenses_join_ids ON pm_package_version_licenses USING btree (pm_package_version_id, pm_license_id);
@@ -45874,6 +44957,10 @@ CREATE INDEX idx_addon_purchases_on_last_refreshed_at_desc_nulls_last ON subscri
 
 CREATE INDEX idx_ai_active_context_code_enabled_namespaces_namespace_id ON ONLY p_ai_active_context_code_enabled_namespaces USING btree (namespace_id);
 
+CREATE INDEX idx_ai_agent_identities_on_project_id ON ai_agent_identities USING btree (project_id);
+
+CREATE UNIQUE INDEX idx_ai_agent_identities_unique_identity ON ai_agent_identities USING btree (user_id, project_id, agent_type, machine_fingerprint);
+
 CREATE UNIQUE INDEX idx_ai_audit_events_on_cloud_event_id_created_at_unique ON ONLY ai_audit_events USING btree (cloud_event_id, created_at);
 
 CREATE INDEX idx_ai_audit_events_on_namespace_id_created_at ON ONLY ai_audit_events USING btree (namespace_id, created_at DESC);
@@ -45887,6 +44974,12 @@ CREATE INDEX idx_ai_catalog_item_stars_on_organization_id ON ai_catalog_item_sta
 CREATE UNIQUE INDEX idx_ai_catalog_item_version_dependencies_version_and_dependency ON ai_catalog_item_version_dependencies USING btree (ai_catalog_item_version_id, dependency_id, organization_id);
 
 CREATE UNIQUE INDEX idx_ai_catalog_item_version_unique ON ai_catalog_item_versions USING btree (ai_catalog_item_id, version);
+
+CREATE INDEX idx_ai_catalog_mcp_server_blocks_on_mcp_server_id ON ai_catalog_mcp_server_blocks USING btree (ai_catalog_mcp_server_id);
+
+CREATE INDEX idx_ai_catalog_mcp_server_blocks_on_ns_and_server ON ai_catalog_mcp_server_blocks USING btree (namespace_id, ai_catalog_mcp_server_id);
+
+CREATE UNIQUE INDEX idx_ai_catalog_mcp_server_blocks_on_org_ns_server ON ai_catalog_mcp_server_blocks USING btree (organization_id, namespace_id, ai_catalog_mcp_server_id);
 
 CREATE INDEX idx_ai_catalog_mcp_servers_on_organization_id ON ai_catalog_mcp_servers USING btree (organization_id);
 
@@ -45943,6 +45036,8 @@ CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devo
 CREATE UNIQUE INDEX idx_appearance_uploads_on_id ON appearance_uploads USING btree (id);
 
 CREATE INDEX idx_application_settings_on_duo_template_project_id ON application_settings USING btree (duo_template_project_id);
+
+CREATE INDEX idx_application_settings_on_o11y_oauth_application_id ON application_settings USING btree (o11y_oauth_application_id);
 
 CREATE INDEX idx_approval_merge_request_rules_approved_approvers_project_id ON approval_merge_request_rules_approved_approvers USING btree (project_id);
 
@@ -46008,9 +45103,13 @@ CREATE UNIQUE INDEX idx_bulk_import_batch_trackers_on_tracker_batch_org_uniq ON 
 
 CREATE UNIQUE INDEX idx_bulk_import_exports_on_group_relation_offline_export ON bulk_import_exports USING btree (group_id, relation, offline_export_id) WHERE ((group_id IS NOT NULL) AND (offline_export_id IS NOT NULL));
 
-CREATE INDEX idx_bulk_import_exports_on_organization_id ON bulk_import_exports USING btree (organization_id);
-
 CREATE UNIQUE INDEX idx_bulk_import_exports_on_project_relation_offline_export ON bulk_import_exports USING btree (project_id, relation, offline_export_id) WHERE ((project_id IS NOT NULL) AND (offline_export_id IS NOT NULL));
+
+CREATE INDEX idx_catalog_bundled_components_on_bundled_resource_id ON catalog_bundled_resource_components USING btree (catalog_bundled_resource_id);
+
+CREATE UNIQUE INDEX idx_catalog_bundled_components_on_version_and_name ON catalog_bundled_resource_components USING btree (catalog_bundled_version_id, name);
+
+CREATE UNIQUE INDEX idx_catalog_bundled_versions_on_bundled_resource_and_semver ON catalog_bundled_resource_versions USING btree (catalog_bundled_resource_id, semver_major, semver_minor, semver_patch, semver_prerelease) NULLS NOT DISTINCT;
 
 CREATE INDEX idx_catalog_resource_cpmt_last_usages_on_cpmt_project_id ON catalog_resource_component_last_usages USING btree (component_project_id);
 
@@ -46340,6 +45439,8 @@ CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON mer
 
 CREATE INDEX idx_merge_requests_on_unmerged_state_id ON merge_requests USING btree (id) WHERE (state_id <> 3);
 
+CREATE UNIQUE INDEX idx_mobile_push_subscriptions_on_token_and_environment ON mobile_device_push_subscriptions USING btree (device_token, apns_environment);
+
 CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON merge_request_context_commit_diff_files USING btree (merge_request_context_commit_id, sha);
 
 CREATE INDEX idx_mr_closing_issues_on_mr_link_issue_from ON merge_requests_closing_issues USING btree (merge_request_id, link_type, issue_id, from_mr_description);
@@ -46379,6 +45480,8 @@ CREATE UNIQUE INDEX idx_o11y_trace_issue_conn_on_issue_id_trace_identifier ON ob
 CREATE INDEX idx_oauth_access_grants_on_organization_id ON oauth_access_grants USING btree (organization_id);
 
 CREATE INDEX idx_oauth_access_tokens_on_organization_id ON oauth_access_tokens USING btree (organization_id);
+
+CREATE INDEX idx_oauth_applications_dynamic_and_id ON oauth_applications USING btree (dynamic, id);
 
 CREATE INDEX idx_oauth_applications_organization_id ON oauth_applications USING btree (organization_id);
 
@@ -46433,6 +45536,14 @@ CREATE UNIQUE INDEX idx_organization_detail_uploads_on_id ON organization_detail
 CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON ONLY p_ai_active_context_code_repositories USING btree (enabled_namespace_id);
 
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
+
+CREATE INDEX idx_p_ci_job_runtime_envs_on_project_id ON ONLY p_ci_job_runtime_environments USING btree (project_id);
+
+CREATE INDEX idx_p_ci_job_runtime_envs_on_runner_machine_id ON ONLY p_ci_job_runtime_environments USING btree (runner_machine_id);
+
+CREATE INDEX idx_p_ci_job_runtime_envs_on_runtime_environment_id ON ONLY p_ci_job_runtime_environments USING btree (runtime_environment_id, build_id, runner_machine_id);
+
+CREATE INDEX idx_p_ci_runtime_environments_on_project_id_environment_key ON ONLY p_ci_runtime_environments USING btree (project_id, environment_key);
 
 CREATE INDEX idx_p_project_daily_statistics_on_date_and_id ON ONLY project_daily_statistics USING btree (date, id);
 
@@ -46708,17 +45819,23 @@ CREATE UNIQUE INDEX idx_security_sep_schedules_on_rule_schedule_id_and_project_i
 
 CREATE INDEX idx_security_sep_schedules_on_security_policy_id_and_project_id ON security_scan_execution_project_schedules USING btree (security_policy_id, project_id);
 
+CREATE INDEX idx_service_desk_settings_where_custom_email_or_project_key ON service_desk_settings USING btree (project_id) WHERE ((custom_email IS NOT NULL) OR (project_key IS NOT NULL));
+
 CREATE INDEX idx_slack_integrations_scopes_on_slack_api_scope_id ON slack_integrations_scopes USING btree (slack_api_scope_id);
 
 CREATE UNIQUE INDEX idx_snippet_uploads_on_id ON snippet_uploads USING btree (id);
 
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_custom_license_project ON software_license_policies USING btree (project_id, custom_software_license_id, scan_result_policy_id);
 
+CREATE INDEX idx_spep_test_runs_on_state_and_created_at_for_stale ON security_scheduled_pipeline_execution_policy_test_runs USING btree (state, created_at) WHERE (state = ANY (ARRAY[0, 3]));
+
 CREATE UNIQUE INDEX idx_spep_test_runs_pipeline_id_unique ON security_scheduled_pipeline_execution_policy_test_runs USING btree (pipeline_id) WHERE (pipeline_id IS NOT NULL);
 
 CREATE INDEX idx_spep_test_runs_policy_id ON security_scheduled_pipeline_execution_policy_test_runs USING btree (security_policy_id);
 
 CREATE INDEX idx_spep_test_runs_project_id ON security_scheduled_pipeline_execution_policy_test_runs USING btree (project_id);
+
+CREATE INDEX idx_sspc_on_security_scan_profile_id ON security_scan_profile_configurations USING btree (security_scan_profile_id);
 
 CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
 
@@ -46871,6 +45988,8 @@ CREATE UNIQUE INDEX idx_vuln_ns_hist_stats_on_traversal_ids_date_and_ns_id ON vu
 CREATE UNIQUE INDEX idx_vuln_ns_stats_on_traversal_ids_and_namespace_id ON vulnerability_namespace_statistics USING btree (traversal_ids, namespace_id);
 
 CREATE INDEX idx_vuln_occurrence_identifiers_on_partition_id_identifier_id ON vulnerability_occurrence_identifiers USING btree (partition_id, identifier_id);
+
+CREATE INDEX idx_vuln_occurrences_on_partition_id_primary_identifier_id ON vulnerability_occurrences USING btree (partition_id, primary_identifier_id);
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 
@@ -47140,7 +46259,11 @@ CREATE INDEX index_ai_catalog_items_on_public ON ai_catalog_items USING btree (p
 
 CREATE INDEX index_ai_catalog_items_on_verification_level ON ai_catalog_items USING btree (verification_level);
 
+CREATE INDEX index_ai_catalog_items_on_visibility_public_and_restricted ON ai_catalog_items USING btree (visibility) WHERE (visibility = ANY (ARRAY[1, 2]));
+
 CREATE INDEX index_ai_catalog_items_where_deleted_at_is_null ON ai_catalog_items USING btree (deleted_at) WHERE (deleted_at IS NULL);
+
+CREATE INDEX index_ai_catalog_mcp_server_blocks_on_created_by_id ON ai_catalog_mcp_server_blocks USING btree (created_by_id);
 
 CREATE INDEX index_ai_catalog_mcp_servers_on_created_by_id ON ai_catalog_mcp_servers USING btree (created_by_id);
 
@@ -47383,6 +46506,8 @@ CREATE INDEX index_arkose_sessions_on_session_xid ON arkose_sessions USING btree
 CREATE INDEX index_arkose_sessions_on_user_id ON arkose_sessions USING btree (user_id);
 
 CREATE INDEX index_arkose_sessions_on_verified_at ON arkose_sessions USING btree (verified_at);
+
+CREATE UNIQUE INDEX index_artifact_registry_namespace_mappings_on_organization_id ON artifact_registry_namespace_mappings USING btree (organization_id);
 
 CREATE INDEX index_ascp_component_dependencies_on_component_id ON ascp_component_dependencies USING btree (component_id);
 
@@ -47698,6 +46823,10 @@ CREATE INDEX index_ca_enabled_incomplete_aggregation_stages_on_last_run_at ON an
 
 CREATE UNIQUE INDEX index_cargo_metadata_on_project_normalized_name_version ON packages_cargo_metadata USING btree (project_id, normalized_name, normalized_version);
 
+CREATE INDEX index_catalog_bundled_resources_on_search_vector ON catalog_bundled_resources USING gin (search_vector);
+
+CREATE UNIQUE INDEX index_catalog_bundled_resources_on_server_fqdn_and_full_path ON catalog_bundled_resources USING btree (server_fqdn, full_path);
+
 CREATE INDEX index_catalog_resource_components_on_catalog_resource_id ON catalog_resource_components USING btree (catalog_resource_id);
 
 CREATE INDEX index_catalog_resource_components_on_project_id ON catalog_resource_components USING btree (project_id);
@@ -47764,13 +46893,19 @@ CREATE INDEX index_cd_rollout_environments_on_previous_version_set_id ON cd_roll
 
 CREATE UNIQUE INDEX index_cd_rollout_environments_on_rollout_and_environment ON cd_rollout_environments USING btree (rollout_id, environment_id);
 
+CREATE INDEX index_cd_rollout_steps_on_organization_id ON cd_rollout_steps USING btree (organization_id);
+
+CREATE INDEX index_cd_rollout_steps_on_rollout_environment_id ON cd_rollout_steps USING btree (rollout_environment_id);
+
+CREATE UNIQUE INDEX index_cd_rollout_steps_on_rollout_id_and_path ON cd_rollout_steps USING btree (rollout_id, path);
+
 CREATE INDEX index_cd_rollout_transitions_on_organization_id ON cd_rollout_transitions USING btree (organization_id);
 
 CREATE INDEX index_cd_rollout_transitions_on_rollout_id_and_created_at ON cd_rollout_transitions USING btree (rollout_id, created_at);
 
 CREATE INDEX index_cd_rollouts_on_application_flow_definition_id ON cd_rollouts USING btree (application_flow_definition_id);
 
-CREATE INDEX index_cd_rollouts_on_application_id ON cd_rollouts USING btree (application_id);
+CREATE UNIQUE INDEX index_cd_rollouts_on_application_id_and_iid ON cd_rollouts USING btree (application_id, iid);
 
 CREATE UNIQUE INDEX index_cd_rollouts_on_application_id_non_terminal ON cd_rollouts USING btree (application_id) WHERE (state = ANY (ARRAY[0, 1, 2]));
 
@@ -47807,6 +46942,8 @@ CREATE UNIQUE INDEX index_cd_version_set_entries_on_version_set_id_and_version_i
 CREATE UNIQUE INDEX index_cd_version_sets_on_application_id_and_entries_digest ON cd_version_sets USING btree (application_id, entries_digest) WHERE (entries_digest IS NOT NULL);
 
 CREATE UNIQUE INDEX index_cd_version_sets_on_application_id_and_name ON cd_version_sets USING btree (application_id, name);
+
+CREATE INDEX index_cd_version_sets_on_created_by_id ON cd_version_sets USING btree (created_by_id);
 
 CREATE INDEX index_cd_version_sets_on_group_id ON cd_version_sets USING btree (group_id);
 
@@ -48538,6 +47675,10 @@ CREATE INDEX index_duo_wf_checkpoint_blobs_on_namespace_id ON ONLY p_duo_workflo
 
 CREATE INDEX index_duo_wf_checkpoint_blobs_on_workflow_id ON ONLY p_duo_workflows_checkpoint_blobs USING btree (workflow_id);
 
+CREATE INDEX index_duo_wf_checkpoint_headers_on_namespace_id ON ONLY p_duo_workflows_checkpoint_headers USING btree (namespace_id);
+
+CREATE INDEX index_duo_wf_checkpoint_headers_on_workflow_id_thread_ts_id ON ONLY p_duo_workflows_checkpoint_headers USING btree (workflow_id, thread_ts, id);
+
 CREATE INDEX index_duo_wf_session_artifacts_on_ns_wf_updated_wf_id ON duo_workflow_session_artifacts USING btree (namespace_id, workflow_updated_at DESC, workflow_id DESC);
 
 CREATE INDEX index_duo_wf_session_artifacts_on_project_id_updated_at ON duo_workflow_session_artifacts USING btree (project_id, workflow_updated_at DESC);
@@ -48592,6 +47733,8 @@ CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events U
 
 CREATE INDEX index_duo_workflows_on_user_id_and_updated_at ON duo_workflows_workflows USING btree (user_id, updated_at DESC) WHERE (workflow_definition <> 'chat'::text);
 
+CREATE INDEX index_duo_workflows_workflows_on_agent_identity_id ON duo_workflows_workflows USING btree (agent_identity_id) WHERE (agent_identity_id IS NOT NULL);
+
 CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_id ON duo_workflows_workflows USING btree (ai_catalog_item_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_version_id ON duo_workflows_workflows USING btree (ai_catalog_item_version_id);
@@ -48602,7 +47745,11 @@ CREATE INDEX index_duo_workflows_workflows_on_merge_request_id ON duo_workflows_
 
 CREATE INDEX index_duo_workflows_workflows_on_namespace_id ON duo_workflows_workflows USING btree (namespace_id);
 
+CREATE INDEX index_duo_workflows_workflows_on_namespace_id_created_at ON duo_workflows_workflows USING btree (namespace_id, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
+
 CREATE INDEX index_duo_workflows_workflows_on_project_id ON duo_workflows_workflows USING btree (project_id);
+
+CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_key ON duo_workflows_workflows USING btree (project_id, user_id, idempotency_key) WHERE ((idempotency_key IS NOT NULL) AND (project_id IS NOT NULL));
 
 CREATE INDEX index_duo_workflows_workflows_on_service_account_id ON duo_workflows_workflows USING btree (service_account_id);
 
@@ -48844,8 +47991,6 @@ CREATE INDEX index_geo_nodes_on_primary ON geo_nodes USING btree ("primary");
 
 CREATE INDEX index_ghost_user_migrations_on_consume_after_id ON ghost_user_migrations USING btree (consume_after, id);
 
-CREATE INDEX index_ghost_user_migrations_on_consume_after_id_non_human ON ghost_user_migrations USING btree (consume_after, id) WHERE (user_type <> 0);
-
 CREATE UNIQUE INDEX index_ghost_user_migrations_on_user_id ON ghost_user_migrations USING btree (user_id);
 
 CREATE INDEX index_ghost_user_migrations_on_user_type_consume_after_id ON ghost_user_migrations USING btree (user_type, consume_after, id);
@@ -48871,6 +48016,16 @@ CREATE INDEX index_gitlab_subscriptions_on_max_seats_used_changed_at ON gitlab_s
 CREATE UNIQUE INDEX index_gitlab_subscriptions_on_namespace_id ON gitlab_subscriptions USING btree (namespace_id);
 
 CREATE INDEX index_gitlab_subscriptions_on_trial_and_trial_starts_on ON gitlab_subscriptions USING btree (trial, trial_starts_on);
+
+CREATE INDEX index_govern_policies_on_namespace_id ON govern_policies USING btree (namespace_id);
+
+CREATE INDEX index_govern_policies_on_org_trigger_lifecycle_and_id ON govern_policies USING btree (organization_id, trigger_type, lifecycle_state, id);
+
+CREATE INDEX index_govern_policy_enforcements_on_govern_policy_id ON govern_policy_enforcements USING btree (govern_policy_id);
+
+CREATE INDEX index_govern_policy_enforcements_on_organization_id ON govern_policy_enforcements USING btree (organization_id);
+
+CREATE INDEX index_govern_policy_enforcements_on_project_id ON govern_policy_enforcements USING btree (project_id);
 
 CREATE UNIQUE INDEX index_gpg_key_subkeys_on_fingerprint ON gpg_key_subkeys USING btree (fingerprint);
 
@@ -49368,8 +48523,6 @@ CREATE INDEX index_job_artifact_states_failed_verification ON ci_job_artifact_st
 
 CREATE INDEX index_job_artifact_states_needs_verification ON ci_job_artifact_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
-CREATE INDEX index_job_artifact_states_on_verification_state ON ci_job_artifact_states USING btree (verification_state);
-
 CREATE INDEX index_job_artifact_states_pending_verification ON ci_job_artifact_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE UNIQUE INDEX index_job_environments_on_ci_job_id_and_environment_id ON job_environments USING btree (ci_job_id, environment_id);
@@ -49678,6 +48831,8 @@ CREATE INDEX index_merge_request_reviewers_on_project_id ON merge_request_review
 
 CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers USING btree (user_id);
 
+CREATE UNIQUE INDEX index_merge_request_saved_views_on_user_id_and_name ON merge_request_saved_views USING btree (user_id, name);
+
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE INDEX index_merge_request_user_mentions_on_project_id ON merge_request_user_mentions USING btree (project_id);
@@ -49841,6 +48996,10 @@ CREATE INDEX index_ml_models_on_project_id ON ml_models USING btree (project_id)
 CREATE UNIQUE INDEX index_ml_models_on_project_id_and_name ON ml_models USING btree (project_id, name);
 
 CREATE INDEX index_ml_models_on_user_id ON ml_models USING btree (user_id);
+
+CREATE INDEX index_mobile_device_push_subscriptions_on_last_seen_at ON mobile_device_push_subscriptions USING btree (last_seen_at);
+
+CREATE INDEX index_mobile_device_push_subscriptions_on_user_id ON mobile_device_push_subscriptions USING btree (user_id);
 
 CREATE UNIQUE INDEX index_mr_approval_metrics_on_project_id_and_mr_id ON merge_request_approval_metrics USING btree (target_project_id, merge_request_id);
 
@@ -50202,21 +49361,9 @@ CREATE INDEX index_p_ci_build_sources_on_project_id_and_build_id ON ONLY p_ci_bu
 
 CREATE INDEX index_p_ci_build_sources_on_search_columns ON ONLY p_ci_build_sources USING btree (project_id, source, build_id, partition_id);
 
-CREATE INDEX index_p_ci_build_tags_on_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (build_id, partition_id);
-
-CREATE INDEX index_p_ci_build_tags_on_project_id ON ONLY p_ci_build_tags USING btree (project_id);
-
-CREATE UNIQUE INDEX index_p_ci_build_tags_on_tag_id_and_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (tag_id, build_id, partition_id);
-
 CREATE INDEX index_p_ci_build_trace_metadata_on_project_id ON ONLY p_ci_build_trace_metadata USING btree (project_id);
 
 CREATE INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ON ONLY p_ci_build_trace_metadata USING btree (trace_artifact_id);
-
-CREATE INDEX index_p_ci_builds_execution_configs_on_pipeline_id ON ONLY p_ci_builds_execution_configs USING btree (pipeline_id);
-
-CREATE INDEX index_p_ci_builds_execution_configs_on_project_id ON ONLY p_ci_builds_execution_configs USING btree (project_id);
-
-CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_finished_build_ch_sync_events USING btree (partition, build_finished_at);
 
@@ -50253,8 +49400,6 @@ CREATE INDEX index_p_ci_pipeline_variables_on_project_id ON ONLY p_ci_pipeline_v
 CREATE INDEX index_p_ci_runner_machine_builds_on_project_id ON ONLY p_ci_runner_machine_builds USING btree (project_id);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
-
-CREATE INDEX index_p_ci_runtime_environments_on_project_id ON ONLY p_ci_runtime_environments USING btree (project_id);
 
 CREATE INDEX index_p_ci_workload_variable_inclusions_on_project_id ON ONLY p_ci_workload_variable_inclusions USING btree (project_id);
 
@@ -51278,6 +50423,8 @@ CREATE INDEX index_scan_execution_policy_rules_on_policy_mgmt_project_id ON scan
 
 CREATE UNIQUE INDEX index_scan_execution_policy_rules_on_unique_policy_rule_index ON scan_execution_policy_rules USING btree (security_policy_id, rule_index);
 
+CREATE INDEX index_scan_profile_triggers_on_configuration_id ON security_scan_profile_triggers USING btree (security_scan_profile_configuration_id);
+
 CREATE INDEX index_scan_result_policies_on_approval_policy_rule_id ON scan_result_policies USING btree (approval_policy_rule_id);
 
 CREATE UNIQUE INDEX index_scan_result_policies_on_configuration_action_and_rule_idx ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, project_id, orchestration_policy_idx, rule_idx, action_idx);
@@ -51318,15 +50465,17 @@ CREATE INDEX index_sec_finding_enrichments_on_vulnerability_id ON security_findi
 
 CREATE INDEX index_secret_rotation_infos_on_next_reminder_at ON secret_rotation_infos USING btree (next_reminder_at);
 
+CREATE UNIQUE INDEX index_security_attributes_on_category_name_not_deleted ON security_attributes USING btree (security_category_id, name) WHERE (deleted_at IS NULL);
+
 CREATE INDEX index_security_attributes_on_namespace_id ON security_attributes USING btree (namespace_id);
 
 CREATE INDEX index_security_attributes_on_namespace_id_where_not_deleted ON security_attributes USING btree (namespace_id) WHERE (deleted_at IS NULL);
 
-CREATE UNIQUE INDEX index_security_attributes_security_category_name ON security_attributes USING btree (security_category_id, name);
+CREATE INDEX index_security_attributes_on_security_category_id ON security_attributes USING btree (security_category_id);
 
-CREATE UNIQUE INDEX index_security_categories_namespace_name ON security_categories USING btree (namespace_id, name);
+CREATE INDEX index_security_categories_on_namespace_id ON security_categories USING btree (namespace_id);
 
-CREATE INDEX index_security_categories_on_namespace_id_where_not_deleted ON security_categories USING btree (namespace_id) WHERE (deleted_at IS NULL);
+CREATE UNIQUE INDEX index_security_categories_on_namespace_name_not_deleted ON security_categories USING btree (namespace_id, name) WHERE (deleted_at IS NULL);
 
 CREATE INDEX index_security_finding_enrichments_on_cve_enrichment_id_and_id ON security_finding_enrichments USING btree (cve_enrichment_id, id);
 
@@ -51368,13 +50517,17 @@ CREATE INDEX index_security_project_tracked_contexts_on_traversal_ids_id ON secu
 
 CREATE INDEX index_security_scan_execution_project_schedules_on_project_id ON security_scan_execution_project_schedules USING btree (project_id);
 
+CREATE INDEX index_security_scan_profile_configurations_on_namespace_id ON security_scan_profile_configurations USING btree (namespace_id);
+
 CREATE INDEX index_security_scan_profile_triggers_on_namespace_id ON security_scan_profile_triggers USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_security_scan_profile_triggers_on_profile_trigger_unique ON security_scan_profile_triggers USING btree (security_scan_profile_id, trigger_type);
 
-CREATE UNIQUE INDEX index_security_scan_profiles_namespace_scan_type_name ON security_scan_profiles USING btree (namespace_id, scan_type, lower(name));
+CREATE INDEX index_security_scan_profiles_on_namespace_id ON security_scan_profiles USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_security_scan_profiles_projects_on_unique_project_profile ON security_scan_profiles_projects USING btree (project_id, security_scan_profile_id);
+
+CREATE UNIQUE INDEX index_security_scan_profiles_unique_name_not_deleted ON security_scan_profiles USING btree (namespace_id, scan_type, lower(name)) WHERE (deleted_at IS NULL);
 
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
@@ -52020,6 +51173,8 @@ CREATE INDEX index_vuln_mgmt_policy_rules_on_policy_mgmt_project_id ON vulnerabi
 
 CREATE UNIQUE INDEX index_vuln_mgmt_policy_rules_on_unique_policy_rule_index ON vulnerability_management_policy_rules USING btree (security_policy_id, rule_index);
 
+CREATE INDEX index_vuln_mr_links_on_vuln_id_where_ai_created ON vulnerability_merge_request_links USING btree (vulnerability_id) WHERE (created_by_ai_workflow = true);
+
 CREATE INDEX index_vuln_namespace_hist_statistics_for_traversal_ids_update ON vulnerability_namespace_historical_statistics USING btree (namespace_id, id);
 
 CREATE INDEX index_vuln_namespace_statistics_gin_traversal_ids ON vulnerability_namespace_statistics USING gin (traversal_ids);
@@ -52297,6 +51452,8 @@ CREATE UNIQUE INDEX index_webauthn_registrations_on_credential_xid ON webauthn_r
 CREATE INDEX index_webauthn_registrations_on_user_id ON webauthn_registrations USING btree (user_id);
 
 CREATE INDEX index_webauthn_registrations_where_authn_mode_is_one ON webauthn_registrations USING btree (authentication_mode) WHERE (authentication_mode = 1);
+
+CREATE INDEX index_wi_positions_on_positioning_ns_id_and_relative_position ON work_item_positions USING btree (relative_positioning_namespace_id, relative_position);
 
 CREATE UNIQUE INDEX index_wiki_meta_user_mentions_on_wiki_page_meta_id_and_note_id ON wiki_page_meta_user_mentions USING btree (wiki_page_meta_id, note_id);
 
@@ -52594,14 +51751,6 @@ CREATE INDEX p_ci_builds_commit_id_type_name_ref_idx ON ONLY p_ci_builds USING b
 
 CREATE INDEX p_ci_builds_commit_id_type_ref_idx ON ONLY p_ci_builds USING btree (commit_id, type, ref);
 
-CREATE INDEX p_ci_builds_metadata_build_id_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) INCLUDE (id) WHERE (interruptible = true);
-
-CREATE INDEX p_ci_builds_metadata_build_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) WHERE (has_exposed_artifacts IS TRUE);
-
-CREATE UNIQUE INDEX p_ci_builds_metadata_build_id_partition_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id, partition_id);
-
-CREATE INDEX p_ci_builds_metadata_project_id_idx ON ONLY p_ci_builds_metadata USING btree (project_id);
-
 CREATE INDEX p_ci_builds_name_id_idx ON ONLY p_ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
 CREATE INDEX p_ci_builds_project_id_id_idx ON ONLY p_ci_builds USING btree (project_id, id);
@@ -52840,11 +51989,15 @@ CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHER
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
+CREATE INDEX tmp_idx_members_on_access_level_source_type_requested_at_id ON members USING btree (id) WHERE ((access_level = 5) AND ((source_type)::text = 'Namespace'::text) AND (requested_at IS NULL));
+
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_p_sent_notifications_on_noteable_id_for_epics ON ONLY p_sent_notifications USING btree (noteable_id) WHERE (noteable_type = 'Epic'::text);
 
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
+
+CREATE INDEX tmp_idx_repository_languages_on_programming_language_id ON repository_languages USING btree (programming_language_id);
 
 CREATE INDEX tmp_idx_sbom_occurrence_refs_on_project_id_id ON sbom_occurrence_refs USING btree (project_id, id);
 
@@ -52859,6 +52012,8 @@ CREATE INDEX tmp_idx_vulnerability_occurrences_on_project_id_id ON vulnerability
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE INDEX tmp_index_namespace_settings_on_experiment_features_enabled ON namespace_settings USING btree (namespace_id) WHERE (experiment_features_enabled IS TRUE);
+
+CREATE INDEX tmp_index_notes_on_id_with_namespace_and_project ON notes USING btree (id) WHERE ((namespace_id IS NOT NULL) AND (project_id IS NOT NULL));
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
@@ -52979,6 +52134,10 @@ CREATE UNIQUE INDEX unique_compliance_security_policies_security_policy_id ON co
 CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_name ON audit_events_external_audit_event_destinations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
+
+CREATE UNIQUE INDEX unique_govern_policies_organization_id_and_name ON govern_policies USING btree (organization_id, name);
+
+CREATE UNIQUE INDEX unique_govern_policy_enforcements_org_policy_and_project ON govern_policy_enforcements USING btree (organization_id, govern_policy_id, project_id) WHERE (project_id IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_idx_ai_catalog_items_on_org_id_identifier_item_type ON ai_catalog_items USING btree (organization_id, identifier, item_type);
 
@@ -55956,390 +55115,6 @@ ALTER INDEX i_vreg_pkgs_npm_cache_remote_entries_on_relative_path_trigram ATTACH
 
 ALTER INDEX i_vreg_pkgs_npm_cache_remote_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_npm_cache_remote_relative_path_idx9;
 
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62_pkey;
-
-ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63_last_edited_by_id_idx;
-
-ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63_namespace_id_idx;
-
-ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63_pkey;
-
 ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION abuse_report_uploads_checksum_idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_model_uploader_created_at ATTACH PARTITION abuse_report_uploads_model_id_model_type_uploader_created_a_idx;
@@ -56956,10 +55731,6 @@ CREATE TRIGGER assign_ci_runner_taggings_id_trigger BEFORE INSERT ON ci_runner_t
 
 CREATE TRIGGER assign_ci_runners_id_trigger BEFORE INSERT ON ci_runners FOR EACH ROW EXECUTE FUNCTION assign_ci_runners_id_value();
 
-CREATE TRIGGER assign_p_ci_build_tags_id_trigger BEFORE INSERT ON p_ci_build_tags FOR EACH ROW EXECUTE FUNCTION assign_p_ci_build_tags_id_value();
-
-CREATE TRIGGER assign_p_ci_builds_execution_configs_id_trigger BEFORE INSERT ON p_ci_builds_execution_configs FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_execution_configs_id_value();
-
 CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
 
 CREATE TRIGGER assign_p_ci_job_annotations_id_trigger BEFORE INSERT ON p_ci_job_annotations FOR EACH ROW EXECUTE FUNCTION assign_p_ci_job_annotations_id_value();
@@ -56973,6 +55744,8 @@ CREATE TRIGGER assign_p_ci_pipelines_id_trigger BEFORE INSERT ON p_ci_pipelines 
 CREATE TRIGGER assign_p_ci_stages_id_trigger BEFORE INSERT ON p_ci_stages FOR EACH ROW EXECUTE FUNCTION assign_p_ci_stages_id_value();
 
 CREATE TRIGGER assign_p_duo_workflows_checkpoint_blobs_id_trigger BEFORE INSERT ON p_duo_workflows_checkpoint_blobs FOR EACH ROW EXECUTE FUNCTION assign_p_duo_workflows_checkpoint_blobs_id_value();
+
+CREATE TRIGGER assign_p_duo_workflows_checkpoint_headers_id_trigger BEFORE INSERT ON p_duo_workflows_checkpoint_headers FOR EACH ROW EXECUTE FUNCTION assign_p_duo_workflows_checkpoint_headers_id_value();
 
 CREATE TRIGGER assign_p_duo_workflows_checkpoints_id_trigger BEFORE INSERT ON p_duo_workflows_checkpoints FOR EACH ROW EXECUTE FUNCTION assign_p_duo_workflows_checkpoints_id_value();
 
@@ -57491,8 +56264,6 @@ CREATE TRIGGER trigger_b83b7e51e2f5 BEFORE INSERT OR UPDATE ON scan_result_polic
 CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
 
 CREATE TRIGGER trigger_bulk_import_batch_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_batch_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_batch_trackers_sharding_key();
-
-CREATE TRIGGER trigger_bulk_import_exports_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_exports FOR EACH ROW EXECUTE FUNCTION bulk_import_exports_sharding_key();
 
 CREATE TRIGGER trigger_bulk_import_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_trackers_sharding_key();
 
@@ -58020,6 +56791,9 @@ ALTER TABLE ONLY cluster_agent_migrations
 ALTER TABLE ONLY bulk_import_trackers
     ADD CONSTRAINT fk_13c8d30bfb FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_agent_identities
+    ADD CONSTRAINT fk_13f32a9c67 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_control_compliance_statuses
     ADD CONSTRAINT fk_13fb61bcfa FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -58211,6 +56985,9 @@ ALTER TABLE ONLY security_pipeline_execution_project_schedules
 
 ALTER TABLE p_ci_build_trace_metadata
     ADD CONSTRAINT fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_agent_identities
+    ADD CONSTRAINT fk_22685ec132 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_firewall_policy_rules
     ADD CONSTRAINT fk_22827be539 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -58539,6 +57316,9 @@ ALTER TABLE ONLY ai_catalog_mcp_servers_users
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_catalog_mcp_server_blocks
+    ADD CONSTRAINT fk_38db221a21 FOREIGN KEY (ai_catalog_mcp_server_id) REFERENCES ai_catalog_mcp_servers(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY import_export_uploads
     ADD CONSTRAINT fk_38e11735aa FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -58686,6 +57466,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 ALTER TABLE ONLY cd_service_environment_healths
     ADD CONSTRAINT fk_465b9ae2c4 FOREIGN KEY (service_id) REFERENCES cd_services(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT fk_47761ddbef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_permission_export_upload_upload_states
     ADD CONSTRAINT fk_47faf4aabf FOREIGN KEY (user_permission_export_upload_upload_id) REFERENCES user_permission_export_upload_uploads(id) ON DELETE CASCADE;
 
@@ -58730,6 +57513,9 @@ ALTER TABLE ONLY workspace_agentk_states
 
 ALTER TABLE ONLY ai_active_context_tasks
     ADD CONSTRAINT fk_4b21032502 FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_scan_profile_triggers
+    ADD CONSTRAINT fk_4b398cbb69 FOREIGN KEY (security_scan_profile_configuration_id) REFERENCES security_scan_profile_configurations(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY enabled_foundational_flows
     ADD CONSTRAINT fk_4b4e102eb8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -58863,6 +57649,9 @@ ALTER TABLE ONLY merge_request_diffs
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY application_settings
+    ADD CONSTRAINT fk_56ede6e5ab FOREIGN KEY (o11y_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY project_repository_states
     ADD CONSTRAINT fk_57201a9be7 FOREIGN KEY (project_repository_id) REFERENCES project_repositories(id) ON DELETE CASCADE NOT VALID;
 
@@ -58953,6 +57742,9 @@ ALTER TABLE ONLY issue_assignees
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT fk_5e1572387c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_version_sets
+    ADD CONSTRAINT fk_5e1f7c4094 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_5e51d70fab FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -59021,6 +57813,9 @@ ALTER TABLE ONLY cd_artifact_sources
 
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT fk_63097c0adc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_mcp_server_blocks
+    ADD CONSTRAINT fk_6323ec3250 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY saml_group_links
     ADD CONSTRAINT fk_6336b1d1d0 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
@@ -59445,6 +58240,9 @@ ALTER TABLE ONLY related_epic_links
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_8264eab4ae FOREIGN KEY (pipeline_execution_policy_bot_access_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY catalog_bundled_resource_components
+    ADD CONSTRAINT fk_82ac455980 FOREIGN KEY (catalog_bundled_version_id) REFERENCES catalog_bundled_resource_versions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY group_wiki_repository_states
     ADD CONSTRAINT fk_832511c9f1 FOREIGN KEY (group_wiki_repository_id) REFERENCES group_wiki_repositories(group_id) ON DELETE CASCADE;
 
@@ -59477,6 +58275,9 @@ ALTER TABLE ONLY scan_result_policies
 
 ALTER TABLE ONLY requirements
     ADD CONSTRAINT fk_85044baef0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_bundled_resource_versions
+    ADD CONSTRAINT fk_85b0753c0d FOREIGN KEY (catalog_bundled_resource_id) REFERENCES catalog_bundled_resources(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY catalog_resource_components
     ADD CONSTRAINT fk_85bb1d1e79 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -59955,6 +58756,9 @@ ALTER TABLE ONLY merge_request_metrics
 ALTER TABLE ONLY packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_ae9b989220 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT fk_aee7ef2ca4 FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_date_field_values
     ADD CONSTRAINT fk_aefe8caa2b FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -60087,6 +58891,9 @@ ALTER TABLE ONLY customer_relations_contacts
 ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens
     ADD CONSTRAINT fk_b961a3df76 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_mcp_server_blocks
+    ADD CONSTRAINT fk_b98a05a2bf FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_b9a3851b82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -60137,9 +58944,6 @@ ALTER TABLE ONLY workspaces
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_bdc8715f08 FOREIGN KEY (duo_dependency_bump_breaking_changes_enabled_by_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY bulk_import_exports
-    ADD CONSTRAINT fk_bde1337d10 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ascp_security_guidelines
     ADD CONSTRAINT fk_be2c636993 FOREIGN KEY (security_context_id) REFERENCES ascp_security_contexts(id) ON DELETE CASCADE;
@@ -60324,11 +59128,17 @@ ALTER TABLE ONLY cluster_providers_aws
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_cdfc40b861 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY mobile_device_push_subscriptions
+    ADD CONSTRAINT fk_ce6837f03a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_dependencies
     ADD CONSTRAINT fk_cea1124da7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_oncall_rotations
     ADD CONSTRAINT fk_cecf1b51f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_mcp_server_blocks
+    ADD CONSTRAINT fk_cedee13ed3 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_agent_plans
     ADD CONSTRAINT fk_cf364a6cc2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -60392,6 +59202,9 @@ ALTER TABLE ONLY jira_tracker_data
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_bundled_resource_components
+    ADD CONSTRAINT fk_d3c7ceb004 FOREIGN KEY (catalog_bundled_resource_id) REFERENCES catalog_bundled_resources(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_admin_roles
     ADD CONSTRAINT fk_d3e201cb93 FOREIGN KEY (admin_role_id) REFERENCES admin_roles(id) ON DELETE CASCADE;
@@ -60540,6 +59353,9 @@ ALTER TABLE ONLY issues
 ALTER TABLE p_duo_workflows_checkpoint_blobs
     ADD CONSTRAINT fk_duo_wf_checkpoint_blobs_workflow_id FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
 
+ALTER TABLE p_duo_workflows_checkpoint_headers
+    ADD CONSTRAINT fk_duo_wf_checkpoint_headers_workflow_id FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_duo_workflows_workflows_ai_catalog_item_id FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE SET NULL;
 
@@ -60563,9 +59379,6 @@ ALTER TABLE ONLY ci_sources_pipelines
 
 ALTER TABLE ONLY cd_rollouts
     ADD CONSTRAINT fk_e1c7f6029e FOREIGN KEY (version_set_id) REFERENCES cd_version_sets(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_builds_metadata
-    ADD CONSTRAINT fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_e23067f9e1 FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -60705,6 +59518,9 @@ ALTER TABLE ONLY issuable_resource_links
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_ecd6ae5828 FOREIGN KEY (agent_identity_id) REFERENCES ai_agent_identities(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY issue_emails
     ADD CONSTRAINT fk_ed0f4c4b51 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -60812,6 +59628,9 @@ ALTER TABLE ONLY cd_application_flow_definitions
 
 ALTER TABLE ONLY observability_metrics_issues_connections
     ADD CONSTRAINT fk_f218d84a14 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT fk_f22b60875d FOREIGN KEY (rollout_environment_id) REFERENCES cd_rollout_environments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_f25d0fbfae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -61440,6 +60259,9 @@ ALTER TABLE ONLY group_import_states
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT fk_rails_3263f29616 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_scan_profile_configurations
+    ADD CONSTRAINT fk_rails_32d65a5f07 FOREIGN KEY (security_scan_profile_id) REFERENCES security_scan_profiles(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY container_repositories
     ADD CONSTRAINT fk_rails_32f7bf5aad FOREIGN KEY (project_id) REFERENCES projects(id);
 
@@ -61779,6 +60601,9 @@ ALTER TABLE ONLY packages_debian_project_architectures
 ALTER TABLE ONLY virtual_registries_container_registry_upstreams
     ADD CONSTRAINT fk_rails_583c557285 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_request_saved_views
+    ADD CONSTRAINT fk_rails_5894b59c1e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE merge_requests_merge_data
     ADD CONSTRAINT fk_rails_593f9b7924 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -61992,6 +60817,9 @@ ALTER TABLE p_ci_job_definition_instances
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_rails_6b39844d44 FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY artifact_registry_namespace_mappings
+    ADD CONSTRAINT fk_rails_6b39bd2ff6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY error_tracking_errors
     ADD CONSTRAINT fk_rails_6b41f837ba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -62115,6 +60943,9 @@ ALTER TABLE ONLY work_item_date_field_values
 ALTER TABLE ONLY scan_execution_policy_rules
     ADD CONSTRAINT fk_rails_7be2571ecf FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY govern_policy_enforcements
+    ADD CONSTRAINT fk_rails_7c42c73888 FOREIGN KEY (govern_policy_id) REFERENCES govern_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
@@ -62159,9 +60990,6 @@ ALTER TABLE ONLY required_code_owners_sections
 
 ALTER TABLE ONLY personal_access_token_granular_scopes
     ADD CONSTRAINT fk_rails_824dd5f58e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_build_tags
-    ADD CONSTRAINT fk_rails_8284d35c66 FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespace_ldap_settings
     ADD CONSTRAINT fk_rails_82cd0ad4bb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -62637,9 +61465,6 @@ ALTER TABLE p_ci_build_names
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_bc8972fa55 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ci_builds_execution_configs
-    ADD CONSTRAINT fk_rails_bc9ff5d0a9_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE ONLY observability_traces_issues_connections
     ADD CONSTRAINT fk_rails_bcf18aa0d2 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -62734,7 +61559,7 @@ ALTER TABLE ONLY scim_oauth_access_tokens
     ADD CONSTRAINT fk_rails_c84404fb6c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrences
-    ADD CONSTRAINT fk_rails_c8661a61eb FOREIGN KEY (primary_identifier_id) REFERENCES vulnerability_identifiers(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_c8661a61eb_p FOREIGN KEY (partition_id, primary_identifier_id) REFERENCES vulnerability_identifiers(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_export_jobs
     ADD CONSTRAINT fk_rails_c88d8db2e1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -62858,9 +61683,6 @@ ALTER TABLE ONLY user_project_member_roles
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_build_tags
-    ADD CONSTRAINT fk_rails_d7bd025909 FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY note_metadata
     ADD CONSTRAINT fk_rails_d853224d37 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

@@ -99,7 +99,7 @@ Secret push protection is allowed on the instance. To use this feature, you must
 
 Prerequisites:
 
-- You must have the Security Manager, Maintainer or Owner role for the project.
+- You must have the Security Manager, Maintainer, or Owner role for the project.
 - On GitLab Dedicated and GitLab Self-Managed, you must allow secret push protection on the instance.
 
 To enable secret push protection in a project:
@@ -148,6 +148,23 @@ Secret push protection does not check a file in a commit when:
 
 Secret push protection scans only the diffs of commits pushed over HTTP(S) and SSH.
 If a secret is already present in a file and not part of the changes, it is not detected.
+
+## Audit events
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/604787) in GitLab 19.3.
+
+{{< /history >}}
+
+[Audit events](../../../compliance/audit_event_types.md#secret-detection) are logged when:
+
+- Secret push protection is skipped because a push contains [too many changed paths](#push-size-threshold).
+- Secret push protection is skipped because a push [changes too many lines](#push-size-threshold).
+- Secret push protection scan timeout occurs and GitLab accepts the push.
+- Secret push protection encounters a ruleset parse or compile error.
+- Secret push protection is skipped because the scan received invalid input.
+- Secret push protection encounters an unexpected scan error.
 
 ## Push size threshold
 

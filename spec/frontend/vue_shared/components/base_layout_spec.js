@@ -1,5 +1,6 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 
@@ -21,6 +22,7 @@ describe('BaseLayout', () => {
   const findAlerts = () => wrapper.findByTestId('base-layout-alerts');
   const findContent = () => wrapper.findByTestId('base-layout-content');
   const findStickyHeader = () => wrapper.findByTestId('base-layout-sticky-header');
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
   describe('PageHeading', () => {
     describe('heading', () => {
@@ -33,6 +35,11 @@ describe('BaseLayout', () => {
       it('renders when heading slot is provided', () => {
         createComponent({}, { heading: 'Custom Heading' });
         expect(findHeading().exists()).toBe(true);
+      });
+
+      it('renders actions inline with the heading', () => {
+        createComponent({ heading: 'Test Heading' });
+        expect(findPageHeading().props('inlineActions')).toBe(true);
       });
     });
 
@@ -154,6 +161,45 @@ describe('BaseLayout', () => {
           { 'sticky-header': '<span>Custom sticky header</span>' },
         );
         expect(findStickyHeader().text()).toBe('Custom sticky header');
+      });
+    });
+
+    describe('header height CSS variables', () => {
+      const HEIGHT = 64;
+      const LIVE_VAR = '--layout-sticky-header-height';
+      const RESERVED_VAR = '--layout-sticky-header-reserved-height';
+      const getVar = (name) => document.documentElement.style.getPropertyValue(name).trim();
+
+      const mountWithStickyHeader = () => {
+        createComponent({ heading: 'Test Heading' }, { 'sticky-header': '<span>Sticky</span>' });
+        jest.spyOn(findStickyHeader().element, 'offsetHeight', 'get').mockReturnValue(HEIGHT);
+      };
+
+      afterEach(() => {
+        document.documentElement.style.removeProperty(LIVE_VAR);
+        document.documentElement.style.removeProperty(RESERVED_VAR);
+      });
+
+      it('sets the live and reserved header height when the header sticks', async () => {
+        mountWithStickyHeader();
+
+        findIntersectionObserver().vm.$emit('disappear');
+        await waitForPromises();
+
+        expect(getVar(LIVE_VAR)).toBe(`${HEIGHT}px`);
+        expect(getVar(RESERVED_VAR)).toBe(`${HEIGHT}px`);
+      });
+
+      it('removes the live var but keeps the reserved var when the header hides', async () => {
+        mountWithStickyHeader();
+
+        findIntersectionObserver().vm.$emit('disappear');
+        await waitForPromises();
+        findIntersectionObserver().vm.$emit('appear');
+        await waitForPromises();
+
+        expect(getVar(LIVE_VAR)).toBe('');
+        expect(getVar(RESERVED_VAR)).toBe(`${HEIGHT}px`);
       });
     });
   });

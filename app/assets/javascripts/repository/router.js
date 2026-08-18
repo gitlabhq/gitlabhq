@@ -2,6 +2,7 @@ import { escapeRegExp } from 'lodash-es';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
+import { projectPath } from '~/lib/utils/path_helpers/project';
 import { encodeRepositoryPath } from './utils/url_utility';
 import { setTitle } from './utils/title';
 import BlobPage from './pages/blob.vue';
@@ -21,7 +22,7 @@ const normalizePathParam = (pathParam) => {
   return pathParam?.replace(/^\//, '') || '/';
 };
 
-export default function createRouter(base, baseRef, fullName) {
+export default function createRouter(projectFullPath, baseRef, fullName) {
   const treePathRoute = {
     component: TreePage,
     props: (route) => ({
@@ -33,7 +34,7 @@ export default function createRouter(base, baseRef, fullName) {
     component: BlobPage,
     props: (route) => {
       return {
-        projectPath: base,
+        projectPath: projectFullPath,
         refType: getRefType(route.query.ref_type || null),
       };
     },
@@ -41,7 +42,7 @@ export default function createRouter(base, baseRef, fullName) {
 
   const router = new VueRouter({
     mode: 'history',
-    base: joinPaths(gon.relative_url_root || '', base),
+    base: projectPath(projectFullPath),
     routes: [
       {
         name: 'treePathDecoded',
@@ -93,16 +94,14 @@ export default function createRouter(base, baseRef, fullName) {
     ],
   });
 
-  // Tree/blob views want a fluid container so the file tree browser + content get the
-  // extra horizontal space. The Rails @force_fluid_layout only fires on initial render,
-  // so client-side navigation needs to update the outer container class here. The
-  // container is the parent of #content-body — the alert wrapper rendered above it is
-  // also a .container-fluid direct child of .js-static-panel-inner, so class selectors
-  // alone would match the wrong element. We capture the initial container-limited
-  // state once so non-fluid routes restore the user's layout preference rather than
-  // unconditionally re-adding container-limited.
+  // Tree/blob views host the file tree browser + content side by side, so on Fixed
+  // layout they get a wider max-width via `.repository-max-width` (see
+  // page_bundles/tree.scss). The Rails @content_class only fires on
+  // initial render, so client-side navigation needs to update the outer container
+  // class here. The container is the parent of #content-body — the alert wrapper
+  // rendered above it is also a .container-fluid direct child of
+  // .js-static-panel-inner, so class selectors alone would match the wrong element.
   const containerEl = document.getElementById('content-body')?.parentElement;
-  const wasLimitedInitially = containerEl?.classList.contains('container-limited') ?? false;
 
   router.afterEach(({ params: { path }, name }) => {
     const needsClosingSlash = !name.includes('blobPath');
@@ -110,7 +109,7 @@ export default function createRouter(base, baseRef, fullName) {
     window.gl.webIDEPath = webIDEUrl(
       joinPaths(
         '/',
-        base,
+        projectFullPath,
         'edit',
         decodeURI(baseRef),
         '-',
@@ -124,8 +123,8 @@ export default function createRouter(base, baseRef, fullName) {
     setTitle(titlePath || '', baseRef, fullName);
 
     if (containerEl) {
-      const fluidRoute = name?.startsWith('treePath') || name?.startsWith('blobPath');
-      containerEl.classList.toggle('container-limited', fluidRoute ? false : wasLimitedInitially);
+      const wideRoute = name?.startsWith('treePath') || name?.startsWith('blobPath');
+      containerEl.classList.toggle('repository-max-width', wideRoute);
     }
   });
 

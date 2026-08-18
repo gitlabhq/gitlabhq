@@ -37,6 +37,11 @@ class SearchController < ApplicationController
 
   before_action :check_scope_global_search_enabled, except: :opensearch
 
+  # The OpenSearch description is static and public, but browsers fetch it with cookies shortly
+  # after a page load. Committing the session here would overwrite what a request that started
+  # earlier stored in it.
+  before_action :skip_session, only: :opensearch
+
   requires_cross_project_access if: -> do
     search_term_present = search_params[:search].present? || autocomplete_params[:term].present?
     search_term_present && !search_params[:project_id].present?
@@ -339,6 +344,10 @@ class SearchController < ApplicationController
     return if search_service.global_search_enabled_for_scope?
 
     redirect_to search_path, alert: _('Global Search is disabled for this scope')
+  end
+
+  def skip_session
+    request.session_options[:skip] = true
   end
 
   def render_timeout(exception)

@@ -92,8 +92,8 @@ describe('WorkItemDescriptionTemplateListbox', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTemplateMessage = () => wrapper.findByTestId('template-message');
   const findTemplateMessageLink = () => wrapper.findComponent(GlLink);
-  const findClearButton = () => wrapper.findByTestId('clear-template');
-  const findResetButton = () => wrapper.findByTestId('reset-template');
+  const findClearButton = () => wrapper.findComponentByTestId('clear-template');
+  const findResetButton = () => wrapper.findComponentByTestId('reset-template');
 
   it('displays a skeleton loader', () => {
     createComponent();
@@ -293,7 +293,7 @@ describe('WorkItemDescriptionTemplateListbox', () => {
         });
 
         it('emits the selected template', () => {
-          expect(wrapper.emitted('selectTemplate')).toEqual([[{ name, category, projectId }]]);
+          expect(wrapper.emitted('select-template')).toEqual([[{ name, category, projectId }]]);
         });
       });
     });

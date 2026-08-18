@@ -1,5 +1,7 @@
 import { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
 import {
@@ -10,7 +12,24 @@ import {
 } from '~/invite_members/constants';
 import { GlEmoji } from '../mock_data/member_modal';
 
+let mockFailModuleLoad = false;
+const mockInitInviteMembersModal = jest.fn();
+
 jest.mock('~/experimentation/experiment_tracking');
+jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/invite_members/init_invite_members_modal', () => ({
+  __esModule: true,
+  get default() {
+    if (mockFailModuleLoad) {
+      throw new Error('chunk load failed');
+    }
+    return mockInitInviteMembersModal;
+  },
+}));
+
+beforeEach(() => {
+  mockFailModuleLoad = false;
+});
 
 const displayText = 'Invite team members';
 const triggerSource = '_trigger_source_';
@@ -74,11 +93,56 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
       spy = jest.spyOn(eventHub, '$emit');
     });
 
-    it('emits openModal from a named source', () => {
+    it('emits openModal from a named source', async () => {
       createComponent();
 
       findButton().vm.$emit('click');
+      await waitForPromises();
 
+      expect(spy).toHaveBeenCalledWith('open-modal', {
+        source: triggerSource,
+      });
+    });
+
+    it('initializes the modal before emitting, so the event is not missed', async () => {
+      const callOrder = [];
+      mockInitInviteMembersModal.mockImplementation(() => callOrder.push('init'));
+      spy.mockImplementation(() => callOrder.push('emit'));
+
+      createComponent();
+
+      findButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(callOrder).toEqual(['init', 'emit']);
+    });
+
+    it('still emits and reports to Sentry when the modal fails to initialize', async () => {
+      const error = new Error('failed to initialize');
+      mockInitInviteMembersModal.mockImplementationOnce(() => {
+        throw error;
+      });
+
+      createComponent();
+
+      findButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(captureException).toHaveBeenCalledWith(error);
+      expect(spy).toHaveBeenCalledWith('open-modal', {
+        source: triggerSource,
+      });
+    });
+
+    it('still emits and reports to Sentry when the modal chunk fails to load', async () => {
+      mockFailModuleLoad = true;
+
+      createComponent();
+
+      findButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(captureException).toHaveBeenCalledWith(expect.any(Error));
       expect(spy).toHaveBeenCalledWith('open-modal', {
         source: triggerSource,
       });
@@ -120,8 +184,9 @@ describe('disclosure dropdown item', () => {
     expect(findTrigger().text()).toBe(displayText);
   });
 
-  it('emits modalOpened which clicked', () => {
+  it('emits modalOpened which clicked', async () => {
     findTrigger().vm.$emit('action');
+    await waitForPromises();
 
     expect(wrapper.emitted('modal-opened')).toHaveLength(1);
   });

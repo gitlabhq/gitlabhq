@@ -13,6 +13,12 @@ export const TABS = [
     title: __('Direct members'),
     queryParamValue: TAB_QUERY_PARAM_VALUES.directMembers,
     lazy: true,
+    // Always show the Direct members tab on the project members page, even when a
+    // project has no direct members (all access inherited from the parent group),
+    // so the tab is discoverable. The seeded count is accurate (see
+    // `direct_members_count`); `alwaysShow` only surfaces the tab when its store
+    // module exists, so it does not leak onto the group members page.
+    alwaysShow: true,
   },
   {
     namespace: MEMBERS_TAB_TYPES.group,

@@ -7,6 +7,7 @@ import {
   GlForm,
   GlFormFields,
   GlTruncate,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/src/utils';
 import { produce } from 'immer';
@@ -38,6 +39,7 @@ export default {
     GlTruncate,
     MountingPortal,
   },
+  mixins: [GlToastMixin],
   inject: ['groupFullPath', 'groupId', 'gitlabLogoPath'],
   props: {
     isEditMode: {

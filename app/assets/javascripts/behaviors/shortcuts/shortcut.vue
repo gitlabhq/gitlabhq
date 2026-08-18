@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { getModifierKey } from '~/constants';
 import { __, s__ } from '~/locale';
@@ -40,6 +39,7 @@ const symbolMap = {
 };
 
 export default normalizeRender({
+  name: 'KeyboardShortcut',
   functional: true,
   props: {
     shortcuts: {

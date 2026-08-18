@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :portfolio_management do
+RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :planning_views do
   include Features::SortingHelpers
   include FilteredSearchHelpers
 
@@ -124,7 +124,13 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :portfolio_m
 
     it 'remembers last sorting value' do
       pajamas_sort_by 'Updated date', from: 'Created date'
-      wait_for_requests
+
+      # There's no UI signal, so wait for the preference to change.
+      # Must poll more slowly than default, otherwise the database starves (!).
+      wait_for('issues sort preference to be saved',
+        max_wait_time: 2 * Capybara.default_max_wait_time, polling_interval: 0.1) do
+        user.reload.user_preference.issues_sort == 'updated_desc'
+      end
 
       visit issues_dashboard_path(assignee_username: user.username)
 

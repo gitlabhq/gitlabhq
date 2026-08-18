@@ -16,6 +16,10 @@ module Observability
     alias_method :group=, :namespace=
 
     validates :o11y_service_url, length: { maximum: 255 }, addressable_url: { message: 'is invalid' }
+    validates :o11y_otel_url, length: { maximum: 255 },
+      addressable_url: { message: 'is invalid' }, allow_blank: true
+    validates :o11y_mcp_url, length: { maximum: 255 },
+      addressable_url: { message: 'is invalid' }, allow_blank: true
     validate :validate_email_format
     encrypts :o11y_service_password, :o11y_service_post_message_encryption_key
     validates :o11y_service_password, length: { maximum: 510 },
@@ -126,7 +130,8 @@ module Observability
     end
 
     def otel_https_endpoint
-      "https://#{otel_address}:14318"
+      uri = Addressable::URI.parse(o11y_otel_url)
+      "https://#{uri.host}:#{uri.port || 14318}"
     end
 
     def otel_grpcs_endpoint
@@ -134,13 +139,21 @@ module Observability
     end
 
     def otel_address
-      if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- endpoint differs between SaaS and self-managed
-        "#{o11y_service_name}.otel.gitlab-o11y.com"
-      else
-        raise ArgumentError, "o11y_service_url must be present" if o11y_service_url.blank?
+      Addressable::URI.parse(o11y_otel_url).host
+    end
 
-        Addressable::URI.parse(o11y_service_url).host
-      end
+    def o11y_otel_url
+      super.presence || "https://#{o11y_service_name}.otel.gitlab-o11y.com:14318"
+    end
+
+    def o11y_mcp_url
+      super.presence || "https://#{o11y_service_name}.mcp.gitlab-o11y.com/mcp"
+    end
+
+    def read_attribute_for_validation(attribute)
+      return read_attribute(attribute) if %i[o11y_otel_url o11y_mcp_url].include?(attribute.to_sym)
+
+      super
     end
 
     private

@@ -3,8 +3,7 @@
 module QA
   RSpec.describe 'Create', feature_category: :source_code_management do
     describe 'Git push over HTTP' do
-      it 'user pushes code to the repository', :smoke, :skip_fips_env,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347747' do
+      it 'user pushes code to the repository', :smoke, :skip_fips_env do
         Flow::Login.sign_in
 
         Resource::Repository::ProjectPush.fabricate! do |push|
@@ -20,8 +19,7 @@ module QA
       end
 
       it 'pushes to a project using a specific Praefect repository storage',
-        :smoke, :skip_fips_env, :requires_admin, :skip_live_env, :requires_praefect,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347789' do
+        :smoke, :skip_fips_env, :requires_admin, :skip_live_env, :requires_praefect do
         Flow::Login.sign_in_as_admin
 
         project = create(:project,

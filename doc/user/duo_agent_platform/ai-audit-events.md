@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Browse and filter a unified record of GitLab Duo agent activity for compliance and governance purposes.
-title: AI audit event report
+title: Audit AI events
 ---
 
 {{< details >}}
@@ -25,7 +25,7 @@ title: AI audit event report
 > It is subject to change without notice.
 > For more information, see [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
-The AI audit event report gives security and compliance teams a unified,
+Use the AI audit event report for a unified,
 browsable record of GitLab Duo agent activity. Each agent session produces
 a comprehensive audit artifact that you can inspect.
 
@@ -58,6 +58,7 @@ You can filter the session list to narrow results:
 
 - **Project**: Filter by project path, or exclude a specific project.
 - **Date range**: Filter sessions created after or before a specific date.
+- **Triggered by**: Filter by the user who triggered the session, or exclude a specific user.
 
 ## View session details
 
@@ -96,22 +97,49 @@ Prerequisites:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
-1. In the **Data privacy** section, select **Enable AI audit event storage**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, select **Store AI audit events**.
 1. Select **Save changes**.
 
 ### Enable storage for a project
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **GitLab Duo**.
-1. In the **Data privacy** section, select **Enable AI audit event storage**.
+1. Select **Settings** > **General**.
+1. Expand the **GitLab Duo** section.
+1. Turn on the **Store AI audit events** toggle.
 1. Select **Save changes**.
 
-If the setting is locked by a parent group, the checkbox is disabled and
+If the setting is locked by a parent group, the control is disabled and
 cannot be changed at the project level.
+
+## Event attribution with composite identity
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247149) in GitLab 19.3.
+
+{{< /history >}}
+
+When an agent session runs with a [composite identity](composite_identity.md),
+which is the default identity for agent sessions, the AI audit events for the session
+are attributed to the service account.
+The `author_id` field contains the user ID of the service account, and the
+service account appears as the event author.
+
+The event `details` field records the human user who started the session:
+
+| Field                   | Description                |
+|-------------------------|----------------------------|
+| `human_author_id`       | User ID of the human user  |
+| `human_author_name`     | Name of the human user     |
+| `human_author_username` | Username of the human user |
+
+When a session is authenticated with a human user's own token, the human user
+is the event author and the `human_author_*` fields are not added.
 
 ## Related topics
 
 - [GitLab Duo Agent Platform](_index.md)
-- [Audit events](../../user/compliance/audit_events.md)
-- [Audit event types](../../user/compliance/audit_event_types.md)
+- [Audit events](../compliance/audit_events.md)
+- [Audit event types](../compliance/audit_event_types.md)
 - [Audit event reports](../../administration/compliance/audit_event_reports.md)

@@ -10,7 +10,7 @@ identifiers:
 additional_properties:
   property:
     description: The specific metadata field key that was hidden (e.g., assignee, labels, milestone, weight, health_status)
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
   - team_planning
 milestone: '18.3'

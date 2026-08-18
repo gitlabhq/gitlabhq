@@ -8,6 +8,9 @@ module API
     include Helpers::Unidiff
     include APIGuard
 
+    MAX_BATCH_BLOBS_FILES = 20
+    BATCH_BLOB_SIZE_LIMIT = 1.megabyte
+
     content_type :txt, 'text/plain'
 
     helpers ::API::Helpers::HeadersHelpers
@@ -66,7 +69,7 @@ module API
         desc: 'The ID or URL-encoded path of the project',
         documentation: { example: 1 }
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         include Gitlab::RepositoryArchiveRateLimiter
 
@@ -113,16 +116,23 @@ module API
         end
       end
 
-      desc 'Get a project repository tree' do
-        success Entities::TreeObject
+      desc 'List all repository trees in a project' do
+        detail 'Lists all repository files and directories in a specified project. This endpoint can be accessed ' \
+          'without authentication if the repository is publicly accessible. This command provides essentially the ' \
+          'same features as the `git ls-tree` command. Use `with_last_commit` to include the last commit that ' \
+          'changed each entry. `with_last_commit` cannot be combined with `recursive`.'
+        success [Entities::TreeObject]
+        failure [{ code: 400, message: 'Bad Request' }, { code: 404, message: '404 Project Not Found' }]
         tags ['repositories']
       end
       params do
-        optional :ref, type: String,
+        optional :ref, type: String, limit: 1024,
           desc: 'The name of a repository branch or tag, if not given the default branch is used',
           documentation: { example: 'main' }
-        optional :path, type: String, desc: 'The path of the tree', documentation: { example: 'files/html' }
+        optional :path, type: String, limit: 1024, desc: 'The path of the tree', documentation: { example: 'files/html' }
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+        optional :with_last_commit, type: Boolean, default: false,
+          desc: 'Include the last commit for each tree entry. Cannot be combined with "recursive"'
 
         use :pagination
         optional :pagination, type: String, values: %w[legacy keyset none], default: 'legacy', desc: 'Specify the pagination method ("none" is only valid if "recursive" is true)'
@@ -137,6 +147,10 @@ module API
           given recursive: ->(value) { value == false } do
             validates([:pagination], except_values: { value: 'none', message: 'cannot be "none" unless "recursive" is true' })
           end
+        end
+
+        given with_last_commit: ->(value) { value == true } do
+          validates([:recursive], except_values: { value: [true], message: 'cannot be "true" when "with_last_commit" is "true"' })
         end
       end
       route_setting :authorization, permissions: :read_repository_tree, boundary_type: :project
@@ -154,7 +168,9 @@ module API
       end
 
       route_setting :authorization, permissions: :read_repository_blob, boundary_type: :project
-      desc 'Get raw blob contents from the repository' do
+      desc 'Retrieve raw blob content' do
+        detail 'Retrieves the raw file contents for a blob, by blob SHA. This endpoint can be accessed without ' \
+          'authentication if the repository is publicly accessible.'
         tags ['repositories']
       end
       params do
@@ -169,7 +185,9 @@ module API
         send_git_blob @repo, @blob
       end
 
-      desc 'Get a blob from the repository' do
+      desc 'Retrieve a blob from a repository' do
+        detail 'Retrieves information, such as size and content, about blobs in a repository. Blob content is Base64 ' \
+          'encoded. This endpoint can be accessed without authentication, if the repository is publicly accessible.'
         tags ['repositories']
       end
       params do
@@ -196,7 +214,10 @@ module API
         }
       end
 
-      desc 'Get an archive of the repository' do
+      desc 'Retrieve file archive from a repository' do
+        detail 'Retrieves the file archive of a specified repository. This endpoint can be accessed without ' \
+          'authentication if the repository is publicly accessible. For GitLab.com users, this endpoint has a rate ' \
+          'limit threshold of 5 requests per minute.'
         tags ['repositories']
       end
       params do
@@ -214,7 +235,10 @@ module API
           default: [],
           desc: 'Comma-separated list of paths to exclude from the archive'
       end
-      route_setting :authorization, permissions: :read_repository_archive, boundary_type: :project
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, permissions: :read_repository_archive, boundary_type: :project,
+        job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
           render_api_error!({ error: _('This archive has been requested too many times. Try again later.') }, 429)
@@ -222,19 +246,51 @@ module API
 
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
+        # Enforce the download ban before any caching/conditional-request logic, so a
+        # banned user cannot receive a 304 and an error never inherits cache headers.
+        # The matching audit is deferred until the archive is actually transferred.
+        check_repository_archive_download!(user_project.repository)
+
+        # Resolve the archive metadata once (with the real storage path) and reuse it
+        # for the cache headers, the HEAD content headers, and the archive body, so
+        # they all describe the same commit. `#metadata` is lazy, so this is free
+        # until something actually reads it.
+        archive_builder = Gitlab::Repositories::ArchiveHeaderBuilder.new(
+          user_project.repository, ref: params[:sha], format: params[:format], append_sha: true,
+          path: params[:path], ref_type: params[:ref_type],
+          storage_path: Gitlab.config.gitlab.repository_downloads_path
+        )
+
+        set_repository_archive_cache_headers!(
+          user_project, archive_builder,
+          ref: params[:sha], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
+        )
+
         # Return early for HEAD requests to avoid generating archives.
         if request.head?
-          send_git_archive_head(user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type])
+          send_git_archive_head(
+            user_project.repository,
+            ref: params[:sha], format: params[:format], append_sha: true, path: params[:path],
+            ref_type: params[:ref_type], builder: archive_builder
+          )
         else
-          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
+          # Reached only for a real transfer (a matching conditional request has
+          # already returned 304 above), so audit the download here.
+          audit_repository_archive_download(user_project.repository)
+
+          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths], metadata: archive_builder.metadata
         end
       rescue Gitlab::Git::CommandError
+        reset_archive_cache_headers!
         service_unavailable!
       rescue Gitlab::Workhorse::ArchiveNotFoundError
+        reset_archive_cache_headers!
         not_found!('File')
       end
 
-      desc 'Compare two branches, tags, or commits' do
+      desc 'Compare branches, tags, or commits' do
+        detail 'Compares branches, tags, or commits. Retrieves the differences between two branches, tags, or ' \
+          'commits in a specified project.'
         success Entities::Compare
         tags ['repositories']
       end
@@ -274,7 +330,10 @@ module API
         end
       end
 
-      desc 'Get repository health' do
+      desc 'Retrieve repository health statistics' do
+        detail 'Retrieves statistics related to the health of a project repository. This endpoint is rate-limited to ' \
+          '5 requests/hour per project when `generate` is `true`. Available only to users with push ' \
+          'access to the repository.'
         success Entities::RepositoryHealth
         tags ['repositories']
       end
@@ -301,7 +360,8 @@ module API
         present health, with: Entities::RepositoryHealth
       end
 
-      desc 'Get repository contributors' do
+      desc 'Retrieve contributors metrics' do
+        detail 'Retrieves a list of contributors to a specified repository.'
         success Entities::Contributor
         tags ['repositories']
       end
@@ -321,7 +381,8 @@ module API
         not_found!
       end
 
-      desc 'Get the common ancestor between commits' do
+      desc 'Retrieve a merge base' do
+        detail 'Retrieves the merge base for two specified commits.'
         success Entities::Commit
         tags ['repositories']
       end
@@ -354,8 +415,93 @@ module API
         end
       end
 
-      desc 'Generates a changelog section for a release and returns it' do
-        detail 'This feature was introduced in GitLab 14.6'
+      # Unlike the other repository endpoints, batch blob retrieval and diverging
+      # commit counts require an authenticated user: the per-user rate limiter cannot
+      # protect against anonymous abuse on public projects. Authenticate in a `before`
+      # block so unauthenticated requests are rejected before parameter validation runs.
+      namespace do
+        before { authenticate! }
+
+        desc 'Get contents of multiple files in a single request' do
+          detail 'Each blob is truncated to the first 1 MB; the `truncated` field indicates when this happens.'
+          success code: 200, model: Entities::BatchBlob, is_array: true
+          failure [[400, 'Bad Request'], [401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Not Found']]
+          tags ['repositories']
+        end
+        params do
+          requires :files, type: Array, allow_blank: false, limit: MAX_BATCH_BLOBS_FILES,
+            desc: 'Array of file objects to retrieve (max 20)' do
+            requires :path, type: String, file_path: true, desc: 'The file path',
+              documentation: { example: 'app/models/user.rb' }
+            optional :ref, type: String, desc: 'The branch, tag, or commit. Defaults to the default branch',
+              documentation: { example: 'main' }
+          end
+        end
+        route_setting :authorization, permissions: :read_repository_blob, boundary_type: :project
+        route_setting :lifecycle, :beta
+        post ':id/repository/blobs/batch', urgency: :low do
+          not_found! unless Feature.enabled?(:repository_blobs_batch_api, user_project)
+
+          check_rate_limit!(:project_repositories_blobs_batch, scope: [user_project, current_user])
+
+          default_ref = user_project.default_branch
+
+          revision_paths = params[:files].map do |file|
+            ref = file[:ref].presence || default_ref
+
+            render_api_error!('Ref is missing and the repository has no default branch', 400) if ref.blank?
+
+            unless Gitlab::GitRefValidator.validate(ref, skip_head_ref_check: true)
+              render_api_error!("Invalid ref: #{ref.inspect}", 400)
+            end
+
+            [ref, file[:path]]
+          end
+
+          blobs = user_project.repository.blobs_at(revision_paths.uniq, blob_size_limit: BATCH_BLOB_SIZE_LIMIT)
+
+          blobs_by_key = blobs.index_by { |blob| [blob.commit_id, blob.path] }
+
+          result = revision_paths.filter_map { |key| blobs_by_key[key] }
+
+          status 200
+          present result, with: Entities::BatchBlob
+        end
+
+        desc 'Retrieve diverging commit counts between two refs' do
+          success Entities::DivergingCommitCount
+          failure [{ code: 400, message: 'Bad request' }, { code: 401, message: 'Unauthorized' }, { code: 403, message: 'Forbidden' }, { code: 404, message: 'Not found' }, { code: 429, message: 'Too many requests' }]
+          tags ['repositories']
+        end
+        params do
+          requires :from, type: String, desc: 'The ref to compare from', limit: 255,
+            documentation: { example: 'main' }
+          requires :to, type: String, desc: 'The ref to compare to', limit: 255,
+            documentation: { example: 'feature' }
+          optional :max_count, type: Integer, desc: 'Maximum number of commits to count. 0 for unlimited', default: 0, values: 0..,
+            documentation: { example: 1000 }
+        end
+        route_setting :authorization, permissions: :read_commit, boundary_type: :project
+        route_setting :lifecycle, :experiment
+        get ':id/repository/diverging_commits', urgency: :low do
+          not_found! unless Feature.enabled?(:repository_diverging_commits_api, user_project)
+
+          check_rate_limit!(:project_repositories_diverging_commits, scope: [current_user, user_project])
+
+          service = ::Branches::DivergingCommitCountsService.new(user_project.repository)
+          counts = service.diverging_counts(params[:from], params[:to], max_count: params[:max_count])
+
+          present counts, with: Entities::DivergingCommitCount
+
+        rescue Gitlab::Git::CommandError
+          render_api_error!('Invalid from or to ref', 400)
+        end
+      end
+
+      desc 'Generate changelog data' do
+        detail 'Generates changelog data based on commits in a repository, without committing them to a changelog ' \
+          'file. Works exactly like `POST /projects/:id/repository/changelog`, except the changelog data is not ' \
+          'committed to any changelog file.'
         success Entities::Changelog
         tags ['repositories']
       end
@@ -387,8 +533,8 @@ module API
         render_api_error!("Failed to generate the changelog: #{ex.message}", 422)
       end
 
-      desc 'Generates a changelog section for a release and commits it in a changelog file' do
-        detail 'This feature was introduced in GitLab 13.9'
+      desc 'Add changelog data to file' do
+        detail 'Adds changelog data to file.'
         success code: 200
         tags ['repositories']
       end

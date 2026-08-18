@@ -1,6 +1,6 @@
 <script>
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
@@ -63,7 +63,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       prefetchWorkItem: this.prefetchWorkItem,
       clearPrefetching: this.clearPrefetching,
     });

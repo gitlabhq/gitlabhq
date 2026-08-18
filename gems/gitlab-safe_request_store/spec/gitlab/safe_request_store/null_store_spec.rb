@@ -19,13 +19,13 @@ RSpec.describe Gitlab::SafeRequestStore::NullStore do
 
   describe '#read' do
     it 'returns nil' do
-      expect(null_store.read('foo')).to be nil
+      expect(null_store.read('foo')).to be_nil
     end
   end
 
   describe '#[]' do
     it 'returns nil' do
-      expect(null_store['foo']).to be nil
+      expect(null_store['foo']).to be_nil
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::SafeRequestStore::NullStore do
 
     context 'when a block is not given' do
       it 'returns nil' do
-        expect(null_store.delete('foo')).to be nil
+        expect(null_store.delete('foo')).to be_nil
       end
     end
   end

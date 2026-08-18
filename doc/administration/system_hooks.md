@@ -66,7 +66,6 @@ group changes, and repository pushes from any project.
 
 {{< history >}}
 
-- **Name** and **Description** text boxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
 - **URL masking**, **Custom headers**, and **Custom webhook template** text boxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/503457) in GitLab 19.0.
 
 {{< /history >}}

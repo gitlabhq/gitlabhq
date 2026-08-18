@@ -441,9 +441,8 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
         context 'when export is already in progress' do
           before do
-            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-              allow(strategy).to receive(:increment).and_return(0)
-            end
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:project_export, scope: user).and_return(false)
           end
 
           it '400 response if export already queued' do
@@ -503,9 +502,8 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           end
 
           before do
-            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
-              allow(strategy).to receive(:increment).and_return(0)
-            end
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:project_export, scope: user).and_return(false)
           end
 
           it 'passes excluded_relations to add_export_job' do

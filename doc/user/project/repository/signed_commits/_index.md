@@ -64,11 +64,16 @@ To review commits for a merge request, or for an entire project, and verify they
 You can also [use the commits API](../../../../api/commits.md#retrieve-commit-signature)
 to check a commit's signature.
 
-### Verify web UI commits
+### Verify GitLab-signed commits
 
-GitLab uses SSH to sign commits created through the web UI.
-To verify these commits locally, obtain the GitLab public key for signing web commits
+GitLab signs the commits it creates, like commits made through the web UI, with a key
+configured on the instance.
+To verify these commits locally, obtain the GitLab public key for signing commits
 using the [web commits API](../../../../api/web_commits.md#retrieve-public-signing-key).
+
+The signature stays with the commit when the commit is copied to another project, for example
+by [repository mirroring](../mirror/_index.md). In the target project, GitLab displays the
+**Verified** badge only if the instance is configured with the key that signed the commit.
 
 ### Warning badge for unverified committer email
 

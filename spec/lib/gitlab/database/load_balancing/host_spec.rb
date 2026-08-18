@@ -522,11 +522,21 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
     it 'returns nil when the database connection fails' do
       wrapped_error = wrapped_exception(ActionView::Template::Error, StandardError)
 
-      allow(host)
-        .to receive(:connection)
-        .and_raise(wrapped_error)
+      allow(host).to receive(:connection).and_raise(wrapped_error)
 
       expect(host.replication_lag_size).to be_nil
+    end
+
+    it 'delegates to log_connection_error' do
+      wrapped_error = wrapped_exception(ActionView::Template::Error, StandardError)
+
+      allow(host).to receive(:connection).and_raise(wrapped_error)
+
+      expect(host)
+        .to receive(:log_connection_error)
+        .with(event: :replication_lag_size_error, message: instance_of(String), error: wrapped_error)
+
+      host.replication_lag_size
     end
 
     context 'when can_track_logical_lsn? is false' do
@@ -660,6 +670,65 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
               .and_raise(wrapped_error)
 
       expect(host.database_replica_location).to be_nil
+    end
+  end
+
+  describe '#log_connection_error' do
+    let(:error) { StandardError.new('boom') }
+
+    it 'logs the error with structured fields' do
+      expect(Gitlab::Database::LoadBalancing::Logger)
+        .to receive(:warn)
+        .with(
+          event: :some_event,
+          message: 'Some message',
+          Labkit::Fields::ERROR_MESSAGE => 'boom',
+          Labkit::Fields::ERROR_TYPE => 'StandardError',
+          db_host: host.host,
+          db_port: host.port
+        )
+
+      host.send(:log_connection_error, event: :some_event, message: 'Some message', error: error)
+    end
+
+    it 'throttles repeated calls for the same host' do
+      expect(Gitlab::Database::LoadBalancing::Logger).to receive(:warn).once
+
+      3.times { host.send(:log_connection_error, event: :some_event, message: 'Some message', error: error) }
+    end
+
+    it 'throttles across different event names for the same host', :aggregate_failures do
+      allow(Gitlab::Database::LoadBalancing::Logger).to receive(:warn)
+
+      host.send(:log_connection_error, event: :first_event, message: 'First message', error: error)
+      host.send(:log_connection_error, event: :second_event, message: 'Second message', error: error)
+
+      expect(Gitlab::Database::LoadBalancing::Logger).to have_received(:warn).once
+      expect(Gitlab::Database::LoadBalancing::Logger)
+        .to have_received(:warn)
+        .with(hash_including(event: :first_event))
+    end
+
+    it 'logs again once the throttle interval has passed' do
+      expect(Gitlab::Database::LoadBalancing::Logger).to receive(:warn).twice
+
+      host.send(:log_connection_error, event: :some_event, message: 'Some message', error: error)
+
+      throttle_interval = load_balancer.configuration.replica_check_interval
+
+      travel_to((throttle_interval.seconds + 1.second).from_now) do
+        host.send(:log_connection_error, event: :some_event, message: 'Some message', error: error)
+      end
+    end
+
+    it 'throttles concurrent calls from multiple threads' do
+      expect(Gitlab::Database::LoadBalancing::Logger).to receive(:warn).once
+
+      threads = Array.new(10) do
+        Thread.new { host.send(:log_connection_error, event: :some_event, message: 'Some message', error: error) }
+      end
+
+      threads.each(&:join)
     end
   end
 

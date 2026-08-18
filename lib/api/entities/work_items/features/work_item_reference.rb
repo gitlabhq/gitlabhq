@@ -19,6 +19,11 @@ module API
           expose :title,
             documentation: { type: 'String', example: 'Plan first milestone' }
 
+          expose :title_html,
+            documentation: { type: 'String', example: '<p>Plan first milestone</p>' } do |work_item, options|
+            MarkupHelper.markdown_field(work_item, :title, current_user: options[:current_user])
+          end
+
           expose :state,
             documentation: { type: 'String', example: 'opened' }
 

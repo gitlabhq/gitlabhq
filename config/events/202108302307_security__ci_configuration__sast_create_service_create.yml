@@ -4,6 +4,8 @@ action: create
 extra_properties:
 identifiers:
 product_group: static_analysis
+product_categories:
+- static_application_security_testing
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58230
 tiers:

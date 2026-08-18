@@ -18,7 +18,7 @@
 
 - if can?(current_user, :read_cross_project)
   - if Feature.enabled?(:vue_profile_activity_calendar, current_user)
-    #js-vue-activity-calendar
+    #js-vue-activity-calendar.new-activities-block{ data: user_activity_calendar_data(@user) }
   - else
     .gl-self-start.gl-overflow-hidden
       .activities-block

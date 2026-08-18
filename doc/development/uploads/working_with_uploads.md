@@ -76,7 +76,7 @@ where to make a pre-authorization request. For that you need the
 routing rule.
 
 A note to those of us who remember,
-[Workhorse used to be a separate project](https://gitlab.com/groups/gitlab-org/-/epics/4826):
+[Workhorse used to be a separate project](https://gitlab.com/groups/gitlab-org/-/work_items/4826):
 it is not necessary anymore to break these two steps into separate merge
 requests. In fact it is probably easier to do both in one merge
 request.
@@ -145,7 +145,7 @@ processing, or "who is the processor".
 Processing in Rails looks appealing but it tends to lead to scaling
 problems down the road because you cannot use direct upload. You are
 then forced to rebuild your feature with processing in Workhorse. So
-if the requirements of your feature allows it, doing the processing in
+if the requirements of your feature allow it, doing the processing in
 Sidekiq strikes a good balance between complexity and the ability to
 scale.
 
@@ -196,7 +196,7 @@ particular, you currently cannot use the `version` mechanism of
 CarrierWave. Things you can do include:
 
 - Filename validation
-- **Incompatible with direct upload**: One time pre-processing of file contents, for example, image resizing
+- **Incompatible with direct upload**: One-time pre-processing of file contents, for example, image resizing
 - **Incompatible with direct upload**: Encryption at rest
 
 CarrierWave pre-processing behaviors such as image resizing
@@ -218,7 +218,7 @@ CarrierWave has 2 storage engines:
 GitLab uses both of these engines, depending on configuration.
 
 The typical way to choose a storage engine in CarrierWave is to use the
-`Uploader.storage` class method. In GitLab we do not do this; we have
+`Uploader.storage` class method. In GitLab we do not do this. We have
 overridden `Uploader#storage` instead. This allows us to vary the
 storage engine file by file.
 
@@ -293,7 +293,7 @@ this file to its intended location.
 
 ## Tables
 
-The Scalability::Frameworks team is making object storage and uploads more easy to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
+The Scalability::Frameworks team is making object storage and uploads easier to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
 
 ### Feature bucket details
 

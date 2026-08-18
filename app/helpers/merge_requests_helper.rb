@@ -98,6 +98,12 @@ module MergeRequestsHelper
       toggle: options.fetch(:force_link, false) ? '' : 'tabvue'
     }
 
+    current_tab = params[:tab].presence || 'show'
+
+    aria_attrs = {
+      current: ('page' if current_tab == tab.to_s)
+    }
+
     url = case tab
           when :show
             data_attrs[:target] = '#notes'
@@ -114,7 +120,7 @@ module MergeRequestsHelper
             raise "Cannot create tab #{tab}."
           end
 
-    link_to(url[merge_request.project, merge_request], data: data_attrs, &block)
+    link_to(url[merge_request.project, merge_request], data: data_attrs, aria: aria_attrs, &block)
   end
 
   def allow_collaboration_unavailable_reason(merge_request)
@@ -159,10 +165,6 @@ module MergeRequestsHelper
     end
   end
 
-  def can_use_description_composer(_user, _merge_request)
-    false
-  end
-
   # Overridden in EE
   def summarize_new_merge_request_disabled_reason(_merge_request); end
 
@@ -182,7 +184,7 @@ module MergeRequestsHelper
       help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
-      project_path: project_path(merge_request.project),
+      project_path: merge_request.project.full_path,
       changes_empty_state_illustration: image_path('illustrations/empty-state/empty-commit-md.svg'),
       is_fluid_layout: fluid_layout.to_s,
       dismiss_endpoint: callouts_path,
@@ -265,7 +267,8 @@ module MergeRequestsHelper
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
       initial_email: can?(current_user, :create_merge_request_in, project) &&
-        project.new_issuable_address(current_user, 'merge_request')
+        project.new_issuable_address(current_user, 'merge_request'),
+      reset_path: new_issuable_address_project_path(project, issuable_type: 'merge_request')
     })
   end
 
@@ -667,14 +670,6 @@ module MergeRequestsHelper
         }
       ]
     }
-  end
-
-  def dashboard_list_title(list_id)
-    merge_request_dashboard_data[:tabs]
-      .flat_map { |tab| tab[:lists] }
-      .flatten
-      .find { |list| list[:id] == list_id }
-      &.dig(:title) || ''
   end
 
   def duo_code_review_bot_username(user)

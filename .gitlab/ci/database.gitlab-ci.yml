@@ -3,6 +3,8 @@ include:
 
 .db:setup pg17:
   stage: prepare
+  variables:
+    GIT_DEPTH: 1
   needs:
     - job: cache:ruby-gems
       optional: true

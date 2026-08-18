@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Integrations::ChatMessage::DeploymentMessage, feature_category: :integrations do
   subject { described_class.new(args) }
 
-  let_it_be(:user, freeze: false) { create(:user, name: 'John Smith', username: 'smith') }
-  let_it_be(:namespace, freeze: false) { create(:namespace, name: 'myspace') }
-  let_it_be(:project, freeze: false) { create(:project, :repository, namespace: namespace, path: 'myproject') }
+  let_it_be_with_reload(:user) { create(:user, name: 'John Smith', username: 'smith') }
+  let_it_be_with_reload(:namespace) { create(:namespace, name: 'myspace') }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, namespace: namespace, path: 'myproject') }
   let_it_be(:commit, freeze: false) { project.commit('HEAD') }
-  let_it_be(:ci_build, freeze: false) { create(:ci_build, project: project) }
-  let_it_be(:environment, freeze: false) { create(:environment, name: 'myenvironment', project: project) }
-  let_it_be(:deployment, freeze: false) { create(:deployment, status: :success, deployable: ci_build, environment: environment, project: project, user: user, sha: commit.sha) }
+  let_it_be_with_reload(:ci_build) { create(:ci_build, project: project) }
+  let_it_be_with_reload(:environment) { create(:environment, name: 'myenvironment', project: project) }
+  let_it_be_with_reload(:deployment) { create(:deployment, status: :success, deployable: ci_build, environment: environment, project: project, user: user, sha: commit.sha) }
 
   let(:args) do
     Gitlab::DataBuilder::Deployment.build(deployment, 'success', Time.current)

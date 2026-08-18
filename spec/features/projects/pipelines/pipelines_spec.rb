@@ -290,6 +290,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           create(:ci_pipeline, :invalid, project: project)
         end
 
+        let(:pipeline_url_button) { find_by_testid('pipeline-url-yaml') }
+
         before do
           visit_project_pipelines
         end
@@ -298,7 +300,10 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           expect(page).to have_content 'yaml invalid'
           expect(page).to have_content 'error'
 
-          expect(page).to have_selector(%(button[title="#{pipeline.yaml_errors}"]))
+          expect(pipeline_url_button[:title]).to eq(
+            'Pipeline could not be created due to CI/CD configuration problems. ' \
+              'Validate the configuration on pipeline editor page for the full list of issues.'
+          )
           expect(page).to have_selector(%(button[title="#{pipeline.present.failure_reason}"]))
         end
       end

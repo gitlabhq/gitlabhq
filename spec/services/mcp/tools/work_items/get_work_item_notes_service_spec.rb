@@ -87,7 +87,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesService, feature_category:
     end
   end
 
-  describe '#perform_0_1_0' do
+  describe '#perform_v0_1_0' do
     let(:arguments) do
       {
         project_id: project.id.to_s,
@@ -98,11 +98,11 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesService, feature_category:
     it 'executes graphql tool with arguments' do
       expect(service).to receive(:execute_graphql_tool).with(arguments)
 
-      service.send(:perform_0_1_0, arguments)
+      service.send(:perform_v0_1_0, arguments)
     end
 
     it 'returns result from graphql tool' do
-      result = service.send(:perform_0_1_0, arguments)
+      result = service.send(:perform_v0_1_0, arguments)
 
       expect(result).to be_a(Hash)
       expect(result[:isError]).to be(false)
@@ -118,8 +118,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesService, feature_category:
       }
     end
 
-    it 'delegates to perform_0_1_0' do
-      expect(service).to receive(:perform_0_1_0).with(arguments)
+    it 'delegates to perform_v0_1_0' do
+      expect(service).to receive(:perform_v0_1_0).with(arguments)
 
       service.send(:perform_default, arguments)
     end

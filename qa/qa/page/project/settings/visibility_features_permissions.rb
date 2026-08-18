@@ -22,6 +22,11 @@ module QA
           def enable_ci_cd_catalog_resource
             within_element('catalog-resource-toggle') do
               find('.gl-toggle').click
+              wait_until(
+                reload: false,
+                max_duration: 10,
+                message: 'Waiting for the CI/CD catalog resource toggle to be enabled'
+              ) { find('.gl-toggle')[:class].include?('is-checked') }
             end
           end
         end

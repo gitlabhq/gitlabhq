@@ -160,7 +160,6 @@ describe('ScopeSelector', () => {
           expect(popover.attributes('delay')).toBe('0');
           expect(popover.props()).toMatchObject({
             target: `scope-${scope}`,
-            triggers: 'focus',
             title: scope,
             placement: 'auto',
             showCloseButton: true,

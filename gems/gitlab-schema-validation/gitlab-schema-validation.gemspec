@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "diffy"
   spec.add_dependency "pg_query"
 
-  spec.add_development_dependency "gitlab-styles", "~> 13.1.0"
+  spec.add_development_dependency "gitlab-styles", "~> 14.0"
   spec.add_development_dependency "pg", "~> 1.5.9"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rspec", "~> 3.13"

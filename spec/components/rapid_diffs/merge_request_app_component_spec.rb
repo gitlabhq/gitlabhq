@@ -49,6 +49,8 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       code_review_enabled: code_review_enabled,
       environment: nil,
       resource: merge_request,
+      conflict_resolution_path: "#{mr_path}/conflicts",
+      can_merge: false,
       mr_path: mr_path,
       project_path: project_path,
       project_name: project_name,
@@ -60,6 +62,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       initial_preparation?: false,
       coverage_endpoint: coverage_endpoint,
       codequality_endpoint: codequality_endpoint,
+      sast_report_available: false,
       empty_state_type: nil
     )
   end
@@ -68,6 +71,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
 
   before do
     allow(RapidDiffs::AppComponent).to receive(:new).and_return(app_component)
+    allow(app_component).to receive(:set_original_view_context)
     allow(app_component).to receive(:render_in).and_yield(app_component)
     allow(app_component).to receive(:with_before_diffs_list).and_yield
     allow(app_component).to receive(:with_diffs_list).and_yield
@@ -97,7 +101,13 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
         new_comment_template_paths: new_comment_template_paths,
         versions: versions,
         coverage_endpoint: coverage_endpoint,
-        codequality_endpoint: codequality_endpoint
+        codequality_endpoint: codequality_endpoint,
+        sast_report_available: false,
+        is_fork: merge_request.for_fork?.to_s,
+        source_project_path: merge_request.source_project.path,
+        source_project_default_url: merge_request.source_project.http_url_to_repo,
+        reviewing_docs_path: '/help/user/project/merge_requests/merge_request_troubleshooting.md' \
+          '#check-out-merge-requests-locally-through-the-head-ref'
       }
     )
 
@@ -130,12 +140,28 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     end
   end
 
+  context 'when sast_report_available is true' do
+    before do
+      allow(presenter).to receive(:sast_report_available).and_return(true)
+    end
+
+    it 'forwards sast_report_available via extra_app_data' do
+      expect(RapidDiffs::AppComponent).to receive(:new).with(
+        presenter,
+        extra_app_data: hash_including(sast_report_available: true)
+      )
+
+      render_component
+    end
+  end
+
   it "renders diffs_list slot with merge request diff files" do
     allow(RapidDiffs::MergeRequestDiffFileComponent).to receive(:with_collection).and_return([])
 
     render_component
 
     expect(RapidDiffs::MergeRequestDiffFileComponent).to have_received(:with_collection)
+      .with(anything, hash_including(conflict_resolution_path: presenter.conflict_resolution_path))
   end
 
   it "loads merge request rapid diffs stylesheet" do

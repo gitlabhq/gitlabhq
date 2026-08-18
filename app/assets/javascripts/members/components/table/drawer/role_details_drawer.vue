@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlDrawer, GlSprintf, GlButton, GlIcon, GlAlert } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
@@ -25,7 +26,9 @@ export default {
     GlAlert,
     RoleSelector,
     RoleUpdater,
-    RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
+    RoleBadges: defineAsyncComponent(
+      () => import('ee_component/members/components/table/role_badges.vue'),
+    ),
   },
   props: {
     member: {

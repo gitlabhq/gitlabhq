@@ -74,13 +74,13 @@ test:
     - glab -R $CI_PROJECT_PATH securefile download $SECURE_FILE_ID --path="where/to/save/file.txt"
 ```
 
-The `SECURE_FILE_ID` CI/CD variable needs to passed to the job explicitly, for example
+The `SECURE_FILE_ID` CI/CD variable needs to be passed to the job explicitly, for example
 in [CI/CD settings](../variables/_index.md#define-a-cicd-variable-in-the-ui) or when
 [running a pipeline manually](../pipelines/_index.md#run-a-pipeline-manually).
 Every other variable is a [predefined variable](../variables/predefined_variables.md)
 that is automatically available.
 
-Alternatively, instead of using the Docker image, you can [download the binary](https://gitlab.com/gitlab-org/cli/-/releases).
+Alternatively, instead of using the Docker image, you can [download the binary](https://gitlab.com/gitlab-org/cli/-/releases)
 and use it in your CI/CD job.
 
 ### With the `download-secure-files` tool (deprecated)

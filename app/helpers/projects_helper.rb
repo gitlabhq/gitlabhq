@@ -387,6 +387,35 @@ module ProjectsHelper
     ) % { default_label: default_label }
   end
 
+  # Data for the Vue-rendered project general settings form (naming,
+  # description, topics, avatar). EE adds the licensed repository-size-limit
+  # fields via an override.
+  def project_general_settings_data(project)
+    service_ping_settings_path =
+      if current_user&.can_admin_all_resources?
+        metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings')
+      else
+        ''
+      end
+
+    {
+      project_id: project.id,
+      project_name: project.name,
+      project_description: project.description,
+      project_avatar_url: project.avatar_url,
+      project_avatar_removable: project.avatar?.to_s,
+      project_topics: project.topic_list.to_json,
+      max_description_length: Project::MAX_DESCRIPTION_LENGTH,
+      form_action: project_path(project),
+      organization_id: project.organization.id,
+      show_repository_size_limit_cta: registration_features_can_be_prompted?.to_s,
+      service_ping_settings_path: service_ping_settings_path,
+      external_authorization_enabled: ::Gitlab::ExternalAuthorization.enabled?.to_s,
+      external_authorization_classification_label: project.external_authorization_classification_label,
+      external_authorization_help_text: external_classification_label_help_message
+    }
+  end
+
   def project_can_be_shared?
     !membership_locked? || @project.allowed_to_share_with_group?
   end

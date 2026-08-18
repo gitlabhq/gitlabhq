@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# Per-repo fragment: GitLab's edit-mode reloaders and lifecycle hooks.
+# Infra, deployers, and cluster live in `gitlab-caproni`.
+#
+# Loaded when the gitlab repository is in edit mode. Set
+# repositories.gitlab.edit_mode: true, then opt into reloaders with
+# edit_mode: true in caproni.local.yaml.
+
+lifecycle_hooks:
+  - type: edit_mode_prepare
+    script: mise trust
+  - type: edit_mode_prepare
+    script: bundle install
+  - type: edit_mode_prepare
+    script: ./scripts/prepare-dev-env.sh
+  - type: edit_mode_start
+    script: .gitlab/caproni/setup.sh
+  - type: edit_mode_start
+    script: .gitlab/caproni/db_migrate.sh
+  - type: edit_mode_start
+    script: .gitlab/caproni/activate-license.sh
+
+reloaders:
+  sidekiq:
+    type: mirror
+    repository: gitlab
+    edit_mode: false
+    mirror:
+      target:
+        namespace: gitlab
+        kubernetes_type: deployment
+        name: gitlab-sidekiq-all-in-1-v2
+      filesystem:
+        mode: localwithoverrides
+        read_only:
+          - "^/etc/gitlab/.*"
+        mapping:
+          "^(?<path>/(?:Users|home)/.*/gitlab/config/)gitlab.yml": "${path}/gitlab-sidekiq.yml"
+          "^/metrics": "/tmp/metrics"
+      edit_mode_processes:
+        sidekiq:
+          command: mise exec -- bin/background_jobs start_foreground
+  gitlab:
+    type: mirror
+    repository: gitlab
+    edit_mode: false
+    mirror:
+      target:
+        namespace: gitlab
+        kubernetes_type: deployment
+        name: gitlab-webservice-default
+        container: webservice
+      filesystem:
+        mode: localwithoverrides
+        read_only:
+          - "^/etc/gitlab/.*"
+          - "^/srv/gitlab/config.ru"
+          - "^/srv/gitlab/config/.*"
+        mapping:
+          "^/srv/gitlab/config.ru": "./config.ru"
+          "^/srv/gitlab/log/(?<file>.+)": "./log/$file"
+          "^/srv/gitlab/log": "./log"
+          "^/srv/gitlab/(?<file>lib/gitlab/cluster/lifecycle_events)": "./$file"
+          "^/srv/gitlab/(?<file>lib/gitlab/puma_logging/json_formatter)": "./$file"
+          "^/srv/gitlab/(?<file>lib/gitlab/puma/error_handler)": "./$file"
+          "^/srv/gitlab/(?<file>config/environment)": "./$file"
+      network:
+        outgoing:
+          ignore_localhost: true
+      edit_mode_processes:
+        puma:
+          # WORKER_PROCESSES=0 runs Puma in single mode (no fork). The pod env
+          # mirrored by mirrord sets WORKER_PROCESSES=2 (cluster mode), and
+          # every Puma worker fork must open a fresh mirrord proxy connection —
+          # when the intproxy hiccups, forked workers abort with "failed to
+          # establish proxy connection for child" and Puma fork-loops forever.
+          # Single mode holds one steady layer connection instead, and saves
+          # a few GB of RAM locally.
+          #
+          # RAILS_HOSTS: in-cluster callers (e.g. iam-data-access's JWKS fetch)
+          # reach this pod via the Service's *.svc.cluster.local FQDN, not the
+          # short *.svc form. Rails' host authorization does an exact-string
+          # match per entry, so both forms must be listed or it 403s with
+          # "Blocked hosts" before the request reaches the app.
+          command: "bash -c 'WORKER_PROCESSES=0 RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc,gitlab-webservice-default.gitlab.svc.cluster.local VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 bundle exec puma --config config/puma.rb'"
+        vite:
+          command: "bash -c 'VITE_RUBY_HOST=127.0.0.1 VITE_RUBY_PORT=3036 bundle exec vite dev'"
+          context: local
+  workhorse:
+    type: mirror
+    repository: gitlab
+    edit_mode: false
+    mirror:
+      target:
+        namespace: gitlab
+        kubernetes_type: deployment
+        name: gitlab-webservice-default
+        container: gitlab-workhorse
+      filesystem:
+        mode: localwithoverrides
+        read_only:
+          - "^/etc/gitlab/.*"
+          - "^/srv/gitlab/config/.*"
+      network:
+        outgoing:
+          ignore_localhost: true
+      edit_mode_processes:
+        workhorse:
+          # authBackend port 8081 matches webservice.service.internalPort in
+          # values/gitlab.yaml (moved off 8080 to coexist with other edit-mode
+          # services). secretPath points at the file that
+          # .gitlab/caproni/setup.sh actually copies from the pod.
+          command: workhorse/gitlab-workhorse -logFile stdout -logFormat json -authBackend http://localhost:8081 -developmentMode -documentRoot /srv/gitlab/public -secretPath .gitlab_workhorse_secret -config workhorse/workhorse-config.toml
+      lifecycle_hooks:
+        - type: edit_mode_start
+          script: bash -c 'cd workhorse && mise install && mise exec -- make'

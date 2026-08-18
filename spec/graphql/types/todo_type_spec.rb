@@ -24,6 +24,7 @@ RSpec.describe GitlabSchema.types['Todo'], feature_category: :notifications do
       :note,
       :member_access_type,
       :target_url,
+      :transfer_failed_retry_url,
       :snoozed_until
     ]
 
@@ -39,7 +40,7 @@ RSpec.describe GitlabSchema.types['Todo'], feature_category: :notifications do
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[id state createdAt action body targetUrl].each do |field_name|
+    %w[id state createdAt action body targetUrl transferFailedRetryUrl].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         expect(described_class.fields[field_name]).to include_graphql_scopes(:ai_workflows)
       end

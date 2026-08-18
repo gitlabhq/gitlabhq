@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlTooltip, GlPopover } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -12,10 +13,10 @@ export default {
     GlIcon,
     GlTooltip,
     GlPopover,
-    WorkItemRolledUpHealthStatus: () =>
-      import(
-        'ee_component/work_items/components/work_item_links/work_item_rolled_up_health_status.vue'
-      ),
+    WorkItemRolledUpHealthStatus: defineAsyncComponent(
+      () =>
+        import('ee_component/work_items/components/work_item_links/work_item_rolled_up_health_status.vue'),
+    ),
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {

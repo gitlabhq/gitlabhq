@@ -54,7 +54,7 @@ module Observability
     attr_reader :namespace, :current_user, :project, :params
 
     def authorized?
-      return false unless ::Feature.enabled?(:observability_sass_features, namespace)
+      return false unless feature_enabled?
 
       if group_namespace?
         Ability.allowed?(current_user, :create_observability_access_request, namespace)
@@ -63,6 +63,14 @@ module Observability
         # granted at the project level (owner only) instead.
         project.present? && project.namespace == namespace &&
           Ability.allowed?(current_user, :create_observability_access_request, project)
+      end
+    end
+
+    def feature_enabled?
+      if group_namespace?
+        ::Feature.enabled?(:observability_sass_features, namespace)
+      else
+        ::Feature.enabled?(:observability_saas_features_user_namespace, namespace)
       end
     end
 

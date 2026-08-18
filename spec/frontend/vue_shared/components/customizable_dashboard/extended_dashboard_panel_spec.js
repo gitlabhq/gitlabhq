@@ -111,48 +111,26 @@ describe('ExtendedDashboardPanel', () => {
   });
 
   describe('with actions', () => {
-    describe('when not editing', () => {
-      beforeEach(() => {
-        createWrapper({
-          props: {
-            actions: [
-              {
-                text: 'Delete',
-                icon: 'remove',
-              },
-            ],
-          },
-        });
-      });
-
-      it('does not set the actions prop', () => {
-        expect(findDashboardPanel().props('actions')).toStrictEqual([]);
+    beforeEach(() => {
+      createWrapper({
+        props: {
+          actions: [
+            {
+              text: 'Delete',
+              icon: 'remove',
+            },
+          ],
+        },
       });
     });
 
-    describe('when editing', () => {
-      beforeEach(() => {
-        createWrapper({
-          props: {
-            editing: true,
-            actions: [
-              {
-                text: 'Delete',
-                icon: 'remove',
-              },
-            ],
-          },
-        });
-      });
-
-      it('sets the actions prop', () => {
-        expect(findDashboardPanel().props('actions')).toStrictEqual([
-          {
-            text: 'Delete',
-            icon: 'remove',
-          },
-        ]);
-      });
+    it('sets the actions prop', () => {
+      expect(findDashboardPanel().props('actions')).toStrictEqual([
+        {
+          text: 'Delete',
+          icon: 'remove',
+        },
+      ]);
     });
   });
 

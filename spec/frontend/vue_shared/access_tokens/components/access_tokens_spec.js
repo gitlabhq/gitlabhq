@@ -59,7 +59,7 @@ describe('AccessTokens', () => {
     store.showCreateForm = false;
   });
 
-  const findCreateTokenButton = () => wrapper.findByTestId('add-new-token-button');
+  const findCreateTokenButton = () => wrapper.findComponentByTestId('add-new-token-button');
   const findCreateTokenForm = () => wrapper.findComponent(AccessTokenForm);
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findPagination = () => wrapper.findComponent(GlPagination);

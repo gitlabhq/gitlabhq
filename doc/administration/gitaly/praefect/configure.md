@@ -20,7 +20,7 @@ Smaller GitLab installations may need only [Gitaly itself](../_index.md).
 
 > [!note]
 > Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
-> [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+> [epic 6127](https://gitlab.com/groups/gitlab-org/-/work_items/6127).
 
 ## Requirements
 
@@ -297,6 +297,80 @@ praefect['configuration'] = {
 
 If you see Praefect database errors after configuring PostgreSQL, see
 [troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
+
+#### Configure automatic failover with a self-managed Patroni cluster
+
+After you complete the [manual database setup](#manual-database-setup), you can point Praefect directly at a
+PostgreSQL cluster managed by a failover tool such as [Patroni](https://patroni.readthedocs.io).
+Praefect connects to PostgreSQL using [`pgx`](https://github.com/jackc/pgx), which supports the same
+multiple-host connection behavior as libpq: Praefect probes every host in the address list and connects to
+whichever one is currently accepting writes, reconnecting automatically after a failover.
+
+Do not put a proxy in front of the PostgreSQL cluster with this configuration. This client-side failover
+detection is different from the setup used for the
+[GitLab application database](../../postgresql/replication_and_failover.md), where a proxy such as PgBouncer or
+Consul-based routing sits in front of the cluster and performs its own server-side switchover. Combining the two
+means the proxy hides the individual cluster nodes from Praefect, so `pgx` can no longer probe each node directly,
+or the proxy's own failover races with Praefect's client-side detection.
+
+This configuration hasn't been deployed or tested by GitLab in a GitLab.com or Dedicated environment. Validate it
+thoroughly in a non-production environment before relying on it.
+
+> [!warning]
+> Configure the cluster to use [synchronous replication](https://patroni.readthedocs.io/en/latest/replication_modes.html#postgresql-synchronous-replication).
+> With asynchronous replication, a failover that loses the primary can also lose transactions that were
+> committed but not yet replicated, which can leave the Praefect database in a state Gitaly doesn't expect.
+
+Prerequisites:
+
+- The [manual database setup](#manual-database-setup) completed against the cluster.
+- A PostgreSQL cluster managed by Patroni, or an equivalent tool that automatically promotes a new primary,
+  on servers dedicated to the Praefect database, configured for synchronous replication.
+  You can build this cluster with the same Patroni, Consul, and PostgreSQL components used for the
+  [GitLab application database](../../postgresql/replication_and_failover.md), configured on a separate set of nodes.
+- Network access from the Praefect node to every node in the cluster.
+
+To configure Praefect:
+
+1. In the Praefect configuration, set `database.host` to a comma-separated list of the cluster node addresses,
+   and `database.port` to the port shared by all nodes:
+
+   ```ruby
+   praefect['configuration'] = {
+      # ...
+      database: {
+         # ...
+         host: 'POSTGRESQL_HOST_1,POSTGRESQL_HOST_2,POSTGRESQL_HOST_3',
+         port: 5432,
+         user: 'praefect',
+         password: PRAEFECT_SQL_PASSWORD,
+         dbname: 'praefect_production',
+      }
+   }
+   ```
+
+1. Set the `PGTARGETSESSIONATTRS` environment variable to `read-write` for the Praefect process, so it connects to
+   the current primary.
+   The Praefect configuration has no dedicated setting for `PGTARGETSESSIONATTRS`, so set the variable through the
+   Praefect environment.
+   Set the key directly instead of assigning the whole `env` hash, so the existing default environment variables
+   for Praefect aren't removed:
+
+   ```ruby
+   praefect['env']['PGTARGETSESSIONATTRS'] = 'read-write'
+   ```
+
+1. Reconfigure for the changes to take effect:
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+This configuration only covers the direct connection between Praefect and PostgreSQL.
+If you also configure [`session_pooled` settings](#reads-distribution-caching) to use PgBouncer, you must make
+PgBouncer highly available separately.
+The `session_pooled` settings accept only a single host, so PgBouncer connections don't participate in this
+failover mechanism.
 
 #### Reads distribution caching
 
@@ -1886,19 +1960,6 @@ praefect['configuration'] = {
 ```
 
 #### Enable deletions
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) and disabled by default in GitLab 15.0
-- [Default enabled](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5321) in GitLab 15.9.
-
-{{< /history >}}
-
-> [!warning]
-> Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
-> that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-> than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the
-> [`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
 metrics.

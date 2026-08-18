@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DiffsColors from './components/diffs_colors.vue';
 
 export default () => {
@@ -8,15 +8,13 @@ export default () => {
 
   const { deletion, addition } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PreferencesDiffsColorsRoot',
     provide: {
       deletion,
       addition,
     },
-    render(createElement) {
-      return createElement(DiffsColors);
-    },
+    component: DiffsColors,
   });
 };

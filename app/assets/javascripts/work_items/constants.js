@@ -10,6 +10,7 @@ import {
 
 export const BULK_EDIT_NO_VALUE = 'no-value';
 
+export const CREATION_CONTEXT_BOARD = 'board';
 export const CREATION_CONTEXT_DESCRIPTION_CHECKLIST = 'description-checklist';
 export const CREATION_CONTEXT_LIST_ROUTE = 'list-route';
 export const CREATION_CONTEXT_NEW_ROUTE = 'new-route';
@@ -457,6 +458,7 @@ export const WORK_ITEM_CREATE_SOURCES = {
   GLOBAL_NAV: 'global_nav',
   CHILD_ITEMS_WIDGET: 'child_items_widget',
   WORK_ITEM_LIST: 'work_item_list',
+  WORK_ITEM_BOARD: 'work_item_board',
   VULNERABILITY: 'vulnerability',
 };
 

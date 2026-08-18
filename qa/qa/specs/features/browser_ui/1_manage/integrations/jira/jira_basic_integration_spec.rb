@@ -33,8 +33,7 @@ module QA
         expect(page).not_to have_text("Requests to the local network are not allowed") # rubocop:disable RSpec/ExpectInHook
       end
 
-      it 'closes an issue via pushing a commit',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347794' do
+      it 'closes an issue via pushing a commit' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end
@@ -44,8 +43,7 @@ module QA
         expect_issue_done(issue_key)
       end
 
-      it 'closes an issue via a merge request',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347795' do
+      it 'closes an issue via a merge request' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end

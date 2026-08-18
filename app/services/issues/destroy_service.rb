@@ -22,6 +22,8 @@ module Issues
       issuable.run_after_commit_or_now do
         Gitlab::EventStore.publish(event)
       end
+
+      issuable.run_after_commit_or_now { GraphqlTriggers.work_item_deleted(issuable) }
     end
   end
 end

@@ -287,6 +287,75 @@ describe('GfmAutoComplete', () => {
           expect(axios.get).not.toHaveBeenCalled();
         });
       });
+
+      describe('members with already-mentioned users', () => {
+        const buildContext = (overrides = {}) => ({
+          isLoadingData: { '@': false },
+          dataSources: { members: 'members_autocomplete_url' },
+          cachedData: { '@': { '': [{ username: 'cached' }] } },
+          cachedMentioned: {},
+          loadData: jest.fn(),
+          ...overrides,
+        });
+
+        it('sends the mentioned usernames from the input and bypasses the cache', async () => {
+          mock.onGet('members_autocomplete_url').reply(HTTP_STATUS_OK, []);
+          const $input = { val: () => '@deloras please review' };
+
+          fetchData.call(buildContext(), $input, '@', '');
+
+          expect(axios.get).toHaveBeenCalledWith('members_autocomplete_url', {
+            params: { search: '', mentioned: ['deloras'] },
+            signal: expect.any(AbortSignal),
+          });
+
+          await waitForPromises();
+        });
+
+        it('uses the cache and omits the param when there are no mentions', () => {
+          const context = buildContext();
+          const $input = { val: () => 'no mentions here' };
+
+          fetchData.call(context, $input, '@', '');
+
+          expect(axios.get).not.toHaveBeenCalled();
+          expect(context.loadData).toHaveBeenCalled();
+        });
+
+        it('serves from cache without refetching when the mentioned set is unchanged', () => {
+          const context = buildContext({
+            cachedData: { '@': { ab: [{ username: 'cached' }] } },
+            cachedMentioned: { '@': ['deloras'] },
+          });
+          const $input = { val: () => '@deloras please review' };
+
+          fetchData.call(context, $input, '@', 'ab');
+
+          expect(axios.get).not.toHaveBeenCalled();
+          expect(context.loadData).toHaveBeenCalledWith($input, '@', [{ username: 'cached' }], {
+            search: 'ab',
+          });
+        });
+
+        it('drops the cache and refetches when the mentioned set changes', async () => {
+          mock.onGet('members_autocomplete_url').reply(HTTP_STATUS_OK, []);
+          const context = buildContext({
+            cachedData: { '@': { ab: [{ username: 'cached' }] } },
+            cachedMentioned: { '@': ['deloras'] },
+          });
+          const $input = { val: () => '@deloras @arlie please review' };
+
+          fetchData.call(context, $input, '@', 'ab');
+
+          expect(context.cachedData['@']).toBeUndefined();
+          expect(axios.get).toHaveBeenCalledWith('members_autocomplete_url', {
+            params: { search: 'ab', mentioned: ['deloras', 'arlie'] },
+            signal: expect.any(AbortSignal),
+          });
+
+          await waitForPromises();
+        });
+      });
     });
 
     describe('frontend filtering', () => {
@@ -1092,30 +1161,51 @@ describe('GfmAutoComplete', () => {
     let autocomplete;
     let $textarea;
 
-    beforeEach(() => {
-      setHTMLFixture(
-        '<div id="editor-wrapper"><textarea data-supports-quick-actions="true"></textarea></div>',
-      );
-      autocomplete = new GfmAutoComplete({});
-      $textarea = $('textarea');
-      autocomplete.setup($textarea, {});
-    });
-
     afterEach(() => {
       autocomplete.destroy();
       resetHTMLFixture();
     });
 
-    it('attaches the at.js container to the textarea parent so it shares the scroll context', () => {
-      $textarea.trigger('focus');
+    describe('when the input supports quick actions', () => {
+      beforeEach(() => {
+        setHTMLFixture(
+          '<div id="editor-wrapper"><textarea data-supports-quick-actions="true"></textarea></div>',
+        );
+        autocomplete = new GfmAutoComplete({});
+        $textarea = $('textarea');
+        autocomplete.setup($textarea, {});
+      });
 
-      const wrapper = document.getElementById('editor-wrapper');
-      const wrapperContainers = wrapper.querySelectorAll('.atwho-container');
-      expect(wrapperContainers).toHaveLength(1);
-      expect(wrapperContainers[0].parentNode).toBe(wrapper);
+      it('attaches the at.js container to the textarea parent so it shares the scroll context', () => {
+        $textarea.trigger('focus');
 
-      const bodyContainers = document.body.querySelectorAll(':scope > .atwho-container');
-      expect(bodyContainers).toHaveLength(0);
+        const wrapper = document.getElementById('editor-wrapper');
+        const wrapperContainers = wrapper.querySelectorAll('.atwho-container');
+        expect(wrapperContainers).toHaveLength(1);
+        expect(wrapperContainers[0].parentNode).toBe(wrapper);
+
+        const bodyContainers = document.body.querySelectorAll(':scope > .atwho-container');
+        expect(bodyContainers).toHaveLength(0);
+      });
+    });
+
+    describe('when the input does not support quick actions', () => {
+      beforeEach(() => {
+        setHTMLFixture('<div id="editor-wrapper"><input type="text" /></div>');
+        autocomplete = new GfmAutoComplete({});
+        $textarea = $('input');
+        autocomplete.setup($textarea, { emojis: true });
+      });
+
+      it('leaves the at.js container attached to the body', () => {
+        $textarea.trigger('focus');
+
+        const wrapper = document.getElementById('editor-wrapper');
+        expect(wrapper.querySelectorAll('.atwho-container')).toHaveLength(0);
+
+        const bodyContainers = document.body.querySelectorAll(':scope > .atwho-container');
+        expect(bodyContainers).toHaveLength(1);
+      });
     });
   });
 
@@ -1181,6 +1271,17 @@ describe('GfmAutoComplete', () => {
       expect(highlighter(li, ')')).toBe(
         '<li> couple (woman,woman<strong>)</strong>  <gl-emoji data-name="couple_ww"></gl-emoji></li>',
       );
+    });
+
+    it.each`
+      query          | emoji               | highlight
+      ${'thumbsup'}  | ${'thumbs_up'}      | ${`<strong>thumbs_up</strong>`}
+      ${'thumbs_up'} | ${'thumbs_up'}      | ${`<strong>thumbs_up</strong>`}
+      ${'prideflag'} | ${'gay_pride_flag'} | ${`gay_<strong>pride_flag</strong>`}
+      ${'servicedo'} | ${'service_dog'}    | ${`<strong>service_do</strong>g`}
+      ${'wo'}        | ${'wolf'}           | ${`<strong>wo</strong>lf`}
+    `('highlights "$query" in "$emoji"', ({ query, emoji, highlight }) => {
+      expect(highlighter(`<li>${emoji}</li>`, query)).toBe(`<li> ${highlight} </li>`);
     });
   });
 
@@ -1667,6 +1768,45 @@ describe('GfmAutoComplete', () => {
       });
     });
 
+    describe('prioritizing already-mentioned users', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-users');
+      let mock;
+
+      beforeEach(() => {
+        // A mention in the editor bypasses the local cache and refetches, so the
+        // backend can include mentioned members outside the default set.
+        mock = new MockAdapter(axios);
+        mock
+          .onGet(`${TEST_HOST}/autocomplete_sources/members`)
+          .reply(HTTP_STATUS_OK, mockAssignees);
+
+        currentReviewers.mockReturnValue([]);
+        currentAssignees.mockImplementation(() => ({ [`${mockWorkItemId}`]: [] }));
+
+        autocomplete.setup($textarea, { members: true });
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('floats a user already @-mentioned in the comment to the top for member quick actions', async () => {
+        $textarea.val('@nancee_simonis can you take a look? ');
+        triggerDropdown($textarea, '/request_review @');
+        await waitForPromises();
+
+        expect(getDropdownItems()[0]).toContain('nancee_simonis');
+      });
+
+      it('does not reorder for a plain @ outside a member quick action', async () => {
+        $textarea.val('@nancee_simonis can you take a look? ');
+        triggerDropdown($textarea, '@');
+        await waitForPromises();
+
+        expect(getDropdownItems()[0]).toContain('root');
+      });
+    });
+
     describe('unlabel', () => {
       const getDropdownItems = () => getAutocompleteDropdownItems('at-view-labels');
       const labelMatcher = (label) => label.title;
@@ -1898,6 +2038,47 @@ describe('GfmAutoComplete', () => {
         }
       },
     );
+  });
+
+  describe('commands underscore-insensitive matching', () => {
+    let autocomplete;
+    let $textarea;
+    let ajaxSpy;
+
+    const cmd = (name, aliases = []) => ({ name, aliases, params: [], description: '' });
+
+    const setupWithCommands = (commands) => {
+      ajaxSpy = jest.spyOn(AjaxCache, 'retrieve').mockReturnValue(Promise.resolve(commands));
+      setHTMLFixture('<textarea data-supports-quick-actions="true"></textarea>');
+      autocomplete = new GfmAutoComplete({
+        commands: `${TEST_HOST}/autocomplete_sources/commands`,
+      });
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, { commands: true });
+    };
+
+    const getCommandsItems = () => getAutocompleteDropdownItems('at-view-commands');
+
+    afterEach(() => {
+      autocomplete?.destroy();
+      resetHTMLFixture();
+      ajaxSpy?.mockRestore();
+    });
+
+    it.each`
+      query                | commands                                        | expected
+      ${'/assignreviewer'} | ${[cmd('assign_reviewer'), cmd('label')]}       | ${['/assign_reviewer']}
+      ${'/label'}          | ${[cmd('label'), cmd('assign_reviewer')]}       | ${['/label']}
+      ${'/assignreviewer'} | ${[cmd('request_review', ['assign_reviewer'])]} | ${['/request_review']}
+    `('typing "$query" shows $expected', async ({ query, commands, expected }) => {
+      setupWithCommands(commands);
+      triggerDropdown($textarea, query);
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(expected.length);
+      expected.forEach((name, i) => expect(items[i]).toContain(name));
+    });
   });
 
   describe('commands sorting', () => {

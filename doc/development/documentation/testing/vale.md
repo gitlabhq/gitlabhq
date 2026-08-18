@@ -189,7 +189,7 @@ In general, you cannot disable Vale rules with the
 [`raw` scope](https://gitlab.com/search?search=scope%3A+raw+file%3A%5Edoc%2F.vale&nav_source=navbar&project_id=278964&group_id=9970&search_code=true&repository_ref=master).
 
 However, if a change causes Vale to fail because of a false positive, you can sometimes
-circumvent the by tweaking the formatting around the change. For example, sometimes
+circumvent the issue by tweaking the formatting around the change. For example, sometimes
 you can add some extra spaces to the start of the line with the false positive.
 Be sure to test that the page continues to render fine, and add an HTML comment describing
 the reason for the special formatting.

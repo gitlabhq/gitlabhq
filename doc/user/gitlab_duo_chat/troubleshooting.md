@@ -88,6 +88,9 @@ This error occurs when GitLab Duo Chat is not included in your GitLab Duo subscr
 
 Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#pricing) includes GitLab Duo Chat.
 
+If your subscription tier already includes GitLab Duo Chat but you still see this error, check whether you have selected a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace) in your user preferences.
+You can encounter error M3006 instead of [error G3002](#error-g3002) when you have not configured a default GitLab Duo namespace.
+
 ## `Error M4000`
 
 You might get an error that states

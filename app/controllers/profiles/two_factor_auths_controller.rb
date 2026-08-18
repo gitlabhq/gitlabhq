@@ -24,7 +24,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     otp_validation_result =
-      ::Users::ValidateManualOtpService.new(current_user).execute(params[:pin_code])
+      ::Users::ValidateManualOtpService.new(current_user).execute(params.permit(:pin_code)[:pin_code])
     validated = (otp_validation_result[:status] == :success)
 
     notify_on_success(:otp) if validated
@@ -117,7 +117,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy_webauthn
-    result = Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
+    result = Webauthn::DestroyService.new(current_user, current_user, params.permit(:id)[:id]).execute
 
     if result[:status] == :success
       redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
@@ -152,14 +152,14 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def validate_current_password
-    return if current_user.valid_password?(params[:current_password])
+    return if current_user.valid_password?(params.permit(:current_password)[:current_password])
 
     current_user.increment_failed_attempts!
 
     error_message = { message: _('You must provide a valid current password.') }
-    if params[:action] == 'create_webauthn'
+    if action_name == 'create_webauthn'
       @webauthn_error = error_message
-    elsif params[:action] == 'create'
+    elsif action_name == 'create'
       @otp_error = error_message
     else
       @error = error_message
@@ -250,42 +250,44 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def groups_notification(groups)
-    group_links = groups.map { |group| view_context.link_to group.full_name, group_path(group) }.to_sentence
-    leave_group_links = groups.map do |group|
-      view_context.link_to safe_format(_("leave %{group_name}"), group_name: group.full_name),
-        leave_group_members_path(group),
-        remote: false, method: :delete
-    end.to_sentence
-
-    safe_format(_(
-      'The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. ' \
-        'You can %{leave_group_links}.'
-    ), group_links: group_links.html_safe, leave_group_links: leave_group_links.html_safe)
+    memberships = GroupMember.with_user(current_user).with_source_id(groups.map(&:id)).index_by(&:source_id)
+    render_to_string partial: 'groups_notification', locals: { groups: groups, memberships: memberships }
   end
 
   def ensure_verified_primary_email
     unless current_user.two_factor_enabled? || current_user.primary_email_verified?
       redirect_to profile_emails_path,
-        notice: _('You need to verify your primary email first before enabling Two-Factor Authentication.')
+        notice: _('You need to verify your primary email first before enabling two-factor authentication (2FA).')
     end
   end
 
   def setup_show_page
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
+      group_list = nil
+      group_title = nil
       two_factor_auth_actions = {
         global: ->(_) do
-          _('The global settings require you to enable Two-Factor Authentication for your account.')
+          _('The global settings require you to enable two-factor authentication (2FA) for your account.')
         end,
         admin_2fa: ->(_) do
-          _('Administrator users are required to enable Two-Factor Authentication for their account.')
+          _('Administrator users are required to enable two-factor authentication (2FA) for their account.')
         end,
         group: ->(groups) do
-          groups_notification(groups)
+          group_list = groups_notification(groups)
+          group_title = _('Secure your account with two-factor authentication (2FA)')
+          _('One or more groups require you to add 2FA to your account. Choose your preferred method below ' \
+            'or review and leave groups to continue using your account.')
         end
       }
       message = execute_action_for_2fa_reason(two_factor_auth_actions)
-      message = append_configure_2fa_later(message) unless two_factor_grace_period_expired?
-      flash.now[:alert] = message
+      message =
+        if two_factor_grace_period_expired?
+          view_context.safe_join([message, group_list].compact)
+        else
+          append_configure_2fa_later(message, group_list: group_list)
+        end
+
+      flash.now[:alert] = group_title ? { title: group_title, message: message } : message
     end
 
     @qr_code = build_qr_code
@@ -294,10 +296,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     setup_webauthn_registration
   end
 
-  def append_configure_2fa_later(message)
+  def append_configure_2fa_later(message, group_list: nil)
     grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
     render_to_string partial: 'configure_later_button',
-      locals: { message: message, grace_period_deadline: grace_period_deadline }
+      locals: { message: message, grace_period_deadline: grace_period_deadline, group_list: group_list }
   end
 
   def notify_on_success(type, options = {})

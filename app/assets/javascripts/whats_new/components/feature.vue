@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlBadge, GlIcon, GlLink, GlButton, GlDrawer } from '@gitlab/ui';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';

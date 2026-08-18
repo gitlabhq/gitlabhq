@@ -32,19 +32,13 @@ module QA
         Flow::AlertSettings.enable_create_incident
       end
 
-      context(
-        'when using HTTP endpoint integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393842'
-      ) do
+      context 'when using HTTP endpoint integration' do
         include_context 'sends and resolves test alerts'
 
         it_behaves_like 'triggers recovery alert'
       end
 
-      context(
-        'when using Prometheus integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393843'
-      ) do
+      context 'when using Prometheus integration' do
         include_context 'sends and resolves test alerts'
 
         let(:http) { false }

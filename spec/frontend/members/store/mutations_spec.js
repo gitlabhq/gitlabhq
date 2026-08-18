@@ -3,6 +3,50 @@ import * as types from '~/members/store/mutation_types';
 import mutations from '~/members/store/mutations';
 
 describe('Vuex members mutations', () => {
+  describe('fetch members mutations', () => {
+    let state;
+
+    beforeEach(() => {
+      state = { members: [], pagination: {}, loading: false, loadRequested: false };
+    });
+
+    describe(types.REQUEST_MEMBERS, () => {
+      it('sets loading and loadRequested flags', () => {
+        mutations[types.REQUEST_MEMBERS](state);
+
+        expect(state.loading).toBe(true);
+        expect(state.loadRequested).toBe(true);
+      });
+    });
+
+    describe(types.RECEIVE_MEMBERS_SUCCESS, () => {
+      it('sets members and pagination and clears loading', () => {
+        state.loading = true;
+        const payload = { members: [{ id: 1 }], pagination: { currentPage: 1 } };
+
+        mutations[types.RECEIVE_MEMBERS_SUCCESS](state, payload);
+
+        expect(state.members).toEqual(payload.members);
+        expect(state.pagination).toEqual(payload.pagination);
+        expect(state.loading).toBe(false);
+      });
+    });
+
+    describe(types.RECEIVE_MEMBERS_ERROR, () => {
+      it('clears loading and shows an error message', () => {
+        state.loading = true;
+
+        mutations[types.RECEIVE_MEMBERS_ERROR](state, { error: new Error('Network Error') });
+
+        expect(state.loading).toBe(false);
+        expect(state.showError).toBe(true);
+        expect(state.errorMessage).toBe(
+          'An error occurred while loading members, please try again.',
+        );
+      });
+    });
+  });
+
   describe('update member mutations', () => {
     let state;
 

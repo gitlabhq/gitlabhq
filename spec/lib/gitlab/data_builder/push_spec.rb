@@ -49,113 +49,92 @@ RSpec.describe Gitlab::DataBuilder::Push, feature_category: :webhooks do
     context 'with changed files' do
       let(:with_changed_files) { true }
 
-      context 'with batch_push_webhook_changed_paths enabled' do
-        it 'returns commit hook data with changed files', :aggregate_failures do
-          expect(Gitlab::GitalyClient).not_to receive(:allow_n_plus_1_calls)
+      it 'returns commit hook data with changed files', :aggregate_failures do
+        expect(data[:project]).to eq(project.hook_attrs)
+        expect(data[:commits].first.keys).to include(*%i[added removed modified])
+      end
 
-          expect(data[:project]).to eq(project.hook_attrs)
-          expect(data[:commits].first.keys).to include(*%i[added removed modified])
+      context 'with a commit that has no changed paths' do
+        let(:commits) { super().first(2) }
+        let(:commit_without_paths) { commits.first }
+        let(:commit_with_paths) { commits.second }
+        let(:changed_path) do
+          Gitlab::Git::ChangedPath.new(
+            status: :ADDED,
+            path: 'batched-path.txt',
+            old_mode: '0',
+            new_mode: '100644',
+            commit_id: commit_with_paths.id
+          )
         end
 
-        context 'with a commit that has no changed paths' do
-          it 'does not fall back to per-commit deltas', :aggregate_failures do
-            commit = commits.first
+        it 'does not fall back to per-commit deltas', :aggregate_failures do
+          allow(project.repository).to receive(:find_changed_paths!).and_return([changed_path])
 
-            allow(project.repository).to receive(:find_changed_paths!).and_return([])
+          commit_without_paths_payload = data[:commits].find { |payload| payload[:id] == commit_without_paths.id }
+          commit_with_paths_payload = data[:commits].find { |payload| payload[:id] == commit_with_paths.id }
 
-            commit_payload = data[:commits].find { |payload| payload[:id] == commit.id }
-
-            expect(commit_payload[:added]).to eq([])
-            expect(commit_payload[:modified]).to eq([])
-            expect(commit_payload[:removed]).to eq([])
-          end
-        end
-
-        context 'with a merge commit' do
-          let(:commits) { [project.repository.commit('60ecb67744cb56576c30214ff52294f8ce2def98')] }
-
-          it 'matches legacy first-parent raw delta buckets', :aggregate_failures do
-            expected_changes = { added: [], modified: ['.gitattributes'], removed: [] }
-
-            commit_payload = data[:commits].first
-
-            expect(commit_payload.slice(:added, :modified, :removed)).to eq(expected_changes)
-            expect(commit_payload[:modified]).not_to include('README.md')
-          end
-        end
-
-        context 'with merge and non-merge commits' do
-          let(:merge_commit) { project.repository.commit('60ecb67744cb56576c30214ff52294f8ce2def98') }
-          let(:non_merge_commit) { project.repository.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
-          let(:commits) { [merge_commit, non_merge_commit] }
-
-          it 'combines merge and non-merge changed path buckets in one build', :aggregate_failures do
-            merge_payload = data[:commits].find { |payload| payload[:id] == merge_commit.id }
-            non_merge_payload = data[:commits].find { |payload| payload[:id] == non_merge_commit.id }
-
-            expect(merge_payload.slice(:added, :modified, :removed))
-              .to eq(added: [], modified: ['.gitattributes'], removed: [])
-            expect(merge_payload[:modified]).not_to include('README.md')
-            expect(non_merge_payload.slice(:added, :modified, :removed))
-              .to eq(added: [], modified: ['files/ruby/popen.rb', 'files/ruby/regex.rb'], removed: [])
-          end
-        end
-
-        context 'with a pure rename' do
-          let(:sample) { super().tap { |sample| sample.target_branch = 'refs/heads/gitaly-rename-test' } }
-          let(:commits) { [project.repository.commit('94bb47ca1297b7b3731ff2a36923640991e9236f')] }
-
-          it 'collapses the rename into a single added path, matching legacy behavior', :aggregate_failures do
-            expect(data[:commits].first[:added]).to contain_exactly('CHANGELOG.md')
-            expect(data[:commits].first[:removed]).to be_empty
-          end
-        end
-
-        context 'with a single commit' do
-          let(:commits) { project.repository.commit(sample.commits.first) }
-
-          it 'returns commit hook data with changed files', :aggregate_failures do
-            expect(data[:commits].size).to eq(1)
-            expect(data[:commits].first.keys).to include(*%i[added removed modified])
-          end
-        end
-
-        context 'with no commits' do
-          let(:commits) { [] }
-
-          it 'returns empty commits' do
-            expect(data[:commits]).to be_empty
-          end
+          expect(commit_without_paths_payload.slice(:added, :modified, :removed))
+            .to eq(added: [], modified: [], removed: [])
+          expect(commit_with_paths_payload.slice(:added, :modified, :removed))
+            .to eq(added: ['batched-path.txt'], modified: [], removed: [])
         end
       end
 
-      context 'with batch_push_webhook_changed_paths disabled' do
-        before do
-          stub_feature_flags(batch_push_webhook_changed_paths: false)
+      context 'with a merge commit' do
+        let(:commits) { [project.repository.commit('60ecb67744cb56576c30214ff52294f8ce2def98')] }
+
+        it 'matches legacy first-parent raw delta buckets', :aggregate_failures do
+          expected_changes = { added: [], modified: ['.gitattributes'], removed: [] }
+
+          commit_payload = data[:commits].first
+
+          expect(commit_payload.slice(:added, :modified, :removed)).to eq(expected_changes)
+          expect(commit_payload[:modified]).not_to include('README.md')
         end
+      end
 
-        it 'returns changed files from per-commit raw deltas', :aggregate_failures do
-          commit = commits.first
+      context 'with merge and non-merge commits' do
+        let(:merge_commit) { project.repository.commit('60ecb67744cb56576c30214ff52294f8ce2def98') }
+        let(:non_merge_commit) { project.repository.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
+        let(:commits) { [merge_commit, non_merge_commit] }
 
-          expect(Gitlab::GitalyClient).to receive(:allow_n_plus_1_calls).and_call_original
-          expect { data }.not_to raise_error
+        it 'combines merge and non-merge changed path buckets in one build', :aggregate_failures do
+          merge_payload = data[:commits].find { |payload| payload[:id] == merge_commit.id }
+          non_merge_payload = data[:commits].find { |payload| payload[:id] == non_merge_commit.id }
 
-          commit_payload = data[:commits].find { |payload| payload[:id] == commit.id }
-
-          expect(commit_payload.keys).to include(*%i[added removed modified])
-          expect(commit_payload[:added]).to eq([])
-          expect(commit_payload[:modified]).to eq([])
-          expect(commit_payload[:removed]).to contain_exactly('.DS_Store', 'files/.DS_Store')
+          expect(merge_payload.slice(:added, :modified, :removed))
+            .to eq(added: [], modified: ['.gitattributes'], removed: [])
+          expect(merge_payload[:modified]).not_to include('README.md')
+          expect(non_merge_payload.slice(:added, :modified, :removed))
+            .to eq(added: [], modified: ['files/ruby/popen.rb', 'files/ruby/regex.rb'], removed: [])
         end
+      end
 
-        context 'with a pure rename' do
-          let(:sample) { super().tap { |sample| sample.target_branch = 'refs/heads/gitaly-rename-test' } }
-          let(:commits) { [project.repository.commit('94bb47ca1297b7b3731ff2a36923640991e9236f')] }
+      context 'with a pure rename' do
+        let(:sample) { super().tap { |sample| sample.target_branch = 'refs/heads/gitaly-rename-test' } }
+        let(:commits) { [project.repository.commit('94bb47ca1297b7b3731ff2a36923640991e9236f')] }
 
-          it 'collapses the rename into a single added path, matching the enabled path', :aggregate_failures do
-            expect(data[:commits].first[:added]).to contain_exactly('CHANGELOG.md')
-            expect(data[:commits].first[:removed]).to be_empty
-          end
+        it 'collapses the rename into a single added path, matching legacy behavior', :aggregate_failures do
+          expect(data[:commits].first[:added]).to contain_exactly('CHANGELOG.md')
+          expect(data[:commits].first[:removed]).to be_empty
+        end
+      end
+
+      context 'with a single commit' do
+        let(:commits) { project.repository.commit(sample.commits.first) }
+
+        it 'returns commit hook data with changed files', :aggregate_failures do
+          expect(data[:commits].size).to eq(1)
+          expect(data[:commits].first.keys).to include(*%i[added removed modified])
+        end
+      end
+
+      context 'with no commits' do
+        let(:commits) { [] }
+
+        it 'returns empty commits' do
+          expect(data[:commits]).to be_empty
         end
       end
     end

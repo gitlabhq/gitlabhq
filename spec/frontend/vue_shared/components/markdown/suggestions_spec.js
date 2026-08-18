@@ -68,6 +68,70 @@ describe('Suggestion component', () => {
     await nextTick();
   });
 
+  describe('when a rendered suggestion diff emits an event', () => {
+    const noteHtmlWithSuggestion = `
+      <div class="suggestion">
+        <div class="js-render-suggestion">+newtest</div>
+      </div>
+    `;
+
+    const createWithRenderedSuggestion = async (props = {}) => {
+      createComponent({ noteHtml: noteHtmlWithSuggestion, suggestionsCount: 2, ...props });
+      await nextTick();
+    };
+
+    beforeEach(() => {
+      window.gon = { current_user_id: 1 };
+    });
+
+    it('emits `add-to-batch` when the add to batch button is clicked', async () => {
+      await createWithRenderedSuggestion();
+
+      await wrapper.find('.js-add-to-batch-btn').trigger('click');
+
+      expect(wrapper.emitted('add-to-batch')).toEqual([[MOCK_DATA.suggestions[0].id]]);
+    });
+
+    it('emits `remove-from-batch` when the remove from batch button is clicked', async () => {
+      await createWithRenderedSuggestion({
+        batchSuggestionsInfo: [{ suggestionId: MOCK_DATA.suggestions[0].id }],
+      });
+
+      await wrapper.find('.js-remove-from-batch-btn').trigger('click');
+
+      expect(wrapper.emitted('remove-from-batch')).toEqual([[MOCK_DATA.suggestions[0].id]]);
+    });
+
+    it('emits `apply` when the apply suggestion button is clicked without a batch', async () => {
+      await createWithRenderedSuggestion();
+
+      await wrapper.find('[data-testid="commit-with-custom-message-button"]').trigger('click');
+
+      expect(wrapper.emitted('apply')).toEqual([
+        [
+          {
+            suggestionId: MOCK_DATA.suggestions[0].id,
+            callback: expect.any(Function),
+            flashContainer: wrapper.vm.$el,
+            message: null,
+          },
+        ],
+      ]);
+    });
+
+    it('emits `apply-batch` when the apply suggestions button is clicked', async () => {
+      await createWithRenderedSuggestion({
+        batchSuggestionsInfo: [{ suggestionId: MOCK_DATA.suggestions[0].id }, { suggestionId: 2 }],
+      });
+
+      await wrapper.find('[data-testid="commit-with-custom-message-button"]').trigger('click');
+
+      expect(wrapper.emitted('apply-batch')).toEqual([
+        [{ message: null, flashContainer: wrapper.vm.$el }],
+      ]);
+    });
+  });
+
   describe('mounted', () => {
     it('renders a flash container', () => {
       expect(wrapper.find('.js-suggestions-flash').exists()).toBe(true);

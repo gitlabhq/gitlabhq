@@ -1,0 +1,1 @@
+internal/ai_assist/duoworkflow/runner.go:348:81: SA1019: startReq.WorkflowDefinition is deprecated: Marked as deprecated in contract/contract.proto. (staticcheck)

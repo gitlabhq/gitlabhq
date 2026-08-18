@@ -1,5 +1,6 @@
 <script>
 import { GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import PageHeading from './page_heading.vue';
 
 export default {
@@ -9,6 +10,7 @@ export default {
     GlLoadingIcon,
     PageHeading,
   },
+  mixins: [glSlotsMixin],
   inject: {
     // Provided by an ancestor DynamicPanel. Falls back to the gon default when
     // the layout is rendered outside a panel (for example in work items).
@@ -68,9 +70,15 @@ export default {
     syncStickyHeaderHeight() {
       const el = this.$refs.stickyHeader;
       if (!el) return;
+      const heightPx = `${el.offsetHeight}px`;
+      // Offsets content while the header is showing; removed when it hides.
+      document.documentElement.style.setProperty('--layout-sticky-header-height', heightPx);
+      // Set once and never removed, so consumers can reserve a stable header
+      // height (e.g. detail-layout's sticky sidebar) without the value toggling
+      // on scroll, which would resize the sidebar and stutter the UI.
       document.documentElement.style.setProperty(
-        '--layout-sticky-header-height',
-        `${el.offsetHeight}px`,
+        '--layout-sticky-header-reserved-height',
+        heightPx,
       );
     },
   },
@@ -85,24 +93,25 @@ export default {
       :heading="heading"
       :heading-tag="headingTag"
       :class="{ 'gl-sr-only': pageHeadingSrOnly }"
+      inline-actions
     >
-      <template v-if="$scopedSlots['heading-wrapper']" #heading-wrapper>
+      <template v-if="glSlots()['heading-wrapper']" #heading-wrapper>
         <slot name="heading-wrapper"></slot>
       </template>
-      <template v-if="$scopedSlots.heading" #heading>
+      <template v-if="glSlots().heading" #heading>
         <slot name="heading"></slot>
       </template>
-      <template v-if="$scopedSlots.actions" #actions>
+      <template v-if="glSlots().actions" #actions>
         <slot name="actions"></slot>
       </template>
-      <template v-if="$scopedSlots.description || description" #description>
-        <slot v-if="$scopedSlots.description" name="description"></slot>
+      <template v-if="glSlots().description || description" #description>
+        <slot v-if="glSlots().description" name="description"></slot>
         <template v-else>{{ description }}</template>
       </template>
     </page-heading>
 
     <gl-intersection-observer
-      v-if="$scopedSlots['sticky-header']"
+      v-if="glSlots()['sticky-header']"
       @appear="isStuck = false"
       @disappear="isStuck = true"
     >
@@ -121,7 +130,7 @@ export default {
     </gl-intersection-observer>
 
     <div
-      v-if="$scopedSlots.alerts"
+      v-if="glSlots().alerts"
       class="gl-base-layout-alerts js-base-layout-alerts"
       data-testid="base-layout-alerts"
     >

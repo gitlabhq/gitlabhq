@@ -71,7 +71,7 @@ module Users
       end
 
       def email_verification_interval
-        interval_in_seconds = Gitlab::ApplicationRateLimiter.rate_limits[:email_verification][:interval]
+        interval_in_seconds = Gitlab::ApplicationRateLimiter.period_for(:email_verification)
         distance_of_time_in_words(interval_in_seconds)
       end
     end

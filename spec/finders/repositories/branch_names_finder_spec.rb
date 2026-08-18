@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Repositories::BranchNamesFinder, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   describe '#execute' do
     it 'returns a limited number of offset filtered branch names' do

@@ -36,6 +36,7 @@ RSpec.shared_examples 'diffs stream tests' do
         go
 
         expect(response.body).to not_include('diff-file')
+        expect(response.body).to not_include('rd-app-empty-state')
         expect(response.body).to include('server-timings')
         expect(response.body).to match(/streaming="[\d.]+"/)
       end

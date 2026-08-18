@@ -209,7 +209,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages' do
         namespace '/nuget' do
           include ::API::Concerns::Packages::Nuget::PublicEndpoints
@@ -228,7 +228,7 @@ module API
 
           # https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
           params do
-            requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX,
+            requires :package_name, type: String, desc: 'The NuGet package name', regexp: ::API::NO_SLASH_URL_PART_REGEX,
               documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
           end
           namespace '/download/*package_name' do
@@ -264,9 +264,9 @@ module API
             end
             params do
               requires :package_version, type: String, desc: 'The NuGet package version',
-                regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.3.0.17' }
+                regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.3.0.17' }
               requires :package_filename, type: String, desc: 'The NuGet package filename',
-                regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
+                regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
             end
             route_setting :authorization, permissions: :download_nuget_package, boundary_type: :project
             get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
@@ -391,7 +391,7 @@ module API
               regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.0.1' }
           end
           route_setting :authorization, permissions: :delete_nuget_package, boundary_type: :project
-          delete '*package_name/*package_version', urgency: :low, requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+          delete '*package_name/*package_version', urgency: :low, requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
             authorize_destroy_package!(project_or_group)
 
             destroy_conditionally!(find_package) do |pkg|
@@ -446,7 +446,7 @@ module API
       requires :project_id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':project_id/packages/nuget/v2' do
         # https://joelverhagen.github.io/NuGetUndocs/?http#endpoint-find-packages-by-id
         desc 'The NuGet V2 Feed Find Packages by ID endpoint' do

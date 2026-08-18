@@ -7,7 +7,7 @@ import CollapsibleSection from '~/merge_request_dashboard/components/collapsible
 describe('Merge request dashboard collapsible section', () => {
   let wrapper;
 
-  const collapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const collapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const sectionContent = () => wrapper.findByTestId('crud-body');
   const emptyState = () => wrapper.findByTestId('crud-empty');
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);

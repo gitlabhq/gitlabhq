@@ -20,6 +20,7 @@ namespace :explore do
 
   scope :catalog do
     get '/' => 'catalog#index', as: :catalog_index
+    get '/cells' => 'catalog#cells', as: :catalog_cells
     get '/*full_path' => 'catalog#show', as: :catalog, constraints: { full_path: /.*/ }
   end
   resources :snippets, only: [:index]

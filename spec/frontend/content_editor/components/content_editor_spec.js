@@ -257,7 +257,7 @@ describe('ContentEditor', () => {
       expect(wrapper.emitted('blur')).toHaveLength(1);
     });
   });
-  describe('when editorStateObserver emits docUpdate event', () => {
+  describe('when editorStateObserver emits doc-update event', () => {
     let markdown;
 
     beforeEach(async () => {
@@ -270,7 +270,7 @@ describe('ContentEditor', () => {
       await nextTick();
       await waitForPromises();
 
-      findEditorStateObserver().vm.$emit('docUpdate');
+      findEditorStateObserver().vm.$emit('doc-update');
     });
 
     it('emits change event with the latest markdown', () => {
@@ -310,6 +310,14 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
+  });
+
+  it('emits `enable-markdown-editor` when the editor mode dropdown switches', () => {
+    createWrapper();
+
+    wrapper.findComponent(EditorModeSwitcher).vm.$emit('switch');
+
+    expect(wrapper.emitted('enable-markdown-editor')).toEqual([[]]);
   });
 
   it('pastes content when CONTENT_EDITOR_READY_PASTE event is emitted', async () => {

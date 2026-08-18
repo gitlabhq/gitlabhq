@@ -23,6 +23,15 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
         expect(subject.valid?).to eq(true)
       end
 
+      it 'caps the decompressed output at max_bytes + 1' do
+        expect(Open3).to receive(:pipeline_r).and_wrap_original do |original, *cmds, **opts|
+          expect(cmds).to include(['head', '-c', (max_bytes + 1).to_s])
+          original.call(*cmds, **opts)
+        end
+
+        expect(subject.valid?).to eq(true)
+      end
+
       context 'when the waiter thread no longer exists due to being terminated or crashing' do
         it 'gracefully handles the absence of the waiter without raising exception' do
           allow(Process).to receive(:getpgid).and_raise(Errno::ESRCH)
@@ -37,27 +46,6 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
 
       it 'returns false' do
         expect(subject.valid?).to eq(false)
-      end
-    end
-
-    context 'when limit_output is enabled' do
-      subject { described_class.new(archive_path: filepath, max_bytes: max_bytes, limit_output: true) }
-
-      it 'caps the decompressed output at max_bytes + 1' do
-        expect(Open3).to receive(:pipeline_r).and_wrap_original do |original, *cmds, **opts|
-          expect(cmds).to include(['head', '-c', (max_bytes + 1).to_s])
-          original.call(*cmds, **opts)
-        end
-
-        expect(subject.valid?).to eq(true)
-      end
-
-      context 'when file exceeds allowed decompressed size' do
-        let(:max_bytes) { 1 }
-
-        it 'returns false' do
-          expect(subject.valid?).to eq(false)
-        end
       end
     end
 

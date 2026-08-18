@@ -18,8 +18,7 @@ module QA
       end
 
       it(
-        'parent pipeline passes when child fetches parent artifacts and passes',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358062'
+        'parent pipeline passes when child fetches parent artifacts and passes'
       ) do
         add_ci_files(success_child_ci_file)
         project.visit_latest_pipeline
@@ -31,8 +30,7 @@ module QA
       end
 
       it(
-        'parent pipeline fails if child fails',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358063'
+        'parent pipeline fails if child fails'
       ) do
         add_ci_files(fail_child_ci_file, expected_status: 'failed')
         project.visit_latest_pipeline

@@ -15,7 +15,6 @@ describe('O11yServiceSettingsSearchBox', () => {
   let wrapper;
   const defaultProps = {
     searchUrl: '/experimental/o11y_service_settings',
-    placeholder: 'Filter by group ID',
   };
 
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
@@ -34,7 +33,7 @@ describe('O11yServiceSettingsSearchBox', () => {
     createComponent({ initialValue: '12345' });
 
     expect(findSearchBox().props()).toMatchObject({
-      placeholder: defaultProps.placeholder,
+      placeholder: 'Filter by namespace ID',
       value: '12345',
     });
   });

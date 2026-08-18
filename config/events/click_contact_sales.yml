@@ -2,6 +2,8 @@
 description: Tracks clicks on the contact sales button for inquiries.
 action: click_contact_sales
 product_group: acquisition
+product_categories:
+- acquisition
 milestone: '17.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167945
 tiers:

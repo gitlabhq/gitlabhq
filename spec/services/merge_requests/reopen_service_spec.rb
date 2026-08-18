@@ -67,7 +67,7 @@ RSpec.describe MergeRequests::ReopenService, feature_category: :code_review_work
     end
 
     it 'caches merge request closing issues' do
-      expect(merge_request).to receive(:cache_merge_request_closes_issues!)
+      expect(merge_request).to receive(:persist_merge_request_issues!)
 
       described_class.new(project: project, current_user: user).execute(merge_request)
     end
@@ -113,6 +113,48 @@ RSpec.describe MergeRequests::ReopenService, feature_category: :code_review_work
 
       it 'does not reopen the merge request' do
         expect(@merge_request).to be_closed
+      end
+    end
+
+    context 'when a branch is missing' do
+      let(:service) { described_class.new(project: project, current_user: user) }
+      let(:branch_error) do
+        _('Cannot reopen this merge request because the source or target branch no longer exists.')
+      end
+
+      before do
+        allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+      end
+
+      it 'does not reopen the merge request and reports a branch error', :aggregate_failures do
+        expect { service.execute(merge_request) }
+          .not_to change { merge_request.merge_request_diffs.count }
+
+        expect(merge_request).to be_closed
+        expect(merge_request.errors[:base]).to include(branch_error)
+      end
+
+      context 'when the prevent_reopen_merge_request_without_branch feature flag is disabled' do
+        before do
+          stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
+        end
+
+        it 'reopens the merge request' do
+          service.execute(merge_request)
+
+          expect(merge_request).to be_opened
+        end
+      end
+
+      context 'when reopen is blocked for another reason' do
+        let(:service) { described_class.new(project: project, current_user: guest) }
+
+        it 'does not reopen the merge request or add a branch error', :aggregate_failures do
+          service.execute(merge_request)
+
+          expect(merge_request).to be_closed
+          expect(merge_request.errors).to be_empty
+        end
       end
     end
   end

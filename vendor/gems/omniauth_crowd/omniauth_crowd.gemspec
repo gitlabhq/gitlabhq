@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'omniauth', '~> 2.0'
   gem.add_runtime_dependency 'nokogiri', '>= 1.4.4'
-  gem.add_runtime_dependency 'activesupport', '>= 0'
+  gem.add_runtime_dependency 'activesupport', '>= 7.2', '< 9'
   gem.add_development_dependency(%q<rack>, [">= 0"])
   gem.add_development_dependency(%q<rake>, [">= 0"])
   gem.add_development_dependency(%q<rack-test>, [">= 0"])

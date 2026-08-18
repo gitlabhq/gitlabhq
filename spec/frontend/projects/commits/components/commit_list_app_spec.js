@@ -9,9 +9,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { groupCommitsByDay } from '~/projects/commits/utils/commit_grouping';
 import CommitListApp from '~/projects/commits/components/commit_list_app.vue';
-import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
+import CommitListRefSelector from '~/projects/commits/components/commit_list_ref_selector.vue';
+import CommitListActions from '~/projects/commits/components/commit_list_actions.vue';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
+import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import commitsQuery from '~/projects/commits/graphql/queries/commits.query.graphql';
 import {
   TOKEN_TYPE_COMMITTED_AFTER,
@@ -40,6 +45,7 @@ describe('CommitListApp', () => {
   const defaultProvide = {
     projectFullPath: 'gitlab-org/gitlab',
     escapedRef: 'main',
+    refType: '',
   };
 
   const commitsQueryHandler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
@@ -47,7 +53,10 @@ describe('CommitListApp', () => {
   const createRouter = (routeQuery = {}) => {
     const router = new VueRouter({
       mode: 'abstract',
-      routes: [{ path: '/', component: CommitListApp }],
+      routes: [
+        { path: '/', component: CommitListApp },
+        { path: '/:ref/:path*', name: 'commitsAnyRef', component: CommitListApp },
+      ],
     });
 
     router.push({ path: '/', query: routeQuery });
@@ -55,11 +64,20 @@ describe('CommitListApp', () => {
     return router;
   };
 
-  const createComponent = (handler = commitsQueryHandler, routeQuery = {}) => {
+  const createComponent = (
+    handler = commitsQueryHandler,
+    routeQuery = {},
+    { provide = {}, router } = {},
+  ) => {
     wrapper = shallowMountExtended(CommitListApp, {
       apolloProvider: createMockApollo([[commitsQuery, handler]]),
-      provide: defaultProvide,
-      router: createRouter(routeQuery),
+      provide: { ...defaultProvide, ...provide },
+      router: router ?? createRouter(routeQuery),
+      stubs: {
+        IndexLayout,
+        BaseLayout,
+        PageHeading,
+      },
     });
   };
 
@@ -80,7 +98,9 @@ describe('CommitListApp', () => {
   });
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findCommitHeader = () => wrapper.findComponent(CommitListHeader);
+  const findCommitRefSelector = () => wrapper.findComponent(CommitListRefSelector);
+  const findCommitActions = () => wrapper.findComponent(CommitListActions);
+  const findCommitFilteredSearch = () => wrapper.findComponent(CommitFilteredSearch);
   const findDailyCommits = () => wrapper.findAllByTestId('daily-commits');
   const findTimeElements = () => wrapper.findAll('time');
   const findEmptyState = () => wrapper.find('p');
@@ -104,14 +124,7 @@ describe('CommitListApp', () => {
   describe('escapedRef decoding', () => {
     it('decodes percent-encoded escapedRef for the initial query', async () => {
       const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
-      wrapper = shallowMountExtended(CommitListApp, {
-        apolloProvider: createMockApollo([[commitsQuery, handler]]),
-        provide: {
-          ...defaultProvide,
-          escapedRef: 'feature%2Fmy-branch',
-        },
-        router: createRouter(),
-      });
+      createComponent(handler, {}, { provide: { escapedRef: 'feature%2Fmy-branch' } });
       await waitForPromises();
 
       expect(handler).toHaveBeenCalledWith(
@@ -122,25 +135,63 @@ describe('CommitListApp', () => {
     });
   });
 
-  describe('commit header', () => {
+  describe('commit ref', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
     });
 
+    it('renders the page title', () => {
+      expect(wrapper.find('h1').text()).toBe('Commits');
+    });
+
     it('renders the commit header component', () => {
-      expect(findCommitHeader().exists()).toBe(true);
+      expect(findCommitRefSelector().exists()).toBe(true);
     });
 
     it('passes currentRef to the header component', () => {
-      expect(findCommitHeader().props('currentRef')).toBe('main');
+      expect(findCommitRefSelector().props('currentRef')).toBe('main');
     });
 
     it('updates currentRef passed to header after ref change', async () => {
-      findCommitHeader().vm.$emit('ref-change', 'develop');
+      findCommitRefSelector().vm.$emit('ref-change', 'develop');
       await waitForPromises();
 
-      expect(findCommitHeader().props('currentRef')).toBe('develop');
+      expect(findCommitRefSelector().props('currentRef')).toBe('develop');
+    });
+
+    it('updates currentRefType passed to header when switching from a branch to a tag', async () => {
+      await wrapper.vm.$router.push({
+        path: `/${encodeURIComponent('main')}/`,
+        query: { ref_type: 'heads' },
+      });
+      await waitForPromises();
+
+      expect(findCommitRefSelector().props('currentRefType')).toBe('heads');
+
+      findCommitRefSelector().vm.$emit('ref-change', 'v1.0');
+      await wrapper.vm.$router.push({
+        path: `/${encodeURIComponent('v1.0')}/`,
+        query: { ref_type: 'tags' },
+      });
+      await waitForPromises();
+
+      expect(findCommitRefSelector().props('currentRefType')).toBe('tags');
+    });
+  });
+
+  describe('commit actions and filtered search', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders the commit actions component', () => {
+      expect(findCommitActions().exists()).toBe(true);
+    });
+
+    it('renders the filtered search component', () => {
+      expect(findCommitFilteredSearch().exists()).toBe(true);
     });
   });
 
@@ -278,7 +329,7 @@ describe('CommitListApp', () => {
     it('refetches commits with new ref when ref-change is emitted', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('ref-change', 'feature-branch');
+      findCommitRefSelector().vm.$emit('ref-change', 'feature-branch');
       await waitForPromises();
 
       expect(commitsQueryHandler).toHaveBeenCalledWith(
@@ -297,13 +348,121 @@ describe('CommitListApp', () => {
       await waitForPromises();
 
       handler.mockClear();
-      findCommitHeader().vm.$emit('ref-change', 'other-branch');
+      findCommitRefSelector().vm.$emit('ref-change', 'other-branch');
       await waitForPromises();
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           ref: 'other-branch',
           after: null,
+        }),
+      );
+    });
+  });
+
+  describe('pipelineRef', () => {
+    const createComponentWithRefType = (refType, handler = commitsQueryHandler) =>
+      createComponent(handler, {}, { provide: { refType } });
+
+    it('passes currentRef as pipelineRef when refType is "heads"', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithRefType('heads', handler);
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pipelineRef: 'main',
+        }),
+      );
+    });
+
+    it('passes currentRef as pipelineRef when refType is "tags"', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithRefType('tags', handler);
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pipelineRef: 'main',
+        }),
+      );
+    });
+
+    it('passes null as pipelineRef when refType is empty (commit SHA)', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithRefType('', handler);
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pipelineRef: null,
+        }),
+      );
+    });
+
+    it('updates pipelineRef when ref changes via header', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithRefType('heads', handler);
+      await waitForPromises();
+
+      handler.mockClear();
+      findCommitRefSelector().vm.$emit('ref-change', 'develop');
+      await wrapper.vm.$router.push({
+        path: `/${encodeURIComponent('develop')}/`,
+        query: { ref_type: 'heads' },
+      });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'develop',
+          pipelineRef: 'develop',
+        }),
+      );
+    });
+
+    it('syncs refType from route query on in-app ref switch (SHA to branch)', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithRefType('', handler);
+      await waitForPromises();
+
+      handler.mockClear();
+      findCommitRefSelector().vm.$emit('ref-change', 'develop');
+      await wrapper.vm.$router.push({
+        path: `/${encodeURIComponent('develop')}/`,
+        query: { ref_type: 'heads' },
+      });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'develop',
+          pipelineRef: 'develop',
+        }),
+      );
+    });
+
+    it('resets pipelineRef to null on in-app ref switch from a branch to a commit SHA', async () => {
+      // Start on a branch view (server injects refType='heads').
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithRefType('heads', handler);
+      await waitForPromises();
+
+      // Selecting a commit SHA drops ref_type from the route query. The inject
+      // fallback must NOT apply after the initial load, otherwise the SHA view
+      // would stay incorrectly ref-scoped.
+      handler.mockClear();
+      findCommitRefSelector().vm.$emit('ref-change', 'abc123def');
+      await wrapper.vm.$router.push({
+        path: `/${encodeURIComponent('abc123def')}/`,
+        query: {},
+      });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'abc123def',
+          pipelineRef: null,
         }),
       );
     });
@@ -318,7 +477,9 @@ describe('CommitListApp', () => {
     it('refetches commits with author filter when filter is applied', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
+      findCommitFilteredSearch().vm.$emit('filter', [
+        { type: 'author', value: { data: 'Administrator' } },
+      ]);
       await waitForPromises();
 
       expect(commitsQueryHandler).toHaveBeenCalledWith(
@@ -332,7 +493,9 @@ describe('CommitListApp', () => {
     it('refetches commits with message filter when filter is applied', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('filter', [{ type: 'message', value: { data: 'fix bug' } }]);
+      findCommitFilteredSearch().vm.$emit('filter', [
+        { type: 'message', value: { data: 'fix bug' } },
+      ]);
       await waitForPromises();
 
       expect(commitsQueryHandler).toHaveBeenCalledWith(
@@ -346,7 +509,7 @@ describe('CommitListApp', () => {
     it('treats free text search as message filter', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: 'filtered-search-term', value: { data: 'search term' } },
       ]);
       await waitForPromises();
@@ -361,7 +524,7 @@ describe('CommitListApp', () => {
     it('refetches commits with committed-after filter when filter is applied', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
       ]);
       await waitForPromises();
@@ -377,7 +540,7 @@ describe('CommitListApp', () => {
     it('refetches commits with committed-before filter when filter is applied', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
       ]);
       await waitForPromises();
@@ -393,7 +556,7 @@ describe('CommitListApp', () => {
     it('refetches commits with date range filters when both are applied', async () => {
       commitsQueryHandler.mockClear();
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
         { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
       ]);
@@ -408,10 +571,12 @@ describe('CommitListApp', () => {
     });
 
     it('clears filters when empty filter array is passed', async () => {
-      findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
+      findCommitFilteredSearch().vm.$emit('filter', [
+        { type: 'author', value: { data: 'Administrator' } },
+      ]);
       await waitForPromises();
 
-      findCommitHeader().vm.$emit('filter', []);
+      findCommitFilteredSearch().vm.$emit('filter', []);
       await waitForPromises();
 
       expect(findDailyCommits()).toHaveLength(2);
@@ -427,7 +592,9 @@ describe('CommitListApp', () => {
     it('tracks filter event with author label', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
+      findCommitFilteredSearch().vm.$emit('filter', [
+        { type: 'author', value: { data: 'Administrator' } },
+      ]);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'filter_commit_list',
@@ -439,7 +606,9 @@ describe('CommitListApp', () => {
     it('tracks filter event with message label', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [{ type: 'message', value: { data: 'fix bug' } }]);
+      findCommitFilteredSearch().vm.$emit('filter', [
+        { type: 'message', value: { data: 'fix bug' } },
+      ]);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'filter_commit_list',
@@ -451,7 +620,7 @@ describe('CommitListApp', () => {
     it('tracks filter event with message label for filtered-search-term token type', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: 'filtered-search-term', value: { data: 'fix bug' } },
       ]);
 
@@ -465,7 +634,7 @@ describe('CommitListApp', () => {
     it('tracks filter event with combined label when both filters are applied', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: 'author', value: { data: 'Administrator' } },
         { type: 'message', value: { data: 'fix bug' } },
       ]);
@@ -480,7 +649,7 @@ describe('CommitListApp', () => {
     it('tracks filter event with committed-after label', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
       ]);
 
@@ -494,7 +663,7 @@ describe('CommitListApp', () => {
     it('tracks filter event with committed-before label', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
       ]);
 
@@ -508,7 +677,7 @@ describe('CommitListApp', () => {
     it('tracks filter event with date range labels when both date filters are applied', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', [
+      findCommitFilteredSearch().vm.$emit('filter', [
         { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
         { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
       ]);
@@ -523,7 +692,7 @@ describe('CommitListApp', () => {
     it('tracks filter event with none label when filters are cleared', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findCommitHeader().vm.$emit('filter', []);
+      findCommitFilteredSearch().vm.$emit('filter', []);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'filter_commit_list',
@@ -640,7 +809,7 @@ describe('CommitListApp', () => {
         await waitForPromises();
 
         handler.mockClear();
-        findCommitHeader().vm.$emit('filter', [
+        findCommitFilteredSearch().vm.$emit('filter', [
           { type: 'author', value: { data: 'Administrator' } },
         ]);
         await waitForPromises();
@@ -665,7 +834,7 @@ describe('CommitListApp', () => {
           }),
         );
 
-        expect(findCommitHeader().props('initialFilterTokens')).toEqual([
+        expect(findCommitFilteredSearch().props('initialFilterTokens')).toEqual([
           { type: 'author', value: { data: 'john.doe', operator: '=' } },
           { type: 'message', value: { data: 'fix bug', operator: '=' } },
         ]);
@@ -684,7 +853,7 @@ describe('CommitListApp', () => {
           }),
         );
 
-        expect(findCommitHeader().props('initialFilterTokens')).toEqual([]);
+        expect(findCommitFilteredSearch().props('initialFilterTokens')).toEqual([]);
       });
 
       it('handles invalid page_size by using default', async () => {
@@ -709,7 +878,7 @@ describe('CommitListApp', () => {
 
         const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
 
-        findCommitHeader().vm.$emit('filter', filters);
+        findCommitFilteredSearch().vm.$emit('filter', filters);
         await waitForPromises();
 
         expect(pushSpy).toHaveBeenCalledWith({ query: expectedQuery });
@@ -747,7 +916,9 @@ describe('CommitListApp', () => {
 
         const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
 
-        findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'admin' } }]);
+        findCommitFilteredSearch().vm.$emit('filter', [
+          { type: 'author', value: { data: 'admin' } },
+        ]);
         await waitForPromises();
 
         expect(pushSpy).toHaveBeenCalledWith({ query: { author: 'admin', page_size: '50' } });
@@ -759,7 +930,9 @@ describe('CommitListApp', () => {
 
         const pushSpy = jest.spyOn(wrapper.vm.$router, 'push');
 
-        findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'admin' } }]);
+        findCommitFilteredSearch().vm.$emit('filter', [
+          { type: 'author', value: { data: 'admin' } },
+        ]);
         await waitForPromises();
 
         expect(pushSpy).not.toHaveBeenCalled();
@@ -784,7 +957,7 @@ describe('CommitListApp', () => {
           }),
         );
 
-        expect(findCommitHeader().props('initialFilterTokens')).toEqual([
+        expect(findCommitFilteredSearch().props('initialFilterTokens')).toEqual([
           { type: 'author', value: { data: 'new-author', operator: '=' } },
           { type: 'message', value: { data: 'fix', operator: '=' } },
         ]);
@@ -818,14 +991,7 @@ describe('CommitListApp', () => {
 
       it('handles encoded refs in initial route path', async () => {
         const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
-        wrapper = shallowMountExtended(CommitListApp, {
-          apolloProvider: createMockApollo([[commitsQuery, handler]]),
-          provide: {
-            ...defaultProvide,
-            escapedRef: 'feature%2Fmy-branch',
-          },
-          router: createRouter(),
-        });
+        createComponent(handler, {}, { provide: { escapedRef: 'feature%2Fmy-branch' } });
         await waitForPromises();
 
         expect(handler).toHaveBeenCalledWith(expect.objectContaining({ ref: 'feature/my-branch' }));
@@ -852,11 +1018,7 @@ describe('CommitListApp', () => {
         });
         await router.push('/feature/my-branch/');
 
-        wrapper = shallowMountExtended(CommitListApp, {
-          apolloProvider: createMockApollo([[commitsQuery, handler]]),
-          provide: { ...defaultProvide, escapedRef },
-          router,
-        });
+        createComponent(handler, {}, { provide: { escapedRef }, router });
         await waitForPromises();
 
         // Must send the full ref, not just 'feature'
@@ -879,13 +1041,8 @@ describe('CommitListApp', () => {
       return router;
     };
 
-    const createComponentWithPath = (handler, filePath = '', routeQuery = {}) => {
-      wrapper = shallowMountExtended(CommitListApp, {
-        apolloProvider: createMockApollo([[commitsQuery, handler]]),
-        provide: defaultProvide,
-        router: createPathRouter(filePath, routeQuery),
-      });
-    };
+    const createComponentWithPath = (handler, filePath = '', routeQuery = {}) =>
+      createComponent(handler, {}, { router: createPathRouter(filePath, routeQuery) });
 
     it('passes file path to GraphQL query', async () => {
       const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
@@ -893,6 +1050,14 @@ describe('CommitListApp', () => {
       await waitForPromises();
 
       expect(handler).toHaveBeenCalledWith(expect.objectContaining({ path: 'app/models/user.rb' }));
+    });
+
+    it('passes the file path to the commit actions component', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      expect(findCommitActions().props('filePath')).toBe('app/models/user.rb');
     });
 
     it('passes null path when no file path in route', async () => {
@@ -909,7 +1074,7 @@ describe('CommitListApp', () => {
       await waitForPromises();
 
       handler.mockClear();
-      findCommitHeader().vm.$emit('ref-change', 'develop');
+      findCommitRefSelector().vm.$emit('ref-change', 'develop');
       await waitForPromises();
 
       expect(handler).toHaveBeenCalledWith(
@@ -972,12 +1137,12 @@ describe('CommitListApp', () => {
       const refB = 'bugfix/bar';
 
       // Switch to refA (in-app: ref-change + router push)
-      findCommitHeader().vm.$emit('ref-change', refA);
+      findCommitRefSelector().vm.$emit('ref-change', refA);
       await wrapper.vm.$router.push(`/${encodeURIComponent(refA)}/`);
       await waitForPromises();
 
       // Switch to refB
-      findCommitHeader().vm.$emit('ref-change', refB);
+      findCommitRefSelector().vm.$emit('ref-change', refB);
       await wrapper.vm.$router.push(`/${encodeURIComponent(refB)}/`);
       await waitForPromises();
 

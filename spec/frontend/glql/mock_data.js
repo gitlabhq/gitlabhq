@@ -74,6 +74,26 @@ export const MOCK_DIMENSIONS = {
   },
 };
 
+export const MOCK_DUO_USAGE_EVENTS_DIMENSIONS = {
+  __typename: 'DuoUsageEventsAggregationResponseDimensions',
+  feature: 'code_suggestions',
+  event: 'code_suggestion_shown_in_ide',
+  user: {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/1',
+    webUrl: 'https://gitlab.com/foobar',
+    username: 'foobar',
+    name: 'Foo Bar',
+    avatarUrl: 'https://gitlab.com/uploads/-/system/user/avatar/1/avatar.png',
+  },
+};
+
+export const MOCK_MERGE_REQUESTS_DIMENSIONS = {
+  __typename: 'MergeRequestsAggregationResponseDimensions',
+  state: 'merged',
+  targetBranch: 'main',
+};
+
 export const MOCK_MILESTONE = {
   __typename: 'Milestone',
   webPath: '/gitlab-org/gitlab-test/-/milestones/1',

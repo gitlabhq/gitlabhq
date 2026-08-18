@@ -507,7 +507,7 @@ RSpec.describe Gitlab::OtherMarkup, :aggregate_failures, feature_category: :wiki
   end
 
   context 'when rendering takes too long' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
     let(:file_name) { 'foo.bar' }
     let(:context) { { project: project } }

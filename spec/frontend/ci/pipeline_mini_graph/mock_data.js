@@ -130,7 +130,7 @@ export const mockJobActions = [
   },
 ];
 
-export const mockJobMutationResponse = (dataName) => ({
+const mockJobMutationResponse = (dataName) => ({
   data: {
     [dataName]: {
       job: {

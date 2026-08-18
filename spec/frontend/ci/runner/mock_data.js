@@ -388,6 +388,7 @@ export const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 export const mockAuthenticationToken = 'MOCK_AUTHENTICATION_TOKEN';
 
 export const newRunnerPath = '/runners/new';
+export const runnerSettingsPath = '/admin/application_settings/ci_cd#js-runner-settings';
 export const runnerInstallHelpPage = 'https://docs.example.com/runner/install/';
 
 export const projectRunnerCloudProvisioningSteps = {

@@ -13,7 +13,7 @@ and links to additional documentation.
 
 ## `git add`
 
-Use `git add` to files to the staging area.
+Use `git add` to add files to the staging area.
 
 ```shell
 git add <file_path>
@@ -47,7 +47,7 @@ $ git blame -L 5,5 example.txt
 
 ## `git bisect`
 
-Use `git bisect`to use binary search to find the commit that introduced a bug.
+Use `git bisect` to use binary search to find the commit that introduced a bug.
 
 Start by identifying a commit that is "bad" (contains the bug) and a commit that is "good" (doesn't contain the bug).
 
@@ -57,8 +57,8 @@ git bisect bad                 # Current version is bad
 git bisect good v2.6.13-rc2    # v2.6.13-rc2 is known to be good
 ```
 
-`git bisect` then picks a commit in between the two points and asks you identify if the commit is "good" or "bad" with
-`git bisect good`or `git bisect bad`. Repeat the process until the commit is found.
+`git bisect` then picks a commit in between the two points and asks you to identify if the commit is "good" or "bad" with
+`git bisect good` or `git bisect bad`. Repeat the process until the commit is found.
 
 ## `git checkout`
 
@@ -84,7 +84,7 @@ For more information, see [clone a Git repository to your local computer](clone.
 
 ## `git commit`
 
-Use `git commit` to commits staged changes to the repository.
+Use `git commit` to commit staged changes to the repository.
 
 ```shell
 git commit -m "<commit_message>"

@@ -116,11 +116,11 @@ Vulnerability Resolution is available in the following workflows:
 {{< history >}}
 
 - Resolve a vulnerability from the vulnerability report:
-  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
   - Changed to beta in GitLab 17.3.
   - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Vulnerability Resolution activity icon:
-  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15036) in GitLab 17.5 with a flag named [`vulnerability_report_vr_badge`](https://gitlab.com/gitlab-org/gitlab/-/issues/486549). Disabled by default.
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/15036) in GitLab 17.5 with a flag named [`vulnerability_report_vr_badge`](https://gitlab.com/gitlab-org/gitlab/-/issues/486549). Disabled by default.
   - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171718) in GitLab 17.6.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/503568) in GitLab 18.0. Feature flag `vulnerability_report_vr_badge` removed.
 
@@ -144,7 +144,8 @@ To resolve a vulnerability from the vulnerability report:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**.
+1. In the upper-right corner, select **Resolve with AI**. If that button is not shown, select
+   **AI actions**, then select **Resolve with AI**.
    > [!warning]
    > If this project is a public project be aware that creating an MR will publicly expose the
    > vulnerability and offered resolution. To create the MR privately,
@@ -164,7 +165,7 @@ then process the merge request according to your standard workflow.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14862) in GitLab 17.6.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185452) in GitLab 17.11. Feature flag `resolve_vulnerability_in_mr` removed.
 

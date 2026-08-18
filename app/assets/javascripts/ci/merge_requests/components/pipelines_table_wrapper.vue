@@ -1,18 +1,16 @@
 <script>
 import { GlLoadingIcon, GlModal, GlLink, GlSprintf, GlKeysetPagination, GlAlert } from '@gitlab/ui';
+
 import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
 import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import { createAlert } from '~/alert';
 import Api from '~/api';
-import { fetchPolicies } from '~/lib/graphql';
-import { getQueryHeaders, setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { s__, __ } from '~/locale';
 
-import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
 import { PIPELINE_ALIVE_STATUSES } from '~/ci/constants';
@@ -31,10 +29,15 @@ import mrPipelineStatusesUpdatedSubscription from '../graphql/subscriptions/mr_p
 import downstreamPipelineStatusUpdatedSubscription from '../graphql/subscriptions/downstream_pipeline_status_updated.subscription.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '../graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
 
-import { createSubscriptionsCollection, updateDownstreamPipelineInList } from '../utils';
-import { MR_PIPELINE_TYPE_DETACHED, MR_PIPELINE_TYPE_MERGED_RESULT } from '../constants';
+import { createSubscriptionsCollection } from '../utils';
+import {
+  MR_PIPELINE_TYPE_DETACHED,
+  MR_PIPELINE_TYPE_MERGED_RESULT,
+  MR_PIPELINE_TYPE_MERGE_TRAIN,
+} from '../constants';
 
 const MAX_DOWNSTREAM_SUBSCRIPTIONS = 3;
+const POLL_INTERVAL_MS = 60 * 1000;
 
 export default {
   name: 'PipelinesTableWrapper',
@@ -81,9 +84,12 @@ export default {
     return {
       hasError: false,
       isCallingPostMergeRequestPipeline: false,
-      pageInfo: {},
-      pipelines: [],
-      pipelinesCount: 0,
+      pipelines: {
+        mergeRequest: null,
+        nodes: [],
+        pageInfo: {},
+        count: 0,
+      },
       pagination: {
         first: PIPELINES_PER_PAGE,
         last: null,
@@ -92,26 +98,24 @@ export default {
       },
       forcedAliveParentIds: [],
       forcedAliveDownstreamIds: [],
+      downstreamPipelines: {},
       pipelineCreationRequests: [],
       showCreationFailedAlert: false,
       isCreatingPipeline: false,
       loaderTimeout: null,
       mergeRequestGid: null,
-      isFetchingDownstream: false,
-      downstreamData: {},
+
+      pollingVisibilityCleanups: [],
     };
   },
   apollo: {
     pipelines: {
       query: getMergeRequestPipelines,
-      context() {
-        return {
-          ...getQueryHeaders(this.graphqlResourceEtag),
-          featureCategory: 'continuous_integration',
-        };
+      context: {
+        featureCategory: 'continuous_integration',
       },
-      // TODO: Implement proper ETag caching - https://gitlab.com/gitlab-org/gitlab/-/work_items/593625
-      pollInterval: 60000,
+      // Ensure we keep an updated state in long running tab sessions, in case subscriptions drop updates.
+      pollInterval: POLL_INTERVAL_MS,
       variables() {
         return {
           fullPath: this.targetProjectFullPath,
@@ -136,32 +140,50 @@ export default {
             }
           : null;
 
-        const serverPipelines =
-          mrDetails?.pipelines?.nodes?.map((pipeline) => ({
-            ...pipeline,
-            id: getIdFromGraphQLId(pipeline.id),
-            graphqlId: pipeline.id,
-            mergeRequest,
-          })) || [];
-
-        return this.mergeWithPendingPipelines(serverPipelines);
-      },
-      result({ data }) {
-        const pipelines = data?.project?.mergeRequest?.pipelines;
-
-        if (pipelines) {
-          this.pageInfo = pipelines.pageInfo;
-          this.pipelinesCount = pipelines.count;
-          this.updateBadgeCount(this.pipelinesCount);
-          this.fetchDownstreamPipelines();
-        }
+        return {
+          mergeRequest,
+          nodes: mrDetails?.pipelines?.nodes || [],
+          pageInfo: mrDetails?.pipelines?.pageInfo || {},
+          count: mrDetails?.pipelines?.count || 0,
+        };
       },
       error() {
         this.hasError = true;
       },
     },
+    downstreamPipelines: {
+      query: getPipelinesDownstream,
+      context: {
+        featureCategory: 'continuous_integration',
+      },
+      // Ensure we keep an updated state in long running tab sessions, in case subscriptions drop updates.
+      pollInterval: POLL_INTERVAL_MS,
+      variables() {
+        return {
+          fullPath: this.targetProjectFullPath,
+          mergeRequestIid: String(this.mergeRequestId),
+          ids: this.displayedPipelineIds,
+        };
+      },
+      skip() {
+        return this.displayedPipelineIds.length === 0;
+      },
+      update(data) {
+        const nodes = data?.project?.mergeRequest?.pipelines?.nodes || [];
+        return nodes.reduce((acc, node) => {
+          acc[node.id] = node.downstream;
+          return acc;
+        }, {});
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
     pipelineCreationRequests: {
       query: getPipelineCreationRequests,
+      context: {
+        featureCategory: 'continuous_integration',
+      },
       variables() {
         return {
           fullPath: this.targetProjectFullPath,
@@ -202,30 +224,65 @@ export default {
     },
   },
   computed: {
-    hasPipelines() {
-      return this.pipelines.length > 0;
+    /**
+     * SUCCEEDED pipeline-creation requests whose pipeline is newer than the newest one the
+     * server has returned and is not already in the list. These are prepended optimistically
+     * so a freshly-created pipeline shows immediately, before the connection query catches up.
+     */
+    newPipelines() {
+      const cacheNodes = this.pipelines.nodes;
+      const existingIds = new Set(cacheNodes.map((pipeline) => pipeline.id));
+      const newestId = cacheNodes[0] ? getIdFromGraphQLId(cacheNodes[0].id) : 0;
+
+      return this.pipelineCreationRequests
+        .filter(
+          (request) =>
+            request.status === 'SUCCEEDED' &&
+            request.pipeline &&
+            !existingIds.has(request.pipeline.id) &&
+            getIdFromGraphQLId(request.pipeline.id) > newestId,
+        )
+        .map((request) => request.pipeline)
+        .sort((a, b) => getIdFromGraphQLId(b.id) - getIdFromGraphQLId(a.id));
     },
-    pipelinesWithDownstream() {
-      return this.pipelines.map((pipeline) => {
-        const downstream = this.downstreamData[pipeline.graphqlId];
-        if (!downstream) return pipeline;
-        return {
+    /**
+     * Ids of every pipeline about to be displayed (connection nodes + optimistic new pipelines),
+     * used to fetch their downstream data.
+     */
+    displayedPipelineIds() {
+      return [...this.newPipelines, ...this.pipelines.nodes].map((pipeline) => pipeline.id);
+    },
+    displayedPipelinesWithDownstream() {
+      const { mergeRequest } = this.pipelines;
+      const seen = new Set();
+
+      return [...this.newPipelines, ...this.pipelines.nodes].reduce((acc, pipeline) => {
+        if (seen.has(pipeline.id)) return acc;
+        seen.add(pipeline.id);
+
+        const downstream = this.downstreamPipelines[pipeline.id];
+        acc.push({
           ...pipeline,
-          downstream: {
-            ...pipeline.downstream,
-            nodes: this.mergeDownstreamNodes(
-              pipeline.downstream?.nodes || [],
-              downstream.nodes || [],
-            ),
-          },
-        };
-      });
+          ...(mergeRequest && { mergeRequest }),
+          ...(downstream && { downstream }),
+        });
+        return acc;
+      }, []);
+    },
+    totalPipelineCount() {
+      return this.pipelines.count + this.newPipelines.length;
+    },
+    hasPipelines() {
+      return this.displayedPipelinesWithDownstream.length > 0;
     },
     isLoading() {
       return this.$apollo.queries.pipelines.loading;
     },
     latestPipeline() {
-      return this.pipelines[0];
+      return this.displayedPipelinesWithDownstream[0];
+    },
+    pageInfo() {
+      return this.pipelines.pageInfo || {};
     },
     shouldRenderTable() {
       return !this.isLoading && this.hasPipelines && !this.hasError;
@@ -238,20 +295,21 @@ export default {
     },
     /**
      * The "Run pipeline" button is rendered when the latest pipeline is a
-     * merge request pipeline (detached or merged-results). When the latest
-     * pipeline is sourced from a push/branch, we hide the button to avoid
-     * suggesting an action the project's CI config may not support.
+     * merge request pipeline (detached, merged-results, or merge train).
+     * When the latest pipeline is sourced from a push/branch, we hide the
+     * button to avoid suggesting an action the project's CI config may not
+     * support.
      *
      * @returns {Boolean}
      */
     canRenderPipelineButton() {
-      return this.isLatestPipelineDetachedOrMergeResultPipeline;
+      return this.isLatestPipelineMergeRequestEventPipeline;
     },
     isForkMergeRequest() {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
     },
     isLatestPipelineCreatedInTargetProject() {
-      return this.latestPipeline?.project?.fullPath === `/${this.targetProjectFullPath}`;
+      return this.latestPipeline?.project?.fullPath === this.targetProjectFullPath;
     },
     shouldShowSecurityWarning() {
       return (
@@ -261,15 +319,17 @@ export default {
       );
     },
     /**
-     * Checks if the latest pipeline is a detached merge request pipeline
-     * or a merged-results pipeline.
+     * Checks if the latest pipeline is a merge request pipeline: detached,
+     * merged-results, or merge train.
      *
      * @returns {Boolean}
      */
-    isLatestPipelineDetachedOrMergeResultPipeline() {
+    isLatestPipelineMergeRequestEventPipeline() {
       const eventType = this.latestPipeline?.mergeRequestEventType;
       return (
-        eventType === MR_PIPELINE_TYPE_DETACHED || eventType === MR_PIPELINE_TYPE_MERGED_RESULT
+        eventType === MR_PIPELINE_TYPE_DETACHED ||
+        eventType === MR_PIPELINE_TYPE_MERGED_RESULT ||
+        eventType === MR_PIPELINE_TYPE_MERGE_TRAIN
       );
     },
     showPagination() {
@@ -281,33 +341,30 @@ export default {
     },
     aliveParentIds() {
       const ids = new Set([
-        ...this.pipelines
+        ...this.displayedPipelinesWithDownstream
           .filter((p) => PIPELINE_ALIVE_STATUSES.includes(p.detailedStatus?.name))
-          .map((p) => p.graphqlId),
+          .map((p) => p.id),
         ...this.forcedAliveParentIds,
       ]);
       return [...ids].sort();
     },
-    aliveDownstreamRefs() {
-      const refs = [];
-      const seenIds = new Set();
-      for (const pipeline of this.pipelinesWithDownstream) {
+    aliveDownstreamIds() {
+      const ids = new Set();
+      for (const pipeline of this.displayedPipelinesWithDownstream) {
         const downstreamNodes = (pipeline.downstream?.nodes || []).slice(
           0,
           MAX_DOWNSTREAM_SUBSCRIPTIONS,
         );
         for (const downstream of downstreamNodes) {
-          if (seenIds.has(downstream.id)) continue;
           if (
             PIPELINE_ALIVE_STATUSES.includes(downstream.detailedStatus?.name) ||
             this.forcedAliveDownstreamIds.includes(downstream.id)
           ) {
-            refs.push({ id: downstream.id, parentGraphqlId: pipeline.graphqlId });
-            seenIds.add(downstream.id);
+            ids.add(downstream.id);
           }
         }
       }
-      return refs;
+      return [...ids];
     },
     hasInProgressCreationRequests() {
       return this.requestLengthByStatus(this.pipelineCreationRequests, 'IN_PROGRESS') > 0;
@@ -317,6 +374,9 @@ export default {
     },
   },
   watch: {
+    totalPipelineCount(count) {
+      this.updateBadgeCount(count);
+    },
     pipelineCreationRequests: {
       handler(newRequests, oldRequests) {
         const hasInProgress = this.requestLengthByStatus(newRequests, 'IN_PROGRESS') > 0;
@@ -327,59 +387,19 @@ export default {
           this.stopDebouncedPipelineLoader();
         }
 
-        const hasSucceededRequests = this.hasSuccessCountIncreased(oldRequests, newRequests);
-        const hasFailedRequests = this.hasFailureCountIncreased(oldRequests, newRequests);
-
-        if (hasSucceededRequests) {
-          const existingIds = new Set(this.pipelines.map((p) => p.id));
-
-          const newPipelines = newRequests
-            .filter(
-              (req) =>
-                req.status === 'SUCCEEDED' &&
-                req.pipeline &&
-                !existingIds.has(getIdFromGraphQLId(req.pipeline.id)) &&
-                this.latestPipeline?.id < getIdFromGraphQLId(req.pipeline.id),
-            )
-            .map((req) => ({
-              ...req.pipeline,
-              id: getIdFromGraphQLId(req.pipeline.id),
-              graphqlId: req.pipeline.id,
-            }));
-
-          if (newPipelines.length > 0) {
-            this.pipelines = [...newPipelines, ...this.pipelines];
-            this.pipelinesCount += newPipelines.length;
-            this.updateBadgeCount(this.pipelinesCount);
-          }
-        }
-
-        this.showCreationFailedAlert = hasFailedRequests;
+        this.showCreationFailedAlert = this.hasFailureCountIncreased(oldRequests, newRequests);
       },
       deep: true,
       immediate: true,
     },
     aliveParentIds(ids) {
-      this.parentSubscriptions.syncSubscriptions(ids, (id) => {
+      this.parentSubscriptions.syncSubscriptions(ids, (pipelineId) => {
         const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
           document: mrPipelineStatusesUpdatedSubscription,
-          variables: { pipelineId: id },
-          updateQuery: (previousData, { subscriptionData }) => {
-            const updatedPipeline = subscriptionData?.data?.ciPipelineStatusUpdated;
-            if (!updatedPipeline) return previousData;
-
-            const index = this.pipelines.findIndex((p) => p.graphqlId === updatedPipeline.id);
-            if (index !== -1) {
-              const existing = this.pipelines[index];
-              this.pipelines.splice(index, 1, {
-                ...existing,
-                ...updatedPipeline,
-                id: existing.id,
-                graphqlId: existing.graphqlId,
-                mergeRequest: existing.mergeRequest,
-              });
-            }
-
+          variables: { pipelineId },
+          updateQuery: (previousData) => {
+            // The subscription payload normalizes into the cached Pipeline entity by id, so the row
+            // updates automatically — updateQuery only needs to leave the query result untouched.
             return previousData;
           },
           onError: (error) => {
@@ -389,32 +409,22 @@ export default {
         return unsubscribe;
       });
     },
-    aliveDownstreamRefs(refs) {
-      this.downstreamSubscriptions.syncSubscriptions(
-        refs.map((r) => r.id),
-        (id) => {
-          const ref = refs.find((r) => r.id === id);
-          const { parentGraphqlId } = ref;
-          const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
-            document: downstreamPipelineStatusUpdatedSubscription,
-            variables: { pipelineId: id },
-            updateQuery: (previousData, { subscriptionData }) => {
-              const updated = subscriptionData?.data?.ciPipelineStatusUpdated;
-              if (updated) {
-                this.pipelines = updateDownstreamPipelineInList(this.pipelines, {
-                  parentGraphqlId,
-                  updatedDownstream: updated,
-                });
-              }
-              return previousData;
-            },
-            onError: (error) => {
-              Sentry.captureException(error);
-            },
-          });
-          return unsubscribe;
-        },
-      );
+    aliveDownstreamIds(ids) {
+      this.downstreamSubscriptions.syncSubscriptions(ids, (pipelineId) => {
+        const { unsubscribe } = this.$apollo.queries.pipelines.subscribeToMore({
+          document: downstreamPipelineStatusUpdatedSubscription,
+          variables: { pipelineId },
+          updateQuery: (previousData) => {
+            // The subscription payload normalizes into the cached Pipeline entity by id, so the row
+            // updates automatically — updateQuery only needs to leave the query result untouched.
+            return previousData;
+          },
+          onError: (error) => {
+            Sentry.captureException(error);
+          },
+        });
+        return unsubscribe;
+      });
     },
   },
   created() {
@@ -422,14 +432,16 @@ export default {
     this.downstreamSubscriptions = createSubscriptionsCollection();
   },
   mounted() {
-    this.pollingVisibilityCleanup = setupQueryPollingByVisibility(
-      this.$apollo.queries.pipelines,
-      60000,
+    this.pollingVisibilityCleanups.push(
+      setupQueryPollingByVisibility(this.$apollo.queries.pipelines, POLL_INTERVAL_MS),
+    );
+    this.pollingVisibilityCleanups.push(
+      setupQueryPollingByVisibility(this.$apollo.queries.downstreamPipelines, POLL_INTERVAL_MS),
     );
   },
-  beforeUnmount() {
+  beforeDestroy() {
     clearTimeout(this.loaderTimeout);
-    this.pollingVisibilityCleanup?.();
+    this.pollingVisibilityCleanups.forEach((cleanup) => cleanup?.());
     this.clearAllSubscriptions();
   },
   methods: {
@@ -442,7 +454,7 @@ export default {
       });
     },
     retryPipeline(pipeline) {
-      this.forcedAliveParentIds = [...new Set([...this.forcedAliveParentIds, pipeline.graphqlId])];
+      this.forcedAliveParentIds = [...new Set([...this.forcedAliveParentIds, pipeline.id])];
       this.executePipelineAction({
         pipeline,
         mutation: retryPipelineMutation,
@@ -455,7 +467,7 @@ export default {
         const { data } = await this.$apollo.mutate({
           mutation,
           variables: {
-            id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id),
+            id: pipeline.id,
           },
           context: {
             featureCategory: 'continuous_integration',
@@ -467,7 +479,7 @@ export default {
           throw new Error(errorMessage);
         }
 
-        this.refetchSinglePipeline(pipeline.graphqlId);
+        this.refetchSinglePipeline(pipeline.id);
       } catch (error) {
         createAlert({
           message: defaultErrorMessage,
@@ -480,59 +492,14 @@ export default {
       this.parentSubscriptions.unsubscribeAll();
       this.downstreamSubscriptions.unsubscribeAll();
     },
-    mergeDownstreamNodes(existingNodes, newNodes) {
-      return newNodes.map((newNode) => {
-        const match = existingNodes.find((n) => n.id === newNode.id);
-        return match ? { ...newNode, ...match } : newNode;
-      });
-    },
-    storeDownstreamData(fetchedPipelines) {
-      const updated = { ...this.downstreamData };
-      fetchedPipelines.forEach((fetchedPipeline) => {
-        const downstreamNodes = fetchedPipeline.downstream?.nodes || [];
-        if (!downstreamNodes.length) return;
-        updated[fetchedPipeline.id] = fetchedPipeline.downstream;
-      });
-      this.downstreamData = updated;
-    },
-    async fetchDownstreamPipelines(pipelineGraphqlId) {
-      const isBulkFetch = !pipelineGraphqlId;
-      if (isBulkFetch && this.isFetchingDownstream) return;
-
-      if (isBulkFetch) this.isFetchingDownstream = true;
-
-      try {
-        const variables = {
-          fullPath: this.targetProjectFullPath,
-          mergeRequestIid: String(this.mergeRequestId),
-        };
-
-        if (pipelineGraphqlId) {
-          variables.ids = [pipelineGraphqlId];
-        }
-
-        // no-cache prevents the backfill response from entering the Apollo cache,
-        // which would overwrite subscription-updated downstream statuses in this.pipelines.
-        const { data } = await this.$apollo.query({
-          query: getPipelinesDownstream,
-          variables,
-          fetchPolicy: fetchPolicies.NO_CACHE,
-        });
-
-        const fetchedPipelines = data?.project?.mergeRequest?.pipelines?.nodes || [];
-        this.storeDownstreamData(fetchedPipelines);
-      } catch (error) {
-        Sentry.captureException(error);
-        createAlert({
-          message: __('An error occurred while fetching downstream pipeline details.'),
-        });
-      } finally {
-        if (isBulkFetch) this.isFetchingDownstream = false;
-      }
-    },
+    /**
+     * Refetch a single pipeline over the network. The result writes into the same normalized
+     * Pipeline entity the connection references, so the rendered row updates without any manual
+     * merge.
+     */
     async refetchSinglePipeline(pipelineGid) {
       try {
-        const { data } = await this.$apollo.query({
+        await this.$apollo.query({
           query: getMergeRequestSinglePipeline,
           variables: {
             fullPath: this.targetProjectFullPath,
@@ -543,33 +510,14 @@ export default {
             featureCategory: 'continuous_integration',
           },
         });
-
-        const updatedPipeline = data?.project?.pipeline;
-        if (updatedPipeline) {
-          this.mergePipelineUpdate(updatedPipeline);
-        }
       } catch (error) {
         Sentry.captureException(error);
-      }
-    },
-    mergePipelineUpdate(updatedPipeline) {
-      const index = this.pipelines.findIndex((p) => p.graphqlId === updatedPipeline.id);
-      if (index !== -1) {
-        const existing = this.pipelines[index];
-        const mergedPipeline = {
-          ...updatedPipeline,
-          id: getIdFromGraphQLId(updatedPipeline.id),
-          graphqlId: updatedPipeline.id,
-          mergeRequest: existing.mergeRequest || updatedPipeline.mergeRequest,
-        };
-        this.pipelines.splice(index, 1, mergedPipeline);
-        // watchers handle subscription reconciliation automatically
       }
     },
     onJobActionExecuted(pipeline) {
       // Force-alive so the pipeline stays subscribed even if the refetched status is not
       // yet alive.
-      this.forcedAliveParentIds = [...new Set([...this.forcedAliveParentIds, pipeline.graphqlId])];
+      this.forcedAliveParentIds = [...new Set([...this.forcedAliveParentIds, pipeline.id])];
 
       const downstreamIds = (pipeline.downstream?.nodes || [])
         .slice(0, MAX_DOWNSTREAM_SUBSCRIPTIONS)
@@ -579,8 +527,10 @@ export default {
           ...new Set([...this.forcedAliveDownstreamIds, ...downstreamIds]),
         ];
       }
-      this.refetchSinglePipeline(pipeline.graphqlId);
-      this.fetchDownstreamPipelines(pipeline.graphqlId);
+      this.refetchSinglePipeline(pipeline.id);
+      // A job action (e.g. playing a manual bridge job) can create a new downstream pipeline,
+      // so refresh the separately-fetched downstream data too.
+      this.$apollo.queries.downstreamPipelines.refetch();
     },
     /**
      * When the user clicks on the "Run pipeline" button
@@ -642,7 +592,6 @@ export default {
       }
     },
     nextPage() {
-      this.downstreamData = {};
       this.forcedAliveParentIds = [];
       this.forcedAliveDownstreamIds = [];
       this.clearAllSubscriptions();
@@ -655,7 +604,6 @@ export default {
     },
 
     prevPage() {
-      this.downstreamData = {};
       this.forcedAliveParentIds = [];
       this.forcedAliveDownstreamIds = [];
       this.clearAllSubscriptions();
@@ -667,12 +615,6 @@ export default {
       };
     },
 
-    hasSuccessCountIncreased(previousRequests = [], currentRequests = []) {
-      return (
-        this.requestLengthByStatus(currentRequests, 'SUCCEEDED') >
-        this.requestLengthByStatus(previousRequests, 'SUCCEEDED')
-      );
-    },
     hasFailureCountIncreased(previousRequests = [], currentRequests = []) {
       return (
         this.requestLengthByStatus(currentRequests, 'FAILED') >
@@ -694,16 +636,6 @@ export default {
         this.loaderTimeout = null;
       }
       this.isCreatingPipeline = false;
-    },
-    mergeWithPendingPipelines(serverPipelines) {
-      const serverIds = new Set(serverPipelines.map((p) => p.id));
-      const newestServerId = serverPipelines[0]?.id || 0;
-
-      const pendingPipelines = this.pipelines.filter(
-        (p) => p.id > newestServerId && !serverIds.has(p.id),
-      );
-
-      return [...pendingPipelines, ...serverPipelines];
     },
   },
   modal: {
@@ -812,7 +744,7 @@ export default {
 
       <pipelines-table
         :is-creating-pipeline="isCreatingPipeline"
-        :pipelines="pipelinesWithDownstream"
+        :pipelines="displayedPipelinesWithDownstream"
         :source-project-full-path="sourceProjectFullPath"
         class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="cancelPipeline"

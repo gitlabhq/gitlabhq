@@ -10,21 +10,17 @@ module QA
         add_ci_file(upstream_project, [upstream_ci_file, upstream_child1_ci_file])
 
         start_pipeline_with_variable
-        wait_for_pipelines
+        wait_for_triggered_pipeline_to_succeed
       end
 
       it(
         'is inheritable when forward:pipeline_variables is true',
-        :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197'
+        :aggregate_failures
       ) do
-        visit_job_page('child1', 'child1_job')
-        verify_job_log_shows_variable_value
-
-        page.go_back
-
-        visit_job_page('downstream1', 'downstream1_job')
-        verify_job_log_shows_variable_value
+        expect_pipeline_to_inherit_variable(child_pipeline('child1_trigger'))
+        expect_pipeline_to_inherit_variable(
+          downstream_pipeline(downstream1_project, 'downstream1_trigger')
+        )
       end
 
       def upstream_ci_file

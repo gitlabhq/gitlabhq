@@ -116,7 +116,7 @@ Content to Show In Work Item and MR Comments:
 
 ### For Prompt Engineering
 
-This is an example on how this could look like in a single agent's prompt:
+This is an example of how this could look in a single agent's prompt:
 
 ```plaintext
 COMMENT BEHAVIOR:

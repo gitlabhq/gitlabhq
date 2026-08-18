@@ -14,7 +14,7 @@ You can follow this tutorial to familiarize yourself with the contribution proce
 
 ## Before you begin
 
-1. If you don't already have a GitLab account [create a new one](https://gitlab.com/users/sign_up).
+1. If you don't already have a GitLab account, [create a new one](https://gitlab.com/users/sign_up).
    Confirm you can successfully [sign in](https://gitlab.com/users/sign_in).
 1. [Request access to the community forks](https://contributors.gitlab.com/start),
    a set of forks mirrored from GitLab repositories in order to improve the contributor experience.

@@ -6,6 +6,7 @@ import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import DeleteItem from './delete_item.vue';
 
 export default {
+  name: 'CustomEmojiList',
   components: {
     GlTableLite,
     GlLoadingIcon,

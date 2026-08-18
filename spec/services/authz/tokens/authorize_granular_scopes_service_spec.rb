@@ -148,7 +148,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
               permissions: permissions,
               token: token
             ).execute
-          end.to issue_same_number_of_queries_as(control).or_fewer
+          end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency.or_fewer
         end
 
         context 'when the `granular_personal_access_tokens` feature flag is disabled' do

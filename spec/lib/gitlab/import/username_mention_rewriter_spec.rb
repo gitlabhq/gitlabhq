@@ -34,24 +34,38 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
   end
 
   describe '#wrap_mentions_in_backticks' do
-    context 'when text is nil' do
-      it 'returns nil' do
-        expect(instance.wrap_mentions_in_backticks(nil)).to be_nil
+    context 'with punctuation, whitespace, and boundary conditions' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:description, :original_text, :expected_text) do
+        'nil'                                                  | nil                       | nil
+        'empty string'                                         | ''                        | ''
+        'username mentions'                                    | 'Hey @aa.bb thanks!'      | 'Hey `@aa.bb` thanks!'
+        'mention at the very start of the string'              | '@alice said hi'          | '`@alice` said hi'
+        'mention at the very end of the string'                | 'Thanks @alice'           | 'Thanks `@alice`'
+        'mention followed by full stop'                        | 'hi @bob. hi @alice.'     | 'hi `@bob`. hi `@alice`.'
+        'username with dots in and after'                      | 'hi @aa.bb. please check' | 'hi `@aa.bb`. please check'
+        'mention followed by a comma'                          | 'cc @bob, thanks'         | 'cc `@bob`, thanks'
+        'mention followed by a colon'                          | 'ping @bob: you there'    | 'ping `@bob`: you there'
+        'mention followed by a semicolon'                      | 'cc @bob; thanks'         | 'cc `@bob`; thanks'
+        'single-character username'                            | '@a is here'              | '`@a` is here'
+        'username ending in a hyphen'                          | 'ping @foo-bar- now'      | 'ping `@foo-bar-` now'
+        'username ending in a slash'                           | '@foo/bar/ test'          | '`@foo/bar/` test'
+        'username ending in a hash'                            | '@foo# test'              | '`@foo#` test'
+        'username consisting only of a dot is left unwrapped'  | 'email @. test'           | 'email @. test'
+        'mention preceded by a tab'                            | "guests:\t@alice"         | "guests:\t`@alice`"
+        'mention preceded by line break'                       | "guests:\n@alice"         | "guests:\n`@alice`"
+        'mention preceded by a carriage return and linefeed'   | "guests:\r\n@alice"       | "guests:\r\n`@alice`"
+        'mention immediately wrapped in parentheses'           | '(@bob)'                  | '(`@bob`)'
+        'two mentions separated only by a slash'               | '@alice/@bob'             | '`@alice/``@bob`'
+        'username containing uppercase letters and digits'     | '@Bob123 hi'              | '`@Bob123` hi'
+        'group mention'                                        | 'maybe @.ali-ce/group#9?' | 'maybe `@.ali-ce/group#9`?'
       end
-    end
 
-    context 'when the text is empty' do
-      it 'returns an empty string' do
-        expect(instance.wrap_mentions_in_backticks('')).to eq('')
-      end
-    end
-
-    context 'when the text contains username mentions' do
-      let(:original_text) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
-      let(:expected_text) { "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
-
-      it 'wraps them in backticks preserving punctuation' do
-        expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
+      with_them do
+        it(params[:description]) do
+          expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
+        end
       end
     end
 

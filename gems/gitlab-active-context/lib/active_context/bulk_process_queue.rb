@@ -40,7 +40,7 @@ module ActiveContext
     private
 
     def collect_specs_from_queue(redis, specs_buffer, scores)
-      queue.each_queued_items_by_shard(redis, shards: [shard]) do |shard_number, specs|
+      queue.each_queued_items_by_shard(redis, shards: [shard], due_only: true) do |shard_number, specs|
         next if specs.empty?
 
         set_key = queue.redis_set_key(shard_number)
@@ -99,6 +99,11 @@ module ActiveContext
     end
 
     def log_indexing_end(set_key, count, first_score, last_score, failures_count, retryable_count, start_time)
+      duration_s = current_time - start_time
+
+      duration_ms = duration_s.to_f * 1_000.to_f
+      duration_per_ref_ms = duration_ms / count.to_f
+
       logger.info(
         'class_name' => self.class.name,
         'message' => 'bulk_indexing_end',
@@ -108,7 +113,8 @@ module ActiveContext
         'meta.indexing.last_score' => last_score,
         'meta.indexing.failures_count' => failures_count,
         'meta.indexing.retryable_count' => retryable_count,
-        'meta.indexing.bulk_execution_duration_s' => current_time - start_time
+        'meta.indexing.bulk_execution_duration_s' => duration_s,
+        'meta.indexing.bulk_execution_duration_per_ref_ms' => duration_per_ref_ms
       )
     end
 

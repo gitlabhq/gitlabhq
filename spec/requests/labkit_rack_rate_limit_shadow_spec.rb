@@ -162,6 +162,23 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
+  # Rack::Attack counts a collector request under both the collector and web
+  # throttles (a collector path is also a web path); the collector rule claims it
+  # here. Pins the known, accepted divergence rather than hiding it.
+  describe 'a collector request with the web throttle enabled' do
+    before do
+      stub_application_setting(throttle_unauthenticated_enabled: true)
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
+    end
+
+    it 'counts under the collector throttle only, under-counting web as Rack::Attack does not', :aggregate_failures do
+      get "/-/collector/i?aid=#{aid}"
+
+      expect(labkit_count).to eq(1)
+      expect(labkit_count_for('unauthenticated_web')).to eq(0)
+    end
+  end
+
   describe 'an allowlisted user' do
     let_it_be(:token) { create(:personal_access_token) }
 
@@ -190,11 +207,13 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
-  # The runner-jobs API path (/api/v4/jobs/*) is excluded from the authenticated API
-  # throttle for authenticated requests (mirroring Rack::Attack's runner_jobs_request?),
-  # but the exclusion is gated on requester presence, not path alone, so anonymous
-  # requests to it are still throttled - otherwise enforce mode would open an
-  # unauthenticated hole on the runner API.
+  # The runner-jobs API path (/api/v4/jobs/*) excludes runner- and job-token-
+  # authenticated requests from the authenticated API throttle (mirroring
+  # Rack::Attack's runner_jobs_request?). The exclusion turns on the auth method, not
+  # the path or bare requester presence: an anonymous request still counts under the
+  # unauthenticated API throttle, and a PAT- or OAuth-authenticated request still
+  # counts under the authenticated one, because only a runner or job token marks the
+  # runner API traffic the throttle is meant to exempt.
   describe 'the runner-jobs API path' do
     before do
       stub_application_setting(
@@ -215,18 +234,18 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       expect(labkit_count_for('runner_jobs')).to eq(0)
     end
 
-    # An authenticated request on this path is claimed by the runner_jobs :skip rule,
-    # which terminates without counting - so no counter moves at all, for a request
-    # the sibling example shows would otherwise count. This also documents the
-    # accepted divergence: a PAT (neither runner nor job token) to /api/v4/jobs/* is
-    # throttled by Rack::Attack but skipped here, since no identity fact distinguishes
-    # a PAT user from a job-token user on a jobs path.
-    it 'skips an authenticated request out of authenticated_api without counting', :aggregate_failures do
+    # A PAT is neither a runner nor a job token, so a PAT request on this path is not
+    # a runner_jobs_request: the runner_jobs skip rule does not claim it and it falls
+    # through to the authenticated API throttle, counted exactly as Rack::Attack
+    # counts it (a PAT-driven bot polling job status is real API usage). This is the
+    # parity fix - skipping on the path alone left this request invisible to labkit
+    # while Rack::Attack throttled it. runner_jobs writes no counter of its own.
+    it 'counts a PAT-authenticated request under authenticated_api, matching Rack::Attack', :aggregate_failures do
       token = create(:personal_access_token)
 
       get '/api/v4/jobs/1/trace', params: { private_token: token.token }
 
-      expect(labkit_count_for('authenticated_api')).to eq(0)
+      expect(labkit_count_for('authenticated_api')).to eq(1)
       expect(labkit_count_for('unauthenticated_api')).to eq(0)
       expect(labkit_count_for('runner_jobs')).to eq(0)
     end

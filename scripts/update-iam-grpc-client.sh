@@ -11,7 +11,7 @@ set -euo pipefail
 repo=https://gitlab.com/gitlab-org/auth/iam.git
 ref=${REF:-main}
 tmp=tmp/gitlab-iam
-services=(auth relationships update)
+services=(auth relationships update lookup)
 
 gem_target="vendor/gems/gitlab-iam-grpc"
 out_dir="$gem_target/lib"

@@ -20,17 +20,48 @@ and to manage dashboards and alerts programmatically.
 
 ## Prerequisites
 
-- Observability must be enabled for your group.
+- Observability must be enabled for your group or personal project.
   For setup instructions, see
   [Set up Observability on GitLab.com](setup_gitlab_com.md) or
   [Set up Observability on GitLab Self-Managed](setup_self_managed.md).
+
+{{< tabs >}}
+
+{{< tab title="Group" >}}
+
 - You must have the Developer, Maintainer, or Owner role for the group.
+
+{{< /tab >}}
+
+{{< tab title="Personal project" >}}
+
+- You must have the Owner role for the project.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Get your API key
 
+{{< tabs >}}
+
+{{< tab title="Group" >}}
+
 1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Observability** > **API Keys**.
+1. In the left sidebar, select **Observe** > **API Keys**.
 1. Copy your API key.
+
+{{< /tab >}}
+
+{{< tab title="Personal project" >}}
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Observe** > **API Keys**.
+1. Copy your API key.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Use this key in the `SIGNOZ-API-KEY` header when you make API requests.
 
@@ -80,5 +111,6 @@ and usage examples, see the
 
 ## Related topics
 
+- [Observability MCP server](mcp_server.md)
 - [Send telemetry data to GitLab Observability](send.md)
 - [Troubleshooting Observability](troubleshooting.md)

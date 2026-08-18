@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Querying a Board list', feature_category: :team_planning do
+RSpec.describe 'Querying a Board list', feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be_with_reload(:current_user) { create(:user) }

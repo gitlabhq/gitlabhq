@@ -270,155 +270,27 @@ RSpec.describe Ci::ListConfigVariablesService,
     end
   end
 
-  context 'when optimize_list_config_variables feature flag is disabled' do
+  it_behaves_like 'config variables service'
+
+  context 'when sending an invalid config' do
+    let(:ci_config) do
+      {
+        variables: {
+          KEY1: { value: 'val 1', description: 'description 1' }
+        },
+        test: {
+          stage: 'invalid',
+          script: 'echo'
+        }
+      }
+    end
+
     before do
-      stub_feature_flags(optimize_list_config_variables: false)
+      synchronous_reactive_cache(service)
     end
 
-    it_behaves_like 'config variables service'
-
-    context 'when sending an invalid config' do
-      let(:ci_config) do
-        {
-          variables: {
-            KEY1: { value: 'val 1', description: 'description 1' }
-          },
-          test: {
-            stage: 'invalid',
-            script: 'echo'
-          }
-        }
-      end
-
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns empty result' do
-        expect(result).to eq({})
-      end
-    end
-
-    context 'when config has $CI_COMMIT_REF_NAME' do
-      let(:include_one_config) do
-        {
-          variables: {
-            VAR1: { description: 'VAR1 from include_one yaml file', value: 'VAR1' },
-            COMMON_VAR: { description: 'Common variable', value: 'include_one' }
-          },
-          test: {
-            stage: 'test',
-            script: 'echo'
-          }
-        }
-      end
-
-      let(:include_two_config) do
-        {
-          variables: {
-            VAR2: { description: 'VAR2 from include_two yaml file', value: 'VAR2' },
-            COMMON_VAR: { description: 'Common variable', value: 'include_two' }
-          },
-          test: {
-            stage: 'test',
-            script: 'echo'
-          }
-        }
-      end
-
-      let(:ci_config) do
-        {
-          include: [
-            {
-              local: 'include_one.yml',
-              rules: [
-                { if: "$CI_COMMIT_REF_NAME =~ /master/" }
-              ]
-            },
-            {
-              local: 'include_two.yml',
-              rules: [
-                { if: "$CI_COMMIT_REF_NAME !~ /master/" }
-              ]
-            }
-          ]
-        }
-      end
-
-      let(:files) do
-        { '.gitlab-ci.yml' => YAML.dump(ci_config), 'include_one.yml' => YAML.dump(include_one_config),
-          'include_two.yml' => YAML.dump(include_two_config) }
-      end
-
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      context 'when it matches with input branch name' do
-        it 'passes the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(anything, a_hash_including(ref: project.default_branch))
-            .and_call_original
-
-          result
-        end
-      end
-
-      context 'when it does not match with input branch name' do
-        let(:other_branch) { 'some_other_branch' }
-        let(:ref) { other_branch }
-
-        before do
-          project.repository.add_branch(project.creator, other_branch, project.default_branch)
-          project.repository.create_file(
-            project.creator,
-            'new_file.txt',
-            'New file content',
-            message: 'Add new file',
-            branch_name: other_branch
-          )
-        end
-
-        it 'passes the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(anything, a_hash_including(ref: other_branch))
-            .and_call_original
-
-          result
-        end
-      end
-    end
-  end
-
-  context 'when optimize_list_config_variables feature flag is enabled' do
-    before do
-      stub_feature_flags(optimize_list_config_variables: true)
-    end
-
-    it_behaves_like 'config variables service'
-
-    context 'when sending an invalid config' do
-      let(:ci_config) do
-        {
-          variables: {
-            KEY1: { value: 'val 1', description: 'description 1' }
-          },
-          test: {
-            stage: 'invalid',
-            script: 'echo'
-          }
-        }
-      end
-
-      before do
-        synchronous_reactive_cache(service)
-      end
-
-      it 'returns variables despite invalid job config' do
-        expect(result).to eq({ 'KEY1' => { value: 'val 1', description: 'description 1' } })
-      end
+    it 'returns variables despite invalid job config' do
+      expect(result).to eq({ 'KEY1' => { value: 'val 1', description: 'description 1' } })
     end
   end
 end

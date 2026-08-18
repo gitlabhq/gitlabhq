@@ -39,6 +39,49 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       expect(request_authenticator.user([:api])).to be_blank
     end
 
+    context 'when a prior token failure recorded auth_fail context' do
+      around do |example|
+        Gitlab::ApplicationContext.with_context(
+          auth_fail: Gitlab::Auth::AuthFailure.new(
+            reason: 'insufficient_scope',
+            token_id: 'PersonalAccessToken/42',
+            requested_scopes: 'api',
+            token_type: 'PersonalAccessToken',
+            auth_header_type: 'private_token_header'
+          )
+        ) do
+          example.run
+        end
+      end
+
+      it 'clears auth_fail keys from the Labkit context when warden session auth succeeds', :aggregate_failures do
+        allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(session_user)
+
+        request_authenticator.user([:api])
+
+        Gitlab::Auth::AuthFailure::LOG_KEYS.each_key do |key|
+          expect(Gitlab::ApplicationContext.current_context_attribute(key)).to be_nil
+        end
+      end
+
+      it 'preserves auth_fail keys in the Labkit context when warden session auth also fails' do
+        allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(nil)
+
+        request_authenticator.user([:api])
+
+        expect(Gitlab::ApplicationContext.current_context_attribute(:auth_fail_reason)).to eq('insufficient_scope')
+      end
+
+      it 'preserves auth_fail keys when a later sessionless format succeeds, keeping the failed-probe audit trail' do
+        allow_any_instance_of(described_class)
+          .to receive(:find_sessionless_user).and_return(nil, sessionless_user)
+
+        request_authenticator.user([:api, :git])
+
+        expect(Gitlab::ApplicationContext.current_context_attribute(:auth_fail_reason)).to eq('insufficient_scope')
+      end
+    end
+
     it 'bubbles up exceptions' do
       allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_raise(Gitlab::Auth::UnauthorizedError)
     end
@@ -384,6 +427,62 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
       it 'returns nil if no access token provided' do
         expect(request_authenticator.find_sessionless_user(:editor_extension)).to be_nil
+      end
+    end
+
+    context 'with :design format' do
+      let_it_be(:design_user) { create(:user) }
+      # `freeze: false`: authenticating updates the token's last_used_at.
+      let_it_be(:design_access_token, freeze: false) { create(:personal_access_token, user: design_user) }
+
+      before do
+        env['SCRIPT_NAME'] = '/group/project/-/design_management/designs/1/sha/raw_image'
+      end
+
+      it 'returns the user from a web access token' do
+        env['HTTP_PRIVATE_TOKEN'] = design_access_token.token
+
+        expect(request_authenticator.find_sessionless_user(:design)).to eq design_user
+      end
+
+      it 'does not authenticate a token passed as a query parameter' do
+        env['QUERY_STRING'] = "private_token=#{design_access_token.token}"
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'does not authenticate an OAuth token passed as a query parameter' do
+        env['QUERY_STRING'] = "access_token=#{design_access_token.token}"
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'fails closed when a query parameter token accompanies a valid header token' do
+        env['HTTP_PRIVATE_TOKEN'] = design_access_token.token
+        env['QUERY_STRING'] = 'private_token=irrelevant'
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'does not consult the other sessionless authentication methods' do
+        allow(request_authenticator)
+          .to receive(:find_user_from_dependency_proxy_token)
+          .and_return(dependency_proxy_user)
+        allow(request_authenticator).to receive(:find_user_from_feed_token).and_return(feed_token_user)
+        allow(request_authenticator)
+          .to receive(:find_user_from_static_object_token)
+          .and_return(static_object_token_user)
+        allow(request_authenticator).to receive(:find_user_from_job_token).and_return(job_token_user)
+        allow(request_authenticator)
+          .to receive(:find_user_from_personal_access_token_for_api_or_git)
+          .and_return(basic_auth_access_token_user)
+        allow(request_authenticator).to receive(:find_user_for_git_or_lfs_request).and_return(lfs_token_user)
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'returns nil if no token provided' do
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
       end
     end
 

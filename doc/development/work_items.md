@@ -9,7 +9,7 @@ Work items introduce a flexible model that standardizes and extends issue tracki
 With work items, you can define different types that can be customized with various widgets to meet
 specific needs - whether you're tracking bugs, incidents, test cases, or other units of work.
 This architectural documentation covers the development details and implementation strategies for
-work items and work item types. For a rough outline of the work ahead, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
+work items and work item types. For a rough outline of the work ahead, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/work_items/6033).
 
 ## Challenges
 
@@ -93,7 +93,7 @@ column. There are `issue`, `incident`, and `test_case` issue types. To extend th
 so that in future we can allow users to define custom WITs, we will
 move the `issue_type` to a separate table: `work_item_types`. The migration process of `issue_type`
 to `work_item_types` will involve creating the set of WITs for all root-level groups as described in
-[this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536).
+[this epic](https://gitlab.com/groups/gitlab-org/-/work_items/6536).
 
 > [!note]
 > At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
@@ -284,9 +284,7 @@ Custom work item types delegate to a system-defined type's `base_type`, inheriti
 To add a new system-defined work item type to GitLab:
 
 1. **Create a definition module** in `app/models/work_items/types_framework/system_defined/definitions/` that defines the type configuration, widgets, and behavior.
-
 1. **Include the definition** in `WorkItems::TypesFramework::SystemDefined::Type` so it's loaded at application startup.
-
 1. **Add to visibility constants** - Add the base type to frontend and backend constants that control where the type appears in the UI and APIs.
 
 For specific implementation details, reach out to the Plan Project Management team in `#g_project-management` on Slack.

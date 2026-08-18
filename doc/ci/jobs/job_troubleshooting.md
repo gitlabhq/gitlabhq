@@ -71,7 +71,7 @@ To run protected manual jobs:
 ## A CI/CD job does not use newer configuration when run again
 
 The configuration for a pipeline is only fetched when the pipeline is created.
-When you rerun a job, uses the same configuration each time. If you update configuration files,
+When you rerun a job, it uses the same configuration each time. If you update configuration files,
 including separate files added with [`include`](../yaml/_index.md#include), you must
 start a new pipeline to use the new configuration.
 
@@ -177,7 +177,7 @@ The configuration can be added to:
 {{< /details >}}
 
 If a job using [`resource_group`](../yaml/_index.md#resource_group) gets stuck, a
-GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+GitLab administrator can try running the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
 # find resource group by name
@@ -222,7 +222,7 @@ If the error persists, inspect the job in the
 
 ## `You are not authorized to run this manual job` message
 
-You can receive this message and have a disabled **Run** button when trying to run a manual job if:
+You might get this message with **Run** disabled when trying to run a manual job if:
 
 - The target environment is a [protected environment](../environments/protected_environments.md)
   and your account is not included in the **Allowed to deploy** list.

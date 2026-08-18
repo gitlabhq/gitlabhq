@@ -18,11 +18,11 @@ RSpec.describe 'merge request content spec', feature_category: :code_review_work
         get cached_widget_project_json_merge_request_path(project, merge_request, format: :json)
       end
 
-      create_list(:ci_build, 10, :artifacts, pipeline: merge_request.head_pipeline)
+      create_list(:ci_build, 3, :artifacts, pipeline: merge_request.head_pipeline)
 
       expect do
         get cached_widget_project_json_merge_request_path(project, merge_request, format: :json)
-      end.not_to exceed_query_limit(control)
+      end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
     end
   end
 

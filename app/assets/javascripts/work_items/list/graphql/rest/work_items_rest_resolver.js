@@ -32,6 +32,22 @@ const NAMESPACE_KIND_TO_TYPENAME = {
   group: 'Namespaces::GroupNamespace',
 };
 
+// Reuses `fallbackNamespace` when the paths match, so Apollo normalizes to the same cache entry as
+// the rest of the list. `restNamespace` is absent on older API responses, where the item was
+// assumed to live in `fallbackNamespace`.
+function mapNamespace(restNamespace, fallbackNamespace) {
+  if (!restNamespace || restNamespace.full_path === fallbackNamespace.fullPath) {
+    return fallbackNamespace;
+  }
+
+  return {
+    __typename: 'Namespace',
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    id: `gid://gitlab/${NAMESPACE_KIND_TO_TYPENAME[restNamespace.kind] || 'Namespace'}/${restNamespace.id}`,
+    fullPath: restNamespace.full_path,
+  };
+}
+
 function mapLabelsFeature(features) {
   const labelsData = features?.labels;
   return {
@@ -106,9 +122,10 @@ function mapHierarchyFeature(features, itemNamespace) {
           id: hierarchy.parent.global_id,
           iid: String(hierarchy.parent.iid),
           title: hierarchy.parent.title,
+          titleHtml: hierarchy.parent.title_html,
           confidential: hierarchy.parent.confidential ?? false,
           webUrl: hierarchy.parent.web_url ?? null, // eslint-disable-line local-rules/no-web-url
-          namespace: itemNamespace,
+          namespace: mapNamespace(hierarchy.parent.namespace, itemNamespace),
           workItemType: hierarchy.parent.work_item_type
             ? {
                 __typename: 'WorkItemType',
@@ -191,22 +208,14 @@ export function nullWorkItemFeatures() {
 }
 
 export function mapWorkItemToGraphQL(item, sharedNamespace, { useWorkItemFeatures = false } = {}) {
-  const itemNamespace =
-    item.namespace.full_path !== sharedNamespace.fullPath
-      ? {
-          __typename: 'Namespace',
-          // eslint-disable-next-line @gitlab/require-i18n-strings
-          id: `gid://gitlab/${NAMESPACE_KIND_TO_TYPENAME[item.namespace.kind] || 'Namespace'}/${item.namespace.id}`,
-          fullPath: item.namespace.full_path,
-        }
-      : sharedNamespace;
+  const itemNamespace = mapNamespace(item.namespace, sharedNamespace);
 
   return {
     __typename: 'WorkItem',
     id: item.global_id,
     iid: String(item.iid),
     title: item.title,
-    titleHtml: item.title_html ?? item.title,
+    titleHtml: item.title_html,
     state: REST_STATE_TO_GRAPHQL[item.state] ?? item.state,
     createdAt: item.created_at,
     updatedAt: item.updated_at,

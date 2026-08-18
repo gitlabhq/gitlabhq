@@ -33,7 +33,7 @@ After you link a group, the following GitLab data is synced to Jira for all proj
 
 - Existing project data (before you linked the group):
   - The last 400 merge requests
-  - The last 400 branches and the last commit to each of those branches (GitLab 15.11 and later)
+  - The last 400 branches and the last commit to each of those branches
 - New project data (after you linked the group):
   - Merge requests
     - Merge request author
@@ -83,12 +83,6 @@ The following instructions cover both old and new app management interfaces.
 - Offering: GitLab.com
 
 {{< /details >}}
-
-{{< history >}}
-
-- **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
-
-{{< /history >}}
 
 Prerequisites:
 

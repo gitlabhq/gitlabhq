@@ -1,7 +1,10 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
@@ -12,14 +15,17 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { badgeState } from '~/merge_requests/badge_state';
+import getStateQuery from '~/pages/projects/merge_requests/queries/get_state.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(PiniaVuePlugin);
+Vue.use(VueApollo);
 
 describe('MergeRequestHeader component', () => {
   let pinia;
   let wrapper;
 
+  const findArchivedBadge = () => wrapper.findComponent(ArchivedBadge);
   const findConfidentialBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
@@ -28,28 +34,45 @@ describe('MergeRequestHeader component', () => {
 
   const renderTestMessage = (renders) => (renders ? 'renders' : 'does not render');
 
-  const createComponent = ({ confidential, hidden, locked, isImported = false } = {}) => {
+  const stateQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+      namespace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        issuable: {
+          __typename: 'MergeRequest',
+          id: 'gid://gitlab/MergeRequest/1',
+          state: 'merged',
+        },
+      },
+    },
+  });
+
+  const createComponent = ({
+    archived = false,
+    confidential,
+    hidden,
+    locked,
+    isImported = false,
+  } = {}) => {
+    useNotes().noteableData.archived = archived;
     useNotes().noteableData.confidential = confidential;
     useNotes().noteableData.discussion_locked = locked;
     useNotes().noteableData.targetType = 'merge_request';
 
     wrapper = shallowMount(MergeRequestHeader, {
       pinia,
+      apolloProvider: createMockApollo([[getStateQuery, stateQueryHandler]]),
       provide: {
         hidden,
         iid: 'mock_id',
+        query: getStateQuery,
+        projectPath: 'gitlab-org/gitlab',
       },
       propsData: {
         initialState: 'opened',
         isImported,
         isDraft: false,
-      },
-      mocks: {
-        $apollo: {
-          query: jest.fn().mockResolvedValue({
-            data: { namespace: { issuable: { state: 'merged' } } },
-          }),
-        },
       },
     });
   };
@@ -129,6 +152,21 @@ describe('MergeRequestHeader component', () => {
       createComponent({ isImported: false });
 
       expect(findImportedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('archived badge', () => {
+    it('renders when merge request belongs to an archived project', () => {
+      createComponent({ archived: true });
+
+      expect(findArchivedBadge().exists()).toBe(true);
+      expect(findArchivedBadge().props('issuableType')).toBe('merge_request');
+    });
+
+    it('does not render when merge request does not belong to an archived project', () => {
+      createComponent({ archived: false });
+
+      expect(findArchivedBadge().exists()).toBe(false);
     });
   });
 });

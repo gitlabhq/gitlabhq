@@ -28,7 +28,7 @@ Some generated dashboards are already available:
 1. [Stage group dashboard](stage_group_dashboard.md): a customizable
    dashboard with tailored metrics per group.
 1. [Error budget detail dashboard](error_budget_detail.md): a
-   dashboard allowing to explore the error budget spend over time and
+   dashboard for exploring the error budget spend over time and
    over multiple SLIs.
 
 ## Time range controls

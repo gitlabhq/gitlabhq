@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User browses commits', feature_category: :source_code_management do
   include RepoHelpers
   include FilteredSearchHelpers
+  include ListboxHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, freeze: false) { create(:project, :public, :repository, namespace: user.namespace) }
@@ -466,6 +467,139 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
           wait_for_requests
 
           expect(page).to have_content message
+        end
+      end
+
+      describe 'keyset pagination', :js do
+        before do
+          visit project_commits_path(project, project.repository.root_ref)
+        end
+
+        it 'paginates forward and back through the commit list' do
+          first_page_commit = project.repository.commit
+
+          expect(page).to have_content(first_page_commit.short_id)
+          expect(page).to have_button('Previous', disabled: true)
+
+          within_testid('commits-pagination') do
+            click_button 'Next'
+          end
+
+          expect(page).to have_testid('daily-commits')
+          expect(page).to have_no_content(first_page_commit.short_id)
+          expect(page).to have_button('Previous', disabled: false)
+
+          within_testid('commits-pagination') do
+            click_button 'Previous'
+          end
+
+          expect(page).to have_content(first_page_commit.short_id)
+          expect(page).to have_button('Previous', disabled: true)
+        end
+
+        it 'hides pagination when all commits fit the selected page size' do
+          # The test repository has more than 20 commits (so pagination shows
+          # with the default page size of 20), but fewer than 50.
+          expect(page).to have_testid('commits-pagination')
+
+          select_from_listbox('Show 50 items', from: 'Show 20 items')
+
+          expect(page).to have_button('Show 50 items')
+          expect(page).to have_no_testid('commits-pagination')
+        end
+      end
+
+      describe 'CI pipeline status', :js do
+        let(:head_commit) { project.repository.commit }
+
+        let!(:pipeline) do
+          create(
+            :ci_pipeline,
+            project: project,
+            sha: head_commit.sha,
+            ref: project.repository.root_ref,
+            status: :success
+          )
+        end
+
+        before do
+          project.enable_ci
+
+          visit project_commits_path(project, project.repository.root_ref)
+        end
+
+        it 'renders the pipeline status icon on the commit' do
+          within("#commit-#{head_commit.short_id}") do
+            expect(page).to have_testid('ci-icon')
+          end
+        end
+      end
+
+      describe 'signature badges', :js do
+        it 'renders a signature badge for a GPG-signed commit' do
+          visit project_commits_path(project, 'gpg-signed')
+
+          expect(page).to have_testid('signature-badge', text: 'Unverified')
+        end
+      end
+
+      describe 'branch names containing a slash', :js do
+        let_it_be(:branch_commit) { project.repository.commit('improve/awesome') }
+
+        it 'loads commits for the branch via direct URL', :aggregate_failures do
+          visit project_commits_path(project, 'improve/awesome')
+
+          expect(find('.ref-selector')).to have_text('improve/awesome')
+          expect(page).to have_content(branch_commit.short_id)
+        end
+
+        it 'navigates to the branch using the ref selector' do
+          visit project_commits_path(project, project.repository.root_ref)
+
+          find('.ref-selector').click
+          wait_for_requests
+
+          page.within('.ref-selector') do
+            fill_in 'Search by Git revision', with: 'improve/awesome'
+            wait_for_requests
+            find('li', text: 'improve/awesome', match: :prefer_exact).click
+          end
+
+          expect(find('.ref-selector')).to have_text('improve/awesome')
+          expect(page).to have_content(branch_commit.short_id)
+        end
+      end
+
+      describe 'commit description', :js do
+        let(:description_body) { 'This is the commit description body.' }
+
+        before do
+          project.repository.create_file(
+            user,
+            'commit-description-test.txt',
+            'content',
+            message: "Add file to test commit description\n\n#{description_body}",
+            branch_name: project.repository.root_ref
+          )
+
+          visit project_commits_path(project, project.repository.root_ref)
+        end
+
+        it 'expands and collapses the commit description' do
+          commit = project.repository.commit
+
+          within("#commit-#{commit.short_id}") do
+            expect(page).to have_content(commit.title)
+            expect(page).to have_no_content(description_body)
+
+            find_by_testid('commit-row').click
+
+            expect(page).to have_content(description_body)
+
+            find_by_testid('commit-row').click
+
+            expect(page).to have_no_content(description_body)
+          end
         end
       end
 

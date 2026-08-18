@@ -82,7 +82,7 @@ module Gitlab
 
         def limited_nodes
           if last
-            query = reverse_order(sliced_nodes).limit(limit_value + 1)
+            query = sliced_nodes.reverse_order.limit(limit_value + 1)
             nodes = execute_query(query)
             nodes = nodes.reverse
 
@@ -162,21 +162,6 @@ module Gitlab
             # Prevent SQL injection from a fabricated cursor value
             [order, @items.quote(cursor[order_expression_name(order)])]
           end
-        end
-
-        def reverse_order(query)
-          # TODO: Migrate to `query.reverse_order` when
-          # https://gitlab.com/gitlab-org/ruby/gems/clickhouse-client/-/work_items/19
-          # is implemented
-          new_query = query.dup
-          new_query.manager.ast.orders = query.manager.ast.orders.map do |order|
-            if order.is_a?(Arel::Nodes::Ascending)
-              Arel::Nodes::Descending.new(order.expr)
-            else
-              Arel::Nodes::Ascending.new(order.expr)
-            end
-          end
-          new_query
         end
 
         def execute_query(query)

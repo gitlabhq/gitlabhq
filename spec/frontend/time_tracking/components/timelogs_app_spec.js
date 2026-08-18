@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDatepicker, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlDatepicker, GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import getTimelogsEmptyResponse from 'test_fixtures/graphql/get_timelogs_empty_response.json';
 import getPaginatedTimelogsResponse from 'test_fixtures/graphql/get_paginated_timelogs_response.json';
 import getNonPaginatedTimelogsResponse from 'test_fixtures/graphql/get_non_paginated_timelogs_response.json';
@@ -46,6 +46,7 @@ describe('Timelogs app', () => {
   const findTable = () => wrapper.findComponent(TimelogsTable);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findGroupSelect = () => findForm().findComponent(GroupSelect);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const findFormDatePicker = (testId) =>
     findForm()
@@ -81,6 +82,7 @@ describe('Timelogs app', () => {
       },
       propsData: {
         limitToHours: false,
+        canReadAllResources: true,
         ...props,
       },
       apolloProvider: fakeApollo,
@@ -117,6 +119,54 @@ describe('Timelogs app', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findTableContainer().exists()).toBe(true);
     });
+
+    it('does not show the filter prompt when the user can read all resources', async () => {
+      mountComponent();
+
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+  });
+
+  describe('when the user cannot read all resources and no filters are set', () => {
+    it('skips the query and shows the filter prompt instead of an error', async () => {
+      mountComponent({ props: { canReadAllResources: false } });
+
+      await waitForPromises();
+
+      expect(resolvedEmptyListMock).not.toHaveBeenCalled();
+      expect(findEmptyState().props('title')).toBe('Select a group or user to see results.');
+      expect(findTableContainer().exists()).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+
+    it('runs the query and hides the prompt once a filter is submitted', async () => {
+      mountComponent({ props: { canReadAllResources: false } });
+
+      await findUsernameInput().setValue('johnsmith');
+      submitForm();
+      await waitForPromises();
+
+      expect(resolvedEmptyListMock).toHaveBeenCalledWith(
+        expect.objectContaining({ username: 'johnsmith' }),
+      );
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findTableContainer().exists()).toBe(true);
+    });
+
+    it('keeps the prompt and skips the query when only dates are submitted', async () => {
+      mountComponent({ props: { canReadAllResources: false } });
+
+      findFromDatepicker().vm.$emit('input', new Date('2023-02-28'));
+      submitForm();
+      await waitForPromises();
+
+      expect(resolvedEmptyListMock).not.toHaveBeenCalled();
+      expect(findEmptyState().exists()).toBe(true);
+      expect(createAlert).not.toHaveBeenCalled();
+    });
   });
 
   describe('the filter form', () => {
@@ -127,7 +177,7 @@ describe('Timelogs app', () => {
       const fromDateTime = new Date('2023-02-28');
       const toDateTime = new Date('2023-03-28');
 
-      findUsernameInput().vm.$emit('input', username);
+      await findUsernameInput().setValue(username);
       findFromDatepicker().vm.$emit('input', fromDateTime);
       findToDatepicker().vm.$emit('input', toDateTime);
       findGroupSelect().vm.$emit('input', { id: 123 });
@@ -150,11 +200,12 @@ describe('Timelogs app', () => {
         before: null,
       });
 
-      expect(`${wrapper.vm.queryVariables.startTime}`).toEqual(
+      const [[queryArguments]] = resolvedEmptyListMock.mock.calls;
+      expect(`${queryArguments.startTime}`).toEqual(
         'Tue Feb 28 2023 00:00:00 GMT+0000 (Greenwich Mean Time)',
       );
       // should be 1 day ahead of the initial To Date value
-      expect(`${wrapper.vm.queryVariables.endTime}`).toEqual(
+      expect(`${queryArguments.endTime}`).toEqual(
         'Tue Mar 28 2023 23:59:59 GMT+0000 (Greenwich Mean Time)',
       );
 
@@ -243,7 +294,7 @@ describe('Timelogs app', () => {
           const fromDateTime = new Date('2023-02-28');
           const toDateTime = new Date('2023-03-28');
 
-          findUsernameInput().vm.$emit('input', username);
+          await findUsernameInput().setValue(username);
           findFromDatepicker().vm.$emit('input', fromDateTime);
           findToDatepicker().vm.$emit('input', toDateTime);
           findGroupSelect().vm.$emit('input', { id: 123 });
@@ -271,7 +322,7 @@ describe('Timelogs app', () => {
         it('uses replace for the first update and push for subsequent updates', async () => {
           mountComponent();
 
-          findUsernameInput().vm.$emit('input', 'user1');
+          await findUsernameInput().setValue('user1');
           submitForm();
           await waitForPromises();
 
@@ -279,7 +330,7 @@ describe('Timelogs app', () => {
             expect.objectContaining({ replace: true }),
           );
 
-          findUsernameInput().vm.$emit('input', 'user2');
+          await findUsernameInput().setValue('user2');
           submitForm();
           await waitForPromises();
 
@@ -291,11 +342,11 @@ describe('Timelogs app', () => {
         it('removes URL parameters when filters are cleared', async () => {
           mountComponent();
 
-          findUsernameInput().vm.$emit('input', 'testuser');
+          await findUsernameInput().setValue('testuser');
           submitForm();
           await waitForPromises();
 
-          findUsernameInput().vm.$emit('input', '');
+          await findUsernameInput().setValue('');
           urlUtility.objectToQuery.mockReturnValue('');
 
           submitForm();
@@ -334,7 +385,7 @@ describe('Timelogs app', () => {
 
       const username = 'johnsmith';
 
-      findUsernameInput().vm.$emit('input', username);
+      await findUsernameInput().setValue(username);
       findGroupSelect().vm.$emit('input', { id: 123 });
 
       await nextTick();

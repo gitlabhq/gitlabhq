@@ -1,0 +1,8 @@
+---
+event: WorkItems::CreatedEvent
+description: CloudEvent counterpart of WorkItemCreatedEvent, published after a work
+  item is created. Unlike the legacy event, which fires unconditionally, this event
+  is skipped for imports, external authors, non-human users, and work items without
+  a project. Uses the CloudEvents v1.0 envelope and carries a richer payload including
+  work item type and confidentiality.
+feature_category: code_suggestions

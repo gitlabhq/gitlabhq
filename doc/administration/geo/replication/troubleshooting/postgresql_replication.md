@@ -41,7 +41,7 @@ If the secondary site is not able to reconnect, use the following steps to remov
 
 - If this slot should be active, because you have a secondary site configured using that slot:
   - Look for the [PostgreSQL logs](../../../logs/_index.md#postgresql-logs) for the secondary site,
-     to view why the replication is not running.
+    to view why the replication is not running.
   - If the secondary site is no longer able to reconnect:
 
     1. Remove the slot using the PostgreSQL console session:

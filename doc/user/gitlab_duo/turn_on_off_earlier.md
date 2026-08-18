@@ -13,13 +13,6 @@ title: Control GitLab Duo availability for earlier GitLab versions
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Settings to turn AI features on and off introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
-- [Settings to turn AI features on and off added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
-
-{{< /history >}}
-
 For GitLab Duo Pro or Enterprise, you can turn GitLab Duo on or off for a group, project, or instance.
 
 > [!note]

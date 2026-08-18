@@ -1,5 +1,10 @@
 import { initPipelineEditor } from '~/ci/pipeline_editor';
 import * as optionsCE from '~/ci/pipeline_editor/options';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+
+jest.mock('~/lib/utils/vue3compat/init_vue_app', () => ({
+  initVueApp: jest.fn().mockReturnValue({ app: true }),
+}));
 
 describe('initPipelineEditor', () => {
   let el;
@@ -21,7 +26,8 @@ describe('initPipelineEditor', () => {
     expect(initPipelineEditor()).toBeNull();
   });
 
-  it('returns an object if there is an element found', () => {
-    expect(initPipelineEditor(`#${selector}`)).toMatchObject({});
+  it('bootstraps the app with the created options and returns it', () => {
+    expect(initPipelineEditor(`#${selector}`)).toEqual({ app: true });
+    expect(initVueApp).toHaveBeenCalledWith({ option: 2 });
   });
 });

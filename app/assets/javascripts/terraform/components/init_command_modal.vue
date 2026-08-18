@@ -90,8 +90,7 @@ terraform init \\
       <pre
         class="code-block gl-border gl-mb-0 gl-w-full !gl-rounded-base gl-py-2"
         data-testid="glab-command"
-        >{{ getModalInfoGlabCopyStr() }}</pre
-      >
+        >{{ getModalInfoGlabCopyStr() }}</pre>
       <simple-copy-button
         :title="$options.i18n.copyToClipboardText"
         :text="getModalInfoGlabCopyStr()"

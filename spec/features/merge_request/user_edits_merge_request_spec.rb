@@ -89,8 +89,6 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
 
       first('.js-target-branch').click
 
-      wait_for_requests
-
       first('.js-target-branch-dropdown a', text: 'merge-test').click
 
       click_button('Save changes')

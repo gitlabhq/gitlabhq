@@ -13,18 +13,6 @@ title: Audit event streaming GraphQL API for top-level groups
 
 {{< /details >}}
 
-{{< history >}}
-
-- Custom HTTP headers API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361216) in GitLab 15.1 [with a feature flag](../feature_flags.md) named `streaming_audit_event_headers`. Disabled by default.
-- Custom HTTP headers API [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) in GitLab 15.2.
-- Custom HTTP headers API [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366524) in GitLab 15.3. [Feature flag `streaming_audit_event_headers`](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) removed.
-- User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
-- [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-- User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
-- API [feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed in GitLab 16.4.
-
-{{< /history >}}
-
 Manage audit event streaming destinations for top-level groups by using a GraphQL API.
 
 ## HTTP destinations
@@ -63,7 +51,7 @@ mutation {
 
 You can optionally specify your own verification token (instead of the default GitLab-generated one) using the GraphQL
 `externalAuditEventDestinationCreate`
-mutation. Verification token length must be within 16 to 24 characters and trailing whitespace are not trimmed. You
+mutation. Verification token length must be within 16 to 24 characters and trailing whitespace is not trimmed. You
 should set a cryptographically random and unique value. For example:
 
 ```graphql
@@ -85,7 +73,7 @@ mutation {
 
 You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
 `externalAuditEventDestinationCreate`
-mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique scoped to a group. For example:
+mutation. Name length must not exceed 72 characters and trailing whitespace is not trimmed. This value should be unique scoped to a group. For example:
 
 ```graphql
 mutation {
@@ -289,12 +277,6 @@ The header is deleted if the returned `errors` object is empty.
 
 ### Event type filters
 
-{{< history >}}
-
-- Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
-
-{{< /history >}}
-
 When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
@@ -349,12 +331,6 @@ Event type filters are removed if:
 - The API responds with `200 OK`.
 
 ### Namespace filters
-
-{{< history >}}
-
-- Namespace filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 16.7.
-
-{{< /history >}}
 
 When you apply a namespace filter to a group, users can filter streamed audit events per destination for a specific subgroup or project of the group. Otherwise, the
 destination receives all audit events.
@@ -440,12 +416,6 @@ Namespace filter is removed if:
 - The API responds with `200 OK`.
 
 ## Google Cloud Logging destinations
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
-
-{{< /history >}}
 
 Manage Google Cloud Logging destinations for top-level groups.
 

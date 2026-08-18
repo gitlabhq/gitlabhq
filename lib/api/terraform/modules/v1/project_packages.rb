@@ -64,13 +64,13 @@ module API
 
           params do
             requires :id, types: [String, Integer], allow_blank: false, desc: 'The ID or full path of a project'
-            requires :module_name, type: String, allow_blank: false, regexp: API::NO_SLASH_URL_PART_REGEX,
+            requires :module_name, type: String, allow_blank: false, regexp: ::API::NO_SLASH_URL_PART_REGEX,
               desc: 'Module name', documentation: { example: 'infra-registry' }
-            requires :module_system, type: String, allow_blank: false, regexp: API::NO_SLASH_URL_PART_REGEX,
+            requires :module_system, type: String, allow_blank: false, regexp: ::API::NO_SLASH_URL_PART_REGEX,
               desc: 'Module system', documentation: { example: 'aws' }
           end
 
-          resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+          resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
             namespace ':id/packages/terraform/modules/:module_name/:module_system' do
               authenticate_with do |accept|
                 accept.token_types(
@@ -117,7 +117,7 @@ module API
                   use :terraform_get
                 end
                 route_setting :authorization, permissions: :download_terraform_module, boundary_type: :project
-                get requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+                get requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
                   present_package_file
                 end
 

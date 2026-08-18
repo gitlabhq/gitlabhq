@@ -58,10 +58,12 @@ describe('JobLogTopBar', () => {
   const findScrollTop = () => wrapper.find('[data-testid="job-top-bar-scroll-top"]');
   const findScrollBottom = () => wrapper.find('[data-testid="job-top-bar-scroll-bottom"]');
   const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
-  const findScrollFailure = () => wrapper.find('[data-testid="job-top-bar-scroll-to-failure"]');
+  const findScrollFailure = () =>
+    wrapper.findComponent('[data-testid="job-top-bar-scroll-to-failure"]');
   const findJobLogSearchPreviousButton = () =>
-    wrapper.find('[data-testid="job-scroll-to-prev-btn"]');
-  const findJobLogSearchNextButton = () => wrapper.find('[data-testid="job-scroll-to-next-btn"]');
+    wrapper.findComponent('[data-testid="job-scroll-to-prev-btn"]');
+  const findJobLogSearchNextButton = () =>
+    wrapper.findComponent('[data-testid="job-scroll-to-next-btn"]');
   const findShowFullScreenButton = () =>
     wrapper.find('[data-testid="job-top-bar-enter-fullscreen"]');
   const findExitFullScreenButton = () =>

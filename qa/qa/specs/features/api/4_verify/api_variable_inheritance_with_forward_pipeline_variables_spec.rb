@@ -12,42 +12,29 @@ module QA
 
       it(
         'is determined based on forward:pipeline_variables condition',
-        :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360745'
+        :aggregate_failures
       ) do
         start_pipeline_via_api_with_variable
-        wait_for_pipelines
+        wait_for_triggered_pipeline_to_succeed
 
         # When forward:pipeline_variables is true
-        expect_downstream_pipeline_to_inherit_variable
+        expect_pipeline_to_inherit_variable(child_pipeline('child1_trigger'))
 
         # When forward:pipeline_variables is false
-        expect_downstream_pipeline_not_to_inherit_variable(upstream_project, 'child2_trigger')
+        expect_pipeline_not_to_inherit_variable(child_pipeline('child2_trigger'))
 
         # When forward:pipeline_variables is default
-        expect_downstream_pipeline_not_to_inherit_variable(downstream1_project, 'downstream1_trigger')
+        expect_pipeline_not_to_inherit_variable(
+          downstream_pipeline(downstream1_project, 'downstream1_trigger')
+        )
       end
 
       def start_pipeline_via_api_with_variable
-        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10,
-          message: 'Wait for initial pipeline to complete') do
-          pipelines = upstream_project.pipelines
-          latest = pipelines.max_by { |p| p[:id].to_i }
-          pipelines.any? && latest&.dig(:status) == 'success'
-        end
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: upstream_project)
 
         new_pipeline = create(:pipeline, project: upstream_project,
           variables: [{ key: key, value: value, variable_type: 'env_var' }])
         @triggered_pipeline_id = new_pipeline.id
-      end
-
-      def wait_for_pipelines
-        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
-          triggered_pipeline&.status == 'success' &&
-            child_pipeline('child1_trigger')&.status == 'success' &&
-            child_pipeline('child2_trigger')&.status == 'success' &&
-            downstream_pipeline(downstream1_project, 'downstream1_trigger')&.status == 'success'
-        end
       end
 
       def upstream_ci_file
@@ -73,18 +60,6 @@ module QA
                 project: #{downstream1_project.full_path}
           YAML
         }
-      end
-
-      def expect_downstream_pipeline_to_inherit_variable
-        pipeline = downstream_pipeline(upstream_project, 'child1_trigger')
-        expect(pipeline).to have_variable(key: key, value: value),
-          "Expected to find `{key: 'TEST_VAR', value: 'This is great!'}` but got #{pipeline.pipeline_variables}"
-      end
-
-      def expect_downstream_pipeline_not_to_inherit_variable(project, bridge_name)
-        pipeline = downstream_pipeline(project, bridge_name)
-        expect(pipeline).not_to have_variable(key: key, value: value),
-          "Did not expect to find `{key: 'TEST_VAR', value: 'This is great!'}` but got #{pipeline.pipeline_variables}"
       end
     end
   end

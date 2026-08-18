@@ -58,7 +58,7 @@ module Mcp
           raise NotImplementedError
         end
 
-        def perform_0_1_0(arguments)
+        def perform_v0_1_0(arguments)
           # Step 1: Fetch the saved view to get its filters and sort
           saved_view_result = execute_saved_view_tool(arguments)
           return saved_view_result if saved_view_result[:isError]
@@ -78,12 +78,12 @@ module Mcp
           append_unsupported_filter_warnings(combined, unsupported_filters)
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(combined) }]
-          ::Mcp::Tools::Response.success(formatted_content, combined)
+          ::Mcp::Tools::Base::Response.success(formatted_content, combined)
         end
 
         override :perform_default
         def perform_default(arguments = {})
-          perform_0_1_0(arguments)
+          perform_v0_1_0(arguments)
         end
 
         private

@@ -74,7 +74,7 @@ describe('~/environments/environment_details/components/kubernetes/delete_pod_mo
   }
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findDeletePodButton = () => wrapper.findByTestId('delete-pod-button');
+  const findDeletePodButton = () => wrapper.findComponentByTestId('delete-pod-button');
 
   beforeEach(() => {
     deleteKubernetesPodMutationMock = jest.fn().mockResolvedValue({ errors: [] });

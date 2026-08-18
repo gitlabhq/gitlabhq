@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ObservabilityApp from './components/app.vue';
 
 export default () => {
@@ -15,20 +15,18 @@ export default () => {
     }
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ObservabilityAppRoot',
-    render(h) {
-      return h(ObservabilityApp, {
-        props: {
-          o11yUrl: dataset.o11yUrl,
-          path: dataset.path,
-          authTokens,
-          title: dataset.title,
-          pollingEndpoint: dataset.pollingEndpoint,
-          queryParams: JSON.parse(dataset.queryParams || '{}'),
-        },
-      });
+    component: ObservabilityApp,
+    props: {
+      o11yUrl: dataset.o11yUrl,
+      path: dataset.path,
+      authTokens,
+      title: dataset.title,
+      pollingEndpoint: dataset.pollingEndpoint,
+      sessionEndpoint: dataset.sessionEndpoint || null,
+      queryParams: JSON.parse(dataset.queryParams || '{}'),
     },
   });
 };

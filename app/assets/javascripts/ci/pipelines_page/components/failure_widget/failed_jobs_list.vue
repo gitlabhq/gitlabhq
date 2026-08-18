@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLink, GlLoadingIcon, GlSprintf, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
 import { __, s__, sprintf } from '~/locale';
@@ -24,6 +24,7 @@ export default {
     GlSprintf,
     FailedJobDetails,
   },
+  mixins: [GlToastMixin],
   inject: ['graphqlPath'],
   props: {
     isMaximumJobLimitReached: {

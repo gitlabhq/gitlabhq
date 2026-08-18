@@ -1,10 +1,24 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   ISSUE_NOTEABLE_TYPE,
   MERGE_REQUEST_NOTEABLE_TYPE,
   DESIGN_NOTEABLE_TYPE,
   COMMIT_NOTEABLE_TYPE,
 } from '~/notes/constants';
+
+export const CONTRIB_LEGENDS = [
+  { title: __('No contributions'), min: 0, level: 0 },
+  { title: __('1-9 contributions'), min: 1, level: 1 },
+  { title: __('10-19 contributions'), min: 10, level: 2 },
+  { title: __('20-29 contributions'), min: 20, level: 3 },
+  { title: __('30+ contributions'), min: 30, level: 4 },
+];
+
+export const FIRST_DAY_OF_WEEK_CHOICES = Object.freeze({
+  sunday: 0,
+  monday: 1,
+  saturday: 6,
+});
 
 // From app/models/event.rb#L16
 export const EVENT_TYPE_CREATED = 'created';

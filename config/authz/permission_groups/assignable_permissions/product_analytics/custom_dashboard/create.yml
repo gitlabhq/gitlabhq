@@ -1,0 +1,9 @@
+---
+name: create_custom_dashboard
+description: Grants the ability to create custom dashboards.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_custom_dashboard

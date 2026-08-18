@@ -367,6 +367,12 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     end
   end
 
+  describe '#show_passkey_immediately?' do
+    it 'returns true' do
+      expect(helper.show_passkey_immediately?).to be(true)
+    end
+  end
+
   describe '#sign_in_form_app_data' do
     subject(:json) { Gitlab::Json.parse(helper.sign_in_form_app_data) }
 
@@ -386,7 +392,8 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
           'new_user_confirmation_path' => '/users/confirmation/new',
           'new_password_path' => '/users/password/new',
           'show_captcha' => false,
-          'is_remember_me_enabled' => true
+          'is_remember_me_enabled' => true,
+          'show_passkey_immediately' => true
         }
       )
     end

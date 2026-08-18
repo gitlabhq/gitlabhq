@@ -144,7 +144,7 @@ To configure PAT settings in GitLab Shell:
 
    - `enabled`: Set to `true` to enable PAT generation using SSH, or `false` to disable it.
    - `allowedScopes`: An array of scopes allowed for PATs generated with SSH.
-     Leave empty (`[]`) to allow all
+     Leave empty (`[]`) to allow all scopes.
 
 1. Save the file and apply the new values:
 
@@ -189,7 +189,7 @@ To configure PAT settings in GitLab Shell:
 
    - `enabled`: Set to `true` to enable PAT generation using SSH, or `false` to disable it.
    - `allowed_scopes`: An array of scopes allowed for PATs generated with SSH.
-      Leave empty (`[]`) to allow all scopes.
+     Leave empty (`[]`) to allow all scopes.
 
 1. Save the file and restart GitLab Shell:
 

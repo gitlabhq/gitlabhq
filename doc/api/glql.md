@@ -97,9 +97,12 @@ response attributes:
 | `data.pageInfo.startCursor`     | string  | Cursor for fetching the previous page of results. |
 | `error`                         | string  | Error message if the query failed. |
 | `fields`                        | array   | Array of field definitions. |
+| `fields[].field`                | string  | The base field name. For aliased parameterised fields, this is the underlying field name (for example, `durationQuantile`), while `key` is the alias (for example, `p50`). For standard fields, same as `key`. |
 | `fields[].key`                  | string  | The unique field identifier. |
 | `fields[].label`                | string  | The human-readable field name. |
-| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. |
+| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. For aliased parameterised fields, this is the generated response key (for example, `durationQuantile_quantile_0_d5`), not a common name. |
+| `fields[].parameters`           | object  | Resolved parameter metadata for parameterised fields. Absent when the field has no parameters. For example, `{"granularity": "weekly"}` or `{"quantile": "0.5"}`. |
+| `fields[].type`                 | string  | Field classification: `dimension` or `metric` for analytics mode fields. Absent for standard fields. |
 | `success`                       | boolean | Indicates if the query was successful. |
 
 ### Example: Basic query
@@ -143,6 +146,7 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
@@ -216,21 +220,25 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "id",
       "key": "id",
       "label": "ID",
       "name": "id"
     },
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
     },
     {
+      "field": "author",
       "key": "author",
       "label": "Author",
       "name": "author"
     },
     {
+      "field": "state",
       "key": "state",
       "label": "State",
       "name": "state"
@@ -306,16 +314,19 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "id",
       "key": "id",
       "label": "ID",
       "name": "id"
     },
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
     },
     {
+      "field": "assignees",
       "key": "assignees",
       "label": "Assignees",
       "name": "assignees"
@@ -375,6 +386,7 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
@@ -395,6 +407,256 @@ curl --request POST \
     "after": "eyJpZCI6IjIifQ=="
   }' \
   --url "https://gitlab.example.com/api/v4/glql"
+```
+
+### Example: Analytics mode query
+
+Aggregate pipeline metrics grouped by a dimension.
+In analytics mode, the `fields` array includes the `type` attribute for each field,
+and the `parameters` attribute for parameterised fields:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "glql_yaml": "mode: analytics\ndimensions: ref\nmetrics: durationQuantile(0.5) as \"p50\"\nquery: type = Pipeline AND project = \"my-group/my-project\" AND finished >= -30d"
+  }' \
+  --url "https://gitlab.example.com/api/v4/glql"
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "count": 2,
+    "nodes": [
+      {
+        "durationQuantile_quantile_0_d5": 245.5,
+        "p50": 245.5,
+        "ref": "main"
+      },
+      {
+        "durationQuantile_quantile_0_d5": 312.0,
+        "p50": 312.0,
+        "ref": "feature-branch"
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "eyJpZCI6IjIifQ==",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "eyJpZCI6IjEifQ=="
+    }
+  },
+  "error": null,
+  "fields": [
+    {
+      "field": "ref",
+      "key": "ref",
+      "label": "Ref",
+      "name": "ref",
+      "type": "dimension"
+    },
+    {
+      "field": "durationQuantile",
+      "key": "p50",
+      "label": "p50",
+      "name": "durationQuantile_quantile_0_d5",
+      "parameters": {
+        "quantile": "0.5"
+      },
+      "type": "metric"
+    }
+  ],
+  "success": true
+}
+```
+
+## Retrieve the GLQL schema
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247360) in GitLab 19.3.
+
+{{< /history >}}
+
+Retrieves the GLQL schema: the available data sources with their filter, display, and sort
+fields, the operator, value kind, and reference type vocabularies, the available functions, and
+the display types a query can be rendered as.
+
+The document describes the query language. A query against a data source that is not available to
+you fails at `POST /glql`.
+
+The document changes only when GitLab is upgraded. It is served with an `ETag`, so send
+`If-None-Match` to revalidate and receive `304 Not Modified` instead of the full document.
+
+```plaintext
+GET /glql/schema
+```
+
+This endpoint takes no parameters and returns the same document for every user.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute         | Type         | Description |
+|-------------------|--------------|-------------|
+| `display_types`   | object array | How a query can be rendered, and what each one needs. Omitting `display:` renders a list. See below. |
+| `functions`       | object array | Available functions, each with a `name`, a `kind` (`value` for use in a query, `field` for use in `fields`), a `description`, `args`, and `returns`. |
+| `operators`       | object array | Comparison operators, each with a `symbol`, `name`, and `label`. |
+| `reference_types` | object array | Reference prefixes, each with a `name`, `symbol`, and `example`. For example, `~` for a label. |
+| `sources`         | object array | The data sources. See below. |
+| `value_kinds`     | object array | The kinds of value a filter accepts, each with a `name` and `description`. |
+| `version`         | string       | Version of the GLQL gem this document was shipped in. |
+
+Response attributes for `display_types[]`:
+
+| Attribute     | Type         | Description |
+|---------------|--------------|-------------|
+| `description` | string       | What the display type renders. |
+| `name`        | string       | The value to use in a GLQL block's `display:` option. |
+| `selections`  | object array | The combinations of dimensions and metrics the type accepts. A query must match one of them. Present only for types that aggregate, which for that reason need `mode: analytics`. See below. |
+
+Response attributes for `display_types[].selections[]`:
+
+| Attribute    | Type    | Description |
+|--------------|---------|-------------|
+| `dimensions` | integer | Exact number of dimensions this combination takes. |
+| `metrics`    | object  | How many metrics this combination takes, as `min` and an optional `max`. No `max` means no limit. |
+
+Response attributes for `sources[]`:
+
+| Attribute | Type         | Description |
+|-----------|--------------|-------------|
+| `label`   | string       | Human-readable name. |
+| `modes`   | object array | Query modes the source supports. See below. |
+| `name`    | string       | Canonical source name. For example, `WorkItems`. |
+
+Response attributes for `sources[].modes[]`:
+
+| Attribute                | Type         | Description |
+|--------------------------|--------------|-------------|
+| `allowed_scopes`         | string array | Scopes the source can be queried in. For example, `project`. |
+| `dimensions`             | string array | Analytics modes only. Fields to group by. |
+| `display_fields`         | object array | Standard modes only. Fields usable in `fields`, each with a `name` and optional `aliases`. Analytics modes omit this and use `dimensions` and `metrics` instead. |
+| `filter_fields`          | object array | Fields usable in `query`, each with a `name`, optional `aliases`, and `value_types`. |
+| `metrics`                | string array | Analytics modes only. Aggregations to compute. |
+| `mode`                   | string       | `Standard` or `Analytics`. Note these are capitalized here, while the `mode` option in a GLQL block is lowercase. For example, `mode: analytics`. |
+| `parameterized_fields`   | object array | Fields that accept arguments, each with a `name` and `parameters`. Present only where supported. See below. |
+| `sort_fields`            | string array | Fields usable in `sort`. |
+| `sort_restrictions`      | object array | Sort fields that accept only one direction, each with a `name` and the `directions` it accepts. Fields absent from this list accept both `asc` and `desc`. Present only where a restriction applies. |
+| `wildcard_filter_fields` | object array | Filters taking an argument, each with a `name`, a `syntax` string, and `value_types`. For example, `customField("Name")`. Present only where supported. |
+
+Response attributes for `sources[].modes[].filter_fields[].value_types[]`:
+
+| Attribute    | Type         | Description |
+|--------------|--------------|-------------|
+| `items`      | object array | `List` only. The value types accepted inside the list. |
+| `kind`       | string       | One of the `value_kinds` names. |
+| `operators`  | string array | Operators accepted for this kind. |
+| `references` | string       | `Reference` only. One of the `reference_types` names. |
+| `values`     | string array | `Enum` and `StringEnum` only. The accepted tokens. On the `type` filter, the tokens listed are the ones that select this data source. Only `WorkItems` accepts more than one, because for work items `type` also narrows the results to a work item type. |
+
+Response attributes for `sources[].modes[].parameterized_fields[].parameters[]`:
+
+| Attribute | Type         | Description |
+|-----------|--------------|-------------|
+| `default` | string       | Value used when the argument is omitted. |
+| `kind`    | string       | `Enum` or `Number`. |
+| `max`     | number       | `Number` only. Largest accepted value. |
+| `min`     | number       | `Number` only. Smallest accepted value. |
+| `name`    | string       | Argument name. For example, `granularity`. |
+| `values`  | string array | `Enum` only. The accepted values. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/glql/schema"
+```
+
+Example response, truncated:
+
+```json
+{
+  "sources": [
+    {
+      "name": "WorkItems",
+      "label": "work items",
+      "modes": [
+        {
+          "mode": "Standard",
+          "allowed_scopes": ["project", "group"],
+          "filter_fields": [
+            {
+              "name": "label",
+              "aliases": ["labels"],
+              "value_types": [
+                { "kind": "String", "operators": ["=", "!="] },
+                {
+                  "kind": "List",
+                  "operators": ["in", "=", "!="],
+                  "items": [{ "kind": "String" }, { "kind": "Reference", "references": "LabelRef" }]
+                }
+              ]
+            }
+          ],
+          "wildcard_filter_fields": [
+            {
+              "name": "customField",
+              "syntax": "customField(\"Name\")",
+              "value_types": [{ "kind": "String", "operators": ["="] }]
+            }
+          ],
+          "display_fields": [
+            { "name": "title" },
+            { "name": "assignee", "aliases": ["assignees"] }
+          ],
+          "sort_fields": ["created", "updated", "due"]
+        }
+      ]
+    }
+  ],
+  "operators": [{ "symbol": "=", "name": "Equal", "label": "equals" }],
+  "value_kinds": [{ "name": "String", "description": "A quoted string, for example \"my title\"." }],
+  "reference_types": [{ "name": "LabelRef", "symbol": "~", "example": "~frontend" }],
+  "display_types": [
+    { "name": "list", "description": "A bulleted list of items." },
+    {
+      "name": "barChart",
+      "description": "Horizontal bars, one per dimension value.",
+      "selections": [
+        { "dimensions": 1, "metrics": { "min": 1 } },
+        { "dimensions": 2, "metrics": { "min": 1, "max": 1 } }
+      ]
+    }
+  ],
+  "functions": [
+    { "name": "today", "kind": "value", "description": "Today's date at 00:00 UTC.", "args": [], "returns": "Date" }
+  ],
+  "version": "0.34.0"
+}
+```
+
+Analytics modes list the arguments their dimensions and metrics accept, so a query can set them
+explicitly rather than relying on the default:
+
+```json
+"parameterized_fields": [
+  {
+    "name": "finished",
+    "parameters": [
+      { "name": "granularity", "kind": "Enum", "values": ["daily", "weekly", "monthly"], "default": "weekly" }
+    ]
+  },
+  {
+    "name": "durationQuantile",
+    "parameters": [{ "name": "quantile", "kind": "Number", "min": 0.01, "max": 0.99, "default": 0.95 }]
+  }
+]
 ```
 
 ## Rate limiting

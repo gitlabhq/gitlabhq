@@ -45,9 +45,9 @@ describe('PasskeyAuthentication', () => {
   let webAuthnDevice;
   let submitSpy;
 
-  const findBackButton = () => wrapper.findByTestId('passkey-authentication-back');
+  const findBackButton = () => wrapper.findComponentByTestId('passkey-authentication-back');
   const findPending = () => wrapper.findByTestId('passkey-authentication-pending');
-  const findRetryButton = () => wrapper.findByTestId('passkey-authentication-try-again');
+  const findRetryButton = () => wrapper.findComponentByTestId('passkey-authentication-try-again');
   const findSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findSuccess = () => wrapper.findByTestId('passkey-authentication-success');
 

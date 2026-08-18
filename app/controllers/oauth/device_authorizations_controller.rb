@@ -20,6 +20,7 @@ module Oauth
       device_grant = device_grant_model.find_by(user_code: user_code)
       # rubocop:enable CodeReuse/ActiveRecord
       @scopes = device_grant&.scopes || ''
+      @application = device_grant&.application
       respond_to do |format|
         format.html do
           render "doorkeeper/device_authorization_grant/authorize"

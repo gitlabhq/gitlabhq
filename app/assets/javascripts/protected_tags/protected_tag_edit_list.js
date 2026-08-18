@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ProtectedTagEdit from './protected_tag_edit.vue';
 
@@ -32,17 +32,14 @@ export default class ProtectedTagEditList {
       Sentry.captureException(e);
     }
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'ProtectedTagEditRoot',
-      render(createElement) {
-        return createElement(ProtectedTagEdit, {
-          props: {
-            preselectedItems: preselected,
-            searchEnabled: el.dataset.filter !== undefined,
-            ...options,
-          },
-        });
+      component: ProtectedTagEdit,
+      props: {
+        preselectedItems: preselected,
+        searchEnabled: el.dataset.filter !== undefined,
+        ...options,
       },
     });
   }

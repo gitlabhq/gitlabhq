@@ -97,9 +97,7 @@ GitLab provides resources for configuring various
 identity providers and protocols, including
 
 - [LDAP](../administration/auth/ldap/_index.md)
-
 - [SAML](../integration/saml.md)
-
 - For more information about identity providers, see [GitLab authentication and authorization](../administration/auth/_index.md).
 
 #### Native GitLab User Authentication Configurations
@@ -111,13 +109,9 @@ least privilege and role based access by providing options for granular
 access. At the project level, the following roles are supported
 
 - Guest
-
 - Reporter
-
 - Developer
-
 - Maintainer
-
 - Owner
 
 Additional details on [project level permissions](../user/permissions.md#project-permissions)
@@ -126,8 +120,7 @@ for customers that have unique permission requirements.
 
 GitLab also supports the following user types for unique use cases:
 
-- [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects and other resources except for the **Admin** area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
-
+- [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects, and other resources except for the **Admin** area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
 - [External Users](../administration/external_users.md) -
   External users can be set to provide limited access for users that
   may not be part of the organization. Typically, this can be used to
@@ -137,7 +130,6 @@ GitLab also supports the following user types for unique use cases:
   external users can reduce risk to an organization by limiting access
   to projects by default and assisting administrators in identifying
   which users are not employed by the organization.
-
 - [Service Accounts](../user/profile/service_accounts.md) -
   Service accounts may be added to accommodate automated tasks.
   Service accounts do not use a seat under the license.
@@ -148,16 +140,14 @@ and much more. Functions that can be used to meet FedRAMP / NIST 800-53
 requirements:
 
 - [Reset user password](reset_user_password.md) when suspected of compromise.
-
 - [Unlock users](unlock_user.md).
   By default, GitLab locks users after 10 failed sign-in attempts.
   Users remain locked for 10 minutes or until an administrator unlocks
-  the user. In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#available-settings)
+  the user. Administrators can [use the API](../api/settings.md#available-settings)
   to configure max login attempts and time period for remaining locked
   out. Per guidance in AC-7, FedRAMP defers to NIST 800-63B for
   defining parameters for account lockouts, which the default setting
   satisfies.
-
 - Review [abuse reports](../administration/review_abuse_reports.md)
   or [spam logs](../administration/review_spam_logs.md).
   FedRAMP requires organizations to monitor accounts for atypical use
@@ -166,46 +156,37 @@ requirements:
   logs are consolidated in the **Spam logs** section of the **Admin** area.
   Administrators can remove, block, or trust users flagged in that
   area.
-
 - [Set password storage parameters](../user/profile/user_passwords.md).
   Stored secrets must satisfy FIPS 140-2 or 140-3 as outlined in
   SC-13. PBKDF2+SHA512 is supported with FIPS compliant ciphers when
   FIPS mode is enabled.
-
 - [Credentials inventory](../administration/credentials_inventory.md)
   enables administrators to review all secrets used in a GitLab
   GitLab Self-Managed instance in one place. A consolidated view of
   credentials, tokens, and keys may assist with satisfying
   requirements such as reviewing passwords or rotating credentials.
-
 - [Modify password complexity requirements](../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements).
   FedRAMP defers to NIST 800-63B in IA-5 for establishing password
   length requirements. GitLab supports 8-128 character passwords, with
   8 characters set as the default.
-
 - [Default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration) -
   FedRAMP establishes that users that have been inactive for a set
   time period should be logged out. FedRAMP does not specify the time
   period, however, clarifies that for privileged users they should be
   logged out at the end of the standard work period. Administrators
   can establish [default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration).
-
 - [Provisioning New Users](../user/profile/account/create_accounts.md) -
   Administrators can create new users for their GitLab account with the
   **Admin** area UI. In compliance with IA-5, GitLab requires new users to
   change their passwords on first login.
-
 - Deprovisioning Users - Administrators are able to [remove users with the **Admin** area UI](../user/profile/account/delete_account.md#delete-users-and-user-contributions).
   An alternative to deleting users is to [block a user](../administration/moderate_users.md#block-a-user)
   and remove all access. Blocking a user maintains their data in
   repositories while removing all access. Blocked users do not impact
   seat counts.
-
 - Deactivate Users - Inactive users that have been identified during account reviews [may be temporarily deactivated](../administration/moderate_users.md#deactivate-a-user). Deactivation is similar to blocking, but there are a few important differences. Deactivating a user does not prohibit the user from signing into the GitLab UI. A deactivated user can become active again by signing in. A deactivated user:
   - Cannot access repositories or the API.
-
   - Cannot use slash commands. For more information, see slash commands.
-
   - Does not occupy a seat.
 
 #### Additional Identification Methods
@@ -213,7 +194,6 @@ requirements:
 **Two-factor authentication** - [GitLab supports the following second factors](../user/profile/account/two_factor_authentication.md):
 
 - One-time password authenticators
-
 - WebAuthn devices
 
 [Instructions for enabling two-factor authentication](../user/profile/account/two_factor_authentication.md#enable-two-factor-authentication)
@@ -227,7 +207,6 @@ as WebAuthn, must be used (IA-2).
 **SSH keys**
 
 - GitLab [provides instructions](../user/ssh.md) on how to configure SSH keys to authenticate and communicate with Git. [Commits can be signed](../user/project/repository/signed_commits/ssh.md), providing additional verification for anyone with a public key.
-
 - Keys should be configured to meet applicable strength and complexity requirements, such as using FIPS 140-2 and FIPS 140-3 validated ciphers. Administrators can [restrict minimum key technologies and key lengths](ssh_keys_restrictions.md). Additionally, GitLab [blocks compromised keys](../user/ssh.md#add-an-ssh-key-to-your-gitlab-account).
 
 **Personal access tokens**
@@ -299,33 +278,19 @@ AU-2 requirements and implement audit events that map to the required
 audit event type. AU-2 identifies the following event buckets:
 
 - Successful and unsuccessful account logon events
-
 - Account management events
-
 - Object access
-
 - Policy change
-
 - Privilege functions
-
 - Process tracking
-
 - System events
-
 - For Web applications:
-
   - All administrator activity
-
   - Authentication checks
-
   - Authorization checks
-
   - Data deletions
-
   - Data access
-
   - Data changes
-
   - Permission changes
 
 Administrators should consider both the required event types and any
@@ -364,11 +329,8 @@ organization. Review the following resources, which may help meet
 incident response requirements:
 
 - [Alerts](../operations/incident_management/alerts.md)
-
 - [Incidents](../operations/incident_management/incidents.md)
-
 - [On-call Schedules](../operations/incident_management/oncall_schedules.md)
-
 - [Status page](../operations/incident_management/status_page.md)
 
 ### Configuration Management (CM)
@@ -396,15 +358,11 @@ settings to consider:
 
 - Remove all approvals when a commit is added - Ensures that approvals
   are not carried over when new commits are made to a merge request.
-
 - Restrict individuals who can dismiss code change reviews.
-
 - Assign [code owners](../user/project/codeowners/_index.md#codeowners-file)
   to be notified when sensitive code or configurations are changed through
   merge requests.
-
 - [Ensure all open comments are resolved before allowing code change merging](../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved).
-
 - [Configure push rules](../user/project/repository/push_rules.md) -
   Push rules can be configured to meet requirements such as reviewing
   signed code, verifying users, and more.
@@ -460,9 +418,7 @@ in a GitLab Self-Managed instance. GitLab supports the following cloud service
 providers:
 
 - [Azure](../install/azure/_index.md)
-
 - [Google Cloud Platform](../install/google_cloud_platform/_index.md)
-
 - [Amazon Web Services](../install/aws/_index.md)
 
 GitLab provides a [decision tree for assisting customers with selecting reference architectures and availability models](../administration/reference_architectures/_index.md#decision-tree).
@@ -486,17 +442,11 @@ The documentation outlines backup strategies for critical components,
 including:
 
 - [PostgreSQL databases](../administration/backup_restore/backup_gitlab.md#postgresql-databases)
-
 - [Git repositories](../administration/backup_restore/backup_gitlab.md#git-repositories)
-
 - [Blobs](../administration/backup_restore/backup_gitlab.md#blobs)
-
 - [Container Registry](../administration/backup_restore/backup_gitlab.md#container-registry)
-
 - [Redis](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data)
-
 - [Configuration Files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files)
-
 - [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
 
 GitLab Geo
@@ -509,36 +459,27 @@ Implementing Geo provides the following benefits:
 
 - Reduce from minutes to seconds the time taken for distributed
   developers to clone and fetch large repositories and projects.
-
 - Enable developers to contribute ideas and work in parallel, across
   regions.
-
 - Balance the read-only load between primary and secondary sites.
-
 - Can be used for cloning and fetching projects, in addition to
   reading any data available in the GitLab web interface (see
   limitations).
-
 - Overcomes slow connections between distant offices, saving time by
   improving speed for distributed teams.
-
 - Helps reduce the loading time for automated tasks, custom
   integrations, and internal workflows.
-
 - Can quickly fail over to a secondary site in a disaster recovery
   scenario.
-
 - Allows planned failover to a secondary site.
 
 Geo provides the following core features:
 
 - Read-only secondary sites: Maintain one primary GitLab site while
   still enabling read-only secondary sites for distributed teams.
-
 - Authentication system hooks: Secondary sites receive all
   authentication data (like user accounts and logins) from the primary
   instance.
-
 - An intuitive UI: Secondary sites use the same web interface as the
   primary site. In addition, there are visual notifications that block
   write operations and make it clear that a user is in a secondary
@@ -547,11 +488,8 @@ Geo provides the following core features:
 Additional Geo Resources:
 
 - [Setting up Geo](../administration/geo/setup/_index.md)
-
 - [Requirements for running Geo](../administration/geo/_index.md#requirements-for-running-geo)
-
 - [Geo Limitations](../administration/geo/_index.md)
-
 - [Geo Disaster Recovery Steps](../administration/geo/disaster_recovery/_index.md)
 
 **PostgreSQL**
@@ -603,9 +541,7 @@ Additional security features that may be used to secure and manage
 application code include:
 
 - [Static application security testing (SAST)](../user/application_security/sast/_index.md)
-
 - [Secret detection](../user/application_security/secret_detection/_index.md)
-
 - [API security](../user/application_security/api_security/_index.md)
 
 #### Patch Management
@@ -675,15 +611,10 @@ information on [configuring runners](../ci/runners/configure_runners.md),
 which includes concepts such as:
 
 - Maximum job timeouts
-
 - Protecting Sensitive Information
-
 - Configuring Long Polling
-
 - Authentication Token Security and Token Rotation
-
 - Preventing Revealing Sensitive Information
-
 - Runner Variables
 
 #### Leveraging APIs
@@ -712,11 +643,8 @@ GitLab provides a [hardening guide](hardening.md)
 for GitLab Self-Managed customers that covers topics such as:
 
 - [Application hardening recommendations](hardening_application_recommendations.md)
-
 - [CI/CD Hardening Recommendation](hardening_cicd_recommendations.md)
-
 - [Configuration Recommendations](hardening_configuration_recommendations.md)
-
 - [Operating System Recommendations](hardening_operating_system_recommendations.md)
 
 GitLab CIS Benchmark Guide - GitLab has published a [CIS Benchmark](https://about.gitlab.com/blog/gitlab-introduces-new-cis-benchmark-for-improved-security/)

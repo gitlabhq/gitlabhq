@@ -37,23 +37,25 @@ describe('ReportActions', () => {
 
   const { user, report } = mockAbuseReport;
 
-  const clickActionsButton = () => wrapper.findByTestId('actions-button').vm.$emit('click');
+  const clickActionsButton = () =>
+    wrapper.findComponentByTestId('actions-button').vm.$emit('click');
   const isDrawerOpen = () => wrapper.findComponent(GlDrawer).props('open');
   const findErrorFor = (id) => wrapper.findByTestId(id).attributes('invalid-feedback');
-  const findUserActionOptions = () => wrapper.findByTestId('action-select');
+  const findUserActionOptions = () => wrapper.findComponentByTestId('action-select');
   const setCloseReport = (close) => {
-    wrapper.findByTestId('close').vm.$emit('change', close);
-    wrapper.findByTestId('close').vm.$emit('input', close);
+    wrapper.findComponentByTestId('close').vm.$emit('change', close);
+    wrapper.findComponentByTestId('close').vm.$emit('input', close);
   };
   const setSelectOption = (id, value) => {
-    wrapper.findByTestId(`${id}-select`).vm.$emit('change', value);
-    wrapper.findByTestId(`${id}-select`).vm.$emit('input', value);
+    wrapper.findComponentByTestId(`${id}-select`).vm.$emit('change', value);
+    wrapper.findComponentByTestId(`${id}-select`).vm.$emit('input', value);
   };
   const selectAction = (chosenAction) => setSelectOption('action', chosenAction);
   const selectReason = (reason) => setSelectOption('reason', reason);
-  const setComment = (comment) => wrapper.findByTestId('comment').vm.$emit('input', comment);
-  const submitForm = () => wrapper.findByTestId('submit-button').vm.$emit('click');
-  const findReasonOptions = () => wrapper.findByTestId('reason-select');
+  const setComment = (comment) =>
+    wrapper.findComponentByTestId('comment').vm.$emit('input', comment);
+  const submitForm = () => wrapper.findComponentByTestId('submit-button').vm.$emit('click');
+  const findReasonOptions = () => wrapper.findComponentByTestId('reason-select');
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(ReportActions, {
@@ -213,7 +215,7 @@ describe('ReportActions', () => {
           if (messageShown) {
             expect(findErrorFor(errorFor)).toBe(ACTIONS_I18N.requiredFieldFeedback);
           } else {
-            expect(wrapper.findByTestId(errorFor).props('state')).toBe(false);
+            expect(wrapper.findComponentByTestId(errorFor).props('state')).toBe(false);
           }
         });
       });

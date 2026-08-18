@@ -113,7 +113,7 @@ export default {
       ref="drawer"
       aria-labelledby="whats-new-drawer-heading"
       tabindex="0"
-      class="whats-new-drawer gl-leading-reset focus:gl-focus"
+      class="whats-new-drawer gl-leading-reset focus-visible:gl-focus"
       :header-height="getDrawerHeaderHeight"
       :z-index="700"
       :open="open"

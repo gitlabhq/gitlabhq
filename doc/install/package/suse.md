@@ -2,8 +2,8 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Install the Linux package on OpenSUSE and SLES
-title: Install the Linux package on OpenSUSE and SLES
+description: Install the Linux package on openSUSE and SLES
+title: Install the Linux package on openSUSE and SLES
 ---
 
 {{< details >}}
@@ -20,7 +20,7 @@ title: Install the Linux package on OpenSUSE and SLES
 ## Prerequisites
 
 - OS requirements:
-  - OpenSUSE Leap 15.6
+  - openSUSE Leap 15.6
   - SLES 12
   - SLES 15 SP6
 - See the [installation requirements](../requirements.md) to learn about the
@@ -189,7 +189,7 @@ to let us know when to communicate with you. We have an explicit email opt-in
 policy so you have complete control over what and how often we send you emails.
 
 Twice a month, we send out the GitLab news you need to know, including new
-features, integrations, documentation, and behind the scenes stories from our development teams.
+features, integrations, documentation, and behind-the-scenes stories from our development teams.
 For critical security updates related to bugs and system performance, sign up
 for our dedicated security newsletter.
 

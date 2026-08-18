@@ -34,6 +34,20 @@ describe('Design note pin component', () => {
     expect(wrapper.find('button').exists()).toBe(false);
   });
 
+  // Triggers real DOM events on the root element: the overlay binds `@mousedown`/`@mouseup` on
+  // this component, and `@vue/compat` MODE 2 with INSTANCE_LISTENERS strips every `on*` prop from
+  // `$attrs`, so the pin must re-emit them itself for the drag to work.
+  describe.each(['click', 'mousedown', 'mouseup'])('%s event', (event) => {
+    it('re-emits the native event', async () => {
+      createComponent();
+
+      await wrapper.find('button').trigger(event);
+
+      expect(wrapper.emitted(event)).toHaveLength(1);
+      expect(wrapper.emitted(event)[0][0]).toBeInstanceOf(MouseEvent);
+    });
+  });
+
   describe('size', () => {
     it('is `sm` it applies `small` class', () => {
       createComponent({ size: 'sm' });

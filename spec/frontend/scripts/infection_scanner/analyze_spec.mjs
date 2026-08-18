@@ -31,12 +31,70 @@ describe('infection scanner', () => {
       expect(detectAppRoot("import MyVue from 'vue'; new MyVue({ el: '#app' });")).toBe(true);
     });
 
+    it('detects initVueApp bootstraps', () => {
+      expect(
+        detectAppRoot(
+          "import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; initVueApp({ el: '#app' });",
+        ),
+      ).toBe(true);
+    });
+
+    it('detects initVueApp bootstraps that also import unmountVueApp', () => {
+      expect(
+        detectAppRoot(
+          "import { initVueApp, unmountVueApp } from '~/lib/utils/vue3compat/init_vue_app'; const vm = initVueApp({ el }); unmountVueApp(vm);",
+        ),
+      ).toBe(true);
+    });
+
+    it('detects initVueApp bootstraps that import Vue only for Vue.use', () => {
+      expect(
+        detectAppRoot(
+          "import Vue from 'vue'; import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; Vue.use(GlToast); initVueApp({ el });",
+        ),
+      ).toBe(true);
+    });
+
+    it('rejects initVueApp bootstraps whose Vue import is used beyond Vue.use', () => {
+      expect(
+        detectAppRoot(
+          "import Vue from 'vue'; import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; Vue.component('x', {}); initVueApp({ el });",
+        ),
+      ).toBe(false);
+    });
+
+    it('rejects files importing initVueApp without calling it', () => {
+      expect(
+        detectAppRoot("import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';"),
+      ).toBe(false);
+    });
+
+    it('defers to the classic checks when the file also imports vue', () => {
+      expect(
+        detectAppRoot(
+          "import { nextTick } from 'vue'; import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; initVueApp({ el });",
+        ),
+      ).toBe(false);
+    });
+
     it('rejects named imports from vue', () => {
       expect(detectAppRoot("import { computed } from 'vue';")).toBe(false);
     });
 
     it('rejects mixed default + named imports', () => {
       expect(detectAppRoot("import Vue, { computed } from 'vue'; new Vue({});")).toBe(false);
+    });
+
+    it('accepts defineAsyncComponent alongside the default import', () => {
+      expect(
+        detectAppRoot("import Vue, { defineAsyncComponent } from 'vue'; new Vue({});"),
+      ).toBe(true);
+    });
+
+    it('rejects other named imports next to defineAsyncComponent', () => {
+      expect(
+        detectAppRoot("import Vue, { defineAsyncComponent, nextTick } from 'vue'; new Vue({});"),
+      ).toBe(false);
     });
 
     it('rejects Vue.component()', () => {
@@ -196,12 +254,7 @@ describe('infection scanner', () => {
         aliasMap: {},
         rootPath: fixture('nested_node_modules'),
       });
-      const from = fixture(
-        'nested_node_modules',
-        'node_modules',
-        'outer-pkg',
-        'index.js',
-      );
+      const from = fixture('nested_node_modules', 'node_modules', 'outer-pkg', 'index.js');
       expect(nestedResolver.resolveModule('inner-pkg', from)).toBe(
         fixture(
           'nested_node_modules',
@@ -241,6 +294,21 @@ describe('infection scanner', () => {
       );
       expect(all).toContain(
         fixture('browser_object_remap', 'node_modules', 'remap-pkg', 'dist', 'browser.js'),
+      );
+    });
+
+    it('applies browser remaps keyed without an extension (jszip-style main)', () => {
+      const remapResolver = createResolver({
+        aliasMap: {},
+        rootPath: fixture('browser_remap_extensionless'),
+      });
+      const from = fixture('browser_remap_extensionless', 'entry.js');
+      const all = remapResolver.resolveModuleAll('zip-pkg', from);
+      expect(all).toContain(
+        fixture('browser_remap_extensionless', 'node_modules', 'zip-pkg', 'lib', 'index.js'),
+      );
+      expect(all).toContain(
+        fixture('browser_remap_extensionless', 'node_modules', 'zip-pkg', 'dist', 'zip.min.js'),
       );
     });
 

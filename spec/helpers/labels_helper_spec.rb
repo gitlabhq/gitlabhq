@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe LabelsHelper do
+RSpec.describe LabelsHelper, feature_category: :team_planning do
+  using RSpec::Parameterized::TableSyntax
+
   describe '#show_label_issuables_link?' do
     shared_examples 'a valid response to show_label_issuables_link?' do |issuables_type, when_enabled = true, when_disabled = false|
       context "when asking for a #{issuables_type} link" do
@@ -127,6 +129,11 @@ RSpec.describe LabelsHelper do
     it 'does not include aria-label when aria_label is not provided' do
       label_link_html = render_label_link('<b>content</b>'.html_safe, link: 'https://target', title: 'tooltip', dataset: {})
       expect(label_link_html).to eq_html('<a class="gl-link gl-label-link has-tooltip" data-title="tooltip" href="https://target"><b>content</b></a>')
+    end
+
+    it 'describes the data-title as HTML when html is true' do
+      label_link_html = render_label_link('<b>content</b>'.html_safe, link: 'https://target', title: 'tooltip', dataset: {}, html: true)
+      expect(label_link_html).to eq_html('<a class="gl-link gl-label-link has-tooltip" data-title="tooltip" data-html="true" href="https://target"><b>content</b></a>')
     end
   end
 
@@ -265,6 +272,48 @@ RSpec.describe LabelsHelper do
       it 'returns title' do
         tooltip = label_tooltip_title(label_with_html_content, tooltip_shows_title: true)
         expect(tooltip).to eq('test')
+      end
+    end
+  end
+
+  describe '#label_tooltip_title_html' do
+    let(:label) { build_stubbed(:label, title: 'A title', description: description, archived: archived) }
+
+    subject { label_tooltip_title_html(label, tooltip_shows_title: tooltip_shows_title) }
+
+    where(:case_name, :tooltip_shows_title, :description, :archived, :expected) do
+      'escapes HTML'          | false | '<i>x</i>' | false | '&lt;i&gt;x&lt;/i&gt;'
+      'appends archived line' | false | 'Desc'     | true  | 'Desc<br><span class="gl-label-tooltip-footer">Archived</span>'
+      'archived, no desc'     | false | nil        | true  | '<span class="gl-label-tooltip-footer">Archived</span>'
+      'active label'          | false | 'Desc'     | false | 'Desc'
+      'title mode'            | true  | 'Desc'     | true  | 'A title<br><span class="gl-label-tooltip-footer">Archived</span>'
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#render_label' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:link) { Nokogiri::HTML.fragment(render_label(label, link: '#')).at_css('a.gl-label-link') }
+
+    context 'when the label is archived' do
+      let(:label) { build_stubbed(:label, project: project, description: 'A description', archived: true).present(issuable_subject: nil) }
+
+      it 'renders an HTML tooltip with the archived line' do
+        expect(link['data-html']).to eq('true')
+        expect(link['data-title']).to eq('A description<br><span class="gl-label-tooltip-footer">Archived</span>')
+      end
+    end
+
+    context 'when the label is not archived' do
+      let(:label) { build_stubbed(:label, project: project, description: 'A description').present(issuable_subject: nil) }
+
+      it 'renders the description tooltip without the archived line' do
+        expect(link['data-html']).to eq('true')
+        expect(link['data-title']).to eq('A description')
       end
     end
   end

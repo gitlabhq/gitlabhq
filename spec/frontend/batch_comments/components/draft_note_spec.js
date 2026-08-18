@@ -70,7 +70,7 @@ describe('Batch comments draft note component', () => {
   describe('update', () => {
     it('dispatches updateDraft', async () => {
       createComponent();
-      findNoteableNote().vm.$emit('handleEdit');
+      findNoteableNote().vm.$emit('handle-edit');
 
       await nextTick();
       const formData = {
@@ -82,7 +82,7 @@ describe('Batch comments draft note component', () => {
         errorCallback: jest.fn(),
       };
 
-      findNoteableNote().vm.$emit('handleUpdateNote', formData);
+      findNoteableNote().vm.$emit('handle-update-note', formData);
 
       expect(useBatchComments().updateDraft).toHaveBeenCalledWith(formData);
     });
@@ -93,7 +93,7 @@ describe('Batch comments draft note component', () => {
       createComponent();
       jest.spyOn(window, 'confirm').mockImplementation(() => true);
 
-      findNoteableNote().vm.$emit('handleDeleteNote', draft);
+      findNoteableNote().vm.$emit('handle-delete-note', draft);
 
       expect(useBatchComments().deleteDraft).toHaveBeenCalledWith(draft);
     });
@@ -152,7 +152,7 @@ describe('Batch comments draft note component', () => {
 
     it(`sets opened state`, async () => {
       createComponent({ draft });
-      await findNoteableNote().vm.$emit('handleEdit');
+      await findNoteableNote().vm.$emit('handle-edit');
       expect(useBatchComments()[types.SET_DRAFT_EDITING]).toHaveBeenCalledWith({
         draftId: draft.id,
         isEditing: true,
@@ -162,7 +162,18 @@ describe('Batch comments draft note component', () => {
     it(`resets opened state on form close`, async () => {
       draft.isEditing = true;
       createComponent({ draft });
-      await findNoteableNote().vm.$emit('cancelForm');
+      await findNoteableNote().vm.$emit('cancel-form');
+      expect(findNoteableNote().props('restoreFromAutosave')).toBe(false);
+      expect(useBatchComments()[types.SET_DRAFT_EDITING]).toHaveBeenCalledWith({
+        draftId: draft.id,
+        isEditing: false,
+      });
+    });
+
+    it(`resets opened state on update success`, async () => {
+      draft.isEditing = true;
+      createComponent({ draft });
+      await findNoteableNote().vm.$emit('update-success');
       expect(findNoteableNote().props('restoreFromAutosave')).toBe(false);
       expect(useBatchComments()[types.SET_DRAFT_EDITING]).toHaveBeenCalledWith({
         draftId: draft.id,
@@ -172,7 +183,7 @@ describe('Batch comments draft note component', () => {
 
     it(`clears autosave key on form cancel`, () => {
       createComponent({ draft, autosaveKey: 'foo' });
-      findNoteableNote().vm.$emit('cancelForm');
+      findNoteableNote().vm.$emit('cancel-form');
       expect(clearDraft).toHaveBeenCalledWith(`foo/draft-note-${draft.id}`);
     });
   });

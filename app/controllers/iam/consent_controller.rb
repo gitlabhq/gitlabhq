@@ -17,7 +17,7 @@ module Iam
 
     CONSENT_DATA_CACHE_TTL = 10.minutes
     CONSENT_DATA_CACHE_KEY_PREFIX = 'iam:consent_data'
-    UPSTREAM_ERROR_REASONS = Set[:iam_request_failed, :service_unavailable].freeze
+    UPSTREAM_ERROR_REASONS = Set[:service_unavailable].freeze
 
     def show
       if @consent_data[:skip_consent]

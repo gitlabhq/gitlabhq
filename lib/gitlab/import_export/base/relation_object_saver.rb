@@ -90,6 +90,8 @@ module Gitlab
         #   # If successful, all notes will be saved
         #   # If timeout occurs, will call process_with_smaller_batch_size
         def save_batch_with_retry(relation_name, batch, retry_count = 0)
+          prepare_records_for_association(relation_name, batch) if relation_name == 'notes'
+
           valid_records, invalid_records = batch.partition { |record| record.valid? }
 
           invalid_records.map! { |record| ::Import::ImportRecordPreparer.recover_invalid_record(record) }
@@ -111,6 +113,17 @@ module Gitlab
 
         def save_valid_records(relation_name, valid_records)
           relation_object.public_send(relation_name) << valid_records
+        end
+
+        def prepare_records_for_association(relation_name, records)
+          association = relation_object.class.reflect_on_association(relation_name)
+          inverse_name = association.inverse_of&.name
+
+          records.each do |record|
+            record[association.foreign_key] = relation_object.id
+            record[association.type] = relation_object.class.polymorphic_name if association.type
+            record.public_send(:"#{inverse_name}=", relation_object) if inverse_name
+          end
         end
 
         def save_potentially_invalid_records(relation_name, invalid_records)

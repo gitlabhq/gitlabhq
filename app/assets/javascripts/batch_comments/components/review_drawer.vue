@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapActions, mapState } from 'pinia';
 import {
   GlDrawer,
@@ -13,7 +14,6 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { useBatchComments } from '~/batch_comments/store';
-import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
@@ -49,7 +49,7 @@ export default {
       query: userCanApproveQuery,
       variables() {
         return {
-          projectPath: this.projectPath.replace(/^\//, ''),
+          projectPath: this.projectPath,
           iid: `${this.getNoteableData.iid}`,
         };
       },
@@ -67,15 +67,17 @@ export default {
     PreviewItem,
     MarkdownEditor,
     MarkdownHeaderDivider,
-    ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
-    SummarizeMyReview: () =>
-      import('ee_component/batch_comments/components/summarize_my_review.vue'),
+    ApprovalPassword: defineAsyncComponent(
+      () => import('ee_component/batch_comments/components/approval_password.vue'),
+    ),
+    SummarizeMyReview: defineAsyncComponent(
+      () => import('ee_component/batch_comments/components/summarize_my_review.vue'),
+    ),
   },
   inject: {
     canSummarize: { default: false },
-    diffsPath: { default: '' },
   },
-  emits: ['input'],
+  emits: ['input', 'draft-click'],
   data() {
     return {
       isSubmitting: false,
@@ -95,7 +97,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useLegacyDiffs, ['viewDiffsFileByFile', 'projectPath']),
+    ...mapState(useLegacyDiffs, ['projectPath']),
     ...mapState(useBatchComments, ['sortedDrafts', 'draftsCount', 'drawerOpened']),
     ...mapState(useNotes, ['getNoteableData', 'getNotesData', 'getCurrentUserLastNote']),
     getDrawerHeaderHeight() {
@@ -148,32 +150,13 @@ export default {
     this.noteData.merge_request_diff_head_sha = this.getNoteableData.diff_head_sha;
   },
   methods: {
-    ...mapActions(useLegacyDiffs, ['goToFile']),
     ...mapActions(useBatchComments, [
-      'scrollToDraft',
       'setDrawerOpened',
       'publishReview',
       'publishReviewInBatches',
       'discardDrafts',
       'clearDrafts',
     ]),
-    isOnLatestDiff(draft) {
-      return draft.position?.head_sha === this.getNoteableData.diff_head_sha;
-    },
-    async onClickDraft(draft) {
-      if (draft.position && !this.isOnLatestDiff(draft)) {
-        const url = new URL(
-          setUrlParams({ commit_id: draft.position.head_sha }, { url: this.diffsPath }),
-        );
-        url.hash = `draft_${draft.id}`;
-        visitUrl(url.toString());
-      } else {
-        if (this.viewDiffsFileByFile) {
-          await this.goToFile({ path: draft.file_path });
-        }
-        await this.scrollToDraft(draft);
-      }
-    },
     async submitReview() {
       this.isSubmitting = true;
       if (this.userLastNoteWatcher) this.userLastNoteWatcher();
@@ -411,7 +394,7 @@ export default {
           v-for="draft in sortedDrafts"
           :key="draft.id"
           :draft="draft"
-          @click="onClickDraft"
+          @click="$emit('draft-click', $event)"
         />
       </div>
     </div>
@@ -423,7 +406,6 @@ export default {
       :action-primary="$options.modal.primaryAction"
       :action-cancel="$options.modal.cancelAction"
       data-testid="discard-review-modal"
-      static
       lazy
       @primary="discardReviews"
     >

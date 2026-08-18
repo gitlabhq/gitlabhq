@@ -192,15 +192,12 @@ To avoid this error, follow [Poetry's configuration advice](https://python-poetr
 
 ## Error: project has unresolved dependencies
 
-The following error messages indicate a Gradle dependency resolution issue
+The following error message indicates a Gradle dependency resolution issue
 caused by your `build.gradle` or `build.gradle.kts` file:
 
-- `Project has <number> unresolved dependencies` (GitLab 16.7 to 16.9)
-- `project has unresolved dependencies: ["dependency_name:version"]` (GitLab 17.0 and later)
+- `project has unresolved dependencies: ["dependency_name:version"]`
 
-In GitLab 16.7 to 16.9, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered.
-
-In GitLab 17.0 and later, `gemnasium-maven` supports the `DS_GRADLE_RESOLUTION_POLICY` environment variable which you can use to control how unresolved dependencies are handled. By default, the scan fails when unresolved dependencies are encountered. However, you can set the environment variable `DS_GRADLE_RESOLUTION_POLICY` to `"none"` to allow the scan to continue and produce partial results.
+`gemnasium-maven` supports the `DS_GRADLE_RESOLUTION_POLICY` environment variable which you can use to control how unresolved dependencies are handled. By default, the scan fails when unresolved dependencies are encountered. However, you can set the environment variable `DS_GRADLE_RESOLUTION_POLICY` to `"none"` to allow the scan to continue and produce partial results.
 
 Consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html) for guidance on
 fixing your `build.gradle` file. For more details, refer to [issue 482650](https://gitlab.com/gitlab-org/gitlab/-/issues/482650).

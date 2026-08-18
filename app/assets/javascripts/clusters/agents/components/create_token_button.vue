@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { CREATE_TOKEN_MODAL } from '../constants';
 
 export default {
+  name: 'CreateTokenButton',
   components: {
     GlButton,
     GlTooltip,

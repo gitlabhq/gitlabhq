@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckOpenStatusService < CheckBaseService
       set_identifier :not_open
+      set_failure_explanation N_('The merge request must be open.')
       set_description 'Checks whether the merge request is open'
 
       def execute

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - common' do
   include RichTextEditorHelpers
 
-  it 'saves page content in local storage if the user navigates away' do
+  it 'saves page content in local storage if the user navigates away', feature_category: :markdown do
     switch_to_content_editor
 
     expect(page).to have_css(content_editor_testid)
@@ -22,20 +22,20 @@ RSpec.shared_examples 'rich text editor - common' do
     expect(page).to have_text('Typing text in the content editor')
   end
 
-  it 'autofocuses the rich text editor when switching to rich text' do
+  it 'autofocuses the rich text editor when switching to rich text', feature_category: :markdown do
     switch_to_content_editor
 
     expect(page).to have_css("#{content_editor_testid}:focus")
   end
 
-  it 'autofocuses the plain text editor when switching back to markdown' do
+  it 'autofocuses the plain text editor when switching back to markdown', feature_category: :markdown do
     switch_to_content_editor
     switch_to_markdown_editor
 
     expect(page).to have_css("textarea:focus")
   end
 
-  describe 'rendering with initial content' do
+  describe 'rendering with initial content', feature_category: :markdown do
     it 'serializes basic markdown content properly' do
       find('textarea').set('')
 
@@ -49,7 +49,7 @@ RSpec.shared_examples 'rich text editor - common' do
       type_in_content_editor :enter
       type_in_content_editor "list item 2"
 
-      wait_until_hidden_field_is_updated(/list item/)
+      wait_until_hidden_field_is_updated(/list item 2/)
 
       switch_to_markdown_editor
 
@@ -97,7 +97,7 @@ RSpec.shared_examples 'rich text editor - common' do
     end
   end
 
-  describe 'automatically resolving references' do
+  describe 'automatically resolving references', feature_category: :markdown do
     before do
       create(:user, name: 'abc123', username: 'abc123')
 
@@ -124,7 +124,7 @@ RSpec.shared_examples 'rich text editor - common' do
     end
   end
 
-  describe 'block content is added to a table' do
+  describe 'block content is added to a table', feature_category: :markdown do
     it 'converts a markdown table to HTML and shows a warning for it' do
       click_on 'Insert table'
       click_on 'Insert a 2×2 table'

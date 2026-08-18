@@ -34,6 +34,7 @@ fragment WorkItemLinkedItemsFragment on WorkItem {
               iconName
             }
             title
+            titleHtml
             state
             createdAt
             closedAt

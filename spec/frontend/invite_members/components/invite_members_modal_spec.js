@@ -124,12 +124,12 @@ describe('InviteMembersModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
-  const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
-  const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
+  const findMemberErrorAlert = () => wrapper.findComponentByTestId('alert-member-error');
+  const findMoreInviteErrorsButton = () => wrapper.findComponentByTestId('accordion-button');
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
   const findAccordion = () => wrapper.findComponent(GlCollapse);
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
-  const findSeatOveragesAlert = () => wrapper.findByTestId('seat-overages-alert');
+  const findSeatOveragesAlert = () => wrapper.findComponentByTestId('seat-overages-alert');
   const findMembershipFormGroup = () => wrapper.findByTestId('membership-radio-group');
   const findMembershipRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findMembershipCurrentRadio = () => wrapper.findByTestId('membership-current');
@@ -138,8 +138,8 @@ describe('InviteMembersModal', () => {
     const [username, message] = Object.entries(errorType.parsedMessage)[index];
     return `${username}: ${message}`;
   };
-  const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
-  const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
+  const findActionButton = () => wrapper.findComponentByTestId('invite-modal-submit');
+  const findCancelButton = () => wrapper.findComponentByTestId('invite-modal-cancel');
   const emitClickFromModal = (findButton) => () =>
     findButton().vm.$emit('click', { preventDefault: jest.fn() });
 

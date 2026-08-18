@@ -150,7 +150,10 @@ describe('WorkItemTypeToken', () => {
     it('is called on mount', () => {
       createComponent();
 
-      expect(namespaceQueryHandler).toHaveBeenLastCalledWith({ fullPath: 'full-path' });
+      expect(namespaceQueryHandler).toHaveBeenLastCalledWith({
+        fullPath: 'full-path',
+        includeFilterableFlags: true,
+      });
     });
 
     it('renders an error when an error occurs', async () => {

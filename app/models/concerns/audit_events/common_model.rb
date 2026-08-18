@@ -85,7 +85,13 @@ module AuditEvents
     end
 
     def author_name
+      return self[:author_name] if composite_identity_author?
+
       author&.name
+    end
+
+    def composite_identity_author?
+      details[:author_class] == ::Gitlab::Audit::CompositeIdentityAuthor.name
     end
 
     def formatted_details
@@ -109,6 +115,8 @@ module AuditEvents
     def as_json(options = {})
       super(options).tap do |json|
         json['ip_address'] = ip_address.to_s
+        json['entity_id'] = entity_id if entity_id.present?
+        json['entity_type'] = entity_type if entity_type.present?
       end
     end
 

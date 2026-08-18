@@ -92,10 +92,10 @@ To automatically create GitLab issues when Jira issues are created, we'll use [J
    - **Web request body**: **Custom data**
 1. Add the following headers:
 
-    | Name | Value |
-    | ------ | ------ |
-    | Authorization | Bearer `<YOUR_GITLAB_TOKEN>` |
-    | Content-Type | `application/json` |
+   | Name | Value |
+   | ------ | ------ |
+   | Authorization | Bearer `<YOUR_GITLAB_TOKEN>` |
+   | Content-Type | `application/json` |
 
    Set the Authorization header to "Hidden" for security.
 1. In the **Custom data** field, enter:

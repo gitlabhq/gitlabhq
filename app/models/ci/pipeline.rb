@@ -469,23 +469,21 @@ module Ci
           # Metrics emission must never raise into the caller's worker.
           next unless pipeline.finished_at && pipeline.created_at
 
-          if ::Feature.enabled?(:ci_observe_pipelines_finished, ::Project.actor_from_id(pipeline.project_id))
-            labels = { source: pipeline.source, status: pipeline.status }
+          labels = { source: pipeline.source, status: pipeline.status }
 
-            ::Gitlab::Ci::Pipeline::Metrics.pipelines_finished_counter
-              .increment(labels.merge(partition_id: pipeline.partition_id))
-            ::Gitlab::Ci::Pipeline::Metrics.pipeline_time_to_finished_histogram
-              .observe(labels, (pipeline.finished_at - pipeline.created_at).to_f)
+          ::Gitlab::Ci::Pipeline::Metrics.pipelines_finished_counter
+            .increment(labels.merge(partition_id: pipeline.partition_id))
+          ::Gitlab::Ci::Pipeline::Metrics.pipeline_time_to_finished_histogram
+            .observe(labels, (pipeline.finished_at - pipeline.created_at).to_f)
 
-            Labkit::UserExperienceSli.observed(
-              :run_pipeline,
-              start_time: pipeline.created_at,
-              Labkit::Fields::GL_PIPELINE_ID.to_sym => pipeline.id,
-              Labkit::Fields::GL_PROJECT_ID.to_sym => pipeline.project_id,
-              pipeline_source: pipeline.source,
-              pipeline_status: pipeline.status
-            )
-          end
+          Labkit::UserExperienceSli.observed(
+            :run_pipeline,
+            start_time: pipeline.created_at,
+            Labkit::Fields::GL_PIPELINE_ID.to_sym => pipeline.id,
+            Labkit::Fields::GL_PROJECT_ID.to_sym => pipeline.project_id,
+            pipeline_source: pipeline.source,
+            pipeline_status: pipeline.status
+          )
         end
       end
 
@@ -592,6 +590,22 @@ module Ci
         merge_request: merge_request,
         project: [merge_request.source_project, merge_request.target_project]
       )
+    end
+
+    # Orders `merge_request_event`-sourced pipelines ahead of all other
+    # sources, then applies the given secondary order (defaulting to `id DESC`)
+    # for ties. Shared by `Ci::PipelinesForMergeRequestFinder` and
+    # `Ci::PipelinesFinder` so the MR Pipelines REST and GraphQL paths return
+    # the same order.
+    scope :merge_request_event_first, ->(order_by: :id, sort: :desc) do
+      table = quoted_table_name
+      column = connection.quote_column_name(order_by)
+      direction = sort.to_s.casecmp?('asc') ? 'ASC' : 'DESC'
+
+      sql = "CASE #{table}.source WHEN (?) THEN 0 ELSE 1 END, #{table}.#{column} #{direction}"
+      query = sanitize_sql_array([sql, sources[:merge_request_event]])
+
+      order(Arel.sql(query))
     end
 
     scope :order_id_asc, -> { order(id: :asc) }
@@ -999,11 +1013,7 @@ module Ci
     end
 
     def archived?(log: false)
-      archive_builds_older_than =
-        if ::Feature.enabled?(:ci_pipeline_archival_setting, project)
-          Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
-        end
-
+      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
       is_archived = archive_builds_older_than.present? && created_at < archive_builds_older_than
 
       if log
@@ -1272,8 +1282,15 @@ module Ci
           MergeRequest.where(id: merge_request_id)
         else
           merge_requests_for_source_project = MergeRequest.where(source_project_id: project_id, source_branch: ref)
-          target_project_ids = merge_requests_for_source_project.from_fork.pluck(:target_project_id)
+          target_project_ids =
+            if Feature.enabled?(:ci_skip_fork_mr_lookup_for_non_forks, project)
+              project.forked? ? merge_requests_for_source_project.from_fork.distinct.pluck(:target_project_id) : []
+            else
+              merge_requests_for_source_project.from_fork.pluck(:target_project_id)
+            end
+
           target_project_ids << project_id
+
           merge_requests_for_source_project.by_commit_sha(target_project_ids, sha)
         end
     end
@@ -1506,7 +1523,14 @@ module Ci
     end
 
     def complete_and_has_self_or_descendant_reports?(reports_scope)
-      complete? && latest_report_builds_in_self_and_project_descendants(reports_scope).exists?
+      return false unless complete?
+
+      hierarchy_builds = builds_in_self_and_project_descendants
+
+      reports_scope
+        .where(job_id: hierarchy_builds.select(:id))
+        .in_partition(hierarchy_builds.where_values_hash['partition_id'] || self)
+        .exists?
     end
 
     def complete_or_manual_and_has_reports?(reports_scope)
@@ -1586,10 +1610,6 @@ module Ci
 
     def has_exposed_artifacts?
       complete? && builds.latest.any_with_exposed_artifacts?
-    end
-
-    def has_erasable_artifacts?
-      complete? && builds.latest.with_erasable_artifacts.exists?
     end
 
     def branch_updated?
@@ -1789,12 +1809,6 @@ module Ci
       url = File.join(Settings.build_server_fqdn, project.full_path, '//', project.ci_config_path_or_default)
 
       "#{url}@#{source_ref_path}"
-    end
-
-    # Set scheduling type of processables if they were created before scheduling_type
-    # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
-    def ensure_scheduling_type!
-      processables.populate_scheduling_type!
     end
 
     def ensure_ci_ref!

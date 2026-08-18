@@ -15,6 +15,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -38,7 +39,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [noteable, resolvable],
+  mixins: [noteable, resolvable, glSlotsMixin],
   inject: {
     reportAbusePath: {
       default: '',
@@ -112,12 +113,12 @@ export default {
     },
   },
   emits: [
-    'cancelForm',
-    'handleDeleteNote',
-    'handleEdit',
-    'handleUpdateNote',
+    'cancel-form',
+    'handle-delete-note',
+    'handle-edit',
+    'handle-update-note',
     'start-replying',
-    'updateSuccess',
+    'update-success',
   ],
   data() {
     return {
@@ -140,9 +141,9 @@ export default {
       set(value) {
         this.isEditingLocal = value;
         if (value) {
-          this.$emit('handleEdit');
+          this.$emit('handle-edit');
         } else {
-          this.$emit('cancelForm');
+          this.$emit('cancel-form');
         }
       },
     },
@@ -308,7 +309,7 @@ export default {
 
       if (confirmed) {
         this.isDeleting = true;
-        this.$emit('handleDeleteNote', this.note);
+        this.$emit('handle-delete-note', this.note);
 
         if (this.note.isDraft) return;
 
@@ -329,10 +330,10 @@ export default {
       this.isRequesting = false;
       this.oldContent = null;
       renderGFM(this.$refs.noteBody.$el);
-      this.$emit('updateSuccess');
+      this.$emit('update-success');
     },
     async formUpdateHandler({ noteText, callback, resolveDiscussion }) {
-      this.$emit('handleUpdateNote', {
+      this.$emit('handle-update-note', {
         note: this.note,
         noteText,
         resolveDiscussion,
@@ -498,7 +499,7 @@ export default {
           :is-imported="note.imported"
           :email-participant="note.external_author"
         >
-          <template #note-header-info>
+          <template v-if="glSlots()['note-header-info']" #note-header-info>
             <slot name="note-header-info"></slot>
           </template>
           <span v-if="commit" v-safe-html="actionText"></span>
@@ -520,7 +521,7 @@ export default {
           :can-delete="canEdit"
           :can-report-as-abuse="canReportAsAbuse"
           :can-resolve="canResolve"
-          :resolvable="note.resolvable || note.isDraft"
+          :resolvable="note.resolvable"
           :is-resolved="note.resolved || note.resolve_discussion"
           :is-resolving="isResolving"
           :resolved-by="note.resolved_by"
@@ -529,11 +530,12 @@ export default {
           :resolve-discussion="note.isDraft && note.resolve_discussion"
           :discussion-id="discussionId"
           :award-path="note.toggle_award_path"
-          @handleEdit="editHandler"
-          @handleDelete="deleteHandler"
-          @handleResolve="resolveHandler"
+          :duo-session-id="note.duo_session_id"
+          @handle-edit="editHandler"
+          @handle-delete="deleteHandler"
+          @handle-resolve="resolveHandler"
           @start-replying="$emit('start-replying')"
-          @updateAssignees="assigneesUpdate"
+          @update-assignees="assigneesUpdate"
         />
       </div>
       <div class="timeline-discussion-body">
@@ -551,7 +553,7 @@ export default {
             :restore-from-autosave="restoreFromAutosave"
             :help-page-path="helpPagePath"
             @handleFormUpdate="formUpdateHandler"
-            @cancelForm="formCancelHandler"
+            @cancel-form="formCancelHandler"
           />
         </slot>
         <div class="timeline-discussion-body-footer">

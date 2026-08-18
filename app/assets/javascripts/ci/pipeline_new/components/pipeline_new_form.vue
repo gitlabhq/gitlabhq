@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlButton, GlLink, GlForm, GlFormGroup, GlSprintf } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, joinPaths, getParameterByName } from '~/lib/utils/url_utility';
@@ -15,7 +16,6 @@ const i18n = {
   configButtonTitle: s__('Pipelines|Go to the pipeline editor'),
   defaultError: __('Something went wrong on our end. Please try again.'),
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
-  refsLoadingErrorTitle: s__('Pipeline|Branches or tags could not be loaded.'),
   submitErrorTitle: s__('Pipeline|Pipeline cannot be run.'),
   warningTitle: __('The form contains the following warning:'),
   mrPipelineDescription: s__(
@@ -37,8 +37,9 @@ export default {
     PipelineInputsForm,
     PipelineVariablesForm,
     RefsDropdown,
-    PipelineAccountVerificationAlert: () =>
-      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    PipelineAccountVerificationAlert: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    ),
   },
   directives: { SafeHtml },
   inject: [
@@ -232,11 +233,6 @@ export default {
     handleVariablesUpdated(updatedVariables) {
       this.pipelineVariables = updatedVariables;
     },
-    onRefsLoadingError(error) {
-      this.reportError({ title: i18n.refsLoadingErrorTitle });
-
-      Sentry.captureException(error);
-    },
     reportError({ title = null, error = i18n.defaultError, warnings = [], totalWarnings = 0 }) {
       this.errorTitle = title;
       this.error = error;
@@ -322,7 +318,6 @@ export default {
           v-model="refValue"
           :project-id="projectId"
           toggle-aria-labelled-by="pipeline-ref-label"
-          @loadingError="onRefsLoadingError"
         />
       </gl-form-group>
       <pipeline-inputs-form

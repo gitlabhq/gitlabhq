@@ -1,6 +1,8 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+
 import EditFeatureFlag from './components/edit_feature_flag.vue';
 import createStore from './store/edit';
 
@@ -19,7 +21,7 @@ export default () => {
     searchPath,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'EditFeatureFlagRoot',
     store: createStore({ endpoint, projectId, path: featureFlagsPath }),
@@ -31,8 +33,6 @@ export default () => {
       featureFlagIssuesEndpoint,
       searchPath,
     },
-    render(createElement) {
-      return createElement(EditFeatureFlag);
-    },
+    component: EditFeatureFlag,
   });
 };

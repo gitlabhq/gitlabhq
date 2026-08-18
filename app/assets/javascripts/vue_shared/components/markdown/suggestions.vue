@@ -58,6 +58,7 @@ export default {
       default: false,
     },
   },
+  emits: ['apply', 'apply-batch', 'add-to-batch', 'remove-from-batch'],
   data() {
     return {
       isRendered: false,
@@ -135,9 +136,10 @@ export default {
             on: {
               apply: ({ suggestionId, callback, message }) =>
                 emitOnRoot('apply', { suggestionId, callback, flashContainer: $el, message }),
-              applyBatch: (message) => emitOnRoot('applyBatch', { message, flashContainer: $el }),
-              addToBatch: (suggestionId) => emitOnRoot('addToBatch', suggestionId),
-              removeFromBatch: (suggestionId) => emitOnRoot('removeFromBatch', suggestionId),
+              'apply-batch': (message) =>
+                emitOnRoot('apply-batch', { message, flashContainer: $el }),
+              'add-to-batch': (suggestionId) => emitOnRoot('add-to-batch', suggestionId),
+              'remove-from-batch': (suggestionId) => emitOnRoot('remove-from-batch', suggestionId),
             },
           });
         },

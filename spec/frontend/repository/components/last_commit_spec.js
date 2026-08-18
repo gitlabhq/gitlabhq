@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -26,8 +25,8 @@ describe('Repository last commit component', () => {
   let apolloProvider;
 
   const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
-  const findHistoryButton = () => wrapper.findByTestId('last-commit-history');
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findHistoryButton = () => wrapper.findComponentByTestId('last-commit-history');
+  const findLoadingSkeleton = () => wrapper.findByTestId('last-commit-loading');
   const findStatusBox = () => wrapper.findComponent(SignatureBadge);
   const findCommitInfo = () => wrapper.findComponent(CommitInfo);
   const findPipelineStatus = () => wrapper.findComponent(CiIcon);
@@ -55,14 +54,20 @@ describe('Repository last commit component', () => {
     loading  | label
     ${true}  | ${'shows'}
     ${false} | ${'hides'}
-  `('$label when loading icon is $loading', async ({ loading }) => {
+  `('$label the loading skeleton when loading is $loading', async ({ loading }) => {
     createComponent();
 
     if (!loading) {
       await waitForPromises();
     }
 
-    expect(findLoadingIcon().exists()).toBe(loading);
+    expect(findLoadingSkeleton().exists()).toBe(loading);
+  });
+
+  it('hides the loading skeleton from assistive technology', () => {
+    createComponent();
+
+    expect(findLoadingSkeleton().attributes('aria-hidden')).toBe('true');
   });
 
   it('renders a CommitInfo component', async () => {

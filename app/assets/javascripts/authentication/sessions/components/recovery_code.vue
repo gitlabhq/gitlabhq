@@ -5,7 +5,8 @@ import illustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-secr
 import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { newAdminSessionPath } from '~/lib/utils/path_helpers/admin';
+import { PASSWORD_MANAGER_IGNORE_ATTRS } from '~/lib/utils/forms';
+import { newAdminSessionPath } from '~/lib/utils/path_helpers/instance_admin';
 import { newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import VerificationLayout from './verification_layout.vue';
 
@@ -62,6 +63,7 @@ export default {
       label: s__('TwoFactorAuth|Recovery code'),
       validators: [formValidators.required(s__('TwoFactorAuth|Recovery code is required.'))],
       inputAttrs: {
+        ...PASSWORD_MANAGER_IGNORE_ATTRS,
         autocomplete: 'off',
         autofocus: true,
         'data-testid': 'recovery-code-field',

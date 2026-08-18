@@ -57,9 +57,9 @@ describe('PagesDeployments', () => {
   const findAllPrimaryDeployments = () => wrapper.findAllByTestId('primary-deployment');
   const findAllParallelDeployments = () => wrapper.findAllByTestId('parallel-deployment');
   const findPrimaryDeploymentsLoadMoreComponent = () =>
-    wrapper.findByTestId('load-more-primary-deployments');
+    wrapper.findComponentByTestId('load-more-primary-deployments');
   const findParallelDeploymentsLoadMoreComponent = () =>
-    wrapper.findByTestId('load-more-parallel-deployments');
+    wrapper.findComponentByTestId('load-more-parallel-deployments');
 
   const createComponent = () => {
     wrapper = shallowMountExtended(PagesDeployments, {
@@ -169,7 +169,7 @@ describe('PagesDeployments', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
-      wrapper.findByTestId('show-inactive-toggle').vm.$emit('change', true);
+      wrapper.findComponentByTestId('show-inactive-toggle').vm.$emit('change', true);
       await waitForPromises();
     });
 
@@ -203,7 +203,7 @@ describe('PagesDeployments', () => {
       createComponent();
       await waitForPromises();
       wrapper
-        .findByTestId(testid)
+        .findComponentByTestId(testid)
         .vm.$emit('error', { id: 'gid://gitlab/PagesDeployment/1', message: errorMessage });
       await nextTick();
     });

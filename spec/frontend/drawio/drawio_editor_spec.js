@@ -205,22 +205,22 @@ describe('drawio/drawio_editor', () => {
     describe.each`
       description | errorMessage | diagram
       ${'when there is an image selected that is not an svg file'} | ${'The selected image is not a valid SVG diagram'} | ${{
-  diagramURL,
-  contentType: 'image/png',
-  filename: 'image.png',
-}}
+        diagramURL,
+        contentType: 'image/png',
+        filename: 'image.png',
+      }}
       ${'when the selected image is not an asset upload'} | ${'The selected image is not an asset uploaded in the application'} | ${{
-  diagramSvg: '<svg></svg>',
-  filename,
-  contentType: 'image/svg+xml',
-  diagramURL: 'https://example.com/image.drawio.svg',
-}}
+        diagramSvg: '<svg></svg>',
+        filename,
+        contentType: 'image/svg+xml',
+        diagramURL: 'https://example.com/image.drawio.svg',
+      }}
       ${'when the selected image is too large'} | ${'The selected image is too large.'} | ${{
-  diagramSvg: 'x'.repeat(DIAGRAM_MAX_SIZE + 1),
-  filename,
-  contentType: 'image/svg+xml',
-  diagramURL,
-}}
+        diagramSvg: 'x'.repeat(DIAGRAM_MAX_SIZE + 1),
+        filename,
+        contentType: 'image/svg+xml',
+        diagramURL,
+      }}
     `('$description', ({ errorMessage, diagram }) => {
       beforeEach(() => {
         editorFacade.getDiagram.mockResolvedValueOnce(diagram);

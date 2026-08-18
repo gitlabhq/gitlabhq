@@ -2,8 +2,10 @@ import { createLink, generateHLJSOpenTag } from './dependency_linker_util';
 
 const PROTOCOL = 'https://';
 const GODOCS_DOMAIN = 'godoc.org/';
+// eslint-disable-next-line @gitlab/no-hardcoded-urls -- Not a full path specific to a project, used for converting inline go dependency links
 const REPO_PATH = '/tree/master/';
 const GODOCS_REGEX = /golang.org/;
+// eslint-disable-next-line @gitlab/no-hardcoded-urls -- Not a full path specific to a project, used for converting inline go dependency links
 const GITLAB_REPO_PATH = `/_${REPO_PATH}`;
 const REPO_REGEX = `[^/'"]+/[^/'"]+`;
 const NESTED_REPO_REGEX = '([^/]+/)+[^/]+?';

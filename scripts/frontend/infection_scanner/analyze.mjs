@@ -128,9 +128,7 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
         let exportsEntry;
         if (typeof pkg.exports === 'string' || !pkg.exports['.']) {
           exportsEntry =
-            subpath === '.'
-              ? pkg.exports
-              : pkg.exports[subpath] || pkg.exports[`${subpath}/index`];
+            subpath === '.' ? pkg.exports : pkg.exports[subpath] || pkg.exports[`${subpath}/index`];
         } else {
           exportsEntry = pkg.exports[subpath];
         }
@@ -142,13 +140,17 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
       }
 
       if (subpath === '.' || subpath === '/') {
+        // main/module may omit the extension (e.g. jszip's "./lib/index");
+        // resolve like bundlers do so the browser-map remap below sees the
+        // entry instead of falling through to require.resolve, which
+        // ignores the browser field.
         if (pkg.module) {
-          const esmPath = path.resolve(pkgDir, pkg.module);
-          if (tryFile(esmPath)) results.add(esmPath);
+          const esmPath = resolveFile(path.resolve(pkgDir, pkg.module));
+          if (esmPath) results.add(esmPath);
         }
         if (pkg.main) {
-          const mainPath = path.resolve(pkgDir, pkg.main);
-          if (tryFile(mainPath)) results.add(mainPath);
+          const mainPath = resolveFile(path.resolve(pkgDir, pkg.main));
+          if (mainPath) results.add(mainPath);
         }
       } else {
         const subDir = path.resolve(pkgDir, subpath.startsWith('.') ? subpath : subpath.slice(1));
@@ -177,11 +179,17 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
         const excluded = new Set();
         for (const resolved of results) {
           const relPath = `./${path.relative(pkgDir, resolved).replace(/\\/g, '/')}`;
-          if (Object.hasOwn(pkg.browser, relPath)) {
-            if (pkg.browser[relPath] === false) {
+          // Browser-map keys may omit the extension (e.g. jszip maps
+          // "./lib/index"); bundler resolvers match those against the
+          // resolved file, so try the extensionless spelling too.
+          const relPathKey = [relPath, relPath.replace(/\.(js|cjs|mjs|json)$/, '')].find((key) =>
+            Object.hasOwn(pkg.browser, key),
+          );
+          if (relPathKey) {
+            if (pkg.browser[relPathKey] === false) {
               excluded.add(resolved);
             } else {
-              const browserPath = path.resolve(pkgDir, pkg.browser[relPath]);
+              const browserPath = path.resolve(pkgDir, pkg.browser[relPathKey]);
               if (tryFile(browserPath)) remapped.add(browserPath);
             }
           }
@@ -265,7 +273,49 @@ export function extractScriptContent(source) {
  * @returns {boolean}
  */
 export function detectAppRoot(code) {
-  const stripped = code.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const stripped = code
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    // `defineAsyncComponent` in a vue import clause is bootstrap plumbing —
+    // it wraps the lazily loaded components handed to the mount call — not a
+    // reach into vue's reactivity APIs, so it must not cost a bootstrap its
+    // app-root firewall. Drop it from vue import clauses before the named-
+    // import veto below; any other named import still disqualifies the file.
+    .replace(
+      /import\s+(?:([A-Za-z_$][\w$]*)\s*,\s*)?\{([^}]*)\}\s+from\s+(['"]vue['"])/g,
+      (...m) => {
+        const [, defaultName, named, quotedVue] = m;
+        const rest = named
+          .split(',')
+          .map((entry) => entry.trim())
+          .filter((entry) => entry && entry !== 'defineAsyncComponent');
+        if (rest.length) {
+          const defaultPart = defaultName ? `${defaultName}, ` : '';
+          return `import ${defaultPart}{ ${rest.join(', ')} } from ${quotedVue}`;
+        }
+        return defaultName ? `import ${defaultName} from ${quotedVue}` : '';
+      },
+    );
+
+  // initVueApp bootstraps are app roots exactly like `new Vue({ el })`
+  // ones: the vue-ness is contained in mounting an app, so importers must
+  // not inherit infection. Only when the file does not also reach into
+  // `vue` itself — then the classic checks below decide.
+  if (
+    /import\s+\{[^}]*\binitVueApp\b[^}]*\}\s+from\s+['"][^'"]*vue3compat\/init_vue_app['"]/.test(
+      stripped,
+    ) &&
+    /\binitVueApp\s*\(/.test(stripped) &&
+    !/import\s+\{[^}]*\}\s+from\s+['"]vue['"]/.test(stripped)
+  ) {
+    const vueDefault = stripped.match(/import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]vue['"]/);
+    if (!vueDefault) return true;
+    // Mirror the classic leniency below: a default `Vue` import used only
+    // for `Vue.use(...)` plugin installs keeps the file an app root.
+    const esc = vueDefault[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const withoutUse = stripped.replace(new RegExp(`${esc}\\s*\\.\\s*use\\s*\\(`, 'g'), '');
+    if (!new RegExp(`${esc}\\s*\\.\\s*[A-Za-z_$]`).test(withoutUse)) return true;
+  }
 
   if (/import\s+\{[^}]*\}\s+from\s+['"]vue['"]/.test(stripped)) return false;
 
@@ -435,7 +485,13 @@ export function computeInfected(graph, appRootSet, infectionSpecifiers) {
   return { infectedSet, infectionTriggers };
 }
 
-function findNearestInfectionReasons({ file, infectionTriggers, graph, infectionSpecifiers, maxShown = 3 }) {
+function findNearestInfectionReasons({
+  file,
+  infectionTriggers,
+  graph,
+  infectionSpecifiers,
+  maxShown = 3,
+}) {
   const reasons = [];
   let totalCount = 0;
   const visited = new Set();
@@ -484,7 +540,14 @@ function findNearestInfectionReasons({ file, infectionTriggers, graph, infection
  * @returns {Promise<{entrypoints: Object, graph: Object}>} The annotated graph. Each graph entry
  *   contains `imports`, `infected`, `appRoot`, and (if infected) `infectionReasons` and `infectionReasonCount`.
  */
-export async function analyze({ rootPath, entrypoints, infectionSpecifiers, aliasMap = {}, fallbackResolve, onProgress }) {
+export async function analyze({
+  rootPath,
+  entrypoints,
+  infectionSpecifiers,
+  aliasMap = {},
+  fallbackResolve,
+  onProgress,
+}) {
   const resolver = createResolver({ aliasMap, rootPath, fallbackResolve });
   const { graph, appRootSet } = await buildGraph(entrypoints, resolver, { onProgress });
   const { infectedSet, infectionTriggers } = computeInfected(

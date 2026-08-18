@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 
@@ -186,15 +187,13 @@ export default function initIntegrationSettingsForm() {
   // so we don't need to manually remove it.
   const helpHtml = customSettingsEl.querySelector('.js-integration-help-html')?.innerHTML;
 
-  return new Vue({
+  return initVueApp({
     el: customSettingsEl,
     name: 'IntegrationEditRoot',
     pinia,
     provide: {
       helpHtml,
     },
-    render(createElement) {
-      return createElement(IntegrationForm);
-    },
+    component: IntegrationForm,
   });
 }

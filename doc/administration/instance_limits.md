@@ -46,32 +46,8 @@ you can visit <https://gitlab.com/help/instance_configuration>.
 
 Rate limits can be used to improve the security and durability of GitLab.
 
-Read more about [configuring rate limits](../security/rate_limits.md).
-
-### Issue creation
-
-This setting limits the request rate to the issue creation endpoint.
-
-Read more about [issue creation rate limits](settings/rate_limit_on_issues_creation.md).
-
-- **Default rate limit**: Disabled by default.
-
-### By User or IP
-
-This setting limits the request rate per user or IP.
-
-Read more about [User and IP rate limits](settings/user_and_ip_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
-### By raw endpoint
-
-These settings limit the request rate on raw endpoints.
-
-Read more about [raw endpoint rate limits](settings/rate_limits_on_raw_endpoints.md).
-
-- **Default rate limit (authenticated and unauthenticated)**: 300 requests per minute, per project and file path.
-- **Default rate limit (unauthenticated)**: 800 requests per minute, per project across all file paths.
+For a complete list of rate limits, and how to change each one, see
+[rate limits](../rate_limits/_index.md).
 
 ### By protected path
 
@@ -101,35 +77,6 @@ Read more about [protected path rate limits](settings/protected_paths.md).
 
 - **Default rate limit**: After 10 requests, the client must wait 60 seconds before trying again.
 
-### Package registry
-
-This setting limits the request rate on the Packages API per user or IP. For more information, see
-[package registry rate limits](settings/package_registry_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
-### Git LFS
-
-This setting limits the request rate on the [Git LFS](../topics/git/lfs/_index.md)
-requests per user. For more information, read
-[GitLab Git Large File Storage (LFS) Administration](lfs/_index.md).
-
-- **Default rate limit**: Disabled by default.
-
-### Files API
-
-This setting limits the request rate on the Files API per user or IP address. For more information, read
-[Files API rate limits](settings/files_api_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
-### Deprecated API endpoints
-
-This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
-[Deprecated API rate limits](settings/deprecated_api_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
 ### Import and export
 
 These settings limit file imports and exports for groups and projects.
@@ -138,22 +85,14 @@ These settings limit file imports and exports for groups and projects.
 |:------------------------|:------------------------------|
 | Project import          | 6 import requests             |
 | Project export          | 6 export requests             |
-| Project export download | 1 download requests           |
+| Project export download | 1 download request            |
 | Group import            | 6 import requests             |
 | Group export            | 6 export requests             |
-| Group export download   | 1 download requests           |
+| Group export download   | 1 download request            |
 
 These settings [can be configured](settings/import_export_rate_limits.md).
 
 #### Direct transfer migration
-
-{{< history >}}
-
-- Maximum number of migrations permitted limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9.
-- Configurable settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
-- Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
-
-{{< /history >}}
 
 The following limits apply on migration by direct transfer.
 
@@ -199,13 +138,6 @@ Set the limit to `0` to disable it.
 
 ### Search rate limit
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/_index.md#disable-global-search-scopes) for authenticated requests.
-
-{{< /history >}}
-
 This setting limits search requests as follows:
 
 | Limit                | Default (requests per minute) |
@@ -240,18 +172,6 @@ Autocomplete requests that exceed the autocomplete rate limit per minute return 
 ```plaintext
 This endpoint has been requested too many times. Try again later.
 ```
-
-### Pipeline creation rate limit
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
-
-{{< /history >}}
-
-This setting limits the request rate to the pipeline creation endpoints.
-
-Read more about [pipeline creation rate limits](settings/rate_limit_on_pipelines_creation.md).
 
 ## Gitaly concurrency limit
 
@@ -655,12 +575,6 @@ header. Such emails don't create comments on issues or merge requests.
 
 ## Amount of data sent from Sentry through Error Tracking
 
-{{< history >}}
-
-- [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
-
-{{< /history >}}
-
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.
 
@@ -724,7 +638,7 @@ the project's unique domain is treated as its own top-level namespace with a sep
 
 This setting limits the number of inbound alert payloads over a period of time.
 
-Read more about [incident management rate limits](settings/rate_limit_on_pipelines_creation.md).
+Read more about [incident management rate limits](settings/incident_management_rate_limits.md).
 
 ### Prometheus Alert JSON payloads
 
@@ -832,9 +746,7 @@ Set the limit to `0` to disable it.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) the 50-node limit from Wiki and repository files.
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) a group-level setting to allow disabling math rendering limits, and re-enabled by default the math limits for wiki and repository files in GitLab 16.9.
+- [Increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243169) the maximum number of nodes rendered from 50 to 1000 in GitLab 19.2.
 
 {{< /history >}}
 
@@ -844,7 +756,7 @@ The limits for issues, merge requests, epics, wikis, and repository files:
 
 - Maximum number of macro expansions: `1000`.
 - Maximum user-specified size in [em](https://en.wikipedia.org/wiki/Em_(typography)): `20`.
-- Maximum number of nodes rendered: `50`.
+- Maximum number of nodes rendered: `1000`.
 - Maximum number of characters in a math block: `1000`.
 - Maximum rendering time: `2000 ms`.
 
@@ -904,8 +816,15 @@ More information can be found in the [Push event activities limit and bulk push 
 
 ### File size limits
 
+{{< history >}}
+
+- File size limit for Cargo packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240512) in GitLab 19.3.
+
+{{< /history >}}
+
 The default maximum file size for a package that's uploaded to the [GitLab package registry](../user/packages/package_registry/_index.md) varies by format:
 
+- Cargo: 5 GB
 - Conan: 3 GB
 - Generic: 5 GB
 - Helm: 5 MB
@@ -924,6 +843,9 @@ or run the following in the
 
 ```ruby
 # File size limit is stored in bytes
+
+# For Cargo Packages
+Plan.default.actual_limits.update!(cargo_max_file_size: 100.megabytes)
 
 # For Conan Packages
 Plan.default.actual_limits.update!(conan_max_file_size: 100.megabytes)
@@ -966,13 +888,6 @@ varies by file type:
 - Image manifest: 10 MB
 
 ## Maximum number of assignees and reviewers
-
-{{< history >}}
-
-- Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
-- Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
-
-{{< /history >}}
 
 Issues and merge requests enforce these maximums:
 
@@ -1120,6 +1035,7 @@ ci_max_artifact_size_coverage_fuzzing: 0,
 ci_max_artifact_size_browser_performance: 0,
 ci_max_artifact_size_load_performance: 0,
 ci_needs_size_limit: 2,
+cargo_max_file_size: 5368709120,
 conan_max_file_size: 3221225472,
 maven_max_file_size: 3221225472,
 npm_max_file_size: 524288000,

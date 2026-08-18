@@ -79,12 +79,10 @@ RSpec.describe ::Integrations::Field, feature_category: :integrations do
 
         let(:have_correct_default) do
           case name
-          when :api_only
+          when :api_only, :is_secret
             be false
           when :type
             eq :text
-          when :is_secret
-            eq false
           when :if
             be true
           else

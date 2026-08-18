@@ -34,9 +34,9 @@ You must have:
   you can use Terminal. In Windows, you can use PowerShell. Linux users are probably
   already familiar with their system's CLI.
 - Familiarity with your system's default editor. This tutorial assumes your editor is Vim,
-  but any text editor should work. If you are unfamiliar with Vim, step 1 to 2 of
+  but any text editor should work. If you are unfamiliar with Vim, steps 1 and 2 of
   [Getting started with Vim](https://opensource.com/article/19/3/getting-started-vim)
-  explains all the commands used later in this tutorial.
+  explain all the commands used later in this tutorial.
 - Permission to overwrite the commit messages. If you are working with multiple people in the same branch,
   you should first verify with them that it's OK to update the commits. Some organizations might
   have rules against rewriting commits, as it is considered a destructive change.

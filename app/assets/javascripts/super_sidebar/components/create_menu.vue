@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
@@ -26,7 +27,9 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     InviteMembersTrigger,
-    CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
+    CreateWorkItemModal: defineAsyncComponent(
+      () => import('~/work_items/components/create_work_item_modal.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -124,10 +127,10 @@ export default {
       hide-button
       :is-group="isGroup"
       :visible="isCreateWorkItemModalVisible"
-      from-global-menu
+      allow-any-namespace
       data-testid="new-work-item-modal"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV"
-      @hideModal="isCreateWorkItemModalVisible = false"
+      @hide-modal="isCreateWorkItemModalVisible = false"
     />
   </gl-disclosure-dropdown>
 </template>

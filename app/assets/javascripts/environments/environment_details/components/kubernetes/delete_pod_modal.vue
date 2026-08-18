@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlSprintf, GlButton } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlButton, GlToastMixin } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
@@ -12,6 +12,7 @@ export default {
     GlSprintf,
     GlButton,
   },
+  mixins: [GlToastMixin],
   props: {
     pod: {
       type: Object,

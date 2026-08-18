@@ -37,7 +37,7 @@ If you [restrict IP addresses for Jira access](https://support.atlassian.com/sec
 
 For the root cause, check the [`integrations_json.log`](../../administration/logs/_index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
 
-In GitLab 16.1 and later, when an error occurs, the `integrations_json.log` file contains `client_*` keys in the outgoing API request to Jira.
+When an error occurs, the `integrations_json.log` file contains `client_*` keys in the outgoing API request to Jira.
 You can use the `client_*` keys to check the [Atlassian API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-group-issues) for why the error has occurred.
 
 In the following example, Jira responds with a `404 Not Found`. This error might happen if:
@@ -306,7 +306,7 @@ Authentication credentials depend on your type of Jira installation:
 - **For Jira Cloud**, you must have a Jira Cloud API token
   and the email address you used to create the token.
 - **For Jira Data Center or Jira Server**, you must have a Jira username and password
-  or, in GitLab 16.0 and later, a Jira personal access token.
+  or a Jira personal access token.
 
 For more information, see [Jira issues integration](configure.md).
 

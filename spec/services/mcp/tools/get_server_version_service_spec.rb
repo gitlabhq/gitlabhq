@@ -73,7 +73,8 @@ RSpec.describe Mcp::Tools::GetServerVersionService, feature_category: :mcp_serve
       expect(service.input_schema).to eq({
         type: 'object',
         properties: {},
-        required: []
+        required: [],
+        additionalProperties: false
       })
     end
   end
@@ -102,17 +103,10 @@ RSpec.describe Mcp::Tools::GetServerVersionService, feature_category: :mcp_serve
         })
       end
 
-      it 'ignores arguments and returns version information' do
-        result = service.execute(params: { arguments: { 'include_revision' => true } })
+      it 'accepts empty arguments' do
+        result = service.execute(params: { arguments: {} })
 
-        expect(result).to eq({
-          content: [{ type: 'text', text: Gitlab::VERSION }],
-          structuredContent: {
-            version: Gitlab::VERSION,
-            revision: Gitlab.revision
-          },
-          isError: false
-        })
+        expect(result[:isError]).to be(false)
       end
     end
 

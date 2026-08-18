@@ -127,7 +127,7 @@ When bulk editing issues, you can edit the following attributes:
 
 - State (open or closed)
 - [Status](../../work_items/status.md)
-- [Assignees](managing_issues.md#assignees)
+- [Assignees](#assignees)
 - [Labels](../labels.md)
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
@@ -181,12 +181,6 @@ You can also use the [`/move` quick action](../quick_actions.md#move) in a comme
 {{< /history >}}
 
 #### From the Work items list
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
-
-{{< /history >}}
 
 You can move multiple issues at the same time when you're in a project.
 You can't move tasks or test cases.
@@ -264,6 +258,7 @@ Any nested task list items are moved up a nested level.
 {{< history >}}
 
 - Minimum role to reorder list items in the issue description [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Canceling of list item drag operations with <kbd>Esc</kbd> [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248854) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -282,6 +277,8 @@ To reorder list items, when viewing an issue:
 1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
 1. Release the grip icon.
+
+To cancel reordering, press <kbd>Esc</kbd> before releasing the grip icon.
 
 ## Close an issue
 
@@ -416,12 +413,6 @@ The default issue closing pattern regex:
 ```
 
 #### Disable automatic issue closing
-
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
-
-{{< /history >}}
 
 You can disable the automatic issue closing feature on a per-project basis
 in the [project's settings](#disable-automatic-issue-closing).
@@ -687,7 +678,7 @@ To filter the list of issues:
    - Author
    - Confidential
    - [Contact](../../crm/_index.md)
-   - [Health](managing_issues.md#health-status)
+   - [Health](#health-status)
    - Iteration
    - Label
    - Milestone
@@ -731,7 +722,7 @@ to match meaningful and significant words to answer a query.
 For example, if you search for `I am securing information for M&A`,
 GitLab can return results with `securing`, `secured`,
 or `information` in the title or description.
-However, GitLab doesn't match the sentence or the words `I`, `am` or `M&A` exactly,
+However, GitLab doesn't match the sentence or the words `I`, `am`, or `M&A` exactly,
 as they aren't deemed lexically meaningful or significant.
 It's a limitation of PostgreSQL full text search.
 

@@ -10,6 +10,7 @@ import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/side
 import AlertSetAssignees from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
@@ -83,11 +84,10 @@ describe('Alert Details Sidebar Assignees', () => {
     });
   }
 
+  useConfigurePathHelpers(mockUrlRoot);
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    window.gon = {
-      relative_url_root: mockUrlRoot,
-    };
 
     mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, mockUsers);
     createComponent({

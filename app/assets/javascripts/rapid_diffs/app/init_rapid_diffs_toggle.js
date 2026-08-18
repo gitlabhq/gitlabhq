@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import RapidDiffsToggle from '~/rapid_diffs/app/rapid_diffs_toggle.vue';
 
 export function initRapidDiffsToggle() {
@@ -6,11 +6,5 @@ export function initRapidDiffsToggle() {
   if (!el) return null;
   if (!window.gon?.features?.rapidDiffsOnMrShow) return null;
 
-  return new Vue({
-    el,
-    name: 'RapidDiffsToggleRoot',
-    render(h) {
-      return h(RapidDiffsToggle);
-    },
-  });
+  return initVueApp({ el, name: 'RapidDiffsToggleRoot', component: RapidDiffsToggle });
 }

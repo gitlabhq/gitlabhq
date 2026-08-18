@@ -90,7 +90,7 @@ module Gitlab
       def simulate_pipeline_creation(content, ref)
         pipeline = ::Ci::CreatePipelineService
           .new(@project, @current_user, ref: ref)
-          .execute(:push, dry_run: true, content: content)
+          .execute(:push, ignore_skip_ci: true, dry_run: true, content: content)
           .payload
 
         Result.new(
@@ -104,7 +104,7 @@ module Gitlab
 
       def lint_pipeline_creation(content, ref)
         service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: ref)
-        pipeline = service.execute(:push, linting: true, content: content).payload
+        pipeline = service.execute(:push, ignore_skip_ci: true, linting: true, content: content).payload
 
         Result.new(
           jobs: yaml_processor_result_to_jobs(service.yaml_processor_result),

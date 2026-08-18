@@ -14,7 +14,7 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
     subject { described_class.new(project, user, params).execute(feature_flag) }
 
     let(:params) { { name: 'new_name' } }
-    let(:audit_event_details) { AuditEvent.last.details }
+    let(:audit_event_details) { AuditEventReader.last.details }
     let(:audit_event_message) { audit_event_details[:custom_message] }
 
     it 'returns success status' do
@@ -44,7 +44,7 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
     it 'creates audit event with correct message' do
       name_was = feature_flag.name
 
-      expect { subject }.to change { AuditEvent.count }.by(1)
+      expect { subject }.to change { AuditEventReader.count }.by(1)
       expect(audit_event_message).to(
         eq("Updated feature flag new_name. "\
            "Updated name from \"#{name_was}\" "\
@@ -67,7 +67,7 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
       end
 
       it 'does not create audit event' do
-        expect { subject }.not_to change { AuditEvent.count }
+        expect { subject }.not_to change { AuditEventReader.count }
       end
 
       it 'does not sync the feature flag to Jira' do
@@ -96,7 +96,7 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
       end
 
       it 'does not create audit event' do
-        expect { subject }.not_to change { AuditEvent.count }
+        expect { subject }.not_to change { AuditEventReader.count }
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
       let(:params) { { description: 'new description' } }
 
       it 'creates audit event with changed description' do
-        expect { subject }.to change { AuditEvent.count }.by(1)
+        expect { subject }.to change { AuditEventReader.count }.by(1)
         expect(audit_event_message).to(
           include("Updated description from \"\" "\
                   "to \"new description\".")
@@ -120,7 +120,7 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
       end
 
       it 'creates audit event about changing active state' do
-        expect { subject }.to change { AuditEvent.count }.by(1)
+        expect { subject }.to change { AuditEventReader.count }.by(1)
         expect(audit_event_message).to(
           include('Updated active from "true" to "false".')
         )

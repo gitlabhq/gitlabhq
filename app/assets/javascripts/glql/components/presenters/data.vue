@@ -1,6 +1,7 @@
 <script>
 import { __, sprintf } from '~/locale';
 import { DISPLAY_TYPES } from '../../constants';
+import AreaChartPresenter from './area_chart.vue';
 import BarChartPresenter from './bar_chart.vue';
 import ColumnChartPresenter from './column_chart.vue';
 import LineChartPresenter from './line_chart.vue';
@@ -19,6 +20,7 @@ export default {
     ColumnChartPresenter,
     LineChartPresenter,
     BarChartPresenter,
+    AreaChartPresenter,
   },
   props: {
     displayType: {
@@ -119,6 +121,14 @@ export default {
   />
   <bar-chart-presenter
     v-else-if="displayType === $options.DISPLAY_TYPES.BAR_CHART"
+    :data="data"
+    :fields="fields"
+    :loading="loading"
+    :display-config="displayConfig"
+    @error="$emit('error', $event)"
+  />
+  <area-chart-presenter
+    v-else-if="displayType === $options.DISPLAY_TYPES.AREA_CHART"
     :data="data"
     :fields="fields"
     :loading="loading"

@@ -8,9 +8,10 @@ RSpec.describe 'layouts/_flash', feature_category: :shared do
 
   let(:locals) { {} }
   let(:allow_signup) { true }
+  let(:current_user) { nil }
 
   before do
-    allow(view).to receive_messages(flash: flash, allow_signup?: allow_signup)
+    allow(view).to receive_messages(flash: flash, allow_signup?: allow_signup, current_user: current_user)
     render(template: template, locals: locals)
   end
 
@@ -80,6 +81,15 @@ RSpec.describe 'layouts/_flash', feature_category: :shared do
         expect(rendered).to include('Sign in before continuing.')
         expect(rendered).not_to include('Sign in or sign up before continuing')
         expect(rendered).not_to include('Register now')
+        expect(rendered).not_to have_selector(".btn[href='/users/sign_up']")
+      end
+    end
+
+    context 'when a user is signed in' do
+      let(:current_user) { build_stubbed(:user) }
+
+      it 'does not render the sign in or register banner', :aggregate_failures do
+        expect(rendered).not_to include('Sign in or sign up before continuing')
         expect(rendered).not_to have_selector(".btn[href='/users/sign_up']")
       end
     end

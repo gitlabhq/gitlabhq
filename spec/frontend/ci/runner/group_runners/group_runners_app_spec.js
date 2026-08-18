@@ -299,7 +299,7 @@ describe('GroupRunnersApp', () => {
     it('When runner is paused or unpaused, some data is refetched', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
-      findRunnerActionsCell().vm.$emit('toggledPaused');
+      findRunnerActionsCell().vm.$emit('toggled-paused');
 
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(
         COUNT_QUERIES + FILTERED_COUNT_QUERIES,

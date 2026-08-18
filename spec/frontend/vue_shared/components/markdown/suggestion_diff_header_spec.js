@@ -36,8 +36,8 @@ describe('Suggestion Diff component', () => {
 
   const findApplyButton = () => wrapper.findComponent(ApplySuggestion);
   const findApplyBatchButton = () => wrapper.find('.js-apply-batch-btn');
-  const findAddToBatchButton = () => wrapper.find('.js-add-to-batch-btn');
-  const findRemoveFromBatchButton = () => wrapper.find('.js-remove-from-batch-btn');
+  const findAddToBatchButton = () => wrapper.findComponent('.js-add-to-batch-btn');
+  const findRemoveFromBatchButton = () => wrapper.findComponent('.js-remove-from-batch-btn');
   const findHeader = () => wrapper.find('.js-suggestion-diff-header');
   const findHelpButton = () => wrapper.find('.js-help-btn');
   const findLoading = () => wrapper.findComponent(GlLoadingIcon);
@@ -112,34 +112,34 @@ describe('Suggestion Diff component', () => {
   });
 
   describe('when add to batch is clicked', () => {
-    it('emits addToBatch', () => {
+    it('emits add-to-batch', () => {
       createComponent({
         suggestionsCount: 2,
       });
 
       findAddToBatchButton().vm.$emit('click');
 
-      expect(wrapper.emitted().addToBatch).toEqual([[]]);
+      expect(wrapper.emitted()['add-to-batch']).toEqual([[]]);
     });
   });
 
   describe('when remove from batch is clicked', () => {
-    it('emits removeFromBatch', () => {
+    it('emits remove-from-batch', () => {
       createComponent({ isBatched: true });
 
       findRemoveFromBatchButton().vm.$emit('click');
 
-      expect(wrapper.emitted().removeFromBatch).toEqual([[]]);
+      expect(wrapper.emitted()['remove-from-batch']).toEqual([[]]);
     });
   });
 
   describe('apply suggestions is clicked', () => {
-    it('emits applyBatch', () => {
+    it('emits apply-batch', () => {
       createComponent({ isBatched: true, batchSuggestionsCount: 2 });
 
       findApplyButton().vm.$emit('apply');
 
-      expect(wrapper.emitted().applyBatch).toEqual([[undefined]]);
+      expect(wrapper.emitted()['apply-batch']).toEqual([[undefined]]);
     });
   });
 

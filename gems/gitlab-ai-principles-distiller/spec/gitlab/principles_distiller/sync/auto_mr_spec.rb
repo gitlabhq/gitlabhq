@@ -11,16 +11,6 @@ require_relative '../../../../lib/gitlab/principles_distiller/sync'
 RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/SpecFilePathFormat -- subject-matter grouping (AutoMr) overrides path/class match
   include TmpdirHelper
 
-  # rubocop:disable RSpec/EnvAssignment -- ENV assignment is necessary in `around` blocks; stub_env requires `allow` which is not available outside `before`
-  around do |example|
-    original_branch = ENV['CI_DEFAULT_BRANCH']
-    ENV['CI_DEFAULT_BRANCH'] ||= 'master'
-    example.run
-  ensure
-    ENV['CI_DEFAULT_BRANCH'] = original_branch
-  end
-  # rubocop:enable RSpec/EnvAssignment
-
   let(:tmpdir) { mktmpdir }
   let(:sync) { described_class.new }
 
@@ -188,12 +178,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
-  describe '.find_open_mr_iid' do
-    # find_open_mr_iid is a private AutoMr helper. Specs reach it via send
+  describe '.find_open_mr' do
+    # find_open_mr is a private AutoMr helper. Specs reach it via send
     # and stub the Net::HTTP transport directly (the same seam the
     # GraphqlClient spec uses).
     subject(:iid) do
-      sync.send(:find_open_mr_iid, 'gitlab-org%2Fgitlab', 'feature-branch', 'api-token')
+      sync.send(:find_open_mr, 'gitlab-org%2Fgitlab', 'feature-branch', 'api-token')
     end
 
     let(:fake_response) { instance_double(Net::HTTPResponse, code: '200', body: response_body) }
@@ -214,10 +204,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     context 'when the API returns one open MR' do
       let(:http_success) { true }
-      let(:response_body) { '[{"iid":42}]' }
+      let(:response_body) { '[{"iid":42,"reviewers":[{"id":7}]}]' }
 
-      it 'returns the iid' do
-        expect(iid).to eq(42)
+      it 'returns the merge request' do
+        expect(iid).to eq({ 'iid' => 42, 'reviewers' => [{ 'id' => 7 }] })
       end
     end
 
@@ -592,8 +582,11 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
   describe '.create_branch_and_mr' do
     subject(:create_branch_and_mr) do
-      sync.create_branch_and_mr(distilled_contents, affected, auto_mr_cfg)
+      sync.create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: failed)
     end
+
+    let(:failed) { [] }
+    let(:received_body) { capture_post_body }
 
     let(:distilled_contents) do
       { 'qa' => "---\nsource_checksum: abc\n---\n# QA Principles\n" }
@@ -622,7 +615,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '201')
     end
 
-    let(:received_body) { capture_post_body }
+    def reviewer_resolver
+      @reviewer_resolver ||= instance_double(Gitlab::PrinciplesDistiller::Sync::ReviewerResolver,
+        ssot_authors: [], owner_team_reviewer: nil)
+    end
 
     before do
       stub_const('ENV', { 'GITLAB_API_TOKEN' => 'token', 'CI_PROJECT_ID' => 'gitlab-org/gitlab',
@@ -649,7 +645,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         system: true,
         distillation_base_sha: 'abcdef1234567890abcdef1234567890abcdef12',
         regenerate_static_artifacts: nil,
-        git_has_staged_changes?: true
+        git_has_staged_changes?: true,
+        open_mrs_by_author: []
       )
       allow(sync.workflow).to receive_messages(
         post_json: mock_response,
@@ -671,7 +668,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       }
       allow(sync.manifest).to receive(:principles_path) { |n| ".ai/principles/distilled/#{n}.md" }
       # Keep the idempotency lookup hermetic (no network); nil => create path.
-      allow(sync).to receive(:find_open_mr_iid).and_return(nil)
+      # Default: no SSOT authors resolve, so the description falls back to the
+      # team ping (contexts below override this to exercise the author path).
+      # Keeps these tests hermetic (no /users lookup over the network).
+      allow(sync).to receive_messages(find_open_mr: nil, reviewer_resolver: reviewer_resolver)
     end
 
     # Captures the team MR body (the one whose title is NOT the tooling MR),
@@ -699,6 +699,38 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       create_branch_and_mr
 
       expect(sync.workflow).to have_received(:post_json).twice
+    end
+
+    it 'omits the ping explanation from the tooling MR' do
+      # The tooling MR carries only generated routing tables and routes to the
+      # broad `/.ai/` owners, so it has no SSOT author to explain the ping to.
+      captured = nil
+      allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
+        captured = body if body[:title].to_s.start_with?('tooling: ')
+        mock_response
+      end
+
+      create_branch_and_mr
+
+      expect(captured[:description]).not_to include('Why you were pinged')
+    end
+
+    context 'when some principles failed distillation' do
+      let(:failed) { %w[other-principle] }
+
+      it 'notes the failed principles in the MR description' do
+        body = capture_post_body
+
+        expect(body[:description]).to include('Partial run').and include('other-principle')
+      end
+    end
+
+    context 'when no principles failed distillation' do
+      it 'omits the partial-run note from the MR description' do
+        body = capture_post_body
+
+        expect(body[:description]).not_to include('Partial run')
+      end
     end
 
     it 'does not stage the Duo review-instructions file on the tooling branch' do
@@ -886,7 +918,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       end
     end
 
-    context 'when the team opts out of pings (ping_team: false)' do
+    context 'when the team opts out of fallback pings (fallback_ping_team: false)' do
       let(:distilled_contents) do
         { 'backend-ruby' => "---\nsource_checksum: a\n---\n# Ruby\n" }
       end
@@ -904,7 +936,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         sync.manifest.data = {
           'principles' => {
             'backend-ruby' => {
-              'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false,
+              'owner_team' => '@gitlab-org/maintainers/rails-backend', 'fallback_ping_team' => false,
               'sources' => [{ 'path' => 'doc/development/backend/ruby_style_guide.md' }]
             }
           }
@@ -929,6 +961,97 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(captured[:description]).to include('**rails-backend**')
         expect(captured[:description]).not_to include('@gitlab-org/maintainers/rails-backend')
         expect(commits).to include(a_string_including('Update rails-backend AI development principles'))
+      end
+    end
+
+    context 'when SSOT authors resolve' do
+      before do
+        # Override the hermetic default: individuals who changed the SSOT are
+        # pinged instead of the owning team.
+        allow(reviewer_resolver).to receive(:ssot_authors).and_return([
+          { username: 'ada', id: 1 }, { username: 'grace', id: 2 }
+        ])
+      end
+
+      it 'pings the resolved authors and omits the team fallback ping', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('authored by @ada @grace')
+        expect(body[:reviewer_ids]).to eq([1, 2])
+        # The team-fallback ping ("Please review: **team**.") must not appear
+        # when authors resolved.
+        expect(body[:description]).not_to include('Please review: **')
+      end
+
+      it 'attributes the ping to the SSOT change', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('you changed the SSOT documentation')
+        # No fallback was needed, so the description must not describe one.
+        expect(body[:description]).not_to include('a member of the owning team was assigned')
+        expect(body[:description]).not_to include('resolved')
+        expect(body[:description]).to include('reviewed and merged')
+      end
+    end
+
+    context 'when no SSOT author resolves but an owner-team member is available' do
+      before do
+        allow(reviewer_resolver).to receive(:owner_team_reviewer).and_return(username: 'ada', id: 1, review_count: 0)
+      end
+
+      it 'mentions and assigns the fallback reviewer', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('routing to @ada')
+        expect(body[:reviewer_ids]).to eq([1])
+      end
+
+      it 'explains that review was routed to an individual, not a group', :aggregate_failures do
+        body = capture_post_body
+
+        # owner_team_reviewer picks one least-loaded member, so describing this
+        # as a group ping would misstate what happened.
+        expect(body[:description]).to include('No documentation author could be resolved')
+        expect(body[:description]).to include('least-loaded available member')
+        expect(body[:description]).not_to include('you changed the SSOT documentation')
+        expect(body[:description]).to include('reviewed and merged')
+      end
+    end
+
+    context 'when authors are mentioned but cannot be assigned as reviewers' do
+      before do
+        allow(reviewer_resolver).to receive_messages(
+          ssot_authors: [{ username: 'ada', id: nil }],
+          owner_team_reviewer: { username: 'grace', id: 2, review_count: 0 }
+        )
+      end
+
+      it 'assigns and names the fallback reviewer without hiding the author mention', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('authored by @ada')
+        expect(body[:description]).to include('Reviewer assignment routed to @grace')
+        expect(body[:reviewer_ids]).to eq([2])
+      end
+
+      it 'explains both the SSOT attribution and the reviewer fallback', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('you changed the SSOT documentation')
+        expect(body[:description]).to include('a member of the owning team was assigned')
+        expect(body[:description]).to include('reviewed and merged')
+      end
+    end
+
+    context 'when authors resolve to reviewer IDs' do
+      before do
+        allow(reviewer_resolver).to receive(:ssot_authors).and_return([{ username: 'ada', id: 1 }])
+      end
+
+      it 'does not query a fallback reviewer' do
+        expect(reviewer_resolver).not_to receive(:owner_team_reviewer)
+
+        capture_post_body
       end
     end
 
@@ -1112,6 +1235,16 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(received_body[:description]).to include('SSOT diff since previous distillation')
         expect(received_body[:description]).to include('````diff')
       end
+    end
+
+    it 'explains the team-only ping and why merging matters', :aggregate_failures do
+      # The default stub resolves neither an author nor an owner-team member, so
+      # nobody is individually pinged: the description must not claim otherwise.
+      expect(received_body[:description]).to include('Why you were pinged, and why this needs merging')
+      expect(received_body[:description]).to include('No individual could be resolved')
+      expect(received_body[:description]).to include('approves through')
+      expect(received_body[:description]).not_to include('you changed the SSOT documentation')
+      expect(received_body[:description]).to include('reviewed and merged')
     end
 
     it 'links the manifest and the CI job YAML in the "How this works" section', :aggregate_failures do
@@ -1313,7 +1446,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
   # Coverage for the decoupled reconcile path: the working tree already holds
   # the fences regenerated by pure projection from merged master (done by
-  # Sync#reconcile_duo_instructions), and this helper cuts a fresh branch off
+  # Sync#reconcile_duo_instructions_fences), and this helper cuts a fresh branch off
   # origin/master, re-applies just the Duo file, and opens/updates a dedicated
   # reconcile MR carrying only that change.
   describe '.create_reconcile_mr_from_working_tree' do
@@ -1346,7 +1479,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
                           'CI_PROJECT_DIR' => tmpdir })
 
       allow(File).to receive(:realpath) { |arg| arg }
-      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr_iid: nil)
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr: nil)
       # The fences are projected AFTER the fresh branch is cut, so the manifest
       # regenerates against the branch's base. Default: a change is produced.
       allow(manifest).to receive(:generate_duo_review_instructions).and_return(true)
@@ -1359,14 +1492,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
 
     it 'opens a dedicated reconcile MR carrying only the fence update' do
-      date = Time.now.utc.strftime('%Y%m%d')
-
       reconcile
 
       expect(sync.workflow).to have_received(:post_json)
         .with(a_string_including('/merge_requests'), hash_including(body: hash_including(
           title: a_string_starting_with('reconcile fences: '),
-          source_branch: "docs-sync/principles-#{date}-reconcile-fences"
+          source_branch: 'docs-sync/principles-reconcile-fences'
         )))
     end
 
@@ -1417,9 +1548,204 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
+  describe '#reconcile_branch_name' do
+    subject(:branch_name) { sync.reconcile_branch_name(auto_mr_cfg) }
+
+    let(:auto_mr_cfg) { { 'branch_prefix' => 'docs-sync/principles' } }
+
+    it 'is date-free so the daily job reuses one MR across runs' do
+      expect(branch_name).to eq('docs-sync/principles-reconcile-fences')
+    end
+  end
+
+  describe 'distillation branch adoption' do
+    subject(:prefetch) { sync.send(:prefetch_adopted_branches!, ctx, slugs) }
+
+    let(:auto_mr_cfg) { { 'branch_prefix' => 'docs-sync/principles' } }
+    let(:ctx) do
+      described_class::PublishContext.new(
+        project_id: 'gitlab-org/gitlab', api_token: 'token', auto_mr_cfg: auto_mr_cfg
+      )
+    end
+
+    let(:slugs) { %w[writing tooling] }
+
+    before do
+      sync.manifest.data = {
+        'principles' => {
+          'writing' => { 'owner_team' => '@gitlab-org/technical-writing', 'team_slug' => 'writing' }
+        }
+      }
+      allow(sync).to receive_messages(mr_assignee_id: 42, warn_if_adopted_branch_has_foreign_tip: nil)
+    end
+
+    context 'when no open MR is available' do
+      before do
+        allow(sync).to receive(:open_mrs_by_author).and_return([])
+      end
+
+      it 'mints a dated branch' do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260731-writing')
+      end
+    end
+
+    context 'when an open MR exactly matches the team branch' do
+      let(:open_mr) do
+        {
+          'source_branch' => 'docs-sync/principles-20260724-writing',
+          'sha' => 'a' * 40,
+          'source_project_id' => 278_964,
+          'target_project_id' => 278_964,
+          'target_branch' => 'master'
+        }
+      end
+
+      before do
+        ctx.base_branch = 'master'
+        allow(sync).to receive(:open_mrs_by_author).and_return([open_mr])
+      end
+
+      it 'adopts its branch and existing MR', :aggregate_failures do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260724-writing')
+        expect(sync).to have_received(:warn_if_adopted_branch_has_foreign_tip)
+          .with('gitlab-org%2Fgitlab', open_mr, 'token')
+      end
+    end
+
+    context 'when an open MR has a longer slug suffix' do
+      before do
+        allow(sync).to receive(:open_mrs_by_author).and_return([
+          { 'source_branch' => 'docs-sync/principles-20260724-technical-writing', 'sha' => 'a' * 40 }
+        ])
+      end
+
+      it 'does not cross-match it' do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260731-writing')
+      end
+    end
+
+    context 'when a matching branch belongs to an incoming fork MR' do
+      before do
+        ctx.base_branch = 'master'
+        allow(sync).to receive(:open_mrs_by_author).and_return([
+          {
+            'source_branch' => 'docs-sync/principles-20260724-writing',
+            'sha' => 'a' * 40,
+            'source_project_id' => 123,
+            'target_project_id' => 278_964,
+            'target_branch' => 'master'
+          }
+        ])
+      end
+
+      it 'does not adopt it' do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260731-writing')
+      end
+    end
+
+    context 'when the lookup raises' do
+      before do
+        allow(sync).to receive(:open_mrs_by_author).and_raise(Net::ReadTimeout)
+      end
+
+      it 'falls back to fresh branches', :aggregate_failures do
+        expect { prefetch }.to output(/could not look up open distillation MRs/).to_stderr
+        expect(sync.tooling_branch_name(auto_mr_cfg, '20260731'))
+          .to eq('docs-sync/principles-20260731-tooling')
+      end
+    end
+  end
+
+  describe '#warn_if_adopted_branch_has_foreign_tip' do
+    subject(:warn_for_tip) do
+      sync.send(:warn_if_adopted_branch_has_foreign_tip, 'gitlab-org%2Fgitlab', mr, 'token')
+    end
+
+    let(:mr) do
+      { 'source_branch' => 'docs-sync/principles-20260724-writing', 'sha' => 'abcdef1234567890' }
+    end
+
+    let(:response) { instance_double(Net::HTTPResponse, body: response_body, is_a?: true) }
+
+    before do
+      allow(sync).to receive_messages(
+        configured_git_user_email: 'service-modelops-agent-principles-distiller@gitlab.com',
+        authenticated_get: response
+      )
+    end
+
+    context 'when a reviewer authored the branch tip' do
+      let(:response_body) do
+        JSON.generate(author_name: 'Reviewer', author_email: 'reviewer@gitlab.com')
+      end
+
+      it 'warns that the force-push will discard the commit' do
+        expect { warn_for_tip }.to output(
+          /tip abcdef123456 was authored by Reviewer <reviewer@gitlab.com>.*force-push will discard/
+        ).to_stderr
+      end
+    end
+
+    context 'when the service account authored the branch tip' do
+      let(:response_body) do
+        JSON.generate(
+          author_name: 'Agent Principles Distiller',
+          author_email: 'service-modelops-agent-principles-distiller@gitlab.com'
+        )
+      end
+
+      it 'does not warn' do
+        expect { warn_for_tip }.not_to output.to_stderr
+      end
+    end
+  end
+
+  describe '#close_adopted_mr_if_empty' do
+    subject(:close_mr) { sync.send(:close_adopted_mr_if_empty, branch, ctx) }
+
+    let(:branch) { 'docs-sync/principles-20260724-writing' }
+    let(:ctx) do
+      described_class::PublishContext.new(project_id: 'gitlab-org/gitlab', api_token: 'token')
+    end
+
+    let(:response) { instance_double(Net::HTTPResponse, is_a?: true) }
+
+    before do
+      sync.instance_variable_set(:@adopted_mrs, { branch => { 'iid' => 123 } })
+      allow(sync.workflow).to receive_messages(gitlab_host: 'https://gitlab.com', put_json: response)
+    end
+
+    it 'closes the obsolete adopted MR' do
+      close_mr
+
+      expect(sync.workflow).to have_received(:put_json).with(
+        'https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/merge_requests/123',
+        headers: { 'PRIVATE-TOKEN' => 'token' },
+        body: { state_event: 'close' }
+      )
+    end
+  end
+
   describe '.publish_tooling_branch' do
-    subject(:publish) do
-      sync.publish_tooling_branch('master', 'gitlab-org/gitlab', 'token', '20260702', auto_mr_cfg)
+    subject(:publish) { sync.publish_tooling_branch(ctx) }
+
+    let(:ctx) do
+      described_class::PublishContext.new(
+        base_branch: 'master', project_id: 'gitlab-org/gitlab', api_token: 'token',
+        date: '20260702', auto_mr_cfg: auto_mr_cfg, failed: []
+      )
     end
 
     let(:duo_dir) { File.join(tmpdir, '.gitlab', 'duo') }
@@ -1473,7 +1799,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
                           'CI_PROJECT_DIR' => tmpdir })
 
       allow(File).to receive(:realpath) { |arg| arg }
-      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr_iid: nil)
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr: nil)
       allow(sync.workflow).to receive_messages(
         post_json: mock_response,
         gitlab_host: 'https://gitlab.com',

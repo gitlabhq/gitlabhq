@@ -17,13 +17,11 @@ RSpec.describe 'Group Dependency Proxy', feature_category: :virtual_registry do
   end
 
   describe 'feature settings' do
-    context 'when not logged in and feature disabled' do
-      it 'does not show the feature settings' do
-        group.create_dependency_proxy_setting(enabled: false)
-
+    context 'when not logged in' do
+      it 'renders 404 page' do
         visit path
 
-        expect(page).not_to have_css('[data-testid="proxy-url"]')
+        expect(page).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -58,9 +56,8 @@ RSpec.describe 'Group Dependency Proxy', feature_category: :virtual_registry do
           expect(page).to have_link s_('DependencyProxy|Configure in settings')
         end
 
-        it 'hides the proxy URL when feature is disabled' do
+        it 'renders 404 page after disabling the feature' do
           visit settings_path
-          wait_for_requests
 
           proxy_toggle = find_by_testid('dependency-proxy-setting-toggle')
           proxy_toggle_button = proxy_toggle.find('button')
@@ -69,11 +66,12 @@ RSpec.describe 'Group Dependency Proxy', feature_category: :virtual_registry do
 
           proxy_toggle_button.click
 
+          expect(page).to have_content _('Settings saved successfully.')
           expect(proxy_toggle).not_to have_css("button.is-checked")
 
           visit path
 
-          expect(page).not_to have_css('input[data-testid="proxy-url"]')
+          expect(page).to have_content s_('404|404: Page not found')
         end
       end
 

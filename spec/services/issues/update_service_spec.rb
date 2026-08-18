@@ -152,6 +152,46 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         subject(:execute_service) { update_issue(opts) }
       end
 
+      describe 'updated_changes passed to the work_item_updated trigger' do
+        def expect_updated_changes(matcher, opts)
+          expect(GraphqlTriggers).to receive(:work_item_updated).with(
+            issue, updated_changes: matcher
+          ).and_call_original
+
+          update_issue(opts)
+        end
+
+        it 'reports a title change' do
+          expect_updated_changes(include('title'), { title: 'new title' })
+        end
+
+        it 'reports a milestone change' do
+          expect_updated_changes(include('milestone_id'), { milestone_id: milestone.id })
+        end
+
+        it 'reports a label change' do
+          expect_updated_changes(include('labels'), { label_ids: [label.id] })
+        end
+
+        it 'reports an assignee change' do
+          expect_updated_changes(include('assignees'), { assignee_ids: [user2.id] })
+        end
+
+        it 'reports a label removal' do
+          update_issue({ label_ids: [label.id] })
+
+          expect_updated_changes(include('labels'), { label_ids: [] })
+        end
+
+        it 'reports an assignee removal' do
+          expect_updated_changes(include('assignees'), { assignee_ids: [] })
+        end
+
+        it 'does not report labels or assignees when they are untouched' do
+          expect_updated_changes(exclude('labels', 'assignees'), { description: 'new description' })
+        end
+      end
+
       context 'when updating milestone' do
         before do
           update_issue({ milestone_id: nil })
@@ -1600,6 +1640,19 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           end
         end
       end
+
+      context 'when target_work_item_type_id is provided' do
+        let_it_be(:target_project, freeze: false) { create(:project, maintainers: user) }
+        let(:type_id) { issue.work_item_type_id }
+
+        it 'forwards target_work_item_type_id to the move service' do
+          expect(::WorkItems::DataSync::MoveService).to receive(:new).with(
+            hash_including(params: { target_work_item_type_id: type_id })
+          ).and_call_original
+
+          update_issue(target_container: target_project, target_work_item_type_id: type_id)
+        end
+      end
     end
 
     context 'clone an issue' do
@@ -1649,6 +1702,21 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
             update_issue(target_clone_container: target_container, clone_with_notes: true)
           end
+        end
+      end
+
+      context 'when target_work_item_type_id is provided' do
+        let_it_be(:target_project, freeze: false) { create(:project, maintainers: user) }
+        let(:type_id) { issue.work_item_type_id }
+
+        it 'forwards target_work_item_type_id to the clone service' do
+          expect(::WorkItems::DataSync::CloneService).to receive(:new).with(
+            hash_including(
+              params: { clone_with_notes: nil, target_work_item_type_id: type_id }
+            )
+          ).and_call_original
+
+          update_issue(target_clone_container: target_project, target_work_item_type_id: type_id)
         end
       end
     end

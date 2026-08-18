@@ -6,7 +6,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include StubGitlabCalls
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, shared_runners_enabled: false, maintainers: user) }
+  let_it_be(:project) { create(:project, :small_repo, shared_runners_enabled: false, maintainers: user) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
 
   let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }

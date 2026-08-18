@@ -295,7 +295,7 @@ You are now going to invite some users to the Engineering subgroup.
 1. In the top bar, select **Search or go to** and find the **Development** group.
 1. Select the **Engineering** subgroup.
 1. In the left sidebar, select **Manage** > **Members**. The only
-   members are you and Alex. Both members have the Owner role, which are inherited roles.
+   members are you and Alex. Both members have the Owner role, which is an inherited role.
 1. Select **Invite members**.
 1. Complete the fields for the following members:
 
@@ -309,8 +309,8 @@ You are now going to invite some users to the Engineering subgroup.
 1. Select **Invite**.
 
    Blake Wang has the Maintainer role in this subgroup, in line with their responsibilities as
-   engineering manager. The three developers all have the Developer role, which are
-   direct roles.
+   engineering manager. The three developers all have the Developer role, which is a
+   direct role.
 1. You can change their roles directly on this subgroup's member page. Under **Role**, select `Maintainer` to change Blake Wang's role
    to an Owner for this subgroup.
 1. Go back to the Development group's member page. You see that the members of the Engineering

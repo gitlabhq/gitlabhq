@@ -83,6 +83,8 @@ RSpec.describe 'User Settings > Password', feature_category: :user_profile do
         end
 
         it 'renders 404', :js do
+          expect(page).to have_current_path(root_path)
+
           visit edit_user_settings_password_path
 
           expect(page).to have_title('Not Found')

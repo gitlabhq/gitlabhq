@@ -31,7 +31,10 @@ module API
       end
 
       def find_label(parent, id_or_title, params = { include_ancestor_groups: true })
-        labels = available_labels_for(parent, params)
+        # Keep the identifier keys out of the finder so they aren't applied as a title
+        # filter; the label is resolved from id_or_title below.
+        finder_params = params.except(:name, :label_id)
+        labels = available_labels_for(parent, finder_params)
         label = labels.find_by_id(id_or_title) || labels.find_by_title(id_or_title)
 
         label || not_found!('Label')

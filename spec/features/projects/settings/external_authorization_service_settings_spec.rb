@@ -12,7 +12,7 @@ RSpec.describe 'Projects > Settings > External Authorization Classification Labe
     sign_in(user)
   end
 
-  it 'shows the field to set a classification label' do
+  it 'shows the field to set a classification label', :js do
     stub_application_setting(external_authorization_service_enabled: true)
 
     visit edit_project_path(project)

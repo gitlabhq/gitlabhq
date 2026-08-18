@@ -6,48 +6,48 @@ Use `glab api` to call the GitLab Search REST API directly — no extra CLI flag
 
 ```bash
 # Search issues across the entire instance
-glab api "search?scope=issues&search=login+bug" | jq '.[] | {iid, title, web_url}'
+glab api --method GET "search?scope=issues&search=login+bug" | jq '.[] | {iid, title, web_url}'
 
 # Search merge requests instance-wide
-glab api "search?scope=merge_requests&search=refactor" | jq '.[] | {iid, title, state}'
+glab api --method GET "search?scope=merge_requests&search=refactor" | jq '.[] | {iid, title, state}'
 
 # Paginate: 50 results per page, page 2
-glab api "search?scope=issues&search=bug&per_page=50&page=2" | jq '.[] | {iid, title}'
+glab api --method GET "search?scope=issues&search=bug&per_page=50&page=2" | jq '.[] | {iid, title}'
 
 # Filter by state
-glab api "search?scope=merge_requests&search=auth&state=merged" | jq '.[] | {iid, title}'
+glab api --method GET "search?scope=merge_requests&search=auth&state=merged" | jq '.[] | {iid, title}'
 ```
 
 ## Group-level search
 
 ```bash
 # Search issues within a group
-glab api "groups/gitlab-org/search?scope=issues&search=performance" | jq '.[] | {iid, title, web_url}'
+glab api --method GET "groups/gitlab-org/search?scope=issues&search=performance" | jq '.[] | {iid, title, web_url}'
 
 # Search merge requests in a group
-glab api "groups/gitlab-org/search?scope=merge_requests&search=refactor" | jq '.[] | {iid, title, state}'
+glab api --method GET "groups/gitlab-org/search?scope=merge_requests&search=refactor" | jq '.[] | {iid, title, state}'
 
 # Nested group — encode the slash as %2F
-glab api "groups/gitlab-org%2Ffoundations/search?scope=issues&search=bug" | jq '.[] | {iid, title}'
+glab api --method GET "groups/gitlab-org%2Ffoundations/search?scope=issues&search=bug" | jq '.[] | {iid, title}'
 ```
 
 ## Project-level search
 
 ```bash
 # Search issues in a project (URL-encode the project path: / → %2F)
-glab api "projects/gitlab-org%2Fcli/search?scope=issues&search=crash" | jq '.[] | {iid, title}'
+glab api --method GET "projects/gitlab-org%2Fcli/search?scope=issues&search=crash" | jq '.[] | {iid, title}'
 
 # Code search (blobs) — requires Advanced Search or Exact Code Search
-glab api "projects/gitlab-org%2Fcli/search?scope=blobs&search=handleAuth" | jq '.[] | {path, startline, data}'
+glab api --method GET "projects/gitlab-org%2Fcli/search?scope=blobs&search=handleAuth" | jq '.[] | {path, startline, data}'
 
 # Commits — requires Advanced Search
-glab api "projects/gitlab-org%2Fcli/search?scope=commits&search=fix+nil" | jq '.[] | {id, title, authored_date}'
+glab api --method GET "projects/gitlab-org%2Fcli/search?scope=commits&search=fix+nil" | jq '.[] | {id, title, authored_date}'
 
 # Wiki pages — requires Advanced Search
-glab api "projects/gitlab-org%2Fcli/search?scope=wiki_blobs&search=setup" | jq '.[] | {path, data}'
+glab api --method GET "projects/gitlab-org%2Fcli/search?scope=wiki_blobs&search=setup" | jq '.[] | {path, data}'
 
 # Notes (comments) — requires Advanced Search
-glab api "projects/gitlab-org%2Fcli/search?scope=notes&search=LGTM" | jq '.[] | {id, body}'
+glab api --method GET "projects/gitlab-org%2Fcli/search?scope=notes&search=LGTM" | jq '.[] | {id, body}'
 ```
 
 ## Scope availability

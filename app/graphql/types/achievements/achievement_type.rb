@@ -46,14 +46,12 @@ module Types
       field :user_achievements,
         Types::Achievements::UserAchievementType.connection_type,
         null: true,
-        experiment: { milestone: '15.10' },
         description: "Recipients for the achievement.",
         extras: [:lookahead],
         resolver: ::Resolvers::Achievements::UserAchievementsResolver
 
       field :unique_users, Types::UserType.connection_type,
         null: false,
-        experiment: { milestone: '18.6' },
         description: "Unique users who have received the achievement."
 
       def avatar_url

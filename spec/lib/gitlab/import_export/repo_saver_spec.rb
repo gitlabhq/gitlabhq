@@ -6,13 +6,12 @@ RSpec.describe Gitlab::ImportExport::RepoSaver do
   describe 'bundle a project Git repo' do
     let_it_be(:user) { create(:user) }
 
-    let!(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo, maintainers: user) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { project.import_export_shared }
     let(:bundler) { described_class.new(exportable: project, shared: shared) }
 
     before do
-      project.add_maintainer(user)
       allow_next_instance_of(Gitlab::ImportExport) do |instance|
         allow(instance).to receive(:storage_path).and_return(export_path)
       end
@@ -35,7 +34,7 @@ RSpec.describe Gitlab::ImportExport::RepoSaver do
     end
 
     context 'when the repo is empty' do
-      let!(:project) { create(:project) }
+      let_it_be(:project) { create(:project, maintainers: user) }
 
       it 'bundles the repo successfully' do
         expect(bundler.save).to be true

@@ -8,41 +8,44 @@ title: GitLab Duo 구성
 
 {{< details >}}
 
-- 제공:  GitLab Self-Managed
+- 제공 서비스: GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
 GitLab Duo는 소프트웨어 개발 생애 주기 전반에서 도움을 주는 AI 기반 어시스턴트입니다.
 
-GitLab Duo를 다음과 같이 구성할 수 있습니다:
+GitLab Duo를 다음과 같이 구성할 수 있습니다.
 
 - 클라우드 기반 AI Gateway(기본값):  GitLab에서 호스팅하는 AI Gateway와 공급업체 언어 모델입니다.
 - 자체 호스팅 모델:  데이터와 보안에 대한 완전한 제어를 위해 자신의 AI Gateway와 언어 모델을 사용합니다.
 - 하이브리드 구성:  일부 기능은 자체 호스팅 모델을 사용하고 다른 기능은 클라우드 기반 모델을 사용합니다.
 
-## 필수 요구 사항 {#prerequisites}
+## 전제 조건 {#prerequisites}
 
 - Silent Mode는 [해제](../../silent_mode/_index.md#turn-off-silent-mode)되어 있습니다.
-- [인스턴스가 활성화 코드로 활성화됨](../../license.md#activate-gitlab-ee).
+- [인스턴스가 활성화 코드로 활성화되었습니다](../../license.md#activate-gitlab-ee).
   - 라이센스 키를 사용할 수 없습니다.
   - [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md) 예외를 제외하고는 오프라인 라이센스로 GitLab Duo를 사용할 수 없습니다.
+- 인스턴스를 실행하는 호스트가 HTTP/S 프록시 서버를 사용하는 경우에도 DNS로 공개 호스트명을 확인할 수 있습니다.
 
 ## GitLab 인스턴스에서 GitLab Duo로의 아웃바운드 연결 허용 {#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo}
 
 - GitLab 애플리케이션 노드는 `https://duo-workflow-svc.runway.gitlab.net`에서 GitLab Duo Workflow에 HTTP/2로 연결해야 합니다. 애플리케이션과 서비스는 gRPC로 통신합니다.
 - GitLab Duo Agent Platform 기능의 경우 방화벽 및 HTTP/S 프록시 서버는 `duo-workflow-svc.runway.gitlab.net`에 대한 아웃바운드 연결을 `443` 포트에서 `https://`로 허용하고 HTTP/2 트래픽을 지원해야 합니다.
+- 인스턴스가 HTTP/S 프록시 서버를 통해 연결되는 경우, 호스트는 여전히 DNS로 공개 호스트명을 확인할 수 있어야 합니다. 호스트명을 프록시 서버를 통해서만 확인할 수 있으면, GitLab Duo 상태 확인, GitLab Credits 대시보드, GitLab Duo Agent Platform과 같은 GitLab Duo 기능이 시간 초과되거나 실패할 수 있습니다. 자세한 내용은 [issue 602538](https://gitlab.com/gitlab-org/gitlab/-/issues/602538)을 참조하세요.
+- AI 기능은 장시간 유지되는 HTTP 연결을 통해 응답을 스트리밍합니다. 최대 요청 기간 또는 유휴 시간 초과를 적용하는 HTTP/S 프록시 서버 또는 방화벽은 오류 없이 긴 응답을 차단할 수 있습니다. 프록시를 경로의 다른 구성 요소보다 더 긴 시간 초과로 구성하세요.
 
 ## 클라이언트에서 GitLab 인스턴스로의 인바운드 연결 허용 {#allow-inbound-connections-from-clients-to-the-gitlab-instance}
 
 GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허용해야 합니다.
 
-1. 다음 헤더를 포함한 WebSocket Protocol 업그레이드 요청을 허용합니다:
+1. 다음 헤더를 포함한 WebSocket Protocol 업그레이드 요청을 허용합니다.
    - `Connection: upgrade`
    - `Upgrade: websocket`
    - `HTTP/2` 프로토콜 지원
    - 표준 WebSocket 보안 헤더: `Sec-WebSocket-*`
 1. `wss://`(WebSocket Secure) 프로토콜 지원을 활성화합니다.
-1. 허용할 특정 엔드포인트를 추가합니다:
+1. 허용할 특정 엔드포인트를 추가합니다.
    - 주요 엔드포인트: `wss://<customer-instance>/-/cable`
    - `HTTP/2` 프로토콜이 `HTTP/1.1`로 다운그레이드되지 않도록 합니다.
    - 포트:  `443`(HTTPS/WSS)
@@ -52,7 +55,7 @@ GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허�
 - `wss://gitlab.example.com/-/cable`에 대한 WebSocket 트래픽 제한과 다른 `.com` 도메인을 확인합니다.
 - Apache와 같은 역방향 프록시를 사용하는 경우 로그에서 **WebSocket connection to .... failures**와 같은 GitLab Duo Chat 연결 문제가 나타날 수 있습니다.
 
-이 문제를 해결하려면 프록시 설정을 편집합니다:
+이 문제를 해결하려면 프록시 설정을 편집합니다.
 
 ```apache
 # Enable WebSocket reverse Proxy
@@ -68,7 +71,7 @@ GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허�
 
 동일한 [클라이언트에서 GitLab 인스턴스로의 인바운드 연결](#allow-inbound-connections-from-clients-to-the-gitlab-instance)을 러너에서 GitLab 인스턴스로의 아웃바운드 연결로 허용해야 합니다.
 
-또한 러너는 다음에 연결할 수 있어야 합니다:
+또한 러너는 다음에 연결할 수 있어야 합니다.
 
 | 대상 | 포트 | 목적 |
 |-------------|------|---------|
@@ -77,11 +80,14 @@ GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허�
 
 조직에서 공개 npm 레지스트리에 대한 액세스를 허용할 수 없으면 필요한 종속성이 이미 설치된 [사용자 지정 Docker 이미지](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)를 사용할 수 있습니다.
 
+> [!note]
+> 러너의 GitLab Duo Agent Platform Service 연결은 GitLab 인스턴스를 통해 라우팅됩니다. 러너는 `duo-workflow-svc.runway.gitlab.net`에 직접 연결하지 않습니다. 포트 `443`의 `duo-workflow-svc.runway.gitlab.net`에 대한 방화벽 요구 사항은 러너가 아닌 GitLab 인스턴스에 적용됩니다. 러너 네트워크 구성은 GitLab 인스턴스로의 아웃바운드 HTTPS 트래픽을 허용해야 합니다.
+
 ## GitLab과 사용량 데이터 공유 {#share-usage-data-with-gitlab}
 
 {{< history >}}
 
-- GitLab 18.9.1에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/587976)됨.
+- GitLab 18.9.1에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/587976)되었습니다.
 
 {{< /history >}}
 
@@ -97,7 +103,7 @@ GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허�
 
 확장 로깅을 켜려면:
 
-1. 오른쪽 상단 모서리에서 **운영자**를 선택합니다.
+1. 오른쪽 위 모서리에서 **운영자**를 선택합니다.
 1. 왼쪽 사이드바에서 **GitLab Duo**를 선택합니다.
 1. **구성 변경**을 선택합니다.
 1. **사용량 데이터 수집** 체크박스를 선택합니다.
@@ -119,8 +125,9 @@ GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허�
 
 {{< history >}}
 
-- GitLab 17.3에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997)됨.
-- GitLab 17.5에서 [헬스 체크 보고서 다운로드 추가](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032).
+- GitLab 17.3에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997)되었습니다.
+- GitLab 17.5에서 [헬스 체크 보고서 다운로드가 추가](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032)되었습니다.
+- Foundational flows 준비 상태 확인이 GitLab 19.1에서 [추가](https://gitlab.com/gitlab-org/gitlab/-/work_items/599536)되었습니다.
 
 {{< /history >}}
 
@@ -134,21 +141,22 @@ GitLab 인스턴스는 IDE 클라이언트에서의 인바운드 연결을 허�
 
 헬스 체크를 실행하려면:
 
-1. 오른쪽 상단 모서리에서 **운영자**를 선택합니다.
+1. 오른쪽 위 모서리에서 **운영자**를 선택합니다.
 1. 왼쪽 사이드바에서 **GitLab Duo**를 선택합니다.
 1. 우측 상단 모서리에서 **헬스 체크 실행**을 선택합니다.
-1. 선택사항. GitLab 17.5 이상에서 헬스 체크가 완료된 후 **보고서 다운로드**를 선택하여 헬스 체크 결과의 상세 보고서를 저장할 수 있습니다.
+1. 선택 사항. GitLab 17.5 이상에서 헬스 체크가 완료된 후 **보고서 다운로드**를 선택하여 헬스 체크 결과의 상세 보고서를 저장할 수 있습니다.
 
-다음 테스트가 수행됩니다:
+다음 테스트가 수행됩니다.
 
 | 테스트                      | 설명 |
 |---------------------------|-------------|
 | AI Gateway                | GitLab Duo Self-Hosted 모델만 해당합니다. AI Gateway URL이 환경 변수로 구성되어 있는지 테스트합니다. 이 연결은 AI Gateway를 사용하는 자체 호스팅 모델 배포에 필요합니다. |
 | 네트워크                   | 인스턴스가 `customers.gitlab.com`와 `cloud.gitlab.com`에 연결할 수 있는지 테스트합니다.<br><br>인스턴스가 어느 대상에도 연결할 수 없으면 방화벽 또는 프록시 서버 설정이 [연결을 허용](#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo)하는지 확인합니다. |
-| 동기화           | 구독이 다음 요건을 충족하는지 테스트합니다: <br>\- 활성화 코드로 활성화되었으며 `customers.gitlab.com`과 동기화할 수 있습니다.<br>\- 올바른 액세스 자격 증명이 있습니다.<br>\- 최근에 동기화되었습니다. 그렇지 않거나 액세스 자격 증명이 누락되었거나 만료된 경우 [수동으로 동기화](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)할 수 있습니다. |
-| Code Suggestions          | GitLab Duo Self-Hosted 모델만 해당합니다. Code Suggestions를 사용할 수 있는지 테스트합니다: <br>\- 라이센스에 Code Suggestions에 대한 액세스가 포함되어 있습니다.<br>\- 기능을 사용할 수 있는 필요한 권한이 있습니다. |
-| GitLab Duo AI 에이전트 플랫폼 | 백엔드 서비스가 운영 중이고 액세스 가능한지 테스트합니다. 이 서비스는 Agent Platform 및 GitLab Duo Agentic Chat과 같은 에이전트 기능에 필요합니다. |
+| 동기화           | 구독이 다음 요건을 충족하는지 테스트합니다. <br>\- 활성화 코드로 활성화되었으며 `customers.gitlab.com`과 동기화할 수 있습니다.<br>\- 올바른 액세스 자격 증명이 있습니다.<br>\- 최근에 동기화되었습니다. 그렇지 않거나 액세스 자격 증명이 누락되었거나 만료된 경우 [수동으로 동기화](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)할 수 있습니다. |
+| Code Suggestions          | GitLab Duo Self-Hosted 모델만 해당합니다. Code Suggestions를 사용할 수 있는지 테스트합니다. <br>\- 라이센스에 Code Suggestions에 대한 액세스가 포함되어 있습니다.<br>\- 기능을 사용할 수 있는 필요한 권한이 있습니다. |
+| GitLab Duo Agent Platform | 백엔드 서비스가 운영 중이고 액세스 가능한지 테스트합니다. 이 서비스는 Agent Platform 및 GitLab Duo Agentic Chat과 같은 에이전트 기능에 필요합니다.<br><br>GitLab Duo Self-Hosted의 경우, [GitLab Duo Agent Platform 기능을 위해 자체 호스팅 모델을 선택](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature)할 때까지 이 테스트를 통과하지 못합니다.<br><br>또한 다음의 기본 플로우 필수 조건을 확인합니다.<br>\- 인스턴스 수준 플로우 실행 설정이 활성화되어 있습니다.<br>\- 인스턴스 수준 기본 플로우 설정이 활성화되어 있습니다.<br>- `gitlab--duo` 태그가 있는 활성 인스턴스 러너가 등록되고 연결되어 있으며, Docker 호환 실행기를 사용합니다.|
 | 시스템 교환           | Code Suggestions을 인스턴스에서 사용할 수 있는지 테스트합니다. 시스템 교환 평가에 실패하면 사용자가 인스턴스에서 GitLab Duo 기능을 사용하지 못할 수 있습니다. |
+| 사용량 청구           | 인스턴스가 고객 포털, AI Gateway 및 Duo Workflow Service를 포함한 사용량 청구 엔드포인트에 연결할 수 있는지 테스트합니다. |
 
 GitLab 버전 17.10 이전의 인스턴스에서 헬스 체크에 문제가 있는 경우 [문제 해결 페이지](../../../user/gitlab_duo/troubleshooting.md)를 참조하세요.
 
@@ -160,6 +168,12 @@ GitLab 버전 17.10 이전의 인스턴스에서 헬스 체크에 문제가 있�
 
 - [GitLab Duo Self-Hosted를 사용하여 AI Gateway를 호스팅하고 지원되는 자체 호스팅 모델을 사용](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms)할 수 있습니다. 이 옵션은 데이터 및 보안에 대한 완전한 제어를 제공합니다.
 - [하이브리드 구성](../../gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration)을 사용합니다. 여기서 일부 기능에 대해 자신의 AI Gateway 및 모델을 호스팅하지만 다른 기능은 GitLab AI Gateway 및 공급업체 모델을 사용하도록 구성합니다.
+
+## GitLab Dedicated for Government {#gitlab-dedicated-for-government}
+
+GitLab Dedicated for Government의 경우, FedRAMP 승인 모델과 함께 GitLab Duo Self-Hosted를 사용해야 합니다. 클라우드 기반 AI Gateway 및 공급업체 모델은 GitLab Dedicated for Government에서 사용할 수 없습니다.
+
+자세한 내용은 [GitLab Dedicated for Government에서 GitLab Duo 구성](gitlab_dedicated_for_government.md)을 참조하세요.
 
 ## 관련 항목 {#related-topics}
 

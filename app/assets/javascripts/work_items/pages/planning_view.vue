@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlAlert, GlFilteredSearchToken, GlIntersectionObserver } from '@gitlab/ui';
+import {
+  GlButton,
+  GlAlert,
+  GlFilteredSearchToken,
+  GlIntersectionObserver,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { isEmpty, isEqual } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
@@ -75,6 +81,8 @@ import {
   TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
+import searchMilestonesQuery from '~/vue_shared/components/filtered_search_bar/queries/search_milestones.query.graphql';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
@@ -85,7 +93,6 @@ import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_sav
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
-import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 
 import {
   convertLegacyTypeFormat,
@@ -138,6 +145,7 @@ import {
   preferencesChanged,
 } from '~/work_items/list/view_change_detection';
 import { persistSortPreference } from '~/work_items/list/display_settings_preferences';
+import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
@@ -153,7 +161,6 @@ import EmptyStateWithAnyTickets from '../list/components/empty_state_with_any_ti
 import EmptyStateWithoutAnyTickets from '../list/components/empty_state_without_any_tickets.vue';
 import InfoBanner from '../list/components/info_banner.vue';
 import NewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
-import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
 import WorkItemDetailPanel from '../components/work_item_detail_panel.vue';
 import WorkItemDisplaySettingsDrawer from '../list/components/work_item_display_settings_drawer.vue';
 
@@ -202,6 +209,10 @@ export default {
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
   searchProjectsQuery,
+  i18n: {
+    boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
+  },
+  BOARD_FEEDBACK_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
   name: 'PlanningView',
   components: {
     GlButton,
@@ -224,11 +235,9 @@ export default {
     IssuableTabs,
     ListView,
     BoardView,
-    WorkItemsOnboardingModal,
-    UserCalloutDismisser,
     WorkItemDetailPanel,
   },
-  mixins: [glFeatureFlagMixin(), InternalEvents.mixin()],
+  mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
   inject: [
     'isIssueRepositioningDisabled',
     'groupId',
@@ -308,6 +317,9 @@ export default {
       initialViewTokens: [],
       initialPreferences: null,
       displaySettings: {},
+      // False until the displaySettings query has actually resolved (or failed), so we
+      // don't mistake "not fetched yet" for a real, empty visibleGroups selection.
+      preferencesLoaded: false,
       showBulkEditSidebar: false,
       checkedIssuableIds: [],
       isStickyHeaderVisible: false,
@@ -320,6 +332,7 @@ export default {
       currentWorkItemIds: [],
       isDisplayDrawerOpen: false,
       drawerTopOffset: '0px',
+      boardUpdatedItem: null,
     };
   },
 
@@ -382,7 +395,11 @@ export default {
           const limit = data?.namespace?.subscribedSavedViewLimit;
           const count = data?.namespace?.currentSavedViews?.nodes.length;
 
-          if (!savedView) {
+          const isDisabledBoardView =
+            savedView?.displaySettings?.viewMode === VIEW_MODE_BOARD &&
+            !this.isPlanningViewBoardEnabled;
+
+          if (!savedView || isDisabledBoardView) {
             this.handleSavedViewNotFound();
             return;
           }
@@ -463,12 +480,14 @@ export default {
           }
         }
         this.isSortKeyInitialized = true;
+        this.preferencesLoaded = true;
       },
       skip() {
         return !this.workItemTypeId || !this.isLoggedIn;
       },
       error(error) {
         this.isSortKeyInitialized = true;
+        this.preferencesLoaded = true;
         this.error = __('An error occurred while getting work item user preference.');
         Sentry.captureException(error);
       },
@@ -606,6 +625,9 @@ export default {
       return n__('WorkItem|%d item', 'WorkItem|%d items', formatNumber(this.workItemsCount));
     },
     allowBulkEditing() {
+      if (this.isBoardView) {
+        return false;
+      }
       if (this.isEpicsList) {
         return this.canBulkAdminEpic;
       }
@@ -685,6 +707,7 @@ export default {
           operators: OPERATORS_IS_NOT_OR,
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
+          fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
           defaultUsers: this.isLoggedIn ? OPTIONS_NONE_ANY_ME : OPTIONS_NONE_ANY,
@@ -702,6 +725,7 @@ export default {
           operators: OPERATORS_IS_NOT_OR,
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
+          fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-author`,
           preloadedUsers,
           multiSelect: true,
@@ -728,6 +752,7 @@ export default {
           shouldSkipSort: true,
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
+          fetchMilestones: this.fetchMilestones,
         },
         {
           order: 16,
@@ -966,6 +991,9 @@ export default {
     collapsedGroups() {
       return this.namespacePreferences.collapsedGroups ?? [];
     },
+    groupOrder() {
+      return this.namespacePreferences.groupOrder ?? [];
+    },
     visibleGroups() {
       return this.namespacePreferences.visibleGroups ?? null;
     },
@@ -999,7 +1027,6 @@ export default {
     apiFilterParams() {
       const params = convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
-        hasStatusFeature: this.hasStatusFeature,
       });
       if (params.types) {
         params.workItemTypeIds = convertNumberToGid(params.types);
@@ -1108,6 +1135,21 @@ export default {
         this.restoreViewDraft();
       }
     },
+    // Ensures the local visibility cache is seeded with the saved view's visibleGroups.
+    // Held off until preferencesLoaded, since visibleGroups reads `{}` (i.e. "no
+    // selection") before displaySettings has actually resolved — writing that early
+    // would tell board_view the selection is known when it isn't, and it would fetch
+    // unscoped before this settles.
+    visibleGroups(visibleGroups) {
+      if (this.preferencesLoaded) {
+        this.syncVisibleGroupsToCache(visibleGroups);
+      }
+    },
+    preferencesLoaded(loaded) {
+      if (loaded) {
+        this.syncVisibleGroupsToCache(this.visibleGroups);
+      }
+    },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
         this.applySavedViewState(this.savedView);
@@ -1155,9 +1197,14 @@ export default {
       }
 
       // TODO remove when we no longer need to convert old type[]=ISSUE params to new type[]=1 params
+      // The types load async, so only filter when the conversion actually changed a token.
+      // Filtering unconditionally re-renders the filtered-search bar as the types resolve,
+      // which discards a token the user is in the middle of building.
       if (this.filterTokens.some((token) => token.type === TOKEN_TYPE_TYPE)) {
         const tokens = convertOldTypeTokenEnumToGid(this.filterTokens, workItemTypesConfiguration);
-        this.handleFilter(tokens);
+        if (!isEqual(tokens, this.filterTokens)) {
+          this.handleFilter(tokens);
+        }
       }
     },
     hasCustomFieldsFeature(hasCustomFieldsFeature) {
@@ -1208,9 +1255,25 @@ export default {
     this.releasesCache = [];
     this.areReleasesFetched = false;
     this.drawerOffsetFrameId = null;
+    // Anonymous users never fetch displaySettings (see its `skip`), so there's no
+    // preferences query to wait on — the answer ("no persisted visibleGroups") is
+    // already known.
+    if (!this.isLoggedIn) {
+      this.preferencesLoaded = true;
+    }
   },
 
   methods: {
+    syncVisibleGroupsToCache(visibleGroups) {
+      this.$apollo.mutate({
+        mutation: updateVisibleGroupsMutation,
+        variables: { visibleGroups },
+        // Client-only mutation: the resolver writes to the cache itself, so we never read the result.
+        // Caching it makes a later work item refetch overwrite unrelated edits. We have not pinned
+        // down why, but skipping the cache write stops it.
+        fetchPolicy: 'no-cache',
+      });
+    },
     saveSessionFilters(tokens) {
       if (this.isSavedView) {
         setSavedViewSessionFilters(this.$route.params.view_id, tokens);
@@ -1245,6 +1308,12 @@ export default {
     deleteItem() {
       this.activeItem = null;
       this.refetchItems({ refetchCounts: true });
+    },
+    handleWorkItemUpdated(workItem) {
+      this.handleStatusChange(workItem);
+      if (this.isBoardView) {
+        this.boardUpdatedItem = workItem;
+      }
     },
     handleStatusChange(workItem) {
       if (this.state === STATUS_ALL) {
@@ -1395,9 +1464,15 @@ export default {
       const draft = getSavedViewDraft(this.draftStorageContext);
       if (!draft) return;
 
+      const isDraftBoardModeUnavailable =
+        draft.viewMode === VIEW_MODE_BOARD && !this.isPlanningViewBoardEnabled;
+
       this.sortKey = draft.sortKey;
       this.localDisplaySettings = draft.displaySettings;
-      this.viewMode = draft.viewMode;
+      // A genuinely inaccessible board saved view is already redirected to "not found" by
+      // the savedView query result handler, so an unavailable board draft here means the
+      // persisted view itself is a list view with a stale/invalid draft view mode.
+      this.viewMode = isDraftBoardModeUnavailable ? VIEW_MODE_LIST : draft.viewMode;
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -1592,7 +1667,9 @@ export default {
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
     },
-    fetchReleases(search) {
+    async fetchReleases(search) {
+      await this.waitForMetadata();
+
       if (this.areReleasesFetched) {
         const data = search
           ? fuzzaldrinPlus.filter(this.releasesCache, search, { key: 'tag' })
@@ -1612,7 +1689,9 @@ export default {
           return [];
         });
     },
-    fetchEmojis(search) {
+    async fetchEmojis(search) {
+      await this.waitForMetadata();
+
       return this.autocompleteCache.fetch({
         url: this.autocompleteAwardEmojisPath,
         cacheName: 'emojis',
@@ -1620,7 +1699,46 @@ export default {
         search,
       });
     },
-    fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
+    // Token suggestions are fetched using values from the metadata query (isGroup and the
+    // autocomplete paths), so wait for it. Without this, a fetch can fire against the wrong
+    // namespace type or an undefined path and come back empty, with no retry.
+    waitForMetadata() {
+      if (!this.metadataLoading) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        const unwatch = this.$watch('metadataLoading', (loading) => {
+          if (!loading) {
+            unwatch();
+            resolve();
+          }
+        });
+      });
+    },
+    async fetchUsers(search) {
+      await this.waitForMetadata();
+
+      const { data } = await this.$apollo.query({
+        query: usersAutocompleteQuery,
+        variables: { fullPath: this.rootPageFullPath, search, isProject: !this.isGroup },
+      });
+
+      return data[this.namespace]?.autocompleteUsers;
+    },
+    async fetchMilestones(search) {
+      await this.waitForMetadata();
+
+      const { data } = await this.$apollo.query({
+        query: searchMilestonesQuery,
+        variables: { fullPath: this.rootPageFullPath, search, isProject: !this.isGroup },
+      });
+
+      return data[this.namespace]?.milestones?.nodes;
+    },
+    async fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
+      await this.waitForMetadata();
+
       return this.$apollo
         .query({
           query: searchLabelsQuery,
@@ -1690,6 +1808,16 @@ export default {
         ? current.filter((id) => id !== groupId)
         : [...current, groupId];
       const newSettings = { ...this.namespacePreferences, collapsedGroups };
+
+      if (this.isSavedView) {
+        this.handleLocalDisplayPreferencesUpdate(newSettings);
+        return;
+      }
+
+      this.persistNamespaceDisplaySettings(newSettings);
+    },
+    handleReorderGroups(groupOrder) {
+      const newSettings = { ...this.namespacePreferences, groupOrder };
 
       if (this.isSavedView) {
         this.handleLocalDisplayPreferencesUpdate(newSettings);
@@ -1814,6 +1942,9 @@ export default {
     handleWorkItemCreated() {
       this.refetchItems({ refetchCounts: true });
     },
+    handleBoardWorkItemCreated() {
+      this.$apollo.queries.workItemsCount.refetch();
+    },
     async refetchItems({ refetchCounts = false }) {
       if (refetchCounts) {
         this.$apollo.queries.workItemsCount.refetch();
@@ -1882,11 +2013,6 @@ export default {
 
 <template>
   <div class="planning-view">
-    <user-callout-dismisser feature-name="work_items_onboarding_modal">
-      <template #default="{ dismiss, shouldShowCallout }">
-        <work-items-onboarding-modal v-if="shouldShowCallout" @close="dismiss" />
-      </template>
-    </user-callout-dismisser>
     <saved-views-not-found-modal
       :show="showSavedViewNotFoundModal"
       data-testid="view-not-found-modal"
@@ -1910,7 +2036,7 @@ export default {
       @close="activeItem = null"
       @add-child="refetchItems"
       @work-item-deleted="deleteItem"
-      @work-item-updated="handleStatusChange"
+      @work-item-updated="handleWorkItemUpdated"
     />
     <div>
       <template v-if="!isServiceDeskList">
@@ -2082,7 +2208,7 @@ export default {
       <div
         class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
       >
-        <div class="gl-flex gl-items-center">
+        <div class="gl-flex gl-items-center gl-gap-3">
           <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>
           <gl-button
             v-if="allowBulkEditing"
@@ -2094,6 +2220,18 @@ export default {
             @click="showBulkEditSidebar = true"
           >
             {{ __('Bulk edit') }}
+          </gl-button>
+          <gl-button
+            v-if="isPlanningViewBoardEnabled && viewMode === $options.VIEW_MODE_BOARD"
+            size="small"
+            variant="link"
+            class="!gl-text-sm"
+            :href="$options.BOARD_FEEDBACK_ISSUE_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="board-feedback-link"
+          >
+            {{ $options.i18n.boardFeedbackLinkText }}
           </gl-button>
         </div>
 
@@ -2255,13 +2393,19 @@ export default {
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
-      :visible-groups="visibleGroups"
+      :group-order="groupOrder"
+      :can-reorder="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
+      :updated-work-item="boardUpdatedItem"
+      :preselected-work-item-type="preselectedWorkItemType"
+      :can-create-work-item="showProjectNewWorkItem"
       @set-error="($evt) => (error = $evt)"
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
+      @reorder-groups="handleReorderGroups"
+      @work-item-created="handleBoardWorkItemCreated"
     />
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"

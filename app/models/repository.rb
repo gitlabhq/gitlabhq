@@ -204,7 +204,9 @@ class Repository
     committed_before: nil,
     committed_after: nil,
     pagination_params: { page_token: nil, limit: 1000 },
-    literal_pathspec: false
+    literal_pathspec: false,
+    first_parent: false,
+    order: nil
   )
     return empty_commit_collection_with_next_cursor unless exists? && has_visible_content? && ref.present?
 
@@ -218,7 +220,9 @@ class Repository
       committed_before: committed_before,
       committed_after: committed_after,
       pagination_params: pagination_params,
-      literal_pathspec: literal_pathspec
+      literal_pathspec: literal_pathspec,
+      first_parent: first_parent,
+      order: order
     )
 
     Repositories::CommitCollectionWithNextCursor.new(
@@ -390,8 +394,8 @@ class Repository
     raw_repository.languages(root_ref)
   end
 
-  def keep_around(*shas, source:)
-    Gitlab::Git::KeepAround.execute(self, shas, source: source)
+  def keep_around(*shas, source:, retry_failed_writes: nil)
+    Gitlab::Git::KeepAround.execute(self, shas, source: source, retry_failed_writes: retry_failed_writes)
   end
 
   def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
@@ -768,7 +772,7 @@ class Repository
     @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths, ref_type: 'heads')
   end
 
-  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true)
+  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true, with_last_commit: false)
     if sha == :head
       return if empty? || root_ref.nil?
 
@@ -780,7 +784,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type, rescue_not_found: rescue_not_found)
+    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type, rescue_not_found: rescue_not_found, with_last_commit: with_last_commit)
   end
 
   def blob_at_branch(branch_name, path)

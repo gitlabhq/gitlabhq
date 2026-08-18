@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: File Storage in GitLab
 ---
 
-We use the [CarrierWave](https://github.com/carrierwaveuploader/carrierwave) gem to handle file upload, store and retrieval.
+We use the [CarrierWave](https://github.com/carrierwaveuploader/carrierwave) gem to handle file upload, store, and retrieval.
 
 File uploads should be accelerated by workhorse, for details refer to [uploads development documentation](uploads/_index.md).
 

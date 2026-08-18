@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
 
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
@@ -13,6 +14,7 @@ import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'GroupsListItem',
@@ -29,9 +31,12 @@ export default {
     GlTooltip,
     GroupListItemActions,
     ListItemInactiveBadge,
-    GroupsListItemPlanBadge: () =>
-      import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
+    GroupsListItemPlanBadge: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
+    ),
   },
+  mixins: [glSlotsMixin],
   provide() {
     return {
       triggerDeleteLocation: 'list',
@@ -166,7 +171,7 @@ export default {
     :data-testid="dataTestid"
     @click-avatar="$emit('click-avatar')"
   >
-    <template #children-toggle>
+    <template v-if="glSlots()['children-toggle']" #children-toggle>
       <slot name="children-toggle"></slot>
     </template>
     <template #avatar-meta>
@@ -215,7 +220,7 @@ export default {
       <group-list-item-actions :group="group" @action="refetch" />
     </template>
 
-    <template #children>
+    <template v-if="glSlots().children" #children>
       <slot name="children"></slot>
     </template>
   </list-item>

@@ -8,6 +8,8 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
   include_context "with diff file component tests"
 
   let(:merge_request) { build(:merge_request, source_project: project, target_project: project) }
+  let(:conflict_resolution_path) { nil }
+  let(:can_merge) { true }
   let(:content_sha) { 'abc123' }
   let(:edit_path_base) { '/-/edit/feature-branch/path/to/file.rb?from_merge_request_iid=' }
 
@@ -246,7 +248,51 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
     end
   end
 
+  describe 'conflict resolution message' do
+    before do
+      allow(diff_file).to receive(:conflict).and_return(:both_modified)
+    end
+
+    context 'when the user cannot merge' do
+      let(:can_merge) { false }
+      let(:conflict_resolution_path) { '/group/project/-/merge_requests/123/conflicts' }
+
+      it 'asks to reach out to someone with write access, without action controls' do
+        render_component
+
+        expect(page).to have_text('Ask someone with write access to resolve it.')
+        expect(page).not_to have_link('resolve conflicts on GitLab')
+        expect(page).not_to have_button('resolve them locally')
+      end
+    end
+
+    context 'when the user can merge and a resolution path is available' do
+      let(:conflict_resolution_path) { '/group/project/-/merge_requests/123/conflicts' }
+
+      it 'links to the conflict resolution page and offers local resolution' do
+        render_component
+
+        expect(page.find_link('resolve conflicts on GitLab')[:href]).to eq(conflict_resolution_path)
+        expect(page.find_button('resolve them locally')['data-click']).to eq('resolveConflictsLocally')
+      end
+    end
+
+    context 'when the user can merge but no resolution path is available' do
+      let(:conflict_resolution_path) { nil }
+
+      it 'offers local resolution only' do
+        render_component
+
+        expect(page).not_to have_link('resolve conflicts on GitLab')
+        expect(page.find_button('resolve them locally')['data-click']).to eq('resolveConflictsLocally')
+      end
+    end
+  end
+
   def render_component(**args)
-    render_inline(described_class.new(diff_file: diff_file, merge_request: merge_request, plain_view: true, **args))
+    render_inline(described_class.new(
+      diff_file: diff_file, merge_request: merge_request,
+      conflict_resolution_path: conflict_resolution_path, can_merge: can_merge, plain_view: true, **args
+    ))
   end
 end

@@ -21,8 +21,8 @@ describe('ml/experiment_tracking/components/model_experiments_header.vue', () =>
   const findCount = () => wrapper.findByTestId('count');
   const findCountIcon = () => wrapper.findComponent(GlIcon);
   const findTitleArea = () => wrapper.findComponent(TitleArea);
-  const findDropdown = () => wrapper.findByTestId('create-dropdown');
-  const findMenuItem = () => wrapper.findByTestId('create-menu-item');
+  const findDropdown = () => wrapper.findComponentByTestId('create-dropdown');
+  const findMenuItem = () => wrapper.findComponentByTestId('create-menu-item');
 
   it('title area exists', () => {
     expect(findTitleArea().exists()).toBe(true);

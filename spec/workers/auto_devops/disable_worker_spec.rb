@@ -4,14 +4,13 @@ require 'spec_helper'
 
 RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_devops do
   let(:user) { create(:user, developer_of: project) }
-  let(:project) { create(:project, :repository, :auto_devops) }
+  let_it_be_with_reload(:project) { create(:project, :auto_devops) }
   let(:auto_devops) { project.auto_devops }
   let(:pipeline) { create(:ci_pipeline, :failed, :auto_devops_source, project: project, user: user) }
 
   subject { described_class.new }
 
   before do
-    project.add_developer(user)
     stub_application_setting(auto_devops_enabled: true)
     auto_devops.update_attribute(:enabled, nil)
   end
@@ -25,7 +24,7 @@ RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_de
   context 'when project owner is a user' do
     let(:owner) { create(:user) }
     let(:namespace) { create(:namespace, owner: owner) }
-    let(:project) { create(:project, :repository, :auto_devops, namespace: namespace) }
+    let(:project) { create(:project, :auto_devops, namespace: namespace) }
 
     it 'sends an email to pipeline user and project owner(s)' do
       expect(NotificationService).to receive_message_chain(:new, :autodevops_disabled).with(pipeline, [user.email, owner.email])
@@ -36,7 +35,7 @@ RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_de
 
   context 'when project does not have owner' do
     let(:group) { create(:group) }
-    let(:project) { create(:project, :repository, :auto_devops, namespace: group) }
+    let(:project) { create(:project, :auto_devops, namespace: group) }
 
     it 'sends an email to pipeline user' do
       expect(NotificationService).to receive_message_chain(:new, :autodevops_disabled).with(pipeline, [user.email])
@@ -47,7 +46,7 @@ RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_de
 
   context 'when pipeline is not related to a user and project does not have owner' do
     let(:group) { create(:group) }
-    let(:project) { create(:project, :repository, :auto_devops, namespace: group) }
+    let(:project) { create(:project, :auto_devops, namespace: group) }
     let(:pipeline) { create(:ci_pipeline, :failed, project: project) }
 
     it 'does not send an email' do

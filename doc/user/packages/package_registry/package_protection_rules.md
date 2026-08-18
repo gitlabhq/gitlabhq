@@ -49,12 +49,6 @@ When a package is protected, the default behavior enforces these restrictions on
 
 ## Protect a package
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140473) in GitLab 16.9.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Maintainer or Owner role.
@@ -91,12 +85,6 @@ It's possible to apply several protection rules to the same package.
 If at least one protection rule applies to the package, the package is protected.
 
 ## Delete a package protection rule and unprotect a package
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140483) in GitLab 16.10.
-
-{{< /history >}}
 
 Prerequisites:
 

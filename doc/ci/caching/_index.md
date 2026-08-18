@@ -172,7 +172,7 @@ job1:
       - binaries/
 ```
 
-The order of caches extraction is:
+The order of cache extraction is:
 
 1. Retrieval attempt for `cache:key`
 1. Retrieval attempts for each entry in order in `fallback_keys`
@@ -363,12 +363,12 @@ By using a single runner on a single machine, you don't have the issue where
 cache can be reused between stages. It only works if the execution goes from the `build` stage
 to the `test` stage in the same runner/machine. Otherwise, the cache [might not be available](#cache-mismatch).
 
-During the caching process, there's also a couple of things to consider:
+During the caching process, also consider the following:
 
-- If some other job, with another cache configuration had saved its
+- If some other job, with another cache configuration, had saved its
   cache in the same zip file, it is overwritten. If the S3 based shared cache is
   used, the file is additionally uploaded to S3 to an object based on the cache
-  key. So, two jobs with different paths, but the same cache key, overwrites
+  key. So, two jobs with different paths, but the same cache key, overwrite
   their cache.
 - When extracting the cache from `cache.zip`, everything in the zip file is
   extracted in the job's working directory (usually the repository which is
@@ -387,7 +387,7 @@ Runners use [cache](../yaml/_index.md#cache) to speed up the execution
 of your jobs by reusing existing data. This can sometimes lead to
 inconsistent behavior.
 
-There are two ways to start with a fresh copy of the cache.
+To start with a fresh copy of the cache, change `cache:key` or clear it manually.
 
 ### Clear the cache by changing `cache:key`
 

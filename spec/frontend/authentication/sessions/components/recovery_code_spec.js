@@ -1,7 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RecoveryCode from '~/authentication/sessions/components/recovery_code.vue';
-import { newAdminSessionPath } from '~/lib/utils/path_helpers/admin';
+import { newAdminSessionPath } from '~/lib/utils/path_helpers/instance_admin';
 import { newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -23,7 +23,7 @@ describe('RecoveryCode', () => {
 
   const findForm = () => wrapper.find('form');
   const findField = () => wrapper.findByTestId('recovery-code-field');
-  const findVerifyButton = () => wrapper.findByTestId('verify-recovery-code-button');
+  const findVerifyButton = () => wrapper.findComponentByTestId('verify-recovery-code-button');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findMethodInput = () => wrapper.find('input[name="two_factor_method"]');
@@ -56,9 +56,18 @@ describe('RecoveryCode', () => {
     expect(findSshLink().attributes('target')).toBe('_blank');
   });
 
-  it('renders the code field with autocomplete off and the otp name', () => {
-    expect(findField().attributes('autocomplete')).toBe('off');
+  it('renders the code field with the otp name', () => {
     expect(findField().attributes('name')).toBe('user[otp_attempt]');
+  });
+
+  it('opts the code field out of password-manager autofill', () => {
+    // A recovery code is neither a password nor a one-time code, so no manager has anything
+    // useful to offer here.
+    expect(findField().attributes('autocomplete')).toBe('off');
+    expect(findField().attributes('data-1p-ignore')).toBe('true');
+    expect(findField().attributes('data-bwignore')).toBe('true');
+    expect(findField().attributes('data-form-type')).toBe('other');
+    expect(findField().attributes('data-lpignore')).toBe('true');
   });
 
   it('does not give the recovery field an otp-named id (avoids password-manager OTP autofill)', () => {

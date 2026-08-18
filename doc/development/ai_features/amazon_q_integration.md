@@ -17,7 +17,7 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
 1. Create a VM in AWS
 
    1. Go to [cloud sandbox](https://gitlabsandbox.cloud/cloud), and login with OKTA
-   1. Click "Create Individual Account", and choose `aws-***` (not `aws-services-***` or `aws-dedicated-***`). This will create a AWS sandbox and display login credentials
+   1. Click "Create Individual Account", and choose `aws-***` (not `aws-services-***` or `aws-dedicated-***`). This will create an AWS sandbox and display login credentials
    1. Configure an EC2 machine
 
    A few things to note:
@@ -32,7 +32,7 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
       sudo GITLAB_ROOT_PASSWORD="your_password" EXTERNAL_URL="https://<vm-instance-external-ip>.nip.io" apt install gitlab-ee
       ```
 
-      This will use nip.io as the DNS service so the GitLab instance can be accessed through HTTPs
+      This will use nip.io as the DNS service so the GitLab instance can be accessed through HTTPS
 
 1. Config the newly installed GitLab instance
    1. SSH into the VM, and add the following config into `/etc/gitlab/gitlab.rb`
@@ -61,7 +61,7 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
 ## Create and configure an AWS sandbox
 
 1. Follow the [same step](#install-and-configure-a-gitlab-linux-package-on-a-virtual-machine) described above on how to create an AWS sandbox if you haven't had one already.
-1. Login into the newly created AWS account and create an **Identity Provider** following this [instruction](../../user/duo_amazon_q/setup.md#create-an-iam-identity-provider) with slight modifications:
+1. Log in to the newly created AWS account and create an **Identity Provider** following this [instruction](../../user/duo_amazon_q/setup.md#create-an-iam-identity-provider) with slight modifications:
 
    - Provider URL: `https://glgo.staging.runway.gitlab.net/cc/oidc/<your_gitlab_instance_id>`
    - Audience: `gitlab-cc-<your_gitlab_instance_id>`

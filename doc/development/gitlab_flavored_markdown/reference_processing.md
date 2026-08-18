@@ -50,7 +50,7 @@ however do not inherit from either of these classes directly, but from
 [`AbstractReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/references/abstract_reference_filter.rb),
 which provides a higher-level interface.
 
-Subclasses of `AbstractReferenceFilter` generally do not override `#call`; instead,
+Subclasses of `AbstractReferenceFilter` generally do not override `#call`. Instead,
 a minimum implementation of `AbstractReferenceFilter` should define:
 
 - `.reference_type`: The type of domain object.
@@ -86,7 +86,7 @@ For reference filters for new objects, use a format following the pattern
 1. Suitable single-character prefixes are limited and no longer allowed for new references.
 1. Following a consistent pattern allows users to infer the existence of new features.
 
-The [Extensible reference filters](https://gitlab.com/groups/gitlab-org/-/epics/7563)
+The [Extensible reference filters](https://gitlab.com/groups/gitlab-org/-/work_items/7563)
 epic discusses the use of this format.
 
 To add a reference prefix for a new object `apple`, which has both a name and ID,
@@ -130,7 +130,7 @@ reference filter.
 
 Each `ReferenceFilter` would iterate over all `<a>` and `text()` nodes in a document.
 
-Not all nodes are processed, document is filtered only for nodes that we want to process.
+Not all nodes are processed. The document is filtered only for nodes that we want to process.
 We are skipping:
 
 - Link tags already processed by some previous filter (if they have a `gfm` class).
@@ -140,7 +140,7 @@ We are skipping:
 
 To avoid filtering such nodes for each `ReferenceFilter`, we do it only once and store the result in the result Hash of the pipeline as `result[:reference_filter_nodes]`.
 
-Pipeline `result` is passed to each filter for modification, so every time when `ReferenceFilter` replaces text or link tag, filtered list (`reference_filter_nodes`) are updated for the next filter to use.
+Pipeline `result` is passed to each filter for modification, so every time when `ReferenceFilter` replaces text or link tag, filtered list (`reference_filter_nodes`) is updated for the next filter to use.
 
 ## Reference parsers
 

@@ -15,7 +15,6 @@ module QA
 
       it(
         'project exists in Cell 1',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/434093',
         only: :local
       ) do
         expect(cell1_db).to have_project(project.name)
@@ -23,7 +22,6 @@ module QA
 
       it(
         'project does not exist in Cell 2',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/434092',
         only: :local
       ) do
         expect(cell2_db).not_to have_project(project.name)

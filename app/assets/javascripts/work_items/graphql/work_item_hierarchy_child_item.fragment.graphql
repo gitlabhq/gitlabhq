@@ -36,6 +36,7 @@ fragment WorkItemHierarchyChildItem on WorkItem {
     name
   }
   title
+  titleHtml
   state
   createdAt
   closedAt

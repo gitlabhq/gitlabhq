@@ -61,19 +61,12 @@ A deploy token's scope determines the actions it can perform.
 | `read_repository`        | Read-only access to the repository using `git clone`.                                                        |
 | `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/_index.md). |
 | `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/_index.md). You need both read and write access to push images. |
-| `read_virtual_registry`  | Grants read-only (pull) access to container images through the group-level Dependency Proxy and virtual registry. Does not grant direct access to the project’s container registry. Available only when the Dependency Proxy is enabled. |
-| `write_virtual_registry` | Grants write access to the group-level Dependency Proxy cache and implicitly permits pulls through that cache. Does not grant push or delete access to the project’s container registry. Available only when the Dependency Proxy is enabled. |
+| `read_virtual_registry`  | Grants read-only (pull) access to container images through the group-level Dependency Proxy and virtual registry. Does not grant direct access to the project's container registry. Available only when the Dependency Proxy is enabled. |
+| `write_virtual_registry` | Grants write access to the group-level Dependency Proxy cache and implicitly permits pulls through that cache. Does not grant push or delete access to the project's container registry. Available only when the Dependency Proxy is enabled. |
 | `read_package_registry`  | Read-only access to the project's package registry.                                                          |
 | `write_package_registry` | Write access to the project's package registry.                                                              |
 
 ## GitLab deploy token
-
-{{< history >}}
-
-- Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
-- [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
-
-{{< /history >}}
 
 A GitLab deploy token is a special type of deploy token. If you create a deploy token named
 `gitlab-deploy-token`, the deploy token is automatically exposed to project CI/CD jobs as variables:
@@ -86,12 +79,6 @@ For example, to use a GitLab token to sign in to your GitLab container registry:
 ```shell
 echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
 ```
-
-> [!note]
-> In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token does not
-> work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
-> `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings** > **CI/CD** > **Variables** to the
-> name and token of the group deploy token.
 
 When `gitlab-deploy-token` is defined in a group, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD`
 CI/CD variables are available only to immediate child projects of the group.

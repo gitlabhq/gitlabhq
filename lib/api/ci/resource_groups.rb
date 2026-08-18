@@ -7,8 +7,8 @@ module API
 
       ci_resource_groups_tags = %w[ci_resource_groups]
 
-      RESOURCE_GROUP_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
-                                        .merge(key: API::NO_SLASH_URL_PART_REGEX)
+      RESOURCE_GROUP_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+                                        .merge(key: ::API::NO_SLASH_URL_PART_REGEX)
 
       before { authenticate! }
 
@@ -20,7 +20,7 @@ module API
           types: [String, Integer],
           desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
-      resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all resource groups' do
           detail 'Lists all resource groups for a specified project.'
           success Entities::Ci::ResourceGroup

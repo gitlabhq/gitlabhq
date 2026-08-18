@@ -851,7 +851,9 @@ func handleMcpRequest(t *testing.T, w http.ResponseWriter, r *http.Request, name
 		json.NewEncoder(w).Encode(response)
 
 	case "notifications/initialized":
-		w.WriteHeader(http.StatusOK)
+		// MCP spec requires 202 Accepted with no body for JSON-RPC notifications
+		// See: https://modelcontextprotocol.io/specification/2025-03-26/basic/transports
+		w.WriteHeader(http.StatusAccepted)
 
 	case "tools/list":
 		var toolsList []map[string]any
@@ -1013,6 +1015,10 @@ func TestManager_buildTools(t *testing.T) {
 					},
 				}
 				json.NewEncoder(w).Encode(response)
+			case "notifications/initialized":
+				// MCP spec requires 202 Accepted with no body for JSON-RPC notifications
+				// See: https://modelcontextprotocol.io/specification/2025-03-26/basic/transports
+				w.WriteHeader(http.StatusAccepted)
 			case "tools/list":
 				w.WriteHeader(http.StatusInternalServerError)
 			}

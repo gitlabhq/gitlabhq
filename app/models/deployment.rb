@@ -9,7 +9,7 @@ class Deployment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
   include EachBatch
-  include FromUnion # used in Environment#last_finished_deployment
+  include FromUnion # used in Environment's deployment associations
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)
@@ -55,7 +55,7 @@ class Deployment < ApplicationRecord
   scope :finished, -> { where(status: FINISHED_STATUSES) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
-  scope :upcoming, -> { where(status: %i[blocked running]) }
+  scope :upcoming, -> { where(status: UPCOMING_DEPLOYMENT_STATUSES) }
   scope :older_than, ->(deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_api_entity_associations, -> do
     preload({ deployable: { runner: [], job_definition: [], user: [], job_artifacts_archive: [] } })
@@ -73,6 +73,9 @@ class Deployment < ApplicationRecord
 
   VISIBLE_STATUSES = %i[running success failed canceled blocked].freeze
   FINISHED_STATUSES = %i[success failed canceled].freeze
+  # Intentionally excludes :created; used by Environment#upcoming_deployment
+  # and the upcoming scope.
+  UPCOMING_DEPLOYMENT_STATUSES = %i[blocked running].freeze
   UPCOMING_STATUSES = %i[created blocked running].freeze
 
   state_machine :status, initial: :created do
@@ -110,6 +113,16 @@ class Deployment < ApplicationRecord
     end
 
     after_transition any => :running do |deployment, transition|
+      deployment.run_after_commit do
+        perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
+
+        serialize_params_for_sidekiq!(perform_params)
+
+        Deployments::HooksWorker.perform_async(perform_params)
+      end
+    end
+
+    after_transition any => :blocked do |deployment, transition|
       deployment.run_after_commit do
         perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
 
@@ -266,8 +279,8 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  def execute_hooks(status, status_changed_at)
-    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status, status_changed_at)
+  def execute_hooks(status, status_changed_at, **kwargs)
+    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status, status_changed_at, **kwargs)
     project.execute_hooks(deployment_data, :deployment_hooks)
     project.execute_integrations(deployment_data, :deployment_hooks)
   end

@@ -16,7 +16,7 @@
           - else
             = safe_format(_("in project %{link_to_project}"), link_to_project: link_to_project)
         - elsif @group
-          - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
+          - link_to_group = link_to(@group.name, @group, class: '@md/panel:gl-ml-2')
           = safe_format(_("in group %{link_to_group}"), link_to_group: link_to_group)
   .gl-flex.gl-gap-3.gl-mt-3{ class: "@sm/panel:gl-mt-0" }
     = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: "@md/panel:gl-hidden gl-grow @md/panel:gl-grow-0"}) do

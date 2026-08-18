@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Lists::CreateService, feature_category: :portfolio_management do
+RSpec.describe Boards::Lists::CreateService, feature_category: :planning_views do
   context 'when board parent is a project' do
     let_it_be(:parent) { create(:project) }
     let_it_be(:board) { create(:board, project: parent) }

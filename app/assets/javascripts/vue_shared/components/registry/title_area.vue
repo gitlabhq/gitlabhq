@@ -3,6 +3,7 @@ import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { isEqual } from 'lodash-es';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'TitleArea',
@@ -13,6 +14,7 @@ export default {
     GlSkeletonLoader,
     PageHeading,
   },
+  mixins: [glSlotsMixin],
   props: {
     avatar: {
       type: String,
@@ -54,7 +56,7 @@ export default {
   methods: {
     recalculateMetadataSlots() {
       const METADATA_PREFIX = 'metadata-';
-      const metadataSlots = Object.keys(this.$scopedSlots).filter((k) =>
+      const metadataSlots = Object.keys(this.glSlots()).filter((k) =>
         k.startsWith(METADATA_PREFIX),
       );
 
@@ -100,7 +102,7 @@ export default {
         </div>
       </template>
 
-      <template #actions>
+      <template v-if="glSlots()['right-actions']" #actions>
         <slot name="right-actions"></slot>
       </template>
     </page-heading>

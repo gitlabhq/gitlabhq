@@ -147,6 +147,20 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       subject(:execute_service) { service.execute(issue) }
     end
 
+    it 'broadcasts namespaceWorkItemChanges for the state change' do
+      allow(GitlabSchema.subscriptions).to receive(:trigger)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+        .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
+
+      service.execute(issue)
+
+      expect(GitlabSchema.subscriptions).to have_received(:trigger).with(
+        'namespaceWorkItemChanges',
+        { namespace_id: project.project_namespace.to_gid },
+        { work_item_id: issue.id, action: :updated }
+      )
+    end
+
     context 'issue is incident type' do
       let(:issue) { create(:incident, project: project) }
       let(:current_user) { user }
@@ -316,7 +330,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
 
       it 'verifies the number of queries', :request_store do
         recorded = ActiveRecord::QueryRecorder.new { close_issue }
-        expected_queries = 41
+        expected_queries = 42
 
         expect(recorded.count).to be <= expected_queries
         expect(recorded.cached_count).to eq(0)

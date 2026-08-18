@@ -7,7 +7,7 @@ title: Semantic Code Search
 
 ## Overview
 
-Semantic Code Search is the first feature offered under Semantic Search. It enables Duo Chat and other AI features to find relevant code snippets from a repository. The feature is available as an [MCP tool (`semantic_code_search`)](../../../user/gitlab_duo/model_context_protocol/mcp_server_tools.md#semantic_code_search) that can be used by GitLab Duo Agent Platform and other AI platforms.
+Semantic Code Search is the first feature offered under Semantic Search. It enables Duo Chat and other AI features to find relevant code snippets from a repository. The feature is available as an [MCP tool (`semantic_code_search`)](../../../user/model_context_protocol/mcp_server_tools.md#semantic_code_search) that can be used by GitLab Duo Agent Platform and other AI platforms.
 
 ## Architecture
 

@@ -1,0 +1,6 @@
+---
+event: MergeRequests::ApprovedCloudEvent
+description: Published when a merge request receives all required approvals. CloudEvent counterpart
+  of the legacy ApprovedEvent, using the CloudEvents v1.0 envelope with a richer payload
+  that includes merge_request IID, project ID, and organization context.
+feature_category: code_suggestions

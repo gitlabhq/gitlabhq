@@ -90,11 +90,18 @@ module Projects
 
     def validate_active_repositories_move!
       if project.repository_storage_moves.scheduled_or_started.exists?
-        raise_error(s_("DeleteProject|Couldn't remove the project. A project repository storage move is in progress. Try again when it's complete."))
+        raise_error(s_("DeleteProject|Couldn't remove the project. " \
+          "A project repository storage move is in progress. Try again when it's complete."))
       end
 
-      if ::ProjectSnippet.by_project(project).with_repository_storage_moves.merge(::Snippets::RepositoryStorageMove.scheduled_or_started).exists?
-        raise_error(s_("DeleteProject|Couldn't remove the project. A related snippet repository storage move is in progress. Try again when it's complete."))
+      snippets_with_active_moves = ::ProjectSnippet
+        .by_project(project)
+        .with_repository_storage_moves
+        .merge(::Snippets::RepositoryStorageMove.scheduled_or_started)
+
+      if snippets_with_active_moves.exists?
+        raise_error(s_("DeleteProject|Couldn't remove the project. " \
+          "A related snippet repository storage move is in progress. Try again when it's complete."))
       end
     end
 
@@ -119,8 +126,8 @@ module Projects
     end
 
     def remove_snippets
-      # We're setting the skip_authorization param because we dont need to perform the access checks within the service since
-      # the user has enough access rights to remove the project and its resources.
+      # We're setting the skip_authorization param because we dont need to perform the access checks
+      # within the service since the user has enough access rights to remove the project and its resources.
       response = ::Snippets::BulkDestroyService.new(current_user, project.snippets).execute(skip_authorization: true)
 
       if response.error?
@@ -163,8 +170,14 @@ module Projects
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
       unless project.destroyed?
-        # Restrict project visibility if the parent namespace visibility was made more restrictive while the project was scheduled for deletion.
-        visibility_level = project.visibility_level_allowed_by_namespace? ? project.visibility_level : project.namespace.visibility_level
+        # Restrict project visibility if the parent namespace visibility was made more restrictive
+        # while the project was scheduled for deletion.
+        visibility_level =
+          if project.visibility_level_allowed_by_namespace?
+            project.visibility_level
+          else
+            project.namespace.visibility_level
+          end
 
         Project.transaction do
           project.update!(pending_delete: false, visibility_level: visibility_level)
@@ -177,7 +190,8 @@ module Projects
 
     def attempt_destroy(project)
       unless remove_registry_tags
-        raise_error(s_('DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator.'))
+        raise_error(s_('DeleteProject|Failed to remove some tags in project container registry. ' \
+          'Please try again or contact administrator.'))
       end
 
       project.leave_pool_repository
@@ -204,6 +218,7 @@ module Projects
       destroy_merge_request_diffs!
       delete_environments
       delete_lfs_objects_projects
+      delete_notes
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -211,7 +226,7 @@ module Projects
       #
       # Exclude container repositories because its before_destroy would be
       # called multiple times, and it doesn't destroy any database records.
-      project.destroy_dependent_associations_in_batches(exclude: [:container_repositories, :snippets])
+      project.destroy_dependent_associations_in_batches(exclude: [:container_repositories, :snippets, :notes])
       project.destroy!
     rescue ActiveRecord::RecordNotDestroyed => e
       raise_error(
@@ -240,9 +255,11 @@ module Projects
             .where(merge_request_diff_id: MergeRequestDiff.where(merge_request_id: relation_ids).select(:id))
             .limit(delete_batch_size)
 
+          # rubocop:disable Layout/LineLength -- complex SQL tuple condition
           deleted_rows = MergeRequestDiffFile
             .where("(merge_request_diff_files.merge_request_diff_id, merge_request_diff_files.relative_order) IN (?)", inner_query)
             .delete_all
+          # rubocop:enable Layout/LineLength
 
           break if deleted_rows == 0
         end
@@ -380,6 +397,28 @@ module Projects
       )
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord -- Direct AR usage required for batched DELETE without loading records into memory
+    def delete_notes
+      deleted_count = 0
+
+      loop do
+        note_ids = Note.where(project_id: project.id).limit(BATCH_SIZE).pluck(:id)
+        break if note_ids.empty?
+
+        # Polymorphic association: no FK cascade, delete explicitly first
+        AwardEmoji.where(awardable_type: 'Note', awardable_id: note_ids).delete_all
+        deleted_count += Note.where(id: note_ids).delete_all
+      end
+
+      Gitlab::AppLogger.info(
+        class: self.class.name,
+        project_id: project.id,
+        message: 'Deleting notes completed',
+        deleted_notes_count: deleted_count
+      )
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def destroy_web_hooks!
       project.hooks.find_each do |web_hook|
         result = ::WebHooks::DestroyService.new(current_user).execute(web_hook)
@@ -423,6 +462,9 @@ module Projects
       end
 
       results.all?
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => error
+      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      raise_error(registry_unreachable_message(error))
     end
 
     ##
@@ -440,6 +482,16 @@ module Projects
       service = ContainerRepository::DestroyService.new(project, current_user, { skip_permission_check: true })
       response = service.execute(repository)
       response[:status] == :success
+    end
+
+    def registry_unreachable_message(error)
+      format(
+        s_('DeleteProject|Failed to remove some tags in project container registry. ' \
+          'The container registry at %{registry_url} could not be reached (%{error}). ' \
+          'If the container registry is not in use, disable the integration to allow the project to be deleted.'),
+        registry_url: Gitlab.config.registry.api_url,
+        error: error.message
+      )
     end
 
     def raise_error(message)

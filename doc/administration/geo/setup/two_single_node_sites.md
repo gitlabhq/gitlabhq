@@ -148,7 +148,7 @@ Prerequisites:
       ##
       ## Private address
       ##
-      ip route get 255.255.255.255 | awk '{print "Private address:", $NF; exit}'
+      ip route get 255.255.255.255 | awk '{for (i=1; i<=NF; i++) if ($i == "src") { print "Private address:", $(i+1); exit }}'
 
       ##
       ## Public address
@@ -312,36 +312,36 @@ Prerequisites:
 1. Test that the `gitlab-psql` user can connect to the primary site database.
    The default Linux package name is `gitlabhq_production`:
 
-    {{< tabs >}}
+   {{< tabs >}}
 
-    {{< tab title="Linux package" >}}
+   {{< tab title="Linux package" >}}
 
-    ```shell
-    sudo \
-        -u gitlab-psql /opt/gitlab/embedded/bin/psql \
-        --list \
-        -U gitlab_replicator \
-        -d "dbname=gitlabhq_production sslmode=verify-ca" \
-        -W \
-        -h <primary_site_ip>
-    ```
+   ```shell
+   sudo \
+       -u gitlab-psql /opt/gitlab/embedded/bin/psql \
+       --list \
+       -U gitlab_replicator \
+       -d "dbname=gitlabhq_production sslmode=verify-ca" \
+       -W \
+       -h <primary_site_ip>
+   ```
 
-    {{< /tab >}}
+   {{< /tab >}}
 
-    {{< tab title="Docker" >}}
+   {{< tab title="Docker" >}}
 
-    ```shell
-    docker exec -it <container_name> su - gitlab-psql -c '/opt/gitlab/embedded/bin/psql \
-        --list \
-        -U gitlab_replicator \
-        -d "dbname=gitlabhq_production sslmode=verify-ca" \
-        -W \
-        -h <primary_site_ip>'
-    ```
+   ```shell
+   docker exec -it <container_name> su - gitlab-psql -c '/opt/gitlab/embedded/bin/psql \
+       --list \
+       -U gitlab_replicator \
+       -d "dbname=gitlabhq_production sslmode=verify-ca" \
+       -W \
+       -h <primary_site_ip>'
+   ```
 
-    {{< /tab >}}
+   {{< /tab >}}
 
-    {{< /tabs >}}
+   {{< /tabs >}}
 
    When prompted, enter the plaintext password you set for the `gitlab_replicator` user.
    If all worked correctly, you should see the list of the primary site databases.
@@ -415,6 +415,14 @@ To replicate the database:
    ```shell
    sudo -i
    ```
+
+   > [!note]
+   > If you switched to `root` without a login shell (for example, with `su` or `sudo su`),
+   > run `sudo -i` before continuing.
+   > Running `gitlab-ctl replicate-geo-database` without a root login environment
+   > causes the PostgreSQL data directory to be owned by `root` instead of `gitlab-psql`,
+   > which causes PostgreSQL to fail with
+   > `could not access the server configuration file ".../postgresql.conf": Permission denied`.
 
 1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION) for your secondary site to
    use as the replication slot name. For example, if your domain is
@@ -500,7 +508,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    chmod 0600 /etc/gitlab/gitlab-secrets.json
    ```
 
-1. To apply the changes, reconfigure every Rails, Sidekiq and Gitaly secondary site node:
+1. To apply the changes, reconfigure every Rails, Sidekiq, and Gitaly secondary site node:
 
    ```shell
    gitlab-ctl reconfigure

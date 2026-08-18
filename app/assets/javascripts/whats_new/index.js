@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import WhatsNewApp from './components/app.vue';
 import { useWhatsNew } from './store';
@@ -18,21 +18,18 @@ export default (dataset = {}, updateHelpMenuUnreadBadge) => {
     } = dataset;
     const el = document.createElement('div');
     document.body.append(el);
-    whatsNewApp = new Vue({
+    whatsNewApp = initVueApp({
       el,
       name: 'WhatsNewAppRoot',
       pinia,
-      render(createElement) {
-        return createElement(WhatsNewApp, {
-          props: {
-            versionDigest,
-            initialReadArticles,
-            markAsReadPath,
-            mostRecentReleaseItemsCount,
-            updateHelpMenuUnreadBadge,
-            placement,
-          },
-        });
+      component: WhatsNewApp,
+      props: {
+        versionDigest,
+        initialReadArticles,
+        markAsReadPath,
+        mostRecentReleaseItemsCount,
+        updateHelpMenuUnreadBadge,
+        placement,
       },
     });
   }

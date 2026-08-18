@@ -29,5 +29,3 @@ export const backoffMockImplementation = (callback) => {
   jest.runOnlyPendingTimers();
   return q;
 };
-
-export default { backoffMockImplementation };

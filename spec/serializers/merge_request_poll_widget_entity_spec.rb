@@ -173,7 +173,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
         it 'returns nil' do
           pipeline.update!(sha: "not up to date")
 
-          expect(subject[:pipeline]).to eq(nil)
+          expect(subject[:pipeline]).to be_nil
         end
       end
     end
@@ -183,7 +183,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
       let(:req) { double('request', current_user: user, project: project) }
 
       it 'does not return ci_status' do
-        expect(subject[:ci_status]).to eq(nil)
+        expect(subject[:ci_status]).to be_nil
       end
     end
   end
@@ -208,7 +208,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
 
   describe '#mergeable' do
     it 'shows whether a merge request is mergeable' do
-      expect(subject[:mergeable]).to eq(true)
+      expect(subject[:mergeable]).to be(true)
     end
 
     context 'when merge request is in checking state' do
@@ -218,7 +218,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
       end
 
       it 'calculates mergeability and returns true' do
-        expect(subject[:mergeable]).to eq(true)
+        expect(subject[:mergeable]).to be(true)
       end
     end
   end
@@ -239,13 +239,13 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
     context 'with active Jenkins integration' do
       let(:active) { true }
 
-      it { expect(subject[:jenkins_integration_active]).to eq(true) }
+      it { expect(subject[:jenkins_integration_active]).to be(true) }
     end
 
     context 'with inactive Jenkins integration' do
       let(:active) { false }
 
-      it { expect(subject[:jenkins_integration_active]).to eq(false) }
+      it { expect(subject[:jenkins_integration_active]).to be(false) }
     end
   end
 end

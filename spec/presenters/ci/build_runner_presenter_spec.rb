@@ -418,6 +418,128 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
         )
       end
     end
+
+    context 'when a default value is a string but the declared type is not' do
+      let(:inputs_spec) do
+        {
+          number_input: { type: 'number', default: '5' },
+          boolean_input: { type: 'boolean', default: 'false' },
+          array_input: { type: 'array', default: '[1, 2]' }
+        }
+      end
+
+      it 'coerces the content to match the announced type' do
+        expect(presenter.runner_inputs).to contain_exactly(
+          { key: :number_input, value: { content: 5, type: 'number' } },
+          { key: :boolean_input, value: { content: false, type: 'boolean' } },
+          { key: :array_input, value: { content: [1, 2], type: 'array' } }
+        )
+      end
+    end
+
+    context 'when a stored value is a string but the declared type is not' do
+      let(:inputs_spec) do
+        { number_input: { type: 'number', default: 1 } }
+      end
+
+      before do
+        create(:ci_job_input,
+          job: build, project: build.project,
+          name: 'number_input', value: '5')
+      end
+
+      it 'coerces the stored value to match the announced type' do
+        expect(presenter.runner_inputs).to contain_exactly(
+          { key: :number_input, value: { content: 5, type: 'number' } }
+        )
+      end
+    end
+
+    context 'when a rules-based input has no stored value' do
+      let(:inputs_spec) do
+        {
+          instance_type: {
+            type: 'string',
+            rules: [
+              { if: '$[[ inputs.instance_type ]] == "large"', default: 'm5.large' },
+              { default: 't3.micro' }
+            ]
+          }
+        }
+      end
+
+      it 'sends the rule-resolved default to the runner' do
+        expect(presenter.runner_inputs).to contain_exactly(
+          { key: :instance_type, value: { content: 't3.micro', type: 'string' } }
+        )
+      end
+
+      context 'when the input also has a stored value' do
+        before do
+          create(:ci_job_input,
+            job: build, project: build.project,
+            name: 'instance_type', value: 'm5.xlarge')
+        end
+
+        it 'sends the stored value, not the rule-resolved default' do
+          expect(presenter.runner_inputs).to contain_exactly(
+            { key: :instance_type, value: { content: 'm5.xlarge', type: 'string' } }
+          )
+        end
+      end
+
+      context 'when the stored value is an empty string' do
+        before do
+          create(:ci_job_input,
+            job: build, project: build.project,
+            name: 'instance_type', value: '')
+        end
+
+        it 'falls back to the rule-resolved default' do
+          expect(presenter.runner_inputs).to contain_exactly(
+            { key: :instance_type, value: { content: 't3.micro', type: 'string' } }
+          )
+        end
+      end
+    end
+
+    context 'when a string input has a numeric-looking value' do
+      let(:inputs_spec) do
+        { text_input: { type: 'string', default: '5' } }
+      end
+
+      it 'keeps the default as a string rather than coercing it to a number' do
+        expect(presenter.runner_inputs).to contain_exactly(
+          { key: :text_input, value: { content: '5', type: 'string' } }
+        )
+      end
+
+      context 'when the stored value is also numeric-looking' do
+        before do
+          create(:ci_job_input,
+            job: build, project: build.project,
+            name: 'text_input', value: '7')
+        end
+
+        it 'keeps the stored value as a string' do
+          expect(presenter.runner_inputs).to contain_exactly(
+            { key: :text_input, value: { content: '7', type: 'string' } }
+          )
+        end
+      end
+    end
+
+    context 'when a string input has a non-string default' do
+      let(:inputs_spec) do
+        { text_input: { type: 'string', default: 5 } }
+      end
+
+      it 'stringifies the content to match the announced type' do
+        expect(presenter.runner_inputs).to contain_exactly(
+          { key: :text_input, value: { content: '5', type: 'string' } }
+        )
+      end
+    end
   end
 
   describe '#runner_variables' do

@@ -3,7 +3,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import CommitsList from '~/commits';
 import GpgBadges from '~/gpg_badges';
 import { mountCommits, mountDateRangeSelect, initCommitsRefSwitcher } from '~/projects/commits';
-import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
 import initCommitListApp from '~/projects/commits/init_commit_list_app';
 
 if (document.querySelector('.js-project-commits-show')) {

@@ -9,6 +9,8 @@ module Gitlab
 
         IMPORTED_OBJECT_MAX_RETRIES = 5
 
+        CUSTOM_EMOJI_NAMES_CACHE_KEY = 'bulk_imports/custom_emoji_names/%{importable_class}/%{importable_id}'
+
         OVERRIDES = { user_contributions: :user, merge_schedule: 'MergeRequests::MergeSchedule', merge_data: 'MergeRequests::MergeData' }.freeze
         EXISTING_OBJECT_RELATIONS = %i[].freeze
 
@@ -289,6 +291,47 @@ module Gitlab
 
           setup_merge_request_note
           setup_diff_note
+        end
+
+        def setup_award_emoji
+          return if valid_award_emoji_name?(@relation_hash['name'])
+
+          @relation_hash = {}
+        end
+
+        def valid_award_emoji_name?(name)
+          name = name.to_s
+
+          return true if TanukiEmoji.find_by_alpha_code(name)
+
+          destination_custom_emoji_names.include?(name)
+        end
+
+        def destination_custom_emoji_names
+          group = award_emoji_destination_group
+          return [] unless group
+
+          cache_key = format(
+            CUSTOM_EMOJI_NAMES_CACHE_KEY,
+            importable_class: importable_class_name, importable_id: @importable.id
+          )
+
+          Gitlab::SafeRequestStore.fetch(cache_key) do
+            cached = Gitlab::Cache::Import::Caching.read(cache_key)
+
+            if cached.nil?
+              custom_emoji_names = Groups::CustomEmojiFinder.new(group, { include_ancestor_groups: true })
+                .execute.pluck(:name)
+
+              cached = Gitlab::Cache::Import::Caching.write(cache_key, Gitlab::Json.dump(custom_emoji_names))
+            end
+
+            Gitlab::Json::SafeParser.parse(cached)
+          end
+        end
+
+        def award_emoji_destination_group
+          nil
         end
 
         def setup_merge_request_note

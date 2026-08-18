@@ -13,19 +13,12 @@ import { currentUserData, discussion, noteableId, noteableType, note } from '../
 describe('WikiDiscussion', () => {
   let wrapper;
 
-  const $apollo = {
-    mutate: jest.fn(),
-  };
-
   const createWrapper = ({ props, provideData = { userData: currentUserData } } = {}) =>
     shallowMountExtended(WikiDiscussion, {
       propsData: {
         discussion,
         noteableId,
         ...props,
-      },
-      mocks: {
-        $apollo,
       },
       provide: {
         noteableType,
@@ -227,9 +220,9 @@ describe('WikiDiscussion', () => {
       expect(Boolean(wrapper.vm.$refs.commentForm)).toBe(true);
     });
 
-    it('should render reply form  when showReplyForm event is fired from discussion actions', async () => {
+    it('should render reply form  when show-reply-form event is fired from discussion actions', async () => {
       const replyPlaceholder = wrapper.findComponent(DiscussionActions);
-      replyPlaceholder.vm.$emit('showReplyForm');
+      replyPlaceholder.vm.$emit('show-reply-form');
 
       await nextTick();
       expect(Boolean(wrapper.vm.$refs.commentForm)).toBe(true);
@@ -251,8 +244,8 @@ describe('WikiDiscussion', () => {
       expect(Boolean(wrapper.vm.$refs.commentForm)).toBe(false);
     });
 
-    it('should set placeholder correctly when creating-note:start event is fired', async () => {
-      replyForm.$emit('creating-note:start', {
+    it('should set placeholder correctly when creating-note-start event is fired', async () => {
+      replyForm.$emit('creating-note-start', {
         body: 'another example note',
         bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">another example note</p>',
       });
@@ -265,21 +258,21 @@ describe('WikiDiscussion', () => {
       });
     });
 
-    it('should remove placeholder note when creating-note:done event is fired', async () => {
-      replyForm.$emit('creating-note:done');
+    it('should remove placeholder note when creating-note-done event is fired', async () => {
+      replyForm.$emit('creating-note-done');
 
       await nextTick();
       const placeholderNote = wrapper.findComponent(PlaceholderNote);
       expect(placeholderNote.exists()).toBe(false);
     });
 
-    it('should remove placeholer when creating-note:success event is fired', async () => {
+    it('should remove placeholer when creating-note-success event is fired', async () => {
       const newReply = {
         ...note,
         id: 'gid://gitlab/DiscussionNote/1525',
       };
 
-      replyForm.$emit('creating-note:success', { notes: { nodes: [newReply] } });
+      replyForm.$emit('creating-note-success', { notes: { nodes: [newReply] } });
       await nextTick();
 
       const placeholderNote = wrapper.findComponent(PlaceholderNote);

@@ -32,7 +32,7 @@ $item-remove-button-space: 42px;
     min-width: $gl-padding;
     cursor: help;
 
-    &:focus {
+    &:focus-visible {
       @apply gl-focus;
     }
   }
@@ -41,7 +41,7 @@ $item-remove-button-space: 42px;
     flex-basis: 100%;
 
     .sortable-link {
-      color: $gray-900;
+      color: var(--gl-text-color-strong);
       font-weight: 500;
     }
   }
@@ -131,7 +131,7 @@ $item-remove-button-space: 42px;
 .mr-ci-status {
   line-height: 0;
 
-  a:focus {
+  a:focus-visible {
     border-radius: $gl-border-radius-full;
     @apply gl-focus;
   }

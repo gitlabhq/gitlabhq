@@ -10,7 +10,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
   include_context 'workhorse headers'
 
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:job) { create(:ci_build, :running, user: personal_access_token.user, project: project) }
   let_it_be(:deploy_token) do

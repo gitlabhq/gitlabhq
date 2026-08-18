@@ -62,6 +62,10 @@ RSpec.shared_examples 'wiki file attachments' do
         wait_for_requests
 
         page.find('.wiki-form').click_button("Preview")
+
+        expect(page).to have_css("a.no-attachment-icon[href$='dk.png']")
+        expect(page).to have_css("a.no-attachment-icon img[src$='dk.png']")
+
         file_path = page.find('input[name="files[]"]', visible: :hidden).value
         link = page.find('a.no-attachment-icon')['href']
         img_link = page.find('a.no-attachment-icon img')['src']

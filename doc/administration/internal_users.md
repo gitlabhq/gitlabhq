@@ -13,16 +13,11 @@ description: Enable automated system operations through internal bot users for G
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
-
-{{< /history >}}
-
 Internal users (also called "bots") are system accounts that GitLab creates automatically to perform
 specific background actions. GitLab uses them when a regular user account is not applicable, such as when
 generating alerts or automatic review feedback. Internal users have usernames and email addresses, so their
 actions can be attributed to them. They do not count towards a license limit and cannot be created manually.
+Bots are indicated with a badge in user listings.
 
 Internal users have limited access and cannot be used directly for many actions such as authentication.
 Some bots have access to make API requests, but most cannot.

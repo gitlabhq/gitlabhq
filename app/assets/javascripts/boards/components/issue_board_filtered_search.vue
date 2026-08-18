@@ -60,7 +60,7 @@ export default {
       required: true,
     },
   },
-  emits: ['setFilters'],
+  emits: ['set-filters'],
   computed: {
     tokensCE() {
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
@@ -208,6 +208,6 @@ export default {
     :board="board"
     :is-swimlanes-on="isSwimlanesOn"
     :filters="filters"
-    @setFilters="$emit('setFilters', $event)"
+    @set-filters="$emit('set-filters', $event)"
   />
 </template>

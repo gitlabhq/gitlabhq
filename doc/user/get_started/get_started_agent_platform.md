@@ -111,11 +111,12 @@ For more information, see:
 
 - [Knowledge Graph](../project/repository/knowledge_graph/_index.md).
 - [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md).
-- [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md).
+- [MCP server](../model_context_protocol/mcp_server.md).
 
 ## Resources
 
 - Eight-part tutorial: [Get started with GitLab Duo Agent Platform: The complete guide](https://about.gitlab.com/blog/gitlab-duo-agent-platform-complete-getting-started-guide/)
 - Blog: [GitLab engineer: How I improved my onboarding experience with AI](https://about.gitlab.com/blog/gitlab-engineer-how-i-improved-my-onboarding-experience-with-ai/)
 - Talk recording: [Agentic AI in GitLab Duo Agent Platform | Use Cases & Best Practices | DACH Roadshow Vienna 2025](https://www.youtube.com/watch?v=amJQkKhe5ys) ([slides](https://docs.google.com/presentation/d/e/2PACX-1vTX-DcBV9Rw6HQ7vNew8EWRv1NMGtKfRbb5eATRb9tENrOUbnbPdZJwXnub2OMnqv-nIV_v0hIQB6Ew/pub?start=false&loop=false&delayms=3000&slide=id.g38ddaede31e_0_36))
+- [Transition from non-agentic GitLab Duo to the GitLab Duo Agent Platform](../../administration/gitlab_duo/configure/transition-to-the-agent-platform.md)
 <!-- Video published on 2025-12-09 -->

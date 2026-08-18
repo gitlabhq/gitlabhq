@@ -19,8 +19,8 @@ for your instance to balance stability with access to new features and security 
 ## Versioning model
 
 Your instance runs on the previous minor version (`N-1`) relative to the
-current GitLab release. For example, when GitLab 16.9 is available,
-your instance runs GitLab 16.8.
+current GitLab release. For example, when GitLab 19.3 is available,
+your instance runs GitLab 19.2.
 
 This approach provides:
 

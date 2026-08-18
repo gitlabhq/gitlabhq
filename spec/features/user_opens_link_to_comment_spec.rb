@@ -18,8 +18,6 @@ RSpec.describe 'User opens link to comment', :js, feature_category: :team_planni
 
       visit Gitlab::UrlBuilder.build(note)
 
-      wait_for_requests
-
       expect(page).to have_button 'All activity'
       expect(page).not_to have_content('Something went wrong while fetching comments')
 

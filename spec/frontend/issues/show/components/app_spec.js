@@ -461,7 +461,7 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('taskListUpdateStarted', () => {
+  describe('task-list-update-started', () => {
     beforeEach(async () => {
       await createComponent();
     });
@@ -469,7 +469,7 @@ describe('Issuable output', () => {
     it('stops polling', async () => {
       expect(findTitle().props().titleText).toBe(initialRequest.title_text);
 
-      findDescription().vm.$emit('taskListUpdateStarted');
+      findDescription().vm.$emit('task-list-update-started');
 
       await advanceToNextPoll();
 
@@ -477,10 +477,10 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('taskListUpdateSucceeded', () => {
+  describe('task-list-update-succeeded', () => {
     beforeEach(async () => {
       await createComponent();
-      findDescription().vm.$emit('taskListUpdateStarted');
+      findDescription().vm.$emit('task-list-update-started');
     });
 
     it('enables polling', async () => {
@@ -491,7 +491,7 @@ describe('Issuable output', () => {
       expect(findTitle().props().titleText).toBe(initialRequest.title_text);
 
       // Enable Polling an move forward
-      findDescription().vm.$emit('taskListUpdateSucceeded');
+      findDescription().vm.$emit('task-list-update-succeeded');
       await advanceToNextPoll();
 
       // Title has changed: polling works!
@@ -499,10 +499,10 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('taskListUpdateFailed', () => {
+  describe('task-list-update-failed', () => {
     beforeEach(async () => {
       await createComponent();
-      findDescription().vm.$emit('taskListUpdateStarted');
+      findDescription().vm.$emit('task-list-update-started');
     });
 
     it('enables polling and calls updateStoreState', async () => {
@@ -513,7 +513,7 @@ describe('Issuable output', () => {
       expect(findTitle().props().titleText).toBe(initialRequest.title_text);
 
       // Enable Polling an move forward
-      findDescription().vm.$emit('taskListUpdateFailed');
+      findDescription().vm.$emit('task-list-update-failed');
       await advanceToNextPoll();
 
       // Title has changed: polling works!
@@ -521,14 +521,14 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('saveDescription event', () => {
+  describe('save-description event', () => {
     beforeEach(async () => {
       await createComponent();
     });
 
     it('makes request to update issue', async () => {
       const description = 'I have been updated!';
-      findDescription().vm.$emit('saveDescription', description);
+      findDescription().vm.$emit('save-description', description);
 
       await waitForPromises();
 
@@ -537,7 +537,7 @@ describe('Issuable output', () => {
 
     it('blocks sensitive content', async () => {
       const description = 'token: glpat-cgyKc1k_AsnEpmP-5fRL!';
-      findDescription().vm.$emit('saveDescription', description);
+      findDescription().vm.$emit('save-description', description);
 
       await waitForPromises();
 

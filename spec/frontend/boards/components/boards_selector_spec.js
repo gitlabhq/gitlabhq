@@ -317,7 +317,7 @@ describe('BoardsSelector', () => {
       expect(findBoardForm().exists()).toBe(true);
     });
 
-    it('emits showBoardModal when BoardForm emits cancel', async () => {
+    it('emits show-board-modal when BoardForm emits cancel', async () => {
       await createComponent({
         props: {
           boardModalForm: formType.new,
@@ -327,10 +327,10 @@ describe('BoardsSelector', () => {
       findBoardForm().vm.$emit('cancel');
       await nextTick();
 
-      expect(wrapper.emitted('showBoardModal')).toEqual([['']]);
+      expect(wrapper.emitted('show-board-modal')).toEqual([['']]);
     });
 
-    it('emits showBoardModal with new when clicking on create board button', async () => {
+    it('emits show-board-modal with new when clicking on create board button', async () => {
       await createComponent({ isProjectBoard: true });
 
       findDropdown().vm.$emit('shown');
@@ -340,10 +340,10 @@ describe('BoardsSelector', () => {
       await mockApollo.resolveQuery(projectRecentBoardsQuery);
 
       wrapper.findComponent(GlButton).vm.$emit('click');
-      expect(wrapper.emitted('showBoardModal')).toEqual([[formType.new]]);
+      expect(wrapper.emitted('show-board-modal')).toEqual([[formType.new]]);
     });
 
-    it('emits showBoardModal when BoardForm emits showBoardModal', async () => {
+    it('emits show-board-modal when BoardForm emits show-board-modal', async () => {
       await createComponent({
         isProjectBoard: true,
         props: {
@@ -351,8 +351,8 @@ describe('BoardsSelector', () => {
         },
       });
 
-      findBoardForm().vm.$emit('showBoardModal', formType.delete);
-      expect(wrapper.emitted('showBoardModal')).toEqual([[formType.delete]]);
+      findBoardForm().vm.$emit('show-board-modal', formType.delete);
+      expect(wrapper.emitted('show-board-modal')).toEqual([[formType.delete]]);
     });
   });
 });

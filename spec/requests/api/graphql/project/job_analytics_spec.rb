@@ -606,43 +606,6 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
       it { expect_graphql_errors_to_include("Argument 'sort' on Field 'jobAnalytics' has an invalid value") }
     end
 
-    context 'when backfill is in progress' do
-      let(:job_analytics_fields) do
-        query_graphql_field(:nodes, nil, [
-          :name,
-          query_graphql_field(:statistics, nil, [
-            query_graphql_field(:duration_statistics, nil, [:mean, :p95]),
-            aliased_graphql_field(:success_rate, :rate, { status: :SUCCESS }),
-            aliased_graphql_field(:failed_rate, :rate, { status: :FAILED }),
-            aliased_graphql_field(:other_rate, :rate, { status: :OTHER })
-          ])
-        ])
-      end
-
-      before do
-        stub_feature_flags(job_analytics_siphon: false)
-        allow(::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper).to receive(:backfill_in_progress?)
-          .and_return(true)
-      end
-
-      it 'returns result using deduplicated finder' do
-        expect_next_instance_of(::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder) do |instance|
-          allow(instance).to receive(:final_query).and_call_original
-        end.at_least(:once)
-
-        post_graphql(query, current_user: current_user)
-
-        expect(nodes).to all(
-          include('statistics' => a_hash_including(
-            'durationStatistics' => include('mean', 'p95'),
-            'successRate' => anything,
-            'failedRate' => anything,
-            'otherRate' => anything
-          ))
-        )
-      end
-    end
-
     context 'when ClickHouse is not configured' do
       before do
         allow(::Gitlab::ClickHouse).to receive(:configured?).and_return(false)

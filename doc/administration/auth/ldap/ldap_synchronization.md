@@ -41,12 +41,6 @@ You must consider your LDAP server's rate limits when configuring LDAP synchroni
 
 ## User sync
 
-{{< history >}}
-
-- Preventing LDAP user's profile name synchronization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11336) in GitLab 15.11.
-
-{{< /history >}}
-
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
 
@@ -336,6 +330,28 @@ To take advantage of group sync, group Owners or users with the [Maintainer role
 For information on adding group links by using CNs and filters, refer to the
 [GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
+### Sync service accounts
+
+By default, group sync does not manage [service account](../../../user/profile/service_accounts.md)
+group membership, because a service account has no LDAP identity to match against.
+
+To let group sync manage a service account's membership the same way it manages a human user's,
+use the [Modify a user API endpoint](../../../api/users.md#modify-a-user) to assign the service account an LDAP identity
+with `provider` and `extern_uid` attributes:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "provider=ldapmain" \
+  --data "extern_uid=uid=example-service-account,ou=people,dc=example,dc=com" \
+  --url "https://gitlab.example.com/api/v4/users/<service_account_user_id>"
+```
+
+After you assign the identity, group sync manages the service account's group membership
+the same way group sync manages a human user's membership.
+
+A dedicated UI and API endpoint are proposed in [issue 578187](https://gitlab.com/gitlab-org/gitlab/-/issues/578187).
+
 ### Assign an admin role to an LDAP group
 
 As an extension of group sync, you can automatically manage your global GitLab
@@ -438,6 +454,131 @@ like the following.
          main:
            group_base: ou=groups,dc=example,dc=com
            admin_group: my_admin_group
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Assign an auditor role to an LDAP group
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/2998) in GitLab 19.3.
+
+{{< /history >}}
+
+As an extension of group sync, you can automatically manage users with the
+[auditor role](../../auditor_users.md). Specify a group CN for `audit_group` and all
+members of the LDAP group are given the auditor role.
+
+> [!note]
+> Auditor users are not synced unless `group_base` is also
+> specified alongside `audit_group`. Also, only specify the CN of the `audit_group`,
+> as opposed to the full DN.
+> Additionally, if an LDAP user has the auditor role, but is not a member of the `audit_group`
+> group, GitLab revokes the auditor role when syncing.
+
+To assign the auditor role to LDAP group members:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_servers'] = {
+     'main' => {
+       'group_base' => 'ou=groups,dc=example,dc=com',
+       'audit_group' => 'my_audit_group',
+       }
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       ldap:
+         servers:
+           main:
+             group_base: ou=groups,dc=example,dc=com
+             audit_group: my_audit_group
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_servers'] = {
+             'main' => {
+               'group_base' => 'ou=groups,dc=example,dc=com',
+               'audit_group' => 'my_audit_group',
+               }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ldap:
+       servers:
+         main:
+           group_base: ou=groups,dc=example,dc=com
+           audit_group: my_audit_group
    ```
 
 1. Save the file and restart GitLab:

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { s__ } from '~/locale';
 
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
@@ -8,7 +9,9 @@ export default {
   name: 'SignInGitlabCom',
   components: {
     SubscriptionsList,
-    SignInOauthButton: () => import('../../components/sign_in_oauth_button.vue'),
+    SignInOauthButton: defineAsyncComponent(
+      () => import('../../components/sign_in_oauth_button.vue'),
+    ),
   },
   props: {
     hasSubscriptions: {

@@ -30,7 +30,7 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
 
     create(:labeled_issue, issue_params)
 
-    expect { visit_milestone }.not_to exceed_query_limit(control)
+    expect { visit_milestone }.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
   end
 
   context 'work items list', :js do

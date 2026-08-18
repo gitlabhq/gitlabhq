@@ -79,9 +79,7 @@ To use GitLab Duo Code Suggestions:
 
 To create an issue in the current project:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. In the Command Palette, search for **GitLab: Create New Issue on Current Project**
    and press <kbd>Enter</kbd>.
 
@@ -94,9 +92,7 @@ To create a merge request in the current project, in the bottom status bar, sele
 
 Alternatively, you can use the Command Palette:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. In the Command Palette, search for **GitLab: Create New Merge Request on Current Project**
    and press <kbd>Enter</kbd>.
 
@@ -132,9 +128,7 @@ Prerequisites:
 
 To search your project:
 
-1. In VS Code, open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Select your desired search type:
    - **GitLab: Search Project Issues (Supports Filters)**
    - **GitLab: Search Project Merge Requests (Supports Filters)**
@@ -214,9 +208,7 @@ To use [GitLab quick actions](../../user/project/quick_actions.md) in issues and
 
 To compare your branch with your project's default branch, without creating a merge request:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. In the Command Palette, search for **GitLab: Compare Current Branch with Default Branch** and
    press <kbd>Enter</kbd>.
 
@@ -229,9 +221,7 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
 
 1. Open your desired file in VS Code.
 1. Select the lines you want to highlight.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. In the Command Palette, search for **GitLab: Open Active File on GitLab** and press <kbd>Enter</kbd>.
 
 ## Create a snippet
@@ -245,9 +235,7 @@ To create a snippet in VS Code:
    - To create a snippet using an entire file, open the file.
    - To create a snippet using a selection of a file, open the file and select the lines you want to
      include.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. In the Command Palette, search for **GitLab: Create Snippet** and press <kbd>Enter</kbd>.
 1. Select the snippet's privacy level:
    - **Private** snippets are visible only to project members.
@@ -264,9 +252,7 @@ When you review a merge request, create a snippet patch when you want to suggest
 
 1. On your local machine, check out the branch you want to propose changes to.
 1. In VS Code, edit all files you want to change. Do not commit your changes.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. In the Command Palette, search for **GitLab: Create Snippet Patch** and press <kbd>Enter</kbd>.
    This command runs a `git diff` command and creates a GitLab snippet in your project.
 1. Enter a **Patch name** and press <kbd>Enter</kbd>. GitLab uses this name as the
@@ -283,9 +269,7 @@ description contains instructions on how to apply the patch.
 To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-remove-multiple-files) snippet from a project you are a member of:
 
 1. Place your cursor where you want to insert the snippet.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Search for **GitLab: Insert Snippet** and press <kbd>Enter</kbd>.
 1. Select the project containing your snippet.
 1. Select the snippet to apply.

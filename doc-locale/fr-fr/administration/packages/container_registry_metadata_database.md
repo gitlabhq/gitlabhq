@@ -467,15 +467,11 @@ Tasks with >10 review attempts - may indicate persistent issues.
 
 {{< tab title="GitLab 18.9 et versions antérieures" >}}
 
-### Se connecter à la base de données de métadonnées du registre de conteneurs GitLab {#connect-to-the-gitlab-container-registry-metadata-database}
-
 Utilisez la commande suivante pour vous connecter à la base de données de métadonnées du registre :
 
 ```shell
 gitlab-psql -d registry
 ```
-
-### Requêtes pour déterminer l'état des tâches de collecte des déchets en ligne {#queries-to-determine-status-of-online-garbage-collection-tasks}
 
 Les requêtes suivantes renvoient les tâches qui ont été réessayées plus de 10 fois ou qui étaient éligibles à l'examen pendant plus de 24 heures. Le ramasse-miettes en ligne doit prendre en charge un élément pour examen dans les 24 heures avec peu de tentatives échouées. Si des lignes sont renvoyées, examinez l'état de votre ramasse-miettes en ligne.
 
@@ -525,8 +521,6 @@ WHERE
 LIMIT
   20;
 ```
-
-#### Requêtes d'information relatives à la collecte des déchets en ligne {#informational-queries-related-to-online-garbage-collection}
 
 Vérifiez le nombre de tâches éligibles à l'examen en exécutant les requêtes suivantes :
 

@@ -13,10 +13,10 @@ resource has its own Markdown file, which is linked from
 
 When modifying the Markdown or API code, also update the corresponding
 [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi), by running
-`bin/rake gitlab:openapi:v2:generate` and `bin/rake gitlab:openapi:v3:generate`.
-To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:v2:check_docs` and
+`bin/rake gitlab:openapi:v3:generate`.
+To check if the OpenAPI definition needs to be updated, you can run
 `bin/rake gitlab:openapi:v3:check_docs`.
-This is also checked by the `openapi-doc-check` CI/CD job that runs for commits that modify API code or documentation.
+This is also checked by the `static-analysis` CI/CD job that runs for commits that modify API code or documentation.
 
 The Markdown topic for an API resource must include:
 
@@ -317,7 +317,7 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 
 | Methods                                         | Description |
 | ----------------------------------------------- | ----------- |
-| `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
+| `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication is needed. |
 | `--request GET`                                 | Use this method when retrieving existing objects. |
 | `--request POST`                                | Use this method when creating new objects. |
 | `--request PUT`                                 | Use this method when updating existing objects. |

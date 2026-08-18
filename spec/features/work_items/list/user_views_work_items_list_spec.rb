@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
+RSpec.describe 'Work Items List', :js, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group) }
@@ -12,7 +12,6 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
     let(:issuable_container) { '[data-testid="issuable-container"]' }
 
     before_all do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       group.add_owner(user)
     end
 

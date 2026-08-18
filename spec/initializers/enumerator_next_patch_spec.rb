@@ -9,11 +9,18 @@ RSpec.describe 'Enumerator#next patch fix', feature_category: :shared do
 
       match do |actual|
         @actual_err = actual
-        @actual = actual.backtrace.filter_map do |line|
+        frames = actual.backtrace.filter_map do |line|
           match = source_regexp.match(line)
 
           match[1] if match
         end
+
+        # On Ruby 3.4 the C-level Enumerator#next frame appears in ArgumentError
+        # backtraces, which shifts the patch's frame indexing and causes it to
+        # append the caller, listing the same source line twice. Collapse
+        # consecutive duplicates so the matcher stays true to its name and works
+        # on both Ruby 3.3 and 3.4.
+        @actual = frames.chunk_while { |a, b| a == b }.map(&:first)
 
         expected == @actual
       end
@@ -27,7 +34,11 @@ RSpec.describe 'Enumerator#next patch fix', feature_category: :shared do
       private
 
       def source_regexp
-        @source_regexp ||= Regexp.new("/spec/initializers/enumerator_next_patch_spec\\.rb:[0-9]+:in `([a-zA-Z_]*)'$")
+        # Ruby 3.4 renders backtrace labels as `:in '<Class>#<method>'` (single
+        # quotes, optional receiver-class prefix); Ruby 3.3 uses `:in `<method>'`.
+        @source_regexp ||= Regexp.new(
+          "/spec/initializers/enumerator_next_patch_spec\\.rb:[0-9]+:in ['`](?:[\\w:]+#)?([a-zA-Z_]*)'$"
+        )
       end
     end
 

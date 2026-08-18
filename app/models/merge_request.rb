@@ -177,6 +177,10 @@ class MergeRequest < ApplicationRecord
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken, :skip_branch_existence_check
 
+  # Set by MergeRequests::ReopenService so that branch existence is validated as
+  # part of the reopen save (and only then). Kept set for the rest of the request.
+  attr_accessor :require_existing_branches
+
   # Temporary flag to skip merge_request_diff creation on create.
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100390
   attr_accessor :skip_ensure_merge_request_diff
@@ -416,6 +420,7 @@ class MergeRequest < ApplicationRecord
     :importing_or_transitioning?,
     :closed_or_merged_without_fork?
   ]
+  validate :validate_required_branch_existence
   validate :validate_target_project, on: :create, unless: :importing_or_transitioning?
   validate :validate_reviewer_size_length, unless: :importing_or_transitioning?
 
@@ -434,6 +439,7 @@ class MergeRequest < ApplicationRecord
   scope :merged, -> { with_state(:merged) }
   scope :non_closed, -> { where.not(state_id: available_states[:closed]) }
   scope :open_and_closed, -> { with_state(:opened, :closed) }
+  scope :opened_or_locked, -> { with_state(:opened, :locked) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :by_sorted_source_branches, ->(branches) do
@@ -539,6 +545,7 @@ class MergeRequest < ApplicationRecord
   scope :order_merged_at_desc, -> { order_by_metric(:merged_at, 'DESC') }
   scope :order_closed_at_asc, -> { order_by_metric(:latest_closed_at, 'ASC') }
   scope :order_closed_at_desc, -> { order_by_metric(:latest_closed_at, 'DESC') }
+  scope :order_iid_asc, -> { reorder(iid: :asc) }
   scope :preload_source_project, -> { preload(:source_project) }
   scope :preload_target_project, -> { preload(:target_project) }
   scope :preload_target_project_with_namespace, -> { preload(target_project: [:namespace]) }
@@ -987,22 +994,18 @@ class MergeRequest < ApplicationRecord
   end
 
   def committer_ids_to_filter_from_approvers
-    if Feature.enabled?(:approval_committer_emails_from_diff, target_project)
-      User.by_any_email(committer_emails_from_diff).select(:id)
-    else
-      committers(with_merge_commits: true, include_author_when_signed: true).select(:id)
-    end
+    committer_users_from_diff.select(:id)
   end
   strong_memoize_attr :committer_ids_to_filter_from_approvers
 
   def committers_to_filter_from_approvers
-    if Feature.enabled?(:approval_committer_emails_from_diff, target_project)
-      User.by_any_email(committer_emails_from_diff)
-    else
-      committers(with_merge_commits: true, lazy: true, include_author_when_signed: true)
-    end
+    committer_users_from_diff
   end
   strong_memoize_attr :committers_to_filter_from_approvers
+
+  def committer_user_ids_from_diff
+    committer_users_from_diff.pluck(:id)
+  end
 
   # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
@@ -1420,13 +1423,19 @@ class MergeRequest < ApplicationRecord
   def validate_branch_existence
     return unless source_project && target_project
 
-    if source_branch.present? && !source_branch_exists?
-      errors.add(:source_branch, _('does not exist'))
-    end
+    nonexistent_branches.each { |branch| errors.add(branch, _('does not exist')) }
+  end
 
-    if target_branch.present? && !target_branch_exists?
-      errors.add(:target_branch, _('does not exist'))
-    end
+  # Enabled by MergeRequests::ReopenService (via require_existing_branches). Unlike
+  # `validate_branch_existence` (create-only), this has no source_project guard so it
+  # also covers a deleted fork, and reports a single `:base` sentence so the API and
+  # UI surface a clear reopen error.
+  def validate_required_branch_existence
+    return unless require_existing_branches
+    return unless Feature.enabled?(:prevent_reopen_merge_request_without_branch, project)
+    return if nonexistent_branches.empty?
+
+    errors.add(:base, _('Cannot reopen this merge request because the source or target branch no longer exists.'))
   end
 
   def validate_target_project
@@ -1599,12 +1608,10 @@ class MergeRequest < ApplicationRecord
       ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
     ])
 
-    skip_conflict_check = merge_when_checks_pass_strat && recheck_merge_status?
-
     {
       skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
-      skip_conflict_check: skip_conflict_check,
+      skip_conflict_check: merge_when_checks_pass_strat,
       skip_draft_check: merge_when_checks_pass_strat,
       skip_blocked_check: merge_when_checks_pass_strat,
       skip_discussions_check: merge_when_checks_pass_strat,
@@ -1848,32 +1855,29 @@ class MergeRequest < ApplicationRecord
       .map(&:id)
 
     transaction do
-      update_cached_closing_issues_from_description!(squash_and_merge_commit_issue_ids)
+      update_relations_from_description!(squash_and_merge_commit_issue_ids, :closes)
       existing_issue_ids = merge_request_closing_issues.pluck(:issue_id)
       issue_ids_to_create = squash_and_merge_commit_issue_ids - existing_issue_ids
 
-      bulk_insert_cached_closing_issues(issue_ids_to_create)
+      bulk_insert_relations(issue_ids_to_create, :closes)
     end
   end
 
-  # If the merge request closes any issues, save this information in the
-  # `MergeRequestsClosingIssues` model. This is a performance optimization.
-  # Calculating this information for a number of merge requests requires
-  # running `ReferenceExtractor` on each of them separately.
-  # This optimization does not apply to issues from external sources.
-  def cache_merge_request_closes_issues!(current_user = self.author)
+  def persist_merge_request_issues!(current_user = self.author)
     return if closed? || merged?
 
-    issues_to_close_ids = closes_issues(current_user).reject { |issue| issue.is_a?(ExternalIssue) }.map(&:id)
+    # Re-derive from the current title/description in case it changed on this instance.
+    clear_memoization(:referenced_issues_in_description)
+
+    closing_issue_ids = closes_issues(current_user).reject { |issue| issue.is_a?(ExternalIssue) }.map(&:id)
+    mentioned_issue_ids = referenced_issue_ids_in_description_excluding(current_user, closing_issue_ids)
 
     transaction do
-      merge_request_closing_issues.from_mr_description.delete_all
+      # Rebuild all from-description rows; user-created rows are left untouched.
+      merge_request_issues.from_mr_description.delete_all
 
-      updated_issue_ids = update_cached_closing_issues_from_description!(issues_to_close_ids)
-      issue_ids_to_create = issues_to_close_ids - updated_issue_ids
-      next unless issue_ids_to_create.any?
-
-      bulk_insert_cached_closing_issues(issue_ids_to_create)
+      persist_description_issue_relations!(closing_issue_ids, :closes)
+      persist_description_issue_relations!(mentioned_issue_ids, :mentioned)
     end
   end
 
@@ -1912,12 +1916,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def issues_mentioned_but_not_closing(current_user)
-    return [] unless target_branch == project.default_branch
+    closing_issue_ids = visible_closing_issues_for(current_user).map(&:id).to_set
 
-    ext = Gitlab::ReferenceExtractor.new(project, current_user)
-    ext.analyze("#{title}\n#{description}")
-
-    ext.issues - visible_closing_issues_for(current_user)
+    referenced_issues_in_description(current_user).reject { |issue| closing_issue_ids.include?(issue.id) }
   end
 
   def related_issues(user)
@@ -1929,7 +1930,7 @@ class MergeRequest < ApplicationRecord
     ext = Gitlab::ReferenceExtractor.new(project, user)
     ext.analyze(messages.join("\n"))
 
-    ext.issues
+    issues_from(ext)
   end
 
   def target_project_path
@@ -2042,7 +2043,7 @@ class MergeRequest < ApplicationRecord
   def has_ci?
     return false if has_no_commits?
 
-    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
+    !!(head_pipeline_id || pipelines_for_mergeability.any? || source_project&.ci_integration)
   end
 
   def branch_missing?
@@ -2224,6 +2225,12 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def pipelines_for_mergeability
+    pipelines = all_pipelines
+    pipelines = pipelines.with_pipeline_source(:merge_request_event) if project.ci_skip_branch_pipelines_for_mrs?
+    pipelines
+  end
+
   def update_head_pipeline
     find_diff_head_pipeline.try do |pipeline|
       self.head_pipeline = pipeline
@@ -2384,8 +2391,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!diff_head_pipeline&.complete_or_manual? &&
-      pipeline_has_report_in_self_or_descendants?(:sast)
+    has_sast_reports_for?(diff_head_pipeline)
+  end
+
+  def has_sast_reports_for?(pipeline)
+    !!pipeline&.complete_or_manual? &&
+      pipeline_has_report_in_self_or_descendants?(:sast, pipeline)
   end
 
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
@@ -2645,7 +2656,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def find_diff_head_pipeline
-    all_pipelines.for_sha_or_source_sha(diff_head_sha).first
+    pipelines_for_mergeability.for_sha_or_source_sha(diff_head_sha).first
   end
 
   def real_time_notes_enabled?
@@ -2657,7 +2668,30 @@ class MergeRequest < ApplicationRecord
   end
 
   def banzai_render_context(field)
-    super.merge(label_url_method: :project_merge_requests_url)
+    super.merge(label_url_method: :project_merge_requests_url, merge_request: self)
+  end
+
+  # When the experiment flag is on for this project, treat the cached HTML as
+  # stale so `title_html`/`description_html` are regenerated and re-persisted,
+  # letting us observe the cold-cache regeneration path for a selected project.
+  #
+  # We only force staleness until the first regeneration on this instance:
+  # `refresh_markdown_cache` re-reads these fields while collecting mentions,
+  # and without this guard that read would recurse back into regeneration. A
+  # freshly loaded instance (a new request) regenerates again, so reads keep
+  # hitting the cold-cache path per request. See the
+  # `regenerate_merge_request_cached_html` rollout.
+  def cached_html_up_to_date?(markdown_field)
+    return super unless always_regenerate_cached_html?
+    return super if @markdown_cache_regenerated
+
+    false
+  end
+
+  def refresh_markdown_cache
+    @markdown_cache_regenerated = true if always_regenerate_cached_html?
+
+    super
   end
 
   def ensure_metrics!
@@ -2997,6 +3031,19 @@ class MergeRequest < ApplicationRecord
 
   private
 
+  def nonexistent_branches
+    [].tap do |branches|
+      branches << :source_branch if source_branch.present? && !source_branch_exists?
+      branches << :target_branch if target_branch.present? && !target_branch_exists?
+    end
+  end
+
+  def always_regenerate_cached_html?
+    strong_memoize(:always_regenerate_cached_html) do
+      Feature.enabled?(:regenerate_merge_request_cached_html, project)
+    end
+  end
+
   # Runs the block with `allow_broken` enabled, restoring the previous value
   # afterwards. Used to bypass the structural validations that would otherwise
   # block recovering a stuck `locked` merge request. Keep this private: a public
@@ -3028,12 +3075,12 @@ class MergeRequest < ApplicationRecord
     Gitlab::EventStore.publish(cloud_event) if cloud_event
   end
 
+  def committer_users_from_diff
+    User.by_any_email(committer_emails_from_diff)
+  end
+
   def committer_emails_from_diff
     return [] unless merge_request_diff&.persisted?
-
-    unless Feature.enabled?(:cache_committer_emails_from_diff, target_project)
-      return uncached_committer_emails_from_diff
-    end
 
     # The committer set of a diff is immutable once the diff is created, so the
     # result is cached keyed by the merge_request_diff id. A new push creates a
@@ -3061,6 +3108,21 @@ class MergeRequest < ApplicationRecord
   strong_memoize_attr :committer_emails_from_diff
 
   def uncached_committer_emails_from_diff
+    # The direct SQL extraction below has a history of load incidents on the
+    # read replicas. Keep approval_committer_emails_from_diff as a rollback
+    # lever: when it is disabled we resolve committer emails from the loaded
+    # diff commits instead. Both paths sit behind committer_emails_from_diff's
+    # per-diff cache, so the fallback no longer reintroduces the original call
+    # rate that motivated the SQL path.
+    if Feature.enabled?(:approval_committer_emails_from_diff, target_project)
+      committer_emails_from_diff_via_sql
+    else
+      preload_commits_metadata
+      commits.committer_emails(with_merge_commits: true, include_author_when_signed: true)
+    end
+  end
+
+  def committer_emails_from_diff_via_sql
     committer_emails_query =
       if read_new_commits_table?
         committer_emails_via_metadata_query
@@ -3069,8 +3131,7 @@ class MergeRequest < ApplicationRecord
       end
 
     # This is a pure read used only for approval eligibility filtering, which
-    # can tolerate a few seconds of replication lag, and it is gated behind the
-    # approval_committer_emails_from_diff feature flag. We send it to a replica
+    # can tolerate a few seconds of replication lag. We send it to a replica
     # via select_all, which ConnectionProxy routes through the load balancer's
     # read path; the previous select_values fell through to #method_missing and
     # was treated as ambiguous, so it ran on the primary. The SQL is unchanged.
@@ -3109,29 +3170,61 @@ class MergeRequest < ApplicationRecord
       .where(u[:email].not_eq(nil))
   end
 
-  def update_cached_closing_issues_from_description!(issues_to_close_ids)
-    # These might have been created manually from the work item interface
-    issue_ids_to_update = merge_request_closing_issues
-      .where(from_mr_description: false, issue_id: issues_to_close_ids)
+  def persist_description_issue_relations!(issue_ids, link_type)
+    promoted_ids = update_relations_from_description!(issue_ids, link_type)
+    issue_ids_to_create = issue_ids - promoted_ids
+    return unless issue_ids_to_create.any?
+
+    bulk_insert_relations(issue_ids_to_create, link_type)
+  end
+
+  def referenced_issue_ids_in_description_excluding(current_user, excluded_ids)
+    referenced_issues_in_description(current_user)
+      .filter_map { |issue| issue.id if issue.is_a?(Issue) } - excluded_ids
+  end
+
+  def referenced_issues_in_description(current_user)
+    # Guard before memoizing so a stale [] is never cached.
+    return [] unless target_branch == project.default_branch
+
+    # ReferenceExtractor is expensive.
+    strong_memoize_with(:referenced_issues_in_description, current_user&.id) do
+      ext = Gitlab::ReferenceExtractor.new(project, current_user)
+      ext.analyze("#{title}\n#{description}")
+
+      issues_from(ext)
+    end
+  end
+
+  def issues_from(extractor)
+    extractor.issues_and_work_items.select do |issue|
+      !issue.is_a?(Issue) ||
+        WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.include?(issue.issue_type)
+    end
+  end
+
+  def update_relations_from_description!(issue_ids, link_type)
+    issue_ids_to_update = merge_request_issues
+      .where(from_mr_description: false, link_type: link_type, issue_id: issue_ids)
       .pluck(:issue_id)
 
     if issue_ids_to_update.any?
-      merge_request_closing_issues
-        .where(issue_id: issue_ids_to_update)
+      merge_request_issues
+        .where(link_type: link_type, issue_id: issue_ids_to_update)
         .update_all(from_mr_description: true)
     end
 
     issue_ids_to_update
   end
 
-  def bulk_insert_cached_closing_issues(issue_ids_to_create)
+  def bulk_insert_relations(issue_ids_to_create, link_type)
     now = Time.zone.now
     new_associations = issue_ids_to_create.map do |issue_id|
       MergeRequestsClosingIssues.new(
         issue_id: issue_id,
         merge_request_id: id,
         from_mr_description: true,
-        link_type: :closes,
+        link_type: link_type,
         created_at: now,
         updated_at: now
       )
@@ -3300,8 +3393,8 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def pipeline_has_report_in_self_or_descendants?(report_type)
-    !!diff_head_pipeline
+  def pipeline_has_report_in_self_or_descendants?(report_type, pipeline = diff_head_pipeline)
+    !!pipeline
       &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
       &.exists?
   end

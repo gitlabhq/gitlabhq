@@ -143,6 +143,65 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
       end
     end
 
+    context "when commenting on a line in a file larger than 1 MB" do
+      # A file larger than 1 MB is `large?` in Gitlab::BlobHelper, so `blob.lines`
+      # is empty even though `blob.data` is present. Creating a diff note must
+      # still resolve the line code by counting from the fetched blob data.
+      let_it_be(:large_file_project) { create(:project, :repository) }
+      let(:position) do
+        build(
+          :text_diff_position,
+          file: 'long-file',
+          old_line: 1,
+          new_line: 1,
+          diff_refs: large_file_mr.diff_refs
+        )
+      end
+
+      let_it_be(:large_file_mr) do
+        owner = large_file_project.first_owner
+        repo = large_file_project.repository
+        lines = Array.new(15_000) { |i| "line-#{i}-#{'x' * 70}" } # > 1 MB
+
+        repo.create_file(owner, 'long-file', "#{lines.join("\n")}\n",
+          message: 'Add long file', branch_name: large_file_project.default_branch)
+
+        changed = lines.dup
+        changed[15] = "line-15-CHANGED-#{'x' * 60}" # change near the top (line 16)
+        repo.update_file(owner, 'long-file', "#{changed.join("\n")}\n",
+          message: 'Change line 16', branch_name: 'branch-01',
+          start_branch_name: large_file_project.default_branch)
+
+        create(:merge_request, source_project: large_file_project, target_project: large_file_project,
+          source_branch: 'branch-01', target_branch: large_file_project.default_branch)
+      end
+
+      before_all do
+        large_file_project.add_developer(user)
+      end
+
+      it "creates a diff note on line 1", :aggregate_failures do
+        post api("/projects/#{large_file_project.id}/merge_requests/#{large_file_mr.iid}/discussions", user),
+          params: { body: 'comment on line 1', position: position.to_h }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['notes'].first['type']).to eq('DiffNote')
+      end
+
+      context 'when the unfold_diff_note_large_blob feature flag is disabled' do
+        before do
+          stub_feature_flags(unfold_diff_note_large_blob: false)
+        end
+
+        it "returns 400 because the line code cannot be resolved" do
+          post api("/projects/#{large_file_project.id}/merge_requests/#{large_file_mr.iid}/discussions", user),
+            params: { body: 'comment on line 1', position: position.to_h }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
     context "when position_type is file" do
       it "creates a new diff note" do
         position = diff_note.position.to_h.merge({ position_type: 'file' }).except(:ignore_whitespace_change)

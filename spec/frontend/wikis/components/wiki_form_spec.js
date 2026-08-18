@@ -47,7 +47,7 @@ describe('WikiForm', () => {
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCancelButton = () => wrapper.findByTestId('wiki-cancel-button');
   const findTemplatesDropdown = () => wrapper.findComponent(WikiTemplate);
-  const findPathGenerationToggle = () => wrapper.findByTestId('path-generation-toggle');
+  const findPathGenerationToggle = () => wrapper.findComponentByTestId('path-generation-toggle');
 
   const getFormData = () => new FormData(findForm().element);
 
@@ -140,7 +140,6 @@ describe('WikiForm', () => {
     wrapper = mountFn(WikiForm, {
       apolloProvider,
       provide: {
-        isEditingPath: true,
         templates,
         formatOptions,
         pageInfo: {
@@ -175,6 +174,7 @@ describe('WikiForm', () => {
 
   afterEach(() => {
     mock.restore();
+    localStorage.clear();
   });
 
   it('displays markdown editor', () => {
@@ -421,19 +421,20 @@ describe('WikiForm', () => {
     });
   });
 
-  describe('cancel button state', () => {
-    it.each`
-      persisted | redirectLink
-      ${false}  | ${'/project/path/-/wikis'}
-      ${true}   | ${'/project/path/-/wikis/home'}
-    `(
-      'when persisted=$persisted, redirects the user to appropriate path',
-      ({ persisted, redirectLink }) => {
-        createWrapper({ persisted });
+  describe('cancel button', () => {
+    it.each([true, false])('does not have an href when persisted=%s', (persisted) => {
+      createWrapper({ persisted });
 
-        expect(findCancelButton().attributes().href).toBe(redirectLink);
-      },
-    );
+      expect(findCancelButton().attributes().href).toBeUndefined();
+    });
+
+    it('emits is-editing=false when clicked', async () => {
+      createWrapper();
+
+      await findCancelButton().trigger('click');
+
+      expect(wrapper.emitted('is-editing')).toEqual([[false]]);
+    });
   });
 
   it.each`
@@ -816,7 +817,7 @@ describe('WikiForm', () => {
       await waitForPromises();
       mutateSpy = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
 
-      wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
+      wrapper.findComponentByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
     });
 
     afterEach(() => {
@@ -824,7 +825,7 @@ describe('WikiForm', () => {
     });
 
     it('shows the commit message modal', () => {
-      expect(wrapper.findByTestId('commit-message-modal').props('visible')).toBe(true);
+      expect(wrapper.findComponentByTestId('commit-message-modal').props('visible')).toBe(true);
     });
 
     it('shows the input field', () => {
@@ -850,7 +851,7 @@ describe('WikiForm', () => {
     });
 
     describe('auto commit message toggle', () => {
-      const findToggle = () => wrapper.findByTestId('auto-commit-message-toggle');
+      const findToggle = () => wrapper.findComponentByTestId('auto-commit-message-toggle');
 
       it('renders the toggle in the modal', () => {
         expect(findToggle().exists()).toBe(true);
@@ -900,7 +901,7 @@ describe('WikiForm', () => {
       await waitForPromises();
       submitSpy = jest.spyOn(findForm().element, 'submit');
 
-      wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
+      wrapper.findComponentByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
 
       await waitForPromises();
 
@@ -949,7 +950,7 @@ describe('WikiForm', () => {
         await waitForPromises();
         const submitSpy = jest.spyOn(findForm().element, 'submit');
 
-        wrapper.findByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
+        wrapper.findComponentByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
         await nextTick();
 
         expect(submitSpy).toHaveBeenCalled();
@@ -963,10 +964,10 @@ describe('WikiForm', () => {
         await waitForPromises();
         const submitSpy = jest.spyOn(findForm().element, 'submit');
 
-        wrapper.findByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
+        wrapper.findComponentByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
         await nextTick();
 
-        expect(wrapper.findByTestId('commit-message-modal').props('visible')).toBe(true);
+        expect(wrapper.findComponentByTestId('commit-message-modal').props('visible')).toBe(true);
         expect(submitSpy).not.toHaveBeenCalled();
       });
 
@@ -977,7 +978,7 @@ describe('WikiForm', () => {
         await waitForPromises();
         const spy = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
 
-        wrapper.findByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
+        wrapper.findComponentByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
         await nextTick();
 
         expect(spy).not.toHaveBeenCalled();
@@ -1006,7 +1007,9 @@ describe('WikiForm', () => {
           submitSpy = jest.spyOn(findForm().element, 'submit');
           mutateSpyLocal = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
 
-          wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', selectedMode);
+          wrapper
+            .findComponentByTestId('wiki-submit-message-mode')
+            .vm.$emit('select', selectedMode);
           await waitForPromises();
         });
 
@@ -1016,7 +1019,9 @@ describe('WikiForm', () => {
 
         if (shouldOpenCommitMessageModal) {
           it('opens commit message modal', () => {
-            expect(wrapper.findByTestId('commit-message-modal').props('visible')).toBe(true);
+            expect(wrapper.findComponentByTestId('commit-message-modal').props('visible')).toBe(
+              true,
+            );
             expect(submitSpy).not.toHaveBeenCalled();
           });
         } else {
@@ -1053,15 +1058,19 @@ describe('WikiForm', () => {
               }),
             );
 
-            wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', selectedMode);
+            wrapper
+              .findComponentByTestId('wiki-submit-message-mode')
+              .vm.$emit('select', selectedMode);
             await nextTick();
 
-            expect(wrapper.findByTestId('wiki-submit-button').props('loading')).toBe(true);
+            expect(wrapper.findComponentByTestId('wiki-submit-button').props('loading')).toBe(true);
 
             resolveMutate();
             await waitForPromises();
 
-            expect(wrapper.findByTestId('wiki-submit-button').props('loading')).toBe(false);
+            expect(wrapper.findComponentByTestId('wiki-submit-button').props('loading')).toBe(
+              false,
+            );
           });
         } else {
           it('does not update the preference via mutation', () => {
@@ -1081,7 +1090,6 @@ describe('WikiForm', () => {
           provide: {
             wikiUrl: '_sidebar',
             pagePersisted: true,
-            isEditingPath: true,
           },
         });
       });
@@ -1155,6 +1163,125 @@ describe('WikiForm', () => {
         expect(wrapper.findByTestId('wiki-submit-button').text()).toBe(expectedText);
       },
     );
+  });
+
+  describe('autosave drafts', () => {
+    const lastCommitSha = 'sha-abc123';
+    const persistedPageInfo = { ...pageInfoPersisted, lastCommitSha };
+    const draftKey = (field) => `autosave/${persistedPageInfo.path}/${field}`;
+    const lockVersionKey = (field) => `${draftKey(field)}/lockVersion`;
+
+    const seedDraft = ({
+      title = 'draft title',
+      content = 'draft content',
+      format = 'markdown',
+      commit = 'draft commit',
+      lockVersion = lastCommitSha,
+    } = {}) => {
+      localStorage.setItem(draftKey('title'), title);
+      localStorage.setItem(draftKey('content'), content);
+      localStorage.setItem(draftKey('format'), format);
+      localStorage.setItem(draftKey('commit'), commit);
+      if (lockVersion) {
+        localStorage.setItem(lockVersionKey('title'), lockVersion);
+      }
+    };
+
+    describe('on submit', () => {
+      it('persists drafts to localStorage before submitting the form', async () => {
+        createWrapper({ persisted: true, pageInfo: { lastCommitSha } });
+        await waitForPromises();
+
+        const submitSpy = jest.spyOn(findForm().element, 'submit').mockImplementation(() => {});
+
+        await inputTitle('Updated title');
+        findMarkdownEditor().vm.$emit('input', 'Updated content');
+        await nextTick();
+
+        await triggerFormSubmit();
+        await nextTick();
+
+        expect(localStorage.getItem(draftKey('title'))).toBe('Updated title');
+        expect(localStorage.getItem(draftKey('content'))).toBe('Updated content');
+        expect(localStorage.getItem(draftKey('format'))).toBe('markdown');
+        expect(localStorage.getItem(lockVersionKey('title'))).toBe(lastCommitSha);
+        expect(submitSpy).toHaveBeenCalled();
+      });
+
+      it('does not clear drafts on beforeunload while a submit is in flight', async () => {
+        createWrapper({ persisted: true, pageInfo: { lastCommitSha } });
+        await waitForPromises();
+
+        jest.spyOn(findForm().element, 'submit').mockImplementation(() => {});
+
+        await inputTitle('Updated title');
+        findMarkdownEditor().vm.$emit('input', 'Updated content');
+        await nextTick();
+
+        await triggerFormSubmit();
+        await nextTick();
+
+        window.dispatchEvent(new Event('beforeunload'));
+
+        expect(localStorage.getItem(draftKey('title'))).toBe('Updated title');
+        expect(localStorage.getItem(draftKey('content'))).toBe('Updated content');
+      });
+    });
+
+    describe('on mount', () => {
+      it('restores drafts whose lockVersion matches pageInfo.lastCommitSha', async () => {
+        seedDraft({
+          title: 'saved draft title',
+          content: 'saved draft content',
+          lockVersion: lastCommitSha,
+        });
+
+        createWrapper({
+          persisted: true,
+          mountFn: mountExtended,
+          pageInfo: { lastCommitSha },
+        });
+        await waitForPromises();
+
+        expect(findTitle().element.value).toBe('saved draft title');
+        expect(findMarkdownEditor().props('value')).toBe('saved draft content');
+      });
+
+      it('discards stale drafts when the stored lockVersion no longer matches', async () => {
+        seedDraft({
+          title: 'stale draft title',
+          content: 'stale draft content',
+          lockVersion: 'old-sha',
+        });
+
+        createWrapper({
+          persisted: true,
+          mountFn: mountExtended,
+          pageInfo: { lastCommitSha },
+        });
+        await waitForPromises();
+
+        expect(findTitle().element.value).toBe(pageInfoPersisted.title);
+        expect(findMarkdownEditor().props('value')).toBe(pageInfoPersisted.content);
+        expect(localStorage.getItem(draftKey('title'))).toBeNull();
+        expect(localStorage.getItem(draftKey('content'))).toBeNull();
+        expect(localStorage.getItem(draftKey('format'))).toBeNull();
+        expect(localStorage.getItem(draftKey('commit'))).toBeNull();
+        expect(localStorage.getItem(lockVersionKey('title'))).toBeNull();
+      });
+
+      it('restores drafts for a new (non-persisted) page even without a lockVersion', async () => {
+        const newDraftKey = (field) => `autosave/${pageInfoNew.createPath}/${field}`;
+        localStorage.setItem(newDraftKey('title'), 'new page draft');
+        localStorage.setItem(newDraftKey('content'), 'new page content');
+
+        createWrapper({ mountFn: mountExtended });
+        await waitForPromises();
+
+        expect(findTitle().element.value).toBe('new page draft');
+        expect(findMarkdownEditor().props('value')).toBe('new page content');
+      });
+    });
   });
 
   describe('keyboard shortcut form submission', () => {

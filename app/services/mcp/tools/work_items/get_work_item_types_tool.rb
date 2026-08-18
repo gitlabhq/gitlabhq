@@ -17,7 +17,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 
@@ -28,11 +28,11 @@ module Mcp
           return processed if processed[:isError]
 
           types = extract_work_item_types(processed[:structuredContent])
-          return ::Mcp::Tools::Response.error("Work item types not found or inaccessible") if types.nil?
+          return ::Mcp::Tools::Base::Response.error("Work item types not found or inaccessible") if types.nil?
 
           payload = { 'workItemTypes' => types }
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(payload) }]
-          ::Mcp::Tools::Response.success(formatted_content, payload)
+          ::Mcp::Tools::Base::Response.success(formatted_content, payload)
         end
 
         def extract_work_item_types(structured_content)

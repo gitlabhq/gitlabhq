@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { escape } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -21,8 +22,9 @@ export default {
     NoteAttachment,
     NoteForm,
     Suggestions,
-    DuoCodeReviewFeedback: () =>
-      import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    DuoCodeReviewFeedback: defineAsyncComponent(
+      () => import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    ),
   },
   directives: {
     SafeHtml,
@@ -72,7 +74,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancelForm', 'handleFormUpdate'],
+  emits: ['cancel-form', 'handleFormUpdate'],
   computed: {
     ...mapState(useLegacyDiffs, ['suggestionCommitMessage']),
     ...mapState(useMrNotes, ['failedToLoadMetadata']),
@@ -175,7 +177,7 @@ export default {
       this.$emit('handleFormUpdate', { noteText, parentElement, callback, resolveDiscussion });
     },
     formCancelHandler(shouldConfirm, isDirty) {
-      this.$emit('cancelForm', { shouldConfirm, isDirty });
+      this.$emit('cancel-form', { shouldConfirm, isDirty });
     },
     applySuggestion({ suggestionId, flashContainer, callback = () => {}, message }) {
       const { discussion_id: discussionId, id: noteId } = this.note;
@@ -225,9 +227,9 @@ export default {
       :default-commit-message="commitMessage"
       :failed-to-load-metadata="failedToLoadMetadata"
       @apply="applySuggestion"
-      @applyBatch="applySuggestionBatch"
-      @addToBatch="addSuggestionToBatch"
-      @removeFromBatch="removeSuggestionFromBatch"
+      @apply-batch="applySuggestionBatch"
+      @add-to-batch="addSuggestionToBatch"
+      @remove-from-batch="removeSuggestionFromBatch"
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
     <duo-code-review-feedback
@@ -252,7 +254,7 @@ export default {
       :autosave-key="autosaveKey"
       :restore-from-autosave="restoreFromAutosave"
       @handleFormUpdate="handleFormUpdate"
-      @cancelForm="formCancelHandler"
+      @cancel-form="formCancelHandler"
     />
     <!-- eslint-disable vue/no-mutating-props -->
     <textarea

@@ -91,7 +91,7 @@ RSpec.describe Operations::FeatureFlags::UserList do
       expect(described_class.count).to eq(1)
       expect(::Operations::FeatureFlags::StrategyUserList.count).to eq(1)
       expect(strategy.reload.user_list).to eq(user_list)
-      expect(strategy.valid?).to eq(true)
+      expect(strategy.valid?).to be(true)
     end
   end
 

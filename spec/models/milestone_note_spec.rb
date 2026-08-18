@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MilestoneNote do
   describe '.from_event' do
     let(:author) { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let(:noteable) { create(:issue, author: author, project: project) }
     let(:event) { create(:resource_milestone_event, issue: noteable) }
 

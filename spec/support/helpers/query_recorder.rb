@@ -18,15 +18,17 @@ module ActiveRecord
     end
 
     def record(&block)
-      # Enable :line so find_query source attribution works even when globally disabled (e.g. CI).
-      # See config/initializers/0_marginalia.rb
-      line_was_present = Marginalia::Comment.components.include?(:line)
-      Marginalia::Comment.components << :line unless line_was_present
+      # Enable the :line tag so find_query source attribution works even when
+      # the tag is globally disabled (e.g. CI). See lib/gitlab/query_logs.rb
+      tags_were = ActiveRecord::QueryLogs.tags
+      unless tags_were.include?(Gitlab::QueryLogs::LINE_TAG)
+        ActiveRecord::QueryLogs.tags = tags_were + [Gitlab::QueryLogs::LINE_TAG]
+      end
 
       # force replacement of bind parameters to give tests the ability to check for ids
       ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
     ensure
-      Marginalia::Comment.components.delete(:line) unless line_was_present
+      ActiveRecord::QueryLogs.tags = tags_were
     end
 
     def show_backtrace(values, duration)
@@ -50,7 +52,7 @@ module ActiveRecord
     end
 
     def get_sql_source(sql)
-      matches = sql.match(%r{,line:(?<line>.*):in\s+`(?<method>.*)'\*/})
+      matches = sql.match(%r{,line:(?<line>.*):in\s+['`](?<method>.*)'\*/})
       matches ? [matches[:line], matches[:method]] : UNKNOWN
     end
 

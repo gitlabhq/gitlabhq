@@ -4,6 +4,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { groupsPath, initialSelectionPropValidator } from './utils';
 import {
   GROUP_TOGGLE_TEXT,
@@ -19,6 +20,7 @@ export default {
     GlAlert,
     EntitySelect,
   },
+  mixins: [glListenersMixin],
   props: {
     apiParams: {
       type: Object,
@@ -148,7 +150,7 @@ export default {
     :fetch-initial-selection="fetchInitialGroup"
     :block="block"
     :fluid-width="fluidWidth"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #error>
       <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" @dismiss="dismissError">{{

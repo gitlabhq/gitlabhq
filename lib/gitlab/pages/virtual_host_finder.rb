@@ -30,7 +30,7 @@ module Gitlab
 
         return unless project&.pages_deployed?
 
-        ::Pages::VirtualDomain.new(projects: [project], namespace: project.namespace)
+        ::Pages::VirtualDomain.new(projects: [project], namespace: project.root_ancestor)
       end
 
       def by_namespace_domain(name)
@@ -54,7 +54,7 @@ module Gitlab
         ::Pages::VirtualDomain.new(
           projects: [domain.project],
           domain: domain,
-          namespace: domain.project.namespace
+          namespace: domain.project.root_ancestor
         )
       end
     end

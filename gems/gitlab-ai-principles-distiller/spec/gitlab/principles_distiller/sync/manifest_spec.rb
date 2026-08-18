@@ -35,7 +35,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
         File.write(File.join(principles_dir, 'test.md'), "---\nsource_checksum: abc123\n---\n# Test")
       end
 
-      it { is_expected.to eq({ 'test' => { checksum: 'abc123', distilled_at_sha: nil } }) }
+      it { is_expected.to eq({ 'test' => { checksum: 'abc123', distilled_at_sha: nil, source_paths: [] } }) }
     end
 
     context 'with file containing source_checksum and distilled_at_sha frontmatter' do
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
           "---\nsource_checksum: abc123\ndistilled_at_sha: def456\n---\n# Test")
       end
 
-      it { is_expected.to eq({ 'test' => { checksum: 'abc123', distilled_at_sha: 'def456' } }) }
+      it { is_expected.to eq({ 'test' => { checksum: 'abc123', distilled_at_sha: 'def456', source_paths: [] } }) }
     end
 
     context 'with file without frontmatter' do
@@ -528,6 +528,102 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     end
   end
 
+  describe '.prior_source_paths' do
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      stub_const("#{described_class}::PRINCIPLES_DIR", 'principles')
+      FileUtils.mkdir_p(File.join(tmpdir, 'principles'))
+    end
+
+    it 'returns the paths from the authoritative sources footer' do
+      File.write(File.join(tmpdir, 'principles', 'qa.md'), <<~MARKDOWN)
+        ---
+        source_checksum: abc123
+        ---
+        # QA Principles
+
+        ## Authoritative sources
+
+        For the full picture, see:
+
+        - doc/qa.md
+        - doc/shared.md
+      MARKDOWN
+
+      expect(manifest.prior_source_paths('qa')).to eq(%w[doc/qa.md doc/shared.md])
+    end
+
+    it 'returns an empty list when the file or footer is missing' do
+      expect(manifest.prior_source_paths('missing')).to eq([])
+
+      File.write(File.join(tmpdir, 'principles', 'qa.md'), "# QA Principles\n\n- Do the thing\n- Another rule\n")
+      expect(manifest.prior_source_paths('qa')).to eq([])
+    end
+
+    it 'returns an empty list when the footer has no source bullets' do
+      File.write(File.join(tmpdir, 'principles', 'qa.md'), "# QA Principles\n\n## Authoritative sources\n")
+
+      expect(manifest.prior_source_paths('qa')).to eq([])
+    end
+  end
+
+  describe '.new_sources_for' do
+    let(:config) { { 'sources' => [{ 'path' => 'doc/old.md' }, { 'path' => 'doc/new.md' }] } }
+
+    before do
+      allow(manifest).to receive(:prior_source_paths).with('qa').and_return(prior_sources)
+    end
+
+    context 'with a prior footer' do
+      let(:prior_sources) { ['doc/old.md'] }
+
+      it 'returns only genuinely newly declared sources' do
+        expect(manifest.new_sources_for('qa', config)).to eq([{ 'path' => 'doc/new.md' }])
+      end
+    end
+
+    context 'without a prior footer' do
+      let(:prior_sources) { [] }
+
+      it 'treats every source as newly declared' do
+        expect(manifest.new_sources_for('qa', config)).to eq(config['sources'])
+      end
+    end
+  end
+
+  describe '.affected_principles' do
+    let(:config) { { 'sources' => [{ 'path' => 'doc/old.md' }, { 'path' => 'doc/new.md' }] } }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      stub_const("#{described_class}::PRINCIPLES_DIR", 'principles')
+      FileUtils.mkdir_p(File.join(tmpdir, 'principles'))
+      manifest.data = { 'principles' => { 'qa' => config } }
+      allow(manifest).to receive(:compute_checksum).with(config).and_return('current')
+    end
+
+    it 'marks only sources absent from the prior footer as newly declared' do
+      File.write(File.join(tmpdir, 'principles', 'qa.md'), <<~MARKDOWN)
+        ---
+        source_checksum: prior
+        ---
+        ## Authoritative sources
+
+        - doc/old.md
+      MARKDOWN
+
+      affected = manifest.affected_principles
+
+      expect(affected.dig('qa', :new_sources)).to eq([{ 'path' => 'doc/new.md' }])
+    end
+
+    it 'marks every source as newly declared without a prior footer' do
+      affected = manifest.affected_principles
+
+      expect(affected.dig('qa', :new_sources)).to eq(config['sources'])
+    end
+  end
+
   describe '.generate_agents_md_context_loading' do
     let(:manifest_data) do
       {
@@ -827,33 +923,33 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     end
   end
 
-  describe '.principle_ping_team?' do
+  describe '.principle_fallback_ping_team?' do
     before do
       manifest.data = {
         'principles' => {
           'small' => { 'owner_team' => '@a/small' },
-          'large' => { 'owner_team' => '@a/large', 'ping_team' => false }
+          'large' => { 'owner_team' => '@a/large', 'fallback_ping_team' => false }
         }
       }
     end
 
-    it 'defaults to true when ping_team is absent' do
-      expect(manifest.principle_ping_team?('small')).to be(true)
+    it 'defaults to true when fallback_ping_team is absent' do
+      expect(manifest.principle_fallback_ping_team?('small')).to be(true)
     end
 
-    it 'returns false when ping_team is explicitly false' do
-      expect(manifest.principle_ping_team?('large')).to be(false)
+    it 'returns false when fallback_ping_team is explicitly false' do
+      expect(manifest.principle_fallback_ping_team?('large')).to be(false)
     end
   end
 
-  describe '.team_pings? and .team_display' do
+  describe '.team_fallback_pings? and .team_display' do
     before do
       manifest.data = {
         'principles' => {
-          'be-a' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false },
-          'be-b' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'ping_team' => false },
+          'be-a' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'fallback_ping_team' => false },
+          'be-b' => { 'owner_team' => '@gitlab-org/maintainers/rails-backend', 'fallback_ping_team' => false },
           'db' => { 'owner_team' => '@gitlab-org/maintainers/database' },
-          'mixed-a' => { 'owner_team' => '@a/mixed', 'ping_team' => false },
+          'mixed-a' => { 'owner_team' => '@a/mixed', 'fallback_ping_team' => false },
           'mixed-b' => { 'owner_team' => '@a/mixed' }
         }
       }
@@ -861,14 +957,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
 
     context 'when every principle owned by the handle opts out' do
       it 'does not ping and displays the team_slug', :aggregate_failures do
-        expect(manifest.team_pings?('@gitlab-org/maintainers/rails-backend')).to be(false)
+        expect(manifest.team_fallback_pings?('@gitlab-org/maintainers/rails-backend')).to be(false)
         expect(manifest.team_display('@gitlab-org/maintainers/rails-backend')).to eq('rails-backend')
       end
     end
 
     context 'when the handle has no opt-out' do
       it 'pings and displays the raw handle', :aggregate_failures do
-        expect(manifest.team_pings?('@gitlab-org/maintainers/database')).to be(true)
+        expect(manifest.team_fallback_pings?('@gitlab-org/maintainers/database')).to be(true)
         expect(manifest.team_display('@gitlab-org/maintainers/database'))
           .to eq('@gitlab-org/maintainers/database')
       end
@@ -876,7 +972,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
 
     context 'when only some principles owned by the handle opt out' do
       it 'still pings (any opt-in wins)', :aggregate_failures do
-        expect(manifest.team_pings?('@a/mixed')).to be(true)
+        expect(manifest.team_fallback_pings?('@a/mixed')).to be(true)
         expect(manifest.team_display('@a/mixed')).to eq('@a/mixed')
       end
     end

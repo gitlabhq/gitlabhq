@@ -1,10 +1,9 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { isEmpty } from 'lodash-es';
 import {
   GlAlert,
   GlButton,
-  GlLink,
-  GlSprintf,
   GlTooltipDirective,
   GlEmptyState,
   GlIntersectionObserver,
@@ -13,6 +12,7 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DuoWorkItemToMrAction from 'ee_component/ai/shared/widgets/duo_work_item_to_mr_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import PanelActionsPortal from '~/vue_shared/components/panel_actions_portal.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
@@ -27,6 +27,7 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   i18n,
   WIDGET_TYPE_DESCRIPTION,
@@ -125,9 +126,8 @@ export default {
     GlButton,
     GlEmptyState,
     GlIntersectionObserver,
-    GlLink,
-    GlSprintf,
     LocalStorageSync,
+    PanelActionsPortal,
     WorkItemActions,
     TodosToggle,
     WorkItemNotificationsWidget,
@@ -138,8 +138,12 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemRelationships,
-    WorkItemErrorTracking: () => import('~/work_items/components/work_item_error_tracking.vue'),
-    WorkItemLinkedResources: () => import('~/work_items/components/work_item_linked_resources.vue'),
+    WorkItemErrorTracking: defineAsyncComponent(
+      () => import('~/work_items/components/work_item_error_tracking.vue'),
+    ),
+    WorkItemLinkedResources: defineAsyncComponent(
+      () => import('~/work_items/components/work_item_linked_resources.vue'),
+    ),
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -148,12 +152,13 @@ export default {
     WorkItemDetailPanel,
     WorkItemDevelopment,
     WorkItemCreateBranchMergeRequestSplitButton,
-    WorkItemVulnerabilities: () =>
-      import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
+    WorkItemVulnerabilities: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
+    ),
     WorkItemMetadataProvider,
     DuoWorkItemToMrAction,
   },
-  mixins: [glFeatureFlagsMixin(), trackingMixin],
+  mixins: [glFeatureFlagsMixin(), trackingMixin, glSlotsMixin],
   inject: {
     groupPath: {
       from: 'groupPath',
@@ -171,11 +176,6 @@ export default {
     isGroup: {},
   },
   props: {
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemId: {
       type: String,
       required: false,
@@ -204,16 +204,13 @@ export default {
   },
   emits: [
     'add-child',
-    'attributesUpdated',
-    'close',
+    'attributes-updated',
     'deleteWorkItem',
-    'openReportAbuse',
     'promotedToObjective',
-    'update-modal',
     'work-item-emoji-updated',
     'work-item-updated',
-    'workItemStateUpdated',
-    'workItemTypeChanged',
+    'work-item-state-updated',
+    'work-item-type-changed',
     'workItemUpdated',
   ],
   data() {
@@ -225,7 +222,6 @@ export default {
       isReportModalOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
-      isStickyHeaderShowing: false,
       editMode: false,
       draftData: {},
       filesToBeSaved: [],
@@ -299,7 +295,7 @@ export default {
           this.refetchError = null;
         }
 
-        if (!(this.isModal || this.isDetailPanel) && this.workItem.namespace) {
+        if (!this.isDetailPanel && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
             : '';
@@ -395,9 +391,6 @@ export default {
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
-    newTodoAndNotificationsEnabled() {
-      return this.glFeatures.notificationsTodosButtons;
-    },
     parentWorkItem() {
       return findHierarchyWidget(this.workItem)?.parent;
     },
@@ -475,8 +468,8 @@ export default {
         ? __('Resolved all discussions.')
         : __('Resolved 1 discussion.');
     },
-    showIntersectionObserver() {
-      return !this.isModal && !this.editMode;
+    showStickyHeader() {
+      return !this.editMode;
     },
     workItemLinkedItems() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
@@ -512,12 +505,6 @@ export default {
       return shouldDisableShortcuts()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
-    },
-    modalCloseButtonClass() {
-      return {
-        '@sm/panel:gl-hidden': !this.error,
-        'gl-flex': true,
-      };
     },
     workItemPresent() {
       return !isEmpty(this.workItem);
@@ -562,14 +549,11 @@ export default {
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
     },
-    isModalOrDetailPanel() {
-      return this.isModal || this.isDetailPanel;
-    },
     workItemActionProps() {
       return {
         fullPath: this.workItemFullPath,
         workItemId: this.workItem.id,
-        hideSubscribe: this.newTodoAndNotificationsEnabled,
+        hideSubscribe: true,
         workItemType: this.workItemType,
         workItemIid: this.iid,
         projectId: this.workItemProjectId,
@@ -584,7 +568,7 @@ export default {
         workItemReference: this.workItem.reference,
         workItemWebUrl: this.workItem.webUrl,
         workItemCreateNoteEmail: this.workItem.createNoteEmail,
-        isModal: this.isModalOrDetailPanel,
+        isDetailPanel: this.isDetailPanel,
         workItemState: this.workItem.state,
         hasChildren: this.hasChildren,
         hasParent: this.shouldShowAncestors,
@@ -623,7 +607,7 @@ export default {
         this.showWorkItemTree ||
         this.workItemLinkedItems ||
         this.workItemDevelopment ||
-        this.$scopedSlots.widgets
+        this.glSlots().widgets
       );
     },
   },
@@ -717,30 +701,25 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
-    openContextualView({ event, modalWorkItem }) {
-      if (!modalWorkItem) {
+    openContextualView({ event, child }) {
+      if (!child) {
         this.activeChildItem = null;
         this.activePanel = null;
         return;
       }
 
-      if (modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDetailPanel) {
+      if (child.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDetailPanel) {
         return;
       }
       if (event) {
         event.preventDefault();
       }
 
-      if (this.isModal) {
-        this.$emit('update-modal', event, modalWorkItem);
-        return;
-      }
-
-      if (this.activeChildItem && this.activeChildItem.iid === modalWorkItem.iid) {
+      if (this.activeChildItem && this.activeChildItem.iid === child.iid) {
         this.activeChildItem = null;
         this.activePanel = null;
       } else {
-        this.activeChildItem = modalWorkItem;
+        this.activeChildItem = child;
         this.activePanel = WORK_ITEM_DETAIL_PANEL;
       }
     },
@@ -755,22 +734,12 @@ export default {
       this.activePanel = null;
     },
     openReportAbuseModal(reply) {
-      if (this.isModal) {
-        this.$emit('openReportAbuse', reply);
-      } else {
-        this.toggleReportAbuseModal(true, reply);
-      }
+      this.toggleReportAbuseModal(true, reply);
     },
     toggleReportAbuseModal(isOpen, workItem = this.workItem) {
       this.isReportModalOpen = isOpen;
       this.reportedUrl = workItem.webUrl || workItem.url || {};
       this.reportedUserId = workItem.author ? getIdFromGraphQLId(workItem.author.id) : 0;
-    },
-    hideStickyHeader() {
-      this.isStickyHeaderShowing = false;
-    },
-    showStickyHeader() {
-      this.isStickyHeaderShowing = true;
     },
     updateDraft(type, value) {
       this.draftData[type] = value;
@@ -905,7 +874,7 @@ export default {
     },
     workItemTypeChanged() {
       this.$apollo.queries.workItem.refetch();
-      this.$emit('workItemTypeChanged', this.workItem);
+      this.$emit('work-item-type-changed', this.workItem);
     },
     isValidDragDataType({ dataTransfer }) {
       this.isDragDataValid = Array.from(dataTransfer.items).some((item) =>
@@ -992,7 +961,7 @@ export default {
 </script>
 
 <template>
-  <work-item-metadata-provider :full-path="workItemFullPath">
+  <work-item-metadata-provider :full-path="workItemFullPath" :include-filterable-flags="false">
     <div
       ref="workItemDetail"
       class="work-item-detail"
@@ -1010,53 +979,20 @@ export default {
         <template #loading>
           <work-item-loading />
         </template>
-        <template #before>
+        <template #sticky-header>
           <work-item-sticky-header
-            v-if="showIntersectionObserver"
-            :current-user-todos="currentUserTodos"
-            :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
+            v-if="showStickyHeader"
             :parent-work-item-confidentiality="parentWorkItemConfidentiality"
             :full-path="workItemFullPath"
-            :is-modal="isModal"
             :is-drawer="isDetailPanel"
             :work-item="workItem"
-            :is-sticky-header-showing="isStickyHeaderShowing"
             :archived="workItem.archived"
-            @hideStickyHeader="hideStickyHeader"
-            @showStickyHeader="showStickyHeader"
-            @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-            @toggleWorkItemConfidentiality="toggleConfidentiality"
-            @error="updateError = $event"
-            @promotedToObjective="$emit('promotedToObjective', iid)"
-            @workItemTypeChanged="workItemTypeChanged"
-            @toggleEditMode="enableEditMode"
-            @workItemStateUpdated="$emit('workItemStateUpdated')"
-            @toggleReportAbuseModal="toggleReportAbuseModal"
-            @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
-          >
-            <template #actions>
-              <work-item-actions
-                v-if="workItemPresent"
-                v-bind="workItemActionProps"
-                :update-in-progress="updateInProgress"
-                @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-                @toggleWorkItemConfidentiality="toggleConfidentiality"
-                @error="updateError = $event"
-                @promotedToObjective="$emit('promotedToObjective', iid)"
-                @workItemStateUpdated="$emit('workItemStateUpdated')"
-                @workItemTypeChanged="workItemTypeChanged"
-                @toggleReportAbuseModal="toggleReportAbuseModal"
-                @work-item-created="handleWorkItemCreated"
-                @toggleSidebar="handleToggleSidebar"
-                @toggleTruncationEnabled="handleTruncationEnabled"
-              />
-            </template>
-          </work-item-sticky-header>
+          />
         </template>
 
         <template #heading-wrapper>
           <div class="gl-min-w-0 gl-grow">
-            <component :is="isModalOrDetailPanel ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">
+            <component :is="isDetailPanel ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">
               {{ s__('WorkItem|Edit work item') }}
             </component>
             <work-item-ancestors v-if="shouldShowAncestors" :work-item="workItem" class="gl-mb-1" />
@@ -1065,7 +1001,7 @@ export default {
                 v-if="workItem.title"
                 ref="title"
                 :is-editing="editMode"
-                :is-modal="isModalOrDetailPanel"
+                :is-detail-panel="isDetailPanel"
                 :title="workItem.title"
                 :title-html="workItem.titleHtml"
                 @updateWorkItem="updateWorkItem"
@@ -1077,7 +1013,7 @@ export default {
               v-if="workItem.title && shouldShowAncestors"
               ref="title"
               :is-editing="editMode"
-              :is-modal="isModalOrDetailPanel"
+              :is-detail-panel="isDetailPanel"
               :class="titleClassComponent"
               :title="workItem.title"
               :title-html="workItem.titleHtml"
@@ -1102,7 +1038,6 @@ export default {
             >
               <gl-button
                 size="small"
-                category="secondary"
                 data-testid="work-item-show-sidebar-button"
                 icon="sidebar-right"
                 @click="handleToggleSidebar"
@@ -1114,12 +1049,13 @@ export default {
         </template>
 
         <template #actions>
-          <div class="gl-ml-auto gl-mt-1 gl-flex gl-grow gl-gap-3">
+          <panel-actions-portal>
             <gl-button
               v-if="shouldShowEditButton"
               v-gl-tooltip.bottom.html
               :title="editTooltip"
-              category="secondary"
+              category="tertiary"
+              size="small"
               data-testid="work-item-edit-form-button"
               class="shortcut-edit-wi-description"
               @click="enableEditMode"
@@ -1130,12 +1066,10 @@ export default {
               v-if="showWorkItemCurrentUserTodos"
               :item-id="workItem.id"
               :current-user-todos="currentUserTodos"
-              todos-button-type="secondary"
-              @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
+              @todos-updated="updateWorkItemCurrentTodosWidgetCache"
               @error="updateError = $event"
             />
             <work-item-notifications-widget
-              v-if="newTodoAndNotificationsEnabled"
               :work-item-id="workItem.id"
               @error="updateError = $event"
             />
@@ -1147,23 +1081,14 @@ export default {
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"
               @promotedToObjective="$emit('promotedToObjective', iid)"
-              @workItemStateUpdated="$emit('workItemStateUpdated')"
-              @workItemTypeChanged="workItemTypeChanged"
+              @work-item-state-updated="$emit('work-item-state-updated')"
+              @work-item-type-changed="workItemTypeChanged"
               @toggleReportAbuseModal="toggleReportAbuseModal"
               @work-item-created="handleWorkItemCreated"
-              @toggleSidebar="handleToggleSidebar"
+              @toggle-sidebar="handleToggleSidebar"
               @toggleTruncationEnabled="handleTruncationEnabled"
             />
-            <gl-button
-              v-if="isModal"
-              class="gl-hidden @sm/panel:!gl-block"
-              category="tertiary"
-              data-testid="work-item-close"
-              icon="close"
-              :aria-label="__('Close')"
-              @click="$emit('close')"
-            />
-          </div>
+          </panel-actions-portal>
         </template>
 
         <template v-if="hasAlerts" #alerts>
@@ -1189,17 +1114,14 @@ export default {
             :style="{ zIndex: 100 }"
             data-testid="work-item-refetch-alert"
           >
-            <gl-alert class="gl-mb-3" variant="warning" @dismiss="refetchError = null">
-              <span>{{ refetchError }}</span>
-              <gl-button
-                class="gl-ml-2"
-                category="primary"
-                variant="confirm"
-                size="small"
-                @click="$apollo.queries.workItem.refetch()"
-              >
-                {{ __('Refresh') }}
-              </gl-button>
+            <gl-alert
+              class="gl-mb-3"
+              variant="warning"
+              :primary-button-text="__('Refresh')"
+              @primaryAction="$apollo.queries.workItem.refetch()"
+              @dismiss="refetchError = null"
+            >
+              {{ refetchError }}
             </gl-alert>
           </section>
         </template>
@@ -1208,7 +1130,7 @@ export default {
           <section
             data-testid="work-item-overview-right-sidebar"
             class="work-item-overview-right-sidebar"
-            :class="{ 'is-modal': isModal, '@md/panel:gl-hidden': !showSidebar }"
+            :class="{ '@md/panel:gl-hidden': !showSidebar }"
           >
             <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
             <work-item-attributes-wrapper
@@ -1218,7 +1140,7 @@ export default {
               :group-path="groupPath"
               :is-group="isGroup"
               @error="updateError = $event"
-              @attributesUpdated="$emit('attributesUpdated', $event)"
+              @attributes-updated="$emit('attributes-updated', $event)"
             />
           </section>
         </template>
@@ -1246,7 +1168,7 @@ export default {
             :can-update-design="canUpdateDesign"
             :can-paste-design="canPasteDesign"
             @upload="onUploadDesign"
-            @dismissError="designUploadError = null"
+            @dismiss-error="designUploadError = null"
           >
             <template #empty-state>
               <design-dropzone
@@ -1284,7 +1206,7 @@ export default {
             :allowed-child-types="allowedChildTypes"
             :is-drawer="isDetailPanel"
             contextual-view-enabled
-            @show-modal="openContextualView"
+            @select-child="openContextualView"
             @add-child="$emit('add-child')"
           />
           <work-item-relationships
@@ -1298,12 +1220,11 @@ export default {
             :active-child-item-id="activeChildItemId"
             :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
             contextual-view-enabled
-            @showModal="openContextualView"
+            @show-modal="openContextualView"
           />
 
           <work-item-development
             v-if="workItemDevelopment"
-            :is-modal="isModal"
             :work-item-id="workItem.id"
             :work-item-iid="iid"
             :work-item-full-path="workItemFullPath"
@@ -1324,7 +1245,6 @@ export default {
             :work-item-iid="workItem.iid"
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"
-            :is-modal="isModal"
             :is-drawer="isDetailPanel"
             :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
             :can-set-work-item-metadata="canAssignUnassignUser"
@@ -1333,8 +1253,7 @@ export default {
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="workItem.confidential"
             :new-comment-template-paths="workItem.commentTemplatesPaths"
-            :use-h2="!isModalOrDetailPanel"
-            :small-header-style="isModal"
+            :use-h2="!isDetailPanel"
             :parent-id="parentWorkItemId"
             :hide-fullscreen-markdown-button="isDetailPanel"
             @error="updateError = $event"
@@ -1347,17 +1266,6 @@ export default {
         </template>
 
         <section class="work-item-view">
-          <div :class="modalCloseButtonClass">
-            <gl-button
-              v-if="isModal"
-              class="gl-ml-auto"
-              category="tertiary"
-              data-testid="work-item-close"
-              icon="close"
-              :aria-label="__('Close')"
-              @click="$emit('close')"
-            />
-          </div>
           <gl-empty-state
             v-if="error"
             :title="s__('WorkItem|Work item not found')"
@@ -1410,6 +1318,7 @@ export default {
                   <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
                     <gl-intersection-observer
                       v-if="showUploadDesign"
+                      data-testid="design-upload-button-observer"
                       @appear="isDesignUploadButtonInViewport = true"
                       @disappear="isDesignUploadButtonInViewport = false"
                     >

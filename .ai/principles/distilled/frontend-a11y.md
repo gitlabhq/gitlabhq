@@ -1,6 +1,6 @@
 ---
-source_checksum: 22b6d121be07ec34
-distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
+source_checksum: 05ce0c53005089b5
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -76,4 +76,3 @@ For the full picture, see:
 
 - doc/development/fe_guide/accessibility/_index.md
 - doc/development/fe_guide/accessibility/best_practices.md
-

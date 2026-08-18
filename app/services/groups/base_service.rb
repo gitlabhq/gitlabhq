@@ -48,5 +48,13 @@ module Groups
     def remove_unallowed_params
       # overridden in EE
     end
+
+    def service_desk_address_conflict_message(project_full_path)
+      format(
+        s_('GroupSettings|Service Desk address for project %{project_path} is already in use. ' \
+          'Change the Service Desk project key before moving or renaming this group.'),
+        project_path: project_full_path
+      )
+    end
   end
 end

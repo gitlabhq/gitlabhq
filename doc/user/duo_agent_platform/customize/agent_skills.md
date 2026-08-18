@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: Agent Foundations
+group: Agent Developer
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Agent Skills
 ---
@@ -31,6 +31,9 @@ and use the information as they work.
 
 When you specify a `SKILL.md` file, the skills are available for GitLab Duo Agent Platform and any
 other AI tool that supports the specification.
+
+You can also distribute and install skills as part of a GitLab Duo CLI plugin. For more
+information, see [GitLab Duo CLI plugins](../../gitlab_duo_cli/customize.md#plugins).
 
 Specify Agent Skills for GitLab Duo to use with:
 
@@ -71,9 +74,9 @@ GitLab Duo supports the following types of skills:
 - For GitLab Duo Chat in your local environment, install and configure one of the following:
   - For project-level skills:
     - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.71.4 or later.
-    - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.73.0 or later.
+    - [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md) 8.73.0 or later.
   - For user-level skills:
-    - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.83.0 or later.
+    - [GitLab Duo CLI](../../gitlab_duo_cli/set_up.md) 8.83.0 or later.
 - For project-level skills with custom flows, update the flow's configuration file to access the
   `workspace_agent_skills` context passed from the executor:
 
@@ -126,8 +129,8 @@ To create a project-level skill:
    <your_instructions_and_context_for_the_skill>
    ```
 
-    For example, a skill to [sign artifacts using cosign](../../../ci/yaml/signing_examples.md) in
-    `skills/cosign-blob/SKILL.md`:
+   For example, a skill to [sign artifacts using cosign](../../../ci/yaml/signing_examples.md) in
+   `skills/cosign-blob/SKILL.md`:
 
     ````markdown
     ---
@@ -231,7 +234,7 @@ To create a user-level skill:
    {{< tab title="glab" >}}
 
    ```shell
-   glab duo cli --enable-global-skills
+   glab duo cli --enable-global-skills true
    ```
 
    {{< /tab >}}
@@ -239,7 +242,7 @@ To create a user-level skill:
    {{< tab title="duo" >}}
 
    ```shell
-   duo --enable-global-skills
+   duo --enable-global-skills true
    ```
 
    {{< /tab >}}

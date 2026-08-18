@@ -53,8 +53,8 @@ The following files list the available pre-installed software:
 - [Git, Git LFS, and GitLab Runner](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/tree/main/cookbooks/gitlab-runner-dependencies/recipes)
 - Pre-installed development tools:
   - [Docker](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/docker.rb)
-  - [.NET Core SDK 3.1, Ruby, Go, Nodejs, OpenJDK, Python3](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/languages.rb)
-  - [7-Zip, wget, curl, jq, Docker Compose, NuGet CLI, cmake, GitLab CLI (glab)](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/utils.rb)
+  - [.NET Core SDK 3.1, Ruby, Go, Node.js, OpenJDK, Python3](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/languages.rb)
+  - [7-Zip, Wget, curl, jq, Docker Compose, NuGet CLI, CMake, GitLab CLI (glab)](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/utils.rb)
   - [Visual C Runtimes](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/vcpkg.rb). See linked file for version.
   - [Visual Studio Build Tools](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/visual-studio-build-tools.rb). See linked file for version.
 
@@ -64,7 +64,7 @@ The installed .NET Core SDK version and the specific version of Visual Studio Bu
 together determine the pre-installed .NET runtime versions.
 
 The following code runs on a schedule in
-[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipeline)
+[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipelines)
 and produces this example list:
 
 For all three runtimes (`Microsoft.AspNetCore.App`, `Microsoft.NETCore.App`, `Microsoft.WindowsDesktop.App`), the available versions are:
@@ -76,7 +76,7 @@ For all three runtimes (`Microsoft.AspNetCore.App`, `Microsoft.NETCore.App`, `Mi
 .NET Framework is version 4.8.04161.
 
 To discover the current state, run the following code or look at a recent log of
-[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipeline):
+[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipelines):
 
 ```powershell
 
@@ -103,14 +103,36 @@ if (Test-Path $ndp) {
 
 ## Docker runtimes
 
-The latest Docker version is installed when the image build runs and you can use literal Docker commands in shell runner jobs.
+The latest Docker version (as of the image build date) is installed when the image build runs and you can use literal Docker commands in shell runner jobs.
+
+Start the Docker service with the following code before running Docker commands.
 
 To discover versions, run the following code or look at pipelines from
-[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipeline):
+[PowerShell Pipelines on GitLab CI](https://gitlab.com/guided-explorations/microsoft/powershell/powershell-pipelines-on-gitlab-ci/-/pipelines):
 
 ```powershell
-      write-host "Docker client and service version:"
-      docker version
+      $svc = Get-Service -Name docker -ErrorAction SilentlyContinue
+
+      if ($null -eq $svc) {
+          Write-Host "Docker service is not installed."
+      }
+      else {
+          if ($svc.Status -eq 'Stopped') {
+              Write-Host "Docker service is stopped; starting it..."
+              Start-Service -Name docker
+              (Get-Service -Name docker).WaitForStatus('Running', '00:00:30')
+              Write-Host "Docker service is now $((Get-Service -Name docker).Status)."
+          }
+          else {
+              Write-Host "Docker service is already $($svc.Status); no action taken."
+          }
+
+          Write-Host "`n=== Docker client and service version ==="
+          if ((Get-Service -Name docker).Status -eq 'Running') {
+              docker info
+              docker version
+          }
+      }
 ```
 
 ## Supported shell
@@ -120,8 +142,8 @@ The `script` section of your `.gitlab-ci.yml` file therefore requires PowerShell
 
 ## Elevated permissions
 
-Hosted runners on Windows for GitLab.com run CI/CD jobs as an elevated admin 
-process. This process lets you install additional software or configure the OS 
+Hosted runners on Windows for GitLab.com run CI/CD jobs as an elevated admin
+process. This process lets you install additional software or configure the OS
 before job execution.
 This permission level is acceptable because the runner creates a new VM for each individual
 job and discards it after the job completes. This process is essentially the same

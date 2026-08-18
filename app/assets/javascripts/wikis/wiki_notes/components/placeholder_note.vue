@@ -18,11 +18,6 @@ export default {
       type: Object,
       required: true,
     },
-    internalNote: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     replyNote: {
       type: Boolean,
       required: false,

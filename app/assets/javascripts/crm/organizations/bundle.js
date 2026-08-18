@@ -2,6 +2,7 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import CrmOrganizationsApp from './organizations_app.vue';
@@ -39,7 +40,7 @@ export default () => {
     routes,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CrmOrganizationsAppRoot',
     router,
@@ -53,8 +54,6 @@ export default () => {
       groupWorkItemsPath,
       textQuery,
     },
-    render(createElement) {
-      return createElement(CrmOrganizationsApp);
-    },
+    component: CrmOrganizationsApp,
   });
 };

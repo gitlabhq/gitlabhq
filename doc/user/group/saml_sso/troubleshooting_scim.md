@@ -21,16 +21,15 @@ When you remove a user, they are removed from the group but their account is not
 
 When the user is added back to the SCIM app, GitLab does not create a new user because the user already exists.
 
-From August 11, 2023, the `skip_saml_identity_destroy_during_scim_deprovision` feature flag is enabled.
-
-For a user de-provisioned by SCIM from that date, their SAML identity is not removed.
+When a user is deprovisioned through SCIM, GitLab removes their access but does not remove their linked SAML identity.
 When that user is added back to the SCIM app:
 
 - Their SCIM identity `active` attribute is set to `true`.
 - They can sign in using SSO.
 
-For users de-provisioned by SCIM before that date, their SAML identity is destroyed.
-To solve this problem, the user must [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account).
+> [!note]
+> In rare cases, users who were deprovisioned before this behavior became generally available might still need to relink their SAML identity.
+> If you encounter issues signing in after being re-added, you can [link SAML to your existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### GitLab Self-Managed
 

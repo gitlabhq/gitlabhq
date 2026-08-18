@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ArchiveSettings from '~/groups_projects/archive/components/archive_settings.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -9,19 +9,16 @@ export default function initArchiveSettings() {
 
   const { resourceType, resourceId, resourcePath, markedForDeletion, helpPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ArchiveSettingsRoot',
-    render(createElement) {
-      return createElement(ArchiveSettings, {
-        props: {
-          resourceType,
-          resourceId,
-          resourcePath,
-          markedForDeletion: parseBoolean(markedForDeletion),
-          helpPath,
-        },
-      });
+    component: ArchiveSettings,
+    props: {
+      resourceType,
+      resourceId,
+      resourcePath,
+      markedForDeletion: parseBoolean(markedForDeletion),
+      helpPath,
     },
   });
 }

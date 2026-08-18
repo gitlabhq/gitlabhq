@@ -16,7 +16,7 @@ module WorkItems
       end
 
       def will_auto_close_by_merge_request
-        return false unless work_item.opened? && work_item.autoclose_by_merged_closing_merge_request?
+        return false unless work_item.eligible_for_autoclose_by_merge_request?
 
         work_item.merge_request_closing_issues.with_opened_merge_request.exists?
       end

@@ -1,5 +1,6 @@
 <script>
-import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
+import { cloneDeep } from 'lodash-es';
 import { InternalEvents } from '~/tracking';
 import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import { logError } from '~/lib/logger';
@@ -33,7 +34,6 @@ export default {
     SignatureBadge,
     GlButtonGroup,
     GlButton,
-    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -95,7 +95,7 @@ export default {
               },
             ) {
               if (ciPipelineStatusUpdated) {
-                const updatedData = structuredClone(previousData);
+                const updatedData = cloneDeep(previousData);
                 const pipeline =
                   updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
                     ?.edges[0]?.node || {};
@@ -185,7 +185,18 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" size="md" color="dark" class="gl-m-auto gl-py-6" />
+  <div
+    v-if="isLoading"
+    class="gl-flex gl-items-center gl-gap-3 gl-px-5 gl-py-4"
+    data-testid="last-commit-loading"
+    aria-hidden="true"
+  >
+    <div class="gl-animate-skeleton-loader gl-h-7 gl-w-7 gl-shrink-0 gl-rounded-full"></div>
+    <div class="gl-flex gl-grow gl-flex-col gl-gap-2">
+      <div class="gl-animate-skeleton-loader gl-h-4 gl-w-30 gl-max-w-full gl-rounded-default"></div>
+      <div class="gl-animate-skeleton-loader gl-h-3 gl-w-20 gl-max-w-full gl-rounded-default"></div>
+    </div>
+  </div>
 
   <div v-else-if="commit">
     <commit-info :commit="commit" class="gl-hidden @sm/panel:gl-flex">

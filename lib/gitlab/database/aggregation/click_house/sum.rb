@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def identifier
-            :"#{name}_sum"
+            dotted_name? ? name : :"#{name}_sum"
           end
 
           def to_outer_arel(context)

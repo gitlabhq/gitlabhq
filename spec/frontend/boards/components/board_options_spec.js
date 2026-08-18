@@ -49,7 +49,7 @@ describe('BoardOptions component', () => {
       expect(wrapper.findByTestId('show-labels-toggle').exists()).toBe(true);
     });
     it('sets isShowingLabels when toggled', async () => {
-      const labelToggleDropdownItem = wrapper.findByTestId('show-labels-toggle-item');
+      const labelToggleDropdownItem = wrapper.findComponentByTestId('show-labels-toggle-item');
       labelToggleDropdownItem.vm.$emit('action');
       await waitForPromises();
 
@@ -83,9 +83,9 @@ describe('BoardOptions component', () => {
         expect(wrapper.findComponent(ToggleEpicsSwimlanes).exists()).toBe(expected);
       },
     );
-    it('emits toggleSwimlanes when toggled', () => {
-      wrapper.findByTestId('epic-swimlanes-toggle-item').vm.$emit('action');
-      expect(wrapper.emitted('toggleSwimlanes')).toHaveLength(1);
+    it('emits toggle-swimlanes when toggled', () => {
+      wrapper.findComponentByTestId('epic-swimlanes-toggle-item').vm.$emit('action');
+      expect(wrapper.emitted('toggle-swimlanes')).toHaveLength(1);
     });
   });
 });

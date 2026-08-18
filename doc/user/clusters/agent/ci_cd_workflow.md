@@ -68,8 +68,6 @@ Authorization configuration can take one or two minutes to propagate.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/356831) to allow authorizing projects in a user namespace in GitLab 15.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/377932) to allow the authorization of groups that belong to different top-level groups in GitLab 18.1.
 
 {{< /history >}}
@@ -101,7 +99,6 @@ After making these changes:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/377932) to allow the authorization of groups that belong to different top-level groups in GitLab 18.1.
 
 {{< /history >}}
@@ -292,12 +289,6 @@ To configure your client, do one of the following:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/357934) in GitLab 15.5 to add impersonation support for environment tiers.
-
-{{< /history >}}
-
 By default, your CI/CD job inherits all the permissions from the service account used to install the
 agent in the cluster.
 To restrict access to your cluster, you can use [impersonation](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation).
@@ -404,12 +395,6 @@ See the [official Kubernetes documentation for details](https://kubernetes.io/do
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343885) in GitLab 15.7.
-
-{{< /history >}}
 
 By default, if your agent is [available to a project](#authorize-agent-access), all of the project's CI/CD jobs can use that agent.
 

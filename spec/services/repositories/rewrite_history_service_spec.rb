@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_code_management do
   subject(:service) { described_class.new(project, user) }
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user, owner_of: project) }
 
   describe '#execute', :aggregate_failures do

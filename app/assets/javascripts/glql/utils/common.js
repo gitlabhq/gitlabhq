@@ -1,4 +1,5 @@
 import { upperFirst, lowerCase } from 'lodash-es';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
 export const extractGroupOrProject = (url = window.location.href) => {
   // These are URL parsing operations on dynamic values, not ideal but acceptable
@@ -45,3 +46,24 @@ export const relativeNamespace = (source, target) => {
   if (commonPrefixLength === 0) return target;
   return targetSegments.slice(commonPrefixLength).join('/') || target;
 };
+
+/**
+ * Wraps a GLQL query in a fenced glql block, the form used to embed it in Markdown.
+ *
+ * @param {string} query - The GLQL query source
+ * @returns {string} The query wrapped in a fenced glql block
+ */
+export const wrapQueryInGlqlBlock = (query) =>
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  `\`\`\`glql\n${query}\n\`\`\``;
+
+/**
+ * Copies a GLQL query to the clipboard, wrapped in a fenced glql block so that it
+ * can be pasted straight back into Markdown.
+ *
+ * @param {string} query - The GLQL query source
+ * @param {HTMLElement} [container] - Container for the fallback textarea used in non-secure
+ * contexts. Defaults to the document body, which does not work when copying from a modal.
+ */
+export const copyQuerySource = (query, container = document.body) =>
+  copyToClipboard(wrapQueryInGlqlBlock(query), container);

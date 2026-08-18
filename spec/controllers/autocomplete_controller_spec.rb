@@ -140,14 +140,16 @@ RSpec.describe AutocompleteController do
 
     context 'limited users per page' do
       before do
-        create_list(:user, 25)
+        stub_const('Autocomplete::UsersFinder::LIMIT', 3)
+
+        create_list(:user, 4)
 
         sign_in(user)
         get(:users)
       end
 
       it { expect(json_response).to be_kind_of(Array) }
-      it { expect(json_response.size).to eq(20) }
+      it { expect(json_response.size).to eq(3) }
     end
 
     context 'unauthenticated user' do

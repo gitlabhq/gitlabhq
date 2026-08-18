@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Argo Rollouts: Service-Environment configuration",
+  "description": "Configuration for deploying one service to one environment. The same service may be deployed to several environments, each with its own configuration.",
+  "required": ["namespace", "application", "manifest_repository"],
+  "additionalProperties": false,
+  "properties": {
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+      "maxLength": 63,
+      "examples": ["argocd"],
+      "description": "Kubernetes namespace where the Argo CD Application object for this (service, environment) pair lives, as a DNS-1123 label. The Argo CD control plane watches this namespace for Application CRs.",
+      "gitlab": {
+        "type": "com.gitlab.cd.text"
+      }
+    },
+    "application": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+      "maxLength": 253,
+      "description": "Name of the Argo CD Application the driver syncs (and pins to a specific revision) for this (service, environment) pair, as a DNS-1123 subdomain.",
+      "gitlab": {
+        "type": "com.gitlab.cd.text"
+      }
+    },
+    "manifest_repository": {
+      "description": "The GitOps repository Argo CD reconciles for this (service, environment) pair. It holds this service's Argo Rollout manifest. The driver reads the Rollout CR from it, pins the new image versions and injects the Argo Rollouts canary/blue-green strategy, and commits the result back for Argo CD to sync. Modelled as a choice of access mechanism; the `type` of each option discriminates the variant.",
+      "oneOf": [
+        {
+          "title": "GitLab-hosted repository",
+          "description": "A repository on a GitLab instance, read and written through the GitLab REST API. Addressed by host and project path, not by clone URL.",
+          "type": "object",
+          "required": ["type", "host", "project", "branch", "manifests_path"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "gitlab"
+            },
+            "host": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https?://",
+              "examples": ["https://gitlab.com"],
+              "description": "Base URL of the GitLab instance hosting the repository, whether gitlab.com or a self-managed instance.",
+              "gitlab": {
+                "type": "com.gitlab.cd.text"
+              }
+            },
+            "project": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*(/[A-Za-z0-9][A-Za-z0-9_.-]*)+$",
+              "description": "Full path of the GitLab project holding the Argo Rollout manifest. This is the repository Argo CD syncs from.",
+              "examples": ["my-group/gitops-repo"],
+              "gitlab": {
+                "type": "com.gitlab.cd.text"
+              }
+            },
+            "branch": {
+              "type": "string",
+              "minLength": 1,
+              "examples": ["main"],
+              "description": "Branch the Argo Rollout manifest is read from and that the pinned versions and generated Argo Rollouts strategy are committed back to. This is the revision Argo CD is pinned to. Must be a branch, never a tag or commit SHA, since the driver writes to it.",
+              "gitlab": {
+                "type": "com.gitlab.cd.text"
+              }
+            },
+            "manifests_path": {
+              "type": "string",
+              "pattern": "^[^/]",
+              "not": { "pattern": "(^|/)\\.\\.(/|$)" },
+              "description": "Path to this service's Argo Rollout manifest(s), relative to the project root. Either a single manifest file or a directory of them (every top-level .yaml/.yml file in the directory is read). Not an absolute path, and cannot traverse outside the project. The driver reads the manifest(s), pins image versions and injects the deploy strategy, and commits them back.",
+              "examples": ["apps/payments/rollout.yaml", "apps/payments"],
+              "gitlab": {
+                "type": "com.gitlab.cd.text"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

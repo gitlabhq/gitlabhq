@@ -10,7 +10,7 @@ module QA
       let(:jira_issue_label_2) { "QA" }
       let(:project) { create(:project, name: "jira_issue_import") }
 
-      it 'imports issues from Jira', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347966' do
+      it 'imports issues from Jira' do
         set_up_jira_integration
         import_jira_issues
 
@@ -53,11 +53,7 @@ module QA
 
       def import_jira_issues
         Page::Project::Menu.perform(&:go_to_work_items)
-
-        Page::Project::WorkItem::Index.perform do |index|
-          index.dismiss_onboarding_modal_if_present
-          index.go_to_jira_import_form
-        end
+        Page::Project::WorkItem::Index.perform(&:go_to_jira_import_form)
 
         Page::Project::Issue::JiraImport.perform do |form|
           form.select_project_and_import(jira_project_key)

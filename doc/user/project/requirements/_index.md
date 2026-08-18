@@ -63,7 +63,7 @@ list being sorted by creation date, in descending order.
 
 You can view a requirement from the list by selecting it.
 
-![requirement view](img/requirement_view_v13_5.png)
+![An example of a selected requirement](img/requirement_view_v13_5.png)
 
 To edit a requirement while viewing it, select the **Edit** icon ({{< icon name="pencil" >}})
 next to the requirement title.
@@ -72,7 +72,6 @@ next to the requirement title.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can edit requirements even if they don't have the Reporter role.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -94,7 +93,6 @@ To edit a requirement:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can archive requirements even if they don't have the Reporter role.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -114,7 +112,6 @@ As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can re-open requirements even if they don't have the Reporter role.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -125,7 +122,7 @@ Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role or be the author or assignee of the requirement.
 
-![archived requirements list](img/requirements_archived_list_view_v13_1.png)
+![The archived requirements list view.](img/requirements_archived_list_view_v13_1.png)
 
 To reopen an archived requirement, select **Reopen**.
 

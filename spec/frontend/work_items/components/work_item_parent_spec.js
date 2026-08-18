@@ -69,7 +69,8 @@ describe('WorkItemParent component', () => {
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAncestorUnavailable = () => wrapper.findByTestId('ancestor-not-available');
   const findLink = () => wrapper.findComponent(GlLink);
-  const findInaccessibleParentPopover = () => wrapper.findByTestId('inaccessible-parent-popover');
+  const findInaccessibleParentPopover = () =>
+    wrapper.findComponentByTestId('inaccessible-parent-popover');
   const findWorkItemPopover = () => wrapper.findComponent(WorkItemPopover);
 
   const successUpdateWorkItemMutationHandler = jest
@@ -77,7 +78,7 @@ describe('WorkItemParent component', () => {
     .mockResolvedValue(mockAncestorWidgetResponse);
 
   const showDropdown = () => {
-    findSidebarDropdownWidget().vm.$emit('dropdownShown');
+    findSidebarDropdownWidget().vm.$emit('dropdown-shown');
   };
 
   const mockWorkItemConfigGetter = jest.fn().mockImplementation((workItemType) => {
@@ -148,7 +149,7 @@ describe('WorkItemParent component', () => {
   };
 
   const selectWorkItem = (workItem) => {
-    findSidebarDropdownWidget().vm.$emit('updateValue', workItem);
+    findSidebarDropdownWidget().vm.$emit('update-value', workItem);
   };
 
   describe('when loaded', () => {
@@ -313,9 +314,9 @@ describe('WorkItemParent component', () => {
 
       expect(findSidebarDropdownWidget().props('loading')).toBe(false);
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
-        { text: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
-        { text: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
-        { text: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
+        { text: 'Objective 101', textHtml: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
+        { text: 'Objective 103', textHtml: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
+        { text: 'Objective 102', textHtml: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
       ]);
       expect(availableWorkItemsSuccessHandler).toHaveBeenCalled();
     });
@@ -356,7 +357,7 @@ describe('WorkItemParent component', () => {
         workItemTypeIds: [],
       });
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', mockText);
+      findSidebarDropdownWidget().vm.$emit('search-started', mockText);
       await waitForPromises();
 
       expect(searchedItemQueryHandler).toHaveBeenLastCalledWith({
@@ -372,7 +373,7 @@ describe('WorkItemParent component', () => {
       });
       expect(workItemReferencesSuccessHandler).not.toHaveBeenCalled();
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
-        { text: mockText, value: 'gid://gitlab/WorkItem/716' },
+        { text: mockText, textHtml: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
       ]);
     });
 
@@ -398,7 +399,7 @@ describe('WorkItemParent component', () => {
         workItemTypeIds: [],
       });
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', input);
+      findSidebarDropdownWidget().vm.$emit('search-started', input);
       await waitForPromises();
 
       expect(workItemReferencesSuccessHandler).toHaveBeenCalledWith({
@@ -406,7 +407,11 @@ describe('WorkItemParent component', () => {
         refs,
       });
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
-        { text: 'Objective _linked_ items 104', value: 'gid://gitlab/WorkItem/705' },
+        {
+          text: 'Objective _linked_ items 104',
+          textHtml: 'Objective <em>linked</em> items 104',
+          value: 'gid://gitlab/WorkItem/705',
+        },
       ]);
     });
 
@@ -424,9 +429,9 @@ describe('WorkItemParent component', () => {
       await waitForPromises();
 
       expect(findSidebarDropdownWidget().props('listItems')).toEqual([
-        { text: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
-        { text: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
-        { text: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
+        { text: 'Objective 101', textHtml: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
+        { text: 'Objective 103', textHtml: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
+        { text: 'Objective 102', textHtml: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
       ]);
     });
 
@@ -442,9 +447,9 @@ describe('WorkItemParent component', () => {
       await waitForPromises();
 
       expect(findSidebarDropdownWidget().props('listItems')).toEqual([
-        { text: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
-        { text: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
-        { text: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
+        { text: 'Objective 101', textHtml: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
+        { text: 'Objective 103', textHtml: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
+        { text: 'Objective 102', textHtml: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
       ]);
     });
 
@@ -461,11 +466,12 @@ describe('WorkItemParent component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', 'Objective 102');
+      findSidebarDropdownWidget().vm.$emit('search-started', 'Objective 102');
       await waitForPromises();
 
       expect(findSidebarDropdownWidget().props('listItems')).not.toContainEqual({
         text: 'Objective 101',
+        textHtml: 'Objective 101',
         value: 'gid://gitlab/WorkItem/716',
       });
     });
@@ -591,18 +597,18 @@ describe('WorkItemParent component', () => {
       expect(groupWorkItemsSuccessHandler).toHaveBeenCalled();
     });
 
-    it('emits parentMilestone if a selected parent has an assigned milestone', async () => {
+    it('emits `parent-milestone` if a selected parent has an assigned milestone', async () => {
       showDropdown();
       await waitForPromises();
 
       selectWorkItem(firstParentOption.id);
       await nextTick();
 
-      expect(wrapper.emitted('parentMilestone')).toBeDefined();
+      expect(wrapper.emitted('parent-milestone')).toBeDefined();
     });
 
     describe('when workItemFeaturesField feature flag is enabled', () => {
-      it('emits parentMilestone with data from features.milestone', async () => {
+      it('emits `parent-milestone` with data from features.milestone', async () => {
         const featuresHandler = jest
           .fn()
           .mockResolvedValue(groupEpicsWithMilestonesQueryResponseWithFeatures);
@@ -630,8 +636,8 @@ describe('WorkItemParent component', () => {
         await waitForPromises();
         await nextTick();
 
-        expect(wrapper.emitted('parentMilestone')).toBeDefined();
-        expect(wrapper.emitted('parentMilestone')[0]).toEqual([
+        expect(wrapper.emitted('parent-milestone')).toBeDefined();
+        expect(wrapper.emitted('parent-milestone')[0]).toEqual([
           expect.objectContaining({
             id: mockFeaturesMilestone.id,
             title: mockFeaturesMilestone.title,
@@ -686,7 +692,7 @@ describe('WorkItemParent component', () => {
         ${'Issue'}   | ${false}            | ${true}             | ${false}
         ${'Issue'}   | ${null}             | ${true}             | ${false}
       `(
-        'emits parentMilestone correctly when workItemType=$workItemType and propagatesMilestone=$propagatesMilestone',
+        'emits `parent-milestone` correctly when workItemType=$workItemType and propagatesMilestone=$propagatesMilestone',
         async ({ workItemType, propagatesMilestone, isGroupWorkItemType, shouldEmitMilestone }) => {
           mockWorkItemConfigGetter.mockImplementation(() => {
             return {
@@ -713,7 +719,7 @@ describe('WorkItemParent component', () => {
           await nextTick();
 
           if (shouldEmitMilestone) {
-            expect(wrapper.emitted('parentMilestone')).toEqual([
+            expect(wrapper.emitted('parent-milestone')).toEqual([
               [
                 expect.objectContaining({
                   id: mockMilestone.id,
@@ -722,7 +728,7 @@ describe('WorkItemParent component', () => {
               ],
             ]);
           } else {
-            expect(wrapper.emitted('parentMilestone')).toBeUndefined();
+            expect(wrapper.emitted('parent-milestone')).toBeUndefined();
           }
         },
       );

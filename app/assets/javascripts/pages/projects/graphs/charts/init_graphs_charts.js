@@ -2,8 +2,9 @@ import { GlColumnChart } from '@gitlab/ui/src/charts';
 import Vue from 'vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import RefSelector from '~/ref/components/ref_selector.vue';
-import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
+import { chartsProjectGraphPath } from '~/lib/utils/path_helpers/repository';
 import CodeCoverage from '../components/code_coverage.vue';
 import SeriesDataMixin from './series_data_mixin';
 
@@ -37,6 +38,7 @@ export function initLanguagesChart() {
 
   return new Vue({
     el,
+    name: 'LanguagesChartRoot',
     components: {
       GlColumnChart,
     },
@@ -78,6 +80,7 @@ export function initCodeCoverageChart() {
 
   return new Vue({
     el,
+    name: 'CodeCoverageRoot',
     render(h) {
       return h(CodeCoverage, {
         props: {
@@ -101,6 +104,7 @@ export function initMonthChart() {
 
   return new Vue({
     el,
+    name: 'MonthChartRoot',
     components: {
       GlColumnChart,
     },
@@ -135,6 +139,7 @@ export function initWeekdayChart() {
 
   return new Vue({
     el,
+    name: 'WeekdayChartRoot',
     data() {
       return {
         chartData: JSON.parse(el.dataset.chartData),
@@ -175,6 +180,7 @@ export function initHourChart() {
 
   return new Vue({
     el,
+    name: 'HourChartRoot',
     mixins: [SeriesDataMixin],
     data() {
       return {
@@ -204,7 +210,7 @@ export function initRefSwitcher() {
     return null;
   }
 
-  const { projectId, projectBranch, graphPath } = el.dataset;
+  const { projectId, projectFullPath, projectBranch, graphPath } = el.dataset;
 
   const graphsPathPrefix = graphPath.match(GRAPHS_PATH_REGEX)?.[0];
   if (!graphsPathPrefix) {
@@ -229,7 +235,7 @@ export function initRefSwitcher() {
         class: 'gl-w-20',
         on: {
           input(selected) {
-            visitUrl(`${graphsPathPrefix}/${encodeURIComponent(selected)}/charts`);
+            visitUrl(chartsProjectGraphPath(projectFullPath, selected));
           },
         },
       });

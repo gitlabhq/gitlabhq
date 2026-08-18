@@ -27,6 +27,12 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603392) in GitLab 19.2
   [with a feature flag](../../../administration/feature_flags/_index.md) named
   `enable_dependency_bump_breaking_changes`. Disabled by default.
+- Go modules support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604601)
+  in GitLab 19.3.
+- Cargo (Rust) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604602)
+  in GitLab 19.3.
+- Feature flag `dependency_management_auto_remediation`
+  [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -48,9 +54,6 @@ For the generally available roadmap, see [epic 19244](https://gitlab.com/groups/
 
 Prerequisites:
 
-- The `dependency_management_auto_remediation`
-  [feature flag](../../../administration/feature_flags/_index.md) must be enabled for the project.
-  This flag is enabled by default in GitLab 19.2.
 - [Dependency scanning](../dependency_scanning/_index.md) must be enabled
   and producing results.
 - The project must use a
@@ -95,7 +98,7 @@ version bump capability and has its own toggle.
 
 Prerequisites:
 
-- You must have [GitLab Duo](../../../user/gitlab_duo/_index.md) available for the project.
+- You must have [GitLab Duo](../../gitlab_duo/_index.md) available for the project.
 - The `enable_dependency_bump_breaking_changes`
   [feature flag](../../../administration/feature_flags/_index.md) must be enabled for the
   project's root namespace.
@@ -123,6 +126,8 @@ Dependency scanning auto-remediation supports the following package managers:
 | Java                    | Gradle                              | `build.gradle`, `build.gradle.kts`                                             |
 | Python                  | pip, pipenv, poetry, setuptools, uv | `requirements.txt`, `Pipfile`, `pyproject.toml`, `setup.py`, `uv.lock`         |
 | JavaScript / TypeScript | npm, yarn, pnpm, bun                | `package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock` |
+| Go                      | Go modules                          | `go.mod`, `go.sum`                                                             |
+| Rust                    | Cargo                               | `Cargo.toml`, `Cargo.lock`                                                     |
 
 Support for additional ecosystems is proposed in
 [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).

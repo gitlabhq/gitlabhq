@@ -40,6 +40,20 @@ export default {
       type: Boolean,
       default: false,
     },
+    /**
+     * Offer only projects, for callers that create work item types which cannot
+     * live in a group (for example issues linked to a merge request).
+     */
+    projectsOnly: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    toggleId: {
+      required: false,
+      type: String,
+      default: undefined,
+    },
   },
   emits: ['error', 'selectNamespace'],
   data() {
@@ -73,11 +87,17 @@ export default {
       query() {
         return namespaceGroupsForLinksWidgetQuery;
       },
+      skip() {
+        return this.projectsOnly;
+      },
       variables() {
         return {
           fullPath: this.limitToCurrentNamespace ? this.fullPath : this.groupPath,
           groupSearch: this.searchKey,
         };
+      },
+      update(data) {
+        return data.group ?? {};
       },
       error() {
         this.$emit('error', __('There was a problem fetching groups.'));
@@ -109,14 +129,19 @@ export default {
           this.selectedNamespace.name
         );
       }
-      return this.fullPath
-        ? this.defaultNamespace?.name ||
-            this.defaultNamespace?.text ||
-            this.defaultNamespace?.nameWithNamespace
+      if (this.fullPath) {
+        return (
+          this.defaultNamespace?.name ||
+          this.defaultNamespace?.text ||
+          this.defaultNamespace?.nameWithNamespace
+        );
+      }
+      return this.projectsOnly
+        ? s__('WorkItem|Select a project')
         : s__('WorkItem|Select a namespace');
     },
     filteredGroups() {
-      if (!this.group.id) {
+      if (this.projectsOnly || !this.group.id) {
         return [];
       }
 
@@ -201,7 +226,7 @@ export default {
       if (this.filteredGroups.length || this.filteredProjects.length) {
         return [
           {
-            text: __('All groups and projects'),
+            text: this.projectsOnly ? __('All projects') : __('All groups and projects'),
             options: [...this.filteredGroups, ...this.filteredProjects],
           },
         ];
@@ -220,6 +245,7 @@ export default {
       this.namespaceCache = unionBy(this.namespaceCache, projectsList, 'id');
     },
     group(groupData) {
+      if (!groupData) return;
       const descendents = groupData.descendantGroups?.nodes || [];
       const groupList = [groupData, ...descendents];
       this.namespaceCache = unionBy(this.namespaceCache, groupList, 'id');
@@ -268,7 +294,9 @@ export default {
         const storedFrequentProjects = storedRawItems ? JSON.parse(storedRawItems) : [];
         const storedFrequentGroups = storedRawGroups ? JSON.parse(storedRawGroups) : [];
 
-        let storedFrequentItems = storedFrequentGroups.concat(storedFrequentProjects);
+        let storedFrequentItems = this.projectsOnly
+          ? storedFrequentProjects
+          : storedFrequentGroups.concat(storedFrequentProjects);
 
         /* Filter for the current group */
         storedFrequentItems = storedFrequentItems.filter((item) => {
@@ -306,6 +334,7 @@ export default {
     :items="listItems"
     :selected="selectedNamespacePath"
     :toggle-text="dropdownToggleText"
+    :toggle-id="toggleId"
     :searching="isLoading"
     fluid-width
     class="gl-relative"

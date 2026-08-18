@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RepositoryCacheAdapter do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
   let(:cache) { repository.send(:cache) }
   let(:redis_set_cache) { repository.send(:redis_set_cache) }

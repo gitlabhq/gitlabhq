@@ -20,14 +20,17 @@ module Gitlab
       # Raised if a supplied entry point does not exist in the webpack manifest
       AssetMissingError = Class.new(StandardError)
 
+      RSPACK_MANIFEST_FILENAME = 'manifest.rspack.json'
+
       class << self
         include Gitlab::Utils::StrongMemoize
 
-        def entrypoint_paths(source)
-          raise WebpackError, manifest["errors"] unless manifest_bundled?
+        def entrypoint_paths(source, manifest_filename: default_manifest_filename)
+          data = manifest(manifest_filename)
+          raise WebpackError, data["errors"] unless manifest_bundled?(data)
 
-          dll_assets = manifest.fetch("dllAssets", [])
-          entrypoint = manifest["entrypoints"][source]
+          dll_assets = data.fetch("dllAssets", [])
+          entrypoint = data["entrypoints"][source]
           if entrypoint && entrypoint["assets"]
             # Can be either a string or an array of strings.
             # Do not include source maps as they are not javascript
@@ -39,10 +42,11 @@ module Gitlab
           end
         end
 
-        def asset_paths(source)
-          raise WebpackError, manifest["errors"] unless manifest_bundled?
+        def asset_paths(source, manifest_filename: default_manifest_filename)
+          data = manifest(manifest_filename)
+          raise WebpackError, data["errors"] unless manifest_bundled?(data)
 
-          paths = manifest["assetsByChunkName"][source]
+          paths = data["assetsByChunkName"][source]
           if paths
             # Can be either a string or an array of strings.
             # Do not include source maps as they are not javascript
@@ -60,24 +64,30 @@ module Gitlab
 
         private
 
-        def manifest_bundled?
-          !manifest["errors"].any? { |error| error.include? "Module build failed" }
+        def default_manifest_filename
+          Gitlab.config.webpack.manifest_filename
         end
 
-        def manifest
+        def manifest_bundled?(data)
+          !data["errors"].any? { |error| error.include? "Module build failed" }
+        end
+
+        def manifest(manifest_filename)
           if Gitlab.config.webpack.dev_server.enabled
             # Only cache at request level if we're in dev server mode, manifest may change ...
-            Gitlab::SafeRequestStore.fetch('manifest.json') { load_manifest }
+            Gitlab::SafeRequestStore.fetch("webpack_manifest:#{manifest_filename}") { load_manifest(manifest_filename) }
           else
             # ... otherwise cache at class level, as JSON loading/parsing can be expensive
-            strong_memoize(:manifest) { load_manifest }
+            strong_memoize_with(:manifest, manifest_filename) { load_manifest(manifest_filename) }
           end
         end
 
-        def load_manifest
-          data = Gitlab::Webpack::FileLoader.load(Gitlab.config.webpack.manifest_filename)
+        def load_manifest(manifest_filename)
+          data = Gitlab::Webpack::FileLoader.load(manifest_filename)
 
-          Gitlab::Json.parse(data)
+          # We intentionally use Gitlab::Json.parse here (not SafeParser) because
+          # the webpack manifest can exceed the memory limits enforced by SafeParser.
+          Gitlab::Json.parse(data) # rubocop:disable Gitlab/JsonSafeParse -- Manifest can exceed SafeParser memory limits
         rescue Gitlab::Webpack::FileLoader::StaticLoadError => e
           raise ManifestLoadError.new("Could not load compiled manifest from #{e.uri}.\n\nHave you run `rake gitlab:assets:compile`?", e.original_error)
         rescue Gitlab::Webpack::FileLoader::DevServerSSLError => e

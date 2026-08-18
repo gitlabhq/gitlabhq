@@ -581,6 +581,25 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
     end
   end
 
+  describe '#reset_attempts!' do
+    let_it_be(:job, freeze: false) { create(:batched_background_migration_job, :failed, attempts: 3) }
+
+    it 'resets attempts to 0' do
+      expect { job.reset_attempts! }.to change { job.attempts }.to(0)
+    end
+
+    context 'when job is not failed' do
+      let_it_be(:job) { create(:batched_background_migration_job, :succeeded) }
+
+      it 'raises ResetAttemptsError' do
+        expect { job.reset_attempts! }.to raise_error(
+          Gitlab::Database::BackgroundMigration::ResetAttemptsError,
+          'Only failed jobs can have attempts reset'
+        )
+      end
+    end
+  end
+
   describe '#reduce_sub_batch_size!' do
     let(:migration_batch_size) { 20 }
     let(:migration_sub_batch_size) { 10 }

@@ -2,6 +2,7 @@
 stage: Production Engineering
 group: Runners Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn how to use hosted runners on macOS for GitLab.com to run CI/CD jobs, build macOS and iOS applications, and configure pre-installed build tools for your apps.
 title: Hosted runners on macOS
 ---
 
@@ -53,7 +54,7 @@ The images and installed components are updated with each GitLab release, to kee
 Major and minor releases of macOS and Xcode are made available in the milestone subsequent to the Apple release.
 
 A new major release image is initially made available as beta, and becomes generally available with the release of the first minor release.
-Because only two generally available images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](_index.md#supported-image-lifecycle).
+Because only two generally available images are supported at a time, the oldest image becomes deprecated and is removed after three months according to the [supported image lifecycle](_index.md#supported-image-lifecycle).
 
 When a new major release is generally available, it becomes the default image for all macOS jobs.
 

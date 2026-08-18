@@ -33,11 +33,6 @@ export const revisionCardDefaultProps = {
   paramsName,
 };
 
-export const repoDropdownDefaultProps = {
-  selectedProject: targetProject,
-  paramsName,
-};
-
 export const revisionDropdownDefaultProps = {
   refsProjectPath: sourceProjectRefsPath,
   paramsBranch,

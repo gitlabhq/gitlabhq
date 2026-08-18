@@ -23,8 +23,6 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
       find('.gl-new-dropdown-contents li', text: 'Jekyll').click
     end
 
-    wait_for_requests
-
     expect(page).to have_css('.gl-new-dropdown-button-text', text: 'Jekyll')
     expect(find('.monaco-editor')).to have_content('This file is a template, and might need editing before it works on your project')
     expect(find('.monaco-editor')).to have_content('jekyll build -d test')
@@ -34,8 +32,6 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     let(:params) { { template: 'Jekyll' } }
 
     it 'uses the given template' do
-      wait_for_requests
-
       expect(page).to have_css('.gl-new-dropdown-button-text', text: 'Jekyll')
       expect(find('.monaco-editor')).to have_content('This file is a template, and might need editing before it works on your project')
       expect(find('.monaco-editor')).to have_content('jekyll build -d test')
@@ -46,8 +42,6 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     let(:params) { { template: 'non-existing-template' } }
 
     it 'leaves the editor empty' do
-      wait_for_requests
-
       expect(page).to have_css('.gl-new-dropdown-button-text', text: 'Apply a template')
       expect(find('.monaco-editor')).to have_content('')
     end
@@ -58,8 +52,6 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     let(:params) { { template: 'Jekyll' } }
 
     it 'leaves the editor empty' do
-      wait_for_requests
-
       expect(find('.monaco-editor')).to have_content('')
     end
   end

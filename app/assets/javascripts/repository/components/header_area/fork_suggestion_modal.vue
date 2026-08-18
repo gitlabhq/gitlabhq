@@ -1,12 +1,14 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'ForkSuggestionModal',
   components: {
     GlModal,
   },
+  mixins: [glListenersMixin],
   props: {
     visible: {
       type: Boolean,
@@ -52,7 +54,7 @@ export default {
     :title="__('Fork to make changes')"
     :action-primary="primaryAction"
     :action-secondary="secondaryAction"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <p data-testid="message">
       {{

@@ -451,7 +451,7 @@ GitLab can be considered to have two layers from a process perspective:
 - GitLab.com: [Monitoring of GitLab.com](https://runbooks.gitlab.com/ai-gateway/)
 
 GitLab AI Gateway is a standalone-service that will give access to AI features to all users of
-GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com.
+GitLab, no matter which instance they are using: self-managed, dedicated, or GitLab.com.
 
 You can read more:
 
@@ -513,7 +513,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
   - [Source](../integration/advanced_search/elasticsearch.md)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
-- GitLab.com: [Get advanced search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
+- GitLab.com: [Get advanced search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/work_items/153) epic.
 
 Elasticsearch is a distributed RESTful search engine built for the cloud.
 
@@ -856,7 +856,7 @@ Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue 
 
 #### Puma
 
-Starting with GitLab 13.0, Puma is the default web server.
+Puma is the default web server.
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md)
 - Configuration:
@@ -1114,7 +1114,7 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 GitLab (includes Puma and Sidekiq logs):
 
-- `/home/git/gitlab/log/` usually contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log` and `puma.stderr.log`.
+- `/home/git/gitlab/log/` usually contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log`, and `puma.stderr.log`.
 
 GitLab Shell:
 

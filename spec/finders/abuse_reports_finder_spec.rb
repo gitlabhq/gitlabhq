@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe AbuseReportsFinder, feature_category: :insider_threat do
+  # `create(:user)` assigns `create(:common_organization)` when no organization is given, and
+  # :common_organization is a find_or_create_by! singleton. Every bare `create(:user)` below
+  # therefore shares this organization, as does every report built from one.
+  let_it_be(:common_organization) { create(:common_organization) }
+
   let_it_be(:user_1) { create(:user) }
   let_it_be(:user_2) { create(:user) }
 
@@ -17,7 +22,9 @@ RSpec.describe AbuseReportsFinder, feature_category: :insider_threat do
     create(:abuse_report, :closed, category: 'phishing', user: user_2, reporter: reporter_2, id: 2)
   end
 
-  subject(:finder) { described_class.new(params).execute }
+  let(:organization) { common_organization }
+
+  subject(:finder) { described_class.new(params, organization: organization).execute }
 
   describe '#execute' do
     shared_examples 'returns all abuse reports' do
@@ -168,6 +175,69 @@ RSpec.describe AbuseReportsFinder, feature_category: :insider_threat do
           it 'sorts reports by created_at in descending order' do
             expect(finder).to eq([abuse_report_5, abuse_report_2])
           end
+        end
+      end
+    end
+
+    describe 'organization isolation' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_reporter) { create(:user, organization: other_organization) }
+      let_it_be(:cross_org_user) { create(:user) }
+
+      # The open list groups reports by (user, category) and shows one report per group: the one
+      # with the smallest id. This report is in the same group as current_org_report below, and
+      # deliberately has the smaller id of the two.
+      #
+      # So if the grouping step ever stops filtering by organization, this report represents the
+      # group, and is then dropped by the organization filter that runs after it. The result is
+      # that current_org_report disappears from the list. A row going missing is a much louder
+      # failure than an extra row showing up.
+      #
+      # Only the relative order of the two ids matters, never their absolute values, so they are
+      # derived from the fixtures above rather than hardcoded.
+      let_it_be(:other_org_report) do
+        create(:abuse_report, :open, id: abuse_report_2.id + 1, category: 'spam', user: cross_org_user,
+          reporter: other_org_reporter, organization: other_organization)
+      end
+
+      let_it_be(:current_org_report) do
+        create(:abuse_report, :open, id: abuse_report_2.id + 2, category: 'spam', user: cross_org_user)
+      end
+
+      context 'when params is empty' do
+        let(:params) { {} }
+
+        it 'excludes reports belonging to another organization' do
+          expect(finder).to match_array([abuse_report_1, abuse_report_2, current_org_report])
+        end
+      end
+
+      context 'when params[:status] = open' do
+        let(:params) { { status: 'open' } }
+
+        it 'excludes other organizations from the results and from the aggregation',
+          :aggregate_failures do
+          expect(finder).to match_array([abuse_report_1, current_org_report])
+
+          # Two reports exist globally for (cross_org_user, spam); only one is in this organization.
+          expect(finder.find { |report| report.id == current_org_report.id }.count).to eq(1)
+        end
+      end
+
+      context 'when scoped to the other organization' do
+        let(:params) { {} }
+        let(:organization) { other_organization }
+
+        it 'returns only that organization reports' do
+          expect(finder).to contain_exactly(other_org_report)
+        end
+      end
+
+      context 'when filtering by a reporter that only exists in another organization' do
+        let(:params) { { reporter: other_org_reporter.username } }
+
+        it 'returns no reports' do
+          expect(finder).to be_empty
         end
       end
     end

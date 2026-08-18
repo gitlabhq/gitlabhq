@@ -6,6 +6,7 @@ import { sprintf, __ } from '~/locale';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import BoardCardInner from './board_card_inner.vue';
 
 export default {
@@ -13,7 +14,7 @@ export default {
   components: {
     BoardCardInner,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glSlotsMixin],
   inject: ['disabled', 'fullPath', 'isIssueBoard', 'isEpicBoard'],
   props: {
     list: {
@@ -52,7 +53,7 @@ export default {
       default: 0,
     },
   },
-  emits: ['setFilters'],
+  emits: ['set-filters'],
   data() {
     return {
       activeBoardItem: undefined,
@@ -250,7 +251,7 @@ export default {
         :id="boardItemUniqueId"
         :class="[
           {
-            'focus:gl-bg-subtle dark:focus:gl-bg-gray-200': showFocusBackground,
+            'focus-visible:gl-bg-subtle dark:focus-visible:gl-bg-gray-200': showFocusBackground,
             'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
           },
         ]"
@@ -260,7 +261,7 @@ export default {
         :data-row-index="rowIndex"
         :style="cardStyle"
         data-testid="board-card-button"
-        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-lg gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus:gl-focus"
+        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-lg gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus-visible:gl-focus"
         @keydown.left.exact.prevent="focusLeft"
         @keydown.right.exact.prevent="focusRight"
         @keydown.down.exact.prevent="focusNext"
@@ -272,10 +273,10 @@ export default {
         :update-filters="true"
         :index="index"
         :show-work-item-type-icon="showWorkItemTypeIcon"
-        @setFilters="$emit('setFilters', $event)"
+        @set-filters="$emit('set-filters', $event)"
         @view-all-sessions="openWorkItemPanel"
       >
-        <slot></slot>
+        <template v-if="glSlots().default" #default><slot></slot></template>
       </board-card-inner>
     </div>
   </li>

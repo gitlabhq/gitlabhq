@@ -23,7 +23,8 @@ module Sidebars
             :dependency_list,
             :audit_events,
             :compliance,
-            :scan_policies
+            :scan_policies,
+            :policy_store
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

@@ -30,7 +30,7 @@ Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https:/
 Personal access tokens can only be used to connect GitHub.com
 repositories to GitLab, and the GitHub user must have the [owner role](https://docs.github.com/en/get-started/learning-about-github/access-permissions-on-github).
 
-To perform a one-off authorization with GitHub to grant GitLab access your
+To perform a one-off authorization with GitHub to grant GitLab access to your
 repositories:
 
 1. In GitHub, create a token:

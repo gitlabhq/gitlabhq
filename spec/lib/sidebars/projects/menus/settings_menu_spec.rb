@@ -67,6 +67,17 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
       let(:item_id) { :repository }
 
       it_behaves_like 'access rights checks'
+
+      context 'when the user does not have admin_project but has manage_merge_request_settings' do
+        let(:user) { build_stubbed(:user) }
+
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :manage_merge_request_settings, project).and_return(true)
+        end
+
+        it { is_expected.not_to be_nil }
+      end
     end
 
     describe 'CI/CD' do
@@ -180,6 +191,16 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
 
         it { is_expected.to be_nil }
       end
+    end
+  end
+
+  describe 'Feature Library metadata' do
+    let(:menu) { described_class.new(context) }
+
+    it 'gives every renderable item the settings library_icon' do
+      serialized = menu.renderable_items.map(&:serialize_for_super_sidebar)
+
+      expect(serialized).to all(include(library_icon: 'settings'))
     end
   end
 end

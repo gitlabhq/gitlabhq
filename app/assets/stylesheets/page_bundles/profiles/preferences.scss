@@ -2,18 +2,24 @@
 
 .application-theme {
   .preview {
-    --theme-preview-color: var(--gl-color-alpha-dark-8);
-    --theme-preview-accent-color: var(--gl-color-neutral-200);
+    --theme-preview-application-chrome-background-color: var(--gl-color-neutral-50);
+    --theme-preview-background-color-default: var(--gl-color-neutral-0);
+    --theme-preview-foreground-color-subtle: var(--gl-color-alpha-dark-8);
+    --theme-preview-foreground-color-default: var(--gl-color-alpha-dark-16);
+    --theme-preview-foreground-color-strong: var(--gl-color-alpha-dark-24);
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
-      --theme-preview-color: var(--gl-color-alpha-light-8);
-      --theme-preview-accent-color: var(--gl-color-neutral-400);
+      --theme-preview-application-chrome-background-color: var(--gl-color-neutral-900);
+      // Note: hardcoded `color.neutral.950` HEX value to not inherit tinted neutrals
+      // from `gl-*-scope` classes used to tint each theme preview
+      --theme-preview-background-color-default: #18171e;
+      --theme-preview-foreground-color-subtle: var(--gl-color-alpha-light-8);
+      --theme-preview-foreground-color-default: var(--gl-color-alpha-light-16);
+      --theme-preview-foreground-color-strong: var(--gl-color-alpha-light-24);
     }
 
     font-size: 0;
-    @apply gl-text-neutral-50;
-    @apply dark:gl-text-neutral-900;
     @apply gl-border;
     @apply gl-rounded-lg;
     @apply gl-mb-3;
@@ -21,11 +27,6 @@
 
     svg {
       width: 100%;
-    }
-
-    &.ui-neutral-scope {
-      opacity: 0.75;
-      --theme-preview-accent-color: var(--gl-color-blue-200);
     }
   }
 }

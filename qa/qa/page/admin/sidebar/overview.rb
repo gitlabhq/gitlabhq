@@ -16,7 +16,7 @@ module QA
           private
 
           def open_overview_submenu(sub_menu)
-            open_submenu("Overview", sub_menu)
+            open_submenu("Instance overview", sub_menu)
           end
         end
       end

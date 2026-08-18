@@ -50,6 +50,18 @@ RSpec.shared_examples 'dismissible alert component' do
     end
   end
 
+  context 'with defer_links option' do
+    let(:dismiss_options) { super().merge(defer_links: true) }
+
+    it 'includes defer_links in data attributes' do
+      expect(rendered_component).to have_css("[data-defer-links='true']")
+    end
+  end
+
+  it 'does not include defer_links in data attributes by default' do
+    expect(rendered_component).not_to have_css('[data-defer-links]')
+  end
+
   context 'with ignore_dismissal_earlier_than option' do
     let(:ignore_time) { 30.days.ago }
     let(:dismiss_options) { super().merge(ignore_dismissal_earlier_than: ignore_time) }

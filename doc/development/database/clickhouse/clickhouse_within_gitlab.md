@@ -274,7 +274,7 @@ A simple query from the `events` table:
 rows = ClickHouse::Client.select('SELECT * FROM events', :main)
 ```
 
-When working with queries with placeholders you can use the `ClickHouse::Query` object where you need to specify the placeholder name and its data type. The actual variable replacement, quoting and escaping will be done by the ClickHouse server.
+When working with queries with placeholders you can use the `ClickHouse::Query` object where you need to specify the placeholder name and its data type. The actual variable replacement, quoting, and escaping will be done by the ClickHouse server.
 
 ```ruby
 raw_query = 'SELECT * FROM events WHERE id > {min_id:UInt64}'
@@ -683,12 +683,45 @@ end
 
 Additionally, to view the executed ClickHouse queries in web interactions, on the performance bar, next to the `ch` label select the count.
 
-## Handling Siphon Errors in Tests
+## Data synchronization with Siphon
 
-GitLab uses a tool called [Siphon](https://gitlab.com/gitlab-org/analytics-section/siphon) to constantly synchronise data from specified tables in PostgreSQL to ClickHouse.
-This process requires that for each specified table, the ClickHouse schema must contain a copy of the PostgreSQL schema.
+GitLab uses [Siphon](https://gitlab.com/gitlab-org/analytics-section/siphon), a change data capture (CDC) tool,
+to continuously synchronize data from PostgreSQL tables to ClickHouse.
+Siphon reads the PostgreSQL logical replication stream and applies every row change to a ClickHouse
+table, which by convention is prefixed with `siphon_`.
 
-During GitLab development, if you add a new column to PostgreSQL without adding a matching column in ClickHouse it will fail with an error:
+Each replicated table has a configuration file in
+[`db/siphon/tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/siphon/tables).
+To replicate a table and design its ClickHouse schema, see
+[ClickHouse table design with Siphon](clickhouse_table_design_with_siphon.md).
+
+### Database migrations
+
+Keep the PostgreSQL and the ClickHouse schemas in sync.
+When you add a column to a replicated PostgreSQL table, add the same column to the ClickHouse table
+with a [ClickHouse migration](#database-schema-and-migrations).
+
+You can leave a column out of the ClickHouse table, but you must then exclude it from replication:
+
+1. Add the column to `ignored_columns` in `db/siphon/tables/<table>.yml`.
+1. Add the column name to the `skip_fields` list in `spec/db/clickhouse_siphon_tables_spec.rb`.
+
+For example, `db/siphon/tables/milestones.yml` excludes the two cached HTML columns:
+
+```yaml
+table: milestones
+database: main
+ignored_columns:
+  - title_html
+  - description_html
+```
+
+Columns that look sensitive, such as tokens and encrypted attributes, must always be listed in
+`ignored_columns`. The tests fail when such a column is missing from the configuration file.
+
+### Handling Siphon errors in tests
+
+During GitLab development, if you add a new column to PostgreSQL without adding a matching column in ClickHouse, the tests fail with an error:
 
 ```plaintext
 This table is synchronised to ClickHouse and you've added a new column!
@@ -696,7 +729,7 @@ This table is synchronised to ClickHouse and you've added a new column!
 
 To resolve this, you should add a migration to add the column to ClickHouse too.
 
-### Example
+#### Example
 
 1. Add a new column `new_int` of type `int4` to a table that is being synchronised to ClickHouse, such as `milestones`.
 1. Note that CI will fail with the error:
@@ -732,6 +765,86 @@ To resolve this, you should add a migration to add the column to ClickHouse too.
    ```
 
 If you need further assistance, reach out to `#f_siphon` internally.
+
+### Renaming or swapping tables
+
+Logical replication does not capture DDL changes, so Siphon does not notice when a table is renamed
+or [swapped](../swapping_tables.md). Such a change needs extra work in the Siphon configuration file,
+otherwise replication stops for the affected table.
+
+Because the rename or the swap itself happens during a [required stop](../required_stops.md),
+you must split the work across two releases:
+
+1. Before the required stop, update `db/siphon/tables/<table>.yml`:
+   - Add `renamed_table_name` with the name the table has after the rename. Siphon and the tests
+     accept either name, so the configuration stays valid before and after the rename.
+   - Add `original_table_name` with the current table name. Siphon derives the NATS subject from the
+     table name, so pinning the subject to the old name keeps the data flowing when the name changes.
+     This key is required whenever `renamed_table_name` is set.
+1. During the required stop, rename or swap the table.
+1. After the required stop, clean up the configuration file:
+   - Set `table` to the new table name.
+   - Remove `renamed_table_name`.
+   - Keep `original_table_name` unchanged, so the NATS subject stays the same.
+   - Optional. Rename the file to reflect the new table name. The filename is not significant, the
+     `table` key defines the source table.
+
+For example, `merge_request_diff_files_99208b8fac` is swapped with `merge_request_diff_files`.
+Before the required stop, the configuration file is:
+
+```yaml
+table: merge_request_diff_files_99208b8fac
+renamed_table_name: merge_request_diff_files
+original_table_name: merge_request_diff_files_99208b8fac
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_request_diff_files
+```
+
+After the swap, the same file becomes:
+
+```yaml
+table: merge_request_diff_files
+original_table_name: merge_request_diff_files_99208b8fac
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_request_diff_files
+```
+
+#### Partitioned tables
+
+The preceding steps also cover partitioned tables. You do not need a configuration file per
+partition, even when the partitions are renamed along with the parent table.
+
+Siphon replicates the individual partitions rather than the parent, so it must recognize each
+partition under both its old and its new name. It derives those names from the parent's, because
+PostgreSQL names a dynamically created partition `<parent>_<suffix>` and a rename carries the suffix
+across. For a parent renamed from `merge_request_diff_files_99208b8fac` to `merge_request_diff_files`:
+
+| Partition before the rename | Partition after the rename |
+|---|---|
+| `merge_request_diff_files_99208b8fac_1` | `merge_request_diff_files_1` |
+| `merge_request_diff_files_99208b8fac_1600000001` | `merge_request_diff_files_1600000001` |
+
+Both names resolve to the same replicated table, so the NATS subject, the ClickHouse target, and the
+schema version hash do not change. Replication continues without a gap and without a re-snapshot,
+whether only the parent is renamed or the partitions are renamed too.
+
+New partitions created after the rename are picked up automatically, as they are for any other
+partitioned table.
+
+This relies on the `<parent>_<suffix>` naming convention, which PostgreSQL does not enforce. A
+partition whose name does not start with the parent's name is not covered, and needs its own
+configuration file with:
+
+- `table` and `renamed_table_name`: the partition name before and after the rename.
+- `schema`: the schema that holds the partition, because the default is `public`.
+- `original_table_name`: the parent table name, so all partitions publish to the same subject.
+
+Do not configure both the parent and its partitions at the same time. The partitions would be
+replicated twice, and the initial snapshot would run twice for each of them.
 
 ## Troubleshooting
 

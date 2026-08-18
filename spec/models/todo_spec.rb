@@ -279,6 +279,18 @@ RSpec.describe Todo, feature_category: :notifications do
 
       expect(subject.body).to eq group.full_path
     end
+
+    it 'returns destination full path when action is transfer_failed for a group' do
+      parent_group = create(:group)
+      destination_group = create(:group, parent: parent_group)
+
+      subject.target = destination_group
+      subject.action = Todo::TRANSFER_FAILED
+      destination_group.state_metadata[:transfer_target_parent_id] = parent_group.id
+      destination_group.namespace_details.save!
+
+      expect(subject.body).to eq("#{parent_group.full_path}/#{destination_group.path}")
+    end
   end
 
   describe '#done' do
@@ -528,11 +540,118 @@ RSpec.describe Todo, feature_category: :notifications do
       end
     end
 
+    context 'when the todo is for a transfer failure' do
+      context 'when it is a project transfer failure' do
+        let_it_be(:todo) do
+          create(:todo, project: project, user: user, action: Todo::TRANSFER_FAILED, target: project)
+        end
+
+        it 'returns the project source path' do
+          is_expected.to eq(::Gitlab::UrlBuilder.build(project))
+        end
+      end
+
+      context 'when it is a group transfer failure' do
+        let_it_be(:todo) do
+          create(:todo, project: nil, group: group, user: user, action: Todo::TRANSFER_FAILED, target: group)
+        end
+
+        it 'returns the group source path' do
+          is_expected.to eq(::Gitlab::UrlBuilder.build(group))
+        end
+      end
+    end
+
     context 'when todo is for an expired SSH key' do
       let_it_be(:key) { create(:key, user: user) }
       let_it_be(:todo) { build(:todo, target: key, project: nil, group: nil, user: user) }
 
       it { is_expected.to eq("http://localhost/-/user_settings/ssh_keys/#{key.id}") }
+    end
+  end
+
+  describe '#transfer_failed_retry_url' do
+    subject { todo.reload.transfer_failed_retry_url }
+
+    context 'when todo is not transfer_failed' do
+      let_it_be(:todo) { create(:todo, project: project, user: user, target: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when todo is a project transfer failure' do
+      let_it_be(:new_namespace) { create(:group) }
+      let_it_be(:todo) do
+        create(:todo, project: project, user: user, action: Todo::TRANSFER_FAILED, target: project)
+      end
+
+      context 'when transfer target namespace metadata exists' do
+        before do
+          project_namespace = project.project_namespace
+          project_namespace.state_metadata[:transfer_target_parent_id] = new_namespace.id
+          project_namespace.namespace_details.save!
+        end
+
+        it 'returns project transfer URL with new namespace' do
+          is_expected.to eq(::Gitlab::Routing.url_helpers.transfer_project_url(project, new_namespace_id: new_namespace.id))
+        end
+      end
+
+      context 'when transfer target namespace metadata does not exist' do
+        before do
+          project_namespace = project.project_namespace
+          project_namespace.state_metadata.except!('transfer_target_parent_id')
+          project_namespace.namespace_details.save!
+        end
+
+        it 'returns project transfer URL with current namespace as fallback' do
+          is_expected.to eq(::Gitlab::Routing.url_helpers.transfer_project_url(project, new_namespace_id: project.namespace_id))
+        end
+      end
+    end
+
+    context 'when todo is a group transfer failure' do
+      let_it_be(:new_parent_group) { create(:group) }
+      let_it_be(:todo) do
+        create(:todo, project: nil, group: group, user: user, action: Todo::TRANSFER_FAILED, target: group)
+      end
+
+      let(:group_for_retry_metadata) { Group.find(group.id) }
+
+      context 'when transfer target group metadata exists' do
+        before do
+          group_for_retry_metadata.state_metadata[:transfer_target_parent_id] = new_parent_group.id
+          group_for_retry_metadata.namespace_details.save!
+        end
+
+        it 'returns group transfer URL with new parent group' do
+          is_expected.to eq(
+            ::Gitlab::Routing.url_helpers.transfer_group_url(group, new_parent_group_id: new_parent_group.id)
+          )
+        end
+      end
+
+      context 'when transfer target group metadata exists with nil value' do
+        before do
+          group_for_retry_metadata.state_metadata[:transfer_target_parent_id] = nil
+          group_for_retry_metadata.namespace_details.save!
+        end
+
+        it 'returns group transfer URL without a parent group id' do
+          is_expected.to eq(::Gitlab::Routing.url_helpers.transfer_group_url(group, new_parent_group_id: nil))
+        end
+      end
+
+      context 'when transfer target group metadata does not exist' do
+        before do
+          group_for_retry_metadata.state_metadata.except!('transfer_target_parent_id')
+          group_for_retry_metadata.namespace_details.save!
+        end
+
+        it 'returns group transfer URL with current parent group as fallback' do
+          is_expected.to eq(::Gitlab::Routing.url_helpers.transfer_group_url(group, new_parent_group_id: group.parent_id))
+        end
+      end
     end
   end
 

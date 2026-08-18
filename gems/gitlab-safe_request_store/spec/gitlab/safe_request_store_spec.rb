@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SafeRequestStore do
   it "has a version number" do
-    expect(described_class::Version::VERSION).not_to be nil
+    expect(described_class::Version::VERSION).not_to be_nil
   end
 
   describe '.ensure_request_store' do

@@ -187,11 +187,11 @@ describe('RunnerList', () => {
       expect(wrapper.emitted('deleted')).toEqual([[event]]);
     });
 
-    it('Emits a toggledPaused event', () => {
+    it('Emits a toggled-paused event', () => {
       const event = { message: 'Paused!' };
-      findRunnerBulkActions().vm.$emit('toggledPaused', event);
+      findRunnerBulkActions().vm.$emit('toggled-paused', event);
 
-      expect(wrapper.emitted('toggledPaused')).toEqual([[event]]);
+      expect(wrapper.emitted('toggled-paused')).toEqual([[event]]);
     });
   });
 

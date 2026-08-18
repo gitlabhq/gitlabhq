@@ -29,9 +29,7 @@ setup-test-env:
     paths:
       - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
       - ${TMP_TEST_FOLDER}/gitaly/config.toml
-      - ${TMP_TEST_FOLDER}/gitaly/config.toml.transactions
       - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
-      - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml.transactions
       - ${TMP_TEST_FOLDER}/gitaly/internal/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
@@ -290,60 +288,77 @@ rspec system pg17 praefect:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:praefect-with-db", rules]
 
-# Test jobs that run without Gitaly's transactions enabled. These will be removed once
-# transactions are always in use in Gitaly.
-rspec migration pg17 no_gitaly_transactions:
+# Variants of Gitaly jobs where repositories will be created with the MVCC backend enabled.
+# These do not run automatically; set the pipeline:run-gitaly-mvcc label to trigger them all.
+rspec migration pg17 gitaly-mvcc:
   extends:
     - rspec migration pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
-rspec background_migration pg17 no_gitaly_transactions:
+rspec background_migration pg17 gitaly-mvcc:
   extends:
     - rspec background_migration pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
-rspec unit pg17 no_gitaly_transactions:
+rspec unit pg17 gitaly-mvcc:
   extends:
     - rspec unit pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
-rspec integration pg17 no_gitaly_transactions:
+rspec integration pg17 gitaly-mvcc:
   extends:
     - rspec integration pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
-rspec system pg17 no_gitaly_transactions:
+rspec system pg17 gitaly-mvcc:
   extends:
     - rspec system pg17
-    - .gitaly-without-transactions
-    - .rails:rules:only-run-system-if-medium-runners-available
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-system", rules]
 
-rspec-ee migration pg17 no_gitaly_transactions:
+rspec-ee migration pg17 gitaly-mvcc:
   extends:
     - rspec-ee migration pg17
-    - .ee-only-gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
-rspec-ee background_migration pg17 no_gitaly_transactions:
+rspec-ee background_migration pg17 gitaly-mvcc:
   extends:
     - rspec-ee background_migration pg17
-    - .ee-only-gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
-rspec-ee unit pg17 no_gitaly_transactions:
+rspec-ee unit pg17 gitaly-mvcc:
   extends:
     - rspec-ee unit pg17
-    - .ee-only-gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
-rspec-ee integration pg17 no_gitaly_transactions:
+rspec-ee integration pg17 gitaly-mvcc:
   extends:
     - rspec-ee integration pg17
-    - .ee-only-gitaly-without-transactions
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
-rspec-ee system pg17 no_gitaly_transactions:
+rspec-ee system pg17 gitaly-mvcc:
   extends:
     - rspec-ee system pg17
-    - .ee-only-gitaly-without-transactions
+    - .gitaly-mvcc
   rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:gitaly-mvcc-ee-system", rules]
 
 rspec fast_spec_helper:
   extends:
@@ -358,7 +373,6 @@ rspec unit clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:clickhouse-changes
-  parallel: 2
 
 # Dedicated job for the partition export/import UTC session guard specs.
 # Runs only the `:partition_tz`-tagged examples (see .rspec-base-pg17-tz) with
@@ -373,31 +387,26 @@ rspec-ee unit clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
-  parallel: 2
 
 rspec integration pg17 clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-and-foss-integration
-  parallel: 3
 
 rspec-ee integration pg17 clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-only-integration
-  parallel: 3
 
 rspec unit clickhouse26:
   extends:
     - .rspec-base-pg17-clickhouse26
     - .rails:rules:clickhouse-changes
-  parallel: 2
 
 rspec-ee unit clickhouse26:
   extends:
     - .rspec-base-pg17-clickhouse26
     - .rails:rules:ee-only-clickhouse-changes
-  parallel: 2
 
 rspec system clickhouse25:
   tags:
@@ -407,7 +416,6 @@ rspec system clickhouse25:
     - .rails:rules:clickhouse-system-changes
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
-  parallel: 2
 
 rspec-ee system clickhouse25:
   tags:
@@ -417,7 +425,6 @@ rspec-ee system clickhouse25:
     - .rails:rules:ee-only-clickhouse-system-changes
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
-  parallel: 2
 
 rspec ci-config-validation branch-pipelines:
   extends:
@@ -502,9 +509,9 @@ rspec:artifact-collector unit:
   needs:
     - job: rspec unit pg17  # 44 jobs
       optional: true
-    - job: rspec unit clickhouse26  # 2 jobs
+    - job: rspec unit clickhouse26  # 1 job
       optional: true
-    - job: rspec unit clickhouse25  # 2 jobs
+    - job: rspec unit clickhouse25  # 1 job
       optional: true
 
 rspec:artifact-collector part-a:
@@ -522,7 +529,7 @@ rspec:artifact-collector part-c:
     - .artifact-collector
     - .rails:rules:artifact-collector-part-c
   needs:
-    - job: rspec system clickhouse25  # 2 jobs
+    - job: rspec system clickhouse25  # 1 job
       optional: true
 
 rspec:artifact-collector part-b:
@@ -532,7 +539,7 @@ rspec:artifact-collector part-b:
   needs:
     - job: rspec integration pg17  # 20 jobs
       optional: true
-    - job: rspec integration pg17 clickhouse25  # 3 jobs
+    - job: rspec integration pg17 clickhouse25  # 1 job
       optional: true
     - job: rspec migration pg17  # 26 jobs
       optional: true
@@ -596,17 +603,17 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee background_migration pg17  # 6 jobs
       optional: true
-    - job: rspec-ee unit clickhouse26  # 2 jobs
+    - job: rspec-ee unit clickhouse26  # 1 job
       optional: true
-    - job: rspec-ee unit clickhouse25  # 2 jobs
+    - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
     - job: rspec-ee integration pg17  # 9 jobs
       optional: true
-    - job: rspec-ee integration pg17 clickhouse25  # 3 jobs
+    - job: rspec-ee integration pg17 clickhouse25  # 1 job
       optional: true
     - job: rspec-ee system pg17  # 16 jobs
       optional: true
-    - job: rspec-ee system clickhouse25  # 2 jobs
+    - job: rspec-ee system clickhouse25  # 1 job
       optional: true
     - job: rspec fail-fast  # 1 job
       optional: true
@@ -877,6 +884,21 @@ rspec:merge-auto-explain-logs:
     expire_in: 31d
     paths:
       - auto_explain/
+
+# Checks for new queries that fail partition pruning on CI tables (p_ci_*).
+# Allowed to fail: a flagged query may originate in spec code, which the detector can't
+# distinguish from app code. Revisit if the CI database has another LWLock incident.
+rspec:check-ci-partition-pruning:
+  extends:
+    - .rails:rules:check-ci-partition-pruning
+  stage: post-test
+  needs:
+    - job: "rspec:merge-auto-explain-logs"
+      artifacts: true
+      optional: true
+  allow_failure: true
+  script:
+    - scripts/database/check_ci_partition_pruning.rb "$RSPEC_AUTO_EXPLAIN_LOG_PATH"
 
 # EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################
@@ -1218,7 +1240,8 @@ rspec-ee system pg17 duo_workflow_service:
     - rspec-ee system pg17
   variables:
     RSPEC_TAGS: "--tag duo_workflow_service"
-  parallel: 4
+    RSPEC_DRY_RUN_TAGS: "duo_workflow_service"
+  parallel: 1  # override parallel: 16 inherited from `rspec-ee system pg17` (.rspec-ee-system-parallel)
   rules:
     - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - !reference [".rails:rules:tier-2-with-backend-spec", rules]

@@ -53,18 +53,13 @@ module Gitlab
         # strip partition number of a form `loose_foreign_keys_deleted_records_1`
         table_name.gsub!(/_[0-9]+$/, '')
 
-        # Tables and views that are properly mapped
-        if gitlab_schema = views_and_tables_to_schema[table_name]
-          return gitlab_schema
-        end
-
-        # Tables and views that are deleted, but we still need to reference them
-        if gitlab_schema = deleted_views_and_tables_to_schema[table_name]
+        # Tables and views that are properly mapped, or deleted but still referenced
+        if gitlab_schema = schema_for(table_name)
           return gitlab_schema
         end
 
         # Partitions that belong to the CI domain
-        if table_name.start_with?('ci_') && gitlab_schema = views_and_tables_to_schema["p_#{table_name}"]
+        if table_name.start_with?('ci_') && gitlab_schema = schema_for("p_#{table_name}")
           return gitlab_schema
         end
 
@@ -132,6 +127,12 @@ module Gitlab
 
           schema_info.allow_cross_foreign_keys?(table_schemas, all_tables)
         end
+      end
+
+      # Looks up a name in the live mapping first, then the deleted mapping
+      # for tables and views that are gone but still need to be referenced.
+      def self.schema_for(table_name)
+        views_and_tables_to_schema[table_name] || deleted_views_and_tables_to_schema[table_name]
       end
 
       def self.views_and_tables_to_schema

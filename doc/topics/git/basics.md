@@ -10,7 +10,7 @@ Basic Git operations help you to manage your Git repositories and to make change
 They provide you with the following benefits:
 
 - Version control: Maintain a history of your project to track changes and revert to previous versions if needed.
-- Collaboration: Enable collaboration and makes it easier to share code and work simultaneously.
+- Collaboration: Enables collaboration and makes it easier to share code and work simultaneously.
 - Organization: Use branches and merge requests to organize and manage your work.
 - Code quality: Facilitates code reviews through merge requests, and helps to maintain code quality and consistency.
 - Backup and recovery: Push changes to remote repositories to ensure your work is backed up and recoverable.
@@ -77,4 +77,3 @@ For more information, see [update a fork](forks.md).
   - [Common Git commands](commands.md)
 - [Advanced operations](advanced.md)
 - [Troubleshooting Git](troubleshooting_git.md)
-- [Git cheat sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)

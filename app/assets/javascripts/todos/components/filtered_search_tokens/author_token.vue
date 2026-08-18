@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import { getUser } from '~/rest_api';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import AsyncToken from './async_token.vue';
 
 export default {
@@ -15,6 +16,7 @@ export default {
     GlAvatar,
     AsyncToken,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -51,7 +53,7 @@ export default {
     :suggestions-fetch-error="$options.i18n.suggestionsFetchError"
     :config="config"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #token-value="{ inputValue, activeTokenValue }">
       <template v-if="displayValue(activeTokenValue)">

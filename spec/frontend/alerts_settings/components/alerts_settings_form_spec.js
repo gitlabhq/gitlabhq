@@ -71,15 +71,16 @@ describe('AlertsSettingsForm', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findSelect = () => wrapper.find('select');
   const findNameField = () => wrapper.findByTestId('integration-name-field');
+  const findNameFieldComponent = () => wrapper.findComponentByTestId('integration-name-field');
   const findFormToggle = () => wrapper.findComponent(GlToggle);
   const findSamplePayloadSection = () => wrapper.findByTestId('sample-payload-section');
   const findResetPayloadModal = () => wrapper.findComponent(GlModal);
   const findMappingBuilder = () => wrapper.findComponent(MappingBuilder);
   const findSubmitButton = () => wrapper.findByTestId('integration-form-submit');
   const findMultiSupportText = () => wrapper.findByTestId('multi-integrations-not-supported');
-  const findJsonTestSubmit = () => wrapper.findByTestId('send-test-alert');
+  const findJsonTestSubmit = () => wrapper.findComponentByTestId('send-test-alert');
   const findJsonTextArea = () => wrapper.findByTestId('test-payload-field');
-  const findActionBtn = () => wrapper.findByTestId('payload-action-btn');
+  const findActionBtn = () => wrapper.findComponentByTestId('payload-action-btn');
   const findTabs = () => wrapper.findAllComponents(GlTab);
 
   const selectOptionAtIndex = async (index) => {
@@ -452,13 +453,13 @@ describe('AlertsSettingsForm', () => {
 
     it('should not be able to submit when HTTP integration form is invalid', async () => {
       await selectOptionAtIndex(1);
-      await findNameField().vm.$emit('input', '');
+      await findNameFieldComponent().vm.$emit('input', '');
       expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should be able to submit when HTTP integration  form is valid', async () => {
       await selectOptionAtIndex(1);
-      await findNameField().vm.$emit('input', 'Name');
+      await findNameFieldComponent().vm.$emit('input', 'Name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 
@@ -472,7 +473,7 @@ describe('AlertsSettingsForm', () => {
       const currentIntegration = { type: typeSet.http, name: 'Existing integration' };
       await createComponent({ currentIntegration });
 
-      await findNameField().vm.$emit('input', 'Updated name');
+      await findNameFieldComponent().vm.$emit('input', 'Updated name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 

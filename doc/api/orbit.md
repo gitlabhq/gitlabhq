@@ -1,6 +1,6 @@
 ---
-stage: Analytics
-group: Knowledge Graph
+stage: Orbit
+group: Context Systems
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: REST API to run queries, retrieve schemas, and check cluster health for Orbit.
 title: Orbit API
@@ -10,13 +10,15 @@ title: Orbit API
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19744) in GitLab 18.10 [with a feature flag](../administration/feature_flags/_index.md) named `knowledge_graph`. This feature is an [experiment](../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19744) as an [experiment](../policy/development_stages_support.md) in GitLab 18.10 [with a feature flag](../administration/feature_flags/_index.md) named `knowledge_graph`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237959) from experiment to beta in GitLab 19.1.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245620) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -514,20 +516,20 @@ Example response:
 ```json
 [
   {
-    "name": "query_graph",
-    "description": "Execute graph queries to find nodes, traverse relationships...",
+    "name": "list_commands",
+    "description": "List the Orbit commands that can be invoked...",
     "parameters": {
       "type": "object",
-      "required": ["query"],
-      "properties": {"query": {"type": "object"}}
+      "properties": {"command_names": {"type": "array"}}
     }
   },
   {
-    "name": "get_graph_schema",
-    "description": "List the GitLab Knowledge Graph schema...",
+    "name": "invoke_command",
+    "description": "Invoke an Orbit command such as query_graph or get_graph_schema...",
     "parameters": {
       "type": "object",
-      "properties": {"expand_nodes": {"type": "array"}}
+      "required": ["command_name"],
+      "properties": {"command_name": {"type": "string"}, "parameters": {"type": "object"}}
     }
   }
 ]

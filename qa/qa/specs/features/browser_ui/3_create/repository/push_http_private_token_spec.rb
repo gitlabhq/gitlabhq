@@ -5,8 +5,7 @@ module QA
     describe 'Git push over HTTP', :smoke, :skip_fips_env do
       let(:test_user) { Runtime::User::Store.test_user }
 
-      it 'user using a personal access token pushes code to the repository',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347749' do
+      it 'user using a personal access token pushes code to the repository' do
         Flow::Login.sign_in
 
         user = build(:user, username: test_user.username, password: test_user.api_client.personal_access_token)

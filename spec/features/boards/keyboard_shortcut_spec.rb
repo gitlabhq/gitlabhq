@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards shortcut', :js, feature_category: :portfolio_management do
+RSpec.describe 'Issue Boards shortcut', :js, feature_category: :planning_views do
   context 'issues are enabled' do
     let(:project) { create(:project) }
 
@@ -19,8 +19,6 @@ RSpec.describe 'Issue Boards shortcut', :js, feature_category: :portfolio_manage
     it 'takes user to issue board index' do
       find('body').native.send_keys('gb')
       expect(page).to have_selector('.boards-list')
-
-      wait_for_requests
     end
   end
 

@@ -15,6 +15,7 @@ require 'optparse'
 require 'rainbow'
 
 require_relative 'env'
+require_relative 'flow_definition'
 require_relative 'graphql_client'
 require_relative 'workspace'
 
@@ -25,25 +26,13 @@ module Gitlab
       DEFAULT_FLOW_NAME = 'Agent Principles Distiller'
       FLOW_DESCRIPTION = 'Distill GitLab development principles from SSOT documentation under ' \
         'doc/development/ into actionable, agent-loadable checklist files.'
-      PROMPT_PATH = '.ai/principles/distillation_prompt.md'
       DRY_RUN_FLOW_GID = 'dry-run-flow-gid'
 
-      # Substring of the GraphQL error GitLab returns when the caller lacks
-      # `admin_ai_catalog_item` (a Maintainer+ ability). Matched to turn an
-      # opaque authorization failure into actionable operator guidance rather
-      # than silently escalating the service account's role.
+      # Substring of the GraphQL error GitLab returns when the caller lacks `admin_ai_catalog_item` (a Maintainer+
+      # ability).
+      # Matched to turn an opaque authorization failure into actionable operator guidance rather than silently
+      # escalating the service account's role.
       PERMISSION_DENIED_FRAGMENT = "you don't have permission"
-
-      # Read-only allowlist; names match
-      # ee/lib/ai/catalog/built_in_tool_definitions.rb. We curate here
-      # rather than rely on agent-side guardrails.
-      TOOL_NAMES = %w[
-        find_files
-        grep
-        list_dir
-        read_file
-        read_files
-      ].freeze
 
       def self.run
         options = parse_options
@@ -82,6 +71,9 @@ module Gitlab
         puts Rainbow('[DRY RUN]').cyan if @dry_run
 
         desired_yaml = build_flow_yaml(load_distillation_prompt)
+        check_definition_size!(desired_yaml)
+        puts FlowDefinition.size_report(desired_yaml)
+
         project_gid = find_project_gid!(@project_path)
 
         flow = find_flow
@@ -107,75 +99,53 @@ module Gitlab
       private
 
       def load_distillation_prompt
-        path = Workspace.safe_join(PROMPT_PATH)
-        abort Rainbow("ERROR: prompt not found at #{path}").red unless File.exist?(path)
-
-        content = File.read(path)
-        # Strip the leading authoring-instructions HTML comment.
-        content.sub(/\A<!--.*?-->\s*/m, '').strip
+        FlowDefinition.load_distillation_prompt
       end
 
-      # Single AgentComponent running our distillation prompt; goal is
-      # passed at workflow-create time.
       def build_flow_yaml(system_prompt)
-        indented_system = indent_block(system_prompt, 8)
-        indented_tools  = TOOL_NAMES.map { |t| "    - #{t}" }.join("\n")
-
-        <<~YAML
-      version: v1
-      environment: ambient
-      components:
-        - name: distiller
-          type: AgentComponent
-          prompt_id: distiller_prompt
-          inputs:
-            - from: context:goal
-              as: goal
-          toolset:
-      #{indented_tools}
-          ui_log_events:
-            - on_tool_execution_success
-            - on_agent_final_answer
-            - on_tool_execution_failed
-      prompts:
-        - prompt_id: distiller_prompt
-          name: distiller
-          unit_primitives: []
-          prompt_template:
-            system: |
-      #{indented_system}
-            user: "{{goal}}"
-            placeholder: history
-          params:
-            timeout: 60
-      routers:
-        - from: distiller
-          to: end
-      flow:
-        entry_point: distiller
-        YAML
+        FlowDefinition.build_flow_yaml(system_prompt)
       end
 
-      def indent_block(text, spaces)
-        pad = ' ' * spaces
-        text.each_line.map { |line| line.empty? ? line : "#{pad}#{line}" }.join.chomp
+      # Fails before any catalog mutation when the definition would exceed the stored-JSONB limit.
+      # Without this the API returns only "Latest version definition is too large. Maximum size allowed is 64 KiB"
+      # with no numbers, and the drift line reports YAML bytes (~30 KiB) which looks nowhere near the limit.
+      # The prompt is stored twice (https://gitlab.com/gitlab-org/gitlab/-/issues/591638).
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/608440
+      def check_definition_size!(yaml_definition)
+        return if FlowDefinition.within_size_limit?(yaml_definition)
+
+        stored = FlowDefinition.stored_definition_bytesize(yaml_definition)
+        over_by = stored - FlowDefinition::DEFINITION_SIZE_LIMIT
+
+        abort Rainbow(<<~MSG.chomp).red
+          ERROR: flow definition is #{over_by} bytes over the catalog limit.
+
+            #{FlowDefinition.size_report(yaml_definition)}
+
+          The catalog stores the parsed YAML *and* the raw YAML string under
+          `yaml_definition`, so #{FlowDefinition::PROMPT_PATH} is counted twice;
+          one byte of prompt costs roughly 2.2 stored bytes. That duplicate
+          storage is tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/591638
+          — once it moves to object storage this budget roughly doubles.
+
+          Shorten the prompt by about #{(over_by / 2.2).ceil} bytes.
+
+          See https://gitlab.com/gitlab-org/gitlab/-/issues/608440 for the byte census and rationale.
+        MSG
       end
 
       def graphql_client
         @graphql_client ||= GraphqlClient.new(host: @host, token: @token)
       end
 
-      # One-shot provisioner: any error here is unrecoverable, so abort
-      # cleanly rather than retry (contrast Workflow#graphql).
+      # One-shot provisioner: any error here is unrecoverable, so abort cleanly rather than retry (contrast
+      # Workflow#graphql).
       #
-      # `action` names the mutation being attempted (e.g. "release a new
-      # flow version"). When the failure is an authorization error, we abort
-      # with operator guidance instead of the raw GraphQL message: the
-      # scheduled run uses a Developer-role service account, which can read
-      # the catalog but cannot create/update flows or consumers (those need
-      # the Maintainer+ `admin_ai_catalog_item` ability). Rather than
-      # escalate the account, we fail loudly and tell a maintainer how to
-      # provision manually.
+      # `action` names the mutation being attempted (e.g. "release a new flow version").
+      # When the failure is an authorization error, we abort with operator guidance instead of the raw GraphQL message:
+      # the scheduled run uses a Developer-role service account, which can read the catalog but cannot create/update
+      # flows or consumers (those need the Maintainer+ `admin_ai_catalog_item` ability).
+      # Rather than escalate the account, we fail loudly and tell a maintainer how to provision manually.
       def graphql(query, variables = {}, action: nil)
         graphql_client.query(query, variables)
       rescue GraphqlClient::Error => e
@@ -324,8 +294,7 @@ module Gitlab
       end
 
       def ensure_item_consumer(flow, project_gid)
-        # Dry-run flow has a placeholder GID; short-circuit the lookup
-        # that would fail GraphQL validation.
+        # Dry-run flow has a placeholder GID; short-circuit the lookup that would fail GraphQL validation.
         if @dry_run && flow['id'] == DRY_RUN_FLOW_GID
           puts Rainbow('[DRY RUN] Would create ItemConsumer for the flow in the project.').cyan
           return
@@ -370,10 +339,14 @@ module Gitlab
         payload['itemConsumer']
       end
 
+      # Reports both the YAML delta and the stored-JSONB size, because only the latter is what the catalog's
+      # 64 KiB limit applies to.
       def diff_summary(old_text, new_text)
         old_size = old_text.to_s.bytesize
         new_size = new_text.to_s.bytesize
-        puts Rainbow("  current: #{old_size} bytes  desired: #{new_size} bytes  delta: #{new_size - old_size}").faint
+        puts Rainbow("  YAML    current: #{old_size} bytes  desired: #{new_size} bytes  " \
+          "delta: #{new_size - old_size}").faint
+        puts Rainbow("  stored  #{FlowDefinition.size_report(new_text)}").faint
       end
     end
   end

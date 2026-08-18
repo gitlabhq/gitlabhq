@@ -16,7 +16,7 @@ export default {
       required: true,
     },
   },
-  emits: ['expandSidebar'],
+  emits: ['expand-sidebar'],
   computed: {
     confidentialIcon() {
       return this.confidential ? 'eye-slash' : 'eye';
@@ -35,7 +35,7 @@ export default {
       :title="tooltipLabel"
       class="sidebar-collapsed-icon"
       data-testid="sidebar-collapsed-icon"
-      @click="$emit('expandSidebar')"
+      @click="$emit('expand-sidebar')"
     >
       <gl-icon
         :size="16"

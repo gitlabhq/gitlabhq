@@ -11,7 +11,7 @@ module ProjectAuthorizations
   #   changes.remove_projects_for_user(user, project_ids)
   # end.apply!
   class Changes
-    attr_reader :projects_to_remove, :users_to_remove_in_project, :authorizations_to_add
+    attr_reader :projects_to_remove, :users_to_remove_in_project, :authorizations_to_add, :rows_added, :rows_deleted
 
     BATCH_SIZE = 1000
     EVENTS_BATCH_SIZE = 100
@@ -22,6 +22,8 @@ module ProjectAuthorizations
       @affected_project_ids = Set.new
       @removed_user_ids = Set.new
       @added_user_ids = Set.new
+      @rows_added = 0
+      @rows_deleted = 0
       yield self
     end
 
@@ -43,6 +45,8 @@ module ProjectAuthorizations
       add_authorizations if should_add_authorization?
 
       publish_events
+
+      self
     end
 
     private
@@ -86,7 +90,9 @@ module ProjectAuthorizations
       log_details(entire_size: ids_to_remove.size, batch_size: BATCH_SIZE) if add_delay
 
       ids_to_remove.each_slice(BATCH_SIZE) do |ids_batch|
-        resource.project_authorizations.where(column_name_of_ids_to_remove => ids_batch).delete_all
+        @rows_deleted += resource.project_authorizations
+                                 .where(column_name_of_ids_to_remove => ids_batch)
+                                 .delete_all
         perform_delay if add_delay
       end
     end
@@ -98,7 +104,7 @@ module ProjectAuthorizations
       attributes.each_slice(BATCH_SIZE) do |attributes_batch|
         attributes_batch.each { |attrs| attrs[:is_unique] = true }
 
-        ProjectAuthorization.insert_all(attributes_batch)
+        @rows_added += ProjectAuthorization.insert_all(attributes_batch).length
         perform_delay if add_delay
       end
     end

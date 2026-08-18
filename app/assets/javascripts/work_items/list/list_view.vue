@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlKeysetPagination,
@@ -8,6 +9,7 @@ import {
   GlSkeletonLoader,
   GlModalDirective,
   GlAlert,
+  GlToastMixin,
 } from '@gitlab/ui';
 import produce from 'immer';
 import { isEmpty } from 'lodash-es';
@@ -45,7 +47,12 @@ import {
   METADATA_KEYS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
-import { combineWorkItemLists, findHierarchyWidget, getSortedWorkItems } from '../utils';
+import {
+  combineWorkItemLists,
+  findDetailPanelWorkItem,
+  findHierarchyWidget,
+  getSortedWorkItems,
+} from '../utils';
 
 import HealthStatus from './components/health_status.vue';
 
@@ -65,8 +72,9 @@ export default {
     ResourceListsLoadingStateList,
     IssueCardStatistics,
     IssueCardTimeInfo,
-    WorkItemBulkEditSidebar: () =>
-      import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
+    WorkItemBulkEditSidebar: defineAsyncComponent(
+      () => import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
+    ),
     HealthStatus,
     GlIcon,
     GlSkeletonLoader,
@@ -77,7 +85,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: ['isGroup', 'workItemType'],
   apollo: {
     workItemsFull() {
@@ -343,27 +351,17 @@ export default {
         return;
       }
 
-      const params = JSON.parse(atob(queryParam));
-      if (params.id) {
-        if (
-          this.activeItem &&
-          getIdFromGraphQLId(this.activeItem.id) === params.id &&
-          this.isIssuableActive(params)
-        ) {
-          return;
-        }
-
-        const issue = this.workItems.find((i) => getIdFromGraphQLId(i.id) === params.id);
-        if (issue) {
-          this.$emit('set-active-item', {
-            ...issue,
-            fullPath: params.full_path,
-          });
-        } else {
-          updateHistory({
-            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
-          });
-        }
+      const { item, notFound } = findDetailPanelWorkItem(
+        queryParam,
+        this.workItems,
+        this.activeItem,
+      );
+      if (item) {
+        this.$emit('set-active-item', item);
+      } else if (notFound) {
+        updateHistory({
+          url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+        });
       }
     },
     handleReorder({ newIndex, oldIndex }) {

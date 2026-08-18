@@ -8,11 +8,11 @@ additional_properties:
   label:
     description: Tab name (e.g. "contributed")
   property:
-    description: Language ID
+    description: Language name
 product_group: organizations
 product_categories:
 - groups_and_projects
-milestone: '17.11'
+milestone: '19.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186021
 tiers:
 - free

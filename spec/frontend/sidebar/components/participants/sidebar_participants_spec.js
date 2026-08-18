@@ -51,12 +51,12 @@ describe('SidebarParticipants component', () => {
       expect(findCollapsedIcon().text()).toBe(participants.length.toString());
     });
 
-    it('clicking on participants icon emits `toggleSidebar` event', () => {
+    it('clicking on participants icon emits `toggle-sidebar` event', () => {
       wrapper = mountComponent({ participants, numberOfLessParticipants: 2 });
 
       findCollapsedIcon().trigger('click');
 
-      expect(wrapper.emitted('toggleSidebar')).toEqual([[]]);
+      expect(wrapper.emitted('toggle-sidebar')).toEqual([[]]);
     });
   });
 

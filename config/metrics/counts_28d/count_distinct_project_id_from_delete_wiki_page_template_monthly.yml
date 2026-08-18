@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_project_id_from_delete_wiki_page_template_monthly
 description: Monthly count of unique projects where a wiki page template was deleted
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

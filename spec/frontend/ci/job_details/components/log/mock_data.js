@@ -65,7 +65,7 @@ export const mockContentSection = [
   },
 ];
 
-export const mockJobLogEnd = [
+const mockJobLogEnd = [
   {
     offset: 1008,
     content: [{ text: 'Job succeeded' }],

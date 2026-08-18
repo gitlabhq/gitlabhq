@@ -150,7 +150,7 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
     it('on search submit, emits fetch-page with correct variables', () => {
       mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
 
-      findSearch().vm.$emit('filter:submit');
+      findSearch().vm.$emit('filter-submit');
 
       const expectedVariables = {
         orderBy: 'created_at',
@@ -164,7 +164,7 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
       mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
 
       const orderBy = 'name';
-      findSearch().vm.$emit('sorting:changed', { orderBy });
+      findSearch().vm.$emit('sorting-changed', { orderBy });
 
       const expectedVariables = {
         orderBy: 'name',
@@ -178,7 +178,7 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
       mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
 
       const sort = 'asc';
-      findSearch().vm.$emit('sorting:changed', { sort });
+      findSearch().vm.$emit('sorting-changed', { sort });
 
       const expectedVariables = {
         orderBy: 'created_at',

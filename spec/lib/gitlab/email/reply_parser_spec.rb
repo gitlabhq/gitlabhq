@@ -289,6 +289,37 @@ RSpec.describe Gitlab::Email::ReplyParser, feature_category: :team_planning do
         .to contain_exactly(body, reply)
     end
 
+    context 'when the reply contains bullet-only lines', feature_category: :service_desk do
+      it "preserves content that follows lone `-` and `*` bullet lines" do
+        expect(test_parse_body(fixture_file("emails/bullet_list_reply.eml")))
+          .to eq(
+            <<-BODY.strip_heredoc.chomp
+              I looked at the proposal and would like the following changes:
+
+                 -
+
+                 Rename the first field on the form.
+                 *
+
+                 Add a short description below it.
+            BODY
+          )
+      end
+
+      it "preserves content in a quoted-printable non-ASCII bullet reply" do
+        reply = test_parse_body(fixture_file("emails/bullet_list_reply_quoted_printable.eml"))
+
+        expect(reply).to include('würde ich')
+        expect(reply).to include('ändern, dass sie kürzer ist')
+        expect(reply).to include('Eine weitere Anpassung.')
+      end
+
+      it "still trims genuine multi-character delimiters such as a signature separator" do
+        expect(test_parse_body(fixture_file("emails/signature_delimiter_reply.eml")))
+          .to eq('This is the actual reply body.')
+      end
+    end
+
     context 'non-UTF-8 content' do
       let(:charset) { '; charset=Shift_JIS' }
       let(:raw_content) do

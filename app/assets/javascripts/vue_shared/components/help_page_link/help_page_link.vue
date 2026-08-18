@@ -1,6 +1,8 @@
 <script>
 import { GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 /**
  * Component to link to GitLab docs.
@@ -15,6 +17,7 @@ export default {
   components: {
     GlLink,
   },
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     href: {
       type: String,
@@ -42,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <gl-link v-bind="attributes" :href="compiledHref" v-on="$listeners">
-    <slot></slot>
+  <gl-link v-bind="attributes" :href="compiledHref" v-on="glListeners()">
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </gl-link>
 </template>

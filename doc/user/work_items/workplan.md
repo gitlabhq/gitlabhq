@@ -45,6 +45,24 @@ The **Workplan** widget appears on the work item and shows the workplan status:
 - **No workplan**: The work item has no workplan, and you do not have permission to create one.
 - **Ready to view**: The work item has a workplan.
 
+## Benefits
+
+A workplan separates intent from implementation:
+
+- The work item description captures intent, or what you want and why.
+  People read the description to understand the goal.
+- The workplan captures implementation, or how to do the work.
+  Agents follow the workplan to carry out the work.
+
+This separation gives you three benefits:
+
+- Intent protection: An agent iterates on the workplan in a field separate from the work item
+  description, so your intent stays intact even as the plan changes across several runs.
+- Plan review: An agent pauses after producing a workplan, so you can review, refine, and approve
+  the plan before any work starts.
+- Agent focus: Because the workplan is a dedicated field, an agent asked to plan work puts that
+  context there instead of rewriting the description or other parts of the work item.
+
 ## When to use a workplan
 
 Use a workplan when you plan to give work to an agent, either by selecting **Implement**
@@ -143,6 +161,30 @@ To delete a workplan:
 1. In the confirmation dialog, select **Delete**.
 
 This action cannot be undone.
+
+## Confidence score
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248374) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan_score`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+The confidence score shows how ready a work item is for an agent to run.
+GitLab Duo scores the work item on how complete, clear, and well scoped it is, then
+maps the score to a confidence level.
+The score appears whether or not the work item has a workplan.
+
+In the **Workplan** widget on the work item, the confidence level appears as
+**Low**, **Medium**, or **High**.
+
+To raise the score, add more detail to the work item description and to the workplan
+steps, such as requirements, acceptance criteria, and constraints.
 
 ## Implement a workplan with GitLab Duo
 

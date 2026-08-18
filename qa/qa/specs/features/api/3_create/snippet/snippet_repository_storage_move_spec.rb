@@ -20,7 +20,7 @@ module QA
         praefect_manager.gitlab = 'gitlab'
       end
 
-      it 'moves snippet repository from one Gitaly storage to another', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347645' do
+      it 'moves snippet repository from one Gitaly storage to another' do
         expect(snippet).to have_file('original_file')
         expect { snippet.change_repository_storage(destination_storage[:name]) }.not_to raise_error
         expect { praefect_manager.verify_storage_move(source_storage, destination_storage, repo_type: :snippet) }.not_to raise_error

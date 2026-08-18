@@ -18,7 +18,8 @@ class LintDocsRedirect
     'gitlab-org/omnibus-gitlab',
     'gitlab-org/charts/gitlab',
     'gitlab-org/cloud-native/gitlab-operator',
-    'gitlab-org/cli'].freeze
+    'gitlab-org/cli',
+    'gitlab-org/ops/artifact-registry'].freeze
 
   def execute
     puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking documentation redirects..."
@@ -55,6 +56,8 @@ class LintDocsRedirect
       'operator'
     when 'gitlab-org/cli'
       'cli'
+    when 'gitlab-org/ops/artifact-registry'
+      'artifact_registry'
     end
   end
 
@@ -65,6 +68,8 @@ class LintDocsRedirect
       'docs/'
     when 'gitlab-org/cli'
       'docs/source'
+    when 'gitlab-org/ops/artifact-registry'
+      'docs/'
     else
       'doc/'
     end

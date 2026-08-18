@@ -28,7 +28,7 @@ To set up Observability on your GitLab Self-Managed instance, you will:
 1. Provision a server and storage.
 1. Configure Docker and install Observability in a container.
 1. Configure network access.
-1. Configure the URL for your group.
+1. Configure the URL for your group or personal namespace.
 
 ## Prerequisites
 
@@ -165,9 +165,14 @@ Now access the GitLab Observability UI at:
 http://[your-instance-ip]:8080
 ```
 
-### Configure the URL for your group
+### Configure the URL for your group or personal namespace
 
-Configure the GitLab Observability URL for your group by using the Rails console:
+Configure the GitLab Observability URL for a group or for a personal namespace by using the
+Rails console.
+
+{{< tabs >}}
+
+{{< tab title="Group" >}}
 
 1. Access the Rails console:
 
@@ -194,6 +199,45 @@ Configure the GitLab Observability URL for your group by using the Rails console
    - `your-o11y-instance-url` with your GitLab Observability instance URL (for example: `http://192.168.1.100:8080`).
    - Email and password with your preferred credentials.
    - Encryption key with a secure 32+ character string.
+
+{{< /tab >}}
+
+{{< tab title="Personal namespace" >}}
+
+GitLab Self-Managed has no UI path for enabling Observability for a personal namespace.
+Configure the setting directly through the Rails console.
+
+1. Access the Rails console:
+
+   ```shell
+   docker exec -it gitlab gitlab-rails console
+   ```
+
+1. Configure the observability settings for the personal namespace:
+
+   ```ruby
+   namespace = User.find_by_username('your-username').namespace
+
+   Observability::GroupO11ySetting.create!(
+     group_id: namespace.id,
+     o11y_service_url: 'your-o11y-instance-url',
+     o11y_service_user_email: 'your-email@example.com',
+     o11y_service_password: 'your-secure-password',
+     o11y_service_post_message_encryption_key: 'your-super-secret-encryption-key-here-32-chars-minimum'
+   )
+   ```
+
+   Replace:
+   - `your-username` with the username that owns the personal namespace.
+   - `your-o11y-instance-url` with your GitLab Observability instance URL (for example: `http://192.168.1.100:8080`).
+   - Email and password with your preferred credentials.
+   - Encryption key with a secure 32+ character string.
+
+The `group_id` column stores the namespace ID for both groups and personal namespaces.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Next steps
 

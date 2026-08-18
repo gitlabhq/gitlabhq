@@ -11,6 +11,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Json, feature_category: :tooling do
           def bar
             JSON.parse('{ "foo": "bar" }')
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Gitlab::Json` over calling `JSON` directly. [...]
+            ::JSON.parse('{ "foo": "bar" }')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Gitlab::Json` over calling `JSON` directly. [...]
           end
         end
       RUBY
@@ -18,6 +20,7 @@ RSpec.describe RuboCop::Cop::Gitlab::Json, feature_category: :tooling do
       expect_correction(<<~RUBY)
         class Foo
           def bar
+            Gitlab::Json.parse('{ "foo": "bar" }')
             Gitlab::Json.parse('{ "foo": "bar" }')
           end
         end
@@ -53,6 +56,8 @@ RSpec.describe RuboCop::Cop::Gitlab::Json, feature_category: :tooling do
           def bar
             ActiveSupport::JSON.parse('{ "foo": "bar" }')
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Gitlab::Json` over calling `JSON` directly. [...]
+            ::ActiveSupport::JSON.parse('{ "foo": "bar" }')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Gitlab::Json` over calling `JSON` directly. [...]
           end
         end
       RUBY
@@ -60,6 +65,7 @@ RSpec.describe RuboCop::Cop::Gitlab::Json, feature_category: :tooling do
       expect_correction(<<~RUBY)
         class Foo
           def bar
+            Gitlab::Json.parse('{ "foo": "bar" }')
             Gitlab::Json.parse('{ "foo": "bar" }')
           end
         end

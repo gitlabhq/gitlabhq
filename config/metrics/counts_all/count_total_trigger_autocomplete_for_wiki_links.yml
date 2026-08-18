@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_trigger_autocomplete_for_wiki_links
 description: Count of triggering autocomplete for wiki links
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

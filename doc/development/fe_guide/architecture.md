@@ -13,7 +13,7 @@ When building new features, consider the scope and scale of what you are about t
 
 ### Merge requests
 
-When a change impacts is limited within a group or has a single contributor, the smallest possible documentation of architecture decisions is a commit and by extension a merge request (MR). MRs or commits can still be referenced even after they are merged, so it is vital to leave a good description, comments and commit messages to explain certain decisions in case it needs to be referenced later. Even a MR that is intended to be reviewed within a group should contain all relevant decision-making explicitly.
+When a change impacts is limited within a group or has a single contributor, the smallest possible documentation of architecture decisions is a commit and by extension a merge request (MR). MRs or commits can still be referenced even after they are merged, so it is vital to leave a good description, comments, and commit messages to explain certain decisions in case it needs to be referenced later. Even a MR that is intended to be reviewed within a group should contain all relevant decision-making explicitly.
 
 ### Architectural Issue
 

@@ -9,6 +9,7 @@ import {
   GlTab,
   GlSprintf,
   GlLink,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
@@ -78,7 +79,7 @@ export default {
     TakeOwnershipModal,
     PipelineScheduleEmptyState,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   inject: {
     projectPath: {
       default: '',

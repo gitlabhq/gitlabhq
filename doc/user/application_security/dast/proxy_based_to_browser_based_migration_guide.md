@@ -14,7 +14,7 @@ title: Migrating from the DAST proxy-based analyzer to DAST version 5
 
 {{< history >}}
 
-- The [DAST proxy-based analyzer](proxy_based_to_browser_based_migration_guide.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
+- The DAST proxy-based analyzer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
 
 {{< /history >}}
 
@@ -42,10 +42,6 @@ Each DAST major version uses different analyzers by default:
 - DAST version 5 uses the browser-based analyzer.
 
 DAST version 5 uses a set of new CI/CD variables. Aliases have been created for the DAST version 4 variables' names.
-
-Changes to make:
-
-- To test your DAST scan using DAST version 5 in GitLab 16.11 and earlier, set the CI/CD variable `DAST_VERSION` to `5`.
 
 ## Continuing to use the proxy-based analyzer
 
@@ -127,7 +123,7 @@ DAST version 5 scans provide better coverage of your application, so they may id
 
 One proxy-based active check is yet to be implemented in the browser-based DAST analyzer.
 Migration of the remaining active check is proposed in
-[epic 13411](https://gitlab.com/groups/gitlab-org/-/epics/13411). If you prefer to remain on DAST
+[epic 13411](https://gitlab.com/groups/gitlab-org/-/work_items/13411). If you prefer to remain on DAST
 version 4 until the last check is migrated, see [Continuing to use the proxy-based analyzer](#continuing-to-use-the-proxy-based-analyzer).
 
 Remaining check:

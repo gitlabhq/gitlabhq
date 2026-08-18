@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import MergeRequestsListApp from './components/merge_requests_list_app.vue';
@@ -62,7 +63,7 @@ export async function mountMergeRequestListsApp({
     showNewResourceDropdown,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MergeRequestsListRoot',
     apolloProvider: new VueApollo({
@@ -105,6 +106,6 @@ export async function mountMergeRequestListsApp({
       namespaceId: namespaceId ? `${namespaceId}` : null,
       showNewResourceDropdown: parseBoolean(showNewResourceDropdown),
     },
-    render: (createComponent) => createComponent(MergeRequestsListApp),
+    component: MergeRequestsListApp,
   });
 }

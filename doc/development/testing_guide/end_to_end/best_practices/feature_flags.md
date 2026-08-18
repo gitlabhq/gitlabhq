@@ -85,7 +85,7 @@ feature_group = "a_feature_group"
 Runtime::Feature.enable(:feature_flag_name, feature_group: feature_group)
 ```
 
-If no scope is provided, the feature flag is set instance-wide and persist even after tests are run:
+If no scope is provided, the feature flag is set instance-wide and persists even after tests are run:
 
 ```ruby
 # This will affect all users! Use with care!
@@ -196,7 +196,7 @@ There are two ways to confirm that end-to-end tests pass:
 - If a merge request adds or edits a [feature flag definition file](../../../feature_flags/_index.md#feature-flag-definition-and-validation),
   two `e2e:test-on-cng` jobs (`cng-instance` and `cng-instance-ff-inverse`) are included automatically in the merge request pipeline.
   One job runs the application with default feature flag state and another sets it to inverse value. The jobs execute the same suite of tests to confirm that they pass with the feature flag either enabled or disabled.
-- In some cases, if end-to-end test jobs didn't trigger automatically, or if it has run the tests with the default feature flag values (which might not be desired),
+- In some cases, if end-to-end test jobs didn't trigger automatically, or if they have run the tests with the default feature flag values (which might not be desired),
   you can create a Draft MR that enables the feature flag to ensure that all E2E tests pass with the feature flag enabled and disabled.
 
 ### Troubleshooting end-to-end test failures with feature flag enabled
@@ -206,7 +206,7 @@ If enabling the feature flag results in E2E test failures, you can browse the ar
 - Identify tests that need to be updated and contact the relevant [counterpart Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors) responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
 - Run the failed tests [locally](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#run-the-end-to-end-tests-in-a-local-development-environment)
   with the [feature flag enabled](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled-or-disabled).
-  This option requires considerable amount of setup, but you'll be able to see what the browser is doing as it's running the failed
+  This option requires a considerable amount of setup, but you'll be able to see what the browser is doing as it's running the failed
   tests, which can help debug the problem faster. You can also refer to the [Troubleshooting Guide for E2E tests](../troubleshooting.md) for
   support for common blockers.
 

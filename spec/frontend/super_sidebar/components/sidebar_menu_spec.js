@@ -1,16 +1,26 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
+import { Portal } from 'portal-vue';
+import { createWrapper as createRootWrapper } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by the source component
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
+import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
+import { Mousetrap } from '~/lib/mousetrap';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { MODAL_ID } from '~/super_sidebar/components/feature_library/constants';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import {
+  HIDDEN_NAV_ITEM_CLASS,
   PANELS_WITH_PINS,
   PINNED_NAV_STORAGE_KEY,
   MAX_OPEN_WORK_ITEMS_COUNT,
@@ -23,6 +33,11 @@ const menuItems = [
   { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Pinned subitem' }] },
   { id: 3, title: 'Empty subitems array', items: [] },
   { id: 4, title: 'Also with subitems', items: [{ id: 41, title: 'Subitem' }] },
+  {
+    id: 'settings_menu',
+    title: 'Settings',
+    items: [{ id: 'settings_general', title: 'General' }],
+  },
 ];
 
 Vue.use(VueApollo);
@@ -31,8 +46,9 @@ describe('Sidebar Menu', () => {
   let wrapper;
   let handler;
 
-  const createWrapper = ({ queryHandler = handler, provide = {}, ...extraProps }) => {
+  const createWrapper = ({ queryHandler = handler, provide = {}, attachTo, ...extraProps }) => {
     wrapper = shallowMountExtended(SidebarMenu, {
+      attachTo,
       apolloProvider: createMockApollo([[superSidebarDataQuery, queryHandler]]),
       propsData: {
         items: sidebarData.current_menu_items,
@@ -56,6 +72,7 @@ describe('Sidebar Menu', () => {
   const findNonStaticItems = () => findNonStaticItemsSection().findAllComponents(NavItem);
   const findNonStaticSectionItems = () =>
     findNonStaticItemsSection().findAllComponents(MenuSection);
+  const findSettingsPortal = () => wrapper.findComponent(Portal);
 
   describe('Static section', () => {
     describe('when the sidebar supports pins', () => {
@@ -104,6 +121,24 @@ describe('Sidebar Menu', () => {
       createWrapper({ panelType: 'your_work' });
       expect(findPinnedSection().exists()).toBe(false);
     });
+
+    describe('interactivity (supportsPins prop)', () => {
+      it('is interactive when logged in on a pin-supporting panel', () => {
+        createWrapper({ panelType: 'project', isLoggedIn: true });
+        expect(findPinnedSection().props('supportsPins')).toBe(true);
+      });
+
+      it('renders but is read-only for logged-out users', () => {
+        createWrapper({ panelType: 'project', isLoggedIn: false });
+        expect(findPinnedSection().exists()).toBe(true);
+        expect(findPinnedSection().props('supportsPins')).toBe(false);
+      });
+
+      it('is not rendered on non-pin panels even for logged-out users', () => {
+        createWrapper({ panelType: 'your_work', isLoggedIn: false });
+        expect(findPinnedSection().exists()).toBe(false);
+      });
+    });
   });
 
   describe('Non static items section', () => {
@@ -119,6 +154,7 @@ describe('Sidebar Menu', () => {
         expect(findNonStaticSectionItems().wrappers.map((w) => w.props('item').title)).toEqual([
           'With subitems',
           'Also with subitems',
+          'Settings',
         ]);
       });
     });
@@ -153,6 +189,7 @@ describe('Sidebar Menu', () => {
           expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
             false,
             false,
+            false,
           ]);
         });
       });
@@ -171,7 +208,84 @@ describe('Sidebar Menu', () => {
           expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
             true,
             true,
+            true,
           ]);
+        });
+      });
+    });
+
+    describe('settings section', () => {
+      const findSettingsSection = () =>
+        findNonStaticSectionItems().wrappers.find((w) => w.props('item').id === 'settings_menu');
+
+      beforeEach(() => {
+        jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => 768);
+      });
+
+      describe('when hideUnpinnedSidebarItems is disabled', () => {
+        beforeEach(() => {
+          createWrapper({ items: menuItems, panelType: 'project' });
+        });
+
+        it('renders the settings section in place with a flyout, not as a disclosure', () => {
+          const settingsSection = findSettingsSection();
+
+          expect(settingsSection.props('disclosure')).toBe(false);
+          expect(settingsSection.props('hasFlyout')).toBe(true);
+        });
+      });
+
+      describe('when hideUnpinnedSidebarItems is enabled', () => {
+        let axiosMock;
+
+        beforeEach(() => {
+          axiosMock = new MockAdapter(axios);
+          axiosMock.onPut().reply(HTTP_STATUS_OK, []);
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            isLoggedIn: true,
+            provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          });
+        });
+
+        afterEach(() => {
+          axiosMock.restore();
+        });
+
+        it('renders the settings section as a disclosure without a flyout', () => {
+          const settingsSection = findSettingsSection();
+
+          expect(settingsSection.props('disclosure')).toBe(true);
+          expect(settingsSection.props('hasFlyout')).toBe(false);
+        });
+
+        it('passes the pin context to the portalled section', () => {
+          const settingsSection = findSettingsSection();
+
+          expect(settingsSection.props('pinContext')).toMatchObject({
+            panelSupportsPins: true,
+            panelType: 'project',
+          });
+        });
+
+        it('relays pin-add from the settings section to persist the pin', async () => {
+          findSettingsSection().vm.$emit('pin-add', 'settings_general', 'General');
+          await waitForPromises();
+
+          expect(JSON.parse(axiosMock.history.put[0].data).menu_item_ids).toContain(
+            'settings_general',
+          );
+        });
+
+        it('relays pin-remove from the settings section to persist the unpin', async () => {
+          findSettingsSection().vm.$emit('pin-add', 'settings_general', 'General');
+          findSettingsSection().vm.$emit('pin-remove', 'settings_general', 'General');
+          await waitForPromises();
+
+          const lastPut = axiosMock.history.put.at(-1);
+          expect(JSON.parse(lastPut.data).menu_item_ids).not.toContain('settings_general');
         });
       });
     });
@@ -521,30 +635,12 @@ describe('Sidebar Menu', () => {
 
   describe('Feature Library modal', () => {
     const findFeatureLibraryModal = () => wrapper.findComponent({ name: 'FeatureLibraryModal' });
-    const findTrigger = () => wrapper.findByTestId('feature-library-trigger');
+    const findTrigger = () => wrapper.findComponentByTestId('feature-library-trigger');
 
-    describe('when feature_library_modal FF is off', () => {
+    describe('when the panel supports pins', () => {
       beforeEach(() => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: false } },
-        });
-      });
-
-      it('does not render the trigger button', () => {
-        expect(findTrigger().exists()).toBe(false);
-      });
-
-      it('does not render the modal', () => {
-        expect(findFeatureLibraryModal().exists()).toBe(false);
-      });
-    });
-
-    describe('when feature_library_modal FF is on and panel supports pins', () => {
-      beforeEach(() => {
-        createWrapper({
-          panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -557,21 +653,28 @@ describe('Sidebar Menu', () => {
         expect(findTrigger().props('icon')).toBe('applications');
       });
 
+      it('does not apply the shimmer class when showFeatureLibraryShimmer is false', () => {
+        expect(findTrigger().classes()).not.toContain('feature-library-shimmer');
+      });
+
       it('renders the modal', () => {
         expect(findFeatureLibraryModal().exists()).toBe(true);
+      });
+
+      it('passes supportsPins=true so pin actions are interactive', () => {
+        expect(findFeatureLibraryModal().props('supportsPins')).toBe(true);
       });
 
       it('passes the section nav items (those with subitems) to the modal', () => {
         createWrapper({
           items: menuItems,
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
         expect(
           findFeatureLibraryModal()
             .props('sections')
             .map((s) => s.id),
-        ).toEqual([2, 4]);
+        ).toEqual([2, 4, 'settings_menu']);
       });
     });
 
@@ -579,7 +682,7 @@ describe('Sidebar Menu', () => {
       beforeEach(() => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true }, isIconOnly: true },
+          provide: { isIconOnly: true },
         });
       });
 
@@ -588,12 +691,28 @@ describe('Sidebar Menu', () => {
       });
     });
 
-    describe('when feature_library_modal FF is on but panel does not support pins', () => {
+    describe('when logged out on a pin-supporting panel', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: PANELS_WITH_PINS[0],
+          isLoggedIn: false,
+        });
+      });
+
+      it('renders the modal', () => {
+        expect(findFeatureLibraryModal().exists()).toBe(true);
+      });
+
+      it('passes supportsPins=false so pin actions are hidden', () => {
+        expect(findFeatureLibraryModal().props('supportsPins')).toBe(false);
+      });
+    });
+
+    describe('when the panel does not support pins', () => {
       beforeEach(() => {
         createWrapper({
           panelType: 'your_work',
           isLoggedIn: true,
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -606,11 +725,92 @@ describe('Sidebar Menu', () => {
       });
     });
 
+    describe('keyboard shortcut', () => {
+      const emittedShowModal = () => createRootWrapper(wrapper.vm.$root).emitted(BV_SHOW_MODAL);
+
+      describe('when the modal is available', () => {
+        beforeEach(() => {
+          createWrapper({
+            panelType: PANELS_WITH_PINS[0],
+          });
+        });
+
+        it('opens the modal on \\', () => {
+          Mousetrap.trigger('\\');
+
+          expect(emittedShowModal()[0]).toContain(MODAL_ID);
+        });
+
+        it('returns false from the handler to prevent the default browser behavior', () => {
+          expect(wrapper.vm.openFeatureLibrary()).toBe(false);
+        });
+      });
+
+      describe('when the component is destroyed', () => {
+        beforeEach(() => {
+          createWrapper({
+            panelType: PANELS_WITH_PINS[0],
+          });
+          jest.spyOn(Mousetrap, 'unbind');
+
+          wrapper.destroy();
+        });
+
+        it('unbinds the shortcut', () => {
+          expect(Mousetrap.unbind).toHaveBeenCalledWith(['\\']);
+        });
+      });
+
+      describe('when the panel does not support pins', () => {
+        beforeEach(() => {
+          createWrapper({
+            panelType: 'your_work',
+          });
+        });
+
+        it('does not bind the shortcut', () => {
+          Mousetrap.trigger('\\');
+
+          expect(emittedShowModal()).toBeUndefined();
+        });
+      });
+
+      describe('when in pinned-only mode', () => {
+        beforeEach(() => {
+          createWrapper({
+            panelType: PANELS_WITH_PINS[0],
+            provide: {
+              glFeatures: { hideUnpinnedSidebarItems: true },
+            },
+          });
+        });
+
+        it('binds the shortcut', () => {
+          Mousetrap.trigger('\\');
+
+          expect(emittedShowModal()[0]).toContain(MODAL_ID);
+        });
+      });
+
+      describe('when on the organization panel', () => {
+        beforeEach(() => {
+          createWrapper({
+            panelType: 'organization',
+          });
+        });
+
+        it('does not bind the shortcut', () => {
+          Mousetrap.trigger('\\');
+
+          expect(emittedShowModal()).toBeUndefined();
+        });
+      });
+    });
+
     describe('onModalPinToggle', () => {
       beforeEach(() => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -633,6 +833,416 @@ describe('Sidebar Menu', () => {
         const spy = jest.spyOn(wrapper.vm, 'createPin').mockImplementation(() => {});
         wrapper.vm.onModalPinToggle('some_item', true);
         expect(spy).toHaveBeenCalledWith('some_item', 'some_item');
+      });
+    });
+
+    describe('shimmer', () => {
+      let dismissHandler;
+
+      const createShimmerWrapper = ({ showFeatureLibraryShimmer = true } = {}) => {
+        dismissHandler = jest.fn().mockResolvedValue({
+          data: {
+            userCalloutCreate: {
+              errors: [],
+              userCallout: {
+                dismissedAt: '2020-01-01T00:00:00Z',
+                featureName: 'feature_library_shimmer_seen',
+              },
+            },
+          },
+        });
+
+        wrapper = shallowMountExtended(SidebarMenu, {
+          apolloProvider: createMockApollo([
+            [superSidebarDataQuery, handler],
+            [dismissUserCalloutMutation, dismissHandler],
+          ]),
+          propsData: {
+            items: sidebarData.current_menu_items,
+            isLoggedIn: sidebarData.is_logged_in,
+            pinnedItemIds: sidebarData.pinned_items,
+            panelType: PANELS_WITH_PINS[0],
+            showFeatureLibraryShimmer,
+          },
+          provide: {
+            currentPath: 'group',
+          },
+        });
+      };
+
+      it('applies the shimmer class when the shimmer should be shown', () => {
+        createShimmerWrapper({ showFeatureLibraryShimmer: true });
+
+        expect(findTrigger().classes()).toContain('feature-library-shimmer');
+      });
+
+      describe('when the trigger is clicked', () => {
+        beforeEach(async () => {
+          createShimmerWrapper({ showFeatureLibraryShimmer: true });
+          findTrigger().vm.$emit('click');
+          await waitForPromises();
+        });
+
+        it('dismisses the callout', () => {
+          expect(dismissHandler).toHaveBeenCalledWith({
+            input: { featureName: 'feature_library_shimmer_seen' },
+          });
+        });
+
+        it('removes the shimmer class', () => {
+          expect(findTrigger().classes()).not.toContain('feature-library-shimmer');
+        });
+      });
+
+      describe('when the keyboard shortcut is used', () => {
+        beforeEach(async () => {
+          createShimmerWrapper({ showFeatureLibraryShimmer: true });
+          Mousetrap.trigger('\\');
+          await waitForPromises();
+        });
+
+        it('dismisses the callout', () => {
+          expect(dismissHandler).toHaveBeenCalledWith({
+            input: { featureName: 'feature_library_shimmer_seen' },
+          });
+        });
+
+        it('removes the shimmer class', () => {
+          expect(findTrigger().classes()).not.toContain('feature-library-shimmer');
+        });
+      });
+
+      it('only dismisses the callout once across multiple clicks', async () => {
+        createShimmerWrapper({ showFeatureLibraryShimmer: true });
+
+        findTrigger().vm.$emit('click');
+        findTrigger().vm.$emit('click');
+        await waitForPromises();
+
+        expect(dismissHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not dismiss the callout when the shimmer is already hidden', async () => {
+        createShimmerWrapper({ showFeatureLibraryShimmer: false });
+
+        findTrigger().vm.$emit('click');
+        await waitForPromises();
+
+        expect(dismissHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when hide_unpinned_sidebar_items feature flag is enabled', () => {
+    describe.each`
+      panelType
+      ${'project'}
+      ${'group'}
+    `('with panelType=$panelType', ({ panelType }) => {
+      beforeEach(() => {
+        createWrapper({
+          items: menuItems,
+          panelType,
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+      });
+
+      it('renders only the settings section in the non-static items', () => {
+        const sections = findNonStaticSectionItems();
+        expect(sections).toHaveLength(1);
+        expect(sections.at(0).props('item').id).toBe('settings_menu');
+      });
+
+      it('renders the settings section as a disclosure', () => {
+        expect(findNonStaticSectionItems().at(0).props('disclosure')).toBe(true);
+      });
+
+      it('portals the settings section to the disclosure target', () => {
+        expect(findSettingsPortal().props('to')).toBe('super-sidebar-settings-disclosure');
+      });
+
+      it('does not render non-settings sections', () => {
+        const sectionTitles = findNonStaticSectionItems().wrappers.map(
+          (w) => w.props('item').title,
+        );
+        expect(sectionTitles).not.toContain('With subitems');
+        expect(sectionTitles).not.toContain('Also with subitems');
+      });
+    });
+
+    describe.each`
+      panelType
+      ${'your_work'}
+      ${'explore'}
+    `('with panelType=$panelType', ({ panelType }) => {
+      beforeEach(() => {
+        createWrapper({
+          items: menuItems,
+          panelType,
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+      });
+
+      it('renders all non-static items', () => {
+        expect(findNonStaticSectionItems().length).toBeGreaterThan(1);
+      });
+    });
+
+    it('hides unpinned items for logged-out users too', () => {
+      createWrapper({
+        items: menuItems,
+        panelType: 'project',
+        isLoggedIn: false,
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      const sections = findNonStaticSectionItems();
+      expect(sections).toHaveLength(1);
+      expect(sections.at(0).props('item').id).toBe('settings_menu');
+    });
+
+    it('hides the main menu separator', () => {
+      createWrapper({
+        items: menuItems,
+        panelType: 'project',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findMainMenuSeparator().exists()).toBe(false);
+    });
+
+    it('does not hide unpinned items for organization panel', () => {
+      createWrapper({
+        items: menuItems,
+        panelType: 'organization',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findNonStaticSectionItems().length).toBeGreaterThan(1);
+    });
+
+    it('renders organization sections in place, not as disclosures', () => {
+      createWrapper({
+        items: menuItems,
+        panelType: 'organization',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findNonStaticSectionItems().wrappers.map((w) => w.props('disclosure'))).not.toContain(
+        true,
+      );
+      expect(findSettingsPortal().exists()).toBe(false);
+    });
+
+    it('still renders the pinned section and feature library trigger', () => {
+      createWrapper({
+        items: menuItems,
+        panelType: 'project',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findPinnedSection().exists()).toBe(true);
+      expect(wrapper.findByTestId('feature-library-trigger').exists()).toBe(true);
+    });
+  });
+
+  describe('Current page nav item', () => {
+    const activeItem = { id: 22, title: 'Active subitem', is_active: true };
+
+    const itemsWithActiveSubitem = [
+      { id: 1, title: 'No subitems' },
+      { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Subitem' }, activeItem] },
+      {
+        id: 'settings_menu',
+        title: 'Settings',
+        items: [{ id: 'settings_general', title: 'General' }],
+      },
+    ];
+
+    const findCurrentPageSection = () => wrapper.findByTestId('current-page-section');
+
+    const createPinnedOnlyWrapper = ({
+      items = itemsWithActiveSubitem,
+      pinnedItemIds = [],
+      glFeatures = {},
+      ...options
+    } = {}) =>
+      createWrapper({
+        items,
+        pinnedItemIds,
+        panelType: 'project',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true, ...glFeatures } },
+        ...options,
+      });
+
+    it('renders the active item when it is not pinned', () => {
+      createPinnedOnlyWrapper();
+
+      expect(findCurrentPageSection().findComponent(NavItem).props('item')).toEqual(activeItem);
+    });
+
+    it('names the list so the item reads as the current page', () => {
+      // Attached to the document so the accessible name computation can resolve
+      // the sibling section's aria-labelledby idref, which points outside this
+      // component.
+      createPinnedOnlyWrapper({ attachTo: document.body });
+
+      expect(wrapper.findByRole('list', { name: 'Current page' }).exists()).toBe(true);
+    });
+
+    it('is not rendered when the active item is already pinned', () => {
+      createPinnedOnlyWrapper({ pinnedItemIds: [activeItem.id] });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when unpinned items are still shown', () => {
+      createPinnedOnlyWrapper({
+        glFeatures: { hideUnpinnedSidebarItems: false, featureLibraryModal: true },
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when the active item is in the settings section', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Subitem' }] },
+          {
+            id: 'settings_menu',
+            title: 'Settings',
+            items: [{ id: 'settings_general', title: 'General', is_active: true }],
+          },
+        ],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when the active item is a static item', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          { id: 1, title: 'No subitems', is_active: true },
+          { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Subitem' }] },
+        ],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when the active item is hidden in the sidebar', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [{ ...activeItem, link_classes: HIDDEN_NAV_ITEM_CLASS }],
+          },
+        ],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    // On group work items, both the visible issue list and the hidden epic list
+    // are active. The visible one must win.
+    it('prefers the visible item when a hidden item is active too', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [
+              {
+                id: 20,
+                title: 'Hidden active',
+                is_active: true,
+                link_classes: HIDDEN_NAV_ITEM_CLASS,
+              },
+              activeItem,
+            ],
+          },
+        ],
+      });
+
+      expect(findCurrentPageSection().findComponent(NavItem).props('item')).toEqual(activeItem);
+    });
+
+    // A group that still has the legacy group_epic_list pinned shows that hidden
+    // item in the pinned section, so its visible twin must not be surfaced again.
+    it('is not rendered when a pinned item links to the same page', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [
+              {
+                id: 20,
+                title: 'Hidden active',
+                link: '/work_items',
+                is_active: true,
+                link_classes: HIDDEN_NAV_ITEM_CLASS,
+              },
+              { ...activeItem, link: '/work_items' },
+            ],
+          },
+        ],
+        pinnedItemIds: [20],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when no item is active', () => {
+      createPinnedOnlyWrapper({ items: menuItems });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered on the organization panel', () => {
+      createWrapper({
+        items: itemsWithActiveSubitem,
+        pinnedItemIds: [],
+        panelType: 'organization',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered on panels that do not support pins', () => {
+      createWrapper({
+        items: itemsWithActiveSubitem,
+        pinnedItemIds: [],
+        panelType: 'your_work',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    describe('when the item emits pin-add', () => {
+      let axiosMock;
+
+      beforeEach(async () => {
+        axiosMock = new MockAdapter(axios);
+        axiosMock.onPut().reply(HTTP_STATUS_OK, [activeItem.id]);
+        createPinnedOnlyWrapper();
+
+        findCurrentPageSection()
+          .findComponent(NavItem)
+          .vm.$emit('pin-add', activeItem.id, activeItem.title);
+        await waitForPromises();
+      });
+
+      afterEach(() => {
+        axiosMock.restore();
+      });
+
+      it('moves the item into the pinned section', () => {
+        expect(findCurrentPageSection().exists()).toBe(false);
+        expect(findPinnedSection().props('items')).toEqual([activeItem]);
       });
     });
   });

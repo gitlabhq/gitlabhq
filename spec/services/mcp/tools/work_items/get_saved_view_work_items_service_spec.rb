@@ -82,7 +82,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
     end
   end
 
-  describe '#perform_0_1_0' do
+  describe '#perform_v0_1_0' do
     let(:saved_view_id) { 'gid://gitlab/WorkItems::SavedViews::SavedView/1' }
     let(:arguments) do
       {
@@ -148,7 +148,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
         version: '0.1.0'
       )
 
-      service.send(:perform_0_1_0, arguments)
+      service.send(:perform_v0_1_0, arguments)
     end
 
     it 'executes work items tool with filters from saved view' do
@@ -161,7 +161,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
         version: '0.1.0'
       )
 
-      service.send(:perform_0_1_0, arguments)
+      service.send(:perform_v0_1_0, arguments)
     end
 
     context 'when saved view has unsupported filters' do
@@ -186,7 +186,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
           unsupported_filters: %w[healthStatusFilter iterationId]
         )
 
-        result = service.send(:perform_0_1_0, arguments)
+        result = service.send(:perform_v0_1_0, arguments)
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]).to have_key('warnings')
@@ -206,7 +206,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
         allow(Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool).to receive(:new).and_return(work_items_tool)
         allow(work_items_tool).to receive_messages(execute: work_items_success, unsupported_filters: [])
 
-        result = service.send(:perform_0_1_0, arguments)
+        result = service.send(:perform_v0_1_0, arguments)
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]).not_to have_key('warnings')
@@ -249,7 +249,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
       end
 
       it 'returns the error from work items tool' do
-        result = service.send(:perform_0_1_0, arguments)
+        result = service.send(:perform_v0_1_0, arguments)
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('The work items are inaccessible')
@@ -265,8 +265,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
       }
     end
 
-    it 'delegates to perform_0_1_0' do
-      expect(service).to receive(:perform_0_1_0).with(arguments)
+    it 'delegates to perform_v0_1_0' do
+      expect(service).to receive(:perform_v0_1_0).with(arguments)
 
       service.send(:perform_default, arguments)
     end

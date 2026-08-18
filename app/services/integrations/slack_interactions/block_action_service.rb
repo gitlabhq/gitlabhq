@@ -4,7 +4,12 @@ module Integrations
   module SlackInteractions
     class BlockActionService
       ALLOWED_UPDATES_HANDLERS = {
-        'incident_management_project' => SlackInteractions::SlackBlockActions::IncidentManagement::ProjectUpdateHandler
+        'incident_management_project' =>
+          SlackInteractions::SlackBlockActions::IncidentManagement::ProjectUpdateHandler,
+        Integrations::SlackEvents::AppMentionedService::PRIVACY_NOTICE_ACKNOWLEDGE_ACTION_ID =>
+          SlackInteractions::SlackBlockActions::DuoPrivacyNoticeHandler,
+        Integrations::SlackEvents::AppMentionedService::PRIVACY_NOTICE_DECLINE_ACTION_ID =>
+          SlackInteractions::SlackBlockActions::DuoPrivacyNoticeDeclineHandler
       }.freeze
 
       def initialize(params)
@@ -15,7 +20,7 @@ module Integrations
         actions.each do |action|
           action_id = action[:action_id]
 
-          action_handler_class = ALLOWED_UPDATES_HANDLERS[action_id]
+          action_handler_class = handlers[action_id]
           action_handler_class.new(params, action).execute
         end
       end
@@ -23,10 +28,16 @@ module Integrations
       private
 
       def actions
-        params[:actions].select { |action| ALLOWED_UPDATES_HANDLERS[action[:action_id]] }
+        params[:actions].select { |action| handlers[action[:action_id]] }
+      end
+
+      def handlers
+        ALLOWED_UPDATES_HANDLERS
       end
 
       attr_accessor :params
     end
   end
 end
+
+Integrations::SlackInteractions::BlockActionService.prepend_mod

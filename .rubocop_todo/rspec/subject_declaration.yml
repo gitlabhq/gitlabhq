@@ -42,7 +42,6 @@ RSpec/SubjectDeclaration:
     - 'spec/lib/gitlab/ci/secure_files/cer_spec.rb'
     - 'spec/lib/gitlab/ci/secure_files/mobile_provision_spec.rb'
     - 'spec/lib/gitlab/ci/secure_files/p12_spec.rb'
-    - 'spec/lib/gitlab/data_builder/push_spec.rb'
     - 'spec/lib/gitlab/database/with_lock_retries_outside_transaction_spec.rb'
     - 'spec/lib/gitlab/database/with_lock_retries_spec.rb'
     - 'spec/lib/gitlab/diff/file_collection/merge_request_diff_spec.rb'

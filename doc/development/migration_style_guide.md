@@ -175,7 +175,7 @@ Git. In that case you can use the `scripts/regenerate-schema` script to
 regenerate a clean `db/structure.sql` for the migrations you're
 adding. This script applies all migrations found in `db/migrate`
 or `db/post_migrate`, so if there are any migrations you don't want to
-commit to the schema, rename or remove them. If your branch is not
+commit to the schema, rename, or remove them. If your branch is not
 targeting the default Git branch, you can set the `TARGET` environment variable.
 
 ```shell
@@ -1014,7 +1014,7 @@ end
 Table **has records** but **no foreign keys**:
 
 - Remove the application code related to the table, such as models,
-  controllers and services.
+  controllers, and services.
 - In a post-deployment migration, use `drop_table`.
 
 This can all be in a single migration if you're sure the code is not used.
@@ -1083,12 +1083,6 @@ end
 
 ## Dropping a sequence
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
-
-{{< /history >}}
-
 Dropping a sequence is uncommon, but you can use the `drop_sequence` method provided by the database team.
 
 Under the hood, it works like this:
@@ -1125,12 +1119,6 @@ end
 
 ## Truncate a table
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
-
-{{< /history >}}
-
 Truncating a table is uncommon, but you can use the `truncate_tables!` method provided by the database team.
 
 Under the hood, it works like this:
@@ -1142,12 +1130,6 @@ Under the hood, it works like this:
   `gitlab_schema`s, it does nothing.
 
 ## Swapping primary key
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
-
-{{< /history >}}
 
 Swapping the primary key is required to partition a table as the **partition key must be included in the primary key**.
 
@@ -1614,7 +1596,7 @@ when creating the trigger.
 
 ## Milestone
 
-Beginning in GitLab 16.6, all new migrations must specify a milestone, using the following syntax:
+All new migrations must specify a milestone, using the following syntax:
 
 ```ruby
 class AddFooToBar < Gitlab::Database::Migration[2.2]

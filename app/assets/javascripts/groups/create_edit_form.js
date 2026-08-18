@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -18,7 +19,7 @@ export const initGroupNameAndPath = () => {
     const fields = parseRailsFormFields(element);
     const { basePath, newSubgroup, mattermostEnabled } = element.dataset;
 
-    return new Vue({
+    return initVueApp({
       el: element,
       name: 'GroupNameAndPathRoot',
       apolloProvider: new VueApollo({
@@ -30,9 +31,7 @@ export const initGroupNameAndPath = () => {
         newSubgroup: parseBoolean(newSubgroup),
         mattermostEnabled: parseBoolean(mattermostEnabled),
       },
-      render(h) {
-        return h(GroupNameAndPath);
-      },
+      component: GroupNameAndPath,
     });
   });
 };

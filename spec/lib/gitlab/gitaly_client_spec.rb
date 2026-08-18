@@ -577,6 +577,25 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           expect(metadata).not_to have_key('remote_ip')
         end
       end
+
+      context 'caller_id is added to application context' do
+        it 'injects caller_id into gRPC metadata' do
+          metadata = {}
+          ::Gitlab::ApplicationContext.with_context(caller_id: 'graphql:getProjects') do
+            metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+          end
+
+          expect(metadata[Labkit::Fields::CALLER_ID]).to eql('graphql:getProjects')
+        end
+      end
+
+      context 'caller_id is not added to application context' do
+        it 'does not inject caller_id into gRPC metadata' do
+          metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+
+          expect(metadata).not_to have_key(Labkit::Fields::CALLER_ID)
+        end
+      end
     end
 
     context 'MVCC manifest pin in metadata' do

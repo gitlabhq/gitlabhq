@@ -1,6 +1,7 @@
 <script>
 import { isEmpty } from 'lodash-es';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import DuoQuestionNote from 'ee_else_ce/work_items/components/notes/duo_question_note.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
@@ -27,6 +28,7 @@ import NoteBody from './work_item_note_body.vue';
 export default {
   name: 'WorkItemNoteThread',
   components: {
+    DuoQuestionNote,
     WorkItemNoteAwardsList,
     TimelineEntryItem,
     NoteBody,
@@ -73,14 +75,21 @@ export default {
       required: false,
       default: false,
     },
+    discussionId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    // Replies are read only by the EE Duo question card, which needs the answer
+    // already posted in this thread to render its answered state after a reload.
+    replies: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     workItemType: {
       type: String,
       required: true,
-    },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     markdownPreviewPath: {
       type: String,
@@ -371,10 +380,6 @@ export default {
       };
     },
     notifyCopyDone() {
-      if (this.isModal) {
-        // eslint-disable-next-line no-restricted-properties
-        navigator.clipboard.writeText(this.noteUrl);
-      }
       toast(__('Link copied to clipboard.'));
     },
     async assignUserAction() {
@@ -420,7 +425,10 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item :id="noteAnchorId" :class="entryClass">
+  <!-- `discussion-id` has to reach the `.js-timeline-entry` root, where the quote-reply
+  shortcut reads it (getDiscussionIdFromSelection in work_item_notes.vue). It used to
+  arrive by attribute fallthrough, which stopped once the prop was declared below. -->
+  <timeline-entry-item :id="noteAnchorId" :class="entryClass" :discussion-id="discussionId">
     <div :key="note.id" class="timeline-avatar gl-float-left">
       <gl-avatar-link
         :href="author.webUrl"
@@ -514,6 +522,15 @@ export default {
               :has-admin-note-permission="hasAdminPermission"
               :is-updating="isUpdating"
               @update-note="updateNote"
+            />
+            <duo-question-note
+              v-if="isFirstNote"
+              :note="note"
+              :work-item-id="workItemId"
+              :discussion-id="discussionId"
+              :replies="replies"
+              :is-discussion-resolved="isDiscussionResolved"
+              @error="$emit('error', $event)"
             />
           </div>
           <edited-at

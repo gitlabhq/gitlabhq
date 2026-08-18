@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can delete an ssh key', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347820' do
+      it 'can delete an ssh key' do
         key = create(:ssh_key, title: key_title)
 
         Page::Main::Menu.perform(&:click_edit_profile_link)

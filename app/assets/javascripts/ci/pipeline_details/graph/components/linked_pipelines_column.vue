@@ -1,6 +1,7 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
 import { LOAD_FAILURE } from '../../constants';
 import { ONE_COL_WIDTH, UPSTREAM, LAYER_VIEW, STAGE_VIEW } from '../constants';
@@ -8,7 +9,6 @@ import {
   calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeLoadErrors,
-  setupQueryPollingByVisibility,
   unwrapPipelineData,
   validateConfigPaths,
 } from '../utils';
@@ -18,7 +18,9 @@ export default {
   name: 'LinkedPipelinesColumn',
   components: {
     LinkedPipeline,
-    PipelineGraph: () => import(/* webpackChunkName: 'pipeline_graph' */ './graph_component.vue'),
+    PipelineGraph: defineAsyncComponent(
+      () => import(/* webpackChunkName: 'pipeline_graph' */ './graph_component.vue'),
+    ),
   },
   props: {
     columnTitle: {

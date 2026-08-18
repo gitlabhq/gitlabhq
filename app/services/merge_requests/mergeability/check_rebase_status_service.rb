@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckRebaseStatusService < CheckBaseService
       set_identifier :need_rebase
+      set_failure_explanation N_('The source branch must be rebased.')
       set_description 'Checks whether the merge request needs to be rebased'
 
       def execute

@@ -1,0 +1,5 @@
+---
+event: WorkItems::StatusChangedEvent
+description: Published when a work item status is updated.
+feature_category: team_planning
+ee_only: true

@@ -10,9 +10,11 @@ module Achievements
 
     rule { can?(:read_user_profile) | can?(:admin_achievement) }.enable :read_user_achievement
 
-    rule { user_is_recipient }.enable :update_owned_user_achievement
-
-    rule { can?(:update_owned_user_achievement) }.enable :update_user_achievement
+    rule { user_is_recipient }.policy do
+      enable :update_user_achievement
+      enable :update_owned_user_achievement
+      enable :update_user_achievement_show_on_profile
+    end
 
     rule { ~can?(:read_achievement) }.policy do
       prevent :read_user_achievement

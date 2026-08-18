@@ -6,7 +6,7 @@ title: Solution Components
 ---
 
 This documentation section covers a variety of Solution components developed and provided by GitLab.
-To download and run these solution components, request your account team for invitation code.
+To download and run these solution components, request an invitation code from your account team.
 
 The use of any Solution component is subject to the [GitLab Subscription Agreement](https://handbook.gitlab.com/handbook/legal/subscription-agreement/) (the "Agreement") and constitutes Free Software as defined within the Agreement.
 
@@ -26,7 +26,7 @@ GitLab Solution to provide metrics on Duo Adoption.
 
 GitLab Solution to provide an integrated end to end DevSecOps workflow.
 
-[Secure Software Development Workflow Workflow: Snyk SAST](integrated_snyk.md)
+[Secure Software Development Workflow: Snyk SAST](integrated_snyk.md)
 
 [Change Control Workflow: ServiceNow](integrated_servicenow.md)
 

@@ -33,7 +33,7 @@ RSpec.describe 'seed production settings' do
       it 'prometheus_metrics_enabled is set to true' do
         load(settings_file)
 
-        expect(settings.prometheus_metrics_enabled).to eq(true)
+        expect(settings.prometheus_metrics_enabled).to be(true)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe 'seed production settings' do
       it 'prometheus_metrics_enabled is set to false' do
         load(settings_file)
 
-        expect(settings.prometheus_metrics_enabled).to eq(false)
+        expect(settings.prometheus_metrics_enabled).to be(false)
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe 'seed production settings' do
       it 'prometheus_metrics_enabled is set to true' do
         load(settings_file)
 
-        expect(settings.prometheus_metrics_enabled).to eq(true)
+        expect(settings.prometheus_metrics_enabled).to be(true)
       end
     end
   end

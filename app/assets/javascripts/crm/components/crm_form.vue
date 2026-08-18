@@ -16,6 +16,7 @@ import { logError } from '~/lib/logger';
 import { getFirstPropertyValue } from '~/lib/utils/common_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import showToast from '~/vue_shared/plugins/global_toast';
 import { INDEX_ROUTE_NAME } from '../constants';
 
 const MSG_SAVE_CHANGES = __('Save changes');
@@ -207,8 +208,10 @@ export default {
     },
     close(success) {
       if (success) {
-        // This is needed so toast perists when route is changed
-        this.$root.$toast.show(this.successMessage);
+        // Not GlToastMixin: it parents the toaster to this component, which the
+        // $router.replace below unmounts. showToast holds a Vue instance that
+        // outlives the route change.
+        showToast(this.successMessage);
       }
 
       this.$router.replace({ name: this.$options.INDEX_ROUTE_NAME });

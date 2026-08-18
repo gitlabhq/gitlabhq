@@ -63,10 +63,14 @@ module Users
     end
 
     def build_data_attributes
-      {
+      data_attributes = {
         dismiss_endpoint: dismiss_endpoint,
         feature_id: dismiss_options[:feature_id]
       }
+
+      data_attributes[:defer_links] = 'true' if dismiss_options[:defer_links]
+
+      data_attributes
     end
 
     def dismiss_endpoint

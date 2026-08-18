@@ -148,6 +148,10 @@ module Gitlab
           options['admin_group']
         end
 
+        def audit_group
+          options['audit_group']
+        end
+
         def duo_add_on_groups
           Array(options['duo_add_on_groups'])
         end

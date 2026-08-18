@@ -45,7 +45,7 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
     context 'with ref and name unspecified' do
       let_it_be_with_reload(:version) { create :go_module_version, mod: mod, commit: project.repository.head_commit }
 
-      it('returns nil') { expect(version.name).to eq(nil) }
+      it('returns nil') { expect(version.name).to be_nil }
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :pac
     context 'with go.mod missing' do
       let_it_be_with_reload(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.0' }
 
-      it('returns nil') { expect(version.gomod).to eq(nil) }
+      it('returns nil') { expect(version.gomod).to be_nil }
     end
 
     context 'with go.mod present' do

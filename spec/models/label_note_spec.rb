@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe LabelNote, feature_category: :team_planning do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:label) { create(:label, project: project, title: 'label-1') }
   let_it_be(:label2) { create(:label, project: project, title: 'label-2') }

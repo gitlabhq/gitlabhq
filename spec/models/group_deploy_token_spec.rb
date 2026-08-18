@@ -24,19 +24,19 @@ RSpec.describe GroupDeployToken, type: :model do
     context 'for itself' do
       let(:test_group) { group }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for a subgroup' do
       let(:test_group) { create(:group, parent: group) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for other group' do
       let(:test_group) { create(:group) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

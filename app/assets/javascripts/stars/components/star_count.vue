@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -17,6 +17,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     projectId: {
       default: null,

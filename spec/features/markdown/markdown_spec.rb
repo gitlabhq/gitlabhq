@@ -239,7 +239,9 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
     RSpec::Mocks.with_temporary_scope do
       stub_application_setting(plantuml_enabled: true, plantuml_url: 'http://localhost:8080')
       stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
-      stub_feature_flags(use_css_language_classes: false)
+
+      allow(Feature).to receive(:disabled?).and_call_original
+      allow(Feature).to receive(:disabled?).with(:use_css_language_classes, feat.project).and_return(true)
 
       markdown(feat.raw_markdown, context)
     end

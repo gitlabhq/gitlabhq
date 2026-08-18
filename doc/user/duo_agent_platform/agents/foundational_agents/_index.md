@@ -40,18 +40,15 @@ Foundational agents are built and maintained by GitLab and display a GitLab-main
 The following foundational agents are available in the GitLab UI, VS Code, and JetBrains IDEs.
 Tier availability varies by agent. For details, see each agent's page.
 
-- [Planner](planner.md), for product management and
-  planning workflows.
-- [Security Analyst](security_analyst_agent.md), for
-  security analysis and vulnerability management.
-- [Data Analyst](data_analyst.md), for analysis
-  and visualization of platform data.
-- [CI Expert](ci_expert_agent.md), for creating,
-  debugging, and optimizing GitLab CI/CD pipelines.
-- [Permissions Assistant](permissions_assistant.md), for selecting permissions
-  when creating a fine-grained personal access token.
-- [Support Assistant](support_assistant.md), for diagnosing and resolving
-  GitLab product problems.
+| Agent | Description |
+|-------|-------------|
+| [CI Expert](ci_expert_agent.md) | Create, debug, and optimize GitLab CI/CD pipelines. |
+| [Data Analyst](data_analyst.md) | Analyze and visualize platform data. |
+| [Flow Creator](flow_creator.md) | Create custom flows for the AI Catalog from Chat. |
+| [Permissions Assistant](permissions_assistant.md) | Select the correct permissions for a fine-grained personal access token. |
+| [Planner](planner.md) | Get assistance with product management and planning workflows. |
+| [Security Analyst](security_analyst_agent.md) | Get assistance with security analysis and vulnerability management. |
+| [Support Assistant](support_assistant.md) | Diagnose and resolve GitLab product problems. |
 
 ## Duplicate an agent
 

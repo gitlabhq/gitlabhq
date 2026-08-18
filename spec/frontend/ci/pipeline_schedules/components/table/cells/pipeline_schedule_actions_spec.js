@@ -26,9 +26,10 @@ describe('Pipeline schedule actions', () => {
   };
 
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
-  const findDeleteBtn = () => wrapper.findByTestId('delete-pipeline-schedule-btn');
-  const findTakeOwnershipBtn = () => wrapper.findByTestId('take-ownership-pipeline-schedule-btn');
-  const findPlayScheduleBtn = () => wrapper.findByTestId('play-pipeline-schedule-btn');
+  const findDeleteBtn = () => wrapper.findComponentByTestId('delete-pipeline-schedule-btn');
+  const findTakeOwnershipBtn = () =>
+    wrapper.findComponentByTestId('take-ownership-pipeline-schedule-btn');
+  const findPlayScheduleBtn = () => wrapper.findComponentByTestId('play-pipeline-schedule-btn');
   const findEditScheduleBtn = () => wrapper.findByTestId('edit-pipeline-schedule-btn');
 
   it('displays buttons when user is the owner of schedule and has adminPipelineSchedule permissions', () => {

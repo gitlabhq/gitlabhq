@@ -31,7 +31,8 @@ Use stacks to:
 
 GitLab detects a stack automatically. A merge request joins a stack when it targets another open
 merge request's source branch, or when another open merge request targets its source branch. A
-stack can contain up to 10 merge requests.
+stack can contain up to 20 merge requests. If a stack contains more than 20 merge requests, GitLab
+does not show the stack control.
 
 To create stacked merge requests from the command line, use
 [stacked diffs](../stacked_diffs.md) in the GitLab CLI.
@@ -58,9 +59,14 @@ changed files, additions, and deletions. An arrow marks the merge request you're
 
 ## Merge a stack
 
-GitLab is designed for you to merge a stack from the bottom up. The merge request at the bottom of
-the stack targets the default branch and merges first, even though it's the only merge request that
-targets the default branch directly. The merge requests above it merge in sequence afterward.
+GitLab is designed for you to merge a stack from the bottom up.
+Only the merge request at the bottom of the stack targets the default branch, so it merges first.
+Each merge request higher in the stack targets the branch below it, so it can merge only after
+that branch merges.
+
+Bottom-up is the recommended order because when a merge request merges, GitLab automatically sets the default branch as the target for the next one in the stack.
+If required, you can merge in a different order. For example, you may want to change the order to apply a fix that a lower merge
+request depends on.
 
 To merge a stack from the bottom up:
 

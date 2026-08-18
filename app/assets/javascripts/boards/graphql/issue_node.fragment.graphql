@@ -9,6 +9,7 @@ fragment IssueNode on Issue {
     username
   }
   title
+  titleHtml
   referencePath: reference(full: true)
   closedAt
   dueDate

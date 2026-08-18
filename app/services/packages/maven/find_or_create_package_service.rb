@@ -91,12 +91,9 @@ module Packages
         # duplicate metadata files can be uploaded multiple times
         return false if package.version.nil?
 
-        existing_file_names = strip_snapshot_parts(
-          package.package_files
-                 .map(&:file_name)
-                 .compact
-        )
+        return package.installable_package_files.with_file_name(file_name).exists? unless snapshot_version?
 
+        existing_file_names = strip_snapshot_parts(package.installable_package_files.pluck_file_names)
         published_file_name = strip_snapshot_parts_from(file_name)
         existing_file_names.include?(published_file_name)
       end

@@ -1,8 +1,14 @@
 import { GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
+import getIncidents from '~/incidents/graphql/queries/get_incidents.query.graphql';
+import getIncidentsCountByStatus from '~/incidents/graphql/queries/get_count_by_status.query.graphql';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
 import {
   I18N,
@@ -30,6 +36,130 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 jest.mock('~/tracking');
 
+Vue.use(VueApollo);
+
+const INCIDENT_TYPE_ID = 'gid://gitlab/WorkItems::Type/2';
+
+const buildAssignees = (assignees) => {
+  const nodes = (assignees && assignees.nodes) || [];
+
+  return {
+    __typename: 'UserCoreConnection',
+    nodes: nodes.map((assignee, index) => ({
+      __typename: 'UserCore',
+      id: `gid://gitlab/User/${index + 1}`,
+      name: null,
+      username: null,
+      avatarUrl: null,
+      webUrl: null,
+      ...assignee,
+    })),
+  };
+};
+
+const buildLabels = (labels) => {
+  const nodes = (labels && labels.nodes) || [];
+
+  return {
+    __typename: 'LabelConnection',
+    nodes: nodes.map((label, index) => ({
+      __typename: 'Label',
+      id: `gid://gitlab/Label/${index + 1}`,
+      title: null,
+      color: null,
+      ...label,
+    })),
+  };
+};
+
+const buildIncidentNodes = (list) =>
+  list.map((incident, index) => ({
+    __typename: 'Issue',
+    id: `gid://gitlab/Issue/${index + 1}`,
+    iid: null,
+    title: null,
+    createdAt: null,
+    state: 'opened',
+    severity: 'UNKNOWN',
+    escalationStatus: null,
+    statusPagePublishedIncident: null,
+    slaDueAt: null,
+    ...incident,
+    labels: buildLabels(incident.labels),
+    assignees: buildAssignees(incident.assignees),
+  }));
+
+const buildIncidentsResponse = (list) => ({
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
+      issues: {
+        __typename: 'IssueConnection',
+        nodes: buildIncidentNodes(list),
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null,
+        },
+      },
+    },
+  },
+});
+
+const buildIncidentsCountResponse = ({ all = 0, opened = 0, closed = 0 } = {}) => ({
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
+      issueStatusCounts: {
+        __typename: 'IssueStatusCountsType',
+        all,
+        opened,
+        closed,
+      },
+    },
+  },
+});
+
+const workItemTypesResponse = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/1',
+      workItemTypes: {
+        __typename: 'WorkItemTypeConnection',
+        nodes: [
+          {
+            __typename: 'WorkItemType',
+            id: INCIDENT_TYPE_ID,
+            name: 'Incident',
+            archived: false,
+            enabled: true,
+            canPromoteToObjective: false,
+            canUserCreateItems: true,
+            iconName: 'work-item-incident',
+            isConfigurable: true,
+            isFilterableBoardView: true,
+            isFilterableListView: true,
+            isGroupWorkItemType: false,
+            isIncidentManagement: true,
+            isServiceDesk: false,
+            showProjectSelector: false,
+            supportsMoveAction: true,
+            supportsRoadmapView: false,
+            useIssueView: true,
+            visibleInSettings: true,
+            widgetDefinitions: [],
+          },
+        ],
+      },
+    },
+  },
+};
+
 describe('Incidents List', () => {
   let wrapper;
   const newIssuePath = 'namespace/project/-/issues/new';
@@ -49,33 +179,51 @@ describe('Incidents List', () => {
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAllComponents(TimeAgoTooltip);
   const findAssignees = () => wrapper.findAllByTestId('incident-assignees');
-  const findCreateIncidentBtn = () => wrapper.findByTestId('create-incident-button');
+  const findCreateIncidentBtn = () => wrapper.findComponentByTestId('create-incident-button');
   const findClosedIcon = () => wrapper.findAllByTestId('incident-closed');
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSeverity = () => wrapper.findAllComponents(SeverityToken);
   const findEscalationStatus = () => wrapper.findAllByTestId('incident-escalation-status');
   const findIncidentLink = () => wrapper.findByTestId('incident-link');
 
-  function mountComponent({ data = {}, loading = false, provide = {} } = {}) {
+  const neverResolve = () => jest.fn().mockReturnValue(new Promise(() => {}));
+
+  async function mountComponent({ data = {}, loading = false, provide = {} } = {}) {
+    const { incidents = {}, incidentsCount: injectedCount = {}, errored, statusFilter } = data;
+    const incidentsList = incidents.list || [];
+
+    let incidentsHandler;
+    let incidentsCountHandler;
+    let workItemTypesHandler;
+
+    if (loading) {
+      incidentsHandler = neverResolve();
+      incidentsCountHandler = neverResolve();
+      workItemTypesHandler = neverResolve();
+    } else if (errored) {
+      incidentsHandler = jest.fn().mockRejectedValue(new Error('Something went wrong'));
+      incidentsCountHandler = jest
+        .fn()
+        .mockResolvedValue(buildIncidentsCountResponse(injectedCount));
+      workItemTypesHandler = jest.fn().mockResolvedValue(workItemTypesResponse);
+    } else {
+      incidentsHandler = jest.fn().mockResolvedValue(buildIncidentsResponse(incidentsList));
+      incidentsCountHandler = jest
+        .fn()
+        .mockResolvedValue(buildIncidentsCountResponse(injectedCount));
+      workItemTypesHandler = jest.fn().mockResolvedValue(workItemTypesResponse);
+    }
+
     wrapper = mountExtended(IncidentsList, {
+      apolloProvider: createMockApollo([
+        [getIncidents, incidentsHandler],
+        [getIncidentsCountByStatus, incidentsCountHandler],
+        [workItemTypesConfigurationQuery, workItemTypesHandler],
+      ]),
       data() {
         return {
-          incidents: [],
-          incidentsCount: {},
-          ...data,
+          ...(statusFilter !== undefined ? { statusFilter } : {}),
         };
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            incidents: {
-              loading,
-            },
-            workItemTypesConfiguration: {
-              loading,
-            },
-          },
-        },
       },
       provide: {
         projectPath: '/project/path',
@@ -102,10 +250,17 @@ describe('Incidents List', () => {
         }),
       },
     });
+
+    if (!loading) {
+      // First tick resolves workItemTypesConfiguration (unlocking incidentTypeId),
+      // second tick resolves the now-unskipped incidents/count queries.
+      await waitForPromises();
+      await waitForPromises();
+    }
   }
 
-  it('shows the loading state', () => {
-    mountComponent({
+  it('shows the loading state', async () => {
+    await mountComponent({
       loading: true,
     });
     expect(findLoader().exists()).toBe(true);
@@ -126,8 +281,15 @@ describe('Incidents List', () => {
     `(
       `when active tab is $statusFilter and there are $all incidents in total and $closed closed incidents, the empty state
       has title: $expectedTitle and description: $expectedDescription`,
-      ({ statusFilter, all, closed, expectedTitle, expectedDescription, canCreateIncident }) => {
-        mountComponent({
+      async ({
+        statusFilter,
+        all,
+        closed,
+        expectedTitle,
+        expectedDescription,
+        canCreateIncident,
+      }) => {
+        await mountComponent({
           data: { incidents: { list: [] }, incidentsCount: { all, closed }, statusFilter },
           provide: { canCreateIncident },
           loading: false,
@@ -139,8 +301,8 @@ describe('Incidents List', () => {
     );
   });
 
-  it('shows error state', () => {
-    mountComponent({
+  it('shows error state', async () => {
+    await mountComponent({
       data: { incidents: { list: [] }, incidentsCount: { all: 0 }, errored: true },
       loading: false,
     });
@@ -149,8 +311,8 @@ describe('Incidents List', () => {
   });
 
   describe('Incident Management list', () => {
-    beforeEach(() => {
-      mountComponent({
+    beforeEach(async () => {
+      await mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount },
         loading: false,
       });
@@ -221,8 +383,8 @@ describe('Incidents List', () => {
   });
 
   describe('Create Incident', () => {
-    beforeEach(() => {
-      mountComponent({
+    beforeEach(async () => {
+      await mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount: {} },
         loading: false,
       });
@@ -237,8 +399,8 @@ describe('Incidents List', () => {
       );
     });
 
-    it('shows the button linking to new incidents page with work items view', () => {
-      mountComponent({
+    it('shows the button linking to new incidents page with work items view', async () => {
+      await mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount: {} },
         loading: false,
       });
@@ -257,16 +419,16 @@ describe('Incidents List', () => {
       expect(findCreateIncidentBtn().attributes('loading')).toBe('true');
     });
 
-    it("doesn't show the button when list is empty", () => {
-      mountComponent({
+    it("doesn't show the button when list is empty", async () => {
+      await mountComponent({
         data: { incidents: { list: [] }, incidentsCount: {} },
         loading: false,
       });
       expect(findCreateIncidentBtn().exists()).toBe(false);
     });
 
-    it("doesn't show the button when user does not have incident creation permissions", () => {
-      mountComponent({
+    it("doesn't show the button when user does not have incident creation permissions", async () => {
+      await mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount: {} },
         provide: { canCreateIncident: false },
         loading: false,
@@ -282,8 +444,8 @@ describe('Incidents List', () => {
   });
 
   describe('sorting the incident list by column', () => {
-    beforeEach(() => {
-      mountComponent({
+    beforeEach(async () => {
+      await mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount },
         loading: false,
       });
@@ -307,18 +469,18 @@ describe('Incidents List', () => {
         const columnHeader = () => wrapper.find(`[${attr}="${value}"]`);
         expect(columnHeader().attributes('aria-sort')).toBe(initialSort);
         columnHeader().trigger('click');
-        await nextTick();
+        await waitForPromises();
         expect(columnHeader().attributes('aria-sort')).toBe(firstSort);
         columnHeader().trigger('click');
-        await nextTick();
+        await waitForPromises();
         expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
       },
     );
   });
 
   describe('Snowplow tracking', () => {
-    beforeEach(() => {
-      mountComponent({
+    beforeEach(async () => {
+      await mountComponent({
         data: { incidents: { list: mockIncidents }, incidentsCount: {} },
         loading: false,
       });

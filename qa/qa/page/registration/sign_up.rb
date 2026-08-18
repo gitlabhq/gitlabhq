@@ -8,6 +8,9 @@ module QA
           element 'new-user-first-name-field'
           element 'new-user-last-name-field'
           element 'new-user-email-field'
+        end
+
+        view 'app/assets/javascripts/registrations/components/signup_submit_button.vue' do
           element 'new-user-register-button'
         end
 

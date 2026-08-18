@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImageViewer from '~/rapid_diffs/app/image_viewer/image_diff_viewer_with_discussions.vue';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
 import { pinia } from '~/pinia/instance';
@@ -12,8 +12,7 @@ export const mergeRequestImageViewerAdapter = {
     );
     const { oldPath, newPath, diffRefs } = this.data;
     const { appData } = this;
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el: this.diffElement.querySelector('[data-image-view]'),
       pinia,
       apolloProvider,
@@ -37,15 +36,12 @@ export const mergeRequestImageViewerAdapter = {
           newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
         };
       },
-      render(h) {
-        return h(ImageViewer, {
-          props: {
-            imageData,
-            oldPath,
-            newPath,
-            diffRefs,
-          },
-        });
+      component: ImageViewer,
+      props: {
+        imageData,
+        oldPath,
+        newPath,
+        diffRefs,
       },
     });
   },

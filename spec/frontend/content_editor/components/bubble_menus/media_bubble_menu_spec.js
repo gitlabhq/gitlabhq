@@ -154,10 +154,10 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
         await buildWrapperAndDisplayMenu();
 
         // Switch to edit mode to access component state in form fields
-        await wrapper.findByTestId('edit-media').vm.$emit('click');
+        await wrapper.findComponentByTestId('edit-media').vm.$emit('click');
 
-        const mediaSrcInput = wrapper.findByTestId('media-src').vm.$el;
-        const mediaAltInput = wrapper.findByTestId('media-alt').vm.$el;
+        const mediaSrcInput = wrapper.findComponentByTestId('media-src').vm.$el;
+        const mediaAltInput = wrapper.findComponentByTestId('media-alt').vm.$el;
 
         expect(mediaSrcInput.value).not.toBe('');
         expect(mediaAltInput.value).not.toBe('');
@@ -176,10 +176,10 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
       beforeEach(async () => {
         await buildWrapperAndDisplayMenu();
 
-        await wrapper.findByTestId('edit-media').vm.$emit('click');
+        await wrapper.findComponentByTestId('edit-media').vm.$emit('click');
 
-        mediaSrcInput = wrapper.findByTestId('media-src');
-        mediaAltInput = wrapper.findByTestId('media-alt');
+        mediaSrcInput = wrapper.findComponentByTestId('media-src');
+        mediaAltInput = wrapper.findComponentByTestId('media-alt');
       });
 
       it('hides the link and copy/edit/remove link buttons', () => {
@@ -228,7 +228,7 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
           mediaSrcInput.setValue('https://gitlab.com/favicon.png');
           mediaAltInput.setValue('gitlab favicon');
 
-          await wrapper.findByTestId('cancel-editing-media').vm.$emit('click');
+          await wrapper.findComponentByTestId('cancel-editing-media').vm.$emit('click');
         });
 
         it('hides the form and shows the copy/edit/remove link buttons', () => {
@@ -237,7 +237,7 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
 
         it(`resets the form with old values of the ${mediaType} from prosemirror`, async () => {
           // click edit once again to show the form back
-          await wrapper.findByTestId('edit-media').vm.$emit('click');
+          await wrapper.findComponentByTestId('edit-media').vm.$emit('click');
 
           mediaSrcInput = wrapper.findByTestId('media-src');
           mediaAltInput = wrapper.findByTestId('media-alt');
@@ -263,7 +263,7 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
       buildWrapper();
       await showMenu();
 
-      await wrapper.findByTestId('edit-media').vm.$emit('click');
+      await wrapper.findComponentByTestId('edit-media').vm.$emit('click');
 
       const mediaSrcInput = wrapper.findByTestId('media-src');
       mediaSrcInput.setValue('https://www.youtube.com/watch?v=xyz');

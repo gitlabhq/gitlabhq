@@ -6,6 +6,14 @@ module Gitlab
       extend ActiveSupport::Concern
       include Gitlab::QuickActions::Dsl
 
+      # Bracketed form mirrors `[timecategory:category-name]` and lets
+      # multi-word type names (e.g. `Key Result`) be passed without quoting
+      # because `]` terminates the value.
+      TARGET_TYPE_REGEX = /
+        (?:\A|\s)               # start of string or whitespace
+        \[type:(?<name>[^\]\n]+)\]
+      /x
+
       included do
         # Issue only quick actions definition
         desc { _('Set due date') }
@@ -102,63 +110,115 @@ module Gitlab
         end
 
         desc { _('Clone this item') }
-        explanation do |target_container_path = quick_action_target.namespace.full_path|
-          _("Clones this item, without comments, to %{group_or_project}.") % { group_or_project: target_container_path }
+        explanation do |raw_params = quick_action_target.namespace.full_path|
+          remaining, type_name = extract_target_type_token!(raw_params.to_s)
+          tokens = remaining.split(' ')
+          tokens.delete('--with_notes')
+          target_container_path = tokens.first.presence || quick_action_target.namespace.full_path
+
+          if type_name
+            format(
+              _("Clones this item, without comments, to %{group_or_project} and changes the type to %{type}."),
+              group_or_project: target_container_path, type: type_name
+            )
+          else
+            format(
+              _("Clones this item, without comments, to %{group_or_project}."),
+              group_or_project: target_container_path
+            )
+          end
         end
-        params 'path/to/group_or_project [--with_notes]'
+        params 'path/to/group_or_project [--with_notes] [type:<work item type>]'
         types Issue, WorkItem
         condition do
           quick_action_target.persisted? &&
             current_user.can?(:"clone_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :clone do |params = ''|
-          params = params.split(' ')
-          with_notes = params.delete('--with_notes').present?
+          remaining, target_type_name = extract_target_type_token!(params.to_s)
+          tokens = remaining.split(' ')
+          with_notes = tokens.delete('--with_notes').present?
 
           # If we have more than 1 param, then the user supplied too many spaces, or mistyped `--with_notes`
-          if params.size > 1
+          if tokens.size > 1
             @execution_message[:clone] = _('Failed to clone this item: wrong parameters.')
             next
           end
 
-          target_container_path = params[0]
+          target_container_path = tokens[0]
           target_container = fetch_target_container(target_container_path)
 
           message =
             if target_container.nil?
               _("Unable to clone. Target project or group doesn't exist or doesn't support this item type.")
-            elsif current_user.can?(:admin_issue, target_container)
-              @updates[:target_clone_container] = target_container
-              @updates[:clone_with_notes] = with_notes
-              _("Cloned this item to %{path_to_group_or_project}.") % { path_to_group_or_project: target_container_path || target_container.full_path }
-            else
+            elsif !current_user.can?(:admin_issue, target_container)
               _("Unable to clone. Insufficient permissions.")
+            else
+              target_type, type_error = resolve_target_work_item_type(target_container, target_type_name, action: 'clone')
+
+              if type_error
+                type_error
+              else
+                @updates[:target_clone_container] = target_container
+                @updates[:clone_with_notes] = with_notes
+                @updates[:target_work_item_type_id] = target_type.id if target_type
+                _("Cloned this item to %{path_to_group_or_project}.") % { path_to_group_or_project: target_container_path || target_container.full_path }
+              end
             end
 
           @execution_message[:clone] = message
         end
 
         desc { _('Move this item to another group or project') }
-        explanation do |path_to_container|
-          _("Moves this item to %{group_or_project}.") % { group_or_project: path_to_container }
+        explanation do |raw_params|
+          remaining, type_name = extract_target_type_token!(raw_params.to_s)
+          target_container_path = remaining.split(' ').first
+
+          if type_name
+            format(
+              _("Moves this item to %{group_or_project} and changes the type to %{type}."),
+              group_or_project: target_container_path, type: type_name
+            )
+          else
+            format(
+              _("Moves this item to %{group_or_project}."),
+              group_or_project: target_container_path
+            )
+          end
         end
-        params 'path/to/group_or_project'
+        params 'path/to/group_or_project [type:<work item type>]'
         types Issue, WorkItem
         condition do
           quick_action_target.persisted? &&
             current_user.can?(:"move_#{quick_action_target.to_ability_name}", quick_action_target)
         end
-        command :move do |target_container_path|
+        command :move do |params = ''|
+          remaining, target_type_name = extract_target_type_token!(params.to_s)
+          tokens = remaining.split(' ')
+
+          if tokens.size > 1
+            @execution_message[:move] = _('Failed to move this item: wrong parameters.')
+            next
+          end
+
+          target_container_path = tokens[0]
           target_container = fetch_target_container(target_container_path)
 
           message =
             if target_container.nil?
               _("Unable to move. Target project or group doesn't exist or doesn't support this item type.")
-            elsif current_user.can?(:admin_issue, target_container)
-              @updates[:target_container] = target_container
-              _("Moved this item to %{path_to_container}.") % { path_to_container: target_container_path }
-            else
+            elsif !current_user.can?(:admin_issue, target_container)
               _("Unable to move. Insufficient permissions.")
+            else
+              target_type, type_error = resolve_target_work_item_type(target_container, target_type_name, action: 'move')
+
+              if type_error
+                type_error
+              else
+                @updates[:target_container] = target_container
+                @updates[:target_work_item_type_id] = target_type.id if target_type
+                _("Moved this item to %{path_to_container}.") % { path_to_container: target_container_path }
+              end
             end
 
           @execution_message[:move] = message
@@ -444,6 +504,36 @@ module Gitlab
         else
           Group.find_by_full_path(target_container_path)
         end
+      end
+
+      # Returns `[remaining_params, type_name]`, or `[params, nil]` when no
+      # `[type:...]` argument is present. The type name is later matched
+      # case-insensitively against the destination namespace's types.
+      def extract_target_type_token!(params)
+        params = params.to_s
+        match = params.match(TARGET_TYPE_REGEX)
+        return [params, nil] unless match
+
+        remaining = "#{params[0...match.begin(0)]} #{params[match.end(0)..]}".strip.squeeze(' ')
+
+        [remaining, match[:name].to_s.strip.presence]
+      end
+
+      # Shares the exact same resolution rules and error messages as
+      # `WorkItems::DataSync::BaseService`. Returns a `[type, error_message]`
+      # pair.
+      def resolve_target_work_item_type(target_container, type_name, action: 'move')
+        target_namespace = target_container.is_a?(Project) ? target_container.project_namespace : target_container
+
+        response = ::WorkItems::TypesFramework::TargetTypeSelector.new(
+          source_type: quick_action_target.work_item_type,
+          target_namespace: target_namespace,
+          type_name: type_name,
+          same_namespace: quick_action_target.namespace_id == target_namespace.id,
+          action: action
+        ).execute
+
+        [response.payload[:type], response.message]
       end
     end
   end

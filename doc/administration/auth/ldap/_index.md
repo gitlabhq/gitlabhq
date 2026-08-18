@@ -85,7 +85,7 @@ If the user is no longer active in LDAP, they are:
 
 You should only use LDAP integration if your LDAP users cannot:
 
-- Change their `mail`, `email` or `userPrincipalName` attributes on the LDAP server. These
+- Change their `mail`, `email`, or `userPrincipalName` attributes on the LDAP server. These
   users can potentially take over any account on your GitLab server.
 - Share email addresses. LDAP users with the same email address can share the same GitLab
   account.
@@ -661,6 +661,7 @@ required when `external_groups` is configured:
 |-------------------|-------------|----------|
 | `group_base`      | Base used to search for groups. All valid groups have this base as part of their DN. | `'ou=groups,dc=gitlab,dc=example'` |
 | `admin_group`     | The CN of a group containing GitLab administrators. Not `cn=administrators` or the full DN. | `'administrators'` |
+| `audit_group`     | The CN of a group containing GitLab auditors. Not `cn=auditors` or the full DN. | `'auditors'` |
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
 
@@ -1160,6 +1161,11 @@ checks like custom 2FA.
 
 When LDAP web sign in is disabled, users don't see an **LDAP** tab on the sign-in page.
 This does not disable using LDAP credentials for Git access.
+
+Disabling LDAP web sign in does not block these users from the web UI: they can
+still sign in with a GitLab password. To require sign-in through your identity
+provider only, also
+[disable password authentication for users with an SSO identity](../../settings/sign_in_restrictions.md#disable-password-and-passkey-authentication-for-users-with-an-sso-identity).
 
 {{< tabs >}}
 

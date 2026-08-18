@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { I18N_EDIT } from '../constants';
 
 export default {
@@ -10,6 +11,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glListenersMixin],
   props: {
     href: {
       type: String,
@@ -34,6 +36,6 @@ export default {
     :href="href"
     :size="size"
     icon="pencil"
-    v-on="$listeners"
+    v-on="glListeners()"
   />
 </template>

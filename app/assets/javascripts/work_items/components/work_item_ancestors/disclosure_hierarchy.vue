@@ -1,7 +1,10 @@
 <script>
 import { uniqueId } from 'lodash-es';
 import { GlIcon, GlTooltip, GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
 
 export default {
@@ -14,23 +17,29 @@ export default {
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
+    SafeHtml,
   },
+  mixins: [glSlotsMixin],
+  titleInLinkSafeHtmlConfig,
   props: {
     /**
      * A list of items in the form:
      * ```
      * {
-     *   title:    String, required
-     *   icon:     String, optional
+     *   titleHtml: String (rendered as HTML)
+     *   title:     String (plain text; label for the collapsed ellipsis dropdown, where HTML can't be used)
+     *   message:   String (rendered as plain text)
+     *   icon:      String, optional
      * }
      * ```
+     * Either a message, or both titleHtml and its plain-text title, must be provided.
      */
     items: {
       type: Array,
       required: false,
       default: () => [],
       validator: (items) => {
-        return items.every((item) => Object.keys(item).includes('title'));
+        return items.every((item) => (item.titleHtml && item.title) || item.message);
       },
     },
     /**
@@ -59,9 +68,11 @@ export default {
   computed: {
     middleItems() {
       if (this.isMobile) {
-        return this.items.slice(0, -1).map((item) => ({ ...item, text: item.title }));
+        return this.items
+          .slice(0, -1)
+          .map((item) => ({ ...item, text: item.title ?? item.message }));
       }
-      return this.items.slice(1, -1).map((item) => ({ ...item, text: item.title }));
+      return this.items.slice(1, -1).map((item) => ({ ...item, text: item.title ?? item.message }));
     },
     firstItem() {
       return this.items[0];
@@ -93,7 +104,9 @@ export default {
     <ul class="gl-relative gl-m-0 gl-inline-flex gl-max-w-full gl-list-none gl-flex-row gl-p-0">
       <template v-if="withEllipsis || isMobile">
         <disclosure-hierarchy-item v-if="!isMobile" :item="firstItem" :item-id="itemId(0)">
-          <slot :item="firstItem" :item-id="itemId(0)"></slot>
+          <template v-if="glSlots().default" #default
+            ><slot :item="firstItem" :item-id="itemId(0)"></slot
+          ></template>
         </disclosure-hierarchy-item>
         <li v-if="middleItems.length > 0" class="disclosure-hierarchy-item">
           <gl-disclosure-dropdown :items="middleItems">
@@ -114,7 +127,11 @@ export default {
                   :name="item.icon"
                   class="gl-mr-3 gl-shrink-0 gl-align-middle"
                 />
-                {{ item.title }}
+                <span
+                  v-if="item.titleHtml"
+                  v-safe-html:[$options.titleInLinkSafeHtmlConfig]="item.titleHtml"
+                ></span>
+                <span v-else>{{ item.message }}</span>
               </span>
             </template>
           </gl-disclosure-dropdown>
@@ -127,7 +144,9 @@ export default {
           {{ ellipsisTooltipLabel }}
         </gl-tooltip>
         <disclosure-hierarchy-item :item="lastItem" :item-id="itemId(lastItemIndex)">
-          <slot :item="lastItem" :item-id="itemId(lastItemIndex)"></slot>
+          <template v-if="glSlots().default" #default
+            ><slot :item="lastItem" :item-id="itemId(lastItemIndex)"></slot
+          ></template>
         </disclosure-hierarchy-item>
       </template>
       <disclosure-hierarchy-item
@@ -137,7 +156,9 @@ export default {
         :item="item"
         :item-id="itemId(index)"
       >
-        <slot :item="item" :item-id="itemId(index)"></slot>
+        <template v-if="glSlots().default" #default
+          ><slot :item="item" :item-id="itemId(index)"></slot
+        ></template>
       </disclosure-hierarchy-item>
     </ul>
   </div>

@@ -4,7 +4,7 @@ import ProtectionRow, {
   MAX_VISIBLE_AVATARS,
   AVATAR_SIZE,
 } from '~/projects/settings/branch_rules/components/protection_row.vue';
-import { protectionRowPropsMock, deployKeysMock } from './mock_data';
+import { protectionRowPropsMock, deployKeysMock, memberRolesMock } from './mock_data';
 
 describe('Branch rule protection row', () => {
   let wrapper;
@@ -30,6 +30,7 @@ describe('Branch rule protection row', () => {
   const findSharedSecretBadge = () => wrapper.findByTestId('shared-secret');
   const findStatusChecksUrl = () => wrapper.findByText(protectionRowPropsMock.statusCheckUrl);
   const findDeployKeys = () => wrapper.findAllByTestId('deploy-key');
+  const findMemberRoles = () => wrapper.findAllByTestId('member-role');
 
   it('renders a title', () => {
     expect(findTitle().exists()).toBe(true);
@@ -70,6 +71,17 @@ describe('Branch rule protection row', () => {
   it('renders deploy keys badges', () => {
     expect(findDeployKeys()).toHaveLength(deployKeysMock.length);
     expect(findDeployKeys().at(0).text()).toBe('Deploy key 1');
+  });
+
+  it('renders custom role badges', () => {
+    createComponent({ propsData: { memberRoles: memberRolesMock } });
+
+    expect(findMemberRoles()).toHaveLength(memberRolesMock.length);
+    expect(findMemberRoles().at(0).text()).toBe('Custom Developer');
+  });
+
+  it('does not render custom role badges when there are none', () => {
+    expect(findMemberRoles()).toHaveLength(0);
   });
 
   it('renders status checks URL', () => {

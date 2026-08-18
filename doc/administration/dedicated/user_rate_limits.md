@@ -30,7 +30,7 @@ Rate limits are automatically configured and managed by GitLab. You cannot:
 
 GitLab manages these settings to ensure optimal performance and stability for your instance.
 
-For more information, see [rate limits](../../security/rate_limits.md).
+For more information, see [rate limits](../../rate_limits/_index.md).
 
 ## Rate limits by request type
 

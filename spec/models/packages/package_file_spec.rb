@@ -252,6 +252,16 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     it { is_expected.to contain_exactly(package_file) }
   end
 
+  describe '.pluck_file_names' do
+    let_it_be(:package) { create(:generic_package) }
+    let_it_be(:package_file) { create(:package_file, file_name: 'foo.jar', package: package) }
+    let_it_be(:another_package_file) { create(:package_file, file_name: 'foo.pom', package: package) }
+
+    subject { package.package_files.pluck_file_names }
+
+    it { is_expected.to contain_exactly('foo.jar', 'foo.pom') }
+  end
+
   describe '.for_rubygem_with_file_name' do
     let_it_be(:non_ruby_package) { create(:nuget_package, project: project, package_type: :nuget) }
     let_it_be(:ruby_package) { create(:rubygems_package, project: project, package_type: :rubygems) }

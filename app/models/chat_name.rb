@@ -45,4 +45,12 @@ class ChatName < ApplicationRecord
   def update_last_used_at?
     last_used_at.nil? || last_used_at.before?(LAST_USED_AT_INTERVAL.ago)
   end
+
+  def duo_privacy_notice_acknowledged?
+    duo_privacy_notice_acknowledged_at.present?
+  end
+
+  def acknowledge_duo_privacy_notice!
+    touch(:duo_privacy_notice_acknowledged_at)
+  end
 end

@@ -46,7 +46,9 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
 
   describe '#random_start_id' do
     before do
-      create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
+      # Needs to comfortably exceed batch_size so max_id - BATCH_SIZE > min_id,
+      # otherwise the random range collapses to a single value.
+      create_list(:namespace, 10) # This will also create Ci::NameSpaceMirror objects
     end
 
     it 'generates a random start_id within the records ids' do
@@ -76,11 +78,13 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
     end
 
     context 'no cursor has been saved before' do
+      let(:batch_size) { 2 }
+      let(:max_batches) { 2 }
       let(:min_id) { Namespace.first.id }
       let(:max_id) { Namespace.last.id }
 
       before do
-        create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
+        create_list(:namespace, 6) # This will also create Ci::NameSpaceMirror objects
       end
 
       it 'picks a random start_id within the range of available item ids' do
@@ -104,7 +108,7 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
           expect(instance).to receive(:execute).with(start_id: min_id).and_return({
             batches: 2,
             next_start_id: min_id + batch_size,
-            matches: 10,
+            matches: max_batches * batch_size,
             mismatches: 0,
             mismatches_details: []
           })
@@ -119,7 +123,7 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
 
         expected_result = {
           batches: 2,
-          matches: 10,
+          matches: max_batches * batch_size,
           mismatches: 0,
           mismatches_details: [],
           start_id: be_between(min_id, max_id),
@@ -137,11 +141,13 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
     end
 
     context 'cursor saved in Redis and moving' do
+      let(:batch_size) { 2 }
+      let(:max_batches) { 1 }
       let(:first_namespace_id) { Namespace.order(:id).first.id }
       let(:second_namespace_id) { Namespace.order(:id).second.id }
 
       before do
-        create_list(:namespace, 30) # This will also create Ci::NameSpaceMirror objects
+        create_list(:namespace, 6) # This will also create Ci::NameSpaceMirror objects
       end
 
       it "keeps moving the cursor with each call to the service" do
@@ -149,8 +155,8 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
 
         allow_next_instance_of(Gitlab::Database::ConsistencyChecker) do |instance|
           expect(instance).to receive(:execute).ordered.with(start_id: first_namespace_id).and_call_original
-          expect(instance).to receive(:execute).ordered.with(start_id: first_namespace_id + 10).and_call_original
-          expect(instance).to receive(:execute).ordered.with(start_id: first_namespace_id + 20).and_call_original
+          expect(instance).to receive(:execute).ordered.with(start_id: first_namespace_id + 2).and_call_original
+          expect(instance).to receive(:execute).ordered.with(start_id: first_namespace_id + 4).and_call_original
           # Gets back to the start of the table
           expect(instance).to receive(:execute).ordered.with(start_id: first_namespace_id).and_call_original
         end
@@ -165,7 +171,7 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
 
         allow_next_instance_of(Gitlab::Database::ConsistencyChecker) do |instance|
           expect(instance).to receive(:execute).ordered.with(start_id: second_namespace_id).and_call_original
-          expect(instance).to receive(:execute).ordered.with(start_id: second_namespace_id + 10).and_call_original
+          expect(instance).to receive(:execute).ordered.with(start_id: second_namespace_id + 2).and_call_original
         end
 
         2.times do

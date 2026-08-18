@@ -3,7 +3,7 @@ import { GlButton, GlDropdownItem, GlSearchBoxByType, GlSprintf } from '@gitlab/
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { debounce } from 'lodash-es';
-import { REF_TYPE_TAGS, SEARCH_DEBOUNCE_MS } from '~/ref/constants';
+import { REF_TYPE_TAGS, SEARCH_DEBOUNCE_MS } from '~/vue_shared/components/ref/constants';
 import { __, s__ } from '~/locale';
 
 export default {

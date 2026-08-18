@@ -7,10 +7,28 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
+  let(:supported_rate_limits) { Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits }
+
+  describe '.handled?' do
+    it 'returns true for a registered key' do
+      expect(described_class.handled?(:pipelines_create)).to be(true)
+    end
+
+    it 'returns false for a key not in the registry' do
+      expect(described_class.handled?(:not_a_registered_key)).to be(false)
+    end
+  end
+
   describe '.set_mode?' do
     it 'returns true for entries with count_distinct (set-mode rules)' do
-      allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all).and_return(
-        fake_key: { count_distinct: :project_id, characteristics: %i[user], action: :block }
+      allow(supported_rate_limits).to receive(:rule_for).with(:fake_key).and_return(
+        ::Labkit::RateLimit::Rule.new(
+          name: 'limit_fake_key',
+          characteristics: %i[user],
+          limit: 1,
+          period: 1.minute,
+          count_distinct: :project_id
+        )
       )
 
       expect(described_class.set_mode?(:fake_key)).to be(true)
@@ -65,17 +83,86 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     context 'when the labkit check errors' do
-      let(:broken_result) { Labkit::RateLimit::Result.new(matched: false, error: true, action: :allow) }
+      let(:broken_result) { Labkit::RateLimit::Result.error }
+      let(:limiter) { instance_double(Labkit::RateLimit::Limiter, check: broken_result) }
 
       before do
-        allow_next_instance_of(Labkit::RateLimit::Limiter) do |limiter|
-          allow(limiter).to receive(:check).and_return(broken_result)
-        end
+        allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
       end
 
       it 'returns false and fails open' do
         expect(described_class.run!(:users_get_by_id, scope: user)).to be(false)
       end
+    end
+
+    it 'checks through the cached limiter from the registry' do
+      result = Labkit::RateLimit::Result.new
+      limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
+
+      allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
+
+      described_class.run!(:users_get_by_id, scope: user)
+
+      expect(limiter).to have_received(:check).with(
+        { user: user.id },
+        cost: 1,
+        rule_context: {}
+      )
+    end
+
+    context 'with bypass_header in the context' do
+      it 'copies bypass_header onto the identifier alongside rule_context' do
+        result = Labkit::RateLimit::Result.new
+        limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
+
+        allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
+
+        described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
+
+        expect(limiter).to have_received(:check).with(
+          { user: user.id, bypass_header: '1' },
+          cost: 1,
+          rule_context: { bypass_header: '1' }
+        )
+      end
+
+      it 'does not increment the real rule counter when the request is bypassed' do
+        described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
+
+        count = Gitlab::Redis::RateLimiting.with do |r|
+          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+        end
+
+        expect(count).to be_nil
+      end
+
+      it 'is never blocked even once the real rule is already over its limit', :aggregate_failures do
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:users_get_by_id_limit).and_return(1)
+        described_class.run!(:users_get_by_id, scope: user)
+        described_class.run!(:users_get_by_id, scope: user) # now over limit (count 2 > limit 1)
+
+        result = described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
+
+        expect(result).to be(false)
+
+        count = Gitlab::Redis::RateLimiting.with do |r|
+          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+        end
+        expect(count.to_i).to eq(2) # the bypassed call did not add a third increment
+      end
+    end
+
+    it 'delegates to SupportedRateLimits.limiter_for on each check' do
+      result = Labkit::RateLimit::Result.new
+      limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
+
+      allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
+
+      2.times { described_class.run!(:users_get_by_id, scope: user) }
+
+      expect(supported_rate_limits).to have_received(:limiter_for).with(:users_get_by_id).twice
+      expect(limiter).to have_received(:check).twice
     end
 
     context 'with scopes that flatten to the same identifier' do
@@ -199,17 +286,27 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     context 'with a count_distinct (set-mode) registry entry' do
-      let_it_be(:project_a) { create(:project) }
-      let_it_be(:project_b) { create(:project) }
+      let_it_be(:project_a) { build_stubbed(:project) }
+      let_it_be(:project_b) { build_stubbed(:project) }
 
-      let(:spec) do
-        {
-          limiter_name: 'applimiter_distinct_downloads',
-          rule_name: 'limit_distinct_downloads_by_user',
+      let(:rule) do
+        ::Labkit::RateLimit::Rule.new(
+          name: 'limit_distinct_downloads_by_user',
           characteristics: %i[user],
           count_distinct: :project_id,
-          action: :block
-        }
+          limit: ->(ctx) { ctx&.dig(:threshold) || 5 },
+          period: ->(ctx) { ctx&.dig(:interval) || 60 },
+          action: :limit
+        )
+      end
+
+      let(:limiter) do
+        ::Labkit::RateLimit::Limiter.new(
+          name: 'applimiter_distinct_downloads',
+          rules: [rule],
+          redis: ::Gitlab::Redis::RateLimiting,
+          logger: ::Gitlab::AppLogger
+        )
       end
 
       let(:set_key) do
@@ -217,10 +314,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       end
 
       before do
-        allow(Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits).to receive(:all)
-          .and_return(distinct_downloads: spec)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:distinct_downloads).and_return(5)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:interval).with(:distinct_downloads).and_return(60)
+        allow(supported_rate_limits).to receive(:rule_for).with(:distinct_downloads).and_return(rule)
+        allow(supported_rate_limits).to receive(:limiter_for).with(:distinct_downloads).and_return(limiter)
       end
 
       it 'SADDs the resource_id onto a SET keyed by the characteristic bucket' do
@@ -250,7 +345,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
           context: { resource_id: project_b.id, threshold: 2, interval: 600 })
 
         expect(result_b).to be(false) # exactly at limit, not exceeded
-        project_c = create(:project)
+        project_c = build_stubbed(:project)
         result_c = described_class.run!(:distinct_downloads, scope: user,
           context: { resource_id: project_c.id, threshold: 2, interval: 600 })
 
@@ -260,14 +355,14 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       it 'falls back to the registered threshold/interval when rule_context overrides are nil', :aggregate_failures do
         4.times do
           described_class.run!(:distinct_downloads, scope: user,
-            context: { resource_id: create(:project).id })
+            context: { resource_id: build_stubbed(:project).id })
         end
         result_at_threshold = described_class.run!(:distinct_downloads, scope: user,
-          context: { resource_id: create(:project).id })
+          context: { resource_id: build_stubbed(:project).id })
         expect(result_at_threshold).to be(false) # 5 distinct == registered threshold
 
         result_over = described_class.run!(:distinct_downloads, scope: user,
-          context: { resource_id: create(:project).id })
+          context: { resource_id: build_stubbed(:project).id })
         expect(result_over).to be(true)
       end
     end
@@ -352,6 +447,15 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         expect(result).to be(true)
       end
 
+      it 'uses the caller interval for the cost-mode bucket expiry' do
+        described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          context: { threshold: 10, interval: 45 }, cost: 1.0)
+
+        ttl = Gitlab::Redis::RateLimiting.with { |r| r.ttl(expected_key) }
+
+        expect(ttl).to be_between(1, 45).inclusive
+      end
+
       it 'returns false and writes no Redis key when the cost is zero', :aggregate_failures do
         result = described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
           context: { threshold: 10, interval: 60 }, cost: 0)
@@ -362,45 +466,46 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
   end
 
-  describe '.build_rule' do
+  describe 'rule value resolution' do
     context 'with a cost-mode key (threshold and interval supplied per call)' do
-      let(:spec) { Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits.all[key] }
-      let(:key) { :main_db_duration_limit_per_worker }
+      it 'resolves limit/period from rule_context for keys without static values' do
+        result = described_class.run!(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          context: { threshold: 42, interval: 600 }, cost: 1.0)
 
-      # The key is not registered in ApplicationRateLimiter.rate_limits, so the
-      # registry fallback (threshold(key)/interval(key)) must not be consulted -
-      # interval(key) would raise InvalidKeyError. Both values arrive per call.
-      it 'resolves limit/period from rule_context without touching the registry', :aggregate_failures do
-        expect(Gitlab::ApplicationRateLimiter).not_to receive(:threshold)
-        expect(Gitlab::ApplicationRateLimiter).not_to receive(:interval)
-
-        rule = described_class.send(:build_rule, key, spec)
-
-        expect(rule.limit.call({ threshold: 42, interval: 600 })).to eq(42)
-        expect(rule.period.call({ threshold: 42, interval: 600 })).to eq(600)
+        expect(result).to be(false)
       end
     end
 
-    context 'with a plain INCR key called with a per-call override' do
-      let(:spec) { Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits.all[:pipelines_create] }
+    context 'with a plain INCR key' do
+      it 'uses the registered limit when overrides are nil' do
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:pipeline_limit_per_project_user_sha).and_return(1)
 
-      # Overrides used to route to the legacy path; with the legacy path gone,
-      # labkit honours them through the rule_context lambdas.
-      it 'resolves limit/period from the override in rule_context', :aggregate_failures do
-        rule = described_class.send(:build_rule, :pipelines_create, spec)
-
-        expect(rule.limit.call({ threshold: 7, interval: 30 })).to eq(7)
-        expect(rule.period.call({ threshold: 7, interval: 30 })).to eq(30)
+        expect(described_class.run!(:pipelines_create, scope: [project, user, 'nil-override-sha'],
+          context: { threshold: nil, interval: nil })).to be(false)
+        expect(described_class.run!(:pipelines_create, scope: [project, user, 'nil-override-sha'],
+          context: { threshold: nil, interval: nil })).to be(true)
       end
 
-      it 'falls back to the registry when no override is supplied', :aggregate_failures do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:pipelines_create).and_return(99)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:interval).with(:pipelines_create).and_return(60)
+      it 'keeps settings-backed fallback values lazy across cached limiter checks' do
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:pipeline_limit_per_project_user_sha).and_return(2, 1)
 
-        rule = described_class.send(:build_rule, :pipelines_create, spec)
+        expect(described_class.run!(:pipelines_create, scope: [project, user, 'lazy-sha'])).to be(false)
+        expect(described_class.run!(:pipelines_create, scope: [project, user, 'lazy-sha'])).to be(true)
+      end
 
-        expect(rule.limit.call({})).to eq(99)
-        expect(rule.period.call({})).to eq(60)
+      it 'uses the registered period when no override is supplied' do
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:pipeline_limit_per_project_user_sha).and_return(99)
+
+        described_class.run!(:pipelines_create, scope: [project, user, 'registry-period-sha'])
+
+        labkit_key = "labkit:rl:applimiter_pipelines_create:limit_pipelines_by_project_user_sha" \
+          ":project:#{project.id}:user:#{user.id}:sha:registry-period-sha"
+        ttl = Gitlab::Redis::RateLimiting.with { |r| r.ttl(labkit_key) }
+
+        expect(ttl).to be_between(1, 1.minute).inclusive
       end
     end
   end
@@ -456,17 +561,58 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     context 'when the labkit peek errors' do
-      let(:broken_result) { Labkit::RateLimit::Result.new(matched: false, error: true, action: :allow) }
+      let(:broken_result) { Labkit::RateLimit::Result.error }
+      let(:limiter) { instance_double(Labkit::RateLimit::Limiter, peek: broken_result) }
 
       before do
-        allow_next_instance_of(Labkit::RateLimit::Limiter) do |limiter|
-          allow(limiter).to receive(:peek).and_return(broken_result)
-        end
+        allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)
       end
 
       it 'returns false and fails open' do
         expect(described_class.run_peek!(:glql, scope: 'sha-abc123')).to be(false)
       end
+    end
+
+    it 'peeks through the cached limiter from the registry' do
+      result = Labkit::RateLimit::Result.new
+      limiter = instance_double(Labkit::RateLimit::Limiter, peek: result)
+
+      allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)
+
+      described_class.run_peek!(:glql, scope: 'sha-abc123')
+
+      expect(limiter).to have_received(:peek).with(
+        { query_sha: 'sha-abc123' },
+        rule_context: {}
+      )
+    end
+
+    context 'with bypass_header in the context' do
+      it 'copies bypass_header onto the identifier alongside rule_context' do
+        result = Labkit::RateLimit::Result.new
+        limiter = instance_double(Labkit::RateLimit::Limiter, peek: result)
+
+        allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)
+
+        described_class.run_peek!(:glql, scope: 'sha-abc123', context: { bypass_header: '1' })
+
+        expect(limiter).to have_received(:peek).with(
+          { query_sha: 'sha-abc123', bypass_header: '1' },
+          rule_context: { bypass_header: '1' }
+        )
+      end
+    end
+
+    it 'delegates to SupportedRateLimits.limiter_for on each peek' do
+      result = Labkit::RateLimit::Result.new
+      limiter = instance_double(Labkit::RateLimit::Limiter, peek: result)
+
+      allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)
+
+      2.times { described_class.run_peek!(:glql, scope: 'sha-abc123') }
+
+      expect(supported_rate_limits).to have_received(:limiter_for).with(:glql).twice
+      expect(limiter).to have_received(:peek).twice
     end
   end
 

@@ -6,7 +6,7 @@ identifiers:
 - project
 - namespace
 - user
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 milestone: '17.3'

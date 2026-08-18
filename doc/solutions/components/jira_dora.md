@@ -118,15 +118,15 @@ Create another Jira automation workflow as described above, with the following c
 1. Under **Customize alert payload mapping**, paste the payload you copied from Jira in step 3. Then click **Parse payload fields**.
 1. Map the fields as shown below:
 
-    | GitLab alert key | Payload alert key |
-    | ------ | ------ |
-    | Title | issue.fields.summary |
-    | Description | issue.fields.status.description |
-    | End time | issue.fields.resolutiondate<sup>1</sup> |
-    | Monitoring tool | issue.fields.reporter.accountType |
-    | Severity | issue.fields.priority.name |
-    | Fingerprint | issue.key |
-    | Environment | issue.fields.project.name |
+   | GitLab alert key | Payload alert key |
+   | ------ | ------ |
+   | Title | issue.fields.summary |
+   | Description | issue.fields.status.description |
+   | End time | issue.fields.resolutiondate<sup>1</sup> |
+   | Monitoring tool | issue.fields.reporter.accountType |
+   | Severity | issue.fields.priority.name |
+   | Fingerprint | issue.key |
+   | Environment | issue.fields.project.name |
 
 <sup>1</sup> This is only needed if you set up the incident resolution automation. If this field doesn't appear as an option, make sure you entered a _resolved_ issue key to test with in step 2 above.
 

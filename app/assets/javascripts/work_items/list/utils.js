@@ -12,6 +12,7 @@ import { capitalizeFirstCharacter, convertEachWordToTitleCase } from '~/lib/util
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import {
+  FILTER_ANY,
   FILTER_ME,
   FILTERED_SEARCH_TERM,
   OPERATOR_NOT,
@@ -518,6 +519,12 @@ const convertToTokenValue = (token, baseValue) => {
  * into a list of 'token' objects.
  */
 export const getSavedViewFilterTokens = (filterObject, options = {}) => {
+  const iterationCadenceKey = filtersMap[TOKEN_TYPE_ITERATION][API_PARAM][ALTERNATIVE_FILTER];
+  const iterationWildcardKey = filtersMap[TOKEN_TYPE_ITERATION][API_PARAM][WILDCARD_FILTER];
+  // The iteration token holds a cadence selection as one `<wildcard>&<cadenceId>`
+  // value, but it is saved as two separate filters.
+  const iterationCadenceIds = [filterObject[iterationCadenceKey] ?? []].flat().filter(Boolean);
+
   const tokens = Object.entries(filterObject)
     .filter(
       ([key]) =>
@@ -594,6 +601,26 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
         }
         return acc;
       }
+
+      if (key === iterationCadenceKey && iterationCadenceIds.length) {
+        const { operator, type } = savedViewFilters[key];
+        const wildcard = capitalize(filterObject[iterationWildcardKey]) || FILTER_ANY;
+
+        acc.push(
+          ...iterationCadenceIds.map((cadenceId) => ({
+            type,
+            data: `${wildcard}&${getIdFromGraphQLId(cadenceId)}`,
+            operator,
+          })),
+        );
+        return acc;
+      }
+
+      if (key === iterationWildcardKey && iterationCadenceIds.length) {
+        // Already part of the cadence token above.
+        return acc;
+      }
+
       const { operator, type } = savedViewFilters[key];
       if (operator === OPERATOR_IS && Array.isArray(value)) {
         acc.push(...value.map((v) => ({ type, data: v, operator })));
@@ -957,6 +984,7 @@ export function mapWorkItemWidgetsToIssuableFields({
     });
 
     activeItem.title = workItem.title;
+    activeItem.titleHtml = workItem.titleHtml;
     activeItem.confidential = workItem.confidential;
     activeItem.type = workItem?.workItemType?.name?.toUpperCase();
   });

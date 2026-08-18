@@ -12,12 +12,6 @@ title: Database migrations API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123408) in GitLab 16.2.
-
-{{< /history >}}
-
 Use this API to manage GitLab database migrations.
 
 Prerequisites:

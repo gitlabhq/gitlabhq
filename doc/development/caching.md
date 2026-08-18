@@ -364,7 +364,7 @@ needed for that use case.
 If you've exhausted other options, and must cache something that's really awkward,
 it's time to look at a custom solution:
 
-- Examples in GitLab include `RepositorySetCache`, `RepositoryHashCache` and `AvatarCache`.
+- Examples in GitLab include `RepositorySetCache`, `RepositoryHashCache`, and `AvatarCache`.
 - Where possible, you should avoid creating custom cache implementations as it adds
   inconsistency.
 - Can be extremely effective. For example, the caching around `merged_branch_names`,

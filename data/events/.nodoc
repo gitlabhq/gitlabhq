@@ -1,0 +1,6 @@
+# Event source files matching these patterns are excluded from
+# documentation requirements (both the RuboCop cop and the spec).
+# Use this for abstract base classes that are not published directly.
+app/events/merge_requests/base_cloud_event.rb
+app/events/work_items/base_event.rb
+app/events/members/base_event.rb

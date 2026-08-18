@@ -53,8 +53,9 @@ describe('InitCommandModal', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findInitCommand = () => wrapper.findByTestId('terraform-init-command');
   const findGlabCommand = () => wrapper.findByTestId('glab-command');
-  const findPlainCopyButton = () => wrapper.findByTestId('terraform-init-command-copy-button');
-  const findGlabCopyButton = () => wrapper.findByTestId('glab-command-copy-button');
+  const findPlainCopyButton = () =>
+    wrapper.findComponentByTestId('terraform-init-command-copy-button');
+  const findGlabCopyButton = () => wrapper.findComponentByTestId('glab-command-copy-button');
 
   describe('when has stateName', () => {
     beforeEach(() => {

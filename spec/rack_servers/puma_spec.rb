@@ -45,7 +45,7 @@ RSpec.describe 'Puma', feature_category: :tooling do
 
       send_signal_to_worker(signal)
 
-      expect(service_recovers_with_new_worker?(original_worker_pid)).to eq(true)
+      expect(service_recovers_with_new_worker?(original_worker_pid)).to be(true)
     end
   end
 

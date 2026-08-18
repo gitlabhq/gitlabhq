@@ -30,6 +30,7 @@ RSpec.shared_examples 'work item API field parity' do
     let(:graphql_field_exceptions) do
       Set.new(%w[
         archived
+        available_quick_actions
         comment_templates_paths
         description
         description_html
@@ -79,10 +80,10 @@ RSpec.shared_examples 'work item API field parity' do
     # require separate paginated endpoints.
     # award_emoji exposes only upvotes / downvotes / new_custom_emoji_path. The award_emoji
     # collection itself lives on a separate paginated GET /work_items/:iid/award_emoji endpoint.
-    # development exposes only closing_merge_requests_count (the count rendered on the list page).
-    # The full closing merge requests list, related branches / merge requests, and
-    # will_auto_close_by_merge_request are not exposed by the listing REST API (tracked in #601071),
-    # so the per-feature field comparison cannot match.
+    # development exposes closing_merge_requests_count (the count rendered on the list page) and
+    # will_auto_close_by_merge_request inline. The full closing merge requests list, related
+    # branches, and related merge requests live on separate paginated sub-endpoints (like
+    # award_emoji), so the per-feature field comparison against the GraphQL widget type cannot match.
     let(:skipped_feature_comparison) do
       Set.new(%w[assignees milestone error_tracking hierarchy award_emoji development])
         .merge(extra_skipped_feature_comparison)
@@ -196,7 +197,13 @@ RSpec.shared_examples 'work item API create parity' do
   end
 
   let(:widget_field_exceptions) do
-    { 'start_and_due_date_widget' => %w[is_fixed] }
+    {
+      'start_and_due_date_widget' => %w[is_fixed],
+
+      # `task_list_toggle` is GraphQL- and update-only (see WorkItemWidgetDescriptionInput).
+      # It appears on the create mutation only because the description input type is shared between create and update.
+      'description_widget' => %w[task_list_toggle]
+    }
   end
 
   # Widgets whose REST/GraphQL input fields are structurally incompatible (e.g. REST uses
@@ -280,21 +287,28 @@ RSpec.shared_examples 'work item API filter parity' do
   let(:or_filter_parity_wip) { [] }
   let(:parity_wip) { filter_parity_wip }
 
+  # REST-only filter params that intentionally have no GraphQL counterpart.
+  # `work_item_type_names` filters by (custom) work item type name in REST only;
+  # GraphQL deprecated name-based type filtering in 19.0 in favour of type ids.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/605891
+  let(:rest_only_filter_params) { %w[work_item_type_names] }
+  let(:rest_only_not_filter_params) { %w[work_item_type_names] }
+
   let(:graphql_filter_params) do
     # instad of `iid` we have `iids`
     # `or`, `not` is just a key in GraphQL
     # `hierarchy_filters` is deprecated
-    # TODO: work_item_type_ids will be added
-    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/593365
-    known_exceptions = %w[iid not or hierarchy_filters work_item_type_ids]
+    # `types` (base-type filter) is intentionally dropped from the Work Items REST API in favour of
+    # `work_item_type_ids`. See https://gitlab.com/gitlab-org/gitlab/-/work_items/605897
+    known_exceptions = %w[iid not or hierarchy_filters types]
 
     ::Resolvers::Namespaces::WorkItemsResolver.arguments.keys.map(&:underscore) - known_exceptions - parity_wip
   end
 
   let(:graphql_not_filter_params) do
-    # TODO: work_item_type_ids will be added
-    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/593365
-    known_exceptions = %w[work_item_type_ids]
+    # `types` (base-type filter) is intentionally dropped from the Work Items REST API in favour of
+    # `work_item_type_ids`. See https://gitlab.com/gitlab-org/gitlab/-/work_items/605897
+    known_exceptions = %w[types]
 
     ::Types::WorkItems::NegatedWorkItemFilterInputType.arguments.keys.map(&:underscore) -
       known_exceptions - not_filter_parity_wip
@@ -320,11 +334,12 @@ RSpec.shared_examples 'work item API filter parity' do
     rest_params
       .reject { |key| key.starts_with?("or") || key.starts_with?("not") }
       .map { |key| key.split('[').first }
-      .uniq
+      .uniq - rest_only_filter_params
   end
 
   let(:rest_not_filter_params) do
-    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s.delete_prefix('not[').delete_suffix(']') }
+    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s.delete_prefix('not[').delete_suffix(']') } -
+      rest_only_not_filter_params
   end
 
   let(:rest_or_filter_params) do

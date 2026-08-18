@@ -27,13 +27,13 @@ class Namespace < ApplicationRecord
 
   extend Gitlab::Utils::Override
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS, feature_flag: :cells_claims_namespaces
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_NAMESPACE_ID, feature_flag: :cells_claims_namespaces
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   ignore_column :file_template_project_id, remove_with: '19.2', remove_after: '2026-06-18'
   ignore_column :custom_project_templates_group_id, remove_with: '19.2', remove_after: '2026-06-18'
-  ignore_column :push_rule_id, remove_with: '19.2', remove_after: '2026-06-18'
+  ignore_columns %i[marked_for_deletion_at marked_for_deletion_by_user_id], remove_with: '19.4', remove_after: '2026-09-17'
 
   columns_changing_default :organization_id
 
@@ -185,6 +185,7 @@ class Namespace < ApplicationRecord
   delegate :maven_package_requests_forwarding,
     :pypi_package_requests_forwarding,
     :npm_package_requests_forwarding,
+    :rubygems_package_requests_forwarding,
     to: :package_settings
 
   delegate :creator,

@@ -9,7 +9,7 @@ title: GitLab Testing Strategy
 ## Core Principles
 
 **Fast Feedback**
-Prioritize speed by running the most relevant tests first—fail fast, fix fast.
+Prioritize speed by running the most relevant tests first - fail fast, fix fast.
 
 **Progressive Testing**
 Start narrow, expand wide. Build confidence through incremental coverage.
@@ -58,7 +58,7 @@ If a test can't reliably block a merge, deployment, or release, it shouldn't exi
 | Pipeline Type | Frontend | Backend | Database | E2E |
 |---------------|----------|---------|----------|-----|
 | **Backport MRs** | Full Jest suite | Full RSpec unit/integration | Migration, DB schema check |  Full suite on Omnibus and GDK |
-| **Stable/[Security Branches](https://gitlab.com/gitlab-org/security/gitlab)** (post-merge) | Jest unite/integration | RSpec unit/integration/system | Migration and background migration tests| None |
+| **Stable/[Security Branches](https://gitlab.com/gitlab-org/security/gitlab)** (post-merge) | Jest unit/integration | RSpec unit/integration/system | Migration and background migration tests| None |
 
 ## Development Workflow
 

@@ -31,9 +31,8 @@ module Gitlab
         def process_params(data)
           return EMPTY_ARRAY unless data.has_key?(:params)
 
-          params_array = data[:params].map { |k, v| { key: k, value: utf8_encode_values(v) } }
-
-          Gitlab::Utils::LogLimitedArray.log_limited_array(params_array, sentinel: Gitlab::Lograge::CustomOptions::LIMITED_ARRAY_SENTINEL)
+          # Parameters are already truncated by TruncateParameters logger
+          data[:params].map { |k, v| { key: k, value: utf8_encode_values(v) } }
         end
 
         def utf8_encode_values(data)

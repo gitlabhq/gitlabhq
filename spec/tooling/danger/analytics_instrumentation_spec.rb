@@ -679,13 +679,19 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
     let(:js_files) { %w[app/assets/javascripts/test.js app/assets/javascripts/component.vue] }
 
+    # Files are treated as InternalEvents consumers by default so the existing
+    # examples keep exercising the check. Override per file to opt a file out.
+    let(:internal_events_import) { "import { InternalEvents } from '~/tracking';" }
+    let(:file_content_lines) { {} }
+
     before do
       allow(fake_helper).to receive(:all_changed_files).and_return(js_files)
       allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
-      allow(fake_project_helper).to receive(:file_lines).and_return([])
 
       js_files.each do |file|
         allow(fake_helper).to receive(:changed_lines).with(file).and_return(file_changes[file] || [])
+        allow(fake_project_helper).to receive(:file_lines)
+          .with(file).and_return(file_content_lines[file] || [internal_events_import])
       end
     end
 
@@ -783,6 +789,100 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       end
 
       it_behaves_like 'suggests property changes'
+    end
+
+    context 'when trackEvent call references an event with no definition file' do
+      let(:event_name) { 'missing_event_definition' }
+      let(:file_changes) { { 'app/assets/javascripts/test.js' => ["+ this.trackEvent('#{event_name}');"] } }
+
+      before do
+        allow(File).to receive(:exist?).and_return(false)
+      end
+
+      it 'fails with a clear error message' do
+        expect(analytics_instrumentation).to receive(:fail).with(
+          a_string_including(event_name)
+            .and(a_string_including('config/events/'))
+        )
+
+        verify_fe_tracking_params
+      end
+    end
+
+    context 'when trackEvent call references an event with no definition file in a .vue file' do
+      let(:event_name) { 'missing_vue_event' }
+      let(:file_changes) { { 'app/assets/javascripts/component.vue' => ["+ this.trackEvent('#{event_name}');"] } }
+
+      before do
+        allow(File).to receive(:exist?).and_return(false)
+      end
+
+      it 'fails with a clear error message' do
+        expect(analytics_instrumentation).to receive(:fail).with(
+          a_string_including(event_name)
+        )
+
+        verify_fe_tracking_params
+      end
+    end
+
+    context 'when the trackEvent call is inside a comment' do
+      let(:event_name) { 'commented_out_event' }
+      let(:file_changes) do
+        { 'app/assets/javascripts/test.js' => ["+ // this.trackEvent('#{event_name}');"] }
+      end
+
+      before do
+        allow(File).to receive(:exist?).and_return(false)
+      end
+
+      it 'does not fail' do
+        expect(analytics_instrumentation).not_to receive(:fail)
+
+        verify_fe_tracking_params
+      end
+    end
+
+    context 'when the file does not use InternalEvents' do
+      let(:event_name) { 'legacy_snowplow_event' }
+      let(:file_changes) { { 'app/assets/javascripts/test.js' => ["+ this.trackEvent('#{event_name}');"] } }
+
+      # File shadows trackEvent / uses the legacy Snowplow mixin, so a bare
+      # trackEvent(...) call is not an internal event and must not be checked.
+      let(:file_content_lines) do
+        { 'app/assets/javascripts/test.js' => ['methods: { trackEvent(name) { this.track(name); } }'] }
+      end
+
+      before do
+        allow(File).to receive(:exist?).and_return(false)
+      end
+
+      it 'does not fail' do
+        expect(analytics_instrumentation).not_to receive(:fail)
+
+        verify_fe_tracking_params
+      end
+    end
+
+    context 'when the file is a spec file' do
+      let(:event_name) { 'spec_only_event' }
+      let(:js_files) do
+        %w[spec/frontend/example_spec.js spec/frontend_integration/example_spec.js spec/test244907.js]
+      end
+
+      let(:file_changes) do
+        js_files.index_with { |_f| ["+ this.trackEvent('#{event_name}');"] }
+      end
+
+      before do
+        allow(File).to receive(:exist?).and_return(false)
+      end
+
+      it 'does not fail for events referenced only in specs' do
+        expect(analytics_instrumentation).not_to receive(:fail)
+
+        verify_fe_tracking_params
+      end
     end
   end
 end

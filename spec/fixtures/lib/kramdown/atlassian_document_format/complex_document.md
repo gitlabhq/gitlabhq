@@ -25,10 +25,8 @@ Color - <span color="#ff991f">Orange</span>
 [https://gitlab-jira.atlassian.net/browse/DEMO-1][1]
 
 `adf-inlineCard:
-{"@context"=>"https://json-ld.org/contexts/person.jsonld",
-"@id"=>"http://dbpedia.org/resource/John_Lennon", "name"=>"John Lennon",
-"born"=>"1940-10-09",
-"spouse"=>"http://dbpedia.org/resource/Cynthia_Lennon"}`
+{"@context":"https://json-ld.org/contexts/person.jsonld","@id":"http://dbpedia.org/resource/John_Lennon","name":"John
+Lennon","born":"1940-10-09","spouse":"http://dbpedia.org/resource/Cynthia_Lennon"}`
 
 [External Link][2]
 

@@ -325,8 +325,6 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
 
           click_on('Project')
 
-          wait_for_requests
-
           expect(page).to have_link('Project', class: 'active')
           expect(page).to have_link('All 2')
           expect(page).to have_link('Group 1')

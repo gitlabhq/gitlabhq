@@ -1,5 +1,5 @@
 <script>
-import { GlDatepicker } from '@gitlab/ui';
+import { GlDatepicker, GlToastMixin } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { getDateInFuture } from '~/lib/utils/datetime_utility';
@@ -8,6 +8,7 @@ import { s__ } from '~/locale';
 export default {
   name: 'ExpirationDatepicker',
   components: { GlDatepicker },
+  mixins: [GlToastMixin],
   inject: ['namespace'],
   props: {
     member: {

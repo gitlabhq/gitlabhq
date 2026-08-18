@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 API/DescriptionTags:
   Exclude:
-    - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/ee/api/internal/kubernetes.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/add_on_purchases.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/members.rb'

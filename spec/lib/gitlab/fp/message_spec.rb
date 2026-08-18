@@ -12,7 +12,10 @@ RSpec.describe Gitlab::Fp::Message, feature_category: :workspaces do
 
   describe '#to_s' do
     it 'returns self.inspect' do
-      expect(described_class.new({ a: 1 }).to_s).to match(/#<Gitlab::Fp::Message:.* @content=\{:a=>1\}>/)
+      content = { a: 1 }
+
+      expect(described_class.new(content).to_s)
+        .to match(/#<Gitlab::Fp::Message:.* @content=#{Regexp.escape(content.to_s)}>/)
     end
   end
 

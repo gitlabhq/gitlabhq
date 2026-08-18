@@ -1,0 +1,10 @@
+---
+name: retry_failed_keep_around_ref_writes
+description: Raise from MergeRequests::KeepAroundRefsWorker when a keep-around ref could not be written, so Sidekiq retries the write instead of the job reporting success.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591291
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248909
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/609449
+milestone: '19.3'
+group: group::code review
+type: beta
+default_enabled: true

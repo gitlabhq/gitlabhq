@@ -165,6 +165,7 @@ query getWorkItemsRest(
               id
               iid
               title
+              titleHtml
               confidential
               webUrl
               namespace {
@@ -227,6 +228,7 @@ query getWorkItemsRest(
               id
               iid
               title
+              titleHtml
               confidential
               webUrl
               namespace {

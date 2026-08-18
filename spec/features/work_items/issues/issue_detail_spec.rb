@@ -37,14 +37,14 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
       visit project_issue_path(project, issue)
     end
 
-    it 'shows task actions ellipsis button when hovering over the task list item, but not within a table', :aggregate_failures do
+    it 'shows checklist item actions ellipsis button when hovering over the task list item, but not within a table', :aggregate_failures do
       find('li', text: 'I am a task').hover
 
-      expect(page).to have_button 'Task actions'
+      expect(page).to have_button 'Checklist item actions'
 
       find('li', text: 'I am inside a table').hover
 
-      expect(page).not_to have_button 'Task actions'
+      expect(page).not_to have_button 'Checklist item actions'
     end
   end
 

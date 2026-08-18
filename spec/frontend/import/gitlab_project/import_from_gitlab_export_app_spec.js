@@ -30,7 +30,7 @@ describe('Import from GitLab export file app', () => {
   const findMultiStepForm = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findForm = () => wrapper.find('form');
   const findProjectNameInput = () => wrapper.findByTestId('project-name');
-  const findProjectSlugInput = () => wrapper.findByTestId('project-slug');
+  const findProjectSlugInput = () => wrapper.findComponentByTestId('project-slug');
   const findDropzoneButton = () => wrapper.findByTestId('dropzone-button');
   const findDropzoneInput = () => wrapper.findByTestId('dropzone-input');
   const findAnimatedUploadIcon = () => wrapper.findComponent(GlAnimatedUploadIcon);
@@ -93,14 +93,14 @@ describe('Import from GitLab export file app', () => {
     it('shows an error message when project name is cleared', async () => {
       await setProjectName('');
 
-      const formGroup = wrapper.findByTestId('project-name-form-group');
+      const formGroup = wrapper.findComponentByTestId('project-name-form-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe('Please enter a valid project name.');
     });
 
     it('shows an error message when project name starts with invalid characters', async () => {
       await setProjectName('#test');
 
-      const formGroup = wrapper.findByTestId('project-name-form-group');
+      const formGroup = wrapper.findComponentByTestId('project-name-form-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
         'Project name must start with a letter, digit, basic emoji, or underscore.',
       );
@@ -109,7 +109,7 @@ describe('Import from GitLab export file app', () => {
     it('shows an error message when project name contains invalid characters', async () => {
       await setProjectName('test?');
 
-      const formGroup = wrapper.findByTestId('project-name-form-group');
+      const formGroup = wrapper.findComponentByTestId('project-name-form-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
         'Project name can contain only lowercase or uppercase letters, digits, basic emoji, spaces, dots, underscores, dashes, or pluses.',
       );
@@ -119,7 +119,7 @@ describe('Import from GitLab export file app', () => {
       findForm().trigger('submit');
       await nextTick();
 
-      const formGroup = wrapper.findByTestId('project-file-form-group');
+      const formGroup = wrapper.findComponentByTestId('project-file-form-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
         'Please upload a valid GitLab project export file.',
       );

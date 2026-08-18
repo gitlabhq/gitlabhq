@@ -73,7 +73,7 @@ export function buildLineDiscussionData({
 }
 
 export function buildDraftLineDiscussionData({ discussion, noteBody, viewConfig, showWhitespace }) {
-  const { position, lineCode } = discussion;
+  const { position, lineCode, commitId } = discussion;
   return {
     note: {
       note: noteBody,
@@ -83,6 +83,7 @@ export function buildDraftLineDiscussionData({ discussion, noteBody, viewConfig,
         ignore_whitespace_change: !(showWhitespace ?? viewConfig.showWhitespace),
       }),
       type: DIFF_NOTE_TYPE,
+      commit_id: commitId || null,
       line_code: lineCode || null,
     },
   };

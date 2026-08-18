@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_group
+description: Enables Vue 3 in compatibility mode for the group overview, activity, new, settings, and members pages
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23093
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248700
+rollout_issue_url:
+milestone: '19.3'
+group: group::organizations
+type: beta
+default_enabled: false

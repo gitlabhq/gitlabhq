@@ -53,7 +53,7 @@ describe('TodosApp', () => {
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
-  const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
+  const findRefreshButton = () => wrapper.findComponentByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
   const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
   const findPagination = () => wrapper.findComponent(TodosPagination);

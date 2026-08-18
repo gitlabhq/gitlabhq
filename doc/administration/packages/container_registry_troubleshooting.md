@@ -205,6 +205,32 @@ Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
 
 {{< /tabs >}}
 
+## Error: `403 Forbidden` when pulling images after upgrading to GitLab 19.0
+
+In GitLab 19.0, the `s3` and `s3aws` container registry storage driver names became aliases for the
+`s3_v2` driver, which uses AWS SDK v2. On AWS S3, the presigned URLs that clients follow to download
+blobs can change from the global `s3.amazonaws.com` hostname to a regional hostname, such as
+`s3.us-east-1.amazonaws.com`.
+
+If a proxy, firewall, or secure web gateway allows only `s3.amazonaws.com`, the redirect to the
+regional hostname is blocked and image pulls fail with `403 Forbidden`. The `403 Forbidden` response
+comes from the filtering device rather than from Amazon S3 or the registry, so the registry logs
+show the blob request completing successfully.
+
+To confirm this cause, request a blob and inspect the redirect target:
+
+```shell
+curl --head "https://gitlab.example.com:5050/v2/mygroup/myproject/myimage/blobs/<digest>"
+```
+
+Check the `location` response header. If the hostname in that header is not allowed by your egress
+controls, add the regional hostname for your bucket region to the allowlist on the filtering device.
+Use the specific regional hostname rather than a wildcard that covers all of Amazon S3.
+
+Alternatively, set `regionendpoint` to an S3 VPC endpoint or another fixed endpoint so that presigned
+URLs use a hostname you control. For more information, see
+[use object storage](container_registry.md#use-object-storage).
+
 ## Supporting older Docker clients
 
 The Docker container registry shipped with GitLab disables the schema1 manifest
@@ -265,7 +291,7 @@ You might get stuck in retry loops when pushing Docker images, even though `dock
 This issue occurs when NGINX isn't properly forwarding headers to the registry, typically in custom
 setups where SSL is offloaded to a third-party reverse proxy.
 
-For more information, see [Docker push through NGINX proxy fails trying to send a 32B layer #970](https://github.com/docker/distribution/issues/970).
+For more information, see [Docker push through NGINX proxy fails trying to send a 32B layer #970](https://github.com/distribution/distribution/issues/970).
 
 To resolve this issue, update your NGINX configuration to enable relative URLs in the registry:
 

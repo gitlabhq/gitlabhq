@@ -206,16 +206,10 @@ For details of API fuzzing configuration options, see [available CI/CD variables
 
 ## GraphQL schema
 
-{{< history >}}
-
-- Support for GraphQL schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
-
-{{< /history >}}
-
 GraphQL is a query language for your API and an alternative to REST APIs.
 API fuzzing supports testing GraphQL endpoints multiple ways:
 
-- Test using the GraphQL schema. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+- Test using the GraphQL schema.
 - Test using a recording (HAR) of GraphQL queries.
 - Test using a Postman Collection containing GraphQL queries.
 
@@ -387,14 +381,6 @@ For details of API fuzzing configuration options, see [available CI/CD variables
 
 ### Postman variables
 
-{{< history >}}
-
-- Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-- Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-- Support for Postman variable scopes: global and environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-
-{{< /history >}}
-
 #### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
@@ -485,7 +471,7 @@ This example defines two variables `base_url` and `token` in the API fuzzing sco
 
 #### Using scopes with API fuzzing
 
-The scopes: global, environment, collection, and GitLab API fuzzing are supported in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only the collection, and GitLab API fuzzing scopes.
+The scopes: global, environment, collection, and GitLab API fuzzing are supported.
 
 The following table provides a quick reference for mapping scope files/URLs to API fuzzing configuration variables:
 
@@ -500,7 +486,7 @@ The following table provides a quick reference for mapping scope files/URLs to A
 
 The Postman Collection document automatically includes any collection scoped variables. The Postman Collection is provided with the configuration variable `FUZZAPI_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections).
 
-Variables from other scopes are provided through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only one single file. The order of the files provided is not important as the files provide the needed scope information.
+Variables from other scopes are provided through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list. The order of the files provided is not important as the files provide the needed scope information.
 
 The configuration variable `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
@@ -893,7 +879,7 @@ Follow these steps to view details of a fuzzing fault:
 ### Security dashboard
 
 Fuzzing faults show up as vulnerabilities with a severity of Unknown. The security dashboard is a
-good place to get an overview of all the security vulnerabilities in your groups, projects and
+good place to get an overview of all the security vulnerabilities in your groups, projects, and
 pipelines. For more information, see the [security dashboard documentation](../../security_dashboard/_index.md).
 
 ### Interacting with the vulnerabilities

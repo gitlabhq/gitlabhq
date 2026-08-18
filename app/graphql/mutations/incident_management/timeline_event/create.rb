@@ -6,6 +6,9 @@ module Mutations
       class Create < Base
         graphql_name 'TimelineEventCreate'
 
+        authorize_granular_token permissions: :create_timeline_event,
+          boundary_argument: :incident_id, boundary: :project, boundary_type: :project
+
         argument :incident_id, Types::GlobalIDType[::Issue],
           required: true,
           description: 'Incident ID of the timeline event.'

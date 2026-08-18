@@ -63,7 +63,7 @@ describe('Package Additional metadata', () => {
   });
 
   const findMainArea = () => wrapper.findByTestId('main');
-  const findComponentIs = () => wrapper.findByTestId('component-is');
+  const findComponentIs = () => wrapper.findComponentByTestId('component-is');
   const findAdditionalMetadataLoader = () => wrapper.findComponent(AdditionalMetadataLoader);
   const findPackageMetadataAlert = () => wrapper.findComponent(GlAlert);
 

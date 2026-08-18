@@ -13,12 +13,6 @@ description: "Administer, configure, and troubleshoot the GitLab for Slack app o
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for GitLab Self-Managed in GitLab 16.2.
-
-{{< /history >}}
-
 > [!note]
 > For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
 

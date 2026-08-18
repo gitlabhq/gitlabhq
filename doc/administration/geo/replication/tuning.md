@@ -39,6 +39,17 @@ of Sidekiq threads from 25 to 50. See the
 [Sidekiq concurrency documentation](../../sidekiq/extra_sidekiq_processes.md#concurrency)
 for more details.
 
+> [!note]
+> The **Verification concurrency limit** is a single global limit on the total number of
+> verification jobs that run concurrently on a site, across all data types combined. The
+> effective concurrency equals the value you configure.
+>
+> In GitLab 19.2 and earlier, GitLab divided the configured value by the number of data
+> types before applying it, so the effective concurrency was lower than the value you set.
+> When you upgrade to GitLab 19.3, GitLab rescales each site's stored value so the effective
+> concurrency stays roughly the same as before the upgrade. As a result, the stored value
+> might be lower after upgrading. Review and re-tune it as needed.
+
 ## Tuning low default settings
 
 To avoid excessive load when setting up new Geo sites, starting with GitLab 18.0,

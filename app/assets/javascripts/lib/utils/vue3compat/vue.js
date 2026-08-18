@@ -35,7 +35,11 @@ class GitLabPatchedVue extends VueCompatOriginal {
       // Mark Vue 3 apps in production
       for (const node of config.el.childNodes) {
         if (node.nodeType === Node.ELEMENT_NODE) {
-          // Can be located with `document.querySelectorAll('[data-gitlab-vue3-app]')`
+          // Can be located with `document.querySelectorAll('[data-gitlab-vue3-app]')`.
+          // This attribute is the official hook used by E2E specs to verify
+          // that a page really mounted under Vue 3 (see
+          // `qa/qa/specs/features/browser_ui/4_verify/pipeline/vue3_rollout_spec.rb`);
+          // keep it stable while the migration is ongoing.
           node.dataset.gitlabVue3App = appName || '';
         }
       }

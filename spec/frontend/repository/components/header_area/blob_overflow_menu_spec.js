@@ -158,14 +158,14 @@ describe('Blob Overflow Menu', () => {
         expect(wrapper.emitted('copy')).toBeUndefined();
       });
 
-      it('proxy showForkSuggestion event from BlobButtonGRoup', () => {
-        findBlobButtonGroup().vm.$emit('showForkSuggestion');
-        expect(wrapper.emitted('showForkSuggestion')).toHaveLength(1);
+      it('proxy show-fork-suggestion event from BlobButtonGRoup', () => {
+        findBlobButtonGroup().vm.$emit('show-fork-suggestion');
+        expect(wrapper.emitted('show-fork-suggestion')).toHaveLength(1);
       });
 
-      it('proxy showForkSuggestion event from BlobDeleteFileGRoup', () => {
-        findBlobDeleteFileGroup().vm.$emit('showForkSuggestion');
-        expect(wrapper.emitted('showForkSuggestion')).toHaveLength(1);
+      it('proxy show-fork-suggestion event from BlobDeleteFileGRoup', () => {
+        findBlobDeleteFileGroup().vm.$emit('show-fork-suggestion');
+        expect(wrapper.emitted('show-fork-suggestion')).toHaveLength(1);
       });
     });
   });

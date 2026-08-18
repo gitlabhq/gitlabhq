@@ -109,6 +109,10 @@ describe('Blob Rich Viewer component', () => {
     expect(wrapper.emitted(CONTENT_LOADED_EVENT)).toHaveLength(1);
   });
 
+  it('emits `rich-content-loaded` when the content is loaded', () => {
+    expect(wrapper.emitted('rich-content-loaded')).toHaveLength(1);
+  });
+
   it('queries for advanced viewer', () => {
     expect(handleBlobRichViewer).toHaveBeenCalledWith(expect.anything(), defaultType);
   });

@@ -37,6 +37,7 @@ function getConfigForRule(rule) {
           ...config,
           rules: {
             [rule]: config.rules[rule],
+            'vue/comment-directive': 'error',
           },
         };
       }

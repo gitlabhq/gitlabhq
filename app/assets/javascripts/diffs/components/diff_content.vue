@@ -252,7 +252,7 @@ export default {
             class="diff-comment-form new-note discussion-form discussion-form-container"
             @handleFormUpdateAddToReview="addToReview"
             @handleFormUpdate="handleSaveNote"
-            @cancelForm="closeDiffFileCommentForm(diffFileHash)"
+            @cancel-form="closeDiffFileCommentForm(diffFileHash)"
           />
         </div>
       </diff-viewer>

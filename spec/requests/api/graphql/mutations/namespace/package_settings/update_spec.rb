@@ -23,6 +23,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       lock_npm_package_requests_forwarding: true,
       pypi_package_requests_forwarding: true,
       lock_pypi_package_requests_forwarding: true,
+      rubygems_package_requests_forwarding: true,
+      lock_rubygems_package_requests_forwarding: true,
       nuget_symbol_server_enabled: true,
       terraform_module_duplicates_allowed: true,
       terraform_module_duplicate_exception_regex: 'foo-.*'
@@ -45,6 +47,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
           lockNpmPackageRequestsForwarding
           pypiPackageRequestsForwarding
           lockPypiPackageRequestsForwarding
+          rubygemsPackageRequestsForwarding
+          lockRubygemsPackageRequestsForwarding
           nugetSymbolServerEnabled
           terraformModuleDuplicatesAllowed
           terraformModuleDuplicateExceptionRegex
@@ -76,6 +80,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       expect(package_settings_response['lockPypiPackageRequestsForwarding']).to eq(params[:lock_pypi_package_requests_forwarding])
       expect(package_settings_response['npmPackageRequestsForwarding']).to eq(params[:npm_package_requests_forwarding])
       expect(package_settings_response['lockNpmPackageRequestsForwarding']).to eq(params[:lock_npm_package_requests_forwarding])
+      expect(package_settings_response['rubygemsPackageRequestsForwarding']).to eq(params[:rubygems_package_requests_forwarding])
+      expect(package_settings_response['lockRubygemsPackageRequestsForwarding']).to eq(params[:lock_rubygems_package_requests_forwarding])
       expect(package_settings_response['nugetSymbolServerEnabled']).to eq(params[:nuget_symbol_server_enabled])
       expect(package_settings_response['terraformModuleDuplicatesAllowed']).to eq(params[:terraform_module_duplicates_allowed])
       expect(package_settings_response['terraformModuleDuplicateExceptionRegex']).to eq(params[:terraform_module_duplicate_exception_regex])
@@ -121,6 +127,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
         lock_npm_package_requests_forwarding: false,
         pypi_package_requests_forwarding: nil,
         lock_pypi_package_requests_forwarding: false,
+        rubygems_package_requests_forwarding: nil,
+        lock_rubygems_package_requests_forwarding: false,
         nuget_symbol_server_enabled: false,
         terraform_module_duplicates_allowed: false,
         terraform_module_duplicate_exception_regex: 'foo'
@@ -137,6 +145,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
         lock_npm_package_requests_forwarding: true,
         pypi_package_requests_forwarding: true,
         lock_pypi_package_requests_forwarding: true,
+        rubygems_package_requests_forwarding: true,
+        lock_rubygems_package_requests_forwarding: true,
         nuget_symbol_server_enabled: true,
         terraform_module_duplicates_allowed: true,
         terraform_module_duplicate_exception_regex: 'foo-.*'
@@ -160,6 +170,39 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       subject
 
       expect(mutation_response).to be_nil
+    end
+  end
+
+  context 'when authorizing granular token permissions' do
+    let_it_be(:namespace) { create(:group) }
+
+    before_all do
+      namespace.add_owner(user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_setting do
+      let(:boundary_object) { namespace }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
+    context 'when the namespace is a project namespace' do
+      let_it_be(:project) { create(:project, group: namespace) }
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_setting do
+        let(:namespace) { project.project_namespace }
+        let(:boundary_object) { project }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'when the namespace is a personal namespace' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_setting do
+        # The default user factory does not create a personal namespace.
+        let(:user) { create(:user, :with_namespace) }
+        let(:namespace) { user.namespace }
+        let(:boundary_object) { :user }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
     end
   end
 

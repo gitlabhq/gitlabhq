@@ -1,11 +1,12 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy, uniqueId } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, queryToObject } from '~/lib/utils/url_utility';
-import { processEmojiInTitle } from '~/emoji';
 import { sprintf, __ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -27,17 +28,26 @@ export default {
     IssueDueDate,
     IssueTimeEstimate,
     WorkItemRelationshipIcons,
-    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
-    IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
+    IssueWeight: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_weight.vue'),
+    ),
+    IssueIteration: defineAsyncComponent(
+      () => import('ee_component/boards/components/issue_iteration.vue'),
+    ),
     WorkItemTypeIcon,
     IssueMilestone,
-    IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
-    EpicCountables: () =>
-      import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
-    WorkItemStatusBadge: () =>
-      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
-    BoardCardSessionBadge: () =>
-      import('ee_component/boards/components/board_card_session_badge.vue'),
+    IssueHealthStatus: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_health_status.vue'),
+    ),
+    EpicCountables: defineAsyncComponent(
+      () => import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
+    ),
+    WorkItemStatusBadge: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    ),
+    BoardCardSessionBadge: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_card_session_badge.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -73,7 +83,7 @@ export default {
       default: false,
     },
   },
-  emits: ['setFilters', 'view-all-sessions'],
+  emits: ['set-filters', 'view-all-sessions'],
   data() {
     return {
       limitBeforeCounter: 2,
@@ -210,10 +220,7 @@ export default {
       return Boolean(this.item.status);
     },
   },
-  processEmojiInTitle,
-  safeHtmlConfig: {
-    ADD_TAGS: ['use', 'gl-emoji'],
-  },
+  titleInLinkSafeHtmlConfig,
   methods: {
     assigneeUrl(assignee) {
       if (!assignee) return '';
@@ -247,7 +254,7 @@ export default {
 
         const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
         const filters = convertObjectPropsToCamelCase(rawFilterParams, {});
-        this.$emit('setFilters', filters);
+        this.$emit('set-filters', filters);
       }
     },
     showScopedLabel(label) {
@@ -301,7 +308,7 @@ export default {
           @mousemove.stop
           @click.exact.prevent
         >
-          <span v-safe-html="$options.processEmojiInTitle(item.title)"></span>
+          <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="item.titleHtml"></span>
         </a>
       </h3>
       <slot></slot>

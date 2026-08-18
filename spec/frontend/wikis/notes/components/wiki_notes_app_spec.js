@@ -388,31 +388,31 @@ describe('WikiNotesApp', () => {
       setupCacheMock();
     });
 
-    it('should setPlaceHolder correctly when "creating-note:start" is called', async () => {
+    it('should setPlaceHolder correctly when "creating-note-start" is called', async () => {
       const commentForm = wrapper.findComponent(WikiCommentForm);
 
-      commentForm.vm.$emit('creating-note:start', { body: 'example placeholder' });
+      commentForm.vm.$emit('creating-note-start', { body: 'example placeholder' });
       await nextTick();
 
       const placeholderNote = wrapper.findComponent(PlaceholderNote);
       expect(placeholderNote.props('note')).toMatchObject({ body: 'example placeholder' });
     });
 
-    it('should removePlaceholder when "creating-note:done" is called', async () => {
+    it('should removePlaceholder when "creating-note-done" is called', async () => {
       wrapper.vm.setPlaceHolderNote({ body: 'example placeholder' });
       const commentForm = wrapper.findComponent(WikiCommentForm);
-      commentForm.vm.$emit('creating-note:done');
+      commentForm.vm.$emit('creating-note-done');
       await nextTick();
 
       expect(wrapper.vm.placeholderNote).toMatchObject({});
     });
 
-    it('should call writeQuery with the correct data when "creating-note:success" is called', async () => {
+    it('should call writeQuery with the correct data when "creating-note-success" is called', async () => {
       const newDiscussion = {
         id: '2',
       };
       const commentForm = wrapper.findComponent(WikiCommentForm);
-      commentForm.vm.$emit('creating-note:success', newDiscussion);
+      commentForm.vm.$emit('creating-note-success', newDiscussion);
       await nextTick();
 
       wikiPage.discussions.nodes.push({

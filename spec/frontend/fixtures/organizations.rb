@@ -110,15 +110,39 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
       end
     end
 
-    describe 'organizations for reconciliation' do
-      base_input_path = 'organizations/index/graphql/queries/'
-      base_output_path = 'graphql/organizations/'
-      query_name = 'organizations_for_reconciliation.query.graphql'
+    describe 'create organization from group settings' do
+      base_input_path = 'groups/settings/create_organization/graphql/queries/'
+      base_output_path = 'graphql/groups/settings/create_organization/'
+      query_name = 'groups.query.graphql'
+
+      # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the frontend queries the
+      # default organization by its hardcoded ID, so the fixture has to use the real one.
+      let_it_be(:default_organization, freeze: false) { create(:organization, :default) }
+      # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
+      let_it_be(:group_owner, freeze: false) { create(:user, organization: default_organization) }
+
+      # The group the reconciliation is started from. It is excluded from the default
+      # organization's groups so that it is only ever listed under the organization to be created.
+      let_it_be(:current_group, freeze: false) do
+        create(:group, organization: default_organization, owners: [group_owner])
+      end
+
+      let_it_be(:default_organization_group, freeze: false) do
+        create(:group, organization: default_organization, owners: [group_owner])
+      end
 
       it "#{base_output_path}#{query_name}.json" do
         query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
 
-        post_graphql(query, current_user: current_user)
+        post_graphql(
+          query,
+          current_user: group_owner,
+          variables: {
+            default_organization_gid: default_organization.to_global_id,
+            group_full_path: current_group.full_path,
+            group_gid: current_group.to_global_id
+          }
+        )
 
         expect_graphql_errors_to_be_empty
       end

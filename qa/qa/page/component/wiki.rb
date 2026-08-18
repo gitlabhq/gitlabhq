@@ -48,14 +48,14 @@ module QA
           click_element('page-history-button')
         end
 
-        def click_edit
-          click_element('wiki-edit-button')
-        end
-
         def delete_page
           click_element('wiki-more-dropdown')
           click_element('page-delete-button', Page::Modal::DeleteWiki)
           Page::Modal::DeleteWiki.perform(&:confirm_deletion)
+        end
+
+        def click_edit
+          click_element('wiki-edit-button')
         end
 
         def has_title?(title)

@@ -23,6 +23,7 @@ import TitleSuggestions from '~/work_items/components/title_suggestions.vue';
 import {
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   CREATION_CONTEXT_LIST_ROUTE,
+  CREATION_CONTEXT_NEW_ROUTE,
   CREATION_CONTEXT_RELATED_ITEM,
   CREATION_CONTEXT_SUPER_SIDEBAR,
   WIDGET_TYPE_START_AND_DUE_DATE,
@@ -116,12 +117,12 @@ describe('Create work item component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
-  const findConfidentialCheckbox = () => wrapper.findByTestId('confidential-checkbox');
-  const findRelatesToCheckbox = () => wrapper.findByTestId('relates-to-checkbox');
+  const findConfidentialCheckbox = () => wrapper.findComponentByTestId('confidential-checkbox');
+  const findRelatesToCheckbox = () => wrapper.findComponentByTestId('relates-to-checkbox');
   const findCreateWorkItemView = () => wrapper.findByTestId('create-work-item-view');
   const findFormButtons = () => wrapper.findByTestId('form-buttons');
-  const findCreateButton = () => wrapper.findByTestId('create-button');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findCreateButton = () => wrapper.findComponentByTestId('create-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
   const findResolveDiscussionSection = () => wrapper.findByTestId('work-item-resolve-discussion');
   const findResolveDiscussionLink = () =>
     wrapper.findByTestId('work-item-resolve-discussion').findComponent(GlLink);
@@ -397,16 +398,18 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                 | isGroup  | fromGlobalMenu | hasEpicsFeature | expected
-      ${'group list page'}     | ${true}  | ${false}       | ${true}         | ${true}
-      ${'project global menu'} | ${false} | ${true}        | ${false}        | ${true}
-      ${'EE with epics'}       | ${true}  | ${false}       | ${true}         | ${true}
-      ${'CE group no epics'}   | ${true}  | ${false}       | ${false}        | ${false}
+      scenario                       | isGroup  | allowAnyNamespace | hasEpicsFeature | showProjectSelector | expected
+      ${'group list page'}           | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
+      ${'any namespace allowed'}     | ${false} | ${true}           | ${false}        | ${false}            | ${true}
+      ${'EE with epics'}             | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
+      ${'CE group no epics'}         | ${true}  | ${false}          | ${false}        | ${false}            | ${false}
+      ${'CE project, no epics'}      | ${false} | ${false}          | ${false}        | ${false}            | ${false}
+      ${'group issue needs project'} | ${true}  | ${false}          | ${true}         | ${true}             | ${false}
     `(
       '$scenario shows selector: $expected',
-      async ({ isGroup, fromGlobalMenu, hasEpicsFeature, expected }) => {
+      async ({ isGroup, allowAnyNamespace, hasEpicsFeature, showProjectSelector, expected }) => {
         createComponent({
-          props: { isGroup, fromGlobalMenu },
+          props: { isGroup, allowAnyNamespace, showProjectSelector },
           provide: { hasEpicsFeature },
         });
 
@@ -414,6 +417,42 @@ describe('Create work item component', () => {
         expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
+
+    it.each`
+      scenario                   | props                          | provide                      | limitToCurrentNamespace
+      ${'any namespace allowed'} | ${{ allowAnyNamespace: true }} | ${{}}                        | ${false}
+      ${'on a group list page'}  | ${{ isGroup: true }}           | ${{ hasEpicsFeature: true }} | ${true}
+    `(
+      '$scenario passes limitToCurrentNamespace: $limitToCurrentNamespace',
+      async ({ props, provide, limitToCurrentNamespace }) => {
+        createComponent({ props, provide });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('limitToCurrentNamespace')).toBe(
+          limitToCurrentNamespace,
+        );
+      },
+    );
+
+    describe('when only projects can be selected', () => {
+      const findSelectorFormGroup = () => wrapper.findByTestId('work-item-namespace-form-group');
+
+      it('restricts the selector to projects and labels it Project', async () => {
+        createComponent({ props: { allowAnyNamespace: true, allowProjectsOnly: true } });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(true);
+        expect(findSelectorFormGroup().attributes('label')).toBe('Project');
+      });
+
+      it('offers groups and projects under the Group/project label by default', async () => {
+        createComponent({ props: { allowAnyNamespace: true } });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(false);
+        expect(findSelectorFormGroup().attributes('label')).toBe('Group/project');
+      });
+    });
 
     it('updates available work item types when new namespace is selected', async () => {
       createComponent({
@@ -522,7 +561,7 @@ describe('Create work item component', () => {
       createComponent({ props: { preselectedWorkItemType: null, showProjectSelector: true } });
       await resolveAll();
 
-      findProjectsSelector().vm.$emit('selectProject', 'fullPath');
+      findProjectsSelector().vm.$emit('select-project', 'fullPath');
       await nextTick();
 
       expect(findSelect().attributes('disabled')).not.toBeUndefined();
@@ -746,7 +785,7 @@ describe('Create work item component', () => {
       createComponent({ props: { showProjectSelector: true } });
       await resolveAll();
 
-      findProjectsSelector().vm.$emit('selectProject', fullPath);
+      findProjectsSelector().vm.$emit('select-project', fullPath);
       await updateWorkItemTitle();
       wrapper.find('form').trigger('submit');
 
@@ -765,7 +804,7 @@ describe('Create work item component', () => {
 
       expect(findAssigneesWidget().props('fullPath')).toBe('full-path');
 
-      findProjectsSelector().vm.$emit('selectProject', fullPath);
+      findProjectsSelector().vm.$emit('select-project', fullPath);
 
       await nextTick();
 
@@ -1373,7 +1412,7 @@ describe('Create work item component', () => {
   });
 
   describe('title and description query parameters', () => {
-    it('saves to the cache when the backend provides them', async () => {
+    it('saves to the cache when the backend provides them on the new work item page', async () => {
       setHTMLFixture(`
         <div class="new-issue-params hidden">
           <div class="params-title">
@@ -1394,6 +1433,7 @@ describe('Create work item component', () => {
         </div>`);
       createComponent({
         props: {
+          creationContext: CREATION_CONTEXT_NEW_ROUTE,
           relatedItem: mockRelatedItem,
         },
       });
@@ -1402,7 +1442,7 @@ describe('Create work item component', () => {
       expect(setNewWorkItemCache).toHaveBeenCalledWith(
         expect.objectContaining({
           fullPath: expect.anything(),
-          context: CREATION_CONTEXT_LIST_ROUTE,
+          context: CREATION_CONTEXT_NEW_ROUTE,
           widgetDefinitions: expect.anything(),
           workItemType: expect.anything(),
           workItemTypeId: expect.anything(),
@@ -1419,6 +1459,7 @@ describe('Create work item component', () => {
     });
 
     it.each([
+      CREATION_CONTEXT_LIST_ROUTE,
       CREATION_CONTEXT_SUPER_SIDEBAR,
       CREATION_CONTEXT_RELATED_ITEM,
       CREATION_CONTEXT_DESCRIPTION_CHECKLIST,

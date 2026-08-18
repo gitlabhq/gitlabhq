@@ -320,7 +320,7 @@ GROUP BY author_id, target_type, action
 ```
 
 - Take the most recent column values based on the `updated_at` column.
-- Take the first value for `created_at`, assuming that the first `INSERT` contains the correct value. An issue only when we don't sync `created_at` at all and the default value (`now64(6, 'UTC')`) is used.
+- Take the first value for `created_at`, assuming that the first `INSERT` contains the correct value. This is an issue only when we don't sync `created_at` at all and the default value (`now64(6, 'UTC')`) is used.
 - Take the most recent `updated_at` value.
 
 The query looks more complicated now because of the deduplication logic. The complexity can be hidden behind a database view.

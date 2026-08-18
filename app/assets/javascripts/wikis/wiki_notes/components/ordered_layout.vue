@@ -1,5 +1,5 @@
 <script>
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
   name: 'OrderedLayout',
@@ -15,7 +15,7 @@ export default normalizeRender({
       {},
       this.slotKeys
         .map((key) => {
-          const scopedSlot = this.$scopedSlots[key];
+          const scopedSlot = getSlotFunction(this, key);
           if (scopedSlot) {
             return scopedSlot();
           }

@@ -10,6 +10,14 @@ import { noMixedJestAliases } from './no_mixed_jest_aliases.mjs';
 import { pageEntrypointMustExecute } from './page_entrypoint_must_execute.mjs';
 import { noApolloMock } from './no_apollo_mock.mjs';
 import { vueNoUnusedInjects } from './vue_no_unused_injects.mjs';
+import { vue3FindComponentUpgrade } from './vue3_find_component_upgrade.mjs';
+import { vue3GlSlots } from './vue3_gl_slots.mjs';
+import { vue3GlSlotsMixinPairing } from './vue3_gl_slots_mixin_pairing.mjs';
+import { vue3InitVueApp } from './vue3_init_vue_app.mjs';
+import { vue3NoUnconditionalSlotForwarding } from './vue3_no_unconditional_slot_forwarding.mjs';
+import { vue3GlListeners } from './vue3_gl_listeners.mjs';
+import { vue3GlListenersMixinPairing } from './vue3_gl_listeners_mixin_pairing.mjs';
+import { glToastMixinRule } from './gl_toast_mixin.mjs';
 
 export const eslintLocalRules = {
   rules: {
@@ -25,5 +33,13 @@ export const eslintLocalRules = {
     'page-entrypoint-must-execute': pageEntrypointMustExecute,
     'no-apollo-mock': noApolloMock,
     'vue-no-unused-injects': vueNoUnusedInjects,
+    'vue3-find-component-upgrade': vue3FindComponentUpgrade,
+    'vue3-gl-slots': vue3GlSlots,
+    'vue3-gl-slots-mixin-pairing': vue3GlSlotsMixinPairing,
+    'vue3-init-vue-app': vue3InitVueApp,
+    'vue3-no-unconditional-slot-forwarding': vue3NoUnconditionalSlotForwarding,
+    'vue3-gl-listeners': vue3GlListeners,
+    'vue3-gl-listeners-mixin-pairing': vue3GlListenersMixinPairing,
+    'gl-toast-mixin': glToastMixinRule,
   },
 };

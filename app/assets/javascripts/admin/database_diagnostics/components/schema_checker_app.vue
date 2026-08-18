@@ -39,7 +39,7 @@ export default {
     hasSchemaDiagnostics() {
       return Boolean(
         this.schemaDiagnostics?.schema_check_results &&
-          Object.keys(this.schemaDiagnostics.schema_check_results).length > 0,
+        Object.keys(this.schemaDiagnostics.schema_check_results).length > 0,
       );
     },
   },

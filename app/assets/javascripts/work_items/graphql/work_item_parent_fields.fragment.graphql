@@ -4,6 +4,7 @@ fragment WorkItemParentFields on WorkItem {
   id
   iid
   title
+  titleHtml
   webUrl
   confidential
   namespace {

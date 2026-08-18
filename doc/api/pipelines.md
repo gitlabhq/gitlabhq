@@ -19,10 +19,6 @@ Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 
 {{< history >}}
 
-- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a feature flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
-- `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a feature flag](../administration/feature_flags/_index.md) named `pipeline_name_search`. Disabled by default.
-- `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
-- `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
 - Support for returning child pipelines with `source` set to `parent_pipeline` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) in GitLab 17.0.
 
 {{< /history >}}
@@ -49,7 +45,7 @@ control the pagination of results.
 | `sha`            | string            | No       | Return pipelines for the specified commit SHA. |
 | `sort`           | string            | No       | The sort order: `asc` or `desc` (default: `desc`). |
 | `source`         | string            | No       | Return pipelines with the specified [source](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
-| `status`         | string            | No       | Return pipelines with the specified status: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, or `scheduled`. |
+| `status`         | string            | No       | Return pipelines with the specified status: `created`, `waiting_for_resource`, `preparing`, `waiting_for_callback`, `pending`, `running`, `success`, `failed`, `canceling`, `canceled`, `skipped`, `manual`, or `scheduled`. |
 | `updated_after`  | datetime          | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime          | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `created_after`  | datetime          | No       | Return pipelines created after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -99,13 +95,6 @@ Example of response
 ```
 
 ## Retrieve a single pipeline
-
-{{< history >}}
-
-- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a feature flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
-- `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
-
-{{< /history >}}
 
 Retrieves a single pipeline from a project.
 
@@ -177,13 +166,6 @@ Example of response
 ```
 
 ## Retrieve the latest pipeline
-
-{{< history >}}
-
-- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a feature flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
-- `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
-
-{{< /history >}}
 
 Retrieves the latest pipeline for the most recent commit on a specific ref in a project. If no pipeline exists for the commit, a `403` status code is returned.
 
@@ -408,7 +390,6 @@ Sample response:
 
 {{< history >}}
 
-- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 - `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a feature flag](../administration/feature_flags/_index.md) named `ci_inputs_for_pipelines`. Enabled by default.
 - `inputs` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
@@ -478,12 +459,6 @@ Example of response
 ```
 
 ## Retry jobs in a pipeline
-
-{{< history >}}
-
-- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-
-{{< /history >}}
 
 Retries failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
 
@@ -601,6 +576,10 @@ Deleting a pipeline does not automatically delete its
 [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
 for details.
+
+Prerequisites:
+
+- The Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/pipelines/:pipeline_id

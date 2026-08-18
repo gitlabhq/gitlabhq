@@ -7,7 +7,7 @@ module Types
       # a `Design` prefix to specify the class exposed in GraphQL
       graphql_name 'DesignVersion'
 
-      description 'A specific version in which designs were added, modified or deleted'
+      description 'A specific version in which designs were added, modified, or deleted'
 
       authorize :read_design
 

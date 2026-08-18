@@ -47,21 +47,21 @@
       = s_('Preferences|Choose a highlight color scheme for viewing and editing code.')
     - c.with_body do
       - if user_application_light_mode? || user_application_system_mode?
-        = f.label class: 'label-bold' do
+        = f.label :color_scheme_id, value: user_light_color_schema_id, class: 'label-bold' do
           = s_('Preferences|Light color scheme')
-        .gl-grid.gl-gap-5.gl-grid-cols-2.gl-mb-5{ class: '@sm/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-4 @lg/panel:gl-grid-cols-6', data: { testid: 'syntax-highlighting-light-color-scheme' } }
+        .gl-flex.gl-flex-wrap.gl-gap-5.gl-mb-5{ data: { testid: 'syntax-highlighting-light-color-scheme' } }
           - Gitlab::ColorSchemes.each do |scheme|
-            %label
+            %label.gl-mb-0
               .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-border gl-rounded-lg gl-max-w-full'
               = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
                 scheme.name,
                 radio_options: { checked: user_light_color_schema_id == scheme.id }
       - if user_application_dark_mode? || user_application_system_mode?
-        = f.label class: 'label-bold' do
+        = f.label :dark_color_scheme_id, value: user_dark_color_scheme_id, class: 'label-bold' do
           = s_('Preferences|Dark color scheme')
-        .gl-grid.gl-gap-5.gl-grid-cols-2.gl-mb-5{ class: '@sm/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-4 @lg/panel:gl-grid-cols-6', data: { testid: 'syntax-highlighting-dark-color-scheme' } }
+        .gl-flex.gl-flex-wrap.gl-gap-5.gl-mb-5{ data: { testid: 'syntax-highlighting-dark-color-scheme' } }
           - Gitlab::ColorSchemes.each do |scheme|
-            %label
+            %label.gl-mb-0
               .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-border gl-rounded-lg gl-max-w-full'
               = f.gitlab_ui_radio_component :dark_color_scheme_id, scheme.id,
                 scheme.name,

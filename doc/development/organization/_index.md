@@ -9,29 +9,107 @@ title: Organization
 The [Organization initiative](../../user/organization/_index.md) focuses on reaching feature parity between
 GitLab.com and GitLab Self-Managed.
 
-## Current phase (FY27-Q1 and FY27-Q2): Feature parity
+## Guidance for feature teams
 
-The current development focus is achieving **feature parity** for organizations. This means ensuring that existing features work for groups inside organizations so users who transfer to an organization don't lose functionality.
+Use this section to understand what to consider before building a feature at the organization level.
 
-**Organizations is not yet ready for new features.** Any new features should continue to target:
+The target milestone for launching Organizations as
+[Beta](https://gitlab.com/groups/gitlab-org/-/work_items?state=opened&label_name%5B%5D=Organizations%3A%3ABeta&type%5B%5D=8)
+is 19.4 (2026-09-11).
 
-- **GitLab.com**: Top-level groups
-- **GitLab Self-Managed**: Instance level
+Previously, a feature implemented at the instance level for GitLab Self-Managed
+had to be re-implemented for top-level groups on GitLab.com.
+Organizations remove this duplication.
+The new default is to build features at the organization level, which serves both.
+For example, the Artifact Registry uses organizations as its
+[anchor point](https://gitlab.com/gitlab-org/ops/artifact-registry/-/blob/main/docs/adr/001_organizations_as_anchor_point.md).
 
-Guidance on building new features on organizations, or migrating existing features from top-level group to organizations, will come in the future.
-Please contact the team on Slack (`#g_organizations`) if you wish to informally discuss this.
+Not every feature needs organization-level scope, and because Organizations
+has not yet launched as Beta, there are key considerations to be aware of.
+Read the following sections for details.
 
-### Available and planned support for implementing organizations
+Contact the team on Slack (`#g_organizations`) to discuss your use case before building.
 
-The Organizations team are implementing changes which will automatically include support for:
+### Determine if your feature needs organization-level scope
+
+Not every feature belongs at the organization level.
+
+Most features should continue to be anchored to the group, project, or user
+level. This mirrors the old paradigm where most features did not target the
+instance or TLG level.
+
+Features that span multiple groups inside an organization should be scoped at
+the group level, but with cross-group navigation. It is not a sufficient
+justification to invent an organization-level version.
+
+Only build a feature at the organization level when users have a clear need
+for organization-level governance or configuration.
+
+Consult the Organizations Charter
+(`https://docs.google.com/document/d/1ldPftCifCDkdw3_3JKOnFjdwNHGIgbHIbW8HEc92i1Y/edit`, internal access required)
+for more information.
+
+### Plan roles specific to your organization-level feature
+
+Organization-level roles are separate from group and project roles.
+When designing your feature:
+
+- Define what actions each organization role (Owner, User) can perform.
+- Do not assume group-level roles map directly to organization-level roles.
+- Consider whether your feature requires a new organization-level permission,
+  or whether an existing role is sufficient.
+
+For more information, see the [organization user documentation](../../user/organization/_index.md).
+
+### Require the top-level group to transfer to its own organization (GitLab.com)
+
+Features that depend on organization context require the TLG to be inside its own organization.
+This is because the default organization on GitLab.com currently contains TLGs where the TLG
+owners are not Organization Owners.
+
+Do not enforce this with a check such as `organization.default?`. GitLab Self-Managed and GitLab
+Dedicated legitimately run inside the default organization, so that check would also block them.
+
+Instead, enforce this through authorization, using the organization-level permissions described in
+[Plan roles specific to your organization-level feature](#plan-roles-specific-to-your-organization-level-feature).
+Gate the feature behind a permission that only an Organization Owner can grant, for example through
+the `organization_owner` and `organization_user` conditions in `Organizations::OrganizationPolicy`.
+
+### Consider organization-based billing limitations
+
+[Organization-based billing](https://gitlab.com/gitlab-org/customers-gitlab-com/-/merge_requests/15263)
+is not yet available.
+
+Do not build features that depend on billing or subscription entitlements at the organization level.
+
+This is because billing and subscription entitlements are currently scoped to the top-level
+group on GitLab.com, not to the organization.
+Most paid customers only have one paid TLG on GitLab.com, so this rarely comes up.
+If you create another TLG, that new TLG does not inherit the paid entitlements of your existing TLG.
+
+Users are
+[warned](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/decisions/013_warn_on_tlg_creation/)
+of this before they attempt to create another TLG on GitLab.com.
+
+## Available and planned support for implementing organizations
+
+The Organizations team is implementing changes which will automatically include support for:
 
 - Application level Organization Isolation: There will be an ActiveRecord extension that will take care of [Organization Scoping](https://gitlab.com/groups/gitlab-org/-/work_items/19414). This is provisionally planned for availability and usage in early FY27-Q2.
 - Sidekiq: there is no need to pass `organization_id` to Sidekiq worker parameters: Sidekiq workers will inherit the Current Organization from the scheduling context
-- Events / Logging: similar to User, Project or Namespace, Organization will be included
-- Routing: Enabling / disabling organization based URL's (`/o/<organization>` prefix) will be available.
+- Events / Logging: similar to User, Project, or Namespace, Organization will be included
+- Routing: Enabling / disabling organization based URLs (`/o/<organization>` prefix) will be available.
 - Organization availability in tests
 
 Teams do not need to implement these, unless there are specific reasons.
+
+## Releasing organization features
+
+Organization features ship behind an `organization flag` that moves through a fixed ladder of stages, from Experimental to generally available (GA).
+A feature's audience only ever grows as its organization flag advances to a later stage, so an earlier stage's audience is never dropped.
+
+For the engineering guide on gating a feature, registering an organization flag, and advancing it through the stages, see [Organizations release process](../organizations/release_process.md).
+For the organization flags currently in the rollout process and their stage, see [Organizations platform release status](../organizations/release_status.md).
 
 ## Database table design
 
@@ -48,24 +126,34 @@ context to conditionally scope queries to that organization.
 
 ### Where `Current.organization` is available
 
-`Current.organization` is available in the following contexts. Some are set up automatically, while others require you to call `set_current_organization` explicitly.
+`Current.organization` is set automatically in the following contexts:
 
-Set automatically (platform-wide):
+- Controllers: `ApplicationController` includes a `before_action :set_current_organization` that runs for every request.
+- GraphQL: `GraphqlController` inherits from `ApplicationController`, so the same `before_action` applies automatically.
+- Grape API: a global `before_validation` hook in `lib/api/api.rb` runs for every endpoint.
+  The hook resolves the organization from the `X-GitLab-Organization-ID` header, then from the
+  organization of the authenticated user, and falls back to the default organization.
+- Sidekiq: set from the organization context captured when the job is enqueued.
 
-- Controllers — `ApplicationController` includes a `before_action :set_current_organization` that runs for every request.
-- GraphQL — `GraphqlController` inherits from `ApplicationController`, so the same `before_action` applies automatically.
-- Sidekiq — set from the organization context captured when the job is enqueued.
+You must set `Current.organization` yourself in these cases:
 
-Requires developer setup:
-
-- Grape API endpoints — `Current.organization` is not set automatically. Call the `set_current_organization` helper in a `before` block for each API class that needs it:
+- Grape API classes that opt out of the global hook with `skip_global_organization_setup!`.
+  The global hook derives the organization from standard API authentication, such as personal
+  access tokens. If your endpoint uses a custom authentication mechanism (for example, deploy
+  tokens), the hook cannot resolve the correct organization. Opt out and derive the
+  organization from the authenticated entity instead:
 
   ```ruby
-  before do
-    authenticate_non_get!
-    set_current_organization
+  class MyAPI < ::API::Base
+    skip_global_organization_setup!
+
+    before do
+      Current.organization = some_custom_method
+    end
   end
   ```
+
+- Code that runs outside a request or Sidekiq context, such as Rake tasks and the Rails console.
 
 ### Passing organization context
 

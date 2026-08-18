@@ -209,6 +209,21 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
           end
         end
 
+        context 'for classify action by a claim type in camelCase (as sent by the HTTP Router)' do
+          let(:headers) do
+            {
+              'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+              'X-Gitlab-Http-Router-Rule-Type' => 'organizationPath'
+            }
+          end
+
+          it 'increments the counter with labels' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: 'classify', rule_type: 'organizationPath')
+            }.by(1)
+          end
+        end
+
         context 'for proxy action' do
           let(:headers) do
             {

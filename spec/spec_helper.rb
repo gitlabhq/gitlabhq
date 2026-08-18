@@ -306,6 +306,10 @@ RSpec.configure do |config|
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
 
+      # Hiding unpinned sidebar items is WIP; disable globally to avoid
+      # breaking feature specs that interact with sidebar sections.
+      stub_feature_flags(hide_unpinned_sidebar_items: false)
+
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
 
@@ -341,13 +345,6 @@ RSpec.configure do |config|
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
 
-      # When enabled, audit events are written only to the new scoped tables and not to the legacy
-      # AuditEvent table. The flag is being rolled out gradually; many existing specs assert on
-      # AuditEvent.count, so keep legacy writes enabled in tests by default. Specs that need to
-      # exercise the new behavior should stub this explicitly.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/591414
-      stub_feature_flags(stop_legacy_audit_event_writes: false)
-
       # accessible_disabled_button switches GlButton from the native `disabled` attribute
       # to `aria-disabled`, which breaks Capybara `disabled:` button matchers suite-wide.
       # Default off in tests during rollout; see
@@ -358,6 +355,12 @@ RSpec.configure do |config|
       # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
       stub_feature_flags(track_api_request_from_personal_access_token: false)
 
+      # Rapid Diffs is not yet the default on the merge request Changes tab. Leaving this on makes
+      # MergeRequestsController#rapid_diffs_page_enabled? resolve the whole suite to Rapid Diffs, so keep
+      # it off until the merge request specs are migrated; see
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/602723
+      stub_feature_flags(rapid_diffs_default_on_mr_show: false)
+
     else
       unstub_all_feature_flags
     end
@@ -366,7 +369,10 @@ RSpec.configure do |config|
     # It can be reenabled for specific tests via:
     #
     # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
-    allow(Gitlab::Git::KeepAround).to receive(:execute)
+    #
+    # Returns an empty array to match the real contract: the SHAs whose
+    # keep-around ref could not be written.
+    allow(Gitlab::Git::KeepAround).to receive(:execute).and_return([])
 
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:

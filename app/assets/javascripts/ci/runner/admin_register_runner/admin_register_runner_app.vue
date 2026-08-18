@@ -44,7 +44,7 @@ export default {
     <registration-instructions
       :runner-id="runnerId"
       :platform="platform"
-      @selectPlatform="onSelectPlatform"
+      @select-platform="onSelectPlatform"
     >
       <template #runner-list-name>{{ s__('Runners|Admin area › Runners') }}</template>
     </registration-instructions>

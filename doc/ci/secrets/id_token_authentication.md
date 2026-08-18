@@ -43,7 +43,7 @@ sequenceDiagram
 
 ID tokens are also used by the [`secrets`](../yaml/_index.md#secrets) keyword.
 
-GitLab Duo Agent Platform [flows](../../user/duo_agent_platform/flows/execution.md#configure-id-tokens)
+GitLab Duo Agent Platform [flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-id-tokens)
 and [external agents](../../user/duo_agent_platform/agents/external.md#authenticate-with-id-tokens)
 can also declare `id_tokens` to authenticate with third-party services during execution.
 
@@ -188,9 +188,9 @@ For AWS on GitLab.com, the following GitLab claims are available as condition ke
 - `ref_protected`
 - `pipeline_source`
 
-These condition keys are available only for the `gitlab.com` OIDC identity provider. They are not currently available for GitLab Self-Managed or GitLab Dedicated, where only the `sub` claim is supported as an AWS condition key.
+These condition keys are available only for the `gitlab.com` OIDC identity provider. They are not available for GitLab Self-Managed or GitLab Dedicated, where only the `sub` claim is supported as an AWS condition key.
 
-Do not rely on `user_login` or `user_email` as the only condition, because a user can change them. Confirm the exact set of supported claims against AWS's published condition keys for the GitLab identity provider.
+Do not rely on `user_login` or `user_email` as the only condition, because a user can change them. Confirm the exact set of supported claims against the AWS published condition keys for the GitLab identity provider.
 
 For a complete AWS trust policy example using `sub`, `namespace_id`, and `project_id`, see [Configure OpenID Connect in AWS](../cloud_services/aws/_index.md#configure-a-role-and-trust). For HashiCorp Vault, see [bound claims](hashicorp_vault_tutorial.md).
 

@@ -39,8 +39,8 @@ class User < ApplicationRecord
   include Users::EmailOtpEnrollment
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::USER_IDS, feature_flag: :cells_claims_users
-  cells_claims_attribute :username, type: CLAIMS_BUCKET_TYPE::USERNAMES, feature_flag: :cells_claims_users
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID, feature_flag: :cells_claims_users
+  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME, feature_flag: :cells_claims_users
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
@@ -280,6 +280,8 @@ class User < ApplicationRecord
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
   has_many :todos,                    dependent: :delete_all
   has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id
+  has_many :mobile_device_push_subscriptions, class_name: 'Notifications::MobileDevicePushSubscription',
+    inverse_of: :user, dependent: :delete_all
   has_many :notification_settings
   has_many :award_emoji, dependent: :destroy
   has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id
@@ -332,6 +334,8 @@ class User < ApplicationRecord
 
   has_many :created_saved_views, class_name: 'WorkItems::SavedViews::SavedView', foreign_key: :created_by_id, dependent: :nullify
   has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', dependent: :delete_all
+  has_many :merge_request_saved_views, class_name: 'MergeRequests::SavedView', inverse_of: :user,
+    dependent: :delete_all
 
   has_many :resource_label_events, dependent: :nullify
   has_many :resource_state_events, dependent: :nullify
@@ -697,7 +701,7 @@ class User < ApplicationRecord
     end
 
     after_transition active: any do |user|
-      user.starred_projects.where('star_count > 0').update_counters(star_count: -1)
+      user.starred_projects.where(Project.arel_table[:star_count].gt(0)).update_counters(star_count: -1)
     end
   end
 
@@ -1784,7 +1788,7 @@ class User < ApplicationRecord
   end
 
   def allow_password_authentication_for_web?
-    return false if ldap_user?
+    return false if ldap_user? && !Gitlab::Auth::Ldap::Config.prevent_ldap_sign_in?
     return false if disable_password_authentication_for_sso_users?
 
     Gitlab::CurrentSettings.password_authentication_enabled_for_web?

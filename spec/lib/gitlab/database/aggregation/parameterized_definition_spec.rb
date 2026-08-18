@@ -62,6 +62,28 @@ RSpec.describe Gitlab::Database::Aggregation::ParameterizedDefinition, feature_c
         expect(key1).not_to eq(key2)
       end
     end
+
+    context 'with multiple optional parameters' do
+      let(:multi_param_definition) do
+        definition_class.new(:foo, :string, nil,
+          parameters: { bar: { type: :string }, baz: { type: :string } })
+      end
+
+      it 'includes all provided parameters prefixed with their names in the postfix' do
+        expect(multi_param_definition.instance_key(parameters: { bar: '42', baz: '43' })).to eq('foo_bar_42_baz_43')
+      end
+
+      it 'skips parameters that were not provided' do
+        expect(multi_param_definition.instance_key(parameters: { bar: '42' })).to eq('foo_bar_42')
+        expect(multi_param_definition.instance_key(parameters: { baz: '43' })).to eq('foo_baz_43')
+      end
+
+      it 'produces different keys when the same value is provided for different parameters' do
+        key1 = multi_param_definition.instance_key(parameters: { bar: '42' })
+        key2 = multi_param_definition.instance_key(parameters: { baz: '42' })
+        expect(key1).not_to eq(key2)
+      end
+    end
   end
 
   describe '#validate_part' do

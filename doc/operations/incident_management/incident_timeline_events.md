@@ -13,14 +13,6 @@ title: Timeline events
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a feature flag](../../administration/feature_flags/_index.md) named `incident_timeline`. Enabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.5. [Feature flag `incident_timeline`](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) removed.
-
-{{< /history >}}
-
 Incident timelines are an important part of record keeping for incidents.
 Timelines can show executives and external viewers what happened during an incident,
 and which steps were taken for it to be resolved.
@@ -63,21 +55,9 @@ To create a timeline event:
 
 ### Using a quick action
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368721) in GitLab 15.4.
-
-{{< /history >}}
-
 You can create a timeline event using the [`/timeline` quick action](../../user/project/quick_actions.md#timeline).
 
 ### From a comment on the incident
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344058) in GitLab 15.4.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -98,12 +78,6 @@ To create a timeline event from a comment on the incident:
 The comment is shown on the incident timeline as a timeline event.
 
 ### When incident severity changes
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6.
-
-{{< /history >}}
 
 A new timeline event is created when someone [changes the severity](manage_incidents.md#change-severity)
 of an incident.
@@ -133,12 +107,6 @@ A new timeline event is created when someone adds or removes [labels](../../user
 
 ## Delete an event
 
-{{< history >}}
-
-- Ability to delete an event when editing it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372265) in GitLab 15.7.
-
-{{< /history >}}
-
 You can also delete timeline events.
 
 Prerequisites:
@@ -162,21 +130,12 @@ Alternatively:
 
 ## Incident tags
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8741) in GitLab 15.9 [with a feature flag](../../administration/feature_flags/_index.md) named `incident_event_tags`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.9.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.10.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/387647) in GitLab 15.11. Feature flag `incident_event_tags` removed.
-
-{{< /history >}}
-
 [When creating an event using the form](#using-the-form) or editing it,
 you can specify incident tags to capture relevant incident timestamps.
 Timeline tags are optional. You can choose more than one tag per event.
 When you create a timeline event and select the tags, the event note
 is populated with a default message.
-This allows for a quick event creation. If a note has already been set, it isn't changed.
+This allows for quick event creation. If a note has already been set, it isn't changed.
 Added tags are displayed next to the timestamp.
 
 ## Formatting rules

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ReportAbuseDropdownItem from './components/report_abuse_dropdown_item.vue';
 
 export const initReportAbuse = () => {
@@ -9,7 +9,7 @@ export const initReportAbuse = () => {
 
     const { reportAbusePath, reportedUserId, reportedFromUrl } = el.dataset;
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'ReportAbuseDropdownItemRoot',
       provide: {
@@ -17,9 +17,7 @@ export const initReportAbuse = () => {
         reportedUserId: parseInt(reportedUserId, 10),
         reportedFromUrl,
       },
-      render(createElement) {
-        return createElement(ReportAbuseDropdownItem);
-      },
+      component: ReportAbuseDropdownItem,
     });
   });
 };

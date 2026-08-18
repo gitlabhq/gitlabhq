@@ -9,12 +9,6 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     sign_in(user)
   end
 
-  matcher :have_namespace_error_message do
-    match do |page|
-      page.has_content?("Group URL can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.', '.git' or '.atom'.")
-    end
-  end
-
   describe 'create a group', :js do
     before do
       visit new_group_path
@@ -61,24 +55,24 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     end
 
     describe 'with .atom at end of group path' do
-      it 'renders new group form with validation errors' do
+      it 'blocks submission and shows an inline validation error' do
         fill_in 'Group name', with: 'test-group'
         fill_in 'Group URL', with: 'atom_group.atom'
         click_button 'Create group'
 
-        expect(page).to have_current_path(groups_path, ignore_query: true)
-        expect(page).to have_namespace_error_message
+        expect(page).to have_current_path(new_group_path, ignore_query: true)
+        expect(page).to have_text('Group URL must not end with `.git` or `.atom`.')
       end
     end
 
     describe 'with .git at end of group path' do
-      it 'renders new group form with validation errors' do
+      it 'blocks submission and shows an inline validation error' do
         fill_in 'Group name', with: 'test-group'
         fill_in 'Group URL', with: 'git_group.git'
         click_button 'Create group'
 
-        expect(page).to have_current_path(groups_path, ignore_query: true)
-        expect(page).to have_namespace_error_message
+        expect(page).to have_current_path(new_group_path, ignore_query: true)
+        expect(page).to have_text('Group URL must not end with `.git` or `.atom`.')
       end
     end
 
@@ -102,7 +96,8 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
         fill_in 'group_path', with: 'z'
         click_button 'Create group'
 
-        expect(page).to have_content('Group URL is too short')
+        expect(page).to have_current_path(new_group_path, ignore_query: true)
+        expect(page).to have_content('Group URL must be at least 2 characters long.')
 
         fill_in 'group_path', with: 'az'
         wait_for_requests
@@ -270,13 +265,14 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     end
 
     context 'when many parent groups are available' do
-      let_it_be(:group2) { create(:group, path: 'foo2', organization: group.organization) }
-      let_it_be(:group3) { create(:group, path: 'foo3', organization: group.organization) }
+      let_it_be(:group2) { create(:group, path: 'foo2', organization: group.organization, maintainers: [user]) }
+      let_it_be(:group3) { create(:group, path: 'foo3', organization: group.organization, developers: [user]) }
+
+      before_all do
+        group.add_owner(user)
+      end
 
       before do
-        group.add_owner(user)
-        group2.add_maintainer(user)
-        group3.add_developer(user)
         visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
       end
 
@@ -307,8 +303,11 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     describe 'real-time group url validation', :js do
       let_it_be(:subgroup) { create(:group, path: 'sub', parent: group) }
 
-      before do
+      before_all do
         group.add_owner(user)
+      end
+
+      before do
         visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
       end
 
@@ -340,27 +339,25 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'group edit', :js do
-    let_it_be(:group, freeze: false) { create(:group, :public) }
+    let_it_be(:group, freeze: false) { create(:group, :public, owners: [user]) }
 
     let(:path) { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
     before do
-      group.add_owner(user)
-
       visit path
     end
 
     it 'saves new settings' do
       within_testid('general-settings') do
         # Have to reset it to '' so it overwrites rather than appends
-        fill_in('group_name', with: '')
-        fill_in 'group_name', with: new_name
+        fill_in('group_name_edit', with: '')
+        fill_in 'group_name_edit', with: new_name
         click_button 'Save changes'
       end
 
       expect(page).to have_content 'successfully updated'
-      expect(find('#group_name').value).to eq(new_name)
+      expect(find('#group_name_edit').value).to eq(new_name)
 
       within_testid "breadcrumb-links" do
         expect(page).to have_content new_name
@@ -385,13 +382,9 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'group page with markdown description' do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group, owners: [user]) }
 
     let(:path) { group_path(group) }
-
-    before do
-      group.add_owner(user)
-    end
 
     it 'parses Markdown' do
       group.update_attribute(:description, 'This is **my** group')
@@ -427,13 +420,9 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   end
 
   describe 'group page with nested groups', :js do
-    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group, freeze: false) { create(:group, owners: [user]) }
     let_it_be(:nested_group) { create(:group, parent: group) }
     let_it_be(:project) { create(:project, namespace: group) }
-
-    before do
-      group.add_owner(user)
-    end
 
     it 'renders projects and groups on the page' do
       visit group_path(group)
@@ -473,12 +462,9 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
       create(
         :group,
         project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS,
-        subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS
+        subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS,
+        owners: [user]
       )
-    end
-
-    before do
-      group.add_owner(user)
     end
 
     context 'when user has subgroup creation permissions but not project creation permissions' do

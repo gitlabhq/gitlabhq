@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import CommitFormModal from './components/form_modal.vue';
@@ -39,7 +39,7 @@ export default function initInviteMembersModal(primaryActionEventName) {
     existingBranch,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CommitFormModalRoot',
     pinia,
@@ -47,14 +47,12 @@ export default function initInviteMembersModal(primaryActionEventName) {
       modalStore,
       prependedText: PREPENDED_MODAL_TEXT,
     },
-    render: (createElement) =>
-      createElement(CommitFormModal, {
-        props: {
-          i18n: { ...I18N_REVERT_MODAL, ...I18N_MODAL },
-          openModal: OPEN_REVERT_MODAL,
-          modalId: REVERT_MODAL_ID,
-          primaryActionEventName,
-        },
-      }),
+    component: CommitFormModal,
+    props: {
+      i18n: { ...I18N_REVERT_MODAL, ...I18N_MODAL },
+      openModal: OPEN_REVERT_MODAL,
+      modalId: REVERT_MODAL_ID,
+      primaryActionEventName,
+    },
   });
 }

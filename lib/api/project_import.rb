@@ -55,7 +55,7 @@ module API
       end
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the project import upload' do
         detail 'This feature was introduced in GitLab 12.9'
         tags ['project_import']
@@ -174,7 +174,7 @@ module API
         optional :import_url_password, type: String, desc: 'Password for the import URL'
       end
       desc 'Import a project from a Git URL' do
-        detail 'This feature was introduced in GitLab 18.10.'
+        detail 'Imports a project from a specified Git URL. This feature was introduced in GitLab 18.10.'
         success code: 201, model: Entities::ProjectImportStatus
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -268,8 +268,8 @@ module API
         end
       end
 
-      desc 'Workhorse authorize the project relation import upload' do
-        detail 'This feature was introduced in GitLab 16.11'
+      desc 'Authorize project relation import' do
+        detail 'Authorizes uploading a project relation import file. This feature was introduced in GitLab 16.11.'
         tags ['project_import']
       end
       route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization

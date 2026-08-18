@@ -938,6 +938,44 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
           perform
         end
       end
+
+      context 'when commit is a merge request merge commit targeting a non-default branch' do
+        let(:merge_request) do
+          create(
+            :merge_request,
+            description: "Closes #{issue.to_reference}",
+            source_branch: 'feature-merged',
+            target_branch: 'release',
+            source_project: project
+          )
+        end
+
+        let(:commit) do
+          project.repository.create_branch('release', 'master')
+          project.repository.after_create_branch
+          project.repository.create_branch('feature-merged', 'feature')
+          project.repository.after_create_branch
+
+          MergeRequests::MergeService
+            .new(project: project, current_user: merge_request.author, params: {
+              sha: merge_request.diff_head_sha,
+              commit_message: "Merge branch 'feature-merged' into 'release'\n\nCloses #{issue.to_reference}"
+            })
+            .execute(merge_request)
+
+          merge_request.reload.merge_commit
+        end
+
+        it 'closes issues from the commit message' do
+          expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
+        end
+
+        it 'creates cross references' do
+          expect(commit).to receive(:create_cross_references!).with(user, [issue])
+
+          perform
+        end
+      end
     end
 
     context 'when pushing to a non-default branch' do

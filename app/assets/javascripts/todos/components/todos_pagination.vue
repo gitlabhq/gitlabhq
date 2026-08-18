@@ -35,6 +35,7 @@ export default {
       default: '',
     },
   },
+  emits: [CURSOR_CHANGED_EVENT],
   data() {
     return {
       pageSize: DEFAULT_PAGE_SIZE,

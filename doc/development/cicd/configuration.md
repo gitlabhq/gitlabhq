@@ -14,7 +14,7 @@ title: Contribute to the CI/CD configuration
 Not every keyword in the CI/CD configuration is represented by an `Entry` class.
 We create `Entry` classes for keywords that have a complex structure or reusable parts.
 
-For example;
+For example:
 
 - The `image` keyword is represented by the [`Entry::Image`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/config/entry/image.rb) class.
 - The `name` subkeyword of the `image` keyword is not represented by an `Entry` class.
@@ -26,7 +26,7 @@ Review the [YAML syntax change review guide](keyword_reviews.md) for important t
 
 > [!note]
 > Experimental CI keywords must be guarded behind a feature flag.
-> Users adding them to their CI configuration does not count as [explicit opt-in](../../policy/development_stages_support.md#experiment),
+> Users adding them to their CI configuration do not count as [explicit opt-in](../../policy/development_stages_support.md#experiment),
 > as they could do so without ever seeing that the keyword is experimental. An
 > experimental CI keyword should not be added to the [JSON schema](schema.md) to ensure it
 > does not get auto-suggested to users yet.
@@ -39,7 +39,7 @@ Update the [JSON schema](schema.md) accordingly.
 
 ### Inheritance
 
-An entry is represented by a class that inherits from;
+An entry is represented by a class that inherits from:
 
 - `Entry::Node`: for simple keywords.
   (For example, [`Entry::Stage`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/config/entry/stage.rb))
@@ -55,8 +55,8 @@ An entry is represented by a class that inherits from;
 The following helper classes are available for use in entries:
 
 - `Entry::Validatable`: Enables the `validations` block in an entry class and provides validations.
-- `Entry::Attributable`: Enables the `attributes` method in an entry class. It creates these methods for each attribute; `xxx`, `has_xxx?`, `has_xxx_value?`.
-- `Entry::Configurable`: Enables the `entry` method in an entry class. It creates these methods for each entry; `xxx_defined?`, `xxx_entry`, `xxx_value`.
+- `Entry::Attributable`: Enables the `attributes` method in an entry class. It creates these methods for each attribute: `xxx`, `has_xxx?`, and `has_xxx_value?`.
+- `Entry::Configurable`: Enables the `entry` method in an entry class. It creates these methods for each entry: `xxx_defined?`, `xxx_entry`, and `xxx_value`.
 
 ### The `value` Method
 
@@ -66,7 +66,7 @@ It can be useful for simple entries. For example, `Entry::Paths` has an array of
 
 In some keywords, we override the `value` method. In this method, we return what and how we want to return from the entry.
 The usage of `Entry::Attributable` and `Entry::Configurable` may have a significant role here. For example,
-in `Entry::Secret`, we have this;
+in `Entry::Secret`, we have this:
 
 ```ruby
 attributes %i[vault file token].freeze
@@ -115,7 +115,7 @@ end
 ### Feature Flag Actor
 
 In entry classes, we have no access to the current project or user. However, it's discouraged to use feature flags without [an actor](../feature_flags/_index.md#feature-actors).
-To solve this problem, we have three options;
+To solve this problem, we have three options:
 
 1. Use `Feature.enabled?(:feature_flag, Feature.current_request)`.
 1. Use `Config::FeatureFlags.enabled?(:feature_flag)`

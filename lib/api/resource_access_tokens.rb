@@ -13,7 +13,7 @@ module API
     helpers ::API::Helpers::PersonalAccessTokensHelpers
 
     %w[project group].each do |source_type|
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{source_type} access tokens" do
           detail "Lists all #{source_type} access tokens for a specified #{source_type}."
           is_array true
@@ -34,10 +34,7 @@ module API
             .new(declared(params, include_missing: false).merge({ user: resource.bots, impersonation: false }))
             .execute
             .preload_users
-
-          if Feature.enabled?(:expose_last_used_ips_for_access_tokens, current_user)
-            tokens = tokens.preload_last_used_ips
-          end
+            .preload_last_used_ips
 
           tokens = if source_type == 'project'
                      tokens.preload_bot_user_associations_for_project

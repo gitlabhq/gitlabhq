@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlLink, GlToggle, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -11,8 +12,9 @@ export default {
     GlLink,
     GlToggle,
     GlSprintf,
-    IdentityVerificationRequiredAlert: () =>
-      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    IdentityVerificationRequiredAlert: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    ),
   },
   props: {
     isDisabledAndUnoverridable: {

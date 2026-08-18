@@ -13,6 +13,20 @@ This page describes how you can switch from one of the previous methods to using
 > Tracking events directly via Snowplow, Redis/RedisHLL is deprecated but won't be removed in the foreseeable future.
 > While we encourage you to migrate to Internal Event tracking the deprecated methods will continue to work for existing events and metrics.
 
+## What are RedisHLL metrics?
+
+These are Service Ping metrics implemented as Redis HyperLogLog counters via `Gitlab::UsageDataCounters::HLLRedisCounter.track_event`.
+
+For each triggered event:
+
+- A HyperLogLog key is written in Redis with a 6 week expiry.
+- The data is later aggregated into a unique count.
+- It is then exposed under metric keys such as `redis_hll_counters.analytics.{event_name_monthly}` in Service ping.
+
+The metric definitions with `instrumentation_class: RedisHLLMetric` read from HLLRedisCounter and map events into Service Ping Metrics.
+
+The RedisHLL API (HLLRedisCounter) is now deprecated and we have moved to using the Internal Events API (`Gitlab::InternalEvents.track_event`).
+
 ## Migrating from existing Snowplow tracking
 
 If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking. Note that starting with GitLab 18.0, Self-Managed instances collect event data by default, providing more detailed insights than the aggregated metrics collected in previous versions.
@@ -40,7 +54,7 @@ include Gitlab::InternalEventsTracking
 track_internal_event('ci_templates_unique', namespace: namespace, project: project, user: user, additional_properties: { label: label })
 ```
 
-The `label`, `property` and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
+The `label`, `property`, and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
 
 In addition, you have to create definitions for the metrics that you would like to track.
 
@@ -143,6 +157,12 @@ Notice that we just need action to pass in the `data-event-tracking` attribute w
 
 ## Migrating from tracking with RedisHLL
 
+Migration of RedisHLL metrics to Internal Events is not a stateful migration of Redis data. This migration replaces legacy HLLRedisCounter calls with `track_internal_event` and points metric definitions at `data_source: internal_events`. This makes Internal Events the single abstraction on top of Snowplow + Redis/RedisHLL.
+
+Under the hood, `Gitlab::InternalEvents.track_event` still updates Redis counters and RedisHLL keys
+according to the metric's event_selection_rules (unique, total, sum, etc.), and also emits the
+Snowplow event and Service Ping context with data_source: `:redis_hll` where appropriate.
+
 ### Backend
 
 If you are currently tracking a metric in `RedisHLL` like this:
@@ -153,7 +173,7 @@ If you are currently tracking a metric in `RedisHLL` like this:
 
 To start using Internal Events Tracking, follow these steps:
 
-1. If event is not being sent to Snowplow, consider renaming if to meet [our naming convention](quick_start.md#defining-event-and-metrics).
+1. If event is not being sent to Snowplow, consider renaming it to meet [our naming convention](quick_start.md#defining-event-and-metrics).
 1. Create an event definition that describes `git_write_action` ([guide](event_definition_guide.md)).
 1. Find metric definitions that list `git_write_action` in the events section (`20210216182041_action_monthly_active_users_git_write.yml` and `20210216184045_git_write_action_weekly.yml`).
 1. Change the `data_source` from `redis_hll` to `internal_events` in the metric definition files.

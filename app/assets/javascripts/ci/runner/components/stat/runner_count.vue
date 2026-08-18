@@ -2,7 +2,7 @@
 import { fetchPolicies } from '~/lib/graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
@@ -99,7 +99,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       count: this.count,
     });
   },

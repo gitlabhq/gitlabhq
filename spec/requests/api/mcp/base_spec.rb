@@ -147,6 +147,55 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         end
       end
 
+      context 'when optional id param is not present' do
+        it 'is successful for notifications' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'notifications/initialized' }
+
+          expect(response).to have_gitlab_http_status(:accepted)
+          expect(response.body).to be_empty
+        end
+      end
+
+      context 'when id param is an integer' do
+        it 'preserves the integer type in the response' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: 1,
+                      params: { protocolVersion: '2025-06-18' } }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq(1)
+          expect(json_response['id']).to be_a(Integer)
+        end
+      end
+
+      context 'when id param is a string' do
+        it 'preserves the string type in the response' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: 'abc-123',
+                      params: { protocolVersion: '2025-06-18' } }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq('abc-123')
+          expect(json_response['id']).to be_a(String)
+        end
+      end
+
+      context 'when id param is neither an integer nor a string' do
+        it 'returns JSON-RPC Invalid Request error' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: { foo: 'bar' },
+                      params: { protocolVersion: '2025-06-18' } }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']['code']).to eq(-32600)
+          expect(json_response['error']['data']['validations']).to include('id is invalid')
+        end
+      end
+
       context 'when method does not exist' do
         it 'returns JSON-RPC Method not found error' do
           post api('/mcp', user, oauth_access_token: access_token),

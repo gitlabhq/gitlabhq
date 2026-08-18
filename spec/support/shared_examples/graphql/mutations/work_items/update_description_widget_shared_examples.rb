@@ -25,8 +25,7 @@ RSpec.shared_examples 'update work item description widget' do
       errors = ActiveModel::Errors.new(work_item).tap { |e| e.add(:description, 'error message') }
 
       allow_next_found_instance_of(::WorkItem) do |instance|
-        allow(instance).to receive(:valid?).and_return(false)
-        allow(instance).to receive(:errors).and_return(errors)
+        allow(instance).to receive_messages(valid?: false, errors: errors)
       end
 
       post_graphql_mutation(mutation, current_user: current_user)

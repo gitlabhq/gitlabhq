@@ -86,7 +86,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         runner_id taggings tags tag_list trigger trigger_id
         user_id auto_canceled_by_id retried failure_reason
         sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store
-        runner_manager_build runner_manager build_runtime_environment runner_session trace_chunks
+        runner_manager_build runner_manager job_runtime_environment runner_session trace_chunks
         upstream_pipeline_id upstream_pipeline_partition_id
         artifacts_file artifacts_metadata artifacts_size commands
         resource resource_group_id processed security_scans security_report_artifacts author
@@ -359,6 +359,29 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
           expect(new_job.job_variables.map(&:value)).to contain_exactly(internal_job_variable.value)
         end
       end
+    end
+  end
+
+  describe 'job definition sharing' do
+    include_context 'when job is a build'
+
+    let(:service) { described_class.new(job, current_user: user) }
+
+    it 'shares the loaded job definition record with the clone' do
+      job.job_definition # load the association, as earlier reads do in the retry flow
+
+      new_job = service.execute
+
+      expect(new_job.association(:job_definition).target).to be(job.job_definition)
+      expect(new_job.job_definition_instance.job_definition_id).to eq(job.job_definition.id)
+    end
+
+    it 'does not share the record when the source association is not loaded' do
+      new_job = service.execute
+
+      expect(new_job.association(:job_definition)).not_to be_loaded
+      expect(new_job.job_definition_instance.job_definition_id)
+        .to eq(job.job_definition_instance.job_definition_id)
     end
   end
 end

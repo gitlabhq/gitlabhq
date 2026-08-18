@@ -26,12 +26,6 @@ Otherwise, add your license in the Admin area.
 
 ## Activate subscription during installation
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
-
-{{< /history >}}
-
 To activate your subscription during installation, set the `GITLAB_ACTIVATION_CODE` environment variable with the activation code:
 
 ```shell
@@ -91,7 +85,9 @@ When your license expires, GitLab locks features, like Git pushes
 and issue creation. Your instance becomes read-only, and
 an expiration message displays to all administrators.
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 For example, if a license has a start date of January 1, 2024 and an end date of January 1, 2025:
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 - It expires at 11:59:59 PM server time December 31, 2024.
 - It is considered expired from 12:00:00 AM server time January 1, 2025.
@@ -222,7 +218,7 @@ This is needed for example in a known edge-case with
 
 ### Remove licenses
 
-To clean up the [License History table](license_file.md#view-license-details-and-history):
+To clean up the [License History table](#view-license-details-and-history):
 
 ```ruby
 TYPE = :trial?
@@ -254,7 +250,7 @@ users to cover the number of users in your instance.
 To fix this issue, purchase additional seats to cover those users.
 For more information, read the [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 
-In GitLab 14.2 and later, for instances that use a license file, the following
+For instances that use a license file, the following
 rules apply:
 
 - If the users over license are less than or equal to 10% of the users in the license

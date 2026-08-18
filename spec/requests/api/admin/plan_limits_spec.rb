@@ -320,7 +320,6 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
       %w[
         active_versioned_pages_deployments_limit_by_namespace
         audit_events_amazon_s3_configurations
-        cargo_max_file_size
         ci_daily_pipeline_schedule_triggers
         ci_job_annotations_num
         ci_job_annotations_size

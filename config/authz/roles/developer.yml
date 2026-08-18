@@ -28,6 +28,9 @@ project:
   - build_push_code
   - cancel_build
   - cancel_pipeline
+  - create_ai_agent_audit_event
+  - create_ai_agent_identity
+  - create_ai_agent_session
   - create_build
   - create_commit_status
   - create_container_image
@@ -59,6 +62,7 @@ project:
   - edit_on_demand_dast_scan
   - enable_continuous_vulnerability_scans
   - execute_ai_catalog_item
+  - force_evaluate_merge_request_security_policy
   - import_issues
   - keep_job_artifacts
   - play_job
@@ -66,6 +70,7 @@ project:
   - publish_catalog_version
   - publish_status_page
   - push_code
+  - read_ai_agent_session
   - read_ai_catalog_flow
   - read_ai_catalog_third_party_flow
   - read_ai_flow_triggers
@@ -79,9 +84,9 @@ project:
   - read_cluster_agent
   - read_compliance_framework
   - read_coverage_fuzzing
-  - read_duo_agent_platform
   - read_feature_flag
   - read_merge_request_status_check_url
+  - read_observability_portal
   - read_on_demand_dast_scan
   - read_pod_logs
   - read_project_security_dashboard
@@ -107,6 +112,7 @@ project:
   - trigger_ai_flow
   - trigger_amazon_q
   - unschedule_job
+  - update_ai_agent_session
   - update_alert_management_alert
   - update_build
   - update_container_image
@@ -144,6 +150,7 @@ group:
   - delete_o11y_settings
   - destroy_saved_replies
   - duo_workflow
+  - read_advanced_dependency_management
   - read_ai_catalog_flow
   - read_ai_catalog_third_party_flow
   - read_ai_foundational_flow
@@ -151,7 +158,6 @@ group:
   - read_cluster
   - read_cluster_agent
   - read_dependency
-  - read_duo_agent_platform
   - read_group_security_dashboard
   - read_licenses
   - read_observability_portal

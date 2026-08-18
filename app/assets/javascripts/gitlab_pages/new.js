@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import Pages from './components/pages_pipeline_wizard.vue';
 
@@ -24,16 +25,13 @@ export default function initPages() {
     return false;
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GitlabPagesNewRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(Pages, {
-        props: {
-          ...el.dataset,
-        },
-      });
+    component: Pages,
+    props: {
+      ...el.dataset,
     },
   });
 }

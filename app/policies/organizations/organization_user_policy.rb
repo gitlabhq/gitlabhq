@@ -12,7 +12,7 @@ module Organizations
     # necessarily own the user. Then we would have to update this rule.
     rule { can?(:update_organization) & ~last_owner }.policy do
       enable :update_organization_user
-      enable :remove_user
+      enable :delete_organization_user
       enable :delete_user
     end
   end

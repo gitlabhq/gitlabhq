@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import { __, sprintf } from '~/locale';
@@ -22,8 +23,9 @@ export default {
     ToolbarMoreDropdown,
     CommentTemplatesModal,
     HeaderDivider,
-    SummarizeCodeChanges: () =>
-      import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    SummarizeCodeChanges: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    ),
   },
   inject: {
     newCommentTemplatePaths: { default: () => [] },
@@ -117,7 +119,7 @@ export default {
       size="small"
       category="primary"
       variant="confirm"
-      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only"
+      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only focus-visible:gl-not-sr-only"
       @click="skipToInput"
       >{{ __('Skip to input') }}</gl-button
     >

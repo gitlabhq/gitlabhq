@@ -10,6 +10,7 @@ import { isCurrentUser } from '~/lib/utils/common_utils';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { updateNoteErrorMessage } from '~/notes/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
@@ -29,6 +30,7 @@ export default {
     TimelineEntryItem,
     TimeAgoTooltip,
   },
+  mixins: [glSlotsMixin],
   inject: {
     store: {
       type: Object,
@@ -93,7 +95,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel-editing', 'noteEdited', 'resolve', 'start-editing', 'startReplying'],
+  emits: ['cancel-editing', 'note-edited', 'resolve', 'start-editing', 'start-replying'],
   data() {
     return {
       isDeleting: false,
@@ -256,7 +258,7 @@ export default {
         }"
       >
         <div
-          v-if="$scopedSlots.headline"
+          v-if="glSlots().headline"
           class="gl-border-b gl-border-section gl-px-4 gl-py-3 gl-text-subtle"
         >
           <slot name="headline"></slot>
@@ -273,7 +275,7 @@ export default {
             :is-imported="note.imported"
             :show-avatar="!timelineLayout"
           >
-            <template #avatar-badge>
+            <template v-if="glSlots()['avatar-badge']" #avatar-badge>
               <slot name="avatar-badge"></slot>
             </template>
           </note-header>
@@ -296,10 +298,11 @@ export default {
             :can-resolve="canResolve"
             :is-resolved="isResolved"
             :is-resolving="isResolving"
+            :duo-session-id="note.duo_session_id"
             @resolve="$emit('resolve')"
             @delete="onDelete"
             @start-editing="$emit('start-editing')"
-            @startReplying="$emit('startReplying')"
+            @start-replying="$emit('start-replying')"
             @award="toggleAward"
           />
         </div>
@@ -330,7 +333,7 @@ export default {
             :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
             :is-first-note="isFirstNote"
             @cancel-editing="onCancelEditing"
-            @input="$emit('noteEdited', $event)"
+            @input="$emit('note-edited', $event)"
             @award="toggleAward"
           />
         </div>

@@ -3461,6 +3461,46 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe 'service desk project_key_address_slug maintenance' do
+    # group1/test/one and group1/test-one both slugify to 'group1-test-one'
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group, name: 'test') }
+    let_it_be_with_reload(:existing_project) { create(:project, path: 'test-one', group: group) }
+    let_it_be_with_reload(:project) { create(:project, path: 'original', group: subgroup) }
+
+    before do
+      create(:service_desk_setting, project: existing_project, project_key: 'key')
+    end
+
+    context 'when the project has a service desk project_key' do
+      let!(:setting) { create(:service_desk_setting, project: project, project_key: 'mykey') }
+
+      it 'recomputes project_key_address_slug on rename' do
+        project.update!(path: 'renamed')
+
+        expect(setting.reload.project_key_address_slug).to eq("#{project.reload.full_path_slug}-mykey")
+      end
+
+      it 'blocks a rename that would collide with another service desk address' do
+        setting.update!(project_key: 'key')
+
+        expect(project.update(path: 'one')).to be(false)
+        expect(project.errors[:base]).to include(
+          a_string_including('Service Desk address is already in use')
+        )
+        expect(project.reload.path).to eq('original')
+      end
+    end
+
+    context 'when the project has no service desk project_key' do
+      it 'allows the rename' do
+        create(:service_desk_setting, project: project, project_key: nil)
+
+        expect { project.update!(path: 'renamed') }.not_to raise_error
+      end
+    end
+  end
+
   describe '.with_service_desk_key' do
     it 'returns projects with given key' do
       project1 = create(:project)
@@ -3614,6 +3654,74 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'handles non-existent project ids' do
       expect(described_class.root_ids_for([non_existing_record_id])).to be_empty
+    end
+  end
+
+  describe '.root_namespace_ids_by_project_ids' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group_project) { create(:project, namespace: group1) }
+
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group2) }
+    let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+
+    let_it_be(:user) { create(:user, :with_namespace) }
+    let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
+
+    let(:project_ids) { [group_project.id, subgroup_project.id, personal_project.id] }
+
+    subject(:root_namespace_ids_by_project_ids) do
+      described_class.root_namespace_ids_by_project_ids(project_ids)
+    end
+
+    it 'returns a hash mapping each project id to its root namespace id' do
+      expect(root_namespace_ids_by_project_ids).to eq({
+        group_project.id => group1.id,
+        subgroup_project.id => group2.id,
+        personal_project.id => user.namespace.id
+      })
+    end
+
+    context 'when given project_ids is nil' do
+      let(:project_ids) { nil }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when given project_ids is an empty array' do
+      let(:project_ids) { [] }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when project_ids includes a non-existent record' do
+      let(:project_ids) { [group_project.id, non_existing_record_id] }
+
+      it 'excludes non-existent project ids' do
+        expect(root_namespace_ids_by_project_ids).to eq(group_project.id => group1.id)
+      end
+    end
+
+    context 'when the number of project_ids is greater than the allowed MAX_PLUCK' do
+      before do
+        stub_const('Project::MAX_PLUCK', 2)
+      end
+
+      it 'fetches the results in batches and merges them' do
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.root_namespace_ids_by_project_ids([group_project.id])
+        end
+
+        batched = ActiveRecord::QueryRecorder.new do
+          expect(root_namespace_ids_by_project_ids).to eq({
+            group_project.id => group1.id,
+            subgroup_project.id => group2.id,
+            personal_project.id => user.namespace.id
+          })
+        end
+
+        expect(batched.count).to eq(control.count + 1)
+      end
     end
   end
 
@@ -9106,8 +9214,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:project) { create(:project, group: create(:group, :public)) }
       let_it_be(:owner) { create(:project_member, :owner, source: project) }
 
-      it 'returns a maximum of ten maintainers/owners of the project in recent_sign_in descending order' do
-        users = create_list(:user, 11, :with_sign_ins)
+      before do
+        stub_const('Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
+      end
+
+      it 'returns a maximum of maintainers/owners, per the limit, in recent_sign_in order' do
+        users = create_list(:user, 3, :with_sign_ins)
 
         active_maintainers_and_owners = users.map do |user|
           create(:project_member, [:maintainer, :owner].sample, user: user, project: project)
@@ -9115,7 +9227,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         active_maintainers_and_owners_in_recent_sign_in_desc_order = project.members
                                                                             .id_in(active_maintainers_and_owners)
-                                                                            .order_recent_sign_in.limit(10)
+                                                                            .order_recent_sign_in.limit(2)
 
         expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_and_owners_in_recent_sign_in_desc_order)
       end
@@ -9131,6 +9243,27 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:pages_deployment, project: project_with_pages)
 
       expect(described_class.with_pages_deployed).to contain_exactly(project_with_pages)
+    end
+  end
+
+  describe '.with_namespace_domain_pages' do
+    let_it_be(:namespace_domain_project) do
+      create(:project).tap do |project|
+        project.project_setting.update!(pages_unique_domain_enabled: false)
+      end
+    end
+
+    let_it_be(:unique_domain_project) do
+      create(:project).tap do |project|
+        project.project_setting.update!(
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: 'unique.example.com'
+        )
+      end
+    end
+
+    it 'returns only projects using the namespace domain' do
+      expect(described_class.with_namespace_domain_pages).to contain_exactly(namespace_domain_project)
     end
   end
 

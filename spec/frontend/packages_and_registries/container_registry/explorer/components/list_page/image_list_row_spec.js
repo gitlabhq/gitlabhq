@@ -26,7 +26,7 @@ describe('Image List Row', () => {
   let wrapper;
   const [item] = imagesListResponse;
 
-  const findDetailsLink = () => wrapper.find('[data-testid="details-link"]');
+  const findDetailsLink = () => wrapper.findComponentByTestId('details-link');
   const findTagsCount = () => wrapper.find('[data-testid="tags-count"]');
   const findDeleteBtn = () => wrapper.findComponent(DeleteButton);
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);

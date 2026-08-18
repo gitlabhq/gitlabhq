@@ -14,7 +14,7 @@ module RuboCop
 
         # @!method json_node?(node)
         def_node_matcher :json_node?, <<~PATTERN
-          (send (const {nil? | (const nil? :ActiveSupport)} :JSON) $_ $...)
+          (send (const {{nil? cbase} | (const {nil? cbase} :ActiveSupport)} :JSON) $_ $...)
         PATTERN
 
         def on_send(node)

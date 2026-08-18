@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Agent Foundations
+group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: AI development principles
 description: How AI development principles are distilled from documentation and how to add a new principle group.
@@ -28,12 +28,18 @@ following steps:
 1. Detects drift by [comparing a checksum](https://gitlab.com/gitlab-org/gitlab/-/blob/4ebf19a1419cd0737352253fa858b2af8edb8fab/gems/gitlab-ai-principles-distiller/lib/gitlab/principles_distiller/sync/manifest.rb#L110-127)
    over each principle's manifest entry, baseline, and source files against
    the checksum stored in the front matter of the existing distilled file.
-1. For each principle that has drifted, calls the
+1. Generates a child pipeline with one job per principle that has drifted.
+1. In each of those jobs, calls the
    [GitLab Duo Agent Platform](../duo_agent_platform/_index.md) Workflow API to
-   regenerate the distilled file from the current source documentation.
-1. Writes the regenerated files to `.ai/principles/distilled/`.
+   regenerate that principle's distilled file from the current source
+   documentation.
+1. Collects the regenerated files from those jobs and writes them to
+   `.ai/principles/distilled/`.
 1. Opens a merge request when any file changed. The merge request targets the
    default branch and requires human approval before merging.
+
+Distilling each principle in its own job gives it its own timeout, so one slow
+principle cannot discard the rest of the run's work.
 
 Distillation runs server-side. The agent reads source files from the branch
 the sync runs against (the default branch for the weekly schedule).
@@ -175,7 +181,7 @@ agent consumes:
 - Avoid descriptive statements. The agent ignores statements like
   "feature flags are enabled by default" when they conflict with
   patterns in existing code. Write the same content as a rule: "DO NOT
-  stub feature flags to `true` in specs; they are already enabled by
+  stub feature flags to `true` in specs. They are already enabled by
   default."
 - Keep examples concrete. Use fenced code blocks for code, file paths,
   or command examples so the agent can match them syntactically.

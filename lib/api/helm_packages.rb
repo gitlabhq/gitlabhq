@@ -13,8 +13,8 @@ module API
 
     PACKAGE_FILENAME = 'package.tgz'
     HELM_REQUIREMENTS = {
-      channel: API::NO_SLASH_URL_PART_REGEX,
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      channel: ::API::NO_SLASH_URL_PART_REGEX,
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     content_type :binary, 'application/octet-stream'
@@ -48,7 +48,7 @@ module API
     params do
       requires :id, types: [Integer, String], desc: 'The ID or full path of a project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/helm', requirements: HELM_REQUIREMENTS do
         desc 'Download a chart index' do
           detail 'Downloads a specified chart index for a project.'

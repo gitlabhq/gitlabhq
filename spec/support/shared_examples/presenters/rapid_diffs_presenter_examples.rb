@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'rapid diffs presenter base diffs_resource' do
+RSpec.shared_examples 'rapid diffs presenter base diffs_resource' do |include_stats: false|
   describe '#diffs_resource' do
     let(:diffs) { instance_double(Gitlab::Diff::FileCollection::Base) }
+    let(:expected_diff_options) { diff_options.merge(include_stats: include_stats) }
 
     it 'calls diffs on the resource with merged options' do
-      expect(resource).to receive(:diffs).with(diff_options).and_return(diffs)
+      expect(resource).to receive(:diffs).with(expected_diff_options).and_return(diffs)
 
       expect(presenter.diffs_resource).to eq(diffs)
     end
@@ -14,7 +15,7 @@ RSpec.shared_examples 'rapid diffs presenter base diffs_resource' do
       let(:extra_options) { { paths: ['file.rb'] } }
 
       it 'merges the options with diff_options' do
-        expect(resource).to receive(:diffs).with(diff_options.merge(extra_options)).and_return(diffs)
+        expect(resource).to receive(:diffs).with(expected_diff_options.merge(extra_options)).and_return(diffs)
 
         presenter.diffs_resource(extra_options)
       end
@@ -226,6 +227,33 @@ RSpec.shared_examples 'rapid diffs presenter diffs methods' do |sorted:|
         expect(resource).to receive(:diffs_for_streaming_by_changed_paths).with(options, &block)
 
         presenter.diff_files_for_streaming_by_changed_paths(options, &block)
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'rapid diffs presenter overflow detection' do
+  describe '#diffs_stream_url overflow detection' do
+    let(:offset) { presenter.offset }
+    let(:overflow) { false }
+
+    before do
+      allow(resource).to receive(:first_diffs_slice).and_return(
+        instance_double(Gitlab::Diff::FileCollection::Base, count: offset, overflow?: overflow)
+      )
+    end
+
+    context 'when the slice overflowed' do
+      let(:overflow) { true }
+
+      it 'returns a stream URL' do
+        expect(presenter.diffs_stream_url).not_to be_nil
+      end
+    end
+
+    context 'when the slice did not overflow' do
+      it 'returns nil' do
+        expect(presenter.diffs_stream_url).to be_nil
       end
     end
   end

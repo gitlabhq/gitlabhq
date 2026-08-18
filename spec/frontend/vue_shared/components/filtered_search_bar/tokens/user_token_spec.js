@@ -16,7 +16,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
-import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPTIONS_NONE_ANY, OPTION_ME } from '~/vue_shared/components/filtered_search_bar/constants';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -226,6 +226,99 @@ describe('UserToken', () => {
 
       expect(tokenValue.findComponent(GlAvatar).props('src')).toBe(mockUsers[0].avatar_url);
       expect(tokenValue.text()).toBe(mockUsers[0].name); // "Administrator"
+    });
+
+    describe('when wildcards collide with usernames', () => {
+      // Real users to collide (case-insensitively) with available wildcards
+      const collisionUsers = {
+        any: {
+          id: 97,
+          name: 'User any',
+          username: 'any',
+          avatar_url: 'avatar/any',
+        },
+        none: {
+          id: 98,
+          name: 'User none',
+          username: 'none',
+          avatar_url: 'avatar/none',
+        },
+        me: {
+          id: 99,
+          name: 'User me',
+          username: 'me',
+          avatar_url: 'avatar/me',
+        },
+      };
+      const userForLabel = (label) => collisionUsers[label.toLowerCase()];
+
+      const findTokenValueSegment = () =>
+        wrapper.findAllComponents(GlFilteredSearchTokenSegment).at(2);
+      const findTokenValueAvatar = () => findTokenValueSegment().findComponent(GlAvatar);
+
+      const createComponentWithData = (data, defaultUsers) => {
+        wrapper = createComponent({
+          value: { data },
+          config: { ...mockAuthorToken, defaultUsers, initialUsers: Object.values(collisionUsers) },
+        });
+      };
+
+      describe('without passing defaultUsers', () => {
+        it.each(['Any', 'None'])(
+          'renders the exact-case `%s` wildcard as-is, not the colliding user',
+          (data) => {
+            createComponentWithData(data);
+            expect(findTokenValueSegment().text()).toBe(data);
+            expect(findTokenValueAvatar().exists()).toBe(false);
+          },
+        );
+
+        it.each(['any', 'AnY', 'none', 'nOnE'])(
+          'renders the found user by name when data is `%s`',
+          (data) => {
+            createComponentWithData(data);
+            const user = userForLabel(data);
+
+            expect(findTokenValueSegment().text()).toBe(user.name);
+            expect(findTokenValueAvatar().props('src')).toBe(user.avatar_url);
+          },
+        );
+
+        // Me is not a default token
+        it('matches `Me` to the user, as there is no such wildcard available', () => {
+          createComponentWithData('Me');
+
+          expect(findTokenValueSegment().text()).toBe(collisionUsers.me.name);
+          expect(findTokenValueAvatar().props('src')).toBe(collisionUsers.me.avatar_url);
+        });
+      });
+
+      describe('when passing `Me` as defaultUsers', () => {
+        it('renders the exact-case `Me` wildcard as-is, not the colliding user', () => {
+          createComponentWithData('Me', [OPTION_ME]);
+
+          expect(findTokenValueSegment().text()).toBe('Me');
+          expect(findTokenValueAvatar().exists()).toBe(false);
+        });
+
+        it.each(['me', 'mE'])('renders the found user by name when data is `%s`', (data) => {
+          createComponentWithData(data, [OPTION_ME]);
+
+          expect(findTokenValueSegment().text()).toBe(collisionUsers.me.name);
+          expect(findTokenValueAvatar().props('src')).toBe(collisionUsers.me.avatar_url);
+        });
+
+        it.each(['Any', 'None'])(
+          'matches `%s` to the user, as there is no such wildcard',
+          (data) => {
+            createComponentWithData(data, [OPTION_ME]);
+            const user = userForLabel(data);
+
+            expect(findTokenValueSegment().text()).toBe(user.name);
+            expect(findTokenValueAvatar().props('src')).toBe(user.avatar_url);
+          },
+        );
+      });
     });
 
     it('renders token value with correct avatarUrl from user object', () => {

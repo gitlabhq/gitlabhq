@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Deletes a release asset link', feature_category: :release_orchestration do
   include GraphqlHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :private, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be_with_reload(:release) { create(:release, project: project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:release_link) { create(:release_link, release: release) }
@@ -29,6 +29,17 @@ RSpec.describe 'Deletes a release asset link', feature_category: :release_orches
 
   let(:delete_link) { post_graphql_mutation(mutation, current_user: current_user) }
   let(:mutation_response) { graphql_mutation_response(mutation_name)&.with_indifferent_access }
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_release_link do
+    let(:user) { maintainer }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:release_asset_link_delete, { id: release_link.to_global_id.to_s }, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
 
   it 'deletes the release asset link and returns the deleted link', :aggregate_failures do
     delete_link

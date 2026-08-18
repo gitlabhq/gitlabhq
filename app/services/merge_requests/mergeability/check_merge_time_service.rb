@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckMergeTimeService < CheckBaseService
       set_identifier :merge_time
+      set_failure_explanation N_('The scheduled merge time must have passed.')
       set_description 'Checks whether the merge is blocked due to a scheduled merge time'
 
       def execute

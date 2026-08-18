@@ -13,7 +13,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all agents' do
           detail 'Lists all agents registered for the project. You must have the Developer, Maintainer, or Owner ' \
             'role to use this endpoint.'

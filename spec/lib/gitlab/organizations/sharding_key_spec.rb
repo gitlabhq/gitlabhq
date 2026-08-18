@@ -10,11 +10,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     %w[
       audit_events
-      ai_settings
       merge_request_diff_commits
       merge_request_diff_files
       merge_request_diff_files_99208b8fac
-      push_rules
     ]
   end
 
@@ -24,10 +22,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     # web_hook_logs_daily's check_19dc80d658 is left NOT VALID by
     # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303 and re-validated (these entries removed)
     # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
+    #
+    # push_rules' check_1d23f0a102 is validated on GitLab.com only
+    # (https://gitlab.com/gitlab-org/gitlab/-/work_items/607950) and remains NOT VALID for self-managed
+    # until https://gitlab.com/gitlab-org/gitlab/-/work_items/607955 (19.6, after required stop 19.5)
     %w[
       web_hook_logs_daily.organization_id
       web_hook_logs_daily.group_id
       web_hook_logs_daily.project_id
+      push_rules.project_id
     ]
   end
 
@@ -55,9 +58,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
-      'web_hook_logs_daily.organization_id', # No LFK needed: daily partitions are dropped after 14 days
-      'web_hook_logs_daily.group_id', # No LFK needed: daily partitions are dropped after 14 days
-      'web_hook_logs_daily.project_id', # No LFK needed: daily partitions are dropped after 14 days
+      'web_hook_logs_daily.organization_id', # No LFK needed: daily partitions are dropped after 7 days
+      'web_hook_logs_daily.group_id', # No LFK needed: daily partitions are dropped after 7 days
+      'web_hook_logs_daily.project_id', # No LFK needed: daily partitions are dropped after 7 days
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
@@ -84,8 +87,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # LFK already present on vulnerability_occurrence with cascade delete.
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
-      # FK removed as table is soon to be dropped. https://gitlab.com/gitlab-org/gitlab/-/work_items/600951
-      'work_item_descriptions.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
       'p_catalog_resource_sync_events.project_id',
       'project_data_transfers.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439201
@@ -122,6 +123,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # No LFK needed: daily partitions are dropped after 30 days via retain_for
       'p_duo_workflows_checkpoint_blobs.project_id',
       'p_duo_workflows_checkpoint_blobs.namespace_id',
+      'p_duo_workflows_checkpoint_headers.project_id',
+      'p_duo_workflows_checkpoint_headers.namespace_id',
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
       'p_knowledge_graph_code_indexing_tasks.project_id',
@@ -144,8 +147,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "abuse_report_labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "achievement_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      # organization_id column added nullable; NOT NULL + validated FK land in a follow-up once call sites are migrated.
-      "ai_settings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/531356",
       "ai_catalog_item_consumers" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/596012",
       "ai_vectorizable_file_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "alert_management_alert_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",

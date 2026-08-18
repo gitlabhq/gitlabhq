@@ -55,14 +55,14 @@ Including when that expanded content is:
 
 Transient bugs happen in the context of code that executes under the assumption
 that the application's state meets one or more conditions. We may write a feature
-that assumes a server-side API response always include a group of attributes or that
+that assumes a server-side API response always includes a group of attributes or that
 an operation only executes when the application has successfully transitioned to a new
 state.
 
 Transient bugs are difficult to debug because there isn't any mechanism that alerts
 the user or the developer about unsatisfied conditions. These conditions are usually
 not expressed explicitly in the code. A useful debugging technique for such situations
-is placing assertions to make any assumption explicit. They can help detect the cause
+is placing assertions to make any assumption explicit. They can help detect
 which unmet condition causes the bug.
 
 #### Asserting pre-conditions on state mutations
@@ -131,7 +131,7 @@ correctly when triggered.
 
 ### Error Logging
 
-Error logging doesn't necessarily directly prevents transient bugs but it can help to debug them.
+Error logging doesn't necessarily directly prevent transient bugs but it can help to debug them.
 
 When coding, sometimes we expect some exceptions to be raised and we rescue them.
 

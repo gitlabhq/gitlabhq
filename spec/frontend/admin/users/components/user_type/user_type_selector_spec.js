@@ -27,7 +27,7 @@ describe('UserTypeSelector component', () => {
   };
 
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
-  const findRadioFor = (value) => wrapper.findByTestId(`user-type-${value}`);
+  const findRadioFor = (value) => wrapper.findComponentByTestId(`user-type-${value}`);
   const findSummaryCard = () => wrapper.findComponent(GlCard);
 
   describe('user type radio group', () => {

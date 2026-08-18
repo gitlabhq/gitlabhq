@@ -132,7 +132,7 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
 
       3.times { create_records }
 
-      expect { execute_presenter }.to issue_same_number_of_queries_as(control)
+      expect { execute_presenter }.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
 
       result = execute_presenter
       expect(result[:enabled_keys].size).to eq(4)

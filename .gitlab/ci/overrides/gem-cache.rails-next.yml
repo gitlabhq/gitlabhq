@@ -7,4 +7,3 @@
   key:
     files:
       - Gemfile.next.lock
-      - Gemfile.next.checksum

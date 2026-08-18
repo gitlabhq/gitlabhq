@@ -49,7 +49,7 @@ fio --ioengine=libaio --direct=1 --gtod_reduce=1 --iodepth=64 --randrepeat=1 \
     --size=4G --rwmixread=75 --bs=4k
 ```
 
-This creates a 4 GB file in the NFS, PostgreSQL or Gitaly path.
+This creates a 4 GB file in the NFS, PostgreSQL, or Gitaly path.
 Fio performs 4 KB reads and writes using a 75%/25% split in the file, with 64
 operations running at a time. Be sure to delete the file after the test
 completes.

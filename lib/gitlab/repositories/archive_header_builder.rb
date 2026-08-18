@@ -6,19 +6,23 @@ module Gitlab
     # Used by both the API and web controller to ensure consistent
     # Content-Type and Content-Disposition headers for HEAD and GET requests.
     class ArchiveHeaderBuilder
-      def initialize(repository, ref:, format:, append_sha:, path: nil, ref_type: nil)
+      def initialize(repository, ref:, format:, append_sha:, path: nil, ref_type: nil, storage_path: '')
         @repository = repository
         @ref = ref
         @format = (format || 'tar.gz').downcase
         @append_sha = append_sha
         @path = path
         @ref_type = ref_type
+        # Defaults to an empty storage path (header generation does not need it).
+        # Pass the real downloads path when the metadata is also used to send the
+        # archive, so the ETag and the archive body share one resolved commit.
+        @storage_path = storage_path
       end
 
       def metadata
         @metadata ||= repository.archive_metadata(
           ref,
-          '', # Storage path not needed for header generation
+          storage_path,
           format,
           append_sha: append_sha,
           path: path,
@@ -49,7 +53,7 @@ module Gitlab
 
       private
 
-      attr_reader :repository, :ref, :format, :append_sha, :path, :ref_type
+      attr_reader :repository, :ref, :format, :append_sha, :path, :ref_type, :storage_path
 
       def validate_metadata!
         raise Gitlab::Workhorse::ArchiveNotFoundError, "Repository or ref not found" if metadata.empty?

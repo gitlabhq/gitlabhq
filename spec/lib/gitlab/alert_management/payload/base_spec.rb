@@ -274,8 +274,8 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
 
       it 'casts values to strings' do
         is_expected.to eq({
-          description: "{\"description\"=>\"description\"}",
-          monitoring_tool: "[\"datadog\", 5]",
+          description: stubs[:description].to_s,
+          monitoring_tool: stubs[:monitoring_tool].to_s,
           service: '4356875',
           project_id: project.id,
           title: "true"

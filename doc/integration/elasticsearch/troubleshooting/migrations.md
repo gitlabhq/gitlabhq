@@ -1,5 +1,5 @@
 ---
-stage: AI-powered
+stage: Analytics
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Elasticsearch migrations
@@ -34,7 +34,7 @@ with the IP address of your Elasticsearch host.
 For a single-node Elasticsearch cluster, the functional cluster health status is yellow (never green). The reason is that the primary shard is allocated, but replicas cannot be as no other node to which Elasticsearch can assign a replica exists. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 
 > [!warning]
-> Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
+> Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch node) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
 
 If you want to have a green status for your single-node Elasticsearch cluster, understand the risks and run the following query to set the number of replicas to `0`. The cluster no longer tries to create any shard replicas.
 
@@ -103,43 +103,3 @@ $ jq '.class' sidekiq/current | sort | uniq -c | sort -nr
 
 In this case, `free -m` on the overloaded GitLab node would also show
 unexpectedly high `buff/cache` usage.
-
-## Error: `Couldn't load task status`
-
-When you reindex, you might get a `Couldn't load task status` error. A `sliceId must be greater than 0 but was [-1]` error might also appear on the Elasticsearch host. As a workaround, consider [reindexing from scratch](indexing.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
-
-For more information, see [issue 422938](https://gitlab.com/gitlab-org/gitlab/-/issues/422938).
-
-## Error: `migration has failed with NoMethodError:undefined method`
-
-In GitLab 15.11, the `BackfillProjectPermissionsInBlobs` migration might fail with the following error message in `elasticsearch.log`:
-
-```shell
-migration has failed with NoMethodError:undefined method `<<' for nil:NilClass, no retries left
-```
-
-If `BackfillProjectPermissionsInBlobs` is the only failed migration, you can upgrade to the latest patch version of GitLab 16.0, which includes [the fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118494). Otherwise, you can ignore the error as it does not affect the functionality of advanced search.
-
-## `ElasticIndexInitialBulkCronWorker` and `ElasticIndexBulkCronWorker` jobs stuck in deduplication
-
-In GitLab 16.5 and earlier, the `ElasticIndexInitialBulkCronWorker` and `ElasticIndexBulkCronWorker` jobs might get stuck in deduplication. This issue might prevent advanced search from properly indexing documents even after creating a new index. In GitLab 16.6, `idempotent!` was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135817) for bulk cron workers that perform indexing.
-
-The Sidekiq log might have the following entries:
-
-```shell
-{"severity":"INFO","time":"2023-10-31T10:33:06.998Z","retry":0,"queue":"default","version":0,"queue_namespace":"cronjob","args":[],"class":"ElasticIndexInitialBulkCronWorker",
-...
-"idempotency_key":"resque:gitlab:duplicate:default:<value>","duplicate-of":"91e8673347d4dc84fbad5319","job_size_bytes":2,"pid":12047,"job_status":"deduplicated","message":"ElasticIndexInitialBulkCronWorker JID-5e1af9180d6e8f991fc773c6: deduplicated: until executing","deduplication.type":"until executing"}
-```
-
-To resolve this issue:
-
-1. In a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session), run this command:
-
-   ```shell
-   idempotency_key = "<idempotency_key_from_log_entry>"
-   duplicate_key = "resque:gitlab:#{idempotency_key}:cookie:v2"
-   Gitlab::Redis::Queues.with { |c| c.del(duplicate_key) }
-   ```
-
-1. Replace `<idempotency_key_from_log_entry>` with the actual entry in your log.

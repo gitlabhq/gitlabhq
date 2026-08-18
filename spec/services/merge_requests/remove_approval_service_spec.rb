@@ -48,6 +48,19 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
       end
     end
 
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/604469
+    shared_examples 'blocks approval removal for a locked merge request' do
+      it_behaves_like 'no-op call'
+
+      it 'does not remove the approval' do
+        expect { execute! }.not_to change { merge_request.approvals.size }
+      end
+
+      it 'returns without success so the API responds 404' do
+        expect(execute!).to be_nil
+      end
+    end
+
     context 'with a user who has approved' do
       let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
       let(:notification_service) { NotificationService.new }
@@ -72,13 +85,25 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
         let(:merge_request) { create(:merge_request, :locked, source_project: project, reviewers: [user]) }
         let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
 
-        it 'calls log_approval_deletion_on_merged_or_locked_mr' do
-          expect(merge_request).to receive(:log_approval_deletion_on_merged_or_locked_mr).with(
-            source: 'MergeRequests::RemoveApprovalService',
-            current_user: user
-          )
+        it_behaves_like 'blocks approval removal for a locked merge request'
 
-          execute!
+        context 'when the prevent_approval_removal_during_merge feature flag is disabled' do
+          before do
+            stub_feature_flags(prevent_approval_removal_during_merge: false)
+          end
+
+          it 'logs the approval deletion instead of blocking it' do
+            expect(merge_request).to receive(:log_approval_deletion_on_merged_or_locked_mr).with(
+              source: 'MergeRequests::RemoveApprovalService',
+              current_user: user
+            )
+
+            execute!
+          end
+
+          it 'removes the approval' do
+            expect { execute! }.to change { merge_request.approvals.size }.from(2).to(1)
+          end
         end
       end
 

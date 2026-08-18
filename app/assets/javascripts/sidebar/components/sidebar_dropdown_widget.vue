@@ -26,6 +26,7 @@ import {
   Tracking,
 } from 'ee_else_ce/sidebar/constants';
 import { issuableAttributesQueries } from 'ee_else_ce/sidebar/queries/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'SidebarDropdownWidget',
@@ -44,6 +45,7 @@ export default {
     GlLink,
     GlLoadingIcon,
   },
+  mixins: [glSlotsMixin],
   inject: {
     canUpdate: {
       default: false,
@@ -392,7 +394,7 @@ export default {
             </span>
           </slot>
         </template>
-        <template #footer>
+        <template v-if="glSlots().footer" #footer>
           <slot name="footer"></slot>
         </template>
       </gl-collapsible-listbox>

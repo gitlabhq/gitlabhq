@@ -84,6 +84,7 @@ module API
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :mr_default_title_template, type: String, limit: 100, desc: 'Template used to generate the default merge request title. Maximum 100 characters.'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
+        optional :cicd_catalog_enabled, type: Boolean, desc: 'Set whether the project is a CI/CD catalog project'
       end
 
       params :optional_project_params_ee do
@@ -171,6 +172,7 @@ module API
           :ci_forward_deployment_enabled,
           :ci_forward_deployment_rollback_allowed,
           :ci_separated_caches,
+          :cicd_catalog_enabled,
           :container_registry_access_level,
           :container_expiration_policy_attributes,
           :default_branch,

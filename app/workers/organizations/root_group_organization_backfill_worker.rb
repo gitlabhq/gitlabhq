@@ -59,12 +59,27 @@ module Organizations
     # rubocop:enable Gitlab/AvoidDefaultOrganization
 
     def backfill_group(group)
-      unless group.organization_id == default_organization&.id
-        return log_info('Group not in default organization, skipping backfill', group_id: group.id)
-      end
+      # This can only be triggered by enabling a feature flag and therefore is guarded by feature flag authorizations
+      result = Organizations::CreateFromGroupService.new(group: group, skip_authorization: true).execute
+      return if result.success?
 
-      new_org = create_organization_for_group(group)
-      transfer_group_to_organization(group, new_org)
+      case result.reason
+      when :not_root_group
+        log_info('Group is not a top-level group, skipping backfill', group_id: group.id)
+      when :not_in_default_organization
+        log_info('Group not in default organization, skipping backfill', group_id: group.id)
+      when :organization_not_created
+        log_error('Failed to create organization', group_id: group.id, error_message: result.message)
+        raise "Failed to create organization for group #{group.id}: #{result.message}"
+      when :group_not_transferred
+        raise_transfer_error(group, result.payload[:organization], result.message)
+      else
+        log_error('Failed to backfill organization',
+          group_id: group.id,
+          error_reason: result.reason,
+          error_message: result.message)
+        raise "Failed to backfill organization for group #{group.id} (#{result.reason}): #{result.message}"
+      end
     end
 
     def revert_group(group)
@@ -79,38 +94,6 @@ module Organizations
       current_org.destroy if organization_deleted
     end
 
-    def create_organization_for_group(group)
-      result = try_create_organization(group, group.path)
-
-      if result.error? && path_validation_error?(result)
-        fallback_path = "organization-#{group.id}"
-        result = try_create_organization(group, fallback_path)
-      end
-
-      unless result.success?
-        log_error('Failed to create organization', group_id: group.id, error_message: result.message)
-        raise "Failed to create organization for group #{group.id}: #{result.message}"
-      end
-
-      result.payload[:organization]
-    end
-
-    def try_create_organization(group, path)
-      Organizations::CreateService.new(
-        current_user: nil,
-        params: {
-          name: group.name,
-          path: path,
-          state: :unconfirmed,
-          visibility_level: group.visibility_level
-        }
-      ).execute(skip_authorization: true)
-    end
-
-    def path_validation_error?(result)
-      result.message.to_s.include?('Path')
-    end
-
     def transfer_group_to_organization(group, organization)
       result = Organizations::Transfer::TopLevelGroupService.new(
         groups: group,
@@ -121,11 +104,16 @@ module Organizations
 
       return if result.success?
 
+      raise_transfer_error(group, organization, result.message)
+    end
+
+    def raise_transfer_error(group, organization, error_message)
       log_error('Failed to transfer group',
         group_id: group.id,
         Labkit::Fields::GL_ORGANIZATION_ID => organization.id,
-        error_message: result.message)
-      raise "Failed to transfer group #{group.id} to organization #{organization.id}: #{result.message}"
+        error_message: error_message)
+
+      raise "Failed to transfer group #{group.id} to organization #{organization.id}: #{error_message}"
     end
 
     def log_info(message, **extra)

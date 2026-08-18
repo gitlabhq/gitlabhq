@@ -8,6 +8,8 @@ module Mutations
       include ResolvesNamespace
 
       authorize :update_ci_namespace_settings
+      authorize_granular_token permissions: :update_ci_namespace_settings, boundary_argument: :full_path,
+        boundary_type: :group
 
       argument :full_path, GraphQL::Types::ID,
         required: true,

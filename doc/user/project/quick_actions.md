@@ -45,7 +45,7 @@ If you manually enter a parameter, it must be enclosed in double quotation marks
 
 - ASCII letters
 - Numbers (0-9)
-- Underscore (`_`), hyphen (`-`), question mark (`?`), dot (`.`), ampersand (`&`) or at (`@`)
+- Underscore (`_`), hyphen (`-`), question mark (`?`), dot (`.`), ampersand (`&`), or at (`@`)
 
 Parameters are case-sensitive. Autocomplete handles this, and the insertion
 of quotation marks, automatically.
@@ -284,12 +284,6 @@ Assign one or more users as reviewers, or request a new review from existing rev
 
 ### `award`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412275) in GitLab 16.5 for tasks, objectives, and key results.
-
-{{< /history >}}
-
 Toggle an emoji reaction.
 
 **Availability**:
@@ -322,12 +316,6 @@ Toggle an emoji reaction.
 - For more information, see [emoji reactions](../emoji_reactions.md).
 
 ### `blocked_by`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214232) in GitLab 16.0.
-
-{{< /history >}}
 
 Mark the item as blocked by other items.
 
@@ -374,12 +362,6 @@ Mark the item as blocked by other items.
 - To mark the items as related, none blocking the other, use [`/relate`](#relate).
 
 ### `blocks`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214232) in GitLab 16.0.
-
-{{< /history >}}
 
 Mark the item as blocking other items.
 
@@ -547,6 +529,10 @@ Clone the work item to a given group or project.
 
 - `<path/to/group_or_project>`: The path to the target group or project. If not provided, clones to the current project.
 - `--with_notes`: Optional flag to include comments and system notes in the clone.
+- `[type:<work item type>]` (optional): The work item type to use in the target
+  namespace. When omitted, the source work item type is preserved.
+  Multi-word type names (for example, `Key Result`) do not need quoting because
+  `]` terminates the value.
 
 **Examples**:
 
@@ -568,10 +554,38 @@ Clone the work item to a given group or project.
   /clone group/project --with_notes
   ```
 
+- Clone to another project and convert to a specific work item type:
+
+  ```plaintext
+  /clone group/project [type:Issue]
+  ```
+
+- Clone with a multi-word type name:
+
+  ```plaintext
+  /clone group/project [type:Key Result]
+  ```
+
 **Additional details**:
 
 - Copies as much data as possible as long as the target contains equivalent objects like labels, milestones, or epics.
 - Does not copy comments or system notes unless `--with_notes` is provided as an argument.
+- When no type is provided, the source work item type is preserved. The clone
+  fails if that type is not available in the target namespace.
+- When a type is provided, the work item is converted to that type. The clone
+  fails if the type is not available in the target namespace.
+- The `[type:...]` value is matched case-insensitively against the names of
+  the work item types available in the target namespace.
+- The clone fails if the resolved type is disabled in the target namespace
+  (archived, admin-disabled, or not visible in the destination context).
+- When cloning to the same namespace, the `[type:...]` argument is validated
+  but no conversion is performed; the clone keeps the source work item type.
+- Basic type conversion between built-in types (for example, `Issue`, `Task`,
+  `Incident`) is available on all tiers.
+- Custom work item types and per-namespace type visibility are Premium and
+  Ultimate features on GitLab.com. If a type is unavailable in the target
+  namespace under your subscription, the clone fails and the error message
+  lists the types you can use.
 
 ### `close`
 
@@ -601,12 +615,6 @@ Close the work item.
 
 ### `confidential`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412276) in GitLab 16.4 for tasks, objectives, and key results.
-
-{{< /history >}}
-
 Mark the work item as confidential.
 
 **Availability**:
@@ -635,12 +643,6 @@ Mark the work item as confidential.
 
 ### `convert_to_ticket`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9.
-
-{{< /history >}}
-
 Convert an issue into a Service Desk ticket.
 
 **Availability**:
@@ -662,6 +664,10 @@ Convert an issue into a Service Desk ticket.
 
 **Additional details**:
 
+- This quick action is available only when [Service Desk is set up](service_desk/configure.md)
+  for the project.
+  On GitLab Self-Managed, the instance must also have
+  [incoming email](../../administration/incoming_email.md) configured with email sub-addressing or a catch-all mailbox.
 - For more information, see [convert a regular issue to a Service Desk ticket](service_desk/using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket).
 
 ### `copy_metadata`
@@ -735,12 +741,6 @@ Create a new merge request starting from the current issue.
   ```
 
 ### `done`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2 for tasks, objectives, and key results.
-
-{{< /history >}}
 
 Mark a to-do item as done.
 
@@ -965,12 +965,6 @@ Set the health status.
 
 ### `iteration`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9 for `--current` and `--next` options.
-
-{{< /history >}}
-
 Set the iteration.
 
 **Availability**:
@@ -1121,7 +1115,7 @@ Merge the changes.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) for epics in GitLab 18.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) for epics in GitLab 18.2.
 
 {{< /history >}}
 
@@ -1163,6 +1157,10 @@ Move the work item to another group or project.
 **Parameters**:
 
 - `<path/to/group_or_project>`: The path to the target group or project.
+- `[type:<work item type>]` (optional): The work item type to use in the target
+  namespace. When omitted, the source work item type is preserved.
+  Multi-word type names (for example, `Key Result`) do not need quoting because
+  `]` terminates the value.
 
 **Examples**:
 
@@ -1172,10 +1170,38 @@ Move the work item to another group or project.
   /move group/project
   ```
 
+- Move to another project and convert to a specific work item type:
+
+  ```plaintext
+  /move group/project [type:Issue]
+  ```
+
+- Move with a multi-word type name:
+
+  ```plaintext
+  /move group/project [type:Key Result]
+  ```
+
 **Additional details**:
 
 - Be careful when moving a work item to a location with different access rules.
   Before moving the work item, make sure it does not contain sensitive data.
+- When no type is provided, the source work item type is preserved. The move
+  fails if that type is not available in the target namespace.
+- When a type is provided, the work item is converted to that type. The move
+  fails if the type is not available in the target namespace.
+- The `[type:...]` value is matched case-insensitively against the names of
+  the work item types available in the target namespace.
+- The move fails if the resolved type is disabled in the target namespace
+  (archived, admin-disabled, or not visible in the destination context).
+- When moving to the same namespace, the `[type:...]` argument is validated
+  but no conversion is performed; the work item keeps its existing type.
+- Basic type conversion between built-in types (for example, `Issue`, `Task`,
+  `Incident`) is available on all tiers.
+- Custom work item types and per-namespace type visibility are Premium and
+  Ultimate features on GitLab.com. If a type is unavailable in the target
+  namespace under your subscription, the move fails and the error message
+  lists the types you can use.
 
 ### `page`
 
@@ -1198,12 +1224,6 @@ Start escalations for the incident.
   ```
 
 ### `promote_to`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1 for tasks and key results.
-
-{{< /history >}}
 
 Promote a work item to a specified type.
 
@@ -1287,12 +1307,6 @@ Publish an issue to an associated Status Page.
 - For more information, see [Status Page](../../operations/incident_management/status_page.md).
 
 ### `react`
-
-{{< history >}}
-
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from `/award` in GitLab 16.7. `/award` is still available as an aliased command.
-
-{{< /history >}}
 
 Toggle an emoji reaction.
 
@@ -1513,12 +1527,6 @@ Mark items as related.
 
 ### `remove_child`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/132761) in GitLab 16.10 for objectives.
-
-{{< /history >}}
-
 Remove an item as a child item.
 
 **Availability**:
@@ -1687,7 +1695,7 @@ Remove the iteration.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) for epics in GitLab 18.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) for epics in GitLab 18.2.
 
 {{< /history >}}
 
@@ -1713,12 +1721,6 @@ Remove the milestone.
 - To set the milestone, use [`/milestone`](#milestone).
 
 ### `remove_parent`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434344) in GitLab 16.9 for tasks and key results.
-
-{{< /history >}}
 
 Remove the parent from the item.
 
@@ -1887,7 +1889,6 @@ Run a new pipeline for the merge request.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5 for tasks and key results.
 - Alias `/epic` for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514942) in GitLab 17.10.
 
 {{< /history >}}
@@ -2082,12 +2083,6 @@ Submit a pending [review](merge_requests/reviews/_index.md#submit-a-review).
 
 ### `subscribe`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 for tasks, objectives, and key results.
-
-{{< /history >}}
-
 Subscribe to notifications for a work item.
 
 **Availability**:
@@ -2202,12 +2197,6 @@ Change the title.
 
 ### `todo`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2 for tasks, objectives, and key results.
-
-{{< /history >}}
-
 Add a to-do item for yourself.
 
 **Availability**:
@@ -2229,12 +2218,6 @@ Add a to-do item for yourself.
   ```
 
 ### `type`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385227) in GitLab 16.0.
-
-{{< /history >}}
 
 Convert a work item to a specified type.
 
@@ -2417,7 +2400,6 @@ Remove labels.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414400) in GitLab 16.1 for issues and epics.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481851) in GitLab 17.8 for tasks, objectives, and key results.
 
 {{< /history >}}
@@ -2485,12 +2467,6 @@ Unlock the discussions.
 - To lock the discussions, use [`/lock`](#lock).
 
 ### `unsubscribe`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 for tasks, objectives, and key results.
-
-{{< /history >}}
 
 Unsubscribe from notifications for a work item.
 

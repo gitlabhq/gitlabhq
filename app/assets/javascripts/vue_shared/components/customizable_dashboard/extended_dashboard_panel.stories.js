@@ -31,7 +31,6 @@ Default.args = {
   showAlertState: false,
   alertPopoverTitle: '',
   actions: [],
-  editing: false,
 };
 
 export const Loading = Template.bind({});
@@ -64,10 +63,9 @@ Information.args = {
   alertVariant: VARIANT_INFO,
 };
 
-export const Editing = Template.bind({});
-Editing.args = {
+export const WithActions = Template.bind({});
+WithActions.args = {
   ...Default.args,
-  editing: true,
   actions: [
     {
       text: __('Delete'),

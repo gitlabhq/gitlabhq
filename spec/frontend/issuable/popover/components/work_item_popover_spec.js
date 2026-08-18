@@ -183,6 +183,32 @@ describe('IssuePopover component', () => {
     });
   });
 
+  describe('when the flag is only available via gon.features (standalone mount)', () => {
+    const featuresQueryHandler = jest.fn().mockResolvedValue(issueQueryWithFeaturesResponse);
+    let originalGonFeatures;
+
+    beforeEach(async () => {
+      // Simulates the real root-mount, where `glFeatures` cannot be injected and
+      // the flag must be read from `gon.features` instead.
+      originalGonFeatures = window.gon.features;
+      window.gon.features = { ...window.gon.features, workItemFeaturesField: true };
+      mountComponent({ queryResponse: featuresQueryHandler });
+      findGlPopover().vm.$emit('show');
+      await waitForPromises();
+    });
+
+    afterEach(() => {
+      // `window` is shared across tests, so restore to avoid leaking the flag.
+      window.gon.features = originalGonFeatures;
+    });
+
+    it('passes useWorkItemFeatures: true using the gon fallback', () => {
+      expect(featuresQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ useWorkItemFeatures: true }),
+      );
+    });
+  });
+
   describe('when request returns null', () => {
     const emptyResponseHandler = jest.fn().mockResolvedValue({ data: { namespace: null } });
 

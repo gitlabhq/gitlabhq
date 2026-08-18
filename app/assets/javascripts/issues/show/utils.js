@@ -1,6 +1,7 @@
 import { TITLE_LENGTH_MAX } from '~/issues/constants';
 import { COLON, HYPHEN, NEWLINE } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
+import { sortableEnd, sortableStart } from '~/sortable/utils';
 
 /**
  * Returns the start and end `sourcepos` rows, converted to zero-based numbering.
@@ -282,4 +283,64 @@ export const insertNextToTaskListItemText = (element, listItem) => {
     // Otherwise, the task item is a simple one where the task text exists as the last child
     listItem.append(element);
   }
+};
+
+/**
+ * Remove the shell added by `wrapTaskListDragClone`. Sortable removes the
+ * clone itself on drop, before `onEnd` fires; this only cleans up shells.
+ * Removes every match: an `onStart` whose `onEnd` never fired (a re-render
+ * mid-drag, a dropped event) can leave an orphan behind.
+ */
+export const removeTaskListDragCloneWrapper = () => {
+  document.querySelectorAll('body > .js-drag-clone-wrapper').forEach((wrapper) => wrapper.remove());
+};
+
+/**
+ * Sortable re-parents its fallback drag clone to `<body>`
+ * (https://gitlab.com/gitlab-org/gitlab/-/work_items/595151 covers why the
+ * fallback mode is required for these lists), where the clone loses every
+ * `.md`/`.description`-scoped style: typography, list markers, checkbox
+ * styling, and the grip/actions positioning. Wrap the clone in a box-less
+ * shell carrying those scoping classes so the held row renders exactly like
+ * the row it represents. Call from the sortable's `onStart`. Clears any
+ * stale shell first, so an orphan cannot outlive the next drag's start.
+ */
+export const wrapTaskListDragClone = () => {
+  removeTaskListDragCloneWrapper();
+
+  const clone = document.querySelector('body > li.task-list-item.is-dragging');
+
+  if (!clone) {
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'md description has-task-list-item-actions js-drag-clone-wrapper';
+  wrapper.style.display = 'contents';
+  wrapper.setAttribute('aria-hidden', 'true');
+
+  const list = document.createElement('ul');
+  list.className = 'task-list';
+  list.style.display = 'contents';
+
+  wrapper.appendChild(list);
+  document.body.appendChild(wrapper);
+  list.appendChild(clone);
+};
+
+/**
+ * Sortable `onStart`/`onEnd` for description task lists. Overriding these
+ * drops the `getSortableDefaultOptions` defaults, so both re-apply the
+ * body-class toggling from `~/sortable/utils` around the drag clone shell
+ * handling.
+ */
+export const taskListSortableOptions = {
+  onStart: () => {
+    sortableStart();
+    wrapTaskListDragClone();
+  },
+  onEnd: () => {
+    sortableEnd();
+    removeTaskListDragCloneWrapper();
+  },
 };

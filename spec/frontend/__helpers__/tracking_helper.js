@@ -1,7 +1,5 @@
 import Tracking from '~/tracking';
 
-export default Tracking;
-
 let document;
 let handlers;
 

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlDatepicker,
@@ -35,8 +36,10 @@ export default {
     GlLink,
     GlSprintf,
     ErrorsAlert,
-    MaxExpirationDateMessage: () =>
-      import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
+    MaxExpirationDateMessage: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
+    ),
   },
   inject: {
     accessTokenMaxDate: {

@@ -4,10 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Badge::Release::LatestRelease do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, guest_of: project) }
 
   before do
-    project.add_guest(user)
     create(:release, project: project, released_at: 1.day.ago)
   end
 

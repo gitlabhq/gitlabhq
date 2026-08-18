@@ -107,7 +107,7 @@ displays them below the summary.
 
 {{< /details >}}
 
-In many cases, incidents are associated to metrics. You can upload screenshots of metric
+In many cases, incidents are associated with metrics. You can upload screenshots of metric
 charts in the **Metrics** tab:
 
 ![Incident Metrics tab](img/incident_metrics_tab_v13_8.png)

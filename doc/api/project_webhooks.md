@@ -379,14 +379,15 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+- Configurable rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3. Feature flag `web_hook_event_resend_api_endpoint_rate_limit` removed.
 
 {{< /history >}}
 
 Resend a specific project webhook event.
 
-This endpoint has a rate limit of five requests per minute for each project webhook and authenticated user.
-To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
+This endpoint has a rate limit of five requests per minute for each authenticated user for a given project.
+All webhooks in the same project share the limit. On GitLab Self-Managed and GitLab Dedicated,
+administrators can [change this limit](../administration/settings/rate-limit-on-webhook-operations.md).
 
 ```plaintext
 POST /projects/:id/hooks/:hook_id/events/:hook_event_id/resend
@@ -520,9 +521,8 @@ Supported attributes:
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-Note the JSON response differs if the project webhook is available or not. If the project
-hook is available before it's returned in the JSON response or an empty response
-is returned.
+If the project webhook is available, it's returned in the JSON response.
+Otherwise, an empty response is returned.
 
 ## Trigger a test project webhook
 
@@ -530,6 +530,7 @@ is returned.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
 - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+- Configurable rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3. Feature flag `web_hook_test_api_endpoint_rate_limit` removed.
 
 {{< /history >}}
 
@@ -540,8 +541,8 @@ In GitLab 17.0 and later, this endpoint has a special rate limit:
 - In GitLab 17.0, the rate was three requests per minute for each project webhook.
 - In GitLab 17.1, this was changed to five requests per minute for each project and authenticated user.
 
-To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`.
+On GitLab Self-Managed and GitLab Dedicated, administrators can
+[change this limit](../administration/settings/rate-limit-on-webhook-operations.md).
 
 ```plaintext
 POST /projects/:id/hooks/:hook_id/test/:trigger

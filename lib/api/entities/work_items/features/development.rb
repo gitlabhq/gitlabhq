@@ -11,6 +11,11 @@ module API
           expose :closing_merge_requests_count, documentation: { type: 'Integer', example: 2 } do |widget, options|
             options.dig(:closing_merge_requests_counts, widget.work_item.id) || 0
           end
+
+          expose :will_auto_close_by_merge_request,
+            documentation: { type: 'Boolean', example: false } do |widget, options|
+            options[:will_auto_close_ids]&.include?(widget.work_item.id) || false
+          end
         end
       end
     end

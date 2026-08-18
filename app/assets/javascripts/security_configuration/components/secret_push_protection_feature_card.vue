@@ -8,6 +8,7 @@ import {
   GlAlert,
   GlButton,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import ProjectSetSecretPushProtection from '~/security_configuration/graphql/set_secret_push_protection.graphql';
 import { __, s__ } from '~/locale';
@@ -26,6 +27,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: [
     'secretPushProtectionAvailable',
     'secretPushProtectionEnforced',

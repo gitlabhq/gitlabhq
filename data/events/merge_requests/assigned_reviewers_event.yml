@@ -1,0 +1,5 @@
+---
+event: MergeRequests::AssignedReviewersEvent
+description: Published when new reviewers are assigned to a merge request. Carries
+  the list of newly assigned reviewers with their IDs and user types.
+feature_category: code_review_workflow

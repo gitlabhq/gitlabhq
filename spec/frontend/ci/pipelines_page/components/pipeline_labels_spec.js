@@ -77,7 +77,7 @@ describe('Pipeline label component', () => {
     expect(findLatestTag().text()).toContain('latest');
   });
 
-  it('should render a yaml badge when it is invalid', () => {
+  it('should render a yaml badge with a generic tooltip when the configuration is invalid', () => {
     const yamlPipeline = defaultProps.pipeline;
     yamlPipeline.flags.yaml_errors = true;
 
@@ -86,6 +86,9 @@ describe('Pipeline label component', () => {
     });
 
     expect(findYamlTag().text()).toContain('yaml invalid');
+    expect(findYamlTag().attributes('title')).toBe(
+      'Pipeline could not be created due to CI/CD configuration problems. Validate the configuration on pipeline editor page for the full list of issues.',
+    );
   });
 
   it('should render an autodevops badge when flag is provided', () => {

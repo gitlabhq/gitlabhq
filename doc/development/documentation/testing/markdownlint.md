@@ -24,6 +24,7 @@ markdownlint configuration is found in the following projects:
 - [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
 - [`gitlab-operator`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
 - [`cli`](https://gitlab.com/gitlab-org/cli)
+- [`artifact-registry`](https://gitlab.com/gitlab-org/ops/artifact-registry)
 
 This configuration is also used in build pipelines.
 

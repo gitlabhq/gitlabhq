@@ -60,15 +60,15 @@ describe('WorkItemDescription', () => {
   const findDescriptionTemplateListbox = () =>
     wrapper.findComponent(WorkItemDescriptionTemplatesListbox);
   const findDescriptionTemplateWarning = () => wrapper.findByTestId('description-template-warning');
-  const findApplyTemplate = () => wrapper.findByTestId('template-apply');
-  const findCancelApplyTemplate = () => wrapper.findByTestId('template-cancel');
+  const findApplyTemplate = () => wrapper.findComponentByTestId('template-apply');
+  const findCancelApplyTemplate = () => wrapper.findComponentByTestId('template-cancel');
 
   const findCloseConfirmModal = () => wrapper.findComponent(WorkItemCloseConfirmModal);
 
   const editDescription = (newText) => findMarkdownEditor().vm.$emit('input', newText);
 
   const findCancelButton = () => wrapper.findByTestId('cancel');
-  const findSubmitButton = () => wrapper.findByTestId('save-description');
+  const findSubmitButton = () => wrapper.findComponentByTestId('save-description');
   const clickCancel = () => findForm().vm.$emit('reset', new Event('reset'));
 
   const successfulTemplateHandler = jest.fn().mockResolvedValue({
@@ -398,10 +398,10 @@ describe('WorkItemDescription', () => {
             isEditing: true,
             workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
           });
-          findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+          findDescriptionTemplateListbox().vm.$emit('select-template', {
             name: 'example',
             projectId: 1,
-            catagory: 'catagory',
+            category: 'category',
           });
           await nextTick();
           await waitForPromises();
@@ -498,7 +498,7 @@ describe('WorkItemDescription', () => {
             isEditing: true,
             descriptionTemplateHandler: jest.fn().mockRejectedValue(new Error()),
           });
-          findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+          findDescriptionTemplateListbox().vm.$emit('select-template', {
             name: 'example',
             projectId: 1,
             category: 'category',
@@ -553,7 +553,7 @@ describe('WorkItemDescription', () => {
             });
 
             it('updates URL when applying template', async () => {
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+              findDescriptionTemplateListbox().vm.$emit('select-template', {
                 name: 'example-template',
                 projectId: 1,
                 category: 'category',
@@ -572,7 +572,7 @@ describe('WorkItemDescription', () => {
             });
 
             it('removes template param (and not other params) from URL when canceling template', async () => {
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+              findDescriptionTemplateListbox().vm.$emit('select-template', {
                 name: 'example-template',
                 projectId: 1,
                 category: 'category',
@@ -609,7 +609,7 @@ describe('WorkItemDescription', () => {
             });
 
             it('removes old template param on apply', async () => {
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+              findDescriptionTemplateListbox().vm.$emit('select-template', {
                 name: 'example-template',
                 projectId: 1,
                 category: 'category',
@@ -634,7 +634,7 @@ describe('WorkItemDescription', () => {
                 isEditing: true,
               });
 
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+              findDescriptionTemplateListbox().vm.$emit('select-template', {
                 name: 'example-template',
                 projectId: 1,
                 category: 'category',
@@ -667,7 +667,7 @@ describe('WorkItemDescription', () => {
           });
 
           it('does not update URL when applying template', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+            findDescriptionTemplateListbox().vm.$emit('select-template', {
               name: 'example-template',
               projectId: 1,
               category: 'category',
@@ -681,7 +681,7 @@ describe('WorkItemDescription', () => {
           });
 
           it('does not update URL when canceling template', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+            findDescriptionTemplateListbox().vm.$emit('select-template', {
               name: 'example-template',
               projectId: 1,
               category: 'category',

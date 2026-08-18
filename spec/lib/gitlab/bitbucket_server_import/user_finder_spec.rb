@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
 
   let_it_be_with_reload(:project) do
     create(
-      :project, :repository, :bitbucket_server_import, :in_group,
+      :project, :small_repo, :bitbucket_server_import, :in_group,
       :import_user_mapping_enabled
     )
   end

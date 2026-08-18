@@ -32,7 +32,7 @@ module Observability
       end
 
       client = O11yProvisioningClient.new
-      result = client.provision_group(namespace, user)
+      result = client.provision_namespace(namespace, user)
 
       if result[:success]
         handle_successful_api_call(namespace, result[:settings_params], namespace_id, user_id, user, project_id)

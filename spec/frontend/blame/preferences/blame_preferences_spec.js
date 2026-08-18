@@ -27,8 +27,8 @@ describe('BlamePreferences', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findAgeIndicatorToggle = () => wrapper.findComponent(GlToggle);
   const findIgnoreRevsCheckbox = () => wrapper.findByTestId('ignore-revs-checkbox');
-  const findIgnoreRevsItem = () => wrapper.findByTestId('ignore-revs-item');
-  const findLearnToIgnoreItem = () => wrapper.findByTestId('learn-to-ignore-item');
+  const findIgnoreRevsItem = () => wrapper.findComponentByTestId('ignore-revs-item');
+  const findLearnToIgnoreItem = () => wrapper.findComponentByTestId('learn-to-ignore-item');
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 

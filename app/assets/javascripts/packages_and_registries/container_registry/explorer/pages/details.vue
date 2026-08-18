@@ -177,7 +177,7 @@ export default {
         ref="deleteModal"
         :items-to-be-deleted="itemsToBeDeleted"
         delete-image
-        @confirmDelete="confirmDelete"
+        @confirm-delete="confirmDelete"
         @cancel-delete="track('cancel_delete')"
       />
     </template>

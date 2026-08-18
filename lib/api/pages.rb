@@ -12,7 +12,7 @@ module API
       requires :id, types: [String, Integer],
         desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Unpublish Pages' do
         detail 'Unpublishes Pages from a specified project. You must have the Maintainer or Owner ' \
           'role for the project.'

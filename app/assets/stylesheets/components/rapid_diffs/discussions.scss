@@ -122,32 +122,120 @@ diff-file[data-line-range-dragging] .rd-discussion-row {
   z-index: constants.$diff-file-new-discussion-toggle-row-z-index;
 }
 
-.rd-new-discussion-toggle {
+.rd-new-discussion-toggle,
+.rd-line-range-handle {
   position: absolute;
   left: 0;
-  top: 50%;
-  padding: 1px;
   width: 24px;
   height: 24px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  transform: translate(-50%, -50%);
+  justify-content: center;
   background: var(--gl-background-color-default);
   color: var(--gl-feedback-info-icon-color);
   border: 1px solid var(--gl-feedback-info-icon-color);
   border-radius: 50%;
+  box-shadow: var(--gl-shadow-sm);
+  transform: translate(-50%, -50%);
   z-index: constants.$diff-file-new-discussion-toggle-z-index;
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     background: var(--gl-feedback-info-icon-color);
     color: var(--gl-background-color-default);
+    border-color: var(--gl-background-color-default);
   }
+}
+
+.rd-new-discussion-toggle {
+  top: 50%;
+  padding: 1px;
 
   &::before {
     content: "";
     position: absolute;
     inset: -2px;
+  }
+}
+
+diff-file[data-line-range-editing] .rd-new-discussion-toggle {
+  display: none;
+}
+
+.rd-hunk-lines[data-line-range-handle-row] {
+  z-index: constants.$diff-file-new-discussion-toggle-z-index;
+}
+
+diff-file[data-line-range-dragging] .rd-line-range-handle:not([data-dragging]),
+diff-file[data-line-range-dragging] .rd-line-range-cancel {
+  pointer-events: none;
+}
+
+.rd-line-range-handle {
+  padding: 0;
+  cursor: grab;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  }
+
+  &:hover,
+  &:focus {
+    box-shadow: var(--gl-shadow-md);
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+
+  &:focus {
+    outline: 2px solid var(--gl-focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.rd-line-range-handle svg,
+.rd-line-range-cancel svg {
+  pointer-events: none;
+}
+
+.rd-line-range-handle[data-line-range-handle="start"] {
+  top: 0;
+}
+
+.rd-line-range-handle[data-line-range-handle="end"] {
+  top: 100%;
+}
+
+.rd-line-range-cancel {
+  --rd-line-range-control-size: 24px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--rd-line-range-control-size);
+  height: var(--rd-line-range-control-size);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, calc(-50% - var(--rd-line-range-control-size)));
+  background: var(--gl-background-color-default);
+  color: var(--gl-text-color-subtle);
+  border: 1px solid var(--gl-border-color-default);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: constants.$diff-file-new-discussion-toggle-z-index;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--gl-background-color-subtle);
+    color: var(--gl-text-color-default);
+    border-color: var(--gl-border-color-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gl-focus-ring-color);
+    outline-offset: 2px;
   }
 }

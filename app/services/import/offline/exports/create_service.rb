@@ -5,6 +5,11 @@ module Import
     module Exports
       class CreateService
         include ::Gitlab::Utils::StrongMemoize
+        include ::Gitlab::InternalEvents::ServiceTracking
+
+        track_internal_event 'start_offline_transfer_export',
+          on: :success,
+          additional_properties: ->(result) { { label: result.payload.configuration.provider.to_s } }
 
         # @param current_user [User] current user object
         # @param portable_params [Array<Hash>] list of portables to export.
@@ -32,7 +37,7 @@ module Import
         end
 
         def execute
-          return feature_flag_disabled_error unless Feature.enabled?(:offline_transfer_exports, current_user)
+          return adc_admin_required_error if adc_without_admin?
           return invalid_params_error unless portable_params_valid?
           return insufficient_permissions_error unless user_can_export_all_portables?
 
@@ -70,6 +75,10 @@ module Import
           return false if portable_params.any? { |h| !h.is_a?(Hash) || h[:full_path].blank? }
 
           true
+        end
+
+        def adc_without_admin?
+          offline_export.configuration.gcs_application_default? && !current_user.can_admin_all_resources?
         end
 
         def validate_object_storage!
@@ -115,11 +124,11 @@ module Import
           Import::Offline::Export.new(
             user: current_user,
             organization_id: organization_id,
-            source_hostname: source_hostname,
             configuration: Import::Offline::Configuration.new(
               provider: storage_config[:provider],
               bucket: storage_config[:bucket],
               object_storage_credentials: storage_config[:credentials],
+              source_hostname: source_hostname,
               organization_id: organization_id
             )
           )
@@ -167,10 +176,6 @@ module Import
           Settings.gitlab.url
         end
 
-        def feature_flag_disabled_error
-          service_error('offline_transfer_exports feature flag must be enabled.')
-        end
-
         def invalid_params_error
           service_error(s_('OfflineTransfer|Export failed. Entity full paths must be provided.'))
         end
@@ -181,6 +186,11 @@ module Import
               'export the following resources or they do not exist: %{paths}'),
             paths: invalid_paths.join(', ')
           ))
+        end
+
+        def adc_admin_required_error
+          service_error(s_('OfflineTransfer|Only administrators can use Application Default Credentials ' \
+            'for offline transfer.'))
         end
 
         def service_error(message)

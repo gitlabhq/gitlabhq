@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category: :pipeline_composition do
-  before do
-    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-      .with(:ci_interpolation_split_function)
-      .and_return(false)
-  end
-
   let_it_be(:project) { create(:project) }
 
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
@@ -36,6 +30,31 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
       expect(subject).to be_interpolated
       expect(subject).to be_valid
       expect(subject.to_hash).to eq({ test: 'deploy gitlab.com' })
+    end
+  end
+
+  context 'when an interpolated value embedded in a string contains backslash sequences' do
+    let(:header) do
+      { spec: { inputs: { arg: nil } } }
+    end
+
+    let(:content) do
+      { test: "printf '%s' $[[ inputs.arg | posix_escape ]] done" }
+    end
+
+    let(:arguments) do
+      { arg: '\;id' }
+    end
+
+    it 'preserves the escaped value instead of reinterpreting the backslashes', :aggregate_failures do
+      subject.interpolate!
+
+      expect(subject).to be_valid
+      # `posix_escape` shell-escapes the value; the surrounding-string
+      # substitution must keep that escaping intact rather than reinterpreting
+      # the backslashes as `gsub` backreferences.
+      escaped = Shellwords.shellescape('\;id')
+      expect(subject.to_hash).to eq({ test: "printf '%s' #{escaped} done" })
     end
   end
 

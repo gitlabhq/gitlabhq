@@ -4,6 +4,7 @@
 NOTE: This file uses v-html over v-safe-html for performance reasons, see:
 https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57842
 * */
+import { defineAsyncComponent } from 'vue';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   CONFLICT_MARKER_THEIR,
@@ -23,14 +24,11 @@ export default {
   name: 'DiffRow',
   components: {
     DiffGutterAvatars,
-    InlineFindingsGutterIconDropdown: () =>
-      import('ee_component/diffs/components/inline_findings_gutter_icon_dropdown.vue'),
+    InlineFindingsGutterIconDropdown: defineAsyncComponent(
+      () => import('ee_component/diffs/components/inline_findings_gutter_icon_dropdown.vue'),
+    ),
   },
   props: {
-    fileHash: {
-      type: String,
-      required: true,
-    },
     filePath: {
       type: String,
       required: true,
@@ -40,11 +38,6 @@ export default {
       required: true,
     },
     isCommented: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    coverageLoaded: {
       type: Boolean,
       required: false,
       default: false,
@@ -85,7 +78,6 @@ export default {
     'show-comment-form',
     'set-highlighted-row',
     'toggle-line-discussions',
-    'toggle-code-quality-findings',
     'enterdragging',
     'startdragging',
     'stopdragging',
@@ -225,10 +217,10 @@ export default {
               "
               @dragstart="
                 !line.left.commentsDisabled &&
-                  $emit('startdragging', {
-                    event: $event,
-                    line: { ...line.left, index: index },
-                  })
+                $emit('startdragging', {
+                  event: $event,
+                  line: { ...line.left, index: index },
+                })
               "
             ></div>
           </span>
@@ -245,7 +237,7 @@ export default {
             :discussions="line.left.discussions"
             :discussions-expanded="line.left.discussionsExpanded"
             data-testid="left-discussions"
-            @toggleLineDiscussions="
+            @toggle-line-discussions="
               $emit('toggle-line-discussions', {
                 lineCode: line.left.line_code,
                 expanded: !line.left.discussionsExpanded,
@@ -275,12 +267,6 @@ export default {
             :code-quality="line.left.codequality"
             :sast="line.left.sast"
             :file-path="filePath"
-            @showInlineFindings="
-              $emit(
-                'toggle-code-quality-findings',
-                line.left.codequality[0] ? line.left.codequality[0].line : line.left.sast[0].line,
-              )
-            "
           />
         </div>
         <div
@@ -351,10 +337,10 @@ export default {
                 "
                 @dragstart="
                   !line.right.commentsDisabled &&
-                    $emit('startdragging', {
-                      event: $event,
-                      line: { ...line.right, index: index },
-                    })
+                  $emit('startdragging', {
+                    event: $event,
+                    line: { ...line.right, index: index },
+                  })
                 "
               ></div>
             </span>
@@ -372,7 +358,7 @@ export default {
             :discussions="line.right.discussions"
             :discussions-expanded="line.right.discussionsExpanded"
             data-testid="right-discussions"
-            @toggleLineDiscussions="
+            @toggle-line-discussions="
               $emit('toggle-line-discussions', {
                 lineCode: line.right.line_code,
                 expanded: !line.right.discussionsExpanded,
@@ -393,14 +379,6 @@ export default {
             :sast="line.right.sast"
             :file-path="filePath"
             data-testid="inlineFindingsIcon"
-            @showInlineFindings="
-              $emit(
-                'toggle-code-quality-findings',
-                line.right.codequality[0]
-                  ? line.right.codequality[0].line
-                  : line.right.sast[0].line,
-              )
-            "
           />
         </div>
         <div

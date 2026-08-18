@@ -103,6 +103,12 @@ describe('ProjectSelect component', () => {
       it('does not render empty search result message', () => {
         expect(findEmptySearchMessage().exists()).toBe(false);
       });
+
+      it('emits `select-project` with the chosen project when an item is selected', () => {
+        findGlCollapsibleListBox().vm.$emit('select', mockProjects[0].id);
+
+        expect(wrapper.emitted('select-project')).toEqual([[mockProjects[0]]]);
+      });
     });
 
     describe('when no projects are being returned', () => {

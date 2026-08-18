@@ -9,6 +9,7 @@ import StatusFilter from '~/search/sidebar/components/status_filter/index.vue';
 import LabelFilter from '~/search/sidebar/components/label_filter/index.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 import TypeFilter from '~/search/sidebar/components/type_filter/index.vue';
+import AuthorFilter from '~/search/sidebar/components/author_filter/index.vue';
 
 Vue.use(Vuex);
 
@@ -41,6 +42,7 @@ describe('GlobalSearch IssuesFilters', () => {
   const findLabelFilter = () => wrapper.findComponent(LabelFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
   const findTypeFilter = () => wrapper.findComponent(TypeFilter);
+  const findAuthorFilter = () => wrapper.findComponent(AuthorFilter);
 
   describe('Renders filters correctly with advanced search', () => {
     beforeEach(() => {
@@ -62,6 +64,10 @@ describe('GlobalSearch IssuesFilters', () => {
     it('renders correctly LabelFilter', () => {
       expect(findLabelFilter().exists()).toBe(true);
     });
+
+    it('renders AuthorFilter', () => {
+      expect(findAuthorFilter().exists()).toBe(true);
+    });
   });
 
   describe('Renders correctly with basic search', () => {
@@ -78,6 +84,10 @@ describe('GlobalSearch IssuesFilters', () => {
 
     it("doesn't render LabelFilter", () => {
       expect(findLabelFilter().exists()).toBe(false);
+    });
+
+    it("doesn't render AuthorFilter", () => {
+      expect(findAuthorFilter().exists()).toBe(false);
     });
 
     it('does render ArchivedFilter', () => {

@@ -10,6 +10,8 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
   let(:migration_builder) { instance_double(Keeps::CleanupUnusedIndexes::MigrationBuilder) }
   let(:cluster_mapper) { instance_double(Keeps::CleanupUnusedIndexes::InstanceClusterMapper) }
 
+  let(:lookback_days) { Keeps::Helpers::GrafanaUnusedIndexQuery::LOOKBACK_DAYS }
+
   let(:index) do
     instance_double(
       Gitlab::Database::PostgresIndex,
@@ -32,6 +34,19 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
     end
 
     described_class.new
+  end
+
+  def expect_decision_log(pattern)
+    logger = keep.instance_variable_get(:@logger)
+    allow(logger).to receive(:puts)
+
+    keep.each_identified_change { |c| c }
+
+    expect(logger).to have_received(:puts).with(pattern)
+  end
+
+  def skip_log(reason)
+    a_string_including(%(Index "index_users_on_foo" on table "users" was skipped with reason: #{reason}))
   end
 
   before do
@@ -85,19 +100,16 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
           tablename: 'users',
           gitlab_schema: 'gitlab_main',
           cluster_type: 'patroni',
+          checked_at: an_instance_of(String),
           columns: [:foo]
         )
       end
-    end
 
-    context 'when columns_for returns empty' do
-      before do
-        allow(grafana_query).to receive(:unused?).and_return(true)
-        allow(keep).to receive(:columns_for).and_return([])
-      end
+      it 'logs the selected decision with a timestamp and reason' do
+        timestamped = /\A\[CleanupUnusedIndexes\] \d{4}-\d{2}-\d{2}T\S+ Index "index_users_on_foo" on table "users" /
+        reason = "was selected with reason: zero scans in the last #{lookback_days}d on patroni; proposing removal"
 
-      it 'does not yield' do
-        expect { |b| keep.each_identified_change(&b) }.not_to yield_control
+        expect_decision_log(a_string_matching(timestamped).and(a_string_ending_with(reason)))
       end
     end
 
@@ -109,6 +121,15 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
       it 'does not yield' do
         expect { |b| keep.each_identified_change(&b) }.not_to yield_control
       end
+
+      it 'skips silently to keep the job log free of in-use index noise' do
+        logger = keep.instance_variable_get(:@logger)
+        allow(logger).to receive(:puts)
+
+        keep.each_identified_change { |c| c }
+
+        expect(logger).not_to have_received(:puts)
+      end
     end
 
     context 'when Mimir returns no signal (cap reached, no series, or unreachable)' do
@@ -118,6 +139,10 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
 
       it 'does not yield (conservative skip)' do
         expect { |b| keep.each_identified_change(&b) }.not_to yield_control
+      end
+
+      it 'logs the skip decision' do
+        expect_decision_log(skip_log('no usage signal from Mimir; skipping conservatively'))
       end
     end
 
@@ -130,6 +155,10 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
         expect(grafana_query).not_to receive(:unused?)
         expect { |b| keep.each_identified_change(&b) }.not_to yield_control
       end
+
+      it 'logs the skip decision' do
+        expect_decision_log(skip_log('exempt via index_keep_list.yml'))
+      end
     end
 
     context 'when the index supports a foreign key' do
@@ -140,6 +169,10 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
       it 'does not yield', :aggregate_failures do
         expect(grafana_query).not_to receive(:unused?)
         expect { |b| keep.each_identified_change(&b) }.not_to yield_control
+      end
+
+      it 'logs the skip decision' do
+        expect_decision_log(skip_log('supports a foreign key'))
       end
     end
 
@@ -196,6 +229,7 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
           tablename: 'users',
           gitlab_schema: 'gitlab_main',
           cluster_type: 'patroni',
+          checked_at: '2026-07-15T09:00:00Z',
           definition: 'CREATE INDEX index_users_on_foo ON public.users USING btree (foo)',
           columns: [:foo]
         }
@@ -238,6 +272,7 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
       result = keep.make_change!(change)
 
       expect(result.description).to include('CREATE INDEX index_users_on_foo')
+      expect(result.description).to include('query run at 2026-07-15T09:00:00Z')
       expect(result.description).to include('verify the 180-day Grafana chart')
       expect(result.description).to include('type="patroni"')
       expect(result.description).to include('[180d]')

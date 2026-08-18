@@ -42,7 +42,7 @@ statement rolls back to the previous consistent state.
 ## Transaction and database locks
 
 When a transaction block is opened, the database tries to acquire the necessary
-locks on the resources. The type of locks depend on the actual database statements.
+locks on the resources. The type of locks depends on the actual database statements.
 
 Consider a concurrent update scenario where the following code is executed at the
 same time from two different processes:
@@ -89,7 +89,7 @@ end
 Here, we ensure that the `notification_email_sent` column is updated only when the
 `send_notification_email` method succeeds. The `send_notification_email` method
 executes a network request to an email sending service. If the underlying infrastructure
-does not specify timeouts or the network call takes too long time, the database transaction
+does not specify timeouts or the network call takes too long, the database transaction
 stays open.
 
 Ideally, a transaction should only contain database statements.
@@ -107,7 +107,7 @@ Avoid doing in a `transaction` block:
 
 ## Explicit model referencing
 
-If a transaction modifies records from the same database table, we advise to use the
+If a transaction modifies records from the same database table, we advise using the
 `Model.transaction` block:
 
 ```ruby

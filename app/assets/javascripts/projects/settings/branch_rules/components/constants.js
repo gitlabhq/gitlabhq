@@ -72,6 +72,14 @@ export const I18N = {
   codeOwnerApprovalEnabled: s__('BranchRules|Require code owner approval enabled'),
   codeOwnerApprovalDisabled: s__('BranchRules|Require code owner approval disabled'),
   noData: s__('BranchRules|No data to display'),
+  groupLevelEmptyStateTitle: s__('BranchRules|Setting inherited'),
+  groupLevelEmptyStateDescription: s__(
+    'BranchRules|This branch rule is configured for the group. To make changes, go to group repository settings.',
+  ),
+  groupLevelEmptyStateNoPermissionsDescription: s__(
+    'BranchRules|This branch rule is configured for the group. You do not have the required permissions.',
+  ),
+  viewGroupSettingsButtonText: s__('BranchRules|View group repository settings'),
   deleteRuleModalTitle: s__('BranchRules|Delete branch rule?'),
   deleteRuleModalText: s__(
     'BranchRules|Are you sure you want to delete this branch rule? This action cannot be undone.',

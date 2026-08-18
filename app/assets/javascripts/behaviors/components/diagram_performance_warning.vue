@@ -11,17 +11,18 @@ export default {
   components: {
     GlAlert,
   },
-  emits: ['closeAlert', 'showImage'],
+  emits: ['close-alert', 'show-image'],
 };
 </script>
 
 <template>
   <!-- eslint-disable vue/v-on-event-hyphenation -->
   <gl-alert
+    data-testid="diagram-performance-warning"
     :primary-button-text="$options.i18n.buttonText"
     variant="warning"
-    @dismiss="$emit('closeAlert')"
-    @primaryAction="$emit('showImage')"
+    @dismiss="$emit('close-alert')"
+    @primaryAction="$emit('show-image')"
   >
     {{ $options.i18n.bodyText }}
   </gl-alert>

@@ -18,17 +18,24 @@ let mockShouldShowCallout = true;
 
 // Replaces the Apollo-backed UserCalloutDismisser with a simple slot renderer
 // so tests can control `shouldShowCallout` and assert `dismiss` calls.
-jest.mock('~/vue_shared/components/user_callout_dismisser.vue', () => ({
-  __esModule: true,
-  default: {
-    name: 'UserCalloutDismisser',
-    props: ['featureName'],
-    render() {
-      const slot = this.$scopedSlots?.default ?? this.$slots?.default;
-      return slot?.({ dismiss: mockDismiss, shouldShowCallout: mockShouldShowCallout }) ?? null;
+jest.mock('~/vue_shared/components/user_callout_dismisser.vue', () => {
+  const { getSlotFunction } = jest.requireActual('~/lib/utils/vue3compat/normalize_render');
+
+  return {
+    __esModule: true,
+    default: {
+      name: 'UserCalloutDismisser',
+      props: ['featureName'],
+      // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+      // render-function emulation, which misclassifies it.
+      compatConfig: { RENDER_FUNCTION: false },
+      render() {
+        const slot = getSlotFunction(this);
+        return slot?.({ dismiss: mockDismiss, shouldShowCallout: mockShouldShowCallout }) ?? null;
+      },
     },
-  },
-}));
+  };
+});
 
 describe('Blob Header Viewer Switcher', () => {
   let wrapper;
@@ -45,7 +52,7 @@ describe('Blob Header Viewer Switcher', () => {
 
   const findSimpleViewerButton = () => wrapper.findComponent('[data-viewer="simple"]');
   const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
-  const findBlameButton = () => wrapper.findByTestId('blame-button');
+  const findBlameButton = () => wrapper.findComponentByTestId('blame-button');
   const findInlineBlamePopover = () => wrapper.findComponent(InlineBlamePopover);
   const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
 

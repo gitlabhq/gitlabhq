@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module UsersHelper
+  include TimeZoneHelper
+
   def admin_users_data_attributes(users)
     {
       users: Admin::UserSerializer.new.represent(users, { current_user: current_user }).to_json,
@@ -54,14 +56,6 @@ module UsersHelper
                        end
 
     { user_internal_regex_pattern: pattern, user_internal_regex_options: options }
-  end
-
-  def current_user_menu_items
-    @current_user_menu_items ||= get_current_user_menu_items
-  end
-
-  def current_user_menu?(item)
-    current_user_menu_items.include?(item)
   end
 
   # Used to preload when you are rendering many projects and checking access
@@ -251,6 +245,13 @@ module UsersHelper
     )
   end
 
+  def user_activity_calendar_data(user)
+    {
+      username: user.username,
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset
+    }
+  end
+
   def email_verification_token_expired?(email_sent_at:)
     return false unless email_sent_at
 
@@ -291,20 +292,6 @@ module UsersHelper
     return ldap_blocked_badge if user.ldap_blocked?
 
     { text: s_('AdminUsers|Blocked'), variant: 'danger' }
-  end
-
-  def get_current_user_menu_items
-    items = []
-
-    items << :sign_out if current_user
-
-    return items if current_user&.required_terms_not_accepted?
-
-    items << :help
-    items << :profile if can?(current_user, :read_user, current_user)
-    items << :settings if can?(current_user, :update_user, current_user)
-
-    items
   end
 
   def render_job_title(job_title, with_schema_markup: false)

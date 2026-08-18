@@ -37,6 +37,20 @@ RSpec.describe API::Entities::WorkItems::Features::Hierarchy, feature_category: 
       end
     end
 
+    context 'when the parent lives in a different project than the work item' do
+      let_it_be(:other_project) { create(:project, :public) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:parent_in_other_project) { create(:work_item, :issue, project: other_project) }
+
+      before_all do
+        create(:parent_link, work_item: work_item, work_item_parent: parent_in_other_project)
+      end
+
+      it "exposes the parent's own namespace, not the work item's" do
+        expect(representation[:parent][:namespace]).to include(full_path: other_project.full_path)
+      end
+    end
+
     context 'when the work item has a parent the user cannot read' do
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
       let_it_be(:hidden_parent) { create(:work_item, :issue, project: private_project) }

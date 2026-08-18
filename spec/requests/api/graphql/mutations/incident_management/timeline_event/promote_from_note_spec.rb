@@ -32,6 +32,11 @@ RSpec.describe 'Promote an incident timeline event from a comment', feature_cate
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_promote_from_note) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_timeline_event do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'creates incident timeline event from the note', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)
 

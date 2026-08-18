@@ -17,6 +17,7 @@ import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/const
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -44,7 +45,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [noteable, resolvable, diffLineNoteFormMixin],
+  mixins: [noteable, resolvable, diffLineNoteFormMixin, glSlotsMixin],
   props: {
     discussion: {
       type: Object,
@@ -364,7 +365,7 @@ export default {
               :is-overview-tab="isOverviewTab"
               @start-replying="showReplyForm"
             >
-              <template #avatar-badge>
+              <template v-if="glSlots()['avatar-badge']" #avatar-badge>
                 <slot name="avatar-badge"></slot>
               </template>
               <template #footer="{ showReplies }">
@@ -393,7 +394,7 @@ export default {
                     :can-resolve-discussions-with-ai="
                       getNoteableData.can_resolve_discussions_with_ai
                     "
-                    @showReplyForm="showReplyForm"
+                    @show-reply-form="showReplyForm"
                     @resolve="resolveHandler"
                   />
                   <note-form
@@ -408,7 +409,7 @@ export default {
                     :autosave-key="autosaveKey"
                     @handleFormUpdateAddToReview="addReplyToReview"
                     @handleFormUpdate="saveReply"
-                    @cancelForm="cancelReplyForm"
+                    @cancel-form="cancelReplyForm"
                   />
                   <note-signed-out-widget v-if="!isLoggedIn" />
                 </li>

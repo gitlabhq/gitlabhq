@@ -68,9 +68,10 @@ describe('ProjectStorageApp', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findUsagePercentage = () => wrapper.findByTestId('total-usage');
   const findSectionedPercentageBar = () => wrapper.findComponent(SectionedPercentageBar);
-  const findProjectDetailsTable = () => wrapper.findByTestId('usage-quotas-project-usage-details');
+  const findProjectDetailsTable = () =>
+    wrapper.findComponentByTestId('usage-quotas-project-usage-details');
   const findNamespaceDetailsTable = () =>
-    wrapper.findByTestId('usage-quotas-namespace-usage-details');
+    wrapper.findComponentByTestId('usage-quotas-namespace-usage-details');
 
   describe('with apollo fetching successful', () => {
     let mockApollo;

@@ -170,7 +170,7 @@ beta:
 ```
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Google Play integration demo](https://youtu.be/Fxaj3hna4uk).
+For an overview, see [Google Play integration demo](https://www.youtube.com/watch?v=Fxaj3hna4uk).
 
 Congratulations! Your app is now set up for automated building, signing, and distribution. Try creating
 a merge request to trigger your first pipeline.

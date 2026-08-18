@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import TwoFactorAuthentication from './sessions/components/two_factor_authentication.vue';
 import { initWebauthnAuthenticate } from './webauthn';
 
@@ -18,12 +18,18 @@ export const mount2faAuthentication = () => {
     rememberMeEnabled,
     webauthnEnabled,
     totpEnabled,
+    emailEnabled,
+    sendEmailOtpPath,
+    emailVerificationData,
   } = el.dataset;
 
   return new Vue({
     el,
     name: 'TwoFactorAuthenticationRoot',
     render(createElement) {
+      const parsedEmailVerificationData =
+        emailVerificationData && convertObjectPropsToCamelCase(JSON.parse(emailVerificationData));
+
       return createElement(TwoFactorAuthentication, {
         props: {
           path,
@@ -33,6 +39,9 @@ export const mount2faAuthentication = () => {
           rememberMeEnabled: parseBoolean(rememberMeEnabled),
           webauthnEnabled: parseBoolean(webauthnEnabled),
           totpEnabled: parseBoolean(totpEnabled),
+          emailEnabled: parseBoolean(emailEnabled),
+          sendEmailOtpPath,
+          emailVerificationData: parsedEmailVerificationData,
           webauthnParams: gon.webauthn ? JSON.parse(gon.webauthn.options) : {},
         },
       });

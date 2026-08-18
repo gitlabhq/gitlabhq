@@ -16,6 +16,154 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
     subject { http_io.close }
 
     it { is_expected.to be_nil }
+
+    context 'when a persistent connection is open' do
+      before do
+        stub_remote_url_206(url, file_path)
+        set_smaller_buffer_size_than(size)
+        http_io.read(1)
+      end
+
+      it 'finishes the session', :aggregate_failures do
+        session = http_io.send(:http_session)
+        expect(session).to be_started
+
+        http_io.close
+
+        expect(session).not_to be_started
+        expect(http_io.instance_variable_get(:@http_session)).to be_nil
+      end
+
+      context 'when the session has already been torn down' do
+        it 'does not raise and resets the session to nil', :aggregate_failures do
+          session = http_io.send(:http_session)
+          allow(session).to receive(:finish).and_raise(IOError)
+
+          expect { http_io.close }.not_to raise_error
+          expect(http_io.instance_variable_get(:@http_session)).to be_nil
+        end
+      end
+    end
+  end
+
+  describe 'connection handling' do
+    before do
+      stub_remote_url_206(url, file_path)
+      set_smaller_buffer_size_than(size)
+    end
+
+    it 'reuses a single connection configured for keep-alive and explicit timeouts' do
+      # Net::HTTP.start ignores option keys that do not name a setter, so a
+      # typo would silently fall back to the default. Assert on every option.
+      expect(Net::HTTP).to receive(:start).once.with(
+        'object-storage', 80,
+        hash_including(
+          **Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS,
+          ignore_eof: false,
+          keep_alive_timeout: described_class::KEEP_ALIVE_TIMEOUT,
+          max_retries: described_class::MAX_RETRIES
+        )
+      ).and_call_original
+
+      expect(http_io.read).to eq(file_body)
+    end
+
+    context 'when http_io_persistent_connections is disabled' do
+      before do
+        stub_feature_flags(http_io_persistent_connections: false)
+      end
+
+      it 'opens a new connection per chunk with default timeouts' do
+        expect(Net::HTTP).to receive(:start).at_least(:twice).with(
+          'object-storage', 80,
+          hash_not_including(:open_timeout)
+        ).and_call_original
+
+        expect(http_io.read).to eq(file_body)
+      end
+    end
+
+    context 'when the connection fails mid-read' do
+      before do
+        stub_request(:get, url).to_raise(Errno::ECONNRESET)
+      end
+
+      it 'surfaces the error instead of returning a truncated read' do
+        expect { http_io.read }.to raise_error(Errno::ECONNRESET)
+      end
+    end
+  end
+
+  describe 'connection lifecycle against a real keep-alive server' do
+    let(:server) { HttpIOHelpers::RangeRequestServer.new(file_body) }
+    let(:url) { "http://127.0.0.1:#{server.port}/trace" }
+
+    before do
+      set_smaller_buffer_size_than(size)
+    end
+
+    after do
+      server.stop
+    end
+
+    it 'reads all chunks over a single connection', :aggregate_failures do
+      expect(http_io.read).to eq(file_body)
+
+      expect(server.responses).to be > 1
+      expect(server.accepts).to eq(1)
+    end
+
+    context 'when the server drops the connection after every response' do
+      let(:server) { HttpIOHelpers::RangeRequestServer.new(file_body, drop_connection_after: 1) }
+
+      it 'reconnects transparently and returns the full body', :aggregate_failures do
+        expect(http_io.read).to eq(file_body)
+
+        expect(server.responses).to be > 1
+        expect(server.accepts).to eq(server.responses)
+      end
+    end
+
+    context 'when the server fails persistently and then recovers' do
+      it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
+        server.fail_next_requests(2)
+
+        expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+
+        http_io.seek(0)
+        expect(http_io.read).to eq(file_body)
+
+        # initial connection + Net::HTTP internal retry + fresh connection
+        # for the successful read
+        expect(server.accepts).to eq(3)
+      end
+    end
+
+    context 'when the connection dies mid-body' do
+      it 'discards the partial body, retries transparently and returns correct data', :aggregate_failures do
+        server.truncate_next_responses(1)
+
+        expect(http_io.read).to eq(file_body)
+
+        # initial connection + reconnect for the retried chunk
+        expect(server.accepts).to eq(2)
+      end
+
+      context 'when the truncation persists' do
+        it 'surfaces the error, then a retried read on the same object succeeds', :aggregate_failures do
+          server.truncate_next_responses(2)
+
+          expect { http_io.read }.to raise_error(described_class::FailedToGetChunkError)
+
+          http_io.seek(0)
+          expect(http_io.read).to eq(file_body)
+
+          # initial connection + Net::HTTP internal retry + fresh connection
+          # for the successful read
+          expect(server.accepts).to eq(3)
+        end
+      end
+    end
   end
 
   describe '#binmode' do
@@ -255,6 +403,76 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
 
       it 'reads a trace' do
         expect { subject }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError)
+      end
+    end
+  end
+
+  describe 'chunk caching' do
+    # The fixture spans several chunks, and no read step lands on a chunk
+    # boundary (192394 % 4096 != 0), so every boundary is crossed mid-step.
+    # That is the ordinary case: trace sizes are arbitrary.
+    let(:buffer_size) { 32.kilobytes }
+    let(:step) { 4.kilobytes }
+    let(:chunk_count) { (size.to_f / buffer_size).ceil }
+    let(:boundaries) { chunk_count - 1 }
+
+    before do
+      stub_remote_url_206(url, file_path)
+      stub_const("Gitlab::HttpIO::BUFFER_SIZE", buffer_size)
+    end
+
+    # Mirrors Gitlab::Ci::Trace::Stream#read_backward, the caller this cache
+    # exists for: walk back to the start of the file in steps smaller than a
+    # chunk, re-seeking to the start of each step afterwards.
+    def read_backward(io)
+      io.seek(0, IO::SEEK_END)
+      out = []
+
+      until io.pos == 0
+        cur = io.pos
+        start = [cur - step, 0].max
+
+        io.seek(start)
+        out.unshift(io.read(cur - start))
+        io.seek(start)
+      end
+
+      out.join
+    end
+
+    it 'requests each chunk once', :aggregate_failures do
+      expect(read_backward(http_io)).to eq(file_body)
+
+      expect(a_request(:get, url)).to have_been_made.times(chunk_count)
+    end
+
+    it 'leaves a forward read unaffected' do
+      expect(http_io.read).to eq(file_body)
+
+      expect(a_request(:get, url)).to have_been_made.times(chunk_count)
+    end
+
+    it 'reads the same bytes as it does without the cache' do
+      cached = read_backward(described_class.new(url, size))
+
+      stub_feature_flags(http_io_previous_chunk_cache: false)
+      uncached = read_backward(described_class.new(url, size))
+
+      expect(cached).to eq(file_body)
+      expect(uncached).to eq(cached)
+    end
+
+    context 'when http_io_previous_chunk_cache is disabled' do
+      before do
+        stub_feature_flags(http_io_previous_chunk_cache: false)
+      end
+
+      it 'refetches both chunks at every boundary crossing' do
+        expect(read_backward(http_io)).to eq(file_body)
+
+        # The straddling step refetches the lower chunk and then the upper one
+        # it just evicted; the following step refetches the lower one again.
+        expect(a_request(:get, url)).to have_been_made.times(chunk_count + (2 * boundaries))
       end
     end
   end

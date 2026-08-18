@@ -27,13 +27,6 @@ Files uploaded by users to GitLab issues, merge requests, and epics contain `/up
 
 ## Access control for uploaded files
 
-{{< history >}}
-
-- Enforced authorization checks became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) in GitLab 15.3. Feature flag `enforce_auth_checks_on_uploads` removed.
-- Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
-
-{{< /history >}}
-
 Access to non-image files uploaded to:
 
 - Issues or merge requests is determined by the project visibility.
@@ -46,7 +39,7 @@ By default, image files do not have the same restriction, and anyone can view th
 Authentication checks for images can cause display issues in the body of notification emails.
 Emails are frequently read from clients (such as Outlook, Apple Mail, or your mobile device)
 not authenticated with GitLab. Images in emails appear broken and unavailable if
-the client is not authorized to GitLab.
+the client is not authenticated with GitLab.
 
 ## Enable authorization checks for all media files
 
@@ -73,7 +66,6 @@ To configure authentication settings for all media files:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
 - REST API [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) support in GitLab 17.2.
 
 {{< /history >}}
@@ -86,7 +78,7 @@ For example:
 
 ```graphql
 mutation{
-  uploadDelete(input: { projectPath: "<path/to/project>", secret: "<32-character-id>" , filename: "<filename>" }) {
+  uploadDelete(input: { projectPath: "<path/to/project>", secret: "<32-character-id>", filename: "<filename>" }) {
     upload {
       id
       size

@@ -67,11 +67,11 @@ describe('Subscriptions', () => {
     });
   });
 
-  it('onClickCollapsedIcon method emits `toggleSidebar` event on component', () => {
+  it('onClickCollapsedIcon method emits `toggle-sidebar` event on component', () => {
     mountComponent({ subscribed: true });
     findTooltip().trigger('click');
 
-    expect(wrapper.emitted('toggleSidebar')).toHaveLength(1);
+    expect(wrapper.emitted('toggle-sidebar')).toHaveLength(1);
   });
 
   it('has visually hidden label', () => {

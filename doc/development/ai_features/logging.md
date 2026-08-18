@@ -29,7 +29,7 @@ A feature flag named `expanded_ai_logging` controls the logging of sensitive dat
 
 ### For GitLab Self-Managed instances
 
-The instance setting `::Ai::Setting.instance.enabled_instance_verbose_ai_logs` controls the logging of sensitive data.
+The instance setting `ApplicationSetting.current.enabled_instance_verbose_ai_logs` controls the logging of sensitive data.
 
 Use the `conditional_info` helper method for conditional logging based on the status of the feature flag or the instance setting:
 

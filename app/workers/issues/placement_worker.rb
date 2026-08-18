@@ -42,7 +42,7 @@ module Issues
       # while preserving creation order.
       to_place = Issue
                  .relative_positioning_query_base(issue)
-                 .with_null_relative_position
+                 .with_null_relative_position(issue.namespace.root_ancestor)
                  .order({ created_at: :asc }, { id: :asc })
                  .limit(QUERY_LIMIT + 1)
                  .to_a

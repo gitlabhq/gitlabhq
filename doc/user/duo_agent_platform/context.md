@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Framework
+stage: Agent Foundations
+group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand what context is available to GitLab Duo features and how to control what information they can access.
 title: GitLab Duo Agent Platform contextual awareness
@@ -91,7 +91,7 @@ The following context is available to the software development flow in GitLab Du
 {{< /details >}}
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17124) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17124) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.
 - Changed to beta in GitLab 18.4.
 - Enabled by default in GitLab 18.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/589801) in GitLab 18.10.

@@ -47,6 +47,25 @@ RSpec.describe "projectTextReplace", feature_category: :source_code_management d
     end
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :rewrite_repository_history do
+    let(:user) { create(:user, owner_of: project) }
+    let(:boundary_object) { project }
+
+    before do
+      allow(::Repositories::RewriteHistoryWorker).to receive(:perform_async)
+    end
+
+    let(:mutation) do
+      graphql_mutation(
+        :project_text_replace,
+        { project_path: project.full_path, replacements: %w[p455w0rd foo==>bar literal:MM/DD/YYYY==>YYYY-MM-DD] },
+        'errors'
+      )
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   describe 'Invalid requests:' do
     context 'when the current_user is a maintainer' do
       let(:current_user) { create(:user, maintainer_of: project) }

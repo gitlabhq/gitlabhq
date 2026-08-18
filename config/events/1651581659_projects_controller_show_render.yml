@@ -4,6 +4,8 @@ action: show
 extra_properties:
 identifiers:
 product_group: acquisition
+product_categories:
+- acquisition
 milestone: "15.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58118
 tiers:

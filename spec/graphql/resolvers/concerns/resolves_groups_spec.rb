@@ -58,7 +58,9 @@ RSpec.describe ResolvesGroups do
       expect(data.size).to eq(2)
     }
 
-    expect { multi_group_query.call }.not_to issue_same_number_of_queries_as(single_group_query)
+    expect do
+      multi_group_query.call
+    end.not_to issue_same_number_of_queries_as(single_group_query).allow_skip_cache_inconsistency
   end
 
   def query_groups(limit:)

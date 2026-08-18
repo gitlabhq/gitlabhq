@@ -1,0 +1,10 @@
+---
+name: namespace_create_rate_limit
+description: Enforce the per-user daily rate limit on project and group creation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601717
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605942
+milestone: '19.3'
+type: gitlab_com_derisk
+group: group::authorization
+default_enabled: false

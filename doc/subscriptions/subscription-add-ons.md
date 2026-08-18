@@ -54,7 +54,7 @@ To view which roles can access GitLab Duo Core, see [GitLab Duo group permission
 ### GitLab Duo Self-Hosted
 
 If you have an offline license, GitLab Duo Core is not available on
-GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI Gateway.
+GitLab Duo Self-Hosted because GitLab Duo Core requires a connection to the GitLab AI Gateway.
 
 If you have an online license, you can use GitLab Duo Core in combination with
 GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab-managed model
@@ -68,7 +68,7 @@ Suggestions and, in GitLab 19.0 and later, GitLab Duo Agentic Chat.
 Your access to these features is subject to the
 [GitLab Terms of Service](https://about.gitlab.com/terms/) and [usage billing](gitlab_credits.md).
 
-GitLab will provide 30 days prior notice before enforcement of these limits take effect.
+GitLab will provide 30 days prior notice before enforcement of these limits takes effect.
 At that time, organization administrators will have tools to monitor and manage
 consumption and will be able to purchase additional capacity.
 
@@ -178,7 +178,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
-1. On the **GitLab Duo Pro** section of your subscription card select **Add seats**.
+1. On the **GitLab Duo Pro** section of your subscription card, select **Add seats**.
 1. Enter the number of seats. The amount cannot be higher than the number of seats in the subscription.
 1. Review the **Purchase summary** section.
 1. From the **Payment method** dropdown list, select your payment method.
@@ -190,7 +190,7 @@ Prerequisites:
 
 - You must purchase a GitLab Duo Pro or Enterprise add-on, or have an active GitLab Duo trial.
 - For GitLab Self-Managed and GitLab Dedicated:
-  - The GitLab Duo Pro add-on is available in GitLab 16.8 and later.
+  - The GitLab Duo Pro add-on is available.
   - The GitLab Duo Enterprise add-on is only available in GitLab 17.3 and later.
 
 After you purchase GitLab Duo Pro or Enterprise, you can assign seats to users to grant access to the add-on.
@@ -216,7 +216,7 @@ The user is sent a confirmation email.
 Prerequisites:
 
 - You must be an administrator.
-- The user must be not blocked, banned or deactivated.
+- The user must not be blocked, banned, or deactivated.
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
@@ -323,7 +323,7 @@ Prerequisites:
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
 1. From the filter bar, select **Assigned seat** and **Yes**.
-1. User list is filtered to only users assigned a GitLab Duo seat.
+1. The user list is filtered to only users assigned a GitLab Duo seat.
 
 ### For GitLab Self-Managed
 
@@ -341,7 +341,7 @@ Prerequisites:
         synchronize subscription ({{< icon name="retry" >}}).
 1. By **Seat utilization**, select **Assign seats**.
 1. To filter by users assigned to a GitLab Duo seat, in the **Filter users** bar, select **Assigned seat**, then select **Yes**.
-1. User list is filtered to only users assigned a GitLab Duo seat.
+1. The user list is filtered to only users assigned a GitLab Duo seat.
 
 ## Automatic seat removal
 
@@ -353,7 +353,7 @@ happens when there are:
 
 ### At subscription expiration
 
-If your subscription containing the GitLab Duo add-on expires, seat assignments are retained for 28 days. If the subscription is renewed, or a new subscription containing GitLab Duo is purchased during this 28-day window, users will be automatically re-assigned.
+If your subscription containing the GitLab Duo add-on expires, seat assignments are retained for 28 days. If the subscription is renewed, or a new subscription containing GitLab Duo is purchased during this 28-day window, users will be automatically reassigned.
 Otherwise, seat assignments are removed and users must be reassigned.
 
 ### For seat overages
@@ -371,12 +371,12 @@ Seats are selected for removal based on the following criteria, in this order:
 1. Users who have not yet used Code Suggestions, ordered by most recently assigned.
 1. Users who have used Code Suggestions, ordered by least recent usage of Code Suggestions.
 
-### For blocked, banned and deactivated users
+### For blocked, banned, and deactivated users
 
 Once or twice each day, a CronJob reviews GitLab Duo seat assignments. If a user who is assigned a GitLab Duo seat becomes
 blocked, banned, or deactivated, their access to GitLab Duo features is automatically removed.
 
-After the seat has been removed, it becomes available and can be re-assigned to a new user.
+After the seat has been removed, it becomes available and can be reassigned to a new user.
 
 ## Troubleshooting
 

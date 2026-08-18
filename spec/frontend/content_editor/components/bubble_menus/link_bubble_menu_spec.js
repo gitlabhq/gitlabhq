@@ -123,7 +123,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
     expect(wrapper.text()).toContain('Uploading: 100%');
   });
 
-  it('updates the bubble menu state when @selectionUpdate event is triggered', async () => {
+  it('updates the bubble menu state when @selection-update event is triggered', async () => {
     const linkUrl = 'https://gitlab.com';
 
     await buildWrapperAndDisplayMenu();
@@ -142,7 +142,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       .setTextSelection(11)
       .run();
 
-    findEditorStateObserver().vm.$emit('selectionUpdate');
+    findEditorStateObserver().vm.$emit('selection-update');
 
     await nextTick();
 
@@ -163,7 +163,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       tiptapEditor.commands.setTextSelection(13);
 
-      findEditorStateObserver().vm.$emit('selectionUpdate');
+      findEditorStateObserver().vm.$emit('selection-update');
 
       await nextTick();
 
@@ -201,7 +201,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       jest.spyOn(navigator.clipboard, 'writeText');
 
-      await wrapper.findByTestId('copy-link-url').vm.$emit('click');
+      await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
 
       const expectedUrl = `${window.gon.gitlab_url}/path/to/project/-/wikis/uploads/my_file.pdf`;
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedUrl);
@@ -215,7 +215,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       jest.spyOn(navigator.clipboard, 'writeText');
 
-      await wrapper.findByTestId('copy-link-url').vm.$emit('click');
+      await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
 
       const expectedUrl = `${window.gon.gitlab_url}/path/to/project/-/wikis/uploads/my_file.pdf`;
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedUrl);
@@ -225,7 +225,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   describe('remove link button', () => {
     it('removes the link', async () => {
       await buildWrapperAndDisplayMenu();
-      await wrapper.findByTestId('remove-link').vm.$emit('click');
+      await wrapper.findComponentByTestId('remove-link').vm.$emit('click');
 
       expect(tiptapEditor.getHTML()).toBe('<p dir="auto">Download PDF File</p>');
     });
@@ -236,7 +236,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
     beforeEach(async () => {
       await buildWrapperAndDisplayMenu();
-      await wrapper.findByTestId('edit-link').vm.$emit('click');
+      await wrapper.findComponentByTestId('edit-link').vm.$emit('click');
 
       linkHrefInput = wrapper.findByTestId('link-href');
     });
@@ -280,11 +280,47 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       });
     });
 
+    describe('when a document-sync event arrives before clicking apply', () => {
+      const editedUrl = 'https://google.com';
+
+      const applyEditedLink = async () => {
+        expect(tiptapEditor.getHTML()).not.toContain(`href="${editedUrl}"`);
+
+        contentEditor.resolveUrl.mockResolvedValue(editedUrl);
+
+        await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
+      };
+
+      beforeEach(() => {
+        linkHrefInput.setValue(editedUrl);
+      });
+
+      describe('via a selection update', () => {
+        beforeEach(async () => {
+          findEditorStateObserver().vm.$emit('selection-update');
+
+          await applyEditedLink();
+        });
+
+        it('applies the edited URL instead of the one still in the document', () => {
+          const link = wrapper.findComponent(GlLink);
+          expect(link.attributes()).toEqual(
+            expect.objectContaining({
+              href: editedUrl,
+              'aria-label': editedUrl,
+              target: '_blank',
+            }),
+          );
+          expect(link.text()).toBe(editedUrl);
+        });
+      });
+    });
+
     describe('after making changes in the form and clicking cancel', () => {
       beforeEach(async () => {
         linkHrefInput.setValue('https://google.com');
 
-        await wrapper.findByTestId('cancel-link').vm.$emit('click');
+        await wrapper.findComponentByTestId('cancel-link').vm.$emit('click');
       });
 
       it('hides the form and shows the copy/edit/remove link buttons', () => {

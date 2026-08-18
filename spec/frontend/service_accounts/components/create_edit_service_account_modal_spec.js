@@ -38,7 +38,7 @@ describe('CreateEditServiceAccountModal', () => {
   const findForm = () => wrapper.findComponent(GlFormFields);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findSubmitButton = () => wrapper.find('button[type=submit]');
+  const findSubmitButton = () => wrapper.findComponent('button[type=submit]');
 
   describe('modal', () => {
     it('emits cancel event when hidden', () => {

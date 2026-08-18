@@ -10,7 +10,7 @@ RSpec.describe 'getting task completion status information', feature_category: :
   description_2_done = '- [x] task 1\n- [x] task 2'
 
   let_it_be(:user1) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
 
   let(:fields) do
     <<~QUERY

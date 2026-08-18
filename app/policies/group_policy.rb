@@ -109,10 +109,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
-  condition(:achievements_enabled, scope: :subject) do
-    Feature.enabled?(:achievements, @subject)
-  end
-
   condition(:group_runner_registration_allowed, scope: :subject) do
     @subject.runner_registration_enabled?
   end
@@ -176,13 +172,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_upload
     enable :read_group_metadata
     enable :read_achievement
-  end
-
-  rule { ~achievements_enabled }.policy do
-    prevent :read_achievement
-    prevent :admin_achievement
-    prevent :award_achievement
-    prevent :destroy_user_achievement
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts

@@ -76,7 +76,7 @@ const findAvatar = () => wrapper.findComponent(GlAvatar);
 const findError = () => wrapper.findComponent(GlAlert);
 const findFileInput = () => wrapper.findByTestId('avatar-file-input');
 const findFormFields = () => wrapper.findComponent(GlFormFields);
-const findResetButton = () => wrapper.findByTestId('reset-file-button');
+const findResetButton = () => wrapper.findComponentByTestId('reset-file-button');
 const findSaveButton = () => wrapper.findByTestId('save-button');
 const findUploadButton = () => wrapper.findByTestId('select-file-button');
 

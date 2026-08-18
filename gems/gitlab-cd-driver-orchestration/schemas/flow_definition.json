@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gitlab.com/cd/schemas/0.0.1/flow_definition.json",
+  "title": "CD flow definition",
+  "description": "Defines how a service is deployed: the environments it targets and the ordered steps that carry out the deploy. A step may stand on its own or be a stage, which groups the steps that deploy to one environment tier. A flow whose steps are all common steps deploys nothing and so targets no environment.",
+  "type": "object",
+  "required": ["steps"],
+  "additionalProperties": false,
+  "properties": {
+    "environments": {
+      "type": "object",
+      "description": "The environments this flow deploys to, keyed by environment id. Optional: a flow of only common steps targets no environment, so it may omit this or leave it empty. Every environment a step names must be a key here. The per-service configuration under each environment is defined by the deploy driver's service_environment schema, not here.",
+      "additionalProperties": { "$ref": "#/$defs/environment" }
+    },
+    "steps": {
+      "type": "array",
+      "description": "The top-level ordered sequence for the flow, run in order.",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/topLevelStep" }
+    }
+  },
+
+  "$defs": {
+    "environment": {
+      "type": "object",
+      "description": "An environment's deploy configuration.",
+      "required": ["services"],
+      "additionalProperties": false,
+      "properties": {
+        "services": {
+          "type": "object",
+          "description": "The services deployed to this environment, keyed by service name. Each value is that service's configuration for this environment, defined by the deploy driver's service_environment schema and opaque to this schema.",
+          "additionalProperties": { "type": "object" }
+        }
+      }
+    },
+
+    "topLevelStep": {
+      "description": "A step at the top level of the flow: either a stage, or a common step that stands outside any stage. A deploy driver step cannot appear here, because it targets an environment and so belongs to a stage.",
+      "oneOf": [
+        { "$ref": "#/$defs/stage" },
+        { "$ref": "#/$defs/commonStep" }
+      ]
+    },
+
+    "stage": {
+      "type": "object",
+      "title": "Stage",
+      "description": "A stage is a deployment to an environment tier. It is type-tagged like any other step so the engine can dispatch a flat sequence, but it groups steps rather than doing work itself. Stages do not nest: a stage's steps are deploy driver steps or common steps.",
+      "required": ["type", "name", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "com.gitlab.cd.steps.stage" },
+        "name": {
+          "type": "string",
+          "description": "A name for this stage, such as 'staging' or 'production'."
+        },
+        "steps": {
+          "type": "array",
+          "description": "The steps for this stage, run in order.",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/stageStep" }
+        }
+      }
+    },
+
+    "stageStep": {
+      "description": "A step within a stage: either a deploy driver step, which targets an environment and whose shape is defined by the driver rather than here, or a common step, which targets no environment.",
+      "oneOf": [
+        { "$ref": "#/$defs/driverStep" },
+        { "$ref": "#/$defs/commonStep" }
+      ]
+    },
+
+    "driverStep": {
+      "type": "object",
+      "description": "A step handled by the deploy driver bound to its target environment. Fields beyond `type` and `environment` are defined by the driver's steps schema and are not validated here, so additional properties are allowed.",
+      "required": ["type", "environment"],
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The driver step type, such as 'com.gitlab.cd.argo.rolling.deploy'."
+        },
+        "environment": {
+          "type": "string",
+          "description": "The id of the environment this step targets; must be a key in the top-level `environments` object."
+        }
+      }
+    },
+
+    "commonStep": {
+      "description": "A driver-agnostic step handled by the orchestration engine. Common steps never target an environment.",
+      "oneOf": [
+        { "$ref": "#/$defs/waitStep" }
+      ]
+    },
+
+    "waitStep": {
+      "type": "object",
+      "title": "Wait",
+      "description": "Pauses the flow for a fixed duration before the next step runs.",
+      "required": ["type", "seconds"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "com.gitlab.cd.steps.wait" },
+        "seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How long to wait, in seconds."
+        }
+      }
+    }
+  }
+}

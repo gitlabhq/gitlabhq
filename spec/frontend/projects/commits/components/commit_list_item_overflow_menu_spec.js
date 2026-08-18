@@ -39,8 +39,8 @@ describe('CommitListItemOverflowMenu', () => {
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
 
-  const findCopyShaItem = () => wrapper.findByTestId('copy-commit-sha');
-  const findBrowseFilesItem = () => wrapper.findByTestId('browse-files');
+  const findCopyShaItem = () => wrapper.findComponentByTestId('copy-commit-sha');
+  const findBrowseFilesItem = () => wrapper.findComponentByTestId('browse-files');
 
   describe('dropdown button', () => {
     it('renders with correct props', () => {

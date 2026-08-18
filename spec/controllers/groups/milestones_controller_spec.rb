@@ -342,10 +342,26 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
     let(:milestone) { create(:milestone, group: group) }
 
     it "removes milestone" do
-      delete :destroy, params: { group_id: group.to_param, id: milestone.iid }, format: :js
+      delete :destroy, params: { group_id: group.to_param, id: milestone.iid }, format: :json
 
       expect(response).to be_successful
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "sets a deletion toast and redirects for html requests", :aggregate_failures do
+      delete :destroy, params: { group_id: group.to_param, id: milestone.iid }
+
+      expect(response).to have_gitlab_http_status(:see_other)
+      expect(response).to redirect_to(group_milestones_path(group))
+      expect(flash[:toast]).to eq(_('Milestone deleted.'))
+    end
+
+    it "sets a deletion toast and returns the redirect URL for json requests", :aggregate_failures do
+      delete :destroy, params: { group_id: group.to_param, id: milestone.iid }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['redirect_url']).to eq(group_milestones_path(group))
+      expect(flash[:toast]).to eq(_('Milestone deleted.'))
     end
   end
 

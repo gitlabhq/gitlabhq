@@ -1,7 +1,7 @@
 ---
 description: Tracks updates to the labels of work items.
 action: updated_labels
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '16.10'

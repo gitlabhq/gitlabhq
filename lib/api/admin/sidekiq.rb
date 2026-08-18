@@ -5,7 +5,7 @@ module API
     class Sidekiq < ::API::Base
       before { authenticated_as_admin! }
 
-      feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+      feature_category :sidekiq
 
       namespace 'admin' do
         namespace 'sidekiq' do
@@ -15,6 +15,8 @@ module API
               tags ['sidekiq']
             end
             params do
+              requires :queue_name, type: String, desc: 'The Sidekiq queue name'
+
               Gitlab::SidekiqQueue::ALLOWED_KEYS.each do |key|
                 optional key, type: String, desc: 'Metadata key to match', allow_blank: false
               end

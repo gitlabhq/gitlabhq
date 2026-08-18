@@ -80,14 +80,19 @@ module Issues
 
         scope = Issue
           .where(namespace_id: namespace_id)
-          .order_by_relative_position
-          .with_non_null_relative_position
+          .order_by_relative_position(root_namespace)
+          .with_non_null_relative_position(root_namespace)
           .select(:id, :relative_position)
 
         with_retry(PREFETCH_ISSUES_BATCH_SIZE, 100) do |batch_size|
-          Gitlab::Pagination::Keyset::Iterator.new(scope: scope).each_batch(of: batch_size) do |batch|
-            caching.cache_issue_ids(batch)
-          end
+          # The union optimization drops the `work_item_positions` JOIN (breaking the
+          # ORDER BY), so disable it only when the flag routes ordering through the join.
+          Gitlab::Pagination::Keyset::Iterator
+            .new(scope: scope,
+              use_union_optimization: !Issue.read_relative_positions_from_work_item_positions?(root_namespace))
+            .each_batch(of: batch_size) do |batch|
+              caching.cache_issue_ids(batch)
+            end
         end
       end
 

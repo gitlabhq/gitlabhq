@@ -14,7 +14,7 @@ title: Linked issues
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
 
 {{< /history >}}
 

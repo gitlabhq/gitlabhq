@@ -9,7 +9,7 @@ class PersonalAccessToken < ApplicationRecord
   include CreatedAtFilterable
   include Gitlab::SQL::Pattern
   include SafelyChangeColumnDefault
-  include PolicyActor
+  include Authz::GranularTokenInterface
 
   extend ::Gitlab::Utils::Override
 
@@ -113,24 +113,6 @@ class PersonalAccessToken < ApplicationRecord
   validate :expires_at_before_instance_max_expiry_date, on: :create
   validate :sudo_only_for_admins
 
-  def permitted_for_boundary?(boundary, permissions)
-    return false if legacy?
-
-    unless granular_scopes.loaded?
-      ActiveRecord::Associations::Preloader.new(
-        records: [self],
-        associations: :granular_scopes
-      ).call
-    end
-
-    required_permissions = Array(permissions).map(&:to_sym)
-    token_permissions = granular_scopes
-      .select { |granular_scope| granular_scope.applicable_to_boundary?(boundary) }
-      .flat_map(&:expanded_permissions)
-
-    (required_permissions - token_permissions).empty?
-  end
-
   def revoke!
     return true if revoked?
 
@@ -212,10 +194,6 @@ class PersonalAccessToken < ApplicationRecord
 
   def hook_attrs
     Gitlab::HookData::ResourceAccessTokenBuilder.new(self).build
-  end
-
-  def legacy?
-    !granular
   end
 
   protected

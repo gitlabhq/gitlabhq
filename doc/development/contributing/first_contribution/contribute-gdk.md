@@ -8,7 +8,7 @@ title: Contribute code with GDK
 Now for the fun part. Let's edit some code.
 
 In this example, I found some UI text I'd like to change.
-In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
+In the upper-right corner of GitLab, I selected my avatar and then **Preferences**.
 I want to change `Syntax highlighting theme` to `Code syntax highlighting theme`:
 
 > [!warning]

@@ -9,6 +9,14 @@ module AuditEvents
     validates :group_id, presence: true
 
     scope :by_group, ->(group_id) { where(group_id: group_id) }
+
+    def entity_id
+      group_id
+    end
+
+    def entity_type
+      'Group'
+    end
   end
 end
 

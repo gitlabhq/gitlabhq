@@ -3,7 +3,7 @@ import { GlSprintf, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, stripPathTail } from '~/lib/utils/url_utility';
 import { __, n__, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
@@ -71,15 +71,17 @@ Once deleted, it cannot be undone or recovered.`),
       eventHub.$emit('delete-milestone-modal-request-started', this.milestoneUrl);
 
       return axios
-        .delete(this.milestoneUrl)
-        .then((response) => {
+        .delete(this.milestoneUrl, { headers: { accept: 'application/json' } })
+        .then(({ data }) => {
           eventHub.$emit('delete-milestone-modal-request-finished', {
             milestoneUrl: this.milestoneUrl,
             successful: true,
           });
 
-          // follow the redirect to milestones overview page
-          visitUrl(response.request.responseURL);
+          // navigate to the milestones overview page, which renders the
+          // deletion toast from the flash set by the destroy action; fall
+          // back to the milestone's list page if the response has no URL
+          visitUrl(data?.redirect_url || stripPathTail(this.milestoneUrl));
         })
         .catch((error) => {
           eventHub.$emit('delete-milestone-modal-request-finished', {

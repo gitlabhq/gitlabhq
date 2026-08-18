@@ -28,6 +28,8 @@ module Gitlab
       end
 
       def commits(limit: nil)
+        return @commits if defined?(@commits) && @commits.empty?
+
         if limit
           return Gitlab::Git::Commit.between(@repository, @base.id, @head.id, limit: limit)
         end

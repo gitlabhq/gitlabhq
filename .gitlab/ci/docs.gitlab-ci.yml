@@ -77,10 +77,13 @@ docs-lint release-note-categories:
   needs: []
   script:
     - |
-      # Fetch the merge base so we can diff against it (the CI clone is shallow).
-      git fetch --depth=1 origin "$CI_MERGE_REQUEST_DIFF_BASE_SHA"
+      # Compare against the target branch tip so merged results pipelines only diff the MR's own
+      # changes. Fall back to the diff base SHA for non-merged-results pipelines.
+      compare_sha="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-$CI_MERGE_REQUEST_DIFF_BASE_SHA}"
+      # Fetch the compare commit so we can diff against it (the CI clone is shallow).
+      git fetch --depth=1 origin "$compare_sha"
       # The 'doc/releases/*.md' git pathspec matches .md files at any depth ('*' spans '/'), so no extra grep is needed.
-      changed_files="$(git diff --name-only --diff-filter=d "$CI_MERGE_REQUEST_DIFF_BASE_SHA" HEAD -- 'doc/releases/*.md')"
+      changed_files="$(git diff --name-only --diff-filter=d "$compare_sha" HEAD -- 'doc/releases/*.md')"
       if [ -z "$changed_files" ]; then
         echo "No release note files changed in this merge request; skipping category validation."
         exit 0

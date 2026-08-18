@@ -29,8 +29,6 @@ RSpec.describe "User deletes branch", :js, feature_category: :source_code_manage
 
     accept_gl_confirm(button_text: 'Yes, delete branch')
 
-    wait_for_requests
-
     expect(page).to have_content('Branch was deleted')
   end
 end

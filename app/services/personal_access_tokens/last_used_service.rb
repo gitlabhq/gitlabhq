@@ -126,8 +126,6 @@ module PersonalAccessTokens
         scope: user,
         target: user,
         message: "Personal access token was used from a previously unseen IP address: #{Gitlab::IpAddressState.current}",
-        authentication_event: true,
-        authentication_provider: :pat,
         organization: @personal_access_token.organization,
         additional_details: {
           pat_id: @personal_access_token.id,

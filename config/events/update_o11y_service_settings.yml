@@ -1,0 +1,16 @@
+---
+description: Tracks when a user successfully saves changes to the group Observability service settings.
+internal_events: true
+action: update_o11y_service_settings
+identifiers:
+- namespace
+- user
+product_group: platform_insights
+product_categories:
+- observability
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248590
+tiers:
+- free
+- premium
+- ultimate

@@ -6,6 +6,7 @@ import { createAlert } from '~/alert';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { ISO_SHORT_FORMAT } from '~/vue_shared/constants';
+import { exploreCatalogIndexPath } from '~/lib/utils/path_helpers/explore';
 import CiResourceDetails from 'ee_else_ce/ci/catalog/components/details/ci_resource_details.vue';
 import getCatalogCiResourceSharedData from '../../graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
 import getCiCatalogResourceVersions from '../../graphql/queries/get_ci_catalog_resource_versions.query.graphql';
@@ -20,7 +21,6 @@ export default {
     CiResourceHeader,
     GlEmptyState,
   },
-  inject: ['ciCatalogPath'],
   data() {
     return {
       isEmpty: false,
@@ -91,6 +91,9 @@ export default {
     },
   },
   computed: {
+    exploreCatalogIndexPath() {
+      return exploreCatalogIndexPath();
+    },
     cleanFullPath() {
       return cleanLeadingSeparator(this.$route.params.id);
     },
@@ -135,7 +138,7 @@ export default {
       :title="$options.i18n.emptyStateTitle"
       :description="$options.i18n.emptyStateDescription"
       :primary-button-text="$options.i18n.emptyStateButtonText"
-      :primary-button-link="ciCatalogPath"
+      :primary-button-link="exploreCatalogIndexPath"
     />
   </div>
   <div v-else>

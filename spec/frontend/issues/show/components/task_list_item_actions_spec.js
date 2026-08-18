@@ -12,10 +12,10 @@ describe('TaskListItemActions component', () => {
   let wrapper;
 
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findConvertToChildItemItem = () => wrapper.findByTestId('convert');
-  const findDeleteItem = () => wrapper.findByTestId('delete');
-  const findDisableItem = () => wrapper.findByTestId('disable');
-  const findEnableItem = () => wrapper.findByTestId('enable');
+  const findConvertToChildItemItem = () => wrapper.findComponentByTestId('convert');
+  const findDeleteItem = () => wrapper.findComponentByTestId('delete');
+  const findDisableItem = () => wrapper.findComponentByTestId('disable');
+  const findEnableItem = () => wrapper.findComponentByTestId('enable');
 
   const mountComponent = ({ issuableType = TYPE_ISSUE, enabled = true } = {}) => {
     setHTMLFixture(`
@@ -41,8 +41,28 @@ describe('TaskListItemActions component', () => {
       category: 'tertiary',
       icon: 'ellipsis_v',
       placement: 'bottom-end',
+      size: 'small',
       textSrOnly: true,
-      toggleText: 'Task actions',
+      toggleText: 'Checklist item actions',
+    });
+  });
+
+  describe('active row highlight', () => {
+    it('adds active class to the parent list item when the dropdown is shown', () => {
+      mountComponent();
+
+      findGlDisclosureDropdown().vm.$emit('shown');
+
+      expect(document.querySelector('li').classList.contains('task-list-item-active')).toBe(true);
+    });
+
+    it('removes active class from the parent list item when the dropdown is hidden', () => {
+      mountComponent();
+      findGlDisclosureDropdown().vm.$emit('shown');
+
+      findGlDisclosureDropdown().vm.$emit('hidden');
+
+      expect(document.querySelector('li').classList.contains('task-list-item-active')).toBe(false);
     });
   });
 

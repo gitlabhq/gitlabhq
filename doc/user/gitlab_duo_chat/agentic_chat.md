@@ -31,7 +31,7 @@ title: GitLab Duo Agentic Chat
 - Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) GitLab Duo Agent Platform on GitLab Self-Managed (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models) in GitLab 18.4 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19213) GitLab Duo Agent Platform on GitLab Self-Managed (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models) in GitLab 18.4 as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 - GitLab Duo Agent Platform on GitLab Self-Managed changed from experiment to [beta](https://gitlab.com/groups/gitlab-org/-/epics/19402) in GitLab 18.5.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
@@ -128,7 +128,7 @@ most recent conversation, and that conversation is still active in the Chat draw
 Where appropriate, the following foundational flows can be triggered from an Agentic Chat conversation to answer a question or accomplish a goal.
 
 - [Developer Flow](../duo_agent_platform/flows/foundational_flows/developer.md#use-the-flow-in-agentic-chat)
-- [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review.md#use-the-flow)
+- [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review/_index.md#use-the-flow)
 - [Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
 
 ### Use GitLab Duo Chat in VS Code

@@ -12,7 +12,7 @@ title: GitLab instrumentation for OpenTelemetry
 > collect and display OpenTelemetry data. Therefore, you should point the
 > `OTEL_EXPORTER_*_ENDPOINT` ENV vars to a GitLab project:
 
-1. Which has an Ultimate license, and where you have
+1. Which has an Ultimate license
 1. In which you have at least the Maintainer role
 1. In which you have access to enable top-level group feature flags (or is under the `gitlab-org` or `gitlab-com` top-level groups which already have the flags enabled)
 

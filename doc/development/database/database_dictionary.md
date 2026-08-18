@@ -47,7 +47,6 @@ table_size: small
 | `gitlab_schema`                 | String        | yes         | GitLab schema name. |
 | `notes`                         | String        | no          | Use for comments, as Psych cannot parse YAML comments. |
 | `table_size`                    | String        | yes         | Classification of current table size on GitLab.com. <sup>1</sup> The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
-| `organization_transfer_support` | String        | conditional | Required when `sharding_key` includes `organization_id`. See [Organization transfer support](#organization-transfer-support). |
 | `sharding_key`                  | Hash          | conditional | Identifies the column used to relate the table to an organization. Only set when the column has a `NOT NULL` constraint. See [Sharding key fields](#sharding-key-fields). |
 | `desired_sharding_key`          | Hash          | conditional | Identifies the intended sharding key column when it exists but doesn't have a `NOT NULL` constraint yet. See [Sharding key fields](#sharding-key-fields). |
 
@@ -168,29 +167,6 @@ For detailed instructions on adding sharding keys to tables, see the [sharding g
 
 ## Organization transfer support
 
-Tables sharded by `organization_id` must be properly handled when transferring users or groups between organizations. The `organization_transfer_support` field tracks whether this support has been implemented.
+Tables sharded by `organization_id` must be properly handled when transferring users or groups between organizations. Transfer support status is tracked in a dedicated registry file at `config/organizations/transfer_support.yml`, separate from the database dictionary.
 
-### When required
-
-The `organization_transfer_support` field is **required** when a table's `sharding_key` includes `organization_id`.
-
-### Schema
-
-```yaml
-organization_transfer_support: <status_value>
-```
-
-The value must be one of: `supported`, `todo`, or `no_work_needed`.
-
-### Status values
-
-- **`supported`**: The table is properly handled in the organization transfer services.
-  - Required for all **new** tables sharded by `organization_id`.
-  - The table must be referenced in one of the transfer services:
-    - `app/services/organizations/transfer/groups_service.rb`
-    - `app/services/organizations/transfer/users_service.rb`
-    - `ee/app/services/ee/organizations/transfer/groups_service.rb`
-- **`todo`**: The table needs organization transfer support but doesn't have it yet.
-  - Used for **existing** tables that were sharded by `organization_id` previously.
-- **`no_work_needed`**: The table has been reviewed and does not require any updates during organization transfers.
-  - Used when the table's `organization_id` is derived from or cascades through other relationships that are already handled.
+For details on status values and how to register transfer support for your table, see the [organization sharding guide](../organization/sharding/_index.md#add-transfer-service-support).

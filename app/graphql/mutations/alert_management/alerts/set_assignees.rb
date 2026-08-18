@@ -6,6 +6,9 @@ module Mutations
       class SetAssignees < Base
         graphql_name 'AlertSetAssignees'
 
+        authorize_granular_token permissions: :update_alert,
+          boundary_argument: :project_path, boundary_type: :project
+
         argument :assignee_usernames,
           [GraphQL::Types::String],
           required: true,

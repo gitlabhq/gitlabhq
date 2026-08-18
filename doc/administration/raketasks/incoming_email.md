@@ -12,12 +12,6 @@ title: Incoming email Rake tasks
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
-
-{{< /history >}}
-
 The following are Incoming email-related Rake tasks.
 
 ## Secrets

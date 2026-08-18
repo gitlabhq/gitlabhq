@@ -143,7 +143,6 @@ export default {
             :path-id-separator="pathIdSeparator"
             :is-locked="issue.lockIssueRemoval"
             :locked-message="issue.lockedMessage"
-            :work-item-type="issue.type"
             event-namespace="relatedIssue"
             data-testid="related-issuable-content"
             @related-issue-remove-request="$emit('related-issue-remove-request', $event)"

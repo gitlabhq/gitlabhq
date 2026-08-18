@@ -16,7 +16,7 @@ export default {
       required: true,
     },
   },
-  emits: ['toggledPaused'],
+  emits: ['toggled-paused'],
   computed: {
     item() {
       return { text: this.runner.paused ? I18N_RESUME : I18N_PAUSE };
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <runner-pause-action :runner="runner" @done="$emit('toggledPaused')">
+  <runner-pause-action :runner="runner" @done="$emit('toggled-paused')">
     <template #default="{ onClick }">
       <gl-disclosure-dropdown-item :item="item" @action="onClick" />
     </template>

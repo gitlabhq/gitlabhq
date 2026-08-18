@@ -341,6 +341,34 @@ describe('Upload dropzone component', () => {
 
         expect(wrapper.emitted('error')).toHaveLength(1);
       });
+
+      it('clears the native file input so the rejected file is not submitted with a form', () => {
+        createComponent();
+        const clearSpy = jest.spyOn(wrapper.vm, 'clearInputFiles');
+
+        stubFileInputOnWrapper([invalidFile]);
+        findFileInput().trigger('change');
+
+        expect(clearSpy).toHaveBeenCalled();
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+    });
+  });
+
+  describe('clearInputFiles', () => {
+    it('clears the native file input value', () => {
+      createComponent();
+
+      // jsdom does not allow setting `value` on file inputs to arbitrary
+      // strings, so stub the property to observe the reset.
+      Object.defineProperty(wrapper.vm.$refs.fileUpload, 'value', {
+        writable: true,
+        value: 'C:\\fakepath\\foo.jpg',
+      });
+
+      wrapper.vm.clearInputFiles();
+
+      expect(wrapper.vm.$refs.fileUpload.value).toBe('');
     });
   });
 

@@ -3,6 +3,7 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'BranchToken',
@@ -10,6 +11,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     active: {
       type: Boolean,
@@ -68,7 +70,7 @@ export default {
     :get-active-token-value="getActiveBranch"
     v-bind="$attrs"
     @fetch-suggestions="fetchBranches"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       {{ activeTokenValue ? activeTokenValue.name : inputValue }}

@@ -212,7 +212,7 @@ kex_exchange_identification: Connection closed by remote host
 Connection closed by x.x.x.x port 22
 ```
 
-This error usually indicates that SSH daemon's `MaxStartups` value is throttling
+This error usually indicates that the SSH daemon's `MaxStartups` value is throttling
 SSH connections. This setting specifies the maximum number of concurrent, unauthenticated
 connections to the SSH daemon. This affects users with proper authentication
 credentials (SSH keys) because every connection is 'unauthenticated' in the
@@ -337,7 +337,7 @@ GitLab database is a date in the past:
 Your password expired. Please access GitLab from a web browser to update your password.
 ```
 
-Requests made with a SSO account and where `password_expires_at` is not `null`
+Requests made with an SSO account and where `password_expires_at` is not `null`
 return this error:
 
 ```plaintext
@@ -465,8 +465,8 @@ your IP address has been blocked by the failed-authentication ban:
 fatal: unable to access 'https://gitlab.com/group/project.git/': The requested URL returned error: 403
 ```
 
-The failed authentication ban limits differ depending if you are using a
-[GitLab Self-Managed](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
+The failed authentication ban limits differ depending on whether you are using a
+[GitLab Self-Managed](../../rate_limits/abuse_bans.md#failed-authentication-ban-for-git-and-container-registry)
 or [GitLab.com](../../user/gitlab_com/_index.md#ip-blocks).
 
 ### Check logs for failed authentications

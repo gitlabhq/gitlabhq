@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import showToast from '~/vue_shared/plugins/global_toast';
 import CrmForm from '~/crm/components/crm_form.vue';
 import routes from '~/crm/contacts/routes';
 import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
@@ -22,6 +23,8 @@ import {
   createOrganizationMutationResponse,
   getGroupOrganizationsQueryResponse,
 } from './mock_data';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 const FORM_CREATE_CONTACT = 'create contact';
 const FORM_UPDATE_CONTACT = 'update contact';
@@ -76,9 +79,7 @@ describe('Reusable form component', () => {
     });
   });
 
-  const mockToastShow = jest.fn();
-
-  const findSaveButton = () => wrapper.findByTestId('save-button');
+  const findSaveButton = () => wrapper.findComponentByTestId('save-button');
   const findForm = () => wrapper.find('form');
   const findError = () => wrapper.findComponent(GlAlert);
   const findFormGroup = (at) => wrapper.findAllComponents(GlFormGroup).at(at);
@@ -88,11 +89,6 @@ describe('Reusable form component', () => {
       router,
       apolloProvider: fakeApollo,
       propsData: { drawerOpen: true, ...propsData },
-      mocks: {
-        $toast: {
-          show: mockToastShow,
-        },
-      },
     });
   };
 
@@ -199,16 +195,16 @@ describe('Reusable form component', () => {
       });
 
       it('should be disabled when required fields are empty', async () => {
-        wrapper.find('#firstName').vm.$emit('input', '');
+        wrapper.findComponent('#firstName').vm.$emit('input', '');
         await waitForPromises();
 
         expect(findSaveButton().props('disabled')).toBe(true);
       });
 
       it('should not be disabled when required fields have values', async () => {
-        wrapper.find('#firstName').vm.$emit('input', 'A');
-        wrapper.find('#lastName').vm.$emit('input', 'B');
-        wrapper.find('#email').vm.$emit('input', 'C');
+        wrapper.findComponent('#firstName').vm.$emit('input', 'A');
+        wrapper.findComponent('#lastName').vm.$emit('input', 'B');
+        wrapper.findComponent('#email').vm.$emit('input', 'C');
         await waitForPromises();
 
         expect(findSaveButton().props('disabled')).toBe(false);
@@ -222,14 +218,14 @@ describe('Reusable form component', () => {
     });
 
     it('should be disabled when required field is empty', async () => {
-      wrapper.find('#name').vm.$emit('input', '');
+      wrapper.findComponent('#name').vm.$emit('input', '');
       await waitForPromises();
 
       expect(findSaveButton().props('disabled')).toBe(true);
     });
 
     it('should not be disabled when required field has a value', async () => {
-      wrapper.find('#name').vm.$emit('input', 'A');
+      wrapper.findComponent('#name').vm.$emit('input', 'A');
       await waitForPromises();
 
       expect(findSaveButton().props('disabled')).toBe(false);
@@ -245,7 +241,7 @@ describe('Reusable form component', () => {
         findForm().trigger('submit');
         await waitForPromises();
 
-        expect(mockToastShow).toHaveBeenCalledWith(toastMessage);
+        expect(showToast).toHaveBeenCalledWith(toastMessage);
       });
     },
   );
@@ -314,9 +310,9 @@ describe('Reusable form component', () => {
     });
 
     it('should include updated values in update mutation', () => {
-      wrapper.find('#firstName').vm.$emit('input', 'Michael');
+      wrapper.findComponent('#firstName').vm.$emit('input', 'Michael');
       wrapper
-        .find('#organizationId')
+        .findComponent('#organizationId')
         .vm.$emit('input', 'gid://gitlab/CustomerRelations::Organization/1');
 
       findForm().trigger('submit');

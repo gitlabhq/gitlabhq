@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlTab } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 /**
  * Wrapper of <gl-tab> to optionally lazily render this tab's content
  * when its shown **without dismounting after its hidden**.
@@ -60,6 +61,7 @@ export default {
       render: () => null,
     },
   },
+  mixins: [glListenersMixin],
   inheritAttrs: false,
   props: {
     emptyMessage: {
@@ -123,7 +125,7 @@ export default {
 };
 </script>
 <template>
-  <gl-tab :lazy="isLazy" v-bind="$attrs" v-on="$listeners">
+  <gl-tab :lazy="isLazy" v-bind="$attrs" v-on="glListeners()">
     <template #title>
       <span>{{ title }}</span>
     </template>

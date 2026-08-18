@@ -20,12 +20,6 @@ You can map FogBugz users to GitLab users.
 
 ## Prerequisites
 
-{{< history >}}
-
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
-
-{{< /history >}}
-
 - [FogBugz import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   enabled. If not enabled, ask your GitLab administrator to enable it. The FogBugz import source is enabled
   by default on GitLab.com.

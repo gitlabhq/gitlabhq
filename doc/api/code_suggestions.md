@@ -18,9 +18,6 @@ Use this API to access GitLab Duo Code Suggestions.
 
 {{< history >}}
 
-- Introduced in GitLab 16.2 [with a feature flag](../administration/feature_flags/_index.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an experiment.
-- Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416371) in GitLab 16.8. [Feature flag `code_suggestions_completion_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138174) removed.
 - `context` and `user_instruction` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a feature flag](../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
 - `context` and `user_instruction` attributes [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 18.6. Feature flag `code_suggestions_context` removed.
 
@@ -104,12 +101,6 @@ Example response:
 ```
 
 ## Validate that Code Suggestions is enabled
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138814) in GitLab 16.7.
-
-{{< /history >}}
 
 Use this endpoint to validate if either:
 

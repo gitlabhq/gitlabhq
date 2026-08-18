@@ -73,7 +73,7 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
 
         expect do
           post_graphql(query, current_user: current_user, variables: variables)
-        end.not_to exceed_all_query_limit(control)
+        end.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
         expect_graphql_errors_to_be_empty
       end
     end

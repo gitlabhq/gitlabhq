@@ -16,12 +16,12 @@ When working with Git LFS, you might encounter the following issues.
 
 This error can occur for a few reasons, including:
 
-- You don't have permissions to access certain LFS object. Confirm you have
+- You don't have permissions to access a certain LFS object. Confirm you have
   permission to push to the project, or fetch from the project.
 - The project isn't allowed to access the LFS object. The LFS object you want
   to push (or fetch) is no longer available to the project. In most cases, the object
   has been removed from the server.
-- The local Git repository is using deprecated version of the Git LFS API. Update
+- The local Git repository is using a deprecated version of the Git LFS API. Update
   your local copy of Git LFS and try again.
 
 ## Invalid status for `<url>` : 501
@@ -43,7 +43,7 @@ These problems can cause `501` errors:
   administrator why Git LFS is not enabled on the server. See
   [LFS administration documentation](../../../administration/lfs/_index.md) for instructions
   on how to enable Git LFS support.
-- The Git LFS client version is not supported by GitLab server. You should:
+- The Git LFS client version is not supported by the GitLab server. You should:
   1. Check your Git LFS version with `git lfs version`.
   1. Check the Git configuration of your project for traces of the deprecated API
      with `git lfs -l`. If your configuration sets `batch = false`,
@@ -116,7 +116,7 @@ read tcp your-instance-ip:54544->your-instance-ip:443: i/o timeout
 error: failed to push some refs to 'ssh://example.com:2222/root/project.git'
 ```
 
-To fix this problem, set the client activity timeout a higher value. For example,
+To fix this problem, set the client activity timeout to a higher value. For example,
 to set the timeout to 60 seconds:
 
 ```shell
@@ -126,8 +126,7 @@ git config lfs.activitytimeout 60
 ## Encountered `n` files that should have been pointers, but weren't
 
 This error indicates the repository should be tracking a file with Git LFS, but
-isn't. [Issue 326342](https://gitlab.com/gitlab-org/gitlab/-/issues/326342#note_586820485),
-fixed in GitLab 16.10, was one cause of this problem.
+isn't.
 
 To fix the problem, migrate the affected files, and push them up to the repository:
 
@@ -208,7 +207,7 @@ The workaround is to create an empty `.gitattributes` file in the root directory
 
 {{< tab title="With Git" >}}
 
-1. Clone your repository::
+1. Clone your repository:
 
    ```shell
    git clone <repository>

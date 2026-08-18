@@ -15,8 +15,8 @@ title: Configure GitLab to use self-hosted models
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/work_items/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8
 - Ability to set AI Gateway URL using UI [added](https://gitlab.com/gitlab-org/gitlab/-/issues/473143) in GitLab 17.9.
@@ -117,12 +117,12 @@ If a model has its own timeout in `MODEL_SPECIFICATIONS`, that value takes prece
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558083) from experiment to beta in GitLab 18.5.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19125) in GitLab 18.8.
 - Feature flag `self_hosted_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589) in GitLab 18.9.
-- On GitLab 18.7 and 18.8, this feature is beta for customers with an online licenses. To use this feature, you must [turn on](#turn-on-self-hosted-beta-models-and-features) self-hosted beta models and features.
+- On GitLab 18.7 and 18.8, this feature is beta for customers with an online license. To use this feature, you must [turn on](#turn-on-self-hosted-beta-models-and-features) self-hosted beta models and features.
 
 {{< /history >}}
 
@@ -169,6 +169,7 @@ To add a self-hosted model:
      | [vLLM](supported_llm_serving_platforms.md#find-the-model-name)        | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
      | [Amazon Bedrock - Set the model identifier](#set-the-model-identifier) | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | [Amazon Bedrock - Use an application inference profile ARN](#use-an-application-inference-profile-arn) | `bedrock/converse/<application inference profile ARN>` | `bedrock/converse/arn:aws:bedrock:us-east-1:123456789012:application-inference-profile/abcd1234efgh` |
+     | [Amazon Bedrock Mantle](supported_llm_serving_platforms.md#configure-amazon-bedrock-mantle) | `bedrock_mantle/<model ID of the model>` | `bedrock_mantle/openai.gpt-oss-120b` |
      | [Gemini Enterprise Agent Platform](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude) | `vertex_ai/<model ID of the model>` | `vertex_ai/claude-sonnet-4-6@default` |
      | [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)                                                             | `anthropic/<model ID of the model>`                     | `anthropic/claude-opus-4-6` |
      | [OpenAI](https://developers.openai.com/api/docs/models)                                                                | `openai/<model ID of the model>`                        | `openai/gpt-5` |
@@ -254,7 +255,7 @@ To select a self-hosted model:
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure models for GitLab Duo**.
 1. Select the **AI-native features** tab.
-1. For the feature you want to select a self-hosted model for, select the model from dropdown list.
+1. For the feature you want to select a self-hosted model for, select the model from the dropdown list.
 
 > [!note]
 > If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
@@ -264,7 +265,7 @@ To select a self-hosted model:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
 - Generally available in GitLab 18.9. Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595).
 

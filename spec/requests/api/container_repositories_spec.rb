@@ -223,5 +223,27 @@ RSpec.describe API::ContainerRepositories, :with_current_organization, feature_c
 
       it_behaves_like 'returning response status', :not_found
     end
+
+    context 'when current organization differs from the repository organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_project) { create(:project, :private, organization: other_organization) }
+      let_it_be(:other_repository) { create(:container_repository, project: other_project) }
+
+      let(:url) { "/registry/repositories/#{other_repository.id}" }
+
+      before_all do
+        other_project.add_reporter(reporter)
+      end
+
+      before do
+        current_organization.mark_as_isolated!
+      end
+
+      it 'does not allow access to the repository' do
+        subject
+
+        expect(response).not_to have_gitlab_http_status(:ok)
+      end
+    end
   end
 end

@@ -2,25 +2,33 @@
 import { kebabCase } from 'lodash-es';
 import {
   GlCollapse,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
   GlIcon,
   GlNavItem,
   GlAnimatedChevronRightDownIcon,
   GlOutsideDirective as Outside,
+  GlTooltipDirective,
 } from '@gitlab/ui';
+import { HIDDEN_NAV_ITEM_CLASS, DEFAULT_PIN_CONTEXT } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
+import DisclosureNavItem from './disclosure_nav_item.vue';
 
 export default {
   name: 'MenuSection',
   components: {
     GlCollapse,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
     GlIcon,
     GlNavItem,
     GlAnimatedChevronRightDownIcon,
     NavItem,
     FlyoutMenu,
+    DisclosureNavItem,
   },
-  directives: { Outside },
+  directives: { Outside, GlTooltip: GlTooltipDirective },
   inject: {
     isIconOnly: { default: false },
   },
@@ -44,6 +52,21 @@ export default {
       required: false,
       default: false,
     },
+    disclosure: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    pinContext: {
+      type: Object,
+      required: false,
+      default: () => ({ ...DEFAULT_PIN_CONTEXT }),
+    },
+    headerless: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     asyncCount: {
       type: Object,
       required: false,
@@ -53,7 +76,7 @@ export default {
   emits: ['collapse-toggle', 'nav-link-click', 'pin-add', 'pin-remove'],
   data() {
     return {
-      isExpanded: Boolean(this.expanded || this.item.is_active),
+      isExpanded: Boolean(this.headerless || this.expanded || this.item.is_active),
       isMouseOverSection: false,
       isMouseOverFlyout: false,
       keepFlyoutClosed: false,
@@ -63,7 +86,7 @@ export default {
     navItems() {
       return this.item.items.filter((item) => {
         if (item.link_classes) {
-          return !item.link_classes.includes('js-super-sidebar-nav-item-hidden');
+          return !item.link_classes.includes(HIDDEN_NAV_ITEM_CLASS);
         }
         return true;
       });
@@ -91,6 +114,16 @@ export default {
     },
     showExpanded() {
       return !this.isIconOnly && this.isExpanded;
+    },
+    showFlyout() {
+      return (
+        !this.headerless &&
+        this.hasFlyout &&
+        this.isMouseOver &&
+        !this.showExpanded &&
+        !this.keepFlyoutClosed &&
+        this.navItems.length > 0
+      );
     },
   },
   watch: {
@@ -148,7 +181,36 @@ export default {
 
 <template>
   <component :is="tag">
+    <gl-disclosure-dropdown v-if="disclosure" class="super-sidebar-settings-dropdown" block>
+      <template #toggle="{ accessibilityAttributes }">
+        <gl-nav-item
+          v-gl-tooltip.right="isIconOnly ? item.title : ''"
+          :icon="item.icon"
+          :is-icon-only="isIconOnly"
+          :aria-label="item.title"
+          :selected="item.is_active"
+          data-testid="menu-section-button"
+          :data-qa-section-name="item.title"
+          v-bind="accessibilityAttributes"
+        >
+          {{ item.title }}
+        </gl-nav-item>
+      </template>
+
+      <gl-disclosure-dropdown-group>
+        <disclosure-nav-item
+          v-for="navItem in navItems"
+          :key="navItem.id"
+          :item="navItem"
+          :pin-context="pinContext"
+          @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
+          @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
+        />
+      </gl-disclosure-dropdown-group>
+    </gl-disclosure-dropdown>
+
     <gl-nav-item
+      v-if="!disclosure && !headerless"
       :id="`menu-section-button-${itemId}`"
       v-outside="handleClickOutside"
       class="gl-relative gl-mb-1"
@@ -173,7 +235,7 @@ export default {
     </gl-nav-item>
 
     <flyout-menu
-      v-if="hasFlyout && isMouseOver && !showExpanded && !keepFlyoutClosed && navItems.length > 0"
+      v-if="!disclosure && showFlyout"
       :target-id="`menu-section-button-${itemId}`"
       :title="item.title"
       :items="navItems"
@@ -188,9 +250,10 @@ export default {
     />
 
     <gl-collapse
+      v-if="!disclosure"
       :id="itemId"
       v-model="isExpanded"
-      :class="{ 'gl-invisible gl-absolute': isIconOnly }"
+      :class="{ 'gl-hidden': isIconOnly && !headerless }"
       class="gl-m-0 gl-list-none gl-p-0 gl-transition-[height] gl-duration-medium gl-ease-ease"
       data-testid="menu-section"
       :data-qa-section-name="item.title"
@@ -202,6 +265,7 @@ export default {
             :key="`${item.title}-${subItem.title}`"
             :item="subItem"
             :async-count="asyncCount"
+            hide-icon
             @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
             @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
           />

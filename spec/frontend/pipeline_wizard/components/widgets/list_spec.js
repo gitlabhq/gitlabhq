@@ -25,7 +25,7 @@ describe('Pipeline Wizard - List Widget', () => {
   const getValueOfInputField = (atIndex = 0) => {
     return findGlFormInputGroupByIndex(atIndex).get('input').element.value;
   };
-  const findAddStepButton = () => wrapper.findByTestId('add-step-button');
+  const findAddStepButton = () => wrapper.findComponentByTestId('add-step-button');
   const addStep = () => findAddStepButton().vm.$emit('click');
 
   const createComponent = (props = {}, mountFn = shallowMountExtended) => {
@@ -117,7 +117,9 @@ describe('Pipeline Wizard - List Widget', () => {
       setValueOnInputField('bar', 1);
       setValueOnInputField('baz', 2);
 
-      const button = findAllGlFormInputGroups().at(1).find('[data-testid="remove-step-button"]');
+      const button = findAllGlFormInputGroups()
+        .at(1)
+        .findComponent('[data-testid="remove-step-button"]');
 
       button.vm.$emit('click');
       await nextTick();

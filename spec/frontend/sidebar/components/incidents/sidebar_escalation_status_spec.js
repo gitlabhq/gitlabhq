@@ -69,7 +69,7 @@ describe('SidebarEscalationStatus', () => {
 
   const findSidebarComponent = () => wrapper.findComponent(SidebarEditableItem);
   const findStatusComponent = () => wrapper.findComponent(EscalationStatus);
-  const findEditButton = () => wrapper.findByTestId('edit-button');
+  const findEditButton = () => wrapper.findComponentByTestId('edit-button');
   const findIcon = () => wrapper.findByTestId('status-icon');
 
   const clickEditButton = () => {

@@ -160,12 +160,6 @@ To enable email OTP for your account:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
-
-{{< /history >}}
-
 You can use Cisco Duo as an OTP provider in GitLab.
 
 DUO® is a registered trademark of Cisco Systems, Inc., and/or its affiliates in the United States and certain other countries.
@@ -425,7 +419,7 @@ The following Git credential helpers authenticate to GitLab using OAuth. This is
 
 ### Git Credential Manager
 
-[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
+[Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/git-ecosystem/git-credential-manager/blob/main/docs/gitlab.md).
 
 So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
 

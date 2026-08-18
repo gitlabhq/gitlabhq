@@ -33,7 +33,7 @@ If job artifacts are using too much disk space, see the
 
 ## Error message `No files to upload`
 
-This message appears in job logs when a the runner can't find the file to upload. Either
+This message appears in job logs when the runner can't find the file to upload. Either
 the path to the file is incorrect, or the file was not created. You can check the job
 log for other errors or warnings that specify the filename and why it wasn't
 generated.
@@ -107,11 +107,14 @@ rspec:
 To troubleshoot this error, verify that:
 
 - Project `my-group/my-project` is in a group with a Premium subscription plan.
-- The user running the job can access resources in `my-group/my-project`.
+- The user who triggers the pipeline has at least the Reporter role in `my-group/my-project`.
+  For more information, see [project CI/CD permissions](../../user/permissions.md#project-cicd).
 - The `project`, `job`, and `ref` combination exists and results in the desired dependency.
 - Any variables in use evaluate to the correct values.
 
 If you use the `CI_JOB_TOKEN`, add the token to the project's [allowlist](ci_job_token.md#control-job-token-access-to-your-project) to pull artifacts from a different project.
+Adding a project to the allowlist does not grant the triggering user access to `my-group/my-project`.
+That user must already have the required role.
 
 ### For a job configured with `needs:pipeline:job`
 

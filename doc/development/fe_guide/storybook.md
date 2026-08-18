@@ -65,7 +65,7 @@ For instructions on how to write stories, refer to the [official Storybook instr
 ## Mocking GraphQL queries and mutations
 
 To write a story for a component that uses Apollo Client for GraphQL, use `createMockApollo` from `helpers/mock_apollo_helper`.
-Pass it an array of `[query, handlerFn]` tuples — each handler receives the query variables and must return a `Promise` resolving to the expected response shape.
+Pass it an array of `[query, handlerFn]` tuples - each handler receives the query variables and must return a `Promise` resolving to the expected response shape.
 
 ```javascript
 import createMockApollo from 'helpers/mock_apollo_helper';

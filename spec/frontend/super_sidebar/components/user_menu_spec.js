@@ -156,7 +156,7 @@ describe('UserMenu component', () => {
         { status: { ...userMenuMockStatus, can_update: canUpdate, busy, customized } },
         stubs,
       );
-      item = wrapper.findByTestId('status-item');
+      item = wrapper.findComponentByTestId('status-item');
     };
 
     describe('When user cannot update the status', () => {
@@ -234,7 +234,7 @@ describe('UserMenu component', () => {
             status: { ...userMenuMockStatus, can_update: true, busy, customized },
           });
 
-          wrapper.findByTestId('status-item').vm.$emit('action');
+          wrapper.findComponentByTestId('status-item').vm.$emit('action');
           await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
@@ -252,7 +252,7 @@ describe('UserMenu component', () => {
             status: { can_update: true, busy, customized },
           });
 
-          wrapper.findByTestId('status-item').vm.$emit('action');
+          wrapper.findComponentByTestId('status-item').vm.$emit('action');
           await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
@@ -272,7 +272,7 @@ describe('UserMenu component', () => {
             status: { ...userMenuMockStatus, can_update: true, busy: false, customized: false },
           });
 
-          wrapper.findByTestId('status-item').vm.$emit('action');
+          wrapper.findComponentByTestId('status-item').vm.$emit('action');
           await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
@@ -519,7 +519,7 @@ describe('UserMenu component', () => {
 
   describe('GitLab Next item', () => {
     const findGitlabNextItem = () => wrapper.findByTestId('gitlab-next-item');
-    const findGitlabNextToggle = () => wrapper.findByTestId('gitlab-next-toggle');
+    const findGitlabNextToggle = () => wrapper.findComponentByTestId('gitlab-next-toggle');
     const findGitlabNextLabel = () => findGitlabNextItem().find('.gl-grow');
 
     let setGitlabNextSpy;
@@ -666,6 +666,7 @@ describe('UserMenu component', () => {
           },
         });
         expect(findEnterAdminModeItem().exists()).toBe(true);
+        expect(findEnterAdminModeItem().find('a').attributes('href')).toBe('/admin/session/new');
         expect(findLeaveAdminModeItem().exists()).toBe(false);
       });
     });
@@ -681,39 +682,35 @@ describe('UserMenu component', () => {
         });
         expect(findEnterAdminModeItem().exists()).toBe(false);
         expect(findLeaveAdminModeItem().exists()).toBe(true);
+        expect(findLeaveAdminModeItem().find('a').attributes('href')).toBe(
+          '/admin/session/destroy',
+        );
       });
     });
   });
 
   describe('Sign out group', () => {
-    const findSignOutGroup = () => wrapper.findByTestId('sign-out-group');
+    const findSignOutGroup = () => wrapper.findComponentByTestId('sign-out-group');
 
-    it('should not render sign out group when user cannot sign out', () => {
+    beforeEach(() => {
       createWrapper();
-      expect(findSignOutGroup().exists()).toBe(false);
     });
 
-    describe('when user can sign out', () => {
-      beforeEach(() => {
-        createWrapper({ can_sign_out: true });
-      });
+    it('should render sign out group', () => {
+      expect(findSignOutGroup().exists()).toBe(true);
+    });
 
-      it('should render sign out group', () => {
-        expect(findSignOutGroup().exists()).toBe(true);
-      });
+    it('should render the menu item with a link to sign out and correct data attribute', () => {
+      expect(findSignOutGroup().find('a').attributes('href')).toBe('/users/sign_out');
+      expect(findSignOutGroup().find('a').attributes('data-method')).toBe('post');
+    });
 
-      it('should render the menu item with a link to sign out and correct data attribute', () => {
-        expect(findSignOutGroup().find('a').attributes('href')).toBe('/users/sign_out');
-        expect(findSignOutGroup().find('a').attributes('data-method')).toBe('post');
-      });
+    it('should track Snowplow event on sign out', () => {
+      findSignOutGroup().vm.$emit('action');
 
-      it('should track Snowplow event on sign out', () => {
-        findSignOutGroup().vm.$emit('action');
-
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
-          label: 'user_sign_out',
-          property: 'nav_user_menu',
-        });
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
+        label: 'user_sign_out',
+        property: 'nav_user_menu',
       });
     });
   });
@@ -725,7 +722,6 @@ describe('UserMenu component', () => {
       display_whats_new: true,
       whats_new_most_recent_release_items_count: 3,
       whats_new_version_digest: 'abc',
-      whats_new_mark_as_read_path: '/mark_as_read',
       whats_new_read_articles: [],
     };
 

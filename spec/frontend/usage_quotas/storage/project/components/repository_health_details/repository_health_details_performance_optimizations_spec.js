@@ -21,9 +21,11 @@ describe('RepositoryHealthPerformanceOptimizations', () => {
 
   const findHeaderText = () => wrapper.findByTestId('performance-header-text');
   const findGlIcon = () => wrapper.findComponent(GlIcon);
-  const findCommitGraphCard = () => wrapper.findByTestId('commit-graph-features');
-  const findReachabilityBitmapCard = () => wrapper.findByTestId('reachability-bitmap-features');
-  const findMultiPackIndexBitmapCard = () => wrapper.findByTestId('multi-pack-bitmap-features');
+  const findCommitGraphCard = () => wrapper.findComponentByTestId('commit-graph-features');
+  const findReachabilityBitmapCard = () =>
+    wrapper.findComponentByTestId('reachability-bitmap-features');
+  const findMultiPackIndexBitmapCard = () =>
+    wrapper.findComponentByTestId('multi-pack-bitmap-features');
 
   describe('header section', () => {
     beforeEach(() => {

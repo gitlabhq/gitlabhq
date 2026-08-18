@@ -1,16 +1,10 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: DAP Repository Flows
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Repository X-Ray gives Code Suggestions more insight into your project's codebase and dependencies.
 title: Repository X-Ray with Code Suggestions
 ---
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
-
-{{< /history >}}
 
 Repository X-Ray automatically enriches:
 

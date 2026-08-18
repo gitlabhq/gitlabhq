@@ -17,11 +17,9 @@ module API
 
         rewrite_param_name(transformed, :assignee_usernames, :assignee_username)
         rewrite_param_name(transformed, :assignee_wildcard_id, :assignee_id)
-        rewrite_param_name(transformed, :types, :issue_types)
         rewrite_param_name(transformed, :parent_ids, :work_item_parent_ids)
 
         rewrite_param_name(transformed[:not], :assignee_usernames, :assignee_username)
-        rewrite_param_name(transformed[:not], :types, :issue_types)
         rewrite_param_name(transformed[:not], :parent_ids, :work_item_parent_ids)
 
         rewrite_param_name(transformed[:or], :assignee_usernames, :assignee_username)

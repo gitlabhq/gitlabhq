@@ -133,11 +133,11 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
           stub_feature_flags(ci_create_pipeline_worker_retry_on_reference_not_found: project)
         end
 
-        it 'raises ReferenceNotFoundError without logging' do
+        it 'raises TransientGitalyReadError without logging' do
           expect(Sidekiq.logger).not_to receive(:warn)
 
           expect { worker.perform(*push_args) }
-            .to raise_error(described_class::ReferenceNotFoundError)
+            .to raise_error(described_class::TransientGitalyReadError)
         end
 
         context 'when before SHA is not blank' do
@@ -166,6 +166,58 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
       context 'when ci_create_pipeline_worker_retry_on_reference_not_found feature flag is disabled' do
         before do
           stub_feature_flags(ci_create_pipeline_worker_retry_on_reference_not_found: false)
+        end
+
+        it 'does not raise and logs the error instead' do
+          expect(Sidekiq.logger).to receive(:warn)
+
+          expect { worker.perform(*push_args) }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when the pipeline creation fails with "Commit not found"' do
+      let(:commit_not_found_message) { Gitlab::Ci::Pipeline::Chain::Validate::Repository::COMMIT_NOT_FOUND_MESSAGE }
+      let(:service_response) { instance_double(ServiceResponse, error?: true, message: commit_not_found_message, payload: pipeline) }
+      let(:before_sha) { 'abc123def456abc123def456abc123def456abc1' }
+      let(:push_args) { [project.id, user.id, project.default_branch, :push, {}, { 'before' => before_sha }] }
+
+      before do
+        allow(Ci::CreatePipelineService).to receive(:new).and_return(create_pipeline_service)
+        allow(create_pipeline_service).to receive(:execute).and_return(service_response)
+      end
+
+      it 'raises TransientGitalyReadError without logging, regardless of the before SHA' do
+        expect(Sidekiq.logger).not_to receive(:warn)
+
+        expect { worker.perform(*push_args) }
+          .to raise_error(described_class::TransientGitalyReadError)
+      end
+
+      context 'when before SHA is blank' do
+        let(:before_sha) { Gitlab::Git::SHA1_BLANK_SHA }
+
+        it 'raises TransientGitalyReadError without logging' do
+          expect(Sidekiq.logger).not_to receive(:warn)
+
+          expect { worker.perform(*push_args) }
+            .to raise_error(described_class::TransientGitalyReadError)
+        end
+      end
+
+      context 'when error message is not "Commit not found"' do
+        let(:service_response) { instance_double(ServiceResponse, error?: true, message: 'some other error', payload: pipeline) }
+
+        it 'does not raise and logs the error instead' do
+          expect(Sidekiq.logger).to receive(:warn)
+
+          expect { worker.perform(*push_args) }.not_to raise_error
+        end
+      end
+
+      context 'when ci_create_pipeline_worker_retry_on_commit_not_found feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_create_pipeline_worker_retry_on_commit_not_found: false)
         end
 
         it 'does not raise and logs the error instead' do

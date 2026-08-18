@@ -6,17 +6,21 @@ import {
   MR_PREVIOUS_FILE_IN_DIFF,
   MR_COMMITS_NEXT_COMMIT,
   MR_TOGGLE_REVIEW,
+  MR_TOGGLE_DIFF_VIEW_TYPE,
 } from '~/behaviors/shortcuts/keybindings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
+import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { COLLAPSE_FILE_BY_USER, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
 import {
   initHotkeys,
   createFileNavigation,
   navigateCommit,
   toggleFileReview,
+  toggleDiffViewType,
 } from '~/rapid_diffs/app/init_hotkeys';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -266,6 +270,39 @@ describe('initHotkeys', () => {
       Mousetrap.trigger(keysFor(MR_TOGGLE_REVIEW)[0]);
 
       expect(useCodeReview().reviewedIds[CODE_REVIEW_ID]).toBe(true);
+    });
+  });
+
+  describe('toggleDiffViewType', () => {
+    let updateViewType;
+
+    beforeEach(() => {
+      updateViewType = jest.spyOn(useDiffsView(), 'updateViewType').mockImplementation(() => {});
+    });
+
+    it('switches from inline to parallel view', () => {
+      useDiffsView().viewType = INLINE_DIFF_VIEW_TYPE;
+
+      toggleDiffViewType();
+
+      expect(updateViewType).toHaveBeenCalledWith(PARALLEL_DIFF_VIEW_TYPE);
+    });
+
+    it('switches from parallel to inline view', () => {
+      useDiffsView().viewType = PARALLEL_DIFF_VIEW_TYPE;
+
+      toggleDiffViewType();
+
+      expect(updateViewType).toHaveBeenCalledWith(INLINE_DIFF_VIEW_TYPE);
+    });
+
+    it('binds to Mousetrap keybindings', () => {
+      useDiffsView().viewType = INLINE_DIFF_VIEW_TYPE;
+      teardown = initHotkeys();
+
+      Mousetrap.trigger(keysFor(MR_TOGGLE_DIFF_VIEW_TYPE)[0]);
+
+      expect(updateViewType).toHaveBeenCalledWith(PARALLEL_DIFF_VIEW_TYPE);
     });
   });
 

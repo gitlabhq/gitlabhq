@@ -1336,7 +1336,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
 
         before do
           merge_request.update!(description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}")
-          merge_request.cache_merge_request_closes_issues!(user)
+          merge_request.persist_merge_request_issues!(user)
         end
 
         context 'when description updates MergeRequestsClosingIssues records' do

@@ -12,12 +12,6 @@ title: Packages API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
-
-{{< /history >}}
-
 Use this API to interact with [GitLab Packages](../administration/packages/_index.md).
 
 ## List packages
@@ -46,7 +40,7 @@ GET /projects/:id/packages
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `composer`, `conan`, `generic`, `golang`, `helm`, `maven`, `npm`, `nuget`, `pypi`, or `terraform_module`. |
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
-| `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
+| `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
 | `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, `pending_destruction`, or `deprecated`. |
 
@@ -124,7 +118,7 @@ GET /groups/:id/packages
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `composer`, `conan`, `generic`, `golang`, `helm`, `maven`, `npm`, `nuget`, `pypi`, or `terraform_module`. |
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
-| `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
+| `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
 | `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, `pending_destruction`, or `deprecated`. |
 
@@ -368,12 +362,6 @@ Example response:
 By default, the `GET` request returns 20 results, because the API is [paginated](rest/_index.md#pagination).
 
 ## List package pipelines
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
-
-{{< /history >}}
 
 Lists all pipelines for a specified package. The results are sorted by `id` in descending order.
 

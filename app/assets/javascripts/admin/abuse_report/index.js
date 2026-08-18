@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import AbuseReportApp from './components/abuse_report_app.vue';
@@ -22,7 +23,7 @@ export const initAbuseReportApp = () => {
     deep: true,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     apolloProvider,
     name: 'AbuseReportAppRoot',
@@ -31,11 +32,9 @@ export const initAbuseReportApp = () => {
       updatePath: abuseReport.report.updatePath,
       listPath: abuseReportsListPath,
     },
-    render: (createElement) =>
-      createElement(AbuseReportApp, {
-        props: {
-          abuseReport,
-        },
-      }),
+    component: AbuseReportApp,
+    props: {
+      abuseReport,
+    },
   });
 };

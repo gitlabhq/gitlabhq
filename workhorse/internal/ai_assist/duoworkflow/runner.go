@@ -341,7 +341,11 @@ func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 		return fmt.Errorf("handleWebSocketMessage: no workflow ID provided in StartWorkflowRequest")
 	}
 
-	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID)
+	// WorkflowDefinition is deprecated, but there is no strategy yet to stop using and eventually
+	// remove it. Legacy/chat flows have no concept of a flow definition until they are migrated to
+	// the flow registry, so this field is still the only value we get for them today.
+	//lint:ignore SA1019 see comment above
+	mutex, err := r.lockManager.acquireLock(r.originalReq.Context(), r.workflowID, startReq.WorkflowDefinition)
 	if err != nil && err != errLockIsUnavailable {
 		return errFailedToAcquireLockError
 	}

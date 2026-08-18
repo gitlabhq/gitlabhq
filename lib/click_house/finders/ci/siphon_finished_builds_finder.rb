@@ -17,6 +17,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
         TABLE_NAME = 'siphon_p_ci_builds'
         SUBQUERY_ALIAS = 'finished_builds'
         STAGES_SUBQUERY_ALIAS = SiphonStagesFinder::SUBQUERY_ALIAS
+        PIPELINES_CTE_ALIAS = SiphonPipelinesFinder::SUBQUERY_ALIAS
 
         # Mirrors the existing flow, which only seeds ci_finished_builds for
         # builds that reached a completed status (see Ci::Build's transition to
@@ -63,8 +64,8 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
 
         # Opt-in LEFT JOIN to siphon_p_ci_stages, the way a caller would join an
         # association in ActiveRecord. Required before selecting/grouping/ordering
-        # on :stage_name. The container scopes the stages side and is consumed
-        # here, so nothing about the join needs to be carried until #final_query.
+        # on :stage_name. Call #filter_by_pipeline_attrs first when combining:
+        # the join reuses its pipelines CTE to prune the stages side.
         def with_stages(container)
           with_queries(
             inner_query: inner_query.select(*fields_with_arg_max(:stage_id)),
@@ -214,13 +215,17 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
           Arel.sql("`#{STAGES_SUBQUERY_ALIAS}`.`name`")
         end
 
-        # Derive the stages-join state from the query itself rather than tracking
-        # it separately: #with_stages adds a join targeting the stages alias.
         def stages_joined?
           outer_query.manager.join_sources.any? do |join|
             source = join.left
             source.is_a?(Arel::Nodes::TableAlias) && source.right.to_s == STAGES_SUBQUERY_ALIAS
           end
+        end
+
+        def pipelines_filtered?
+          with_node = outer_query.manager.ast.with
+
+          with_node && with_node.children.any? { |cte| cte.name.to_s == PIPELINES_CTE_ALIAS }
         end
 
         # stage_name resolves to the joined stages alias, but the join needs
@@ -247,8 +252,13 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
           with_outer_query(outer_query.group(*columns))
         end
 
+        # Hoisted into a named CTE so #stage_join can reuse the same set to
+        # prune the stages side.
         def apply_pipeline_filter(pipelines)
-          with_inner_query(inner_query.where(commit_id: pipelines.select(:id).final_query))
+          with_queries(
+            inner_query: inner_query.where(commit_id: pipelines_cte_reference),
+            outer_query: outer_query.with(pipelines.select(:id).final_query.as_cte(PIPELINES_CTE_ALIAS))
+          )
         end
 
         def pipelines_finder
@@ -281,17 +291,24 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
           outer.with(inner.as_cte(SUBQUERY_ALIAS))
         end
 
-        # Scope the stages subquery by container only. Scoping it further by the
-        # stage_ids from the builds CTE looks cheaper but references the CTE a
-        # second time, and ClickHouse inlines CTEs at every reference site - the
-        # whole builds dedup aggregation would run twice and block the main scan
-        # behind a CreatingSets step (measured 6x slower on a 90-day window).
+        # The pipeline_id IN-set lets the by_traversal_path_pipeline_id
+        # projection prune granules instead of scanning the container's entire
+        # stage history.
         def stage_join(base_outer, container)
           stages = SiphonStagesFinder.for_container(container)
+          stages = stages.for_pipeline_ids(pipelines_cte_reference) if pipelines_filtered?
           stages_alias = stages.final_query.to_arel.as(STAGES_SUBQUERY_ALIAS)
-          stages_id = Arel::Table.new(STAGES_SUBQUERY_ALIAS)[:id]
+          stages_table = Arel::Table.new(STAGES_SUBQUERY_ALIAS)
 
-          base_outer.joins(stages_alias, { stage_id: stages_id }, type: :outer)
+          base_outer.joins(
+            stages_alias,
+            { stage_id: stages_table[:id], partition_id: stages_table[:partition_id] },
+            type: :outer
+          )
+        end
+
+        def pipelines_cte_reference
+          ClickHouse::Client::QueryBuilder.new(PIPELINES_CTE_ALIAS).select(:id)
         end
         # rubocop: enable CodeReuse/ActiveRecord
       end

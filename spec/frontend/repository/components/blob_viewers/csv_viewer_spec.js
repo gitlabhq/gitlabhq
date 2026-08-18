@@ -16,7 +16,7 @@ describe('CSV Viewer', () => {
     });
   };
 
-  const findCsvViewerComp = () => wrapper.find('[data-testid="csv"]');
+  const findCsvViewerComp = () => wrapper.findComponent('[data-testid="csv"]');
 
   it('renders a Source Editor component', () => {
     createComponent();

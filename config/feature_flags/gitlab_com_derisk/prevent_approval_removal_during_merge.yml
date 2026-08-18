@@ -1,0 +1,11 @@
+---
+name: prevent_approval_removal_during_merge
+description: Blocks approval removal while a merge is in flight and re-checks approval
+  inside the merge lock, preventing a merged-but-unapproved merge request
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/604469
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243660
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605128
+milestone: '19.2'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

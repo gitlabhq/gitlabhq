@@ -57,9 +57,11 @@ project:
   - request_access
   - update_saved_view
   - update_saved_view_visibility
+  - update_work_item_user_preference
   - upload_file
 group:
   permissions: []
   raw_permissions:
   - request_access
+  - update_work_item_user_preference
   - upload_file

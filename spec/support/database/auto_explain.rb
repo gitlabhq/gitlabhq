@@ -67,6 +67,8 @@ module AutoExplain
           FileUtils.mkdir_p(File.dirname(log_file))
 
           fingerprints = Set.new
+          seen_query_ids = Set.new
+          seen_queries = Set.new
           recording_start = Time.now
 
           Zlib::GzipWriter.open(log_file) do |gz|
@@ -74,47 +76,55 @@ module AutoExplain
 
             pg.exec('SET statement_timeout TO 0;')
 
-            # Use UNION ALL to handle queries differently based on query_id:
-            # - Apply DISTINCT for non-zero query_ids for efficient database-level deduplication
-            # - Process all query_id=0 cases separately to ensure nothing is missed
-            pg.send_query(<<~SQL.squish)
-              WITH base_data AS (
+            # The Postgres log (pglog.csv) is shared by every database in the
+            # cluster, so scope each pass to the current connection's database.
+            # Without this filter every connection re-parses (and re-fingerprints)
+            # the entire cluster-wide log, tripling the work in a decomposed setup.
+            #
+            # This is intentionally a plain streaming scan with no DISTINCT or
+            # ORDER BY: sorting the parsed log makes Postgres materialize it into
+            # pgsql_tmp temp files, which has exhausted the disk on CI runners in
+            # query-heavy jobs (background migrations). Deduplication happens in
+            # Ruby below, which only accumulates small sets of distinct
+            # query_ids/texts rather than the full log.
+            pg.send_query_params(<<~SQL.squish, [connection.current_database])
+              SELECT
+                  m.message->>'Query Text' as query,
+                  m.message->'Plan' as plan,
+                  m.query_id
+              FROM (
                   SELECT
                       substring(message from '\{.*$')::jsonb AS message,
                       query_id
                   FROM pglog
-                  WHERE message LIKE '%{%'
-              )
-              (
-                  SELECT DISTINCT ON (query_id)
-                      m.query_id,
-                      m.message->>'Query Text' as query,
-                      m.message->'Plan' as plan
-                  FROM base_data m
-                  WHERE m.query_id != 0
-              )
-              UNION ALL
-              (
-                  SELECT
-                      m.query_id,
-                      m.message->>'Query Text' as query,
-                      m.message->'Plan' as plan
-                  FROM base_data m
-                  WHERE m.query_id = 0
-              )
-              ORDER BY query_id;
+                  WHERE database_name = $1 AND message LIKE '%{%'
+              ) m;
             SQL
 
             pg.set_single_row_mode
             pg.get_result.stream_each do |row|
+              query_id = row['query_id']
               query = row['query']
+
+              # Cheap first-level deduplication, mirroring what DISTINCT ON did
+              # database-side: one row per non-zero query_id (queries sharing a
+              # normalized shape), and one row per exact query text for
+              # query_id=0 rows (where Postgres could not compute an id). This
+              # keeps expensive PgQuery.fingerprint calls proportional to the
+              # number of distinct queries rather than total query executions.
+              if query_id.to_i == 0
+                next unless seen_queries.add?(query)
+              else
+                next unless seen_query_ids.add?(query_id)
+              end
+
               fingerprint = PgQuery.fingerprint(query)
               next unless fingerprints.add?(fingerprint)
 
               plan = Gitlab::Json.parse(row['plan'])
 
               output = {
-                query_id: row['query_id'],
+                query_id: query_id,
                 query: query,
                 plan: plan,
                 fingerprint: fingerprint,

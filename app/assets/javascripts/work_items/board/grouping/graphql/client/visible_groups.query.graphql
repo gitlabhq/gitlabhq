@@ -1,0 +1,5 @@
+# @feature_category: portfolio_management
+query workItemsGroupByVisibleGroups {
+  workItemsGroupByVisibleGroups @client
+  workItemsGroupByVisibleGroupsHydrated @client
+}

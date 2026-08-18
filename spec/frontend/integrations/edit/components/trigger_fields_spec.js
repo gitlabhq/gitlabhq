@@ -34,6 +34,7 @@ describe('TriggerFields', () => {
   const findAllGlFormGroups = () => wrapper.find('#trigger-fields').findAllComponents(GlFormGroup);
   const findAllGlFormCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findAllGlFormInputs = () => wrapper.findAllComponents(GlFormInput);
+  const findAllHiddenInputs = () => wrapper.findAll('input[type="hidden"]');
 
   describe('placeholder text on the event fields and default values', () => {
     const dummyFieldPlaceholder = '#foo';
@@ -204,6 +205,37 @@ describe('TriggerFields', () => {
           expect(field.props('value')).toBe(events[index].field.value);
         });
       });
+    });
+  });
+
+  describe('toggling a checkbox (regression test)', () => {
+    const events = [
+      {
+        title: 'Push',
+        name: 'push_event',
+        description: 'Event on push',
+        value: true,
+      },
+      {
+        title: 'Merge request',
+        name: 'merge_requests_event',
+        description: 'Event on merge_request',
+        value: false,
+      },
+    ];
+
+    beforeEach(() => {
+      createComponent({ events });
+    });
+
+    it('updates the hidden input value', async () => {
+      const checkboxInput = findAllGlFormGroups().at(0).find('input[type="checkbox"]');
+
+      expect(findAllHiddenInputs().at(0).element.value).toBe(events[0].value.toString());
+
+      await checkboxInput.setChecked(!events[0].value);
+
+      expect(findAllHiddenInputs().at(0).element.value).toBe((!events[0].value).toString());
     });
   });
 });

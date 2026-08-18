@@ -7,8 +7,8 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { getDatesInRange, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
-import RefSelector from '~/ref/components/ref_selector.vue';
-import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 import { xAxisLabelFormatter } from '../utils';
 import { MASTER_CHART_HEIGHT } from '../constants';
 import ContributorAreaChart from './contributor_area_chart.vue';
@@ -17,6 +17,8 @@ import IndividualChart from './individual_chart.vue';
 const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
 
 export default {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  name: 'Contributors',
   MASTER_CHART_HEIGHT,
   i18n: {
     history: __('History'),

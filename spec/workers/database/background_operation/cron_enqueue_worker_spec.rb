@@ -36,6 +36,7 @@ RSpec.describe Database::BackgroundOperation::CronEnqueueWorker, feature_categor
           table_name,
           column_name,
           job_arguments: job_arguments,
+          enqueued_by: described_class.name,
           batch_size: 100,
           min_cursor: [100]
         )

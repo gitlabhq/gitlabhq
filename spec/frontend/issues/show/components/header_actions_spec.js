@@ -124,8 +124,8 @@ describe('HeaderActions component', () => {
   };
 
   const findToggleIssueStateButton = () =>
-    wrapper.find(`[data-testid="toggle-issue-state-button"]`);
-  const findEditButton = () => wrapper.find(`[data-testid="edit-button"]`);
+    wrapper.findComponent(`[data-testid="toggle-issue-state-button"]`);
+  const findEditButton = () => wrapper.findComponent(`[data-testid="edit-button"]`);
 
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);
   const findMobileDropdown = () => findDropdownBy('mobile-dropdown');
@@ -136,10 +136,10 @@ describe('HeaderActions component', () => {
     findDesktopDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findDesktopDropdownTooltip = () => getBinding(findDesktopDropdown().element, 'gl-tooltip');
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
-  const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-item');
-  const findCopyReferenceDropdownItem = () => wrapper.findByTestId('copy-reference');
-  const findCopyEmailItem = () => wrapper.findByTestId('copy-email');
-  const findPromoteToEpicButton = () => wrapper.findByTestId('promote-button');
+  const findReportAbuseButton = () => wrapper.findComponentByTestId('report-abuse-item');
+  const findCopyReferenceDropdownItem = () => wrapper.findComponentByTestId('copy-reference');
+  const findCopyEmailItem = () => wrapper.findComponentByTestId('copy-email');
+  const findPromoteToEpicButton = () => wrapper.findComponentByTestId('promote-button');
   const findLockIssueToggle = () => wrapper.findByTestId('lock-issue-toggle');
 
   const findModal = () => wrapper.findComponent(GlModal);
@@ -421,7 +421,7 @@ describe('HeaderActions component', () => {
           promoteToEpicHandler: promoteToEpicMutationSuccessResponseHandler,
         });
 
-        wrapper.find('[data-testid="promote-button"]').vm.$emit('action');
+        wrapper.findComponent('[data-testid="promote-button"]').vm.$emit('action');
 
         await waitForPromises();
       });
@@ -457,7 +457,7 @@ describe('HeaderActions component', () => {
           promoteToEpicHandler: promoteToEpicMutationErrorHandler,
         });
 
-        wrapper.find('[data-testid="promote-button"]').vm.$emit('action');
+        wrapper.findComponent('[data-testid="promote-button"]').vm.$emit('action');
 
         await waitForPromises();
       });

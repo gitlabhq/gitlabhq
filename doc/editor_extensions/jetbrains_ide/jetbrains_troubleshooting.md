@@ -46,6 +46,9 @@ Ask your network administrator to
 [allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
 if you suspect this is the issue.
 
+If the connection to the GitLab Duo Agent Platform fails with a WebSocket error `1006` or `404`, see
+[connection fails with WebSocket error `1006` or `404`](../../user/duo_agent_platform/troubleshooting.md#connection-fails-with-websocket-error-1006-or-404).
+
 ## IDE commands fail or run indefinitely
 
 When using GitLab Duo Agentic Chat or the Software Development Flow in your IDE,
@@ -163,7 +166,7 @@ To do this:
 
 If GitLab Duo still fails to connect, you might need to
 ignore certificate errors. You might see errors in the GitLab Language Server logs after enabling
-[debug mode](jetbrains_troubleshooting.md#enable-debug-mode):
+[debug mode](#enable-debug-mode):
 
 ```plaintext
 2024-10-31T10:32:54:165 [error]: fetch: request to https://gitlab.com/api/v4/personal_access_tokens/self failed with:

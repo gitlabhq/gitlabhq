@@ -79,6 +79,16 @@ describe('Copy Code Button', () => {
         });
       });
 
+      it('is set up when a blob embed reuses .file-content.code (not a raw file view)', () => {
+        setHTMLFixture(
+          '<div id="content-body"><div class="blob-embed"><div class="file-content code"></div></div></div>',
+        );
+
+        initCopyCodeButton();
+
+        expect(mockObserve).toHaveBeenCalled();
+      });
+
       it('does not add duplicate buttons when mutations trigger rapidly', () => {
         global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 1;
 

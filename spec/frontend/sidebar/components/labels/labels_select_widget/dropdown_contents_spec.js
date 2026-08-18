@@ -85,14 +85,14 @@ describe('DropdownContent', () => {
     expect(findDropdown().emitted('show')).toBeUndefined();
   });
 
-  it('does not emit `setLabels` event on dropdown hide if labels did not change', () => {
+  it('does not emit `set-labels` event on dropdown hide if labels did not change', () => {
     createComponent();
     findDropdown().vm.$emit('hide');
 
-    expect(wrapper.emitted('setLabels')).toBeUndefined();
+    expect(wrapper.emitted('set-labels')).toBeUndefined();
   });
 
-  it('emits `setLabels` event on dropdown hide if labels changed on non-sidebar widget', async () => {
+  it('emits `set-labels` event on dropdown hide if labels changed on non-sidebar widget', async () => {
     createComponent({ props: { variant: VARIANT_STANDALONE } });
     const updatedLabel = {
       id: 28,
@@ -105,10 +105,10 @@ describe('DropdownContent', () => {
     await nextTick();
     findDropdown().vm.$emit('hide');
 
-    expect(wrapper.emitted('setLabels')).toEqual([[[updatedLabel]]]);
+    expect(wrapper.emitted('set-labels')).toEqual([[[updatedLabel]]]);
   });
 
-  it('emits `setLabels` event on visibility change if labels changed on sidebar widget', async () => {
+  it('emits `set-labels` event on visibility change if labels changed on sidebar widget', async () => {
     createComponent({ props: { variant: VARIANT_STANDALONE, isVisible: true } });
     const updatedLabel = {
       id: 28,
@@ -121,7 +121,7 @@ describe('DropdownContent', () => {
     wrapper.setProps({ isVisible: false });
     await nextTick();
 
-    expect(wrapper.emitted('setLabels')).toEqual([[[updatedLabel]]]);
+    expect(wrapper.emitted('set-labels')).toEqual([[[updatedLabel]]]);
   });
 
   it('renders header', () => {
@@ -149,14 +149,14 @@ describe('DropdownContent', () => {
     expect(focusInput).toHaveBeenCalled();
   });
 
-  it('handles searchEnter', () => {
+  it('handles search-enter', () => {
     createComponent({
       stubs: { DropdownContentsLabelsView: stubComponent(DropdownContentsLabelsView) },
     });
 
     const dropdownHeader = findDropdownHeader();
     expect(() =>
-      dropdownHeader.vm.$emit('searchEnter', { preventDefault: jest.fn() }),
+      dropdownHeader.vm.$emit('search-enter', { preventDefault: jest.fn() }),
     ).not.toThrow();
   });
 
@@ -173,8 +173,8 @@ describe('DropdownContent', () => {
       expect(findDropdownFooter().exists()).toBe(false);
     });
 
-    it('changes the view to Labels view on `toggleDropdownContentsCreateView` event', async () => {
-      findDropdownHeader().vm.$emit('toggleDropdownContentsCreateView');
+    it('changes the view to Labels view on `toggle-dropdown-contents-create-view` event', async () => {
+      findDropdownHeader().vm.$emit('toggle-dropdown-contents-create-view');
       await nextTick();
 
       expect(findCreateView().exists()).toBe(false);

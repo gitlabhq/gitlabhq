@@ -15,8 +15,9 @@ module API
         Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute
       end
 
+      # Must precede preload_member_roles so per-group role checks reuse the primed plan (EE).
+      preload_groups(projects_relation) if options[:with] && options[:with] <= Entities::Project
       preload_member_roles(projects_relation, options[:current_user]) if options[:current_user]
-      preload_groups(projects_relation) if options[:with] == Entities::Project
 
       projects_relation
     end
@@ -54,6 +55,8 @@ module API
       group_projects.each do |project|
         project.group = project.namespace
       end
+
+      groups
     end
 
     def projects_for_group_preload(projects_relation)

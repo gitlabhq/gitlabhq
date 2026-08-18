@@ -7,8 +7,7 @@ RSpec.describe Admin::ProjectsHelper, feature_category: :groups_and_projects do
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.admin_projects_app_data)).to eq(
         {
-          'programming_languages' => ProgrammingLanguage.most_popular,
-          'base_path' => '/admin/projects'
+          'programming_languages' => ProgrammingLanguage.most_popular
         }
       )
     end

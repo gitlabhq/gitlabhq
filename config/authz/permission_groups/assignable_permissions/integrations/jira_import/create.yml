@@ -1,0 +1,9 @@
+---
+name: create_jira_import
+description: Grants the ability to create Jira imports
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_jira_import

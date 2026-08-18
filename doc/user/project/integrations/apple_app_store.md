@@ -12,13 +12,6 @@ title: Apple App Store Connect
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888) in GitLab 15.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `apple_app_store_integration`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385335) in GitLab 15.10. Feature flag `apple_app_store_integration` removed.
-
-{{< /history >}}
-
 This feature is part of [Mobile DevOps](../../../ci/mobile_devops/_index.md) developed by GitLab.
 The feature is still in development, but you can:
 

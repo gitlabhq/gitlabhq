@@ -1,12 +1,11 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { commitDiffDiscussionsStore } from '~/rapid_diffs/stores/instances/commit_discussions';
 import CommitTimeline from './discussions/timeline.vue';
 
 export function initTimeline(appData) {
   const timelineContainer = document.querySelector('[data-commit-timeline]');
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el: timelineContainer,
     name: 'CommitTimelineRoot',
     provide: {
@@ -22,8 +21,6 @@ export function initTimeline(appData) {
       },
       noteableType: appData.noteableType,
     },
-    render(h) {
-      return h(CommitTimeline);
-    },
+    component: CommitTimeline,
   });
 }

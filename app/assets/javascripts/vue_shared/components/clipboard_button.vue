@@ -15,6 +15,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { sanitize } from '~/lib/dompurify';
+import { BV_HIDE_TOOLTIP, BV_SHOW_TOOLTIP } from '~/lib/utils/constants';
 
 import { __ } from '~/locale';
 import {
@@ -22,6 +23,8 @@ import {
   CLIPBOARD_ERROR_EVENT,
   I18N_ERROR_MESSAGE,
 } from '~/behaviors/copy_to_clipboard';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ClipboardButton',
@@ -37,6 +40,7 @@ export default {
   components: {
     GlButton,
   },
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     text: {
       type: String,
@@ -123,13 +127,13 @@ export default {
   methods: {
     updateTooltip(title) {
       this.localTitle = title;
-      this.$root.$emit('bv::show::tooltip', this.id);
+      this.$root.$emit(BV_SHOW_TOOLTIP, this.id);
 
       clearTimeout(this.titleTimeout);
 
       this.titleTimeout = setTimeout(() => {
         this.localTitle = this.title;
-        this.$root.$emit('bv::hide::tooltip', this.id);
+        this.$root.$emit(BV_HIDE_TOOLTIP, this.id);
       }, 1000);
     },
   },
@@ -153,8 +157,8 @@ export default {
     aria-live="polite"
     @[$options.CLIPBOARD_SUCCESS_EVENT]="updateTooltip($options.i18n.copied)"
     @[$options.CLIPBOARD_ERROR_EVENT]="updateTooltip($options.i18n.error)"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </gl-button>
 </template>

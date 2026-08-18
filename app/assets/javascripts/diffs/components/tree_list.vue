@@ -68,7 +68,7 @@ export default {
       default: null,
     },
   },
-  emits: ['clickFile', 'toggleFolder'],
+  emits: ['click-file', 'toggle-folder'],
   data() {
     return {
       search: '',
@@ -324,9 +324,9 @@ export default {
             :bold-text="item.type === 'blob' && !item.viewed"
             class="diff-file-row gl-relative"
             :data-file-row="item.fileHash"
-            @clickTree="$emit('toggleFolder', item.path)"
-            @clickFile="!item.loading && $emit('clickFile', item)"
-            @clickSubmodule="!item.loading && $emit('clickFile', item)"
+            @click-tree="$emit('toggle-folder', item.path)"
+            @click-file="!item.loading && $emit('click-file', item)"
+            @click-submodule="!item.loading && $emit('click-file', item)"
           >
             <file-row-stats
               v-if="!hideFileStats && item.type === 'blob'"

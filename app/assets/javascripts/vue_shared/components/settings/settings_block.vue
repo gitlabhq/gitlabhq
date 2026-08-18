@@ -4,10 +4,12 @@ import { uniqueId } from 'lodash-es';
 import { historyPushState } from '~/lib/utils/common_utils';
 
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'SettingsBlock',
   components: { GlButton, GlCollapse, GlAnimatedChevronLgRightDownIcon },
+  mixins: [glSlotsMixin],
   props: {
     title: {
       type: String,
@@ -40,7 +42,7 @@ export default {
       return this.localExpanded ? this.$options.i18n.collapseText : this.$options.i18n.expandText;
     },
     toggleButtonAriaLabel() {
-      return `${this.toggleButtonText} ${this.$scopedSlots.title || this.title}`;
+      return `${this.toggleButtonText} ${this.glSlots().title || this.title}`;
     },
     expandedClass() {
       return this.localExpanded ? 'expanded' : '';

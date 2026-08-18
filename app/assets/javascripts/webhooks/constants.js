@@ -83,7 +83,9 @@ export const TRIGGER_CONFIG = [
     key: 'deploymentEvents',
     inputName: 'hook[deployment_events]',
     label: s__('WebhooksTrigger|Deployment events'),
-    helpText: s__('WebhooksTrigger|A deployment starts, finishes, fails, or is canceled.'),
+    helpText: s__(
+      'WebhooksTrigger|A deployment starts, finishes, fails, is canceled, is awaiting approval, or is awaiting manual action. On Premium and Ultimate, also when a deployment is approved or rejected.',
+    ),
   },
   {
     key: 'featureFlagEvents',

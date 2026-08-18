@@ -105,6 +105,27 @@ To show or hide the age indicator legend:
 1. Select **Blame preferences** ({{< icon name="preferences" >}}).
 1. Select or clear the **Show age indicator legend** checkbox.
 
+### Resize the blame column
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239543) in GitLab 19.3.
+
+{{< /history >}}
+
+In the inline blame view, drag the divider between the blame column and the file content
+to resize the blame column.
+Your browser saves the selected width and uses it the next time you view a file in blame view.
+
+The blame column width has a minimum of 250 pixels and a maximum of 600 pixels.
+On smaller screens, the column uses its minimum width, and you cannot resize it.
+
+To resize the blame column:
+
+1. Open a file in the blame view.
+1. Hover over the divider between the blame column and the file content.
+1. When the resize cursor appears, drag the divider left or right to adjust the width.
+
 ## Related topics
 
 - [Git file blame REST API](../../../../api/repository_files.md#retrieve-file-blame-history-from-a-repository)

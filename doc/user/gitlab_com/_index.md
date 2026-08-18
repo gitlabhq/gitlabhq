@@ -72,6 +72,7 @@ the related documentation:
 |----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-------------------------------|
 | Artifacts maximum size (compressed)                                              | 1 GB                                                                                                       | See [Maximum artifacts size](../../administration/cicd/limits.md#maximum-artifacts-size). |
 | Artifacts [expiry time](../../ci/yaml/_index.md#artifactsexpire_in)              | 30 days unless otherwise specified                                                                         | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration). Artifacts created before June 22, 2020 have no expiry. |
+| Security scan [finding](../application_security/detect/security_scanning_results.md) retention   | 30 days                                                                                                    | See [Security scan retention period](../../administration/settings/security_and_compliance.md#security-scan-retention-period). |
 | Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                              | See [Pipeline schedules advanced configuration](../../administration/cicd/limits.md#maximum-scheduled-pipeline-frequency). |
 | Maximum jobs in a single pipeline                                                | `500` for Free tier, `1000` for all trial tiers, `1500` for Premium, and `2000` for Ultimate.              | See [Maximum number of jobs in a pipeline](../../administration/cicd/limits.md#maximum-number-of-jobs-in-a-pipeline). |
 | Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `60000` for Ultimate.            | See [Number of jobs in active pipelines](../../administration/cicd/limits.md#number-of-jobs-in-active-pipelines). |
@@ -208,13 +209,6 @@ Service discovery:
 
 - [`gitlab-cookbooks` / `gitlab_consul` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_consul)
 
-### Elastic cluster
-
-We use Elasticsearch and Kibana for part of our monitoring solution:
-
-- [`gitlab-cookbooks` / `gitlab-elk` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-elk)
-- [`gitlab-cookbooks` / `gitlab_elasticsearch` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_elasticsearch)
-
 ### Fluentd
 
 We use Fluentd to unify our GitLab logs:
@@ -316,13 +310,6 @@ See how to look up [IP address ranges or CIDR blocks for GCP](https://cloud.goog
 
 ## Maximum number of reviewers and assignees
 
-{{< history >}}
-
-- Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
-- Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
-
-{{< /history >}}
-
 Merge requests enforce these maximums:
 
 - Maximum assignees: 200
@@ -383,9 +370,8 @@ Settings related to the deletion of projects and groups.
 
 {{< history >}}
 
-- Delayed group deletion enabled by default for GitLab Premium and GitLab Ultimate in GitLab 16.1.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven days to 30 days in 18.0.2.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/work_items/17375) from seven days to 30 days in 18.0.2.
 
 {{< /history >}}
 
@@ -397,9 +383,8 @@ See how to [view and restore groups marked for deletion](../group/_index.md#rest
 
 {{< history >}}
 
-- Delayed project deletion enabled by default for GitLab Premium and GitLab Ultimate in GitLab 16.1.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven-days to 30 days in 18.0.2.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/work_items/17375) from seven-days to 30 days in 18.0.2.
 
 {{< /history >}}
 
@@ -436,7 +421,7 @@ GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../admi
 ## Rate limits on GitLab.com
 
 > [!note]
-> See [Rate limits](../../security/rate_limits.md) for administrator
+> See [Rate limits](../../rate_limits/_index.md) for administrator
 > documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
@@ -470,7 +455,7 @@ The following table describes the rate limits for GitLab.com:
 | GitLab Duo `aiAction`  requests                                  | 160 requests every 8 hours      |
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                       |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
-| GitLab package hosting system requests for an IP address (introduced in GitLab 16.11) | 3,000 requests each minute      |
+| GitLab package hosting system requests for an IP address | 3,000 requests each minute      |
 | GitLab repository files | 500 requests each minute        |
 | User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute        |
 | User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute        |
@@ -551,7 +536,7 @@ To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
 ### Non-configurable limits
 
 For more information about non-configurable rate limits used on GitLab.com, see
-[non-configurable limits](../../security/rate_limits.md#non-configurable-limits)
+[non-configurable limits](../../rate_limits/non_configurable.md)
 
 ### Pagination response headers
 

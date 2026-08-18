@@ -107,7 +107,7 @@ describe('packages_list', () => {
     beforeEach(async () => {
       mountComponent();
       itemToBeDeleted = last(packageList);
-      await findPackagesListRow().vm.$emit('packageToDelete', itemToBeDeleted);
+      await findPackagesListRow().vm.$emit('package-to-delete', itemToBeDeleted);
     });
 
     afterEach(() => {
@@ -118,10 +118,10 @@ describe('packages_list', () => {
       expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(itemToBeDeleted);
     });
 
-    it('deleteItemConfirmation emit package:delete', async () => {
+    it('deleteItemConfirmation emit package-delete', async () => {
       await findPackageListDeleteModal().vm.$emit('ok');
 
-      expect(wrapper.emitted('package:delete')[0]).toEqual([itemToBeDeleted]);
+      expect(wrapper.emitted('package-delete')[0]).toEqual([itemToBeDeleted]);
     });
 
     it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
@@ -158,9 +158,9 @@ describe('packages_list', () => {
       modelEvent = pagination.vm.$options.model.event;
     });
 
-    it('emits page:changed events when the page changes', () => {
+    it('emits page-changed events when the page changes', () => {
       pagination.vm.$emit(modelEvent, 2);
-      expect(wrapper.emitted('page:changed')).toEqual([[2]]);
+      expect(wrapper.emitted('page-changed')).toEqual([[2]]);
     });
   });
 

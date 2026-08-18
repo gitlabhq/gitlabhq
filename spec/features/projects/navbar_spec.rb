@@ -20,6 +20,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
   before do
     stub_feature_flags(hide_incident_management_features: false)
     stub_feature_flags(slsa_provenance_statement: false)
+    stub_feature_flags(observability_sass_features: true)
     stub_feature_flags(ai_catalog_public_explore: false)
     sign_in(user)
 

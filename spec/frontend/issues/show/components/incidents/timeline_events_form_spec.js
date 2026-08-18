@@ -51,10 +51,10 @@ describe('Timeline events form', () => {
   });
 
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
-  const findSubmitButton = () => wrapper.findByTestId('save-button');
-  const findSubmitAndAddButton = () => wrapper.findByTestId('save-and-add-button');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findDeleteButton = () => wrapper.findByTestId('delete-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('save-button');
+  const findSubmitAndAddButton = () => wrapper.findComponentByTestId('save-and-add-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-button');
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');

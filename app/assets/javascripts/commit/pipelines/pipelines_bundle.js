@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import CommitPipelinesList from '~/ci/commit/components/commit_pipelines_list.vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { initPipelineCountListener } from './utils';
 
@@ -13,33 +15,28 @@ const apolloProvider = new VueApollo({
  * Used in:
  *  - Commit details View > Pipelines Tab > Pipelines Table (projects:commit:pipelines)
  */
-export default () => {
+export const initCommitPipelines = () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
   if (pipelineTableViewEl) {
     // Update MR and Commits tabs
     initPipelineCountListener(pipelineTableViewEl);
 
-    const table = new Vue({
-      name: 'CommitPipelinesTableRoot',
-      components: {
-        CommitPipelinesTable: () => {
-          return gon.features.commitPipelinesTabGraphql
-            ? import('~/ci/commit/components/commit_pipelines_list.vue')
-            : import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue');
-        },
-      },
+    // The app mounts on a child element so that pipelineTableViewEl stays in the
+    // document: the listener above receives the `update-pipelines-count` event
+    // that the app bubbles up to it.
+    const el = document.createElement('div');
+    pipelineTableViewEl.appendChild(el);
+
+    initVueApp({
+      el,
+      name: 'CommitPipelinesListRoot',
+      component: CommitPipelinesList,
       apolloProvider,
-      render(createElement) {
-        return createElement('commit-pipelines-table', {
-          props: {
-            endpoint: pipelineTableViewEl.dataset.endpoint,
-            projectFullPath: pipelineTableViewEl.dataset.projectFullPath,
-            commitSha: pipelineTableViewEl.dataset.commitSha,
-          },
-        });
+      props: {
+        projectFullPath: pipelineTableViewEl.dataset.projectFullPath,
+        commitSha: pipelineTableViewEl.dataset.commitSha,
       },
-    }).$mount();
-    pipelineTableViewEl.appendChild(table.$el);
+    });
   }
 };

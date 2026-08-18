@@ -19,11 +19,16 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*.rb"] + ["LICENSE.txt", "README.md"]
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "base64"
   spec.add_runtime_dependency "mail", "~> 2.7"
   spec.add_runtime_dependency "oauth2", [">= 1.4.4", "< 3"]
 
   spec.add_development_dependency "debug", ">= 1.0.0"
-  spec.add_development_dependency "rails"
+  # Pin to Rails 7.2: it pulls ActiveSupport 7.2, which declares its former
+  # default-gem requirements (base64, bigdecimal) and no longer does the
+  # undeclared `require "mutex_m"` that ActiveSupport 7.0/7.1 does, so those
+  # gems don't need to be declared here for Ruby 3.4.
+  spec.add_development_dependency "rails", ">= 7.2", "< 9"
   spec.add_development_dependency "rspec", "~> 3.11.0"
   spec.add_development_dependency "webmock", "~> 3.18.1"
 end

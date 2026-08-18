@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckConflictStatusService < CheckBaseService
       set_identifier :conflict
+      set_failure_explanation N_('The merge request must not have conflicts.')
       set_description 'Checks whether the merge request has a conflict'
 
       def execute

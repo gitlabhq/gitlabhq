@@ -28,7 +28,7 @@ export default {
       required: false,
     },
   },
-  emits: ['toggledPaused', 'deleted'],
+  emits: ['toggled-paused', 'deleted'],
   computed: {
     canUpdate() {
       return this.runner.userPermissions?.updateRunner;
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     onToggledPaused(event) {
-      this.$emit('toggledPaused', event);
+      this.$emit('toggled-paused', event);
     },
     onDeleted(event) {
       this.$emit('deleted', event);
@@ -56,7 +56,7 @@ export default {
       :runner="runner"
       :compact="true"
       :size="size"
-      @toggledPaused="onToggledPaused"
+      @toggled-paused="onToggledPaused"
     />
     <slot><!-- space for other actions --></slot>
     <runner-delete-button

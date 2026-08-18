@@ -238,7 +238,7 @@ li.note {
 }
 
 .gl-accessibility {
-  &:focus {
+  &:focus-visible {
     display: flex;
     align-items: center;
     top: 1px;
@@ -362,6 +362,10 @@ li.note {
 
 .gl-label-scoped {
   box-shadow: 0 0 0 2px currentColor inset;
+}
+
+.gl-label-tooltip-footer {
+  color: var(--gl-tooltip-text-color-subtle);
 }
 
 .ref-container,

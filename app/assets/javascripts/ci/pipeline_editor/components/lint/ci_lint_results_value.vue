@@ -49,8 +49,7 @@ export default {
       v-if="scripts.beforeScript.show"
       class="gl-whitespace-pre-wrap"
       data-testid="ci-lint-before-script"
-      >{{ scripts.beforeScript.content }}</pre
-    >
+      >{{ scripts.beforeScript.content }}</pre>
     <pre v-if="scripts.script.show" class="gl-whitespace-pre-wrap" data-testid="ci-lint-script">{{
       scripts.script.content
     }}</pre>
@@ -58,8 +57,7 @@ export default {
       v-if="scripts.afterScript.show"
       class="gl-whitespace-pre-wrap"
       data-testid="ci-lint-after-script"
-      >{{ scripts.afterScript.content }}</pre
-    >
+      >{{ scripts.afterScript.content }}</pre>
 
     <ul class="gl-mb-0 gl-list-none gl-pl-0">
       <li v-if="tagList">

@@ -342,7 +342,7 @@ describe('Pipelines Table', () => {
     });
 
     it('tracks status badge click', () => {
-      findCiIcon().vm.$emit('ciStatusBadgeClick');
+      findCiIcon().vm.$emit('ci-status-badge-click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
         label: TRACKING_CATEGORIES.table,

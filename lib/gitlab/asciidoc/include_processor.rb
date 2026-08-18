@@ -99,6 +99,7 @@ module Gitlab
 
         raise NoData, 'Blob not found' unless blob
         raise NoData, 'File is not readable' unless blob.readable_text?
+        raise NoData, 'File is too large' if blob.truncated?
 
         blob.data
       end

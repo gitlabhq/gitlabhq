@@ -48,6 +48,7 @@ Before upgrading to GitLab 18.11, review the following:
 - [18.11.0 - 18.11.1] - [CI job token regression pulling container images from internal and public projects](#ci-job-token-regression-pulling-container-images-from-internal-and-public-projects)
 - [18.11.0] - [Upgrading to 18.11 triggers a PostgreSQL 17.7 version upgrade](#postgresql-version-177-upgrade-on-gitlab-1811) (Linux package, Docker, Geo)
 - [18.11.0] - [Mattermost and Spamcheck removed from SLES 12.5 packages](#mattermost-and-spamcheck-removed-from-sles-125-packages) (Linux package)
+- [18.11.0] - [Compiled per-job config is subject to a 1 MiB size limit](#compiled-per-job-config-is-subject-to-a-1-mib-size-limit)
 
 ### Upgrade to 18.10
 
@@ -599,7 +600,7 @@ For more information, see the
 A [post deployment migration](../../development/database/post_deployment_migrations.md)
 schedules batched [background migrations](../background_migrations.md) to copy CI builds metadata
 to new optimized tables (`p_ci_job_definitions`). This migration is part of an initiative to
-ultimately reduce CI database size (see [epic 13886](https://gitlab.com/groups/gitlab-org/-/epics/13886)).
+ultimately reduce CI database size (see [epic 13886](https://gitlab.com/groups/gitlab-org/-/work_items/13886)).
 If you have an instance with millions of jobs and want to speed up the migration,
 you can [select what data is migrated](#ci-builds-metadata-migration-details).
 
@@ -657,7 +658,7 @@ GitLab responds to requests that exceed the size limit with a `413 Entity Too la
 - Affects: All installation methods
 - Affected versions: 18.6.2
 
-Some [runner restrictions](../../user/duo_agent_platform/flows/execution.md#configure-runners-to-execute-flows)
+Some [runner restrictions](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows)
 have been introduced relating to which runners can be used with Duo Agent Platform.
 
 ### Geo log cursor migration fix
@@ -1005,7 +1006,7 @@ legacy installations, the first two options can be used as a stopgap.
 > This migration only copies existing data from the old format to the new one.
 > No data is deleted.
 
-Data not migrated will be removed in a future release (see [epic 18271](https://gitlab.com/groups/gitlab-org/-/epics/18271)).
+Data not migrated will be removed in a future release (see [epic 18271](https://gitlab.com/groups/gitlab-org/-/work_items/18271)).
 
 The migration duration is directly proportional to the total number of CI jobs in your instance.
 Jobs are processed from newest to oldest partitions to prioritize recent data.
@@ -1282,3 +1283,12 @@ enabled for all projects in the group.
 
 You should check the settings for projects in a group before allowing the foundational flow for
 secret false positive detection for the group.
+
+### Compiled per-job config is subject to a 1 MiB size limit
+
+- Affects: All installation methods
+- Affected versions: 18.11.x
+
+A [change to enforce JSON schema validation also now enforces a 1 MiB size limit of the compiled per-job config](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218219). When a job's compiled config (its options, YAML variables, tokens, secrets, etc.) exceeds this limit, pipeline creation fails with: `Failed to persist the pipeline: Validation failed: Config is too large. Maximum size allowed is 1 MiB`. The workaround is to reduce the size of the job's config to be less than 1 MiB.
+
+In GitLab 19, [the size limit is configurable](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241962) using the `ci_max_total_yaml_size_bytes` application setting.

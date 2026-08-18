@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: グループレベルの保護ブランチAPI
 ---
 
@@ -14,23 +14,18 @@ title: グループレベルの保護ブランチAPI
 
 {{< history >}}
 
-- GitLab 17.6[で一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/500250)になりました。機能フラグ`group_protected_branches`は削除されました。
+- GitLab 17.6で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/500250)になりました。機能フラグ`group_protected_branches`は削除されました。
 
 {{< /history >}}
 
-グループの保護ブランチAPIを使用して、保護ブランチルールを管理します。グループに属するプロジェクトに適用される保護ブランチルールを、一覧表示、作成、更新、削除するためのエンドポイントが用意されています。
+このAPIを使用して、グループ内のすべてのプロジェクトに継承される[保護ブランチの設定](../user/project/repository/branches/protected.md#in-a-group)を管理します。グループの保護ブランチは、[有効なアクセスレベル](#valid-access-levels)のみをサポートします。個々のユーザーとグループは指定できません。
 
-グループの保護ブランチは、[有効なアクセスレベル](#valid-access-levels)のみをサポートします。個々のユーザーおよびグループは指定できません。
+> [!warning]
+> 保護ブランチの設定は、トップレベルグループにのみ限定されます。
 
-{{< alert type="warning" >}}
+## 有効なアクセスレベル {#valid-access-levels}
 
-グループの保護ブランチの設定は、トップレベルグループのみに制限されています。
-
-{{< /alert >}}
-
-## アクセスレベルの有効性 {#valid-access-levels}
-
-アクセスレベルは、`ProtectedRefAccess.allowed_access_levels`メソッドで定義されています。認識されるレベルは以下のとおりです:
+アクセスレベルは、`ProtectedRefAccess.allowed_access_levels`メソッドで定義されています。これらのレベルは認識されます:
 
 ```plaintext
 0  => No access
@@ -39,9 +34,9 @@ title: グループレベルの保護ブランチAPI
 60 => Admin access
 ```
 
-## 保護ブランチの一覧表示 {#list-protected-branches}
+## 保護ブランチをリスト表示 {#list-protected-branches}
 
-グループから保護ブランチのリストを取得します。ワイルドカードが設定されている場合、そのワイルドカードに一致するブランチの正確な名前の代わりに、ワイルドカードが返されます。
+グループから保護ブランチのリストを取得します。ワイルドカードが設定されている場合、そのワイルドカードに一致するブランチの正確な名前ではなく、ワイルドカードが返されます。
 
 ```plaintext
 GET /groups/:id/protected_branches
@@ -50,14 +45,14 @@ GET /groups/:id/protected_branches
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `search` | 文字列 | いいえ | 検索する保護ブランチの名前または名前の一部。 |
+| `search` | 文字列 | いいえ | 検索対象となる保護ブランチの名前またはその一部。 |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/protected_branches"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -113,9 +108,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 単一の保護ブランチまたはワイルドカードの保護ブランチを取得 {#get-a-single-protected-branch-or-wildcard-protected-branch}
+## 単一の保護ブランチまたはワイルドカード保護ブランチを取得 {#get-a-single-protected-branch-or-wildcard-protected-branch}
 
-単一の保護ブランチまたはワイルドカードの保護ブランチを取得します。
+単一の保護ブランチまたはワイルドカード保護ブランチを取得します。
 
 ```plaintext
 GET /groups/:id/protected_branches/:name
@@ -131,7 +126,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/protected_branches/main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -160,9 +155,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## リポジトリのブランチを保護する {#protect-repository-branches}
+## リポジトリブランチを保護 {#protect-repository-branches}
 
-ワイルドカードの保護ブランチを使用して、単一のリポジトリのブランチを保護します。
+ワイルドカード保護ブランチを使用して、単一のリポジトリブランチを保護します。
 
 ```plaintext
 POST /groups/:id/protected_branches
@@ -178,16 +173,16 @@ curl --request POST \
 | -------------------------------------------- | ---- | -------- | ----------- |
 | `id`                                         | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`                                       | 文字列         | はい | ブランチまたはワイルドカードの名前。 |
-| `allow_force_push`                           | ブール値        | いいえ  | プッシュアクセス権を持つすべてのユーザーに強制プッシュを許可します。デフォルトは`false`です。 |
-| `allowed_to_merge`                           | 配列          | いいえ  | マージを許可するアクセスレベルの配列。それぞれが`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式のハッシュで記述されています。 |
-| `allowed_to_push`                            | 配列          | いいえ  | プッシュを許可するアクセスレベルの配列。それぞれが`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式のハッシュで記述されています。 |
-| `allowed_to_unprotect`                       | 配列          | いいえ  | 保護解除を許可するアクセスレベルの配列。それぞれが`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式のハッシュで記述されています。 |
-| `code_owner_approval_required`               | ブール値        | いいえ  | このブランチが[`CODEOWNERS`ファイル](../user/project/codeowners/_index.md)内の項目と一致する場合、このブランチへのプッシュを禁止します。デフォルトは`false`です。 |
-| `merge_access_level`                         | 整数        | いいえ  | マージを許可するアクセスレベル。デフォルト: `40`、メンテナーロール。 |
-| `push_access_level`                          | 整数        | いいえ  | プッシュを許可するアクセスレベル。デフォルト: `40`、メンテナーロール。 |
-| `unprotect_access_level`                     | 整数        | いいえ  | 保護解除を許可するアクセスレベル。デフォルト: `40`、メンテナーロール。 |
+| `allow_force_push`                           | ブール値        | いいえ  | プッシュアクセス権を持つすべてのユーザーが強制プッシュできるようにします。デフォルト: `false`。 |
+| `allowed_to_merge`                           | 配列          | いいえ  | マージが許可されるアクセスレベルの配列。それぞれ`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式のハッシュで記述されます。 |
+| `allowed_to_push`                            | 配列          | いいえ  | プッシュが許可されるアクセスレベルの配列。それぞれ`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式のハッシュで記述されます。 |
+| `allowed_to_unprotect`                       | 配列          | いいえ  | 保護解除が許可されるアクセスレベルの配列。それぞれ`{user_id: integer}`、`{group_id: integer}`、または`{access_level: integer}`の形式のハッシュで記述されます。 |
+| `code_owner_approval_required`               | ブール値        | いいえ  | [`CODEOWNERS`ファイル](../user/project/codeowners/_index.md)内の項目に一致する場合、このブランチへのプッシュを禁止します。デフォルト: `false`。 |
+| `merge_access_level`                         | 整数        | いいえ  | マージが許可されるアクセスレベル。デフォルト: `40`、メンテナーロール。 |
+| `push_access_level`                          | 整数        | いいえ  | プッシュが許可されるアクセスレベル。デフォルト: `40`、メンテナーロール。 |
+| `unprotect_access_level`                     | 整数        | いいえ  | 保護解除が許可されるアクセスレベル。デフォルト: `40`、メンテナーロール。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -227,7 +222,7 @@ curl --request POST \
 
 ### アクセスレベルの例 {#example-with-access-levels}
 
-アクセスレベルを使用して、グループの保護ブランチを設定します:
+アクセスレベルを使用して、グループの保護ブランチを構成します:
 
 ```shell
 curl --request POST \
@@ -245,7 +240,7 @@ curl --request POST \
     --url "https://gitlab.example.com/api/v4/groups/5/protected_branches"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -290,9 +285,9 @@ curl --request POST \
 }
 ```
 
-## リポジトリのブランチの保護を解除する {#unprotect-repository-branches}
+## リポジトリブランチの保護を解除 {#unprotect-repository-branches}
 
-指定された保護ブランチまたはワイルドカードの保護ブランチの保護を解除します。
+指定された保護ブランチまたはワイルドカード保護ブランチの保護を解除します。
 
 ```plaintext
 DELETE /groups/:id/protected_branches/:name
@@ -309,7 +304,7 @@ curl --request DELETE \
 | `id` | 整数または文字列 | はい | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name` | 文字列 | はい | ブランチの名前 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -344,15 +339,15 @@ curl --request PATCH \
 | -------------------------------------------- | ---- | -------- | ----------- |
 | `id`                                         | 整数または文字列 | はい      | グループのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。                       |
 | `name`                                       | 文字列         | はい      | ブランチの名前                                                                                                               |
-| `allow_force_push`                           | ブール値        | いいえ       | 有効にすると、このブランチにプッシュできるメンバーは、強制プッシュも実行できます。                                                               |
-| `allowed_to_push`                            | 配列          | いいえ       | プッシュアクセスレベルの配列。それぞれがハッシュで記述されています。                                                                          |
-| `allowed_to_merge`                           | 配列          | いいえ       | マージアクセスレベルの配列。それぞれがハッシュで記述されています。                                                                         |
-| `allowed_to_unprotect`                       | 配列          | いいえ       | 保護解除アクセスレベルの配列。それぞれがハッシュで記述されています。                                                                     |
-| `code_owner_approval_required`               | ブール値        | いいえ       | このブランチが[`CODEOWNERS`ファイル](../user/project/codeowners/_index.md)内の項目と一致する場合、このブランチへのプッシュを禁止します。デフォルトは`false`です。 |
+| `allow_force_push`                           | ブール値        | いいえ       | 有効にすると、このブランチにプッシュできるメンバーも強制プッシュできます。                                                               |
+| `allowed_to_push`                            | 配列          | いいえ       | プッシュアクセスレベルの配列。それぞれハッシュで記述されます。                                                                          |
+| `allowed_to_merge`                           | 配列          | いいえ       | マージアクセスレベルの配列。それぞれハッシュで記述されます。                                                                         |
+| `allowed_to_unprotect`                       | 配列          | いいえ       | 保護解除アクセスレベルの配列。それぞれハッシュで記述されます。                                                                     |
+| `code_owner_approval_required`               | ブール値        | いいえ       | [`CODEOWNERS`ファイル](../user/project/codeowners/_index.md)内の項目に一致する場合、このブランチへのプッシュを禁止します。デフォルト: `false`。 |
 
-`allowed_to_push`、`allowed_to_merge`、および`allowed_to_unprotect`の配列内の要素は、`{access_level: integer}`の形式にする必要があります。各アクセスレベルは、[有効なアクセスレベル](#valid-access-levels)の有効な値である必要があります。
+`allowed_to_push`、`allowed_to_merge`、および`allowed_to_unprotect`配列内の要素は、`{access_level: integer}`の形式を取る必要があります。各アクセスレベルは、[有効なアクセスレベル](#valid-access-levels)から有効な値である必要があります。
 
-- アクセスレベルを更新するには、それぞれのハッシュで`access_level``id`も渡す必要があります。
+- アクセスレベルを更新するには、それぞれのハッシュで`access_level`の`id`も渡す必要があります。
 - アクセスレベルを削除するには、`_destroy`を`true`に設定して渡す必要があります。次の例を参照してください。
 
 ### 例: `push_access_level`レコードを作成 {#example-create-a-push_access_level-record}
@@ -364,7 +359,7 @@ curl --header 'Content-Type: application/json' --request PATCH \
   --url "https://gitlab.example.com/api/v4/groups/22034114/protected_branches/main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -390,7 +385,7 @@ curl --header 'Content-Type: application/json' --request PATCH \
   --url "https://gitlab.example.com/api/v4/groups/22034114/protected_branches/main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -416,7 +411,7 @@ curl --header 'Content-Type: application/json' --request PATCH \
   --url "https://gitlab.example.com/api/v4/groups/22034114/protected_branches/main"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {

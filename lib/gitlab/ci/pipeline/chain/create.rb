@@ -116,6 +116,7 @@ module Gitlab
             bulk_insert_needs!(builds)
             bulk_insert_job_sources!(builds)
             bulk_insert_job_environments!(builds)
+            bulk_insert_job_runtime_environments!(builds)
           end
 
           def bulk_insert_job_definition_instances!(builds, result)
@@ -188,6 +189,48 @@ module Gitlab
             job_environments.each_slice(BULK_INSERT_BATCH_SIZE) do |batch|
               insert_records_and_restore_ids(::Environments::Job, batch, returning: [])
             end
+          end
+
+          def bulk_insert_job_runtime_environments!(builds)
+            return unless ::Feature.enabled?(:ci_suspendable_environment_runner_routing, project,
+              type: :gitlab_com_derisk)
+
+            suspend_options = command.suspend_options
+            return if suspend_options.blank?
+
+            suspend_on_success = !!suspend_options[:suspend_on_success]
+            suspend_on_failure = !!suspend_options[:suspend_on_failure]
+            environment_key = suspend_options[:environment_key]
+
+            return unless suspend_on_success || suspend_on_failure || environment_key.present?
+
+            runtime_environment_id = find_runtime_environment_id(environment_key)
+
+            job_runtime_environments = builds.filter_map do |build|
+              next unless build.is_a?(::Ci::Build)
+
+              ::Ci::JobRuntimeEnvironment.new(
+                build: build,
+                partition_id: build.partition_id,
+                project_id: build.project_id,
+                suspend_on_success: suspend_on_success,
+                suspend_on_failure: suspend_on_failure,
+                runtime_environment_id: runtime_environment_id,
+                runner_machine_id: nil
+              )
+            end
+
+            job_runtime_environments.each_slice(BULK_INSERT_BATCH_SIZE) do |batch|
+              insert_records_and_restore_ids(::Ci::JobRuntimeEnvironment, batch, returning: [])
+            end
+          end
+
+          def find_runtime_environment_id(environment_key)
+            return if environment_key.blank?
+
+            ::Ci::RuntimeEnvironment
+              .find_by_key_and_project(environment_key, project.id)
+              &.id
           end
 
           def insert_records_and_restore_ids(model_class, records, returning:)

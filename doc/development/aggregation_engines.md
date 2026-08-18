@@ -265,6 +265,32 @@ Calculates the average value with support for conditional averaging using `avgIf
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
+#### `min` metric
+
+Calculates the minimum value with support for conditional aggregation using `minIf()`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name or identifier. Identifier becomes `:min_{name}` |
+| `type` | Symbol | No | Data type. Default: `:float` |
+| `expression` | Proc | No | Custom expression for the value |
+| `if` | Proc | No | Condition expression for conditional aggregation (`minIf`) |
+| `formatter` | Proc | No | Formatting function applied to results |
+| `description` | String | No | Human-readable description |
+
+#### `max` metric
+
+Calculates the maximum value with support for conditional aggregation using `maxIf()`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name or identifier. Identifier becomes `:max_{name}` |
+| `type` | Symbol | No | Data type. Default: `:float` |
+| `expression` | Proc | No | Custom expression for the value |
+| `if` | Proc | No | Condition expression for conditional aggregation (`maxIf`) |
+| `formatter` | Proc | No | Formatting function applied to results |
+| `description` | String | No | Human-readable description |
+
 #### `rate` metric
 
 Calculates the ratio between rows matching a numerator condition and rows matching a denominator condition (or total rows).
@@ -510,6 +536,59 @@ metrics do
 end
 ```
 
+## Measurements
+
+A measurement is a row-level value with a base type. Declare it once with the
+class-level `measurement` macro, and the framework expands it into a group of
+related metrics.
+
+```ruby
+measurement(name, type, expression, description: nil)
+```
+
+The macro expands into four metrics with dotted identifiers:
+
+- `<name>.min` and `<name>.max`, which inherit the measurement's base type
+- `<name>.mean`, which is always `:float`
+- `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
+  parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
+
+The `expression` argument can be a `transient(:name)` reference or a lambda.
+Zero-arity lambdas are wrapped automatically.
+
+```ruby
+transient(:duration) do
+  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+end
+
+measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
+```
+
+In GraphQL, the four aggregates surface as one nested group field named after the
+measurement, with `min`, `max`, `mean`, and `quantile` sub-fields.
+
+```graphql
+duration {
+  min
+  max
+  mean
+  quantile(quantile: 0.95)
+}
+```
+
+`orderBy` accepts the full dotted identifier, for example
+`{ identifier: "duration.max", direction: DESC }`.
+
+### Requirements and limitations
+
+- The engine adapter must support the `min`, `max`, `mean`, and `quantile` metrics.
+  Calling `measurement` on an adapter that does not support them (the ActiveRecord
+  engine today) raises `ArgumentError`. In practice, this makes the macro
+  ClickHouse-only.
+- The macro does not accept `if:` or `formatter:` options.
+- The raw measurement value does not get a dimension.
+- `metric_range` and `metric_exact_match` filters cannot target dotted metric identifiers.
+
 ## Using the Framework
 
 ### Creating an aggregation request
@@ -603,7 +682,7 @@ The GraphQL integration automatically generates:
 - **Query field** for mounted engine
 - **Filter arguments** based on engine filter definitions
 - **Order argument** based on engine dimensions and metrics definitions. Snake-cased dimension and metric identifiers can be used as an order identifier
-- **Response types** with dimensions and metrics as fields
+- **Response types** with dimensions and metrics as fields; metrics with [dotted identifiers](#dotted-metric-identifiers) are nested under a shared group field
 - **Parameterized fields** for dimensions and metrics with parameters
 - **Pagination**: aggregation results are automatically paginated using `OFFSET` pagination
 
@@ -710,6 +789,39 @@ Filter arguments are split across the two levels based on when the filter is app
 - **Metric filters** (those defined with `metric_exact_match` or `metric_range`) appear on the
   inner `aggregated` field.
 
+### Dotted metric identifiers
+
+To group several aggregates of the same underlying value under one GraphQL field, declare metrics with a dotted name. The name is used verbatim as the identifier (the usual `:{name}_count`-style derivation is skipped):
+
+```ruby
+metrics do
+  mean :"duration.mean", :float, ->(_params) { Arel.sql("dateDiff('seconds', created_at, finished_at)") }
+  quantile :"duration.quantile", :float, ->(_params) { Arel.sql("dateDiff('seconds', created_at, finished_at)") },
+    parameters: { quantile: { type: :float } }
+end
+```
+
+All metrics sharing a prefix become one object field with a sub-field per second segment, similar to the nested `dimensions` sub-object. Parameterized metrics keep their arguments on the sub-field:
+
+```graphql
+nodes {
+  duration {
+    mean
+    quantile(quantile: 0.9)
+  }
+}
+```
+
+A dotted metric without an explicit expression falls back to reading the database column named by the first segment (for example, `duration.max` reads the `duration` column). `count` metrics never reference the name as a column.
+
+Rules, enforced at definition time:
+
+- Exactly two dot-separated segments, each matching `[a-z][a-z0-9_]*`. Metrics only; dimensions and filters reject dotted names.
+- The prefix must not collide with a flat metric identifier, and `dimensions` is reserved.
+- Identifiers must stay unique after dot sanitization: instance keys (SQL aliases and result-row keys) replace `.` with `__`, so `duration.max` collides with a `duration__max` metric.
+
+`orderBy` accepts the full dotted identifier (`{ identifier: "duration.max", direction: DESC }`). Metric filters can't target dotted metrics.
+
 ### Custom request validations
 
 Add custom validation logic to discard specific aggregation requests while maintaining the GraphQL
@@ -737,7 +849,7 @@ module Types
 end
 ```
 
-The `validate_request!` method receives a `Gitlab::Database::Aggregation::Request` object containing `dimensions`, `metrics`, `filters` and `order` specifications.
+The `validate_request!` method receives a `Gitlab::Database::Aggregation::Request` object containing `dimensions`, `metrics`, `filters`, and `order` specifications.
 
 ### Dimensions for ActiveRecord association
 

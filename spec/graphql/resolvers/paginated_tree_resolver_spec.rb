@@ -86,6 +86,21 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
         end
       end
 
+      context 'when the page token is stale' do
+        before do
+          allow(repository).to receive(:tree)
+            .and_raise(Gitlab::Git::InvalidPageToken, 'Invalid page token: invalid')
+        end
+
+        it 'generates an error with the same extensions' do
+          expect_graphql_error_to_be_created(
+            Gitlab::Graphql::Errors::BaseError, 'Invalid page token: invalid'
+          ) { subject }
+
+          expect(subject.extensions).to eq(code: 'invalid_argument', gitaly_code: 3, service: 'git')
+        end
+      end
+
       it 'returns all tree entries during cursor pagination' do
         cursor = nil
 

@@ -44,7 +44,7 @@ than we anticipated. To do that, we can use the
 shows all running threads that connect to the database by their
 name. Threads labeled `puma worker` or `sidekiq_worker_thread` are
 the threads that define `Gitlab::Runtime.max_threads` so those are
-accounted for. If there's more than 10 other threads running, we could
+accounted for. If there are more than 10 other threads running, we could
 consider raising the default headroom.
 
 ## Connection lifecycle

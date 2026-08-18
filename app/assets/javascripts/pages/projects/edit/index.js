@@ -9,12 +9,13 @@ import initTransferProjectForm from '~/projects/settings/init_transfer_project_f
 import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import UserCallout from '~/user_callout';
-import initTopicsTokenSelector from '~/projects/settings/topics';
 import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
 import initPruneObjectsButton from '~/projects/prune_objects_button';
 import initArchiveSettings from '~/groups_projects/archive';
 import initUnarchiveSettings from '~/groups_projects/unarchive';
+import initTopicsTokenSelector from '~/projects/settings/topics';
 import { initProjectNameValidation } from '~/projects/project_name_validation';
+import mountProjectGeneralSettings from '~/projects/settings/mount_project_general_settings';
 import { initProjectPermissionsSettings } from '../shared/permissions/init_project_permissions_settings';
 import initGitlabDuoSettings from '../shared/permissions/gitlab_duo_settings';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
@@ -34,12 +35,18 @@ initProjectPermissionsSettings();
 initGitlabDuoSettings();
 initTransferProjectForm();
 
-dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));
-
 initSearchSettings();
 initArchiveSettings();
 initUnarchiveSettings();
-initTopicsTokenSelector();
 initProjectSelects();
 
-initProjectNameValidation();
+// Mount the general settings Vue app (includes topics selector) when the
+// `project_general_settings_vue` feature flag renders its mount point.
+// Otherwise initialize the legacy server-rendered form.
+if (mountProjectGeneralSettings()) {
+  dirtySubmitFactory(document.querySelectorAll('.js-mr-settings-form'));
+} else {
+  initTopicsTokenSelector();
+  initProjectNameValidation();
+  dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));
+}

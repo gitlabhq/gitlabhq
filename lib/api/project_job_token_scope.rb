@@ -9,7 +9,7 @@ module API
     feature_category :system_access
     urgency :low
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve the CI/CD job token access settings for a project' do
         detail 'Retrieves the CI/CD job token access settings (job token scope) of a specified project.'
         failure [
@@ -19,6 +19,9 @@ module API
         ]
         success code: 200, model: Entities::ProjectJobTokenScope
         tags %w[projects_job_token_scope]
+      end
+      params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       route_setting :authorization, permissions: :read_job_token_scope, boundary_type: :project
       get ':id/job_token_scope' do
@@ -39,6 +42,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         requires :enabled,
           type: Boolean,
           as: :ci_inbound_job_token_scope_enabled,
@@ -69,6 +73,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         use :pagination
       end
       route_setting :authorization, permissions: :read_job_token_scope_allowlist, boundary_type: :project
@@ -91,6 +96,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         use :pagination
       end
       route_setting :authorization, permissions: :read_job_token_scope_allowlist, boundary_type: :project

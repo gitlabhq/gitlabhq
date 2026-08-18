@@ -56,13 +56,14 @@ module Slack
       handle_http_error(e, 'Slack API error when removing reaction', channel)
     end
 
-    def post_ephemeral(channel:, user:, text:, thread_ts: nil)
+    def post_ephemeral(channel:, user:, text:, thread_ts: nil, blocks: nil)
       Gitlab::IntegrationsLogger.info(
         message: 'Slack API: posting ephemeral',
         channel_id: channel
       )
       payload = { channel: channel, user: user, text: text }
       payload[:thread_ts] = thread_ts if thread_ts.present?
+      payload[:blocks] = blocks if blocks.present?
       response = post('chat.postEphemeral', payload)
       log_error('Slack API error when posting ephemeral message', response, channel) unless response['ok']
       response
@@ -82,7 +83,11 @@ module Slack
       # update_message uses `unless blocks.nil?` so it can clear blocks with [].
       payload[:blocks] = blocks if blocks.present?
       response = post('chat.postMessage', payload)
-      log_error('Slack API error when posting message', response, channel) unless response['ok']
+      unless response['ok']
+        log_error('Slack API error when posting message', response, channel,
+          blocks: payload[:blocks])
+      end
+
       response
     rescue *Gitlab::HTTP::HTTP_ERRORS => e
       handle_http_error(e, 'Slack API error when posting message', channel)
@@ -99,7 +104,11 @@ module Slack
       payload = { channel: channel, ts: ts, text: text }
       payload[:blocks] = blocks unless blocks.nil?
       response = post('chat.update', payload)
-      log_error('Slack API error when updating message', response, channel) unless response['ok']
+      unless response['ok']
+        log_error('Slack API error when updating message', response, channel,
+          blocks: payload[:blocks])
+      end
+
       response
     rescue *Gitlab::HTTP::HTTP_ERRORS => e
       handle_http_error(e, 'Slack API error when updating message', channel)
@@ -123,6 +132,28 @@ module Slack
       handle_http_error(e, 'Slack API error when setting status', channel)
     end
 
+    def open_view(trigger_id:, view:)
+      Gitlab::IntegrationsLogger.info(message: 'Slack API: opening view')
+      response = post('views.open', trigger_id: trigger_id, view: view)
+      log_error('Slack API error when opening view', response, nil) unless response['ok']
+      response
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      handle_http_error(e, 'Slack API error when opening view', nil)
+    end
+
+    # Fetches metadata about a conversation (channel, private channel, DM, or
+    # group DM). Requires the matching read scope for the conversation type
+    # (channels:read, groups:read, im:read, or mpim:read).
+    # See https://docs.slack.dev/reference/methods/conversations.info
+    def conversation_info(channel:)
+      response = get('conversations.info', channel: channel)
+      parsed = normalize_response(response)
+      log_error('Slack API error when fetching conversation info', parsed, channel) unless parsed['ok']
+      parsed
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      handle_http_error(e, 'Slack API error when fetching conversation info', channel)
+    end
+
     private
 
     attr_reader :token
@@ -138,11 +169,14 @@ module Slack
       error_response
     end
 
-    def log_error(message, response, channel)
+    def log_error(message, response, channel, blocks: nil)
       Gitlab::IntegrationsLogger.error(
         message: message,
         channel_id: channel,
-        response: response
+        response: response,
+        # Surfaced for block-validation failures (e.g. invalid_blocks): the
+        # response_metadata json-pointer indexes into exactly these blocks.
+        blocks: blocks
       )
     end
   end

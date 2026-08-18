@@ -129,7 +129,6 @@ gitlab_kas['env'] = {
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/464) in GitLab 16.5.0.
 - [Added](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/2183) multiple CIDR support to `OWN_PRIVATE_API_CIDR` in GitLab 17.8.1.
 
 {{< /history >}}
@@ -164,13 +163,6 @@ gitlab_kas['env'] = {
 ```
 
 ##### Option 3 - automatic configuration based on listener configuration
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/464) in GitLab 16.5.0.
-- [Updated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/510) KAS to listen on and publish all non-loopback IP addresses and filter out IPv4 and IPv6 addresses based on the value of `private_api_listen_network`.
-
-{{< /history >}}
 
 A KAS node can determine what IP addresses are available based on the `private_api_listen_network` and
 `private_api_listen_address` settings:
@@ -364,14 +356,6 @@ See [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitl
 
 ## Kubernetes API proxy cookie
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504) in GitLab 15.10 [with feature flags](../feature_flags/_index.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
-- Feature flags `kas_user_access` and `kas_user_access_project` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123479) in GitLab 16.1.
-- Feature flags `kas_user_access` and `kas_user_access_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
-
-{{< /history >}}
-
 GitLab Relay (KAS) proxies Kubernetes API requests to the GitLab agent for Kubernetes with either:
 
 - A [CI/CD job](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md).
@@ -394,7 +378,7 @@ to authenticate and authorize the user.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12180) in GitLab 17.4.
 
 {{< /history >}}
 

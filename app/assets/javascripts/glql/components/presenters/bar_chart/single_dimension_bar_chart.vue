@@ -2,7 +2,13 @@
 import { GlBarChart } from '@gitlab/ui/src/charts';
 import { stackedPresentationOptions } from '@gitlab/ui/src/utils/constants';
 import { DISPLAY_TYPES } from '../../../constants';
-import { buildBarSeriesData, tooltipContentFromParams } from '../../../utils/chart_data';
+import {
+  buildBarSeriesData,
+  dimensionLabelFormatter,
+  labelWithParameter,
+  tooltipContentFromParams,
+  tooltipTitleFromParams,
+} from '../../../utils/chart_data';
 import {
   buildFormatterByLabel,
   buildSharedAxisFormatter,
@@ -10,6 +16,7 @@ import {
   yAxisTitleFor,
 } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
+import { barCategoryAxisOptions } from './bar_chart_options';
 
 export default {
   name: 'SingleDimensionBarChart',
@@ -46,16 +53,31 @@ export default {
     sharedAxisFormatter() {
       return buildSharedAxisFormatter(this.metrics);
     },
+    dimensionLabel() {
+      return labelWithParameter(this.dimension);
+    },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.dimension);
+    },
     // GlBarChart flips the axes: the metric/value axis is x, and the
     // dimension/category axis is y. yAxisTitleFor derives a title from the
     // metrics regardless of which axis it ends up on.
     xAxisTitle() {
       return yAxisTitleFor(this.metrics);
     },
+    // Every series maps the same nodes in order, so the first series' tuples
+    // carry all the category values; sizing needs their display labels.
+    categoryLabels() {
+      const [firstSeries] = Object.values(this.chartData);
+      return (firstSeries ?? []).map(([, category]) => this.categoryFormatter(category));
+    },
     chartOptions() {
-      return this.sharedAxisFormatter
-        ? { xAxis: { axisLabel: { formatter: this.sharedAxisFormatter } } }
-        : {};
+      return {
+        ...barCategoryAxisOptions(this.categoryLabels, { formatter: this.categoryFormatter }),
+        ...(this.sharedAxisFormatter
+          ? { xAxis: { axisLabel: { formatter: this.sharedAxisFormatter } } }
+          : {}),
+      };
     },
   },
   methods: {
@@ -64,6 +86,13 @@ export default {
     },
     contentFromParams(params) {
       return tooltipContentFromParams(params, DISPLAY_TYPES.BAR_CHART);
+    },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.dimensionLabel,
+        displayType: DISPLAY_TYPES.BAR_CHART,
+      });
     },
   },
 };
@@ -75,8 +104,9 @@ export default {
     :option="chartOptions"
     :presentation="presentation"
     :x-axis-title="xAxisTitle"
-    :y-axis-title="dimension.label"
+    :y-axis-title="dimensionLabel"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

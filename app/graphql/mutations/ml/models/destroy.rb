@@ -8,6 +8,9 @@ module Mutations
 
         include FindsProject
 
+        authorize_granular_token permissions: :delete_ml_model,
+          boundary_argument: :project_path, boundary_type: :project
+
         argument :id, ::Types::GlobalIDType[::Ml::Model],
           required: true,
           description: 'Global ID of the model to be deleted.'

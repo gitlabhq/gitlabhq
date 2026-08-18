@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe DeployKeys::DeployKeysFinder, feature_category: :continuous_delivery do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
 
     let_it_be(:accessible_project) { create(:project, :internal, developers: user) }
     let_it_be(:inaccessible_project) { create(:project, :internal) }

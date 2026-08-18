@@ -3,8 +3,6 @@ import { GlAlert, GlBadge, GlFormGroup, GlFormSelect, GlTableLite } from '@gitla
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { s__, sprintf } from '~/locale';
 
-const SCHEMA_FIELD_NAME = 'application_setting[logging_field_schema_version]';
-const DUAL_EMIT_FIELD_NAME = 'application_setting[logging_field_dual_emit_target]';
 const ALERT_CONTAINER_SELECTOR = '#js-logging-field-settings';
 
 export default {
@@ -39,6 +37,14 @@ export default {
       required: false,
       default: () => ({}),
     },
+    schemaFieldName: {
+      type: String,
+      required: true,
+    },
+    dualEmitFieldName: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -66,7 +72,7 @@ export default {
       return this.schemaVersion === this.latestVersion;
     },
     helpTargetVersion() {
-      if (this.dualEmitTarget !== '' && this.dualEmitTarget !== null) {
+      if (this.dualEmitTarget !== '') {
         return Number(this.dualEmitTarget);
       }
       return this.schemaVersion;
@@ -75,7 +81,7 @@ export default {
       return this.fieldChanges[String(this.helpTargetVersion)] || [];
     },
     isDualEmitting() {
-      return this.dualEmitTarget !== '' && this.dualEmitTarget !== null;
+      return this.dualEmitTarget !== '';
     },
     showHelp() {
       return this.helpChanges.length > 0;
@@ -92,8 +98,8 @@ export default {
     },
     deprecatedHeader() {
       return this.isDualEmitting
-        ? this.$options.i18n.deprecatedHeaderDualEmit
-        : this.$options.i18n.deprecatedHeaderUpgrade;
+        ? s__('AdminSettings|Also emitted as (deprecated)')
+        : s__('AdminSettings|Replaces (deprecated)');
     },
     helpFields() {
       return [
@@ -141,8 +147,6 @@ export default {
       return fields.length > 0 ? fields.join(', ') : '—';
     },
   },
-  schemaFieldName: SCHEMA_FIELD_NAME,
-  dualEmitFieldName: DUAL_EMIT_FIELD_NAME,
   i18n: {
     currentVersion: s__('AdminSettings|Current version'),
     schemaVersionLabel: s__('AdminSettings|Schema version'),
@@ -166,8 +170,6 @@ export default {
       'AdminSettings|When upgrading to v%{target}, the following field names will change:',
     ),
     standardHeader: s__('AdminSettings|Standard field name'),
-    deprecatedHeaderDualEmit: s__('AdminSettings|Also emitted as (deprecated)'),
-    deprecatedHeaderUpgrade: s__('AdminSettings|Replaces (deprecated)'),
     helpNoteDualEmit: s__(
       'AdminSettings|During dual-emit, both the standard and deprecated field names appear in every log line. Disable dual-emit to stop emitting deprecated names.',
     ),
@@ -192,10 +194,10 @@ export default {
       label-for="logging-field-schema-version"
       label-class="label-bold"
     >
-      <input :name="$options.schemaFieldName" type="hidden" :value="schemaVersion" />
       <gl-form-select
         id="logging-field-schema-version"
         v-model="schemaVersion"
+        :name="schemaFieldName"
         :options="schemaOptions"
         data-testid="schema-version-select"
       />
@@ -215,10 +217,10 @@ export default {
       >
         {{ $options.i18n.dualEmitWarning }}
       </gl-alert>
-      <input :name="$options.dualEmitFieldName" type="hidden" :value="dualEmitTarget" />
       <gl-form-select
         id="logging-field-dual-emit-target"
         v-model="dualEmitTarget"
+        :name="dualEmitFieldName"
         :options="dualEmitOptions"
         :disabled="isAtLatestVersion"
         data-testid="dual-emit-select"

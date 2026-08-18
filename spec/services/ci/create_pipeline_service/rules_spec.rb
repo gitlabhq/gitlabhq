@@ -1495,6 +1495,65 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
     end
 
+    context 'when include:rules filter out all includes leaving no visible jobs' do
+      # The included file does not need to exist: include:rules: filtering runs
+      # before the file is resolved, so a filtered-out include is never fetched.
+      let(:config) do
+        <<~YAML
+          workflow:
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /wip$/
+                when: never
+              - when: always
+
+          include:
+            - local: .child.yml
+              rules:
+                - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        YAML
+      end
+
+      context 'when workflow:rules block the pipeline' do
+        let(:ref) { 'refs/heads/wip' }
+
+        it 'does not persist the pipeline', :aggregate_failures do
+          expect(response).to be_error
+          expect(pipeline).not_to be_persisted
+          expect(pipeline.failure_reason).to eq('filtered_by_rules')
+        end
+      end
+
+      context 'when workflow:rules allow the pipeline' do
+        let(:ref) { 'refs/heads/master' }
+
+        it 'does not persist the pipeline', :aggregate_failures do
+          expect(response).to be_error
+          expect(pipeline).not_to be_persisted
+          expect(pipeline.failure_reason).to eq('filtered_by_rules')
+        end
+      end
+    end
+
+    context 'when config genuinely has no jobs and no includes' do
+      let(:config) do
+        <<~YAML
+          workflow:
+            rules:
+              - when: always
+          stages: [test]
+        YAML
+      end
+
+      let(:ref) { 'refs/heads/master' }
+
+      it 'persists a failed pipeline with config_error', :aggregate_failures do
+        expect(response).to be_error
+        expect(pipeline).to be_persisted
+        expect(pipeline.failure_reason).to eq('config_error')
+        expect(pipeline.errors.full_messages).to include(a_string_including('at least one visible job'))
+      end
+    end
+
     context 'when root variables are used' do
       let(:config) do
         <<-YAML

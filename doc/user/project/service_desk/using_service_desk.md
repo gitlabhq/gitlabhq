@@ -46,12 +46,12 @@ For more information, see [external participants](external_participants.md) and 
 
 ### Create a Service Desk ticket in GitLab UI
 
-{{< history >}}
+Prerequisites:
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `convert_to_ticket_quick_action`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
-
-{{< /history >}}
+- Service Desk must be [set up for the project](configure.md).
+  On GitLab Self-Managed, this includes [incoming email](../../../administration/incoming_email.md#set-it-up)
+  configured with email sub-addressing or a catch-all mailbox.
+  Without incoming email, the `/convert_to_ticket` quick action is not available.
 
 To create a Service Desk ticket from the UI:
 
@@ -92,13 +92,6 @@ To view Service Desk tickets:
 1. In the left sidebar, select **Monitor** > **Service Desk**.
 
 #### Redesigned ticket list
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `service_desk_vue_list`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415385) in GitLab 16.10. Feature flag `service_desk_vue_list` removed.
-
-{{< /history >}}
 
 The Service Desk ticket list more closely matches the regular issue list.
 Available features include:
@@ -147,13 +140,6 @@ when you [filter the list of tickets](#filter-the-list-of-tickets) by:
 
 ### Special HTML formatting in HTML emails
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811) in GitLab 15.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116809) in GitLab 15.11. Feature flag `service_desk_html_to_text_email_handler` removed.
-
-{{< /history >}}
-
 HTML emails sent from Service Desk tickets show HTML formatting, such as:
 
 - Tables
@@ -163,27 +149,14 @@ HTML emails sent from Service Desk tickets show HTML formatting, such as:
 
 ### Files attached to comments
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 16.6. Feature flag `service_desk_new_note_email_native_attachments` removed.
-
-{{< /history >}}
-
 If a comment contains any attachments and their total size is less than or equal to 10 MB, these
 attachments are sent as part of the email. In other cases, the email contains links to the attachments.
 
-In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
-
 ## Convert a regular issue to a Service Desk ticket
 
-{{< history >}}
+Prerequisites:
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a feature flag](../../../administration/feature_flags/_index.md) named `convert_to_ticket_quick_action`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
-
-{{< /history >}}
+- Service Desk must be [set up for the project](configure.md).
 
 Use the quick action `/convert_to_ticket external-ticket-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket
@@ -195,20 +168,11 @@ You can add a public comment on the ticket to let the end user know that the tic
 
 ## Privacy considerations
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
-
-{{< /history >}}
-
 Service Desk tickets are [confidential](../issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
 [make a ticket public](../issues/confidential_issues.md#in-an-existing-issue).
 When a Service Desk ticket becomes public, the ticket creator's and participants' email addresses are
 visible to signed-in users with the Reporter, Developer, Maintainer, or Owner role for the project.
-
-In GitLab 15.8 and earlier, when a Service Desk ticket becomes public, the ticket creator's email
-address is disclosed to everyone who can view the project.
 
 Anyone in your project can use the Service Desk email address to create a ticket in this project, **regardless
 of their role** in the project.
@@ -219,12 +183,6 @@ An external user (ticket creator) cannot see the internal email address
 displayed in the information note.
 
 ### Moving a Service Desk ticket
-
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk ticket is moved.
-
-{{< /history >}}
 
 You can move a Service Desk ticket the same way you
 [move a regular issue](../issues/managing_issues.md#move-an-issue) in GitLab.

@@ -4,6 +4,7 @@ module MergeRequests
   module Mergeability
     class CheckDiscussionsStatusService < CheckBaseService
       set_identifier :discussions_not_resolved
+      set_failure_explanation N_('All open threads must be resolved.')
       set_description 'Checks whether the merge request has open discussions'
 
       def execute

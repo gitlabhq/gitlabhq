@@ -55,7 +55,7 @@ module Gitlab
         end
 
         override :max_blob_size
-        def self.max_blob_size(project)
+        def self.max_blob_size
           # We take into account for the highlight limit to avoid an extra gitaly call
           # When the real blob size is between the highlight limit and the max blob size
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152151#note_1904271976

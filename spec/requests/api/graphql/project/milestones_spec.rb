@@ -6,7 +6,7 @@ RSpec.describe 'getting milestone listings nested in a project', feature_categor
   include GraphqlHelpers
 
   let_it_be(:today) { Time.now.utc.to_date }
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:current_user) { create(:user) }
 
   let_it_be(:no_dates) { create(:milestone, project: project, title: 'no dates') }

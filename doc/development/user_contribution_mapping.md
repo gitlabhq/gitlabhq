@@ -284,7 +284,7 @@ When a real user accepts their reassignment, the process of replacing all foreig
 
 ## Placeholder reference aliasing
 
-Saving model names and column names to the `import_source_user_placeholder_references` table is brittle. Actual model and column names can change and there's nothing to update the placeholder records that are currently storing the old names. Instead of treating a placeholder references' `model`, `numeric_key` and `composite_key` as real names, they should be treated as aliases. The `Import::PlaceholderReferences::AliasResolver` is used to map values stored in these attributes to real model and column names.
+Saving model names and column names to the `import_source_user_placeholder_references` table is brittle. Actual model and column names can change and there's nothing to update the placeholder records that are currently storing the old names. Instead of treating a placeholder references' `model`, `numeric_key`, and `composite_key` as real names, they should be treated as aliases. The `Import::PlaceholderReferences::AliasResolver` is used to map values stored in these attributes to real model and column names.
 
 ### When does `Import::PlaceholderReferences::AliasResolver` need to be updated?
 

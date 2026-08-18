@@ -12,7 +12,7 @@ Value Stream Analytics (VSA).
 
 ## Current Status
 
-The aggregated backend is used by default since GitLab 15.0 on the group-level.
+The aggregated backend is used by default on the group-level.
 
 ## Motivation
 
@@ -26,7 +26,7 @@ statement timeout (15 s).
 
 The database queries in the old backend use the core domain models directly through
 `IssuableFinders` classes: ([MergeRequestsFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/finders/merge_requests_finder.rb) and [IssuesFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/finders/issues_finder.rb)).
-With the requested change of the [date range filters](https://gitlab.com/groups/gitlab-org/-/epics/6046),
+With the requested change of the [date range filters](https://gitlab.com/groups/gitlab-org/-/work_items/6046),
 this approach was no longer viable from the performance point of view.
 
 Benefits of the aggregated VSA backend:
@@ -34,7 +34,7 @@ Benefits of the aggregated VSA backend:
 - Simpler database queries (fewer JOINs).
 - Faster aggregations, only a single table is accessed.
 - Possibility to introduce further aggregations for improving the first page load time.
-- Better performance for large groups (with many subgroups, projects, issues and, merge requests).
+- Better performance for large groups (with many subgroups, projects, issues, and merge requests).
 - Ready for database decomposition. The VSA related database tables could live in a separate
   database with a minimal development effort.
 - Ready for keyset pagination which can be useful for exporting the data.
@@ -54,7 +54,7 @@ The first value stream uses standard timestamp-based events for defining the sta
 value stream uses label events.
 
 Each value stream and stage item from the example is persisted in the database. Notice that
-the `Deployment` stage is identical for both value streams; that means that the underlying
+the `Deployment` stage is identical for both value streams. This means that the underlying
 `stage_event_hash_id` is the same for both stages. The `stage_event_hash_id` reduces
 the amount of data the backend collects and plays a vital role in database partitioning.
 
@@ -64,7 +64,7 @@ every day.
 
 ### Feature availability
 
-The aggregated VSA feature is available on the group and project level however, the aggregated
+The aggregated VSA feature is available on the group and project level. However, the aggregated
 backend is only available for Premium and Ultimate customers due to data storage and data
 computation costs. Storing de-normalized, aggregated data requires significant disk space.
 
@@ -170,7 +170,7 @@ Due to the async nature of the data collection, data consistency issues are boun
 is a trade-off that makes the query performance significantly faster. We think that for analytical
 workload a slight lag in the data is acceptable.
 
-Before the rollout we plan to implement some indicators on the VSA page that shows the most
+Before the rollout we plan to implement some indicators on the VSA page that show the most
 recent backend activities. For example, indicators that show the last data collection timestamp
 and the last consistency check timestamp.
 
@@ -254,8 +254,8 @@ database tables. This change could be implemented using array columns.
 
 ### Endpoints
 
-The feature uses private JSON APIs for delivering the data to the frontend. On the first page load
-, the following requests are invoked:
+The feature uses private JSON APIs for delivering the data to the frontend. On the first page load,
+the following requests are invoked:
 
 - Initial HTML page load which is mostly empty. Some configuration data is exposed via `data` attributes.
 - `value_streams` - Load the available value streams for the given group.

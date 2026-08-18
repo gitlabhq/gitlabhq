@@ -10,7 +10,7 @@ identifiers:
 additional_properties:
   property:
     description: user role
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - portfolio_management
 milestone: '18.11'

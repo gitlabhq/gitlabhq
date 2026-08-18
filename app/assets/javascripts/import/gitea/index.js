@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportFromGiteaApp from './import_from_gitea_app.vue';
 
 export function initGiteaImportProjectForm() {
@@ -12,11 +12,5 @@ export function initGiteaImportProjectForm() {
 
   const props = { backButtonPath, namespaceId, formPath };
 
-  return new Vue({
-    el,
-    name: 'ImportFromGiteaRoot',
-    render(h) {
-      return h(ImportFromGiteaApp, { props });
-    },
-  });
+  return initVueApp({ el, name: 'ImportFromGiteaRoot', component: ImportFromGiteaApp, props });
 }

@@ -27,7 +27,7 @@ title: Ruby gems in the package registry
 You can publish Ruby gems to your project's package registry. Then, you can download them from the UI or with the API.
 
 This feature is an [experiment](../../../policy/development_stages_support.md).
-For more information about the development of this feature, see [epic 3200](https://gitlab.com/groups/gitlab-org/-/epics/3200).
+For more information about the development of this feature, see [epic 3200](https://gitlab.com/groups/gitlab-org/-/work_items/3200).
 
 ## Authenticate to the package registry
 

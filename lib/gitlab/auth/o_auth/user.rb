@@ -27,11 +27,6 @@ module Gitlab
         SigninDisabledForProviderError = Class.new(StandardError)
         IdentityWithUntrustedExternUidError = Class.new(StandardError)
         UnknownAttributeMappingError = Class.new(StandardError)
-        # Raised when a new-user INSERT would be attempted while the owning
-        # Organization is in read_only_initialization or read_only state.
-        # Existing-user sign-ins (timestamp updates) are not affected.
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/604050.
-        NewUserOrganizationReadOnlyError = Class.new(StandardError)
 
         attr_reader :auth_hash
 
@@ -63,7 +58,6 @@ module Gitlab
 
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
-          raise NewUserOrganizationReadOnlyError if new_user_blocked_by_read_only_organization?
 
           block_after_save = needs_blocking?
 
@@ -103,6 +97,14 @@ module Gitlab
           gl_user
         end
 
+        def existing_user_for_email_link
+          return unless new?
+          return if auto_link_user?
+          return unless auth_hash.has_attribute?(:email)
+
+          ::User.find_by_any_email(auth_hash.email)
+        end
+
         def bypass_two_factor?
           providers = Gitlab.config.omniauth.allow_bypass_two_factor
           if providers.is_a?(Array)
@@ -126,26 +128,6 @@ module Gitlab
 
         def should_save?
           true
-        end
-
-        # Returns true when all of the following hold:
-        #   1. The user does not yet exist in the database (new record / INSERT).
-        #   2. The owning organization is in read_only_initialization or read_only state.
-        #   3. The organization_read_only_enforcement feature flag is enabled.
-        #
-        # Existing-user sign-ins only update timestamp columns and are not blocked.
-        # When the feature flag is disabled the method is a no-op, preserving the
-        # pre-enforcement behaviour.
-        def new_user_blocked_by_read_only_organization?
-          return false unless new?
-
-          organization_id = user_params[:organization_id]
-          return false unless organization_id
-
-          organization = ::Organizations::Organization.find_by_id(organization_id)
-          return false unless organization
-
-          organization.read_only_enforced?
         end
 
         def add_or_update_user_identities
@@ -185,7 +167,7 @@ module Gitlab
         # rubocop: enable CodeReuse/ActiveRecord
 
         def auto_link_ldap_user?
-          Gitlab.config.omniauth.auto_link_ldap_user
+          Gitlab::Auth::Ldap::Config.enabled? && Gitlab.config.omniauth.auto_link_ldap_user
         end
 
         def creating_linked_ldap_user?
@@ -194,6 +176,7 @@ module Gitlab
 
         def ldap_person
           return @ldap_person if defined?(@ldap_person)
+          return @ldap_person = nil unless Gitlab::Auth::Ldap::Config.enabled?
 
           # Look for a corresponding person with same uid in any of the configured LDAP providers
           Gitlab::Auth::Ldap::Config.providers.each do |provider|

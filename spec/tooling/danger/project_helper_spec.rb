@@ -118,11 +118,10 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'vendor/languages.yml'    | [:backend]
       'file_hooks/examples/'    | [:backend]
 
-      'Gemfile'          | [:backend]
-      'Gemfile.lock'     | [:backend]
-      'Gemfile.checksum' | [:backend]
-      'Rakefile'         | [:backend]
-      'FOO_VERSION'      | [:backend]
+      'Gemfile'      | [:backend]
+      'Gemfile.lock' | [:backend]
+      'Rakefile'     | [:backend]
+      'FOO_VERSION'  | [:backend]
 
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:ci_template]
       'lib/gitlab/ci/templates/dotNET-Core.yml'               | [:ci_template]

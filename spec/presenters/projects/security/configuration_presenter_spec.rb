@@ -40,7 +40,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
 
       it 'returns info that Auto DevOps is not enabled' do
-        expect(html_data[:auto_devops_enabled]).to eq(false)
+        expect(html_data[:auto_devops_enabled]).to be(false)
         expect(html_data[:auto_devops_path]).to eq(project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
       end
 
@@ -198,14 +198,14 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         feature = Gitlab::Json.parse(html_data[:features]).find { |scan| scan['type'] == 'sast' }
 
         expect(feature['type']).to eq('sast')
-        expect(feature['configured']).to eq(true)
+        expect(feature['configured']).to be(true)
         expect(feature['configuration_path']).to be_nil
-        expect(feature['available']).to eq(true)
-        expect(feature['can_enable_by_merge_request']).to eq(true)
+        expect(feature['available']).to be(true)
+        expect(feature['can_enable_by_merge_request']).to be(true)
         expect(feature['meta_info_path']).to be_nil
-        expect(feature['on_demand_available']).to eq(false)
+        expect(feature['on_demand_available']).to be(false)
         expect(feature['security_features']).not_to be_empty
-        expect(feature['can_user_configure']).to eq(false)
+        expect(feature['can_user_configure']).to be(false)
       end
 
       context 'when checking features configured status' do
@@ -303,13 +303,13 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
           end
 
           it 'expects gitlab_ci_present to be true' do
-            expect(html_data[:gitlab_ci_present]).to eq(true)
+            expect(html_data[:gitlab_ci_present]).to be(true)
           end
         end
 
         context 'when a .gitlab-ci.yml file does not exist' do
           it 'expects gitlab_ci_present to be false if the file is not present' do
-            expect(html_data[:gitlab_ci_present]).to eq(false)
+            expect(html_data[:gitlab_ci_present]).to be(false)
           end
         end
       end

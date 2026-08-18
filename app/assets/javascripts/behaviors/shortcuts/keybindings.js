@@ -126,6 +126,12 @@ export const TOGGLE_SUPER_SIDEBAR = {
   defaultKeys: ['mod+\\'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
+export const OPEN_FEATURE_LIBRARY = {
+  id: 'globalShortcuts.openFeatureLibrary',
+  description: __('Open the More features dialog'),
+  defaultKeys: ['\\'],
+};
+
 export const TOGGLE_CANARY = {
   id: 'globalShortcuts.toggleCanary',
   description: __('Toggle GitLab Next'),
@@ -713,6 +719,7 @@ const GLOBAL_SHORTCUTS_GROUP = {
     TOGGLE_PERFORMANCE_BAR,
     HIDE_APPEARING_CONTENT,
     TOGGLE_SUPER_SIDEBAR,
+    OPEN_FEATURE_LIBRARY,
     DUO_CHAT,
   ],
 };

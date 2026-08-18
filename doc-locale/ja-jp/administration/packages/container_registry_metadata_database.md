@@ -15,8 +15,8 @@ description: コンテナレジストリのデータをデータベースに保�
 
 {{< history >}}
 
-- [GitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) （GitLab 16.4の[ベータ](../../policy/development_stages_support.md)機能）。
 - GitLab 17.3で[一般公開](https://gitlab.com/gitlab-org/gitlab/-/issues/423459)になりました。
+- GitLab 19.0で新しいLinuxパッケージおよび自己コンパイルによるインストール向けのPreferモードが[導入](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2849)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
 
@@ -57,12 +57,28 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 
 一部のデータベース対応機能はGitLab.comでのみ有効になり、レジストリデータベースの自動データベースプロビジョニングは利用できません。コンテナレジストリデータベースに関連する機能のステータスについては、[フィードバックイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/423459#supported-feature-status)の機能サポートテーブルを確認してください。
 
+## データベース要件 {#database-requirements}
+
+コンテナレジストリは、メタデータデータベースに直接接続し、それに対して読み書きトランザクションを実行します。
+
+デフォルトでは、GitLab 18.3以降は、メインのGitLabデータベースにレジストリメタデータ用の論理データベースを事前プロビジョニングします。このデータベースはすでに以下の要件を満たしているため、ほとんどのインストールでは追加のデータベースセットアップは必要ありません。レジストリに[外部データベース](#using-an-external-database)を使用する場合にのみ、これらの要件を自分で満たす必要があります:
+
+- サポートされているPostgreSQLバージョンを実行します。レジストリは起動時にバージョンをチェックし、サポートされていないバージョンでは起動しません。サポートされているバージョンについては、[PostgreSQLの要件](../../install/requirements.md#postgresql)を参照してください。
+- レジストリには専用のデータベースを使用します。データベースとそのユーザーを作成するには、[コンテナレジストリメタデータデータベースを設定する](../postgresql/external.md#container-registry-metadata-database)を参照してください。
+- PostgreSQL拡張機能を追加しないでください。メタデータデータベースは拡張機能を必要としないため、メインのGitLabデータベースの拡張機能リストをコピーしないでください。
+- 読み書きアクセスを許可します。レジストリは読み取り専用レプリカに対して起動しません。
+- `bytea_output`をPostgreSQLのデフォルトである`hex`に設定したままにします。レジストリは一部のバイナリ列を16進数テキストとして読み取ります。そのため、`bytea_output = escape`に設定されたサーバーまたはロールでは、`invalid hex format`というエラーでインポートが失敗します。[エラー: `convert field 8 failed: invalid hex format`](container_registry_metadata_database_troubleshooting.md#error-convert-field-8-failed-invalid-hex-format)を参照してください。
+
+レジストリユーザーがデータベースを所有している必要があります。そうでない場合、移行は権限エラーで失敗します。[エラー: `permission denied for schema public`](container_registry_metadata_database_troubleshooting.md#error-permission-denied-for-schema-public-sqlstate-42501)を参照してください。
+
+TLSで接続を暗号化するのはオプションです。暗号化するには、例の設定のように`sslmode`を`require`に設定します。サーバー証明書も検証するには、`sslrootcert`にあるCA証明書と共に`verify-full`を使用します。
+
 ## Linuxパッケージインストールでのメタデータデータベースの有効化 {#enable-the-metadata-database-for-linux-package-installations}
 
 前提条件: 
 
 - GitLab 17.5が最小必須バージョンですが、GitLab 18.3以降をお勧めします。改善と設定が容易になっているためです。
-- [バージョン要件に適合する](../../install/requirements.md#postgresql)PostgreSQLデータベース。レジストリノードからアクセス可能なものである必要があります。
+- [データベース要件](#database-requirements)を満たすPostgreSQLデータベース。レジストリノードからアクセス可能なものである必要があります。
 - 外部データベースを使用する場合は、最初に外部データベース接続をセットアップする必要があります。詳細については、[外部データベースの使用](#using-an-external-database)を参照してください。
 
 ### はじめに {#before-you-start}
@@ -72,6 +88,7 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 - オフラインガベージコレクションを自動化していないことを確認してください。サードパーティのコマンドを使用している場合は、特に確認してください。
 - 最初に[レジストリのストレージを削減することで](../../user/packages/container_registry/reduce_container_registry_storage.md)、プロセスを高速化できます。
 - 可能であれば、[コンテナレジストリデータ](../backup_restore/backup_gitlab.md#container-registry)をバックアップします。
+- コンテナレジストリの[通知](container_registry.md#configure-container-registry-notifications)を設定します。
 
 ### 新しいインストールでのデータベースの有効化 {#enable-the-database-for-new-installations}
 
@@ -95,9 +112,9 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 - オフラインガベージコレクションの実行: この操作自体に害はありませんが、オフラインガベージコレクションはインポート処理を短縮する効果はほとんどなく、コマンドの実行に要する時間を取り戻すほどの効果はありません。
 
 > [!note]
-> メタデータインポートは、タグ付きイメージのみを対象とします。タグなしおよび参照されていないマニフェスト、およびそれらによって排他的に参照されるレイヤーは、背後に残され、アクセスできなくなります。タグ付けされていないイメージは、GitLabのUIやAPIからはもともと表示されませんが、バックエンド上では「dangling（ダングリング）」状態となり、残存してしまうことがあります。新しいレジストリへのインポート後、すべてのイメージは継続的なオンラインガベージコレクションの対象となります。デフォルトでは、タグ付けされておらず参照もされていないマニフェストやレイヤーは、24時間以上残っている場合に自動的に削除されます。
+> メタデータインポートは、タグ付けされたイメージのみを対象とします。タグなしおよび参照されていないマニフェスト、およびそれらによって排他的に参照されるレイヤーは、背後に残され、アクセスできなくなります。タグ付けされていないイメージは、GitLabのUIやAPIからはもともと表示されませんが、バックエンド上では「dangling（ダングリング）」状態となり、残存してしまうことがあります。新しいレジストリへのインポート後、すべてのイメージは継続的なオンラインガベージコレクションの対象となります。デフォルトでは、タグ付けされておらず参照もされていないマニフェストやレイヤーは、24時間以上残っている場合に自動的に削除されます。
 
-#### 適切なインポート方法の選択方法 {#how-to-choose-the-right-import-method}
+### 適切なインポート方法を選択してください {#choose-the-right-import-method}
 
 定期的に[オフラインガベージコレクション](container_registry.md#container-registry-garbage-collection)を実行する場合は、[ワンステップインポート](container_registry_metadata_database_one_step_import.md)方式を使用します。この方法は、処理にかかる時間がほぼ同程度であり、3ステップのインポート方法と比べて操作がより簡単です。
 
@@ -107,7 +124,7 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 
 詳細については、[外部データベースの使用](#using-an-external-database)を参照してください。
 
-#### インポートの中断からの復元 {#restore-interrupted-imports}
+### インポートの中断からの復元 {#restore-interrupted-imports}
 
 {{< history >}}
 
@@ -134,15 +151,25 @@ Helm Chartのインストールについては、Helm Chartのドキュメント
 
 有効な期間単位の詳細については、[Go言語のduration文字列](https://pkg.go.dev/time#ParseDuration)を参照してください。
 
-#### インポート後 {#post-import}
+### インポート後 {#post-import}
 
-レジストリストレージの減少を確認するには、インポート後約48時間かかる場合があります。これはオンラインガベージコレクションの正常かつ想定された動作です。この遅延は、オンラインガベージコレクションがイメージのプッシュ処理に干渉しないようにするためのものです。オンラインガベージコレクターの進捗とヘルスをモニタリングする方法については、[オンラインガベージコレクションのモニタリング](#online-garbage-collection-monitoring)セクションを確認してください。
+大規模なインポートが完了すると、数十万から数百万ものblobがガベージコレクションのレビューのためにキューに入れられることがあります。これは正常です。
+
+タグ付けされたイメージが、宙ぶらりんのblobが棚卸しされる前にインポートされるため、ガベージコレクターは最初にタグ付けされたイメージによってまだ参照されているblobをレビューします。ガベージコレクションはこれらのblobをキューから削除しますが、ストレージからは削除しません。
+
+ストレージは、ガベージコレクターが宙ぶらりんのblobに到達した後にのみ減少します。ポストインポート後、レジストリストレージが減少するまでに48時間以上かかる場合があります。これは、ガベージコレクターがイメージblobとの干渉を避けるためにレビューを遅らせるためです。
+
+ポストインポートのガベージコレクションバックログを監視および管理するには:
+
+- [オンラインガベージコレクションの健全性を確認](#check-the-health-of-online-garbage-collection)して、レビューキューのサイズとステータスを確認します。
+- 大規模なバックログの処理を一時的に高速化するために、[ガベージコレクターワーカーの間隔を調整](#adjust-the-garbage-collector-worker-interval)します。
 
 ## Preferモード {#prefer-mode}
 
 {{< history >}}
 
 - GitLab 18.7で[導入](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9411)されました。
+- GitLab 19.0の新しいLinuxパッケージおよびセルフコンパイルされたインストールに対して[デフォルトで有効](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2849)になりました。
 
 {{< /history >}}
 
@@ -176,6 +203,55 @@ GitLabを再設定すると、レジストリは、ファイルシステムま�
 
 フォールバックの決定は起動時に一度だけ行われ、レジストリの実行中は変更されません。フォールバック後にデータベースへの自動再試行または再接続はありません。フォールバック後にファイルシステムからデータベースモードに移行するには、標準の[メタデータインポート](#enable-the-database-for-existing-registries)を完了し、レジストリを再起動します。
 
+### デフォルトの設定 {#default-configuration}
+
+{{< history >}}
+
+- GitLab 19.0の新しいLinuxパッケージおよびセルフコンパイルされたインストールの場合、デフォルトのメタデータデータベースモードが[`prefer`に変更](https://gitlab.com/gitlab-org/container-registry/-/merge_requests/2849)されました。
+
+{{< /history >}}
+
+GitLab 19.0以降では、新しいインストールの場合、メタデータデータベースはデフォルトでprefer modeで有効になります:
+
+- Linuxパッケージ（Omnibus）のインストールの場合: `/etc/gitlab/gitlab.rb`で設定が指定されていない場合、`registry['database']['enabled']`は`"prefer"`がデフォルトになります。詳細については、[イシュー9396](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9396)を参照してください。
+- セルフコンパイルされたインストールの場合: レジストリ設定ファイルで設定が指定されていない場合、`database.enabled`は`"prefer"`がデフォルトになります。
+
+アップグレード後、レジストリが使用しているバックエンドを確認してください。手順については、[アクティブなメタデータバックエンドを確認](#verify-which-metadata-backend-is-active)を参照してください。
+
+#### 新規インストール {#new-installations}
+
+新しいGitLab 19.0以降のインストールでは、レジストリはprefer modeで起動します。到達可能なメタデータデータベースが設定されている場合、レジストリはそれを使用します。到達可能なデータベースがない場合、レジストリは起動に失敗します。
+
+新しいインストールをファイルシステムメタデータに保持するには、最初のレジストリ起動前にデータベースモードを`"false"`に設定します:
+
+- Linuxパッケージ（Omnibus）のインストールの場合、`/etc/gitlab/gitlab.rb`で:
+
+  ```ruby
+  registry['database']['enabled'] = "false"
+  ```
+
+- セルフコンパイルされたインストールの場合、`/home/git/gitlab/config/gitlab.yml`で:
+
+  ```yaml
+  registry:
+    database:
+      enabled: false
+  ```
+
+#### 既存のインストール {#existing-installations}
+
+既存のインストールをGitLab 19.0以降にアップグレードしても、現在の`registry['database']['enabled']`設定は維持されます。アップグレードではメタデータの移行やアクティブなバックエンドのスイッチは行われません。
+
+ファイルシステムメタデータを持つ既存のprefer modeのインストールは、アップグレード後もファイルシステムメタデータを使用し続けます。データベースにスイッチするには、[メタデータインポート](#enable-the-database-for-existing-registries)を完了します。
+
+#### メタデータデータベースのバックアップ {#metadata-database-backups}
+
+レジストリがメタデータデータベースを使用する場合、レジストリデータベースをバックアップに含めます。手順については、[メタデータデータベースによるバックアップ](#backup-with-metadata-database)を参照してください。
+
+既存のファイルシステムメタデータを持つprefer modeのインストールは、再起動後もフォールバック状態を維持します。フォールバック中、レジストリはメタデータデータベースからの読み書きを行いません。フォールバックが終了するまで、メタデータデータベースをバックアップする必要はありません。
+
+フォールバックを終了するには、[メタデータインポート](#enable-the-database-for-existing-registries)を完了し、レジストリを再起動します。再起動後、レジストリはメタデータデータベースを使用します。バックアップルーチンに含めてください。
+
 ### どのメタデータバックエンドがアクティブかを確認する {#verify-which-metadata-backend-is-active}
 
 レジストリが使用しているメタデータバックエンドを確認するには、次のいずれかの方法を使用します。
@@ -185,7 +261,7 @@ GitLabを再設定すると、レジストリは、ファイルシステムま�
 1. レジストリ`/v2/`エンドポイントにリクエストを送信します:
 
    ```shell
-   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlabcontainer-registry-database-enabled
+   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlab-container-registry-database-enabled
    ```
 
 1. `gitlab-container-registry-database-enabled`応答ヘッダーを検査します:
@@ -208,7 +284,7 @@ GitLabを再設定すると、レジストリは、ファイルシステムま�
 
 レジストリのログを確認するには、次のいずれかのメッセージを探します:
 
-- レジストリがレガシーストレージにフォールバックする場合 (Preferモードのみ):
+- レジストリがレガシーストレージにフォールバックする場合（Preferモードのみ）:
 
   ```plaintext
   database prefer mode enabled, but found filesystem metadata: falling back to legacy metadata
@@ -300,7 +376,7 @@ GitLabを再設定すると、レジストリは、ファイルシステムま�
 {{< /tabs >}}
 
 > [!note]
-> `migrate up`コマンドには、移行の適用方法を制御するために使用できる追加のフラグがいくつか用意されています。詳細については、`sudo gitlab-ctl registry-database migrate up --help`を実行してください。
+> `migrate up`コマンドは、移行がどのように適用されるかを制御するために使用できる追加のフラグを提供します。詳細については、`sudo gitlab-ctl registry-database migrate up --help`を実行してください。
 
 ## オンラインガベージコレクションのモニタリング {#online-garbage-collection-monitoring}
 
@@ -407,6 +483,12 @@ Tasks with >10 review attempts - may indicate persistent issues.
 
 {{< tab title="GitLab 18.9以前" >}}
 
+レジストリメタデータデータベースに接続するには、次のコマンドを使用します:
+
+```shell
+gitlab-psql -d registry
+```
+
 次のクエリは、10回以上再試行されたタスク、または24時間以上レビュー待ちの状態にあるタスクを返します。通常、オンラインガベージコレクターは、失敗がごくわずかな場合には、24時間以内にレビュー対象のアイテムを処理します。もしクエリの結果に行が返された場合は、オンラインガベージコレクターのヘルスを調査してください。
 
 マニフェストの場合:
@@ -455,8 +537,6 @@ WHERE
 LIMIT
   20;
 ```
-
-#### オンラインガベージコレクションに関連する情報クエリ {#informational-queries-related-to-online-garbage-collection}
 
 次のクエリを実行して、レビューの対象となるタスクの数を確認します:
 
@@ -631,7 +711,7 @@ kubectl create secret generic my-registry-db-password-secret \
 
 #### レジストリデータベース認証情報を設定する {#configure-registry-database-credentials}
 
-必要なYAMLをHelmの`values.yaml`に追加して、バックアップユーザーと復元するユーザーを設定します。設定設定の定義については、次の表を参照してください。 
+必要なYAMLをHelmの`values.yaml`に追加して、バックアップユーザーと復元するユーザーを設定します。設定設定の定義については、次の表を参照してください。
 
 | 設定 | デフォルト | 説明 |
 |---|---|---|
@@ -783,7 +863,7 @@ flowchart TB
 メタデータインポートが完了した後、レジストリをオブジェクトストレージメタデータを使用するようにリバートできます。
 
 > [!warning]
-> オブジェクトストレージメタデータにリバートすると、インポートの完了とこのリバート操作の間に追加または削除されたコンテナイメージ、タグ、またはリポジトリは使用できなくなります。
+> オブジェクトストレージのメタデータに復元すると、インポート完了からこの復元操作までの間に追加または削除されたコンテナイメージ、タグ、またはリポジトリは利用できなくなります。
 
 オブジェクトストレージメタデータにリバートするには、以下を実行します:
 

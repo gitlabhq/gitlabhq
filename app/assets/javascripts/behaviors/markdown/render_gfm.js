@@ -8,17 +8,10 @@ import { renderGlql } from './render_glql';
 import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 import { addAriaLabels } from './accessibility';
 import { renderImageLightbox } from './render_image_lightbox';
-import renderStickyTableHeaders from './render_table_headers';
-import { GFM_POPOVER_SELECTOR } from './constants';
-
-function initPopovers(elements) {
-  if (!elements.length) return;
-  import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
-    .then(({ default: initIssuablePopovers }) => {
-      initIssuablePopovers(elements);
-    })
-    .catch(() => {});
-}
+import renderMarkdownTables from './render_markdown_tables';
+import markPrintScaleTables from './mark_print_scale_tables';
+import initPopovers from './init_popovers';
+import { GFM_POPOVER_SELECTOR, GFM_LIGHTBOX_IMAGE_SELECTOR } from './constants';
 
 // Render GitLab Flavored Markdown.
 //
@@ -44,12 +37,12 @@ export function renderGFM(element) {
   const iframeEls = arrayFromAll('.js-render-iframe');
   const tableEls = arrayFromAll('[data-canonical-lang="json"][data-lang-params~="table"]');
   const tableHTMLEls = arrayFromAll('table[data-table-fields]');
+  const mdTableEls = arrayFromAll('.md table:not(.code)');
   const glqlEls = arrayFromAll('[data-canonical-lang="glql"], .language-glql');
   const userEls = arrayFromAll('.gfm-project_member');
   const popoverEls = arrayFromAll(GFM_POPOVER_SELECTOR);
   const taskListCheckboxEls = arrayFromAll('.task-list-item-checkbox');
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  const imageEls = arrayFromAll('a>img');
+  const imageEls = arrayFromAll(GFM_LIGHTBOX_IMAGE_SELECTOR);
 
   syntaxHighlight(highlightEls);
   renderKroki(krokiEls);
@@ -58,12 +51,11 @@ export function renderGFM(element) {
   renderIframe(iframeEls);
   renderJSONTable(tableEls.map((e) => e.parentNode));
   renderJSONTableHTML(tableHTMLEls);
+  renderMarkdownTables(mdTableEls);
+  markPrintScaleTables(mdTableEls);
   highlightCurrentUser(userEls);
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);
   renderGlql(glqlEls);
   renderImageLightbox(imageEls, element);
-
-  const mdTableEls = arrayFromAll('table:not(.code)');
-  renderStickyTableHeaders(mdTableEls);
 }

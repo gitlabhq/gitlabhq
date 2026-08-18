@@ -42,8 +42,9 @@ commands:
   - npm install -g @anthropic-ai/claude-code
   - echo "Installing glab"
   - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
-  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
-  - apt-get install -y glab
+  - |
+    if command -v glab > /dev/null 2>&1; then echo "glab already present, skipping installation"; else ( set -o pipefail && echo "Installing glab@1.111.0..." && GLAB_OS=$(uname -s | tr '[:upper:]' '[:lower:]') && GLAB_ARCH=$(uname -m) && case "$GLAB_ARCH" in x86_64) GLAB_ARCH=amd64 ;; aarch64|arm64) GLAB_ARCH=arm64 ;; *) echo "Unsupported architecture: $GLAB_ARCH" >&2; exit 1 ;; esac && mkdir -p /tmp/bin /tmp/glab && curl --silent --show-error --fail --location --output /tmp/glab/glab.tar.gz "https://gitlab.com/gitlab-org/cli/-/releases/v1.111.0/downloads/glab_1.111.0_${GLAB_OS}_${GLAB_ARCH}.tar.gz" && case "${GLAB_OS}_${GLAB_ARCH}" in darwin_amd64) GLAB_SHA256=bf97aee449ae37e31e0ce9c052dd42840487317fa6159a42bce633ebda4f7333 ;; darwin_arm64) GLAB_SHA256=5cef8943f7aa73dcd619928d13ece8465a07962f1b036d74eef4f3d258d5cec3 ;; linux_amd64) GLAB_SHA256=d3aa186428ce6668455e2e35184c6f60b013840d759c7ea4cf02bac68d2a1827 ;; linux_arm64) GLAB_SHA256=13737967bf713574ac6c9b7316a8878c9a5920e1c1c3ccdc99772eafd274020a ;; *) echo "No vetted glab checksum for ${GLAB_OS}_${GLAB_ARCH}" >&2; exit 1 ;; esac && echo "$GLAB_SHA256 */tmp/glab/glab.tar.gz" | sha256sum --check --quiet && tar --extract --gzip --file /tmp/glab/glab.tar.gz --directory /tmp/glab && mv /tmp/glab/bin/glab /tmp/bin/ ) || echo "Warning: glab installation failed; continuing without glab" >&2; fi
+  - export PATH="/tmp/bin:$PATH"
   - mkdir -p ~/.config/glab-cli
   - |
     cat > ~/.config/glab-cli/config.yml <<EOF
@@ -108,8 +109,9 @@ commands:
   - echo "Installing glab"
   - export OPENAI_API_KEY=$AI_FLOW_AI_GATEWAY_TOKEN
   - apt-get update --quiet && apt-get install --yes curl wget gpg git && rm --recursive --force /var/lib/apt/lists/*
-  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
-  - apt-get install --yes glab
+  - |
+    if command -v glab > /dev/null 2>&1; then echo "glab already present, skipping installation"; else ( set -o pipefail && echo "Installing glab@1.111.0..." && GLAB_OS=$(uname -s | tr '[:upper:]' '[:lower:]') && GLAB_ARCH=$(uname -m) && case "$GLAB_ARCH" in x86_64) GLAB_ARCH=amd64 ;; aarch64|arm64) GLAB_ARCH=arm64 ;; *) echo "Unsupported architecture: $GLAB_ARCH" >&2; exit 1 ;; esac && mkdir -p /tmp/bin /tmp/glab && curl --silent --show-error --fail --location --output /tmp/glab/glab.tar.gz "https://gitlab.com/gitlab-org/cli/-/releases/v1.111.0/downloads/glab_1.111.0_${GLAB_OS}_${GLAB_ARCH}.tar.gz" && case "${GLAB_OS}_${GLAB_ARCH}" in darwin_amd64) GLAB_SHA256=bf97aee449ae37e31e0ce9c052dd42840487317fa6159a42bce633ebda4f7333 ;; darwin_arm64) GLAB_SHA256=5cef8943f7aa73dcd619928d13ece8465a07962f1b036d74eef4f3d258d5cec3 ;; linux_amd64) GLAB_SHA256=d3aa186428ce6668455e2e35184c6f60b013840d759c7ea4cf02bac68d2a1827 ;; linux_arm64) GLAB_SHA256=13737967bf713574ac6c9b7316a8878c9a5920e1c1c3ccdc99772eafd274020a ;; *) echo "No vetted glab checksum for ${GLAB_OS}_${GLAB_ARCH}" >&2; exit 1 ;; esac && echo "$GLAB_SHA256 */tmp/glab/glab.tar.gz" | sha256sum --check --quiet && tar --extract --gzip --file /tmp/glab/glab.tar.gz --directory /tmp/glab && mv /tmp/glab/bin/glab /tmp/bin/ ) || echo "Warning: glab installation failed; continuing without glab" >&2; fi
+  - export PATH="/tmp/bin:$PATH"
   - mkdir -p ~/.config/glab-cli
   - |
     cat > ~/.config/glab-cli/config.yml <<EOF

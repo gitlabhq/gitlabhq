@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash-es';
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
@@ -22,7 +22,7 @@ const initPerformanceBar = (el) => {
     el,
     name: 'PerformanceBarRoot',
     components: {
-      PerformanceBarApp: () => import('./components/performance_bar_app.vue'),
+      PerformanceBarApp: defineAsyncComponent(() => import('./components/performance_bar_app.vue')),
     },
     data() {
       const store = new PerformanceBarStore();

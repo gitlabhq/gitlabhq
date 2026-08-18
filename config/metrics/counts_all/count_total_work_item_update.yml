@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_work_item_update
 description: Count of interactions where a work item was updated
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 performance_indicator_type: []

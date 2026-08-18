@@ -46,7 +46,7 @@ You can read more about enabling browser-specific keyboard navigation on [a11ypr
   - Icon-only buttons have an `aria-label`.
 - Interactive elements can be [accessed with the Tab key](#support-keyboard-only-use) and have a visible focus state.
 - Elements with [tooltips](https://design.gitlab.com/components/tooltip#accessibility) are focusable using the Tab key.
-- Are any `role`, `tabindex` or `aria-*` attributes unnecessary?
+- Are any `role`, `tabindex`, or `aria-*` attributes unnecessary?
 - Can any `div` or `span` elements be replaced with a more semantic [HTML element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) like `p`, `button`, or `time`?
 
 ## Provide a good document outline
@@ -77,7 +77,7 @@ An accessible name can be provided in multiple ways and is decided with [accessi
 
 1. `aria-labelledby`
 1. `aria-label`
-1. `alt`, `legend`, `figcaption` or `caption`
+1. `alt`, `legend`, `figcaption`, or `caption`
 1. `title`.
 
 ### Examples of providing accessible names

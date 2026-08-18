@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlModal, GlSprintf, GlModalDirective } from '@gitlab/ui';
 import { __, s__, createDateTimeFormat } from '~/locale';

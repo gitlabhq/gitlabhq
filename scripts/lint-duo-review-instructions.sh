@@ -31,4 +31,4 @@ if [ -n "${WARN_STALE:-}" ]; then
 	WARN_STALE_FLAG=(--warn-stale)
 fi
 
-exec ${RUBY_RUN} "${GEM_DIR}/bin/gitlab-ai-principles-distiller-sync" --check-duo-instructions "${WARN_STALE_FLAG[@]}" --workspace .
+exec ${RUBY_RUN} "${GEM_DIR}/bin/gitlab-ai-principles-distiller-sync" check-fences "${WARN_STALE_FLAG[@]}" --workspace .

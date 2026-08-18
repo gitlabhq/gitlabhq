@@ -7,7 +7,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
   subject(:client) { described_class.new('https://gitlab-test.atlassian.net', 'sample_secret') }
 
-  let_it_be(:project, freeze: false) { create_default(:project, :repository) }
+  let_it_be(:project, freeze: false) { create_default(:project, :small_repo) }
   let_it_be(:mrs_by_title) { create_list(:merge_request, 4, :unique_branches, :jira_title) }
   let_it_be(:mrs_by_branch) { create_list(:merge_request, 2, :jira_branch) }
   let_it_be(:red_herrings) { create_list(:merge_request, 1, :unique_branches) }
@@ -27,6 +27,8 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     end
   end
 
+  it_behaves_like 'a Jira dev-info client', auth_error_message: 'Invalid JWT'
+
   describe '.generate_update_sequence_id', :skip_freeze_time do
     it 'returns unix time in microseconds as integer', :aggregate_failures do
       travel_to(Time.utc(1970, 1, 1, 0, 0, 1)) do
@@ -36,78 +38,6 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       travel_to(Time.utc(1970, 1, 1, 0, 0, 5)) do
         expect(described_class.generate_update_sequence_id).to eq(5000)
       end
-    end
-  end
-
-  describe '#send_info' do
-    it 'calls more specific methods as appropriate' do
-      expect(subject).to receive(:store_ff_info).with(
-        project: project,
-        update_sequence_id: :x,
-        feature_flags: :r
-      ).and_return(:ff_stored)
-
-      expect(subject).to receive(:store_build_info).with(
-        project: project,
-        update_sequence_id: :x,
-        pipelines: :y
-      ).and_return(:build_stored)
-
-      expect(subject).to receive(:store_deploy_info).with(
-        project: project,
-        update_sequence_id: :x,
-        deployments: :q
-      ).and_return(:deploys_stored)
-
-      expect(subject).to receive(:store_dev_info).with(
-        project: project,
-        update_sequence_id: :x,
-        commits: :a,
-        branches: :b,
-        merge_requests: :c
-      ).and_return(:dev_stored)
-
-      expect(subject).to receive(:remove_branch_info).with(
-        project: project,
-        update_sequence_id: :x,
-        remove_branch_info: :j
-      ).and_return(:branch_removed)
-
-      args = {
-        project: project,
-        update_sequence_id: :x,
-        commits: :a,
-        branches: :b,
-        merge_requests: :c,
-        pipelines: :y,
-        deployments: :q,
-        feature_flags: :r,
-        remove_branch_info: :j
-      }
-
-      expect(subject.send_info(**args))
-        .to contain_exactly(:dev_stored, :build_stored, :deploys_stored, :ff_stored, :branch_removed)
-    end
-
-    it 'only calls methods that we need to call' do
-      expect(subject).to receive(:store_dev_info).with(
-        project: project,
-        update_sequence_id: :x,
-        commits: :a
-      ).and_return(:dev_stored)
-
-      args = {
-        project: project,
-        update_sequence_id: :x,
-        commits: :a
-      }
-
-      expect(subject.send_info(**args)).to contain_exactly(:dev_stored)
-    end
-
-    it 'raises an argument error if there is nothing to send (probably a typo?)' do
-      expect { subject.send_info(project: project, builds: :x) }
-        .to raise_error(ArgumentError)
     end
   end
 
@@ -123,102 +53,18 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     }
   end
 
+  # The status matrix lives in the shared 'a Jira dev-info client' contract.
+  # Only the request-body log limit stays here, with the payload that trips it.
   describe '#handle_response' do
     let(:errors) { [{ 'message' => 'X' }, { 'message' => 'Y' }] }
+    let(:request) { double(raw_body: { repositories: ['a' * 20_000] }.to_json) }
+    let(:response) { double(code: 400, parsed_response: errors, request: request) }
     let(:processed) { subject.send(:handle_response, response, 'foo') { |x| [:data, x] } }
 
-    before do
-      allow(subject).to receive(:parse_jira_error_messages).and_call_original
-    end
-
-    context 'when the response is 200 OK' do
-      let(:response) { double(code: 200, parsed_response: :foo) }
-
-      it 'yields to the block' do
-        expect(processed).to eq [:data, :foo]
-      end
-    end
-
-    context 'when the response is 202 accepted' do
-      let(:response) { double(code: 202, parsed_response: :foo) }
-
-      it 'yields to the block' do
-        expect(processed).to eq [:data, :foo]
-      end
-    end
-
-    context 'when the response is 400 bad request' do
-      let(:request) { double(raw_body: { repositories: [] }.to_json) }
-      let(:response) { double(code: 400, parsed_response: errors, request: request) }
-
-      it 'extracts the errors messages, raw response, and request body', :aggregate_failures do
-        expect(subject).to receive(:parse_jira_error_messages).with(errors).and_return(%w[X Y])
-        expect(processed).to eq(
-          'errorMessages' => %w[X Y],
-          'responseCode' => 400,
-          'response' => errors,
-          'requestBody' => { 'repositories' => [] }
-        )
-      end
-
-      context 'when the request body exceeds the log limit' do
-        let(:request) { double(raw_body: { repositories: ['a' * 20_000] }.to_json) }
-
-        it 'truncates the request body', :aggregate_failures do
-          expect(processed['requestBody']).to be_a(String)
-          expect(processed['requestBody']).to start_with('Request body truncated')
-          expect(processed['requestBody'].length).to be < 15_000
-        end
-      end
-    end
-
-    context 'when the response is 401 forbidden' do
-      let(:response) { double(code: 401, parsed_response: nil) }
-
-      it 'reports that our JWT is wrong' do
-        expect(processed).to eq('errorMessages' => ['Invalid JWT'], 'responseCode' => 401)
-      end
-    end
-
-    context 'when the response is 403' do
-      let(:response) { double(code: 403, parsed_response: nil) }
-
-      it 'reports that the App is misconfigured' do
-        expect(processed).to eq('errorMessages' => ['App does not support foo'], 'responseCode' => 403)
-      end
-    end
-
-    context 'when the response is 413' do
-      let(:response) { double(code: 413, parsed_response: errors) }
-
-      it 'extracts the errors messages' do
-        expect(subject).to receive(:parse_jira_error_messages).with(errors).and_return(%w[X Y])
-        expect(processed).to eq('errorMessages' => ['Data too large', 'X', 'Y'], 'responseCode' => 413)
-      end
-    end
-
-    context 'when the response is 429' do
-      let(:response) { double(code: 429, parsed_response: nil) }
-
-      it 'reports that we exceeded the rate limit' do
-        expect(processed).to eq('errorMessages' => ['Rate limit exceeded'], 'responseCode' => 429)
-      end
-    end
-
-    context 'when the response is 503' do
-      let(:response) { double(code: 503, parsed_response: nil) }
-
-      it 'reports that the service is unavailable' do
-        expect(processed).to eq('errorMessages' => ['Service unavailable'], 'responseCode' => 503)
-      end
-    end
-
-    context 'when the response is anything else' do
-      let(:response) { double(code: 1000, parsed_response: :something) }
-
-      it 'reports that this was unanticipated' do
-        expect(processed).to eq('errorMessages' => ['Unknown error'], 'responseCode' => 1000, 'response' => :something)
-      end
+    it 'truncates a request body that exceeds the log limit', :aggregate_failures do
+      expect(processed['requestBody']).to be_a(String)
+      expect(processed['requestBody']).to start_with('Request body truncated')
+      expect(processed['requestBody'].length).to be < 15_000
     end
   end
 

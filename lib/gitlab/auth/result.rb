@@ -21,6 +21,10 @@ module Gitlab
           project == for_project
       end
 
+      def gitlab_shell?
+        type == :gitlab_shell
+      end
+
       def lfs_deploy_token?(for_project)
         type == :lfs_deploy_token &&
           actor.try(:has_access_to?, for_project)

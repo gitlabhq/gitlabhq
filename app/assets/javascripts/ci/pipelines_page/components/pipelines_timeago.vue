@@ -36,7 +36,15 @@ export default {
 </script>
 <template>
   <div class="gl-text-sm gl-text-subtle">
-    <p v-if="durationFormatted" class="gl-mb-0 gl-whitespace-nowrap" data-testid="duration">
+    <p
+      v-if="durationFormatted"
+      v-gl-tooltip
+      :title="__('Total time to run')"
+      class="gl-mb-0 gl-whitespace-nowrap"
+      data-testid="duration"
+      data-placement="top"
+      data-container="body"
+    >
       <gl-icon name="timer" class="gl-mr-2" :size="12" variant="subtle" />
       {{ durationFormatted }}
     </p>

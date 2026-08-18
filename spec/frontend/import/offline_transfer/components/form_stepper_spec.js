@@ -3,7 +3,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import {
   FORM_STEPPER_TAB_COLOR,
-  FORM_STEPPER_TAB_BORDER_COLOR,
+  FORM_STEPPER_ACTIVE_TAB_BORDER,
 } from '~/import/offline_transfer/constants';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -31,9 +31,9 @@ describe('FormStepper', () => {
     });
   };
 
-  const findBackButton = () => wrapper.findByTestId('back-button');
-  const findContinueButton = () => wrapper.findByTestId('continue-button');
-  const findCompletionButton = () => wrapper.findByTestId('completion-button');
+  const findBackButton = () => wrapper.findComponentByTestId('back-button');
+  const findContinueButton = () => wrapper.findComponentByTestId('continue-button');
+  const findCompletionButton = () => wrapper.findComponentByTestId('completion-button');
   const findAllStepHeadings = () => wrapper.findAll('[data-testid^="step-nav"]');
   const findAllStepContents = () => wrapper.findAll('[data-testid^="step-content"]');
 
@@ -82,14 +82,17 @@ describe('FormStepper', () => {
       expect(stepsContent.at(0).text()).not.toContain('Verify tab content');
     });
 
-    it('shows tab headings with correct styles', () => {
+    it('shows tab headings with correct styles and attributes', () => {
       expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_COLOR.active)).toBe(true);
+      expect(findStepHeading(0).attributes('aria-current')).toBe('step');
       expect(hasClasses(findStepHeading(1), FORM_STEPPER_TAB_COLOR.pending)).toBe(true);
+      expect(findStepHeading(1).attributes('aria-current')).toBeUndefined();
       expect(hasClasses(findStepHeading(2), FORM_STEPPER_TAB_COLOR.pending)).toBe(true);
+      expect(findStepHeading(2).attributes('aria-current')).toBeUndefined();
 
-      expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_BORDER_COLOR.active)).toBe(true);
-      expect(hasClasses(findStepHeading(1), FORM_STEPPER_TAB_BORDER_COLOR.pending)).toBe(true);
-      expect(hasClasses(findStepHeading(2), FORM_STEPPER_TAB_BORDER_COLOR.pending)).toBe(true);
+      expect(hasClasses(findStepHeading(0), FORM_STEPPER_ACTIVE_TAB_BORDER)).toBe(true);
+      expect(hasClasses(findStepHeading(1), FORM_STEPPER_ACTIVE_TAB_BORDER)).toBe(false);
+      expect(hasClasses(findStepHeading(2), FORM_STEPPER_ACTIVE_TAB_BORDER)).toBe(false);
     });
 
     it('shows step numbers (not check icons) for all tabs', () => {
@@ -98,6 +101,29 @@ describe('FormStepper', () => {
         expect(heading.findComponent({ name: 'GlIcon' }).exists()).toBe(false);
         expect(heading.text()).toContain(String(i + 1));
       });
+    });
+  });
+
+  describe('canStart check', () => {
+    it('hides the continue button on first step when canStart is false', () => {
+      createComponent({ propsData: { canStart: false } });
+      expect(findContinueButton().exists()).toBe(false);
+    });
+
+    it('shows the continue button on first step when canStart is true', () => {
+      createComponent({ propsData: { canStart: true } });
+
+      expect(findContinueButton().exists()).toBe(true);
+    });
+
+    it('only gates the first step', async () => {
+      createComponent();
+      await clickContinue();
+      expect(findContinueButton().exists()).toBe(true);
+
+      await wrapper.setProps({ canStart: false });
+
+      expect(findContinueButton().exists()).toBe(true);
     });
   });
 
@@ -126,6 +152,7 @@ describe('FormStepper', () => {
       await clickContinue();
 
       expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_COLOR.completed)).toBe(true);
+      expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_COLOR.active)).toBe(false);
       expect(findStepHeading(0).findComponent({ name: 'GlIcon' }).props('name')).toBe('check');
       expect(hasClasses(findStepHeading(1), FORM_STEPPER_TAB_COLOR.active)).toBe(true);
       expect(findStepHeading(1).findComponent({ name: 'GlIcon' }).exists()).toBe(false);
@@ -146,7 +173,7 @@ describe('FormStepper', () => {
       await clickContinue();
 
       expect(findBackButton().exists()).toBe(true);
-      expect(findCompletionButton().exists()).toBe(true);
+      expect(findCompletionButton().text()).toBe('Export');
       expect(findContinueButton().exists()).toBe(false);
     });
 
@@ -176,6 +203,7 @@ describe('FormStepper', () => {
 
       // First step is before our destination so it stays completed
       expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_COLOR.completed)).toBe(true);
+      expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_COLOR.active)).toBe(false);
 
       expect(hasClasses(findStepHeading(1), FORM_STEPPER_TAB_COLOR.active)).toBe(true);
       expect(hasClasses(findStepHeading(2), FORM_STEPPER_TAB_COLOR.pending)).toBe(true);
@@ -284,34 +312,74 @@ describe('FormStepper', () => {
       resolveValidation(true);
       await waitForPromises();
 
-      expect(findCompletionButton().attributes('disabled')).toBeDefined(); // disabled post-completion too
+      expect(findCompletionButton().attributes('disabled')).toBeUndefined();
     });
   });
 
-  describe('completion', () => {
-    beforeEach(async () => {
-      createComponent();
+  describe('final step', () => {
+    const createComponentOnLastStep = async (propsData = {}) => {
+      createComponent({ propsData });
       await clickContinue();
       await clickContinue();
-    });
+    };
 
-    it('uses the completionButtonText prop for the final button label', () => {
-      expect(findCompletionButton().text()).toBe('Export');
-    });
-
-    it('emits complete after the last step is submitted', async () => {
+    it('when Complete button is clicked emits `complete`', async () => {
+      await createComponentOnLastStep();
       await clickComplete();
       await nextTick();
 
       expect(wrapper.emitted('complete')).toHaveLength(1);
     });
 
-    it('disables the completion button and hides the back button after form is complete', async () => {
-      await clickComplete();
-      await waitForPromises();
+    describe('when the parent passes isSubmitting as true', () => {
+      beforeEach(async () => {
+        await createComponentOnLastStep({ isSubmitting: true });
+      });
 
-      expect(findCompletionButton().attributes('disabled')).toBeDefined();
-      expect(findBackButton().exists()).toBe(false);
+      it('puts Complete button in a loading state', () => {
+        expect(findCompletionButton().props('loading')).toBe(true);
+      });
+
+      it('hides the back button', () => {
+        expect(findBackButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when the parent passes isCompletionDisabled as true', () => {
+      beforeEach(async () => {
+        await createComponentOnLastStep({ isCompletionDisabled: true });
+      });
+
+      it('disables the completion button', () => {
+        expect(findCompletionButton().attributes('disabled')).toBeDefined();
+      });
+
+      it('keeps the back button visible so the user can go back and edit', () => {
+        expect(findBackButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when the parent reports submission succeeded', () => {
+      beforeEach(async () => {
+        await createComponentOnLastStep({ isFormComplete: true });
+      });
+
+      it('hides the completion button', () => {
+        expect(findCompletionButton().exists()).toBe(false);
+      });
+
+      it('hides the back button', () => {
+        expect(findBackButton().exists()).toBe(false);
+      });
+
+      it('marks every step heading as completed with a check icon', () => {
+        mockSteps.forEach((_, i) => {
+          const heading = findStepHeading(i);
+
+          expect(hasClasses(heading, FORM_STEPPER_TAB_COLOR.completed)).toBe(true);
+          expect(heading.findComponent({ name: 'GlIcon' }).props('name')).toBe('check');
+        });
+      });
     });
   });
 });

@@ -24,7 +24,7 @@ Rake tasks are available for projects that have been created on Praefect storage
 
 You can check replicas for a specific project or for all projects.
 
-Run this Rake task on the node that GitLab is installed and not on the node that Praefect is installed.
+Run this Rake task on the node on which GitLab is installed and not on the node on which Praefect is installed.
 
 ### Check replicas for a specific project
 

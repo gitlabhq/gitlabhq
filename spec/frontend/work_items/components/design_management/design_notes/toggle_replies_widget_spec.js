@@ -7,8 +7,8 @@ describe('Toggle replies widget component', () => {
   let wrapper;
 
   const findToggleWrapper = () => wrapper.findByTestId('toggle-comments-wrapper');
-  const findToggleButton = () => wrapper.findByTestId('toggle-replies-button');
-  const findRepliesButton = () => wrapper.findByTestId('replies-button');
+  const findToggleButton = () => wrapper.findComponentByTestId('toggle-replies-button');
+  const findRepliesButton = () => wrapper.findComponentByTestId('replies-button');
   const findAvatarInline = () => wrapper.findComponent(GlAvatarsInline);
 
   const threeNotes = [...notes, DISCUSSION_3];

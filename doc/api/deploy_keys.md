@@ -16,12 +16,6 @@ Use this API to interact with [deploy keys](../user/project/deploy_keys/_index.m
 
 ## Deploy key fingerprints
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302) `fingerprint_sha256` attribute in GitLab 15.2.
-
-{{< /history >}}
-
 Some endpoints return public key fingerprints as part of the response. You can use these fingerprints
 to identify the user that created the deploy key. For more information,
 see [get user by deploy key fingerprint](keys.md#retrieve-user-by-deploy-key-fingerprint).
@@ -39,12 +33,6 @@ The following attributes contain the deploy key fingerprint:
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
-
-{{< /history >}}
 
 Get a list of all deploy keys across all projects of the GitLab instance. This
 endpoint requires administrator access and is not available on GitLab.com.
@@ -225,12 +213,6 @@ Example response:
 ```
 
 ## List project deploy keys for user
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
-
-{{< /history >}}
 
 Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/_index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
 

@@ -254,7 +254,7 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
         post_graphql(query, current_user: user)
       end
 
-      expect(multi).not_to exceed_query_limit(baseline)
+      expect(multi).not_to exceed_query_limit(baseline).allow_skip_cache_inconsistency
     end
   end
 

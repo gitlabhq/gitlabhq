@@ -36,7 +36,7 @@ describe('DiscussionFilter component', () => {
   let mock;
 
   const findFilter = (filterType) =>
-    wrapper.find(`.gl-new-dropdown-item[data-filter-type="${filterType}"]`);
+    wrapper.findComponent(`.gl-new-dropdown-item[data-filter-type="${filterType}"]`);
   const findGlDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
@@ -104,7 +104,7 @@ describe('DiscussionFilter component', () => {
 
     describe('when the dropdown is clicked', () => {
       it('calls the right actions', () => {
-        wrapper.find('.js-newest-first').vm.$emit('action');
+        wrapper.findComponent('.js-newest-first').vm.$emit('action');
 
         expect(useNotes().setDiscussionSortDirection).toHaveBeenCalledWith({
           direction: DESC,
@@ -124,7 +124,7 @@ describe('DiscussionFilter component', () => {
 
     describe('when the dropdown item is clicked', () => {
       it('calls the right actions', () => {
-        wrapper.find('.js-oldest-first').vm.$emit('action');
+        wrapper.findComponent('.js-oldest-first').vm.$emit('action');
 
         expect(useNotes().setDiscussionSortDirection).toHaveBeenCalledWith({
           direction: ASC,

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlEmptyState, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import HarborListHeader from '~/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue';
@@ -40,10 +41,12 @@ export default {
     GlLink,
     EmptyResult,
     PersistedSearch,
-    CliCommands: () =>
-      import(
-        /* webpackChunkName: 'harbor_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
-      ),
+    CliCommands: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'harbor_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
+        ),
+    ),
   },
   mixins: [Tracking.mixin()],
   inject: [

@@ -10,9 +10,13 @@ module Gitlab
             private
 
             def process_without_instrumentation(locations)
-              locations.select do |location|
+              kept = locations.select do |location|
                 Rules.new(location[:rules]).evaluate(context).pass?
               end
+
+              context.mark_all_includes_filtered_by_rules! if kept.empty? && locations.any?
+
+              kept
             end
           end
         end

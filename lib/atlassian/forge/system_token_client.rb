@@ -3,17 +3,16 @@
 # rubocop:disable Gitlab/BoundedContexts -- reuse the existing Atlassian module namespace
 module Atlassian
   module Forge
-    # Sends dev-info to Jira directly with a Forge app system OAuth token
-    # (x-forge-oauth-system) instead of the Connect shared_secret. Subclasses the
-    # Connect Client to reuse payload building; only the auth header changes.
+    # Sends dev-info to Jira with a Forge app system OAuth token
+    # (x-forge-oauth-system) instead of the Connect shared_secret.
     # See https://developer.atlassian.com/platform/forge/remote/calling-product-apis/
-    class SystemTokenClient < ::Atlassian::JiraConnect::Client
+    class SystemTokenClient < ::Atlassian::Jira::DevInfoClient
       # api_base_url is the FIT app.apiBaseUrl (carries a /ex/jira/<cloudId> path
-      # prefix the parent's build_uri preserves); system_token is the appSystemToken.
+      # prefix the shared build_uri preserves); system_token is the appSystemToken.
       def initialize(api_base_url, system_token)
         @system_token = system_token
 
-        super(api_base_url, nil)
+        super(api_base_url)
       end
 
       private

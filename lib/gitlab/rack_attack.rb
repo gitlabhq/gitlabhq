@@ -109,6 +109,21 @@ module Gitlab
         Gitlab::Throttle.bypass_header.present? &&
           req.get_header(Gitlab::Throttle.bypass_header) == '1'
       end
+
+      # Once every Labkit cohort enforces, Labkit fully owns rate limiting and
+      # Rack::Attack has nothing left to independently throttle: safelisting
+      # every request here stops it from re-running (and possibly re-blocking)
+      # a request Labkit already decided.
+      #
+      # The registry is referenced from the top level (::Gitlab::...) rather
+      # than relative to the surrounding module: this block is registered once
+      # at boot, so after a development code reload its lexical scope points at
+      # the unloaded Gitlab::RackAttack module and a relative lookup raises
+      # NameError. A root-anchored lookup resolves through Object and lets
+      # Zeitwerk autoload the fresh constants.
+      rack_attack.safelist('labkit_fully_enforced') do |_req|
+        ::Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry.fully_enforced?
+      end
     end
 
     # The complete set of CE throttle definitions: the REGULAR_THROTTLES

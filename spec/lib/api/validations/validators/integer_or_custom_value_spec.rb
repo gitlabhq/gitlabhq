@@ -12,8 +12,8 @@ RSpec.describe API::Validations::Validators::IntegerOrCustomValue do
   describe '#initialize' do
     let(:opts) { { fail_fast: false, allow_blank: false } }
 
-    # Grape's ValidatorFactory passes the options hash positionally on Grape 2.4
-    # and as keywords on Grape 2.0. The validator must instantiate under both.
+    # Grape's ValidatorFactory passes the options hash positionally. The keyword
+    # form stays supported because the constructor accepts either.
     it 'accepts the options argument passed positionally' do
       expect { described_class.new(['test'], { values: custom_values }, false, scope.new, opts) }
         .not_to raise_error

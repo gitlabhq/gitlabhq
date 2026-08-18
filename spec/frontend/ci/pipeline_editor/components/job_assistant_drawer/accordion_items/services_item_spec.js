@@ -11,12 +11,12 @@ describe('Services item', () => {
 
   const findLink = () => wrapper.findComponent(GlLink);
   const findServiceNameInputByIndex = (index) =>
-    wrapper.findByTestId(`service-name-input-${index}`);
+    wrapper.findComponentByTestId(`service-name-input-${index}`);
   const findServiceEntrypointInputByIndex = (index) =>
-    wrapper.findByTestId(`service-entrypoint-input-${index}`);
+    wrapper.findComponentByTestId(`service-entrypoint-input-${index}`);
   const findDeleteItemButtonByIndex = (index) =>
-    wrapper.findByTestId(`delete-job-service-button-${index}`);
-  const findAddItemButton = () => wrapper.findByTestId('add-job-service-button');
+    wrapper.findComponentByTestId(`delete-job-service-button-${index}`);
+  const findAddItemButton = () => wrapper.findComponentByTestId('add-job-service-button');
 
   const dummyServiceName = 'a';
   const dummyServiceEntrypoint = ['b', 'c'];

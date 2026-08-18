@@ -1,6 +1,6 @@
 ---
-source_checksum: e6bdd4909ea096f0
-distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
+source_checksum: 73d062f7c41319ed
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -28,7 +28,9 @@ distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 ### Assignable Permissions
 
 - Create assignable permission YAML files manually at `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml`; DO NOT place them at any other path.
+- Prefer adding raw permissions to an existing assignable permission over creating a new one; create a new assignable permission only when the raw permissions represent a capability users should be able to grant separately from existing ones for that resource.
 - Ensure every raw permission listed in an assignable permission's `permissions` array already exists as a raw permission definition file before referencing it.
+- Set the `available_for` field to `granular_access_token`, `role`, or both; an assignable permission that declares `granular_access_token` must have at least one of its raw permissions referenced by a REST authorization decorator or GraphQL granular scope directive.
 - Set the `boundaries` field to only the organizational levels (`project`, `group`, `user`, `instance`) where the bundled raw permissions actually apply; use the principle of least privilege and DO NOT include boundaries that the endpoints do not support.
 - Use `instance` boundary sparingly — typically only for admin-facing permissions.
 - Add a category `.metadata.yml` only when titleization produces an incorrect display name (e.g., `ci_cd` → `"CI/CD"`); DO NOT create one when the folder name titleizes correctly.
@@ -47,22 +49,21 @@ distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 
 ### GraphQL Authorization Directives
 
-- Add `authorize_granular_token` to every GraphQL object type and mutation that exposes protected resources; the `gitlab:permissions:graphql:validate` Rake task requires every object type to declare either a directive or a `skip_reason:`.
+- Add `authorize_granular_token` to every GraphQL object type and mutation that exposes protected resources; the `gitlab:permissions:validate` Rake task requires every object type to declare either a directive or a `skip_reason:`, unless grandfathered in `config/authz/graphql/authorization_todo.txt` (DO NOT add new entries to that file).
 - Use `boundary: :project` (or `:group`, `:user`, `:instance`) on object types where the resolved object has a method to reach the boundary (e.g., `issue.project`); use `boundary_argument: :project_path` on mutations and root query fields where the boundary is passed as an argument.
 - Use `boundary: :itself` when the type itself is the boundary object (e.g., `ProjectType` or `GroupType`).
 - Use `boundary: :user` or `boundary: :instance` for standalone resources that do not belong to a specific project or group.
 - When a mutation's `boundary_argument` resolves to a record that is not itself a Project or Group, combine `boundary_argument` with `boundary` so the extractor locates the record and then calls `boundary` on it to reach the Project or Group.
 - Ensure `permissions` references only valid permission symbols from `Authz::PermissionGroups::Assignable.all_permissions`; the `gitlab:permissions:validate` Rake task enforces this.
 - Ensure `boundary_type` matches at least one boundary declared in the corresponding assignable permission's `boundaries` field; the Lefthook pre-push validation catches mismatches.
+- Use `skip_reason: :parent_authorizes` (alone, without `permissions:` or a boundary) on types whose data is only reachable through a parent type that already declares its own directive; valid reasons are defined in `lib/tasks/gitlab/permissions/graphql/skip_reasons.rb`.
 - DO NOT declare `permissions:` alongside `skip_reason:`; use `skip_reason:` alone on types that intentionally opt out of granular-token authorization.
 - Use `traversal: true` on entry-point fields (e.g., `Query.group(fullPath:)`, `Query.project(fullPath:)`) that resolve a boundary from a path argument but do not expose data themselves; pass it via `granular_scope_directive(traversal: true)` on the field definition. Note: `traversal: true` only applies to `project` and `group` boundary types and is not currently enforced — a field marked `traversal: true` enforces the listed permissions like any other field pending reimplementation.
 - DO NOT pass `traversal: true` to a type-level `authorize_granular_token`; use `granular_scope_directive(traversal: true)` on the field definition instead (passing it at the type level raises `ArgumentError`).
 
 ### Traversal Between Authorized Types
 
-- Understand that when a field on an authorized type returns another type that also declares `authorize_granular_token`, the owner type's directive is intended to be automatically skipped and the child type's directive enforces authorization; however, this automatic skip is **not currently performed** — plan permissions assuming both the owner type's and the child type's directives are enforced.
-- DO NOT rely on the automatic traversal skip for leaf types (types whose fields all return plain scalars, e.g., `RepositoryLanguageType`, `PushRulesType`); for leaf types the collection-level check always fires and must not be bypassed.
-- Add an explicit field-level directive using `directives: granular_scope_directive(...)` to any field where the automatic traversal skip should not apply; an explicit field-level directive always wins.
+- Understand that when a field on an authorized type returns another type that also declares `authorize_granular_token`, both directives are enforced independently; plan permissions assuming the token needs both the owner type's and the child type's permissions (the automatic traversal skip was previously implemented but is pending reimplementation — DO NOT rely on it).
 
 ### Authorization Caching and Performance
 
@@ -74,12 +75,18 @@ distilled_at_sha: 73023e3b34aa63d1692e8a3066e870c10875ef55
 
 - Ensure the `granular_personal_access_tokens` feature flag is enabled for the token's user during development and testing; when the flag is disabled, granular PATs do not work for GraphQL requests.
 
+### Documentation and Validation
+
+- Run `bundle exec rake gitlab:permissions:graphql:compile_docs` to regenerate the fine-grained token reference documentation at `doc/auth/tokens/fine_grained_access_tokens_graphql.md`; DO NOT edit that file by hand.
+- Ensure the `gitlab:permissions:validate` Rake task passes before pushing; it also fails when a permission in a directive has no authorization test — add the test in the same merge request as the directive declaration (each type, mutation, or field declaring a permission needs its own test per boundary type, with no grandfathered exceptions).
+
 ### Authorization Tests
 
 - Use the `'authorizing granular token permissions for GraphQL'` shared example for both query and mutation specs; provide `user`, `boundary_object`, and `request` let-bindings.
+- Use the `'authorizing granular token permissions for GraphQL with a skipped child type'` shared example for types that declare `skip_reason: :parent_authorizes`; provide `user`, `boundary_object`, `request`, and `skipped_data_path` let-bindings.
 - Set `boundary_object` to match the `boundary_type`: `project` for `:project`, `group` for `:group`, `:user` for `:user`, `:instance` for `:instance`.
 - Ensure the `user` is a member of the `boundary_object` namespace (project or group) when the boundary type is `:project` or `:group`; authorization is denied otherwise.
-- Verify that the shared example covers: legacy PATs still grant access, granular PATs with the required permission grant access, granular PATs without the required permission are denied, and the `granular_personal_access_tokens` feature flag is enforced.
+- Verify that the shared example covers: legacy PATs still grant access, legacy tokens are denied when the boundary's top-level group enforces fine-grained tokens, granular PATs with the required permission grant access, granular PATs without the required permission are denied (unauthorized queries return `null` data with a `200` response; unauthorized mutations return a top-level GraphQL error), and the `granular_personal_access_tokens` feature flag is enforced.
 
 ## Authoritative sources
 

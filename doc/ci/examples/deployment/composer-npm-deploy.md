@@ -2,7 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
+title: Running Composer and npm scripts with deployment through SCP in GitLab CI/CD
 ---
 
 {{< details >}}
@@ -12,20 +12,20 @@ title: Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
 
 {{< /details >}}
 
-This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../_index.md).
+Use [GitLab CI/CD](../../_index.md) to build dependencies of a PHP project while compiling assets with an npm script.
 
-It is possible to create your own image with custom PHP and Node.js versions. For brevity, this guide uses an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) with both PHP and Node.js installed.
+It is possible to create your own image with custom PHP and Node.js versions. For brevity, this guide uses the official [`php`](https://hub.docker.com/_/php) Docker image and installs Node.js in the `before_script`.
 
 ```yaml
-image: tetraweb/php
+image: php:8.3
 ```
 
-The next step is to install zip/unzip packages and make composer available. Place these in the `before_script` section:
+The next step is to install the zip/unzip packages and Node.js, and make Composer available. Place these in the `before_script` section:
 
 ```yaml
 before_script:
   - apt-get update
-  - apt-get install zip unzip
+  - apt-get install -y git zip unzip nodejs npm
   - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   - php composer-setup.php
   - php -r "unlink('composer-setup.php');"
@@ -137,7 +137,7 @@ The final `.gitlab-ci.yml` looks like this:
 
 ```yaml
 stage_deploy:
-  image: tetraweb/php
+  image: php:8.3
   artifacts:
     paths:
       - build/
@@ -145,7 +145,7 @@ stage_deploy:
     - if: $CI_COMMIT_BRANCH == "dev"
   before_script:
     - apt-get update
-    - apt-get install zip unzip
+    - apt-get install -y git zip unzip nodejs npm
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"

@@ -8,8 +8,8 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
   let_it_be(:user) { create(:user) }
 
-  let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
-  let_it_be_with_reload(:another_project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, developers: user) }
+  let_it_be_with_reload(:another_project) { create(:project, :small_repo) }
 
   let(:project_files) { {} }
   let(:other_project_files) { {} }
@@ -31,10 +31,6 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
   before do
     allow_any_instance_of(Gitlab::Ci::Config::External::Context)
       .to receive(:check_execution_time!)
-
-    allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-      .with(:ci_interpolation_split_function)
-      .and_return(false)
   end
 
   describe "#perform" do
@@ -298,9 +294,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       end
 
       context 'when user is reporter of another project' do
-        before do
-          another_project.add_reporter(user)
-        end
+        before_all { another_project.add_reporter(user) }
 
         it 'properly expands all includes' do
           is_expected.to include(:my_build, :remote_build, :rspec)
@@ -363,9 +357,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         }
       end
 
-      before do
-        another_project.add_developer(user)
-      end
+      before_all { another_project.add_developer(user) }
 
       it 'appends the file to the values' do
         output = processor.perform
@@ -404,9 +396,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         }
       end
 
-      before do
-        another_project.add_developer(user)
-      end
+      before_all { another_project.add_developer(user) }
 
       it 'appends the file to the values' do
         output = processor.perform
@@ -438,9 +428,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         }
       end
 
-      before do
-        another_project.add_developer(user)
-      end
+      before_all { another_project.add_developer(user) }
 
       it 'appends the file to the values' do
         output = processor.perform

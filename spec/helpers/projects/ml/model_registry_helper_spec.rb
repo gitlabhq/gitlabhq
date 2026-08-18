@@ -6,7 +6,20 @@ require 'spec_helper'
 require 'mime/types'
 
 RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
-  let_it_be(:project) { build_stubbed(:project) }
+  let_it_be(:project) do
+    # build_stubbed runs the factory's after(:stub), not after(:build), so it skips
+    # the transient model_registry/experiments values; combined with this MR removing
+    # the model-level ENABLED default, a build_stubbed (private) project resolves these
+    # to PRIVATE. Set them explicitly to keep the registry available to the owner in
+    # the write-access checks below.
+    build_stubbed(:project).tap do |stubbed_project|
+      stubbed_project.project_feature.assign_attributes(
+        model_registry_access_level: ProjectFeature::ENABLED,
+        model_experiments_access_level: ProjectFeature::ENABLED
+      )
+    end
+  end
+
   let_it_be(:user) { project.first_owner }
 
   describe '#index_ml_model_data' do

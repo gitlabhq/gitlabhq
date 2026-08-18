@@ -44,10 +44,10 @@ describe('Redact text', () => {
     });
   };
 
-  const findDrawerTrigger = () => wrapper.findByTestId('drawer-trigger');
+  const findDrawerTrigger = () => wrapper.findComponentByTestId('drawer-trigger');
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findWarningModal = () => wrapper.findComponent(WarningModal);
-  const redactTextButton = () => wrapper.findByTestId('redact-text');
+  const redactTextButton = () => wrapper.findComponentByTestId('redact-text');
   const findTextarea = () => wrapper.findComponent(GlFormTextarea);
 
   beforeEach(() => createComponent());

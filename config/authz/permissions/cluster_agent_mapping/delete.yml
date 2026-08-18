@@ -1,0 +1,3 @@
+---
+name: delete_cluster_agent_mapping
+description: Grants the ability to delete a cluster agent mapping.

@@ -62,7 +62,7 @@ Here's an example setup flow from scratch:
 
 1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/_index.md) project.
 1. Set up a [Kubernetes Cluster](../infrastructure/clusters/_index.md) in your project.
-1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx) in your cluster.
+1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx) in your cluster.
 1. Set up [the base domain](clusters/gitlab_managed_clusters.md#base-domain) based on the Ingress
    Endpoint assigned above.
 1. Check if [`v2.0.0+` of `auto-deploy-image` is used in your Auto DevOps pipelines](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).
@@ -76,7 +76,7 @@ Here's an example setup flow from scratch:
 ### Show Canary Ingress deployments on deploy boards (deprecated)
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 
 To view canary deployments you must properly configure deploy boards:
 
@@ -103,7 +103,7 @@ can quickly notice them.
 #### How to check the current traffic weight on a Canary Ingress (deprecated)
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 
 1. Visit the [deploy board](deploy_boards.md).
 1. View the current weights on the right.
@@ -113,7 +113,7 @@ can quickly notice them.
 #### How to change the traffic weight on a Canary Ingress (deprecated)
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 
 You can change the traffic weight in your environment's deploy board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).

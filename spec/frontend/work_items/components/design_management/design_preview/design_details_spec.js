@@ -183,7 +183,7 @@ describe('DesignDetails', () => {
     });
 
     it('moves note pin', async () => {
-      findDesignPresentation().vm.$emit('moveNote', {
+      findDesignPresentation().vm.$emit('move-note', {
         noteId,
         discussionId,
         position: newCoordinates,
@@ -196,7 +196,7 @@ describe('DesignDetails', () => {
     it('displays error when move note pin fails', async () => {
       createComponent({ repositionImageMutationHandler: errorQueryHandler });
 
-      findDesignPresentation().vm.$emit('moveNote', {
+      findDesignPresentation().vm.$emit('move-note', {
         noteId,
         discussionId,
         position: newCoordinates,
@@ -286,7 +286,7 @@ describe('DesignDetails', () => {
     });
 
     it('updates cache when todos are updated', () => {
-      findDesignToolbar().vm.$emit('todosUpdated', { cache: expect.anything(), todos: [] });
+      findDesignToolbar().vm.$emit('todos-updated', { cache: expect.anything(), todos: [] });
 
       expect(updateWorkItemDesignCurrentTodosWidget).toHaveBeenCalledWith({
         store: expect.anything(),
@@ -304,7 +304,7 @@ describe('DesignDetails', () => {
       createComponent();
 
       await waitForPromises();
-      findDesignPresentation().vm.$emit('openCommentForm', { x: 0, y: 0 });
+      findDesignPresentation().vm.$emit('open-comment-form', { x: 0, y: 0 });
     });
 
     it('updates storeand closes the form when mutation is completed', async () => {

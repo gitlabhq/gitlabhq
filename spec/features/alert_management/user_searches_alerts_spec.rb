@@ -12,7 +12,6 @@ RSpec.describe 'User searches Alert Management alerts', :js, feature_category: :
     stub_feature_flags(hide_incident_management_features: false)
 
     visit project_alert_management_index_path(project)
-    wait_for_requests
   end
 
   context 'when a developer displays the alert list and the alert service is enabled they can search an alert' do

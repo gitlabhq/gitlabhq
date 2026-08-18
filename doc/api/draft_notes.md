@@ -129,7 +129,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `position[start_sha]`       | string            | yes (if `position` is provided) | SHA referencing commit in target branch. |
 | `position[new_path]`        | string            | yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`        | string            | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`   | string            | yes (if `position` is provided) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position[position_type]`   | string            | yes (if `position` is provided) | Type of the position reference. Allowed values: `text`, `image`, or `file`. |
 | `position[new_line]`        | integer           | no          | For `text` diff notes, the line number after change. |
 | `position[old_line]`        | integer           | no          | For `text` diff notes, the line number before change. |
 | `position[line_range]`      | hash              | no          | Line range for a multi-line diff note. |
@@ -163,7 +163,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `position[start_sha]`     | string            | yes (if `position` is provided) | SHA referencing commit in target branch. |
 | `position[new_path]`      | string            | yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`      | string            | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]` | string            | yes (if `position` is provided) | Type of the position reference. Allowed values: `text`, `image` or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position[position_type]` | string            | yes (if `position` is provided) | Type of the position reference. Allowed values: `text`, `image`, or `file`. |
 | `position[new_line]`      | integer           | no       | For `text` diff notes, the line number after change. |
 | `position[old_line]`      | integer           | no       | For `text` diff notes, the line number before change. |
 | `position[line_range]`    | hash              | no       | Line range for a multi-line diff note. |
@@ -227,9 +227,12 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes/bulk_publish
 ```
 
 | Attribute           | Type              | Required | Description |
-|---------------------|-------------------|----------|-------------|
+| ------------------- | ----------------- | -------- | ----------- |
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
+| `note`              | string            | no       | Text of a summary note to add to the merge request. |
+| `internal`          | boolean           | no       | If `true`, the summary note is internal. |
+| `reviewer_state`    | string            | no       | If defined, sets the review state after publishing. Does not record a formal approval. Possible values: `requested_changes`, `reviewed`. |
 
 ```shell
 curl --request POST \

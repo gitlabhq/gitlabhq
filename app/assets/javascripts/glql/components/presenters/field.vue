@@ -13,6 +13,11 @@ export default {
       type: String,
       default: '',
     },
+    presenterKey: {
+      required: false,
+      type: String,
+      default: '',
+    },
     variant: {
       required: false,
       type: String,
@@ -24,7 +29,10 @@ export default {
       return dataForField(this.item, this.fieldKey);
     },
     presenter() {
-      return presenterFor(this.item, this.fieldKey, this.variant);
+      return presenterFor(this.item, this.fieldKey, {
+        variant: this.variant,
+        presenterKey: this.presenterKey,
+      });
     },
   },
 };

@@ -46,7 +46,6 @@ describe('wikis/components/wiki_header', () => {
         pageHeading: 'Wiki page heading',
         queryVariables,
         isPageTemplate: false,
-        isEditingPath: false,
         showEditButton: true,
         showRestoreVersionButton: false,
         wikiUrl: 'http://wiki.url',
@@ -79,7 +78,7 @@ describe('wikis/components/wiki_header', () => {
 
   const findPageHeading = () => wrapper.findByTestId('page-heading');
   const findEditButton = () => wrapper.findByTestId('wiki-edit-button');
-  const findSubscribeButton = () => wrapper.findByTestId('wiki-subscribe-button');
+  const findSubscribeButton = () => wrapper.findComponentByTestId('wiki-subscribe-button');
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
   const findSidebarToggle = () => wrapper.findComponent(WikiSidebarToggle);
   const findRestoreVersionButton = () => wrapper.findByTestId('wiki-restore-version-button');

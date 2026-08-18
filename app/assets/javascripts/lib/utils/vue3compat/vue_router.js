@@ -4,6 +4,7 @@ import {
   createMemoryHistory,
   createWebHistory,
   createWebHashHistory,
+  START_LOCATION,
 } from '@gitlab/vue-router-vue3';
 import { transformRoutes, normalizeLocation } from './vue_router_helper';
 
@@ -110,6 +111,19 @@ const runBeforeEnterGuards = (resolved) => {
   return null;
 };
 
+// Inverse of Vue Router 4's internal isRouteComponent(): a plain function
+// without component markers is a lazy loader (`() => import(...)`).
+const isLazyRouteComponent = (component) =>
+  typeof component === 'function' &&
+  !('displayName' in component) &&
+  !('props' in component) &&
+  !('__vccOpts' in component);
+
+const hasLazyMatchedComponents = (resolved) =>
+  resolved.matched.some((record) =>
+    Object.values(record.components ?? {}).some(isLazyRouteComponent),
+  );
+
 // Strip trailing slash from path (except for root '/'), handling query strings and hashes
 const stripTrailingSlash = (fullPath) => {
   const queryIndex = fullPath.indexOf('?');
@@ -131,6 +145,31 @@ const stripTrailingSlash = (fullPath) => {
 export default class VueRouterCompat {
   constructor(options) {
     const router = createRouter(transformOptions(options));
+
+    // Pre-committing the initial route below turns the follow-up
+    // `router.replace()` into a "duplicated navigation": Vue Router 4 still
+    // fires `afterEach` but skips the guard pipeline, so global `beforeEach`
+    // guards would never run for the initial route (Vue Router 3 ran them).
+    // A real forced navigation is no fix — it rewrites the browser URL to the
+    // router's own base + path. Instead, queue the registered guards and run
+    // them manually once. Stays `null` unless the pre-commit path runs.
+    let pendingInitialGuards = null;
+
+    const registerBeforeEach = router.beforeEach;
+    router.beforeEach = (guard) => {
+      pendingInitialGuards?.push(guard);
+      const removeGuard = registerBeforeEach(guard);
+      return () => {
+        if (pendingInitialGuards) {
+          const index = pendingInitialGuards.indexOf(guard);
+          if (index !== -1) {
+            pendingInitialGuards.splice(index, 1);
+          }
+        }
+        return removeGuard();
+      };
+    };
+
     // Patch history to strip trailing slashes (mimic Vue Router 3 behavior)
     const { history } = router.options;
     const originalPush = history.push.bind(history);
@@ -148,20 +187,33 @@ export default class VueRouterCompat {
 
     // Synchronously resolve initial route to match Vue Router 3 behavior.
     // Vue Router 4's initial navigation is async, but components that read
-    // $route in data() need it available immediately.
+    // $route in data() need it available immediately. Setting
+    // `currentRoute.value` below also suppresses Vue Router 4's own initial
+    // navigation (it checks `currentRoute === START_LOCATION`).
+    const routerMode = options?.mode || 'hash';
     try {
       // Get the base path from the history object and strip it from the current path.
       // Vue Router 4's resolve() expects paths relative to the base, not absolute paths.
       const historyBase = router.options.history.base || '';
 
-      // Strip trailing slash from initial URL to match Vue Router 3 behavior
-      const fullUrl = window.location.pathname + window.location.search + window.location.hash;
-      const normalizedUrl = stripTrailingSlash(fullUrl);
-      if (normalizedUrl !== fullUrl) {
-        window.history.replaceState(window.history.state, '', normalizedUrl);
+      let currentLocation;
+      if (routerMode === 'abstract') {
+        // Abstract-mode routers are decoupled from the browser URL (Vue
+        // Router 3 never consulted window.location for them); resolving
+        // window.location here fails to match and logs "No match found"
+        // warnings. Resolve against the router's own base instead.
+        currentLocation = historyBase || '/';
+      } else {
+        // Strip trailing slash from initial URL to match Vue Router 3 behavior
+        const fullUrl = window.location.pathname + window.location.search + window.location.hash;
+        const normalizedUrl = stripTrailingSlash(fullUrl);
+        if (normalizedUrl !== fullUrl) {
+          window.history.replaceState(window.history.state, '', normalizedUrl);
+        }
+
+        currentLocation = normalizeLocation(historyBase);
       }
 
-      const currentLocation = normalizeLocation(historyBase);
       let resolved = router.resolve(currentLocation);
 
       // Vue Router 4's resolve() does not follow redirects (unlike Vue Router 3's
@@ -169,7 +221,11 @@ export default class VueRouterCompat {
       // components reading $route in data() see the final destination immediately.
       const maxRedirects = 10;
       let didRedirect = false;
-      for (let i = 0; i < maxRedirects; i += 1) {
+      // Re-evaluated after every redirect hop: once the target carries lazy
+      // components the synchronous path is abandoned (see below), and running
+      // guards here as well would fire them twice.
+      let hasLazyComponents = hasLazyMatchedComponents(resolved);
+      for (let i = 0; !hasLazyComponents && i < maxRedirects; i += 1) {
         const lastMatched = resolved.matched[resolved.matched.length - 1];
 
         // resolve() does not execute beforeEnter guards. Synchronously invoke
@@ -188,19 +244,54 @@ export default class VueRouterCompat {
         } else {
           break;
         }
+
+        hasLazyComponents = hasLazyMatchedComponents(resolved);
       }
 
-      router.currentRoute.value = resolved;
+      // Lazy route components are only resolved during a real navigation:
+      // pre-committing `currentRoute.value` would leave RouterView rendering
+      // the raw loader function ("[object Promise]"). Skip the synchronous
+      // pre-commit and let Vue Router's own initial navigation resolve the
+      // loaders; $route-in-data() is moot there since the route component
+      // doesn't exist until the loader settles.
+      if (!hasLazyComponents) {
+        router.currentRoute.value = resolved;
 
-      // Forces afterEach hooks to run on the first route (e.g. updates to document.title)
-      router.replace(resolved);
+        // Forces afterEach hooks to run on the first route (e.g. updates to document.title)
+        router.replace(resolved);
 
-      // When a redirect was followed, update the browser URL to reflect the
-      // final destination. Setting currentRoute.value above prevents Vue Router 4's
-      // initial async navigation (which checks currentRoute === START_LOCATION),
-      // so the URL would otherwise remain at the pre-redirect path.
-      if (didRedirect) {
-        history.replace(resolved.fullPath);
+        // When a redirect was followed, update the browser URL to reflect the
+        // final destination. Setting currentRoute.value above prevents Vue Router 4's
+        // initial async navigation (which checks currentRoute === START_LOCATION),
+        // so the URL would otherwise remain at the pre-redirect path.
+        if (didRedirect) {
+          history.replace(resolved.fullPath);
+        }
+
+        // Run the queued global guards manually (abstract mode stays at START
+        // until the first explicit push, so it never ran them). Deferred to a
+        // microtask so guards registered right after construction are picked
+        // up too.
+        if (routerMode !== 'abstract') {
+          pendingInitialGuards = [];
+          const initialRoute = resolved;
+          Promise.resolve()
+            .then(async () => {
+              const guards = pendingInitialGuards;
+              pendingInitialGuards = null;
+              for (const guard of guards) {
+                try {
+                  // Sequential like the real guard pipeline; awaiting also
+                  // contains rejections from async guards.
+                  // eslint-disable-next-line no-await-in-loop
+                  await guard(initialRoute, START_LOCATION, () => {});
+                } catch {
+                  // A throwing guard must not break router construction.
+                }
+              }
+            })
+            .catch(() => {});
+        }
       }
     } catch {
       // If resolution fails, let the async navigation handle it

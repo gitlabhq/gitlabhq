@@ -4,27 +4,38 @@ module Gitlab
   module ApplicationRateLimiter
     # Routes ApplicationRateLimiter checks through Labkit::RateLimit::Limiter.
     #
-    # Every key registered in ApplicationRateLimiter.rate_limits must also be
-    # registered in SupportedRateLimits. A guardrail spec asserts that coverage
-    # so Labkit can be the authoritative rate-limiting path.
+    # Every key registered in SupportedRateLimits is handled by labkit, whose
+    # decision is authoritative. Keys not in the registry are not handled here
+    # (the caller falls through to "not throttled").
     #
     # The labkit Redis key shape is "labkit:rl:...".
     module LabkitAdapter
       class << self
-        # Whether the spec for +key+ describes a count_distinct (SADD/SCARD)
-        # rule. Used by the dispatch to decide whether IncrementPerActionedResource
-        # calls can be routed to the labkit path without semantic drift.
-        def set_mode?(key)
-          spec = SupportedRateLimits.all[key]
-          !spec.nil? && !spec[:count_distinct].nil?
+        # Whether +key+ has a registry entry and is therefore routed through
+        # labkit. Guards {#run!}/{#run_peek!}, whose +fetch+ would otherwise
+        # raise for an unregistered key.
+        def handled?(key)
+          SupportedRateLimits.all.key?(key)
         end
 
-        # Whether the spec for +key+ accumulates a Float cost (resource-usage)
+        # Whether the rule for +key+ describes a count_distinct (SADD/SCARD)
+        # rule. Used by the dispatch to decide whether resource-based calls can
+        # be routed to the labkit path without semantic drift.
+        def set_mode?(key)
+          SupportedRateLimits.rule_for(key).count_distinct.present?
+        rescue KeyError
+          false
+        end
+
+        # Whether +key+ accumulates a Float cost (resource-usage)
         # rather than counting calls. Cost-mode dispatch passes the per-request
         # consumption as labkit `check(cost:)`.
         def cost_mode?(key)
-          spec = SupportedRateLimits.all[key]
-          !spec.nil? && !!spec[:cost_mode]
+          SupportedRateLimits.cost_mode?(key)
+        end
+
+        def period_for(key)
+          SupportedRateLimits.period_for(key)
         end
 
         # Increments the labkit counter and returns labkit's boolean decision
@@ -34,7 +45,10 @@ module Gitlab
         # +:resource_id+ supplies the SADD member for count_distinct
         # (set-mode) rules; ignored for INCR-mode rules. A per-call
         # +:threshold+ / +:interval+ overrides the registry value via the
-        # Rule's one-arity `limit:`/`period:` callables. The whole hash is
+        # Rule's one-arity `limit:`/`period:` callables. +:bypass_header+,
+        # when present, is also copied onto the identifier (not just
+        # rule_context) so the synthetic bypass rule can match it against
+        # '1' (see SupportedRateLimits#bypass_rule_for). The whole hash is
         # forwarded as labkit `rule_context:`.
         #
         # +cost+ is the float amount a cost-mode (resource-usage) entry adds to
@@ -44,11 +58,12 @@ module Gitlab
         #
         # @return [Boolean] labkit's decision (exceeded?)
         def run!(key, scope:, context: {}, cost: nil)
-          spec = SupportedRateLimits.all.fetch(key)
-          rule = build_rule(key, spec)
-          identifier = identifier_for(rule, scope)
+          rule = SupportedRateLimits.rule_for(key)
+          limiter = limiter_for(key)
+          identifier = identifier_for(rule.characteristics, scope)
+          apply_bypass_header!(identifier, context)
 
-          member_slot = spec[:count_distinct]
+          member_slot = rule.count_distinct
           resource_id = context[:resource_id]
           identifier[member_slot] = resource_id if member_slot && resource_id
 
@@ -56,10 +71,10 @@ module Gitlab
           # else is a plain count, labkit's default cost of 1. A zero-cost job
           # must not create an empty counter, mirroring the resource-usage
           # strategy, and only cost-mode can be 0.
-          check_cost = spec[:cost_mode] ? cost.to_f : 1
+          check_cost = SupportedRateLimits.cost_mode?(key) ? cost.to_f : 1
           return false if check_cost == 0
 
-          result = build_limiter(spec, rule).check(identifier, cost: check_cost, rule_context: context)
+          result = limiter.check(identifier, cost: check_cost, rule_context: context)
 
           return false if result.error?
 
@@ -75,12 +90,12 @@ module Gitlab
         #
         # @return [Boolean] labkit's decision (exceeded?)
         def run_peek!(key, scope:, context: {})
-          spec = SupportedRateLimits.all.fetch(key)
-          rule = build_rule(key, spec)
-          result = build_limiter(spec, rule).peek(
-            identifier_for(rule, scope),
-            rule_context: context
-          )
+          rule = SupportedRateLimits.rule_for(key)
+          limiter = limiter_for(key)
+          identifier = identifier_for(rule.characteristics, scope)
+          apply_bypass_header!(identifier, context)
+
+          result = limiter.peek(identifier, rule_context: context)
 
           return false if result.error?
 
@@ -89,45 +104,15 @@ module Gitlab
 
         private
 
-        def build_limiter(spec, rule)
-          ::Labkit::RateLimit::Limiter.new(
-            name: spec[:limiter_name],
-            rules: [rule],
-            redis: ::Gitlab::Redis::RateLimiting,
-            logger: ::Gitlab::AppLogger
-          )
+        # Copies :bypass_header from +context+ onto +identifier+ only when the
+        # caller supplied it: true for anything going through #throttled?,
+        # false for callers that bypass it (e.g. resource_usage_throttled?).
+        def apply_bypass_header!(identifier, context)
+          identifier[:bypass_header] = context[:bypass_header] if context.key?(:bypass_header)
         end
 
-        # Rules are built per check rather than memoized. Resolving threshold
-        # and interval through ApplicationRateLimiter.threshold/.interval on
-        # every call lets application-setting changes and test stubs of the
-        # public threshold(key)/interval(key) methods propagate to the labkit
-        # path; a memoized Rule would freeze whichever value resolved on
-        # first construction. The Redis round-trip in `check` dominates
-        # construction cost, so the per-call allocation is not load-bearing.
-        def build_rule(key, spec)
-          # limit/period are one-arity callables resolved per check. A caller
-          # that supplies the value via rule_context wins: a set-mode
-          # (count_distinct) entry its per-call override, a threshold_from_caller
-          # entry (web_hook_calls*) its :threshold, a resource-usage entry both
-          # :threshold and :interval, and any key called with a per-call
-          # threshold:/interval: override. Otherwise the value falls back to the
-          # registry, resolved fresh per check so application-setting changes and
-          # test stubs propagate. The fallback is lazy on purpose: resource-usage
-          # keys aren't in ApplicationRateLimiter.rate_limits (interval(key)
-          # would raise InvalidKeyError), but their ctx always carries both
-          # values, so the registry is never consulted for them.
-          limit = ->(ctx) { ctx&.dig(:threshold) || ::Gitlab::ApplicationRateLimiter.threshold(key) }
-          period = ->(ctx) { ctx&.dig(:interval) || ::Gitlab::ApplicationRateLimiter.interval(key) }
-
-          ::Labkit::RateLimit::Rule.new(
-            name: spec[:rule_name],
-            characteristics: spec[:characteristics],
-            limit: limit,
-            period: period,
-            action: spec[:action],
-            count_distinct: spec[:count_distinct]
-          )
+        def limiter_for(key)
+          SupportedRateLimits.limiter_for(key)
         end
 
         # Builds the labkit identifier hash from a scope by routing AR-typed
@@ -142,13 +127,13 @@ module Gitlab
         # scope [project, user] yields {project: id, user: id}; labkit's
         # missing-value sentinel '_unknown_' fills :group, so the Redis
         # key shape is distinct from the Group case ({group: id, user: id}).
-        def identifier_for(rule, scope)
+        def identifier_for(characteristics, scope)
           values = Array(scope).flatten.compact
           identifier = {}
           remaining_values = []
 
           values.each do |value|
-            char = ar_characteristic_for(value, rule.characteristics)
+            char = ar_characteristic_for(value, characteristics)
             if char && !identifier.key?(char)
               identifier[char] = value.id
             else
@@ -156,7 +141,7 @@ module Gitlab
             end
           end
 
-          primitive_chars = rule.characteristics.reject do |c|
+          primitive_chars = characteristics.reject do |c|
             ar_characteristic_names.include?(c) || identifier.key?(c)
           end
 
@@ -190,7 +175,8 @@ module Gitlab
             ::Environment => :environment,
             ::Ci::PipelineSchedule => :ci_pipeline_schedule,
             ::Import::SourceUser => :import_source_user,
-            ::Key => :key
+            ::Key => :key,
+            ::MergeRequest => :merge_request
           }.freeze
         end
 
@@ -220,3 +206,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ApplicationRateLimiter::LabkitAdapter.prepend_mod

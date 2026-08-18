@@ -15,11 +15,11 @@ and the Rake task at `lib/tasks/gitlab/docs/compile_events.rake`.
 To add or update an event, edit the corresponding YAML file in `data/events/`.
 Then regenerate this page by running:
 
-  bin/rake gitlab:docs:compile_events
+`bin/rake gitlab:docs:compile_events`
 
 To verify this page is up to date, run:
 
-  bin/rake gitlab:docs:check_events
+`bin/rake gitlab:docs:check_events`
 -->
 
 This page lists all domain events published through the
@@ -40,6 +40,7 @@ To find subscribers, search the subscription files under
 | `Ai::ActiveContext::Code::MarkRepositoryAsReadyEvent` | `global_search` | EE | Published to mark Ai::ActiveContext::Code::Repository records whose embedding indexing has completed as ready, by checking the search index for the presence of expected embedding fields. |
 | `Ai::ActiveContext::Code::ProcessInvalidEnabledNamespaceEvent` | `global_search` | EE | Published to remove Ai::ActiveContext::Code::EnabledNamespace records that are no longer eligible (e.g. expired SaaS subscriptions or instances without AI features). Re-emitted by the subscriber worker to continue batched processing. |
 | `Ai::ActiveContext::Code::ProcessPendingEnabledNamespaceEvent` | `global_search` | EE | Published to process the next pending Ai::ActiveContext::Code::EnabledNamespace by enrolling its eligible projects as Ai::ActiveContext::Code::Repository records. Re-emitted by the subscriber worker while pending namespaces remain. |
+| `Ai::DuoWorkflows::WorkflowFinishedEvent` | `duo_agent_platform` | EE | Published when a Duo workflow transitions to :finished (the agent completed successfully). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. |
 | `Ai::DuoWorkflows::WorkflowStartedEvent` | `duo_agent_platform` | EE | Published when a Duo workflow first transitions to :running (the agent has begun executing). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. |
 
 ## Analytics
@@ -80,7 +81,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
-| `GitlabSubscriptions::RenewedEvent` | `subscription_management` | CE | Published when a GitLab subscription is renewed. Fires only on genuine renewals — both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. Deferred via run_after_commit. |
+| `GitlabSubscriptions::RenewedEvent` | `subscription_management` | CE | Published when a GitLab subscription is renewed. Fires only on genuine renewals - both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. Deferred via run_after_commit. |
 
 ## Groups
 
@@ -103,6 +104,7 @@ To find subscribers, search the subscription files under
 | `Members::DestroyedEvent` | `user_management` | CE | Published after a member record is removed from a group or project. Fires once per user per destroy operation; not published on recursive cascades (for example, when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now. |
 | `Members::MembersAddedEvent` | `user_management` | CE | Published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
 | `Members::MembershipModifiedByAdminEvent` | `seat_cost_management` | EE | Published when an admin creates or promotes a member to a billable role while member-promotion-management is enabled, so pending approval workflows can be processed. |
+| `Members::UpdatedCloudEvent` | `user_management` | CE | CloudEvent published after one or more member access levels are updated. Skipped on no-op updates (empty members array). |
 | `Members::UpdatedEvent` | `user_management` | CE | Published after one or more member access levels are updated. Skipped on no-op updates (empty members array). |
 
 ## Merge Requests
@@ -110,11 +112,14 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `MergeRequests::ApprovalsResetEvent` | `code_review_workflow` | EE | Published when existing approvals on a merge request are reset, typically because new commits were pushed or other state changes invalidated prior approvals. |
+| `MergeRequests::ApprovedCloudEvent` | `code_suggestions` | CE | Published when a merge request receives all required approvals. CloudEvent counterpart of the legacy ApprovedEvent, using the CloudEvents v1.0 envelope with a richer payload that includes merge_request IID, project ID, and organization context. |
 | `MergeRequests::ApprovedEvent` | `code_review_workflow` | CE | Published when a user approves a merge request. Fires only when the approving user is eligible (not the author, satisfies any approval rules), the MR is not already merged, and the approval record is persisted. |
+| `MergeRequests::AssignedReviewersEvent` | `code_review_workflow` | CE | Published when new reviewers are assigned to a merge request. Carries the list of newly assigned reviewers with their IDs and user types. |
 | `MergeRequests::AutoMerge::TitleDescriptionUpdateEvent` | `code_review_workflow` | CE | Published when an MR title or description changes while auto-merge is enabled and the project has merge_request_title_regex configured. Does not fire for description-only changes unless EE Jira-key detection also triggers. |
 | `MergeRequests::ClosedEvent` | `code_review_workflow` | EE | Published when a merge request is closed, so EE subscribers (such as security policy workers) can react to the state change. |
+| `MergeRequests::CodeConflictEvent` | `code_review_workflow` | CE | Published when a merge request cannot be merged due to a code conflict. Only fires when the conflict notification condition is met. |
 | `MergeRequests::CreatedEvent` | `code_review_workflow` | EE | Published when a new merge request is created and prepared, so EE subscribers can react to the new merge request. |
-| `MergeRequests::DiscussionsResolvedEvent` | `code_review_workflow` | CE | Published when resolving a discussion brings an auto-merge-enabled MR to a fully resolved state (mergeable_discussions_state? becomes true). Does not fire on every resolution — only when the resolution unblocks auto-merge. |
+| `MergeRequests::DiscussionsResolvedEvent` | `code_review_workflow` | CE | Published when resolving a discussion brings an auto-merge-enabled MR to a fully resolved state (mergeable_discussions_state? becomes true). Does not fire on every resolution - only when the resolution unblocks auto-merge. |
 | `MergeRequests::DraftNotePublishedEvent` | `code_review_workflow` | CE | Published when a draft note (pending review comment) is published on a merge request. |
 | `MergeRequests::DraftStateChangeEvent` | `code_review_workflow` | CE | Published when an MR title update toggles the "Draft:" prefix and the draft status actually changes. Title updates that leave the draft state unchanged do not fire it. |
 | `MergeRequests::ExternalStatusCheckPassedEvent` | `compliance_management` | EE | Published when an external status check response transitions to the passed state for a merge request. |
@@ -123,6 +128,7 @@ To find subscribers, search the subscription files under
 | `MergeRequests::MergedEvent` | `code_review_workflow` | EE | Published when a merge request has been merged and post-merge processing runs, allowing EE subscribers (such as compliance, security policy, and audit workers) to react. |
 | `MergeRequests::OverrideRequestedChangesStateEvent` | `code_review_workflow` | CE | Published when a reviewer's "requested changes" status is overridden on a merge request. |
 | `MergeRequests::PipelineCreationCompletedEvent` | `code_review_workflow` | CE | Published when an asynchronous MR-scoped pipeline creation attempt finishes. `pipeline_id` is set if a `Ci::Pipeline` row was persisted, nil if creation produced no pipeline (workflow:rules dropped, missing CI config, etc.). Used to re-trigger auto-merge when no `Ci::Pipeline.after_transition` will fire. |
+| `MergeRequests::ReadyEvent` | `code_suggestions` | CE | Published when a merge request transitions from draft to ready status, indicating it is no longer a work in progress. |
 | `MergeRequests::ReopenedEvent` | `code_review_workflow` | EE | Published when a closed merge request is reopened, so EE subscribers can react to the state change. |
 | `MergeRequests::UnblockedStateEvent` | `code_review_workflow` | CE | Published when the set of blocking merge requests changes (for example, a blocking MR is merged, unlinked, or added). Requires the :blocking_merge_requests feature on the target project, and only fires when the set actually differs from the previous state. |
 | `MergeRequests::UpdatedEvent` | `code_review_workflow` | EE | Published when a merge request is updated, so EE subscribers can react to changes on the merge request. |
@@ -152,7 +158,7 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `Organizations::ConfirmedEvent` | `organization` | CE | Published when an organization transitions from `unconfirmed` to `confirmed`. Emitted by Organizations::ConfirmService after the state transition is committed. Not published if the confirmation fails or is rolled back. |
-| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only — subscribers are responsible for traversing descendants if needed. Published via run_after_commit_or_now inside the transfer transaction, so it is never emitted on rollback. |
+| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only - subscribers are responsible for traversing descendants if needed. Published via run_after_commit_or_now inside the transfer transaction, so it is never emitted on rollback. |
 
 ## Package Metadata
 
@@ -180,7 +186,7 @@ To find subscribers, search the subscription files under
 |-------|-----------------|---------|-------------|
 | `ProjectAuthorizations::AuthorizationsAddedEvent` | `permissions` | CE | Published after project authorization rows are inserted for one or more users. Multiple changes may be batched into a single event group. |
 | `ProjectAuthorizations::AuthorizationsChangedEvent` | `permissions` | CE | Defined to signal project authorization access-level changes. Not currently published anywhere in the codebase; a subscriber exists in EE security_subscriptions.rb but no publish call has been added yet. |
-| `ProjectAuthorizations::AuthorizationsRemovedEvent` | `permissions` | CE | Published after project authorization rows are deleted, but only for users who are truly removed — not for those whose access level merely changes (those users are excluded by comparing against authorizations being added in the same operation). Events are batched. |
+| `ProjectAuthorizations::AuthorizationsRemovedEvent` | `permissions` | CE | Published after project authorization rows are deleted, but only for users who are truly removed - not for those whose access level merely changes (those users are excluded by comparing against authorizations being added in the same operation). Events are batched. |
 
 ## Projects
 
@@ -267,9 +273,12 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `WorkItems::BulkUpdatedEvent` | `team_planning` | CE | Published after a batch of work items is updated in bulk (for example, milestone cleared on milestone destroy, parent link changes). Each event batch covers up to EVENTS_BATCH_SIZE work items; published via publish_group. |
+| `WorkItems::CreatedEvent` | `code_suggestions` | CE | CloudEvent counterpart of WorkItemCreatedEvent, published after a work item is created. Unlike the legacy event, which fires unconditionally, this event is skipped for imports, external authors, non-human users, and work items without a project. Uses the CloudEvents v1.0 envelope and carries a richer payload including work item type and confidentiality. |
+| `WorkItems::StatusChangedEvent` | `team_planning` | EE | Published when a work item status is updated. |
 | `WorkItems::WorkItemClosedEvent` | `team_planning` | EE | Published when a work item (issue or epic work item) is closed. |
 | `WorkItems::WorkItemCreatedEvent` | `team_planning` | CE | Published after a new work item (issue, task, etc.) is created. |
 | `WorkItems::WorkItemDeletedEvent` | `team_planning` | CE | Published after a work item is permanently deleted. |
 | `WorkItems::WorkItemReopenedEvent` | `team_planning` | EE | Published when a previously closed work item (issue or epic work item) is reopened. |
 | `WorkItems::WorkItemUpdatedEvent` | `team_planning` | CE | Published after a work item's attributes are updated. |
+
 <!-- vale on -->

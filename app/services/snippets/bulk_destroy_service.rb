@@ -16,6 +16,7 @@ module Snippets
       reason: :snippet_delete_error,
       message: 'Failed to remove snippets.'
     }.freeze
+    BATCH_SIZE = 1000
 
     attr_reader :current_user, :snippets
 
@@ -31,8 +32,7 @@ module Snippets
       return ServiceResponse.success(message: 'No snippets found.') if snippets.empty?
 
       user_can_delete_snippets! unless skip_authorization
-      attempt_delete_repositories!
-      snippets.destroy_all # rubocop: disable Cop/DestroyAll
+      destroy_snippets_with_repositories!
 
       ServiceResponse.success(message: 'Snippets were deleted.')
     rescue SnippetAccessError
@@ -46,7 +46,6 @@ module Snippets
         message: SNIPPET_REPOSITORIES_DELETE_ERROR[:message]
       )
     rescue StandardError
-      # In case the delete operation fails
       ServiceResponse.error(
         reason: SNIPPETS_DELETE_ERROR[:reason],
         message: SNIPPETS_DELETE_ERROR[:message]
@@ -67,12 +66,21 @@ module Snippets
       can?(current_user, :admin_snippet, snippet)
     end
 
-    def attempt_delete_repositories!
-      snippets.each do |snippet|
-        result = ::Repositories::DestroyService.new(snippet.repository).execute
+    def destroy_snippets_with_repositories!
+      # rubocop:disable CodeReuse/ActiveRecord -- Keeps large content columns unloaded while preserving snippet destroy callbacks.
+      snippets
+        .select(:id, :type, :project_id, :organization_id, :author_id)
+        .preload(:snippet_repository, project: :route)
+        .each_batch(of: BATCH_SIZE) do |batch|
+        batch.each do |snippet|
+          result = ::Repositories::DestroyService.new(snippet.repository).execute
 
-        raise DeleteRepositoryError if result[:status] == :error
+          raise DeleteRepositoryError if result[:status] == :error
+
+          snippet.destroy!
+        end
       end
+      # rubocop:enable CodeReuse/ActiveRecord
     end
   end
 end

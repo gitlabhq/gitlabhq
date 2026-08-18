@@ -157,8 +157,8 @@ For uniqueness, the generated files include a timestamp prefix in ISO 8601 forma
 To use a metric definition to manage [performance indicator](https://handbook.gitlab.com/handbook/product/analytics-instrumentation-guide/#instrumenting-metrics-and-events):
 
 1. Create a merge request that includes related changes.
-1. Use labels `~"analytics instrumentation"`, `"~Data Warehouse::Impact Check"`.
-1. Update the metric definition `performance_indicator_type` [field](metrics_dictionary.md#metrics-definition-and-validation).
+1. Use label `~"analytics instrumentation"`.
+1. Update the metric definition `performance_indicator_type` [field](#metrics-definition-and-validation).
 1. Create an issue in GitLab Product Data Insights project with the [PI Chart Help template](https://gitlab.com/gitlab-data/product-analytics/-/issues/new?description_template=PI%20Chart%20Help) to have the new metric visualized.
 
 ## Metrics Dictionary

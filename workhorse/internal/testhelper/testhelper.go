@@ -152,6 +152,16 @@ func ReadAll(t *testing.T, r io.Reader) []byte {
 	return b
 }
 
+// GoleakOptions returns the shared goroutine leak ignore options.
+func GoleakOptions() []goleak.Option {
+	return []goleak.Option{
+		// Workaround for https://github.com/census-instrumentation/opencensus-go/issues/1191#issuecomment-610440163
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),
+		// Workaround for https://github.com/getsentry/raven-go/issues/90
+		goleak.IgnoreTopFunction("github.com/getsentry/raven-go.(*Client).worker"),
+	}
+}
+
 // VerifyNoGoroutines stops any known global Goroutine handlers and verifies that no
 // lingering Goroutines are present.
 func VerifyNoGoroutines(m *testing.M) {
@@ -159,12 +169,7 @@ func VerifyNoGoroutines(m *testing.M) {
 
 	regexp2.StopTimeoutClock() // https://github.com/dlclark/regexp2/issues/63
 
-	err := goleak.Find(
-		// Workaround for https://github.com/census-instrumentation/opencensus-go/issues/1191#issuecomment-610440163
-		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),
-		// Workaround for https://github.com/getsentry/raven-go/issues/90
-		goleak.IgnoreTopFunction("github.com/getsentry/raven-go.(*Client).worker"),
-	)
+	err := goleak.Find(GoleakOptions()...)
 
 	if err != nil {
 		panic(err)

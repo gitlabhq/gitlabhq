@@ -18,7 +18,7 @@ Depending on a component's functionality, [testing the component](_index.md#test
 For example, a component which lints, builds, and tests software in a specific programming language requires actual source code samples.
 You can have source code examples, configuration files, and similar in the same repository.
 
-For example, the Code Quality CI/CD component's has several [code samples for testing](https://gitlab.com/components/code-quality/-/tree/main/src).
+For example, the Code Quality CI/CD component has several [code samples for testing](https://gitlab.com/components/code-quality/-/tree/main/src).
 
 ### Example: Test a Rust language CI/CD component
 
@@ -272,7 +272,7 @@ In this example:
   and therefore uses `my-tool:1.0.3`.
 - If you include it with `@~latest`, it uses the latest released version.
 - The `component.reference` field shows the exact reference you specified, like `1.0`, `~latest`, or a SHA.
-  The reference could be useful for logging or debugging.
+  You can use the reference for logging or debugging.
 
 ## CI/CD component migration examples
 
@@ -333,7 +333,7 @@ The CI/CD template migration involves the following steps:
    based on one template for each job.
 
    - The name of the template should follow the `go` command, for example `format.yml`, `build.yml`, and `test.yml`.
-   - Create a new project, initialize a Git repository, add/commit all changes, set a remote origin and push.
+   - Create a new project, initialize a Git repository, add/commit all changes, set a remote origin, and push.
      Modify the URL for your CI/CD component project path.
    - Create additional files as outlined in the guidance to [write a component](_index.md#write-a-component):
      `README.md`, `LICENSE.md`, `.gitlab-ci.yml`, `.gitignore`. The following shell commands
@@ -356,7 +356,7 @@ The CI/CD template migration involves the following steps:
    ```
 
 1. Create the CI/CD jobs as template. Start with the `build` job.
-   - Define the following inputs in the `spec` section: `stage`, `golang_version` and `binary_directory`.
+   - Define the following inputs in the `spec` section: `stage`, `golang_version`, and `binary_directory`.
    - Add a dynamic job name definition, accessing `inputs.golang_version`.
    - Use the similar pattern for dynamic Go image versions, accessing `inputs.golang_version`.
    - Assign the stage to the `inputs.stage` value.
@@ -429,7 +429,7 @@ The CI/CD template migration involves the following steps:
          - go test -race $(go list ./... | grep -v /vendor/)
      ```
 
-1. In order to test the component, modify the `.gitlab-ci.yml` configuration file,
+1. To test the component, modify the `.gitlab-ci.yml` configuration file,
    and add [tests](_index.md#test-the-component).
 
    - Specify a different value for `golang_version` as input for the `build` job.

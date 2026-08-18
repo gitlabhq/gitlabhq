@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   label:
     description: The method of execution, e.g. UI or rake task
-product_group: pipeline_security
+product_group: secrets_manager_application
 product_categories:
 - secrets_management
 milestone: '17.10'

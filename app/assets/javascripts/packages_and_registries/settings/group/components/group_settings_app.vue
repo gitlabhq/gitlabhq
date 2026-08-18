@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlToastMixin } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
 import PackagesForwardingSettings from '~/packages_and_registries/settings/group/components/packages_forwarding_settings.vue';
@@ -15,7 +15,7 @@ export default {
     PackagesForwardingSettings,
     DependencyProxySettings,
   },
-  mixins: [glAbilitiesMixin()],
+  mixins: [glAbilitiesMixin(), GlToastMixin],
   inject: ['groupPath'],
   apollo: {
     group: {

@@ -197,7 +197,14 @@ module Gitlab
         def retry_failed_jobs!
           batched_jobs.with_status(:failed).each_batch(of: 100) do |batch|
             self.class.transaction do
-              batch.lock.each(&:split_and_retry!)
+              is_cursor = cursor?
+
+              batch.lock.each do |job|
+                next if job.still_retryable?
+
+                is_cursor ? job.reset_attempts! : job.split_and_retry!
+              end
+
               self.execute!
             end
           end

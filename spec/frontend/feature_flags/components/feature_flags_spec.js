@@ -59,7 +59,7 @@ describe('Feature flags', () => {
   };
 
   const configureButton = () => wrapper.findByTestId('ff-configure-button');
-  const newButton = () => wrapper.findByTestId('ff-new-button');
+  const newButton = () => wrapper.findComponentByTestId('ff-new-button');
   const userListButton = () => wrapper.findByTestId('ff-user-list-button');
   const limitAlert = () => wrapper.findComponent(GlAlert);
   const findTablePagination = () => wrapper.findComponent(TablePagination);

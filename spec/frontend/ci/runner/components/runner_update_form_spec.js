@@ -37,7 +37,7 @@ describe('RunnerUpdateForm', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findRunnerFormFields = () => wrapper.findComponent(RunnerFormFields);
 
-  const findSubmit = () => wrapper.find('[type="submit"]');
+  const findSubmit = () => wrapper.findComponent('[type="submit"]');
   const findSubmitDisabledAttr = () => findSubmit().attributes('aria-disabled');
   const findCancelBtn = () => wrapper.findByRole('link', { name: 'Cancel' });
   const submitForm = () => findForm().trigger('submit');

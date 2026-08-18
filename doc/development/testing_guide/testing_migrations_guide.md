@@ -32,7 +32,7 @@ for an example.
 A `before` hook reverts all migrations to the point that a migration
 under test is not yet migrated.
 
-In other words, our custom RSpec hooks finds a previous migration, and
+In other words, our custom RSpec hooks find a previous migration, and
 migrate the database **down** to the previous migration version.
 
 With this approach you can test a migration against a database schema.

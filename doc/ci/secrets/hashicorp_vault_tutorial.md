@@ -127,7 +127,7 @@ EOF
 ```
 
 Combined with [protected branches](../../user/project/repository/branches/protected.md),
-you can restrict who is able to authenticate and read the secrets.
+you can restrict who can authenticate and read the secrets.
 
 Any of the claims [included in the JWT](id_token_authentication.md#token-payload)
 can be matched against a list of values in the bound claims. For example:
@@ -252,7 +252,7 @@ In this example:
   is set to match the `bound_audiences` parameter of the `role` used for the Vault JWT authentication method.
 - `@secret` - The vault name, where your Secrets Engines are enabled.
 - `myproject/staging/db` - The path location of the secret in Vault.
-- `password` The field to be fetched in the referenced secret.
+- `password` - The field to be fetched in the referenced secret.
 
 If more than one ID token is defined, use the `token` keyword to specify which token should be used. For example:
 

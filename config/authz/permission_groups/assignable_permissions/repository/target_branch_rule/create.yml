@@ -1,0 +1,9 @@
+---
+name: create_target_branch_rule
+description: Grants the ability to create target branch rules
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_target_branch_rule

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportProjectMembersTrigger from '~/invite_members/components/import_project_members_trigger.vue';
 
 export default function initImportProjectMembersTrigger() {
@@ -8,14 +8,12 @@ export default function initImportProjectMembersTrigger() {
     return false;
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportProjectMembersTriggerRoot',
-    render: (createElement) =>
-      createElement(ImportProjectMembersTrigger, {
-        props: {
-          ...el.dataset,
-        },
-      }),
+    component: ImportProjectMembersTrigger,
+    props: {
+      ...el.dataset,
+    },
   });
 }

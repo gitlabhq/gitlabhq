@@ -58,6 +58,7 @@ export default {
   },
   data() {
     return {
+      // eslint-disable-next-line vue/no-unused-properties -- needed for `wikiPage` Apollo query
       wikiPage: {},
       noteableId: '',
       userPermissions: {},
@@ -87,14 +88,6 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.wikiPage.loading;
-    },
-    queryData() {
-      const { defaultClient: cache } = this.$apollo.provider.clients;
-
-      return cache.readQuery({
-        query: wikiPageQuery,
-        variables: this.queryVariables,
-      });
     },
     sortedDiscussions() {
       if (!this.wikiDiscussionSortOrder) return this.discussions;
@@ -221,9 +214,9 @@ export default {
           :noteable-id="noteableId"
           :note-id="noteableId"
           :can-set-internal-note="userPermissions.markNoteAsInternal"
-          @creating-note:start="setPlaceHolderNote"
-          @creating-note:done="removePlaceholder"
-          @creating-note:success="(discussion) => updateCache({ discussion })"
+          @creating-note-start="setPlaceHolderNote"
+          @creating-note-done="removePlaceholder"
+          @creating-note-success="(discussion) => updateCache({ discussion })"
         />
       </template>
       <template v-if="placeholderNote.body" #place-holder-note>
@@ -232,6 +225,7 @@ export default {
         </ul>
       </template>
       <template #comments>
+        <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event -->
         <gl-alert
           v-if="loadingFailed"
           :dismissible="false"
@@ -241,6 +235,7 @@ export default {
         >
           {{ $options.i18n.loadingFailedErrText }}
         </gl-alert>
+        <!-- eslint-enable vue/v-on-event-hyphenation -->
         <ul v-else id="notes-list" class="notes main-notes-list timeline">
           <template v-for="discussion in sortedDiscussions">
             <skeleton-note

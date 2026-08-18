@@ -11,6 +11,17 @@ module Mutations
         description 'These settings can be adjusted only by the group Owner.'
 
         authorize :admin_package
+        # `namespace_path` resolves to a group, a project namespace (the
+        # extractor locates the Project by path), or a personal namespace.
+        # No concrete boundary can express a personal namespace, so the
+        # standalone user boundary applies there; RBAC (`admin_package` on
+        # Namespaces::UserNamespacePolicy) restricts it to the owner.
+        authorize_granular_token permissions: :update_package_setting,
+          boundaries: [
+            { boundary_argument: :namespace_path, boundary_type: :group },
+            { boundary_argument: :namespace_path, boundary_type: :project },
+            { boundary: :user, boundary_type: :user }
+          ]
 
         argument :namespace_path,
           GraphQL::Types::ID,
@@ -78,6 +89,14 @@ module Mutations
           required: false,
           description: copy_field_description(Types::Namespace::PackageSettingsType, :pypi_package_requests_forwarding)
 
+        argument :rubygems_package_requests_forwarding,
+          GraphQL::Types::Boolean,
+          required: false,
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :rubygems_package_requests_forwarding
+          )
+
         argument :lock_maven_package_requests_forwarding,
           GraphQL::Types::Boolean,
           required: false,
@@ -100,6 +119,14 @@ module Mutations
           description: copy_field_description(
             Types::Namespace::PackageSettingsType,
             :lock_pypi_package_requests_forwarding
+          )
+
+        argument :lock_rubygems_package_requests_forwarding,
+          GraphQL::Types::Boolean,
+          required: false,
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :lock_rubygems_package_requests_forwarding
           )
 
         argument :nuget_symbol_server_enabled,

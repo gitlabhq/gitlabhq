@@ -609,18 +609,18 @@ describe('WorkItemBulkEditSidebar component', () => {
       expect(findBulkMoveComponent().props('disabled')).toBe(true);
     });
 
-    it('emits "start" when bulk move emits "moveStart"', () => {
+    it('emits "start" when bulk move emits "move-start"', () => {
       mountForBulkMove();
 
-      findBulkMoveComponent().vm.$emit('moveStart');
+      findBulkMoveComponent().vm.$emit('move-start');
 
       expect(wrapper.emitted('start')).toHaveLength(1);
     });
 
-    it('emits "success" when bulk move emits "moveSuccess"', () => {
+    it('emits "success" when bulk move emits "move-success"', () => {
       mountForBulkMove();
 
-      findBulkMoveComponent().vm.$emit('moveSuccess', { toastMessage: 'hello!' });
+      findBulkMoveComponent().vm.$emit('move-success', { toastMessage: 'hello!' });
 
       const events = wrapper.emitted('success');
 
@@ -628,10 +628,10 @@ describe('WorkItemBulkEditSidebar component', () => {
       expect(events[0][0]).toEqual({ refetchCounts: true, toastMessage: 'hello!' });
     });
 
-    it('emits "finish" when bulk move emits "moveFinish"', () => {
+    it('emits "finish" when bulk move emits "move-finish"', () => {
       mountForBulkMove();
 
-      findBulkMoveComponent().vm.$emit('moveFinish');
+      findBulkMoveComponent().vm.$emit('move-finish');
 
       expect(wrapper.emitted('finish')).toHaveLength(1);
     });

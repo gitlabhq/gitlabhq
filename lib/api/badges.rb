@@ -29,7 +29,7 @@ module API
           type: String,
           desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user."
       end
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all badges for a #{source_type}" do
           detail "Lists all badges for a specified #{source_type}#{', including group badges' if is_project}."
           success Entities::Badge

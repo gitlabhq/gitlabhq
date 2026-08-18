@@ -13,10 +13,11 @@ monitored.
 
 ## Existing SLIs
 
-1. [`rails_request`](rails_request.md)
+1. `audit_event_streaming_nats_dispatch`
 1. `global_search_apdex`
 1. `global_search_error_rate`
 1. `global_search_indexing_apdex`
+1. [`rails_request`](rails_request.md)
 1. [`sidekiq_execution`](sidekiq_execution.md)
 1. [`zoekt_tasks`](zoekt_tasks.md)
 
@@ -53,7 +54,7 @@ You should use `ErrorRate` to measure the rate of unsuccessful operations. For e
 
 Before the first scrape, it is important to have
 [initialized the SLI with all possible label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics).
-This avoid confusing results when using these counters in calculations.
+This avoids confusing results when using these counters in calculations.
 
 To initialize an SLI, use the `.initialize_sli` class method, for
 example:
@@ -178,7 +179,7 @@ To pass extra selectors and override properties of the SLI, see the
 SLIs with statically defined feature categories can already receive
 alerts about the SLI in specified Slack channels. For more information, read the
 [alert routing documentation](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/uncategorized/alert-routing.md).
-In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/614)
+In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/614)
 we are extending this so alerts for SLIs with a `feature_category`
 label in the source metrics can also be routed.
 

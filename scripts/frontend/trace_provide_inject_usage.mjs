@@ -38,6 +38,13 @@
  *   not resolve (e.g. computed dynamic-import paths) break the "import ⟹
  *   reachable" guarantee.
  *
+ *   `ee_else_ce`/`jh_else_ce`/`any_else_ce` aliases resolve to exactly one target
+ *   per webpack config, but GitLab ships CE and EE builds from the same source —
+ *   a module only reachable through the *other* edition's resolution is still
+ *   live code. The reachability Breadth-First Search is therefore run once per
+ *   available edition (CE always, EE when this checkout has one) and the
+ *   results are unioned, so an edition-specific descendant isn't missed.
+ *
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -59,6 +66,27 @@ const ROOT_PATH = path.resolve(import.meta.dirname, '../../');
 // place and the rest of the script just works against "whatever roots exist".
 const ASSET_ROOTS = ['app/assets/javascripts', 'ee/app/assets/javascripts', 'jh/app/assets/javascripts'];
 const SEARCH_DIRS = ASSET_ROOTS.filter((dir) => fs.existsSync(path.join(ROOT_PATH, dir)));
+const HAS_EE = SEARCH_DIRS.includes('ee/app/assets/javascripts');
+const HAS_JH = HAS_EE && SEARCH_DIRS.includes('jh/app/assets/javascripts'); // mirrors config/helpers/is_jh_env.js
+
+/**
+ * `config/webpack.config.js` uses `NormalModuleReplacementPlugin` (not `resolve.alias`) to
+ * collapse `ee_component/*.vue`, `jh_component/*.vue`, and `jh_else_ee/*.vue` imports to a
+ * no-op stub whenever the corresponding edition isn't part of the build. dependency-cruiser
+ * only sees `resolve` (via `extractWebpackResolveConfig`), not webpack plugins, so without
+ * this it would report those as unresolved boundaries even though the real build resolves
+ * them fine — to nothing. Mirrors the plugin's own `!IS_EE`/`!IS_JH` conditions.
+ * @param {boolean} isEE
+ * @param {boolean} isJH
+ * @returns {RegExp[]}
+ */
+function emptyComponentStubPatterns(isEE, isJH) {
+  const patterns = [];
+  if (!isEE) patterns.push(/^ee_component\//);
+  if (!isJH) patterns.push(/^jh_component\//);
+  if (!isEE && !isJH) patterns.push(/^jh_else_ee\//);
+  return patterns;
+}
 
 const BABEL_PLUGINS = [
   'jsx',
@@ -247,13 +275,51 @@ function findInjectorModules(key) {
  */
 let resolveOptionsPromise;
 /**
- * Lazily load (and memoise) the webpack resolve config dependency-cruiser needs.
+ * Lazily load (and memoise) the webpack resolve config dependency-cruiser needs,
+ * for whichever edition this checkout is (CE if there's no `ee/`, EE otherwise).
  * @returns {Promise<object>}
  */
 function getResolveOptions() {
   // Loading the webpack config is slow; do it once even when iterating many files.
   resolveOptionsPromise ||= extractWebpackResolveConfig('./config/webpack.config.js');
   return resolveOptionsPromise;
+}
+
+let ceResolveOptionsPromise;
+const CE_RESOLVE_CONFIG_MARKER = '<<<CE_RESOLVE_CONFIG>>>';
+
+/**
+ * Lazily load (and memoise) the webpack resolve config with `ee_else_ce`/`any_else_ce`
+ * forced to their CE targets, regardless of which edition this checkout is.
+ *
+ * `config/helpers/aliases.js` bakes `IS_EE` into `require.cache`d modules the moment
+ * it's first loaded, so re-requiring it in-process with a different `FOSS_ONLY` env
+ * var has no effect — the cached module wins. A child process starts that cache
+ * fresh, so it's the only reliable way to get the *other* edition's alias map.
+ * @returns {Promise<object>}
+ */
+function getCeResolveOptions() {
+  ceResolveOptionsPromise ||= (async () => {
+    const helperPath = path.join(ROOT_PATH, 'tmp/depcruise-trace-ce-resolve-config.mjs');
+    fs.mkdirSync(path.dirname(helperPath), { recursive: true });
+    fs.writeFileSync(
+      helperPath,
+      "import extractWebpackResolveConfig from 'dependency-cruiser/config-utl/extract-webpack-resolve-config';\n" +
+        "const options = await extractWebpackResolveConfig('./config/webpack.config.js');\n" +
+        // Loading the webpack config prints its own banner lines to stdout (Vue
+        // version, incremental-compiler status); a marker lets us pull the JSON
+        // back out regardless of whatever else lands on stdout around it.
+        `process.stdout.write('${CE_RESOLVE_CONFIG_MARKER}' + JSON.stringify(options));\n`,
+    );
+    const out = execFileSync('node', [helperPath], {
+      cwd: ROOT_PATH,
+      encoding: 'utf-8',
+      env: { ...process.env, FOSS_ONLY: 'true' },
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    return JSON.parse(out.slice(out.indexOf(CE_RESOLVE_CONFIG_MARKER) + CE_RESOLVE_CONFIG_MARKER.length));
+  })();
+  return ceResolveOptionsPromise;
 }
 
 /**
@@ -303,27 +369,22 @@ function findRouterModules(providerRel) {
 }
 
 /**
- * Build the import-graph reachability set for one provider (see the Technique B block above).
- * @param {string} providerRel
- * @returns {Promise<{ reachable: Map<string, string|null>, boundaries: string[], moduleCount: number }>}
+ * Run one Breadth-First Search over the import graph, resolved per `edition`.
+ * Factored out of `buildReachability` so it can be run once per edition (see below).
+ * @param {string[]} seeds
+ * @param {{ resolveOptions: object, cacheFolder: string, stubPatterns: RegExp[] }} edition
+ *   `stubPatterns`: unresolved imports matching these are a real, empty stub in this
+ *   edition's build (see `emptyComponentStubPatterns`), not a boundary
+ * @returns {Promise<{ reachable: Map<string, string|null>, boundaries: string[] }>}
  */
-async function buildReachability(providerRel) {
-  const resolveOptions = await getResolveOptions();
+async function traverseImportGraph(seeds, { resolveOptions, cacheFolder, stubPatterns }) {
   const cruiseOptions = {
     doNotFollow: { path: 'node_modules' },
     exclude: { path: 'node_modules' }, // NB: do NOT exclude dynamic imports
     moduleSystems: ['es6', 'cjs', 'amd'],
     enhancedResolveOptions: { extensions: ['.js', '.cjs', '.mjs', '.vue'] },
-    cache: { folder: './tmp/cache/depcruise-trace-cache', strategy: 'metadata' },
+    cache: { folder: cacheFolder, strategy: 'metadata' },
   };
-
-  // Seed the provider plus any sibling/ancestor router module, so descendants that
-  // are only reachable through `<router-view>` are counted as reachable.
-  const routerModules = findRouterModules(providerRel);
-  if (routerModules.length > 0) {
-    console.log(`Including router module(s): ${routerModules.join(', ')}`);
-  }
-  const seeds = [providerRel, ...routerModules];
 
   const parent = new Map(seeds.map((seed) => [seed, null])); // resolved module -> parent (Breadth-First Search tree)
   const boundaries = [];
@@ -353,6 +414,7 @@ async function buildReachability(providerRel) {
 
       for (const dep of mod.dependencies) {
         if (dep.couldNotResolve) {
+          if (stubPatterns.some((pattern) => pattern.test(dep.module))) continue;
           boundaries.push(`unresolved import in ${file} → "${dep.module}"`);
           continue;
         }
@@ -366,7 +428,76 @@ async function buildReachability(providerRel) {
     frontier = next;
   }
 
-  return { reachable: parent, boundaries, moduleCount: parent.size };
+  return { reachable: parent, boundaries };
+}
+
+/**
+ * Build the import-graph reachability set for one provider (see the Technique B block above).
+ *
+ * Run once per available edition (CE always; EE too when this checkout has an `ee/`
+ * overlay) and union the results, since an `ee_else_ce`/`any_else_ce` import resolves
+ * to a different file per edition and both are real, shipped code.
+ * @param {string} providerRel
+ * @returns {Promise<{ reachable: Map<string, string|null>, boundaries: string[], moduleCount: number }>}
+ */
+async function buildReachability(providerRel) {
+  // Seed the provider plus any sibling/ancestor router module, so descendants that
+  // are only reachable through `<router-view>` are counted as reachable.
+  const routerModules = findRouterModules(providerRel);
+  if (routerModules.length > 0) {
+    console.log(`Including router module(s): ${routerModules.join(', ')}`);
+  }
+  const seeds = [providerRel, ...routerModules];
+
+  const editions = [
+    traverseImportGraph(seeds, {
+      resolveOptions: await getResolveOptions(),
+      cacheFolder: './tmp/cache/depcruise-trace-cache',
+      stubPatterns: emptyComponentStubPatterns(HAS_EE, HAS_JH),
+    }),
+  ];
+  // A provider that itself lives under ee/ (or jh/) never ships in a CE build at
+  // all, so it has no separate CE edition to check — its own bare `ee/...` imports
+  // are normal EE-only code, not a CE-resolution gap. Only run the second pass for
+  // providers that are actually part of the CE-buildable tree.
+  if (HAS_EE && providerRel.startsWith('app/assets/javascripts/')) {
+    editions.push(
+      traverseImportGraph(seeds, {
+        resolveOptions: await getCeResolveOptions(),
+        cacheFolder: './tmp/cache/depcruise-trace-cache-ce',
+        stubPatterns: emptyComponentStubPatterns(false, false),
+      }),
+    );
+  }
+  const results = await Promise.all(editions);
+
+  const reachable = new Map();
+  const boundaries = [];
+  for (const result of results) {
+    for (const [module, parentModule] of result.reachable) {
+      if (!reachable.has(module)) reachable.set(module, parentModule);
+    }
+    boundaries.push(...result.boundaries);
+  }
+
+  return { reachable, boundaries, moduleCount: reachable.size };
+}
+
+/**
+ * Walk the BFS parent chain from a seed down to `module`, inclusive of both ends.
+ * `chain.length - 1` is the hop-count (depth) from the seed to `module`.
+ * @param {Map<string, string|null>} parent
+ * @param {string} module
+ * @returns {string[]}
+ */
+function chainFromSeed(parent, module) {
+  const chain = [module];
+  let current = module;
+  while (parent.get(current)) {
+    current = parent.get(current);
+    chain.unshift(current);
+  }
+  return chain;
 }
 
 /**
@@ -543,27 +674,32 @@ async function traceFile(providerRel) {
   const groups = new Map(VERDICT_ORDER.map((verdict) => [verdict, []]));
   classified.forEach((entry) => groups.get(entry.verdict).push(entry));
 
-  // Pad keys within a section so the trailing notes line up into a column.
-  const padKeys = (entries) => Math.max(0, ...entries.map(({ key }) => key.length));
-
   for (const verdict of VERDICT_ORDER) {
     const entries = groups.get(verdict);
     if (entries.length === 0) continue;
     console.log(`\n  ${SECTION_LABEL[verdict]} (${entries.length})`);
-    const width = padKeys(entries);
 
     for (const { key, injectors, reachableInjectors } of entries) {
-      const padded = key.padEnd(width);
       if (verdict === VERDICT.REMOVABLE) {
         console.log(`    ${key}`);
-      } else if (verdict === VERDICT.LIKELY_REMOVABLE || verdict === VERDICT.INCONCLUSIVE) {
-        const more = injectors.length > 1 ? ` +${injectors.length - 1}` : '';
-        console.log(`    ${padded}  ← ${shortPath(injectors[0])}${more}`);
-      } else {
-        const more =
-          reachableInjectors.length > 1 ? ` +${reachableInjectors.length - 1} reachable` : '';
-        console.log(`    ${padded}  ← ${shortPath(reachableInjectors[0])}${more}`);
+        continue;
       }
+      const list = verdict === VERDICT.IN_USE ? reachableInjectors : injectors;
+      const label = verdict === VERDICT.IN_USE ? 'usages' : 'unrelated usages';
+      console.log(`    ${key} (${list.length} ${label})`);
+      list.forEach((m) => {
+        if (verdict !== VERDICT.IN_USE) {
+          console.log(`      ← ${shortPath(m)}`);
+          return;
+        }
+        const chain = chainFromSeed(reachable, m);
+        const depth = chain.length - 1;
+        console.log(`      ← ${shortPath(chain[0])}`);
+        chain.slice(1).forEach((file, i) => {
+          const isLast = i === chain.length - 2;
+          console.log(`        → ${shortPath(file)}${isLast ? `  (depth ${depth})` : ''}`);
+        });
+      });
     }
   }
 
@@ -644,7 +780,10 @@ async function main() {
       );
     }
   }
-  console.log('\nIN USE = possible descent (confirm at runtime); it is not proof of use.');
+  console.log(
+    '\nIN USE = possible descent (confirm at runtime); it is not proof of use.' +
+      '\nDepth = import-graph hops from provider to injector — a large depth means more indirection to verify by hand.',
+  );
 }
 
 main().catch((error) => {

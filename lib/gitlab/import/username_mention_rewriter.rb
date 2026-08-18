@@ -12,7 +12,7 @@ module Gitlab
       # Handles @ instances in email addresses or urls
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/477097
 
-      MENTION_REGEX = Gitlab::UntrustedRegexp.new('(`+[^`]*`+)|((?:^|\s|\()@[\w\-#./]+)')
+      MENTION_REGEX = Gitlab::UntrustedRegexp.new('(`+[^`]*`+)|((?:^|\s|\()@[\w\-#./]*[\w\-#/])')
 
       def update_username_mentions(relation_hash)
         if relation_hash['description']
@@ -30,8 +30,8 @@ module Gitlab
             case match[0]
             when /^`/
               match[0]
-            when /^ /
-              " `#{match[0].lstrip}`"
+            when /^\s/
+              "#{match[0][0]}`#{match[0][1..]}`"
             when /^\(/
               "(`#{match[0].sub(/^./, '')}`"
             else

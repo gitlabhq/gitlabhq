@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Representation::TreeEntry do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
 
   describe '.decorate' do

@@ -8,7 +8,7 @@ describe('Harbor Tags Header', () => {
   let wrapper;
 
   const findTitle = () => wrapper.findByTestId('title');
-  const findTagsCount = () => wrapper.findByTestId('tags-count');
+  const findTagsCount = () => wrapper.findComponentByTestId('tags-count');
 
   const mountComponent = ({ propsData }) => {
     wrapper = shallowMountExtended(TagsHeader, {

@@ -24,11 +24,11 @@ A database review is required for:
   generally up to the author of a merge request to decide whether or
   not complex queries are being introduced and if they require a
   database review.
-- Changes in Service Data metrics that use `count`, `distinct_count`, `estimate_batch_distinct_count` and `sum`.
+- Changes in Service Data metrics that use `count`, `distinct_count`, `estimate_batch_distinct_count`, and `sum`.
   These metrics could have complex queries over large tables.
   See the [Analytics Instrumentation Guide](https://handbook.gitlab.com/handbook/product/product-processes/analytics-instrumentation-guide/)
   for implementation details.
-- Changes that use [`update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`](#preparation-when-using-bulk-update-operations)
+- Changes that use [`update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all`, or `destroy_all`](#preparation-when-using-bulk-update-operations)
   methods on an ActiveRecord object.
 
 A database reviewer is expected to look out for overly complex
@@ -283,7 +283,7 @@ of these methods:
 
 #### Preparation when using bulk update operations
 
-Using `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
+Using `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all`, or `destroy_all`
 ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
 can destroy data if improperly scoped. These methods are also
 [incompatible with Common Table Expression (CTE) statements](sql.md#when-to-use-common-table-expressions).

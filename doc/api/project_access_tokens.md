@@ -132,12 +132,6 @@ curl --request GET \
 
 ## Create a project access token
 
-{{< history >}}
-
-- The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
-
-{{< /history >}}
-
 Creates a project access token for a specified project. You cannot create a token with an access level greater than your account. For example, a user with the Maintainer role cannot create a project access token with the Owner role.
 
 You must use a personal access token with this endpoint. You cannot authenticate with a project access token. There is an [open feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/359953) to add this functionality.
@@ -183,13 +177,6 @@ curl --request POST \
 ```
 
 ## Rotate a project access token
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
-- `expires_at` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6.
-
-{{< /history >}}
 
 Rotates a project access token. This immediately revokes the previous token and creates a new token. Generally, this endpoint rotates a specific project access token by authenticating with a personal access token. You can also use a project access token to rotate itself. For more information, see [Self-rotate](#self-rotate).
 

@@ -27,15 +27,12 @@ module Mutations
 
         service_params = protected_branch_params(name)
         protected_branch = ::ProtectedBranches::CreateService.new(project, current_user, service_params).execute
+        branch_rule = ::Projects::BranchRule.new(project, protected_branch) if protected_branch.persisted?
 
-        if protected_branch.persisted?
-          {
-            branch_rule: ::Projects::BranchRule.new(project, protected_branch),
-            errors: []
-          }
-        else
-          { errors: errors_on_object(protected_branch) }
-        end
+        {
+          branch_rule: branch_rule,
+          errors: errors_on_object(protected_branch)
+        }
       rescue Gitlab::Access::AccessDeniedError
         raise_resource_not_available_error!
       end

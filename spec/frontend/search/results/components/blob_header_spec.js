@@ -35,7 +35,7 @@ describe('BlobHeader', () => {
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findHeaderLink = () => wrapper.findComponent(GlLink);
   const findFileIcon = () => wrapper.findComponent(FileIcon);
-  const findProjectPath = () => wrapper.findByTestId('project-path-content');
+  const findProjectPath = () => wrapper.findComponentByTestId('project-path-content');
   const findProjectName = () => wrapper.findByTestId('file-name-content');
 
   describe('component basics', () => {

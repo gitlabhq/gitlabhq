@@ -181,5 +181,60 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_
         expect(subject).to contain_exactly(123, 456)
       end
     end
+
+    describe 'labkit_fully_enforced safelist' do
+      let(:safelist_block) do
+        captured_block = nil
+        allow(fake_rack_attack).to receive(:safelist) do |name, &block|
+          captured_block = block if name == 'labkit_fully_enforced'
+        end
+
+        described_class.configure(fake_rack_attack)
+        captured_block
+      end
+
+      def stub_shadow_and_enforce(cohort, shadow:, enforce:)
+        stub_feature_flags(
+          "rate_limiter_use_labkit_rack_cohort_#{cohort}": shadow,
+          "rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce": enforce
+        )
+      end
+
+      it 'registers a safelist rule' do
+        expect(safelist_block).to be_a(Proc)
+      end
+
+      # spec/support/rate_limiter_labkit_rack_shadow.rb defaults every cohort's
+      # enforce flag off across the suite, matching production before rollout.
+      it 'does not safelist by default (no cohort enforces yet)' do
+        expect(safelist_block.call(nil)).to be(false)
+      end
+
+      it 'safelists every request once every cohort both shadows and enforces' do
+        registry = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry
+        registry.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+
+        expect(safelist_block.call(nil)).to be(true)
+      end
+
+      it 'does not safelist while any single cohort does not yet enforce' do
+        registry = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry
+        registry.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+        stub_shadow_and_enforce(2, shadow: true, enforce: false)
+
+        expect(safelist_block.call(nil)).to be(false)
+      end
+
+      # Regression guard: enforce alone must never be enough to safelist, or a
+      # misconfiguration (enforce on, shadow off) would silently disable rate
+      # limiting entirely - Labkit does nothing without shadow, and this
+      # safelist would still wave Rack::Attack through.
+      it 'does not safelist when every cohort enforces but none shadow' do
+        registry = Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry
+        registry.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: false, enforce: true) }
+
+        expect(safelist_block.call(nil)).to be(false)
+      end
+    end
   end
 end

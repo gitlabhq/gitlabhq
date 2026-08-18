@@ -16,6 +16,7 @@ query projectWorkItems(
         id
         iid
         title
+        titleHtml
         confidential
         webUrl
         namespace {
@@ -35,6 +36,7 @@ query projectWorkItems(
         id
         iid
         title
+        titleHtml
         confidential
         webUrl
         namespace {

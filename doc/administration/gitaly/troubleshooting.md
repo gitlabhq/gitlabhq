@@ -262,9 +262,9 @@ When attempting `git push`, you can see:
   }
   ```
 
-This combination of errors occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
+This combination of errors occurs when the GitLab server has been upgraded but Gitaly has not yet been upgraded.
 
-GitLab 15.5 and later [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
+GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
 You should [upgrade external Gitaly servers](../../update/plan_your_upgrade.md#upgrades-for-optional-features) before
 upgrading the GitLab server.
 
@@ -462,23 +462,6 @@ If commit signing fails with either of these errors:
 - `invalid data: tag byte does not have MSB set`
 
 This error happens because Gitaly commit signing is headless and not associated with a specific user. The GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
-
-## Gitaly logs show errors in `info` messages
-
-Because of a bug [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6201) in GitLab 16.3, additional entries were written to the
-[Gitaly logs](../logs/_index.md#gitaly-logs). These log entries contained `"level":"info"` but the `msg` string appeared to contain an error.
-
-For example:
-
-```json
-{"level":"info","msg":"[core] [Server #3] grpc: Server.Serve failed to create ServerTransport: connection error: desc = \"ServerHandshake(\\\"x.x.x.x:x\\\") failed: wrapped server handshake: EOF\"","pid":6145,"system":"system","time":"2023-12-14T21:20:39.999Z"}
-```
-
-The reason for this log entry is that the underlying gRPC library sometimes output verbose transportation logs. These log entries appear to be errors but are, in general,
-safe to ignore.
-
-This bug was [fixed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6513/) in GitLab 16.4.5, 16.5.5, and 16.6.0, which prevents these types of messages from
-being written to the Gitaly logs.
 
 ## Profiling Gitaly
 

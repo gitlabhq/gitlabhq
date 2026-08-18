@@ -68,7 +68,10 @@ module RapidDiffs
         rapid_diffs_presenter.diff_files_for_streaming(options)
       end
 
-      return render_empty_state if diff_files.empty?
+      if diff_files.empty?
+        render_empty_state unless streaming_continuation?(options)
+        return
+      end
 
       old_path = params.permit(:skip_old_path)[:skip_old_path]
       new_path = params.permit(:skip_new_path)[:skip_new_path]
@@ -122,7 +125,10 @@ module RapidDiffs
         rapid_diffs_presenter.diff_files_for_streaming(options).count
       end
 
-      return render_empty_state if count == 0
+      if count == 0
+        render_empty_state unless streaming_continuation?(options)
+        return
+      end
 
       rapid_diffs_presenter.diff_files_for_streaming_by_changed_paths(options) do |diff_files_batch|
         highlight_diff_files(diff_files_batch)
@@ -140,6 +146,10 @@ module RapidDiffs
 
     def highlight_diff_files(diff_files)
       diff_files.each { |diff_file| highlight_diff_file(diff_file) }
+    end
+
+    def streaming_continuation?(options)
+      options[:offset_index].to_i > 0
     end
 
     def render_empty_state

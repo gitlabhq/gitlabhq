@@ -78,6 +78,7 @@ export default {
       errors: [],
       warnings: [],
       alerts: [],
+      actions: [],
       alertTitle: '',
       alertDescription: '',
       alertDescriptionLink: '',
@@ -240,6 +241,7 @@ export default {
       const { type: dataType } = this.currentVisualization.data;
       this.loading = true;
       this.clearAlerts();
+      this.setActions([]);
       const requestNumber = this.currentRequestNumber + 1;
       this.currentRequestNumber = requestNumber;
 
@@ -319,6 +321,9 @@ export default {
       this.alertDescriptionLink = descriptionLink || this.$options.PANEL_TROUBLESHOOTING_URL;
       this.alertTitle = title;
     },
+    setActions(actions = []) {
+      this.actions = actions;
+    },
     isCubeJsBadRequest(error) {
       return Boolean(error.status === HTTP_STATUS_BAD_REQUEST && error.response?.message);
     },
@@ -338,6 +343,7 @@ export default {
     :show-alert-state="showAlertState"
     :alert-variant="alertVariant"
     :alert-popover-title="alertTitle"
+    :actions="actions"
     :body-content-classes="bodyContentClasses"
   >
     <template v-if="views.length" #filters>
@@ -375,6 +381,8 @@ export default {
         :options="visualizationOptions"
         :query="aggregatedQuery"
         @set-alerts="setAlerts"
+        @set-actions="setActions"
+        @reload="fetchData"
         @update-query="onUpdateQuery"
       />
     </template>

@@ -54,6 +54,13 @@ module Types
       description: 'A single CI/CD Catalog resource visible to an authorized user',
       resolver: ::Resolvers::Ci::Catalog::ResourceResolver
 
+    field :ci_catalog_bundled_resources,
+      ::Types::Ci::Catalog::BundledResourceType.connection_type,
+      null: true,
+      experiment: { milestone: '19.3' },
+      description: 'GitLab-maintained bundled CI/CD Catalog resources available on the current cell.',
+      resolver: ::Resolvers::Ci::Catalog::BundledResourcesResolver
+
     field :ci_variables,
       Types::Ci::InstanceVariableType.connection_type,
       null: true,
@@ -115,6 +122,13 @@ module Types
       argument :id, ::Types::GlobalIDType[::MergeRequest], required: true,
         description: 'Global ID of the merge request.'
     end
+    field :merge_requests,
+      null: true,
+      max_page_size: 20,
+      experiment: { milestone: '19.3' },
+      resolver: Resolvers::MergeRequests::RootResolver,
+      description: 'Find merge requests visible to the current user. ' \
+        'At least one filter must be provided.'
     field :metadata, Types::AppConfig::InstanceMetadataType,
       null: true,
       resolver: Resolvers::AppConfig::InstanceMetadataResolver,
@@ -167,6 +181,10 @@ module Types
     field :query_complexity, Types::QueryComplexityType,
       null: true,
       description: 'Information about the complexity of the GraphQL query.'
+    field :restricted_visibility_levels, [Types::VisibilityLevelsEnum],
+      null: true,
+      description: 'Visibility levels that are restricted on the instance. ' \
+        'Non-administrators cannot use restricted visibility levels for groups, projects, or snippets.'
     field :runner, Types::Ci::RunnerType,
       null: true,
       resolver: Resolvers::Ci::RunnerResolver,
@@ -338,6 +356,10 @@ module Types
 
     def gitpod_enabled
       application_settings.gitpod_enabled
+    end
+
+    def restricted_visibility_levels
+      application_settings.restricted_visibility_levels || []
     end
 
     def query_complexity

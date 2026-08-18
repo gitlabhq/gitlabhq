@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import UserLists from './components/user_lists.vue';
 import { useUserLists } from './store/index';
@@ -14,7 +14,7 @@ export const initUserLists = () => {
 
   useUserLists(pinia).$patch({ projectId });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'UserListsRoot',
     pinia,
@@ -23,8 +23,6 @@ export const initUserLists = () => {
       errorStateSvgPath,
       newUserListPath,
     },
-    render(createElement) {
-      return createElement(UserLists);
-    },
+    component: UserLists,
   });
 };

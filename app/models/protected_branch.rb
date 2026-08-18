@@ -18,6 +18,11 @@ class ProtectedBranch < ApplicationRecord
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
   scope :allowing_force_push, -> { where(allow_force_push: true) }
   scope :sorted_by_name, -> { order(name: :asc) }
+  scope :sorted_by_name_with_default_first, ->(default_branch) {
+    return sorted_by_name if default_branch.blank?
+
+    order(arel_table[:name].eq(default_branch).desc, arel_table[:name].asc)
+  }
   scope :sorted_by_namespace_and_name, -> { order(:namespace_id, :name) }
 
   scope :for_group, ->(group) { where(group: group) }

@@ -251,7 +251,7 @@ PUT /projects/:id/boards/:board_id
 | `assignee_id`                | integer        | no       | The assignee the board should be scoped to. Premium and Ultimate only. |
 | `milestone_id`               | integer        | no       | The milestone the board should be scoped to. Premium and Ultimate only. |
 | `labels`                     | string         | no       | Comma-separated list of label names which the board should be scoped to. Premium and Ultimate only. |
-| `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to. Premium and Ultimate only. |
+| `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped. Premium and Ultimate only. |
 
 ```shell
 curl --request PUT \
@@ -457,7 +457,7 @@ POST /projects/:id/boards/:board_id/lists
 | `iteration_id` | integer | no | The ID of an iteration. Premium and Ultimate only. |
 
 > [!note]
-> Label, assignee and milestone arguments are mutually exclusive,
+> Label, assignee, and milestone arguments are mutually exclusive,
 > that is, only one of them is accepted in a request.
 > Check the [issue board documentation](../user/project/issue_board.md)
 > for more information regarding the required license for each list type.

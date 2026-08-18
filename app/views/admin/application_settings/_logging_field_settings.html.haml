@@ -8,5 +8,7 @@
     available_versions: ApplicationSetting::LOGGING_FIELD_SCHEMA_VERSIONS.to_json,
     field_changes: logging_field_changes_data.to_json
   } }
+    = f.hidden_field :logging_field_schema_version, data: { js_name: 'schemaVersion' }
+    = f.hidden_field :logging_field_dual_emit_target, data: { js_name: 'dualEmitTarget' }
 
   = f.submit _('Save changes'), pajamas_button: true

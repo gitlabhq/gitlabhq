@@ -48,7 +48,7 @@ describe('NoteForm', () => {
       .findAllComponents(GlButton)
       .filter((buttonWrapper) => buttonWrapper.text() === 'Save comment')
       .at(0);
-  const findCancelButton = () => wrapper.findByTestId('cancel');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel');
 
   beforeEach(() => {
     defaultProps = {
@@ -174,10 +174,10 @@ describe('NoteForm', () => {
       expect(wrapper.emitted('cancel')).toStrictEqual([[false]]);
     });
 
-    it('propagates handleSuggestDismissed event', () => {
+    it('propagates handle-suggest-dismissed event', () => {
       createComponent();
-      findEditor().vm.$emit('handleSuggestDismissed');
-      expect(wrapper.emitted('handleSuggestDismissed')).toStrictEqual([[]]);
+      findEditor().vm.$emit('handle-suggest-dismissed');
+      expect(wrapper.emitted('handle-suggest-dismissed')).toStrictEqual([[]]);
     });
 
     it('propagates input event', () => {
@@ -383,8 +383,8 @@ describe('NoteForm', () => {
   describe('draft review support', () => {
     const saveDraft = jest.fn().mockResolvedValue();
 
-    const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
-    const findCommentButton = () => wrapper.findByTestId('reply-comment-button');
+    const findAddToReviewButton = () => wrapper.findComponentByTestId('add-to-review-button');
+    const findCommentButton = () => wrapper.findComponentByTestId('reply-comment-button');
 
     describe('when saveDraft is not provided', () => {
       it('does not show add-to-review button', () => {
@@ -484,9 +484,9 @@ describe('NoteForm', () => {
   });
 
   describe('resolve discussion toggle', () => {
-    const findResolveCheckbox = () => wrapper.findByTestId('resolve-checkbox');
-    const findUnresolveCheckbox = () => wrapper.findByTestId('unresolve-checkbox');
-    const findDraftButton = () => wrapper.findByTestId('add-to-review-button');
+    const findResolveCheckbox = () => wrapper.findComponentByTestId('resolve-checkbox');
+    const findUnresolveCheckbox = () => wrapper.findComponentByTestId('unresolve-checkbox');
+    const findDraftButton = () => wrapper.findComponentByTestId('add-to-review-button');
 
     const markdownEditorStub = {
       MarkdownEditor: stubComponent(MarkdownEditor, {

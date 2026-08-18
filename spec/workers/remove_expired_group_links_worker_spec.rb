@@ -51,41 +51,16 @@ RSpec.describe RemoveExpiredGroupLinksWorker, feature_category: :system_access d
           subject.perform
         end
 
-        context 'with skip_group_share_unlink_auth_refresh feature flag disabled' do
-          before do
-            stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
-          end
+        it 'removes project authorization', :sidekiq_inline do
+          shared_group = group_group_link.shared_group
+          shared_with_group = group_group_link.shared_with_group
+          project = create(:project, group: shared_group)
 
-          it 'removes project authorization', :sidekiq_inline do
-            shared_group = group_group_link.shared_group
-            shared_with_group = group_group_link.shared_with_group
-            project = create(:project, group: shared_group)
+          user = create(:user)
+          shared_with_group.add_maintainer(user)
 
-            user = create(:user)
-            shared_with_group.add_maintainer(user)
-
-            expect { subject.perform }.to(
-              change { user.can?(:read_project, project) }.from(true).to(false))
-          end
-        end
-
-        context 'with skip_group_share_unlink_auth_refresh feature flag enabled' do
-          before do
-            stub_feature_flags(skip_group_share_unlink_auth_refresh: true)
-          end
-
-          it 'does not remove project authorization', :sidekiq_inline do
-            shared_group = group_group_link.shared_group
-            shared_with_group = group_group_link.shared_with_group
-            project = create(:project, group: shared_group)
-
-            user = create(:user)
-            shared_with_group.add_maintainer(user)
-
-            subject.perform
-
-            expect(user.can?(:read_project, project)).to be_truthy
-          end
+          expect { subject.perform }.to(
+            change { user.can?(:read_project, project) }.from(true).to(false))
         end
       end
 

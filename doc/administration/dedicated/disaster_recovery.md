@@ -3,25 +3,33 @@ stage: GitLab Dedicated
 group: Environment Automation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Recovery objectives, failover process, and regional backup strategies for GitLab Dedicated instances.
-title: Disaster recovery for GitLab Dedicated
+title: Disaster recovery for GitLab Dedicated and GitLab Dedicated for Government
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Dedicated
+- Offering: GitLab Dedicated, GitLab Dedicated for Government
 
 {{< /details >}}
 
-GitLab Dedicated provides automatic disaster recovery to restore your instance if your primary
-region becomes unavailable. To be eligible for the full recovery objectives:
+GitLab Dedicated and GitLab Dedicated for Government provide disaster recovery to restore your
+instance if your primary region becomes unavailable. Recovery objectives, replication behavior,
+and the failover process depend on whether your environment has a secondary region configured
+for Geo-based failover.
+
+## Recovery objectives
+
+{{< tabs >}}
+
+{{< tab title="GitLab Dedicated" >}}
+
+To be eligible for the full recovery objectives:
 
 - Configure a primary and secondary region when you [create your instance](create_instance/_index.md).
 - Select regions [supported by GitLab Dedicated](create_instance/data_residency_high_availability.md#supported-regions).
 
 If no secondary region is configured, recovery is limited to backup restoration.
-
-## Recovery objectives
 
 GitLab Dedicated provides disaster recovery with these recovery objectives:
 
@@ -30,7 +38,28 @@ GitLab Dedicated provides disaster recovery with these recovery objectives:
 - Recovery Point Objective (RPO): Data loss is limited to a maximum of four hours of the most
   recent changes, depending on when the disaster occurs relative to the last backup.
 
+{{< /tab >}}
+
+{{< tab title="GitLab Dedicated for Government" >}}
+
+GitLab Dedicated for Government does not use Geo-based secondary-region failover. Recovery
+relies on backup restoration. The recovery targets match those for GitLab Dedicated
+environments without a secondary region configured:
+
+- Recovery Time Objective (RTO): Service is restored within eight hours. Larger repositories
+  or databases can extend recovery time.
+- Recovery Point Objective (RPO): Data loss is limited to a maximum of four hours of the most
+  recent changes.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Geo replication
+
+{{< tabs >}}
+
+{{< tab title="GitLab Dedicated" >}}
 
 When you create your instance, you select a primary region and a secondary region for
 your environment. Geo continuously replicates data between these regions, including:
@@ -38,6 +67,18 @@ your environment. Geo continuously replicates data between these regions, includ
 - Database content
 - Repository storage
 - Object storage
+
+{{< /tab >}}
+
+{{< tab title="GitLab Dedicated for Government" >}}
+
+GitLab Dedicated for Government does not support Geo. Your instance runs in a single
+AWS GovCloud region (US-West), with backups replicated to a separate AWS GovCloud region
+(US-East) for redundancy.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Automated backups
 
@@ -96,6 +137,10 @@ GitLab does not provide:
 
 ## Failover process
 
+{{< tabs >}}
+
+{{< tab title="GitLab Dedicated" >}}
+
 When your instance becomes unavailable due to a complete region failure or critical component
 failure that cannot be quickly recovered, the GitLab Dedicated team:
 
@@ -121,6 +166,23 @@ GitLab communicates with you through one or more of:
 
 GitLab may establish a temporary Slack channel and Zoom bridge to coordinate with your team
 throughout the recovery process.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Dedicated for Government" >}}
+
+GitLab Dedicated for Government does not have a secondary region to fail over to. If your
+instance becomes unavailable due to a complete region failure, the GitLab Dedicated team
+restores your instance from the most recent backup in your backup region.
+
+Throughout the process, GitLab communicates with you through one or more of:
+
+- Slack
+- Support tickets
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Related topics
 

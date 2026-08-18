@@ -82,13 +82,18 @@ module Gitlab
         end
 
         def search_pattern
-          # When search contains wildcards, use restrictive pattern to match exact query
           if wildcard_search?
-            [[prefix, search].compact.join]
+            [[prefix, glob_safe_search].compact.join]
           else
             # **/* allows to match any level of nesting
-            [[prefix, "**/*", search, "*"].compact.join]
+            [[prefix, "**/*", glob_safe_search, "*"].compact.join]
           end
+        end
+
+        def glob_safe_search
+          # Escape every git-wildmatch metacharacter except '*' so Gitaly's ListRefs agrees with RefMatcher.
+          # wildmatch has no brace expansion, so {} stay literal in both engines.
+          search&.gsub(/[?\[\]\\]/) { |char| "\\#{char}" }
         end
 
         def wildcard_search?

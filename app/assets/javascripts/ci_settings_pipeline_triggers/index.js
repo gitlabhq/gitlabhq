@@ -1,6 +1,6 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import TriggersList from './components/triggers_list.vue';
 
@@ -25,19 +25,13 @@ export default (containerId = 'js-ci-pipeline-triggers-list') => {
 
   const initTriggers = parseJsonArray(containerEl.dataset.triggers);
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'TriggersListRoot',
     apolloProvider,
-    components: {
-      TriggersList,
-    },
-    render(h) {
-      return h(TriggersList, {
-        props: {
-          initTriggers,
-        },
-      });
+    component: TriggersList,
+    props: {
+      initTriggers,
     },
   });
 };

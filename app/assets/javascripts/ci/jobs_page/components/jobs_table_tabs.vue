@@ -43,7 +43,7 @@ export default {
       default: () => {},
     },
   },
-  emits: ['fetchJobsByStatus'],
+  emits: ['fetch-jobs-by-status'],
   computed: {
     tabs() {
       return [
@@ -78,7 +78,7 @@ export default {
         :title-link-attributes="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
           'data-testid': tab.testId,
         } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-        @click="$emit('fetchJobsByStatus', tab.scope)"
+        @click="$emit('fetch-jobs-by-status', tab.scope)"
       >
         <template #title>
           <span>{{ tab.text }}</span>

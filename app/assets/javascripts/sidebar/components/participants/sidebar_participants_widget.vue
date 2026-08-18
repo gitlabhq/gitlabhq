@@ -25,7 +25,7 @@ export default {
       type: String,
     },
   },
-  emits: ['fetch-error', 'toggleSidebar'],
+  emits: ['fetch-error', 'toggle-sidebar'],
   data() {
     return {
       participants: {},
@@ -79,6 +79,6 @@ export default {
     :participant-count="participantCount"
     :lazy="false"
     class="block participants"
-    @toggleSidebar="$emit('toggleSidebar')"
+    @toggle-sidebar="$emit('toggle-sidebar')"
   />
 </template>

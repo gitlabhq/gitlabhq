@@ -1,9 +1,11 @@
+import initIssuablePopovers from '~/issuable/popover';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { renderGlql } from '~/behaviors/markdown/render_glql';
 import { renderJSONTable } from '~/behaviors/markdown/render_json_table';
 import { renderImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
 import renderSandboxedMermaid from '~/behaviors/markdown/render_sandboxed_mermaid';
-import renderStickyTableHeaders from '~/behaviors/markdown/render_table_headers';
+import renderMarkdownTables from '~/behaviors/markdown/render_markdown_tables';
+import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/behaviors/markdown/render_glql', () => ({
   renderGlql: jest.fn(),
@@ -20,7 +22,17 @@ jest.mock('~/behaviors/markdown/render_image_lightbox', () => ({
 
 jest.mock('~/behaviors/markdown/render_sandboxed_mermaid', () => jest.fn());
 
-jest.mock('~/behaviors/markdown/render_table_headers', () => jest.fn());
+// Spy on renderMarkdownTables while keeping the real implementation, so the tests
+// below can observe what the rest of renderGFM sees once a table has been mounted.
+jest.mock('~/behaviors/markdown/render_markdown_tables', () => {
+  const { default: renderMarkdownTablesActual } = jest.requireActual(
+    '~/behaviors/markdown/render_markdown_tables',
+  );
+
+  return { __esModule: true, default: jest.fn(renderMarkdownTablesActual) };
+});
+
+jest.mock('~/issuable/popover', () => ({ __esModule: true, default: jest.fn() }));
 
 describe('renderGFM', () => {
   it('handles a missing element', () => {
@@ -107,28 +119,91 @@ describe('renderGFM', () => {
     });
   });
 
-  describe('rendering sticky table headers', () => {
+  describe('rendering markdown', () => {
     let element;
 
     beforeEach(() => {
       element = document.createElement('div');
       element.innerHTML = `
-        <table>
-          <thead><tr><th>Header 1</th><th>Header 2</th></tr></thead>
-          <tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>
-        </table>
-        <table class="code">
-          <thead><tr><th>Code Header</th></tr></thead>
-          <tbody><tr><td>Code Data</td></tr></tbody>
-        </table>
+        <div class="md">
+          <table>
+            <thead><tr><th>Header 1</th><th>Header 2</th></tr></thead>
+            <tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>
+          </table>
+          <table class="code">
+            <thead><tr><th>Code Header</th></tr></thead>
+            <tbody><tr><td>Code Data</td></tr></tbody>
+          </table>
+        </div>
       `;
     });
 
-    it('calls renderStickyTableHeaders with non-code tables', () => {
+    it('calls renderMarkdownTables with markdown tables, excluding code tables', () => {
       renderGFM(element);
 
-      const tables = Array.from(element.querySelectorAll('table:not(.code)'));
-      expect(renderStickyTableHeaders).toHaveBeenCalledWith(tables);
+      const tables = Array.from(element.querySelectorAll('.md table:not(.code)'));
+      expect(tables).toHaveLength(1);
+      expect(renderMarkdownTables).toHaveBeenCalledWith(tables);
+    });
+  });
+
+  describe('rendering markdown containing a table which is itself rendered', () => {
+    let element;
+
+    beforeEach(() => {
+      window.gon = { features: { markdownSortableTableColumns: true } };
+
+      element = document.createElement('div');
+      element.innerHTML = `
+        <div class="md">
+          <table>
+            <thead><tr><th>Reference</th><th>Image</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="/g/p/-/issues/1" class="gfm gfm-issue" data-reference-type="issue">#1</a>
+                </td>
+                <td>
+                  <a href="/uploads/image.png"><img src="/uploads/image.png" alt="Image"></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      document.body.appendChild(element);
+    });
+
+    afterEach(() => {
+      element.remove();
+    });
+
+    it('initialises popovers on the references present in the final DOM', async () => {
+      renderGFM(element);
+      await waitForPromises();
+
+      const reference = element.querySelector('.gfm-issue');
+      expect(reference).not.toBe(null);
+
+      expect(initIssuablePopovers).toHaveBeenCalled();
+      const [references] = initIssuablePopovers.mock.calls.at(-1);
+      expect(references).toHaveLength(1);
+      expect(references[0].isConnected).toBe(true);
+      expect(references[0]).toBe(reference);
+    });
+
+    it('renders image lightboxes for the images present in the final DOM', async () => {
+      renderGFM(element);
+      await waitForPromises();
+
+      const image = element.querySelector('img');
+      expect(image).not.toBe(null);
+
+      expect(renderImageLightbox).toHaveBeenCalled();
+      const [images] = renderImageLightbox.mock.calls.at(-1);
+      expect(images).toHaveLength(1);
+      expect(images[0].isConnected).toBe(true);
+      expect(images[0]).toBe(image);
     });
   });
 });

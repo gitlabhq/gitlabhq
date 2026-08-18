@@ -7,6 +7,7 @@ import CreateTokenModal from './create_token_modal.vue';
 import RevokeTokenButton from './revoke_token_button.vue';
 
 export default {
+  name: 'TokenTable',
   components: {
     GlEmptyState,
     GlTable,

@@ -16,9 +16,6 @@ describe('Brand Logo component', () => {
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(BrandLogo, {
-      provide: {
-        rootPath: '/',
-      },
       propsData: {
         ...defaultPropsData,
         ...props,
@@ -34,6 +31,12 @@ describe('Brand Logo component', () => {
       createWrapper();
       expect(findBrandLogo().exists()).toBe(true);
       expect(findBrandLogo().element.src).toBe(defaultPropsData.logoUrl);
+    });
+
+    it('links to the homepage', () => {
+      createWrapper();
+
+      expect(wrapper.find('a').attributes('href')).toBe('/');
     });
 
     it('when logoUrl given empty', () => {

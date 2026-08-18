@@ -29,9 +29,9 @@ describe('DropdownContentsCreateView', () => {
     });
   };
 
-  const findColorSelectorInput = () => wrapper.findByTestId('selected-color');
-  const findLabelTitleInput = () => wrapper.findByTestId('label-title');
-  const findCreateClickButton = () => wrapper.findByTestId('create-click');
+  const findColorSelectorInput = () => wrapper.findComponentByTestId('selected-color');
+  const findLabelTitleInput = () => wrapper.findComponentByTestId('label-title');
+  const findCreateClickButton = () => wrapper.findComponentByTestId('create-click');
   const findAllLinks = () => wrapper.find('.dropdown-content').findAllComponents(GlLink);
 
   beforeEach(() => {

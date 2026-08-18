@@ -60,7 +60,6 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         subject.finish!
 
         expect(File).to exist(File.join(destination, 'manifests/default', project.repository.relative_path, "#{backup_id}.toml"))
-        expect(File).to exist(File.join(destination, 'manifests/default', project.repository.relative_path, "+latest.toml"))
       end
 
       it 'erases any existing repository backups' do

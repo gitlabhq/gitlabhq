@@ -43,18 +43,15 @@ module QA
         {
           'using a personal access token' => {
             authentication_token_type: :personal_access_token,
-            maven_header_name: 'Private-Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/556461'
+            maven_header_name: 'Private-Token'
           },
           'using a project deploy token' => {
             authentication_token_type: :project_deploy_token,
-            maven_header_name: 'Deploy-Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/556459'
+            maven_header_name: 'Deploy-Token'
           },
           'using a ci job token' => {
             authentication_token_type: :ci_job_token,
-            maven_header_name: 'Job-Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/556460'
+            maven_header_name: 'Job-Token'
           }
         }
       end
@@ -82,7 +79,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package and installs', testcase: params[:testcase] do
+        it 'publishes a nuget package and installs' do
           create(:commit, project: project, actions: [
             {
               action: 'update',

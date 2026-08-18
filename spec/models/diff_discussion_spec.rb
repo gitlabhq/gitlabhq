@@ -127,7 +127,7 @@ RSpec.describe DiffDiscussion do
 
       context 'when commit_id is not present' do
         it 'returns empty hash' do
-          expect(subject.merge_request_version_params).to eq(nil)
+          expect(subject.merge_request_version_params).to be_nil
         end
       end
 

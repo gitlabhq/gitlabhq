@@ -144,6 +144,28 @@ describe('view change detection', () => {
       ).toBe(false);
     });
 
+    it('returns true when groupOrder differs', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: {
+            groupOrder: ['status:gid://gitlab/Status/2', 'status:gid://gitlab/Status/1'],
+          },
+          baselinePreferences: {
+            groupOrder: ['status:gid://gitlab/Status/1', 'status:gid://gitlab/Status/2'],
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when groupOrder matches', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { groupOrder: ['status:gid://gitlab/Status/1'] },
+          baselinePreferences: { groupOrder: ['status:gid://gitlab/Status/1'] },
+        }),
+      ).toBe(false);
+    });
+
     it('treats missing tracked keys as empty arrays and visibleGroups as null', () => {
       expect(
         preferencesChanged({

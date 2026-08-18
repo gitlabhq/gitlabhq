@@ -40,3 +40,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Organizations::Menus::SettingsMenu.prepend_mod

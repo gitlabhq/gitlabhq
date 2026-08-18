@@ -150,6 +150,8 @@ These shortcuts are available when browsing the files in a project (go to
 | <kbd>Escape</kbd> | Go back to the **Find File** screen (only while searching for files, **Code** > **Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
 | <kbd>.</kbd>      | Open the Web IDE. |
+| <kbd>Shift</kbd>+<kbd>f</kbd> | Show or hide the [file tree browser](project/repository/files/file_tree_browser.md). |
+| <kbd>f</kbd>      | Open the search panel (only while the file tree browser is open). |
 
 ### Repository graph
 
@@ -302,12 +304,6 @@ These shortcuts are available when viewing [epics](group/epics/_index.md):
 
 ## Disable keyboard shortcuts
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
-
-{{< /history >}}
-
 To disable keyboard shortcuts:
 
 1. In the upper-right corner, select your avatar.
@@ -316,12 +312,6 @@ To disable keyboard shortcuts:
 1. Select **Save changes**.
 
 ## Enable keyboard shortcuts
-
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
-
-{{< /history >}}
 
 To enable keyboard shortcuts:
 

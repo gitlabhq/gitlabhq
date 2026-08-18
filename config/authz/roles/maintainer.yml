@@ -59,6 +59,7 @@ project:
   - admin_web_hook
   - admin_wiki
   - apply_security_scan_profiles
+  - block_ai_catalog_mcp_server
   - change_commit_committer_check
   - change_commit_committer_name_check
   - change_push_rules
@@ -88,6 +89,7 @@ project:
   - create_protected_tags
   - create_resource_access_tokens
   - create_runners
+  - create_security_scan_profiles
   - create_service_account
   - create_squash_option
   - create_web_ide_terminal
@@ -97,6 +99,7 @@ project:
   - delete_freeze_period
   - delete_job_artifact
   - delete_protected_tag
+  - delete_security_scan_profiles
   - delete_service_account
   - delete_squash_option
   - delete_timelog
@@ -109,6 +112,7 @@ project:
   - destroy_upload
   - enable_container_scanning_for_registry
   - enable_secret_push_protection
+  - execute_vulnerability_duo_workflow
   - force_cancel_build
   - import_project_members_from_another_project
   - invite_member
@@ -177,6 +181,7 @@ project:
   - update_cvs_for_dependency_scanning
   - update_duo_setting
   - update_external_status_check
+  - update_feature_flags_minimum_role_setting
   - update_freeze_period
   - update_pages
   - update_pipeline_variable_override_setting
@@ -186,6 +191,7 @@ project:
   - update_runners_registration_token
   - update_sec_ai_workflow_settings
   - update_secret_detection_validity_check
+  - update_security_scan_profiles
   - update_security_setting
   - update_snippet
   - update_squash_option
@@ -229,10 +235,12 @@ group:
   - create_jira_connect_subscription
   - create_project_fork
   - create_protected_branch
+  - create_security_scan_profiles
   - create_subgroup
   - create_virtual_registry
   - create_work_item_type
   - delete_custom_emoji
+  - delete_security_scan_profiles
   - destroy_package
   - destroy_protected_branch
   - destroy_upload
@@ -266,6 +274,9 @@ group:
   - update_product_analytics_settings
   - update_protected_branch
   - update_secret_detection_validity_check
+  - update_security_scan_profiles
+  - update_user_achievement
+  - update_user_achievement_award_message
   - update_virtual_registry
   - update_work_item_setting
   - update_work_item_type

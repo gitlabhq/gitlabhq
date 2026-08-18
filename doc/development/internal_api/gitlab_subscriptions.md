@@ -5,8 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Subscriptions Internal API
 ---
 
-The GitLab Subscriptions internal API is used by the CustomersDot application,
-it cannot be used by other consumers. This documentation is intended for people
+The GitLab Subscriptions internal API is used by the CustomersDot application.
+It cannot be used by other consumers. This documentation is intended for people
 working on the GitLab and CustomersDot codebases.
 
 ## Add new endpoints
@@ -135,7 +135,7 @@ Parameters:
 | `shared_runners_minutes_limit` | integer | no | Compute minutes quota |
 | `extra_shared_runners_minutes_limit` |  integer | no | Extra compute minutes |
 | `additional_purchased_storage_size` |  integer | no | Additional storage size |
-| `additional_purchased_storage_ends_on` |  date | no | Additional purchased storage Ends on |
+| `additional_purchased_storage_ends_on` |  date | no | Additional purchased storage ends on |
 | `gitlab_subscription_attributes` |  hash | no |  Hash object containing GitLab Subscription attributes. Accepts `seats`,`max_seats_used`,`plan_code`,`end_date`,`auto_renew`,`trial`,`trial_ends_on`,`trial_starts_on`,`trial_extension_type` |
 
 Example request:
@@ -171,7 +171,7 @@ Example response:
 
 #### Provision a namespace
 
-Use to provision subscription related resources for a root namespace. This includes base product, storage, compute minutes, and add-on purchases.
+Use a POST command to provision subscription related resources for a root namespace. This includes base product, storage, compute minutes, and add-on purchases.
 The endpoint processes resources independently - if one resource fails to provision, others continue to be provisioned.
 
 You can provision one or more resources in a single request based on the parameters provided.
@@ -223,7 +223,7 @@ Compute Minutes supported attributes:
 | `shared_runners_minutes_limit`       | integer   | no         | Compute minutes quota |
 | `extra_shared_runners_minutes_limit` | integer   | no         | Extra compute minutes |
 
-Add-on Purchases Supported attributes:
+Add-on Purchases supported attributes:
 
 | Attribute      | Type      | Required   | Description                                                                                                                        |
 | :------------  | :-------- | :--------- | :------------                                                                                                                      |
@@ -852,12 +852,6 @@ Example response:
 ```
 
 ### Compute quota provisioning (deprecated)
-
-{{< history >}}
-
-- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
-
-{{< /history >}}
 
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.

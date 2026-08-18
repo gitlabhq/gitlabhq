@@ -2,6 +2,7 @@
 /app/assets/javascripts/lib/utils/path_helpers/*.js
 /ee/app/assets/javascripts/lib/utils/path_helpers/*.js
 /fixtures/lib/gitlab/graphql/
+/ee/frontend_islands/
 /node_modules/
 /public/
 /vendor/

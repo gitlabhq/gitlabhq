@@ -1,0 +1,14 @@
+---
+table_name: ai_agent_identities
+classes:
+- Ai::ExternalAgents::AgentIdentity
+feature_categories:
+- software_composition_analysis
+description: Stores registered agent identities for GAIG. Each record represents a
+  specific agent type running on a machine, authenticated as a specific user, against
+  a project.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241216
+milestone: '19.3'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects

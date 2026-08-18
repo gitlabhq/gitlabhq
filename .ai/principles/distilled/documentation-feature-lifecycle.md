@@ -1,6 +1,6 @@
 ---
-source_checksum: ab2f08e20f161210
-distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
+source_checksum: bba6373d18de99ee
+distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -64,6 +64,10 @@ distilled_at_sha: 9eb89263152259e883603c908db1e1cea6a1a74e
 
 - To update or remove a release note after the deadline: update the `gitlab` repository MR, backport to the stable branch, and trigger a new `docs-gitlab-com` pipeline for the stable branch; verify the update on `docs.gitlab.com` by selecting the version in the upper-right corner.
 - To remove a feature release note, delete only the associated Markdown file; no other files require adjustment.
+
+### Release Notes — Category Validation
+
+- When a release note MR fails the `docs-lint release-note-categories` CI/CD job due to a renamed or removed category in an older release note, add the `pipeline:skip-release-note-categories` label to skip validation.
 
 ### Upgrade Notes (Version-Specific Changes)
 
