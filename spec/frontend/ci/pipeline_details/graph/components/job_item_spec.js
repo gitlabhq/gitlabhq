@@ -32,6 +32,8 @@ describe('pipeline graph job item', () => {
   const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
   const findActionComponent = () => wrapper.findComponentByTestId('ci-action-button');
   const findJobItemContent = () => wrapper.findByTestId('ci-job-item-content');
+  const findJobNameRow = () => wrapper.findByTestId('job-name-row');
+  const findStageName = () => wrapper.findByTestId('stage-name-in-job');
   const findBadge = () => wrapper.findByTestId('job-bridge-badge');
   const findJobSourceBadge = () => wrapper.findComponent(JobSourceBadge);
   const findJobCiIcon = () => wrapper.findComponent(CiIcon);
@@ -184,6 +186,39 @@ describe('pipeline graph job item', () => {
       createWrapper({ props: { job: mockFailedJob } });
 
       expect(findActionComponent().props('tooltipText')).toBe('Retry');
+    });
+
+    describe('spacing', () => {
+      it('reserves room next to the job name', () => {
+        createWrapper();
+
+        expect(findJobNameRow().classes('gl-pr-6')).toBe(true);
+      });
+
+      it('reserves room when the user cannot run the action', () => {
+        createWrapper({ props: { job: mockJobWithUnauthorizedAction } });
+
+        expect(findJobNameRow().classes('gl-pr-6')).toBe(true);
+      });
+
+      it('does not reserve room when there is no action icon', () => {
+        createWrapper({ props: { job: mockJobWithoutDetails } });
+
+        expect(findActionComponent().exists()).toBe(false);
+        expect(findJobNameRow().classes('gl-pr-6')).toBe(false);
+      });
+
+      it('reserves room next to the stage name', () => {
+        createWrapper({ props: { stageName: 'build' } });
+
+        expect(findStageName().classes('gl-pr-6')).toBe(true);
+      });
+
+      it('does not reserve room next to the stage name when there is no action icon', () => {
+        createWrapper({ props: { job: mockJobWithoutDetails, stageName: 'build' } });
+
+        expect(findStageName().classes('gl-pr-6')).toBe(false);
+      });
     });
   });
 

@@ -146,6 +146,13 @@ class:
 - `get_` for a single object, `list_` for a collection.
 - `save_` for create and update field mutations. The presence of `id` defines whether the operation is a create or update action.
   Parameters required on create should be marked as such in the tool definition.
+  Intentional exception: a `save_` tool may also fold non-field-mutation lifecycle actions (for
+  example `retry`, `cancel`) behind an `action` parameter, when those actions operate on the same
+  resource the tool creates and don't warrant a dedicated tool of their own. Route on the presence
+  of the resource's own ID rather than the parent identifier. For example, `save_pipeline`
+  treats an absent `pipeline_id` as create, and a present `pipeline_id` plus `action` as a lifecycle
+  transition on that pipeline. Document this in the tool description and record it as an
+  intentional exception (see below).
 - `delete_` for actual delete operations. These should never be folded into `save_` to allow for better governance handling.
 - `add_` or other deviations from the pattern are reserved for objects that do not have a typical CRUD shape, such as commits, branches, or sessions (for example `add_commit`, `add_branch`).
 

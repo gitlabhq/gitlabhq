@@ -506,25 +506,25 @@ Example:
 List all failed pipelines on the main branch for project gitlab-org/gitlab
 ```
 
-## `manage_pipeline`
+## `save_pipeline`
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247806) the `list` action in favor of the `list_pipelines` tool in GitLab 19.3.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605855) in GitLab 19.3.
 
 {{< /history >}}
 
-Manages CI/CD pipelines in a GitLab project. To list pipelines, use the `list_pipelines` tool instead.
+Runs, retries, or cancels a CI/CD pipeline in a GitLab project. To update pipeline metadata or
+delete a pipeline, use the `manage_pipeline` tool instead. To list pipelines, use the
+`list_pipelines` tool instead.
 
 | Parameter     | Type    | Required    | Description |
 |---------------|---------|-------------|-------------|
-| `id`          | string  | Yes         | ID or URL-encoded path of the project. |
-| `ref`         | string  | No          | Branch or tag name. If set, creates a new pipeline on a branch or tag. |
-| `pipeline_id` | integer | No          | ID of the pipeline. If only this parameter is set, deletes a pipeline and all related data. |
-| `retry`       | boolean | No          | If `true` and `pipeline_id` is set, retries failed or canceled pipeline jobs. |
-| `cancel`      | boolean | No          | If `true` and `pipeline_id` is set, cancels all jobs in a running pipeline. |
-| `name`        | string  | No          | Name of the pipeline. If this parameter and `pipeline_id` are set, updates the pipeline metadata. |
+| `url`         | string  | No          | GitLab URL of the project. Used only to create a pipeline. Provide this, or `project_id`. |
+| `project_id`  | string  | No          | ID or full path of the project. Used only to create a pipeline. Provide this, or `url`. |
+| `pipeline_id` | integer | No          | ID of an existing pipeline to target. When set, requires `action`. Omit to create a new pipeline. |
+| `action`      | string  | No          | Lifecycle action to perform on `pipeline_id`: `retry` or `cancel`. Required when `pipeline_id` is set. |
+| `ref`         | string  | No          | Branch or tag name. Required to create a pipeline (when `pipeline_id` is absent). |
 | `variables`   | array   | No          | Pipeline variables in array format (`[{key, value, variable_type}]`). |
 | `inputs`      | hash    | No          | Pipeline input parameters as key-value pairs. |
 
@@ -534,12 +534,6 @@ Examples:
 
   ```plaintext
   Create a pipeline on the main branch for project gitlab-org/gitlab
-  ```
-
-- Update a pipeline:
-
-  ```plaintext
-  Rename pipeline 12345 to "My deploy pipeline" in project gitlab-org/gitlab
   ```
 
 - Retry a pipeline:
@@ -552,6 +546,34 @@ Examples:
 
   ```plaintext
   Cancel pipeline 12345 in project gitlab-org/gitlab
+  ```
+
+## `manage_pipeline`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247806) the `list` action in favor of the `list_pipelines` tool in GitLab 19.3.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605855) the `create`, `retry`, and `cancel` actions in favor of the `save_pipeline` tool in GitLab 19.3.
+
+{{< /history >}}
+
+Updates pipeline metadata or deletes a pipeline in a GitLab project. To create, retry, or cancel a
+pipeline, use the `save_pipeline` tool instead. To list pipelines, use the `list_pipelines` tool
+instead.
+
+| Parameter     | Type    | Required    | Description |
+|---------------|---------|-------------|-------------|
+| `id`          | string  | Yes         | ID or URL-encoded path of the project. |
+| `pipeline_id` | integer | Yes         | ID of the pipeline. If only this parameter is set, deletes a pipeline and all related data. |
+| `name`        | string  | No          | Name of the pipeline. If this parameter and `pipeline_id` are set, updates the pipeline metadata. |
+
+Examples:
+
+- Update a pipeline:
+
+  ```plaintext
+  Rename pipeline 12345 to "My deploy pipeline" in project gitlab-org/gitlab
   ```
 
 - Delete a pipeline:

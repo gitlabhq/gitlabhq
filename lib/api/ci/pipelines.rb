@@ -103,11 +103,6 @@ module API
           use :create_pipeline_params
         end
 
-        route_setting :mcp,
-          tool_name: :create_pipeline,
-          params: [:id, :ref, :variables, :inputs],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
-          resource_name: "project"
         route_setting :authorization, permissions: :create_pipeline, boundary_type: :project
         route_setting :log_safety, { unsafe: %w[inputs] }
         post ':id/pipeline', urgency: :low, feature_category: :pipeline_composition do
@@ -414,11 +409,6 @@ module API
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
 
-        route_setting :mcp,
-          tool_name: :retry_pipeline,
-          params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
-          resource_name: "pipeline"
         route_setting :authorization, permissions: :retry_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/retry', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
@@ -446,11 +436,6 @@ module API
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
 
-        route_setting :mcp,
-          tool_name: :cancel_pipeline,
-          params: [:id, :pipeline_id],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
-          resource_name: "pipeline"
         route_setting :authorization, permissions: :cancel_pipeline, boundary_type: :project
         post ':id/pipelines/:pipeline_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize! :cancel_pipeline, pipeline

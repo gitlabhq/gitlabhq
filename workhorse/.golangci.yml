@@ -136,7 +136,7 @@ linters:
             - github.com/go-redsync/redsync/v4/redis/goredis/v9
             - github.com/hashicorp/golang-lru/v2
             # GitLab Knowledge Graph proto stubs
-            - gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb
+            - gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb
             # gRPC and Protocol Buffers
             - google.golang.org/grpc
             - google.golang.org/grpc/codes

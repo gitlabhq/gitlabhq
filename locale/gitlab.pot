@@ -9067,13 +9067,13 @@ msgstr ""
 msgid "AiPowered|Reset"
 msgstr ""
 
-msgid "AiPowered|Reset %{groupName} to inherited value"
-msgstr ""
-
 msgid "AiPowered|Reset %{groupName} to inherited value?"
 msgstr ""
 
-msgid "AiPowered|Reset to inherited value"
+msgid "AiPowered|Reset override"
+msgstr ""
+
+msgid "AiPowered|Reset override for %{groupName}"
 msgstr ""
 
 msgid "AiPowered|Resets the group to its inherited value — the nearest ancestor with an override, or the instance default if none exists."
@@ -9160,7 +9160,7 @@ msgstr ""
 msgid "AiPowered|These settings are disabled because GitLab Duo availability is set to always on."
 msgstr ""
 
-msgid "AiPowered|This group has an admin lock. Click Reset to remove it."
+msgid "AiPowered|This group has an admin lock. Click '%{action}' to change this value."
 msgstr ""
 
 msgid "AiPowered|This setting applies to the entire instance. By turning on these features, you accept the %{termsLinkStart}GitLab Duo AI Terms%{termsLinkEnd} unless your organization has a separate agreement with GitLab that governs AI usage."
@@ -12199,9 +12199,6 @@ msgstr ""
 msgid "ArtifactRegistry|Name cannot be longer than %{maxLength} characters."
 msgstr ""
 
-msgid "ArtifactRegistry|Name has already been taken."
-msgstr ""
-
 msgid "ArtifactRegistry|Name is required."
 msgstr ""
 
@@ -12292,9 +12289,6 @@ msgid "ArtifactRegistry|Repository URL copied to clipboard."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository details"
-msgstr ""
-
-msgid "ArtifactRegistry|Repository not found."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository setup"

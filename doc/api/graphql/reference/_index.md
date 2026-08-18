@@ -7889,7 +7889,7 @@ Arguments:
 | <a id="mutation-createcontainerprotectionrepositoryrule-minimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Introduced in GitLab 17.11. Status: Experiment. Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
 | <a id="mutation-createcontainerprotectionrepositoryrule-minimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="mutation-createcontainerprotectionrepositoryrule-projectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
-| <a id="mutation-createcontainerprotectionrepositoryrule-repositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path. |
+| <a id="mutation-createcontainerprotectionrepositoryrule-repositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path. |
 
 Fields:
 
@@ -18007,7 +18007,7 @@ Arguments:
 | <a id="mutation-updatecontainerprotectionrepositoryrule-id"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container repository protection rule to be updated. |
 | <a id="mutation-updatecontainerprotectionrepositoryrule-minimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Introduced in GitLab 17.11. Status: Experiment. Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
 | <a id="mutation-updatecontainerprotectionrepositoryrule-minimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
-| <a id="mutation-updatecontainerprotectionrepositoryrule-repositorypathpattern"></a>`repositoryPathPattern` | [`String`](#string) | Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path. |
+| <a id="mutation-updatecontainerprotectionrepositoryrule-repositorypathpattern"></a>`repositoryPathPattern` | [`String`](#string) | Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path. |
 
 Fields:
 
@@ -38618,7 +38618,7 @@ Fields:
 | <a id="containerprotectionrepositoryrule-id"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container repository protection rule. |
 | <a id="containerprotectionrepositoryrule-minimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Introduced in GitLab 17.11. Status: Experiment. Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
 | <a id="containerprotectionrepositoryrule-minimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
-| <a id="containerprotectionrepositoryrule-repositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path. |
+| <a id="containerprotectionrepositoryrule-repositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path. |
 
 ### `ContainerProtectionTagRule`
 
@@ -40421,8 +40421,7 @@ Fields:
 
 {{< /details >}}
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -40467,8 +40466,7 @@ Fields:
 
 {{< /details >}}
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -55732,8 +55730,7 @@ Arguments:
 
 {{< /details >}}
 
-Ancestor dependency paths for a dependency used by the project. \
-          Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+Ancestor dependency paths for a dependency used by the project. Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -69576,10 +69573,10 @@ Risk rating levels based on score ranges.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="riskrating-critical"></a>`CRITICAL` | Critical risk (76–100). |
-| <a id="riskrating-high"></a>`HIGH` | High risk (51–75). |
-| <a id="riskrating-low"></a>`LOW` | Low risk (0–25). |
-| <a id="riskrating-medium"></a>`MEDIUM` | Medium risk (26–50). |
+| <a id="riskrating-critical"></a>`CRITICAL` | Critical risk (76-100). |
+| <a id="riskrating-high"></a>`HIGH` | High risk (51-75). |
+| <a id="riskrating-low"></a>`LOW` | Low risk (0-25). |
+| <a id="riskrating-medium"></a>`MEDIUM` | Medium risk (26-50). |
 | <a id="riskrating-unknown"></a>`UNKNOWN` | Unknown risk level. |
 
 ### `SastUiComponentSize`
@@ -73554,8 +73551,7 @@ Fields:
 
 {{< /details >}}
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 

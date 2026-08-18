@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 
-	gkgpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb"
+	orbitpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
@@ -44,12 +44,12 @@ var cache = connectionsCache{
 	connections: make(map[cacheKey]*grpc.ClientConn),
 }
 
-func getClient(server GkgServer) (gkgpb.KnowledgeGraphServiceClient, error) {
+func getClient(server GkgServer) (orbitpb.OrbitServiceClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
 		return nil, err
 	}
-	return gkgpb.NewKnowledgeGraphServiceClient(conn), nil
+	return orbitpb.NewOrbitServiceClient(conn), nil
 }
 
 // getOrCreateConnection returns a cached gRPC connection or creates a new one.

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	gkgpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb"
+	orbitpb "gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
@@ -115,19 +115,19 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 	}
 	defer func() { _ = stream.CloseSend() }()
 
-	format := gkgpb.ResponseFormat_RESPONSE_FORMAT_RAW
+	format := orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW
 	if params.Format == "llm" {
-		format = gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM
+		format = orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM
 	}
 
-	queryType := gkgpb.QueryType_QUERY_TYPE_JSON
+	queryType := orbitpb.QueryType_QUERY_TYPE_JSON
 	if params.QueryType == queryTypeNamed {
-		queryType = gkgpb.QueryType_QUERY_TYPE_NAMED
+		queryType = orbitpb.QueryType_QUERY_TYPE_NAMED
 	}
 
-	initialMsg := &gkgpb.ExecuteQueryMessage{
-		Content: &gkgpb.ExecuteQueryMessage_Request{
-			Request: &gkgpb.ExecuteQueryRequest{
+	initialMsg := &orbitpb.ExecuteQueryMessage{
+		Content: &orbitpb.ExecuteQueryMessage_Request{
+			Request: &orbitpb.ExecuteQueryRequest{
 				Query:     params.Query,
 				Format:    format,
 				QueryType: queryType,
@@ -148,9 +148,9 @@ const maxStreamMessages = 10
 func (sq *SendQuery) recvLoop(
 	ctx context.Context,
 	w http.ResponseWriter, r *http.Request,
-	stream gkgpb.KnowledgeGraphService_ExecuteQueryClient,
+	stream orbitpb.OrbitService_ExecuteQueryClient,
 	params sendQueryParams,
-	format gkgpb.ResponseFormat,
+	format orbitpb.ResponseFormat,
 ) {
 	for range maxStreamMessages {
 		msg, err := stream.Recv()
@@ -160,15 +160,15 @@ func (sq *SendQuery) recvLoop(
 		}
 
 		switch c := msg.GetContent().(type) {
-		case *gkgpb.ExecuteQueryMessage_Redaction:
+		case *orbitpb.ExecuteQueryMessage_Redaction:
 			if err := sq.handleRedaction(ctx, r, stream, c.Redaction, params.ClientIP); err != nil {
 				fail.Request(w, r, err, fail.WithStatus(http.StatusBadGateway))
 				return
 			}
-		case *gkgpb.ExecuteQueryMessage_Result:
+		case *orbitpb.ExecuteQueryMessage_Result:
 			writeResultResponse(w, r, c.Result, format, params.McpID)
 			return
-		case *gkgpb.ExecuteQueryMessage_Error:
+		case *orbitpb.ExecuteQueryMessage_Error:
 			writeErrorResponse(w, r, c.Error, params.McpID)
 			return
 		}
@@ -209,8 +209,8 @@ func isContextDone(ctx context.Context, err error) bool {
 func (sq *SendQuery) handleRedaction(
 	ctx context.Context,
 	originalReq *http.Request,
-	stream gkgpb.KnowledgeGraphService_ExecuteQueryClient,
-	exchange *gkgpb.RedactionExchange,
+	stream orbitpb.OrbitService_ExecuteQueryClient,
+	exchange *orbitpb.RedactionExchange,
 	clientIP string,
 ) error {
 	required := exchange.GetRequired()
@@ -223,10 +223,10 @@ func (sq *SendQuery) handleRedaction(
 		return fmt.Errorf("orbit.SendQuery: redaction callback: %v", err)
 	}
 
-	respMsg := &gkgpb.ExecuteQueryMessage{
-		Content: &gkgpb.ExecuteQueryMessage_Redaction{
-			Redaction: &gkgpb.RedactionExchange{
-				Content: &gkgpb.RedactionExchange_Response{
+	respMsg := &orbitpb.ExecuteQueryMessage{
+		Content: &orbitpb.ExecuteQueryMessage_Redaction{
+			Redaction: &orbitpb.RedactionExchange{
+				Content: &orbitpb.RedactionExchange_Response{
 					Response: redactionResp,
 				},
 			},
@@ -238,8 +238,8 @@ func (sq *SendQuery) handleRedaction(
 	return nil
 }
 
-func writeResultResponse(w http.ResponseWriter, r *http.Request, result *gkgpb.ExecuteQueryResult, format gkgpb.ResponseFormat, mcpID any) {
-	if format == gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM {
+func writeResultResponse(w http.ResponseWriter, r *http.Request, result *orbitpb.ExecuteQueryResult, format orbitpb.ResponseFormat, mcpID any) {
+	if format == orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM {
 		writeLLMResultResponse(w, r, result, mcpID)
 		return
 	}
@@ -266,7 +266,7 @@ func writeResultResponse(w http.ResponseWriter, r *http.Request, result *gkgpb.E
 // writeLLMResultResponse writes the raw goon body directly: text/plain for
 // REST callers, MCP text content for MCP callers. The JSON envelope is skipped
 // because goon is not JSON; wrapping it would escape every newline.
-func writeLLMResultResponse(w http.ResponseWriter, r *http.Request, result *gkgpb.ExecuteQueryResult, mcpID any) {
+func writeLLMResultResponse(w http.ResponseWriter, r *http.Request, result *orbitpb.ExecuteQueryResult, mcpID any) {
 	body := result.GetFormattedText()
 
 	w.Header().Del("Content-Length")
@@ -294,7 +294,7 @@ func writeLLMResultResponse(w http.ResponseWriter, r *http.Request, result *gkgp
 	}
 }
 
-func writeErrorResponse(w http.ResponseWriter, r *http.Request, qErr *gkgpb.ExecuteQueryError, mcpID any) {
+func writeErrorResponse(w http.ResponseWriter, r *http.Request, qErr *orbitpb.ExecuteQueryError, mcpID any) {
 	w.Header().Del("Content-Length")
 	w.Header().Set("Content-Type", "application/json")
 
@@ -332,7 +332,7 @@ func wrapMCPSuccess(resultJSON []byte, mcpID any) mcpResponse {
 	}
 }
 
-func buildQueryResponse(result *gkgpb.ExecuteQueryResult, format gkgpb.ResponseFormat) queryResponse {
+func buildQueryResponse(result *orbitpb.ExecuteQueryResult, format orbitpb.ResponseFormat) queryResponse {
 	var resp queryResponse
 
 	if md := result.GetMetadata(); md != nil {
@@ -341,7 +341,7 @@ func buildQueryResponse(result *gkgpb.ExecuteQueryResult, format gkgpb.ResponseF
 		resp.RowCount = md.GetRowCount()
 	}
 
-	if format == gkgpb.ResponseFormat_RESPONSE_FORMAT_LLM {
+	if format == orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM {
 		// LLM responses are written by writeLLMResultResponse with no envelope.
 		// Leave Result nil; callers should not consume it for LLM format.
 		return resp

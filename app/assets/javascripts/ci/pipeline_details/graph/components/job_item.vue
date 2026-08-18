@@ -240,6 +240,9 @@ export default {
         this.job.status?.label?.includes('(not allowed)')
       );
     },
+    hasActionButton() {
+      return Boolean(this.hasAction || this.hasUnauthorizedManualAction);
+    },
     unauthorizedManualActionIcon() {
       /*
         The action object is not available when the user cannot run the action.
@@ -345,7 +348,11 @@ export default {
       <div class="gl-flex gl-grow gl-items-center">
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pipeline-job-width gl-flex gl-flex-col gl-pl-3 gl-pr-3">
-          <div class="gl-flex gl-items-center">
+          <div
+            class="gl-flex gl-items-center"
+            :class="{ 'gl-pr-6': hasActionButton }"
+            data-testid="job-name-row"
+          >
             <div
               class="gl-line-clamp-2 gl-pr-1 gl-text-left gl-leading-normal gl-text-default"
               :title="job.name"
@@ -356,8 +363,9 @@ export default {
           </div>
           <div
             v-if="showStageName"
+            class="gl-truncate gl-text-left gl-text-sm gl-leading-normal gl-text-subtle"
+            :class="{ 'gl-pr-6': hasActionButton }"
             data-testid="stage-name-in-job"
-            class="gl-truncate gl-pr-6 gl-text-left gl-text-sm gl-leading-normal gl-text-subtle"
           >
             {{ stageName }}
           </div>

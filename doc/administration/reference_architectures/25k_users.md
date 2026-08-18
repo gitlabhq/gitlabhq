@@ -441,12 +441,6 @@ Refer to your preferred Load Balancer's documentation for further guidance.
   </a>
 </div>
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#set-up-components">
-    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
 ## Configure Consul
 
 Next, we set up the Consul servers.

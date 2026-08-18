@@ -39179,7 +39179,7 @@
             },
             {
               "name": "repositoryPathPattern",
-              "description": "Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path.",
+              "description": "Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -43998,7 +43998,7 @@
             },
             {
               "name": "repositoryPathPattern",
-              "description": "Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path.",
+              "description": "Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -210581,7 +210581,7 @@
             },
             {
               "name": "repositoryPathPattern",
-              "description": "Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path.",
+              "description": "Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

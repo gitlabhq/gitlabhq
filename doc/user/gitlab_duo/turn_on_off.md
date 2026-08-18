@@ -141,7 +141,7 @@ To clear the admin lock for a subgroup:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. In the **Namespace availability overrides** section, find the subgroup.
-1. In the row for the subgroup, select **Reset**.
+1. In the row for the subgroup, select **Reset override**.
 
 The subgroup returns to the instance default.
 Users with the Owner role for the subgroup can now control GitLab Duo availability.

@@ -718,7 +718,13 @@ export default {
         : this.groupPath;
     },
     shouldShowNamespaceSelector() {
-      return this.allowAnyNamespace || (this.isGroup && this.hasEpicsFeature);
+      // When the form asks for a project (Issues/Tasks/Incidents on a group page),
+      // keep creation project-scoped even if group Epic support would otherwise
+      // show the Group/project namespace selector.
+      return (
+        this.allowAnyNamespace ||
+        (this.isGroup && this.hasEpicsFeature && !this.showProjectSelector)
+      );
     },
     namespaceSelectorLabel() {
       return this.allowProjectsOnly ? __('Project') : __('Group/project');

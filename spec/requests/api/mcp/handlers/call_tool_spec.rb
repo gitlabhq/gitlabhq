@@ -307,16 +307,16 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
-  describe '#manage_pipeline' do
+  describe '#save_pipeline' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :running) }
     let_it_be(:cancelable_build) { create(:ci_build, :running, pipeline: pipeline) }
 
     context 'when creating a pipeline' do
       let(:tool_params) do
         {
-          name: 'manage_pipeline',
+          name: 'save_pipeline',
           arguments: {
-            id: project.full_path,
+            project_id: project.full_path,
             ref: project.default_branch
           }
         }
@@ -340,11 +340,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     context 'when canceling a pipeline' do
       let(:tool_params) do
         {
-          name: 'manage_pipeline',
+          name: 'save_pipeline',
           arguments: {
-            id: project.full_path,
             pipeline_id: pipeline.id,
-            cancel: true
+            action: 'cancel'
           }
         }
       end
@@ -364,11 +363,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
       let(:tool_params) do
         {
-          name: 'manage_pipeline',
+          name: 'save_pipeline',
           arguments: {
-            id: project.full_path,
             pipeline_id: failed_pipeline.id,
-            retry: true
+            action: 'retry'
           }
         }
       end
@@ -378,10 +376,68 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['isError']).to be_falsey
-        expect(json_response['result']['content'].first['text']).to include('Pipeline retried successfully')
+        expect(json_response['result']['structuredContent']).to include(
+          'action' => 'retry', 'id' => failed_pipeline.id
+        )
       end
     end
 
+    context 'with error handling' do
+      context 'with ambiguous parameters' do
+        let(:tool_params) do
+          { name: 'save_pipeline', arguments: { project_id: project.full_path } }
+        end
+
+        it 'returns clear error message' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include(
+            'Provide ref to create a pipeline, or pipeline_id and action'
+          )
+        end
+      end
+
+      context 'with pipeline_id but no action' do
+        let(:tool_params) do
+          { name: 'save_pipeline', arguments: { pipeline_id: pipeline.id } }
+        end
+
+        it 'returns clear error message' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include(
+            'Provide action: "retry" or "cancel" when pipeline_id is set'
+          )
+        end
+      end
+
+      context 'with non-existent ref' do
+        let(:tool_params) do
+          {
+            name: 'save_pipeline',
+            arguments: {
+              project_id: project.full_path,
+              ref: 'non-existent-branch'
+            }
+          }
+        end
+
+        it 'returns error for invalid reference' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include('Reference not found')
+        end
+      end
+    end
+  end
+
+  describe '#manage_pipeline' do
     context 'when deleting a pipeline' do
       let_it_be(:owner) { create(:user) }
       let_it_be(:owner_access_token) { create(:oauth_access_token, user: owner, scopes: [:mcp]) }
@@ -440,7 +496,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
 
     context 'with error handling' do
-      context 'with ambiguous parameters' do
+      context 'without pipeline_id' do
         let(:tool_params) do
           { name: 'manage_pipeline', arguments: { id: project.full_path } }
         end
@@ -450,27 +506,34 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
-          expect(json_response['result']['content'].first['text']).to include('Cannot determine operation')
+          expect(json_response['result']['content'].first['text']).to include('Validation error')
         end
       end
 
-      context 'with non-existent ref' do
+      context 'with non-existent pipeline_id' do
+        let_it_be(:owner) { create(:user) }
+        let_it_be(:owner_access_token) { create(:oauth_access_token, user: owner, scopes: [:mcp]) }
+
         let(:tool_params) do
           {
             name: 'manage_pipeline',
             arguments: {
               id: project.full_path,
-              ref: 'non-existent-branch'
+              pipeline_id: non_existing_record_id
             }
           }
         end
 
-        it 'returns error for invalid reference' do
-          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+        before_all do
+          project.add_owner(owner)
+        end
+
+        it 'returns a not found error' do
+          post api('/mcp', owner, oauth_access_token: owner_access_token), params: params, as: :json
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
-          expect(json_response['result']['content'].first['text']).to include('Reference not found')
+          expect(json_response['result']['content'].first['text']).to include('Pipeline Not Found')
         end
       end
     end

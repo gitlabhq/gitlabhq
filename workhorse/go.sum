@@ -604,8 +604,8 @@ gitlab.com/gitlab-org/labkit/v2 v2.33.1 h1:9ucAQfIH5mDdn/YY1pQ2yfyU6oHncc2t81f/k
 gitlab.com/gitlab-org/labkit/v2 v2.33.1/go.mod h1:PlyYhvjc/Gz15U1TP+1U1q5LvfQLUTQtGnLwxkOiPck=
 gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20260812224451-4ea26b59f939 h1:79YUptajV6XemumCJN01pl4tSjdMtjyk3kvN41bK4Gk=
 gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20260812224451-4ea26b59f939/go.mod h1:G/uyhLyG53gWlNSoTuWirrqS42PKcobyiQZvEAaJ9o8=
-gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb v0.86.0 h1:3zXHKPChzuboHt9ZS0u9O4KKgu/UlYeSYpJMdDrmb+M=
-gitlab.com/gitlab-org/orbit/knowledge-graph/clients/gkgpb v0.86.0/go.mod h1:gIscHhU3TQXmx3Bzgtm82loTCO41BWclUiWUgXB2AQQ=
+gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb v0.100.0 h1:Ysyj5uftWz+SLXBHr9T5fYjqf7Gv1o5V+QFxw99gbAE=
+gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb v0.100.0/go.mod h1:XLpy+jkDwPu8hKU++VeLMSfljIjSVhh1y/ha2XvHNNI=
 gitlab.com/gitlab-org/quality/analytics/test-metrics-exporters/go v0.0.4 h1:p57od/K7ufaC8hGWeVSKpZ6xxGj+mt5CWN1D38yzFP8=
 gitlab.com/gitlab-org/quality/analytics/test-metrics-exporters/go v0.0.4/go.mod h1:NYe9a4dtw/lW9d4SQhB7sML6GiLKQEMJnrobs6+XH5U=
 go.etcd.io/bbolt v1.3.5 h1:XAzx9gjCb0Rxj7EoqcClPD1d5ZBxZJk0jbuoPHenBt0=

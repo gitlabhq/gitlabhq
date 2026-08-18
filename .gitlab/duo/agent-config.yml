@@ -5,7 +5,7 @@
 # CI build image — needed because the default DAP image lacks ruby-devel
 # headers for native gem compilation. Update this tag when .gitlab-ci.yml
 # version variables change (see DEFAULT_CI_IMAGE).
-image: "registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-138-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2"
+image: "registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-trixie-slim-ruby-3.3.12-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-151-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2"
 
 setup_script:
   # SRT sandbox — fail closed, no || true.

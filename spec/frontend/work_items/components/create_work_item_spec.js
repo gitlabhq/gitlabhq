@@ -398,17 +398,18 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                   | isGroup  | allowAnyNamespace | hasEpicsFeature | expected
-      ${'group list page'}       | ${true}  | ${false}          | ${true}         | ${true}
-      ${'any namespace allowed'} | ${false} | ${true}           | ${false}        | ${true}
-      ${'EE with epics'}         | ${true}  | ${false}          | ${true}         | ${true}
-      ${'CE group no epics'}     | ${true}  | ${false}          | ${false}        | ${false}
-      ${'CE project, no epics'}  | ${false} | ${false}          | ${false}        | ${false}
+      scenario                       | isGroup  | allowAnyNamespace | hasEpicsFeature | showProjectSelector | expected
+      ${'group list page'}           | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
+      ${'any namespace allowed'}     | ${false} | ${true}           | ${false}        | ${false}            | ${true}
+      ${'EE with epics'}             | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
+      ${'CE group no epics'}         | ${true}  | ${false}          | ${false}        | ${false}            | ${false}
+      ${'CE project, no epics'}      | ${false} | ${false}          | ${false}        | ${false}            | ${false}
+      ${'group issue needs project'} | ${true}  | ${false}          | ${true}         | ${true}             | ${false}
     `(
       '$scenario shows selector: $expected',
-      async ({ isGroup, allowAnyNamespace, hasEpicsFeature, expected }) => {
+      async ({ isGroup, allowAnyNamespace, hasEpicsFeature, showProjectSelector, expected }) => {
         createComponent({
-          props: { isGroup, allowAnyNamespace },
+          props: { isGroup, allowAnyNamespace, showProjectSelector },
           provide: { hasEpicsFeature },
         });
 

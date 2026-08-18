@@ -94166,7 +94166,7 @@
             },
             {
               "name": "repositoryPathPattern",
-              "description": "Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path.",
+              "description": "Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -103449,7 +103449,7 @@
             },
             {
               "name": "repositoryPathPattern",
-              "description": "Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path.",
+              "description": "Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -124029,7 +124029,7 @@
             },
             {
               "name": "dependencyPaths",
-              "description": "Ancestor dependency paths for a dependency. \\\n      Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 18.2: Status: Experiment.",
+              "description": "Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 18.2: Status: Experiment.",
               "args": [
                 {
                   "name": "after",
@@ -124328,7 +124328,7 @@
             },
             {
               "name": "dependencyPaths",
-              "description": "Ancestor dependency paths for a dependency. \\\n      Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 18.2: Status: Experiment.",
+              "description": "Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 18.2: Status: Experiment.",
               "args": [
                 {
                   "name": "after",
@@ -125208,7 +125208,7 @@
             },
             {
               "name": "dependencyPaths",
-              "description": "Ancestor dependency paths for a dependency. \\\n      Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 18.2: Status: Experiment.",
+              "description": "Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 18.2: Status: Experiment.",
               "args": [
                 {
                   "name": "after",
@@ -312024,7 +312024,7 @@
             },
             {
               "name": "dependencyPaths",
-              "description": "Ancestor dependency paths for a dependency used by the project. \\\n          Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 17.10: Status: Experiment.",
+              "description": "Ancestor dependency paths for a dependency used by the project. Returns `null` if `dependency_graph_graphql` feature flag is disabled. Introduced in GitLab 17.10: Status: Experiment.",
               "args": [
                 {
                   "name": "occurrence",
@@ -361521,25 +361521,25 @@
           "enumValues": [
             {
               "name": "LOW",
-              "description": "Low risk (0–25).",
+              "description": "Low risk (0-25).",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "MEDIUM",
-              "description": "Medium risk (26–50).",
+              "description": "Medium risk (26-50).",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "HIGH",
-              "description": "High risk (51–75).",
+              "description": "High risk (51-75).",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "CRITICAL",
-              "description": "Critical risk (76–100).",
+              "description": "Critical risk (76-100).",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -396144,7 +396144,7 @@
             },
             {
               "name": "repositoryPathPattern",
-              "description": "Container repository path pattern protected by the protection rule. Must start with the project’s full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project’s full path.",
+              "description": "Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

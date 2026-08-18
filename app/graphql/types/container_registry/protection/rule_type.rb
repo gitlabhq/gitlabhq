@@ -19,9 +19,9 @@ module Types
           GraphQL::Types::String,
           null: false,
           description:
-            'Container repository path pattern protected by the protection rule. ' \
-            'Must start with the project’s full path. For example: `my-project/*-prod-*`. ' \
-            'Wildcard character `*` is allowed anywhere after the project’s full path.'
+            "Container repository path pattern protected by the protection rule. " \
+            "Must start with the project's full path. For example: `my-project/*-prod-*`. " \
+            "Wildcard character `*` is allowed anywhere after the project's full path."
 
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
