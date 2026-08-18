@@ -1,0 +1,6 @@
+
+| Value | Description |
+| ----- | ----------- |
+<% sorted_by_name(@values).each do |value| %>
+| <%= name(value) %> | <%= description(value).squish %> |
+<% end %>

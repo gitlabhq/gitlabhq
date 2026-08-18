@@ -31,7 +31,10 @@ module Gitlab
       #
       # Returns :delivered, :bad_token (the token is dead and the
       # subscription should be discarded), :failed, or :skipped (no APNs
-      # credentials configured).
+      # credentials configured). Never raises: a misconfigured key (missing,
+      # unreadable, or invalid p8 file) or a transport error is tracked and
+      # reported as :failed, so one bad setting cannot fail every todo batch
+      # in Sidekiq.
       def push(subscription, payload)
         unless configured?
           log_skipped(subscription)
@@ -41,6 +44,11 @@ module Gitlab
         response = connection_for(subscription).push(build_notification(subscription, payload))
 
         categorize_response(response)
+      rescue StandardError => e
+        drop_connection(subscription.apns_environment)
+        Gitlab::ErrorTracking.track_exception(e, subscription_id: subscription.id)
+
+        :failed
       end
 
       # Connections are reused per APNs environment for the lifetime of this
@@ -57,6 +65,17 @@ module Gitlab
       def connection_for(subscription)
         @connections ||= {}
         @connections[subscription.apns_environment] ||= build_connection(subscription)
+      end
+
+      # A connection that raised mid-push may be broken: keeping it memoized
+      # would fail every remaining push in its APNs environment without ever
+      # reconnecting, so it is evicted (and closed, so the socket does not
+      # outlive the eviction) and the next push builds a fresh one.
+      def drop_connection(environment)
+        connection = @connections&.delete(environment)
+        connection&.close
+      rescue StandardError
+        nil
       end
 
       def build_connection(subscription)

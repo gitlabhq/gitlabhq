@@ -126,8 +126,6 @@ app/models/group.rb:
   - hierarchy_members_with_inactive
 app/models/import/source_user_placeholder_reference.rb:
   - aliased_composite_key
-app/models/issue.rb:
-  - previous_updated_at
 app/models/namespace.rb:
   - any_project_with_pages_deployed?
   - saved_change_to_parent?

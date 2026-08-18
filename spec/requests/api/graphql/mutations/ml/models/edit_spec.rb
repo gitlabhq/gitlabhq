@@ -22,6 +22,12 @@ RSpec.describe 'Editing of a machine learning model', feature_category: :mlops d
   let(:mutation) { graphql_mutation(:ml_model_edit, edit_input, nil, ['version']) }
   let(:mutation_response) { graphql_mutation_response(:ml_model_edit) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_ml_model do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when user is not allowed write changes' do
     before do
       allow(Ability).to receive(:allowed?).and_call_original

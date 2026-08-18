@@ -27,6 +27,12 @@ RSpec.describe 'Creation of a machine learning model', feature_category: :mlops 
     it_behaves_like 'a mutation that returns a top-level access error'
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_ml_model do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when user is allowed write changes' do
     it 'creates a model' do
       post_graphql_mutation(mutation, current_user: current_user)

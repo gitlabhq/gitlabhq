@@ -9,6 +9,8 @@ module Docs
       FRONT_MATTER_PATTERN = /\A---[ \t]*\R(?<front_matter>.*?)\R---[ \t]*(?:\R|\z)/m
       EXTENSION_PREFIX = 'x-'
 
+      attr_reader :tags_dir
+
       def initialize(tags_dir = TAGS_DIR)
         @tags_dir = tags_dir
       end
@@ -26,7 +28,7 @@ module Docs
       end
 
       def tag_files
-        @tag_files ||= Dir.glob(File.join(@tags_dir, '*.md'))
+        @tag_files ||= Dir.glob(File.join(tags_dir, '*.md'))
       end
 
       def slug_for(path)

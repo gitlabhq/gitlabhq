@@ -859,6 +859,7 @@ lib/gitlab/checks/
 /tooling/ci/job_tokens/docs/
 /tooling/custom_roles/docs/
 /tooling/eslint-config/eslint-local-rules/require_valid_help_page_path.js
+/tooling/graphql/docs/
 /tooling/graphql/deprecated_docs/
 
 ^[Documentation Pages] @gl-docsteam

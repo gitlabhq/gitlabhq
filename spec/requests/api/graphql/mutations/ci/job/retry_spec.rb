@@ -102,11 +102,6 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
       )
     end
 
-    # TODO: Temporary mitigation for https://gitlab.com/gitlab-org/gitlab/-/issues/606207
-    before do
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
-    end
-
     it 'applies them to a retried manual job' do
       post_graphql_mutation(mutation, current_user: user)
 
@@ -205,11 +200,6 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
                         }
       QL
       )
-    end
-
-    # TODO: Temporary mitigation for https://gitlab.com/gitlab-org/gitlab/-/issues/606207.
-    before do
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
     end
 
     it 'applies them to the retried job' do

@@ -1,0 +1,17 @@
+<%= docs_render 'page_metadata', title: 'Enums', description: 'Types whose values are restricted to a fixed list of options.' %>
+
+Enumeration types, also called _enums_, are scalar values restricted to a
+specific set of allowed values. For more information, see the
+[GraphQL enumeration types documentation](https://graphql.org/learn/schema/#enumeration-types).
+
+<%= docs_render 'deprecation_warning_header' %>
+
+<% sorted_by_name(@enums).each do |enum| %>
+
+## <%= name(enum) %>
+
+<%= description(enum) %>
+
+<%= docs_render 'enum_values_table', values: enum.values %>
+
+<% end %>

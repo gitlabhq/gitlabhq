@@ -444,9 +444,9 @@ class WorkItem < Issue
       errors.add(:base, _('All child items must be confidential in order to turn on confidentiality.'))
     end
 
-    if !confidential? && work_item_parent&.confidential?
-      errors.add(:base, _('A non-confidential work item cannot have a confidential parent.'))
-    end
+    return unless !confidential? && work_item_parent&.confidential?
+
+    errors.add(:base, _('A non-confidential work item cannot have a confidential parent.'))
   end
 
   def record_create_action
@@ -515,12 +515,12 @@ class WorkItem < Issue
     )
 
     # We expect a restriction for every child type
-    if restrictions.size < child_type_ids.size
-      errors.add(
-        :work_item_type_id,
-        format(_('cannot be changed to %{new_type} with these child item types.'), new_type: work_item_type.name)
-      )
-    end
+    return unless restrictions.size < child_type_ids.size
+
+    errors.add(
+      :work_item_type_id,
+      format(_('cannot be changed to %{new_type} with these child item types.'), new_type: work_item_type.name)
+    )
   end
 
   def validate_depth(parent_link, child_links)
@@ -541,9 +541,9 @@ class WorkItem < Issue
         0
       end
 
-    if max_child_depth + ancestor_depth > restriction.maximum_depth - 1
-      errors.add(:work_item_type_id, _('reached maximum depth'))
-    end
+    return unless max_child_depth + ancestor_depth > restriction.maximum_depth - 1
+
+    errors.add(:work_item_type_id, _('reached maximum depth'))
   end
 
   def hierarchy_supports_parent?

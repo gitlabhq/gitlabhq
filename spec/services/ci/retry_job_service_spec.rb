@@ -351,18 +351,6 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
         expect(new_job.association(:job_definition).target).to be(shared_definition)
       end
-
-      context 'when ci_retry_shared_job_definition is disabled' do
-        before do
-          stub_feature_flags(ci_retry_shared_job_definition: false)
-        end
-
-        it 'leaves the clone to load its own record' do
-          job.job_definition
-
-          expect(new_job.association(:job_definition)).not_to be_loaded
-        end
-      end
     end
 
     context 'when enqueue_if_actionable is provided' do

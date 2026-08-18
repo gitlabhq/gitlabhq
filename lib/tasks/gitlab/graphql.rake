@@ -5,6 +5,7 @@ return if Rails.env.production?
 namespace :gitlab do
   require 'graphql/rake_task'
   require_relative '../../../tooling/graphql/deprecated_docs/renderer'
+  require_relative '../../../tooling/graphql/docs'
 
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
@@ -157,6 +158,28 @@ namespace :gitlab do
       else
         format_output('GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.')
         abort
+      end
+    end
+
+    namespace :docs do
+      desc 'GitLab | GraphQL | Generate GraphQL docs (experimental)'
+      task compile: [:simulate_saas, :environment, :enable_feature_flags] do
+        Tooling::Graphql::Docs.compile!
+
+        puts 'Experimental documentation compiled.'
+      end
+
+      desc 'GitLab | GraphQL | Check if GraphQL docs are up to date (experimental)'
+      task check: [:simulate_saas, :environment, :enable_feature_flags] do
+        if Tooling::Graphql::Docs.stale?
+          format_output(
+            'Experimental GraphQL documentation is outdated!',
+            'Please update the documentation by running `bundle exec rake gitlab:graphql:docs:compile`.'
+          )
+          abort
+        else
+          puts 'Experimental GraphQL documentation is up to date.'
+        end
       end
     end
 

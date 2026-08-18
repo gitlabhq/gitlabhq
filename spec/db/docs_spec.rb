@@ -215,3 +215,31 @@ RSpec.describe 'Deleted views documentation', feature_category: :database do
 
   include_examples 'validate dictionary', views, directory_path, required_fields
 end
+
+RSpec.describe 'Batched background migrations documentation', feature_category: :database do
+  directory_path = Rails.root.join('db/docs/batched_background_migrations')
+
+  it 'has queued_migration_version less than finalized_by' do
+    invalid_files = Dir.glob(File.join(directory_path, '*.yml')).select do |file_path|
+      dictionary = YAML.safe_load(File.read(file_path))
+      queued_migration_version = dictionary['queued_migration_version']
+      finalized_by = dictionary['finalized_by']
+
+      queued_migration_version.present? && finalized_by.present? &&
+        finalized_by.to_s.to_i <= queued_migration_version.to_s.to_i
+    end
+
+    message = <<~MSG.chomp
+      The following dictionary files have a `finalized_by` version that is not greater than
+      their `queued_migration_version`. A migration cannot be finalized before it is queued.
+
+      If the migration was re-queued, clear the `finalized_by` value (keep the key) and
+      no-op the corresponding finalization migration. See
+      https://docs.gitlab.com/development/database/batched_background_migrations/#re-queue-batched-background-migrations
+
+      #{invalid_files.join("\n")}
+    MSG
+
+    expect(invalid_files).to be_empty, message
+  end
+end

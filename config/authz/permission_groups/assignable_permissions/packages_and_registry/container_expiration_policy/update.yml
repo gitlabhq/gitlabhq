@@ -1,0 +1,9 @@
+---
+name: update_container_expiration_policy
+description: Grants the ability to update container expiration policies
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_container_expiration_policy

@@ -79,6 +79,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{doc/api/openapi/openapi_v3.yaml,tooling/docs/api/tags/*.md,*.rb}'
       run: GITLAB_SIMULATE_SAAS=false bundle exec rake gitlab:openapi:v3:check_docs
+    openapi_tag_docs:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: 'tooling/docs/api/tags/*'
+      run: bundle exec rake gitlab:openapi:v3:validate_tag_docs
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -294,6 +299,11 @@ pre-commit:
       files: git diff --name-only --staged
       glob: '{db/migrate/*.rb,db/post_migrate/*.rb,db/schema_migrations/*}'
       run: scripts/validate_migration_checksum
+    schema-migrations-format:
+      tags: database
+      files: git diff --name-only --cached
+      glob: 'db/schema_migrations/20*'
+      run: ruby scripts/lint/validate_schema_migrations_format.rb
     prevent_graphql_schema_deletion:
       tags: graphql schema
       run: |

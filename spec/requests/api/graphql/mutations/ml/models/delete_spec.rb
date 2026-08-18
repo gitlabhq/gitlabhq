@@ -87,6 +87,11 @@ RSpec.describe 'Deleting a model', feature_category: :mlops do
         project.add_maintainer(user)
       end
 
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_ml_model do
+        let(:boundary_object) { project }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+
       context 'with invalid id' do
         let(:params) { { project_path: project.full_path, id: "gid://gitlab/Ml::Model/#{non_existing_record_id}" } }
 

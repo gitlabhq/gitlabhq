@@ -790,10 +790,6 @@ class Issue < ApplicationRecord
     ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
   end
 
-  def previous_updated_at
-    previous_changes['updated_at']&.first || updated_at
-  end
-
   def banzai_render_context(field)
     additional_attributes = { label_url_method: :project_issues_url }
     additional_attributes[:group] = namespace if namespace.is_a?(Group)

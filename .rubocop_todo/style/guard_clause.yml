@@ -91,7 +91,6 @@ Style/GuardClause:
     - 'app/models/service_desk_setting.rb'
     - 'app/models/snippet_input_action.rb'
     - 'app/models/user.rb'
-    - 'app/models/work_item.rb'
     - 'app/presenters/ci/pipeline_presenter.rb'
     - 'app/presenters/merge_request_presenter.rb'
     - 'app/presenters/project_presenter.rb'

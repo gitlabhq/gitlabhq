@@ -2042,9 +2042,9 @@ Grants the ability to create, delete, read, and update ml experiments.
 | Read | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/search` |
 | Update | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/experiments/set-experiment-tag` |
 
-#### Ml Model
+#### ML Model
 
-Grants the ability to create, delete, read, and update ml models.
+Grants the ability to create, delete, read, and update ML models.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

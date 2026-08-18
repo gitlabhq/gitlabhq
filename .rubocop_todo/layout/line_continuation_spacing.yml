@@ -88,7 +88,6 @@ Layout/LineContinuationSpacing:
     - 'spec/features/projects/files/user_edits_files_spec.rb'
     - 'spec/features/projects/files/user_replaces_files_spec.rb'
     - 'spec/features/users/email_verification_on_login_spec.rb'
-    - 'spec/features/work_items/issues/viewing_issues_with_external_authorization_enabled_spec.rb'
     - 'spec/finders/groups/projects_requiring_authorizations_refresh/on_direct_membership_finder_spec.rb'
     - 'spec/lib/gitlab/auth/otp/strategies/forti_token_cloud_spec.rb'
     - 'spec/lib/gitlab/ci/trace/stream_spec.rb'

@@ -47,6 +47,46 @@ RSpec.describe Gitlab::MobilePush::ApnsClient, feature_category: :notifications 
     end
   end
 
+  describe '#push error handling' do
+    let(:subscription) { build_stubbed(:mobile_device_push_subscription, :sandbox) }
+
+    it 'returns :failed and tracks the exception when the auth key file is unreachable' do
+      missing_key_client = described_class.new(
+        auth_key_path: '/nonexistent/key.p8', key_id: 'KEYID12345', team_id: 'TEAM123456'
+      )
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        .with(an_instance_of(RuntimeError), subscription_id: subscription.id)
+
+      expect(missing_key_client.push(subscription, payload)).to eq(:failed)
+    end
+
+    it 'returns :failed and tracks the exception when delivery raises' do
+      allow(Apnotic::Connection).to receive(:development).and_return(connection)
+      allow(connection).to receive(:push).and_raise(SocketError)
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        .with(an_instance_of(SocketError), subscription_id: subscription.id)
+
+      expect(client.push(subscription, payload)).to eq(:failed)
+    end
+
+    it 'drops the broken connection so the next push reconnects' do
+      broken = instance_double(Apnotic::Connection)
+      allow(broken).to receive(:push).and_raise(SocketError)
+      allow(broken).to receive(:close).and_raise(IOError)
+
+      allow(Apnotic::Connection).to receive(:development).and_return(broken, connection)
+      allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+      expect(client.push(subscription, payload)).to eq(:failed)
+      expect(client.push(subscription, payload)).to eq(:delivered)
+
+      expect(Apnotic::Connection).to have_received(:development).twice
+      expect(broken).to have_received(:close)
+    end
+  end
+
   describe '#close' do
     it 'closes every opened connection' do
       subscription = build_stubbed(:mobile_device_push_subscription, :sandbox)

@@ -173,6 +173,39 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
     end
   end
 
+  context 'when authorizing granular token permissions' do
+    let_it_be(:namespace) { create(:group) }
+
+    before_all do
+      namespace.add_owner(user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_setting do
+      let(:boundary_object) { namespace }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
+    context 'when the namespace is a project namespace' do
+      let_it_be(:project) { create(:project, group: namespace) }
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_setting do
+        let(:namespace) { project.project_namespace }
+        let(:boundary_object) { project }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'when the namespace is a personal namespace' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :update_package_setting do
+        # The default user factory does not create a personal namespace.
+        let(:user) { create(:user, :with_namespace) }
+        let(:namespace) { user.namespace }
+        let(:boundary_object) { :user }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+  end
+
   describe 'post graphql mutation' do
     subject { post_graphql_mutation(mutation, current_user: user) }
 

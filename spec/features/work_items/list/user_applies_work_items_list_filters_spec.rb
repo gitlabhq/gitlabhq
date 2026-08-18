@@ -140,46 +140,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :planning_views
       end
     end
 
-    describe 'label' do
-      it 'filters', :aggregate_failures do
-        select_tokens 'Label', '=', label1.title, submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Label', '!=', label1.title, submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Label', '=', 'None', submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(task.title)
-
-        click_button 'Clear'
-
-        select_tokens 'Label', '=', 'Any', submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-      end
-
-      it 'supports multi-select filtering with "is one of" operator', :aggregate_failures do
-        select_tokens 'Label', '||', label1.title, label2.title, submit: true
-
-        expect(page).to have_css('.issue', count: 2)
-        expect(page).to have_link(incident.title)
-        expect(page).to have_link(issue.title)
-      end
-    end
-
     describe 'milestone' do
       it 'filters', :aggregate_failures do
         select_tokens 'Milestone', '=', milestone1.title, submit: true

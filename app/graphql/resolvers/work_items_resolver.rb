@@ -73,7 +73,7 @@ module Resolvers
     end
 
     def prepare_finder_params(args)
-      params = super(args)
+      params = super
       params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
 
       params

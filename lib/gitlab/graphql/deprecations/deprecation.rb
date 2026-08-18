@@ -14,6 +14,8 @@ module Gitlab
 
         include ActiveModel::Validations
 
+        attr_reader :milestone, :replacement
+
         validates :milestone, presence: true, format: { with: /\A\d+\.\d+\z/, message: 'must be milestone-ish' }
         validates :reason, presence: true
         validates :reason,
@@ -98,9 +100,17 @@ module Gitlab
           reason == REASON_EXPERIMENT
         end
 
+        def reason_text
+          @reason_text ||= REASONS[reason] || "#{reason.to_s.strip}."
+        end
+
+        def deprecated?
+          !experiment?
+        end
+
         private
 
-        attr_reader :reason, :milestone, :replacement
+        attr_reader :reason
 
         def milestone_is_string
           return if milestone.is_a?(String)
@@ -117,10 +127,6 @@ module Gitlab
 
         def reason_is_string?
           reason.is_a?(String)
-        end
-
-        def reason_text
-          @reason_text ||= REASONS[reason] || "#{reason.to_s.strip}."
         end
 
         def description_suffix

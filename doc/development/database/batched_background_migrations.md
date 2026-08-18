@@ -453,8 +453,10 @@ To requeue a batched background migration, you must:
 - In the new post-deployment migration, delete the existing batched background
   migration using the `delete_batched_background_migration` method at the start
   of the `#up` method to ensure that any existing runs are cleaned up.
-- Update the `db/docs/batched_background_migration/*.yml` file from the original
+- Update the `db/docs/batched_background_migrations/*.yml` file from the original
   migration to include information about the requeue.
+- If the original migration was already finalized, clear the `finalized_by` value
+  in the dictionary file (keep the key) and no-op the finalizing migration.
 
 #### Example
 
@@ -525,7 +527,7 @@ feature_category: static_application_security_testing
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
 milestone: '17.4'
 queued_migration_version: 20240814085540
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: # leave empty until the requeued migration is finalized
 ```
 
 ### Stop and remove batched background migrations

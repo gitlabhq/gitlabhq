@@ -131,6 +131,17 @@ RSpec.describe 'Updating the container expiration policy', feature_category: :co
     end
   end
 
+  context 'when authorizing granular token permissions' do
+    before_all do
+      project.add_maintainer(user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_container_expiration_policy do
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+  end
+
   describe 'post graphql mutation' do
     subject { post_graphql_mutation(mutation, current_user: user) }
 

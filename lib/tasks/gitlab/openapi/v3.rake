@@ -10,6 +10,13 @@ namespace :gitlab do
         abort('Validation of swagger document failed') unless success
       end
 
+      desc 'GitLab | OpenAPI | Validate curated API tag content'
+      task validate_tag_docs: :environment do
+        require_relative 'validate_tag_docs_task'
+
+        Tasks::Gitlab::Openapi::ValidateTagDocsTask.run
+      end
+
       task generate: :environment do
         unless Rails.env.development? || Rails.env.test?
           raise 'This task can only be run in the development or test environment'

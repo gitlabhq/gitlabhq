@@ -477,7 +477,7 @@
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
   - "lib/tasks/gitlab/docs/compile_windows.rake"
   # event store index
-  - "doc/development/events/_index.md"
+  - "doc/development/eventstore/events.md"
   - "data/events/**/*"
   - "lib/tasks/gitlab/docs/compile_events.rake"
   # organizations release status table

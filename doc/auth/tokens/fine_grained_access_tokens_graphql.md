@@ -903,6 +903,14 @@ Grants the ability to create, delete, read, restore, and update organizations.
 
 ### Packages and Registry resources
 
+#### Container Expiration Policy
+
+Grants the ability to update container expiration policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `UpdateContainerExpirationPolicy` |
+
 #### Container Registry Protection Tag Rule
 
 Grants the ability to create, delete, read, and update container registry protection tag rules.
@@ -941,6 +949,14 @@ Grants the ability to read and update dependency proxies.
 | Update | Group | Mutation | `UpdateDependencyProxyImageTtlGroupPolicy` |
 | Update | Group | Mutation | `UpdateDependencyProxySettings` |
 
+#### Dependency Proxy Packages Setting
+
+Grants the ability to update dependency proxy packages settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `UpdateDependencyProxyPackagesSettings` |
+
 #### Package
 
 Grants the ability to create, delete, read, and update packages.
@@ -954,6 +970,54 @@ Grants the ability to create, delete, read, and update packages.
 | Delete | Project | Mutation | `DestroyPackageFiles` |
 | Update | Project | Mutation | `UpdatePackagesCleanupPolicy` |
 | Update | Project | Mutation | `UpdatePackagesProtectionRule` |
+
+#### Package Setting
+
+Grants the ability to update package settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `UpdateNamespacePackageSettings` |
+| Update | Group | Mutation | `UpdateNamespacePackageSettings` |
+| Update | User | Mutation | `UpdateNamespacePackageSettings` |
+
+#### Virtual Registry
+
+Grants the ability to create, delete, read, and update virtual registries.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `ContainerUpstreamCreate` |
+| Create | Group | Mutation | `ContainerVirtualRegistryCreate` |
+| Create | Group | Mutation | `ContainerVirtualRegistryUpstreamCreate` |
+| Create | Group | Mutation | `MavenUpstreamCreate` |
+| Create | Group | Mutation | `MavenVirtualRegistryCreate` |
+| Delete | Group | Mutation | `ContainerUpstreamCacheDelete` |
+| Delete | Group | Mutation | `ContainerUpstreamDelete` |
+| Delete | Group | Mutation | `ContainerVirtualRegistryCacheDelete` |
+| Delete | Group | Mutation | `ContainerVirtualRegistryDelete` |
+| Delete | Group | Mutation | `ContainerVirtualRegistryUpstreamDelete` |
+| Delete | Group | Mutation | `MavenUpstreamCacheDelete` |
+| Delete | Group | Mutation | `MavenUpstreamDelete` |
+| Delete | Group | Mutation | `MavenVirtualRegistryCacheDelete` |
+| Delete | Group | Mutation | `MavenVirtualRegistryDelete` |
+| Delete | Group | Mutation | `MavenVirtualRegistryUpstreamDelete` |
+| Update | Group | Mutation | `ContainerUpstreamTest` |
+| Update | Group | Mutation | `ContainerUpstreamUpdate` |
+| Update | Group | Mutation | `ContainerVirtualRegistryUpdate` |
+| Update | Group | Mutation | `ContainerVirtualRegistryUpstreamUpdate` |
+| Update | Group | Mutation | `MavenUpstreamUpdate` |
+| Update | Group | Mutation | `MavenVirtualRegistryUpdate` |
+| Update | Group | Mutation | `MavenVirtualRegistryUpstreamUpdate` |
+| Update | Group | Mutation | `UpdateVirtualRegistriesSetting` |
+
+#### Virtual Registry Cleanup Policy
+
+Grants the ability to create, delete, read, and update virtual registry cleanup policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `VirtualRegistriesCleanupPolicyUpsert` |
 
 ### Product Analytics resources
 
@@ -1028,6 +1092,17 @@ Grants the ability to create, delete, read, and update snippets.
 | Update | User | Mutation | `UpdateSnippet` |
 
 ### Project Model Registry and Experiments resources
+
+#### ML Model
+
+Grants the ability to create, delete, read, and update ML models.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `MlModelCreate` |
+| Delete | Project | Mutation | `MlModelDelete` |
+| Delete | Project | Mutation | `MlModelDestroy` |
+| Update | Project | Mutation | `MlModelEdit` |
 
 #### Model Version
 

@@ -1797,35 +1797,6 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   it_behaves_like 'versioned description'
 
-  describe "#previous_updated_at" do
-    let_it_be(:updated_at) { Time.zone.local(2012, 01, 06) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: reusable_project, updated_at: updated_at) }
-
-    it 'returns updated_at value if updated_at did not change at all' do
-      allow(issue).to receive(:previous_changes).and_return({})
-
-      expect(issue.previous_updated_at).to eq(updated_at)
-    end
-
-    it 'returns updated_at value if `previous_changes` has nil value for `updated_at`' do
-      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => nil })
-
-      expect(issue.previous_updated_at).to eq(updated_at)
-    end
-
-    it 'returns updated_at value if previous updated_at value is not present' do
-      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [nil, Time.zone.local(2013, 02, 06)] })
-
-      expect(issue.previous_updated_at).to eq(updated_at)
-    end
-
-    it 'returns previous updated_at when present' do
-      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [Time.zone.local(2013, 02, 06), Time.zone.local(2013, 03, 06)] })
-
-      expect(issue.previous_updated_at).to eq(Time.zone.local(2013, 02, 06))
-    end
-  end
-
   describe '#design_collection' do
     it 'returns a design collection' do
       issue = build(:issue)

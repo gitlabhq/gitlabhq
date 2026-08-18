@@ -14,3 +14,4 @@ permissions:
   - update_npm_virtual_registry_upstream
   - test_container_virtual_registry_upstream
   - test_maven_virtual_registry_upstream
+  - update_virtual_registry_setting

@@ -84,7 +84,6 @@ module Ci
     end
 
     def shared_job_definition
-      return unless Feature.enabled?(:ci_retry_shared_job_definition, project)
       return unless job.association(:job_definition).loaded?
 
       job.job_definition

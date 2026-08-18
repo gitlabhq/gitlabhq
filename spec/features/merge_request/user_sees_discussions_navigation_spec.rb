@@ -76,6 +76,10 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
     describe "Overview page discussions navigation" do
       before do
         visit project_merge_request_path(project, merge_request)
+
+        # Wait for discussions to be rendered before attempting navigation
+        find(first_discussion_selector)
+        find(second_discussion_selector)
       end
 
       it_behaves_like 'a page with a thread navigation'

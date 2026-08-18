@@ -8,6 +8,9 @@ module Mutations
 
         include FindsProject
 
+        authorize_granular_token permissions: :update_ml_model,
+          boundary_argument: :project_path, boundary_type: :project
+
         argument :model_id, GraphQL::Types::Int,
           required: false,
           description: 'Id of the model.'

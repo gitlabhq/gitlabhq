@@ -383,19 +383,5 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
       expect(new_job.job_definition_instance.job_definition_id)
         .to eq(job.job_definition_instance.job_definition_id)
     end
-
-    context 'when ci_retry_shared_job_definition is disabled' do
-      before do
-        stub_feature_flags(ci_retry_shared_job_definition: false)
-      end
-
-      it 'assigns the job definition id without sharing the record' do
-        new_job = service.execute
-
-        expect(new_job.association(:job_definition)).not_to be_loaded
-        expect(new_job.job_definition_instance.job_definition_id)
-          .to eq(job.job_definition_instance.job_definition_id)
-      end
-    end
   end
 end

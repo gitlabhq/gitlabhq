@@ -4087,6 +4087,9 @@ msgstr ""
 msgid "AWS access key ID (Optional)"
 msgstr ""
 
+msgid "AWS region must be a valid region code, for example us-east-1"
+msgstr ""
+
 msgid "AWS secret access key (Optional)"
 msgstr ""
 
@@ -59365,6 +59368,9 @@ msgstr ""
 msgid "Policy `%{policyName}` passed"
 msgstr ""
 
+msgid "Policy details"
+msgstr ""
+
 msgid "Policy management project does not have any policies in %{policy_path}"
 msgstr ""
 
@@ -59434,6 +59440,9 @@ msgstr ""
 msgid "PolicyStore|All projects in the group"
 msgstr ""
 
+msgid "PolicyStore|Are you sure you want to delete %{name}? This action cannot be undone."
+msgstr ""
+
 msgid "PolicyStore|Audit"
 msgstr ""
 
@@ -59480,6 +59489,9 @@ msgid "PolicyStore|Custom Rule (Rego)"
 msgstr ""
 
 msgid "PolicyStore|Default (all projects)"
+msgstr ""
+
+msgid "PolicyStore|Delete policy?"
 msgstr ""
 
 msgid "PolicyStore|Deployment"
@@ -59683,6 +59695,9 @@ msgstr ""
 msgid "PolicyStore|The policies could not be fetched from the Policy Store API."
 msgstr ""
 
+msgid "PolicyStore|The policy could not be deleted. Try again."
+msgstr ""
+
 msgid "PolicyStore|The policy could not be loaded from the Policy Store API. Refresh the page to try again."
 msgstr ""
 
@@ -59702,6 +59717,9 @@ msgid "PolicyStore|This step is coming soon."
 msgstr ""
 
 msgid "PolicyStore|Timezone"
+msgstr ""
+
+msgid "PolicyStore|Trigger"
 msgstr ""
 
 msgid "PolicyStore|Triggers"
