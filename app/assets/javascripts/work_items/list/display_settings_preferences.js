@@ -21,16 +21,16 @@ export const alertPreferenceError = (error) =>
     error,
   });
 
-export const applicableMetadataFields = ({ isGroup, isServiceDeskList, viewMode }) =>
+export const applicableMetadataFields = ({ isServiceDeskList, viewMode }) =>
   WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS_SORTED.filter((item) => {
-    // Some fields are tailored to the list view only, so they are not offered
-    // as toggles while the board view is active.
+    // The board card has no markup for some fields, so they get no toggle there.
     if (viewMode === VIEW_MODE_BOARD && !item.isAvailableInBoard) {
       return false;
     }
-    return item.key === METADATA_KEYS.STATUS
-      ? !isServiceDeskList
-      : !isGroup || item.isPresentInGroup;
+    if (item.key === METADATA_KEYS.STATUS) {
+      return !isServiceDeskList;
+    }
+    return true;
   });
 
 const updateUserPreferencesCache = (

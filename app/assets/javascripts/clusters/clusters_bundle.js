@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
@@ -14,8 +13,6 @@ import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 
 const Environments = () => import('ee_component/clusters/components/environments.vue');
-
-Vue.use(GlToast);
 
 export default class Clusters {
   constructor() {

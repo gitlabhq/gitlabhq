@@ -64,6 +64,10 @@ module Mcp
           true
         end
 
+        def unlisted?
+          false
+        end
+
         # Returns tool annotations (e.g., readOnly flag for governance controls).
         # Tools should override this method to provide custom annotations.
         # Returns empty hash by default, which will be omitted from to_h output.

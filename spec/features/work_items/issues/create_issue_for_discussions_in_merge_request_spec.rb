@@ -54,11 +54,11 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
 
         expect(find_field('Title').value).to include(merge_request.title)
         expect(find_field('Description').value).to include(discussion.first_note.note)
-        expect(page).to have_text("Creating this Issue will resolve all threads in !#{merge_request.iid}")
+        expect(page).to have_text("Creating this issue will resolve all threads in !#{merge_request.iid}")
 
         expect do
           # Actually creates an issue for the project
-          click_button 'Create Issue'
+          click_button 'Create issue'
 
           # Issue title includes MR title
           expect(page).to have_content(%(Follow-up from "#{merge_request.title}"))

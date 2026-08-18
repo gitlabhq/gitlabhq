@@ -92,6 +92,10 @@ module Mcp
           auto_annotations
         end
 
+        def unlisted?
+          settings[:unlisted].present?
+        end
+
         private
 
         def parse_type(type)

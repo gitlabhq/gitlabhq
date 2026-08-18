@@ -13,6 +13,7 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 
 import { getMutation, optimisticAwardUpdate, getNewCustomEmojiPath } from '../../notes/award_utils';
+import { lowercaseWorkItemType } from '../../utils';
 
 export default {
   name: 'WorkItemNoteActions',
@@ -147,7 +148,7 @@ export default {
     },
     displayAuthorBadgeText() {
       return sprintf(__('This user is the author of this %{workItemType}.'), {
-        workItemType: this.workItemType,
+        workItemType: lowercaseWorkItemType(this.workItemType),
       });
     },
     displayMemberBadgeText() {

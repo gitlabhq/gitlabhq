@@ -118,7 +118,7 @@ describe('WorkItemLabels component', () => {
   };
 
   const updateLabels = (labels) => {
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', labels);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-selected', labels);
     findWorkItemSidebarDropdownWidget().vm.$emit('update-value', labels);
   };
 
@@ -447,8 +447,8 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     showDropdown();
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label2Id, label3Id]);
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label1Id, label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-selected', [label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-selected', [label1Id, label2Id, label3Id]);
     findWorkItemSidebarDropdownWidget().vm.$emit('update-value', [label1Id, label2Id, label3Id]);
 
     expect(successRemoveAllLabelWorkItemMutationHandler).not.toHaveBeenCalled();

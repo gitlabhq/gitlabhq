@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import AnalyticsDashboardsBreadcrumbs from '~/analytics/shared/components/analytics_dashboards_breadcrumbs.vue';
 import createDefaultClient from '~/lib/graphql';
@@ -22,7 +21,6 @@ export default () => {
   const { exploreAnalyticsDashboardsPath } = convertObjectPropsToCamelCase(el.dataset);
 
   Vue.use(VueApollo);
-  Vue.use(GlToast);
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });

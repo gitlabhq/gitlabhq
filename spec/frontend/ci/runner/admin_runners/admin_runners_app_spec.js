@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlToast, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -84,7 +84,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 const STATUS_COUNT_QUERIES = 3;
 const TAB_COUNT_QUERIES = 4;

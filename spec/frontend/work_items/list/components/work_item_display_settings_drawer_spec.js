@@ -137,7 +137,6 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       createComponent({
         props: {
           namespacePreferences,
-          isGroup: true,
           isServiceDeskList: false,
           isSavedView: true,
           sortKey: 'CREATED_DESC',
@@ -147,7 +146,6 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findMetadata().props()).toMatchObject({
         namespacePreferences,
         fullPath: 'gitlab-org/gitlab',
-        isGroup: true,
         isServiceDeskList: false,
         isSavedView: true,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/8',

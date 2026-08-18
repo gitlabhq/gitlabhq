@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import ReleaseIndexApp from './components/app_index.vue';
@@ -9,7 +8,6 @@ export default () => {
   const el = document.getElementById('js-releases-page');
 
   Vue.use(VueApollo);
-  Vue.use(GlToast);
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(

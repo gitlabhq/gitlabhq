@@ -88,11 +88,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    isGroup: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isServiceDeskList: {
       type: Boolean,
       required: false,
@@ -226,7 +221,6 @@ export default {
           <work-item-display-settings-metadata
             :namespace-preferences="namespacePreferences"
             :full-path="fullPath"
-            :is-group="isGroup"
             :is-service-desk-list="isServiceDeskList"
             :is-saved-view="isSavedView"
             :work-item-type-id="workItemTypeId"

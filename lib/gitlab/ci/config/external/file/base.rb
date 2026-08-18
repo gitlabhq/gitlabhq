@@ -116,7 +116,7 @@ module Gitlab
                 expanded_content_hash # calling the method expands then memoizes the result
               end
 
-              validate_hash!
+              validate_parsed_content_presence!
               validate_content_keys! if inputs_only?
             end
 
@@ -161,18 +161,26 @@ module Gitlab
               }
             end
 
+            def parsed_content_blank?
+              content_result.content.blank?
+            end
+            strong_memoize_attr :parsed_content_blank?
+
             def expanded_content_hash
-              return if content_result.content.blank?
+              return if parsed_content_blank?
 
               strong_memoize(:expanded_content_hash) do
                 expand_includes(content_result.content)
               end
             end
 
-            def validate_hash!
-              if to_hash.blank?
-                errors.push("Included file `#{masked_location}` does not have valid YAML syntax!")
-              end
+            def validate_parsed_content_presence!
+              # Expanding `include:` can legitimately yield an empty hash, for example when every
+              # nested include is dropped by its `include:rules:`, so the expanded result cannot be
+              # validated here.
+              return unless parsed_content_blank?
+
+              errors.push("Included file `#{masked_location}` contains no configuration!")
             end
 
             def expand_includes(hash)

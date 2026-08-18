@@ -65,7 +65,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
       subject(:value) { partitioning_strategy.next_partition_if.call(active_partition) }
 
       context 'when the partition is empty' do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the partition has records' do
@@ -75,7 +75,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
           described_class.create!(pipeline_id: 2, pipeline_finished_at: 1.minute.ago, project_namespace_id: 1)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the first record of the partition is older than PARTITION_DURATION' do
@@ -88,7 +88,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
             project_namespace_id: 1)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
       subject(:value) { partitioning_strategy.detach_partition_if.call(active_partition) }
 
       context 'when the partition is empty' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when the partition contains unprocessed records' do
@@ -111,14 +111,14 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
           described_class.create!(pipeline_id: 3, pipeline_finished_at: 1.minute.ago, project_namespace_id: 1)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
 
         context 'when almost all the records are too old' do
           before do
             travel(30.days - 2.minutes)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when all the records are too old' do
@@ -126,7 +126,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
             travel(30.days)
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
 
@@ -138,7 +138,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
             project_namespace_id: 1)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 

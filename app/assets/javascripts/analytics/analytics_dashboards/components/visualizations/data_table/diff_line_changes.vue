@@ -26,6 +26,6 @@ export default {
 <template>
   <div>
     <span class="gl-font-bold gl-text-success">{{ formattedAdditions }}</span>
-    <span class="gl-font-bold gl-text-red-500">{{ formattedDeletions }}</span>
+    <span class="gl-font-bold gl-text-danger">{{ formattedDeletions }}</span>
   </div>
 </template>

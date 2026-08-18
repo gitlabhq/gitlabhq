@@ -338,7 +338,7 @@ describe('WorkItemDescription', () => {
       expect(findMarkdownEditor().exists()).toBe(true);
     });
 
-    it('emits the `updateDraft` event when the description is updated', async () => {
+    it('emits the `update-draft` event when the description is updated', async () => {
       createComponent({ editMode: true });
       const updatedDesc = 'updated desc with inline editing disabled';
 
@@ -346,10 +346,10 @@ describe('WorkItemDescription', () => {
 
       findMarkdownEditor().vm.$emit('input', updatedDesc);
 
-      expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
+      expect(wrapper.emitted('update-draft')).toEqual([[updatedDesc]]);
     });
 
-    it('does not emit the `updateDraft` event when the description is updated from mounted hook of markdown-editor', async () => {
+    it('does not emit the `update-draft` event when the description is updated from mounted hook of markdown-editor', async () => {
       createComponent({ editMode: true, isCreateFlow: true });
       const updatedDesc = 'updated desc with inline editing disabled';
 
@@ -357,10 +357,10 @@ describe('WorkItemDescription', () => {
 
       findMarkdownEditor().vm.$emit('input', updatedDesc, true);
 
-      expect(wrapper.emitted('updateDraft')).toBeUndefined();
+      expect(wrapper.emitted('update-draft')).toBeUndefined();
     });
 
-    it('emits the `updateWorkItem` event when submitting the description', async () => {
+    it('emits the `update-work-item` event when submitting the description', async () => {
       await createComponent({ isEditing: true });
       editDescription('updated description');
       findMarkdownEditor().vm.$emit(
@@ -368,7 +368,7 @@ describe('WorkItemDescription', () => {
         new KeyboardEvent('keydown', { key: ENTER_KEY, ctrlKey: true }),
       );
 
-      expect(wrapper.emitted('updateWorkItem')).toEqual([[{ clearDraft: expect.any(Function) }]]);
+      expect(wrapper.emitted('update-work-item')).toEqual([[{ clearDraft: expect.any(Function) }]]);
     });
 
     it('tracks saved using editor event on submit', async () => {
@@ -956,12 +956,12 @@ describe('WorkItemDescription', () => {
     };
 
     describe('when work item has no blockers and no open children', () => {
-      it('emits updateWorkItem directly without showing any modal', async () => {
+      it('emits `update-work-item` directly without showing any modal', async () => {
         await createComponent({ isEditing: true });
         await saveDescription();
 
         expect(findCloseConfirmModal().exists()).toBe(false);
-        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+        expect(wrapper.emitted('update-work-item')).toHaveLength(1);
       });
     });
 
@@ -975,7 +975,7 @@ describe('WorkItemDescription', () => {
         await saveDescription();
 
         expect(findCloseConfirmModal().exists()).toBe(false);
-        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+        expect(wrapper.emitted('update-work-item')).toHaveLength(1);
       });
     });
 
@@ -988,7 +988,7 @@ describe('WorkItemDescription', () => {
         await waitForPromises();
 
         expect(findCloseConfirmModal().exists()).toBe(false);
-        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+        expect(wrapper.emitted('update-work-item')).toHaveLength(1);
       });
     });
 
@@ -998,28 +998,28 @@ describe('WorkItemDescription', () => {
         await saveDescription();
       });
 
-      it('shows the confirm modal with isBlockedByOpenItems=true instead of emitting updateWorkItem', () => {
+      it('shows the confirm modal with isBlockedByOpenItems=true instead of emitting `update-work-item`', () => {
         expect(findCloseConfirmModal().exists()).toBe(true);
         expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(true);
-        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+        expect(wrapper.emitted('update-work-item')).toBeUndefined();
       });
 
       it('passes the blocking items to the modal', () => {
         expect(findCloseConfirmModal().props('blockerItems').length).toBeGreaterThan(0);
       });
 
-      it('emits updateWorkItem when the modal proceed action is confirmed', async () => {
+      it('emits `update-work-item` when the modal proceed action is confirmed', async () => {
         findCloseConfirmModal().vm.$emit('proceed');
         await waitForPromises();
 
-        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+        expect(wrapper.emitted('update-work-item')).toHaveLength(1);
       });
 
-      it('does not emit updateWorkItem when the modal is cancelled', async () => {
+      it('does not emit `update-work-item` when the modal is cancelled', async () => {
         findCloseConfirmModal().vm.$emit('hide');
         await waitForPromises();
 
-        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+        expect(wrapper.emitted('update-work-item')).toBeUndefined();
       });
     });
 
@@ -1032,24 +1032,24 @@ describe('WorkItemDescription', () => {
         await saveDescription();
       });
 
-      it('shows the confirm modal with isBlockedByOpenItems=false instead of emitting updateWorkItem', () => {
+      it('shows the confirm modal with isBlockedByOpenItems=false instead of emitting `update-work-item`', () => {
         expect(findCloseConfirmModal().exists()).toBe(true);
         expect(findCloseConfirmModal().props('isBlockedByOpenItems')).toBe(false);
-        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+        expect(wrapper.emitted('update-work-item')).toBeUndefined();
       });
 
-      it('emits updateWorkItem when the modal proceed action is confirmed', async () => {
+      it('emits `update-work-item` when the modal proceed action is confirmed', async () => {
         findCloseConfirmModal().vm.$emit('proceed');
         await waitForPromises();
 
-        expect(wrapper.emitted('updateWorkItem')).toHaveLength(1);
+        expect(wrapper.emitted('update-work-item')).toHaveLength(1);
       });
 
-      it('does not emit updateWorkItem when the modal is cancelled', async () => {
+      it('does not emit `update-work-item` when the modal is cancelled', async () => {
         findCloseConfirmModal().vm.$emit('hide');
         await waitForPromises();
 
-        expect(wrapper.emitted('updateWorkItem')).toBeUndefined();
+        expect(wrapper.emitted('update-work-item')).toBeUndefined();
       });
     });
 

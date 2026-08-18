@@ -424,7 +424,7 @@ You can also configure the associated [incident to be closed automatically](mana
 > [HTTP endpoint integrations](#single-alerting-endpoint) so you can see alerts in
 > the GitLab interface.
 
-You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
+You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie/migration).
 
 If you enable the Opsgenie integration, you can't have other GitLab alert
 services

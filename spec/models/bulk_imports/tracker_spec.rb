@@ -205,7 +205,7 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
       it 'returns true' do
         allow(tracker).to receive(:checksums).and_return(nil)
 
-        expect(tracker.checksums_empty?).to eq(true)
+        expect(tracker.checksums_empty?).to be(true)
       end
     end
 
@@ -215,7 +215,7 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
           .to receive(:checksums)
           .and_return({ labels: { source: 1, fetched: 1, imported: 1 } })
 
-        expect(tracker.checksums_empty?).to eq(false)
+        expect(tracker.checksums_empty?).to be(false)
       end
     end
 
@@ -225,7 +225,7 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
           .to receive(:checksums)
           .and_return({ labels: { source: 0, fetched: 0, imported: 0 } })
 
-        expect(tracker.checksums_empty?).to eq(true)
+        expect(tracker.checksums_empty?).to be(true)
       end
     end
   end
@@ -256,7 +256,7 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
     it 'marks tracker as canceled' do
       tracker.cancel!
 
-      expect(tracker.canceled?).to eq(true)
+      expect(tracker.canceled?).to be(true)
     end
 
     context 'when tracker has batches' do
@@ -265,7 +265,7 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
 
         tracker.cancel!
 
-        expect(batch.reload.canceled?).to eq(true)
+        expect(batch.reload.canceled?).to be(true)
       end
     end
   end

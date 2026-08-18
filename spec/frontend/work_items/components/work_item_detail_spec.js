@@ -423,7 +423,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemDescription().vm.$emit('updateWorkItem', { clearDraft: clearDraftSpy });
+      findWorkItemDescription().vm.$emit('update-work-item', { clearDraft: clearDraftSpy });
       await mockApollo.resolveMutation(updateWorkItemMutation);
 
       expect(clearDraftSpy).toHaveBeenCalled();
@@ -435,7 +435,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ mutationHandler });
       await mockApollo.resolveAll();
 
-      findWorkItemDescription().vm.$emit('updateWorkItem', { clearDraft: clearDraftSpy });
+      findWorkItemDescription().vm.$emit('update-work-item', { clearDraft: clearDraftSpy });
       await mockApollo.rejectMutation(updateWorkItemMutation);
 
       expect(clearDraftSpy).not.toHaveBeenCalled();

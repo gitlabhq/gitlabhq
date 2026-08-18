@@ -128,7 +128,7 @@ export default {
     'dropdown-hidden',
     'dropdown-shown',
     'search-started',
-    'updateSelected',
+    'update-selected',
     'update-value',
   ],
   data() {
@@ -203,7 +203,7 @@ export default {
         this.$emit('update-value', finalValue);
       } else {
         this.isDirty = true;
-        this.$emit('updateSelected', this.localSelectedItem);
+        this.$emit('update-selected', this.localSelectedItem);
         this.clearSearch();
       }
     },

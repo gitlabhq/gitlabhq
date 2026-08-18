@@ -228,6 +228,10 @@ export const formatUserForListbox = (user) => ({
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(NAME_TO_ENUM_MAP).find((name) => NAME_TO_ENUM_MAP[name] === workItemTypeEnum);
 
+// Type names are stored in title case, so mid-sentence interpolation needs sentence case.
+// https://design.gitlab.com/content/ui-text#capitalization
+export const lowercaseWorkItemType = (workItemType) => workItemType?.toLowerCase() ?? '';
+
 /**
  * TODO: Remove this method with https://gitlab.com/gitlab-org/gitlab/-/issues/479637
  * We're currently setting children count per page based on `DEFAULT_PAGE_SIZE_CHILD_ITEMS`

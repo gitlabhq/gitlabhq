@@ -719,10 +719,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         if (from_status != to_status || success_to_success?) && transitionable?(from_status, to_status)
           expect(pipeline.set_status(to_status.to_s))
-            .to eq(true)
+            .to be(true)
         else
           expect(pipeline.set_status(to_status.to_s))
-            .to eq(false), 'loopback transitions are not allowed'
+            .to be(false), 'loopback transitions are not allowed'
         end
       end
 
@@ -2349,7 +2349,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'does not update the coverage value of each build from the trace' do
         pipeline.update_builds_coverage
 
-        expect(build.reload.coverage).to eq(nil)
+        expect(build.reload.coverage).to be_nil
       end
     end
 
@@ -3632,7 +3632,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let(:pipeline) { build(:ci_empty_pipeline, ref: 'master', project: build(:project)) }
 
       it 'always returns false' do
-        expect(pipeline.ref_exists?).to eq false
+        expect(pipeline.ref_exists?).to be false
       end
     end
   end
@@ -3783,23 +3783,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     subject { pipeline.has_exposed_artifacts? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'with unexposed artifacts' do
       let(:options) { { artifacts: { paths: ['test'] } } }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with exposed artifacts' do
       let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
 
       context 'when the pipeline is not complete' do
         let(:pipeline) { create(:ci_pipeline, :running) }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when job_artifacts_metadata.exposed_as is not populated' do
@@ -3808,7 +3808,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it 'reads from job options' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
         end
       end
 
@@ -3819,7 +3819,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it 'reads from job_artifacts_metadata' do
-          is_expected.to eq(true)
+          is_expected.to be(true)
         end
       end
     end
@@ -5735,7 +5735,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     subject { pipeline.filtered_as_empty? }
 
-    it { is_expected.to eq false }
+    it { is_expected.to be false }
 
     context 'when the pipeline is failed' do
       using RSpec::Parameterized::TableSyntax
@@ -7003,7 +7003,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns true' do
           create(:ci_bridge, pipeline: pipeline, scheduling_type: :dag)
 
-          expect(pipeline.uses_needs?).to eq(true)
+          expect(pipeline.uses_needs?).to be(true)
         end
       end
 
@@ -7011,7 +7011,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns true' do
           create(:ci_build, pipeline: pipeline, scheduling_type: :dag)
 
-          expect(pipeline.uses_needs?).to eq(true)
+          expect(pipeline.uses_needs?).to be(true)
         end
       end
     end
@@ -7020,7 +7020,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'returns false' do
         create(:ci_build, pipeline: pipeline, scheduling_type: :stage)
 
-        expect(pipeline.uses_needs?).to eq(false)
+        expect(pipeline.uses_needs?).to be(false)
       end
     end
   end

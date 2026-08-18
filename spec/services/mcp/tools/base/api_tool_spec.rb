@@ -74,6 +74,20 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
     end
   end
 
+  describe '#unlisted?' do
+    it 'returns false when the route does not opt in' do
+      expect(api_tool.unlisted?).to be(false)
+    end
+
+    context 'when the route marks the tool unlisted' do
+      let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool', unlisted: true } }
+
+      it 'returns true' do
+        expect(api_tool.unlisted?).to be(true)
+      end
+    end
+  end
+
   describe '#input_schema' do
     context 'with standard types' do
       it 'returns a valid JSON schema with required fields' do

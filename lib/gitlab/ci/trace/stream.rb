@@ -106,7 +106,11 @@ module Gitlab
             next unless matches.is_a?(Array)
             next if matches.empty?
 
-            match = matches.flatten.last
+            # #scan returns one slot per capture group, holding nil for a group
+            # that did not participate, such as an unused alternation branch.
+            match = matches.flatten.compact.last
+            next unless match
+
             coverage = match.gsub(/\d+(\.\d+)?/).first
             return coverage if coverage.present? # rubocop:disable Cop/AvoidReturnFromBlocks
           end

@@ -114,6 +114,17 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
       end
     end
 
+    context 'when the file contains only comments' do
+      let(:location) { 'some/file/config.yml' }
+      let(:content) { "# only a comment\n" }
+
+      it 'is not a valid file' do
+        expect(valid?).to be_falsy
+        expect(file.errors)
+          .to include('Included file `some/file/config.yml` contains no configuration!')
+      end
+    end
+
     context 'when the class has no validate_context!' do
       let(:test_class) do
         Class.new(described_class) do

@@ -1,5 +1,3 @@
-import { GlToast } from '@gitlab/ui';
-import Vue from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RegistrationToken from '~/ci/runner/components/registration/registration_token.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
@@ -8,8 +6,6 @@ import { mockRegistrationToken } from '../../mock_data';
 describe('RegistrationToken', () => {
   let wrapper;
   const showToastMock = jest.fn();
-
-  Vue.use(GlToast);
 
   const findInputCopyToggleVisibility = () => wrapper.findComponent(InputCopyToggleVisibility);
 

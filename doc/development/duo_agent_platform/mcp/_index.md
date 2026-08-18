@@ -575,6 +575,72 @@ Release M+1: Remove alias (after clients have had time to refresh their tool lis
 
 This approach ensures zero downtime for connected clients during tool renames.
 
+### Gating a tool's availability
+
+Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.
+Before `available?` is called, the request sets the tool's credentials with `set_cred(current_user:)`,
+so the check can depend on the current user, licensing, or other request state:
+
+```ruby
+module Mcp
+  module Tools
+    class ExampleService < Base::CustomService
+      def available?
+        Feature.enabled?(:example_tool, current_user)
+      end
+    end
+  end
+end
+```
+
+`available?` filters the `tools/list` response only:
+
+- It is not checked by `tools/call`, so a client that already knows a tool name can still call it
+  even when the tool reports unavailable.
+- It is not consulted by the AI Catalog tool picker, which sources tools from a per-request cached
+  snapshot with no user context.
+- Custom, GraphQL, and aggregated tools support `available?`. API tools defined through route
+  settings are always considered available.
+
+### Hiding a tool from discovery
+
+Mark a tool as *unlisted* to hide it from discovery while keeping it fully callable. An unlisted
+tool is omitted from the `tools/list` response and from the AI Catalog tool picker, but it stays
+resolvable through `get_tool`, remains in the Duo Workflow allowlist, and can still be called
+through `tools/call`. Use this to stage a tool before it is ready to be advertised.
+
+`unlisted?` differs from [`available?`](#gating-a-tools-availability): `available?` is a per-user
+check that gates whether a user is offered a tool in `tools/list`, whereas `unlisted?` is a static
+property that hides the tool from `tools/list` for everyone *and* from the AI Catalog picker. The
+picker distinction matters because it reads a user-less cached snapshot, so it can honor a static
+flag like `unlisted?` but not a per-user check like `available?`. Neither blocks `tools/call`.
+
+For custom, GraphQL, and aggregated tools, override `unlisted?`:
+
+```ruby
+module Mcp
+  module Tools
+    class ExampleService < Base::CustomService
+      def unlisted?
+        true
+      end
+    end
+  end
+end
+```
+
+For API tools, set `unlisted` in the route setting:
+
+```ruby
+route_setting :mcp, tool_name: :example_tool, params: [:id], unlisted: true
+```
+
+The default is `false`, so existing tools remain listed until they opt in.
+
+> [!note]
+> Keep `unlisted?` static. Do not drive it from a per-user or credential-dependent check, because
+> the AI Catalog picker cannot evaluate one.
+
 ### Splitting an action out of an aggregated tool
 
 An aggregated tool that folds several operations behind a parameter (for example, an `action` or

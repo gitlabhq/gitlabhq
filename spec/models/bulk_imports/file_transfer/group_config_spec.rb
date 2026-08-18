@@ -68,19 +68,19 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
   describe '#batchable_relation?' do
     context 'when relation is batchable' do
       it 'returns true' do
-        expect(subject.batchable_relation?('labels')).to eq(true)
+        expect(subject.batchable_relation?('labels')).to be(true)
       end
     end
 
     context 'when relation is not batchable' do
       it 'returns false' do
-        expect(subject.batchable_relation?('namespace_settings')).to eq(false)
+        expect(subject.batchable_relation?('namespace_settings')).to be(false)
       end
     end
 
     context 'when relation is not listed as portable' do
       it 'returns false' do
-        expect(subject.batchable_relation?('foo')).to eq(false)
+        expect(subject.batchable_relation?('foo')).to be(false)
       end
     end
   end
@@ -121,7 +121,7 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
   describe '#commit_notes_export_via_git?' do
     it 'returns false for every group relation (commit_notes is project-only)', :aggregate_failures do
       subject.portable_relations.each do |relation|
-        expect(subject.commit_notes_export_via_git?(relation)).to eq(false)
+        expect(subject.commit_notes_export_via_git?(relation)).to be(false)
       end
     end
   end
@@ -139,11 +139,11 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
         end
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the relation does not have user contribitions' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

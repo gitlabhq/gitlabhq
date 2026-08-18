@@ -44,6 +44,7 @@ import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
+  lowercaseWorkItemType,
   updateDraftWorkItemType,
   newWorkItemFullPath,
   getLastUsedWorkItemTypeIdForNamespace,
@@ -461,7 +462,7 @@ export default {
       return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
     },
     relatedItemType() {
-      return this.relatedItem?.type;
+      return lowercaseWorkItemType(this.relatedItem?.type);
     },
     workItemAssignees() {
       return findAssigneesWidget(this.workItem);
@@ -550,7 +551,7 @@ export default {
     },
     createWorkItemText() {
       return sprintf(s__('WorkItem|Create %{workItemType}'), {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     makeConfidentialText() {
@@ -563,7 +564,7 @@ export default {
     },
     titleText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     canUpdate() {
@@ -653,7 +654,7 @@ export default {
           ? this.$options.i18n.resolveOneThreadText
           : this.$options.i18n.resolveAllThreadsText;
       return sprintf(warning, {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     isFormFilled() {
@@ -1327,7 +1328,7 @@ export default {
               is-editing
               :is-valid="isTitleValid"
               :title="workItemTitle"
-              @updateDraft="updateDraftData('title', $event)"
+              @update-draft="updateDraftData('title', $event)"
             />
             <title-suggestions
               :project-path="selectedProjectFullPath"
@@ -1353,7 +1354,7 @@ export default {
                 :work-item-widgets-auto-save-key="workItemWidgetsAutoSaveKey"
                 @error="updateError = $event"
                 @cancel-create="handleCancelClick"
-                @updateDraft="updateDraftData('description', $event)"
+                @update-draft="updateDraftData('description', $event)"
               />
               <div
                 v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink"

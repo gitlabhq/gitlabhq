@@ -34,7 +34,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         expect(page).not_to have_selector('[data-testid="add-tree-form"]')
 
         find_by_testid('add-tree-child-button').click
-        click_button 'New Task'
+        click_button 'New task'
 
         expect(page).to have_selector('[data-testid="add-tree-form"]')
 
@@ -52,18 +52,18 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         it 'adds an existing child task', :aggregate_failures do
           within_testid('work-item-tree') do
             find_by_testid('add-tree-child-button').click
-            click_button 'Existing Task'
+            click_button 'Existing task'
 
-            expect(page).to have_button('Add Task', disabled: true)
+            expect(page).to have_button('Add task', disabled: true)
             find_by_testid('work-item-token-select-input').set(task.title)
             wait_for_all_requests
             click_button task.title
 
-            expect(page).to have_button('Add Task', disabled: false)
+            expect(page).to have_button('Add task', disabled: false)
 
             send_keys :escape
 
-            click_button('Add Task')
+            click_button('Add task')
 
             wait_for_all_requests
 
@@ -96,7 +96,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       it 'displays labels, milestone and assignee for work item children', :aggregate_failures do
         within_testid('work-item-tree') do
           find_by_testid('add-tree-child-button').click
-          click_button 'Existing Task'
+          click_button 'Existing task'
 
           find_by_testid('work-item-token-select-input').set(task.title)
           wait_for_all_requests
@@ -104,7 +104,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
           send_keys :escape
 
-          click_button('Add Task')
+          click_button('Add task')
 
           wait_for_all_requests
         end
@@ -131,15 +131,15 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     it 'keeps the create button usable after the first child is created', :aggregate_failures do
       within_testid('work-item-tree') do
         find_by_testid('add-tree-child-button').click
-        click_button 'New Task'
+        click_button 'New task'
 
         fill_in 'Add a title', with: 'First task'
-        click_button 'Create Task'
+        click_button 'Create task'
 
         expect(page).to have_link 'First task'
 
         fill_in 'Add a title', with: 'Second task'
-        click_button 'Create Task'
+        click_button 'Create task'
 
         expect(page).to have_link 'Second task'
       end

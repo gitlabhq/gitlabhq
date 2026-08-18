@@ -210,6 +210,26 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    context 'when a tool is unlisted' do
+      let(:manager) do
+        ::Mcp::Tools::Manager.new.tap do |m|
+          allow(m.list_tools['get_mcp_server_version']).to receive(:unlisted?).and_return(true)
+        end
+      end
+
+      before do
+        handler = ::API::Mcp::Handlers::ListTools.new(manager)
+        allow(::API::Mcp::Handlers::ListTools).to receive(:new).and_return(handler)
+      end
+
+      it 'is excluded from the list' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).not_to include('get_mcp_server_version')
+      end
+    end
+
     context 'when x-gitlab-enabled-mcp-server-tools header is present' do
       def post_list_tools_with_allowed(allowed_tools)
         post api('/mcp', user, oauth_access_token: access_token),

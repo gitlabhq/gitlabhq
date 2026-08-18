@@ -7,7 +7,7 @@ import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/co
 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { newProjectForkPath } from '~/lib/utils/path_helpers/project';
-import { createBranchMRApiPathHelper } from '~/work_items/utils';
+import { createBranchMRApiPathHelper, lowercaseWorkItemType } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   findInvalidBranchNameCharacters,
@@ -248,7 +248,7 @@ export default {
         createAlert({
           message: sprintf(
             s__('WorkItem|Failed to create a branch for this %{workItemType}. Please try again.'),
-            { workItemType: this.workItemType },
+            { workItemType: lowercaseWorkItemType(this.workItemType) },
           ),
         });
       } finally {

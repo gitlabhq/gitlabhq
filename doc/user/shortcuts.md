@@ -86,7 +86,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd>+<kbd>n</kbd>   | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
 | <kbd>g</kbd>+<kbd>d</kbd>   | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
 | <kbd>g</kbd>+<kbd>i</kbd>   | Go to the project **Work items** page (**Plan** > **Work items**). |
-| <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Work items**, select **New item** ). |
+| <kbd>i</kbd>                | Go to the **New issue** page (**Plan** > **Work items**, select **New item** ). |
 | <kbd>g</kbd>+<kbd>b</kbd>   | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |
 | <kbd>g</kbd>+<kbd>m</kbd>   | Go to the project **Merge requests** page (**Code** > **Merge requests**). |
 | <kbd>g</kbd>+<kbd>p</kbd>   | Go to the CI/CD **Pipelines** page (**Build** > **Pipelines**). |

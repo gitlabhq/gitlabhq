@@ -5,30 +5,36 @@ require 'spec_helper'
 RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_management do
   include RepoHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  before_all do
+    project.add_maintainer(user)
+  end
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
-  # Edit is a standalone button; Delete and Report abuse live in the "More actions" menu.
   shared_examples 'a reportable note in Rapid Diffs' do
-    let(:comment) { find("#note_#{note.id}") }
+    # Wait for note content to render, not just the empty wrapper div
+    let(:comment) { find("#note_#{note.id}", text: note.note) }
 
     it 'can be edited and deleted', :aggregate_failures do
       within(comment) do
-        expect(page).to have_button('Edit comment')
+        # Wait for action buttons to be interactive (not in loading state)
+        find_button('Edit comment', disabled: false)
 
         click_button 'More actions'
 
-        expect(page).to have_button('Delete comment')
+        expect(page).to have_button('Delete comment', disabled: false)
       end
     end
 
     it 'report button links to a report page', :aggregate_failures do
       within(comment) do
+        # Wait for action buttons to be interactive (not in loading state)
+        find_button('More actions', disabled: false)
         click_button 'More actions'
         find_by_testid('report-abuse-button').click
       end
@@ -46,6 +52,7 @@ RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_
 
     before do
       visit project_commit_path(project, sample_commit.id)
+      find("#note_#{note.id}", text: note.note)
     end
 
     it_behaves_like 'a reportable note in Rapid Diffs'
@@ -56,6 +63,7 @@ RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_
 
     before do
       visit project_commit_path(project, sample_commit.id)
+      find("#note_#{note.id}", text: note.note)
     end
 
     it_behaves_like 'a reportable note in Rapid Diffs'

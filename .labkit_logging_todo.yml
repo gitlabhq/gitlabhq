@@ -20,6 +20,10 @@ offenses:
   standard_field: Labkit::Fields::GL_PIPELINE_ID
 - logger_class: "*"
   callsite: Labkit::Context
+  deprecated_field: meta.search.project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: "*"
+  callsite: Labkit::Context
   deprecated_field: meta.user
   standard_field: Labkit::Fields::GL_USER_NAME
 - logger_class: Gitlab::AppJsonLogger

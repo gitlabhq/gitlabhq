@@ -173,7 +173,7 @@ describe('WorkItemLinksForm', () => {
       it('renders create form', () => {
         expect(findForm().exists()).toBe(true);
         expect(findInput().exists()).toBe(true);
-        expect(findAddChildButton().text()).toBe('Create Task');
+        expect(findAddChildButton().text()).toBe('Create task');
         expect(findWorkItemTokenInput().exists()).toBe(false);
       });
 
@@ -281,7 +281,7 @@ describe('WorkItemLinksForm', () => {
       it('renders create form with project selection', () => {
         expect(findForm().exists()).toBe(true);
         expect(findInput().exists()).toBe(true);
-        expect(findAddChildButton().text()).toBe('Create Issue');
+        expect(findAddChildButton().text()).toBe('Create issue');
         expect(findProjectSelector().exists()).toBe(true);
         expect(findWorkItemTokenInput().exists()).toBe(false);
       });
@@ -358,7 +358,7 @@ describe('WorkItemLinksForm', () => {
           fullPath: 'group-a',
           selectedGroupFullPath: 'group-a',
         });
-        expect(findAddChildButton().text()).toBe('Create Epic');
+        expect(findAddChildButton().text()).toBe('Create epic');
       });
     });
 
@@ -384,7 +384,7 @@ describe('WorkItemLinksForm', () => {
         expect(confidentialCheckbox.attributes('disabled')).toBeDefined();
         expect(confidentialCheckbox.attributes('checked')).toBe('true');
         expect(findTooltip().text()).toBe(
-          'A non-confidential Task cannot be assigned to a confidential parent Issue.',
+          'A non-confidential task cannot be assigned to a confidential parent issue.',
         );
       });
     });
@@ -464,7 +464,7 @@ describe('WorkItemLinksForm', () => {
     it('renders add form', () => {
       expect(findForm().exists()).toBe(true);
       expect(findWorkItemTokenInput().exists()).toBe(true);
-      expect(findAddChildButton().text()).toBe('Add Task');
+      expect(findAddChildButton().text()).toBe('Add task');
       expect(findInput().exists()).toBe(false);
       expect(findConfidentialCheckbox().exists()).toBe(false);
     });
@@ -483,7 +483,7 @@ describe('WorkItemLinksForm', () => {
     it('selects and adds children', async () => {
       await selectAvailableWorkItemTokens();
 
-      expect(findAddChildButton().text()).toBe('Add Tasks');
+      expect(findAddChildButton().text()).toBe('Add tasks');
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(true);
       expect(findWorkItemTokenInput().props('value')).toBe(
         availableWorkItemsResponse.data.namespace.workItems.nodes,

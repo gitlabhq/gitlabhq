@@ -141,7 +141,7 @@ export default {
       default: true,
     },
   },
-  emits: ['cancel-create', 'cancel-editing', 'error', 'updateDraft', 'updateWorkItem'],
+  emits: ['cancel-create', 'cancel-editing', 'error', 'update-draft', 'update-work-item'],
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
@@ -589,7 +589,7 @@ export default {
         );
       }
 
-      this.$emit('updateWorkItem', { clearDraft: () => this.clearDraftWorkItem() });
+      this.$emit('update-work-item', { clearDraft: () => this.clearDraftWorkItem() });
 
       this.conflictedDescription = '';
       this.initialDescriptionText = this.descriptionText;
@@ -601,14 +601,14 @@ export default {
       // will be lost. See vue_shared/components/markdown/markdown_editor.vue
       // mounted hook where onMountInit boolean is passed with $emit('input').
       if (!onMountInit || !this.isCreateFlow) {
-        this.$emit('updateDraft', this.descriptionText);
+        this.$emit('update-draft', this.descriptionText);
       }
       this.updateDraftDescription(this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
       this.wasEdited = true;
       this.descriptionText = newText;
-      this.$emit('updateDraft', this.descriptionText);
+      this.$emit('update-draft', this.descriptionText);
       this.updateWorkItem();
     },
     handleSelectTemplate(templateData) {

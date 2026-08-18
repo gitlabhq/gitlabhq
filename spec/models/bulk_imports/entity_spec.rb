@@ -432,12 +432,12 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     let_it_be(:entity) { create(:bulk_import_entity, :group_entity) }
 
     it 'returns true when the given pipeline name exists in the pipelines list' do
-      expect(entity.pipeline_exists?(BulkImports::Groups::Pipelines::GroupPipeline)).to eq(true)
-      expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::GroupPipeline')).to eq(true)
+      expect(entity.pipeline_exists?(BulkImports::Groups::Pipelines::GroupPipeline)).to be(true)
+      expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::GroupPipeline')).to be(true)
     end
 
     it 'returns false when the given pipeline name exists in the pipelines list' do
-      expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::InexistentPipeline')).to eq(false)
+      expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::InexistentPipeline')).to be(false)
     end
   end
 
@@ -559,8 +559,8 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       group_entity = build(:bulk_import_entity)
       project_entity = build(:bulk_import_entity, :project_entity)
 
-      expect(group_entity.project?).to eq(false)
-      expect(project_entity.project?).to eq(true)
+      expect(group_entity.project?).to be(false)
+      expect(project_entity.project?).to be(true)
     end
   end
 
@@ -569,8 +569,8 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       group_entity = build(:bulk_import_entity)
       project_entity = build(:bulk_import_entity, :project_entity)
 
-      expect(group_entity.group?).to eq(true)
-      expect(project_entity.group?).to eq(false)
+      expect(group_entity.group?).to be(true)
+      expect(project_entity.group?).to be(false)
     end
   end
 
@@ -616,7 +616,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     it 'returns nil when not associated with group or project' do
       entity = build(:bulk_import_entity, group: nil, project: nil)
 
-      expect(entity.full_path).to eq(nil)
+      expect(entity.full_path).to be_nil
     end
   end
 
@@ -665,13 +665,13 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     context 'when entity has failures' do
       it 'sets has_failures flag to true' do
-        expect(entity.has_failures).to eq(false)
+        expect(entity.has_failures).to be(false)
 
         create(:bulk_import_failure, entity: entity)
 
         entity.fail_op!
 
-        expect(entity.has_failures).to eq(true)
+        expect(entity.has_failures).to be(true)
       end
 
       it 'sets the has_failures flag on the parent import' do
@@ -684,11 +684,11 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     context 'when entity does not have failures' do
       it 'sets has_failures flag to false' do
-        expect(entity.has_failures).to eq(false)
+        expect(entity.has_failures).to be(false)
 
         entity.fail_op!
 
-        expect(entity.has_failures).to eq(false)
+        expect(entity.has_failures).to be(false)
       end
     end
   end
@@ -774,7 +774,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     it 'marks entity as canceled' do
       entity.cancel!
 
-      expect(entity.canceled?).to eq(true)
+      expect(entity.canceled?).to be(true)
     end
 
     context 'when entity has trackers' do
@@ -787,7 +787,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
         entity.cancel!
 
-        expect(tracker.reload.canceled?).to eq(true)
+        expect(tracker.reload.canceled?).to be(true)
       end
     end
   end

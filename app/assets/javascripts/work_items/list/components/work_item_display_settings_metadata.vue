@@ -42,11 +42,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    isGroup: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isServiceDeskList: {
       type: Boolean,
       required: false,
@@ -75,7 +70,6 @@ export default {
     },
     applicableMetadataPreferences() {
       return applicableMetadataFields({
-        isGroup: this.isGroup,
         isServiceDeskList: this.isServiceDeskList,
         viewMode: this.viewMode,
       });

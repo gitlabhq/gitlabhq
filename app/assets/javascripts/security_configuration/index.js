@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
@@ -15,7 +14,6 @@ export const initSecurityConfiguration = (el) => {
   }
 
   Vue.use(VueApollo);
-  Vue.use(GlToast);
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),

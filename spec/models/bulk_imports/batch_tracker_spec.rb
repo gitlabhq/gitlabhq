@@ -35,7 +35,7 @@ RSpec.describe BulkImports::BatchTracker, type: :model, feature_category: :impor
 
       batch.cancel!
 
-      expect(batch.reload.canceled?).to eq(true)
+      expect(batch.reload.canceled?).to be(true)
     end
   end
 end

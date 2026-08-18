@@ -36,10 +36,12 @@ reloaders:
           - "^/etc/gitlab/.*"
         mapping:
           "^(?<path>/(?:Users|home)/.*/gitlab/config/)gitlab.yml": "${path}/gitlab-sidekiq.yml"
-          "^/metrics": "/tmp/metrics"
       edit_mode_processes:
         sidekiq:
-          command: mise exec -- bin/background_jobs start_foreground
+          # mirrord copies prometheus_multiproc_dir=/metrics from the pod env,
+          # but that path (an emptyDir) only exists inside the pod, not on the
+          # host machine, so metrics are silently disabled without this override.
+          command: "bash -c 'prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/sidekiq mise exec -- bin/background_jobs start_foreground'"
   gitlab:
     type: mirror
     repository: gitlab
@@ -82,7 +84,10 @@ reloaders:
           # short *.svc form. Rails' host authorization does an exact-string
           # match per entry, so both forms must be listed or it 403s with
           # "Blocked hosts" before the request reaches the app.
-          command: "bash -c 'WORKER_PROCESSES=0 RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc,gitlab-webservice-default.gitlab.svc.cluster.local VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 bundle exec puma --config config/puma.rb'"
+          # mirrord copies prometheus_multiproc_dir=/metrics from the pod env,
+          # but that path (an emptyDir) only exists inside the pod, not on the
+          # host machine, so metrics are silently disabled without this override.
+          command: "bash -c 'WORKER_PROCESSES=0 prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/puma RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc,gitlab-webservice-default.gitlab.svc.cluster.local VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 bundle exec puma --config config/puma.rb'"
         vite:
           command: "bash -c 'VITE_RUBY_HOST=127.0.0.1 VITE_RUBY_PORT=3036 bundle exec vite dev'"
           context: local

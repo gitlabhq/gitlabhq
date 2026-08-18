@@ -4,6 +4,7 @@ import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild, addHierarchyChildren } from '../../graphql/cache_utils';
+import { lowercaseWorkItemType } from '../../utils';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
 import workItemHierarchyAddChildrenMutation from '../../graphql/work_item_hierarchy_add_children.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
@@ -180,16 +181,16 @@ export default {
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
         return sprintf(s__('WorkItem|Create %{workItemType}'), {
-          workItemType: this.childrenType.name,
+          workItemType: lowercaseWorkItemType(this.childrenType.name),
         });
       }
       if (this.workItemsToAdd.length > 1) {
         return sprintf(s__('WorkItem|Add %{workItemType}s'), {
-          workItemType: this.childrenType.name,
+          workItemType: lowercaseWorkItemType(this.childrenType.name),
         });
       }
       return sprintf(s__('WorkItem|Add %{workItemType}'), {
-        workItemType: this.childrenType.name,
+        workItemType: lowercaseWorkItemType(this.childrenType.name),
       });
     },
     confidentialityCheckboxLabel() {
@@ -206,8 +207,8 @@ export default {
           'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
         ),
         {
-          workItemType: this.childrenType.name,
-          parentWorkItemType: this.parentWorkItemType,
+          workItemType: lowercaseWorkItemType(this.childrenType.name),
+          parentWorkItemType: lowercaseWorkItemType(this.parentWorkItemType),
         },
       );
     },

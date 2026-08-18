@@ -1253,7 +1253,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     context 'without provider' do
       let(:provider) {}
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with provider' do
@@ -1266,13 +1266,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       context 'with on_creation? set to true' do
         let(:on_creation?) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'with on_creation? set to false' do
         let(:on_creation?) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -1287,7 +1287,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     context 'without platform_kubernetes' do
       let(:platform_kubernetes) {}
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with platform_kubernetes' do
@@ -1296,13 +1296,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       context 'with active? set to true' do
         let(:active?) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'with active? set to false' do
         let(:active?) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -1317,7 +1317,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     context 'without platform_kubernetes' do
       let(:platform_kubernetes) {}
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with platform_kubernetes' do
@@ -1326,13 +1326,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
       context 'with rbac? set to true' do
         let(:rbac?) { true }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'with rbac? set to false' do
         let(:rbac?) { false }
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
     end
   end

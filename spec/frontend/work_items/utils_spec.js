@@ -80,6 +80,7 @@ import {
   getMetadataWidgetsFromWorkItem,
   formatLabelForListbox,
   formatUserForListbox,
+  lowercaseWorkItemType,
   newWorkItemPath,
   getDisplayReference,
   isReference,
@@ -269,6 +270,18 @@ describe('convertTypeEnumToName', () => {
     ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
+  });
+});
+
+describe('lowercaseWorkItemType', () => {
+  it.each`
+    workItemType    | result
+    ${'Key Result'} | ${'key result'}
+    ${'Epic'}       | ${'epic'}
+    ${undefined}    | ${''}
+    ${null}         | ${''}
+  `('returns "$result" when given $workItemType', ({ workItemType, result }) => {
+    expect(lowercaseWorkItemType(workItemType)).toBe(result);
   });
 });
 

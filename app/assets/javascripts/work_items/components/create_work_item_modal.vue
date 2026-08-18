@@ -12,7 +12,12 @@ import { __, s__, sprintf } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MR_WORK_ITEM_RELATIONSHIP_TYPES } from '~/sidebar/constants';
-import { newWorkItemPath, canRouterNav, getDraftWorkItemType } from '~/work_items/utils';
+import {
+  newWorkItemPath,
+  canRouterNav,
+  getDraftWorkItemType,
+  lowercaseWorkItemType,
+} from '~/work_items/utils';
 
 import {
   RELATED_ITEM_ID_URL_QUERY_PARAM,
@@ -209,7 +214,7 @@ export default {
     },
     newWorkItemText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
       });
     },
     showMergeRequestRelationshipNote() {

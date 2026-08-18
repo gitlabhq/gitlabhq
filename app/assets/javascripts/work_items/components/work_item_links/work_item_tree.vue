@@ -27,6 +27,7 @@ import {
   getItems,
   trackCrudCollapse,
   getHiddenMetadataKeysFromLocalStorage,
+  lowercaseWorkItemType,
 } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
@@ -322,7 +323,7 @@ export default {
   },
   methods: {
     genericActionItems(type) {
-      const workItemName = type.name;
+      const workItemName = lowercaseWorkItemType(type.name);
       return [
         ...(type.name === WORK_ITEM_TYPE_NAME_TICKET
           ? []

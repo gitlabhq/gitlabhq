@@ -1,6 +1,7 @@
 <script>
 import { GlModal, GlLink } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import { lowercaseWorkItemType } from '../utils';
 
 export default {
   name: 'WorkItemCloseConfirmModal',
@@ -27,7 +28,7 @@ export default {
   emits: ['hide', 'proceed'],
   computed: {
     lowercaseWorkItemType() {
-      return this.workItemType.toLowerCase();
+      return lowercaseWorkItemType(this.workItemType);
     },
     title() {
       if (this.isBlockedByOpenItems) {

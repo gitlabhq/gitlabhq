@@ -335,14 +335,14 @@ describe('CreateWorkItemModal', () => {
     it('updates the selected type', async () => {
       createComponent();
 
-      expect(wrapper.find('h2').text()).toBe('New Epic');
+      expect(wrapper.find('h2').text()).toBe('New epic');
 
       findForm().vm.$emit('change-type', WORK_ITEM_TYPE_NAME_KEY_RESULT);
       await nextTick();
       findForm().vm.$emit('work-item-created', { webUrl: '/', workItem: {} });
 
-      expect(wrapper.find('h2').text()).toBe('New Key Result');
-      expect(findTrigger().text()).toBe('New Key Result');
+      expect(wrapper.find('h2').text()).toBe('New key result');
+      expect(findTrigger().text()).toBe('New key result');
       expect(showToast).toHaveBeenCalledWith('Key Result created.', expect.any(Object));
     });
   });

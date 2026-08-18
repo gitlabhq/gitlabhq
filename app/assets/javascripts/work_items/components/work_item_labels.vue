@@ -345,7 +345,7 @@ export default {
     @dropdown-shown="onDropdownShown"
     @search-started="search"
     @update-value="submitLabels"
-    @updateSelected="setLabels"
+    @update-selected="setLabels"
   >
     <template #list-item="{ item }">
       <div class="gl-flex gl-items-center gl-gap-3 gl-break-anywhere">

@@ -1,11 +1,7 @@
-import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import WorkItemLinks from './work_item_links.vue';
-
-Vue.use(GlToast);
 
 export default function initWorkItemLinks() {
   const workItemLinksRoot = document.querySelector('.js-work-item-links-root');

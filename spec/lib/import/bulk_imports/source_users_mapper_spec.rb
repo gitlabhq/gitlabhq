@@ -62,7 +62,7 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
 
     context 'when import source does not exists' do
       it 'returns nil' do
-        expect(mapper.map['-1']).to eq(nil)
+        expect(mapper.map['-1']).to be_nil
       end
     end
 
@@ -81,13 +81,13 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
   describe '#include?' do
     context 'when a source user with the source_user_identifier exists' do
       it 'returns true' do
-        expect(mapper.include?(101)).to eq(true)
+        expect(mapper.include?(101)).to be(true)
       end
     end
 
     context 'when a source user with the source_user_identifier does not exist' do
       it 'returns false' do
-        expect(mapper.include?(-1)).to eq(false)
+        expect(mapper.include?(-1)).to be(false)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
       end
 
       it 'returns true for the source ghost user ID without creating a new source user' do
-        expect(mapper.include?(10)).to eq(true)
+        expect(mapper.include?(10)).to be(true)
         expect(Import::SourceUser.find_by(source_user_identifier: 10)).to be_nil
       end
     end

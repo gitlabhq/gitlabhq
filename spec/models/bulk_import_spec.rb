@@ -94,23 +94,23 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
     context 'when entity has failures' do
       it 'sets has_failures flag to true' do
-        expect(import.has_failures).to eq(false)
+        expect(import.has_failures).to be(false)
 
         entity.update!(has_failures: true)
         import.fail_op!
 
-        expect(import.has_failures).to eq(true)
+        expect(import.has_failures).to be(true)
       end
     end
 
     context 'when entity does not have failures' do
       it 'sets has_failures flag to false' do
-        expect(import.has_failures).to eq(false)
+        expect(import.has_failures).to be(false)
 
         entity.update!(has_failures: false)
         import.fail_op!
 
-        expect(import.has_failures).to eq(false)
+        expect(import.has_failures).to be(false)
       end
     end
   end
@@ -120,7 +120,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       it 'returns true' do
         bulk_import = build(:bulk_import, source_version: '16.2.0')
 
-        expect(bulk_import.supports_batched_export?).to eq(true)
+        expect(bulk_import.supports_batched_export?).to be(true)
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       it 'returns false' do
         bulk_import = build(:bulk_import, source_version: '15.5.0')
 
-        expect(bulk_import.supports_batched_export?).to eq(false)
+        expect(bulk_import.supports_batched_export?).to be(false)
       end
     end
   end
@@ -137,22 +137,22 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     let(:import) { create(:bulk_import, :started) }
 
     it 'marks import as canceled' do
-      expect(import.canceled?).to eq(false)
+      expect(import.canceled?).to be(false)
 
       import.cancel!
 
-      expect(import.canceled?).to eq(true)
+      expect(import.canceled?).to be(true)
     end
 
     context 'when import has entities' do
       it 'marks entities as canceled' do
         entity = create(:bulk_import_entity, bulk_import: import)
 
-        expect(entity.canceled?).to eq(false)
+        expect(entity.canceled?).to be(false)
 
         import.cancel!
 
-        expect(entity.reload.canceled?).to eq(true)
+        expect(entity.reload.canceled?).to be(true)
       end
     end
   end

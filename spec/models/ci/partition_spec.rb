@@ -286,13 +286,13 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     subject(:all_partitions_exist) { ci_partition.all_partitions_exist? }
 
     context 'when all partitions exist' do
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when database partitions does not exist for ci_partition record' do
       let(:ci_partition) { create(:ci_partition, id: non_existing_record_id) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -307,7 +307,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     context 'when current_from is nil' do
       it 'returns false' do
         ci_partition.assign_attributes(current_from: nil)
-        expect(exceeded).to eq(false)
+        expect(exceeded).to be(false)
       end
     end
 
@@ -316,20 +316,20 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         stub_application_setting(ci_partitions_in_seconds_limit: nil)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when elapsed' do
       it 'returns true for "31 days"' do
         ci_partition.assign_attributes(current_from: 31.days.ago)
-        expect(exceeded).to eq(true)
+        expect(exceeded).to be(true)
       end
     end
 
     context 'when not elapsed' do
       it 'returns false for "29 days"' do
         ci_partition.assign_attributes(current_from: 29.days.ago)
-        expect(exceeded).to eq(false)
+        expect(exceeded).to be(false)
       end
     end
   end

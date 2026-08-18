@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -35,7 +34,6 @@ const mountCiVariableListApp = (containerEl) => {
     component = CiProjectVariables;
   }
 
-  Vue.use(GlToast);
   Vue.use(VueApollo);
 
   // If the feature flag `ci_variables_pages` is enabled,

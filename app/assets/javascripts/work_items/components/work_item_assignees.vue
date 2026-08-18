@@ -380,7 +380,7 @@ export default {
     @dropdown-shown="onDropdownShown"
     @search-started="setSearchKey"
     @update-value="handleAssigneesInput"
-    @updateSelected="handleAssigneeClick"
+    @update-selected="handleAssigneeClick"
     @dropdown-hidden="onDropdownHide"
   >
     <template #list-item="{ item }">

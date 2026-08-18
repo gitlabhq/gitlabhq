@@ -429,7 +429,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
       expect(page).not_to have_button 'Turn on confidentiality'
       expect(page).to have_button 'Copy reference'
       expect(page).not_to have_button 'Report abuse'
-      expect(page).to have_button 'Delete Key Result'
+      expect(page).to have_button 'Delete key result'
     end
 
     page.within('.main-notes-list') do
@@ -1154,11 +1154,11 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   it 'adds an existing child item', :aggregate_failures do
     within_testid testid do
       find_by_testid('add-tree-child-button').click
-      click_button "Existing #{type.to_s.capitalize}"
+      click_button "Existing #{type}"
       fill_in 'Search existing items', with: child_item.title
       click_button child_item.title
       send_keys :escape
-      click_button "Add #{type.to_s.capitalize}"
+      click_button "Add #{type}"
 
       expect(page).to have_link child_item.title
     end
@@ -1190,9 +1190,9 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 
   def create_child(type, title)
     find_by_testid('add-tree-child-button').click
-    click_button "New #{type.to_s.capitalize}"
+    click_button "New #{type}"
     fill_in 'Add a title', with: title
-    click_button "Create #{type.to_s.capitalize}"
+    click_button "Create #{type}"
     expect(page).to have_link title
   end
 end

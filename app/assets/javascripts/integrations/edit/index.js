@@ -1,13 +1,9 @@
-import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 
 import IntegrationForm from './components/integration_form.vue';
 import { useIntegrationForm } from './store';
-
-Vue.use(GlToast);
 
 function parseBooleanInData(data) {
   const result = {};

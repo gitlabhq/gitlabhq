@@ -421,8 +421,22 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       expect(json_response).to include(
         'id' => export_1.id,
         'status' => export_1.status_name.to_s,
-        'source_hostname' => export_1.source_hostname
+        'source_hostname' => export_1.source_hostname,
+        'bucket' => export_1.configuration.bucket,
+        'export_prefix' => export_1.configuration.export_prefix
       )
+    end
+
+    context 'when the export has no configuration' do
+      let_it_be(:export_without_configuration) { create(:offline_export, user: user) }
+      let(:request) { get api("/offline_exports/#{export_without_configuration.id}", user) }
+
+      it 'returns bucket and export_prefix as null' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('bucket' => nil, 'export_prefix' => nil)
+      end
     end
 
     context 'when export does not belong to user' do

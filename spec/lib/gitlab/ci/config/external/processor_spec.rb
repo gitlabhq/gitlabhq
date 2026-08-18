@@ -168,6 +168,19 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       end
     end
 
+    context 'when an included file contains only comments' do
+      let(:values) { { include: [{ local: 'blank.yml' }], image: 'image:1.0' } }
+
+      let(:project_files) { { 'blank.yml' => "# only a comment\n" } }
+
+      it 'raises an error about the missing configuration' do
+        expect { processor.perform }.to raise_error(
+          described_class::IncludeError,
+          'Included file `blank.yml` contains no configuration!'
+        )
+      end
+    end
+
     context "when both external files and values defined the same key" do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:values) do
@@ -683,6 +696,49 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
         it 'raises IncludeError' do
           expect { subject }.to raise_error(described_class::IncludeError, /contains unknown keys: allow_failure/)
+        end
+      end
+
+      context 'when an included file consists only of includes that are all filtered out' do
+        let(:context_params) do
+          { project: project, sha: sha, user: user, variables: Gitlab::Ci::Variables::Collection.new(variables) }
+        end
+
+        let(:variables) { [{ key: 'CI_PIPELINE_SOURCE', value: 'push' }] }
+
+        let(:project_files) do
+          {
+            'wrapper.yml' => <<~YAML,
+            include:
+              - local: 'component.yml'
+            YAML
+            'component.yml' => <<~YAML,
+            include:
+              - local: 'mr_only.yml'
+                rules:
+                  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+            YAML
+            'mr_only.yml' => <<~YAML
+            mr_only_job:
+              script: echo mr
+            YAML
+          }
+        end
+
+        let(:values) do
+          { include: [{ local: 'wrapper.yml' }], always_runs: { script: 'echo always' } }
+        end
+
+        it 'treats the file as a no-op instead of failing the pipeline' do
+          expect(perform).to eq({ always_runs: { script: 'echo always' } })
+        end
+
+        context 'when the rules match' do
+          let(:variables) { [{ key: 'CI_PIPELINE_SOURCE', value: 'merge_request_event' }] }
+
+          it 'includes the nested file' do
+            expect(perform.keys).to match_array([:always_runs, :mr_only_job])
+          end
         end
       end
     end

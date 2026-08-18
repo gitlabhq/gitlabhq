@@ -6,7 +6,7 @@ import {
 } from '~/work_items/constants';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
-import searchMilestonesQuery from './graphql/search_milestones.query.graphql';
+import searchMilestonesQuery from '../graphql/search_milestones.query.graphql';
 
 /**
  * A new work item created from a board column inherits both the column's grouping
@@ -15,8 +15,10 @@ import searchMilestonesQuery from './graphql/search_milestones.query.graphql';
  * fragment (keyed by widget type, e.g. `{ LABELS: { labels: { nodes } } }`), resolving
  * filter values (names/titles) to the full objects the widget draft needs.
  *
- * Add a new inherited attribute (assignees, milestone, …) by writing an inheritor and
- * adding it to `FILTER_INHERITORS` — no board-component changes required.
+ * The available inheritors differ by edition (iteration, weight, … are EE-only), so this
+ * list is supplied by an `ee_else_ce` module and consumed in `./index.js`. Add a new CE
+ * inherited attribute by writing an inheritor and adding it to `FILTER_INHERITORS` here;
+ * add an EE-only one in the EE counterpart — no board-component changes required.
  *
  * @typedef {Object} FilterInheritor
  * @property {string} widgetType - The widgets-draft key this inheritor owns (e.g. `LABELS`).
@@ -33,15 +35,13 @@ import searchMilestonesQuery from './graphql/search_milestones.query.graphql';
 
 // apiFilterParams stores a single filtered value as a string and several as an array;
 // normalize to an array of the present values so inheritors can treat both the same way.
-const toArray = (value) => (Array.isArray(value) ? value : [value].filter(Boolean));
+export const toArray = (value) => (Array.isArray(value) ? value : [value].filter(Boolean));
 
 /** @type {FilterInheritor} */
 const labelsInheritor = {
   widgetType: WIDGET_TYPE_LABELS,
 
   async resolve({ apolloClient, fullPath, isGroup, filters }) {
-    // `labelName` holds only positive (IS) label filters; negated/union labels use
-    // `not.labelName`/`or.labelNames` are intentionally not inherited.
     const titles = toArray(filters?.labelName);
     if (!titles.length) {
       return {};
@@ -140,31 +140,3 @@ const milestoneInheritor = {
 };
 
 export const FILTER_INHERITORS = [labelsInheritor, assigneesInheritor, milestoneInheritor];
-
-/**
- * Widgets-draft keys the inheritors manage. The board resets these before re-seeding so a
- * filter that is no longer active does not linger in the draft shared across board views.
- */
-export const INHERITED_WIDGET_TYPES = FILTER_INHERITORS.map((inheritor) => inheritor.widgetType);
-
-/**
- * Merges every inheritor's widgets-draft fragment for the board's active filters.
- * A failing inheritor is logged and skipped so it can't block opening the create modal.
- *
- * @param {InheritContext} context
- * @returns {Promise<Object>} Combined widgets-draft fragment (`{}` when nothing is inherited).
- */
-export const resolveInheritedWidgetsDraft = async (context) => {
-  const fragments = await Promise.all(
-    FILTER_INHERITORS.map(async (inheritor) => {
-      try {
-        return await inheritor.resolve(context);
-      } catch (error) {
-        Sentry.captureException(error);
-        return {};
-      }
-    }),
-  );
-
-  return Object.assign({}, ...fragments);
-};

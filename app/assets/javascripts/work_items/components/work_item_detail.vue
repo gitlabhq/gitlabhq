@@ -1004,8 +1004,8 @@ export default {
                 :is-detail-panel="isDetailPanel"
                 :title="workItem.title"
                 :title-html="workItem.titleHtml"
-                @updateWorkItem="updateWorkItem"
-                @updateDraft="updateDraft('title', $event)"
+                @update-work-item="updateWorkItem"
+                @update-draft="updateDraft('title', $event)"
                 @error="updateError = $event"
               />
             </div>
@@ -1018,8 +1018,8 @@ export default {
               :title="workItem.title"
               :title-html="workItem.titleHtml"
               @error="updateError = $event"
-              @updateWorkItem="updateWorkItem"
-              @updateDraft="updateDraft('title', $event)"
+              @update-work-item="updateWorkItem"
+              @update-draft="updateDraft('title', $event)"
             />
           </div>
         </template>
@@ -1298,8 +1298,8 @@ export default {
                   :without-heading-anchors="isDetailPanel"
                   :hide-fullscreen-markdown-button="isDetailPanel"
                   :truncation-enabled="truncationEnabled"
-                  @updateWorkItem="updateWorkItem"
-                  @updateDraft="updateDraft('description', $event)"
+                  @update-work-item="updateWorkItem"
+                  @update-draft="updateDraft('description', $event)"
                   @cancel-editing="cancelEditing"
                   @error="updateError = $event"
                 />

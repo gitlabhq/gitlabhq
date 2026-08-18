@@ -79,7 +79,7 @@ First, we need to create a GitLab project access token with the necessary permis
 
 ### Jira Issue Creation Workflow
 
-To automatically create GitLab issues when Jira issues are created, we'll use [Jira automation](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
+To automatically create GitLab issues when Jira issues are created, we'll use [Jira automation](https://community.atlassian.com/forums/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828).
 
 1. Navigate to your Jira project. From the sidebar, head to **Project settings** > **Automation**.
 1. Click **Create rule** in the upper right.
@@ -177,4 +177,4 @@ This converts the creation timestamp (format: `2025-02-15T09:45:32.7+0000`) into
   - [Create new issue](../../api/issues.md#create-an-issue)
   - [Edit issue](../../api/issues.md#update-an-issue)
 - [GitLab Project Access Tokens](../../user/project/settings/project_access_tokens.md)
-- [Jira automation with web requests](https://community.atlassian.com/t5/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828)
+- [Jira automation with web requests](https://community.atlassian.com/forums/Jira-articles/Automation-for-Jira-Send-web-request-using-Jira-REST-API/ba-p/1443828)

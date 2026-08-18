@@ -82,10 +82,10 @@ describe('Work Item title', () => {
       expect(findEditableTitleForm().attributes('label')).toBe(WorkItemTitle.i18n.titleLabel);
     });
 
-    it('emits `updateDraft` event on change of the input', () => {
+    it('emits `update-draft` event on change of the input', () => {
       findEditableTitleInput().vm.$emit('input', 'updated title');
 
-      expect(wrapper.emitted('updateDraft')).toEqual([['updated title']]);
+      expect(wrapper.emitted('update-draft')).toEqual([['updated title']]);
     });
   });
 });

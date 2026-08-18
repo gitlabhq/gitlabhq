@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { apolloProvider } from './graphql/client';
 import EnvironmentsApp from './components/environments_app.vue';
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 export default (el) => {
   if (el) {

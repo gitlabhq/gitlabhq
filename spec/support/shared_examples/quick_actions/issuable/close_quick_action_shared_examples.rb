@@ -24,11 +24,7 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
       fill_in "Title", with: 'bug 345'
       fill_in "Description", with: "bug description\n/close"
 
-      if issuable_type == :merge_request
-        click_button "Create #{issuable_type}".humanize
-      else
-        click_button "Create #{issuable_type.to_s.capitalize}"
-      end
+      click_button "Create #{issuable_type}".humanize
 
       expect(page).to have_content 'bug 345'
 

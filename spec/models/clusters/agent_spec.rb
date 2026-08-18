@@ -190,7 +190,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
     subject { agent.ci_access_authorized_for?(user) }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'with project-level authorization' do
       let_it_be(:authorization) { create(:agent_ci_access_project_authorization, agent: agent, project: deployment_project) }
@@ -245,7 +245,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
     subject { agent.user_access_authorized_for?(user) }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'with project-level authorization' do
       let_it_be(:authorization) { create(:agent_user_access_project_authorization, agent: agent, project: deployment_project) }

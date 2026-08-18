@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
@@ -7,7 +6,6 @@ import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import HomePanelApp from './components/app.vue';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({

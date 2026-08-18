@@ -38,7 +38,7 @@ import updateWorkItemNotificationsMutation from '../graphql/update_work_item_not
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import getWorkItemNotificationsByIdQuery from '../graphql/get_work_item_notifications_by_id.query.graphql';
-import { findNotificationsWidget } from '../utils';
+import { findNotificationsWidget, lowercaseWorkItemType } from '../utils';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
 import MoveWorkItemModal from './move_work_item_modal.vue';
@@ -311,28 +311,28 @@ export default {
     i18n() {
       return {
         deleteWorkItem: sprintf(s__('WorkItem|Delete %{workItemType}'), {
-          workItemType: this.workItemType,
+          workItemType: lowercaseWorkItemType(this.workItemType),
         }),
         convertError: sprintf(
           s__(
             'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
           ),
-          { workItemType: this.workItemType },
+          { workItemType: lowercaseWorkItemType(this.workItemType) },
         ),
         copyCreateNoteEmail: sprintf(s__('WorkItem|Copy %{workItemType} email address'), {
-          workItemType: this.workItemType,
+          workItemType: lowercaseWorkItemType(this.workItemType),
         }),
         copyReferenceError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
           ),
-          { workItemType: this.workItemType },
+          { workItemType: lowercaseWorkItemType(this.workItemType) },
         ),
         copyCreateNoteEmailError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
           ),
-          { workItemType: this.workItemType },
+          { workItemType: lowercaseWorkItemType(this.workItemType) },
         ),
       };
     },
@@ -345,7 +345,7 @@ export default {
             'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
           );
       return sprintf(message, {
-        workItemType: this.workItemType,
+        workItemType: lowercaseWorkItemType(this.workItemType),
       });
     },
     workItemTypeConfiguration() {

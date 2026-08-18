@@ -88,7 +88,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
           select_listbox_item label_titles.first
           send_keys(:escape)
         end
-        click_button("Create Issue")
+        click_button("Create issue")
 
         expect(page).to have_content(issue_title)
                     .and have_content(user.name)
@@ -111,7 +111,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
         end
         click_button date.day
         click_button 'Apply'
-        click_button 'Create Issue'
+        click_button 'Create issue'
 
         expect(page).to have_text date.to_fs(:medium)
       end
@@ -218,7 +218,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
         fill_in 'Title', with: 'bug 345'
         fill_in 'Description', with: 'bug description'
 
-        click_button 'Create Issue'
+        click_button 'Create issue'
         expect(page).to have_content('bug 345')
       end
     end

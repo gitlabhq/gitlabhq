@@ -20,7 +20,7 @@ GitLab CI/CD can be used with Bitbucket Cloud by:
 
 To use GitLab CI/CD with a Bitbucket Cloud repository:
 
-1. In Bitbucket, create an [**App password**](https://support.atlassian.com/bitbucket-cloud/docs/create-an-app-password/) to authenticate
+1. In Bitbucket, create an [**App password**](https://support.atlassian.com/bitbucket-cloud/docs/api-tokens/) to authenticate
    the script that sets commit build
    statuses in Bitbucket. Repository write permissions are required.
 

@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
@@ -8,7 +7,6 @@ import SettingsApp from 'ee_else_ce/packages_and_registries/settings/group/compo
 import { apolloProvider } from './graphql';
 
 Vue.use(Translate);
-Vue.use(GlToast);
 
 export default () => {
   const el = document.getElementById('js-packages-and-registries-settings');

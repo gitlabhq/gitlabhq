@@ -920,4 +920,53 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       end
     end
   end
+
+  # Regression test for https://gitlab.com/gitlab-org/gitlab/-/work_items/565633
+  # Jira rejected the whole sync with "Invalid binary character '#xD83D'" (the
+  # UTF-16 high surrogate of an emoji) when free-text fields contained emoji.
+  describe '#post' do
+    let(:path) { '/rest/devinfo/0.10/bulk' }
+    let(:url) { "https://gitlab-test.atlassian.net#{path}" }
+
+    def stub_post(&body_matcher)
+      stub_full_request(url, method: :post)
+        .with(&body_matcher)
+        .to_return(status: 202, body: {}.to_json, headers: { 'Content-Type' => 'application/json' })
+    end
+
+    it 'strips characters Atlassian rejects from the request body' do
+      stub = stub_post do |req|
+        req.body.include?('"name":"ship  it"') &&
+          req.body.match(::Atlassian::Jira::PayloadSanitizer::INVALID_CHARS).nil?
+      end
+
+      subject.send(:post, path, { repositories: [{ name: 'ship 🚝 it' }] })
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'preserves valid multi-byte characters' do
+      stub = stub_post { |req| req.body.include?('"name":"café-ñ"') }
+
+      subject.send(:post, path, { repositories: [{ name: 'café-ñ' }] })
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'strips rejected characters from payloads serialized by Grape entities' do
+      # Grape entities serialize to a SimpleDelegator (NestingExposure::OutputBuilder),
+      # which must not escape sanitization: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245813#note_3625655389
+      emoji_project = create(:project, :public, name: 'ship 🚝 it', namespace: project.namespace)
+      repo = ::Atlassian::JiraConnect::Serializers::RepositoryEntity.represent(emoji_project)
+
+      stub = stub_post do |req|
+        req.body.include?('"name":"ship  it"') &&
+          req.body.match(::Atlassian::Jira::PayloadSanitizer::INVALID_CHARS).nil?
+      end
+
+      subject.send(:post, path, { repositories: [repo] })
+
+      expect(stub).to have_been_requested
+    end
+  end
 end

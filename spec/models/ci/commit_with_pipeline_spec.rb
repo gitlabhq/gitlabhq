@@ -156,7 +156,7 @@ RSpec.describe Ci::CommitWithPipeline, feature_category: :continuous_integration
         .with('master')
         .and_return(nil)
 
-      expect(commit.status('master')).to eq(nil)
+      expect(commit.status('master')).to be_nil
     end
 
     it 'returns the status of the latest pipeline when no ref is given' do

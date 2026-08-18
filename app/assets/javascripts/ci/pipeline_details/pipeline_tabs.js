@@ -3,13 +3,11 @@ import VueRouter from 'vue-router';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
-import { GlToast } from '@gitlab/ui';
 import PipelineTabs from 'ee_else_ce/ci/pipeline_details/tabs/pipeline_tabs.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createTestReportsStore from './stores/test_reports';
 import { getPipelineDefaultTab } from './utils';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 Vue.use(VueRouter);
 Vue.use(Vuex);

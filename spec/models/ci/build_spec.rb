@@ -2059,7 +2059,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       describe '#erasable?' do
         subject { build.erasable? }
 
-        it { is_expected.to eq false }
+        it { is_expected.to be false }
       end
     end
 
@@ -2833,7 +2833,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.has_expired_locked_archive_artifacts? }
 
     context 'when build does not have artifacts' do
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'when build has artifacts' do
@@ -2846,7 +2846,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           build.pipeline.unlocked!
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when artifacts are locked' do
@@ -2863,7 +2863,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             build.update!(artifacts_expire_at: 1.day.from_now)
           end
 
-          it { is_expected.to eq(false) }
+          it { is_expected.to be(false) }
         end
 
         context 'when artifacts expired in the past' do
@@ -2871,7 +2871,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             build.update!(artifacts_expire_at: 1.day.ago)
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
     end
@@ -5873,14 +5873,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#debug_mode?' do
     subject { build.debug_mode? }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'when debug_trace_enabled? is true' do
       before do
         allow(build).to receive(:debug_trace_enabled?).and_return(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when CI_DEBUG_TRACE=true is in variables' do
@@ -5888,37 +5888,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'reflects instance variables' do
           create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: value)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects group variables' do
           create(:ci_group_variable, key: 'CI_DEBUG_TRACE', value: value, group: project.group)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects pipeline variables' do
           create_or_replace_pipeline_variables(pipeline, { key: 'CI_DEBUG_TRACE', value: value })
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects project variables' do
           create(:ci_variable, key: 'CI_DEBUG_TRACE', value: value, project: project)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects job variables' do
           create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: value, job: build)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'when in yaml variables' do
           stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_TRACE', value: value.to_s }])
 
-          is_expected.to eq true
+          is_expected.to be true
         end
       end
     end
@@ -5928,37 +5928,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it 'reflects instance variables' do
           create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: value)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects group variables' do
           create(:ci_group_variable, key: 'CI_DEBUG_SERVICES', value: value, group: project.group)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects pipeline variables' do
           create_or_replace_pipeline_variables(pipeline, { key: 'CI_DEBUG_SERVICES', value: value })
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects project variables' do
           create(:ci_variable, key: 'CI_DEBUG_SERVICES', value: value, project: project)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'reflects job variables' do
           create(:ci_job_variable, key: 'CI_DEBUG_SERVICES', value: value, job: build)
 
-          is_expected.to eq true
+          is_expected.to be true
         end
 
         it 'when in yaml variables' do
           stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_SERVICES', value: value.to_s }])
 
-          is_expected.to eq true
+          is_expected.to be true
         end
       end
     end
@@ -6761,7 +6761,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     it 'returns the value for normalized attribute' do
-      expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(false)
+      expect(job.send(:read_job_definition_attribute, :interruptible)).to be(false)
     end
 
     it 'returns the value for non-normalized attribute' do
@@ -6774,7 +6774,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it 'returns the value for normalized attribute from temp_job_definition' do
-        expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(true)
+        expect(job.send(:read_job_definition_attribute, :interruptible)).to be(true)
       end
 
       it 'returns the value for non-normalized attribute from temp_job_definition' do
@@ -6787,11 +6787,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'returns nil' do
-          expect(job.send(:read_job_definition_attribute, :interruptible)).to eq(nil)
+          expect(job.send(:read_job_definition_attribute, :interruptible)).to be_nil
         end
 
         it 'returns nil' do
-          expect(job.send(:read_job_definition_attribute, :tag_list)).to eq(nil)
+          expect(job.send(:read_job_definition_attribute, :tag_list)).to be_nil
         end
       end
     end

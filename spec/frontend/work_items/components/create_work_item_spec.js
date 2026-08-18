@@ -179,7 +179,7 @@ describe('Create work item component', () => {
   };
 
   const updateWorkItemTitle = async (title = 'Test title') => {
-    findTitleInput().vm.$emit('updateDraft', title);
+    findTitleInput().vm.$emit('update-draft', title);
     await nextTick();
     await waitForPromises();
   };
@@ -498,7 +498,7 @@ describe('Create work item component', () => {
       it('includes the typed description in the create mutation after namespace change', async () => {
         await setupGroupForm();
 
-        findDescriptionWidget().vm.$emit('updateDraft', 'Preserved description');
+        findDescriptionWidget().vm.$emit('update-draft', 'Preserved description');
         await nextTick();
         await waitForPromises();
 
@@ -678,7 +678,7 @@ describe('Create work item component', () => {
       await resolveAll();
 
       expect(findSelect().exists()).toBe(false);
-      expect(findFormTitle().text()).toBe('New Epic');
+      expect(findFormTitle().text()).toBe('New epic');
     });
 
     it('emits `change-type` with the type name when "selectedWorkItemTypeId" changes', async () => {
@@ -725,7 +725,7 @@ describe('Create work item component', () => {
       createComponent();
       await resolveAll();
 
-      findTitleInput().vm.$emit('updateDraft', 'Test title');
+      findTitleInput().vm.$emit('update-draft', 'Test title');
       await waitForPromises();
       await submitCreateForm();
 
@@ -751,7 +751,7 @@ describe('Create work item component', () => {
       });
       await resolveAll();
 
-      findTitleInput().vm.$emit('updateDraft', 'Test title');
+      findTitleInput().vm.$emit('update-draft', 'Test title');
       await waitForPromises();
       await submitCreateForm();
 
@@ -1217,7 +1217,7 @@ describe('Create work item component', () => {
 
     it('renders the correct text for the checkbox', () => {
       expect(findRelatesToCheckbox().text()).toMatchInterpolatedText(
-        'Mark this item as related to: Epic #1',
+        'Mark this item as related to: epic #1',
       );
     });
 
@@ -1278,7 +1278,7 @@ describe('Create work item component', () => {
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
-      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create Epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
 
     it('shows buttons on left and sticky when not isModal', async () => {
@@ -1287,7 +1287,7 @@ describe('Create work item component', () => {
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
-      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create Epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });
 
@@ -1345,7 +1345,7 @@ describe('Create work item component', () => {
       wrapper.find('form').trigger('submit');
 
       apolloProvider.defaultClient.mutate.mockClear();
-      findTitleInput().vm.$emit('updateDraft', 'new title');
+      findTitleInput().vm.$emit('update-draft', 'new title');
       await nextTick();
 
       expect(apolloProvider.defaultClient.mutate).not.toHaveBeenCalledWith(
@@ -1562,7 +1562,7 @@ describe('Create work item component', () => {
 
       it('renders text', () => {
         expect(findResolveDiscussionSection().text()).toMatchInterpolatedText(
-          'Creating this Issue will resolve the thread in !1 (discussion 1224)',
+          'Creating this issue will resolve the thread in !1 (discussion 1224)',
         );
       });
 

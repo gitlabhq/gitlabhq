@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlToast } from '@gitlab/ui';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
@@ -11,7 +10,6 @@ import { apolloProvider as createApolloProvider } from './graphql/client';
 import { ROUTE_NAME_LOGS, ROUTE_NAME_ENVIRONMENT_DETAILS } from './constants';
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 const apolloProvider = createApolloProvider();
 

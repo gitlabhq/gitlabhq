@@ -51,8 +51,6 @@ app/models/deploy_token.rb:
   - order_expires_at_asc
 app/models/design_management/design.rb:
   - for_reference
-app/models/gpg_key.rb:
-  - externally_invalid
 app/models/group_group_link.rb:
   - groups_having_access_to
 app/models/member.rb:

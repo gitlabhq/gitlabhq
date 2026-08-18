@@ -151,6 +151,23 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    context 'when the tool is unlisted' do
+      let(:tool_params) { { name: 'get_mcp_server_version', arguments: {} } }
+
+      before do
+        allow_next_instance_of(::Mcp::Tools::GetServerVersionService) do |tool|
+          allow(tool).to receive(:unlisted?).and_return(true)
+        end
+      end
+
+      it 'still executes because unlisted only affects discovery' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+      end
+    end
+
     context 'with unknown tool name' do
       let(:params) do
         {

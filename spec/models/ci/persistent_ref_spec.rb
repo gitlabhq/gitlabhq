@@ -47,7 +47,7 @@ RSpec.describe Ci::PersistentRef, feature_category: :continuous_integration do
     let(:sha) { project.repository.commit.sha }
 
     context 'when a persistent ref does not exist' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when a persistent ref exists' do
@@ -55,7 +55,7 @@ RSpec.describe Ci::PersistentRef, feature_category: :continuous_integration do
         pipeline.persistent_ref.create # rubocop: disable Rails/SaveBang
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

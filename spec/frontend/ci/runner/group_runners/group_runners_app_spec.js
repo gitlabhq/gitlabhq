@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlButton, GlLink, GlToast } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -62,7 +62,6 @@ import {
 } from '../mock_data';
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 const mockGroupFullPath = 'group1';
 const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;

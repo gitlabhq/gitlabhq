@@ -291,7 +291,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: 'copy-create-note-email-action',
-        text: 'Copy Issue email address',
+        text: 'Copy issue email address',
       },
       {
         group: true,
@@ -306,7 +306,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: 'delete-action',
-        text: 'Delete Issue',
+        text: 'Delete issue',
       },
       {
         group: true,
@@ -453,7 +453,7 @@ describe('WorkItemActions component', () => {
 
       expect(modalShowSpy).toHaveBeenCalled();
       expect(findModal().text()).toBe(
-        'Are you sure you want to delete the Task? This action cannot be reversed.',
+        'Are you sure you want to delete the task? This action cannot be reversed.',
       );
     });
 
@@ -463,7 +463,7 @@ describe('WorkItemActions component', () => {
       findDeleteButton().vm.$emit('action');
 
       expect(findModal().text()).toBe(
-        'Delete this Task and release all child items? This action cannot be reversed.',
+        'Delete this task and release all child items? This action cannot be reversed.',
       );
     });
 
@@ -666,7 +666,7 @@ describe('WorkItemActions component', () => {
 
         expect(convertWorkItemMutationErrorHandler).toHaveBeenCalled();
         expect(wrapper.emitted('error')).toEqual([
-          ['Something went wrong while promoting the Key Result. Please try again.'],
+          ['Something went wrong while promoting the key result. Please try again.'],
         ]);
       });
     });
@@ -685,16 +685,14 @@ describe('WorkItemActions component', () => {
   });
 
   describe('copy email address action', () => {
-    it.each([WORK_ITEM_TYPE_NAME_KEY_RESULT, WORK_ITEM_TYPE_NAME_OBJECTIVE])(
-      'renders correct button name when work item is %s',
-      (workItemType) => {
-        createComponent({ workItemType });
+    it.each([
+      [WORK_ITEM_TYPE_NAME_KEY_RESULT, 'Copy key result email address'],
+      [WORK_ITEM_TYPE_NAME_OBJECTIVE, 'Copy objective email address'],
+    ])('renders correct button name when work item is %s', (workItemType, buttonText) => {
+      createComponent({ workItemType });
 
-        expect(findCopyCreateNoteEmailButton().text()).toEqual(
-          `Copy ${workItemType} email address`,
-        );
-      },
-    );
+      expect(findCopyCreateNoteEmailButton().text()).toEqual(buttonText);
+    });
 
     it('shows toast when user clicks on the action', () => {
       createComponent();

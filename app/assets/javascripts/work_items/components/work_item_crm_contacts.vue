@@ -280,7 +280,7 @@ export default {
     data-testid="work-item-crm-contacts"
     @dropdown-shown="search"
     @search-started="search"
-    @updateSelected="updateCount"
+    @update-selected="updateCount"
     @update-value="updateItems"
   >
     <template #readonly>
