@@ -36,6 +36,8 @@
   "resolutions": {
     "browserslist": "^4.28.2",
     "chokidar": "^3.5.2",
+    "playwright": "^1.55.0",
+    "playwright-core": "^1.55.0",
     "string-width": "^4.2.0"
   },
   "dependencies": {

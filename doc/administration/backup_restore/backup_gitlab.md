@@ -250,7 +250,7 @@ In the unlikely event that the secrets file is lost, see
 
 GitLab uses Redis both as a cache store and to hold persistent data for our background jobs system, Sidekiq. The provided backup command does not back up Redis data. This means that in order to take a consistent backup with the backup command, there must be no pending or running background jobs.
 
-Elasticsearch is an optional database for advanced search. It can improve search in both source-code level, and user generated content in issues, merge requests, and discussions. The backup command does not back up Elasticsearch data. Elasticsearch data can be regenerated from PostgreSQL data after a restore.
+Elasticsearch is an optional database for advanced search. It can improve search at both the source-code level and in user-generated content in issues, merge requests, and discussions. The backup command does not back up Elasticsearch data. Elasticsearch data can be regenerated from PostgreSQL data after a restore.
 
 Manual backup options:
 
@@ -1647,7 +1647,7 @@ There are a few possible downsides to this:
 
 - Repositories are read-only for a period of time that scales with the size of the repository.
 - Backups take a longer time to complete due to marking each project as read-only, potentially leading to inconsistencies. For example,
-  a possible date discrepancy between the last data available for the first project that gets backed up compared to
+  there could be a date discrepancy between the last data available for the first project that gets backed up compared to
   the last project that gets backed up.
 - Fork networks should be entirely read-only while the projects inside get backed up to prevent potential changes to the pool repository.
 

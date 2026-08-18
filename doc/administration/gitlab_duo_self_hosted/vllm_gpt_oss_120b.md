@@ -355,7 +355,7 @@ Incoming requests exceed KV cache capacity. vLLM queues new requests until cache
 To resolve this issue:
 
 1. Check `kv_cache_usage_perc`. Sustained values above 0.85 confirm you're memory-bound.
-1. Reduce `--max-model-len` to lower per-request KV allocation, this frees slots for more concurrent requests.
+1. Reduce `--max-model-len` to lower per-request KV allocation. This frees slots for more concurrent requests.
 1. Reduce `--max-num-seqs` to limit how many requests compete for cache simultaneously.
 1. If you've exhausted single-node tuning, scale horizontally: add GPUs or nodes and load-balance across multiple vLLM instances.
 
@@ -376,4 +376,4 @@ To resolve this issue, make these adjustments in the following order:
 To resolve this issue:
 
 1. Increase `--max-num-batched-tokens` to let vLLM process more tokens per iteration.
-1. Increase `--max-num-seqs` so more requests batch together, this improves GPU utilization.
+1. Increase `--max-num-seqs` so more requests batch together. This improves GPU utilization.

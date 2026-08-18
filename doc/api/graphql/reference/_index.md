@@ -14192,6 +14192,32 @@ Fields:
 | <a id="mutation-organizationupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-organizationupdate-organization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
 
+### `Mutation.organizationUserDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `OrganizationUserDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-organizationuserdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-organizationuserdelete-id"></a>`id` | [`OrganizationsOrganizationUserID!`](#organizationsorganizationuserid) | ID of the organization user to delete. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-organizationuserdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-organizationuserdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-organizationuserdelete-organizationuser"></a>`organizationUser` {{< icon name="warning-solid" >}} | [`OrganizationUser`](#organizationuser) | Introduced in GitLab 19.3. Status: Experiment. Organization user that was deleted. |
+
 ### `Mutation.organizationUserUpdate`
 
 {{< details >}}
@@ -53114,8 +53140,8 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="organizationuserpermissions-adminorganization"></a>`adminOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_organization` on this resource. |
+| <a id="organizationuserpermissions-deleteorganizationuser"></a>`deleteOrganizationUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_organization_user` on this resource. |
 | <a id="organizationuserpermissions-deleteuser"></a>`deleteUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_user` on this resource. |
-| <a id="organizationuserpermissions-removeuser"></a>`removeUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_user` on this resource. |
 
 ### `Package`
 

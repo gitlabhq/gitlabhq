@@ -803,7 +803,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/finders/licenses_finder.rb'
     - 'ee/app/finders/organization_push_rule_finder.rb'
     - 'ee/app/finders/productivity_analytics_finder.rb'
-    - 'ee/app/finders/project_push_rule_finder.rb'
     - 'ee/app/finders/scim_finder.rb'
     - 'ee/app/mailers/ci_minutes_usage_mailer.rb'
     - 'ee/app/mailers/credentials_inventory_mailer.rb'

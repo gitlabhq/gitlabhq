@@ -569,7 +569,6 @@ remove_fork_project
 remove_group
 remove_pages
 remove_project
-remove_user
 rename_project
 reopen_issue
 reopen_merge_request

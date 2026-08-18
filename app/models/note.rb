@@ -425,7 +425,7 @@ class Note < ApplicationRecord
   end
 
   def for_project_noteable?
-    !(for_personal_snippet? || for_abuse_report? || group_level_issue?)
+    !(for_personal_snippet? || group_level_issue?)
   end
 
   def group_level_issue?
@@ -438,10 +438,6 @@ class Note < ApplicationRecord
 
   def for_issuable?
     for_issue? || for_merge_request?
-  end
-
-  def for_abuse_report?
-    noteable_type == AbuseReport.name
   end
 
   def skip_project_check?
@@ -833,9 +829,9 @@ class Note < ApplicationRecord
   end
 
   def ensure_organization_id
-    return unless for_personal_snippet? || for_abuse_report?
+    return unless for_personal_snippet?
 
-    self.organization_id = noteable&.organization_id if for_personal_snippet?
+    self.organization_id = noteable&.organization_id
 
     # Organization-scoped notes carry only organization_id; clear any stray
     # project_id/namespace_id (e.g. a factory or caller default) in preparation
@@ -885,10 +881,10 @@ class Note < ApplicationRecord
   end
 
   # Only normalize the sharding key once we can positively classify the note.
-  # Personal snippet and abuse-report notes are organization-keyed and handled
-  # by ensure_organization_id, so they are left untouched here.
+  # Personal snippet notes are organization-keyed and handled by
+  # ensure_organization_id, so they are left untouched here.
   def sharding_key_resolvable?
-    return false if for_personal_snippet? || for_abuse_report?
+    return false if for_personal_snippet?
 
     project_id.present? || noteable.present?
   end

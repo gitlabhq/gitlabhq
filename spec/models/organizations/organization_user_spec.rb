@@ -58,8 +58,9 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       subject(:organization_user) { create(:organization_user, user: user) }
 
       it 'prevents user leaving all organizations' do
-        organization_user.destroy!
+        expect { organization_user.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
 
+        expect(described_class.exists?(organization_user.id)).to be(true)
         expect(organization_user.errors[:base]).to include(_('A user must associate with at least one organization'))
       end
 

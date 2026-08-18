@@ -91,9 +91,6 @@ class GroupMember < Member
     # group_grants_project_access? call below which checks the same
     # sources Gitlab::ProjectAuthorizations#calculate reads for a group
     # membership.
-    #
-    # For now, this optimization is only applied to new records behind
-    # the skip_authorized_projects_refresh_for_new_group feature flag.
     return if previously_new_record? && skip_authorized_projects_refresh? && !group_grants_project_access?
 
     super

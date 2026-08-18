@@ -172,7 +172,7 @@ Set up cronjobs to perform Gitaly server-side backups:
    crontab -e
    ```
 
-1. There, add the following lines to schedule the backup for everyday of every month at 2 AM. To limit the number of increments needed to restore a backup, a full backup of Git repositories will be taken on the first of each month, and the rest of the days will take an incremental backup.:
+1. There, add the following lines to schedule the backup for every day of every month at 2 AM. To limit the number of increments needed to restore a backup, a full backup of Git repositories will be taken on the first of each month, and the rest of the days will take an incremental backup:
 
    ```plaintext
    0 2 1 * * /opt/gitlab/bin/gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db CRON=1

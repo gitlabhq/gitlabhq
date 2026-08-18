@@ -248,7 +248,7 @@ configure this:
    openssl rsa -aes256 -in /path/to/ssl-key.pem -out /path/to/encrypted-ssl-key.pem
    ```
 
-   Enter in a password twice to write the encrypted file. In this
+   Enter a password twice to write the encrypted file. In this
    example, we use `some-password-here`.
 
 1. Create a script or executable that prints the password. For

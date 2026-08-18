@@ -71,7 +71,7 @@ Legend:
 - `Component` - Name of the component.
 - `On by default` - Is the component running by default.
 - `Communicates via` - How the component talks with the other components.
-- `Alternative` - If it is possible to configure the component to use different type of communication. The type is listed with default port used in that case.
+- `Alternative` - If it is possible to configure the component to use a different type of communication. The type is listed with the default port used in that case.
 - `Connection port` - Port on which the component communicates.
 
 GitLab also expects a file system to be ready for the storage of Git repositories

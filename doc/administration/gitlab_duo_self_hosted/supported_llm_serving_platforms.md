@@ -223,7 +223,7 @@ To use IRSA to authenticate Amazon EKS:
 
    > [!note]
    > Some models might use different ARN formats. For example, newer models might
-   > require inference profile ARNs in addition to foundation model ARNs. To check the
+   > require inference profile ARNs in addition to foundation model ARNs. To check
    > the ARN format for your specific model, see the [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
 
 1. Create an IAM role with a trust policy for your Amazon EKS service account to use. Replace the following values:

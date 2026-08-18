@@ -27269,6 +27269,9 @@ msgstr ""
 msgid "DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator."
 msgstr ""
 
+msgid "DeleteProject|Failed to remove some tags in project container registry. The container registry at %{registry_url} could not be reached (%{error}). If the container registry is not in use, disable the integration to allow the project to be deleted."
+msgstr ""
+
 msgid "DeleteProject|Failed to remove webhooks. Please try again or contact administrator."
 msgstr ""
 
@@ -34456,6 +34459,9 @@ msgid "Failed to delete custom emoji. Please try again."
 msgstr ""
 
 msgid "Failed to delete file! Please try again."
+msgstr ""
+
+msgid "Failed to delete the organization user"
 msgstr ""
 
 msgid "Failed to deploy to"
@@ -83509,6 +83515,9 @@ msgstr ""
 msgid "TransferProject|Cannot transfer project: failed to connect to the container registry. Please try again later."
 msgstr ""
 
+msgid "TransferProject|Failed to transfer project. The container registry at %{registry_url} could not be reached (%{error}). If the container registry is not in use, disable the integration to allow the project to be transferred."
+msgstr ""
+
 msgid "TransferProject|Please select a new namespace for your project."
 msgstr ""
 
@@ -92900,6 +92909,12 @@ msgstr ""
 msgid "You cannot create projects in your personal namespace. Contact your GitLab administrator."
 msgstr ""
 
+msgid "You cannot delete a user from their home organization"
+msgstr ""
+
+msgid "You cannot delete the last owner of the organization"
+msgstr ""
+
 msgid "You cannot edit files in archived projects"
 msgstr ""
 
@@ -93141,6 +93156,9 @@ msgid "You have insufficient permissions to create organizations"
 msgstr ""
 
 msgid "You have insufficient permissions to delete a branch target"
+msgstr ""
+
+msgid "You have insufficient permissions to delete the organization user"
 msgstr ""
 
 msgid "You have insufficient permissions to manage alerts for this project"

@@ -2110,7 +2110,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/finders/okrs/checkin_reminder_key_result_finder.rb'
     - 'ee/app/finders/organization_push_rule_finder.rb'
     - 'ee/app/finders/productivity_analytics_finder.rb'
-    - 'ee/app/finders/project_push_rule_finder.rb'
     - 'ee/app/finders/scim_finder.rb'
     - 'ee/app/graphql/ee/gitlab_schema.rb'
     - 'ee/app/graphql/ee/graphql_triggers.rb'

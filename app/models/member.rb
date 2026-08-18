@@ -32,8 +32,7 @@ class Member < ApplicationRecord
   # of a brand-new group, which has no projects yet). Currently only
   # read in `GroupMember#refresh_member_authorized_projects` and set by
   # Groups::CreateService when adding an owner to the newly created
-  # group (behind the skip_authorized_projects_refresh_for_new_group
-  # feature flag).
+  # group.
   attr_accessor :skip_authorized_projects_refresh
   alias_method :skip_authorized_projects_refresh?, :skip_authorized_projects_refresh
 

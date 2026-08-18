@@ -1958,11 +1958,12 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
-        - 'storybook/'
+        - 'storybook/**/*'
     - <<: *if-default-refs
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
+        - 'storybook/**/*'
 
 .frontend:rules:fe-islands:test:
   rules:

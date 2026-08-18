@@ -638,6 +638,22 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       end
     end
 
+    context 'when the container registry cannot be reached' do
+      before do
+        # allow_any_instance_of is used here because the root repository is built ad hoc and not exposed
+        allow_any_instance_of(ContainerRepository)
+          .to receive(:has_tags?).and_raise(Faraday::ConnectionFailed, 'Connection refused')
+      end
+
+      it 'fails with an actionable error and does not delete the project', :aggregate_failures do
+        expect(destroy_project(project, user)).to be false
+
+        expect(project.reload.pending_delete).to be(false)
+        expect(project.deletion_error).to include(Gitlab.config.registry.api_url)
+        expect(project.deletion_error).to include('disable the integration')
+      end
+    end
+
     describe 'tag protection rules handling' do
       let_it_be_with_refind(:project) { create(:project, :repository, namespace: user.namespace) }
 

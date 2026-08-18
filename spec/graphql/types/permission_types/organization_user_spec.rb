@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Types::PermissionTypes::OrganizationUser, feature_category: :cell do
   it 'exposes the expected fields' do
     expected_permissions = %i[
-      remove_user
+      delete_organization_user
       delete_user
       admin_organization
     ]

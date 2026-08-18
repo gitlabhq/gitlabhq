@@ -520,6 +520,32 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
           it_behaves_like 'project transfer failed with a message', 'Project cannot be transferred because of a container registry error: Bad Request'
         end
+
+        context 'when the registry becomes unreachable after the dry run succeeds' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:move_repository_to_namespace) do |_path, dry_run:, **|
+              raise Faraday::ConnectionFailed, 'end of file reached' unless dry_run
+
+              :accepted
+            end
+          end
+
+          it 'fails with an actionable error message', :aggregate_failures do
+            expect(execute_transfer).to be false
+            expect(project.errors[:new_namespace]).to include(include(Gitlab.config.registry.api_url))
+            expect(project.errors[:new_namespace]).to include(include('disable the integration'))
+          end
+
+          it 'tracks the exception and rolls back the transfer', :aggregate_failures do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(Faraday::ConnectionFailed),
+              project_id: project.id
+            )
+
+            expect(execute_transfer).to be false
+            expect(project.reload.namespace).to eq(group)
+          end
+        end
       end
 
       context 'when transferring to a different top level namespace' do

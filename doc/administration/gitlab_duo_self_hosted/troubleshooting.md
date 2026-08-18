@@ -144,7 +144,7 @@ This should return a response from the model in the format:
    "timestamp"=>1723448920}}
 ```
 
-If that is not the case, this might means one of the following:
+If that is not the case, this might mean one of the following:
 
 - The user might not have access to Code Suggestions. To resolve,
   [check if a user can request Code Suggestions](#check-if-a-user-can-request-code-suggestions).

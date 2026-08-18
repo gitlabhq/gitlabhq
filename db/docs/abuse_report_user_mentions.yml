@@ -1,7 +1,6 @@
 ---
 table_name: abuse_report_user_mentions
-classes:
-- AntiAbuse::Reports::UserMention
+classes: []
 feature_categories:
 - insider_threat
 description: User mentions in abuse report notes

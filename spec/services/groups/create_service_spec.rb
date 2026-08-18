@@ -60,26 +60,10 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   end
 
   describe 'owner authorized projects refresh' do
-    context 'when the skip_authorized_projects_refresh_for_new_group flag is enabled' do
-      it 'is not performed' do
-        expect(AuthorizedProjectsWorker).not_to receive(:new)
+    it 'is not performed' do
+      expect(AuthorizedProjectsWorker).not_to receive(:new)
 
-        expect(response).to be_success
-      end
-    end
-
-    context 'when the skip_authorized_projects_refresh_for_new_group flag is disabled' do
-      before do
-        stub_feature_flags(skip_authorized_projects_refresh_for_new_group: false)
-      end
-
-      it 'is performed' do
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(current_user.id)
-        end
-
-        expect(response).to be_success
-      end
+      expect(response).to be_success
     end
   end
 

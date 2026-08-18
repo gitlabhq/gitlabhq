@@ -24,7 +24,7 @@ Use the GitLab API to move Git repositories:
 - From single-node Gitaly to Gitaly Cluster (Praefect).
 
 GitLab repositories can be associated with projects, groups, and snippets. Each of these types has a separate API for
-moving the repositories. To move all repositories on a GitLab instance, each of type of repository must be moved for
+moving the repositories. To move all repositories on a GitLab instance, each type of repository must be moved for
 each storage.
 
 Each repository is made read-only for the duration of the move and is not writable until the move is finished.
@@ -34,7 +34,7 @@ To move repositories:
 1. Ensure all [local and cluster storages](../gitaly/configure_gitaly.md#mixed-configuration) are accessible to the GitLab instance. In
    this example, these are `<original_storage_name>` and `<cluster_storage_name>`.
 1. [Configure repository storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored)
-   so that the new storages receives all new projects. This stops new projects from being created on existing storages
+   so that the new storages receive all new projects. This stops new projects from being created on existing storages
    while the migration is in progress.
 1. Schedule repository moves for projects, snippets, and group.
 1. If you use [Geo](../geo/_index.md),

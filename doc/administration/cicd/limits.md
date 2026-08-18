@@ -27,7 +27,7 @@ Review the [CI/CD limits and settings for GitLab.com](../../user/gitlab_com/_ind
 {{< /history >}}
 
 The number of [CI/CD variables](../../ci/variables/_index.md) that can be defined in
-instance settings is limited. This limits is checked each time a new variable is created.
+instance settings is limited. This limit is checked each time a new variable is created.
 If a new variable would cause the total number of variables to exceed the limit,
 the new variable is not created.
 
@@ -156,7 +156,7 @@ Set the limit to `0` to disable it. Disabled by default.
 The total number of subscriptions can be limited per project. This limit is
 checked each time a new subscription is created.
 
-If a new subscription would cause the total number of subscription to exceed the
+If a new subscription would cause the total number of subscriptions to exceed the
 limit, the subscription is considered invalid.
 
 To configure this limit:
@@ -483,7 +483,7 @@ To change the maximum number of caches per job:
 
 {{< /details >}}
 
-Some CI/CD limits can be only be changed by editing the instance configuration.
+Some CI/CD limits can only be changed by editing the instance configuration.
 
 Prerequisites:
 
@@ -592,8 +592,8 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 
 ### Group and project CI/CD variable limits
 
-The number of [CI/CD variables](../../ci/variables/_index.md) that can be defined in groups and projects,
-are limited for the entire instance. These limits are checked each time a new variable is created.
+The number of [CI/CD variables](../../ci/variables/_index.md) that can be defined in groups and projects
+is limited for the entire instance. These limits are checked each time a new variable is created.
 If a new variable would cause the total number of variables to exceed the respective limit,
 the new variable is not created.
 

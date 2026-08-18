@@ -901,6 +901,14 @@ Grants the ability to create, delete, read, restore, and update organizations.
 | Update | Instance | Mutation | `OrganizationUpdate` |
 | Update | Instance | Mutation | `OrganizationUserUpdate` |
 
+#### Organization User
+
+Grants the ability to delete organization users.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Instance | Mutation | `OrganizationUserDelete` |
+
 ### Packages and Registry resources
 
 #### Container Expiration Policy

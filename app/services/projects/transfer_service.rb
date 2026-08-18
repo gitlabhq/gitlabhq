@@ -45,7 +45,8 @@ module Projects
       project_namespace.state_metadata[:transfer_target_parent_id] = new_namespace.id
 
       unless project_namespace.schedule_transfer(transition_user: current_user)
-        raise TransferError, s_('TransferProject|Unable to initiate transfer. The project may already have a transfer in progress.')
+        raise TransferError, s_('TransferProject|Unable to initiate transfer. ' \
+          'The project may already have a transfer in progress.')
       end
 
       Projects::TransferWorker.perform_async(
@@ -154,7 +155,9 @@ module Projects
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
 
-      if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.name).exists?
+      if Project.where(namespace_id: @new_namespace.try(:id))
+                .where('path = ? or name = ?', project.path, project.name)
+                .exists?
         raise TransferError, s_("TransferProject|Project with same name or path in target namespace already exists")
       end
 
@@ -167,7 +170,8 @@ module Projects
       verify_if_container_registry_tags_can_be_handled(project)
 
       if !new_namespace_has_same_root?(project) && project_has_namespaced_npm_packages?
-        raise TransferError, s_("TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
+        raise TransferError, s_("TransferProject|Root namespace can't be updated if the project has NPM packages " \
+          "scoped to the current root level namespace.")
       end
 
       proceed_to_transfer
@@ -180,29 +184,36 @@ module Projects
       raise_error_due_to_tags_if_transfer_is_not_allowed
       raise_error_due_to_tags_if_not_in_same_root(project)
       raise_error_due_to_tags_if_transfer_dry_run_fails(project)
-    rescue Faraday::Error => e
-      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
-      raise TransferError,
-        s_('TransferProject|Cannot transfer project: failed to connect to the container registry. Please try again later.')
+    rescue Faraday::Error => error
+      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      raise TransferError, s_('TransferProject|Cannot transfer project: failed to connect to the container registry. ' \
+        'Please try again later.')
     end
 
     def raise_error_due_to_tags_if_transfer_is_not_allowed
       return if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
-      raise TransferError, s_('TransferProject|Project cannot be transferred, because image tags are present in its container registry')
+      raise TransferError, s_('TransferProject|Project cannot be transferred, ' \
+        'because image tags are present in its container registry')
     end
 
     def raise_error_due_to_tags_if_not_in_same_root(project)
       return if new_namespace_has_same_root?(project)
 
-      raise TransferError, s_('TransferProject|Project cannot be transferred to a different top-level namespace, because image tags are present in its container registry')
+      raise TransferError, s_('TransferProject|Project cannot be transferred to a different top-level namespace, ' \
+        'because image tags are present in its container registry')
     end
 
     def raise_error_due_to_tags_if_transfer_dry_run_fails(project)
-      dry_run = transfer_project_path_in_registry(project.full_path, new_namespace.full_path, project: project, dry_run: true)
+      dry_run = transfer_project_path_in_registry(
+        project.full_path, new_namespace.full_path, project: project, dry_run: true
+      )
       return if dry_run == :accepted
 
-      raise TransferError, format(s_('TransferProject|Project cannot be transferred because of a container registry error: %{error}'), error: dry_run.to_s.titleize)
+      raise TransferError, format(
+        s_('TransferProject|Project cannot be transferred because of a container registry error: %{error}'),
+        error: dry_run.to_s.titleize
+      )
     end
 
     def new_namespace_has_same_root?(project)
@@ -246,9 +257,7 @@ module Projects
             move_project_uploads(project)
 
             # Update Container Registry
-            if project.has_container_registry_tags?
-              transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
-            end
+            update_container_registry_path(project)
 
             update_integrations
 
@@ -281,6 +290,25 @@ module Projects
       project.save!
     rescue ActiveRecord::RecordInvalid => e
       raise TransferError, e.record.errors.full_messages.to_sentence
+    end
+
+    def update_container_registry_path(project)
+      return unless project.has_container_registry_tags?
+
+      transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => error
+      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      raise TransferError, registry_unreachable_message(error)
+    end
+
+    def registry_unreachable_message(error)
+      format(
+        s_('TransferProject|Failed to transfer project. ' \
+          'The container registry at %{registry_url} could not be reached (%{error}). ' \
+          'If the container registry is not in use, disable the integration to allow the project to be transferred.'),
+        registry_url: Gitlab.config.registry.api_url,
+        error: error.message
+      )
     end
 
     def transfer_project_path_in_registry(old_project_path, new_namespace_path, project:, dry_run:)

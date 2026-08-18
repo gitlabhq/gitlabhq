@@ -572,7 +572,7 @@ When a server-side backup is collected, the restore process defaults to use the 
 node that hosts each repository is responsible for pulling the necessary backup data directly from object storage.
 
 1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
-1. Start a server-side backup restore process and specifying the [ID of the backup](backup_archive_process.md#backup-id) you wish to restore:
+1. Start a server-side backup restore process, specifying the [ID of the backup](backup_archive_process.md#backup-id) you wish to restore:
 
 {{< tabs >}}
 

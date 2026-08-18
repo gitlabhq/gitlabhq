@@ -352,7 +352,7 @@ The metadata file is in a binary format, with additional Gzip compression.
 
 GitLab doesn't extract the artifacts archive to save space, memory, and disk
 I/O. It instead inspects the metadata file which contains all the relevant
-information. This is especially important when there is a lot of artifacts, or
+information. This is especially important when there are a lot of artifacts, or
 an archive is a very large file.
 
 When selecting a specific file, [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) extracts it

@@ -74,12 +74,7 @@ module Groups
             # A brand-new group has no projects, so recalculating the owner's
             # authorized projects here is a no-op. Skip the high-urgency refresh
             # to keep it off the AuthorizedProjectsWorker 10s-target path.
-            @group.add_owner(
-              current_user,
-              skip_authorized_projects_refresh: Feature.enabled?(
-                :skip_authorized_projects_refresh_for_new_group, current_user
-              )
-            )
+            @group.add_owner(current_user, skip_authorized_projects_refresh: true)
             Integration.create_from_default_integrations(@group, :group_id)
           end
         end

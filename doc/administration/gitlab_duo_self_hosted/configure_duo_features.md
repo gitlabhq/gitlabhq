@@ -122,7 +122,7 @@ If a model has its own timeout in `MODEL_SPECIFICATIONS`, that value takes prece
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19125) in GitLab 18.8.
 - Feature flag `self_hosted_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589) in GitLab 18.9.
-- On GitLab 18.7 and 18.8, this feature is beta for customers with an online licenses. To use this feature, you must [turn on](#turn-on-self-hosted-beta-models-and-features) self-hosted beta models and features.
+- On GitLab 18.7 and 18.8, this feature is beta for customers with an online license. To use this feature, you must [turn on](#turn-on-self-hosted-beta-models-and-features) self-hosted beta models and features.
 
 {{< /history >}}
 
@@ -255,7 +255,7 @@ To select a self-hosted model:
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure models for GitLab Duo**.
 1. Select the **AI-native features** tab.
-1. For the feature you want to select a self-hosted model for, select the model from dropdown list.
+1. For the feature you want to select a self-hosted model for, select the model from the dropdown list.
 
 > [!note]
 > If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
