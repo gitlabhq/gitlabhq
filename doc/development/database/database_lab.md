@@ -39,7 +39,7 @@ To access the DLE's services, you can:
   provides `EXPLAIN` (analyze, buffers) plans for queries executed there.
 - Migration testing by triggering a job as a part of a merge request.
 - Direct `psql` access to DLE instead of a production replica. Available to authorized users only.
-  To request `psql` access, file an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+  To request `psql` access, file an [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/work_items/new?description_template=Database_Lab_Access_Request).
 
 For more assistance, use the `#database` Slack channel.
 

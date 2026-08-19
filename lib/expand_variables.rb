@@ -31,6 +31,8 @@ module ExpandVariables
     private
 
     def replace_with(value, variables)
+      return value if value.nil?
+
       # We lazily fabricate the variables collection in case there is no variable in the value string.
       # `collection` needs to be initialized to nil here
       # so that it is memoized in the closure block for `gsub`.

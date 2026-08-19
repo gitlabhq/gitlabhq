@@ -26,7 +26,9 @@ class GraphqlController < ApplicationController
     Gitlab::Auth::TooManyIps => { status: :forbidden },
     RateLimitedService::RateLimitedError => { status: :too_many_requests },
     Gitlab::Git::ResourceExhaustedError => { status: :service_unavailable },
-    Gitlab::Graphql::Errors::OrganizationReadOnlyError => { status: :service_unavailable },
+    # Time-bounded blocks are retryable (503 + Retry-After); indefinite blocks are not (403).
+    Gitlab::Graphql::Errors::TimeBoundedOrganizationMaintenanceModeError => { status: :service_unavailable },
+    Gitlab::Graphql::Errors::IndefiniteOrganizationMaintenanceModeError => { status: :forbidden },
     ActiveRecord::QueryAborted => { status: :service_unavailable },
     ActiveRecord::QueryCanceled => {
       status: :service_unavailable,
@@ -45,11 +47,11 @@ class GraphqlController < ApplicationController
     current_user.nil? || sessionless_user? || !any_mutating_query?
   }
   skip_before_action :check_two_factor_requirement, if: -> { sessionless_user? }
-  # GraphQL handles read-only enforcement per-operation in
-  # #disallow_mutations_for_organization_read_only: all GraphQL traffic is POST,
-  # so the generic write-method check from EnforcesReadOnlyOrganization would
-  # block read queries too.
-  skip_before_action :enforce_read_only_organization
+  # GraphQL handles maintenance-mode enforcement in
+  # #disallow_requests_for_organization_maintenance_mode so the error is returned
+  # as a GraphQL-shaped response instead of the generic HTML/JSON error from
+  # EnforcesOrganizationMaintenanceMode.
+  skip_before_action :enforce_organization_maintenance_mode
 
   # Header can be passed by tests to disable SQL query limits.
   DISABLE_SQL_QUERY_LIMIT_HEADER = 'HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'
@@ -88,6 +90,7 @@ class GraphqlController < ApplicationController
   prepend_before_action { authenticate_sessionless_user!(:graphql_api) }
 
   before_action :authorize_access_api!
+  before_action :disallow_requests_for_organization_maintenance_mode
   before_action(only: [:execute]) { check_dpop! }
   before_action :set_graphql_caller_id, only: [:execute]
   before_action :set_user_last_activity
@@ -102,7 +105,6 @@ class GraphqlController < ApplicationController
   before_action :enforce_language_server_restrictions
 
   before_action :disallow_mutations_for_get
-  before_action :disallow_mutations_for_organization_read_only
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -221,15 +223,21 @@ class GraphqlController < ApplicationController
     raise ::Gitlab::Graphql::Errors::ArgumentError, "Mutations are forbidden in #{request.request_method} requests"
   end
 
-  def disallow_mutations_for_organization_read_only
-    return unless any_mutating_query?
-
+  # Blocks all operations, including read queries: HTTP verb and operation type
+  # are unreliable proxies for "no write"
+  # (https://gitlab.com/gitlab-org/gitlab/-/issues/607966).
+  def disallow_requests_for_organization_maintenance_mode
     organization = ::Current.organization
-    return unless organization&.read_only?
-    return unless Feature.enabled?(:organization_read_only_enforcement, organization)
+    return unless organization&.read_only_enforced?
 
-    raise ::Gitlab::Graphql::Errors::OrganizationReadOnlyError,
-      "Mutations are forbidden because the organization is in read-only mode"
+    if organization.read_only_time_bounded?
+      raise ::Gitlab::Graphql::Errors::TimeBoundedOrganizationMaintenanceModeError.new(
+        organization.read_only_message,
+        headers: { 'Retry-After' => ::Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s })
+    else
+      raise ::Gitlab::Graphql::Errors::IndefiniteOrganizationMaintenanceModeError,
+        organization.read_only_message
+    end
   end
 
   def limit_query_size

@@ -17,26 +17,33 @@ RSpec.describe 'Reportable note on commit', :js, feature_category: :source_code_
   end
 
   shared_examples 'a reportable note in Rapid Diffs' do
-    # Wait for note content to render, not just the empty wrapper div
     let(:comment) { find("#note_#{note.id}", text: note.note) }
+
+    def open_more_actions_dropdown
+      click_button 'More actions'
+      return if has_testid?('disclosure-content', wait: 2) # rubocop:disable RSpec/AvoidConditionalStatements -- retry click if dropdown didn't open
+
+      click_button 'More actions'
+    end
 
     it 'can be edited and deleted', :aggregate_failures do
       within(comment) do
-        # Wait for action buttons to be interactive (not in loading state)
-        find_button('Edit comment', disabled: false)
+        expect(page).to have_button('Edit comment')
+        open_more_actions_dropdown
 
-        click_button 'More actions'
-
-        expect(page).to have_button('Delete comment', disabled: false)
+        within_testid('disclosure-content') do
+          expect(page).to have_button('Delete comment')
+        end
       end
     end
 
     it 'report button links to a report page', :aggregate_failures do
       within(comment) do
-        # Wait for action buttons to be interactive (not in loading state)
-        find_button('More actions', disabled: false)
-        click_button 'More actions'
-        find_by_testid('report-abuse-button').click
+        open_more_actions_dropdown
+
+        within_testid('disclosure-content') do
+          find_by_testid('report-abuse-button').click
+        end
       end
 
       choose "They're posting spam or unsolicited content."

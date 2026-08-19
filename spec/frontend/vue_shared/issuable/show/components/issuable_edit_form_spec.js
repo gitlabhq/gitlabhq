@@ -41,7 +41,7 @@ describe('IssuableEditForm', () => {
   let wrapper;
   const assertEvent = (eventSpy) => {
     expect(eventSpy).toHaveBeenNthCalledWith(1, 'update.issuable', expect.any(Function));
-    expect(eventSpy).toHaveBeenNthCalledWith(2, 'close.form', expect.any(Function));
+    expect(eventSpy).toHaveBeenNthCalledWith(2, 'close-form', expect.any(Function));
   };
 
   const findActions = () => wrapper.findByTestId('actions');
@@ -96,7 +96,7 @@ describe('IssuableEditForm', () => {
   });
 
   describe('created', () => {
-    it('binds `update.issuable` and `close.form` event listeners', () => {
+    it('binds `update.issuable` and `close-form` event listeners', () => {
       const eventOnSpy = jest.spyOn(IssuableEventHub, '$on');
       const wrapperTemp = createComponent();
 
@@ -107,7 +107,7 @@ describe('IssuableEditForm', () => {
   });
 
   describe('beforeDestroy', () => {
-    it('unbinds `update.issuable` and `close.form` event listeners', () => {
+    it('unbinds `update.issuable` and `close-form` event listeners', () => {
       const wrapperTemp = createComponent();
       const eventOffSpy = jest.spyOn(IssuableEventHub, '$off');
 

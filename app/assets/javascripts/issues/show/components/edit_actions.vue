@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     closeForm() {
-      eventHub.$emit('close.form');
+      eventHub.$emit('close-form');
     },
   },
 };

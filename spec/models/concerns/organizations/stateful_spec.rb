@@ -563,6 +563,26 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
     end
   end
 
+  describe '#read_only_message' do
+    subject(:read_only_message) { organization.read_only_message }
+
+    context 'when the read-only reason is time-bounded' do
+      before do
+        organization.read_only_reason = 'migration'
+      end
+
+      it { is_expected.to eq('This organization is temporarily unavailable due to maintenance.') }
+    end
+
+    context 'when the read-only reason is indefinite' do
+      before do
+        organization.read_only_reason = 'legal'
+      end
+
+      it { is_expected.to eq('This organization is unavailable.') }
+    end
+  end
+
   describe 'guard: default organization cannot enter read-only' do
     # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required for testing default organization guard
     let_it_be_with_reload(:default_org) { create(:organization, :default) }

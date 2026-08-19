@@ -538,6 +538,7 @@ type:DeploymentPermissions
 type:DeploymentTag
 type:DeploymentsAggregationResponse
 type:DeploymentsAggregationResponseDimensions
+type:DeploymentsAggregationResponseDurationMetrics
 type:DeploymentsAggregationScope
 type:DescriptionVersion
 type:Design
@@ -597,9 +598,6 @@ type:ExternalStatusCheck
 type:FeatureFlag
 type:FileUpload
 type:FindingDueDatesSetError
-type:FinishedPipelinesAggregationResponse
-type:FinishedPipelinesAggregationResponseDimensions
-type:FinishedPipelinesAggregationScope
 type:ForkDetails
 type:GeoNode
 type:GitlabSubscriptionBudgetCapUserOverride
@@ -793,6 +791,7 @@ type:PipelineSecurityReportFinding
 type:PipelineSecurityReportFindingPermissions
 type:PipelinesAggregationResponse
 type:PipelinesAggregationResponseDimensions
+type:PipelinesAggregationResponseDurationMetrics
 type:PipelinesAggregationScope
 type:PolicyAnyMergeRequestViolation
 type:PolicyApprovalGroup

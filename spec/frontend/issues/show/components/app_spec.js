@@ -91,7 +91,7 @@ describe('Issuable output', () => {
   };
 
   const openForm = () => {
-    return emitHubEvent('open.form');
+    return emitHubEvent('open-form');
   };
 
   const updateIssuable = () => {
@@ -181,7 +181,7 @@ describe('Issuable output', () => {
       await createComponent();
     });
 
-    it('shows actions on `open.form` event', async () => {
+    it('shows actions on `open-form` event', async () => {
       expect(findForm().exists()).toBe(false);
 
       await openForm();
@@ -262,7 +262,7 @@ describe('Issuable output', () => {
     it('closes the form after fetching data', async () => {
       await updateIssuable();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+      expect(eventHub.$emit).toHaveBeenCalledWith('close-form');
     });
 
     it('does not redirect if issue has not moved', async () => {
@@ -308,7 +308,7 @@ describe('Issuable output', () => {
 
         await updateIssuable();
 
-        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('close-form');
         expect(createAlert).toHaveBeenCalledWith({
           message: `Error updating issue. Request failed with status code 401`,
         });
@@ -323,7 +323,7 @@ describe('Issuable output', () => {
 
         await updateIssuable();
 
-        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('close-form');
         expect(createAlert).toHaveBeenCalledWith({
           message: `Error updating merge request. Request failed with status code 401`,
         });

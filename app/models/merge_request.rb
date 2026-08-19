@@ -1432,7 +1432,6 @@ class MergeRequest < ApplicationRecord
   # UI surface a clear reopen error.
   def validate_required_branch_existence
     return unless require_existing_branches
-    return unless Feature.enabled?(:prevent_reopen_merge_request_without_branch, project)
     return if nonexistent_branches.empty?
 
     errors.add(:base, _('Cannot reopen this merge request because the source or target branch no longer exists.'))

@@ -134,6 +134,10 @@ module Organizations
       groups.none? && projects.none?
     end
 
+    def read_only_enforced?
+      read_only? && Feature.enabled?(:organization_read_only_enforcement, self)
+    end
+
     def to_param
       path
     end

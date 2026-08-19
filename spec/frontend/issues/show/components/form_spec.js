@@ -144,7 +144,7 @@ describe('Inline edit form component', () => {
     it('calls reset on autosave when eventHub emits appropriate events', () => {
       createComponent();
 
-      eventHub.$emit('close.form');
+      eventHub.$emit('close-form');
 
       expect(clearDraft).toHaveBeenCalledTimes(2);
 

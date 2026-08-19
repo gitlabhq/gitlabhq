@@ -81,7 +81,7 @@ export default {
   },
   created() {
     eventHub.$on('update.issuable', this.resetAutosave);
-    eventHub.$on('close.form', this.resetAutosave);
+    eventHub.$on('close-form', this.resetAutosave);
   },
   mounted() {
     if (this.enableAutosave) this.initAutosave();
@@ -91,7 +91,7 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off('update.issuable', this.resetAutosave);
-    eventHub.$off('close.form', this.resetAutosave);
+    eventHub.$off('close-form', this.resetAutosave);
   },
   methods: {
     initAutosave() {

@@ -43,6 +43,7 @@ import {
 } from './graphql/cache_updates';
 import {
   I18N_MOVE_ERROR,
+  I18N_MOVE_SUCCESS,
   MOVE_IN_PROGRESS_INDICATOR_DELAY,
   BOARD_COLUMN_DND_GROUP,
   BOARD_COLUMN_CLASS,
@@ -660,6 +661,12 @@ export default {
 
         if (data?.workItemUpdate?.errors?.length) {
           throw new Error(data.workItemUpdate.errors.join(', '));
+        }
+
+        if (valueChanged) {
+          this.$toast.show(
+            sprintf(I18N_MOVE_SUCCESS, { reference: node.reference, targetGroup: toValue.name }),
+          );
         }
       } catch (error) {
         this.$toast.show(I18N_MOVE_ERROR);

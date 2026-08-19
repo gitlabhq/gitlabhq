@@ -226,7 +226,7 @@ describe('ReadyToMerge', () => {
       createComponent({
         mr: {
           pipeline: { status: 'FAILED' },
-          availableAutoMergeStrategies: MWCP_MERGE_STRATEGY,
+          availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
           hasCI: true,
         },
       });
@@ -304,6 +304,43 @@ describe('ReadyToMerge', () => {
       await nextTick();
 
       expect(findMergeButton().props('disabled')).toBe(true);
+    });
+
+    it('stays enabled when auto-merge is genuinely unavailable (loaded empty [])', () => {
+      // [] means "loaded, no auto-merge strategy" — an immediate Merge is the
+      // correct action, so the button must NOT be disabled. Only `undefined`
+      // (not-yet-loaded) disables it. Guards against a no-auto-merge regression.
+      createComponent({ mr: { availableAutoMergeStrategies: [] } });
+
+      expect(findMergeButton().props('disabled')).toBe(false);
+      expect(findMergeButton().text()).toBe('Merge');
+    });
+
+    it('shows a spinner instead of a clickable button while strategies are still loading', () => {
+      // Regression for #593704: strategies load from a separate poll, so a
+      // clickable "Merge" button here would let a user immediately merge and
+      // bypass a merge train before auto-merge availability is known. Show a
+      // loading spinner (and keep it non-interactive) until the poll resolves.
+      createComponent({ mr: { availableAutoMergeStrategies: undefined } });
+
+      expect(findMergeButton().props('loading')).toBe(true);
+      expect(findMergeButton().props('disabled')).toBe(true);
+      expect(findMergeButton().text()).toBe('Checking merge options…');
+    });
+
+    it('enables the auto-merge action once strategies arrive from the poll', async () => {
+      // Simulates the real lifecycle: initial data has no strategies
+      // (undefined) until the widget poll populates them as an array.
+      createComponent({ mr: { availableAutoMergeStrategies: undefined } });
+      expect(findMergeButton().props('loading')).toBe(true);
+
+      await wrapper.setProps({
+        mr: createTestMr({ mr: { availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY] } }),
+      });
+
+      expect(findMergeButton().props('loading')).toBe(false);
+      expect(findMergeButton().props('disabled')).toBe(false);
+      expect(findMergeButton().text()).toBe('Set to auto-merge');
     });
   });
 

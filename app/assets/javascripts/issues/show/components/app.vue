@@ -331,13 +331,13 @@ export default {
     window.addEventListener('beforeunload', this.handleBeforeUnloadEvent);
 
     eventHub.$on('update.issuable', this.updateIssuable);
-    eventHub.$on('close.form', this.closeForm);
-    eventHub.$on('open.form', this.openForm);
+    eventHub.$on('close-form', this.closeForm);
+    eventHub.$on('open-form', this.openForm);
   },
   beforeDestroy() {
     eventHub.$off('update.issuable', this.updateIssuable);
-    eventHub.$off('close.form', this.closeForm);
-    eventHub.$off('open.form', this.openForm);
+    eventHub.$off('close-form', this.closeForm);
+    eventHub.$off('open-form', this.openForm);
     window.removeEventListener('beforeunload', this.handleBeforeUnloadEvent);
     this.hideStickyHeader();
   },
@@ -473,7 +473,7 @@ export default {
         })
         .then(this.refetchData)
         .then(() => {
-          eventHub.$emit('close.form');
+          eventHub.$emit('close-form');
         })
         .catch((error = {}) => {
           const { message, response = {} } = error;

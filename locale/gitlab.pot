@@ -8237,6 +8237,9 @@ msgstr ""
 msgid "AiFlowTriggers|Mention-triggered flows are not supported on group-level resources. They require a project-level item such as an issue or merge request."
 msgstr ""
 
+msgid "AiFlowTriggers|Your message is too long for me to process. Shorten it and mention me again."
+msgstr ""
+
 msgid "AiFlowTriggers|✅ %{flow_name} has started. You can view progress %{link_start}here%{link_end}."
 msgstr ""
 
@@ -8248,6 +8251,11 @@ msgstr ""
 
 msgid "AiGovernance|%d audit event"
 msgid_plural "AiGovernance|%d audit events"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AiGovernance|%d session"
+msgid_plural "AiGovernance|%d sessions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8326,6 +8334,9 @@ msgstr ""
 msgid "AiGovernance|Destroy"
 msgstr ""
 
+msgid "AiGovernance|Developer activity"
+msgstr ""
+
 msgid "AiGovernance|External"
 msgstr ""
 
@@ -8380,6 +8391,9 @@ msgstr ""
 msgid "AiGovernance|Overrides group"
 msgstr ""
 
+msgid "AiGovernance|Project exposure"
+msgstr ""
+
 msgid "AiGovernance|Read"
 msgstr ""
 
@@ -8420,6 +8434,12 @@ msgid "AiGovernance|View all agents"
 msgstr ""
 
 msgid "AiGovernance|View all audit logs"
+msgstr ""
+
+msgid "AiGovernance|View all projects"
+msgstr ""
+
+msgid "AiGovernance|View all users"
 msgstr ""
 
 msgid "AiGovernance|Web access"
@@ -29906,6 +29926,9 @@ msgstr ""
 msgid "DuoAgenticChat|Chat about different topics"
 msgstr ""
 
+msgid "DuoAgenticChat|Chat could not be loaded"
+msgstr ""
+
 msgid "DuoAgenticChat|Chat history"
 msgstr ""
 
@@ -30005,10 +30028,16 @@ msgstr ""
 msgid "DuoAgenticChat|Let's work through this together..."
 msgstr ""
 
+msgid "DuoAgenticChat|Loading your conversation..."
+msgstr ""
+
 msgid "DuoAgenticChat|More actions"
 msgstr ""
 
 msgid "DuoAgenticChat|More active sessions"
+msgstr ""
+
+msgid "DuoAgenticChat|New chat"
 msgstr ""
 
 msgid "DuoAgenticChat|No credits remain for this billing period"
@@ -30045,6 +30074,9 @@ msgid "DuoAgenticChat|Repurchase Agent Platform"
 msgstr ""
 
 msgid "DuoAgenticChat|Responses may be inaccurate. Verify before use."
+msgstr ""
+
+msgid "DuoAgenticChat|Retry"
 msgstr ""
 
 msgid "DuoAgenticChat|Return to non-agentic Chat"
@@ -30147,6 +30179,9 @@ msgid "DuoAgenticChat|Your GitLab Duo Agent Platform subscription has been cance
 msgstr ""
 
 msgid "DuoAgenticChat|Your GitLab Duo Agent Platform trial has ended"
+msgstr ""
+
+msgid "DuoAgenticChat|Your messages are still saved. Try again, or start a new chat."
 msgstr ""
 
 msgid "DuoAgenticChat|Your subscription has been cancelled. Repurchase to resume using GitLab Duo Agent Platform."
@@ -31279,6 +31314,9 @@ msgid "DuoCodeReview|When you enable Code Review Flow for this namespace, all re
 msgstr ""
 
 msgid "DuoCodeReview|You don't have access to GitLab Duo Code Review. Contact your administrator to verify your account has access to this feature."
+msgstr ""
+
+msgid "DuoCodeReview|Your message is too long for me to process. Shorten it and mention me again."
 msgstr ""
 
 msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"
@@ -81715,10 +81753,10 @@ msgstr ""
 msgid "This only applies to repository indexing operations."
 msgstr ""
 
-msgid "This organization is currently in read-only mode. Write operations are disabled."
+msgid "This organization is temporarily unavailable due to maintenance."
 msgstr ""
 
-msgid "This organization is currently in read-only mode. Write operations are temporarily disabled."
+msgid "This organization is unavailable."
 msgstr ""
 
 msgid "This page is hosted on GitLab pages but contains user-generated content and may contain malicious code. Do not accept unless you trust the author and source."
@@ -90366,6 +90404,9 @@ msgstr ""
 msgid "WorkItemBoard|Move right"
 msgstr ""
 
+msgid "WorkItemBoard|Moved %{reference} to %{targetGroup}"
+msgstr ""
+
 msgid "WorkItemBoard|No items"
 msgstr ""
 
@@ -95744,6 +95785,9 @@ msgid "mrWidget|Cannot merge until %{mergeAfter}"
 msgstr ""
 
 msgid "mrWidget|Checking if merge request can be merged…"
+msgstr ""
+
+msgid "mrWidget|Checking merge options…"
 msgstr ""
 
 msgid "mrWidget|Cherry-pick"

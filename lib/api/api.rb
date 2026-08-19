@@ -130,9 +130,9 @@ module API
       end
 
       # Mirror what set_current_organization in lib/api/helpers.rb does after
-      # assigning, so write requests to a read-only organization are rejected
-      # even when this hook short-circuits the per-endpoint helper.
-      check_organization_read_only!
+      # assigning, so requests to an organization in maintenance mode are
+      # rejected even when this hook short-circuits the per-endpoint helper.
+      check_organization_maintenance_mode!
     end
 
     before do

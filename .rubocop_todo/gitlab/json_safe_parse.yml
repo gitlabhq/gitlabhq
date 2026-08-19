@@ -197,8 +197,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/requests/projects/security/dast_site_profiles_controller_spec.rb'
     - 'ee/spec/requests/projects/security/policies_controller_spec.rb'
     - 'ee/spec/serializers/sbom/sbom_entity_spec.rb'
-    - 'ee/spec/services/ai/active_context/code/deleter_spec.rb'
-    - 'ee/spec/services/ai/active_context/code/indexer_spec.rb'
     - 'ee/spec/services/ai/duo_workflows/duo_agent_platform_model_metadata_service_spec.rb'
     - 'ee/spec/services/ai/duo_workflows/start_workflow_service_spec.rb'
     - 'ee/spec/services/alert_management/extract_alert_payload_fields_service_spec.rb'

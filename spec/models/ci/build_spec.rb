@@ -4659,6 +4659,102 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it_behaves_like 'saves data on transition'
     end
+
+    context 'runner_machine_id audit write on job_runtime_environment' do
+      context 'when the build has a job_runtime_environment' do
+        let!(:job_runtime_environment) { create(:ci_job_runtime_environment, build: job) }
+
+        it 'sets runner_machine_id to the assigned runner_manager id' do
+          job.reload
+
+          run!
+
+          expect(job_runtime_environment.reload.runner_machine_id).to eq(runner_manager.id)
+        end
+      end
+
+      context 'when the feature flag is disabled for the project' do
+        let!(:job_runtime_environment) { create(:ci_job_runtime_environment, build: job) }
+
+        before do
+          stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        end
+
+        it 'does not touch job_runtime_environment' do
+          expect(job).not_to receive(:job_runtime_environment)
+
+          run!
+        end
+
+        it 'leaves runner_machine_id unset' do
+          run!
+
+          expect(job_runtime_environment.reload.runner_machine_id).to be_nil
+        end
+      end
+
+      context 'when the build has no job_runtime_environment (the common case)' do
+        it 'succeeds without error' do
+          expect { run! }.to change { job.reload.status }.to('running')
+        end
+      end
+
+      context 'when persisting runner_machine_id fails' do
+        let!(:job_runtime_environment) { create(:ci_job_runtime_environment, build: job) }
+        let(:db_error) { ActiveRecord::ActiveRecordError.new('deadlock detected') }
+
+        before do
+          allow(job).to receive(:job_runtime_environment).and_return(job_runtime_environment)
+          allow(job_runtime_environment).to receive(:update!).and_raise(db_error)
+          allow(Gitlab::ErrorTracking).to receive(:track_exception)
+        end
+
+        it 'still completes the running transition' do
+          expect { run! }.to change { job.reload.status }.to('running')
+        end
+
+        it 'tracks the exception' do
+          run!
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
+            db_error, build_id: job.id, runner_machine_id: runner_manager.id
+          )
+        end
+      end
+
+      context 'when there is no runner_manager on the transition' do
+        let(:runner_manager) { nil }
+
+        it 'does not attempt to touch job_runtime_environment' do
+          expect(job).not_to receive(:job_runtime_environment)
+
+          run_job_without_exception
+        end
+      end
+
+      it 'does not check the routing feature flag when the transition is not to running' do
+        job
+
+        allow(Feature).to receive(:enabled?).and_call_original
+        expect(Feature).not_to receive(:enabled?)
+          .with(:ci_suspendable_environment_runner_routing, any_args)
+
+        job.drop!
+      end
+
+      it 'checks the feature flag outside the transaction' do
+        allow(Feature).to receive(:enabled?).and_call_original
+        expect(Feature).to receive(:enabled?)
+          .with(:ci_suspendable_environment_runner_routing, job.project, type: :gitlab_com_derisk)
+          .and_wrap_original do |method, *args, **kwargs|
+          expect(Ci::ApplicationRecord).not_to be_inside_transaction
+
+          method.call(*args, **kwargs)
+        end
+
+        run!
+      end
+    end
   end
 
   describe "state transition: running => failed", :freeze_time do

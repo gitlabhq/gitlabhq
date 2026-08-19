@@ -214,6 +214,14 @@ export default {
     isAutoMergeAvailable() {
       return !isEmpty(this.mr.availableAutoMergeStrategies);
     },
+    autoMergeStrategiesPending() {
+      // Strategies load from a separate poll than this component's own query, so
+      // until that poll resolves they are not yet an array (the field is [String]).
+      // Treat any non-array value as pending so the button can't trigger an
+      // immediate merge (bypassing a merge train) before auto-merge availability
+      // is known (#593704).
+      return !Array.isArray(this.mr.availableAutoMergeStrategies);
+    },
     pipeline() {
       return this.state.headPipeline;
     },
@@ -271,6 +279,9 @@ export default {
       return PIPELINE_SUCCESS_STATE;
     },
     mergeButtonText() {
+      if (this.autoMergeStrategiesPending) {
+        return s__('mrWidget|Checking merge options…');
+      }
       if (this.isMergingImmediately) {
         return __('Merge in progress');
       }
@@ -770,7 +781,7 @@ export default {
                   data-testid="merge-button"
                   variant="confirm"
                   :disabled="isMergeButtonDisabled"
-                  :loading="isMakingRequest"
+                  :loading="isMakingRequest || autoMergeStrategiesPending"
                   @click="handleMergeButtonClick(isAutoMergeAvailable)"
                   >{{ mergeButtonText }}</gl-button
                 >

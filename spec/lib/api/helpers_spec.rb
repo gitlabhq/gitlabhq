@@ -860,6 +860,29 @@ RSpec.describe API::Helpers, feature_category: :api do
         it_behaves_like 'private group without access'
       end
     end
+
+    context 'organization maintenance mode enforcement' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      it 'enforces maintenance mode on the accessible group' do
+        expect(helper).to receive(:check_organization_maintenance_mode_for!).with(group)
+
+        helper.find_group_by_full_path!(group.full_path)
+      end
+
+      it 'does not enforce maintenance mode when access is denied' do
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:not_found!).and_raise('404')
+
+        expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+        expect { helper.find_group_by_full_path!(group.full_path) }.to raise_error('404')
+      end
+    end
   end
 
   describe '#find_namespace' do
@@ -1067,6 +1090,57 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
       end
     end
+
+    context 'organization maintenance mode enforcement' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        group.add_guest(user)
+      end
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      it 'enforces maintenance mode on the accessible namespace' do
+        expect(helper).to receive(:check_organization_maintenance_mode_for!).with(group)
+
+        helper.find_namespace!(group.id)
+      end
+
+      it 'does not enforce maintenance mode when access is denied' do
+        allow(helper).to receive(:current_user).and_return(create(:user))
+        allow(helper).to receive(:not_found!).and_raise('404')
+
+        expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+        expect { helper.find_namespace!(group.id) }.to raise_error('404')
+      end
+
+      context 'when namespace is a project namespace' do
+        let_it_be_with_reload(:project) { create(:project, :private) }
+
+        it 'enforces maintenance mode on the accessible project namespace' do
+          project.add_developer(user)
+
+          expect(helper).to receive(:check_organization_maintenance_mode_for!).with(project.project_namespace)
+
+          helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true)
+        end
+
+        it 'does not enforce maintenance mode when project access is denied' do
+          allow(helper).to receive(:authenticate_non_public?).and_return(false)
+          allow(helper).to receive(:not_found!).and_raise('404')
+
+          expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+          expect { helper.find_namespace!(project.project_namespace.id, allow_project_namespaces: true) }
+            .to raise_error('404')
+        end
+      end
+    end
   end
 
   describe '#find_namespace_by_path!' do
@@ -1126,6 +1200,35 @@ RSpec.describe API::Helpers, feature_category: :api do
 
           helper.find_namespace_by_path!(project.full_path, allow_project_namespaces: false)
         end
+      end
+    end
+
+    context 'organization maintenance mode enforcement' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        group.add_guest(user)
+      end
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      it 'enforces maintenance mode on the accessible namespace' do
+        expect(helper).to receive(:check_organization_maintenance_mode_for!).with(group)
+
+        helper.find_namespace_by_path!(group.full_path)
+      end
+
+      it 'does not enforce maintenance mode when access is denied' do
+        allow(helper).to receive(:current_user).and_return(create(:user))
+        allow(helper).to receive(:not_found!).and_raise('404')
+
+        expect(helper).not_to receive(:check_organization_maintenance_mode_for!)
+
+        expect { helper.find_namespace_by_path!(group.full_path) }.to raise_error('404')
       end
     end
   end

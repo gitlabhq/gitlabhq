@@ -1,7 +1,6 @@
 ---
 API/DescriptionDetail:
   Exclude:
-    - 'ee/lib/api/admin/ai/active_context.rb'
     - 'ee/lib/api/admin/search/zoekt.rb'
     - 'ee/lib/api/admin_member_roles.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows.rb'

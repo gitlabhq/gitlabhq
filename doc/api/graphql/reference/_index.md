@@ -26365,30 +26365,6 @@ Fields:
 | <a id="featureflagedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="featureflagedge-node"></a>`node` | [`FeatureFlag`](#featureflag) | The item at the end of the edge. |
 
-#### `FinishedPipelinesAggregationResponseConnection`
-
-The connection type for [`FinishedPipelinesAggregationResponse`](#finishedpipelinesaggregationresponse).
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponseconnection-count"></a>`count` | [`Int!`](#int) | Total number of aggregated rows. |
-| <a id="finishedpipelinesaggregationresponseconnection-edges"></a>`edges` | [`[FinishedPipelinesAggregationResponseEdge]`](#finishedpipelinesaggregationresponseedge) | A list of edges. |
-| <a id="finishedpipelinesaggregationresponseconnection-nodes"></a>`nodes` | [`[FinishedPipelinesAggregationResponse]`](#finishedpipelinesaggregationresponse) | A list of nodes. |
-| <a id="finishedpipelinesaggregationresponseconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `FinishedPipelinesAggregationResponseEdge`
-
-The edge type for [`FinishedPipelinesAggregationResponse`](#finishedpipelinesaggregationresponse).
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponseedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="finishedpipelinesaggregationresponseedge-node"></a>`node` | [`FinishedPipelinesAggregationResponse`](#finishedpipelinesaggregationresponse) | The item at the end of the edge. |
-
 #### `GitlabSubscriptionBudgetCapUserOverrideConnection`
 
 The connection type for [`GitlabSubscriptionBudgetCapUserOverride`](#gitlabsubscriptionbudgetcapuseroverride).
@@ -34068,6 +34044,7 @@ Fields:
 | <a id="aifoundationalchatagent-systemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
 | <a id="aifoundationalchatagent-tools"></a>`tools` | [`[AiCatalogBuiltInTool!]!`](#aicatalogbuiltintool) | List of built-in tools enabled for the agent. |
 | <a id="aifoundationalchatagent-version"></a>`version` | [`String`](#string) | Version of the agent. |
+| <a id="aifoundationalchatagent-visibility"></a>`visibility` | [`AiCatalogItemVisibility!`](#aicatalogitemvisibility) | Visibility of the agent in the catalog. |
 
 ### `AiFoundationalChatAgentFlowConfig`
 
@@ -34774,32 +34751,6 @@ Arguments:
 | <a id="analytics-duousageevents-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by event timestamp. Start of the range. |
 | <a id="analytics-duousageevents-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by event timestamp. End of the range. |
 | <a id="analytics-duousageevents-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
-
-##### `Analytics.finishedPipelines`
-
-{{< details >}}
-
-- Introduced in GitLab 19.0.
-- Status: Experiment.
-
-{{< /details >}}
-
-Aggregation engine for finished pipelines analytics.
-
-Returns [`FinishedPipelinesAggregationScope`](#finishedpipelinesaggregationscope).
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="analytics-finishedpipelines-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
-| <a id="analytics-finishedpipelines-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by pipeline finish timestamp. Start of the range. |
-| <a id="analytics-finishedpipelines-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by pipeline finish timestamp. End of the range. |
-| <a id="analytics-finishedpipelines-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many pipeline refs. |
-| <a id="analytics-finishedpipelines-source"></a>`source` | [`[String!]`](#string) | Filter by one or many pipeline sources. |
-| <a id="analytics-finishedpipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
-| <a id="analytics-finishedpipelines-startedatto"></a>`startedAtTo` | [`Time`](#time) | Filter by pipeline start timestamp. End of the range. |
-| <a id="analytics-finishedpipelines-status"></a>`status` | [`[String!]`](#string) | Filter by one or many pipeline statuses. |
 
 ##### `Analytics.mergeRequests`
 
@@ -41103,6 +41054,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="deploymentsaggregationresponse-canceledrate"></a>`canceledRate` | [`Float`](#float) | Deployment canceled rate (out of finished deployments). |
 | <a id="deploymentsaggregationresponse-dimensions"></a>`dimensions` | [`DeploymentsAggregationResponseDimensions`](#deploymentsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
+| <a id="deploymentsaggregationresponse-duration"></a>`duration` | [`DeploymentsAggregationResponseDurationMetrics`](#deploymentsaggregationresponsedurationmetrics) | Aggregated `duration` metrics. |
 | <a id="deploymentsaggregationresponse-failurerate"></a>`failureRate` | [`Float`](#float) | Deployment failure rate (out of finished deployments). |
 | <a id="deploymentsaggregationresponse-successrate"></a>`successRate` | [`Float`](#float) | Deployment success rate (out of finished deployments). |
 | <a id="deploymentsaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of deployments. |
@@ -41158,6 +41110,32 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="deploymentsaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) |  |
+
+### `DeploymentsAggregationResponseDurationMetrics`
+
+Aggregated `duration` metrics for `Deployments` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum deployment duration in milliseconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean deployment duration in milliseconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum deployment duration in milliseconds. |
+
+#### Fields with arguments
+
+##### `DeploymentsAggregationResponseDurationMetrics.quantile`
+
+Quantile of deployment duration in milliseconds.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentsaggregationresponsedurationmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `DeploymentsAggregationScope`
 
@@ -43106,97 +43084,6 @@ Fields:
 | <a id="findingreportscomparer-report"></a>`report` {{< icon name="warning-solid" >}} | [`ComparedSecurityReport`](#comparedsecurityreport) | Introduced in GitLab 16.1. Status: Experiment. Compared security report. |
 | <a id="findingreportscomparer-status"></a>`status` | [`FindingReportsComparerStatus`](#findingreportscomparerstatus) | Comparison status. |
 | <a id="findingreportscomparer-statusreason"></a>`statusReason` | [`String`](#string) | Text explaining the status. |
-
-### `FinishedPipelinesAggregationResponse`
-
-Response for `FinishedPipelines` aggregation engine.
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponse-canceledrate"></a>`canceledRate` | [`Float`](#float) | Pipeline canceled rate. |
-| <a id="finishedpipelinesaggregationresponse-dimensions"></a>`dimensions` | [`FinishedPipelinesAggregationResponseDimensions`](#finishedpipelinesaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
-| <a id="finishedpipelinesaggregationresponse-failurerate"></a>`failureRate` | [`Float`](#float) | Pipeline failure rate. |
-| <a id="finishedpipelinesaggregationresponse-skippedrate"></a>`skippedRate` | [`Float`](#float) | Pipeline skipped rate. |
-| <a id="finishedpipelinesaggregationresponse-successrate"></a>`successRate` | [`Float`](#float) | Pipeline success rate. |
-| <a id="finishedpipelinesaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of pipelines. |
-
-#### Fields with arguments
-
-##### `FinishedPipelinesAggregationResponse.durationQuantile`
-
-Pipeline duration quantile in seconds.
-
-Returns [`Float`](#float).
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponse-durationquantile-quantile"></a>`quantile` | [`Float`](#float) |  |
-
-### `FinishedPipelinesAggregationResponseDimensions`
-
-Response dimensions for `FinishedPipelines` aggregation engine.
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponsedimensions-project"></a>`project` | [`Project`](#project) | Project. |
-| <a id="finishedpipelinesaggregationresponsedimensions-ref"></a>`ref` | [`String`](#string) | Pipeline ref. |
-| <a id="finishedpipelinesaggregationresponsedimensions-source"></a>`source` | [`String`](#string) | Pipeline source. |
-| <a id="finishedpipelinesaggregationresponsedimensions-status"></a>`status` | [`String`](#string) | Pipeline status. |
-
-#### Fields with arguments
-
-##### `FinishedPipelinesAggregationResponseDimensions.finishedAt`
-
-Pipeline finish time.
-
-Returns [`Time`](#time).
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponsedimensions-finishedat-granularity"></a>`granularity` | [`String`](#string) |  |
-
-##### `FinishedPipelinesAggregationResponseDimensions.startedAt`
-
-Pipeline start time.
-
-Returns [`Time`](#time).
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationresponsedimensions-startedat-granularity"></a>`granularity` | [`String`](#string) |  |
-
-### `FinishedPipelinesAggregationScope`
-
-Aggregation scope for `FinishedPipelines`. Apply ordering and pagination on the aggregation.
-
-#### Fields with arguments
-
-##### `FinishedPipelinesAggregationScope.aggregated`
-
-Aggregated data.
-
-Returns [`FinishedPipelinesAggregationResponseConnection`](#finishedpipelinesaggregationresponseconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="finishedpipelinesaggregationscope-aggregated-orderby"></a>`orderBy` | [`[AggregationOrder!]`](#aggregationorder) | Sorting order list for the aggregated data. |
-| <a id="finishedpipelinesaggregationscope-aggregated-successrate"></a>`successRate` | [`[Float!]`](#float) | Filter by exact pipeline success rate The `success_rate` metric must also be requested when using this filter. |
 
 ### `ForkDetails`
 
@@ -51438,6 +51325,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mergerequestsaggregationresponse-dimensions"></a>`dimensions` | [`MergeRequestsAggregationResponseDimensions`](#mergerequestsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
 | <a id="mergerequestsaggregationresponse-throughputcount"></a>`throughputCount` | [`Int`](#int) | Number of merged merge requests. |
+| <a id="mergerequestsaggregationresponse-timetomerge"></a>`timeToMerge` | [`MergeRequestsAggregationResponseTimeToMergeMetrics`](#mergerequestsaggregationresponsetimetomergemetrics) | Aggregated `time_to_merge` metrics. |
 | <a id="mergerequestsaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of merge requests. |
 
 #### Fields with arguments
@@ -51490,6 +51378,32 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestsaggregationresponsedimensions-metricmergedat-granularity"></a>`granularity` | [`String`](#string) | Time bucket granularity: daily, weekly, or monthly. |
+
+### `MergeRequestsAggregationResponseTimeToMergeMetrics`
+
+Aggregated `time_to_merge` metrics for `MergeRequests` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsaggregationresponsetimetomergemetrics-max"></a>`max` | [`Int`](#int) | Maximum time to merge in seconds. |
+| <a id="mergerequestsaggregationresponsetimetomergemetrics-mean"></a>`mean` | [`Float`](#float) | Mean time to merge in seconds. |
+| <a id="mergerequestsaggregationresponsetimetomergemetrics-min"></a>`min` | [`Int`](#int) | Minimum time to merge in seconds. |
+
+#### Fields with arguments
+
+##### `MergeRequestsAggregationResponseTimeToMergeMetrics.quantile`
+
+Quantile of time to merge in seconds.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestsaggregationresponsetimetomergemetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `MergeRequestsAggregationScope`
 
@@ -54564,6 +54478,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pipelinesaggregationresponse-dimensions"></a>`dimensions` | [`PipelinesAggregationResponseDimensions`](#pipelinesaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
+| <a id="pipelinesaggregationresponse-duration"></a>`duration` | [`PipelinesAggregationResponseDurationMetrics`](#pipelinesaggregationresponsedurationmetrics) | Aggregated `duration` metrics. |
 
 #### Fields with arguments
 
@@ -54642,6 +54557,32 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pipelinesaggregationresponsedimensions-startedat-granularity"></a>`granularity` | [`String`](#string) |  |
+
+### `PipelinesAggregationResponseDurationMetrics`
+
+Aggregated `duration` metrics for `Pipelines` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinesaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum pipeline duration in seconds. |
+| <a id="pipelinesaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean pipeline duration in seconds. |
+| <a id="pipelinesaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum pipeline duration in seconds. |
+
+#### Fields with arguments
+
+##### `PipelinesAggregationResponseDurationMetrics.quantile`
+
+Quantile of pipeline duration in seconds.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinesaggregationresponsedurationmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `PipelinesAggregationScope`
 

@@ -337,10 +337,10 @@ describe('HeaderActions component', () => {
         expect(findEditButton().exists()).toBe(true);
       });
 
-      it('should trigger "open.form" event when clicked', async () => {
+      it('should trigger `open-form` event when clicked', async () => {
         expect(issuesEventHub.$emit).not.toHaveBeenCalled();
         await findEditButton().vm.$emit('click');
-        expect(issuesEventHub.$emit).toHaveBeenCalledWith('open.form');
+        expect(issuesEventHub.$emit).toHaveBeenCalledWith('open-form');
       });
     });
   });

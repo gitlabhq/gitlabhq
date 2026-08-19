@@ -33,7 +33,6 @@ Style/RedundantRegexpEscape:
     - 'ee/app/models/iteration.rb'
     - 'ee/app/models/iterations/cadence.rb'
     - 'ee/app/models/product_analytics/funnel_step.rb'
-    - 'ee/app/services/ai/active_context/code/indexer_response_modifier.rb'
     - 'ee/app/services/virtual_registries/container/handle_referrers_request_service.rb'
     - 'ee/lib/ai/context/dependencies/config_files/base.rb'
     - 'ee/lib/ai/context/dependencies/config_files/java_gradle.rb'

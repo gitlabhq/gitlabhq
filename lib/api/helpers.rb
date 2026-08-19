@@ -115,7 +115,7 @@ module API
         rack_env: request.env
       ).organization
 
-      check_organization_read_only!
+      check_organization_maintenance_mode!
     end
 
     def save_current_user_in_env(user)
@@ -182,7 +182,7 @@ module API
         return redirect!(url_with_project_id(project))
       end
 
-      check_organization_read_only_for!(project)
+      check_organization_maintenance_mode_for!(project)
 
       project
     end
@@ -245,14 +245,18 @@ module API
       ::Gitlab::ApplicationContext.push(namespace: group) if group
       result = check_group_access(group)
 
-      check_organization_read_only_for!(result)
+      check_organization_maintenance_mode_for!(result)
 
       result
     end
 
     def find_group_by_full_path!(full_path)
       group = Group.find_by_full_path(full_path)
-      check_group_access(group)
+      result = check_group_access(group)
+
+      check_organization_maintenance_mode_for!(result)
+
+      result
     end
 
     def check_group_access(group)
@@ -300,27 +304,31 @@ module API
     def find_namespace!(id, allow_project_namespaces: false)
       namespace = find_namespace(id, allow_project_namespaces: allow_project_namespaces)
 
-      if namespace.is_a?(::Namespaces::ProjectNamespace)
-        return namespace if can?(current_user, read_project_ability, namespace)
-        return unauthorized! if authenticate_non_public?
-
-        return not_found!('Project')
-      end
-
-      check_namespace_access(namespace)
+      resolve_namespace_access!(namespace)
     end
 
     def find_namespace_by_path!(path, allow_project_namespaces: false)
       namespace = find_namespace_by_path(path, allow_project_namespaces: allow_project_namespaces)
 
+      resolve_namespace_access!(namespace)
+    end
+
+    def resolve_namespace_access!(namespace)
       if namespace.is_a?(::Namespaces::ProjectNamespace)
-        return namespace if can?(current_user, read_project_ability, namespace)
+        if can?(current_user, read_project_ability, namespace)
+          check_organization_maintenance_mode_for!(namespace)
+          return namespace
+        end
+
         return unauthorized! if authenticate_non_public?
 
         return not_found!('Project')
       end
 
-      check_namespace_access(namespace)
+      accessible_namespace = check_namespace_access(namespace)
+      check_organization_maintenance_mode_for!(accessible_namespace)
+
+      accessible_namespace
     end
 
     def find_branch!(branch_name)
@@ -617,55 +625,40 @@ module API
       render_api_error!(message || '503 Service Unavailable', 503)
     end
 
-    def check_organization_read_only!
-      return unless write_request?
-
+    def check_organization_maintenance_mode!
       organization = ::Current.organization
-      return unless organization_read_only_enforced?(organization)
+      return unless organization_maintenance_mode_enforced?(organization)
 
-      render_organization_read_only_error!(organization)
+      render_organization_maintenance_mode_error!(organization)
     end
 
     # Guards the resource's own organization, which can differ from
     # Current.organization (already checked in set_current_organization) when a
     # request targets a project or group outside the caller's current
     # organization. The extra organization load is intentional defense-in-depth.
-    def check_organization_read_only_for!(resource)
-      return unless write_request?
+    def check_organization_maintenance_mode_for!(resource)
       return unless resource.respond_to?(:organization)
 
       organization = resource.organization
-      return unless organization_read_only_enforced?(organization)
+      return unless organization_maintenance_mode_enforced?(organization)
 
-      render_organization_read_only_error!(organization)
+      render_organization_maintenance_mode_error!(organization)
     end
 
-    def organization_read_only_enforced?(organization)
-      return false unless organization&.read_only?
+    def organization_maintenance_mode_enforced?(organization)
+      return false unless organization
 
-      Feature.enabled?(:organization_read_only_enforcement, organization)
+      organization.read_only_enforced?
     end
 
     # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons
     # are not (403).
-    def render_organization_read_only_error!(organization)
+    def render_organization_maintenance_mode_error!(organization)
       if organization.read_only_time_bounded?
-        header 'Retry-After', '60'
-        service_unavailable!(read_only_organization_message(time_bounded: true))
+        header 'Retry-After', ::Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
+        service_unavailable!(organization.read_only_message)
       else
-        forbidden!(read_only_organization_message(time_bounded: false))
-      end
-    end
-
-    def write_request?
-      %w[POST PATCH PUT DELETE].include?(request.request_method)
-    end
-
-    def read_only_organization_message(time_bounded:)
-      if time_bounded
-        _('This organization is currently in read-only mode. Write operations are temporarily disabled.')
-      else
-        _('This organization is currently in read-only mode. Write operations are disabled.')
+        forbidden!(organization.read_only_message)
       end
     end
 

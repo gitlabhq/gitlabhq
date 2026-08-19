@@ -30,6 +30,8 @@ module Organizations
     # https://gitlab.com/gitlab-org/gitlab/-/work_items/602825.
     TIME_BOUNDED_READ_ONLY_REASONS = %w[migration incident].freeze
 
+    MAINTENANCE_MODE_RETRY_AFTER_SECONDS = 60
+
     # Non-active states from which read-only mode cannot be entered. An
     # organization must be active first; the state machine enforces this via the
     # `active -> read_only_initialization` transition.
@@ -129,6 +131,14 @@ module Organizations
 
       def read_only_time_bounded?
         TIME_BOUNDED_READ_ONLY_REASONS.include?(read_only_reason)
+      end
+
+      def read_only_message
+        if read_only_time_bounded?
+          _('This organization is temporarily unavailable due to maintenance.')
+        else
+          _('This organization is unavailable.')
+        end
       end
 
       private

@@ -4705,20 +4705,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           expect(merge_request.reload).to be_closed
           expect(merge_request.title).not_to eq("A brand new title")
         end
-
-        context "when the prevent_reopen_merge_request_without_branch feature flag is disabled" do
-          before do
-            stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
-          end
-
-          it "reopens the merge request" do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
-              params: { state_event: "reopen" }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['state']).to eq('opened')
-          end
-        end
       end
     end
 

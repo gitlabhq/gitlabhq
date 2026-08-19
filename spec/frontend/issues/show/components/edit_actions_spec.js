@@ -86,10 +86,10 @@ describe('Edit Actions component', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('emits close.form when clicking cancel', () => {
+    it('emits `close-form` when clicking cancel', () => {
       findCancelButton().vm.$emit('click');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+      expect(eventHub.$emit).toHaveBeenCalledWith('close-form');
     });
   });
 });

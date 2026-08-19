@@ -20,7 +20,8 @@ export default {
         !commitMessage.length ||
         !this.shouldShowMergeControls ||
         this.isMakingRequest ||
-        this.mr.preventMerge,
+        this.mr.preventMerge ||
+        this.autoMergeStrategiesPending,
       );
     },
     pipelineMustSucceedConflictText() {

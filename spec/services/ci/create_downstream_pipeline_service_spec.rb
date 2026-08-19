@@ -808,6 +808,29 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           end
         end
       end
+
+      context 'when a pipeline variable has a nil value and pipeline variables are forwarded' do
+        let(:trigger) do
+          {
+            trigger: {
+              project: downstream_project.full_path,
+              branch: 'feature',
+              forward: { pipeline_variables: true }
+            }
+          }
+        end
+
+        before do
+          create_or_replace_pipeline_variables(upstream_pipeline, key: 'NIL_VARIABLE', value: nil)
+          downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+        end
+
+        it 'creates the downstream pipeline and forwards the variable' do
+          expect { subject }.to change { Ci::Pipeline.count }.by(1)
+
+          expect(pipeline.variables.find { |var| var.key == 'NIL_VARIABLE' }.value).to be_nil
+        end
+      end
     end
 
     # TODO: Move this context into a feature spec that uses

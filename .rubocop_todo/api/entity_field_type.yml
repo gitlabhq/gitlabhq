@@ -3,7 +3,6 @@
 API/EntityFieldType:
   Exclude:
     - 'ee/lib/api/entities/admin/model.rb'
-    - 'ee/lib/api/entities/ai/active_context.rb'
     - 'ee/lib/api/entities/ai/duo_workflows/basic_checkpoint.rb'
     - 'ee/lib/api/entities/ai/duo_workflows/checkpoint.rb'
     - 'ee/lib/api/entities/ai/duo_workflows/checkpoint_write.rb'

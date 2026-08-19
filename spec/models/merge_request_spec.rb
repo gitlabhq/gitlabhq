@@ -1326,19 +1326,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           expect(merge_request.errors[:base]).not_to include(branch_error)
         end
       end
-
-      context 'when the prevent_reopen_merge_request_without_branch feature flag is disabled' do
-        before do
-          stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
-          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
-        end
-
-        it 'skips the validation' do
-          merge_request.valid?
-
-          expect(merge_request.errors[:base]).not_to include(branch_error)
-        end
-      end
     end
   end
 

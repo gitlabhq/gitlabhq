@@ -12879,6 +12879,7 @@ paths:
     get:
       operationId: getApiV4AdminActiveContextConnections
       summary: Get all ActiveContext connections
+      description: Returns every ActiveContext connection configured for this instance.
       tags:
       - Active context
       responses:
@@ -12896,6 +12897,8 @@ paths:
     put:
       operationId: putApiV4AdminActiveContextConnectionsActivate
       summary: Activate an ActiveContext connection
+      description: Activates the specified connection and deactivates the previously
+        active connection, if any.
       tags:
       - Active context
       responses:
@@ -12923,6 +12926,8 @@ paths:
     put:
       operationId: putApiV4AdminActiveContextConnectionsDeactivate
       summary: Deactivate an ActiveContext connection
+      description: Deactivates the specified connection. This asynchronously drops
+        indexed data for the connection and deletes the connection record.
       tags:
       - Active context
       responses:
@@ -12950,6 +12955,8 @@ paths:
     put:
       operationId: putApiV4AdminActiveContextCollectionsId
       summary: Update collection options
+      description: Updates the queue shard count and/or queue shard limit for the
+        specified collection.
       tags:
       - Active context
       responses:
@@ -12988,6 +12995,8 @@ paths:
     delete:
       operationId: deleteApiV4AdminActiveContextDeadQueue
       summary: Clear the ActiveContext dead queue
+      description: Removes all items from the dead queue and returns the number of
+        items cleared.
       tags:
       - Active context
       responses:
@@ -13001,6 +13010,8 @@ paths:
     post:
       operationId: postApiV4AdminActiveContextDeadQueueReplay
       summary: Replay items from the dead queue into another queue
+      description: Enqueues a background task that replays dead queue items into the
+        specified target queue.
       tags:
       - Active context
       responses:
@@ -13022,6 +13033,8 @@ paths:
     put:
       operationId: putApiV4AdminActiveContextCodeEnabledNamespaces
       summary: Update enabled namespace state
+      description: Transitions the indexing state of an enabled namespace to pending
+        or ready.
       tags:
       - Active context
       responses:

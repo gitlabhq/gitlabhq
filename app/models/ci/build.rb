@@ -376,6 +376,7 @@ module Ci
         # By only assigning the runner manager once the job starts running, we avoid the problem.
         transition.args.first.try do |runner_manager|
           build.runner_manager = runner_manager
+          build.record_runtime_environment_assignment(runner_manager)
         end
       end
 
@@ -1274,6 +1275,20 @@ module Ci
 
     def create_queuing_entry!
       ::Ci::PendingBuild.upsert_from_build!(self)
+    end
+
+    # Deferred to run_after_commit so that a failure here (validation or a
+    # database error such as a deadlock/timeout) can never roll back the
+    # transition to running: this is routing metadata for a future resumed
+    # job, not something the currently running build depends on.
+    def record_runtime_environment_assignment(runner_manager)
+      run_after_commit do
+        next unless Feature.enabled?(:ci_suspendable_environment_runner_routing, project, type: :gitlab_com_derisk)
+
+        job_runtime_environment&.update!(runner_manager: runner_manager)
+      rescue ActiveRecord::ActiveRecordError => e
+        Gitlab::ErrorTracking.track_exception(e, build_id: id, runner_machine_id: runner_manager.id)
+      end
     end
 
     ##

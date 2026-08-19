@@ -313,7 +313,7 @@ export default {
         });
     },
     edit() {
-      issuesEventHub.$emit('open.form');
+      issuesEventHub.$emit('open-form');
       this.closeActionsDropdown();
     },
     copyReference() {

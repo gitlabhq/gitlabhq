@@ -73,18 +73,6 @@ RSpec.describe 'Update of an existing merge request', feature_category: :code_re
         expect(mutation_response['errors'])
           .to include('Cannot reopen this merge request because the source or target branch no longer exists.')
       end
-
-      context 'when the prevent_reopen_merge_request_without_branch feature flag is disabled' do
-        before do
-          stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
-        end
-
-        it 'reopens the merge request' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(mutation_response['mergeRequest']['state']).to eq('opened')
-        end
-      end
     end
 
     context 'when required arguments are missing' do
