@@ -2,14 +2,13 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: SAST false positive detection
+title: Detect false positives automatically
 description: Automatic detection and filtering of false positives in SAST findings.
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -22,9 +21,9 @@ description: Automatic detection and filtering of false positives in SAST findin
 
 {{< /history >}}
 
-When a static application security testing (SAST) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
+When a static application security testing (SAST) scan runs, the SAST False Positive Detection Flow automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
 
-The GitLab Duo assessment includes:
+The flow assessment includes:
 
 - Confidence score: A numerical score indicating the likelihood that the finding is a false positive.
 - Explanation: Contextual reasoning about why the finding may or may not be a true positive, based on code context and vulnerability characteristics.
@@ -32,7 +31,7 @@ The GitLab Duo assessment includes:
 
 The detection runs automatically after each security scan with no manual triggering required.
 
-Results are based on AI analysis and should be reviewed by security professionals. The feature requires GitLab Duo with an active subscription.
+Results are based on AI analysis and should be reviewed by security professionals.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [GitLab AI-Powered SAST False Positive Detection and Remediation](https://www.youtube.com/watch?v=kVMM5OFva_U).
@@ -41,41 +40,15 @@ For an overview, see [GitLab AI-Powered SAST False Positive Detection and Remedi
 For a click-through demo, see [SAST False Positive Detection Flow](https://gitlab.navattic.com/sast-fp-detection-flow).
 <!-- Demo published on 2026-02-17 -->
 
-## Automatic detection
+## Prerequisites
 
-False positive detection runs automatically when:
+- Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+- Turn on **Allow foundational flows** and **SAST False Positive Detection** [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- [Configure push rules to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- [Configure your own runners](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
+- Set [a default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace) in your user preferences.
 
-- A SAST security scan completes successfully on the default branch.
-- The scan detects Critical or High severity vulnerabilities.
-- GitLab Duo features are enabled for the project.
-
-The analysis happens in the background and results appear in the vulnerability report after processing is complete.
-
-## Manual trigger
-
-You can manually trigger false positive detection for existing vulnerabilities:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Secure** > **Vulnerability report**.
-1. Select the vulnerability you want to analyze.
-1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
-
-The GitLab Duo analysis runs and results are displayed on the vulnerability details page.
-
-## Configuration
-
-To use false positive detection, you must have:
-
-- A GitLab Duo add-on subscription (GitLab Duo Core, Pro, or Enterprise).
-- [GitLab Duo enabled](../../gitlab_duo/turn_on_off.md) in your project or group.
-- [A default GitLab Duo namespace set](../../profile/preferences.md#set-a-default-gitlab-duo-namespace) in your user preferences.
-- GitLab 18.7 or later.
-
-### Enable false positive detection
-
-False positive detection is turned off by default. To use this feature, you must enable the foundational flow for the group and turn on the feature for the project.
-
-#### Allow foundational flow for a group
+## Allow foundational flow for a group
 
 You can allow all projects in a group to use the foundational flow. Individual projects must still enable the feature in their project settings.
 To allow false positive detection for all projects in a group:
@@ -85,7 +58,7 @@ To allow false positive detection for all projects in a group:
 1. Under **Allow foundational flows**, select the **SAST False Positive Detection** checkbox.
 1. Select **Save changes**.
 
-#### Turn on for a project
+## Turn on for a project
 
 Prerequisites:
 
@@ -100,6 +73,27 @@ To turn on false positive detection for a specific project:
 1. Select **Save changes**.
 
 When you allow false positive detection for the group and turn it on for the project, the feature work works automatically with your existing SAST scanners.
+
+## Automatic detection
+
+The false positive detection flow runs automatically when:
+
+- A SAST security scan completes successfully on the default branch.
+- The scan detects Critical or High severity vulnerabilities.
+- GitLab Duo features are enabled for the project.
+
+The analysis happens in the background and results appear in the vulnerability report after processing is complete.
+
+## Run the SAST False Positive Detection Flow
+
+You can manually trigger analysis for existing vulnerabilities:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
+1. Select the vulnerability you want to analyze.
+1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
+
+The GitLab Duo analysis runs and results are displayed on the vulnerability details page.
 
 ## Confidence scores
 

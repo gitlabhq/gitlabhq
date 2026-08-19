@@ -14,7 +14,7 @@ import {
 import { escape } from 'lodash-es';
 import { mapActions, mapState } from 'pinia';
 import { keysFor, MR_TOGGLE_REVIEW } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -271,7 +271,7 @@ export default {
     fileReviewTooltip() {
       const { description } = MR_TOGGLE_REVIEW;
       const keys = keysFor(MR_TOGGLE_REVIEW);
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} ${createHotkeyHtml(keys[0])}`);
     },

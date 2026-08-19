@@ -447,7 +447,7 @@ including:
 - [Container Registry](../administration/backup_restore/backup_gitlab.md#container-registry)
 - [Redis](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data)
 - [Configuration Files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files)
-- [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
+- [Elasticsearch](https://www.elastic.co/docs/deploy-manage/tools/snapshot-and-restore)
 
 GitLab Geo
 

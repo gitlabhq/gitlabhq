@@ -25672,6 +25672,30 @@ Fields:
 | <a id="devopsadoptionsnapshotedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="devopsadoptionsnapshotedge-node"></a>`node` | [`DevopsAdoptionSnapshot`](#devopsadoptionsnapshot) | The item at the end of the edge. |
 
+#### `DiffConnection`
+
+The connection type for [`Diff`](#diff).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="diffconnection-edges"></a>`edges` | [`[DiffEdge]`](#diffedge) | A list of edges. |
+| <a id="diffconnection-nodes"></a>`nodes` | [`[Diff]`](#diff) | A list of nodes. |
+| <a id="diffconnection-overflow"></a>`overflow` | [`Boolean!`](#boolean) | Whether files were omitted from the page because it exceeded the diff size limits. Omitted files are absent from `nodes` and are not flagged with `collapsed` or `too_large`. |
+| <a id="diffconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DiffEdge`
+
+The edge type for [`Diff`](#diff).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="diffedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="diffedge-node"></a>`node` | [`Diff`](#diff) | The item at the end of the edge. |
+
 #### `DiscussionConnection`
 
 The connection type for [`Discussion`](#discussion).
@@ -49139,6 +49163,29 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequest-diffstats-path"></a>`path` | [`String`](#string) | Specific file path. |
+
+##### `MergeRequest.diffs`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Diffs of the merge request, including per-file patch text. Files whose content is omitted because they exceed size limits are reported with the `collapsed` or `too_large` flags. When a page exceeds the diff size limits, later files are omitted entirely and the connection `overflow` field is set. Supports forward-only pagination. This field can only be resolved 10 times in any single request.
+
+Returns [`DiffConnection`](#diffconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequest-diffs-expanded"></a>`expanded` | [`Boolean`](#boolean) | Return full patch text even for files that would otherwise be collapsed for size. |
 
 ##### `MergeRequest.discussionsWithActivity`
 

@@ -9,7 +9,7 @@ import {
   MR_TOGGLE_DIFF_VIEW_TYPE,
   ISSUABLE_COMMENT_OR_REPLY,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { pinia } from '~/pinia/instance';
 import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
@@ -103,7 +103,7 @@ export function toggleDiffViewType() {
 }
 
 export function initHotkeys() {
-  if (shouldDisableShortcuts()) return () => {};
+  if (keyboardShortcutsDisabled()) return () => {};
 
   const nav = createFileNavigation();
 

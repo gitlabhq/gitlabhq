@@ -3,7 +3,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitNavigation from '~/rapid_diffs/app/compare_versions/commit_navigation.vue';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
@@ -34,7 +34,7 @@ describe('CommitNavigation', () => {
   const findNextDisabledTooltip = () => wrapper.findByTestId('next-commit-disabled-tooltip');
 
   beforeEach(() => {
-    shouldDisableShortcuts.mockReturnValue(false);
+    keyboardShortcutsDisabled.mockReturnValue(false);
     setWindowLocation(`${TEST_HOST}/?commit_id=abc123full`);
   });
 
@@ -218,7 +218,7 @@ describe('CommitNavigation', () => {
     });
 
     it('omits aria-keyshortcuts when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
       createComponent({ commit: commitWithNeighbors });
 
       expect(findPrevButton().attributes('aria-keyshortcuts')).toBeUndefined();
@@ -255,7 +255,7 @@ describe('CommitNavigation', () => {
     });
 
     it('renders plain-text tooltips when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
       createComponent({ commit: commitWithNeighbors });
 
       expect(tooltipValue(findPrevButton())).toBe('Previous commit');

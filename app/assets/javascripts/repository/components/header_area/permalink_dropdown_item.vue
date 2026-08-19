@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { hashState, updateHash } from '~/blob/state';
 import { getAbsolutePermalinkPath } from './utils';
 
@@ -35,7 +35,7 @@ export default {
       return keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0];
     },
     shortcutsDisabled() {
-      return shouldDisableShortcuts();
+      return keyboardShortcutsDisabled();
     },
     currentQueryParams() {
       const params = {};

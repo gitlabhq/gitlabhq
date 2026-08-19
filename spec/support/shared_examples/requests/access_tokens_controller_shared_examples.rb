@@ -49,6 +49,39 @@ RSpec.shared_examples 'GET resource access tokens available' do
     expect(json_response.count).to eq(1)
     expect(json_response.first['id']).to eq(active_resource_access_token.id)
   end
+
+  # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
+  # Delete this whole context when the flag is removed - there's no more requester-vs-token-owner
+  # mismatch to guard against once everyone is on the same (unconditional) code path.
+  context 'when the flag differs between the requester and a token owner' do
+    it 'avoids N+1 queries when rendering last_used_ips' do
+      # Enables the flag only for the token owner, not for the signed-in requester.
+      stub_feature_flags(expose_last_used_ips_for_access_tokens: access_token_user)
+      active_resource_access_token.last_used_ips.create!(
+        organization: active_resource_access_token.organization, ip_address: '192.0.2.30'
+      )
+
+      # Issue the request directly. The memoized `get_access_tokens_json` helper reaches the
+      # server only on its first call, so measuring through it records no queries at all.
+      get access_tokens_path, params: { format: :json } # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        get access_tokens_path, params: { format: :json }
+      end
+
+      extra_token = create(:personal_access_token, user: access_token_user)
+      extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.31')
+
+      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        get access_tokens_path, params: { format: :json }
+      end
+
+      # Counts only last_used_ips queries rather than the request total, because this
+      # response also has a separate pre-existing N+1 on `members` via the `role` field.
+      expect(recorder.log.grep(/personal_access_token_last_used_ips/).size)
+        .to eq(control.log.grep(/personal_access_token_last_used_ips/).size)
+    end
+  end
 end
 
 RSpec.shared_examples 'GET access tokens are paginated and ordered' do
@@ -158,6 +191,33 @@ RSpec.shared_examples 'GET inactive access tokens' do
     expect(response.headers['X-Page']).to eq('1')
     expect(response.headers['X-Next-Page']).to eq('')
     expect(response.headers['X-Total']).to eq('3')
+  end
+
+  # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
+  # Delete this whole context when the flag is removed - there's no more requester-vs-token-owner
+  # mismatch to guard against once everyone is on the same (unconditional) code path.
+  context 'when the flag differs between the requester and a token owner' do
+    it 'avoids N+1 queries when rendering last_used_ips' do
+      # Enables the flag only for the token owner, not for the signed-in requester.
+      stub_feature_flags(expose_last_used_ips_for_access_tokens: access_token_user)
+      inactive_resource_access_token1.last_used_ips.create!(
+        organization: inactive_resource_access_token1.organization, ip_address: '192.0.2.30'
+      )
+
+      # Issue the request directly. The memoized `get_inactive_access_tokens` subject reaches
+      # the server only on its first call, so measuring through it records no queries at all.
+      get inactive_access_tokens_path # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get inactive_access_tokens_path }
+
+      extra_token = create(:personal_access_token, :revoked, user: access_token_user)
+      extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.31')
+
+      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { get inactive_access_tokens_path }
+
+      expect(recorder.log.grep(/personal_access_token_last_used_ips/).size)
+        .to eq(control.log.grep(/personal_access_token_last_used_ips/).size)
+    end
   end
 end
 

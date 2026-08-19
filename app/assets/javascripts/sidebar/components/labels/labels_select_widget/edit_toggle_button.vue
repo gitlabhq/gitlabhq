@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { keysFor, ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 
 export default {
@@ -25,13 +25,13 @@ export default {
   },
   computed: {
     shortcutDescription() {
-      return shouldDisableShortcuts() ? null : ISSUABLE_CHANGE_LABEL.description;
+      return keyboardShortcutsDisabled() ? null : ISSUABLE_CHANGE_LABEL.description;
     },
     shortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_CHANGE_LABEL)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(ISSUABLE_CHANGE_LABEL)[0];
     },
     tooltip() {
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? null
         : sanitize(
             `${this.shortcutDescription} <kbd class="flat gl-ml-1" aria-hidden=true>${this.shortcutKey}</kbd>`,

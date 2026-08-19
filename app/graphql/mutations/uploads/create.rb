@@ -42,8 +42,6 @@ module Mutations
       def resolve(file:, **args)
         parent = authorized_resource_parent_find!(args)
 
-        raise_resource_not_available_error! if parent.is_a?(Group) && Feature.disabled?(:group_uploads_api, parent)
-
         result = ::Uploads::CreateService.new(parent, current_user, file: file).execute
 
         result.payload.merge(errors: result.success? ? [] : [result.message])

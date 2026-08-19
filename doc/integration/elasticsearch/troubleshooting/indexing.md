@@ -75,13 +75,13 @@ s = SearchService.new(u, {:search => 'search_term', :scope => 'blobs'})
 pp s.search_objects.to_a
 ```
 
-Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side:
+Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) to see if the data shows up on the Elasticsearch side:
 
 ```shell
 curl --request GET <elasticsearch_server_ip>:9200/gitlab-production/_search?q=<search_term>
 ```
 
-More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html) are also possible.
+More [complex Elasticsearch API calls](https://www.elastic.co/docs/explore-analyze/query-filter/languages/querydsl) are also possible.
 
 If the results:
 
@@ -376,7 +376,7 @@ to encounter issues when called upon with some frequency. See the
 [Elasticsearch documentation on capacity planning](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/capacity-planning.html).
 
 The easiest way to determine if sharding is in use is to check the output of the
-[Elasticsearch Health API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html):
+[Elasticsearch Health API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cluster-health):
 
 - Red means the cluster is down.
 - Yellow means it is up with no sharding/replication.

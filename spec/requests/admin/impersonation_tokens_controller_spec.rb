@@ -20,6 +20,32 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
+    # Delete this whole context when the flag is removed - there's no more requester-vs-token-owner
+    # mismatch to guard against once everyone is on the same (unconditional) code path.
+    context 'when the flag differs between the requester and the token owner' do
+      let(:impersonation_tokens_path) { admin_user_impersonation_tokens_path(user_id: user.username) }
+
+      it 'avoids N+1 queries when rendering last_used_ips' do
+        # Enables the flag only for the token owner, not for the signed-in admin.
+        stub_feature_flags(expose_last_used_ips_for_access_tokens: user)
+        token = create(:personal_access_token, :impersonation, user: user)
+        token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.30')
+
+        get impersonation_tokens_path # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get impersonation_tokens_path }
+
+        extra_token = create(:personal_access_token, :impersonation, user: user)
+        extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.31')
+
+        recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { get impersonation_tokens_path }
+
+        expect(recorder.log.grep(/personal_access_token_last_used_ips/).size)
+          .to eq(control.log.grep(/personal_access_token_last_used_ips/).size)
+      end
+    end
   end
 
   context 'when impersonation is disabled' do

@@ -8,7 +8,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -52,7 +52,7 @@ export default {
         : '';
     },
     nextCommitShortcutKey() {
-      return shouldDisableShortcuts() || !this.commit.next_commit_id
+      return keyboardShortcutsDisabled() || !this.commit.next_commit_id
         ? null
         : keysFor(MR_COMMITS_NEXT_COMMIT)[0];
     },
@@ -64,7 +64,7 @@ export default {
     nextCommitTooltip() {
       const description = this.nextCommitTitle;
       const key = this.nextCommitShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
@@ -74,7 +74,7 @@ export default {
         : '';
     },
     previousCommitShortcutKey() {
-      return shouldDisableShortcuts() || !this.commit.prev_commit_id
+      return keyboardShortcutsDisabled() || !this.commit.prev_commit_id
         ? null
         : keysFor(MR_COMMITS_PREVIOUS_COMMIT)[0];
     },
@@ -86,7 +86,7 @@ export default {
     previousCommitTooltip() {
       const description = this.previousCommitTitle;
       const key = this.previousCommitShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },

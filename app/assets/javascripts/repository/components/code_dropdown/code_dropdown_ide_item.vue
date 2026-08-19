@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { InternalEvents } from '~/tracking';
 
 export default {
@@ -20,7 +20,7 @@ export default {
   emits: ['close-dropdown'],
   computed: {
     shortcutsDisabled() {
-      return shouldDisableShortcuts();
+      return keyboardShortcutsDisabled();
     },
   },
   methods: {

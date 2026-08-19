@@ -24,7 +24,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { sanitize } from '~/lib/dompurify';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
@@ -497,12 +497,12 @@ export default {
       return !this.editMode && this.canUpdate;
     },
     editShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
     },
     editTooltip() {
       const description = __('Edit title and description');
       const key = this.editShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },

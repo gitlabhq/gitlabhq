@@ -9,7 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { Mousetrap } from '~/lib/mousetrap';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 
@@ -85,7 +85,7 @@ describe('FileTreeSearch', () => {
     });
 
     it('focuses the search input field and triggers tracking event when shortcut is triggered and is enabled', () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       const mousetrapInstance = wrapper.vm.mousetrap;
@@ -100,7 +100,7 @@ describe('FileTreeSearch', () => {
     });
 
     it('binds and unbinds mousetrap shortcut when shortcuts are enabled', () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
       const unbindSpy = jest.spyOn(Mousetrap.prototype, 'unbind');
       createComponent();
@@ -115,7 +115,7 @@ describe('FileTreeSearch', () => {
     });
 
     it('does not bind mousetrap shortcut when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
       const bindSpy = jest.spyOn(Mousetrap.prototype, 'bind');
       createComponent();
 
@@ -123,7 +123,7 @@ describe('FileTreeSearch', () => {
     });
 
     it('renders shortcut key and search input with correct aria-keyshortcuts when shortcuts are enabled', () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       createComponent();
 
       expect(findShortcutKey().text()).toBe(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR)[0]);
@@ -133,7 +133,7 @@ describe('FileTreeSearch', () => {
     });
 
     it('hides shortcut key after user enters text in the search input field', async () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       createComponent();
       await triggerSearch('users');
 
@@ -141,7 +141,7 @@ describe('FileTreeSearch', () => {
     });
 
     it('does not set aria-keyshortcuts attribute when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
       createComponent();
 
       expect(findSearchInput().attributes('aria-keyshortcuts')).toBeUndefined();

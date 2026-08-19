@@ -6,7 +6,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { removeParams, setUrlParams } from '~/lib/utils/url_utility';
 
@@ -47,12 +47,12 @@ export default {
         : '';
     },
     previousCommitShortcutKey() {
-      return shouldDisableShortcuts() || !this.commit.prev_commit_id
+      return keyboardShortcutsDisabled() || !this.commit.prev_commit_id
         ? null
         : keysFor(MR_COMMITS_PREVIOUS_COMMIT)[0];
     },
     nextCommitShortcutKey() {
-      return shouldDisableShortcuts() || !this.commit.next_commit_id
+      return keyboardShortcutsDisabled() || !this.commit.next_commit_id
         ? null
         : keysFor(MR_COMMITS_NEXT_COMMIT)[0];
     },

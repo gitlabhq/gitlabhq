@@ -16,7 +16,7 @@ import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
 import { EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE } from '~/repository/constants';
@@ -154,7 +154,7 @@ describe('HeaderArea', () => {
         });
 
         it('toggles visibility on shortcut trigger', () => {
-          shouldDisableShortcuts.mockReturnValue(false);
+          keyboardShortcutsDisabled.mockReturnValue(false);
           createComponent();
           Mousetrap.trigger(toggleHotkeys[0]);
           expect(useFileTreeBrowserVisibility().toggleFileTreeBrowserIsExpanded).toHaveBeenCalled();
@@ -162,7 +162,7 @@ describe('HeaderArea', () => {
 
         it('triggers a tracking event when the toggle button is clicked', () => {
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-          shouldDisableShortcuts.mockReturnValue(false);
+          keyboardShortcutsDisabled.mockReturnValue(false);
           fileTreeBrowserStore.setFileTreeBrowserIsExpanded(false);
 
           createComponent();
@@ -183,7 +183,7 @@ describe('HeaderArea', () => {
         });
 
         it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
-          shouldDisableShortcuts.mockReturnValue(false);
+          keyboardShortcutsDisabled.mockReturnValue(false);
           wrapper = createComponent();
           wrapper.destroy();
           Mousetrap.trigger(toggleHotkeys[0]);
@@ -195,7 +195,7 @@ describe('HeaderArea', () => {
 
       describe('toggle visibility when shortcuts are disabled', () => {
         it('does not toggle visibility on shortcut trigger', () => {
-          shouldDisableShortcuts.mockReturnValue(true);
+          keyboardShortcutsDisabled.mockReturnValue(true);
           wrapper = createComponent();
           Mousetrap.trigger(toggleHotkeys[0]);
           expect(
@@ -388,7 +388,7 @@ describe('HeaderArea', () => {
       pinia = createTestingPinia({ stubActions: false });
       fileTreeBrowserStore = useFileTreeBrowserVisibility();
       jest.spyOn(fileTreeBrowserStore, 'initializeFileTreeBrowser');
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
 
       wrapper = createComponent({
         route: { name: 'treePathDecoded' },

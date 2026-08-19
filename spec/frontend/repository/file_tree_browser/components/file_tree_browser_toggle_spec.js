@@ -5,7 +5,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
@@ -198,7 +198,7 @@ describe('FileTreeBrowserToggle', () => {
 
   describe('tooltip', () => {
     it('displays "Hide file tree browser" tooltip when browser is expanded', () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
 
       createComponent();
@@ -207,7 +207,7 @@ describe('FileTreeBrowserToggle', () => {
     });
 
     it('displays "Show file tree browser" tooltip when browser is collapsed', () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       fileTreeBrowserStore.setFileTreeBrowserIsExpanded(false);
 
       createComponent();
@@ -216,14 +216,14 @@ describe('FileTreeBrowserToggle', () => {
     });
 
     it('renders shortcut when shortcuts are enabled', () => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       createComponent();
 
       expect(findShortcut().exists()).toBe(true);
     });
 
     it('does not render shortcut when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
       createComponent();
 
       expect(findTooltip().exists()).toBe(true);

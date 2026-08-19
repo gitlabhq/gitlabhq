@@ -47,7 +47,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/behaviors/shortcuts/shortcuts_disabled', () => ({
-  shouldDisableShortcuts: () => false,
+  keyboardShortcutsDisabled: () => false,
 }));
 
 describe('Blob controls component', () => {

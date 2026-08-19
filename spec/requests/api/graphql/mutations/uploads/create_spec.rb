@@ -100,10 +100,6 @@ RSpec.describe 'Create an upload', feature_category: :team_planning do
   context 'when uploading to a group' do
     let(:extra_params) { { group_path: group.full_path } }
 
-    before do
-      stub_feature_flags(group_uploads_api: group)
-    end
-
     it_behaves_like 'upload creation'
 
     it_behaves_like 'authorizing granular token permissions for GraphQL', :create_markdown_upload do
@@ -119,25 +115,6 @@ RSpec.describe 'Create an upload', feature_category: :team_planning do
           api('/', version: 'graphql', personal_access_token: pat),
           params: upload_params,
           file_key: '1'
-        )
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      let(:current_user) { guest }
-
-      before do
-        stub_feature_flags(group_uploads_api: false)
-      end
-
-      it 'returns a resource not available error' do
-        post_graphql_mutation_with_uploads(mutation, current_user: current_user)
-
-        expect(graphql_errors).to include(
-          a_hash_including(
-            'message' => "The resource that you are attempting to access does not exist " \
-              "or you don't have permission to perform this action"
-          )
         )
       end
     end

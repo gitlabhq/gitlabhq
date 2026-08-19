@@ -15,7 +15,7 @@ import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { sanitize } from '~/lib/dompurify';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import {
   dropdowni18nText,
   IssuableAttributeState,
@@ -255,15 +255,15 @@ export default {
       return !this.hasLoadedAttributes || this.$apollo.queries.attributesList.loading;
     },
     labelShortcutDescription() {
-      return shouldDisableShortcuts() || !this.keybinding ? null : this.keybinding.description;
+      return keyboardShortcutsDisabled() || !this.keybinding ? null : this.keybinding.description;
     },
     labelShortcutKey() {
-      return shouldDisableShortcuts() || !this.keybinding ? null : keysFor(this.keybinding)[0];
+      return keyboardShortcutsDisabled() || !this.keybinding ? null : keysFor(this.keybinding)[0];
     },
     labelTooltip() {
       const description = this.labelShortcutDescription;
       const key = this.labelShortcutKey;
-      return shouldDisableShortcuts() || !this.keybinding
+      return keyboardShortcutsDisabled() || !this.keybinding
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },

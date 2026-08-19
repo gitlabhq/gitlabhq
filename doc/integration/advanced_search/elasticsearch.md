@@ -57,7 +57,7 @@ The cluster cannot assign replica shards to the same node as primary shards.
 
 > [!note]
 > Before you use a new Elasticsearch cluster in production, see
-> [important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
+> [important Elasticsearch configuration](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-settings-configuration).
 
 ### Version compatibility
 
@@ -116,7 +116,7 @@ privileges. The `Username` makes requests from GitLab to the search cluster.
 
 For more information,
 see [Elasticsearch role based access control](https://www.elastic.co/guide/en/elasticsearch/reference/current/authorization.html#roles)
-and [Elasticsearch security privileges](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-privileges.html).
+and [Elasticsearch security privileges](https://www.elastic.co/docs/reference/elasticsearch/security-privileges).
 
 ```json
 {
@@ -558,7 +558,7 @@ The following Elasticsearch settings are available:
 | **URL**                                                     | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. If you use [OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html), only connections over ports `80` and `443` are accepted. |
 | **Username**                                                | The `username` of your Elasticsearch instance. |
 | **Password**                                                | The password of your Elasticsearch instance. |
-| **Number of Elasticsearch shards and replicas per index**   | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
+| **Number of Elasticsearch shards and replicas per index**   | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/docs/deploy-manage/production-guidance/elasticsearch-in-production-environments). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
 | **Limit the amount of namespace and project data to index** | When you enable this setting, you can specify namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this setting but do not specify any namespace or project, only project records are indexed. For more information, see [Limit the amount of namespace and project data to index](#limit-the-amount-of-namespace-and-project-data-to-index). |
 | **Use AWS OpenSearch Service with IAM credentials**         | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | **AWS Region**                                              | The AWS region in which your OpenSearch Service is located. |
@@ -646,8 +646,8 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can improve language support for Chinese and Japanese by using the [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html)
-and [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
+You can improve language support for Chinese and Japanese by using the [`smartcn`](https://www.elastic.co/docs/reference/elasticsearch/plugins/analysis-smartcn)
+and [`kuromoji`](https://www.elastic.co/docs/reference/elasticsearch/plugins/analysis-kuromoji) analysis plugins from Elastic.
 
 To enable custom language analyzers:
 
@@ -664,10 +664,10 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 | Parameter                                             | Description |
 |-------------------------------------------------------|-------------|
-| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices. |
-| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index. |
-| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices. |
-| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for advanced search. Only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index. |
+| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [`smartcn`](https://www.elastic.co/docs/reference/elasticsearch/plugins/analysis-smartcn) custom analyzer for newly created indices. |
+| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [`smartcn`](https://www.elastic.co/docs/reference/elasticsearch/plugins/analysis-smartcn) fields for advanced search. Only enable this after installing the plugin, enabling custom analyzer indexing and recreating the index. |
+| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [`kuromoji`](https://www.elastic.co/docs/reference/elasticsearch/plugins/analysis-kuromoji) custom analyzer for newly created indices. |
+| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [`kuromoji`](https://www.elastic.co/docs/reference/elasticsearch/plugins/analysis-kuromoji) fields for advanced search. Only enable this after installing the plugin, enabling custom analyzer indexing and recreating the index. |
 
 ## Disable advanced search
 
@@ -748,7 +748,7 @@ To resume indexing:
 ## Zero-downtime reindexing
 
 The idea behind this reindexing method is to use the
-[Elasticsearch reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html)
+[Elasticsearch reindex API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-reindex)
 and Elasticsearch index alias feature to perform the operation. An index alias connects to a
 `primary` index that GitLab uses for reads and writes. When the reindexing process starts,
 writes to the `primary` index are temporarily paused. Then, another index is created and the
@@ -800,9 +800,9 @@ To trigger zero-downtime reindexing:
 
 ##### Slice multiplier
 
-The slice multiplier calculates the [number of slices during reindexing](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#docs-reindex-slice).
+The slice multiplier calculates the [number of slices during reindexing](https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reindex-indices#docs-reindex-slice).
 
-GitLab uses [manual slicing](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#docs-reindex-manual-slice)
+GitLab uses [manual slicing](https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reindex-indices#docs-reindex-manual-slice)
 to control the reindex efficiently and safely, which enables users to retry only
 failed slices.
 
@@ -1068,9 +1068,9 @@ For basic guidance on choosing a cluster configuration, see also [Elastic Cloud 
 - It's not recommended to use HDD storage with the search cluster, because it takes a hit on performance. It's better to use SSD storage (NVMe or SATA SSD drives for example).
 - You should not use [coordinating-only nodes](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#coordinating-only-node) with large instances. Coordinating-only nodes are smaller than [data nodes](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#data-node), which can impact performance and [advanced search migrations](#advanced-search-migrations).
 - You can use the [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) to benchmark search performance with different search cluster sizes and configurations.
-- `Heap size` should be set to no more than 50% of your physical RAM. Additionally, it shouldn't be set to more than the threshold for zero-based compressed oops. The exact threshold varies, but 26 GB is safe on most systems, but can also be as large as 30 GB on some systems. See [Heap size settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings) and [Setting JVM options](https://www.elastic.co/guide/en/elasticsearch/reference/current/jvm-options.html) for more details.
+- `Heap size` should be set to no more than 50% of your physical RAM. Additionally, it shouldn't be set to more than the threshold for zero-based compressed oops. The exact threshold varies, but 26 GB is safe on most systems, but can also be as large as 30 GB on some systems. See [Heap size settings](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-settings-configuration#heap-size-settings) and [Setting JVM options](https://www.elastic.co/docs/reference/elasticsearch/jvm-settings) for more details.
 - `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in real-time. This changes how soon you see fresh results. If that's important for you, you should leave it as close as possible to the default value.
-- You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html) to 30% or 40% if you have a lot of heavy indexing operations.
+- You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/indexing-buffer-settings) to 30% or 40% if you have a lot of heavy indexing operations.
 
 ### Advanced search settings
 
@@ -1165,7 +1165,7 @@ due to large volumes of data being indexed:
 1. [Select the **Turn on indexing for advanced search** checkbox](#enable-advanced-search).
 1. Indexing large Git repositories can take a while. To speed up the process, you can [tune for indexing speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed):
 
-   - You can temporarily increase [`refresh_interval`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html).
+   - You can temporarily increase [`refresh_interval`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-refresh).
 
    - You can set the number of replicas to 0. This setting controls the number of copies each primary shard of an index has. Thus, having 0 replicas effectively disables the replication of shards across nodes, which should increase the indexing performance. This is an important trade-off in terms of reliability and query performance. It is important to remember to set the replicas to a considered value after the initial indexing is complete.
 
@@ -1484,4 +1484,4 @@ To recover data more quickly, you can replay:
    You must trigger another `ElasticDeleteProjectWorker`.
 
 You can also take regular
-[Elasticsearch snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html) to reduce the time it takes to recover from data loss without reindexing everything from scratch.
+[Elasticsearch snapshots](https://www.elastic.co/docs/deploy-manage/tools/snapshot-and-restore) to reduce the time it takes to recover from data loss without reindexing everything from scratch.

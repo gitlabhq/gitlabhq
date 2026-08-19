@@ -79,7 +79,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def active_impersonation_tokens
-    tokens = finder(state: 'active', sort: 'expires_asc').execute
+    tokens = finder(state: 'active', sort: 'expires_asc').execute.preload_last_used_ips
     ::ImpersonationAccessTokenSerializer.new.represent(tokens)
   end
 

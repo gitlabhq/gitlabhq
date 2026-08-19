@@ -6,7 +6,7 @@ import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keysFor, ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { observable } from '~/lib/utils/observable';
 import { assigneesQueries } from '../../queries/constants';
@@ -173,15 +173,15 @@ export default {
       return this.currentUser.username !== undefined;
     },
     assigneeShortcutDescription() {
-      return shouldDisableShortcuts() ? null : ISSUE_MR_CHANGE_ASSIGNEE.description;
+      return keyboardShortcutsDisabled() ? null : ISSUE_MR_CHANGE_ASSIGNEE.description;
     },
     assigneeShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(ISSUE_MR_CHANGE_ASSIGNEE)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(ISSUE_MR_CHANGE_ASSIGNEE)[0];
     },
     assigneeTooltip() {
       const description = this.assigneeShortcutDescription;
       const key = this.assigneeShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },

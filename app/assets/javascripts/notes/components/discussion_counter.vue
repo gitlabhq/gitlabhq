@@ -13,7 +13,7 @@ import {
   MR_NEXT_UNRESOLVED_DISCUSSION,
   MR_PREVIOUS_UNRESOLVED_DISCUSSION,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { useNotes } from '~/notes/store/legacy_notes';
 import discussionNavigation from '../mixins/discussion_navigation';
@@ -67,7 +67,7 @@ export default {
         : __('Hide all comments');
     },
     nextUnresolvedDiscussionShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(MR_NEXT_UNRESOLVED_DISCUSSION)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(MR_NEXT_UNRESOLVED_DISCUSSION)[0];
     },
     nextUnresolvedDiscussionTitle() {
       return MR_NEXT_UNRESOLVED_DISCUSSION.description;
@@ -75,12 +75,12 @@ export default {
     nextUnresolvedDiscussionTooltip() {
       const description = this.nextUnresolvedDiscussionTitle;
       const key = this.nextUnresolvedDiscussionShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
     previousUnresolvedDiscussionShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION)[0];
+      return keyboardShortcutsDisabled() ? null : keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION)[0];
     },
     previousUnresolvedDiscussionTitle() {
       return MR_PREVIOUS_UNRESOLVED_DISCUSSION.description;
@@ -88,7 +88,7 @@ export default {
     previousUnresolvedDiscussionTooltip() {
       const description = this.previousUnresolvedDiscussionTitle;
       const key = this.previousUnresolvedDiscussionShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },

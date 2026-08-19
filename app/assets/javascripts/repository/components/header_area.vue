@@ -4,7 +4,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import {
   keysFor,
   TOGGLE_FILE_TREE_BROWSER_VISIBILITY,
@@ -186,7 +186,7 @@ export default {
     findFileTooltip() {
       const { description } = START_SEARCH_PROJECT_FILE;
       const key = this.findFileShortcutKey;
-      return shouldDisableShortcuts()
+      return keyboardShortcutsDisabled()
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
@@ -205,7 +205,7 @@ export default {
       return this.shortcutsEnabled ? keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY)[0] : null;
     },
     shortcutsEnabled() {
-      return !shouldDisableShortcuts();
+      return !keyboardShortcutsDisabled();
     },
   },
   mounted() {

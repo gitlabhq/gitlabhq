@@ -2,7 +2,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { groupIterationsResponse } from 'jest/work_items/mock_data';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
@@ -218,7 +218,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     };
 
     beforeEach(() => {
-      shouldDisableShortcuts.mockReturnValue(false);
+      keyboardShortcutsDisabled.mockReturnValue(false);
       keysFor.mockReturnValue(['e']);
     });
 
@@ -240,7 +240,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     });
 
     it('does not show tooltip when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
 
       createComponent({ canUpdate: true, shortcut });
 

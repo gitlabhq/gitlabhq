@@ -1,7 +1,7 @@
 // This is the only file allowed to import directly from the package.
 // eslint-disable-next-line no-restricted-imports
 import Mousetrap from 'mousetrap';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 
 const additionalStopCallbacks = [];
 const originalStopCallback = Mousetrap.prototype.stopCallback;
@@ -145,7 +145,7 @@ const ensureInputFocusLockInitialized = () => {
 export const suppressShortcutsUntilInputFocus = ({
   timeoutMs = INPUT_FOCUS_LOCK_DEFAULT_TIMEOUT_MS,
 } = {}) => {
-  if (shouldDisableShortcuts()) return;
+  if (keyboardShortcutsDisabled()) return;
 
   ensureInputFocusLockInitialized();
   inputFocusLockSuppressed = true;

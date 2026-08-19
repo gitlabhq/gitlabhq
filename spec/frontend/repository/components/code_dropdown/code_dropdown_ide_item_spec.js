@@ -5,7 +5,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { OPEN_VSCODE_SSH } from '~/repository/components/code_dropdown/constants';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_disabled', () => ({
-  shouldDisableShortcuts: () => false,
+  keyboardShortcutsDisabled: () => false,
 }));
 
 describe('CodeDropdownIdeItem', () => {

@@ -10,7 +10,7 @@ import {
   MR_TOGGLE_FILE_BROWSER,
   MR_FOCUS_FILE_BROWSER,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { setHTMLFixture } from 'helpers/fixtures';
@@ -41,7 +41,7 @@ describe('FileBrowserToggle', () => {
   };
 
   beforeEach(() => {
-    shouldDisableShortcuts.mockReturnValue(false);
+    keyboardShortcutsDisabled.mockReturnValue(false);
   });
 
   it('sets initial browser visibility', () => {
@@ -147,7 +147,7 @@ describe('FileBrowserToggle', () => {
     });
 
     it('does not display keyboard shortcut when shortcuts are disabled', () => {
-      shouldDisableShortcuts.mockReturnValue(true);
+      keyboardShortcutsDisabled.mockReturnValue(true);
       createComponent({ mountFn: mount });
       expect(findTooltip().find('kbd').exists()).toBe(false);
     });

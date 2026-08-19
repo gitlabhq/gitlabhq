@@ -1,7 +1,7 @@
 <script>
 import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { __ } from '~/locale';
 import {
   keysFor,
@@ -27,7 +27,7 @@ export default {
       return this.shortcutsEnabled ? keysFor(MR_TOGGLE_FILE_BROWSER)[0] : null;
     },
     shortcutsEnabled() {
-      return !shouldDisableShortcuts();
+      return !keyboardShortcutsDisabled();
     },
     toggleFileBrowserTitle() {
       return this.fileBrowserVisible ? __('Hide file browser') : __('Show file browser');

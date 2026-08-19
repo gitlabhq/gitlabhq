@@ -4,7 +4,7 @@ import { mapState, mapActions } from 'pinia';
 import { __ } from '~/locale';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
+import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
 import { InternalEvents } from '~/tracking';
 import {
@@ -44,7 +44,7 @@ export default {
         : __('Show file tree browser');
     },
     shortcutsEnabled() {
-      return !shouldDisableShortcuts();
+      return !keyboardShortcutsDisabled();
     },
     target() {
       return () => this.$refs.toggle?.$el;

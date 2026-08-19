@@ -40,6 +40,17 @@ module Types
       description: 'Details about which files were changed in the merge request.' do
       argument :path, GraphQL::Types::String, required: false, description: 'Specific file path.'
     end
+    field :diffs, null: true, calls_gitaly: true,
+      resolver: Resolvers::MergeRequests::DiffsResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      experiment: { milestone: '19.4' },
+      description: 'Diffs of the merge request, including per-file patch text. Files whose content is ' \
+        'omitted because they exceed size limits are reported with the `collapsed` or `too_large` flags. ' \
+        'When a page exceeds the diff size limits, later files are omitted entirely and the connection ' \
+        '`overflow` field is set. Supports forward-only pagination. This field can only be resolved 10 ' \
+        'times in any single request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10
+    end
     field :discussions_with_activity, ::Types::Notes::DiscussionType.connection_type,
       null: false,
       skip_type_authorization: [:read_note, :read_emoji],
