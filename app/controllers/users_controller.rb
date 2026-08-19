@@ -75,10 +75,10 @@ class UsersController < ApplicationController
       format.json do
         load_events
 
-        @is_personal_homepage = params[:is_personal_homepage].present? && Feature.enabled?(:personal_homepage,
-          current_user)
+        @is_personal_homepage = permitted_params[:is_personal_homepage].present? &&
+          Feature.enabled?(:personal_homepage, current_user)
 
-        if params[:type] == 'raw'
+        if permitted_params[:type] == 'raw'
           @events = if user.include_private_contributions?
                       @events.reject(&:target_deleted?)
                     else
@@ -136,21 +136,21 @@ class UsersController < ApplicationController
 
   def followers
     present_users do
-      @user_followers = user.followers.page(params[:page]).per(FOLLOWERS_FOLLOWING_USERS_PER_PAGE)
+      @user_followers = user.followers.page(permitted_params[:page]).per(FOLLOWERS_FOLLOWING_USERS_PER_PAGE)
     end
   end
 
   def following
     present_users do
-      @user_following = user.followees.page(params[:page]).per(FOLLOWERS_FOLLOWING_USERS_PER_PAGE)
+      @user_following = user.followees.page(permitted_params[:page]).per(FOLLOWERS_FOLLOWING_USERS_PER_PAGE)
     end
   end
 
   def present_projects
-    skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
-    skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
-    compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
-    card_mode = Gitlab::Utils.to_boolean(params[:card_mode])
+    skip_pagination = Gitlab::Utils.to_boolean(permitted_params[:skip_pagination])
+    skip_namespace = Gitlab::Utils.to_boolean(permitted_params[:skip_namespace])
+    compact_mode = Gitlab::Utils.to_boolean(permitted_params[:compact_mode])
+    card_mode = Gitlab::Utils.to_boolean(permitted_params[:card_mode])
 
     respond_to do |format|
       format.html { render 'show' }
@@ -189,7 +189,7 @@ class UsersController < ApplicationController
 
   def calendar_activities
     @calendar_date = begin
-      Date.parse(params[:date])
+      Date.parse(permitted_params[:date])
     rescue StandardError
       Date.today
     end
@@ -202,7 +202,7 @@ class UsersController < ApplicationController
 
   def exists
     if Gitlab::CurrentSettings.signup_enabled? || current_user
-      render json: { exists: Namespace.username_reserved?(params[:username]) }
+      render json: { exists: Namespace.username_reserved?(permitted_params[:username]) }
     else
       render json: { error: _('You must be authenticated to access this path.') }, status: :unauthorized
     end
@@ -236,8 +236,15 @@ class UsersController < ApplicationController
 
   private
 
+  def permitted_params
+    @permitted_params ||= params.permit(
+      :card_mode, :compact_mode, :date, :event_filter, :is_personal_homepage,
+      :limit, :offset, :page, :scope, :skip_namespace, :skip_pagination, :type, :username
+    )
+  end
+
   def user
-    @user ||= find_routable!(User, params[:username], request.fullpath)
+    @user ||= find_routable!(User, permitted_params[:username], request.fullpath)
   end
 
   def personal_projects
@@ -259,22 +266,23 @@ class UsersController < ApplicationController
   end
 
   def load_events
-    event_filter = EventFilter.new(params[:event_filter]) if params[:event_filter].present?
-    @events = UserRecentEventsFinder.new(current_user, user, event_filter, params).execute
+    event_filter = EventFilter.new(permitted_params[:event_filter]) if permitted_params[:event_filter].present?
+    @events = UserRecentEventsFinder.new(current_user, user, event_filter, permitted_params).execute
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 
   def load_projects
     @projects = personal_projects
-      .page(params[:page])
-      .per(params[:limit])
+      .page(permitted_params[:page])
+      .per(permitted_params[:limit])
 
     prepare_projects_for_rendering(@projects)
   end
 
   def load_contributed_projects
-    @contributed_projects = contributed_projects.with_route.joined(user).page(params[:page]).without_count
+    @contributed_projects = contributed_projects.with_route.joined(user).page(permitted_params[:page])
+      .without_count
 
     prepare_projects_for_rendering(@contributed_projects)
   end
@@ -287,16 +295,16 @@ class UsersController < ApplicationController
 
   def load_groups
     groups = JoinedGroupsFinder.new(user).execute(current_user)
-    @groups = groups.with_namespace_details.page(params[:page]).without_count
+    @groups = groups.with_namespace_details.page(permitted_params[:page]).without_count
 
     prepare_groups_for_rendering(@groups)
   end
 
   def load_snippets
     @snippets = SnippetsFinder.new(current_user, organization_id: Current.organization.id, author: user,
-      scope: params[:scope])
+      scope: permitted_params[:scope])
       .execute
-      .page(params[:page])
+      .page(permitted_params[:page])
       .inc_author
 
     @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
@@ -330,8 +338,7 @@ class UsersController < ApplicationController
   end
 
   def set_legacy_data
-    controller_action = params[:action]
-    @action = controller_action.gsub('show', 'overview')
+    @action = action_name.gsub('show', 'overview')
     @endpoint = request.path
   end
 end

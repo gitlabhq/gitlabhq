@@ -1,0 +1,19 @@
+---
+key_path: counts.count_user_preferences_emoji_autocomplete_disabled
+description: Count of active users who turned off the emoji autocomplete preference
+product_group: planner_intelligence
+product_categories:
+- text_editors
+value_type: number
+status: active
+milestone: "19.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246534
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountUserPreferencesEmojiAutocompleteDisabledMetric
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

@@ -503,20 +503,41 @@ Example:
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 ```
 
-## `get_job_log`
+## `get_job`
 
-Retrieves the trace (log output) for a specific CI/CD job.
+{{< history >}}
 
-| Parameter | Type    | Required | Description |
-|-----------|---------|----------|-------------|
-| `id`      | string  | Yes      | ID or URL-encoded path of the project. |
-| `job_id`  | integer | Yes      | ID of the job. |
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605856) in GitLab 19.3.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605856) from `get_job_log` in GitLab 19.3. `get_job_log` continues to work as an alias and always returns the `log` facet, capped at `byte_limit`.
 
-Example:
+{{< /history >}}
 
-```plaintext
-Show me the log output for job 88 in project gitlab-org/gitlab
-```
+Gets a CI/CD job's metadata, and optionally its trace/log.
+
+| Parameter     | Type    | Required | Description |
+|---------------|---------|----------|-------------|
+| `id`          | string  | Yes      | ID or full path of the project. |
+| `job_id`      | integer | Yes      | ID of the job. |
+| `include`     | array   | No       | Facet to include alongside the job, one per call: `log`. |
+| `byte_offset` | integer | No       | Byte offset to start reading the job's log from. Only applies when `include` is `log`. Default is `0`. |
+| `byte_limit`  | integer | No       | Maximum number of bytes of the job's log to return. Only applies when `include` is `log`. Default and maximum is `512000`. |
+
+When the log is longer than `byte_limit`, the response reports the total size and tells you the
+`byte_offset` to use for the next window.
+
+Examples:
+
+- Get a job's metadata:
+
+  ```plaintext
+  Get the status of job 88 in project gitlab-org/gitlab
+  ```
+
+- Get a job's log:
+
+  ```plaintext
+  Show me the log output for job 88 in project gitlab-org/gitlab
+  ```
 
 ## `list_pipelines`
 

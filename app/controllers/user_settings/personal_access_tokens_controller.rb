@@ -29,7 +29,7 @@ module UserSettings
       respond_to do |format|
         format.html
         format.ics do
-          if params[:feed_token]
+          if permitted_params[:feed_token]
             response.headers['Content-Type'] = 'text/plain'
             render plain: expiry_ics
           else
@@ -82,14 +82,18 @@ module UserSettings
 
     private
 
+    def permitted_params
+      params.permit(:description, :feed_token, :name, :scopes)
+    end
+
     def set_hide_search_settings
       @hide_search_settings = true
     end
 
     def set_access_token_params
       @access_token_params = {
-        name: params[:name],
-        description: params[:description],
+        name: permitted_params[:name],
+        description: permitted_params[:description],
         scopes: parse_scopes_from_params
       }
     end
@@ -129,11 +133,12 @@ module UserSettings
     end
 
     def parse_scopes_from_params
-      return [] if params[:scopes].nil?
+      raw_scopes = permitted_params[:scopes]
+      return [] if raw_scopes.nil?
 
       scopes = []
 
-      params[:scopes].split(",", Gitlab::Auth.all_available_scopes.count + 1) do |scope|
+      raw_scopes.split(",", Gitlab::Auth.all_available_scopes.count + 1) do |scope|
         scope = scope.squish
         next if scope.empty?
 
@@ -167,7 +172,7 @@ module UserSettings
     def redirect_for_legacy_new?
       granular_tokens_feature_enabled? &&
         !granular_tokens_enforced? &&
-        params[:name].present? &&
+        permitted_params[:name].present? &&
         parse_scopes_from_params.any?
     end
 

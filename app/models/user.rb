@@ -532,6 +532,7 @@ class User < ApplicationRecord
     :organization_groups_projects_display, :organization_groups_projects_display=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
+    :emoji_autocomplete_enabled, :emoji_autocomplete_enabled=,
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,

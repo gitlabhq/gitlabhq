@@ -5,6 +5,7 @@ import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 import { uniqueId } from 'lodash-es';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
+import { isEmojiAutocompleteEnabled } from '~/lib/utils/emoji_autocomplete';
 import {
   prioritizeCommandsWithFrequent,
   recordFrequentCommandUsage,
@@ -286,7 +287,7 @@ export default Node.create({
         resolveReferenceType: (prefixCommand) => QUOTED_QUICK_ACTION_REFERENCE_TYPES[prefixCommand],
       }),
       createPlugin('%', 'reference', REFERENCE_TYPES.MILESTONE),
-      createPlugin(':', 'emoji', REFERENCE_TYPES.EMOJI),
+      ...(isEmojiAutocompleteEnabled() ? [createPlugin(':', 'emoji', REFERENCE_TYPES.EMOJI)] : []),
       createPlugin('[[', 'link', REFERENCE_TYPES.WIKI),
       createPlugin('/', 'reference', REFERENCE_TYPES.COMMAND, {
         cache: false,

@@ -12,6 +12,7 @@ import {
 } from 'lodash-es';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
+import { isEmojiAutocompleteEnabled } from '~/lib/utils/emoji_autocomplete';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
@@ -297,7 +298,7 @@ class GfmAutoComplete {
   }
 
   setupAtWho($input) {
-    if (this.enableMap.emojis) this.setupEmoji($input);
+    if (this.enableMap.emojis && isEmojiAutocompleteEnabled()) this.setupEmoji($input);
     if (this.enableMap.members) this.setupMembers($input);
     if (this.enableMap.issues) this.setupIssues($input);
     if (this.enableMap.issuesAlternative) this.setupIssuesAlternative($input);

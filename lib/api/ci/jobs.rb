@@ -117,7 +117,6 @@ module API
             values: 1..Gitlab::Ci::Trace::Stream::LIMIT_SIZE, documentation: { example: 51200 }
         end
 
-        route_setting :mcp, tool_name: :get_job_log, params: [:id, :job_id]
         route_setting :authorization, permissions: :read_job, boundary_type: :project
         get ':id/jobs/:job_id/trace', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!

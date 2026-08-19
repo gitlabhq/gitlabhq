@@ -61,6 +61,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :render_whitespace_in_code,
       :project_shortcut_buttons,
       :keyboard_shortcuts_enabled,
+      :emoji_autocomplete_enabled,
       :markdown_surround_selection,
       :markdown_automatic_lists,
       :markdown_maintain_indentation,

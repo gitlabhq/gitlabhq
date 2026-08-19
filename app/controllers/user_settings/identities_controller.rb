@@ -39,7 +39,7 @@ module UserSettings
     private
 
     def verify_state
-      render_403 unless session[:identity_link_state] == params[:state]
+      render_403 unless session[:identity_link_state] == params.permit(:state)[:state]
     end
 
     def assign_variables_from_session

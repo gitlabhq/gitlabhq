@@ -62,8 +62,15 @@ module Gitlab
         gon.instance_token_prefix = Authn::TokenField::PrefixHelper.instance_prefix
       end
 
-      gon.fluid_layout               = false
-      gon.keyboard_shortcuts_enabled = current_user ? current_user.keyboard_shortcuts_enabled : true
+      gon.fluid_layout = false
+      if current_user
+        gon.keyboard_shortcuts_enabled = current_user.keyboard_shortcuts_enabled
+        gon.emoji_autocomplete_enabled = current_user.emoji_autocomplete_enabled
+      else
+        gon.keyboard_shortcuts_enabled = true
+        gon.emoji_autocomplete_enabled = true
+      end
+
       gon.broadcast_message_dismissal_path =
         current_user ? Gitlab::Routing.url_helpers.broadcast_message_dismissals_path : nil
 

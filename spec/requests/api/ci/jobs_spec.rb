@@ -797,13 +797,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
     end
 
-    describe 'mcp route setting', :skip_before_request do
-      subject { get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user) }
-
-      it_behaves_like 'an endpoint with mcp route setting', :get_job_log,
-        expected_params: [:id, :job_id]
-    end
-
     context 'authorized user' do
       context 'with oauth token that has ai_workflows scope', :skip_before_request do
         let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }

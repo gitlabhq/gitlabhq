@@ -60010,6 +60010,9 @@ msgstr ""
 msgid "Preferences|Enable default text editor"
 msgstr ""
 
+msgid "Preferences|Enable emoji autocomplete"
+msgstr ""
+
 msgid "Preferences|Enable extension marketplace"
 msgstr ""
 
@@ -60161,6 +60164,9 @@ msgid "Preferences|Web IDE and Workspaces"
 msgstr ""
 
 msgid "Preferences|When enabled, you can choose which Orbit-powered features to use below. Turning this off disables all Orbit features."
+msgstr ""
+
+msgid "Preferences|When you type a colon (:) in a description or comment box, a list of matching emoji is suggested."
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line."

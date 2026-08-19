@@ -156,6 +156,40 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       end
     end
 
+    describe 'emoji_autocomplete_enabled' do
+      context 'when there is no current_user' do
+        it 'defaults gon.emoji_autocomplete_enabled to true' do
+          expect(gon).to receive(:emoji_autocomplete_enabled=).with(true)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the current_user has the preference enabled' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, emoji_autocomplete_enabled: true))
+        end
+
+        it 'sets gon.emoji_autocomplete_enabled to true' do
+          expect(gon).to receive(:emoji_autocomplete_enabled=).with(true)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when the current_user has the preference disabled' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, emoji_autocomplete_enabled: false))
+        end
+
+        it 'sets gon.emoji_autocomplete_enabled to false' do
+          expect(gon).to receive(:emoji_autocomplete_enabled=).with(false)
+
+          helper.add_gon_variables
+        end
+      end
+    end
+
     describe 'instance_token_prefix' do
       it 'exposes instance_token_prefix' do
         stub_application_setting(instance_token_prefix: 'instanceprefix')

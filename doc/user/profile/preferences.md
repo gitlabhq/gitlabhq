@@ -325,6 +325,21 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 1. Select the **Automatically add new list items** checkbox.
 1. Select **Save changes**.
 
+### Turn off emoji autocomplete
+
+By default, when you type a colon (`:`) in a description or comment box, GitLab suggests
+matching emoji. If you type colons for other reasons, such as in languages that put a space
+before a colon, you can turn off these suggestions. When turned off, you can still insert emoji
+by other means, such as copy and paste.
+
+To turn off emoji autocomplete:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. Scroll to the **Behavior** section.
+1. Clear the **Enable emoji autocomplete** checkbox.
+1. Select **Save changes**.
+
 ### Maintain cursor indentation
 
 Maintain the indentation when you press <kbd>Enter</kbd>. The cursor on the new line is automatically indented the same as the previous line. This setting works only in description and comment boxes.

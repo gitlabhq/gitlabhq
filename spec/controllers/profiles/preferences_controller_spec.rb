@@ -57,6 +57,7 @@ RSpec.describe Profiles::PreferencesController, feature_category: :user_profile 
           tab_width: '5',
           project_shortcut_buttons: 'true',
           keyboard_shortcuts_enabled: 'true',
+          emoji_autocomplete_enabled: 'false',
           render_whitespace_in_code: 'true',
           extensions_marketplace_enabled: '1'
         }.with_indifferent_access

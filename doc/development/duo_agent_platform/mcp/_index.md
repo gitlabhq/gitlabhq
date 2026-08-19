@@ -196,7 +196,8 @@ still passes validation for an optional `enum` parameter.
   the payload (for example the `diff` facet of `get_commit` and the `diffs` facet of
   `get_merge_request`). Do not retrofit `detail` where a better-suited knob already exists: file
   content uses line pagination (`offset`/`limit`) and job logs use byte pagination
-  (`byte_offset`/`byte_limit`), because those APIs have no diff-style verbosity levels.
+  (`byte_offset`/`byte_limit`), because those APIs have no diff-style verbosity levels. See
+  `get_job` (`include: log`) for a worked example of a single-purpose reader promoted to a facet.
 - Prefer a filter parameter over a new facet or tool when one facet is a subset of another (for
   example a `job_status: failed` filter instead of a separate `failing_jobs` facet).
 

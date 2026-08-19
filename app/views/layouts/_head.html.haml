@@ -101,14 +101,14 @@
   = csp_meta_tag
   = action_cable_meta_tag
 
-  %link{ rel: 'manifest', href: manifest_path(format: :json) }
+  %link{ rel: 'manifest', href: manifest_path(format: :json), crossorigin: 'use-credentials' }
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   -# Apple Safari/iOS home screen icons
   = appearance_apple_touch_icon
 
   -# OpenSearch
-  %link{ href: search_opensearch_path(format: :xml), rel: 'search', title: 'Search GitLab', type: 'application/opensearchdescription+xml' }
+  %link{ href: search_opensearch_path(format: :xml), rel: 'search', title: 'Search GitLab', type: 'application/opensearchdescription+xml', crossorigin: 'use-credentials' }
 
   = yield :meta_tags
 

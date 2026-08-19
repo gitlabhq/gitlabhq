@@ -25,6 +25,21 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
     expect(field).not_to be_checked
   end
 
+  it 'allows the user to disable emoji autocomplete and persists the choice' do
+    field = page.find_field("user[emoji_autocomplete_enabled]")
+
+    expect(field).to be_checked
+
+    field.click
+    click_button 'Save changes'
+
+    expect(page).to have_content('Preferences saved.')
+    expect(user.reload.user_preference.emoji_autocomplete_enabled).to be(false)
+
+    visit(profile_preferences_path)
+    expect(page.find_field("user[emoji_autocomplete_enabled]")).not_to be_checked
+  end
+
   describe 'User changes tab width to acceptable value' do
     it 'shows success message' do
       fill_in 'Tab width', with: 9

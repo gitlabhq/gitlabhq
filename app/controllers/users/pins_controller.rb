@@ -32,11 +32,13 @@ module Users
       params.permit(:panel, menu_item_ids: [])
     end
 
+    # rubocop:disable Rails/StrongParams -- deliberately sizes the whole request, not just the permitted keys
     def check_request_size
       return if params.to_s.bytesize < 100.kilobytes
 
       head :payload_too_large
     end
+    # rubocop:enable Rails/StrongParams
 
     def track_nav_item_change(panel, new_menu_items, prev_menu_items)
       cleaned_new_items = new_menu_items.reject(&:blank?)

@@ -1956,12 +1956,6 @@
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # For tier-1 pipelines, only run when relevant storybook files change
-    - <<: *if-merge-request-tier-1-or-no-tier
-      changes:
-        - '{,ee/}app/**/*.vue'
-        - '{,ee/}app/**/*.stories.js'
-        - 'storybook/**/*'
     - <<: *if-default-refs
       changes:
         - '{,ee/}app/**/*.vue'

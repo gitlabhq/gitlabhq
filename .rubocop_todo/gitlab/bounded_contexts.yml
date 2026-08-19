@@ -2864,7 +2864,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/product_analytics/funnel_step.rb'
     - 'ee/app/models/productivity_analytics.rb'
     - 'ee/app/models/project_alias.rb'
-    - 'ee/app/models/project_push_rule.rb'
     - 'ee/app/models/project_security_setting.rb'
     - 'ee/app/models/protected_branch/required_code_owners_section.rb'
     - 'ee/app/models/protected_branch/unprotect_access_level.rb'

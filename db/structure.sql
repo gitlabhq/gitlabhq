@@ -32912,6 +32912,7 @@ CREATE TABLE user_preferences (
     wiki_use_auto_commit_message boolean DEFAULT false NOT NULL,
     orbit_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     knowledge_graph_governing_namespace_id bigint,
+    emoji_autocomplete_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -51037,6 +51038,8 @@ CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING 
 CREATE INDEX index_user_preferences_on_policy_advanced_editor ON user_preferences USING btree (policy_advanced_editor) WHERE (policy_advanced_editor = true);
 
 CREATE UNIQUE INDEX index_user_preferences_on_user_id ON user_preferences USING btree (user_id);
+
+CREATE INDEX index_user_preferences_on_user_id_emoji_autocomplete_disabled ON user_preferences USING btree (user_id) WHERE (emoji_autocomplete_enabled = false);
 
 CREATE INDEX index_user_project_callouts_on_project_id ON user_project_callouts USING btree (project_id);
 

@@ -70,7 +70,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
         # read-only
         'get_issue' => { 'readOnlyHint' => true },
-        'get_job_log' => { 'readOnlyHint' => true },
+        'get_job' => { 'readOnlyHint' => true },
         'get_mcp_server_version' => { 'readOnlyHint' => true },
         'get_merge_request' => { 'readOnlyHint' => true },
         'get_merge_request_commits' => { 'readOnlyHint' => true },

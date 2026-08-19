@@ -21,6 +21,7 @@ class UserPreference < ApplicationRecord
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
+  scope :emoji_autocomplete_disabled, -> { where(emoji_autocomplete_enabled: false) }
 
   validates :dark_color_scheme_id, allow_nil: true, inclusion: {
     in: Gitlab::ColorSchemes.valid_ids,
@@ -42,6 +43,7 @@ class UserPreference < ApplicationRecord
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
   validates :early_access_studio_participant, allow_nil: false, inclusion: { in: [true, false] }
+  validates :emoji_autocomplete_enabled, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
   validates :extensions_marketplace_opt_in_url, length: { maximum: 512 }
@@ -55,6 +57,7 @@ class UserPreference < ApplicationRecord
   attribute :render_whitespace_in_code, default: false
   attribute :project_shortcut_buttons, default: true
   attribute :keyboard_shortcuts_enabled, default: true
+  attribute :emoji_autocomplete_enabled, default: true
   attribute :dpop_enabled, default: false
   attribute :text_editor_type, default: 2
 

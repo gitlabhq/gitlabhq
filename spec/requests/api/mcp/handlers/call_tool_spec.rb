@@ -844,6 +844,59 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe '#get_job' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    # `let` rather than `let_it_be`, because a live trace does not survive between examples.
+    let(:job) { create(:ci_build, :trace_live, :failed, pipeline: pipeline, name: 'rspec') }
+
+    let(:arguments) { { id: project.full_path, job_id: job.id } }
+    let(:tool_params) { { name: 'get_job', arguments: arguments } }
+
+    it 'returns success response' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']).to include('id' => job.id, 'status' => 'failed')
+      expect(json_response['result']['structuredContent']).not_to have_key('log')
+    end
+
+    context 'with the log facet' do
+      let(:arguments) { super().merge(include: ['log']) }
+
+      it 'returns the job log' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['log']['content']).to eq('BUILD TRACE')
+      end
+    end
+
+    context 'when called as the get_job_log alias' do
+      let(:tool_params) { { name: 'get_job_log', arguments: arguments } }
+
+      it 'resolves to get_job and returns the log without an explicit include' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['log']['content']).to eq('BUILD TRACE')
+      end
+    end
+
+    context 'when caller does not have permission to read the job' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not-found error' do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('not found or inaccessible')
+      end
+    end
+  end
+
   # Facet, filter, and pagination behaviour is covered in the tool spec. These examples only cover
   # what the tool spec cannot: that arguments survive the JSON-RPC round trip and that the endpoint
   # enforces access.

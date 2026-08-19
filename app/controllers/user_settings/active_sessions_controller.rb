@@ -10,7 +10,7 @@ module UserSettings
 
     def destroy
       # params[:id] can be an Rack::Session::SessionId#private_id
-      ActiveSession.destroy_session(current_user, params[:id])
+      ActiveSession.destroy_session(current_user, params.permit(:id)[:id])
       current_user.invalidate_all_remember_tokens!
 
       respond_to do |format|

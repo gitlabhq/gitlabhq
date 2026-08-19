@@ -16,7 +16,7 @@ title: Policy store API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default.
 
 {{< /history >}}
 
@@ -164,14 +164,57 @@ A scope is authored one of two ways, and a request may use one or the other but 
   supplied directly, stored as authored.
 
 A request that supplies both returns `400 Bad Request`.
-An empty `scope_rego` does not count as the second form, so
-[Update a policy](#update-a-policy) accepts it alongside `policy_scope` to retire an authored
-program and recompile.
+An empty `scope_rego` does not count as the second form, so either operation accepts it
+alongside `policy_scope`.
+On [Create a policy](#create-a-policy), an empty value has the same effect as omitting it.
+On [Update a policy](#update-a-policy), it retires an authored program and compiles a new one
+from `policy_scope`.
 
 `scope_rego` is always present in a response, because a policy with no scope compiles to a
 program that applies to every project.
 `policy_scope` is `null` when the Rego was authored directly, because a hand-written program
 has no structured form.
+
+#### Policy scope structure
+
+`policy_scope` holds one or more criteria, and `match_mode` controls how they combine.
+A criterion names IDs, either as integers or as objects with an `id` key.
+GitLab deduplicates and sorts the IDs, so authoring order does not change the compiled program.
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `application` | object | `including` and `excluding` lists of application security attribute IDs. |
+| `business_impact` | object | `including` and `excluding` lists of business impact security attribute IDs. |
+| `business_unit` | object | `including` and `excluding` lists of business unit security attribute IDs. |
+| `compliance_frameworks` | array | IDs of compliance frameworks the project must carry. Takes a list directly, rather than `including` and `excluding`. |
+| `exposure` | object | `including` and `excluding` lists of exposure security attribute IDs. |
+| `groups` | object | `including` and `excluding` lists of group IDs. |
+| `match_mode` | string | Either `all` or `any`. With `all`, every criterion must match. With `any`, one match is enough. Any other value is treated as `all`. |
+| `projects` | object | `including` and `excluding` lists of project IDs. `excluding` also accepts `{"type": "personal"}` and `{"type": "archived"}`, which exclude every project of that kind. |
+
+For example:
+
+```json
+{
+  "match_mode": "any",
+  "compliance_frameworks": [{ "id": 5 }],
+  "projects": { "including": [12, 34], "excluding": [{ "type": "archived" }] },
+  "groups": { "including": [{ "id": 7 }] }
+}
+```
+
+A value GitLab cannot read as an ID returns `400 Bad Request`.
+That covers a value that is not a number, and a number outside the range 1 to 9223372036854775807.
+
+Three cases are accepted and worth knowing, because each one scopes the policy differently
+from what you might expect:
+
+- An `including` list that names no IDs matches nothing for that criterion. Under
+  `match_mode: all` the policy then applies to no project. Under `match_mode: any` another
+  criterion can still match.
+- An `excluding` list that names no IDs excludes nothing.
+- A criterion GitLab does not recognize has no effect. If it was the only criterion supplied,
+  the policy applies to every project.
 
 ### Rules and actions
 
@@ -187,7 +230,8 @@ A request replaces the whole array.
 You cannot add or remove a single entry.
 
 Send `rules` and `actions` as JSON with a `Content-Type: application/json` header.
-A form-encoded body cannot express their nested structure.
+A form-encoded body can carry both arrays, but every value in one arrives as a string, so a
+`value` that is not a string cannot be expressed that way.
 
 ### Response attributes
 
@@ -320,19 +364,20 @@ Supported attributes:
 | Attribute         | Type    | Required | Description |
 | ----------------- | ------- | -------- | ----------- |
 | `id`              | integer | Yes      | ID of the organization. |
-| `name`            | string  | Yes      | Name of the policy. Maximum 255 characters. |
+| `name`            | string  | Yes      | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
 | `rules`           | array   | Yes      | Rules of the policy. At least one entry is required. |
 | `trigger_type`    | string  | Yes      | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
 | `actions`         | array   | No       | Actions the policy takes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. Defaults to `active`. |
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. Defaults to `enforce`. |
-| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
-| `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Cannot be combined with `policy_scope`. Maximum 4096 characters. |
+| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
+| `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. A non-empty value cannot be combined with `policy_scope`. |
 
 If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
-Returns `400 Bad Request` when an attribute is invalid or both scope forms are supplied.
+Returns `400 Bad Request` when an attribute is invalid, both scope forms are supplied, or the
+name is already taken in the organization.
 
 Example request:
 
@@ -393,8 +438,8 @@ Supported attributes:
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. |
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. |
-| `name`            | string  | No       | Name of the policy. Maximum 255 characters. |
-| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. |
+| `name`            | string  | No       | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
+| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
 | `rules`           | array   | No       | Rules of the policy. Replaces the stored rules. |
 | `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. |
 | `trigger_type`    | string  | No       | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
@@ -405,6 +450,9 @@ A `scope_rego` that was authored directly is left as it is.
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
+Returns `400 Bad Request` when an attribute is invalid, both scope forms are supplied, the new
+name is already taken in the organization, or a recompiled `scope_rego` exceeds 4096
+characters.
 
 Example request:
 
