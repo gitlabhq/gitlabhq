@@ -50,8 +50,6 @@ This flow:
 - Delivers detailed review comments with actionable feedback.
 - Supports custom review instructions tailored to your project.
 
-This flow is available in the GitLab UI only.
-
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../../_index.md#prerequisites).
@@ -64,6 +62,10 @@ This flow is available in the GitLab UI only.
 
 ## Use the flow
 
+The Code Review Flow is available in the GitLab UI and through the REST API.
+
+### Request a review in the GitLab UI
+
 {{< history >}}
 
 - Using a flow in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
@@ -74,7 +76,7 @@ This flow is available in the GitLab UI only.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-To use the Code Review Flow on a merge request:
+To request a review in the GitLab UI:
 
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Use one of these methods to request a review:
@@ -88,6 +90,44 @@ To use the Code Review Flow on a merge request:
    If you are in Agentic Chat, you can also do the following:
    - See the progress in the Chat conversation.
    - Select **View Agent Session** in the conversation.
+
+### Request a review through the REST API
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Trigger code review through the REST API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250117) in GitLab 19.4.
+
+{{< /history >}}
+
+To request a review through the REST API, [trigger the flow](../../../../../api/duo_agent_platform_flows.md#trigger-a-flow)
+with these parameters:
+
+- Set `project_id` to the project that contains the merge request.
+- Set `goal` to either the IID of the merge request to review, or the full URL of that merge request.
+- Set `workflow_definition` to `code_review/v1`. Alternatively, set `ai_catalog_item_consumer_id`
+  to the [consumer ID](../../../../../api/duo_agent_platform_flows.md#look-up-the-consumer-id) for Code Review Flow.
+- Set `start_workflow` to `true` to start the review immediately.
+
+The following example triggers a code review of merge request `42`:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "project_id": "5",
+    "goal": "42",
+    "workflow_definition": "code_review/v1",
+    "start_workflow": true
+  }' \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows"
+```
 
 ## Interact with GitLab Duo in reviews
 

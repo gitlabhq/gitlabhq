@@ -1,220 +1,260 @@
 import {
-  addWorkItemToColumn,
-  adjustWorkItemCountInColumn,
   readWorkItemFromColumn,
   readWorkItemsFromColumn,
   removeWorkItemFromColumn,
+  addWorkItemToColumn,
+  adjustWorkItemCountInColumn,
 } from '~/work_items/board/graphql/cache_updates';
-import {
-  buildBoardWorkItemsResponse,
-  buildBoardWorkItemsCountResponse,
-  buildWorkItemNode,
-  buildStatusWidget,
-} from '../mock_data';
 
-// Minimal stand-in for the Apollo cache: the real client strips unselected
-// fields (e.g. the STATUS widget) on write, so a fake keeps the helper logic
-// under test without coupling to query selections.
-const createFakeCache = (data) => {
-  let store = data;
-  return {
-    readQuery: () => store ?? null,
-    updateQuery: (_options, updater) => {
-      const result = updater(store);
-      if (result !== undefined) {
-        store = result;
-      }
+describe('board cache_updates', () => {
+  const query = { fake: 'query' };
+  const variables = { fake: 'variables' };
+  const workItemA = { id: 'gid://gitlab/WorkItem/1', title: 'A' };
+  const workItemB = { id: 'gid://gitlab/WorkItem/2', title: 'B' };
+  const workItemC = { id: 'gid://gitlab/WorkItem/3', title: 'C' };
+
+  const buildRestData = (nodes) => ({
+    restWorkItems: { nodes },
+  });
+
+  const buildGraphqlData = (nodes) => ({
+    namespace: { workItems: { nodes } },
+  });
+
+  const buildCountData = (count) => ({
+    namespace: {
+      workItems: {
+        ...(typeof count === 'number' ? { count } : {}),
+      },
     },
-    getStore: () => store,
+  });
+
+  // Minimal cache stub that just holds a single "row" of data and lets the
+  // helpers exercise both read and updateQuery flows.
+  const createCache = (initialData) => {
+    let stored = initialData;
+    return {
+      readQuery: jest.fn(() => stored),
+      updateQuery: jest.fn((_options, updater) => {
+        const result = updater(stored);
+        if (result !== undefined) {
+          stored = result;
+        }
+      }),
+      getStored: () => stored,
+    };
   };
-};
 
-const nodesOf = (cache) => cache.getStore().namespace.workItems.nodes;
+  // The list helpers read/write different cache paths depending on the query in
+  // use: `restWorkItems` when the REST @client field backs the board, or
+  // `namespace.workItems` for the GraphQL query. Callers signal which path via
+  // `useRestApi`, so we exercise both here.
+  describe.each([
+    {
+      label: 'when useRestApi is true (top-level restWorkItems path)',
+      useRestApi: true,
+      buildData: buildRestData,
+      getConnection: (data) => data?.restWorkItems,
+    },
+    {
+      label: 'when useRestApi is false (nested namespace.workItems path)',
+      useRestApi: false,
+      buildData: buildGraphqlData,
+      getConnection: (data) => data?.namespace?.workItems,
+    },
+  ])('$label', ({ useRestApi, buildData, getConnection }) => {
+    describe('readWorkItemFromColumn', () => {
+      it('returns a deep clone of the matching node', () => {
+        const cache = createCache(buildData([workItemA, workItemB]));
 
-describe('work item board cache updates', () => {
-  const query = {};
-  const variables = {};
+        const result = readWorkItemFromColumn({
+          cache,
+          query,
+          variables,
+          workItemId: workItemA.id,
+          useRestApi,
+        });
 
-  const toDoStatus = {
-    __typename: 'WorkItemStatusCustom',
-    id: 'gid://gitlab/Status/1',
-    name: 'To do',
-    iconName: 'status-waiting',
-    color: '#737278',
-    category: 'TO_DO',
-  };
-
-  const buildCacheWith = (nodes) => createFakeCache(buildBoardWorkItemsResponse(nodes).data);
-
-  describe('removeWorkItemFromColumn', () => {
-    it('removes the matching node', () => {
-      const cache = buildCacheWith([buildWorkItemNode(1), buildWorkItemNode(2)]);
-
-      removeWorkItemFromColumn({
-        cache,
-        query,
-        variables,
-        workItemId: 'gid://gitlab/WorkItem/1',
+        expect(result).toEqual(workItemA);
+        expect(result).not.toBe(workItemA);
       });
 
-      expect(nodesOf(cache).map((node) => node.id)).toEqual(['gid://gitlab/WorkItem/2']);
+      it('returns null when the item is not present', () => {
+        const cache = createCache(buildData([workItemA]));
+
+        const result = readWorkItemFromColumn({
+          cache,
+          query,
+          variables,
+          workItemId: workItemB.id,
+          useRestApi,
+        });
+
+        expect(result).toBeNull();
+      });
+
+      it('returns null when the connection is missing', () => {
+        const cache = createCache({});
+
+        const result = readWorkItemFromColumn({
+          cache,
+          query,
+          variables,
+          workItemId: workItemA.id,
+          useRestApi,
+        });
+
+        expect(result).toBeNull();
+      });
     });
 
-    it('does nothing when the cache entry is missing', () => {
-      const cache = createFakeCache(undefined);
+    describe('readWorkItemsFromColumn', () => {
+      it('returns the connection nodes', () => {
+        const cache = createCache(buildData([workItemA, workItemB]));
 
-      expect(() =>
+        const result = readWorkItemsFromColumn({ cache, query, variables, useRestApi });
+
+        expect(result).toEqual([workItemA, workItemB]);
+      });
+
+      it('returns an empty array when the connection is missing', () => {
+        const cache = createCache({});
+
+        const result = readWorkItemsFromColumn({ cache, query, variables, useRestApi });
+
+        expect(result).toEqual([]);
+      });
+    });
+
+    describe('removeWorkItemFromColumn', () => {
+      it('removes the matching node from the connection', () => {
+        const cache = createCache(buildData([workItemA, workItemB]));
+
         removeWorkItemFromColumn({
           cache,
           query,
           variables,
-          workItemId: 'gid://gitlab/WorkItem/1',
-        }),
-      ).not.toThrow();
-    });
-  });
+          workItemId: workItemA.id,
+          useRestApi,
+        });
 
-  describe('addWorkItemToColumn', () => {
-    it('inserts the node at the given index', () => {
-      const cache = buildCacheWith([buildWorkItemNode(1), buildWorkItemNode(2)]);
-
-      addWorkItemToColumn({
-        cache,
-        query,
-        variables,
-        workItem: buildWorkItemNode(3),
-        index: 1,
+        expect(getConnection(cache.getStored()).nodes).toEqual([workItemB]);
       });
 
-      expect(nodesOf(cache).map((node) => node.id)).toEqual([
-        'gid://gitlab/WorkItem/1',
-        'gid://gitlab/WorkItem/3',
-        'gid://gitlab/WorkItem/2',
-      ]);
+      it('is a no-op when the connection is missing', () => {
+        const cache = createCache({});
+
+        removeWorkItemFromColumn({
+          cache,
+          query,
+          variables,
+          workItemId: workItemA.id,
+          useRestApi,
+        });
+
+        expect(cache.getStored()).toEqual({});
+      });
     });
 
-    it('runs patchCard on the inserted node so it matches the target column', () => {
-      const cache = buildCacheWith([]);
-      const movedNode = buildWorkItemNode(3, {
-        widgets: [buildStatusWidget({ ...toDoStatus })],
-      });
-      const patchCard = (node) => {
-        const widget = node.widgets.find((w) => w.type === 'STATUS');
-        widget.status = { ...widget.status, name: 'In progress' };
-      };
+    describe('addWorkItemToColumn', () => {
+      it('inserts the work item at the given index', () => {
+        const cache = createCache(buildData([workItemA, workItemC]));
 
-      addWorkItemToColumn({
-        cache,
-        query,
-        variables,
-        workItem: movedNode,
-        index: 0,
-        patchCard,
-      });
-
-      const statusWidget = nodesOf(cache)[0].widgets.find((w) => w.type === 'STATUS');
-      expect(statusWidget.status.name).toBe('In progress');
-    });
-
-    it('does not insert a duplicate when the node is already present', () => {
-      const cache = buildCacheWith([buildWorkItemNode(1)]);
-
-      addWorkItemToColumn({
-        cache,
-        query,
-        variables,
-        workItem: buildWorkItemNode(1),
-        index: 0,
-      });
-
-      expect(nodesOf(cache)).toHaveLength(1);
-    });
-
-    it('does nothing when the cache entry is missing', () => {
-      const cache = createFakeCache(undefined);
-
-      expect(() =>
         addWorkItemToColumn({
           cache,
           query,
           variables,
-          workItem: buildWorkItemNode(1),
-          index: 0,
-        }),
-      ).not.toThrow();
-    });
-  });
+          workItem: workItemB,
+          index: 1,
+          useRestApi,
+        });
 
-  describe('adjustWorkItemCountInColumn', () => {
-    const countOf = (cache) => cache.getStore().namespace.workItems.count;
-
-    it('applies the delta to the cached count', () => {
-      const cache = createFakeCache(buildBoardWorkItemsCountResponse(5).data);
-
-      adjustWorkItemCountInColumn({ cache, query, variables, delta: -1 });
-
-      expect(countOf(cache)).toBe(4);
-    });
-
-    it('does not drop below zero', () => {
-      const cache = createFakeCache(buildBoardWorkItemsCountResponse(0).data);
-
-      adjustWorkItemCountInColumn({ cache, query, variables, delta: -1 });
-
-      expect(countOf(cache)).toBe(0);
-    });
-
-    it('does nothing when the cache entry is missing', () => {
-      const cache = createFakeCache(undefined);
-
-      expect(() =>
-        adjustWorkItemCountInColumn({ cache, query, variables, delta: 1 }),
-      ).not.toThrow();
-    });
-  });
-
-  describe('readWorkItemsFromColumn', () => {
-    it('returns the column nodes in order', () => {
-      const cache = buildCacheWith([buildWorkItemNode(1), buildWorkItemNode(2)]);
-
-      expect(readWorkItemsFromColumn({ cache, query, variables }).map((node) => node.id)).toEqual([
-        'gid://gitlab/WorkItem/1',
-        'gid://gitlab/WorkItem/2',
-      ]);
-    });
-
-    it('returns an empty array when the cache entry is missing', () => {
-      expect(
-        readWorkItemsFromColumn({ cache: createFakeCache(undefined), query, variables }),
-      ).toEqual([]);
-    });
-  });
-
-  describe('readWorkItemFromColumn', () => {
-    it('returns a detached clone of the node', () => {
-      const node = buildWorkItemNode(1);
-      const cache = buildCacheWith([node]);
-
-      const result = readWorkItemFromColumn({
-        cache,
-        query,
-        variables,
-        workItemId: 'gid://gitlab/WorkItem/1',
+        expect(getConnection(cache.getStored()).nodes).toEqual([workItemA, workItemB, workItemC]);
       });
 
-      expect(result).toEqual(node);
-      expect(result).not.toBe(node);
-    });
+      it('does not insert duplicates', () => {
+        const cache = createCache(buildData([workItemA, workItemB]));
 
-    it('returns null when the node or cache entry is missing', () => {
-      expect(
-        readWorkItemFromColumn({
-          cache: createFakeCache(undefined),
+        addWorkItemToColumn({
+          cache,
           query,
           variables,
-          workItemId: 'gid://gitlab/WorkItem/1',
-        }),
-      ).toBe(null);
+          workItem: workItemA,
+          index: 0,
+          useRestApi,
+        });
+
+        expect(getConnection(cache.getStored()).nodes).toEqual([workItemA, workItemB]);
+      });
+
+      it('runs patchCard on the cloned inserted node', () => {
+        const cache = createCache(buildData([workItemA]));
+        const patchCard = jest.fn((node) => {
+          // eslint-disable-next-line no-param-reassign
+          node.title = 'patched';
+        });
+
+        addWorkItemToColumn({
+          cache,
+          query,
+          variables,
+          workItem: workItemB,
+          index: 1,
+          patchCard,
+          useRestApi,
+        });
+
+        expect(patchCard).toHaveBeenCalledTimes(1);
+        expect(getConnection(cache.getStored()).nodes[1]).toEqual({
+          ...workItemB,
+          title: 'patched',
+        });
+        // The original object is not mutated.
+        expect(workItemB.title).toBe('B');
+      });
+
+      it('is a no-op when the connection is missing', () => {
+        const cache = createCache({});
+
+        addWorkItemToColumn({
+          cache,
+          query,
+          variables,
+          workItem: workItemA,
+          index: 0,
+          useRestApi,
+        });
+
+        expect(cache.getStored()).toEqual({});
+      });
+    });
+  });
+
+  // The count-only query is a regular GraphQL query, so its cache entry always
+  // lives at namespace.workItems.count regardless of the REST API flag.
+  describe('adjustWorkItemCountInColumn', () => {
+    it('increments the count by delta', () => {
+      const cache = createCache(buildCountData(5));
+
+      adjustWorkItemCountInColumn({ cache, query, variables, delta: 2 });
+
+      expect(cache.getStored().namespace.workItems.count).toBe(7);
+    });
+
+    it('clamps the count to zero when delta would drop it below zero', () => {
+      const cache = createCache(buildCountData(1));
+
+      adjustWorkItemCountInColumn({ cache, query, variables, delta: -5 });
+
+      expect(cache.getStored().namespace.workItems.count).toBe(0);
+    });
+
+    it('is a no-op when count is not a number', () => {
+      const cache = createCache(buildCountData());
+
+      adjustWorkItemCountInColumn({ cache, query, variables, delta: 1 });
+
+      expect(cache.getStored().namespace.workItems.count).toBeUndefined();
     });
   });
 });

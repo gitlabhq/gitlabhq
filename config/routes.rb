@@ -53,7 +53,10 @@ InitializerConnections.warn_if_database_connection do
       end
 
       use_doorkeeper_openid_connect do
-        controllers discovery: 'jwks'
+        # Userinfo is served by a GitLab-owned controller so IAM-issued
+        # JWTs are accepted alongside Doorkeeper tokens
+        controllers discovery: 'jwks',
+          userinfo: 'oauth/userinfo'
       end
 
       # MCP OAuth Discovery Support - Add path insertion endpoints
@@ -72,7 +75,7 @@ InitializerConnections.warn_if_database_connection do
       end
 
       # Add OPTIONS method for CORS preflight requests
-      match '/oauth/userinfo' => 'doorkeeper/openid_connect/userinfo#show', via: :options
+      match '/oauth/userinfo' => 'oauth/userinfo#show', via: :options
       match '/oauth/discovery/keys' => 'jwks#keys', via: :options
       match '/.well-known/openid-configuration' => 'jwks#provider', via: :options
       match '/.well-known/oauth-protected-resource' => 'oauth_protected_resource_metadata#show', via: :options

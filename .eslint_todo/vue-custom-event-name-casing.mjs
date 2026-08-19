@@ -38,7 +38,6 @@ export default {
     'app/assets/javascripts/sidebar/components/assignees/assignees_realtime.vue',
     'app/assets/javascripts/sidebar/components/confidential/sidebar_confidentiality_widget.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_vue/labels_select_root.vue',
-    'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue',
     'app/assets/javascripts/sidebar/components/subscriptions/subscriptions.vue',
     'app/assets/javascripts/sidebar/components/time_tracking/sidebar_time_tracking.vue',
     'app/assets/javascripts/sidebar/components/todo_toggle/todo.vue',

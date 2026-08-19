@@ -21,6 +21,7 @@ import {
 import {
   mockStatus,
   buildWorkItemNode,
+  buildBoardRestWorkItemsResponse,
   buildBoardWorkItemsResponse,
   buildBoardWorkItemsCountResponse,
 } from '../mock_data';
@@ -29,12 +30,26 @@ jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 
-describe('ColumnGroup', () => {
+describe.each([
+  {
+    label: 'REST query',
+    query: getWorkItemsRestQuery,
+    buildResponse: buildBoardRestWorkItemsResponse,
+    glFeatures: { workItemRestApiFrontendUsers: true },
+    useRestApi: true,
+  },
+  {
+    label: 'GraphQL query',
+    query: getBoardWorkItemsQuery,
+    buildResponse: buildBoardWorkItemsResponse,
+    glFeatures: { workItemRestApiFrontendUsers: false },
+    useRestApi: false,
+  },
+])('ColumnGroup with $label', ({ query, buildResponse, glFeatures, useRestApi }) => {
   let wrapper;
   let apolloProvider;
 
-  const boardQueryHandler = jest.fn();
-  const restQueryHandler = jest.fn();
+  const queryHandler = jest.fn();
   const countQueryHandler = jest.fn();
 
   const findColumnHeader = () => wrapper.findComponent(ColumnHeader);
@@ -59,10 +74,9 @@ describe('ColumnGroup', () => {
     headerDecoration: (value) => ({ type: 'icon', name: value.iconName, color: value.color }),
   };
 
-  const createComponent = ({ props = {}, glFeatures = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     apolloProvider = createMockApollo([
-      [getBoardWorkItemsQuery, boardQueryHandler],
-      [getWorkItemsRestQuery, restQueryHandler],
+      [query, queryHandler],
       [getWorkItemsCountOnlyQuery, countQueryHandler],
     ]);
 
@@ -82,8 +96,7 @@ describe('ColumnGroup', () => {
   };
 
   beforeEach(() => {
-    boardQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(1)]));
-    restQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(1)]));
+    queryHandler.mockResolvedValue(buildResponse([buildWorkItemNode(1)]));
     countQueryHandler.mockResolvedValue(buildBoardWorkItemsCountResponse(1));
   });
 
@@ -103,7 +116,7 @@ describe('ColumnGroup', () => {
 
     it('passes the total count from the count query, not the number of loaded items', async () => {
       // A single page is loaded, but the column actually holds 57 matching items.
-      boardQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(1)]));
+      queryHandler.mockResolvedValue(buildResponse([buildWorkItemNode(1)]));
       countQueryHandler.mockResolvedValue(buildBoardWorkItemsCountResponse(57));
       createComponent();
       await waitForPromises();
@@ -206,7 +219,7 @@ describe('ColumnGroup', () => {
       createComponent({ props: { collapsed: true } });
       await waitForPromises();
 
-      expect(boardQueryHandler).not.toHaveBeenCalled();
+      expect(queryHandler).not.toHaveBeenCalled();
     });
 
     it('still fetches the count query when collapsed', async () => {
@@ -221,12 +234,12 @@ describe('ColumnGroup', () => {
       createComponent({ props: { collapsed: true } });
       await waitForPromises();
 
-      expect(boardQueryHandler).not.toHaveBeenCalled();
+      expect(queryHandler).not.toHaveBeenCalled();
 
       await wrapper.setProps({ collapsed: false });
       await waitForPromises();
 
-      expect(boardQueryHandler).toHaveBeenCalled();
+      expect(queryHandler).toHaveBeenCalled();
       expect(findWorkItemCards()).toHaveLength(1);
     });
   });
@@ -243,7 +256,7 @@ describe('ColumnGroup', () => {
 
   describe('when no work items are returned', () => {
     beforeEach(async () => {
-      boardQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([]));
+      queryHandler.mockResolvedValue(buildResponse([]));
       createComponent();
       await waitForPromises();
     });
@@ -269,7 +282,7 @@ describe('ColumnGroup', () => {
     const nodes = [buildWorkItemNode(1), buildWorkItemNode(2), buildWorkItemNode(3)];
 
     beforeEach(async () => {
-      boardQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse(nodes));
+      queryHandler.mockResolvedValue(buildResponse(nodes));
       createComponent();
       await waitForPromises();
     });
@@ -279,8 +292,8 @@ describe('ColumnGroup', () => {
     });
 
     it('passes each work item to its card', () => {
-      const renderedItems = findWorkItemCards().wrappers.map((card) => card.props('item'));
-      expect(renderedItems).toEqual(nodes);
+      const renderedIds = findWorkItemCards().wrappers.map((card) => card.props('item').id);
+      expect(renderedIds).toEqual(nodes.map((node) => node.id));
     });
 
     it('does not render the empty state or skeleton ghost cards', () => {
@@ -293,13 +306,17 @@ describe('ColumnGroup', () => {
     const nodes = [buildWorkItemNode(1), buildWorkItemNode(2)];
 
     beforeEach(async () => {
-      boardQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse(nodes));
+      queryHandler.mockResolvedValue(buildResponse(nodes));
       createComponent();
       await waitForPromises();
     });
 
     it('binds the work items to a shared draggable group keyed by id', () => {
-      expect(findDraggable().props('value')).toEqual(nodes);
+      expect(
+        findDraggable()
+          .props('value')
+          .map((node) => node.id),
+      ).toEqual(nodes.map((node) => node.id));
       expect(findDraggable().props('itemKey')).toBe('id');
       expect(findDraggable().vm.$attrs.group).toEqual({
         name: 'work-item-board',
@@ -397,7 +414,7 @@ describe('ColumnGroup', () => {
       createComponent();
       await waitForPromises();
 
-      expect(boardQueryHandler).toHaveBeenCalledWith(
+      expect(queryHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           firstPageSize: 20,
           fullPath: 'full/path',
@@ -415,7 +432,7 @@ describe('ColumnGroup', () => {
       createComponent({ props: { strategy } });
       await waitForPromises();
 
-      expect(boardQueryHandler).toHaveBeenCalledWith(
+      expect(queryHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           customGroup: { name: 'Custom' },
         }),
@@ -430,7 +447,7 @@ describe('ColumnGroup', () => {
       });
       await waitForPromises();
 
-      expect(boardQueryHandler).toHaveBeenCalledWith(
+      expect(queryHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           status: { name: mockStatus.name },
         }),
@@ -438,29 +455,11 @@ describe('ColumnGroup', () => {
     });
   });
 
-  describe('query selection by feature flags', () => {
-    it('uses getWorkItemsRestQuery when workItemRestApiFrontendUsers is enabled', async () => {
-      createComponent({ glFeatures: { workItemRestApiFrontendUsers: true } });
-      await waitForPromises();
-
-      expect(restQueryHandler).toHaveBeenCalled();
-      expect(boardQueryHandler).not.toHaveBeenCalled();
-    });
-
-    it('uses getBoardWorkItemsQuery when workItemRestApiFrontendUsers is disabled', async () => {
-      createComponent({ glFeatures: { workItemRestApiFrontendUsers: false } });
-      await waitForPromises();
-
-      expect(boardQueryHandler).toHaveBeenCalled();
-      expect(restQueryHandler).not.toHaveBeenCalled();
-    });
-  });
-
   describe('when the work items query errors', () => {
     const queryError = new Error('GraphQL failure');
 
     beforeEach(async () => {
-      boardQueryHandler.mockRejectedValue(queryError);
+      queryHandler.mockRejectedValue(queryError);
       createComponent();
       await waitForPromises();
     });
@@ -482,7 +481,7 @@ describe('ColumnGroup', () => {
     });
 
     it('clears the error when the query subsequently succeeds', async () => {
-      boardQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(1)]));
+      queryHandler.mockResolvedValue(buildResponse([buildWorkItemNode(1)]));
       wrapper.vm.$apollo.queries.workItemsConnection.refetch();
       await waitForPromises();
 
@@ -493,9 +492,7 @@ describe('ColumnGroup', () => {
 
   describe('pagination', () => {
     it('does not render the load more button when there is no next page', async () => {
-      boardQueryHandler.mockResolvedValue(
-        buildBoardWorkItemsResponse([buildWorkItemNode(1)], { hasNextPage: false }),
-      );
+      queryHandler.mockResolvedValue(buildResponse([buildWorkItemNode(1)], { hasNextPage: false }));
       createComponent();
       await waitForPromises();
 
@@ -503,8 +500,8 @@ describe('ColumnGroup', () => {
     });
 
     it('renders the load more button when there is a next page', async () => {
-      boardQueryHandler.mockResolvedValue(
-        buildBoardWorkItemsResponse([buildWorkItemNode(1)], {
+      queryHandler.mockResolvedValue(
+        buildResponse([buildWorkItemNode(1)], {
           hasNextPage: true,
           endCursor: 'CURSOR1',
         }),
@@ -516,14 +513,14 @@ describe('ColumnGroup', () => {
     });
 
     it('fetches the next page with the end cursor and subsequent page size', async () => {
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(1)], {
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(1)], {
           hasNextPage: true,
           endCursor: 'CURSOR1',
         }),
       );
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(2)], { hasNextPage: false }),
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(2)], { hasNextPage: false }),
       );
       createComponent();
       await waitForPromises();
@@ -531,7 +528,7 @@ describe('ColumnGroup', () => {
       findLoadMore().vm.$emit('fetch-next-page');
       await waitForPromises();
 
-      expect(boardQueryHandler).toHaveBeenLastCalledWith(
+      expect(queryHandler).toHaveBeenLastCalledWith(
         expect.objectContaining({
           afterCursor: 'CURSOR1',
           firstPageSize: 100,
@@ -540,14 +537,14 @@ describe('ColumnGroup', () => {
     });
 
     it('appends the next page of work items to the existing list', async () => {
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(1), buildWorkItemNode(2)], {
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(1), buildWorkItemNode(2)], {
           hasNextPage: true,
           endCursor: 'CURSOR1',
         }),
       );
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(3), buildWorkItemNode(4)], {
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(3), buildWorkItemNode(4)], {
           hasNextPage: false,
         }),
       );
@@ -562,14 +559,14 @@ describe('ColumnGroup', () => {
     });
 
     it('shows skeleton ghost cards after existing items and hides the load more button while paginating', async () => {
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(1)], {
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(1)], {
           hasNextPage: true,
           endCursor: 'CURSOR1',
         }),
       );
       let resolveSecondPage;
-      boardQueryHandler.mockReturnValueOnce(
+      queryHandler.mockReturnValueOnce(
         new Promise((resolve) => {
           resolveSecondPage = resolve;
         }),
@@ -584,9 +581,7 @@ describe('ColumnGroup', () => {
       expect(findWorkItemCards()).toHaveLength(1);
       expect(findLoadMore().exists()).toBe(false);
 
-      resolveSecondPage(
-        buildBoardWorkItemsResponse([buildWorkItemNode(2)], { hasNextPage: false }),
-      );
+      resolveSecondPage(buildResponse([buildWorkItemNode(2)], { hasNextPage: false }));
       await waitForPromises();
 
       expect(findSkeletons()).toHaveLength(0);
@@ -596,13 +591,13 @@ describe('ColumnGroup', () => {
       const queryError = new Error('GraphQL failure');
 
       beforeEach(async () => {
-        boardQueryHandler.mockResolvedValueOnce(
-          buildBoardWorkItemsResponse([buildWorkItemNode(1)], {
+        queryHandler.mockResolvedValueOnce(
+          buildResponse([buildWorkItemNode(1)], {
             hasNextPage: true,
             endCursor: 'CURSOR1',
           }),
         );
-        boardQueryHandler.mockRejectedValueOnce(queryError);
+        queryHandler.mockRejectedValueOnce(queryError);
         createComponent();
         await waitForPromises();
 
@@ -640,20 +635,21 @@ describe('ColumnGroup', () => {
       });
     const cachedNodeIds = () => {
       const { cache } = apolloProvider.defaultClient;
-      const data = cache.readQuery({ query: getBoardWorkItemsQuery, variables: columnVariables() });
-      return data.namespace.workItems.nodes.map((node) => node.id);
+      const data = cache.readQuery({ query, variables: columnVariables() });
+      const connection = useRestApi ? data.restWorkItems : data.namespace.workItems;
+      return connection.nodes.map((node) => node.id);
     };
 
     // nodes 1 and 2 in the first page, nodes 3 and 4 in the second page.
     beforeEach(async () => {
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(1), buildWorkItemNode(2)], {
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(1), buildWorkItemNode(2)], {
           hasNextPage: true,
           endCursor: 'CURSOR1',
         }),
       );
-      boardQueryHandler.mockResolvedValueOnce(
-        buildBoardWorkItemsResponse([buildWorkItemNode(3), buildWorkItemNode(4)], {
+      queryHandler.mockResolvedValueOnce(
+        buildResponse([buildWorkItemNode(3), buildWorkItemNode(4)], {
           hasNextPage: false,
         }),
       );
@@ -684,9 +680,10 @@ describe('ColumnGroup', () => {
     it('removes a card on a later page', () => {
       removeWorkItemFromColumn({
         cache: apolloProvider.defaultClient.cache,
-        query: getBoardWorkItemsQuery,
+        query,
         variables: columnVariables(),
         workItemId: 'gid://gitlab/WorkItem/3',
+        useRestApi,
       });
 
       expect(cachedNodeIds()).toEqual([
@@ -699,10 +696,11 @@ describe('ColumnGroup', () => {
     it('inserts a card past the first page', () => {
       addWorkItemToColumn({
         cache: apolloProvider.defaultClient.cache,
-        query: getBoardWorkItemsQuery,
+        query,
         variables: columnVariables(),
         workItem: buildWorkItemNode(5),
         index: 4,
+        useRestApi,
       });
 
       expect(cachedNodeIds()).toEqual([

@@ -110,12 +110,12 @@ describe('DropdownContentsCreateView', () => {
     expect(findLoadingIcon().exists()).toBe(false);
   });
 
-  it('emits a `hideCreateView` event on Cancel button click', () => {
+  it('emits a `hide-create-view` event on Cancel button click', () => {
     createComponent();
     const event = { stopPropagation: jest.fn() };
     findCancelButton().vm.$emit('click', event);
 
-    expect(wrapper.emitted('hideCreateView')).toHaveLength(1);
+    expect(wrapper.emitted('hide-create-view')).toHaveLength(1);
     expect(event.stopPropagation).toHaveBeenCalled();
   });
 

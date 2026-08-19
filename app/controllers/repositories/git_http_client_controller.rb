@@ -115,7 +115,7 @@ module Repositories
     end
 
     def repository_path
-      @repository_path ||= params[:repository_path]
+      @repository_path ||= params.permit(:repository_path)[:repository_path]
     end
 
     def parse_repo_path

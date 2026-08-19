@@ -50815,10 +50815,10 @@ definitions:
         description: Duo availability. One of `default_on`, `default_off`, `never_on`
           or `always_on`
         enum:
+        - always_on
         - default_on
         - default_off
         - never_on
-        - always_on
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group
@@ -51134,10 +51134,10 @@ definitions:
         description: Duo availability. One of `default_on`, `default_off`, `never_on`
           or `always_on`
         enum:
+        - always_on
         - default_on
         - default_off
         - never_on
-        - always_on
       duo_remote_flows_availability:
         type: boolean
         description: Enable GitLab Duo remote flows for this group

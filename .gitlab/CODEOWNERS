@@ -766,16 +766,20 @@ Dangerfile
 /app/assets/javascripts/tracking/
 /scripts/internal_events/
 
-^[Growth Experiments] @gitlab-org/growth/experiment-devs
+[Growth Experiments] @gitlab-org/growth/experiment-devs
 /app/experiments/
+/ee/app/experiments/
 /spec/experiments/
+/ee/spec/experiments/
+/ee/app/services/experiments/
+/ee/spec/services/experiments/
 /config/initializers/gitlab_experiment.rb
-/config/feature_flags/experiment/
-/ee/config/feature_flags/experiment/
 /ee/lib/api/experiments.rb
 /ee/spec/requests/api/experiments_spec.rb
-/ee/lib/ee/api/entities/experiment.rb
-/ee/spec/lib/ee/api/entities/experiment_spec.rb
+/ee/lib/api/entities/experiment.rb
+/ee/spec/lib/api/entities/experiment_spec.rb
+/ee/lib/api/entities/experiments/
+/ee/spec/lib/api/entities/experiments/
 
 ^[Growth] @gitlab-org/growth/engineers
 /app/models/onboarding/

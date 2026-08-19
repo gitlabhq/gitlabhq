@@ -15,7 +15,7 @@ module BlobViewer
         h[:project] = project
         h[:requested_path] = blob.path
         h[:issuable_reference_expansion_enabled] = true
-        h[:cache_key] = ['blob', blob.id, 'commit', blob.commit_id]
+        h[:cache_key] = ['blob', blob.id, 'commit', blob.commit_id, 'path', blob.path]
         h[:commit_id] = blob.commit_id
         h[:use_filename_in_anchor] = true if blob.container.is_a?(Snippet)
       end

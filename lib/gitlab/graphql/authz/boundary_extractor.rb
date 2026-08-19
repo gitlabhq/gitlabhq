@@ -16,6 +16,12 @@ module Gitlab
           @arguments = arguments
         end
 
+        def extract_groups
+          directives
+            .group_by { |directive| directive.arguments[:requirement_group] }
+            .transform_values { |grouped| self.class.new(grouped, object: @object, arguments: @arguments).extract }
+        end
+
         # Concrete (project/group) boundaries take precedence over
         # standalone (:user/:instance) boundaries.
         def extract

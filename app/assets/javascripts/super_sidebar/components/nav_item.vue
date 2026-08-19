@@ -219,6 +219,10 @@ export default {
     togglePointerEvents() {
       this.canClickPinButton = this.isMouseIn;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- invoked externally via this.$refs.currentPageItem in sidebar_menu.vue
+    focus() {
+      this.$refs.navLink?.$el?.focus();
+    },
   },
 };
 </script>
@@ -232,6 +236,7 @@ export default {
     @mouseleave="isMouseIn = false"
   >
     <gl-nav-item
+      ref="navLink"
       v-bind="linkProps"
       class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-mb-1"
       :class="computedLinkClasses"

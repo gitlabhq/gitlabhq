@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import { Portal } from 'portal-vue';
@@ -7,13 +7,13 @@ import { createWrapper as createRootWrapper } from '@vue/test-utils';
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { Mousetrap } from '~/lib/mousetrap';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { MODAL_ID } from '~/super_sidebar/components/feature_library/constants';
@@ -833,6 +833,177 @@ describe('Sidebar Menu', () => {
         const spy = jest.spyOn(wrapper.vm, 'createPin').mockImplementation(() => {});
         wrapper.vm.onModalPinToggle('some_item', true);
         expect(spy).toHaveBeenCalledWith('some_item', 'some_item');
+      });
+    });
+
+    describe('focus after unpinning', () => {
+      let axiosMock;
+
+      // Mounted in full: the focus targets are real buttons rendered by
+      // GlNavItem, which shallow stubs replace with non-focusable elements.
+      const createFocusWrapper = ({
+        items = sidebarData.current_menu_items,
+        pinnedItemIds = sidebarData.pinned_items,
+        panelType = PANELS_WITH_PINS[0],
+        provide = {},
+      } = {}) => {
+        wrapper = mountExtended(SidebarMenu, {
+          apolloProvider: createMockApollo([[superSidebarDataQuery, handler]]),
+          attachTo: document.body,
+          propsData: {
+            items,
+            isLoggedIn: sidebarData.is_logged_in,
+            pinnedItemIds,
+            panelType,
+          },
+          provide: {
+            currentPath: 'group',
+            ...provide,
+          },
+        });
+      };
+
+      const unpin = (source, id = 'some_item', title = 'Some Item') =>
+        findPinnedSection().vm.$emit('pin-remove', id, title, source);
+      const findPinnedSectionButton = () =>
+        findPinnedSection().find('[data-testid="menu-section-button"]');
+      const findCurrentPageItem = () =>
+        wrapper.findByTestId('current-page-section').findComponent(NavItem);
+
+      beforeEach(() => {
+        axiosMock = new MockAdapter(axios);
+        axiosMock.onPut().reply(HTTP_STATUS_OK, []);
+      });
+
+      afterEach(() => {
+        axiosMock.restore();
+      });
+
+      describe('when the feature library is available', () => {
+        beforeEach(() => {
+          createFocusWrapper();
+        });
+
+        it('moves focus to the "More features" button', async () => {
+          unpin({ fromPinnedSection: true });
+          await nextTick();
+
+          expect(document.activeElement).toBe(findTrigger().element);
+        });
+
+        it('leaves focus alone when unpinning outside the pinned section', async () => {
+          unpin();
+          await nextTick();
+
+          expect(document.activeElement).toBe(document.body);
+        });
+      });
+
+      describe('when the feature library is not rendered', () => {
+        const items = [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [{ id: 'some_item', title: 'Some Item', link: '/some' }],
+          },
+        ];
+
+        // The organization panel supports pins but excludes the feature library,
+        // so unpinning falls back to the pinned section toggle.
+        beforeEach(() => {
+          createFocusWrapper({ items, pinnedItemIds: ['some_item'], panelType: 'organization' });
+        });
+
+        it('does not render the feature library trigger', () => {
+          expect(findTrigger().exists()).toBe(false);
+        });
+
+        it('moves focus to the pinned section toggle', async () => {
+          unpin({ fromPinnedSection: true });
+          await nextTick();
+
+          expect(document.activeElement).toBe(findPinnedSectionButton().element);
+        });
+
+        it('leaves focus alone when unpinning outside the pinned section', async () => {
+          unpin();
+          await nextTick();
+
+          expect(document.activeElement).toBe(document.body);
+        });
+      });
+
+      describe('when unpinning the active page', () => {
+        const activeItem = {
+          id: 'active_page',
+          title: 'Active subitem',
+          link: '/active',
+          is_active: true,
+        };
+        const items = [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [{ id: 'some_item', title: 'Some Item', link: '/some' }, activeItem],
+          },
+        ];
+
+        beforeEach(() => {
+          createFocusWrapper({
+            items,
+            pinnedItemIds: ['some_item', 'active_page'],
+            provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          });
+        });
+
+        it('moves focus to its current-page item, not "More features"', async () => {
+          unpin({ fromPinnedSection: true }, 'active_page', 'Active subitem');
+          await nextTick();
+
+          expect(document.activeElement).toBe(
+            findCurrentPageItem().find('[data-testid="nav-item-link"]').element,
+          );
+        });
+
+        it('moves focus to "More features" when unpinning a non-active page', async () => {
+          unpin({ fromPinnedSection: true }, 'some_item', 'Some Item');
+          await nextTick();
+
+          expect(document.activeElement).toBe(findTrigger().element);
+        });
+      });
+
+      describe('when a temporary nav item is already showing', () => {
+        const activeItem = {
+          id: 'active_page',
+          title: 'Active subitem',
+          link: '/active',
+          is_active: true,
+        };
+        const items = [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [{ id: 'some_item', title: 'Some Item', link: '/some' }, activeItem],
+          },
+        ];
+
+        beforeEach(() => {
+          createFocusWrapper({
+            items,
+            pinnedItemIds: ['some_item'],
+            provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          });
+        });
+
+        it('moves focus to "More features" when unpinning a different page', async () => {
+          expect(wrapper.findByTestId('current-page-section').exists()).toBe(true);
+
+          unpin({ fromPinnedSection: true }, 'some_item', 'Some Item');
+          await nextTick();
+
+          expect(document.activeElement).toBe(findTrigger().element);
+        });
       });
     });
 

@@ -346,7 +346,7 @@ export const oauthRegisterPath = /*#__PURE__*/ (...args) => {
  * - href: `/oauth/userinfo(.:format)`
  * - Path helper: `oauth_userinfo_path`
  * - URL helper: `oauth_userinfo_url`
- * - controller#action: `doorkeeper/openid_connect/userinfo#show`
+ * - controller#action: `oauth/userinfo#show`
  *
  * @param {object | undefined} options
  * @returns {string} route path

@@ -68,11 +68,11 @@ module Repositories
     end
 
     def download_request?
-      params[:action] == 'index'
+      action_name == 'index'
     end
 
     def upload_request?
-      %w[create unlock verify].include?(params[:action])
+      %w[create unlock verify].include?(action_name)
     end
 
     def lfs_params

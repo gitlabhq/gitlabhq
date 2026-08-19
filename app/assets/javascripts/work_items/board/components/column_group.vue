@@ -7,6 +7,7 @@ import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import WorkItemChildrenLoadMore from '~/work_items/components/shared/work_item_children_load_more.vue';
 import { DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT } from '~/work_items/constants';
+import { getWorkItemsConnection } from '~/work_items/utils';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 
 import { boardColumnQuery, boardColumnQueryVariables, boardColumnCountVariables } from '../utils';
@@ -132,6 +133,9 @@ export default {
     };
   },
   computed: {
+    useRestApi() {
+      return this.glFeatures.workItemRestApiFrontendUsers;
+    },
     isLoading() {
       // Initial load only; once items exist the load-more component owns the
       // in-progress indicator, so the column spinner never replaces the list.
@@ -193,13 +197,16 @@ export default {
           return this.collapsed;
         },
         update(data) {
-          return data?.namespace?.workItems ?? { nodes: [], pageInfo: {} };
+          return getWorkItemsConnection(data, this.useRestApi) ?? { nodes: [], pageInfo: {} };
         },
         result({ data, error }) {
           if (!error) {
             this.error = null;
           }
-          this.$emit('check-board-params', data?.namespace?.workItems?.nodes ?? []);
+          this.$emit(
+            'check-board-params',
+            getWorkItemsConnection(data, this.useRestApi)?.nodes ?? [],
+          );
         },
         variables() {
           return this.queryVariables;
@@ -253,12 +260,22 @@ export default {
             firstPageSize: DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT,
             afterCursor: this.pageInfo.endCursor,
           },
-          updateQuery(previousResult, { fetchMoreResult }) {
-            const previousConnection = previousResult?.namespace?.workItems;
-            const newConnection = fetchMoreResult?.namespace?.workItems;
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            const previousConnection = getWorkItemsConnection(previousResult, this.useRestApi);
+            const newConnection = getWorkItemsConnection(fetchMoreResult, this.useRestApi);
 
             if (!newConnection) {
               return previousResult;
+            }
+
+            if (this.useRestApi) {
+              return {
+                ...fetchMoreResult,
+                restWorkItems: {
+                  ...newConnection,
+                  nodes: [...(previousConnection?.nodes ?? []), ...newConnection.nodes],
+                },
+              };
             }
 
             return {

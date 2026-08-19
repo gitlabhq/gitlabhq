@@ -7,11 +7,25 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BoardView from '~/work_items/board/board_view.vue';
 import ColumnGroup from '~/work_items/board/components/column_group.vue';
-import { groupingStrategyFor } from '~/work_items/board/grouping';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
+import * as grouping from '~/work_items/board/grouping';
+import { addWorkItemToColumn } from '~/work_items/board/graphql/cache_updates';
 import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
-import { buildNamespaceStatusesResponse, buildWorkItemTypesResponse } from './mock_data';
+import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
+import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
+import {
+  buildNamespaceStatusesResponse,
+  buildWorkItemTypesResponse,
+  buildBoardRestWorkItemsResponse,
+  buildBoardWorkItemsResponse,
+  buildWorkItemNode,
+  mockStatus,
+} from './mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/work_items/board/graphql/cache_updates');
+
+const { groupingStrategyFor } = grouping;
 
 Vue.use(VueApollo);
 
@@ -29,10 +43,18 @@ describe('BoardView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findColumnGroups = () => wrapper.findAllComponents(ColumnGroup);
 
-  const createComponent = ({ props = {}, visibleGroups = null } = {}) => {
-    const apolloProvider = createMockApollo([
+  let apolloProvider;
+
+  const createComponent = ({
+    props = {},
+    visibleGroups = null,
+    glFeatures = {},
+    handlers = [],
+  } = {}) => {
+    apolloProvider = createMockApollo([
       [groupByValuesQuery, groupByValuesHandler],
       ...(gateQuery ? [[gateQuery, gateDataHandler]] : []),
+      ...handlers,
     ]);
     apolloProvider.clients.defaultClient.writeQuery({
       query: workItemsGroupByVisibleGroupsQuery,
@@ -46,6 +68,9 @@ describe('BoardView', () => {
 
     wrapper = shallowMountExtended(BoardView, {
       apolloProvider,
+      provide: {
+        glFeatures,
+      },
       propsData: {
         rootPageFullPath: 'full/path',
         queryVariables,
@@ -83,6 +108,66 @@ describe('BoardView', () => {
 
       expect(Sentry.captureException).not.toHaveBeenCalled();
       expect(wrapper.emitted('set-error')).toBeUndefined();
+    });
+  });
+
+  describe('when a work item is created on the board', () => {
+    const createdWorkItem = buildWorkItemNode(42);
+
+    const requestCreate = async () => {
+      wrapper.findComponent(ColumnGroup).vm.$emit('create-item', mockStatus);
+      await waitForPromises();
+      wrapper.findComponent(CreateWorkItemModal).vm.$emit('work-item-created', createdWorkItem);
+      await waitForPromises();
+    };
+
+    beforeEach(() => {
+      jest.spyOn(grouping, 'groupingStrategyFor').mockReturnValue({
+        property: 'status',
+        valuesQuery: groupByValuesQuery,
+        extractValues: () => [mockStatus],
+        columnFilter: (value) => ({ status: { name: value.name } }),
+        headerDecoration: () => ({ type: 'none' }),
+        moveInput: () => ({}),
+        newItemDraft: () => ({}),
+        patchCard: () => {},
+        itemValueId: () => mockStatus.id,
+      });
+      groupByValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([mockStatus]));
+    });
+
+    it('inserts the created item using the REST query when the flag is enabled', async () => {
+      const restQueryHandler = jest
+        .fn()
+        .mockResolvedValue(buildBoardRestWorkItemsResponse([createdWorkItem]));
+      createComponent({
+        glFeatures: { workItemRestApiFrontendUsers: true },
+        handlers: [[getWorkItemsRestQuery, restQueryHandler]],
+      });
+      await waitForPromises();
+
+      await requestCreate();
+
+      expect(addWorkItemToColumn).toHaveBeenCalledWith(
+        expect.objectContaining({ query: getWorkItemsRestQuery, useRestApi: true }),
+      );
+    });
+
+    it('inserts the created item using the GraphQL query when the flag is disabled', async () => {
+      const boardQueryHandler = jest
+        .fn()
+        .mockResolvedValue(buildBoardWorkItemsResponse([createdWorkItem]));
+      createComponent({
+        glFeatures: { workItemRestApiFrontendUsers: false },
+        handlers: [[getBoardWorkItemsQuery, boardQueryHandler]],
+      });
+      await waitForPromises();
+
+      await requestCreate();
+
+      expect(addWorkItemToColumn).toHaveBeenCalledWith(
+        expect.objectContaining({ query: getBoardWorkItemsQuery, useRestApi: false }),
+      );
     });
   });
 

@@ -34,8 +34,6 @@ module Ci
         end
 
         it 'does not schedule an organization isolation status check' do
-          stub_feature_flags(isolation_status_check: true)
-
           expect(::Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
 
           expect(execute.build).to eq(pending_job)

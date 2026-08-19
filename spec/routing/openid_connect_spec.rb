@@ -19,14 +19,14 @@ RSpec.describe Doorkeeper::OpenidConnect::DiscoveryController, 'routing' do
   end
 end
 
-# oauth_userinfo GET  /oauth/userinfo(.:format) doorkeeper/openid_connect/userinfo#show
-#                POST /oauth/userinfo(.:format) doorkeeper/openid_connect/userinfo#show
-RSpec.describe Doorkeeper::OpenidConnect::UserinfoController, 'routing' do
+# oauth_userinfo GET  /oauth/userinfo(.:format) oauth/userinfo#show
+#                POST /oauth/userinfo(.:format) oauth/userinfo#show
+RSpec.describe Oauth::UserinfoController, 'routing', feature_category: :system_access do
   specify "to #show" do
-    expect(get('/oauth/userinfo')).to route_to('doorkeeper/openid_connect/userinfo#show')
+    expect(get('/oauth/userinfo')).to route_to('oauth/userinfo#show')
   end
 
   specify "to #show" do
-    expect(post('/oauth/userinfo')).to route_to('doorkeeper/openid_connect/userinfo#show')
+    expect(post('/oauth/userinfo')).to route_to('oauth/userinfo#show')
   end
 end

@@ -348,7 +348,10 @@ gem 'device_detector', feature_category: :shared # rubocop:todo Gemfile/MissingF
 # Redis
 gem 'redis', '~> 5.4.1', feature_category: :redis
 gem 'redis-client', '~> 0.25', feature_category: :redis
-gem 'redis-cluster-client', '~> 0.13', feature_category: :redis
+# Below 0.17.1 a pipelined command that hits a cluster redirection skips reply mapping, so
+# mapped_hmget returns an Array instead of a Hash.
+# https://github.com/redis-rb/redis-cluster-client/pull/547
+gem 'redis-cluster-client', '~> 0.13', '>= 0.17.1', feature_category: :redis
 gem 'redis-clustering', '~> 5.4.0', feature_category: :redis
 gem 'connection_pool', '~> 2.5.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

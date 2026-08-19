@@ -1311,16 +1311,38 @@ module API
     def authorize_granular_token_scopes!(token)
       return unless authorize_granular_token?(token)
 
-      result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-        boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
-      ).execute
-      return unless result.error?
+      granular_token_requirements.each do |boundaries, permissions|
+        result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+          boundaries: boundaries, permissions: permissions, token: token
+        ).execute
+        next unless result.error?
 
-      not_found! if result.reason == :resource_not_found
+        not_found! if result.reason == :resource_not_found
 
-      Current.add_granular_denied_permissions(result.payload[:denied_permissions])
+        Current.add_granular_denied_permissions(result.payload[:denied_permissions])
 
-      raise Gitlab::Auth::GranularPermissionsError, result.message
+        raise Gitlab::Auth::GranularPermissionsError, result.message
+      end
+    end
+
+    def granular_token_requirements
+      [[boundaries_for_endpoint, permissions_for_endpoint]] +
+        Array(authorization_settings[:additional_scopes]).map do |spec|
+          [resolve_additional_boundary(spec), Array(spec[:permissions])]
+        end
+    end
+
+    def resolve_additional_boundary(spec)
+      return build_boundary(spec[:boundary_type], spec[:boundary_param]) unless spec[:boundary].respond_to?(:call)
+
+      boundary_object = instance_exec(&spec[:boundary])
+      boundary = ::Authz::Boundary.for(boundary_object) if boundary_object
+      return unless boundary
+
+      # Mirrors GraphQL's BoundaryExtractor: a callable result whose type disagrees
+      # with the declared boundary_type resolves to no boundary, denying with 404.
+      expected_class = ::Authz::Boundary.strategy_for_type(spec[:boundary_type])
+      boundary if expected_class.nil? || boundary.instance_of?(expected_class)
     end
 
     def permissions_for_endpoint

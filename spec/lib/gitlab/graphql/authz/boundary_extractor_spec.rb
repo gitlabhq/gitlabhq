@@ -307,4 +307,36 @@ RSpec.describe Gitlab::Graphql::Authz::BoundaryExtractor, feature_category: :per
       end
     end
   end
+
+  describe '#extract_groups' do
+    let(:object) { project }
+
+    subject(:groups) { extractor.extract_groups }
+
+    context 'with an additional requirement group' do
+      let(:directives) do
+        [
+          create_directive(boundary: 'itself', boundary_type: 'project'),
+          create_directive(boundary: 'group', boundary_type: 'group', requirement_group: 'target')
+        ]
+      end
+
+      it 'keys each group separately' do
+        expect(groups).to eq({ nil => [project], 'target' => [group] })
+      end
+    end
+
+    context 'when an additional group resolves to nothing' do
+      let(:directives) do
+        [
+          create_directive(boundary: 'itself', boundary_type: 'project'),
+          create_directive(boundary: 'not_a_method', boundary_type: 'project', requirement_group: 'target')
+        ]
+      end
+
+      it 'keeps the empty group so its requirement is not dropped' do
+        expect(groups).to eq({ nil => [project], 'target' => [] })
+      end
+    end
+  end
 end

@@ -238,8 +238,8 @@ export default {
         :workspace-type="workspaceType"
         :attr-workspace-path="attrWorkspacePath"
         :label-create-type="labelCreateType"
-        @hideCreateView="toggleDropdownContent"
-        @labelCreated="handleNewLabel"
+        @hide-create-view="toggleDropdownContent"
+        @label-created="handleNewLabel"
         @input="clearSearch"
       />
     </template>

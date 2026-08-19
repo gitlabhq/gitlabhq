@@ -70333,7 +70333,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e83c2a25e7da"
+              "$ref": "#/components/schemas/RequestBody_2984aa2653a7"
   "/api/v4/groups/{id}":
     put:
       operationId: putApiV4GroupsId
@@ -70365,7 +70365,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2d428c28b365"
+              "$ref": "#/components/schemas/RequestBody_ac9c4462c09c"
     get:
       operationId: getApiV4GroupsId
       summary: Retrieve a group
@@ -116218,7 +116218,7 @@ components:
           example:
             environment: production
           nullable: true
-    RequestBody_e83c2a25e7da:
+    RequestBody_2984aa2653a7:
       type: object
       properties:
         name:
@@ -116432,10 +116432,10 @@ components:
         duo_availability:
           type: string
           enum:
+          - always_on
           - default_on
           - default_off
           - never_on
-          - always_on
           description: Duo availability. One of `default_on`, `default_off`, `never_on`
             or `always_on`
           nullable: true
@@ -116589,7 +116589,7 @@ components:
       required:
       - name
       - path
-    RequestBody_2d428c28b365:
+    RequestBody_ac9c4462c09c:
       type: object
       properties:
         name:
@@ -116804,10 +116804,10 @@ components:
         duo_availability:
           type: string
           enum:
+          - always_on
           - default_on
           - default_off
           - never_on
-          - always_on
           description: Duo availability. One of `default_on`, `default_off`, `never_on`
             or `always_on`
           nullable: true

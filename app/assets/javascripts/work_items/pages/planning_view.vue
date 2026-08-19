@@ -2005,6 +2005,9 @@ export default {
         id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
         fieldName: 'workItems',
       });
+      if (this.useRestApi) {
+        cache.evict({ fieldName: 'restWorkItems' });
+      }
       cache.gc();
     },
   },

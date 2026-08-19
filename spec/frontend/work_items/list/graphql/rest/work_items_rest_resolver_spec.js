@@ -7,14 +7,9 @@ const FULL_PATH = 'gitlab-org/gitlab-shell';
 const ENCODED_PATH = encodeURIComponent(FULL_PATH);
 const ENDPOINT = `/api/v4/namespaces/${ENCODED_PATH}/-/work_items`;
 
-const makeNamespace = (
-  fullPath = FULL_PATH,
-  id = 'gid://gitlab/Namespaces::ProjectNamespace/26',
-) => ({
-  id,
+const makeNamespace = (fullPath = FULL_PATH, { isGroup = false } = {}) => ({
   fullPath,
-  name: 'Gitlab Shell',
-  __typename: 'Namespace',
+  isGroup,
 });
 
 const makeRestItem = (overrides = {}) => ({
@@ -96,7 +91,7 @@ describe('workItemsRestResolver', () => {
     });
 
     it('uses the /groups/:full_path/-/work_items endpoint for group namespaces', async () => {
-      const groupNamespace = makeNamespace('my-group', 'gid://gitlab/Group/7');
+      const groupNamespace = makeNamespace('my-group', { isGroup: true });
       const encodedGroupPath = encodeURIComponent('my-group');
       mockAxios
         .onGet(`/api/v4/groups/${encodedGroupPath}/-/work_items`)
@@ -238,7 +233,7 @@ describe('workItemsRestResolver', () => {
           full_path: 'test-org/test-project',
         },
       });
-      const testNamespace = makeNamespace('test-org', 'gid://gitlab/Namespaces::GroupNamespace/35');
+      const testNamespace = makeNamespace('test-org');
       const testEndpoint = `/api/v4/namespaces/${encodeURIComponent('test-org')}/-/work_items`;
       mockAxios.onGet(testEndpoint).reply(HTTP_STATUS_OK, [item], {});
 

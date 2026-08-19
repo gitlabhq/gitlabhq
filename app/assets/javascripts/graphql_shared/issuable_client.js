@@ -23,7 +23,7 @@ import activeDiscussionQuery from '~/work_items/components/design_management/gra
 import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import { SHOW_ALL_GROUPS } from '~/work_items/board/grouping/visibility';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
-import { workItemsRestResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
+import { restWorkItemsResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
 import { preserveDetailsState } from '~/work_items/utils';
 import {
   linkedItems,
@@ -149,9 +149,6 @@ export const config = {
             toReference({ __typename: 'LocalWorkItemChildIsExpanded', id: variables.id }),
           namespace: {
             keyArgs: ['fullPath'],
-            merge(existing, incoming) {
-              return incoming ?? existing;
-            },
           },
         },
       },
@@ -171,8 +168,8 @@ export const config = {
         },
       },
       Namespace: {
+        merge: true,
         fields: {
-          merge: true,
           workItems: {
             merge(existing = {}, incoming = {}) {
               return { ...existing, ...incoming };
@@ -625,12 +622,12 @@ export const config = {
   },
 };
 
-const namespaceResolvers = window.gon?.features?.workItemRestApiFrontendUsers
-  ? { Namespace: { workItems: workItemsRestResolver } }
+const restWorkItemsResolvers = window.gon?.features?.workItemRestApiFrontendUsers
+  ? { Query: { restWorkItems: restWorkItemsResolver } }
   : {};
 
 export const resolvers = {
-  ...namespaceResolvers,
+  ...restWorkItemsResolvers,
   Mutation: {
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });

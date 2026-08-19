@@ -16,38 +16,20 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
       let_it_be_with_reload(:issue) { create(:issue) }
       let_it_be(:other_issue) { create(:issue) }
 
-      context "when the feature flag 'isolation_status_check' is disabled" do
-        before do
-          stub_feature_flags(isolation_status_check: false)
-        end
+      it 'schedules a organization isolation status check when belongs_to relation is updated' do
+        expect(Organizations::CheckOrganizationIsolationStatusWorker)
+          .to receive(:perform_async)
+          .with(issue.class.name, issue.id, { 'duplicated_to_id' => [nil, other_issue.id] })
 
+        issue.update!(duplicated_to: other_issue)
+      end
+
+      context 'when the update happens inside a skip_isolation_check block' do
         it 'does not schedule a organization isolation status check' do
           expect(Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
 
-          issue.update!(duplicated_to: other_issue)
-        end
-      end
-
-      context "when the feature flag 'isolation_status_check' is enabled" do
-        before do
-          stub_feature_flags(isolation_status_check: true)
-        end
-
-        it 'schedules a organization isolation status check when belongs_to relation is updated' do
-          expect(Organizations::CheckOrganizationIsolationStatusWorker)
-            .to receive(:perform_async)
-            .with(issue.class.name, issue.id, { 'duplicated_to_id' => [nil, other_issue.id] })
-
-          issue.update!(duplicated_to: other_issue)
-        end
-
-        context 'when the update happens inside a skip_isolation_check block' do
-          it 'does not schedule a organization isolation status check' do
-            expect(Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
-
-            described_class.skip_isolation_check do
-              issue.update!(duplicated_to: other_issue)
-            end
+          described_class.skip_isolation_check do
+            issue.update!(duplicated_to: other_issue)
           end
         end
       end

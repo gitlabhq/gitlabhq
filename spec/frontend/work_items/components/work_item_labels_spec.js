@@ -579,12 +579,12 @@ describe('WorkItemLabels component', () => {
         });
       });
 
-      describe('when "hideCreateView" event is emitted', () => {
+      describe('when "hide-create-view" event is emitted', () => {
         it('hides dropdown', async () => {
           expect(findDisclosureDropdown().exists()).toBe(true);
           expect(findDropdownContentsCreateView().exists()).toBe(true);
 
-          findDropdownContentsCreateView().vm.$emit('hideCreateView');
+          findDropdownContentsCreateView().vm.$emit('hide-create-view');
           await nextTick();
 
           expect(findDisclosureDropdown().exists()).toBe(false);
@@ -592,13 +592,13 @@ describe('WorkItemLabels component', () => {
         });
       });
 
-      describe('when "labelCreated" event is emitted', () => {
+      describe('when "label-created" event is emitted', () => {
         it('updates "createdLabelId" value and hides dropdown', async () => {
           expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(undefined);
           expect(findDisclosureDropdown().exists()).toBe(true);
           expect(findDropdownContentsCreateView().exists()).toBe(true);
 
-          findDropdownContentsCreateView().vm.$emit('labelCreated', {
+          findDropdownContentsCreateView().vm.$emit('label-created', {
             id: 'gid://gitlab/Label/55',
             name: 'New label',
           });

@@ -79,7 +79,6 @@ RSpec/NamedSubject:
     - 'ee/spec/graphql/mutations/epics/update_spec.rb'
     - 'ee/spec/graphql/mutations/issues/promote_to_epic_spec.rb'
     - 'ee/spec/graphql/mutations/issues/set_epic_spec.rb'
-    - 'ee/spec/graphql/mutations/issues/set_iteration_spec.rb'
     - 'ee/spec/graphql/mutations/issues/set_weight_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/set_reviewers_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/update_approval_rules_spec.rb'

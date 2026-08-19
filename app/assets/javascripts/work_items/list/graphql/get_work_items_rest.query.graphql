@@ -1,13 +1,15 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 
-# `workItems @client` is intercepted by the Apollo local resolver
-# (workItemsRestResolver in work_items_rest_resolver.js), which fetches from the REST API.
+# Top-level `restWorkItems @client` field is intercepted by the Apollo local resolver
+# (restWorkItemsResolver in work_items_rest_resolver.js), which fetches from the work items REST API.
+# Isolated from Query.namespace to prevent cache broadcast conflicts.
 # @feature_category: portfolio_management
 query getWorkItemsRest(
   $includeDescendants: Boolean = true
   $iid: String
   $fullPath: ID!
+  $isGroup: Boolean
   $search: String
   $sort: WorkItemSort
   $state: IssuableState
@@ -47,216 +49,218 @@ query getWorkItemsRest(
     id
     fullPath
     name
-    workItems(
-      iid: $iid
-      includeDescendants: $includeDescendants
-      search: $search
-      sort: $sort
-      state: $state
-      assigneeUsernames: $assigneeUsernames
-      assigneeWildcardId: $assigneeWildcardId
-      authorUsername: $authorUsername
-      closedAfter: $closedAfter
-      closedBefore: $closedBefore
-      confidential: $confidential
-      createdAfter: $createdAfter
-      createdBefore: $createdBefore
-      dueBefore: $dueBefore
-      dueAfter: $dueAfter
-      labelName: $labelName
-      milestoneTitle: $milestoneTitle
-      milestoneWildcardId: $milestoneWildcardId
-      myReactionEmoji: $myReactionEmoji
-      subscribed: $subscribed
-      types: $types
-      workItemTypeIds: $workItemTypeIds
-      updatedAfter: $updatedAfter
-      updatedBefore: $updatedBefore
-      crmContactId: $crmContactId
-      crmOrganizationId: $crmOrganizationId
-      releaseTag: $releaseTag
-      releaseTagWildcardId: $releaseTagWildcardId
-      hierarchyFilters: $hierarchyFilters
-      in: $in
-      not: $not
-      or: $or
-      after: $afterCursor
-      before: $beforeCursor
-      first: $firstPageSize
-      last: $lastPageSize
-    ) @client {
-      pageInfo {
-        ...PageInfo
-      }
-      nodes {
+  }
+  restWorkItems(
+    isGroup: $isGroup
+    fullPath: $fullPath
+    iid: $iid
+    includeDescendants: $includeDescendants
+    search: $search
+    sort: $sort
+    state: $state
+    assigneeUsernames: $assigneeUsernames
+    assigneeWildcardId: $assigneeWildcardId
+    authorUsername: $authorUsername
+    closedAfter: $closedAfter
+    closedBefore: $closedBefore
+    confidential: $confidential
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    dueBefore: $dueBefore
+    dueAfter: $dueAfter
+    labelName: $labelName
+    milestoneTitle: $milestoneTitle
+    milestoneWildcardId: $milestoneWildcardId
+    myReactionEmoji: $myReactionEmoji
+    subscribed: $subscribed
+    types: $types
+    workItemTypeIds: $workItemTypeIds
+    updatedAfter: $updatedAfter
+    updatedBefore: $updatedBefore
+    crmContactId: $crmContactId
+    crmOrganizationId: $crmOrganizationId
+    releaseTag: $releaseTag
+    releaseTagWildcardId: $releaseTagWildcardId
+    hierarchyFilters: $hierarchyFilters
+    in: $in
+    not: $not
+    or: $or
+    after: $afterCursor
+    before: $beforeCursor
+    first: $firstPageSize
+    last: $lastPageSize
+  ) @client {
+    pageInfo {
+      ...PageInfo
+    }
+    nodes {
+      id
+      author {
         id
-        author {
-          id
-          avatarUrl
-          name
-          username
-          webPath
-          webUrl
-        }
-        closedAt
-        confidential
-        createdAt
-        hidden
-        iid
-        userDiscussionsCount
-        namespace {
-          id
-          fullPath
-        }
-        reference(full: true)
-        title
-        titleHtml
-        updatedAt
+        avatarUrl
+        name
+        username
         webPath
         webUrl
-        state
-        widgets(
-          onlyTypes: [
-            LABELS
-            ASSIGNEES
-            MILESTONE
-            START_AND_DUE_DATE
-            HIERARCHY
-            AWARD_EMOJI
-            DEVELOPMENT
-          ]
-        ) {
-          type
-          ... on WorkItemWidgetLabels {
-            allowsScopedLabels
-            labels {
-              nodes {
-                ...Label
-              }
-            }
-          }
-          ... on WorkItemWidgetAssignees {
-            assignees {
-              nodes {
-                id
-                avatarUrl
-                name
-                username
-                webUrl
-                webPath
-              }
-            }
-          }
-          ... on WorkItemWidgetMilestone {
-            milestone {
-              id
-              dueDate
-              startDate
-              title
-              webPath
-            }
-          }
-          ... on WorkItemWidgetStartAndDueDate {
-            dueDate
-            startDate
-          }
-          ... on WorkItemWidgetHierarchy {
-            parent {
-              id
-              iid
-              title
-              titleHtml
-              confidential
-              webUrl
-              namespace {
-                id
-                fullPath
-              }
-              workItemType {
-                id
-                name
-                iconName
-              }
-            }
-          }
-          ... on WorkItemWidgetAwardEmoji {
-            upvotes
-            downvotes
-          }
-          ... on WorkItemWidgetDevelopment {
-            closingMergeRequests {
-              count
-            }
-          }
-        }
-        features {
+      }
+      closedAt
+      confidential
+      createdAt
+      hidden
+      iid
+      userDiscussionsCount
+      namespace {
+        id
+        fullPath
+      }
+      reference(full: true)
+      title
+      titleHtml
+      updatedAt
+      webPath
+      webUrl
+      state
+      widgets(
+        onlyTypes: [
+          LABELS
+          ASSIGNEES
+          MILESTONE
+          START_AND_DUE_DATE
+          HIERARCHY
+          AWARD_EMOJI
+          DEVELOPMENT
+        ]
+      ) {
+        type
+        ... on WorkItemWidgetLabels {
+          allowsScopedLabels
           labels {
-            allowsScopedLabels
-            labels {
-              nodes {
-                ...Label
-              }
+            nodes {
+              ...Label
             }
           }
+        }
+        ... on WorkItemWidgetAssignees {
           assignees {
-            assignees {
-              nodes {
-                id
-                avatarUrl
-                name
-                username
-                webUrl
-                webPath
-              }
-            }
-          }
-          milestone {
-            milestone {
+            nodes {
               id
-              dueDate
-              startDate
-              title
+              avatarUrl
+              name
+              username
+              webUrl
               webPath
             }
           }
-          startAndDueDate {
+        }
+        ... on WorkItemWidgetMilestone {
+          milestone {
+            id
             dueDate
             startDate
+            title
+            webPath
           }
-          hierarchy {
-            parent {
+        }
+        ... on WorkItemWidgetStartAndDueDate {
+          dueDate
+          startDate
+        }
+        ... on WorkItemWidgetHierarchy {
+          parent {
+            id
+            iid
+            title
+            titleHtml
+            confidential
+            webUrl
+            namespace {
               id
-              iid
-              title
-              titleHtml
-              confidential
+              fullPath
+            }
+            workItemType {
+              id
+              name
+              iconName
+            }
+          }
+        }
+        ... on WorkItemWidgetAwardEmoji {
+          upvotes
+          downvotes
+        }
+        ... on WorkItemWidgetDevelopment {
+          closingMergeRequests {
+            count
+          }
+        }
+      }
+      features {
+        labels {
+          allowsScopedLabels
+          labels {
+            nodes {
+              ...Label
+            }
+          }
+        }
+        assignees {
+          assignees {
+            nodes {
+              id
+              avatarUrl
+              name
+              username
               webUrl
-              namespace {
-                id
-                fullPath
-              }
-              workItemType {
-                id
-                name
-                iconName
-              }
-            }
-          }
-          awardEmoji {
-            upvotes
-            downvotes
-          }
-          development {
-            closingMergeRequests {
-              count
+              webPath
             }
           }
         }
-        workItemType {
-          id
-          name
-          iconName
+        milestone {
+          milestone {
+            id
+            dueDate
+            startDate
+            title
+            webPath
+          }
         }
+        startAndDueDate {
+          dueDate
+          startDate
+        }
+        hierarchy {
+          parent {
+            id
+            iid
+            title
+            titleHtml
+            confidential
+            webUrl
+            namespace {
+              id
+              fullPath
+            }
+            workItemType {
+              id
+              name
+              iconName
+            }
+          }
+        }
+        awardEmoji {
+          upvotes
+          downvotes
+        }
+        development {
+          closingMergeRequests {
+            count
+          }
+        }
+      }
+      workItemType {
+        id
+        name
+        iconName
       }
     }
   }

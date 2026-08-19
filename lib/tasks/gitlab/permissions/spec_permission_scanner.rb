@@ -11,8 +11,10 @@ module Tasks
       #   EXAMPLE_NAMES - names of the shared examples that test a permission
       class SpecPermissionScanner
         EACH_LOOP_LOOKBACK_LINES = 15
+        KEYWORD_LOOKAHEAD_LINES = 3
 
         SHARED_EXAMPLES_PATTERN = /^(\s*)(?:RSpec\.)?shared_examples(?:_for)?\s+['"](.+?)['"]/
+        ADDITIONAL_SCOPE_PATTERN = /additional_scope_permissions:\s*((?:%i)?[\[(][^\])]*[\])]|:"[^"]*"|:\w+)/
 
         def initialize(root_path = Rails.root)
           @root_path = root_path
@@ -181,19 +183,39 @@ module Tasks
             end
 
             multiplier = multiplier_for_line(file, idx, inclusions) * each_loop_multiplier(lines, idx)
-            extract_permission_args(args).each do |entry|
-              if entry.is_a?(Regexp)
-                existing = @dynamic_patterns.find { |e| e[:pattern] == entry }
-                if existing
-                  existing[:count] += multiplier
-                else
-                  @dynamic_patterns << { pattern: entry, count: multiplier }
-                end
-              else
-                @test_counts[entry] += multiplier
-              end
-            end
+            entries = extract_permission_args(args) + extract_additional_scope_args(lines, idx)
+            entries.each { |entry| add_test_count(entry, multiplier) }
           end
+        end
+
+        def add_test_count(entry, multiplier)
+          unless entry.is_a?(Regexp)
+            @test_counts[entry] += multiplier
+            return
+          end
+
+          existing = @dynamic_patterns.find { |e| e[:pattern] == entry }
+          if existing
+            existing[:count] += multiplier
+          else
+            @dynamic_patterns << { pattern: entry, count: multiplier }
+          end
+        end
+
+        # The `additional_scope_permissions:` keyword may sit on the invocation line
+        # or a continuation line. The window stops at the next example invocation so
+        # a neighboring call's keyword is not attributed to this one.
+        def extract_additional_scope_args(lines, idx)
+          window = [lines[idx]]
+
+          (1..KEYWORD_LOOKAHEAD_LINES).each do |offset|
+            line = lines[idx + offset]
+            break if line.nil? || line.match?(/(?:it_behaves_like|include_examples)\s/)
+
+            window << line
+          end
+
+          window.join.scan(ADDITIONAL_SCOPE_PATTERN).flat_map { |(value)| extract_permission_args(value) }
         end
 
         def extract_permission_args(args)

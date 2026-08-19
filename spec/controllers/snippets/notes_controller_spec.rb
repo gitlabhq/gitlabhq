@@ -28,6 +28,31 @@ RSpec.describe Snippets::NotesController, feature_category: :team_planning do
       get :index, params: { snippet_id: public_snippet, format: :json }
     end
 
+    describe 'finder params' do
+      let!(:note) { create(:note_on_personal_snippet, noteable: public_snippet) }
+
+      it 'forwards the client-supplied keys NotesFinder reads' do
+        expect(NotesFinder).to receive(:new)
+          .with(anything,
+            hash_including(notes_filter: '1', target_iid: '2', search: 'findme', sort: 'created_desc'))
+          .and_call_original
+
+        get :index, params: {
+          snippet_id: public_snippet, notes_filter: 1, target_iid: 2, search: 'findme', sort: 'created_desc'
+        }
+      end
+
+      it 'does not let the client override the target the notes are scoped to' do
+        expect(NotesFinder).to receive(:new)
+          .with(anything, hash_including(target_id: public_snippet.id, target_type: 'personal_snippet'))
+          .and_call_original
+
+        get :index, params: { snippet_id: public_snippet, target: private_snippet.id, target_type: 'issue' }
+
+        expect(json_response['notes'].count).to eq(1)
+      end
+    end
+
     context 'when a snippet is public' do
       before do
         note_on_public

@@ -14,12 +14,24 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
   describe 'registry file' do
     let(:registry) { Gitlab::Organizations::TransferSupportRegistry.registry }
 
+    it 'does not allow the todo status' do
+      registry.each do |table_name, status|
+        expect(status).not_to eq('todo'),
+          "Table '#{table_name}' has organization_transfer_support: todo in " \
+            "config/organizations/transfer_support.yml, which is no longer allowed. " \
+            "Set it to 'supported', 'no_work_needed', or a tracking issue URL " \
+            "(for example https://gitlab.com/gitlab-org/gitlab/-/issues/XXX). " \
+            "See https://docs.gitlab.com/development/organization/sharding/#add-transfer-service-support."
+      end
+    end
+
     it 'contains only valid status values' do
       registry.each do |table_name, status|
-        expect(status).to be_in(valid_statuses),
+        expect(Gitlab::Organizations::TransferSupportRegistry.valid_status?(status)).to be(true),
           "Table '#{table_name}' has invalid organization_transfer_support value '#{status}' " \
             "in config/organizations/transfer_support.yml. " \
-            "Must be one of: #{valid_statuses.join(', ')}"
+            "Must be one of: #{valid_statuses.join(', ')}, or a tracking issue URL " \
+            "matching #{Gitlab::Organizations::TransferSupportRegistry::ISSUE_URL_REGEXP.inspect}"
       end
     end
 
@@ -70,9 +82,10 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
         transfer_support = entry.organization_transfer_support
         next unless transfer_support
 
-        expect(transfer_support).to be_in(valid_statuses),
+        expect(Gitlab::Organizations::TransferSupportRegistry.valid_status?(transfer_support)).to be(true),
           "Table '#{entry.table_name}' has invalid organization_transfer_support value '#{transfer_support}'. " \
-            "Must be one of: #{valid_statuses.join(', ')}"
+            "Must be one of: #{valid_statuses.join(', ')}, or a tracking issue URL " \
+            "matching #{Gitlab::Organizations::TransferSupportRegistry::ISSUE_URL_REGEXP.inspect}"
       end
     end
   end
@@ -116,7 +129,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
         expect(@tracker.tracked_tables).to include(entry.table_name),
           "Table '#{entry.table_name}' has organization_transfer_support: supported " \
             "in config/organizations/transfer_support.yml but was not updated during any transfer spec. " \
-            "Either add test coverage, update the status to 'todo' if transfer support is " \
+            "Either add test coverage, update the status to a tracking issue URL if transfer support is " \
             "not yet implemented, or 'no_work_needed' if no transfer work is required."
       end
     end
@@ -124,6 +137,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
     it 'ensures tables updated during transfer are marked as supported' do
       @tracker.tracked_table_locations.each do |table_name, locations|
         entry = Gitlab::Database::Dictionary.entry(table_name)
+        next if entry.organization_transfer_support == 'no_work_needed'
 
         locations_text = locations.to_a.sort.map { |loc| "  - #{loc}" }.join("\n")
 

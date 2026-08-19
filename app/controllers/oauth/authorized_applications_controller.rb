@@ -13,17 +13,23 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
   end
 
   def destroy
-    if params[:token_id].present?
-      current_resource_owner.oauth_authorized_tokens.find(params[:token_id].to_s).revoke
+    if permitted_params[:token_id].present?
+      current_resource_owner.oauth_authorized_tokens.find(permitted_params[:token_id].to_s).revoke
     else
       Authn::OauthApplications::RevokeService.new(
         current_user: current_resource_owner,
-        application_id: params[:id].to_s
+        application_id: permitted_params[:id].to_s
       ).execute
     end
 
     redirect_to user_settings_applications_url,
       status: :found,
       notice: I18n.t(:notice, scope: [:doorkeeper, :flash, :authorized_applications, :destroy])
+  end
+
+  private
+
+  def permitted_params
+    params.permit(:token_id, :id)
   end
 end

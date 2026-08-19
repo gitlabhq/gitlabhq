@@ -45,6 +45,11 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   private
 
+  def permitted_params
+    params.permit(:resource, :client_id, :code_challenge, :code_challenge_method)
+  end
+  strong_memoize_attr :permitted_params
+
   # In Rails 8 alias_method at class-body level fails when the aliased method
   # is not yet in the ancestor chain at load time. Define explicitly instead.
   def auth_user
@@ -119,6 +124,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Force the appropriate MCP scope for MCP server requests and dynamic MCP applications.
     # This ensures that even if a client requests other scopes, dynamic MCP applications
     # are restricted to the correct scope only, regardless of what was requested.
+    # rubocop:disable Rails/StrongParams -- In-place writes to params consumed by Doorkeeper's pre_auth via super
     if resource_is_mcp_orbit_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_ORBIT_SCOPE)
       params[:scope] = Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
     elsif resource_is_mcp_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_SCOPE)
@@ -126,16 +132,19 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     end
 
     params[:organization_id] = ::Current.organization.id
+    # rubocop:enable Rails/StrongParams
 
     super
   end
 
   def resource_is_mcp_server?
-    params[:resource].present? && params[:resource].end_with?('/api/v4/mcp')
+    resource = permitted_params[:resource]
+    resource.present? && resource.end_with?('/api/v4/mcp')
   end
 
   def resource_is_mcp_orbit_server?
-    params[:resource].present? && params[:resource].end_with?('/api/v4/orbit/mcp')
+    resource = permitted_params[:resource]
+    resource.present? && resource.end_with?('/api/v4/orbit/mcp')
   end
 
   def should_force_scope_for_dynamic_app?(scope)
@@ -145,12 +154,14 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   # limit scopes when signing in with GitLab
   def downgrade_scopes!
+    # rubocop:disable Rails/StrongParams -- In-place writes to params consumed by Doorkeeper's pre_auth via super
     auth_type = params.delete('gl_auth_type')
     return unless auth_type == 'login'
 
     ensure_read_user_scope!
 
     params['scope'] = Gitlab::Auth::READ_USER_SCOPE.to_s if application_has_read_user_scope?
+    # rubocop:enable Rails/StrongParams
   end
 
   # Configure the application to support read_user scope, if it already
@@ -172,7 +183,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   def doorkeeper_application
-    ::Doorkeeper::OAuth::Client.find(params['client_id'].to_s)&.application
+    ::Doorkeeper::OAuth::Client.find(permitted_params[:client_id].to_s)&.application
   end
   strong_memoize_attr :doorkeeper_application
 
@@ -211,13 +222,14 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   def validate_pkce_for_dynamic_applications
     return unless doorkeeper_application&.dynamic?
 
-    if params[:code_challenge].blank?
+    if permitted_params[:code_challenge].blank?
       pre_auth.error = :pkce_required_for_dynamic_applications
       render "doorkeeper/authorizations/error"
       return
     end
 
-    return unless params[:code_challenge_method].present? && params[:code_challenge_method] != 'S256'
+    code_challenge_method = permitted_params[:code_challenge_method]
+    return unless code_challenge_method.present? && code_challenge_method != 'S256'
 
     pre_auth.error = :invalid_code_challenge_method
     render "doorkeeper/authorizations/error"

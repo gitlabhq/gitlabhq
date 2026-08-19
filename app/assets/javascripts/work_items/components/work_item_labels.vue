@@ -412,8 +412,8 @@ export default {
           :label-create-type="workspaceType"
           :search-key="searchTerm"
           :workspace-type="workspaceType"
-          @hideCreateView="showLabelForm = false"
-          @labelCreated="handleLabelCreated"
+          @hide-create-view="showLabelForm = false"
+          @label-created="handleLabelCreated"
         />
       </gl-disclosure-dropdown>
     </template>

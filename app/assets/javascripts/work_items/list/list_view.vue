@@ -52,6 +52,7 @@ import {
   findDetailPanelWorkItem,
   findHierarchyWidget,
   getSortedWorkItems,
+  getWorkItemsConnection,
 } from '../utils';
 
 import HealthStatus from './components/health_status.vue';
@@ -309,7 +310,7 @@ export default {
           return this.queryVariables;
         },
         update(data) {
-          return data?.namespace?.workItems.nodes ?? [];
+          return getWorkItemsConnection(data, this.useRestApi)?.nodes ?? [];
         },
         skip() {
           return isEmpty(this.queryVariables) || this.skipQuery;
@@ -327,7 +328,7 @@ export default {
       };
     },
     handleListDataResults(data) {
-      this.pageInfo = data?.namespace?.workItems.pageInfo ?? {};
+      this.pageInfo = getWorkItemsConnection(data, this.useRestApi)?.pageInfo ?? {};
       this.namespaceId = data?.namespace?.id;
 
       if (data?.namespace) {
@@ -337,10 +338,16 @@ export default {
     },
     handleEvictCache() {
       const { cache } = this.$apollo.provider.defaultClient;
+
       cache.evict({
         id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
         fieldName: 'workItems',
       });
+
+      if (this.useRestApi) {
+        cache.evict({ fieldName: 'restWorkItems' });
+      }
+
       cache.gc();
     },
     checkDetailPanelParams() {
@@ -416,11 +423,13 @@ export default {
           variables: this.queryVariables,
         },
         (existingData) => {
-          if (!existingData?.namespace?.workItems?.nodes) {
+          const workItemsPath = getWorkItemsConnection(existingData, this.useRestApi)?.nodes;
+
+          if (!workItemsPath) {
             return existingData;
           }
 
-          const workItems = [...existingData.namespace.workItems.nodes];
+          const workItems = [...workItemsPath];
 
           if (oldIndex >= 0 && oldIndex < workItems.length) {
             const [movedItem] = workItems.splice(oldIndex, 1);
@@ -430,7 +439,11 @@ export default {
           }
 
           return produce(existingData, (draftData) => {
-            draftData.namespace.workItems.nodes = workItems;
+            if (this.useRestApi) {
+              draftData.restWorkItems.nodes = workItems;
+            } else {
+              draftData.namespace.workItems.nodes = workItems;
+            }
           });
         },
       );

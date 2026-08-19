@@ -15,8 +15,9 @@ class AuthorizedProjectsWorker
 
   deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
+  defer_on_database_health_signal :gitlab_main, [:project_authorizations], 1.minute
+
   idempotent!
-  loggable_arguments 1 # For the job waiter key
 
   def perform(user_id)
     user = User.find_by_id(user_id)

@@ -706,7 +706,10 @@ When you omit a foreign key for this reason, add the column to `allowed_to_be_mi
    during organization transfers (when users or groups move between organizations).
    - Set to `supported` if you've implemented the transfer logic in one of the transfer services
      at `{,ee/}app/services/**/organizations/transfer/*_service.rb`.
-   - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
+   - Set to `no_work_needed` if the table requires no changes for organization transfers.
+   - For existing tables where transfer support is not yet implemented, set to a tracking issue
+     URL in the format `https://gitlab.com/gitlab-org/gitlab/-/issues/<id>` or `/-/work_items/<id>`.
+     New tables must use `supported`.
 
    Add an entry in alphabetical order:
 

@@ -24,6 +24,11 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker, feature
     )
   end
 
+  it 'defers on database health signal for project_authorizations' do
+    expect(described_class.database_health_check_attrs).to include(
+      { gitlab_schema: :gitlab_main, tables: [:project_authorizations], delay_by: 1.minute })
+  end
+
   include_examples 'an idempotent worker' do
     let(:job_args) { [project.id, user.id] }
 

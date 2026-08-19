@@ -6635,6 +6635,18 @@ const buildWorkItemsWithSubChildQueryResponse = ({ includeRestFeatures = false }
       }))
     : subChildBaseNodes;
 
+  const workItemsData = {
+    __typename: 'WorkItemConnection',
+    pageInfo: {
+      hasNextPage: true,
+      hasPreviousPage: false,
+      startCursor: 'startCursor',
+      endCursor: 'endCursor',
+      __typename: 'PageInfo',
+    },
+    nodes,
+  };
+
   return {
     data: {
       namespace: {
@@ -6642,18 +6654,9 @@ const buildWorkItemsWithSubChildQueryResponse = ({ includeRestFeatures = false }
         __typename: 'Group',
         fullPath: 'full/path',
         name: 'Test',
-        workItems: {
-          __typename: 'WorkItemConnection',
-          pageInfo: {
-            hasNextPage: true,
-            hasPreviousPage: false,
-            startCursor: 'startCursor',
-            endCursor: 'endCursor',
-            __typename: 'PageInfo',
-          },
-          nodes,
-        },
+        ...(includeRestFeatures ? {} : { workItems: workItemsData }),
       },
+      ...(includeRestFeatures ? { restWorkItems: workItemsData } : {}),
     },
   };
 };
@@ -7050,17 +7053,17 @@ const buildWorkItemsRestQueryResponse = (features) => ({
       __typename: 'Group',
       fullPath: 'full/path',
       name: 'Test',
-      workItems: {
-        __typename: 'WorkItemConnection',
-        pageInfo: {
-          hasNextPage: true,
-          hasPreviousPage: false,
-          startCursor: 'startCursor',
-          endCursor: 'endCursor',
-          __typename: 'PageInfo',
-        },
-        nodes: combinedQueryResultExample.map((item) => ({ ...item, features })),
+    },
+    restWorkItems: {
+      __typename: 'WorkItemConnection',
+      pageInfo: {
+        hasNextPage: true,
+        hasPreviousPage: false,
+        startCursor: 'startCursor',
+        endCursor: 'endCursor',
+        __typename: 'PageInfo',
       },
+      nodes: combinedQueryResultExample.map((item) => ({ ...item, features })),
     },
   },
 });

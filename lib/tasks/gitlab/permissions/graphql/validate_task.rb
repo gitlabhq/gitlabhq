@@ -19,8 +19,10 @@ module Tasks
               missing_authorization: [],
               invalid_skip_reason: [],
               conflicting_authorization: [],
+              invalid_additional_scope: [],
               insufficient_tests: []
             }
+            @seen_requirement_groups = Set.new
           end
 
           private
@@ -55,19 +57,46 @@ module Tasks
 
             permissions = directive.arguments[:permissions].map { |p| p.to_s.downcase.to_sym }
             boundary_type = directive.arguments[:boundary_type]&.to_sym
+            requirement_group = directive.arguments[:requirement_group]
+
+            validate_additional_scope(item, directive) if requirement_group
 
             permissions.each do |permission|
               validate_permission_exists(item, permission)
               validate_boundary_type(item, permission, boundary_type)
-              register_test_coverage(item, permission, boundary_type)
+              register_test_coverage(item, permission, boundary_type, requirement_group)
             end
           end
 
+          # A malformed additional scope fails silently at request time: without a
+          # boundary_type or a boundary source its group never resolves and every
+          # granular token is denied with 404, and two entries colliding on a group
+          # leave the second entry's permissions unenforced (`permissions_for` reads
+          # the first directive of a group).
+          def validate_additional_scope(item, directive)
+            args = directive.arguments
+
+            violations[:invalid_additional_scope] << item.merge(reason: 'missing boundary_type') unless
+              args[:boundary_type]
+
+            unless args[:boundary] || args[:boundary_argument]
+              violations[:invalid_additional_scope] << item.merge(reason: 'missing boundary or boundary_argument')
+            end
+
+            group_key = "#{item[:kind]}:#{item[:name]}:#{args[:requirement_group]}"
+            return if @seen_requirement_groups.add?(group_key)
+
+            violations[:invalid_additional_scope] <<
+              item.merge(reason: "duplicate requirement_group '#{args[:requirement_group]}'")
+          end
+
           # A type, mutation, or field may declare multiple directives (one per
-          # boundary); each declaration needs its own test per boundary type.
-          def register_test_coverage(item, permission, boundary_type)
+          # boundary); each declaration needs its own test per boundary type. The
+          # requirement_group keeps an additional scope's requirement countable even
+          # when it repeats the primary directive's permission and boundary type.
+          def register_test_coverage(item, permission, boundary_type, requirement_group = nil)
             spec_permission_scanner.add_endpoint(
-              endpoint_id: "#{item[:kind]}:#{item[:name]} #{boundary_type}",
+              endpoint_id: ["#{item[:kind]}:#{item[:name]}", boundary_type, requirement_group].compact.join(' '),
               permission: permission,
               details: item.merge(permission: permission)
             )
@@ -163,6 +192,7 @@ module Tasks
               format_missing_authorization_errors +
               format_invalid_skip_reason_errors +
               format_conflicting_authorization_errors +
+              format_graphql_errors(:invalid_additional_scope) +
               format_insufficient_test_errors
           end
 
@@ -172,7 +202,7 @@ module Tasks
             out = "#{error_messages[kind]}\n\n"
 
             violations[kind].each do |v|
-              out += "  - [#{v[:kind]}] #{v[:name]}: #{v[:permission]} (#{v[:source]})\n"
+              out += "  - [#{v[:kind]}] #{v[:name]}: #{v[:permission] || v[:reason]} (#{v[:source]})\n"
             end
 
             "#{out}\n"
@@ -268,6 +298,13 @@ module Tasks
               conflicting_authorization: <<~MSG.chomp,
                 The following GraphQL types declare `authorize_granular_token` with both permissions and a skip_reason.
                 Remove one: a type is either authorized directly or intentionally skipped.
+              MSG
+              invalid_additional_scope: <<~MSG.chomp,
+                The following GraphQL types/mutations/fields have an invalid additional_scopes entry.
+                Each entry must declare boundary_type and locate its boundary with boundary_argument or boundary,
+                and entries must not collide on a requirement group (use distinct boundary_arguments).
+                Otherwise the entry silently denies every request with 404 or goes unenforced.
+                #{graphql_implementation_guide_link(anchor: 'additional-required-scopes')}
               MSG
               insufficient_tests: <<~MSG.chomp
                 The following permissions have fewer tests than GraphQL types/mutations/fields using them.

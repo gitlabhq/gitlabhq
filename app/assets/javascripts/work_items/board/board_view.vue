@@ -20,7 +20,11 @@ import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
-import { findDetailPanelWorkItem, getNewWorkItemWidgetsAutoSaveKey } from '../utils';
+import {
+  findDetailPanelWorkItem,
+  getNewWorkItemWidgetsAutoSaveKey,
+  getWorkItemsConnection,
+} from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
 import { SHOW_ALL_GROUPS } from './grouping/visibility';
@@ -171,6 +175,9 @@ export default {
     columnQuery() {
       return boardColumnQuery(this.glFeatures);
     },
+    useRestApi() {
+      return this.glFeatures.workItemRestApiFrontendUsers;
+    },
     // Relative position is only meaningful under Manual sort; any other sort would
     // immediately override a reorder, so we don't persist position then.
     isManualSort() {
@@ -318,17 +325,24 @@ export default {
           variables: { ...variables, iid: workItem.iid, firstPageSize: 1 },
           fetchPolicy: 'no-cache',
         });
-        const node = data?.namespace?.workItems?.nodes?.[0];
+        const node = getWorkItemsConnection(data, this.useRestApi)?.nodes?.[0];
         if (!node) {
           return false;
         }
 
         const { cache } = client;
         const columnNodesBeforeInsert = this.isManualSort
-          ? readWorkItemsFromColumn({ cache, query, variables })
+          ? readWorkItemsFromColumn({ cache, query, variables, useRestApi: this.useRestApi })
           : [];
 
-        addWorkItemToColumn({ cache, query, variables, workItem: node, index: 0 });
+        addWorkItemToColumn({
+          cache,
+          query,
+          variables,
+          workItem: node,
+          index: 0,
+          useRestApi: this.useRestApi,
+        });
         adjustWorkItemCountInColumn({
           cache,
           query: getWorkItemsCountOnlyQuery,
@@ -452,6 +466,7 @@ export default {
         query,
         variables: this.columnVariables(fromColumn),
         workItemId,
+        useRestApi: this.useRestApi,
       });
       addWorkItemToColumn({
         cache,
@@ -460,6 +475,7 @@ export default {
         workItem: node,
         index,
         patchCard,
+        useRestApi: this.useRestApi,
       });
       adjustWorkItemCountInColumn({
         cache,
@@ -494,6 +510,7 @@ export default {
           query,
           variables: this.columnVariables(column),
           workItemId,
+          useRestApi: this.useRestApi,
         }),
       );
 
@@ -506,6 +523,7 @@ export default {
         query,
         variables: this.columnVariables(currentColumn),
         workItemId,
+        useRestApi: this.useRestApi,
       });
 
       this.moveWorkItemBetweenColumns({
@@ -591,7 +609,12 @@ export default {
       // before/after ids match where the card lands. Only computed under Manual sort.
       const { moveBeforeId, moveAfterId } = this.isManualSort
         ? getMovePositionIds({
-            nodes: readWorkItemsFromColumn({ cache, query, variables: toVariables }),
+            nodes: readWorkItemsFromColumn({
+              cache,
+              query,
+              variables: toVariables,
+              useRestApi: this.useRestApi,
+            }),
             sameColumn: !valueChanged,
             oldIndex,
             newIndex,
@@ -605,7 +628,13 @@ export default {
 
       // Snapshot the moved card so the cache update can reinsert it into the target
       // column (with the new value) on both the optimistic and the confirmed pass.
-      const node = readWorkItemFromColumn({ cache, query, variables: fromVariables, workItemId });
+      const node = readWorkItemFromColumn({
+        cache,
+        query,
+        variables: fromVariables,
+        workItemId,
+        useRestApi: this.useRestApi,
+      });
       if (!node) {
         return;
       }

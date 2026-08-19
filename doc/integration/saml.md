@@ -46,7 +46,7 @@ For more information on:
    gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
-1. Optional. You should automatically link a first-time SAML sign-in with existing GitLab users if their
+1. Optional. You can automatically link SAML sign-in with existing GitLab users if their
    email addresses match. To do this, add the following setting in `/etc/gitlab/gitlab.rb`:
 
    ```ruby

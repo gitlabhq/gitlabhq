@@ -188,6 +188,100 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
     end
   end
 
+  describe '#validate_additional_scope' do
+    let(:item) { { kind: 'mutation', name: 'IssueMove', source: 'app/graphql/mutations/issues/move.rb' } }
+
+    def additional_directive(arguments)
+      Class.new(Directives::Authz::GranularScope).allocate.tap do |d|
+        allow(d).to receive(:arguments).and_return(arguments)
+      end
+    end
+
+    def scope_violations
+      task.send(:violations)[:invalid_additional_scope]
+    end
+
+    context 'when the entry declares a boundary_type and a boundary_argument' do
+      it 'does not add a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+
+        expect { task.send(:validate_additional_scope, item, directive) }.not_to change { scope_violations.length }
+      end
+    end
+
+    context 'when the entry declares a boundary method' do
+      it 'does not add a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary: 'target_project', requirement_group: 'additional_0')
+
+        expect { task.send(:validate_additional_scope, item, directive) }.not_to change { scope_violations.length }
+      end
+    end
+
+    context 'when the entry is missing a boundary_type' do
+      it 'adds a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'],
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+
+        task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations).to contain_exactly(item.merge(reason: 'missing boundary_type'))
+      end
+    end
+
+    context 'when the entry has neither boundary nor boundary_argument' do
+      it 'adds a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          requirement_group: 'additional_0')
+
+        task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations).to contain_exactly(item.merge(reason: 'missing boundary or boundary_argument'))
+      end
+    end
+
+    context 'when two entries collide on a requirement group' do
+      it 'adds a violation for the second entry' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+
+        task.send(:validate_additional_scope, item, directive)
+        task.send(:validate_additional_scope, item, directive)
+
+        expect(scope_violations)
+          .to contain_exactly(item.merge(reason: "duplicate requirement_group 'target_project_path'"))
+      end
+    end
+
+    context 'when the same group name appears on different items' do
+      it 'does not add a violation' do
+        directive = additional_directive(permissions: ['CREATE_WORK_ITEM'], boundary_type: 'PROJECT',
+          boundary_argument: 'target_project_path', requirement_group: 'target_project_path')
+        other_item = item.merge(name: 'EpicMove')
+
+        task.send(:validate_additional_scope, item, directive)
+        task.send(:validate_additional_scope, other_item, directive)
+
+        expect(scope_violations).to be_empty
+      end
+    end
+  end
+
+  describe '#register_test_coverage' do
+    let(:item) { { kind: 'mutation', name: 'IssueMove', source: 'app/graphql/mutations/issues/move.rb' } }
+
+    it 'includes the requirement group in the endpoint id' do
+      scanner = task.send(:spec_permission_scanner)
+      allow(scanner).to receive(:add_endpoint)
+
+      task.send(:register_test_coverage, item, :create_work_item, :project, 'target_project_path')
+
+      expect(scanner).to have_received(:add_endpoint)
+        .with(hash_including(endpoint_id: 'mutation:IssueMove project target_project_path'))
+    end
+  end
+
   describe '#validate_boundary_type' do
     context 'when boundary_type is nil' do
       it 'returns without adding a violation' do

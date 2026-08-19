@@ -10,8 +10,10 @@ module AuthorizedProjectUpdate # rubocop:disable Gitlab/BoundedContexts -- keepi
     data_consistency :delayed
     queue_namespace :authorized_project_update
 
+    defer_on_database_health_signal :gitlab_main, [:project_authorizations], 5.minutes
+
     idempotent!
-    deduplicate :until_executing, including_scheduled: true
+    deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
     def perform(group_id, params = {})
       group = Group.find_by_id(group_id)

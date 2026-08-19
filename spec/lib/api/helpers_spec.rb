@@ -2400,6 +2400,163 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#granular_token_requirements' do
+    let_it_be(:target_project) { create(:project) }
+
+    subject(:requirements) { helper.send(:granular_token_requirements) }
+
+    before do
+      allow(helper).to receive_messages(
+        params: { to_project_id: target_project.id },
+        find_project: target_project,
+        authorization_settings: settings
+      )
+    end
+
+    context 'without additional boundaries' do
+      let(:settings) { { permissions: [:read_project], boundary_type: :project } }
+
+      it 'returns only the primary requirement' do
+        expect(requirements.size).to eq(1)
+      end
+    end
+
+    context 'with an additional boundary' do
+      let(:settings) do
+        {
+          permissions: [:read_project], boundary_type: :project,
+          additional_scopes: [
+            { permissions: [:create_work_item], boundary_type: :project, boundary_param: :to_project_id }
+          ]
+        }
+      end
+
+      it 'appends the resolved boundary with its own permissions', :aggregate_failures do
+        boundaries, permissions = requirements.last
+
+        expect(boundaries).to be_a(Authz::Boundary::ProjectBoundary)
+        expect(permissions).to eq([:create_work_item])
+      end
+
+      context 'when the boundary cannot be resolved' do
+        before do
+          allow(helper).to receive(:find_project).and_return(nil)
+        end
+
+        it 'leaves it nil so the service reports it as missing' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+    end
+
+    context 'with an additional boundary resolved by a callable' do
+      let(:settings) do
+        {
+          permissions: [:read_project], boundary_type: :project,
+          additional_scopes: [
+            { permissions: [:assign_runner], boundary_type: :project, boundary: -> { runner_owner } }
+          ]
+        }
+      end
+
+      before do
+        allow(helper).to receive(:runner_owner).and_return(runner_owner)
+      end
+
+      context 'when the callable returns a boundary object' do
+        let(:runner_owner) { target_project }
+
+        it 'resolves the boundary from the callable', :aggregate_failures do
+          boundaries, permissions = requirements.last
+
+          expect(boundaries).to be_a(Authz::Boundary::ProjectBoundary)
+          expect(permissions).to eq([:assign_runner])
+        end
+      end
+
+      context 'when the callable returns nil' do
+        let(:runner_owner) { nil }
+
+        it 'leaves it nil so the service reports it as missing' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+
+      context 'when the callable returns something that is not a boundary' do
+        let(:runner_owner) { 'not a boundary' }
+
+        it 'leaves it nil rather than passing an invalid boundary to the service' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+
+      context 'when the callable returns an object of a different boundary type' do
+        let(:runner_owner) { create(:group) }
+
+        it 'leaves it nil rather than checking the wrong container type' do
+          expect(requirements.last.first).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#authorize_granular_token_scopes!' do
+    include Rack::Test::Methods
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: user) }
+    let_it_be(:target_project) { create(:project, developers: user) }
+
+    let(:assignable) { ::Authz::PermissionGroups::Assignable.for_permission(:read_project).first.name }
+
+    let(:pat) do
+      create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project), permissions: [assignable])
+    end
+
+    let(:helper_app) do
+      Class.new(Grape::API::Instance) do
+        helpers API::Helpers
+        format :json
+
+        route_setting :authorization, permissions: :read_project, boundary_type: :project,
+          additional_scopes: [
+            { permissions: :read_project, boundary_type: :project, boundary_param: :to_project_id }
+          ]
+        get ':id/move' do
+          authorize_granular_token_scopes!(PersonalAccessToken.find_by_token(params[:token]))
+          { ok: true }
+        end
+      end
+    end
+
+    def app
+      helper_app
+    end
+
+    context 'when the additional boundary cannot be resolved' do
+      it 'denies with 404 without running the endpoint' do
+        get "/#{project.id}/move", token: pat.token, to_project_id: non_existing_record_id
+
+        expect(last_response.status).to eq(404)
+      end
+    end
+
+    context 'when the token is scoped to both boundaries' do
+      let(:pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project), permissions: [assignable],
+          additional_scopes: [
+            { boundary: ::Authz::Boundary.for(target_project), permissions: [assignable] }
+          ])
+      end
+
+      it 'grants access' do
+        get "/#{project.id}/move", token: pat.token, to_project_id: target_project.id
+
+        expect(last_response.status).to eq(200)
+      end
+    end
+  end
+
   describe '#authenticate_by_gitlab_shell_or_workhorse_token!' do
     include GitlabShellHelpers
     include WorkhorseHelpers

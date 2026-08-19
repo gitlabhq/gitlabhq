@@ -55,7 +55,6 @@ module Organizations
 
     def check_organization_isolation_status
       return if Sharding.skip_isolation_check?
-      return unless Feature.enabled?(:isolation_status_check, Feature.current_request)
       return if self.class.sharding_keys.empty?
 
       changed_associations = self.class

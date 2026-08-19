@@ -47,12 +47,16 @@ module Repositories
 
     private
 
+    def operation_param
+      params.permit(:operation)[:operation]
+    end
+
     def download_request?
-      params[:operation] == 'download'
+      operation_param == 'download'
     end
 
     def upload_request?
-      params[:operation] == 'upload'
+      operation_param == 'upload'
     end
 
     def download_objects!

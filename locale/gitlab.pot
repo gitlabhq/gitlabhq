@@ -23245,7 +23245,13 @@ msgstr ""
 msgid "ContinuousDeployment|Approval needed"
 msgstr ""
 
+msgid "ContinuousDeployment|Approve"
+msgstr ""
+
 msgid "ContinuousDeployment|Approved"
+msgstr ""
+
+msgid "ContinuousDeployment|Approved %{step}"
 msgstr ""
 
 msgid "ContinuousDeployment|Are you sure you want to delete %{name} link?"
@@ -23380,6 +23386,9 @@ msgstr ""
 msgid "ContinuousDeployment|Environment name"
 msgstr ""
 
+msgid "ContinuousDeployment|Environment: %{name}"
+msgstr ""
+
 msgid "ContinuousDeployment|Environments"
 msgstr ""
 
@@ -23396,6 +23405,9 @@ msgid "ContinuousDeployment|Expand releases"
 msgstr ""
 
 msgid "ContinuousDeployment|Expand services"
+msgstr ""
+
+msgid "ContinuousDeployment|Explain why this rollout is being rejected"
 msgstr ""
 
 msgid "ContinuousDeployment|Failed"
@@ -23420,6 +23432,12 @@ msgid "ContinuousDeployment|Failed to load services. Reload to try again."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to load the application. Please try again later."
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to load the approval gate. Refresh to try again."
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to record the decision. Please try again."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to save the link. Try again later."
@@ -23551,6 +23569,9 @@ msgstr ""
 msgid "ContinuousDeployment|QA"
 msgstr ""
 
+msgid "ContinuousDeployment|Reason"
+msgstr ""
+
 msgid "ContinuousDeployment|Register application"
 msgstr ""
 
@@ -23563,7 +23584,16 @@ msgstr ""
 msgid "ContinuousDeployment|Register your first environment"
 msgstr ""
 
+msgid "ContinuousDeployment|Reject"
+msgstr ""
+
+msgid "ContinuousDeployment|Reject this approval?"
+msgstr ""
+
 msgid "ContinuousDeployment|Rejected"
+msgstr ""
+
+msgid "ContinuousDeployment|Rejected %{step}"
 msgstr ""
 
 msgid "ContinuousDeployment|Release"
@@ -40712,9 +40742,6 @@ msgstr ""
 msgid "Homepage|Friday mode: activated"
 msgstr ""
 
-msgid "Homepage|Git happens"
-msgstr ""
-
 msgid "Homepage|Good afternoon"
 msgstr ""
 
@@ -40778,13 +40805,7 @@ msgstr ""
 msgid "Homepage|It all started with a commit"
 msgstr ""
 
-msgid "Homepage|It works on my machine"
-msgstr ""
-
 msgid "Homepage|It's Tuesday, let's code"
-msgstr ""
-
-msgid "Homepage|It's not a bug, it's a feature"
 msgstr ""
 
 msgid "Homepage|Late night coding session?"
@@ -40830,9 +40851,6 @@ msgid "Homepage|Ready when you are"
 msgstr ""
 
 msgid "Homepage|Ready, set, go"
-msgstr ""
-
-msgid "Homepage|Rebasing: still not fun"
 msgstr ""
 
 msgid "Homepage|Rise and ship!"
@@ -59526,6 +59544,9 @@ msgstr ""
 msgid "PolicyStore|Choose individual projects to govern"
 msgstr ""
 
+msgid "PolicyStore|Comma-separated environment names this rule applies to. At least one name or tier is required."
+msgstr ""
+
 msgid "PolicyStore|Continue editing"
 msgstr ""
 
@@ -59553,6 +59574,9 @@ msgstr ""
 msgid "PolicyStore|Deployment Gate"
 msgstr ""
 
+msgid "PolicyStore|Deployment tiers this rule applies to. At least one name or tier is required."
+msgstr ""
+
 msgid "PolicyStore|Describe what this policy does"
 msgstr ""
 
@@ -59563,6 +59587,9 @@ msgid "PolicyStore|Details"
 msgstr ""
 
 msgid "PolicyStore|Developer"
+msgstr ""
+
+msgid "PolicyStore|Development"
 msgstr ""
 
 msgid "PolicyStore|Disable"
@@ -59592,13 +59619,13 @@ msgstr ""
 msgid "PolicyStore|Enforcement mode"
 msgstr ""
 
-msgid "PolicyStore|Environment"
-msgstr ""
-
 msgid "PolicyStore|Environment State"
 msgstr ""
 
-msgid "PolicyStore|Environment name or pattern this rule applies to."
+msgid "PolicyStore|Environment names"
+msgstr ""
+
+msgid "PolicyStore|Environment tiers"
 msgstr ""
 
 msgid "PolicyStore|Esc or click outside to save"
@@ -59655,6 +59682,9 @@ msgstr ""
 msgid "PolicyStore|OPA/Rego policy evaluated server-side when the event is received. Maximum 32 KB."
 msgstr ""
 
+msgid "PolicyStore|Other"
+msgstr ""
+
 msgid "PolicyStore|Override groups"
 msgstr ""
 
@@ -59671,6 +59701,9 @@ msgid "PolicyStore|Policy creation steps"
 msgstr ""
 
 msgid "PolicyStore|Policy name"
+msgstr ""
+
+msgid "PolicyStore|Production"
 msgstr ""
 
 msgid "PolicyStore|Projects"
@@ -59742,10 +59775,16 @@ msgstr ""
 msgid "PolicyStore|Specific projects"
 msgstr ""
 
+msgid "PolicyStore|Staging"
+msgstr ""
+
 msgid "PolicyStore|Start from scratch"
 msgstr ""
 
 msgid "PolicyStore|Targeted"
+msgstr ""
+
+msgid "PolicyStore|Testing"
 msgstr ""
 
 msgid "PolicyStore|The available %{catalog} could not be fetched from the Policy Store API. Refresh the page to try again."
@@ -59850,7 +59889,7 @@ msgstr ""
 msgid "PolicyStore|e.g. America/New_York"
 msgstr ""
 
-msgid "PolicyStore|e.g. production, prod-*"
+msgid "PolicyStore|e.g. production, staging"
 msgstr ""
 
 msgid "PolicyStore|e.g. security-leads, engineering-leads"
@@ -69328,7 +69367,7 @@ msgstr ""
 msgid "SecretsManager|Add secret"
 msgstr ""
 
-msgid "SecretsManager|After August 20, GitLab Secrets Manager will require consuming GitLab credits. Without an eligible plan, your secrets manager will be disabled and pipelines will no longer access secrets. To avoid service disruption, start a trial to keep access."
+msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will consume GitLab credits. Without an eligible plan, your secrets manager will be disabled. To avoid a service disruption, start a trial to keep access."
 msgstr ""
 
 msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
@@ -69520,8 +69559,15 @@ msgstr ""
 msgid "SecretsManager|Your Beta period is over and GitLab Secrets Manager has been disabled"
 msgstr ""
 
-msgid "SecretsManager|Your free beta ends on August 20. Start a trial now."
-msgstr ""
+msgid "SecretsManager|Your free beta ends in %{count} day. Start a trial now."
+msgid_plural "SecretsManager|Your free beta ends in %{count} days. Start a trial now."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecretsManager|Your free beta ends in %{count} hour. Start a trial now."
+msgid_plural "SecretsManager|Your free beta ends in %{count} hours. Start a trial now."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Secure Code Warrior"
 msgstr ""
@@ -90497,10 +90543,22 @@ msgstr ""
 msgid "WorkItemDecisionLog|Selected"
 msgstr ""
 
+msgid "WorkItemDuoQuestion|An answer is required to submit"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Answer in your own words"
+msgstr ""
+
 msgid "WorkItemDuoQuestion|Recommended"
 msgstr ""
 
+msgid "WorkItemDuoQuestion|Send answer"
+msgstr ""
+
 msgid "WorkItemDuoQuestion|Something went wrong while sending your answer. Please try again."
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Type your answer here…"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Your answer was posted, but the thread could not be resolved. Resolve it manually so GitLab Duo can continue."

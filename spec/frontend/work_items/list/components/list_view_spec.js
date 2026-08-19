@@ -338,26 +338,43 @@ describe.each`
     ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
   `('$description', ({ pageInfo, exists }) => {
     it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
-      const mockResponse = {
+      const workItemsData = {
+        ...workItemsQueryResponseCombined.data.namespace.workItems,
+        pageInfo: {
+          ...pageInfo,
+          startCursor: 'start',
+          endCursor: 'end',
+          __typename: 'PageInfo',
+        },
+      };
+
+      const mockResponseGraphQL = {
         data: {
           namespace: {
             ...workItemsQueryResponseCombined.data.namespace,
-            workItems: {
-              ...workItemsQueryResponseCombined.data.namespace.workItems,
-              pageInfo: {
-                ...pageInfo,
-                startCursor: 'start',
-                endCursor: 'end',
-                __typename: 'PageInfo',
-              },
-            },
+            workItems: workItemsData,
           },
         },
       };
 
-      workItemsSlimQueryHandler.mockResolvedValue(mockResponse);
-      workItemsFullQueryHandler.mockResolvedValue(mockResponse);
-      workItemsRestQueryHandler.mockResolvedValue(mockResponse);
+      const mockResponseREST = {
+        data: {
+          namespace: {
+            id: workItemsQueryResponseCombined.data.namespace.id,
+            // eslint-disable-next-line no-underscore-dangle
+            __typename: workItemsQueryResponseCombined.data.namespace.__typename,
+            fullPath: workItemsQueryResponseCombined.data.namespace.fullPath,
+            name: workItemsQueryResponseCombined.data.namespace.name,
+          },
+          restWorkItems: workItemsData,
+        },
+      };
+
+      workItemsSlimQueryHandler.mockResolvedValue(mockResponseGraphQL);
+      workItemsFullQueryHandler.mockResolvedValue(mockResponseGraphQL);
+      workItemsRestQueryHandler.mockResolvedValue(
+        useRestApi ? mockResponseREST : mockResponseGraphQL,
+      );
 
       mountComponent({ useRestApi });
       await waitForPromises();

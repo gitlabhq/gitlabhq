@@ -1,8 +1,11 @@
 /**
- * When a query uses `namespace { workItems @client { ... } }`, Apollo invokes this resolver
- * instead of sending a GraphQL network request. The resolver fetches data from the work items
- * REST endpoint and maps the response to match the GraphQL WorkItem type shape so Apollo can
- * cache it.
+ * REST-backed resolvers for the work items list.
+ *
+ * `restWorkItemsResolver` is the top-level @client resolver for `Query.restWorkItems`
+ *
+ * `workItemsRestResolver` is the shared implementation it delegates to: it fetches
+ * from the work items REST endpoint and maps the response to match the GraphQL
+ * WorkItem type shape so Apollo can cache it.
  *
  * REST endpoint: GET /api/:version/namespaces/:full_path/-/work_items
  */
@@ -17,8 +20,7 @@ const GROUPS_PATH = '/api/:version/groups/:full_path/-/work_items';
 const NAMESPACES_PATH = '/api/:version/namespaces/:full_path/-/work_items';
 
 export function isGroupNamespace(namespace) {
-  // eslint-disable-next-line @gitlab/no-hardcoded-urls
-  return (namespace?.id ?? '').includes('/Group/');
+  return Boolean(namespace?.isGroup);
 }
 
 const REST_STATE_TO_GRAPHQL = {
@@ -321,4 +323,31 @@ export async function workItemsRestResolver(namespace, args) {
     pageInfo,
     nodes,
   };
+}
+
+/**
+ * Top-level @client resolver for Query.restWorkItems field.
+ *
+ * Wraps workItemsRestResolver above to adapt the signature from:
+ *   workItemsRestResolver(namespace, args)
+ * to:
+ *   restWorkItemsResolver(_, args)
+ *
+ * This isolates REST data under Query.restWorkItems instead of
+ * Query.namespace(fullPath).workItems, preventing cache broadcast conflicts
+ * where writes to namespace trigger unwanted resolver reruns.
+ *
+ * The namespace object passed downstream is a lightweight marker used solely
+ * for REST endpoint selection (groups vs namespaces). Real namespace data
+ * (id, kind) comes from the REST API response itself.
+ */
+export async function restWorkItemsResolver(_, args) {
+  const { fullPath, isGroup, ...restArgs } = args;
+
+  const namespace = {
+    fullPath,
+    isGroup: Boolean(isGroup),
+  };
+
+  return workItemsRestResolver(namespace, restArgs);
 }

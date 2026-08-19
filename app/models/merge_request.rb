@@ -944,8 +944,21 @@ class MergeRequest < ApplicationRecord
     !!(title =~ DRAFT_REGEX)
   end
 
+  # No legitimate title stacks anywhere near this many draft prefixes; it only
+  # bounds the loop below against an adversarial title (title length isn't
+  # validated yet at this point).
+  MAX_DRAFT_PREFIX_STRIPS = 20
+
   def self.draftless_title(title)
-    title.sub(DRAFT_REGEX, "")
+    MAX_DRAFT_PREFIX_STRIPS.times do
+      # Loop because DRAFT_REGEX uses \A and can't match multiple prefixes in one pass
+      new_title = title.sub(DRAFT_REGEX, "")
+      break if new_title == title
+
+      title = new_title
+    end
+
+    title
   end
 
   def self.draft_title(title)

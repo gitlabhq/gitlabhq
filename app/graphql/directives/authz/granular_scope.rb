@@ -28,6 +28,12 @@ module Directives
         description: 'Argument name containing the authorization boundary (path or GlobalID). ' \
           'Use for mutations and query fields where the boundary is passed as an argument.'
 
+      argument :requirement_group, GraphQL::Types::String,
+        required: false,
+        description: 'Label grouping directives that are alternative boundaries for the same ' \
+          'requirement. The token must be authorized on any one boundary in a group, and on every ' \
+          'group. Absent means the primary group. Set for a second container, such as a move target.'
+
       locations FIELD_DEFINITION, OBJECT
     end
   end

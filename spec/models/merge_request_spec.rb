@@ -3436,8 +3436,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe "#draftless_title" do
     subject { build_stubbed(:merge_request) }
 
-    ['draft:', 'Draft: ', '[Draft]', '[DRAFT] '].each do |draft_prefix|
-      it "removes a '#{draft_prefix}' prefix" do
+    [
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ',
+      'Draft: Draft: ', '[Draft] [Draft] ', '(Draft) (Draft) ', 'Draft:Draft: ', 'Draft: [Draft] (Draft) '
+    ].each do |draft_prefix|
+      it "removes the '#{draft_prefix}' prefix" do
         draftless_title = subject.title
         subject.title = "#{draft_prefix}#{subject.title}"
 
@@ -3468,6 +3471,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(subject.draftless_title).to eq 'Implement feature called draft'
     end
 
+    it 'does not strip a bare draft word left over after removing real prefixes' do
+      subject.title = 'Draft: Draft: draft'
+
+      expect(subject.draftless_title).to eq 'draft'
+    end
+
     it 'does not remove WIP in the middle of the title' do
       subject.title = 'Something with WIP in the middle'
 
@@ -3490,6 +3499,19 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.title = 'Something ends with Draft'
 
       expect(subject.draftless_title).to eq subject.title
+    end
+
+    it 'preserves real content that only exceeds the length limit because of the prefix' do
+      real_title = ('a' * Issuable::TITLE_LENGTH_MAX)
+      subject.title = "Draft: #{real_title}"
+
+      expect(subject.draftless_title).to eq real_title
+    end
+
+    it 'bounds the number of prefixes it will strip from an adversarial title' do
+      subject.title = "#{'Draft: ' * 100_000}Implement feature"
+
+      expect(subject.draftless_title).to start_with('Draft: ')
     end
   end
 

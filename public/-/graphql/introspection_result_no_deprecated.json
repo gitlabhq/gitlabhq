@@ -241093,6 +241093,16 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "requirementGroup",
+              "description": "Label grouping directives that are alternative boundaries for the same requirement. The token must be authorized on any one boundary in a group, and on every group. Absent means the primary group. Set for a second container, such as a move target.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ]
         },

@@ -13,8 +13,6 @@ export default {
     'app/assets/javascripts/members/components/filter_sort/sort_dropdown.vue',
     'app/assets/javascripts/pipeline_wizard/components/step.vue',
     'app/assets/javascripts/sidebar/components/assignees/sidebar_assignees_widget.vue',
-    'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue',
-    'app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue',
     'app/assets/javascripts/todos/components/todos_filter_bar.vue',
     'app/assets/javascripts/vue_shared/access_tokens/components/access_tokens.vue',
     'app/assets/javascripts/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue',

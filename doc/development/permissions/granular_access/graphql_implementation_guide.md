@@ -113,7 +113,7 @@ Use the `authorize_granular_token` method to declare permissions on types and mu
 **Method Signature:**
 
 ```ruby
-authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil, boundaries: nil, skip_reason: nil)
+authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil, boundaries: nil, additional_scopes: nil, skip_reason: nil)
 ```
 
 **Parameters:**
@@ -125,6 +125,7 @@ authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, bounda
 | `boundary` | Symbol representing the method to call on the resolved object to extract the boundary (for example, `:project`). Use `:itself` when the resolved object is the Project or Group itself (for example, on `ProjectType` and `GroupType`). Use `:user` or `:instance` for standalone resources. |
 | `boundary_argument` | Symbol representing the argument name containing the boundary path (for example, `:project_path`). |
 | `boundaries` | Array of boundary hashes for resources that support multiple boundary types. Each hash requires a `boundary_type` key and can include `boundary` or `boundary_argument`. For more details, see [Multiple boundaries](#multiple-boundaries). |
+| `additional_scopes` | Array of boundary hashes for a second container that the type or mutation acts on, each of which must be authorized in addition to the primary boundary. Each hash requires its own `permissions` and `boundary_type` keys, and can include `boundary` or `boundary_argument`. For more details, see [Additional required scopes](#additional-required-scopes). |
 | `skip_reason` | Symbol declaring that a type intentionally opts out of granular-token authorization. Use instead of `permissions:` and a boundary, not alongside them. For more details, see [Skip authorization with `skip_reason`](#skip-authorization-with-skip_reason). |
 
 **For object types:**
@@ -243,6 +244,42 @@ For an instance runner, `runner.owner` returns a `User`, so neither the project 
 directive matches, and the standalone `instance` boundary applies.
 For more details, see [Multiple boundaries](graphql_architecture.md#multiple-boundaries).
 
+#### Additional required scopes
+
+Some mutations act on a second container named in an argument, separate from the primary boundary.
+For example, moving an issue reads the source project from one argument but also writes to a target
+project named in another.
+Use `additional_scopes` to require authorization on that second container as well.
+
+`boundaries` and `additional_scopes` serve different purposes.
+`boundaries` lists alternatives, where the token needs to satisfy only one of them.
+`additional_scopes` lists cumulative requirements, where the token needs to satisfy every one of them,
+on top of the primary boundary.
+
+```ruby
+class Move < BaseMutation
+  authorize_granular_token permissions: :move_issue,
+    boundary_argument: :project_path, boundary_type: :project,
+    additional_scopes: [
+      { permissions: :create_work_item, boundary_argument: :target_project_path, boundary_type: :project }
+    ]
+end
+```
+
+Each entry in `additional_scopes` declares its own `permissions`, because the permission required on
+the target of a move can differ from the permission required on the source.
+When an additional scope's boundary cannot be resolved from the arguments, the request is denied with
+`404 Not Found` instead of skipping the requirement.
+
+Each `additional_scopes` entry must declare a `boundary_type` and locate its boundary
+using either `boundary_argument` or `boundary`. Two entries in the same
+`additional_scopes` list must not share a `boundary_argument` value, because each entry
+needs its own requirement group. Run `bundle exec rake gitlab:permissions:validate` to
+catch declarations that violate these rules at validation time, rather than have them
+silently deny every request with `404 Not Found` at request time.
+
+For more details, see [Additional required scopes](graphql_architecture.md#additional-required-scopes).
+
 #### Traversal between authorized types
 
 When a field on an authorized type returns another type that also declares
@@ -323,6 +360,21 @@ it_behaves_like 'authorizing granular token permissions for GraphQL', :<permissi
   let(:user) { current_user }
   let(:boundary_object) { <boundary_object> }
   let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+end
+```
+
+To test a mutation that declares `additional_scopes`, pass `additional_scope_permissions:` to the
+shared example and define `additional_scope_requirements`.
+The shared example then scopes the token to every boundary, and adds an example asserting that a token
+holding only the primary boundary's scope is denied.
+
+```ruby
+it_behaves_like 'authorizing granular token permissions for GraphQL', :move_issue,
+  additional_scope_permissions: :create_work_item do
+  let(:boundary_object) { source_project }
+  let(:additional_scope_requirements) do
+    [{ boundary_object: target_project, permissions: :create_work_item }]
+  end
 end
 ```
 

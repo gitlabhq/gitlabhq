@@ -36,6 +36,11 @@ When the flag is disabled, granular PATs do not work for GraphQL requests.
   - `boundary_argument`: Argument name containing the boundary.
   - `boundary_type`: The type of authorization boundary (`project`, `group`, `user`,
     `instance`). Used for validation and documentation of the permission boundary.
+  - `requirement_group`: Label grouping directives that are alternative boundaries for the
+    same requirement. The token must be authorized on any one boundary in a group, and on
+    every distinct group present on the type or mutation. A directive with no
+    `requirement_group` belongs to the primary group. An additional scope gets a group
+    name derived from its `boundary_argument`, or `additional_<index>` when it has none.
 
 ### 3. Boundary extractor
 
@@ -182,6 +187,41 @@ The boundary that applies depends on the runner:
 - For an instance runner, `runner.owner` is neither a Project nor a Group, so both concrete directives are skipped. The standalone `instance` boundary is used instead, and the token is checked for `read_runner` on the instance.
 
 The standalone boundary is preferred over the concrete boundaries only in the last case, where the runner has no owning project or group.
+
+## Additional required scopes
+
+[Multiple boundaries](#multiple-boundaries) covers alternatives within a single group, where the token
+needs to satisfy only one of the directives that share a group.
+Additional required scopes work the other way: each group is a separate, cumulative requirement, and
+the token needs to satisfy all of them.
+
+`BoundaryExtractor` groups the directives declared on a type or mutation by `requirement_group`, then
+resolves each group's boundary independently.
+`GranularScopeAuthorization` authorizes each group with its own call to `AuthorizeGranularScopesService`,
+and caches the result under a key built from that group's permissions and resolved boundaries.
+A token can be authorized for the primary scope and denied for an additional scope, or the reverse,
+without either result affecting the other's cache entry.
+
+Declaring `additional_scopes` on `authorize_granular_token` adds a directive per entry, each with a
+`requirement_group` derived from its `boundary_argument`, or `additional_<index>` when it has none.
+The primary boundary, and any `boundaries` alternatives for it, keep the default group.
+
+```ruby
+authorize_granular_token permissions: :move_issue,
+  boundary_argument: :project_path, boundary_type: :project,
+  additional_scopes: [
+    { permissions: :create_work_item, boundary_argument: :target_project_path, boundary_type: :project }
+  ]
+```
+
+For this mutation, the primary directive (`move_issue` on the project resolved from `project_path`)
+belongs to the default group, and the additional directive (`create_work_item` on the project resolved
+from `target_project_path`) belongs to its own `target_project_path` group.
+Both groups must be authorized for the mutation to run.
+
+When a group's boundary cannot be resolved, `AuthorizeGranularScopesService` returns `404 Not Found`
+for that group, the same as for an unresolved primary boundary.
+See [Boundary resolution errors](#2-boundary-resolution-errors).
 
 ## Example scenarios
 

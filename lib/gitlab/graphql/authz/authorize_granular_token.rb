@@ -11,18 +11,13 @@ module Gitlab
           # Pass `boundaries:` for multi-boundary fields; otherwise a single-element array is returned.
           def granular_scope_directive(
             permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil,
-            boundaries: nil)
+            boundaries: nil, additional_scopes: nil)
             validate_boundaries!(boundaries) if boundaries
 
-            (boundaries || [{ boundary: boundary, boundary_argument: boundary_argument,
-                              boundary_type: boundary_type }]).map do |b|
+            requirement_scopes(permissions, boundaries, additional_scopes,
+              boundary: boundary, boundary_argument: boundary_argument, boundary_type: boundary_type).map do |b|
               {
-                Directives::Authz::GranularScope => granular_scope_arguments(
-                  permissions: permissions,
-                  boundary: b[:boundary],
-                  boundary_argument: b[:boundary_argument],
-                  boundary_type: b[:boundary_type]
-                )
+                Directives::Authz::GranularScope => granular_scope_arguments(**b)
               }
             end
           end
@@ -30,27 +25,29 @@ module Gitlab
           # Applies the GranularScope directives to a type or mutation class.
           def authorize_granular_token(
             permissions: nil, boundary_type: nil, boundary: nil, boundary_argument: nil,
-            boundaries: nil, skip_reason: nil)
-            other_args = { permissions:, boundary_type:, boundary:, boundary_argument:, boundaries: }
+            boundaries: nil, skip_reason: nil, additional_scopes: nil)
+            other_args = { permissions:, boundary_type:, boundary:, boundary_argument:, boundaries:,
+                           additional_scopes: }
             return apply_skip_directive(skip_reason, other_args) if skip_reason
 
             raise ArgumentError, 'missing keyword: :permissions' if permissions.nil?
 
             validate_boundaries!(boundaries) if boundaries
 
-            (boundaries || [{ boundary: boundary, boundary_argument: boundary_argument,
-                              boundary_type: boundary_type }]).each do |b|
-              directive Directives::Authz::GranularScope,
-                **granular_scope_arguments(
-                  permissions: permissions,
-                  boundary: b[:boundary],
-                  boundary_argument: b[:boundary_argument],
-                  boundary_type: b[:boundary_type]
-                )
+            requirement_scopes(permissions, boundaries, additional_scopes,
+              boundary: boundary, boundary_argument: boundary_argument, boundary_type: boundary_type).each do |b|
+              directive Directives::Authz::GranularScope, **granular_scope_arguments(**b)
             end
           end
 
           private
+
+          def requirement_scopes(permissions, boundaries, additional_scopes, **primary)
+            (boundaries || [primary]).map { |b| b.merge(permissions: permissions) } +
+              Array(additional_scopes).each_with_index.map do |b, index|
+                b.merge(requirement_group: b[:boundary_argument]&.to_s || "additional_#{index}")
+              end
+          end
 
           def apply_skip_directive(reason, other_args)
             validate_skip_authorization!(other_args)
@@ -76,12 +73,14 @@ module Gitlab
             end
           end
 
-          def granular_scope_arguments(permissions:, boundary:, boundary_argument:, boundary_type:)
+          def granular_scope_arguments(
+            permissions:, boundary: nil, boundary_argument: nil, boundary_type: nil, requirement_group: nil)
             {
               permissions: Array.wrap(permissions).map(&:to_s),
               boundary: boundary&.to_s,
               boundary_argument: boundary_argument&.to_s,
-              boundary_type: boundary_type&.to_s&.upcase
+              boundary_type: boundary_type&.to_s&.upcase,
+              requirement_group: requirement_group
             }.compact
           end
         end

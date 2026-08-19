@@ -1,32 +1,33 @@
 import produce from 'immer';
 import { cloneDeep } from 'lodash-es';
-
-const getConnection = (data) => data?.namespace?.workItems;
+import { getWorkItemsConnection } from '~/work_items/utils';
 
 // Deep snapshot of the moved card so it can be reinserted into the target column;
 // null when the column or item is absent.
-export const readWorkItemFromColumn = ({ cache, query, variables, workItemId }) => {
+export const readWorkItemFromColumn = ({ cache, query, variables, workItemId, useRestApi }) => {
   const data = cache.readQuery({ query, variables });
-  const node = getConnection(data)?.nodes?.find((item) => item.id === workItemId);
+  const node = getWorkItemsConnection(data, useRestApi)?.nodes?.find(
+    (item) => item.id === workItemId,
+  );
   return node ? cloneDeep(node) : null;
 };
 
 // Pre-move snapshot of a column's ordered work items; empty when the column is
 // absent from the cache. Used to compute relative-position ids for a move.
-export const readWorkItemsFromColumn = ({ cache, query, variables }) => {
+export const readWorkItemsFromColumn = ({ cache, query, variables, useRestApi }) => {
   const data = cache.readQuery({ query, variables });
-  return getConnection(data)?.nodes ?? [];
+  return getWorkItemsConnection(data, useRestApi)?.nodes ?? [];
 };
 
 // No-op on a missing cache entry, so a move still works when a sibling column is unloaded.
-export const removeWorkItemFromColumn = ({ cache, query, variables, workItemId }) => {
+export const removeWorkItemFromColumn = ({ cache, query, variables, workItemId, useRestApi }) => {
   cache.updateQuery({ query, variables }, (sourceData) => {
-    if (!getConnection(sourceData)) {
+    if (!getWorkItemsConnection(sourceData, useRestApi)) {
       return sourceData;
     }
 
     return produce(sourceData, (draftData) => {
-      const { nodes } = getConnection(draftData);
+      const { nodes } = getWorkItemsConnection(draftData, useRestApi);
       const index = nodes.findIndex((item) => item.id === workItemId);
       if (index !== -1) {
         nodes.splice(index, 1);
@@ -38,14 +39,22 @@ export const removeWorkItemFromColumn = ({ cache, query, variables, workItemId }
 // Inserts at index and runs the optional `patchCard` callback on the inserted
 // (cloned) node so its grouped attribute matches the target column during the
 // optimistic window. No-op on a missing cache entry.
-export const addWorkItemToColumn = ({ cache, query, variables, workItem, index, patchCard }) => {
+export const addWorkItemToColumn = ({
+  cache,
+  query,
+  variables,
+  workItem,
+  index,
+  patchCard,
+  useRestApi,
+}) => {
   cache.updateQuery({ query, variables }, (sourceData) => {
-    if (!getConnection(sourceData)) {
+    if (!getWorkItemsConnection(sourceData, useRestApi)) {
       return sourceData;
     }
 
     return produce(sourceData, (draftData) => {
-      const { nodes } = getConnection(draftData);
+      const { nodes } = getWorkItemsConnection(draftData, useRestApi);
       if (nodes.some((item) => item.id === workItem.id)) {
         return;
       }
@@ -64,13 +73,13 @@ export const addWorkItemToColumn = ({ cache, query, variables, workItem, index, 
 // so card-move updates to the connection don't touch it). No-op on a missing entry.
 export const adjustWorkItemCountInColumn = ({ cache, query, variables, delta }) => {
   cache.updateQuery({ query, variables }, (sourceData) => {
-    const connection = getConnection(sourceData);
+    const connection = sourceData?.namespace?.workItems;
     if (typeof connection?.count !== 'number') {
       return sourceData;
     }
 
     return produce(sourceData, (draftData) => {
-      const draft = getConnection(draftData);
+      const draft = draftData.namespace.workItems;
       draft.count = Math.max(0, draft.count + delta);
     });
   });

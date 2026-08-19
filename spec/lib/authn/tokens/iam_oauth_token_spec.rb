@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   include_context 'with IAM authentication setup'
 
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   let(:scopes) { %w[api read_repository] }
   let(:expires_at) { 1.hour.from_now }
@@ -91,6 +91,28 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
     end
   end
 
+  describe '#acceptable?' do
+    it 'returns true when the token is accessible and includes a required scope' do
+      expect(token.acceptable?([:api])).to be(true)
+    end
+
+    it 'returns true when no scopes are required' do
+      expect(token.acceptable?([])).to be(true)
+    end
+
+    it 'returns false when the token does not include any required scope' do
+      expect(token.acceptable?([:openid])).to be(false)
+    end
+
+    it 'returns false when the token is not accessible' do
+      token
+
+      travel_to(2.hours.from_now) do
+        expect(token.acceptable?([:api])).to be(false)
+      end
+    end
+  end
+
   describe '#accessible?' do
     it 'returns true for valid token' do
       expect(token.accessible?).to be(true)
@@ -102,6 +124,12 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
       travel_to(2.hours.from_now) do
         expect(token.accessible?).to be(false)
       end
+    end
+
+    it 'returns false when the user is blocked' do
+      user.block!
+
+      expect(token.accessible?).to be(false)
     end
   end
 
@@ -116,6 +144,12 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
       travel_to(2.hours.from_now) do
         expect(token.active?).to be(false)
       end
+    end
+  end
+
+  describe '#application' do
+    it 'returns nil' do
+      expect(token.application).to be_nil
     end
   end
 
@@ -136,6 +170,20 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   describe '#id' do
     it 'returns the id' do
       expect(token.id).to be_present
+    end
+  end
+
+  describe '#includes_scope?' do
+    it 'returns true when required scopes are blank' do
+      expect(token.includes_scope?).to be(true)
+    end
+
+    it 'returns true when any required scope matches' do
+      expect(token.includes_scope?(:openid, :api)).to be(true)
+    end
+
+    it 'returns false when no required scope matches' do
+      expect(token.includes_scope?(:openid, :profile)).to be(false)
     end
   end
 
@@ -206,6 +254,13 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
       it 'returns nil' do
         expect(token.scope_user).to be_nil
       end
+    end
+  end
+
+  describe '#scopes' do
+    it 'returns a Doorkeeper::OAuth::Scopes instance with the token scopes', :aggregate_failures do
+      expect(token.scopes).to be_a(Doorkeeper::OAuth::Scopes)
+      expect(token.scopes.to_a).to eq(scopes)
     end
   end
 

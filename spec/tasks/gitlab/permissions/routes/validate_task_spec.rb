@@ -89,6 +89,174 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
+    context 'with additional_scopes' do
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      context 'when an entry is valid' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [
+                { permissions: :read_project, boundary_type: :project, boundary_param: :to_project_id }
+              ]
+            }
+          }
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/REST permissions are valid/).to_stdout
+        end
+      end
+
+      context 'when an entry references an undefined permission' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [{ permissions: :undefined_permission, boundary_type: :project }]
+            }
+          }
+        end
+
+        before do
+          allow(Authz::Permission).to receive(:defined?).with(:undefined_permission).and_return(false)
+          allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+            .with(:undefined_permission).and_return([])
+        end
+
+        it 'reports the permission as undefined' do
+          expect { run }.to raise_error(SystemExit)
+            .and output(/permissions without definition files/).to_stdout
+        end
+      end
+
+      context 'when an entry is missing a boundary_type' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [{ permissions: :read_project, boundary_param: :to_project_id }]
+            }
+          }
+        end
+
+        it 'reports the missing boundary' do
+          expect { run }.to raise_error(SystemExit)
+            .and output(/missing a boundary_type/).to_stdout
+        end
+      end
+
+      context 'when an entry is missing permissions' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [{ boundary_type: :project, boundary_param: :to_project_id }]
+            }
+          }
+        end
+
+        it 'reports the entry as invalid' do
+          expect { run }.to raise_error(SystemExit)
+            .and output(/invalid additional_scopes entry.*missing permissions/m).to_stdout
+        end
+      end
+
+      context 'when a :project entry has neither boundary_param nor boundary' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [{ permissions: :read_project, boundary_type: :project }]
+            }
+          }
+        end
+
+        it 'reports the entry as invalid' do
+          expect { run }.to raise_error(SystemExit)
+            .and output(/invalid additional_scopes entry.*missing boundary_param or boundary/m).to_stdout
+        end
+      end
+
+      context 'when an entry locates its boundary with a callable' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [
+                { permissions: :read_project, boundary_type: :project, boundary: -> {} }
+              ]
+            }
+          }
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/REST permissions are valid/).to_stdout
+        end
+      end
+
+      context 'when a standalone entry has no boundary_param' do
+        let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project user]) }
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [{ permissions: :read_project, boundary_type: :user }]
+            }
+          }
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/REST permissions are valid/).to_stdout
+        end
+      end
+
+      context 'when registering test coverage' do
+        let(:route_settings) do
+          {
+            authorization: {
+              permissions: :read_project, boundary_type: :project,
+              additional_scopes: [
+                { permissions: :read_project, boundary_type: :project, boundary_param: :to_project_id }
+              ]
+            }
+          }
+        end
+
+        it 'registers the additional scope permission as its own requirement' do
+          run
+
+          expect(task).to have_received(:register_test_coverage)
+            .with(mock_route, :read_project, [:project], scope_suffix: 'additional')
+        end
+
+        it 'appends the scope suffix to the endpoint id' do
+          mock_scanner = instance_double(
+            Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner,
+            insufficient_test_coverage: [],
+            derive_spec_path: 'spec/requests/api/test_spec.rb'
+          )
+          allow(task).to receive(:register_test_coverage).and_call_original
+          allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
+          allow(mock_scanner).to receive(:add_endpoint)
+
+          run
+
+          expect(mock_scanner).to have_received(:add_endpoint)
+            .with(hash_including(endpoint_id: 'lib/api/test.rb:42 project'))
+          expect(mock_scanner).to have_received(:add_endpoint)
+            .with(hash_including(endpoint_id: 'lib/api/test.rb:42 project additional'))
+        end
+      end
+    end
+
     context 'when a route has an undefined permission' do
       let(:route_settings) { { authorization: { permissions: :undefined_permission, boundary_type: :project } } }
 

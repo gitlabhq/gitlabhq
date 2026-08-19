@@ -418,6 +418,9 @@ export const findDetailPanelWorkItem = (queryParam, items, activeItem) => {
   return item ? { item: { ...item, fullPath }, notFound: false } : { item: null, notFound: true };
 };
 
+export const getWorkItemsConnection = (data, useRestApi) =>
+  useRestApi ? data?.restWorkItems : data?.namespace?.workItems;
+
 export const getAutosaveKeyQueryParamString = () => {
   const allowedKeysInQueryParamString = [
     'vulnerability_id',

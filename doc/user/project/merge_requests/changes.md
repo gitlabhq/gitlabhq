@@ -244,6 +244,7 @@ To change how a merge request shows changed lines:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590833) in GitLab 18.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `rapid_diffs_on_mr_show`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/539581) in GitLab 19.0.
+- [Set as the default experience](https://gitlab.com/gitlab-org/gitlab/-/issues/602723) on the merge request **Changes** tab on GitLab.com in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `rapid_diffs_default_on_mr_show`. Enabled by default.
 
 {{< /history >}}
 
@@ -260,7 +261,9 @@ For the feature parity roadmap, see [epic 19380](https://gitlab.com/groups/gitla
 
 ### Turn on Rapid Diffs
 
-To turn on Rapid Diffs for all merge requests:
+Rapid Diffs is on by default on the merge request **Changes** tab.
+
+If you previously turned it off, you can turn it back on for all merge requests:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.

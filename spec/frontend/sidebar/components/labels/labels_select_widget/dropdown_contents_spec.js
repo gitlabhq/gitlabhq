@@ -181,8 +181,8 @@ describe('DropdownContent', () => {
       expect(findLabelsView().exists()).toBe(true);
     });
 
-    it('changes the view to Labels view on `hideCreateView` event', async () => {
-      findCreateView().vm.$emit('hideCreateView');
+    it('changes the view to Labels view on `hide-create-view` event', async () => {
+      findCreateView().vm.$emit('hide-create-view');
       await nextTick();
 
       expect(findCreateView().exists()).toBe(false);
@@ -198,7 +198,7 @@ describe('DropdownContent', () => {
         textColor: '#FFFFFF',
       };
 
-      findCreateView().vm.$emit('labelCreated', createdLabel);
+      findCreateView().vm.$emit('label-created', createdLabel);
       await nextTick();
 
       expect(findLabelsView().props('localSelectedLabels')).toContain(createdLabel);

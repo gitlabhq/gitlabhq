@@ -324,8 +324,20 @@ export default {
 
       if (source?.fromPinnedSection) {
         this.$nextTick(() => {
-          this.$refs.pinnedSectionButton?.$el.querySelector('button')?.focus();
+          this.focusAfterPinnedUnpin(itemId);
         });
+      }
+    },
+    focusAfterPinnedUnpin(itemId) {
+      if (!this.showFeatureLibrary) {
+        this.$refs.pinnedSectionButton?.$el.querySelector('button')?.focus();
+        return;
+      }
+
+      if (this.activeUnpinnedItem?.id === itemId) {
+        this.$refs.currentPageItem?.focus();
+      } else {
+        this.$refs.featureLibraryTrigger?.$el?.focus();
       }
     },
     movePin(fromId, toId, isDownwards) {
@@ -424,6 +436,7 @@ export default {
     />
     <gl-nav-item
       v-if="showFeatureLibrary"
+      ref="featureLibraryTrigger"
       v-gl-modal="$options.modalId"
       v-gl-tooltip.right.viewport="isIconOnly ? $options.i18n.browseMoreFeatures : ''"
       :aria-label="$options.i18n.browseMoreFeatures"
@@ -442,7 +455,12 @@ export default {
         class="gl-m-0 gl-list-none gl-p-0"
         data-testid="current-page-section"
       >
-        <nav-item :item="activeUnpinnedItem" :async-count="asyncCount" @pin-add="createPin" />
+        <nav-item
+          ref="currentPageItem"
+          :item="activeUnpinnedItem"
+          :async-count="asyncCount"
+          @pin-add="createPin"
+        />
       </ul>
     </template>
     <feature-library-modal

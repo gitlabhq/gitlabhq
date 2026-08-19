@@ -3,13 +3,15 @@
 # This file tracks which organization-sharded tables have been updated
 # to support organization transfers.
 #
-# Valid statuses:
-#   supported      - Transfer logic is implemented and tested
-#   todo           - Transfer support has not yet been implemented (legacy tables only)
-#   no_work_needed - Table requires no changes for organization transfers
+# Valid values:
+#   supported                                           - Transfer logic is implemented and tested
+#   no_work_needed                                      - Table requires no changes for organization transfers
+#   https://gitlab.com/gitlab-org/gitlab/-/issues/<id>  - Transfer support is not yet implemented;
+#                                                          track the work in this issue
 #
-# New organization-sharded tables MUST use 'supported'. The 'todo' status is
-# only allowed for tables that existed before this tracking system was introduced.
+# New organization-sharded tables MUST use 'supported'. The plain 'todo' value is no
+# longer allowed: existing tables without transfer support must link a tracking issue
+# instead, so the work stays visible.
 #
 # Tables are sorted alphabetically. Add new entries in sort order to avoid
 # merge conflicts.
@@ -19,54 +21,54 @@
 ---
 abuse_events: supported
 abuse_report_events: supported
-abuse_report_upload_states: todo
-abuse_report_uploads: todo
-abuse_report_user_mentions: todo
+abuse_report_upload_states: https://gitlab.com/gitlab-org/gitlab/-/work_items/616248
+abuse_report_uploads: https://gitlab.com/gitlab-org/gitlab/-/work_items/616249
+abuse_report_user_mentions: https://gitlab.com/gitlab-org/gitlab/-/work_items/616250
 abuse_reports: supported
 admin_roles: no_work_needed
-agent_organization_authorizations: todo
+agent_organization_authorizations: https://gitlab.com/gitlab-org/gitlab/-/issues/611975
 ai_catalog_item_stars: supported
-ai_catalog_item_version_dependencies: todo
+ai_catalog_item_version_dependencies: https://gitlab.com/gitlab-org/gitlab/-/work_items/616251
 ai_catalog_item_versions: supported
 ai_catalog_items: supported
 ai_catalog_mcp_server_blocks: supported
 ai_catalog_mcp_servers: supported
 ai_catalog_mcp_servers_users: supported
-ai_conversation_messages: todo
+ai_conversation_messages: https://gitlab.com/gitlab-org/gitlab/-/issues/611964
 ai_conversation_threads: supported
 ai_events_counts: supported
 ai_settings: no_work_needed
 ai_usage_events: supported
-analytics_cycle_analytics_stage_event_hashes: todo
+analytics_cycle_analytics_stage_event_hashes: https://gitlab.com/gitlab-org/gitlab/-/issues/611961
 artifact_registry_namespace_mappings: no_work_needed
 authentication_events: supported
 award_emoji: supported
-background_operation_jobs: todo
-background_operation_workers: todo
+background_operation_jobs: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+background_operation_workers: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 bulk_import_batch_trackers: no_work_needed
 bulk_import_configurations: no_work_needed
 bulk_import_entities: no_work_needed
 bulk_import_failures: no_work_needed
 bulk_import_trackers: no_work_needed
 bulk_imports: supported
-burned_project_routes: todo
-cd_application_flow_definitions: todo
-cd_application_links: todo
-cd_applications: todo
-cd_artifact_sources: todo
-cd_deployment_transitions: todo
-cd_deployments: todo
-cd_environment_driver_bindings: todo
+burned_project_routes: https://gitlab.com/gitlab-org/gitlab/-/issues/611975
+cd_application_flow_definitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_application_links: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_applications: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_artifact_sources: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_deployment_transitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_deployments: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_environment_driver_bindings: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 cd_environments: no_work_needed
-cd_rollout_environments: todo
-cd_rollout_steps: todo
-cd_rollout_transitions: todo
-cd_rollouts: todo
-cd_service_environment_healths: todo
-cd_services: todo
-cd_version_set_entries: todo
-cd_version_sets: todo
-cd_versions: todo
+cd_rollout_environments: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_rollout_steps: https://gitlab.com/gitlab-org/gitlab/-/work_items/616252
+cd_rollout_transitions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_rollouts: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_service_environment_healths: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_services: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_version_set_entries: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_version_sets: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
+cd_versions: https://gitlab.com/gitlab-org/gitlab/-/issues/611968
 ci_runner_taggings_group_type: supported
 ci_runner_taggings_project_type: supported
 cluster_platforms_kubernetes: supported
@@ -77,16 +79,16 @@ clusters_kubernetes_namespaces: supported
 custom_dashboard_search_data: supported
 custom_dashboard_versions: supported
 custom_dashboards: supported
-dependency_list_export_part_upload_states: todo
-dependency_list_export_part_uploads: todo
-dependency_list_export_parts: todo
+dependency_list_export_part_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
+dependency_list_export_part_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
+dependency_list_export_parts: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
 dependency_list_export_upload_states: no_work_needed
 dependency_list_export_uploads: no_work_needed
 dependency_list_exports: no_work_needed
 enabled_foundational_flow_check_results: no_work_needed
 fork_networks: supported
-govern_policies: todo
-govern_policy_enforcements: todo
+govern_policies: https://gitlab.com/gitlab-org/gitlab/-/work_items/616253
+govern_policy_enforcements: https://gitlab.com/gitlab-org/gitlab/-/work_items/616254
 granular_scopes: supported
 group_type_ci_runner_machines: supported
 group_type_ci_runners: supported
@@ -97,22 +99,22 @@ import_offline_exports: supported
 import_placeholder_user_details: supported
 integrations: no_work_needed
 issue_tracker_data: no_work_needed
-jira_connect_installations: todo
+jira_connect_installations: https://gitlab.com/gitlab-org/gitlab/-/issues/611960
 jira_tracker_data: no_work_needed
 keys: supported
 labels: no_work_needed
 ldap_admin_role_links: no_work_needed
 loose_foreign_keys_organization_deleted_records: no_work_needed
 member_roles: no_work_needed
-merge_request_diff_commit_users: todo
+merge_request_diff_commit_users: https://gitlab.com/gitlab-org/gitlab/-/issues/611965
 namespaces: supported
 non_sql_service_pings: no_work_needed
 notes: supported
 oauth_access_grants: supported
 oauth_access_tokens: supported
 oauth_applications: supported
-oauth_device_grants: todo
-oauth_openid_requests: todo
+oauth_device_grants: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
+oauth_openid_requests: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
 organization_cluster_agent_mappings: supported
 organization_detail_upload_states: no_work_needed
 organization_detail_uploads: no_work_needed
@@ -121,34 +123,34 @@ organization_foundational_agent_statuses: no_work_needed
 organization_isolations: no_work_needed
 organization_push_rules: no_work_needed
 organization_settings: no_work_needed
-organization_user_details: todo
+organization_user_details: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 organization_users: supported
 personal_access_token_granular_scopes: supported
-personal_access_token_last_used_ips: todo
+personal_access_token_last_used_ips: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
 personal_access_tokens: supported
-personal_snippet_upload_states: todo
-pool_repositories: todo
-project_topic_upload_states: todo
+personal_snippet_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
+pool_repositories: https://gitlab.com/gitlab-org/gitlab/-/work_items/616235
+project_topic_upload_states: https://gitlab.com/gitlab-org/gitlab/-/work_items/616255
 project_topic_uploads: no_work_needed
 project_type_ci_runner_machines: supported
 project_type_ci_runners: supported
 projects: supported
 queries_service_pings: no_work_needed
 raw_usage_data: no_work_needed
-sbom_component_versions: todo
-sbom_components: todo
-sbom_source_packages: todo
-sbom_sources: todo
-scim_oauth_access_tokens: todo
-security_policy_settings: todo
-slack_api_scopes: todo
+sbom_component_versions: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
+sbom_components: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
+sbom_source_packages: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
+sbom_sources: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
+scim_oauth_access_tokens: https://gitlab.com/gitlab-org/gitlab/-/issues/611959
+security_policy_settings: https://gitlab.com/gitlab-org/gitlab/-/issues/611959
+slack_api_scopes: https://gitlab.com/gitlab-org/gitlab/-/issues/611960
 slack_integrations: no_work_needed
 slack_integrations_scopes: no_work_needed
 snippet_repositories: supported
 snippet_repository_states: supported
 snippet_repository_storage_moves: supported
 snippet_statistics: supported
-snippet_uploads: todo
+snippet_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 snippet_user_mentions: supported
 snippets: supported
 spam_logs: supported
@@ -158,16 +160,16 @@ subscription_user_add_on_assignment_versions: supported
 subscription_user_add_on_assignments: supported
 todos: supported
 topics: supported
-upcoming_reconciliations: todo
-user_agent_details: todo
-user_upload_states: todo
-user_uploads: todo
+upcoming_reconciliations: https://gitlab.com/gitlab-org/gitlab/-/issues/611959
+user_agent_details: https://gitlab.com/gitlab-org/gitlab/-/issues/611967
+user_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
+user_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 users: supported
-vulnerability_export_part_upload_states: todo
-vulnerability_export_part_uploads: todo
-vulnerability_export_parts: todo
-vulnerability_export_upload_states: todo
-vulnerability_export_uploads: todo
+vulnerability_export_part_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
+vulnerability_export_part_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
+vulnerability_export_parts: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
+vulnerability_export_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
+vulnerability_export_uploads: https://gitlab.com/gitlab-org/gitlab/-/issues/611974
 vulnerability_exports: supported
 web_hook_logs_daily: no_work_needed
 web_hooks: no_work_needed
