@@ -63,12 +63,12 @@ export default {
       switch (this.visibility) {
         case VISIBILITY_LEVEL_PRIVATE_STRING:
           return s__(
-            'Organization|The visibility of this group will be changed to private because the Organization is private.',
+            "Organization|This group will become private to match the Organization's visibility.",
           );
 
         case VISIBILITY_LEVEL_INTERNAL_STRING:
           return s__(
-            'Organization|The visibility of this group will be changed to internal because the Organization is internal.',
+            "Organization|This group will become internal to match the Organization's visibility.",
           );
 
         default:

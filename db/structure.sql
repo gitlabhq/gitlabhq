@@ -24432,6 +24432,57 @@ CREATE SEQUENCE merge_requests_id_seq
 
 ALTER SEQUENCE merge_requests_id_seq OWNED BY merge_requests.id;
 
+CREATE TABLE merge_requests_risk_assessments (
+    id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    assessed_at timestamp with time zone,
+    score smallint,
+    confidence smallint,
+    status smallint DEFAULT 0 NOT NULL,
+    diff_sha bytea NOT NULL,
+    scoring_function_version text,
+    rationale text,
+    domain_tags text[] DEFAULT '{}'::text[] NOT NULL,
+    missing_signals text[] DEFAULT '{}'::text[] NOT NULL,
+    signal_breakdown jsonb DEFAULT '[]'::jsonb NOT NULL,
+    classification jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_26da91615e CHECK ((char_length(scoring_function_version) <= 20)),
+    CONSTRAINT check_5f46ad8e07 CHECK ((char_length(rationale) <= 2048))
+);
+
+CREATE SEQUENCE merge_requests_risk_assessments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_requests_risk_assessments_id_seq OWNED BY merge_requests_risk_assessments.id;
+
+CREATE TABLE merge_requests_risk_outcomes (
+    id bigint NOT NULL,
+    risk_assessment_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    observed_at timestamp with time zone NOT NULL,
+    signal_type smallint NOT NULL,
+    confidence smallint NOT NULL,
+    evidence jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE merge_requests_risk_outcomes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_requests_risk_outcomes_id_seq OWNED BY merge_requests_risk_outcomes.id;
+
 CREATE TABLE merge_trains (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
@@ -37188,6 +37239,10 @@ ALTER TABLE ONLY merge_requests_closing_issues ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY merge_requests_compliance_violations ALTER COLUMN id SET DEFAULT nextval('merge_requests_compliance_violations_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_requests_risk_assessments ALTER COLUMN id SET DEFAULT nextval('merge_requests_risk_assessments_id_seq'::regclass);
+
+ALTER TABLE ONLY merge_requests_risk_outcomes ALTER COLUMN id SET DEFAULT nextval('merge_requests_risk_outcomes_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_trains ALTER COLUMN id SET DEFAULT nextval('merge_trains_id_seq'::regclass);
 
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
@@ -40866,6 +40921,12 @@ ALTER TABLE ONLY merge_requests_merge_data
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT merge_requests_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_requests_risk_assessments
+    ADD CONSTRAINT merge_requests_risk_assessments_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_requests_risk_outcomes
+    ADD CONSTRAINT merge_requests_risk_outcomes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_trains
     ADD CONSTRAINT merge_trains_pkey PRIMARY KEY (id);
@@ -45457,6 +45518,8 @@ CREATE INDEX idx_mr_closing_issues_on_mr_link_issue_from ON merge_requests_closi
 
 CREATE INDEX idx_mr_metrics_on_project_closed_at_with_mr_id ON merge_request_metrics USING btree (target_project_id, latest_closed_at, merge_request_id) WHERE (latest_closed_at IS NOT NULL);
 
+CREATE UNIQUE INDEX idx_mr_risk_outcomes_on_assessment_and_signal ON merge_requests_risk_outcomes USING btree (risk_assessment_id, signal_type);
+
 CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests USING btree (target_project_id, state_id, created_at, id);
 
 CREATE UNIQUE INDEX idx_mvn_reg_upstreams_on_local_upstream_and_registry_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (local_upstream_id, registry_id) WHERE (local_upstream_id IS NOT NULL);
@@ -48914,6 +48977,12 @@ CREATE INDEX index_merge_requests_on_target_project_id_and_updated_at_and_id ON 
 CREATE INDEX index_merge_requests_on_tp_id_and_merge_commit_sha_and_id ON merge_requests USING btree (target_project_id, merge_commit_sha, id);
 
 CREATE INDEX index_merge_requests_on_updated_by_id ON merge_requests USING btree (updated_by_id) WHERE (updated_by_id IS NOT NULL);
+
+CREATE UNIQUE INDEX index_merge_requests_risk_assessments_on_merge_request_id ON merge_requests_risk_assessments USING btree (merge_request_id);
+
+CREATE INDEX index_merge_requests_risk_assessments_on_project_id ON merge_requests_risk_assessments USING btree (project_id);
+
+CREATE INDEX index_merge_requests_risk_outcomes_on_project_id ON merge_requests_risk_outcomes USING btree (project_id);
 
 CREATE UNIQUE INDEX index_merge_trains_on_merge_request_id ON merge_trains USING btree (merge_request_id);
 
@@ -57412,6 +57481,9 @@ ALTER TABLE ONLY abuse_reports
 ALTER TABLE ONLY merge_requests_approval_rules_approver_users
     ADD CONSTRAINT fk_4025feea5b FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_risk_assessments
+    ADD CONSTRAINT fk_402fb1100a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_405568b491 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -57616,6 +57688,9 @@ ALTER TABLE ONLY path_locks
 ALTER TABLE ONLY cd_deployments
     ADD CONSTRAINT fk_527d6fec3e FOREIGN KEY (rollout_environment_id) REFERENCES cd_rollout_environments(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_risk_assessments
+    ADD CONSTRAINT fk_530a615669 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY jira_connect_installations
     ADD CONSTRAINT fk_5326fc7be6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
@@ -57741,6 +57816,9 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_5d9b886930 FOREIGN KEY (workspaces_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY merge_requests_risk_outcomes
+    ADD CONSTRAINT fk_5da6e00c8d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
     ADD CONSTRAINT fk_5ddc4a2f7b FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
@@ -57996,6 +58074,9 @@ ALTER TABLE ONLY merge_requests_approval_rules_approver_users
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_7280faac49 FOREIGN KEY (snippet_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_risk_outcomes
+    ADD CONSTRAINT fk_729d895c35 FOREIGN KEY (risk_assessment_id) REFERENCES merge_requests_risk_assessments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_number_field_values
     ADD CONSTRAINT fk_72d475d3cd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

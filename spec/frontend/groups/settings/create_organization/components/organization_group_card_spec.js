@@ -114,8 +114,8 @@ describe('OrganizationGroupCard', () => {
 
       describe.each`
         groupVisibility | organizationVisibility | expectedIcon | expectedTooltip                                                                                                | expectedWarning
-        ${'public'}     | ${'private'}           | ${'lock'}    | ${'Private - The group and its projects can only be viewed by members.'}                                       | ${'The visibility of this group will be changed to private because the Organization is private.'}
-        ${'public'}     | ${'internal'}          | ${'shield'}  | ${'Internal - The group and any internal projects can be viewed by any logged in user except external users.'} | ${'The visibility of this group will be changed to internal because the Organization is internal.'}
+        ${'public'}     | ${'private'}           | ${'lock'}    | ${'Private - The group and its projects can only be viewed by members.'}                                       | ${"This group will become private to match the Organization's visibility."}
+        ${'public'}     | ${'internal'}          | ${'shield'}  | ${'Internal - The group and any internal projects can be viewed by any logged in user except external users.'} | ${"This group will become internal to match the Organization's visibility."}
       `(
         'when organization visibility ($organizationVisibility) is more restrictive than group visibility ($groupVisibility)',
         ({

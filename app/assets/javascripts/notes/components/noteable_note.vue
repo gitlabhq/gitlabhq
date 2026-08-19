@@ -552,7 +552,7 @@ export default {
             :autosave-key="autosaveKey"
             :restore-from-autosave="restoreFromAutosave"
             :help-page-path="helpPagePath"
-            @handleFormUpdate="formUpdateHandler"
+            @handle-form-update="formUpdateHandler"
             @cancel-form="formCancelHandler"
           />
         </slot>

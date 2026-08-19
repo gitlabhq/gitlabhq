@@ -374,10 +374,10 @@ If an issue belongs to an epic, you can go to the parent epic from:
 
 Prerequisites:
 
-- You must be a member of either:
+- You must be a member of one of the following:
   - The group
   - A project in the group
-  - A project in one of the group's subgroups
+  - A project in any of the group's descendant groups
 
 To view epics in a group:
 
@@ -398,9 +398,14 @@ Whether you can view an epic depends on the [group visibility level](../../publi
 the epic's [confidentiality status](#make-an-epic-confidential):
 
 - Public group and a non-confidential epic: Anyone can view the epic.
-- Private group and non-confidential epic: You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group, or be a member of a project in the group or one of its subgroups.
+- Private group and non-confidential epic: You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group or be a member of a project in the group or in any of its descendant groups.
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
+
+Permission to view an epic is not the same as permission to view its child items.
+In the **Child items** section, you see only the items you have permission to view.
+The item counts and progress include items you cannot view.
+For more information, see [view count and weight of issues in an epic](../../work_items/child_items.md#view-count-and-weight-of-issues-in-an-epic).
 
 ### Open epics in a drawer
 

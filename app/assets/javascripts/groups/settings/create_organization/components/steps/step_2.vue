@@ -2,17 +2,18 @@
 import { GlSprintf } from '@gitlab/ui';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { n__, sprintf } from '~/locale';
-import { isDefaultOrganization } from '~/organizations/shared/utils';
 import OrganizationGroupCard from '../organization_group_card.vue';
 import OrganizationCard from '../organization_card.vue';
 import BaseStep from './base_step.vue';
 
 const DRAGGING_CSS_CLASS = 'organizations-reconciliation-draggable-dragging';
 const FALLBACK_CSS_CLASS = 'organizations-reconciliation-draggable-fallback';
+const DRAGGING_DISABLED_CSS_CLASS = 'organizations-reconciliation-draggable-disabled';
 
 export default {
   name: 'ReconciliationStep2',
   FALLBACK_CSS_CLASS,
+  DRAGGING_DISABLED_CSS_CLASS,
   components: {
     BaseStep,
     OrganizationCard,
@@ -35,27 +36,11 @@ export default {
   data() {
     return {
       pendingChanges: {},
-      activeDragGroupId: null,
     };
   },
   computed: {
-    defaultOrganization() {
-      return this.organizations.find(isDefaultOrganization);
-    },
-    currentDefaultOrgGroupIds() {
-      return this.defaultOrganization
-        ? this.defaultOrganization.groups.nodes.map((group) => group.id)
-        : [];
-    },
-    shouldShowDefaultOrganizationDropzone() {
-      if (this.activeDragGroupId) {
-        return this.initialDefaultOrgGroupIds.includes(this.activeDragGroupId);
-      }
-
-      return this.initialDefaultOrgGroupIds.length !== this.currentDefaultOrgGroupIds.length;
-    },
     stepTitle() {
-      const count = this.defaultOrganization?.groups?.nodes?.length ?? 0;
+      const count = this.initialDefaultOrgGroupIds.length;
 
       return sprintf(
         n__(
@@ -78,33 +63,20 @@ export default {
     }
   },
   methods: {
-    draggableGroup(organization) {
-      if (isDefaultOrganization(organization)) {
-        return {
-          name: 'organizationGroups',
-          pull: true,
-          put: () => this.initialDefaultOrgGroupIds.includes(this.activeDragGroupId),
-        };
-      }
-
-      return 'organizationGroups';
+    isDraggable(group) {
+      return this.initialDefaultOrgGroupIds.includes(group.id);
     },
-    shouldShowDropzone(organization) {
-      if (isDefaultOrganization(organization)) {
-        return this.shouldShowDefaultOrganizationDropzone;
+    shouldShowDropzone(isDefaultOrganization, groups) {
+      if (isDefaultOrganization) {
+        return this.initialDefaultOrgGroupIds.length !== groups.length;
       }
 
       return true;
-    },
-    onDraggableStart(organization, { oldIndex }) {
-      this.activeDragGroupId = organization.groups.nodes[oldIndex].id;
     },
     onDraggableInput(changedOrganization, groups) {
       this.pendingChanges[changedOrganization.id] = groups;
     },
     onDraggableEnd() {
-      this.activeDragGroupId = null;
-
       const updatedOrganizations = this.organizations.map((organization) => {
         const pendingChange = this.pendingChanges[organization.id];
 
@@ -130,6 +102,14 @@ export default {
     },
     onUnchoose() {
       document.body.classList.remove(DRAGGING_CSS_CLASS);
+    },
+    onMove(event) {
+      // Prevent reordering items that have dragging disabled
+      if (event.related.classList.contains(DRAGGING_DISABLED_CSS_CLASS)) {
+        return 1;
+      }
+
+      return true;
     },
   },
 };
@@ -160,12 +140,13 @@ export default {
                 class="organizations-reconciliation-draggable gl-flex gl-min-h-11 gl-flex-col gl-gap-4"
                 chosen-class="gl-shadow-md"
                 :value="organization.groups.nodes"
-                :group="draggableGroup(organization)"
+                group="organizationGroups"
                 item-key="id"
                 :fallback-on-body="true"
                 :force-fallback="true"
                 :fallback-class="$options.FALLBACK_CSS_CLASS"
-                @start="onDraggableStart(organization, $event)"
+                :filter="`.${$options.DRAGGING_DISABLED_CSS_CLASS}`"
+                :move="onMove"
                 @input="onDraggableInput(organization, $event)"
                 @end="onDraggableEnd"
                 @choose="onChoose"
@@ -176,12 +157,16 @@ export default {
                   :key="group.id"
                   :group="group"
                   :organization-visibility="organization.visibility"
-                  class="gl-select-none hover:gl-cursor-grab hover:gl-shadow-md"
-                  :class="{ 'gl-border': isDefaultOrganization }"
+                  class="gl-select-none"
+                  :class="{
+                    'gl-border': isDefaultOrganization,
+                    'hover:gl-cursor-grab hover:gl-shadow-md': isDraggable(group),
+                    [$options.DRAGGING_DISABLED_CSS_CLASS]: !isDraggable(group),
+                  }"
                 />
               </draggable>
               <div
-                v-if="shouldShowDropzone(organization)"
+                v-if="shouldShowDropzone(isDefaultOrganization, organization.groups.nodes)"
                 data-testid="organization-dropzone"
                 class="organizations-reconciliation-draggable-dropzone gl-border-secondary gl-pointer-events-none gl-absolute gl-flex gl-h-11 gl-w-full gl-items-center gl-justify-center gl-rounded-md gl-border-dashed gl-border-strong"
               >

@@ -120,8 +120,8 @@ export default {
   },
   emits: [
     'cancel-form',
-    'handleFormUpdate',
-    'handleFormUpdateAddToReview',
+    'handle-form-update',
+    'handle-form-update-add-to-review',
     'handle-suggest-dismissed',
   ],
   data() {
@@ -356,7 +356,7 @@ export default {
       );
 
       this.$emit(
-        'handleFormUpdate',
+        'handle-form-update',
         this.updatedNoteBody,
         this.$refs.editNoteForm,
         () => {
@@ -385,7 +385,7 @@ export default {
 
       eventHub.$emit(clickType, { name: clickType });
       this.$emit(
-        'handleFormUpdateAddToReview',
+        'handle-form-update-add-to-review',
         this.updatedNoteBody,
         shouldResolve,
         this.$refs.editNoteForm,

@@ -312,6 +312,41 @@ describe('methodName', () => {
 });
 ```
 
+### Extract conditions into `describe` blocks
+
+When "when X" appears inside an `it` block description, extract the condition into
+its own `describe` block with a `beforeEach` that performs the setup.
+Context-driven specs group related tests together, and help both humans and AI agents
+see which scenarios are already covered and update specs in the right place.
+
+**Bad**:
+
+```javascript
+it('displays an alert when the request fails', () => {
+  createComponent({ props: { hasError: true } });
+
+  expect(findAlert().exists()).toBe(true);
+});
+```
+
+**Good**:
+
+```javascript
+describe('when the request fails', () => {
+  beforeEach(() => {
+    createComponent({ props: { hasError: true } });
+  });
+
+  it('displays an alert', () => {
+    expect(findAlert().exists()).toBe(true);
+  });
+});
+```
+
+For the same reason, avoid `it` blocks that re-create the component when an outer
+`beforeEach` already did.
+Move them into their own `describe` block with dedicated setup instead.
+
 ### Testing promises
 
 When testing Promises you should always make sure that the test is asynchronous and rejections are handled. It's now possible to use the `async/await` syntax in the test suite:

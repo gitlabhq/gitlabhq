@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
@@ -16,7 +15,6 @@ import SuperTopbar from './components/super_topbar.vue';
 
 export { initPageBreadcrumbs } from './super_sidebar_breadcrumbs';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 const getTrialStatusWidgetData = (sidebarData) => {

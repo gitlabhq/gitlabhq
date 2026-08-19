@@ -594,8 +594,8 @@ export default {
               autofocus
               class="gl-px-5 gl-py-3"
               data-testid="file-note-form"
-              @handleFormUpdate="handleSaveNote"
-              @handleFormUpdateAddToReview="handleSaveDraftNote"
+              @handle-form-update="handleSaveNote"
+              @handle-form-update-add-to-review="handleSaveDraftNote"
               @cancel-form="handleFileCommentCancel"
             />
           </div>

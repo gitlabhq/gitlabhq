@@ -742,7 +742,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_70f8c0578b6a"
+              "$ref": "#/components/schemas/RequestBody_af2d93c7f7ea"
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -94742,7 +94742,7 @@ components:
       required:
       - started_on
       - expires_on
-    RequestBody_70f8c0578b6a:
+    RequestBody_af2d93c7f7ea:
       type: object
       properties:
         topic:
@@ -94785,9 +94785,14 @@ components:
               description: The step type, present on step_* events
               nullable: true
               maxLength: 255
+            service:
+              type: string
+              description: Name of the Cd::Service, present on service_started/service_succeeded/service_failed
+              nullable: true
+              maxLength: 255
             error:
               type: string
-              description: Failure detail, present on step_failed
+              description: Failure detail, present on step_failed and service_failed
               nullable: true
               maxLength: 2000
           nullable: true

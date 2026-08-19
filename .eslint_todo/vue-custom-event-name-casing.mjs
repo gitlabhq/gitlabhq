@@ -33,7 +33,6 @@ export default {
     'app/assets/javascripts/merge_requests/list/components/merge_requests_list_app.vue',
     'app/assets/javascripts/notes/components/comment_form.vue',
     'app/assets/javascripts/notes/components/discussion_filter_note.vue',
-    'app/assets/javascripts/notes/components/note_body.vue',
     'app/assets/javascripts/notes/components/note_form.vue',
     'app/assets/javascripts/notes/components/notes_app.vue',
     'app/assets/javascripts/notes/components/timeline_toggle.vue',

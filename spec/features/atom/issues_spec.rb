@@ -117,6 +117,18 @@ RSpec.describe 'Issues Feed', feature_category: :planning_views do
       it_behaves_like 'a sanitized issuable atom feed'
     end
 
+    context 'with a reference in the description' do
+      let_it_be(:issue_with_reference) do
+        create(:issue, author: user, project: project, description: "See #{issue.to_reference}")
+      end
+
+      before do
+        visit project_issues_path(project, :atom, feed_token: user.feed_token)
+      end
+
+      it_behaves_like 'an atom feed with absolute reference URLs'
+    end
+
     it "renders atom feed with url parameters for project issues" do
       visit project_issues_path(project, :atom, feed_token: user.feed_token, state: 'opened', assignee_id: user.id)
 

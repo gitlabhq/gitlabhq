@@ -49,14 +49,5 @@ RSpec.describe Projects::Security::ConfigurationController, feature_category: :s
         expect(dast_feature['available']).to be_falsey
       end
     end
-
-    it 'pushes security_scan_profiles_feature feature flag to the frontend' do
-      allow(controller).to receive(:push_frontend_feature_flag)
-
-      get :show, params: { namespace_id: project.namespace, project_id: project }
-
-      expect(controller).to have_received(:push_frontend_feature_flag)
-        .with(:security_scan_profiles_feature, project.root_ancestor).at_least(:once)
-    end
   end
 end

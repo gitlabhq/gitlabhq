@@ -413,10 +413,9 @@ describe('~/security_configuration/components/app', () => {
   });
 
   describe('scan profile upgrade hint', () => {
-    describe('when scan profiles feature is enabled but unlicensed', () => {
+    describe('when scan profiles are unlicensed', () => {
       beforeEach(() => {
         createComponent({
-          glFeatures: { securityScanProfilesFeature: true },
           licensedFeatures: {},
         });
       });
@@ -426,23 +425,9 @@ describe('~/security_configuration/components/app', () => {
       });
     });
 
-    describe('when scan profiles feature is enabled and licensed', () => {
+    describe('when scan profiles are licensed', () => {
       beforeEach(() => {
         createComponent({
-          glFeatures: { securityScanProfilesFeature: true },
-          licensedFeatures: { securityScanProfiles: true },
-        });
-      });
-
-      it('does not show the upgrade hint badge', () => {
-        expect(findUpgradeHintBadge().exists()).toBe(false);
-      });
-    });
-
-    describe('when scan profiles feature is disabled and licensed', () => {
-      beforeEach(() => {
-        createComponent({
-          glFeatures: { securityScanProfilesFeature: false },
           licensedFeatures: { securityScanProfiles: true },
         });
       });

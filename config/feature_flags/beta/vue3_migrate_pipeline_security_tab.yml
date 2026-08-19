@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_pipeline_security_tab
+description: Enables Vue 3 in compatibility mode for the pipeline security tab
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/609371
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250177
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/617015
+milestone: '19.4'
+group: group::vulnerability management
+type: beta
+default_enabled: false

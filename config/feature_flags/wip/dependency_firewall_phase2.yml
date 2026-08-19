@@ -1,0 +1,10 @@
+---
+name: dependency_firewall_phase2
+description: Feature flag for dependency firewall functionality - Work in Progress implementation for Phase 2
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587499
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245513
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605926
+milestone: '19.4'
+group: group::dependency firewall
+type: wip
+default_enabled: false

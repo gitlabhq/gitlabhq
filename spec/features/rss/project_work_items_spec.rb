@@ -116,6 +116,19 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :planning_views 
       it_behaves_like 'a sanitized issuable atom feed'
     end
 
+    context 'with a reference in the description' do
+      let!(:referenced) { create(:work_item, author: user, project: project) }
+      let!(:work_item) do
+        create(:work_item, author: user, project: project, description: "See #{referenced.to_reference}")
+      end
+
+      before do
+        visit project_work_items_path(project, :atom, feed_token: user.feed_token)
+      end
+
+      it_behaves_like 'an atom feed with absolute reference URLs'
+    end
+
     context 'with multiple work items' do
       let!(:work_item1) do
         create(

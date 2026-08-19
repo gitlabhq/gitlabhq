@@ -361,6 +361,7 @@ For further quality guidelines, see [testing](https://handbook.gitlab.com/handbo
 - Explain why the code exists, not just what it does.
 - Try to respond to every comment. Only resolve threads you have fully addressed. If a comment can be
   addressed in a follow-up issue, work with the maintainer on a path forward.
+- Push feedback-based changes as isolated commits. Squashing commits can make it harder for your reviewer to quickly see changes.
 - Re-request review once you are ready for another round.
 - Address all GitLab Duo review comments before requesting a review from human reviewers.
 

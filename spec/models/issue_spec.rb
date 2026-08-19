@@ -1736,11 +1736,12 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       context 'when read_relative_positions_from_work_item_positions is enabled' do
-        it 'joins work_item_positions while keeping the namespace scope' do
+        it 'joins work_item_positions and scopes by the positioning root column' do
           sql = described_class.relative_positioning_query_base(project_issue).to_sql
 
           expect(sql).to include('INNER JOIN "work_item_positions"')
-          expect(sql).to include('"issues"."namespace_id" IN')
+          expect(sql).to include('"work_item_positions"."relative_positioning_namespace_id" =')
+          expect(sql).not_to include('"issues"."namespace_id" IN')
         end
       end
 

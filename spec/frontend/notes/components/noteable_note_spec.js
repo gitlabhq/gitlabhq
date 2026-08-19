@@ -347,7 +347,7 @@ describe('issue_note', () => {
         '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onload="alert(1)" />';
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
-      findNoteBody().vm.$emit('handleFormUpdate', {
+      findNoteBody().vm.$emit('handle-form-update', {
         noteText: noteBody,
         parentElement: null,
         callback: () => {},
@@ -390,7 +390,7 @@ describe('issue_note', () => {
     it('emits handle-update-note', async () => {
       const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
 
-      findNoteBody().vm.$emit('handleFormUpdate', params);
+      findNoteBody().vm.$emit('handle-form-update', params);
       await nextTick();
       await waitForPromises();
 
@@ -409,7 +409,7 @@ describe('issue_note', () => {
     });
 
     it('updates note content', async () => {
-      findNoteBody().vm.$emit('handleFormUpdate', params);
+      findNoteBody().vm.$emit('handle-form-update', params);
 
       await nextTick();
       await waitForPromises();
@@ -428,7 +428,7 @@ describe('issue_note', () => {
 
       // Attempt to update note with sensitive content
       const updatedNote = { ...params, noteText: sensitiveMessage };
-      findNoteBody().vm.$emit('handleFormUpdate', updatedNote);
+      findNoteBody().vm.$emit('handle-form-update', updatedNote);
 
       await nextTick();
       await waitForPromises();
@@ -457,7 +457,7 @@ describe('issue_note', () => {
       });
 
       beforeEach(() => {
-        findNoteBody().vm.$emit('handleFormUpdate', { ...params, noteText: 'invalid note' });
+        findNoteBody().vm.$emit('handle-form-update', { ...params, noteText: 'invalid note' });
       });
 
       it('renders error message and restores content of updated note', async () => {
@@ -556,7 +556,7 @@ describe('issue_note', () => {
     it('emits `update-success` once the note update succeeds', async () => {
       createWrapper();
 
-      findNoteBody().vm.$emit('handleFormUpdate', {
+      findNoteBody().vm.$emit('handle-form-update', {
         noteText: 'updated note text',
         parentElement: null,
         callback: jest.fn(),

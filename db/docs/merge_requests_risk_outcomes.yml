@@ -1,0 +1,14 @@
+---
+table_name: merge_requests_risk_outcomes
+classes:
+- MergeRequests::RiskOutcome
+feature_categories:
+- duo_code_review
+description: Observed outcomes for a scored merge request, used to check later whether
+  risk scores predicted anything.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249134
+milestone: '19.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

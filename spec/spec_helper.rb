@@ -135,6 +135,7 @@ RSpec.configure do |config|
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include FileReadHelpers
+  config.include AtomFeedHelpers
   config.include Database::MultipleDatabasesHelpers
   config.include Database::WithoutCheckConstraint
   config.include Devise::Test::ControllerHelpers, type: :controller

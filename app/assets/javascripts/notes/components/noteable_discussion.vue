@@ -407,8 +407,8 @@ export default {
                     :save-button-title="saveButtonTitle"
                     :autofocus="!hasDraft"
                     :autosave-key="autosaveKey"
-                    @handleFormUpdateAddToReview="addReplyToReview"
-                    @handleFormUpdate="saveReply"
+                    @handle-form-update-add-to-review="addReplyToReview"
+                    @handle-form-update="saveReply"
                     @cancel-form="cancelReplyForm"
                   />
                   <note-signed-out-widget v-if="!isLoggedIn" />

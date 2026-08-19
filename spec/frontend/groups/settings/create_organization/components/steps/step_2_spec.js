@@ -12,6 +12,8 @@ import { mockOrganizations, mockNewOrganization, mockDefaultOrganization } from 
 describe('ReconciliationStep2', () => {
   let wrapper;
 
+  const defaultOrgGroupIds = mockDefaultOrganization.groups.nodes.map((group) => group.id);
+
   const createComponent = ({ props = {} } = {}) => {
     wrapper = mountExtended(Step2, {
       propsData: {
@@ -20,7 +22,9 @@ describe('ReconciliationStep2', () => {
         ...props,
       },
       stubs: {
-        Draggable: stubComponent(Draggable, { props: ['group', 'fallbackClass'] }),
+        Draggable: stubComponent(Draggable, {
+          props: ['group', 'filter', 'fallbackClass', 'move'],
+        }),
       },
     });
   };
@@ -40,26 +44,18 @@ describe('ReconciliationStep2', () => {
   });
 
   describe('step description', () => {
-    it('renders the singular description when the default organization has one group', () => {
-      createComponent();
+    it('renders the singular description when the default organization initially had one group', () => {
+      createComponent({ props: { initialDefaultOrgGroupIds: defaultOrgGroupIds } });
 
       expect(findBaseStep().text()).toContain(
         'You have 1 other top-level group. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization.',
       );
     });
 
-    it('renders the plural description when the default organization has multiple groups', () => {
-      const [group] = mockDefaultOrganization.groups.nodes;
-
+    it('renders the plural description when the default organization initially had multiple groups', () => {
       createComponent({
         props: {
-          organizations: [
-            mockNewOrganization,
-            {
-              ...mockDefaultOrganization,
-              groups: { ...mockDefaultOrganization.groups, nodes: [group, { ...group, id: 2 }] },
-            },
-          ],
+          initialDefaultOrgGroupIds: [...defaultOrgGroupIds, 'gid://gitlab/Group/9'],
         },
       });
 
@@ -157,6 +153,68 @@ describe('ReconciliationStep2', () => {
       });
     });
 
+    it('puts every draggable in the same group so groups can be moved between organizations', () => {
+      createComponent();
+
+      findAllDraggableComponents().wrappers.forEach((draggable) => {
+        expect(draggable.props('group')).toBe('organizationGroups');
+      });
+    });
+
+    describe('which groups can be dragged', () => {
+      const DRAGGING_DISABLED_CSS_CLASS = 'organizations-reconciliation-draggable-disabled';
+      const NEW_ORG_INDEX = 0;
+      const DEFAULT_ORG_INDEX = 1;
+
+      const findGroupCardAt = (cardIndex) => findAllGroupCards(findCardAt(cardIndex)).at(0);
+
+      beforeEach(() => {
+        createComponent({ props: { initialDefaultOrgGroupIds: defaultOrgGroupIds } });
+      });
+
+      it('filters out groups that were not originally in the default organization', () => {
+        findAllDraggableComponents().wrappers.forEach((draggable) => {
+          expect(draggable.props('filter')).toBe(`.${DRAGGING_DISABLED_CSS_CLASS}`);
+        });
+      });
+
+      it('marks groups that were originally in the default organization as draggable', () => {
+        const classes = findGroupCardAt(DEFAULT_ORG_INDEX).classes();
+
+        expect(classes).not.toContain(DRAGGING_DISABLED_CSS_CLASS);
+        expect(classes).toContain('hover:gl-cursor-grab');
+        expect(classes).toContain('hover:gl-shadow-md');
+      });
+
+      it('marks groups that were not originally in the default organization as not draggable', () => {
+        const classes = findGroupCardAt(NEW_ORG_INDEX).classes();
+
+        expect(classes).toContain(DRAGGING_DISABLED_CSS_CLASS);
+        expect(classes).not.toContain('hover:gl-cursor-grab');
+        expect(classes).not.toContain('hover:gl-shadow-md');
+      });
+
+      describe('move', () => {
+        const createMoveEvent = (relatedCssClasses) => {
+          const related = document.createElement('div');
+          related.classList.add(...relatedCssClasses);
+
+          return { related };
+        };
+
+        const callMove = (relatedCssClasses) =>
+          findDraggable1().props('move')(createMoveEvent(relatedCssClasses));
+
+        it('places the dragged group after groups that cannot be dragged', () => {
+          expect(callMove([DRAGGING_DISABLED_CSS_CLASS])).toBe(1);
+        });
+
+        it('lets SortableJS position the dragged group when the group it is moved over can be dragged', () => {
+          expect(callMove(['hover:gl-cursor-grab'])).toBe(true);
+        });
+      });
+    });
+
     describe('when component is destroyed', () => {
       const FALLBACK_CSS_CLASS = 'organizations-reconciliation-draggable-fallback';
 
@@ -226,98 +284,57 @@ describe('ReconciliationStep2', () => {
       });
     });
 
-    describe('default organization drop zone', () => {
+    describe('drop zones', () => {
       const OTHER_ORG_INDEX = 0;
       const DEFAULT_ORG_INDEX = 1;
 
-      const startDragFromOrg = async (orgIndex) => {
-        findAllDraggableComponents().at(orgIndex).vm.$emit('start', { oldIndex: 1 });
-        await nextTick();
-      };
+      it('always shows the drop zone for the organization being created', () => {
+        createComponent({
+          props: {
+            organizations: mockOrganizations,
+            initialDefaultOrgGroupIds: defaultOrgGroupIds,
+          },
+        });
 
-      describe('when all initial groups are still in the default organization', () => {
-        beforeEach(() => {
+        expect(findDropZone(OTHER_ORG_INDEX).exists()).toBe(true);
+      });
+
+      describe('when the default organization still holds all of the groups it started with', () => {
+        it('hides the default organization drop zone', () => {
           createComponent({
             props: {
               organizations: mockOrganizations,
-              initialDefaultOrgGroupIds: mockDefaultOrganization.groups.nodes.map(
-                (group) => group.id,
-              ),
+              initialDefaultOrgGroupIds: defaultOrgGroupIds,
             },
           });
-        });
 
-        it('hides the default organization drop zone', () => {
           expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(false);
         });
-
-        it('always shows the non default organization drop zone', () => {
-          expect(findDropZone(OTHER_ORG_INDEX).exists()).toBe(true);
-        });
       });
 
-      describe('when a group has been removed from the default organization', () => {
-        beforeEach(() => {
+      describe('when a group has been moved out of the default organization', () => {
+        it('shows the default organization drop zone', () => {
           createComponent({
             props: {
               organizations: updatedOrganizations,
-              initialDefaultOrgGroupIds: mockDefaultOrganization.groups.nodes.map(
-                (group) => group.id,
-              ),
+              initialDefaultOrgGroupIds: defaultOrgGroupIds,
             },
           });
-        });
 
-        it('shows the drop zone', () => {
           expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(true);
         });
       });
 
-      describe('when dragging a group that was originally in the default organization', () => {
-        beforeEach(async () => {
-          createComponent({
-            props: {
-              organizations: updatedOrganizations,
-              initialDefaultOrgGroupIds: mockDefaultOrganization.groups.nodes.map(
-                (group) => group.id,
-              ),
-            },
-          });
-          await startDragFromOrg(OTHER_ORG_INDEX);
-        });
-
-        it('shows the drop zone', () => {
-          expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(true);
-        });
-
-        it('sets the default organization group `put` to true', () => {
-          const defaultOrgDraggable = findAllDraggableComponents().at(DEFAULT_ORG_INDEX);
-          const group = defaultOrgDraggable.props('group');
-
-          expect(group.put()).toBe(true);
-        });
-      });
-
-      describe('when dragging a group that was not originally in the default organization', () => {
-        beforeEach(async () => {
+      describe('when the default organization started with no groups', () => {
+        it('hides the default organization drop zone', () => {
           createComponent({
             props: {
               organizations: updatedOrganizations,
               initialDefaultOrgGroupIds: [],
             },
           });
-          await startDragFromOrg(OTHER_ORG_INDEX);
-        });
 
-        it('hides the drop zone', () => {
           expect(findDropZone(DEFAULT_ORG_INDEX).exists()).toBe(false);
-        });
-
-        it('sets the default organization group `put` to false', () => {
-          const defaultOrgDraggable = findAllDraggableComponents().at(DEFAULT_ORG_INDEX);
-          const group = defaultOrgDraggable.props('group');
-
-          expect(group.put()).toBe(false);
         });
       });
     });

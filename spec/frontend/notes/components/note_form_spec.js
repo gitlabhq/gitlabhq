@@ -177,13 +177,13 @@ describe('issue_note_form component', () => {
         it('should save note when cmd+enter is pressed', () => {
           textarea.trigger('keydown.enter', { metaKey: true });
 
-          expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+          expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
         });
 
         it('should save note when ctrl+enter is pressed', () => {
           textarea.trigger('keydown.enter', { ctrlKey: true });
 
-          expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+          expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
         });
 
         it('should disable textarea when ctrl+enter is pressed', async () => {
@@ -226,7 +226,7 @@ describe('issue_note_form component', () => {
         const saveButton = wrapper.findComponent('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
-        expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+        expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
       });
 
       it('tracks event when save button is clicked', () => {
@@ -318,7 +318,7 @@ describe('issue_note_form component', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted('handleFormUpdateAddToReview')).toStrictEqual([
+        expect(wrapper.emitted('handle-form-update-add-to-review')).toStrictEqual([
           ['Foo', false, wrapper.vm.$refs.editNoteForm, expect.any(Function)],
         ]);
       });
@@ -331,7 +331,7 @@ describe('issue_note_form component', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+        expect(wrapper.emitted('handle-form-update')).toHaveLength(1);
       });
     });
 

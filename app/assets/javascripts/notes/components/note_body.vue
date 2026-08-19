@@ -74,7 +74,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel-form', 'handleFormUpdate'],
+  emits: ['cancel-form', 'handle-form-update'],
   computed: {
     ...mapState(useLegacyDiffs, ['suggestionCommitMessage']),
     ...mapState(useMrNotes, ['failedToLoadMetadata']),
@@ -174,7 +174,7 @@ export default {
     },
     // eslint-disable-next-line max-params
     handleFormUpdate(noteText, parentElement, callback, resolveDiscussion) {
-      this.$emit('handleFormUpdate', { noteText, parentElement, callback, resolveDiscussion });
+      this.$emit('handle-form-update', { noteText, parentElement, callback, resolveDiscussion });
     },
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancel-form', { shouldConfirm, isDirty });
@@ -253,7 +253,7 @@ export default {
       :resolve-discussion="note.resolve_discussion"
       :autosave-key="autosaveKey"
       :restore-from-autosave="restoreFromAutosave"
-      @handleFormUpdate="handleFormUpdate"
+      @handle-form-update="handleFormUpdate"
       @cancel-form="formCancelHandler"
     />
     <!-- eslint-disable vue/no-mutating-props -->

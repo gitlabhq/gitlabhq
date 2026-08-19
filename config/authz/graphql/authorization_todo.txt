@@ -41,7 +41,9 @@ mutation:AiSelfHostedModelCreate
 mutation:AiSelfHostedModelDelete
 mutation:AiSelfHostedModelUpdate
 mutation:ArtifactRegistryRoleBulkGrant
+mutation:ArtifactRegistryRoleBulkRevoke
 mutation:ArtifactRegistryRoleGrant
+mutation:ArtifactRegistryRoleRevoke
 mutation:AscpComponentCreate
 mutation:AscpScanCreate
 mutation:AscpSecurityContextCreate

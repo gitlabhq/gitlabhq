@@ -114,7 +114,10 @@ current parent.
 
 Prerequisites:
 
-- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project.
+- You must have permission to [view the epic](../group/epics/manage_epics.md#who-can-view-an-epic).
+  A role in the epic's group is not required.
+  Membership of a project in the epic's group, or in any of its descendant groups, is enough.
 
 To add an existing issue to an epic:
 
@@ -215,7 +218,10 @@ After you remove an issue from an epic, the issue is no longer associated with t
 
 Prerequisites:
 
-- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project.
+- You must have permission to [view the epic](../group/epics/manage_epics.md#who-can-view-an-epic).
+  A role in the epic's group is not required.
+  Membership of a project in the epic's group, or in any of its descendant groups, is enough.
 
 To remove an issue from an epic:
 

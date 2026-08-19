@@ -1,8 +1,7 @@
-import { GlToast } from '@gitlab/ui';
+import { GlToastMixin } from '@gitlab/ui';
 import Vue from 'vue';
 
-Vue.use(GlToast);
-const instance = new Vue();
+const instance = new Vue({ name: 'GlobalToastRoot', mixins: [GlToastMixin], render: () => null });
 
 export default function showGlobalToast(...args) {
   return instance.$toast.show(...args);

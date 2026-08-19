@@ -4854,6 +4854,34 @@ Fields:
 | <a id="mutation-artifactregistryrolebulkgrant-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-artifactregistryrolebulkgrant-grantedrolecount"></a>`grantedRoleCount` | [`Int`](#int) | Number of role assignments granted. Present only on success. |
 
+### `Mutation.artifactRegistryRoleBulkRevoke`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation.
+
+Input type: `ArtifactRegistryRoleBulkRevokeInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrolebulkrevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrolebulkrevoke-revocations"></a>`revocations` | [`[ArtifactRegistryRoleRevocationInput!]!`](#artifactregistryrolerevocationinput) | Role revocations to apply. All succeed or none are applied. A maximum of 1000 revocations is allowed per request. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrolebulkrevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrolebulkrevoke-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistryrolebulkrevoke-revokedrolecount"></a>`revokedRoleCount` | [`Int`](#int) | Number of role assignments revoked. Present only on success. |
+
 ### `Mutation.artifactRegistryRoleGrant`
 
 {{< details >}}
@@ -4882,6 +4910,34 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mutation-artifactregistryrolegrant-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactregistryrolegrant-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.artifactRegistryRoleRevoke`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it.
+
+Input type: `ArtifactRegistryRoleRevokeInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrolerevoke-assigneeid"></a>`assigneeId` | [`UserID!`](#userid) | Global ID of the user to revoke the role from. |
+| <a id="mutation-artifactregistryrolerevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrolerevoke-resourceid"></a>`resourceId` | [`String!`](#string) | UUID of the Artifact Registry resource (repository or namespace) the role is assigned on. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrolerevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrolerevoke-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.ascpComponentCreate`
 
@@ -75226,6 +75282,17 @@ Arguments:
 | <a id="artifactregistryroleassignmentinput-assigneeid"></a>`assigneeId` | [`UserID!`](#userid) | Global ID of the user to grant the role to. |
 | <a id="artifactregistryroleassignmentinput-resourceid"></a>`resourceId` | [`String!`](#string) | UUID of the Artifact Registry resource (repository or namespace) the role applies to. |
 | <a id="artifactregistryroleassignmentinput-role"></a>`role` | [`ArtifactRegistryRole!`](#artifactregistryrole) | Artifact Registry role to grant. |
+
+### `ArtifactRegistryRoleRevocationInput`
+
+Single Artifact Registry role revocation. Names no role: a user holds one role per resource, and revoking removes it.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrolerevocationinput-assigneeid"></a>`assigneeId` | [`UserID!`](#userid) | Global ID of the user to revoke the role from. |
+| <a id="artifactregistryrolerevocationinput-resourceid"></a>`resourceId` | [`String!`](#string) | UUID of the Artifact Registry resource (repository or namespace) the role is assigned on. |
 
 ### `AscpSecurityGuidelineInput`
 

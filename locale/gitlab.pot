@@ -23420,6 +23420,9 @@ msgstr ""
 msgid "ContinuousDeployment|Filter releases…"
 msgstr ""
 
+msgid "ContinuousDeployment|Filter services…"
+msgstr ""
+
 msgid "ContinuousDeployment|Flow editor"
 msgstr ""
 
@@ -23495,7 +23498,13 @@ msgstr ""
 msgid "ContinuousDeployment|No releases match your filter."
 msgstr ""
 
+msgid "ContinuousDeployment|No services available."
+msgstr ""
+
 msgid "ContinuousDeployment|No services in this release."
+msgstr ""
+
+msgid "ContinuousDeployment|No services match your filter."
 msgstr ""
 
 msgid "ContinuousDeployment|No services yet. Add at least one — a service is the deployable unit (Git repo with K8s manifests, or a container image)."
@@ -55987,10 +55996,10 @@ msgstr ""
 msgid "Organization|Switch organizations"
 msgstr ""
 
-msgid "Organization|The visibility of this group will be changed to internal because the Organization is internal."
+msgid "Organization|This group will become internal to match the Organization's visibility."
 msgstr ""
 
-msgid "Organization|The visibility of this group will be changed to private because the Organization is private."
+msgid "Organization|This group will become private to match the Organization's visibility."
 msgstr ""
 
 msgid "Organization|Top-level groups"

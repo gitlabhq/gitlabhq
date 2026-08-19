@@ -101,6 +101,9 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - Use issues, milestones, and merge requests' full URLs instead of short references,
   as they are displayed as plain text outside of GitLab.
 - The merge request should not contain more than 10 commit messages.
+  If your work spans multiple distinct logical pieces, consider
+  [stacked MRs](../../user/project/merge_requests/stacked_diffs.md) rather than
+  accumulating many commits in a single MR.
 - The commit subject should contain at least 3 words.
 
 **Important notes**:
@@ -169,6 +172,10 @@ the contribution acceptance criteria below:
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
 1. The MR contains a few logically organized commits, or has [squashing commits enabled](../../user/project/merge_requests/squash_and_merge.md).
+   During review, push feedback-based changes as isolated commits. Do not squash until
+   ready to merge. MR diff versions are a less reliable alternative: they break when
+   you rebase (the version diff includes rebased changes, not just feedback-driven ones)
+   and can be inaccurate in practice.
 1. The changes can merge without problems. If not, you should rebase if you're the
    only one working on your feature branch. Otherwise, merge the default branch into the MR branch.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not

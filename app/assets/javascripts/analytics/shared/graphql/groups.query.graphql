@@ -1,7 +1,14 @@
-# @feature_category: product_analytics
+# @feature_category: custom_dashboards_foundation
 
 query analyticsGetGroups($search: String!, $first: Int!, $topLevelOnly: Boolean = false) {
-  groups(search: $search, first: $first, topLevelOnly: $topLevelOnly, sort: "name_asc") {
+  groups(
+    search: $search
+    first: $first
+    topLevelOnly: $topLevelOnly
+    sort: "name_asc"
+    # Only return groups the user is a member of, not every group available
+    allAvailable: false
+  ) {
     nodes {
       id
       name
