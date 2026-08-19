@@ -300,6 +300,7 @@ module ApplicationSettingsHelper
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
+      :import_jobs_concurrency_limit,
       :container_expiration_policies_enable_historic_entries,
       :container_registry_expiration_policies_caching,
       :container_registry_token_expire_delay,
