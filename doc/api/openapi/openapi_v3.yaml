@@ -17272,7 +17272,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e4642b3ac7e6"
+              "$ref": "#/components/schemas/RequestBody_d58f6d1b9386"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -83356,6 +83356,8 @@ components:
           type: string
         concurrent_bitbucket_server_import_jobs_limit:
           type: string
+        import_jobs_concurrency_limit:
+          type: string
         container_expiration_policies_enable_historic_entries:
           type: string
         container_registry_expiration_policies_caching:
@@ -97224,7 +97226,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_e4642b3ac7e6:
+    RequestBody_d58f6d1b9386:
       type: object
       properties:
         admin_mode:
@@ -98591,6 +98593,9 @@ components:
           type: string
           nullable: true
         ci_partitions_in_seconds_limit_human_readable:
+          type: string
+          nullable: true
+        import_jobs_concurrency_limit:
           type: string
           nullable: true
         container_expiration_policies_enable_historic_entries:

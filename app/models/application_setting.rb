@@ -658,6 +658,7 @@ class ApplicationSetting < ApplicationRecord
       :concurrent_relation_batch_export_limit,
       :container_registry_token_expire_delay,
       :housekeeping_optimize_repository_period,
+      :import_jobs_concurrency_limit,
       :inactive_projects_delete_after_months,
       :max_artifacts_content_include_size,
       :max_artifacts_size,
@@ -865,6 +866,7 @@ class ApplicationSetting < ApplicationRecord
     throttle_unauthenticated_git_http_period_in_seconds: [:integer, { default: 3600 }]
 
   jsonb_accessor :importers,
+    import_jobs_concurrency_limit: [:integer, { default: 100 }],
     silent_admin_exports_enabled: [:boolean, { default: false }],
     allow_contribution_mapping_to_admins: [:boolean, { default: false }],
     allow_bypass_placeholder_confirmation: [:boolean, { default: false }],
