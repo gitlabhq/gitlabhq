@@ -1,5 +1,6 @@
 import { GlToggle } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import {
   featureAccessLevelNone,
@@ -29,12 +30,24 @@ describe('Project Feature Settings', () => {
   const findHiddenInput = () => wrapper.find(`input[name=${defaultProps.name}]`);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findSelect = () => wrapper.find('select');
+  const findSelectWrapper = () => wrapper.find('.select-wrapper');
+  const findSelectTooltip = () => getBinding(findSelectWrapper().element, 'gl-tooltip');
 
-  const mountComponent = (customProps = {}) =>
+  const mountComponent = (customProps = {}, mountOptions = {}) =>
     shallowMount(ProjectFeatureSetting, {
       propsData: {
         ...defaultProps,
         ...customProps,
+      },
+      ...mountOptions,
+    });
+
+  // Stubbing a directive interferes with `setProps` re-renders under Vue 3, so
+  // only the tooltip assertions mount with the mock.
+  const mountWithMockedTooltip = (customProps = {}) =>
+    mountComponent(customProps, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
 
@@ -140,6 +153,26 @@ describe('Project Feature Settings', () => {
         expect(findSelect().attributes('disabled')).toBe(expected);
       },
     );
+
+    describe('disabled reason tooltip', () => {
+      const PRIVATE_REASON = 'Feature visibility cannot be changed while the project is private.';
+      const NO_REPO_REASON = 'This feature requires the repository to be enabled.';
+
+      it.each`
+        scenario                       | props                                                 | title             | tabindex
+        ${'project is private'}        | ${{ disabledSelectInput: true }}                      | ${PRIVATE_REASON} | ${'0'}
+        ${'repository is disabled'}    | ${{ disabledInput: true }}                            | ${NO_REPO_REASON} | ${'0'}
+        ${'private and repo disabled'} | ${{ disabledSelectInput: true, disabledInput: true }} | ${NO_REPO_REASON} | ${'0'}
+        ${'feature is toggled off'}    | ${{ value: featureAccessLevelNone.value }}            | ${''}             | ${undefined}
+        ${'options collapse to one'}   | ${{ options: [featureAccessLevelMembers] }}           | ${''}             | ${undefined}
+        ${'select is enabled'}         | ${{}}                                                 | ${''}             | ${undefined}
+      `('shows "$title" when $scenario', ({ props, title, tabindex }) => {
+        wrapper = mountWithMockedTooltip(props);
+
+        expect(findSelectTooltip().value).toEqual({ disabled: !title, title });
+        expect(findSelectWrapper().attributes('tabindex')).toBe(tabindex);
+      });
+    });
 
     it('should emit the change when a new option is selected', async () => {
       wrapper = mountComponent();

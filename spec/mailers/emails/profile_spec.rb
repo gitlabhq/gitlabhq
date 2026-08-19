@@ -933,6 +933,20 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       is_expected.to have_body_text('simply ignore this email')
     end
 
+    context 'when the achievement was already accepted' do
+      let_it_be(:user_achievement) do
+        create(:user_achievement, user: user, achievement: achievement, show_on_profile: true)
+      end
+
+      it 'does not include an accept link' do
+        is_expected.not_to have_body_text(%r{awarded_achievements/.*/accept})
+      end
+
+      it 'does not include the ignore message' do
+        is_expected.not_to have_body_text('simply ignore this email')
+      end
+    end
+
     context 'when award message is present' do
       let_it_be(:user_achievement) do
         create(:user_achievement, user: user, achievement: achievement, award_message: 'For outstanding work')

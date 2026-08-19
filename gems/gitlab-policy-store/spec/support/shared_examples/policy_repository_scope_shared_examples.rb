@@ -20,7 +20,7 @@ RSpec.shared_examples 'a policy repository reconciling scope forms' do
       policy = repository.create(compiled_attributes)
 
       expect(policy.scope_rego).to include('framework_id in {5}')
-      expect(policy.scope_rego).to include('match_mode=all')
+      expect(policy.scope_rego).to include('match_mode: all')
       expect(policy.scope_rego).not_to eq(program_compiled_for({ policy_scope: nil }, policy.name))
     end
 

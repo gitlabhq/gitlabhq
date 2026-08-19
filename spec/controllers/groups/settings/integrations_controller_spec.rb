@@ -50,29 +50,13 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
       end
     end
 
-    it 'sorts integrations alphabetically in control' do
-      stub_experiments(ordered_integrations: :control)
-
+    it 'sorts integrations alphabetically' do
       request
 
       integrations = assigns(:integrations)
       titles = integrations.map(&:title)
 
       expect(titles).to eq(titles.sort_by(&:downcase))
-    end
-
-    describe 'integration sorting with ordered_integrations experiment', :experiment do
-      it 'sorts integrations by popularity ranking in candidate' do
-        stub_experiments(ordered_integrations: :candidate)
-
-        request
-
-        integrations = assigns(:integrations).map(&:type)
-
-        expect(integrations.first).to eq("Integrations::Jira")
-        expect(integrations[1]).to eq("Integrations::Discord")
-        expect(integrations.last).to eq("Integrations::Zentao")
-      end
     end
   end
 

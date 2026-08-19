@@ -123,6 +123,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['iframe_rendering_allowlist']).to eq([])
       expect(json_response['email_otp_enabled']).to be(false)
       expect(json_response['authn_data_retention_cleanup_enabled']).to be(false)
+      expect(json_response['auto_accept_awarded_achievements']).to be(false)
       expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(false)
       expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(false)
       expect(json_response['offline_transfer_exports_enabled']).to be(false)
@@ -371,6 +372,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             },
             terraform_state_encryption_enabled: false,
             authn_data_retention_cleanup_enabled: true,
+            auto_accept_awarded_achievements: true,
             allow_s3_compatible_storage_for_offline_transfer: true,
             allow_application_default_credentials_for_offline_transfer: true,
             offline_transfer_exports_enabled: true,
@@ -474,6 +476,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['vscode_extension_marketplace']).to eq({ "enabled" => false, "preset" => 'open_vsx' })
         expect(json_response['terraform_state_encryption_enabled']).to be(false)
         expect(json_response['authn_data_retention_cleanup_enabled']).to be(true)
+        expect(json_response['auto_accept_awarded_achievements']).to be(true)
         expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(true)
         expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(true)
         expect(json_response['offline_transfer_exports_enabled']).to be(true)

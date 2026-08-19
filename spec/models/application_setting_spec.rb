@@ -42,6 +42,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         asciidoc_max_includes: 32,
         authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true,
+        auto_accept_awarded_achievements: false,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         background_operations_max_jobs: 10,
@@ -1878,6 +1879,15 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       it 'rejects invalid values for default dark syntax highlighting theme' do
         is_expected.not_to allow_value(nil, 0,
           Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_dark_syntax_highlighting_theme)
+      end
+    end
+
+    context 'for auto_accept_awarded_achievements' do
+      it { is_expected.to allow_value({ auto_accept_awarded_achievements: true }).for(:default_profile_preferences) }
+      it { is_expected.to allow_value({ auto_accept_awarded_achievements: false }).for(:default_profile_preferences) }
+
+      it 'does not allow a non-boolean value' do
+        is_expected.not_to allow_value({ auto_accept_awarded_achievements: 'true' }).for(:default_profile_preferences)
       end
     end
 

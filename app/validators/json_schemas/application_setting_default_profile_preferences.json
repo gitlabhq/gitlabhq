@@ -7,6 +7,10 @@
     "default_dark_syntax_highlighting_theme": {
       "type": "integer",
       "description": "Default dark syntax highlighting theme id"
+    },
+    "auto_accept_awarded_achievements": {
+      "type": "boolean",
+      "description": "Accept achievements on behalf of their recipients when they are awarded"
     }
   }
 }

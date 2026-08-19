@@ -769,6 +769,39 @@ users from deleting their own accounts:
 1. Expand **Account and limit**.
 1. Clear the **Allows users to delete their own accounts** checkbox.
 
+## Automatically accept achievements for all users
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750) in GitLab 19.4.
+
+{{< /history >}}
+
+By default, users must explicitly accept an [achievement](../../user/profile/achievements.md) before it appears on
+their user profile. Instead, you can configure a setting to automatically accept newly awarded achievements for all
+users on the instance.
+
+When turned on, new achievements are accepted immediately and displayed on the recipient's user profile. GitLab
+still sends an email notification for the achievement, but the email no longer contains an acceptance link.
+This setting does not apply to achievements awarded before the setting was turned on.
+
+Recipients can still [hide the achievement from their profile](../../user/profile/achievements.md#change-visibility-of-specific-achievements).
+
+To automatically accept achievements for all users:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Account and limit**.
+1. Select the **Automatically accept achievements for all users** checkbox.
+1. Select **Save changes**.
+
 ## Troubleshooting
 
 {{< details >}}

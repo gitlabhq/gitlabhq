@@ -71,6 +71,16 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
         expect(response.payload.show_on_profile).to be(false)
       end
 
+      context 'when achievements are automatically accepted for the instance' do
+        before do
+          stub_application_setting(auto_accept_awarded_achievements: true)
+        end
+
+        it 'awards the achievement with show_on_profile set to true' do
+          expect(response.payload.show_on_profile).to be(true)
+        end
+      end
+
       context 'with an award_message' do
         let(:award_message) { 'Awarded for outstanding contribution' }
 

@@ -77,6 +77,42 @@ RSpec.describe Gitlab::Ci::Reports::CoverageReportGenerator,
       end
     end
 
+    context 'when a report fails to parse' do
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let!(:build_jvm) { create(:ci_build, :success, name: 'jvm', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :cobertura, job: build_rspec)
+        create(:ci_job_artifact, :jacoco, job: build_jvm)
+
+        allow_next_instance_of(Gitlab::Ci::Parsers::Coverage::Cobertura) do |parser|
+          allow(parser).to receive(:parse!) do |_data, report, **|
+            report.add_file('partially_parsed.rb', { 1 => 1 })
+            raise Gitlab::Ci::Parsers::Coverage::Cobertura::InvalidXMLError, 'XML parsing failed'
+          end
+        end
+      end
+
+      it 'logs a warning and keeps coverage from the other builds' do
+        expect(Gitlab::AppLogger).to receive(:warn)
+          .with(
+            hash_including(
+              Labkit::Fields::CLASS_NAME => described_class.name,
+              Labkit::Fields::ERROR_TYPE => 'Gitlab::Ci::Parsers::Coverage::Cobertura::InvalidXMLError',
+              message: 'Failed to parse coverage report artifact',
+              Labkit::Fields::GL_PIPELINE_ID => pipeline.id,
+              build_id: build_rspec.id
+            )
+          )
+
+        expect(subject.files.keys).to match_array(jacoco_filenames)
+      end
+
+      it 'discards data the failed report parsed before the error' do
+        expect(subject.files).not_to have_key('partially_parsed.rb')
+      end
+    end
+
     context 'when builds are retried' do
       let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', retried: true, pipeline: pipeline) }
       let!(:build_golang) { create(:ci_build, :success, name: 'golang', retried: true, pipeline: pipeline) }

@@ -59766,6 +59766,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="secretsmanagerentitlement-betaprogramended"></a>`betaProgramEnded` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the free-beta program has ended for the namespace. Set only when state is TRIAL_ELIGIBLE; null otherwise. |
 | <a id="secretsmanagerentitlement-blockedreason"></a>`blockedReason` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlementBlockedReason`](#secretsmanagerentitlementblockedreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the entitlement is blocked; null when state is not BLOCKED. |
 | <a id="secretsmanagerentitlement-creditsremaining"></a>`creditsRemaining` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.2. Status: Experiment. Number of trial credits remaining. |
 | <a id="secretsmanagerentitlement-creditstotal"></a>`creditsTotal` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.2. Status: Experiment. Initial trial credit allocation for the current trial period. |

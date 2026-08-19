@@ -1177,7 +1177,8 @@ class ApplicationSetting < ApplicationRecord
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   jsonb_accessor :default_profile_preferences,
-    default_dark_syntax_highlighting_theme: [:integer, { default: 2 }]
+    default_dark_syntax_highlighting_theme: [:integer, { default: 2 }],
+    auto_accept_awarded_achievements: [:boolean, { default: false }]
 
   validates :default_profile_preferences, json_schema: { filename: "application_setting_default_profile_preferences" }
 

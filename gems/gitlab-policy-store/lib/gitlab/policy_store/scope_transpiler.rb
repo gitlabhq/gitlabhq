@@ -6,22 +6,15 @@ module Gitlab
   module PolicyStore
     # Compiles a policy's authored `policy_scope`, a plain jsonb hash, into
     # `scope_rego` text in the `package gitlab.scope` namespace.
+    #
+    # The compiled program's entire contract with the engine is one boolean rule,
+    # `applies`, kept total by `default applies := false` so that a context matching
+    # nothing is out of scope rather than undefined. Everything else a program carries
+    # (the `excluded`/`included` rules feeding `applies`, the comment naming the policy)
+    # is for whoever reads the stored text: the engine queries
+    # `data.gitlab.scope.applies` and nothing else.
     class ScopeTranspiler
-      # Rego indents with tabs, written here as `\t` escapes so the squiggly
-      # heredoc's dedent cannot absorb them.
-      SCOPE_PRELUDE = <<~REGO.chomp
-        package gitlab.scope
-
-        applicable := [result.policy | some result in results; result.applies]
-
-        not_applicable := [result.policy | some result in results; not result.applies]
-
-        applicability := {
-        \t"applicable": applicable,
-        \t"not_applicable": not_applicable,
-        \t"results": [result | some result in results],
-        }
-      REGO
+      PACKAGE = "package gitlab.scope"
 
       # Rego loop variables must be unique within a single AND body (match_mode
       # "all"), so each dimension carries its own.
@@ -45,7 +38,7 @@ module Gitlab
       end
 
       def transpile
-        "#{SCOPE_PRELUDE}\n\n#{scope_block}\n"
+        "#{PACKAGE}\n\n#{scope_block}\n"
       end
 
       private
@@ -55,7 +48,7 @@ module Gitlab
       def scope_block
         return unscoped_block if unscoped?
 
-        statements = [header]
+        statements = ["#{header} (match_mode: #{match_mode})"]
 
         statements << "default #{excluded_rule} := false"
         excluded_conditions.each do |condition|
@@ -67,7 +60,6 @@ module Gitlab
 
         statements << "default #{applies_rule} := false"
         statements << "#{applies_rule} if {\n\tnot #{excluded_rule}\n\t#{included_rule}\n}"
-        statements << results_statement
 
         statements.join("\n\n")
       end
@@ -75,21 +67,8 @@ module Gitlab
       def unscoped_block
         <<~REGO.chomp
           #{header}
-          results contains {
-          \t"policy": #{policy_name.to_json},
-          \t"applies": true,
-          \t"reason": "no policy_scope: applies to all projects",
-          }
-        REGO
-      end
-
-      def results_statement
-        <<~REGO.chomp
-          results contains {
-          \t"policy": #{policy_name.to_json},
-          \t"applies": #{applies_rule},
-          \t"reason": sprintf("excluded=%v, included=%v (match_mode=#{match_mode})", [#{excluded_rule}, #{included_rule}]),
-          }
+          # no policy_scope: applies to all projects
+          #{applies_rule} := true
         REGO
       end
 
@@ -106,15 +85,15 @@ module Gitlab
       end
 
       def excluded_rule
-        "scope_excluded"
+        "excluded"
       end
 
       def included_rule
-        "scope_included"
+        "included"
       end
 
       def applies_rule
-        "scope_applies"
+        "applies"
       end
 
       def included_conditions

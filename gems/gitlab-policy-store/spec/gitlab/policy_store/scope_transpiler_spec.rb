@@ -56,7 +56,7 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     end
 
     context "with individual scope constructs" do
-      it "emits the prelude and a scoped block with include (all) + exclude" do
+      it "emits a scoped block with include (all) + exclude, ending in a total applies rule" do
         rego = described_class.new(
           {
             match_mode: "all",
@@ -67,16 +67,29 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
         ).transpile
 
         expect(rego).to include("package gitlab.scope")
-        expect(rego).to include('# policy "Block denied licenses"')
-        expect(rego).to include("default scope_excluded := false")
+        expect(rego).to include('# policy "Block denied licenses" (match_mode: all)')
+        expect(rego).to include("default excluded := false")
         expect(rego).to include("input.project.id in {77}")
         expect(rego).to include("input.project.archived == true")
         expect(rego).to include("some framework_id in input.compliance_frameworks")
         expect(rego).to include("framework_id in {5}")
         expect(rego).to include("input.project.id in {42, 43}")
-        expect(rego).to include("not scope_excluded")
-        reason = 'sprintf("excluded=%v, included=%v (match_mode=all)", [scope_excluded, scope_included])'
-        expect(rego).to include(reason)
+        expect(rego).to include("default applies := false")
+        expect(rego).to include("applies if {\n\tnot excluded\n\tincluded\n}")
+      end
+
+      # The engine queries `data.gitlab.scope.applies` and nothing else, so any further
+      # rule would be text nobody reads in a stored, length-capped column. An earlier
+      # revision exposed a `results` set and `applicable`/`not_applicable`/`applicability`
+      # aggregates over it, which only pay off when several policies' programs answer in
+      # one query, and these rule names are not namespaced per policy, so co-loading them
+      # into one engine ORs them into each other instead.
+      it "exposes no rule beyond applies and the two it is derived from" do
+        rego = described_class.new({ compliance_frameworks: [{ id: 5 }] }, policy_name: "P").transpile
+
+        rule_names = rego.scan(/^(?:default )?(\w+)(?= if | := )/).flatten.uniq
+
+        expect(rule_names).to contain_exactly("excluded", "included", "applies")
       end
 
       it "emits one included body per dimension for match_mode any" do
@@ -85,18 +98,18 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
           policy_name: "P"
         ).transpile
 
-        expect(rego.scan("scope_included if {").length).to eq(2)
+        expect(rego.scan("included if {").length).to eq(2)
         expect(rego).to include("some group_id in input.groups")
         expect(rego).to include("some business_impact_id in input.security_attributes.business_impact")
       end
 
-      it "emits applies:true for a no-scope (empty) policy" do
+      it "emits an unconditional applies rule for a no-scope (empty) policy" do
         rego = described_class.new({}, policy_name: "Unscoped").transpile
 
-        expect(rego).to include('"policy": "Unscoped"')
-        expect(rego).to include('"applies": true')
+        expect(rego).to include('# policy "Unscoped"')
         expect(rego).to include("no policy_scope: applies to all projects")
-        expect(rego).not_to include("scope_applies")
+        expect(rego).to include("applies := true")
+        expect(rego).not_to include("default applies")
       end
 
       it "emits a constant included rule when only excludes are present" do
@@ -105,7 +118,7 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
           policy_name: "P"
         ).transpile
 
-        expect(rego).to include("scope_included if { true }")
+        expect(rego).to include("included if { true }")
       end
     end
 
@@ -308,7 +321,7 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     # one that applies to every project.
     context "with a schema-valid scope that names no ids" do
       def applies_to_all?(rego)
-        rego.include?('"applies": true')
+        rego.include?("applies := true")
       end
 
       it "matches nothing when compliance_frameworks declares an entry with no id" do
@@ -337,7 +350,7 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
       it "applies everywhere when projects.excluding declares an entry with no id" do
         rego = described_class.new({ projects: { excluding: [{}] } }, policy_name: "P").transpile
 
-        expect(rego).to include("scope_included if { true }")
+        expect(rego).to include("included if { true }")
         expect(rego).not_to include("set()")
       end
 
@@ -358,9 +371,11 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
       end
     end
 
-    # The policy-name schema (1..255 characters) permits quotes and newlines, and
-    # the name is interpolated into generated source, so `to_json` is doing real
-    # work here. Guards against a future refactor to plain interpolation.
+    # The policy-name schema (1..255 characters) permits quotes and newlines, and the
+    # name is interpolated into a comment in generated source, where an unescaped
+    # newline would end the comment and let the rest of the name parse as Rego. So
+    # `to_json` is doing real work here; this guards against a refactor to plain
+    # interpolation.
     context "with a name that needs escaping" do
       it "escapes the policy name in the generated Rego" do
         rego = described_class.new(nil, policy_name: %(A "quoted"\nname)).transpile

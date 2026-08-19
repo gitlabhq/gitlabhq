@@ -18084,7 +18084,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_4301abf8c328"
+              "$ref": "#/components/schemas/RequestBody_f33ea4923f09"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -85843,6 +85843,8 @@ components:
           type: integer
         logging_field_dual_emit_target:
           type: integer
+        auto_accept_awarded_achievements:
+          type: string
         deactivate_dormant_users:
           type: string
         deactivate_dormant_users_period:
@@ -100095,7 +100097,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_4301abf8c328:
+    RequestBody_f33ea4923f09:
       type: object
       properties:
         admin_mode:
@@ -102173,6 +102175,9 @@ components:
           type: string
           nullable: true
         granular_tokens_enforced_after:
+          type: string
+          nullable: true
+        auto_accept_awarded_achievements:
           type: string
           nullable: true
         deactivate_dormant_users:

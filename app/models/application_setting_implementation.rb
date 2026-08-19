@@ -50,6 +50,7 @@ module ApplicationSettingImplementation
         asset_proxy_enabled: false,
         authn_data_retention_cleanup_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
+        auto_accept_awarded_achievements: false,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         ci_job_live_trace_enabled: false,

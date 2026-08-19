@@ -6572,6 +6572,9 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|Automatically accept achievements for all users"
+msgstr ""
+
 msgid "AdminSettings|Built-in project templates"
 msgstr ""
 
@@ -8290,7 +8293,7 @@ msgstr ""
 msgid "AiGovernance|Audit events"
 msgstr ""
 
-msgid "AiGovernance|Audit trail"
+msgid "AiGovernance|Audit logs"
 msgstr ""
 
 msgid "AiGovernance|Block"
@@ -8332,7 +8335,7 @@ msgstr ""
 msgid "AiGovernance|Failed to load agent inventory."
 msgstr ""
 
-msgid "AiGovernance|Failed to load audit trail."
+msgid "AiGovernance|Failed to load audit logs."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool rules."
@@ -8416,7 +8419,7 @@ msgstr ""
 msgid "AiGovernance|View all agents"
 msgstr ""
 
-msgid "AiGovernance|View full audit log"
+msgid "AiGovernance|View all audit logs"
 msgstr ""
 
 msgid "AiGovernance|Web access"
@@ -62014,6 +62017,9 @@ msgstr ""
 msgid "ProjectSettings|Feature flags"
 msgstr ""
 
+msgid "ProjectSettings|Feature visibility cannot be changed while the project is private."
+msgstr ""
+
 msgid "ProjectSettings|For Gitaly, location of data on the storage. For Gitaly Cluster, location of data on the virtual storage."
 msgstr ""
 
@@ -62300,6 +62306,9 @@ msgid "ProjectSettings|These checks must pass before merge requests can be merge
 msgstr ""
 
 msgid "ProjectSettings|This feature is an experiment. When you enable this, you accept the %{link}."
+msgstr ""
+
+msgid "ProjectSettings|This feature requires the repository to be enabled."
 msgstr ""
 
 msgid "ProjectSettings|This project"
@@ -69242,6 +69251,9 @@ msgstr ""
 msgid "SecretsManager|Add secret"
 msgstr ""
 
+msgid "SecretsManager|After August 20, GitLab Secrets Manager will require consuming GitLab credits. Without an eligible plan, your secrets manager will be disabled and pipelines will no longer access secrets. To avoid service disruption, start a trial to keep access."
+msgstr ""
+
 msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
 msgstr ""
 
@@ -69273,6 +69285,9 @@ msgid "SecretsManager|Configure OpenBao"
 msgstr ""
 
 msgid "SecretsManager|Contact your GitLab administrator for a trial."
+msgstr ""
+
+msgid "SecretsManager|Contact your administrator to start a trial."
 msgstr ""
 
 msgid "SecretsManager|Delete secret"
@@ -69398,6 +69413,9 @@ msgstr ""
 msgid "SecretsManager|Something went wrong while setting up the secrets manager. Please try again."
 msgstr ""
 
+msgid "SecretsManager|Start a 30-day trial to continue using GitLab Secrets Manager and avoid service disruption."
+msgstr ""
+
 msgid "SecretsManager|Stored secrets"
 msgstr ""
 
@@ -69420,6 +69438,12 @@ msgid "SecretsManager|To confirm, enter %{secretName}:"
 msgstr ""
 
 msgid "SecretsManager|Use the secrets manager to store your sensitive credentials, and then safely use them in your processes."
+msgstr ""
+
+msgid "SecretsManager|Your Beta period is over and GitLab Secrets Manager has been disabled"
+msgstr ""
+
+msgid "SecretsManager|Your free beta ends on August 20. Start a trial now."
 msgstr ""
 
 msgid "Secure Code Warrior"

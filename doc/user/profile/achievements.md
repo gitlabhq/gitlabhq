@@ -201,6 +201,9 @@ until the user accepts them.
 The acceptance link remains valid for 30 days. After that time, call the
 [`userAchievementsUpdate` GraphQL mutation](#change-visibility-of-specific-achievements) to accept the achievement.
 
+An administrator can
+[automatically accept newly awarded achievements for all recipients](../../administration/settings/account_and_limit_settings.md#automatically-accept-achievements-for-all-users).
+
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.

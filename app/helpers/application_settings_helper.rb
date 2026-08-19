@@ -701,7 +701,8 @@ module ApplicationSettingsHelper
       :enforce_granular_tokens,
       :granular_tokens_enforced_after,
       :logging_field_schema_version,
-      :logging_field_dual_emit_target
+      :logging_field_dual_emit_target,
+      :auto_accept_awarded_achievements
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

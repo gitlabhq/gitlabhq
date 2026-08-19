@@ -369687,6 +369687,18 @@
           "description": "Secrets Manager entitlement for a top-level group.",
           "fields": [
             {
+              "name": "betaProgramEnded",
+              "description": "Indicates whether the free-beta program has ended for the namespace. Set only when state is TRIAL_ELIGIBLE; null otherwise. Introduced in GitLab 19.4: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
               "name": "blockedReason",
               "description": "Reason the entitlement is blocked; null when state is not BLOCKED. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [],

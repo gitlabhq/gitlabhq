@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Coverage::Jacoco, feature_category: :code_testing do
   let_it_be(:project) { create(:project) }
-  let(:xml_data) { double }
+  let(:xml_data) { '<report></report>' }
   let(:coverage_report) { double }
   let(:paths) { double }
   let(:merge_request_paths) { double }
@@ -27,5 +27,15 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Jacoco, feature_category: :code_te
     expect(Gitlab::Ci::Parsers::Coverage::Documents::JacocoDocument).to receive(:new)
 
     parse_report
+  end
+
+  context 'when the XML data is empty' do
+    let(:xml_data) { '' }
+
+    it 'skips parsing' do
+      expect(Nokogiri::XML::SAX::Parser).not_to receive(:new)
+
+      expect { parse_report }.not_to raise_error
+    end
   end
 end

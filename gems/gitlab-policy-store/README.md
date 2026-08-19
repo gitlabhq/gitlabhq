@@ -101,11 +101,37 @@ Gitlab::PolicyStore.create(
   organization_id: 1, name: "Framework 5 only", trigger_type: "deployment_requested",
   policy_scope: { compliance_frameworks: [{ id: 5 }] }
 ).scope_rego
-# => "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n\n..."
+```
+
+```rego
+package gitlab.scope
+
+# policy "Framework 5 only" (match_mode: all)
+
+default excluded := false
+
+default included := false
+
+included if {
+	some framework_id in input.compliance_frameworks
+	framework_id in {5}
+}
+
+default applies := false
+
+applies if {
+	not excluded
+	included
+}
 ```
 
 The generated program is `package gitlab.scope`, per
 [GOVERN-006: Policy scope as Rego and quick-check strategy](https://gitlab.com/gitlab-org/architecture/govern/design-doc/-/blob/main/decisions/006-policy-scope-rego-quick-check.md).
+Its whole contract with the engine is the boolean `data.gitlab.scope.applies`, kept total
+by `default applies := false` so that a context matching nothing is out of scope rather
+than undefined. The `excluded` and `included` rules it is derived from, and the comment
+naming the policy, are for whoever reads the stored text.
+
 The gem compiles it. Evaluating a program against a project is the engine's job.
 
 ## Rule compilation
