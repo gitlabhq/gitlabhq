@@ -7,6 +7,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { logError } from '~/lib/logger';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
@@ -36,6 +37,7 @@ Vue.use(VueApollo);
 jest.mock('~/repository/utils/dom');
 jest.mock('~/alert');
 jest.mock('~/lib/logger');
+jest.mock('~/lib/utils/copy_to_clipboard');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
@@ -428,10 +430,9 @@ describe('Blob controls component', () => {
     });
 
     it('copies to clipboard raw blob text, when receives copy event', () => {
-      jest.spyOn(navigator.clipboard, 'writeText');
       findOverflowMenu().vm.$emit('copy');
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Example raw text content');
+      expect(copyToClipboard).toHaveBeenCalledWith('Example raw text content');
     });
 
     it('changes ForkSuggestionModal visibility when receives show-fork-suggestion event', async () => {

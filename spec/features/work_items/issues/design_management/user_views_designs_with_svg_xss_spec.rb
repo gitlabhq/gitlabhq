@@ -7,7 +7,7 @@ RSpec.describe 'User views an SVG design that contains XSS', :js, feature_catego
 
   let(:project) { create(:project_empty_repo, :public) }
   let(:issue) { create(:issue, project: project) }
-  let(:file) { Rails.root.join('spec', 'fixtures', 'logo_sample.svg') }
+  let(:file) { Rails.root.join('spec/fixtures/logo_sample.svg') }
   let(:design) { create(:design, :with_file, filename: 'xss.svg', file: file, issue: issue) }
 
   before do

@@ -5,6 +5,8 @@ module Admin
     class ApplicationController < Admin::ApplicationController
       extend Gitlab::Utils::Override
 
+      layout 'admin/organization'
+
       skip_before_action :authenticate_admin!, unless: :can_access_instance_admin_area?
       skip_before_action :enforce_step_up_authentication, unless: :can_access_instance_admin_area?
 

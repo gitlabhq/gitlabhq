@@ -384,7 +384,7 @@ For details of API fuzzing configuration options, see [available CI/CD variables
 #### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
-requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/variables/).
+requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/use/send-requests/variables/variables/).
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
@@ -402,7 +402,7 @@ Postman has grown from a basic client tool with a nice UX experience to a more c
 
 Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a global environment scope that is seen by every operation definition and workspace. You can also create a variable in a specific environment scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a local scope, but test scripts do.
 
-Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. Read [variable scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from the Postman documentation before moving forward.
+Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. Read [variable scopes](https://learning.postman.com/docs/use/send-requests/variables/variables/#variable-scopes) from the Postman documentation before moving forward.
 
 As mentioned previously, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
@@ -439,9 +439,9 @@ Not all scopes are supported by API fuzzing and variables defined in scripts are
 
 For more details on how to define variables and export variables in different scopes, see:
 
-- [Defining collection variables](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-collection-variables)
-- [Defining environment variables](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-environment-variables)
-- [Defining global variables](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-global-variables)
+- [Defining collection variables](https://learning.postman.com/docs/use/send-requests/variables/variables/#defining-collection-variables)
+- [Defining environment variables](https://learning.postman.com/docs/use/send-requests/variables/variables/#defining-environment-variables)
+- [Defining global variables](https://learning.postman.com/docs/use/send-requests/variables/variables/#defining-global-variables)
 
 #### Exporting from Postman Client
 
@@ -454,7 +454,7 @@ For more details on exporting variables in different supported scopes, see:
 
 - [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
 - [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
-- [Downloading global environments](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
+- [Downloading global environments](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments)
 
 #### API fuzzing scope, custom JSON file format
 
@@ -490,7 +490,7 @@ Variables from other scopes are provided through the `FUZZAPI_POSTMAN_COLLECTION
 
 The configuration variable `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
-- [Exported global environment](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
+- [Exported global environment](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments)
 - [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [API fuzzing custom JSON format](#api-fuzzing-scope-custom-json-file-format)
 
@@ -637,7 +637,7 @@ The supported dynamic variables during the scanning process are:
 
 #### Example: Global scope
 
-In this example, [the global scope is exported](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to API fuzzing through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+In this example, [the global scope is exported](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to API fuzzing through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
 Here is an example of using `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`:
 
@@ -729,7 +729,7 @@ values. For example:
 
 In this example, a global scope, environment scope, and collection scope are configured. The first step is to export the various scopes.
 
-- [Export the global scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
+- [Export the global scope](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the environment scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
@@ -787,7 +787,7 @@ When using exported scopes, it's often the case that the value of a variable mus
 
 In this example, a global scope, environment scope, collection scope, and API fuzzing scope are configured. The first step is to export and create your various scopes.
 
-- [Export the global scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
+- [Export the global scope](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the environment scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the collection scope as `postman-collection.json`
 

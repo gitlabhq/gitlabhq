@@ -3799,6 +3799,8 @@ Gitlab/BoundedContexts:
     - 'lib/sidebars/admin/menus/monitoring_menu.rb'
     - 'lib/sidebars/admin/menus/spam_logs_menu.rb'
     - 'lib/sidebars/admin/menus/system_hooks_menu.rb'
+    - 'lib/sidebars/admin/organizations/menus/overview_menu.rb'
+    - 'lib/sidebars/admin/organizations/panel.rb'
     - 'lib/sidebars/admin/panel.rb'
     - 'lib/sidebars/concerns/container_with_html_options.rb'
     - 'lib/sidebars/concerns/has_active_routes.rb'

@@ -11985,9 +11985,6 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry was enabled."
 msgstr ""
 
-msgid "ArtifactRegistry|Artifact details for %{name} loaded."
-msgstr ""
-
 msgid "ArtifactRegistry|Artifact list updated."
 msgstr ""
 
@@ -12031,6 +12028,9 @@ msgid "ArtifactRegistry|Control artifact registry access for this organization. 
 msgstr ""
 
 msgid "ArtifactRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block:"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy digest"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy registry URL"
@@ -12097,6 +12097,9 @@ msgid "ArtifactRegistry|Description (optional)"
 msgstr ""
 
 msgid "ArtifactRegistry|Description cannot be longer than %{maxLength} characters."
+msgstr ""
+
+msgid "ArtifactRegistry|Digest"
 msgstr ""
 
 msgid "ArtifactRegistry|Disable Artifact Registry"
@@ -55846,6 +55849,9 @@ msgid "Organization|Organization URL is too short (minimum is 2 characters)."
 msgstr ""
 
 msgid "Organization|Organization URL successfully changed."
+msgstr ""
+
+msgid "Organization|Organization administration"
 msgstr ""
 
 msgid "Organization|Organization administrators"

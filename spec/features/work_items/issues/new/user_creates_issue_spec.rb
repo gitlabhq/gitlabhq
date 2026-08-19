@@ -123,20 +123,20 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       end
 
       it 'uploads file when dragging into textarea' do
-        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+        dropzone_file Rails.root.join('spec/fixtures/banana_sample.gif')
 
         expect(page).to have_field('Description', with: /banana_sample/)
       end
 
       it "doesn't add double newline to end of a single attachment markdown" do
-        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+        dropzone_file Rails.root.join('spec/fixtures/banana_sample.gif')
 
         expect(page.find_field("Description").value).not_to match(/\n\n$/)
       end
 
       it "cancels a file upload correctly", :capybara_ignore_server_errors do
         slow_requests do
-          dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
+          dropzone_file([Rails.root.join('spec/fixtures/dk.png')], 0, false)
 
           within_testid 'markdown-field' do
             click_button 'Cancel'

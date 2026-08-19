@@ -192,7 +192,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
     end
 
     context 'when dates are changed' do
-      let(:opts) { { start_date: Date.today } }
+      let(:opts) { { start_date: Time.zone.today } }
 
       include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
         attributes: %w[

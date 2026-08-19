@@ -118,7 +118,7 @@ RSpec.shared_examples 'work item does not support labels widget updates via quic
 end
 
 RSpec.shared_examples 'work item supports start and due date widget updates via quick actions' do
-  let(:due_date) { Date.today }
+  let(:due_date) { Time.zone.today }
   let(:body) { "/remove_due_date" }
 
   before do

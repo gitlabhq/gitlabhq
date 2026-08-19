@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Banzai
+  ATOM_CONTEXT = { only_path: false, xhtml: true }.freeze
+
   # if you need to render markdown, then you probably need to post_process as well,
   # such as removing references that the current user doesn't have
   # permission to make

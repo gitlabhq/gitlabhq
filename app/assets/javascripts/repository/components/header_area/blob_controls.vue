@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { computed, defineAsyncComponent } from 'vue';
 import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
@@ -250,8 +251,7 @@ export default {
       this.trackEvent(BLAME_BUTTON_CLICK);
     },
     onCopy() {
-      // eslint-disable-next-line no-restricted-properties
-      navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
+      copyToClipboard(this.blobInfo.rawTextBlob);
     },
     onShowForkSuggestion() {
       this.isForkSuggestionModalVisible = true;

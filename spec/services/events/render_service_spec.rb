@@ -11,7 +11,7 @@ RSpec.describe Events::RenderService, feature_category: :user_profile do
     context 'when the request format is atom' do
       it 'renders the note inside events' do
         expect(Banzai::ObjectRenderer).to receive(:new)
-          .with(user: user, redaction_context: { only_path: false, xhtml: true })
+          .with(user: user, redaction_context: Banzai::ATOM_CONTEXT)
           .and_call_original
 
         expect_any_instance_of(Banzai::ObjectRenderer)

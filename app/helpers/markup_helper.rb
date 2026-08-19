@@ -115,6 +115,14 @@ module MarkupHelper
     render_markdown_field(object, field, context)
   end
 
+  def atom_markdown(text, context = {})
+    markdown(text, context.merge(Banzai::ATOM_CONTEXT))
+  end
+
+  def atom_markdown_field(object, field, context = {})
+    markdown_field(object, field, context.merge(Banzai::ATOM_CONTEXT))
+  end
+
   def markup(file_name, text, context = {})
     context[:project] ||= @project
     context[:text_source] ||= :blob

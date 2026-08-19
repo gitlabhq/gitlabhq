@@ -109,7 +109,6 @@ Style/SuperArguments:
     - 'lib/banzai/filter/jira_import/adf_to_commonmark_filter.rb'
     - 'lib/banzai/filter/markdown_filter.rb'
     - 'lib/banzai/filter/references/milestone_reference_filter.rb'
-    - 'lib/banzai/pipeline/atom_pipeline.rb'
     - 'lib/banzai/pipeline/broadcast_message_pipeline.rb'
     - 'lib/banzai/pipeline/description_pipeline.rb'
     - 'lib/banzai/pipeline/email_pipeline.rb'

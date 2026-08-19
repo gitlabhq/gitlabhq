@@ -1,0 +1,7 @@
+- page_title    _("Organization Admin")
+-# rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- We only want to generate org-scoped path here
+- header_title  _("Organization Admin"), organization_admin_root_path(Current.organization)
+-# rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
+- nav "organization_admin"
+
+= render template: "layouts/application"

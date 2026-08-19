@@ -7,7 +7,7 @@ module Sidebars
       def render?
         return false unless context.current_user
 
-        render_with_abilities.any? { |ability| context.current_user.can?(ability) }
+        render_with_abilities.any? { |ability| can?(context.current_user, ability, authorization_subject) }
       end
 
       protected
@@ -23,6 +23,13 @@ module Sidebars
       end
 
       private
+
+      # The authorization subject for admin ability checks. Defaults to
+      # `:global` for the instance admin area. The organization admin area
+      # overrides this to return the current organization.
+      def authorization_subject
+        :global
+      end
 
       def render_with_abilities
         %i[admin_all_resources]

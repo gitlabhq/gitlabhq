@@ -201,7 +201,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
       end
 
       it 'adds and removes due date from issue' do
-        date = Date.today.at_beginning_of_month + 2.days
+        date = Time.zone.today.at_beginning_of_month + 2.days
 
         within_testid('work-item-due-dates') do
           click_button 'Edit'

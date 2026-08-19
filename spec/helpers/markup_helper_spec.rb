@@ -198,6 +198,22 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
     end
   end
 
+  describe '#atom_markdown_field' do
+    let(:issuable) { create(:issue, project: project, description: "See #{merge_request.to_reference}") }
+
+    it 'resolves references to absolute URLs' do
+      expect(gfm_link_href(helper.atom_markdown_field(issuable, :description)))
+        .to eq(urls.project_merge_request_url(project, merge_request))
+    end
+  end
+
+  describe '#atom_markdown' do
+    it 'resolves references to absolute URLs' do
+      expect(gfm_link_href(helper.atom_markdown(merge_request.to_reference)))
+        .to eq(urls.project_merge_request_url(project, merge_request))
+    end
+  end
+
   describe '#link_to_markdown_field' do
     let(:link)    { '/commits/0a1b2c3d' }
     let(:issues)  { create_list(:issue, 2, project: project) }
@@ -681,5 +697,9 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
   def urls
     Gitlab::Routing.url_helpers
+  end
+
+  def gfm_link_href(html)
+    Nokogiri::HTML5.fragment(html).at_css('a.gfm')[:href]
   end
 end
