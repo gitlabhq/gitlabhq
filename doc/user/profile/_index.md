@@ -30,8 +30,8 @@ To access your profile:
 1. In the upper-right corner, select your avatar.
 1. Select your name or username.
 
-You can also access a users' profile page by using the ID instead of the username at `https://gitlab.example.com/-/u/<id>`.
-For example, if your username is `gitlab-user` has an ID `12345`, you can access the profile page either at
+You can also access a user's profile page by using the ID instead of the username at `https://gitlab.example.com/-/u/<id>`.
+For example, if your username is `gitlab-user` and your ID is `12345`, you can access the profile page either at
 `https://gitlab.example.com/gitlab-user` or `https://gitlab.example.com/-/u/12345`.
 
 ## Find the user ID
@@ -40,7 +40,7 @@ You might need the user ID if you want to interact with it using the [GitLab API
 
 To find the user ID:
 
-1. Go to the users' profile page.
+1. Go to the user's profile page.
 1. On the profile page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy user ID**.
 

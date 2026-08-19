@@ -13,7 +13,7 @@ title: Enable and disable GitLab features deployed behind feature flags
 
 {{< /details >}}
 
-GitLab adopted feature flags strategies
+GitLab adopted feature flag strategies
 to deploy features in an early stage of development so that they can be
 incrementally rolled out.
 

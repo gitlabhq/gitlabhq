@@ -153,7 +153,7 @@ After developer tools have been enabled, obtain a session cookie as follows:
 
 1. Visit <https://gitlab.com> while logged in.
 1. Optional. Select **Fetch/XHR** request filter in the **Developer Tools** panel. This step is described for Google Chrome developer tools and is not strictly necessary. It just makes it easier to find the correct request.
-1. Select the `results?request_id=<some-request-id>` request on the left hand side.
+1. Select the `results?request_id=<some-request-id>` request on the left-hand side.
 1. The session cookie is displayed under the `Request Headers` section of the `Headers` panel. Right-click on the cookie value and select `Copy value`.
 
 ![Viewing a session cookie in the Developer Tools panel of a browser](img/obtaining-a-session-cookie-for-request_v14_3.png)

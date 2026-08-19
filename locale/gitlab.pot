@@ -11916,6 +11916,9 @@ msgstr ""
 msgid "Artifact was successfully deleted."
 msgstr ""
 
+msgid "ArtifactRegistry|%{artifactType} for %{digest}"
+msgstr ""
+
 msgid "ArtifactRegistry|%{date} by %{user}"
 msgstr ""
 
@@ -12169,6 +12172,9 @@ msgid_plural "ArtifactRegistry|Images"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|Index"
+msgstr ""
+
 msgid "ArtifactRegistry|Install"
 msgstr ""
 
@@ -12279,6 +12285,9 @@ msgstr ""
 msgid "ArtifactRegistry|Push an image:"
 msgstr ""
 
+msgid "ArtifactRegistry|Referrer for %{digest}"
+msgstr ""
+
 msgid "ArtifactRegistry|Registry URL"
 msgstr ""
 
@@ -12327,6 +12336,12 @@ msgstr ""
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
 msgstr ""
 
+msgid "ArtifactRegistry|SBOM attestation for %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|SLSA attestation for %{digest}"
+msgstr ""
+
 msgid "ArtifactRegistry|Set up Artifact registry"
 msgstr ""
 
@@ -12334,6 +12349,9 @@ msgid "ArtifactRegistry|Setup instructions"
 msgstr ""
 
 msgid "ArtifactRegistry|Sign in to the registry:"
+msgstr ""
+
+msgid "ArtifactRegistry|Signature for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Size"

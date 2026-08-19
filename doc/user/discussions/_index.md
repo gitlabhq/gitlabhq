@@ -148,7 +148,7 @@ You can use [Markdown](../markdown.md) and [quick actions](../project/quick_acti
 
 ### Comment reply expiration
 
-Email replies that create standard or threaded comments are subject to a two year
+Email replies that create standard or threaded comments are subject to a two-year
 [retention policy](../../administration/reply_by_email.md#retention-policy-for-notifications).
 
 ## Edit a comment
@@ -225,7 +225,7 @@ Who can be notified:
 Use internal notes to protect information added to a public issue, epic, wiki page, or merge request.
 Internal notes differ from public comments:
 
-- Only project members with least the Reporter role can view the internal note.
+- Only project members with at least the Reporter role can view the internal note.
 - You can't convert internal notes to regular comments.
 - All replies to internal notes are also internal.
 - Internal notes display an **Internal note** badge and are shown in a different
@@ -408,7 +408,7 @@ To generate a summary of issue discussions:
 1. Select **View summary**.
 
 The comments in the issue are summarized in as many as 10 list items.
-You can ask follow up questions based on the response.
+You can ask follow-up questions based on the response.
 
 Data usage: When you use this feature, the text of all comments on the issue are sent to
 the large language model.

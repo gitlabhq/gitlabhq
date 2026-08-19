@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Legacy repository archive endpoint', feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :private, :repository) }
+  let_it_be(:project) { create(:project, :private, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let(:archive_project) { project }
@@ -66,7 +66,7 @@ RSpec.describe 'Legacy repository archive endpoint', feature_category: :source_c
     end
 
     context 'with a public project' do
-      let_it_be(:public_project) { create(:project, :public, :repository) }
+      let_it_be(:public_project) { create(:project, :public, :small_repo) }
 
       let(:archive_project) { public_project }
 
@@ -82,7 +82,7 @@ RSpec.describe 'Legacy repository archive endpoint', feature_category: :source_c
     context 'with nested namespace' do
       let_it_be(:group) { create(:group) }
       let_it_be(:subgroup) { create(:group, parent: group) }
-      let_it_be(:nested_project) { create(:project, :private, :repository, namespace: subgroup) }
+      let_it_be(:nested_project) { create(:project, :private, :small_repo, namespace: subgroup) }
 
       let(:archive_project) { nested_project }
 

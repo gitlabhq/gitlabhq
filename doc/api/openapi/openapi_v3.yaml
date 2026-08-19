@@ -1728,7 +1728,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d98ff4ec17a4"
+              "$ref": "#/components/schemas/RequestBody_949adbf6ddd5"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/revoke_token":
     post:
@@ -2198,7 +2198,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_0b3b859426ba"
+              "$ref": "#/components/schemas/RequestBody_24bfaf02a0f1"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
@@ -95319,7 +95319,7 @@ components:
       - project_id
       - merge_request_iid
       - review_output
-    RequestBody_d98ff4ec17a4:
+    RequestBody_949adbf6ddd5:
       type: object
       properties:
         project_id:
@@ -95409,13 +95409,6 @@ components:
             required:
             - Category
             - Content
-          nullable: true
-        shallow_clone:
-          type: boolean
-          default: true
-          description: Whether or not the workflow should use a shallow clone of the
-            repository during its execution.  Defaults to true.
-          example: true
           nullable: true
         issue_id:
           type: integer
@@ -95634,7 +95627,7 @@ components:
           description: The ID or path of the project
           example: '1'
           nullable: true
-    RequestBody_0b3b859426ba:
+    RequestBody_24bfaf02a0f1:
       type: object
       properties:
         project_id:
@@ -95736,13 +95729,6 @@ components:
             required:
             - Category
             - Content
-          nullable: true
-        shallow_clone:
-          type: boolean
-          default: true
-          description: Whether or not the workflow should use a shallow clone of the
-            repository during its execution.  Defaults to true.
-          example: true
           nullable: true
         issue_id:
           type: integer

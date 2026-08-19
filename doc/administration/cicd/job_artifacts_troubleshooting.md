@@ -47,7 +47,7 @@ reasons are:
   [Rake task for orphaned artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do because it also removes empty directories (see the previous reason).
 - Artifacts with `unknown` status might not be processed by automatic cleanup. You can [check for these artifacts](#check-for-artifacts-with-unknown-status) and clean them up to reclaim disk space.
-- The [keep latest artifacts from most recent success jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
+- The [keep latest artifacts from most recent successful jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
 
 In these and other cases, identify the projects most responsible
@@ -707,7 +707,7 @@ In this diagram:
 ### Proxy download enabled
 
 If `proxy_download` is `true`, GitLab always fetches the
-artifacts from object storage and send the data to the runner, even if
+artifacts from object storage and sends the data to the runner, even if
 the runner sends the `direct_download=true` query parameter. Proxy
 downloads might be desirable if runners have restricted network access.
 

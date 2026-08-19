@@ -523,7 +523,7 @@ To resolve the issue, [configure `kubectl` to trust the CA](#environments-with-k
 
 ### Validation errors
 
-If you use `kubectl` versions v1.27.0 or v.1.27.1, you might get the following error:
+If you use `kubectl` versions v1.27.0 or v1.27.1, you might get the following error:
 
 ```plaintext
 error: error validating "file.yml": error validating data: the server responded with the status code 426 but did not return more information; if you choose to ignore these errors, turn validation off with --validate=false

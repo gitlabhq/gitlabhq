@@ -197,7 +197,7 @@ Before setting up AWS S3 streaming audit events, you must:
 
 1. Create an access key for AWS with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
    For more information, see [Managing access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html?icmpid=docs_iam_console#Using_CreateAccessKey).
-1. Create an AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
+1. Create an AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html).
 
 ### Add a new AWS S3 destination
 

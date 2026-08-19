@@ -16,7 +16,7 @@ Work items include the types:
 `Issue`, `Incident`, `TestCase`, `Requirement`, `Task`, `Ticket`, `Objective`, `KeyResult`, and `Epic`.
 
 > [!note]
-> Querying epics is available only on the Premium and Ultimate tier.
+> Querying epics is available only on the Premium and Ultimate tiers.
 
 ## Allowed scopes
 
@@ -348,7 +348,7 @@ For more information, see [scopes](_index.md#scopes).
 
 **Notes**:
 
-- Scoped labels, or labels containing spaces must be wrapped in quotes.
+- Scoped labels or labels containing spaces must be wrapped in quotes.
 
 ### Milestone {#workitem-milestone}
 
@@ -510,10 +510,10 @@ For more information, see [scopes](_index.md#scopes).
 | Created at       | `created`, `createdAt`                | All             | Display time since the object was created |
 | Description      | `description`                         | All             | Display the description of the object |
 | Due date         | `due`, `dueDate`                      | All             | Display time until the object is due |
-| Epic             | `epic`                                | All except Epic | Display a link to the epic. Available in the Premium and Ultimate tier |
+| Epic             | `epic`                                | All except Epic | Display a link to the epic. Available in the Premium and Ultimate tiers |
 | Health status    | `health`, `healthStatus`              | All             | Display a badge indicating the health status. Available in the Ultimate tier |
 | ID               | `id`                                  | All             | Display the ID of the object |
-| Iteration        | `iteration`                           | All except Epic | Display the iteration. Available in the Premium and Ultimate tier |
+| Iteration        | `iteration`                           | All except Epic | Display the iteration. Available in the Premium and Ultimate tiers |
 | Labels           | `label`, `labels`                     | All             | Display labels. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
 | Last comment     | `lastComment`                         | All             | Display the last comment made on the object |
 | Milestone        | `milestone`                           | All             | Display the milestone associated with the object |

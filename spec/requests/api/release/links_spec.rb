@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   include Ci::JobTokenScopeHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository, :private) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, :private) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
@@ -185,7 +185,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        let(:project) { create(:project, :small_repo, :public) }
 
         it 'allows the request' do
           get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", non_project_member)
@@ -361,7 +361,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        let(:project) { create(:project, :small_repo, :public) }
 
         it 'forbids the request' do
           post api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member), params: params
@@ -533,7 +533,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        let(:project) { create(:project, :small_repo, :public) }
 
         it_behaves_like '403 response' do
           let(:request) do
@@ -662,7 +662,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        let(:project) { create(:project, :small_repo, :public) }
 
         it_behaves_like '403 response' do
           let(:request) do

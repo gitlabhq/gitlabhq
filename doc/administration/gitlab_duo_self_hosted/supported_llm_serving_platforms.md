@@ -25,7 +25,7 @@ title: Configure LLM platforms
 
 {{< /history >}}
 
-The AI Gateway supports multiple LLM providers through [LiteLLM](https://docs.litellm.ai/docs/providers). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the providers we have validated and tested. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
+The AI Gateway supports multiple LLM providers through [LiteLLM](https://docs.litellm.ai/docs/providers). Each platform has unique features and benefits that can cater to different needs. The following documentation summarizes the providers we have validated and tested. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
 
 ## Use multiple models and platforms
 

@@ -57,7 +57,7 @@ When a new version of Kubernetes is released:
 
 - This page updates with the results of early smoke tests within approximately
   four weeks.
-- If the release of a new version support is delayed, this page updates
+- If support for a new Kubernetes version is delayed, this page updates
   with the expected GitLab support version within approximately eight weeks.
 
 When installing the agent, use a Helm version compatible with your Kubernetes version. Other versions of Helm might not work. For a list of compatible versions, see the [Helm version support policy](https://helm.sh/docs/topics/version_skew/).

@@ -26,7 +26,7 @@ Where:
 
 - User `user-1` creates `parent-group`, `subgroup-A`, and `subgroup-B`.
 - `subgroup-A` is shared with `subgroup-B`.
-- User `terraform-user` is member of `parent-group` with inherited `owner` access to both subgroups.
+- User `terraform-user` is a member of `parent-group` with inherited `owner` access to both subgroups.
 
 When the Terraform state is refreshed, the API query `GET /groups/:subgroup-A_id` issued by the provider does not return the
 details of `subgroup-B` in the `shared_with_groups` array. This leads to the error.

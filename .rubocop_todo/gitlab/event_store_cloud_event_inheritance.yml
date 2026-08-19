@@ -1,6 +1,5 @@
 ---
 Gitlab/EventStoreCloudEventInheritance:
-  Details: grace period
   Exclude:
     - 'app/events/ci/job_artifacts_deleted_event.rb'
     - 'app/events/ci/pipeline_created_event.rb'

@@ -176,7 +176,7 @@ GitLab container registry storage can be configured in either:
   - Self-hosted S3-compatible object storage.
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
-The backup command does not back up registry data when they are stored in Object Storage.
+The backup command does not back up registry data when it is stored in Object Storage.
 
 #### Metadata database
 
@@ -1017,7 +1017,7 @@ For self-compiled installations:
          # Turns on AWS Server-Side Encryption with Amazon S3-Managed keys (optional)
          # https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html
          # For SSE-S3, set 'server_side_encryption' to 'AES256'.
-         # For SS3-KMS, set 'server_side_encryption' to 'aws:kms'. Set
+         # For SSE-KMS, set 'server_side_encryption' to 'aws:kms'. Set
          # 'server_side_encryption_kms_key_id' to the ARN of customer master key.
          # storage_options:
          #   server_side_encryption: 'aws:kms'

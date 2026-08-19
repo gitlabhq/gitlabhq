@@ -90,7 +90,7 @@ RSS feed of a user's activity:
 1. Go to the [user's profile](_index.md#access-your-user-profile).
 1. In the upper-right corner, select the feed symbol ({{< icon name="rss" >}}) to display the results as an RSS feed in Atom format.
 
-The URL of the result contains both a feed token, and
+The URL of the result contains both a feed token and
 the user's activity that you're authorized to view.
 You can add this URL to your feed reader.
 

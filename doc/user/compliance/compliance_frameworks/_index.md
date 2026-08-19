@@ -221,7 +221,7 @@ To set as default (or remove the default) from [compliance framework report](../
 
 ## Remove a compliance framework from a project
 
-To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
+To remove a compliance framework from one or multiple projects in a group, remove the compliance framework through the
 [compliance projects report](../compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
 
 ## Export a compliance framework as a JSON file
@@ -449,7 +449,7 @@ Combine GitLab compliance controls to help you meet
 
 External controls are API calls to external systems that request the status of an external control or requirement.
 
-You can create a external control that sends data to third-party tools.
+You can create an external control that sends data to third-party tools.
 
 When the [compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) are run, GitLab sends a notification. The users or automated workflows can then update the status of control from outside of GitLab.
 

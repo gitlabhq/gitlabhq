@@ -14,7 +14,7 @@ title: PlantUML
 
 {{< /details >}}
 
-Use the [PlantUML](https://plantuml.com) integration, to create diagrams in snippets, wikis, and repositories.
+Use the [PlantUML](https://plantuml.com) integration to create diagrams in snippets, wikis, and repositories.
 GitLab.com integrates with PlantUML for all users, and requires no additional configuration.
 
 To set up the integration on your GitLab Self-Managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).

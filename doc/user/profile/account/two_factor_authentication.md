@@ -99,7 +99,7 @@ WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
 
 To register a WebAuthn-compatible device:
 
-1. If using a physical device, plug it in to computer.
+1. If using a physical device, plug it in to your computer.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the left sidebar, select **Access** > **Password and authentication**.

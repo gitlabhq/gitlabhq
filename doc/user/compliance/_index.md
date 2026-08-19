@@ -13,7 +13,7 @@ description: Compliance features.
 
 {{< /details >}}
 
-GitLab compliance features for users ensure your GitLab groups and projects meets common compliance standards.
+GitLab compliance features for users ensure your GitLab groups and projects meet common compliance standards.
 
 ## Compliant workflow automation
 

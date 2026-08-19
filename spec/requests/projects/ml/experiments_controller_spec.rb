@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be_with_reload(:experiment) do
     create(:ml_experiments, project: project, user: user).tap do |e|

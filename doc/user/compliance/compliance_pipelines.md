@@ -61,7 +61,7 @@ To migrate an existing compliance framework to use the pipeline execution policy
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. [Edit](compliance_frameworks/_index.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
-1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
+1. In the banner that appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
 For more information, see [Security policy project](../application_security/policies/enforcement/security_policy_projects.md).
@@ -98,7 +98,7 @@ To configure a compliance pipeline:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. Select **Frameworks** section.
-1. Select **New framework** section, add information of compliance framework including path to the compliance framework configuration. Use the
+1. Select the **New framework** section, and add the compliance framework information, including the path to the compliance framework configuration. Use the
    `path/file.y[a]ml@group-name/project-name` format. For example:
 
    - `.compliance-ci.yml@gitlab-org/gitlab`.
@@ -112,7 +112,7 @@ The user running the pipeline in the labeled project must at least have the Repo
 
 When used to enforce scan execution, this feature has some overlap with
 [scan execution policies](../application_security/policies/scan_execution_policies.md).
-The user experience for these two features [have not been unified](https://gitlab.com/groups/gitlab-org/-/epics/7312).
+The user experience for these two features [has not been unified](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 
 ## Important considerations
 
@@ -203,7 +203,7 @@ If any projects use [configuration hosted externally](../../ci/pipelines/setting
 the example configuration does not work. See [issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960)
 for more details.
 
-With projects that use externally hosted configuration, you can try the this workaround:
+With projects that use externally hosted configuration, you can try this workaround:
 
 - The `include` section in the example compliance pipeline configuration must be adjusted.
   For example, using [`include:rules`](../../ci/yaml/includes.md#use-rules-with-include):
@@ -284,7 +284,7 @@ include:  # Execute individual project's configuration
 ```
 
 In this example, a configuration file is only included if it exists for the given `ref`
-in the project in `exists:project: $CI_PROJECT_PATH'`.
+in the project in `exists:project: '$CI_PROJECT_PATH'`.
 
 If `exists:project` is not specified in the compliance pipeline configuration, it searches for files in the project
 in which the `include` is defined. In compliance pipelines, the `include` from the previous example

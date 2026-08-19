@@ -33263,6 +33263,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="agentplatformsessionsaggregationresponsedimensions-flowtype"></a>`flowType` | [`String`](#string) | Type of session. |
+| <a id="agentplatformsessionsaggregationresponsedimensions-project"></a>`project` | [`Project`](#project) | Project the session ran in. |
 | <a id="agentplatformsessionsaggregationresponsedimensions-user"></a>`user` | [`UserCore`](#usercore) | Session owner. |
 
 #### Fields with arguments
@@ -34609,6 +34610,7 @@ Arguments:
 | <a id="analytics-agentplatformsessions-createdeventatto"></a>`createdEventAtTo` | [`Time`](#time) | Filter by session creation timestamp. End of the range. |
 | <a id="analytics-agentplatformsessions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-agentplatformsessions-flowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many flow types. |
+| <a id="analytics-agentplatformsessions-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
 | <a id="analytics-agentplatformsessions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
 
 ##### `Analytics.contributions`
@@ -63482,6 +63484,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="wikipage-awardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the wiki page. (see [Connections](#connections)) |
 | <a id="wikipage-commenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
+| <a id="wikipage-content"></a>`content` | [`String`](#string) | Content of the wiki page. |
 | <a id="wikipage-discussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
 | <a id="wikipage-id"></a>`id` | [`WikiPageMetaID!`](#wikipagemetaid) | Global ID of the wiki page metadata record. |
 | <a id="wikipage-name"></a>`name` | [`String`](#string) | Name or title of the object. |

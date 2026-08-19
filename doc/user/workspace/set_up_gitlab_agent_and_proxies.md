@@ -362,7 +362,7 @@ To update your DNS records:
 
    This command returns a `400 Bad Request` error until you create a workspace.
 
-1. From another terminal, check the proxy logs::
+1. From another terminal, check the proxy logs:
 
    ```shell
    kubectl -n gitlab-workspaces logs -f -l app.kubernetes.io/name=gitlab-workspaces-proxy

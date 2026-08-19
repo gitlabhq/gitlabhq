@@ -32,6 +32,19 @@ module Gitlab
         from_group_params || from_organization_params
       end
 
+      # True when the URL names an Organization (/o/:organization_path) other than
+      # the one the group/namespace params resolve to, so the request can be
+      # rejected. See https://gitlab.com/gitlab-org/gitlab/-/issues/595615.
+      # A string comparison is enough: Organization paths are case-insensitively
+      # unique (unique_organizations_on_path_case_insensitive), and it avoids a
+      # second Organization lookup on every organization-scoped request.
+      def organization_path_mismatch?
+        return false if params[:organization_path].blank?
+        return false unless from_group_params
+
+        !from_group_params.path.casecmp?(params[:organization_path].to_s)
+      end
+
       def from_headers
         return if headers.nil?
 
@@ -66,6 +79,7 @@ module Gitlab
 
         ::Organizations::Organization.find_by_namespace_path_with_isolation_record(path)
       end
+      strong_memoize_attr :from_group_params
 
       def from_organization_params
         path = params[:organization_path]

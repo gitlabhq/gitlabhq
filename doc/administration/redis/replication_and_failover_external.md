@@ -250,7 +250,7 @@ installations. From the GitLab application perspective, all it requires is
 the correct credentials for the Sentinel nodes.
 
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
-it needs to access at least one of listed ones.
+it needs to access at least one of the listed ones.
 
 The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels in the same machine:

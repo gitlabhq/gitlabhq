@@ -563,7 +563,7 @@ There is no way to download a specific version of the state using the UI.
 
 #### Protect sensitive data in Terraform state files
 
-Terraform state files might contain sensitive information such as passwords private keys, API tokens, and database connection strings.
+Terraform state files might contain sensitive information such as passwords, private keys, API tokens, and database connection strings.
 In GitLab, any user with the Developer role or higher can download and view Terraform state files for projects where they are members.
 
 To reduce exposure of sensitive data:

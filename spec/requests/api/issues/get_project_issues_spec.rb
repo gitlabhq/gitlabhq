@@ -3,22 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues, feature_category: :team_planning do
-  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, reporters: user) }
   let_it_be(:private_mrs_project, freeze: false) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE, reporters: user)
   end
 
-  let_it_be(:group, freeze: false) { create(:group, :public, reporters: user) }
+  let_it_be_with_reload(:group) { create(:group, :public, reporters: user) }
 
-  let_it_be(:user2, freeze: false)       { create(:user) }
-  let_it_be(:non_member, freeze: false)  { create(:user) }
-  let_it_be(:guest, freeze: false)       { create(:user, guest_of: [group, project, private_mrs_project]) }
-  let_it_be(:author, freeze: false)      { create(:author) }
-  let_it_be(:assignee, freeze: false)    { create(:assignee) }
-  let_it_be(:admin, freeze: false)       { create(:user, :admin) }
+  let_it_be_with_reload(:user2)       { create(:user) }
+  let_it_be_with_reload(:non_member)  { create(:user) }
+  let_it_be_with_reload(:guest)       { create(:user, guest_of: [group, project, private_mrs_project]) }
+  let_it_be_with_reload(:author)      { create(:author) }
+  let_it_be_with_reload(:assignee)    { create(:assignee) }
+  let_it_be_with_reload(:admin)       { create(:user, :admin) }
 
-  let_it_be(:milestone, freeze: false) { create(:milestone, title: '1.0.0', project: project) }
+  let_it_be_with_reload(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   let_it_be(:empty_milestone, freeze: false) do
     create(:milestone, title: '2.0.0', project: project)
   end
@@ -62,10 +62,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       description: issue_description
   end
 
-  let_it_be(:label, freeze: false) { create(:label, title: 'label', color: '#FFAABB', project: project) }
-  let_it_be(:label_link, freeze: false) { create(:label_link, label: label, target: issue) }
+  let_it_be_with_reload(:label) { create(:label, title: 'label', color: '#FFAABB', project: project) }
+  let_it_be_with_reload(:label_link) { create(:label_link, label: label, target: issue) }
 
-  let_it_be(:note, freeze: false) { create(:note_on_issue, author: user, project: project, noteable: issue) }
+  let_it_be_with_reload(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let_it_be(:merge_request1, freeze: false) do
     create(
@@ -216,7 +216,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'and group project is private' do
-        let_it_be(:group_project, freeze: false) { create(:project, :private, group: group) }
+        let_it_be_with_reload(:group_project) { create(:project, :private, group: group) }
 
         it_behaves_like 'returns project issues without confidential issues for guests'
         it_behaves_like 'returns all project issues for reporters'

@@ -40,7 +40,7 @@ instances run in different machines. If you fail to provision the machines in
 that specific way, any issue with the shared environment can bring your entire
 setup down.
 
-It is OK to run a Sentinel alongside of a primary or replica Redis instance.
+It is OK to run a Sentinel alongside a primary or replica Redis instance.
 There should be no more than one Sentinel on the same machine though.
 
 You also need to take into consideration the underlying network topology,
@@ -102,8 +102,8 @@ the Linux package in `5` **independent** machines, both with
 You must have at least `3` Redis servers: `1` primary, `2` Replicas, and they
 need to each be on independent machines.
 
-You can have additional Redis nodes, that helps to survive a situation
-where more nodes goes down. Whenever there is only `2` nodes online, a failover
+You can have additional Redis nodes, which helps to survive a situation
+where more nodes go down. Whenever there are only `2` nodes online, a failover
 is not initiated.
 
 As an example, if you have `6` Redis nodes, a maximum of `3` can be
@@ -111,7 +111,7 @@ simultaneously down.
 
 There are different requirements for Sentinel nodes.
 If you host them in the same Redis machines, you may need to take
-that restrictions into consideration when calculating the amount of
+those restrictions into consideration when calculating the number of
 nodes to be provisioned. See [Sentinel setup overview](#sentinel-setup-overview)
 documentation for more information.
 
@@ -145,7 +145,7 @@ be each in an independent machine (that are believed to fail independently),
 ideally in different geographical areas.
 
 You can configure them in the same machines where you've configured the other
-Redis servers, but understand that if a whole node goes down, you loose both
+Redis servers, but understand that if a whole node goes down, you lose both
 a Sentinel and a Redis instance.
 
 The number of sentinels should ideally always be an **odd** number, for the
@@ -181,7 +181,7 @@ the official documentation:
   the moment a Sentinel detected the misconfiguration).
 
 - The time needed to cancel a failover that is already in progress but
-  did not produced any configuration change (REPLICAOF NO ONE yet not
+  did not produce any configuration change (REPLICAOF NO ONE yet not
   acknowledged by the promoted replica).
 
 - The maximum time a failover in progress waits for all the replicas to be
@@ -239,7 +239,7 @@ To disable Redis in the single install, edit `/etc/gitlab/gitlab.rb`:
 redis['enable'] = false
 ```
 
-If you fail to replicate first, you may loose data (unprocessed background jobs).
+If you fail to replicate first, you may lose data (unprocessed background jobs).
 
 ### Step 1. Configuring the primary Redis instance
 
@@ -365,7 +365,7 @@ With GitLab Enterprise Edition, you can use the Linux package to set up
 multiple machines with the Sentinel daemon.
 
 1. SSH into the server that hosts Redis Sentinel.
-1. **You can omit this step if the Sentinels is hosted in the same node as
+1. **You can omit this step if the Sentinels are hosted in the same node as
    the other Redis instances**.
 
    [Download and install](https://about.gitlab.com/install/) the
@@ -413,13 +413,13 @@ multiple machines with the Sentinel daemon.
    ## Value must NOT be greater than the amount of sentinels.
    ##
    ## The quorum can be used to tune Sentinel in two ways:
-   ## 1. If a the quorum is set to a value smaller than the majority of Sentinels
+   ## 1. If the quorum is set to a value smaller than the majority of Sentinels
    ##    we deploy, we are basically making Sentinel more sensible to primary failures,
    ##    triggering a failover as soon as even just a minority of Sentinels is no longer
    ##    able to talk with the primary.
    ## 1. If a quorum is set to a value greater than the majority of Sentinels, we are
    ##    making Sentinel able to failover only when there are a very large number (larger
-   ##    than majority) of well connected Sentinels which agree about the primary being down.s
+   ##    than majority) of well connected Sentinels which agree about the primary being down.
    sentinel['quorum'] = 2
 
    ## Consider unresponsive server down after x amount of ms.
@@ -437,7 +437,7 @@ multiple machines with the Sentinel daemon.
    ##   the moment a Sentinel detected the misconfiguration).
    ##
    ## - The time needed to cancel a failover that is already in progress but
-   ##   did not produced any configuration change (REPLICAOF NO ONE yet not
+   ##   did not produce any configuration change (REPLICAOF NO ONE yet not
    ##   acknowledged by the promoted replica).
    ##
    ## - The maximum time a failover in progress waits for all the replica to be

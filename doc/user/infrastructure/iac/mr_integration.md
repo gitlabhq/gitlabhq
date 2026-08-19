@@ -81,7 +81,7 @@ To manually configure a GitLab OpenTofu Report artifact:
    pipe the output and convert the relevant bits into a store variable `PLAN_JSON`.
    This JSON is used to create a
    [GitLab OpenTofu Report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsterraform).
-   The OpenTofu report obtains a OpenTofu `tfplan.json` file. The collected
+   The OpenTofu report obtains an OpenTofu `tfplan.json` file. The collected
    OpenTofu plan report is uploaded to GitLab as an artifact, and is shown in merge requests.
 
    ```yaml

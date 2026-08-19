@@ -13,16 +13,17 @@ title: Use the GitLab Duo CLI
 
 {{< /details >}}
 
-Prerequisites:
-
-- A [default GitLab Duo namespace](../profile/preferences.md#namespace-resolution-in-your-local-environment)
-  set, or an open project that has GitLab Duo access.
-
 You can use the GitLab Duo CLI in two modes:
 
 - Interactive mode: Provides a chat experience similar to GitLab Duo Chat in the GitLab UI or in
   editor extensions. Supports build and plan modes.
 - Headless mode: Enables non-interactive use in runners, scripts, and other automated workflows.
+
+## Prerequisites
+
+- The GitLab Duo CLI installed and [set up](set_up.md).
+- A [default GitLab Duo namespace](../profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set, or an open project that has access to GitLab Duo.
 
 ## Interactive mode
 

@@ -1,6 +1,5 @@
 ---
 Gitlab/Authz/PermissionCheck:
-  Details: grace period
   Exclude:
     - 'app/controllers/clusters/base_controller.rb'
     - 'app/controllers/concerns/notes_actions.rb'

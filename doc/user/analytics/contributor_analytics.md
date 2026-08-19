@@ -12,7 +12,7 @@ title: Contributor analytics
 
 {{< /details >}}
 
-Contributor analytics give you an overview of the commits made by projects members to a project over time.
+Contributor analytics give you an overview of the commits made by project members to a project over time.
 
 ## View contributor analytics
 

@@ -810,7 +810,6 @@ export default {
       :is-group="isGroup"
       :is-updating="isSubmitting"
       :without-heading-anchors="withoutHeadingAnchors"
-      @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />
     <edited-at

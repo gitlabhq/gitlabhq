@@ -14,7 +14,6 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemCloseConfirmModal from '~/work_items/components/work_item_close_confirm_modal.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
-import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import WorkItemDescriptionTemplatesListbox from '~/work_items/components/work_item_description_template_listbox.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -53,7 +52,6 @@ describe('WorkItemDescription', () => {
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const findForm = () => wrapper.findComponent(GlForm);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-  const findRenderedDescription = () => wrapper.findComponent(WorkItemDescriptionRendered);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
   const findConflictsAlert = () => wrapper.findComponent(GlAlert);
   const findConflictedDescription = () => wrapper.findByTestId('conflicted-description');
@@ -140,6 +138,13 @@ describe('WorkItemDescription', () => {
       replace: jest.fn(),
     };
 
+    // The app renders an existing work item straight into edit mode through
+    // `?edit=true`, which is what makes the Apollo result seed the editor with
+    // the current description.
+    if (isEditing) {
+      setWindowLocation('?edit=true');
+    }
+
     wrapper = shallowMountExtended(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
@@ -156,7 +161,7 @@ describe('WorkItemDescription', () => {
         workItemIid,
         workItemTypeId,
         newWorkItemType,
-        editMode,
+        editMode: editMode || isEditing,
         showButtonsBelowField,
         isCreateFlow,
         isGroup,
@@ -178,12 +183,6 @@ describe('WorkItemDescription', () => {
     });
 
     await waitForPromises();
-
-    if (isEditing) {
-      findRenderedDescription().vm.$emit('startEditing');
-
-      await nextTick();
-    }
   };
 
   describe('editing description', () => {
@@ -516,7 +515,7 @@ describe('WorkItemDescription', () => {
         beforeEach(async () => {
           await createComponent({
             routeName: ROUTES.new,
-            isEditing: true,
+            editMode: true,
             isCreateFlow: true,
           });
           await nextTick();
@@ -539,8 +538,9 @@ describe('WorkItemDescription', () => {
               await createComponent({
                 routeName: ROUTES.new,
                 routeQuery: { description_template: 'bug', other_param: 'some_value' },
-                isEditing: true,
+                editMode: true,
                 isCreateFlow: true,
+                workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
               });
             });
 
@@ -595,8 +595,9 @@ describe('WorkItemDescription', () => {
               await createComponent({
                 routeName: ROUTES.new,
                 routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
-                isEditing: true,
+                editMode: true,
                 isCreateFlow: true,
+                workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
               });
             });
 

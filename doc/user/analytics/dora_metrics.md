@@ -41,7 +41,7 @@ For a video explanation, see [DORA metrics: User analytics](https://www.youtube.
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
-Software leaders can use the deployment frequency metric to understand how often the team successfully deploys software to production, and how quickly the teams can respond to customers' requests or new market opportunities.
+Software leaders can use the deployment frequency metric to understand how often the team successfully deploys software to production, and how quickly the team can respond to customers' requests or new market opportunities.
 High deployment frequency means you can get feedback sooner and iterate faster to deliver improvements and features.
 
 ### How deployment frequency is calculated

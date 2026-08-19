@@ -53,7 +53,7 @@ To set up your environment for the Agent Platform:
 1. [Configure your network](_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) to allow outbound connections from your GitLab instance.
 1. [Configure instance or group runners](../../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) to use the flows. Flows that use CI/CD are executed on runners. Agentic Chat does not require runners.
 1. [Allow connections](_index.md#allow-connections-from-the-runner) from the runner to your GitLab instance.
-1. If you have an online license, [Synchronize your subscription data](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
+1. If you have an online license, [synchronize your subscription data](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Validate your configuration
 

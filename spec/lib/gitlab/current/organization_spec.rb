@@ -26,6 +26,20 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
   let_it_be(:params_with_invalid_org_path) { { organization_path: 'not_found' } }
   let_it_be(:params_with_invalid_groups_id) { { controller: 'groups', id: 'not_found' } }
   let_it_be(:params_with_invalid_group_id) { { group_id: 'not_found' } }
+  let_it_be(:params_with_matching_org_path) { { namespace_id: group.full_path, organization_path: organization.path } }
+  let_it_be(:params_with_mismatched_org_path) do
+    { namespace_id: group.full_path, organization_path: other_organization.path }
+  end
+
+  let_it_be(:params_with_upcased_org_path) do
+    { namespace_id: group.full_path, organization_path: organization.path.upcase }
+  end
+
+  let_it_be(:params_with_unknown_org_path) { { namespace_id: group.full_path, organization_path: 'not_found' } }
+  let_it_be(:params_with_invalid_namespace_and_org_path) do
+    { namespace_id: 'not_found', organization_path: other_organization.path }
+  end
+
   let_it_be(:empty_params) { {} }
   let_it_be(:rack_env_with_valid_org) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => header_organization.id.to_s } }
   let_it_be(:rack_env_with_invalid_org) { { 'HTTP_X_GITLAB_ORGANIZATION_ID' => non_existing_record_id.to_s } }
@@ -243,6 +257,39 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
         current_organization = described_class.new(params: empty_params, rack_env: rack_env_with_valid_org)
 
         expect { current_organization.from_request }.to match_query_count(1)
+      end
+    end
+  end
+
+  describe '#organization_path_mismatch?' do
+    subject(:current_organization) { described_class.new(params: params) }
+
+    where(:params, :expected) do
+      ref(:params_with_matching_org_path)               | false
+      ref(:params_with_mismatched_org_path)             | true
+      ref(:params_with_upcased_org_path)                | false
+      ref(:params_with_unknown_org_path)                | true
+      ref(:params_with_namespace_id)                    | false
+      ref(:params_with_org_path)                        | false
+      ref(:params_with_empty_org_path)                  | false
+      ref(:params_with_invalid_namespace_and_org_path)  | false
+      ref(:empty_params)                                | false
+    end
+
+    with_them do
+      it 'detects whether the URL names a different organization' do
+        expect(current_organization.organization_path_mismatch?).to eq(expected)
+      end
+    end
+
+    context 'for query optimization' do
+      it 'adds no queries after resolving the organization' do
+        current_organization = described_class.new(params: params_with_mismatched_org_path)
+
+        expect do
+          current_organization.organization
+          current_organization.organization_path_mismatch?
+        end.to match_query_count(1)
       end
     end
   end

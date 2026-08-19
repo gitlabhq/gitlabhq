@@ -207,7 +207,7 @@ For more information, see [scopes](_index.md#scopes).
 **Notes**:
 
 - The `in` operator is not supported for merge requests.
-- Scoped labels, or labels containing spaces must be wrapped in quotes.
+- Scoped labels or labels containing spaces must be wrapped in quotes.
 
 ### Merged at {#mr-merged-at}
 

@@ -1995,36 +1995,115 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe 'gitlab:db:reset_as_non_superuser' do
     let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
-    let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
+    let(:owner_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool, db_config: configuration) }
+    let(:owner_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
+    let(:guard_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
+    let(:guard_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
+    let(:migration_context) { instance_double(ActiveRecord::MigrationContext, needs_migration?: false) }
     let(:configurations) { double(ActiveRecord::DatabaseConfigurations) }
-    let(:configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, env_name: 'test', name: 'main') }
-    let(:config_hash) { { username: 'foo' } }
+    let(:configuration) do
+      instance_double(
+        ActiveRecord::DatabaseConfigurations::HashConfig,
+        env_name: 'test',
+        name: 'main',
+        database: 'gitlabhq_test',
+        configuration_hash: { host: 'localhost' }
+      )
+    end
 
     before do
       skip_if_shared_database(:ci)
 
       allow(Rake::Task['db:drop']).to receive(:invoke)
       allow(Rake::Task['db:create']).to receive(:invoke)
+      allow(Rake::Task['db:migrate:main']).to receive(:invoke)
+      allow(ActiveRecord).to receive(:dump_schema_after_migration=)
       allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
-      allow(configurations).to receive(:configs_for).and_return([configuration])
-      allow(configuration).to receive(:configuration_hash).and_return(config_hash)
+      allow(ActiveRecord::Base).to receive(:configurations=)
+      allow(configurations).to receive(:configs_for).with(env_name: 'test').and_return([configuration])
+      allow(configurations).to receive(:configs_for).with(include_hidden: true).and_return([configuration])
+      allow(ActiveRecord::Tasks::DatabaseTasks)
+        .to receive(:with_temporary_pool_for_each).with(env: 'test').and_yield(owner_pool)
+      allow(ActiveRecord::Tasks::DatabaseTasks)
+        .to receive(:with_temporary_pool_for_each).with(name: 'main').and_yield(guard_pool)
+      allow(owner_pool).to receive(:with_connection).and_yield(owner_connection)
+      allow(owner_connection).to receive(:execute)
+      allow(owner_connection).to receive(:quote_column_name) { |name| %("#{name}") }
+      allow(guard_pool).to receive(:with_connection).and_yield(guard_connection)
+      allow(guard_pool).to receive(:migration_context).and_return(migration_context)
+      allow(guard_connection).to receive(:select_value).and_return(42)
       allow(ActiveRecord::Base).to receive(:establish_connection).and_return(connection_pool)
+      allow(Gitlab::Database).to receive(:check_for_non_superuser)
     end
 
-    it 'migrate as nonsuperuser check with default username' do
-      expect(config_hash).to receive(:merge).with({ username: 'gitlab' }).and_call_original
-      expect(Gitlab::Database).to receive(:check_for_non_superuser)
+    it 'transfers database ownership to the default username before migrating' do
+      expect(owner_connection).to receive(:execute).with('ALTER DATABASE "gitlabhq_test" OWNER TO "gitlab"')
       expect(Rake::Task['db:migrate:main']).to receive(:invoke)
 
       run_rake_task('gitlab:db:reset_as_non_superuser')
     end
 
-    it 'migrate as nonsuperuser check with specified username' do
-      expect(config_hash).to receive(:merge).with({ username: 'foo' }).and_call_original
-      expect(Gitlab::Database).to receive(:check_for_non_superuser)
-      expect(Rake::Task['db:migrate:main']).to receive(:invoke)
+    it 'transfers database ownership to the specified username' do
+      expect(owner_connection).to receive(:execute).with('ALTER DATABASE "gitlabhq_test" OWNER TO "foo"')
 
       run_rake_task('gitlab:db:reset_as_non_superuser', '[foo]')
+    end
+
+    it 'rebuilds the configurations with the username and with schema_dump disabled' do
+      expect(ActiveRecord::DatabaseConfigurations::HashConfig).to receive(:new)
+        .with('test', 'main', hash_including(username: 'gitlab', schema_dump: false)).and_call_original
+      expect(ActiveRecord::Base).to receive(:configurations=)
+
+      run_rake_task('gitlab:db:reset_as_non_superuser')
+    end
+
+    it 'checks the connection user is not a superuser' do
+      expect(Gitlab::Database).to receive(:check_for_non_superuser)
+
+      run_rake_task('gitlab:db:reset_as_non_superuser')
+    end
+
+    it 'skips dumping the schema after migrating' do
+      expect(ActiveRecord).to receive(:dump_schema_after_migration=).with(false)
+
+      run_rake_task('gitlab:db:reset_as_non_superuser')
+    end
+
+    it 'raises when no migrations were applied' do
+      allow(guard_connection).to receive(:select_value).and_return(0)
+
+      expect { run_rake_task('gitlab:db:reset_as_non_superuser') }
+        .to raise_error(/No migrations were applied on the main database/)
+    end
+
+    it 'raises when migrations are still pending' do
+      allow(migration_context).to receive(:needs_migration?).and_return(true)
+
+      expect { run_rake_task('gitlab:db:reset_as_non_superuser') }
+        .to raise_error(/Migrations are still pending on the main database/)
+    end
+
+    context 'with a configuration belonging to another environment' do
+      let(:other_env_configuration) do
+        instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, env_name: 'development', name: 'main')
+      end
+
+      before do
+        allow(configurations).to receive(:configs_for).with(include_hidden: true)
+          .and_return([configuration, other_env_configuration])
+      end
+
+      it 'rebuilds only the current environment configs and passes the rest through unchanged' do
+        expect(ActiveRecord::DatabaseConfigurations::HashConfig).to receive(:new)
+          .with('test', 'main', hash_including(username: 'gitlab', schema_dump: false)).and_call_original
+        expect(ActiveRecord::DatabaseConfigurations::HashConfig).not_to receive(:new)
+          .with('development', anything, anything)
+        expect(ActiveRecord::Base).to receive(:configurations=) do |rebuilt|
+          expect(rebuilt.configurations).to include(other_env_configuration)
+        end
+
+        run_rake_task('gitlab:db:reset_as_non_superuser')
+      end
     end
   end
 

@@ -76,7 +76,7 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_location`: Set your cluster's region.
 - `TF_VAR_cluster_name`: Set your cluster's name.
 - `TF_VAR_kubernetes_version`: Set the version of Kubernetes.
-- `TF_VAR_create_resource_group`: Allow to enable or disable the creation of a new resource group. (Default set to true).
+- `TF_VAR_create_resource_group`: Enable or disable the creation of a new resource group. (Default set to true).
 - `TF_VAR_resource_group_name`: Set the name of resource group.
 - `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent for Kubernetes.
 

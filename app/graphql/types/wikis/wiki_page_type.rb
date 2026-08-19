@@ -31,8 +31,15 @@ module Types
         null: false,
         description: 'Whether the current user is subscribed to notifications on the wiki page.'
 
+      field :content, GraphQL::Types::String,
+        null: true, calls_gitaly: true, description: 'Content of the wiki page.'
+
       def subscribed
         object.subscribed?(current_user, object.project)
+      end
+
+      def content
+        object.wiki_page&.content
       end
 
       def web_url

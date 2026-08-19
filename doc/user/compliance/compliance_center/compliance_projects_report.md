@@ -103,7 +103,7 @@ To remove a compliance framework from multiple projects in a group:
 Export a report of compliance frameworks that are applied to projects in a group. Reports:
 
 - Do not use filters on the framework report.
-- Are truncated at 15 MB so the email attachment too large.
+- Are truncated at 15 MB so the email attachment isn't too large.
 
 Prerequisites:
 
@@ -146,9 +146,9 @@ To create a new compliance framework from the compliance projects report:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
-1. Select the **+ Add framework**.
-1. Select the **Create a new framework**.
-1. Select the **Add framework** to create compliance framework.
+1. Select **+ Add framework**.
+1. Select **Create a new framework**.
+1. Select **Add framework** to create a compliance framework.
 
 ## Edit a compliance framework
 
@@ -164,7 +164,7 @@ To edit a compliance framework from the compliance projects report:
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over framework and select **Edit the framework**.
-1. Select the **Save changes** to edit compliance framework.
+1. Select **Save changes** to edit the compliance framework.
 
 ## Delete a compliance framework
 
@@ -180,4 +180,4 @@ To delete a compliance framework from the compliance projects report:
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over framework and select **Edit the framework**.
-1. Select the **Delete framework** to delete compliance framework.
+1. Select **Delete framework** to delete the compliance framework.

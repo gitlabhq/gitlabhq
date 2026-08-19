@@ -44,7 +44,7 @@ The restore process handles existing data differently depending on the data type
 - Git repositories: If repositories with the same name already exist, the restore fails
   with a "repository already exists" error. For more information, see
   [issue 118459](https://gitlab.com/gitlab-org/gitlab/-/issues/118459).
-- File system data is attempted to be moved to a separate directory before restoration.
+- File system data is moved to a separate directory before restoration, if possible.
 - Object storage data is not automatically cleared. You must manually clear object storage
   buckets before restoring to avoid retaining orphaned data.
 
@@ -257,7 +257,7 @@ Post-restore verification guides:
 
 For GitLab installations using the Docker image or the GitLab Helm chart on a
 Kubernetes cluster, the restore task expects the restore directories to be
-empty. However, with Docker and Kubernetes volume mounts, some system level
+empty. However, with Docker and Kubernetes volume mounts, some system-level
 directories may be created at the volume roots, such as the `lost+found`
 directory found in Linux operating systems. These directories are usually owned
 by `root`, which can cause access permission errors because the restore Rake task

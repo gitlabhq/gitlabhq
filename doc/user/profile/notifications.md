@@ -227,7 +227,7 @@ Project notification events:
 |-------------------------------------|---------------------------------------|---------|
 | New release                         | Project members                       | Only sent when the  **Release is created** custom notification level is selected. |
 | Project access expired              | Project members                       | Sent when user's access to a project expires in seven days. |
-| Project access level changed        | Project members                       | Sent when user project access level is changed. |
+| Project access level changed        | Project members                       | Sent when a user's project access level is changed. |
 | Project access tokens expiring soon | Direct project Owners and Maintainers | Security email, always sent. |
 | Project deploy tokens expiring soon | Project Owners and Maintainers        | Security email, always sent. |
 | Project moved                       | Project members                       | Sent for all notification levels except disabled, or when the  **Project is moved** custom notification level is selected. |
@@ -263,7 +263,7 @@ Group notification events:
 
 Events generate notifications based on the [notification level](#notification-levels) selected.
 Some notifications can be optionally enabled by selecting the **Custom** notification level, and selecting the desired events. You can also manually [subscribe to notifications](#subscribe-to-notifications-for-a-specific-issue-merge-request-or-epic)
-for and epic, issue, or merge request.
+for an epic, issue, or merge request.
 
 By default, you don't receive notifications for issues, merge requests, or epics you create.
 You can turn on [notifications about your own activity](#global-notification-settings).
@@ -563,7 +563,7 @@ notification email can have one of [the alert's](../../operations/incident_manag
 {{< /details >}}
 
 An [incident escalation](../../operations/incident_management/escalation_policies.md)
-notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:
+notification email can have one of [the incident's](../../operations/incident_management/incidents.md) statuses:
 
 - `incident_triggered`
 - `incident_acknowledged`

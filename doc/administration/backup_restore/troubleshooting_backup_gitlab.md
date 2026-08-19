@@ -570,7 +570,7 @@ DROP EXTENSION IF EXISTS pg_stat_statements;
 CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
 ```
 
-When trying to restore the backup in a PostgreSQL instance that doesn't have the `pg_stats_statements` extension,
+When trying to restore the backup in a PostgreSQL instance that doesn't have the `pg_stat_statements` extension,
 the following error message is displayed:
 
 ```plaintext
@@ -579,7 +579,7 @@ HINT: Must be superuser to create this extension.
 ERROR: extension "pg_stat_statements" does not exist
 ```
 
-When trying to restore in an instance that has the `pg_stats_statements` extension enabled, the cleaning up step
+When trying to restore in an instance that has the `pg_stat_statements` extension enabled, the cleaning up step
 fails with an error message similar to the following:
 
 ```plaintext

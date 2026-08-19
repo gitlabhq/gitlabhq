@@ -49,7 +49,6 @@ Supported attributes:
 | `namespace_id` | string | No | ID or path of the namespace to associate the flow with. |
 | `pre_approved_agent_privileges` | integer array | No | Privilege IDs the agent can use without asking for user approval. Must be a subset of `agent_privileges`. |
 | `project_id` | string | No | ID or path of the project to associate the flow with. |
-| `shallow_clone` | boolean | No | Whether to use a shallow clone of the repository during execution. Default: `true`. |
 | `source_branch` | string | No | Source branch for the CI pipeline. Defaults to the project's default branch. |
 | `start_workflow` | boolean | No | When `true`, starts the flow immediately after creation. |
 | `workflow_definition` | string | No | Flow type identifier. Example: `developer/v1`. Cannot be used with `ai_catalog_item_consumer_id`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. |

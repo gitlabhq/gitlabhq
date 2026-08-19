@@ -125,21 +125,21 @@ You might get an error that states
 `This command is used for explaining vulnerabilities and can only be invoked from a vulnerability detail page.` or
 `Vulnerability Explanation currently only supports vulnerabilities reported by SAST. Error code: M4003`.
 
-This error occurs when there is a problem when using [`Explain Vulnerability`](examples.md#explain-a-vulnerability) feature.
+This error occurs when there is a problem when using the [`Explain Vulnerability`](examples.md#explain-a-vulnerability) feature.
 
 ## `Error M4004`
 
 You might get an error that states
 `This resource has no comments to summarize`.
 
-This error occurs when there is a problem when using `Summarize Discussion` feature.
+This error occurs when there is a problem when using the `Summarize Discussion` feature.
 
 ## `Error M4005`
 
 You might get an error that states
 `There is no job log to troubleshoot.` or `This command is used for troubleshooting jobs and can only be invoked from a failed job log page.`.
 
-This error occurs when there is a problem when using [`Troubleshoot job`](examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) feature.
+This error occurs when there is a problem when using the [`Troubleshoot job`](examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) feature.
 
 ## `Error M5000`
 
@@ -384,7 +384,7 @@ used in the search.
 
 You might get an error that states `I'm sorry, I can't generate a response. Please try again`, without a specific error code.
 
-Check the Sidekiq logs to see if you find the following error:`Header mismatch 'X-Gitlab-Instance-Id'`.
+Check the Sidekiq logs to see if you find the following error: `Header mismatch 'X-Gitlab-Instance-Id'`.
 
 If you see this error, then to resolve it, contact the GitLab support team and ask them to send you a new activation code for the license.
 

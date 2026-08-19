@@ -33,7 +33,7 @@ You can configure GitLab Duo to use:
 ## Allow outbound connections from the GitLab instance to GitLab Duo
 
 - GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
-- For GitLab Duo Agent Platform features your firewalls and HTTP/S proxy servers must allow outbound
+- For GitLab Duo Agent Platform features, your firewalls and HTTP/S proxy servers must allow outbound
   connections to `duo-workflow-svc.runway.gitlab.net` on port `443` with `https://` and support for
   HTTP/2 traffic.
 - If your instance connects through an HTTP/S proxy server, the host must still be

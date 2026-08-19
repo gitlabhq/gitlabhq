@@ -38,9 +38,9 @@ To create a new compliance framework from the compliance frameworks report:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
-1. Select the **New framework**.
+1. Select **New framework**.
 1. Select **Create blank framework**.
-1. Select the **Add framework** to create compliance framework.
+1. Select **Add framework** to create a compliance framework.
 
 ## Edit a compliance framework
 
@@ -54,7 +54,7 @@ To edit a compliance framework from the compliance frameworks report:
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over framework and select **Edit the framework**.
-1. Select the **Save changes** to edit compliance framework.
+1. Select **Save changes** to edit the compliance framework.
 
 ## Delete a compliance framework
 
@@ -68,7 +68,7 @@ To delete a compliance framework from the compliance frameworks report:
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over framework and select **Edit the framework**.
-1. Select the **Delete framework** to delete compliance framework.
+1. Select **Delete framework** to delete the compliance framework.
 
 ## Set and remove a compliance framework as default
 
@@ -82,13 +82,13 @@ Prerequisites:
 
 - You must be an administrator or have the Security Manager or Owner role for the group.
 
-To set a compliance framework as [default](../compliance_frameworks/_index.md#default-compliance-frameworks)] from the compliance frameworks report:
+To set a compliance framework as [default](../compliance_frameworks/_index.md#default-compliance-frameworks) from the compliance frameworks report:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the compliance framework you want to set as default, select {{< icon name="pencil" >}} action.
-1. Select the **Set as default** to set as default.
+1. Select **Set as default**.
 
 To remove a compliance framework as default from the compliance frameworks report:
 
@@ -96,7 +96,7 @@ To remove a compliance framework as default from the compliance frameworks repor
 1. In the left sidebar, select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the compliance framework that is default, select {{< icon name="pencil" >}} action.
-1. Select the **Remove as default** to remove as default.
+1. Select **Remove as default**.
 
 ## Export a report of compliance frameworks in a group
 

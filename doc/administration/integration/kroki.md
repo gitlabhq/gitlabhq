@@ -18,8 +18,11 @@ you can create diagrams-as-code within AsciiDoc, Markdown, reStructuredText, and
 
 ## Enable Kroki in GitLab
 
-You need to enable Kroki integration from Settings under **Admin** area.
-To do that, sign in with an administrator account and follow these steps:
+Prerequisites:
+
+- Administrator access.
+
+To enable the Kroki integration:
 
 1. In the upper-right corner, select **Admin**.
 1. Go to **Settings** > **General**.

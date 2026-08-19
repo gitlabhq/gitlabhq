@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::GraphsController, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository, :private) }
+  let_it_be(:project) { create(:project, :small_repo, :private) }
   let(:ref) { 'master' }
 
   describe 'GET #charts' do

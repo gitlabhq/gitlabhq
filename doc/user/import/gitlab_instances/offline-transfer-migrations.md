@@ -43,7 +43,7 @@ default, and for a given operation both layers must be on:
 - Imports: the `offline_transfer_imports_enabled` application setting.
 
 To perform exports and imports, use the [offline transfer REST API](https://api.gitlab.com/rest/#tag/offline-transfers).
-Support offline transfers in the GitLab UI is proposed in [work item 19870](https://gitlab.com/groups/gitlab-org/-/work_items/19870).
+Support for offline transfers in the GitLab UI is proposed in [work item 19870](https://gitlab.com/groups/gitlab-org/-/work_items/19870).
 
 ## Version requirements
 
@@ -145,7 +145,7 @@ Prerequisites:
 
 To migrate a group or project:
 
-1. On the source instance, the REST API to [create an offline transfer export](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_exports) to an object storage bucket.
+1. On the source instance, use the REST API to [create an offline transfer export](https://api.gitlab.com/rest/#tag/offline-transfers/POST/api/v4/offline_exports) to an object storage bucket.
 1. When the export finishes, GitLab sends you an email with the export prefix. You need this prefix
    to start the import. If you do not receive the email, the export prefix can be viewed in the object storage service.
 1. If the destination instance cannot access the export bucket, move the export files to a bucket

@@ -9,11 +9,11 @@ RSpec.describe API::SupplyChain::Attestations, feature_category: :artifact_secur
   include HttpIOHelpers
 
   let_it_be_with_reload(:project) do
-    create(:project, :repository)
+    create(:project, :small_repo)
   end
 
   let_it_be_with_reload(:other_project) do
-    create(:project, :repository)
+    create(:project, :small_repo)
   end
 
   let_it_be_with_reload(:pipeline) do

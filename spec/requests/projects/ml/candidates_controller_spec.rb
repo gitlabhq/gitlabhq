@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:experiment) { create(:ml_experiments, project: project, user: user) }
   let_it_be(:candidate) do

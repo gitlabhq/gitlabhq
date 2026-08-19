@@ -16,7 +16,7 @@ A security audit is an in-depth analysis and review of your infrastructure, whic
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
 audit events which allow you to track a variety of different actions within GitLab.
 GitLab can help owners and administrators respond to auditors by generating
-comprehensive reports. These audit reports vary in scope, depending on the
+comprehensive reports. These audit reports vary in scope, depending on your
 needs.
 
 For example, you can use audit events to track:
@@ -24,7 +24,7 @@ For example, you can use audit events to track:
 - Who changed the permission level of a particular user for a GitLab project, and when.
 - Who added a new user or removed a user, and when.
 
-These events can be used to in an audit to assess risk, strengthen security measures, respond to incidents, and adhere to compliance. For a complete list the audit
+These events can be used in an audit to assess risk, strengthen security measures, respond to incidents, and adhere to compliance. For a complete list of the audit
 events GitLab provides, see [audit event types](audit_event_types.md). For example:
 
 - Generate a report of audit events to provide to an external auditor requesting proof of certain logging capabilities.

@@ -13,7 +13,7 @@ description: Understand how to specify criteria using license approval policy fo
 
 {{< /details >}}
 
-Use license approval policies to specify criteria that determines when approval is required before a merge request can be merged.
+Use license approval policies to specify criteria that determine when approval is required before a merge request can be merged.
 
 License approval policies apply only to [protected](../project/repository/branches/protected.md) target branches.
 

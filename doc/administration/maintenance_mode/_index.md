@@ -18,7 +18,7 @@ When Maintenance Mode is enabled, in-progress actions finish relatively quickly 
 In that state, various maintenance tasks are easier. Services can be stopped completely or
 further degraded for a shorter period of time than might otherwise be needed. For example, stopping cron jobs and draining queues should be fairly quick.
 
-Maintenance Mode allows most external actions that do not change internal state. On a high-level, HTTP `POST`, `PUT`, `PATCH`, and `DELETE` requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
+Maintenance Mode allows most external actions that do not change internal state. At a high level, HTTP `POST`, `PUT`, `PATCH`, and `DELETE` requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
 
 ## Enable Maintenance Mode
 
@@ -200,7 +200,7 @@ continue to work, but proxied Git pushes to primary don't.
 
 ### Secure features
 
-Features that depend on creating issues or creating or approving merge requests,
+Features that depend on creating issues or creating or approving merge requests
 do not work.
 
 Exporting a vulnerability list from a vulnerability report page does not work.
@@ -213,7 +213,7 @@ SAST and secret detection cannot be initiated because they depend on passing CI/
 
 In the use case of [a planned failover](../geo/disaster_recovery/planned_failover.md), a few writes in the primary database are acceptable, because they are replicated quickly and are not significant in number.
 
-For the same reason we don't automatically block background jobs when Maintenance Mode is enabled.
+For the same reason, we don't automatically block background jobs when Maintenance Mode is enabled.
 
 The resulting database writes are acceptable. Here, the trade-off is between more service degradation and the completion of replication.
 

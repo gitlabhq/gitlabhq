@@ -12,10 +12,14 @@ RSpec.describe GitlabSchema.types['WikiPage'], feature_category: :wiki do
   it 'has the correct fields' do
     expected_fields = [
       :id, :title, :notes, :discussions, :commenters,
-      :user_permissions, :web_url, :name, :subscribed, :award_emoji, :slug
+      :user_permissions, :web_url, :name, :subscribed, :award_emoji, :slug, :content
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
+  end
+
+  it 'marks content as calling Gitaly' do
+    expect(described_class.fields['content']).to be_calls_gitaly
   end
 
   describe 'permissions' do
@@ -27,6 +31,7 @@ RSpec.describe GitlabSchema.types['WikiPage'], feature_category: :wiki do
             title
             webUrl
             name
+            content
           }
         }
       )
@@ -41,6 +46,10 @@ RSpec.describe GitlabSchema.types['WikiPage'], feature_category: :wiki do
 
       it 'has wiki page title' do
         expect(response['title']).to eq(wiki_page_meta.title)
+      end
+
+      it 'has wiki page content' do
+        expect(response['content']).to eq(wiki_page_meta.wiki_page.content)
       end
     end
 

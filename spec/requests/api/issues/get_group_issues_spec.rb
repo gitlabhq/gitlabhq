@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe API::Issues, feature_category: :team_planning do
-  let_it_be(:user2, freeze: false)               { create(:user) }
-  let_it_be(:admin, freeze: false)               { create(:user, :admin) }
-  let_it_be(:non_member, freeze: false)          { create(:user) }
-  let_it_be(:user, freeze: false)                { create(:user) }
-  let_it_be(:guest, freeze: false)               { create(:user) }
-  let_it_be(:author, freeze: false)              { create(:author) }
-  let_it_be(:assignee, freeze: false)            { create(:assignee) }
+  let_it_be_with_reload(:user2)               { create(:user) }
+  let_it_be_with_reload(:admin)               { create(:user, :admin) }
+  let_it_be_with_reload(:non_member)          { create(:user) }
+  let_it_be_with_reload(:user)                { create(:user) }
+  let_it_be_with_reload(:guest)               { create(:user) }
+  let_it_be_with_reload(:author)              { create(:author) }
+  let_it_be_with_reload(:assignee)            { create(:assignee) }
   let_it_be(:issue_title, freeze: false)         { 'foo' }
   let_it_be(:issue_description, freeze: false)   { 'closed' }
   let_it_be(:no_milestone_title, freeze: false)  { 'None' }
@@ -20,8 +20,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /groups/:id/issues' do
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:group_project, freeze: false) { create(:project, :public, :repository, creator_id: user.id, namespace: group) }
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:group_project) { create(:project, :public, :repository, creator_id: user.id, namespace: group) }
     let_it_be(:private_mrs_project, freeze: false) do
       create(:project, :public, :repository, creator_id: user.id, namespace: group, merge_requests_access_level: ProjectFeature::PRIVATE)
     end
@@ -168,9 +168,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'when user is a group member' do
-        before do
-          group.add_developer(user)
-        end
+        before_all { group.add_developer(user) }
 
         it 'also returns subgroups projects issues' do
           get api(base_url, user)
@@ -351,9 +349,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when user is a group member' do
-      before do
-        group.add_reporter(user)
-      end
+      before_all { group.add_reporter(user) }
 
       it_behaves_like 'authorizing granular token permissions', :read_issue do
         let(:boundary_object) { group }

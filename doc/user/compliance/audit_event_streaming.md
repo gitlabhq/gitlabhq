@@ -214,9 +214,9 @@ Manage AWS S3 destinations for top-level groups.
 
 Before setting up AWS S3 streaming audit events, you must:
 
-1. Create a access key for AWS with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
+1. Create an access key for AWS with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
    For more information, see [Managing access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html?icmpid=docs_iam_console#Using_CreateAccessKey).
-1. Create a AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
+1. Create an AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
 
 ### Add a new AWS S3 destination
 
@@ -250,7 +250,7 @@ To update an AWS S3 streaming destination to a top-level group:
 1. Enter a random string to use as a name for the destination.
 1. To update the destination, enter the **Access Key ID**, **Secret Access Key**, **Bucket Name**, and **AWS Region**
    from previously-created AWS access key and bucket.
-1. To update the Secret Access Key, select **Add a new Secret Access Key** and enter a AWS Secret Access Key.
+1. To update the Secret Access Key, select **Add a new Secret Access Key** and enter an AWS Secret Access Key.
 1. Select **Save**.
 
 ## List streaming destinations

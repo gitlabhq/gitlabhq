@@ -232862,6 +232862,18 @@
               "deprecationReason": null
             },
             {
+              "name": "content",
+              "description": "Content of the wiki page.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "discussions",
               "description": "All discussions on the noteable.",
               "args": [

@@ -120,7 +120,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
 - This group must be at the top level.
-- The lifecycle must not be in use i.e., should not be associated with any work item type
+- The lifecycle must not be in use. It must not be associated with any work item type.
 
 To remove a lifecycle:
 

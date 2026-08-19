@@ -268,7 +268,7 @@ You can ask about a specific GitLab pipeline job. For example:
 You can ask about a specific GitLab work item. For example:
 
 - `Generate a summary for the work item identified via this link: <link to your work item>`
-- When you are viewing an work item in GitLab, you can ask `Generate a concise summary of the current work item.`
+- When you are viewing a work item in GitLab, you can ask `Generate a concise summary of the current work item.`
 - `How can I improve the description of <link to your work item> so that readers understand the value and problems to be solved?`
 
 > [!note]

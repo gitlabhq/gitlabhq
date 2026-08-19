@@ -80,12 +80,12 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
    This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to
    GitLab users because they do not exist in the GitLab database. You can delete
    [some of these orphaned files](../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore,
-   but this clean up Rake task only operates on a subset of files.
+   but this cleanup Rake task only operates on a subset of files.
 
    1. For `When to overwrite`, choose `Never`. GitLab object stored files are intended to be immutable. This selection could be helpful if a malicious actor succeeded at mutating GitLab files.
    1. For `When to delete`, choose `Never`. If you sync the backup bucket to source, then you cannot recover if files are accidentally or maliciously deleted from source.
 
-1. Alternatively, it is possible to backup object storage into buckets or subdirectories segregated by day. This avoids the problem of orphaned files after restore, and supports backup of file versions if needed. But it greatly increases backup storage costs. This can be done with [a Cloud Function triggered by Cloud Scheduler](https://docs.cloud.google.com/scheduler/docs/tut-gcf-pub-sub), or with a script run by a cronjob. A partial example:
+1. Alternatively, it is possible to back up object storage into buckets or subdirectories segregated by day. This avoids the problem of orphaned files after restore, and supports backup of file versions if needed. But it greatly increases backup storage costs. This can be done with [a Cloud Function triggered by Cloud Scheduler](https://docs.cloud.google.com/scheduler/docs/tut-gcf-pub-sub), or with a script run by a cronjob. A partial example:
 
    ```shell
    # Set GCP project so you don't have to specify it in every command
@@ -120,8 +120,8 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
    gcloud transfer jobs create gs://gitlab-bucket-uploads/ gs://backup-bucket/$today/uploads/ --name "$today-backup-uploads"
    ```
 
-   1. These Transfer Jobs are not automatically deleted after running. You could implement clean up of old jobs in the script.
-   1. The example script does not delete old backups. You could implement clean up of old backups according to your desired retention policy.
+   1. These Transfer Jobs are not automatically deleted after running. You could implement cleanup of old jobs in the script.
+   1. The example script does not delete old backups. You could implement cleanup of old backups according to your desired retention policy.
 1. Ensure that backups are performed at the same time or later than Cloud SQL backups, to reduce data inconsistencies.
 
 {{< /tab >}}

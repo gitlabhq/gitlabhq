@@ -16,7 +16,7 @@ title: Cluster Environments (deprecated)
 > This feature is not available by default on GitLab Self-Managed. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
 Cluster environments provide a consolidated view of which CI [environments](../../ci/environments/_index.md) are
-deployed to the Kubernetes cluster and it:
+deployed to the Kubernetes cluster. This view:
 
 - Shows the project and the relevant environment related to the deployment.
 - Displays the status of the pods for that environment.

@@ -73,7 +73,7 @@ To categorize and prioritize issues, making it easier for you to identify and fo
 on specific areas of work, use labels. By assigning descriptive labels to issues,
 like "bug," "enhancement," or "high priority," you can filter and find relevant tasks.
 
-In issues, use comments and threads provide a centralized space for discussion,
+In issues, comments and threads provide a centralized space for discussion,
 feedback, and collaboration. Team members can ask questions, provide updates, share ideas,
 and review each other's work in the context of an issue.
 

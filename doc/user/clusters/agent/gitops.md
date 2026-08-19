@@ -117,7 +117,7 @@ flux:
   webhook_receiver_url: http://webhook-receiver.another-flux-namespace.svc.cluster.local
 ```
 
-There is special handing for
+There is special handling for
 [service proxy URLs](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster-services/) configured
 in this format: `/api/v1/namespaces/[^/]+/services/[^/]+/proxy`. For example:
 

@@ -246,7 +246,7 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 
 {{< /history >}}
 
-The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used(current behavior).
+The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used (current behavior).
 License information can be provided using a valid SPDX identifier or a license name. However, providing a license using an SPDX License Expression is not supported.
 More information about the license field format can be found on the [CycloneDX](https://cyclonedx.org/use-cases/#license-compliance) specification.
 

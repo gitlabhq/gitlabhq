@@ -53,7 +53,7 @@ Runbooks are a collection of documented procedures that explain how to carry out
 like starting, stopping, debugging, or troubleshooting a system. In GitLab, runbooks are created
 in Markdown. They can include a variety of elements, including text, code snippets, images, and links.
 
-Runbook in GitLab integrate with other GitLab features, like CI/CD pipelines and issues.
+Runbooks in GitLab integrate with other GitLab features, like CI/CD pipelines and issues.
 You can trigger runbooks automatically based on specific events or conditions, like
 when a pipeline is successful or an issue is created. In addition, users can link runbooks
 to issues, merge requests, and other GitLab objects.

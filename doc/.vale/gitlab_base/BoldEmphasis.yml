@@ -1,5 +1,5 @@
 ---
-name: gitlab_docs.BoldEmphasis
+name: gitlab_base.BoldEmphasis
 description: |
   Avoid bold for simple emphasis.
 extends: existence

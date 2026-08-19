@@ -69,9 +69,7 @@ Create an Amazon Q Developer profile.
 
 ### Create an IAM identity provider
 
-Next, create an IAM identity provider.
-
-First, you need the some values from GitLab:
+Create an IAM identity provider. First, retrieve some values from GitLab.
 
 Prerequisites:
 
@@ -348,7 +346,7 @@ To turn off GitLab Duo with Amazon Q for a group:
 1. Expand **Amazon Q**.
 1. Choose an option:
    - To turn it off for the group, but let other groups or projects turn it on, select **Off by default**.
-   - To turn if off for the group, and to prevent other groups or projects from turning it on, select **Always off**.
+   - To turn it off for the group, and to prevent other groups or projects from turning it on, select **Always off**.
 1. Select **Save changes**.
 
 ### Turn off for a project

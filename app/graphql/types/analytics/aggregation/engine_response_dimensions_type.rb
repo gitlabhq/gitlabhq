@@ -29,7 +29,10 @@ module Types
 
                 define_method(name) do
                   association_id = object[dimension.instance_key({})]
-                  BatchLoader::GraphQL.for(association_id).batch do |ids, loader, _args|
+                  # `key` keeps each dimension in its own batch. Without it every association field
+                  # shares one batch, because the batch is keyed on the block source location and
+                  # all of them are defined here, so ids of one model get looked up with another.
+                  BatchLoader::GraphQL.for(association_id).batch(key: dimension) do |ids, loader, _args|
                     objects = if custom_finder
                                 custom_finder.call(ids)
                               else

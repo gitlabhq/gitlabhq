@@ -222,9 +222,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:expected_lfs_enabled) { true }
     end
 
-    it_behaves_like 'model with wiki' do
-      let_it_be_with_reload(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
-      let(:container_without_wiki) { create(:project) }
+    describe 'model with wiki', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+      it_behaves_like 'model with wiki' do
+        let_it_be_with_reload(:container) { create(:project, :wiki_repo, namespace: create(:group)) }
+        let(:container_without_wiki) { create(:project) }
+      end
     end
 
     it_behaves_like 'can move repository storage' do
@@ -556,7 +558,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'member_namespace membership relationship'
     end
 
-    describe '#namespace_requesters setters' do
+    describe '#namespace_requesters setters', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       let_it_be(:requested_at) { Time.current }
       let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
@@ -602,7 +604,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'share with group lock'
     end
 
-    describe '#namespace_members_and_requesters setters' do
+    describe '#namespace_members_and_requesters setters', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       let_it_be(:requested_at) { Time.current }
       let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
@@ -2033,43 +2035,45 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    include_examples 'ci_cd_settings delegation' do
-      let(:attributes_with_prefix) do
-        {
-          'allow_composite_identities_to_run_pipelines' => '',
-          'group_runners_enabled' => '',
-          'default_git_depth' => 'ci_',
-          'forward_deployment_enabled' => 'ci_',
-          'forward_deployment_rollback_allowed' => 'ci_',
-          'keep_latest_artifact' => '',
-          'pipeline_variables_minimum_override_role' => 'ci_',
-          'runner_token_expiration_interval' => '',
-          'separated_caches' => 'ci_',
-          'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
-          'cross_project_push_for_job_token_allowed' => 'ci_',
-          'inbound_job_token_scope_enabled' => 'ci_',
-          'push_repository_for_job_token_allowed' => 'ci_',
-          'job_token_scope_enabled' => 'ci_outbound_',
-          'id_token_sub_claim_components' => 'ci_',
-          'delete_pipelines_in_seconds' => 'ci_',
-          'display_pipeline_variables' => 'ci_',
-          'skip_branch_pipelines_for_mrs' => 'ci_',
-          'resource_group_default_process_mode' => ''
-        }
-      end
+    describe 'ci_cd_settings delegation', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+      include_examples 'ci_cd_settings delegation' do
+        let(:attributes_with_prefix) do
+          {
+            'allow_composite_identities_to_run_pipelines' => '',
+            'group_runners_enabled' => '',
+            'default_git_depth' => 'ci_',
+            'forward_deployment_enabled' => 'ci_',
+            'forward_deployment_rollback_allowed' => 'ci_',
+            'keep_latest_artifact' => '',
+            'pipeline_variables_minimum_override_role' => 'ci_',
+            'runner_token_expiration_interval' => '',
+            'separated_caches' => 'ci_',
+            'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
+            'cross_project_push_for_job_token_allowed' => 'ci_',
+            'inbound_job_token_scope_enabled' => 'ci_',
+            'push_repository_for_job_token_allowed' => 'ci_',
+            'job_token_scope_enabled' => 'ci_outbound_',
+            'id_token_sub_claim_components' => 'ci_',
+            'delete_pipelines_in_seconds' => 'ci_',
+            'display_pipeline_variables' => 'ci_',
+            'skip_branch_pipelines_for_mrs' => 'ci_',
+            'resource_group_default_process_mode' => ''
+          }
+        end
 
-      let(:exclude_attributes) do
-        # Skip attributes defined in EE code
-        %w[
-          merge_pipelines_enabled
-          merge_trains_enabled
-          auto_rollback_enabled
-          merge_trains_skip_train_allowed
-          merge_train_enforcement
-          max_pipelines_per_merge_train
-          restrict_pipeline_cancellation_role
-          max_pipelines_per_merge_train
-        ]
+        let(:exclude_attributes) do
+          # Skip attributes defined in EE code
+          %w[
+            merge_pipelines_enabled
+            merge_trains_enabled
+            auto_rollback_enabled
+            merge_trains_skip_train_allowed
+            merge_train_enforcement
+            max_pipelines_per_merge_train
+            restrict_pipeline_cancellation_role
+            max_pipelines_per_merge_train
+          ]
+        end
       end
     end
 
@@ -2530,7 +2534,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       context 'when no README exists' do
         let(:project) { create(:project, :empty_repo) }
 
-        it 'returns nil' do
+        it 'returns nil', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
           expect(project.readme_url).to be_nil
         end
       end
@@ -2978,7 +2982,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.reload.star_count).to eq(0)
     end
 
-    it 'does not count stars from blocked users' do
+    it 'does not count stars from blocked users', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       user1 = create(:user)
       user2 = create(:user)
       project = create(:project, :public)
@@ -3303,7 +3307,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project1) { create(:project, :small_repo, name: 'Project 1') }
     let_it_be(:project2) { create(:project, :small_repo, name: 'Project 2') }
 
-    it 'includes correct projects' do
+    it 'includes correct projects', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       expect(described_class.by_name(project1.name)).to eq([project1])
       expect(described_class.by_name(project2.name.chop)).to match_array([project1, project2])
     end
@@ -4023,7 +4027,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     # During migration, the onboarding_complete property can still be false,
     # but will be updated later. To account for that case, pages_show_onboarding?
     # should return false if `deployed` is true.
-    context "will return false if pages is deployed even if onboarding_complete is false" do
+    context "will return false if pages is deployed even if onboarding_complete is false", quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       before do
         project.pages_metadatum.update_column(:onboarding_complete, false)
         create(:pages_deployment, project: project)
@@ -4252,7 +4256,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#track_project_repository' do
+  describe '#track_project_repository', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
     shared_examples 'tracks storage location' do
       context 'when a project repository entry does not exist' do
         before do
@@ -4645,7 +4649,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create_pipeline(project) }
 
-    it_behaves_like 'latest successful build for sha or ref'
+    describe 'latest successful build for sha or ref', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
+      it_behaves_like 'latest successful build for sha or ref'
+    end
 
     subject { project.latest_successful_build_for_ref(build_name) }
 
@@ -8173,7 +8179,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#branch_allows_collaboration?' do
-    context 'when there are open merge requests that have their source/target branches point to each other' do
+    context 'when there are open merge requests that have their source/target branches point to each other', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:developer) { create(:user) }
       let_it_be(:reporter) { create(:user) }
@@ -9188,7 +9194,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#access_request_approvers_to_be_notified' do
+  describe '#access_request_approvers_to_be_notified', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
     shared_examples 'returns active, non_invited, non_requested owners/maintainers of the project' do
       specify do
         maintainer = create(:project_member, :maintainer, source: project)
@@ -9277,7 +9283,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#closest_setting' do
+  describe '#closest_setting', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43943', type: :flaky } do
     shared_examples_for 'fetching closest setting' do
       let!(:namespace) { create(:namespace) }
       let!(:project) { create(:project, namespace: namespace) }

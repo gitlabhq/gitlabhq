@@ -22,12 +22,12 @@ RSpec.describe 'getting user information', feature_category: :user_management do
   end
 
   context 'looking up a user by username' do
-    let_it_be(:project_a, freeze: false) { create(:project, :repository) }
-    let_it_be(:project_b, freeze: false) { create(:project, :repository) }
+    let_it_be_with_reload(:project_a) { create(:project) }
+    let_it_be_with_reload(:project_b) { create(:project) }
     let_it_be_with_reload(:user) { create(:user, developer_of: [project_a, project_b]) }
-    let_it_be(:authorised_user, freeze: false) { create(:user, developer_of: [project_a, project_b]) }
-    let_it_be(:unauthorized_user, freeze: false) { create(:user) }
-    let_it_be(:admin, freeze: false) { create(:user, :admin) }
+    let_it_be_with_reload(:authorised_user) { create(:user, developer_of: [project_a, project_b]) }
+    let_it_be_with_reload(:unauthorized_user) { create(:user) }
+    let_it_be_with_reload(:admin) { create(:user, :admin) }
 
     let_it_be(:assigned_mr, freeze: false) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_a, assignees: [user])
@@ -393,7 +393,7 @@ RSpec.describe 'getting user information', feature_category: :user_management do
       end
 
       context 'we request the groupMemberships' do
-        let_it_be(:membership_a, freeze: false) { create(:group_member, user: user) }
+        let_it_be_with_reload(:membership_a) { create(:group_member, user: user) }
 
         let(:group_memberships) { graphql_data_at(:user, :group_memberships, :nodes) }
         let(:user_fields) { 'groupMemberships { nodes { id } }' }
@@ -416,7 +416,7 @@ RSpec.describe 'getting user information', feature_category: :user_management do
       end
 
       context 'we request the projectMemberships' do
-        let_it_be(:membership_a, freeze: false) { create(:project_member, user: user) }
+        let_it_be_with_reload(:membership_a) { create(:project_member, user: user) }
 
         let(:project_memberships) { graphql_data_at(:user, :project_memberships, :nodes) }
         let(:user_fields) { 'projectMemberships { nodes { id } }' }
@@ -528,10 +528,10 @@ RSpec.describe 'getting user information', feature_category: :user_management do
   end
 
   context 'authored merge requests' do
-    let_it_be(:current_user, freeze: false) { create(:user) }
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:subgroup, freeze: false) { create(:group, parent: group) }
-    let_it_be(:project, freeze: false) { create(:project, :public, group: group) }
+    let_it_be_with_reload(:current_user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:project) { create(:project, :public, group: group) }
     let_it_be(:merge_request1, freeze: false) do
       create(:merge_request, source_project: project, source_branch: '1', author: current_user)
     end

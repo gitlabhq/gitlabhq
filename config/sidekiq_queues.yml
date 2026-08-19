@@ -263,6 +263,8 @@
   - 1
 - - cd_rollouts_start
   - 1
+- - cd_versions_backfill_from_artifact_source
+  - 1
 - - cd_versions_create_from_artifact
   - 1
 - - cells_bulk_claims
