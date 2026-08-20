@@ -15,7 +15,7 @@ title: Customer experience improvement and third-party offers
 
 Within GitLab, we inform users of available third-party offers they might find valuable in order
 to enhance the development of their projects. An example is the Google Cloud Platform free credit
-for using [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/).
+for using [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine).
 
 Furthermore, we use content to improve customer experience. An example are the personalization
 questions when creating a group.

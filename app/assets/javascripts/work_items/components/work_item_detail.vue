@@ -1303,7 +1303,7 @@ export default {
                   @cancel-editing="cancelEditing"
                   @error="updateError = $event"
                 />
-                <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3">
+                <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-5">
                   <work-item-award-emoji
                     v-if="workItemAwardEmoji"
                     :work-item-archived="workItem.archived"
@@ -1315,7 +1315,7 @@ export default {
                     @error="updateError = $event"
                     @emoji-updated="$emit('work-item-emoji-updated', $event)"
                   />
-                  <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
+                  <div class="gl-flex gl-flex-wrap gl-gap-3">
                     <gl-intersection-observer
                       v-if="showUploadDesign"
                       data-testid="design-upload-button-observer"
@@ -1338,15 +1338,13 @@ export default {
                       :is-confidential-work-item="workItem.confidential"
                       :project-id="workItemProjectId"
                     />
-                    <div>
-                      <duo-work-item-to-mr-action
-                        v-if="showGenerateMrWithDuoButton"
-                        :project-path="workItemFullPath"
-                        :work-item-iid="workItem.iid"
-                        :work-item-type="workItemType"
-                        :work-item-web-url="workItem.webUrl"
-                      />
-                    </div>
+                    <duo-work-item-to-mr-action
+                      v-if="showGenerateMrWithDuoButton"
+                      :project-path="workItemFullPath"
+                      :work-item-iid="workItem.iid"
+                      :work-item-type="workItemType"
+                      :work-item-web-url="workItem.webUrl"
+                    />
                   </div>
                 </div>
               </section>

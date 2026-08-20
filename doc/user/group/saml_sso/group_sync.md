@@ -345,7 +345,7 @@ To configure Self-Managed:
 ## Microsoft Azure Active Directory integration
 
 > [!note]
-> Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
+> Microsoft has [announced](https://azure.microsoft.com/en-us/updates?id=azure-ad-is-becoming-microsoft-entra-id) that Azure Active Directory (AD) is being renamed to Entra ID.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of group sync using Microsoft Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).

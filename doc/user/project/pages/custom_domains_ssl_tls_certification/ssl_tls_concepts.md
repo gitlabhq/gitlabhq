@@ -74,7 +74,7 @@ to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
 which issues certificates trusted by most of browsers, it's open
 source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_encrypt_integration.md) to enable HTTPS on your custom domain.
 
-Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/application-services/products/ssl/),
+Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/products/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
 Their certs are valid up to 15 years. See the tutorial on
 [how to add a Cloudflare Certificate to your GitLab Pages website](https://about.gitlab.com/blog/setting-up-gitlab-pages-with-cloudflare-certificates/).

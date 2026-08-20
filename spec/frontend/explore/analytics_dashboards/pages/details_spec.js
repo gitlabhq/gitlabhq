@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDashboardLayout, GlTabs, GlTab } from '@gitlab/ui';
+import { GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -37,6 +37,12 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const findDashboardFilters = () => wrapper.findComponent(DashboardFilters);
   const findViewsTabs = () => wrapper.findComponent(GlTabs);
   const findViewTabs = () => wrapper.findAllComponents(GlTab);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+
+  const selectGroup = async (group = { id: 1, fullPath: 'gitlab-org' }) => {
+    findDashboardFilters().vm.$emit('set-groups', [group]);
+    await waitForPromises();
+  };
 
   describe('dashboard filters', () => {
     const dashboardLoaderSlotStub = {
@@ -167,6 +173,8 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       template: '<div><slot name="filters" /></div>',
     };
 
+    // Panels only render once a namespace is chosen, so these specs select a
+    // group before asserting on them.
     const createWithConfig = async (config) => {
       createComponent({
         stubs: {
@@ -174,7 +182,9 @@ describe('ExploreAnalyticsDashboardDetails', () => {
           GlDashboardLayout: filtersSlotStub,
         },
       });
+
       await waitForPromises();
+      await selectGroup();
     };
 
     describe('when the dashboard defines views', () => {
@@ -266,6 +276,84 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       it('ignores the param and renders the dashboard panels', () => {
         expect(findViewsTabs().exists()).toBe(false);
         expect(findDashboardLayout().props('config').panels).toEqual(overviewPanels);
+      });
+    });
+  });
+
+  describe('when no group or project is selected', () => {
+    const panels = [{ id: 'panel-1', title: 'Overview panel' }];
+
+    const emptyStateSlotStub = {
+      props: ['config'],
+      template: '<div><slot name="filters" /><slot name="empty-state" /></div>',
+    };
+
+    const dashboardLoaderSlotStub = stubComponent(DashboardLoader, {
+      data() {
+        return { slotConfig: { panels } };
+      },
+      template: `
+        <div>
+          <slot name="dashboard" :config="slotConfig" :cell-height="undefined" :min-cell-height="undefined" />
+        </div>
+      `,
+    });
+
+    beforeEach(async () => {
+      createComponent({
+        stubs: {
+          DashboardLoader: dashboardLoaderSlotStub,
+          GlDashboardLayout: emptyStateSlotStub,
+        },
+      });
+      await waitForPromises();
+    });
+
+    it('renders the empty state', () => {
+      expect(findEmptyState().props('title')).toBe('Select a group or project');
+    });
+
+    it('withholds the panels from the layout', () => {
+      expect(findDashboardLayout().props('config').panels).toEqual([]);
+    });
+
+    describe('once a group is selected', () => {
+      beforeEach(() => selectGroup());
+
+      it('hides the empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
+      });
+
+      it('passes the panels to the layout', () => {
+        expect(findDashboardLayout().props('config').panels).toEqual(panels);
+      });
+    });
+
+    describe('once a project is selected', () => {
+      beforeEach(async () => {
+        findDashboardFilters().vm.$emit('set-projects', [{ id: 2, fullPath: 'gitlab-org/gitlab' }]);
+        await waitForPromises();
+      });
+
+      it('hides the empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
+      });
+
+      it('passes the panels to the layout', () => {
+        expect(findDashboardLayout().props('config').panels).toEqual(panels);
+      });
+    });
+
+    describe('when the selected group is cleared', () => {
+      beforeEach(async () => {
+        await selectGroup();
+        findDashboardFilters().vm.$emit('set-groups', []);
+        await waitForPromises();
+      });
+
+      it('returns to the empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findDashboardLayout().props('config').panels).toEqual([]);
       });
     });
   });

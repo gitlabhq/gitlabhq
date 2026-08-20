@@ -20,7 +20,7 @@ The DevSecOps qualification is a category of the DevOps Software Competency that
 
 ## Public Sector Partner
 
-This designation indicates that GitLab has been deemed qualified to work with AWS Public Sector customers. GitLab has a dedicated organization to address public sector specific needs. [AWS Program Information](https://aws.amazon.com/partners/programs/public-sector/)
+This designation indicates that GitLab has been deemed qualified to work with AWS Public Sector customers. GitLab has a dedicated organization to address public sector specific needs. [AWS Program Information](https://aws.amazon.com/partners/programs/#aws-public-sector-programs)
 
 ## AWS Graviton
 
@@ -32,6 +32,6 @@ GitLab Instances and Runners have been validated on Amazon Linux 2 and 2023 - th
 
 ## AWS Marketplace Seller
 
-GitLab is a marketplace seller and you can purchase and deploy it through AWS marketplace [AWS Program Information](https://aws.amazon.com/marketplace/partners/management-tour)
+GitLab is a marketplace seller and you can purchase and deploy it through [AWS marketplace](https://aws.amazon.com/partners/marketplace/)
 
 ![AWS Partner Designations Logo](img/all-aws-partner-designations_v16_6.png)

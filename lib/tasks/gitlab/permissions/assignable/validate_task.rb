@@ -28,6 +28,7 @@ module Tasks
               name: [],
               action: {},
               boundary_in_name: {},
+              invalid_assignable_when: {},
               duplicate_name: [],
               duplicate_raw_permission: {},
               file: {},
@@ -134,6 +135,7 @@ module Tasks
             validate_name(permission)
             validate_action(permission)
             validate_boundary_in_name(permission)
+            validate_assignable_when(permission)
             validate_file(permission)
             validate_name_path(permission)
 
@@ -155,6 +157,16 @@ module Tasks
             return unless boundary
 
             violations[:boundary_in_name][permission.name] = boundary
+          end
+
+          def validate_assignable_when(permission)
+            unknown_boundaries = permission.assignable_when
+              .flat_map { |entry| Array(entry[:boundaries]) }
+              .uniq - permission.boundaries
+
+            return if unknown_boundaries.empty?
+
+            violations[:invalid_assignable_when][permission.name] = unknown_boundaries
           end
 
           def validate_file(permission)
@@ -264,6 +276,7 @@ module Tasks
             out += format_error_list_with_source(:name)
             out += format_action_errors
             out += format_boundary_in_name_errors
+            out += format_invalid_assignable_when_errors
             out += format_duplicate_name_errors
             out += format_duplicate_raw_permission_errors
             out += format_file_errors
@@ -300,6 +313,20 @@ module Tasks
               source = assignable_source_path(permission)
 
               out += "  - #{permission}: Resource should not start with boundary '#{boundary}'. (#{source})\n"
+            end
+
+            "#{out}\n"
+          end
+
+          def format_invalid_assignable_when_errors
+            return '' if violations[:invalid_assignable_when].empty?
+
+            out = "#{error_messages[:invalid_assignable_when]}\n\n"
+
+            violations[:invalid_assignable_when].each do |permission, unknown_boundaries|
+              source = assignable_source_path(permission)
+
+              out += "  - #{permission}: #{unknown_boundaries.join(', ')} (#{source})\n"
             end
 
             "#{out}\n"
@@ -371,6 +398,10 @@ module Tasks
               boundary_in_name: "The following assignable permissions encode a resource boundary in their name." \
                 "\nThe permission name should not include the boundary (project, group, user) as a prefix." \
                 "\n#{conventions_link(anchor: 'avoiding-resource-boundaries-in-permission-names')}",
+              invalid_assignable_when: "The following assignable permissions reference boundaries in " \
+                "`assignable_when` that are not declared in `boundaries`." \
+                "\nRemove the unknown boundaries or add them to the `boundaries` field." \
+                "\n#{assignable_permissions_link(anchor: 'assignable-permission-file-fields')}",
               duplicate_name: "The following permissions have duplicate names." \
                 "\nAssignable permissions must have unique names." \
                 "\n#{assignable_permissions_link(anchor: 'important-constraints')}",

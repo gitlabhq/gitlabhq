@@ -524,7 +524,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Enable [review apps](../ci/review_apps/_index.md)                                                           |            |       |         |          |                  |     ✓     |     ✓      |
 | Cancel jobs <sup>8</sup>                                                                                    |            |       |         |          |                  |     ✓     |     ✓      |
 | Read [Terraform](infrastructure/_index.md) state                                                            |            |       |         |          |                  |     ✓     |     ✓      |
-| Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                   |            |       |         |          |                  |     ✓     |     ✓      |
+| Run [interactive web terminals](../ci/interactive_web_terminal/_index.md) <sup>15</sup>                     |            |       |         |          |                  |     ✓     |     ✓      |
 | Use pipeline editor                                                                                         |            |       |         |          |                  |     ✓     |     ✓      |
 | View project runners <sup>9</sup>                                                                           |            |       |         |          |        ✓         |           |     ✓      |
 | Manage project runners <sup>9</sup>                                                                         |            |       |         |          |                  |           |     ✓      |
@@ -575,6 +575,7 @@ Project Owners can perform any listed action, and can delete pipelines:
     These permission requirements apply when creating or editing schedules, and are checked dynamically as branch protection rules may change over time.
 13. When running manually, the pipeline executes with the triggering user's permissions instead of the schedule owner's permissions.
 14. Security Managers can only run DAST on-demand scan pipelines.
+15. Developers and Maintainers: Only if the job was triggered by the user.
 
 <!-- markdownlint-enable MD029 -->
 

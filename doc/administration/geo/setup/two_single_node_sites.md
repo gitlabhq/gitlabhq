@@ -177,7 +177,7 @@ Prerequisites:
       Depending on your network configuration, the suggested addresses might
       be incorrect. If your primary and secondary sites connect over a local
       area network, or a virtual network connecting availability zones like the
-      [Amazon VPC](https://aws.amazon.com/vpc/) or the [Google VPC](https://cloud.google.com/vpc/),
+      [Amazon VPC](https://aws.amazon.com/vpc/) or the [Google VPC](https://cloud.google.com/vpc),
       you should use the secondary site private address for `postgresql['md5_auth_cidr_addresses']`.
 
    1. Add the following lines to `/etc/gitlab/gitlab.rb`. Be sure to replace the IP

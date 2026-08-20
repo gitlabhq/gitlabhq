@@ -207,6 +207,137 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
     end
 
+    context 'when the merge request is retargeted while the check is running' do
+      # The caller holds a record loaded before the retarget, so the merge status it
+      # computes answers the question for the old target branch. The factory targets
+      # `feature`, so retarget to something else, and via `update_column` so that
+      # `reload_diff_if_branch_changed` does not also move the source diff - this
+      # example is about the target branch alone.
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/606487
+      before do
+        MergeRequest.find(merge_request.id).tap do |current|
+          current.update_column(:target_branch, 'improve/awesome')
+          current.mark_as_unmergeable
+        end
+      end
+
+      it 'discards the merge status computed for the old target branch' do
+        expect(merge_request.target_branch).to eq('feature') # the caller is stale
+
+        expect { subject }.not_to change { MergeRequest.find(merge_request.id).merge_status }
+          .from('cannot_be_merged')
+      end
+
+      it 'reports the merge status as discarded' do
+        result = subject
+
+        expect(result).to be_error
+        expect(result.reason).to eq(described_class::STALE_MERGE_STATUS_DISCARDED)
+      end
+
+      it 'does not leave the discarded status on the in-memory record' do
+        subject
+
+        expect(merge_request.merge_status).not_to eq('can_be_merged')
+      end
+
+      it 'does not run the callbacks of the discarded transition' do
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated)
+        expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+        subject
+      end
+
+      context 'when the merge request is broken' do
+        before do
+          allow(merge_request).to receive(:broken?).and_return(true)
+        end
+
+        # The discarded status here is the value the row already holds, so only the
+        # record shows whether the transition ran.
+        it 'discards the unmergeable status too' do
+          expect { subject }.not_to change { merge_request.merge_status }.from('unchecked')
+        end
+
+        it 'reports the merge status as discarded' do
+          expect(subject.reason).to eq(described_class::STALE_MERGE_STATUS_DISCARDED)
+        end
+
+        context 'when discard_stale_mergeability_verdicts is disabled' do
+          before do
+            stub_feature_flags(discard_stale_mergeability_verdicts: false)
+          end
+
+          it 'writes the stale unmergeable status' do
+            expect { subject }.to change { merge_request.merge_status }
+              .from('unchecked').to('cannot_be_merged')
+          end
+        end
+      end
+
+      context 'when discard_stale_mergeability_verdicts is disabled' do
+        before do
+          stub_feature_flags(discard_stale_mergeability_verdicts: false)
+        end
+
+        it 'overwrites the current merge status with the stale one' do
+          expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
+            .from('cannot_be_merged').to('can_be_merged')
+        end
+
+        it 'takes the original path, reading no inputs and locking no row' do
+          expect(merge_request).not_to receive(:merge_status_inputs)
+          expect(merge_request).not_to receive(:merge_status_inputs_current?)
+
+          subject
+        end
+      end
+    end
+
+    context 'when the source diff is reloaded while the check is running' do
+      # The caller holds the diff its merge status was computed from, but a newer one
+      # has since become the latest, so that status answers for an old source SHA.
+      before do
+        merge_request.merge_request_diff # load the caller's diff before it is superseded
+
+        MergeRequest.find(merge_request.id).tap do |current|
+          current.create_merge_request_diff
+          current.mark_as_unmergeable
+        end
+      end
+
+      it 'discards the merge status computed for the old source SHA' do
+        expect { subject }.not_to change { MergeRequest.find(merge_request.id).merge_status }
+          .from('cannot_be_merged')
+      end
+
+      context 'when discard_stale_mergeability_verdicts is disabled' do
+        before do
+          stub_feature_flags(discard_stale_mergeability_verdicts: false)
+        end
+
+        it 'overwrites the current merge status with the stale one' do
+          expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
+            .from('cannot_be_merged').to('can_be_merged')
+        end
+      end
+    end
+
+    context 'when a merge status was already written for the same source and target' do
+      # The claim compares inputs, not ordering. Requiring the row to still await a
+      # status would make the first writer win, so a check that ran on inputs which
+      # have since been restored would lock out the correct status behind it, turning
+      # a race that used to self-correct into a permanent wrong answer.
+      before do
+        MergeRequest.find(merge_request.id).mark_as_unmergeable
+      end
+
+      it 'still writes the merge status' do
+        expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
+          .from('cannot_be_merged').to('can_be_merged')
+      end
+    end
+
     context 'when it cannot be merged on git' do
       let(:merge_request) do
         create(

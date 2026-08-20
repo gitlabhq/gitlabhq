@@ -84,6 +84,11 @@ export default {
       required: false,
       default: null,
     },
+    titleContainerClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: null,
+    },
     titleClass: {
       type: [String, Array, Object],
       required: false,
@@ -94,6 +99,11 @@ export default {
       required: false,
       default: 'h2',
       validator: (value) => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div'].includes(value),
+    },
+    actionsContainerClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: null,
     },
     bodyClass: {
       type: [String, Array, Object],
@@ -242,7 +252,7 @@ export default {
       ]"
       data-testid="crud-header"
     >
-      <div class="gl-flex gl-grow gl-flex-col gl-self-center gl-py-3">
+      <div class="gl-flex gl-grow gl-flex-col gl-self-center gl-py-3" :class="titleContainerClass">
         <component
           :is="titleTag"
           class="gl-mx-0 gl-my-2 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal gl-text-heading"
@@ -281,7 +291,11 @@ export default {
           </slot>
         </p>
       </div>
-      <div class="gl-my-3 gl-flex gl-items-start gl-gap-3" data-testid="crud-actions">
+      <div
+        class="gl-my-3 gl-flex gl-items-start gl-gap-3"
+        :class="actionsContainerClass"
+        data-testid="crud-actions"
+      >
         <slot name="actions" :show-form="showForm" :is-form-visible="isFormVisible"></slot>
         <gl-button
           v-if="toggleText && !isFormUsedAndVisible"

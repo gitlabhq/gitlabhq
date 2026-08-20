@@ -60,10 +60,17 @@ Support for fixing these limitations is tracked in the following issues:
 > [this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
 > improving this behavior.
 
+Prerequisites:
+
+- You must have the Developer, Maintainer, or Owner role for the project.
+- You must have started the job.
+  No role grants access to the terminal of a job started by another user.
+  For more information, see [CI/CD permissions](../../user/permissions.md#project-cicd).
+
 Sometimes, when a job is running, things don't go as you expect. It
 would be helpful if one can have a shell to aid debugging. When a job runs,
 the right panel displays a `debug` button ({{< icon name="external-link" >}}) that opens the terminal
-for the current job. Only the person who started a job can debug it.
+for the current job.
 
 ![Example of job running with terminal available](img/interactive_web_terminal_running_job_v17_3.png)
 

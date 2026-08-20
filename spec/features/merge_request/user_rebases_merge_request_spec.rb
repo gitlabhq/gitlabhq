@@ -18,11 +18,11 @@ RSpec.describe "User rebases a merge request", :js, feature_category: :code_revi
 
       click_button 'Expand merge checks'
 
-      expect(page).to have_button("Rebase")
+      # `exact_text` is required: a substring match also hits the widget's "Rebase source
+      # branch" button, which opens a confirmation modal instead of rebasing.
+      click_button("Rebase", exact_text: true)
 
-      click_button("Rebase")
-
-      expect(find_by_testid('standard-rebase-button')).to have_selector(".gl-spinner")
+      expect(page).to have_css("[data-testid='standard-rebase-button'] .gl-spinner")
     end
   end
 

@@ -157,7 +157,7 @@ In a fully self-hosted configuration, you deploy your own AI Gateway and use onl
 > [!note]
 > This configuration only includes models configured through your self-hosted AI Gateway. If you use [GitLab-managed models](configure_duo_features.md#select-a-gitlab-managed-model-for-a-feature) for any features, those features connect to the GitLab-hosted AI Gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
 
-While you deploy your own AI Gateway, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) as your model backend and they will continue to connect through your self-hosted AI Gateway.
+While you deploy your own AI Gateway, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-foundry/models/openai/) as your model backend and they will continue to connect through your self-hosted AI Gateway.
 
 If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you should use this fully self-hosted configuration.
 
@@ -221,7 +221,7 @@ integrates with external vendor LLM providers, including:
 
 - [Anthropic](https://www.anthropic.com/)
 - [Fireworks AI](https://fireworks.ai/)
-- [Google Vertex](https://cloud.google.com/vertex-ai/)
+- [Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform)
 
 These LLMs communicate through the GitLab Cloud Connector,
 offering a ready-to-use AI solution without the need for on-premise infrastructure.

@@ -58,6 +58,44 @@
       "minItems": 1,
       "uniqueItems": true,
       "description": "Consumers that may use this permission: granular access tokens, standard roles, and/or custom roles"
+    },
+    "assignable_when": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Conditions the user must meet for the permission to be offered in the token creation UI. Not a security control: endpoints must still enforce these conditions at request time",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "gitlab_team_member",
+              "saas",
+              "self_managed"
+            ]
+          },
+          "boundaries": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "instance",
+                "group",
+                "project",
+                "user"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Boundaries the condition applies to. When omitted, the condition applies to all boundaries"
+          }
+        }
+      }
     }
   },
   "required": [

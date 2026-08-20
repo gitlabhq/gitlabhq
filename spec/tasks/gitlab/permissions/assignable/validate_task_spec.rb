@@ -126,6 +126,50 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
       end
     end
 
+    context 'when assignable_when references a boundary not declared in boundaries' do
+      let(:permission_definition) do
+        {
+          name: permission_name,
+          description: 'Update a wiki',
+          permissions: raw_permissions,
+          boundaries: ['project'],
+          available_for: ['granular_access_token'],
+          assignable_when: [{ condition: 'admin', boundaries: ['instance'] }]
+        }
+      end
+
+      it 'returns an error' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following assignable permissions reference boundaries in `assignable_when` that are not declared in `boundaries`.
+          #  Remove the unknown boundaries or add them to the `boundaries` field.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#assignable-permission-file-fields
+          #
+          #    - update_wiki: instance (config/authz/permission_groups/assignable_permissions/wiki_category/wiki/update.yml)
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when assignable_when only references declared boundaries' do
+      let(:permission_definition) do
+        {
+          name: permission_name,
+          description: 'Update a wiki',
+          permissions: raw_permissions,
+          boundaries: ['project'],
+          available_for: ['granular_access_token'],
+          assignable_when: [{ condition: 'admin', boundaries: ['project'] }, { condition: 'gitlab_team_member' }]
+        }
+      end
+
+      it 'passes validation' do
+        expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
+      end
+    end
+
     context 'when action is disallowed' do
       let(:permission_name) { 'manage_wiki' }
       let(:permission_source_file) do

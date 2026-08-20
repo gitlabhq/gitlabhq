@@ -34,6 +34,7 @@ boundaries:
 | `permissions` | Array of raw permissions included in this assignable permission (must already exist as [raw permission definition files](permission_definitions.md#permission-definition-file)) |
 | `boundaries` | List of organizational levels where the assignable permission applies |
 | `available_for` | Consumers that may use this permission: `granular_access_token` (granular PATs), `role` (standard and custom roles), or both. An assignable permission that declares `granular_access_token` must have at least one of its raw permissions referenced by a REST authorization decorator or GraphQL granular scope directive. |
+| `assignable_when` | Optional. Conditions the current user must meet for the permission to be offered in the token creation UI. See [Conditionally Assignable Permissions](#conditionally-assignable-permissions). |
 | `deprecated` | Optional. When set to `true`, hides the assignable permission from the UI so users can no longer select it when creating new tokens. Existing tokens that already have this permission continue to work. Use this during [rename migrations](#renaming-assignable-permissions) or when phasing out a permission. |
 
 ### Understanding the Directory Structure
@@ -118,6 +119,73 @@ The `boundaries` field specifies which organizational levels support this assign
 
 **Selecting Boundaries:**
 Review the endpoint routes in your API file or the GraphQL types and mutations you are protecting. If endpoints follow patterns like `/projects/:id/...`, include `project`. If endpoints follow `/groups/:id/...`, include `group`. For GraphQL, check the `boundary_type` declared in your directives. Only include boundaries that your endpoints actually support.
+
+### Conditionally Assignable Permissions
+
+Some endpoints are only available to certain users, for example instance-level
+audit event endpoints require administrator access, while the group-level and
+project-level endpoints of the same resource do not. Exposing such a permission
+to every user in the token creation UI adds noise without adding value.
+
+Use the optional `assignable_when` field to declare the conditions a user must
+meet for the permission to be offered in the token creation UI:
+
+```yaml
+---
+name: read_audit_event
+description: Grants the ability to read audit events
+boundaries:
+  - group
+  - project
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_audit_event
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+```
+
+Each entry declares one `condition` and, optionally, the `boundaries` it applies
+to. When `boundaries` is omitted, the condition applies to every boundary of the
+permission. Multiple entries that apply to the same boundary must all be met.
+Every boundary listed in `assignable_when` must also appear in the permission's
+`boundaries` field.
+
+**Available conditions:**
+
+| Condition | The permission is offered when |
+|-----------|--------------------------------|
+| `admin` | The current user can access the Admin area, as an instance administrator or through a custom admin role. |
+| `gitlab_team_member` | The current user is a GitLab team member. |
+| `saas` | The instance is GitLab.com. |
+| `self_managed` | The instance is not GitLab.com. |
+
+**Effects of `assignable_when`:**
+
+- The token creation UI only offers the permission at boundaries where the
+  current user meets the conditions. In the example above, a regular user can
+  select `read_audit_event` for groups and projects, but the permission does not
+  appear in the instance-wide section. An administrator sees it everywhere.
+- Token creation, validation, documentation generation, and runtime
+  authorization are not affected. The API accepts granular scopes containing
+  the permission regardless of the conditions; calls to its endpoints fail
+  with `403 Forbidden` when the endpoint's own checks reject the user.
+  Existing tokens that already hold the permission continue to work even if
+  the owner no longer meets the conditions.
+- REST endpoints declare the same conditions with
+  [`assignable_when` on their authorization decorator](rest_api_implementation_guide.md#tagging-conditionally-available-endpoints).
+  The validation task fails when the endpoint tags and the YAML conditions for
+  a boundary disagree, so tag the endpoints and update the YAML file in the
+  same merge request.
+
+> [!warning]
+> `assignable_when` is not a security control. It only controls which
+> permissions the token creation UI offers. Endpoints must still enforce the
+> same conditions at request time (for example, with
+> `authenticated_as_admin!`).
 
 ### Important Constraints
 

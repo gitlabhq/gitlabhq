@@ -150,6 +150,7 @@ end
 | `additional_scopes` | Optional. Array of scopes that must all be authorized in addition to the primary boundary, for endpoints that act on a second container. Each entry declares its own `permissions` and `boundary_type`, with either `boundary_param` or a callable `boundary` (see below) |
 | `skip_granular_token_authorization` | Optional. A symbol naming the reason why granular PATs can access the endpoint without requiring specific permissions, for example `:public_endpoint` (see below) |
 | `todo` | Optional. A non-empty string (an issue link or a short reason) that defers a decision on granular token authorization. While present, granular PATs are denied access to the endpoint (see below) |
+| `assignable_when` | Optional. An array of conditions the endpoint enforces on the current user, for example `[:admin]` for endpoints behind `authenticated_as_admin!`. Applies to every boundary type declared by the endpoint. The validation task requires the endpoint tags and the assignable permission's [`assignable_when` conditions](assignable_permissions.md#conditionally-assignable-permissions) to stay consistent (see below) |
 
 Example with custom `boundary_param`:
 
@@ -286,6 +287,31 @@ end
 The value must be a non-empty string, such as an issue link or a short reason. A blank value is treated as missing authorization and the validation task fails.
 
 A granular PAT that calls the endpoint receives a `403 Forbidden` response, because the authorization service finds no permissions to check. Replace `todo` with `permissions` and a `boundary_type` (or `skip_granular_token_authorization`) once you decide how the endpoint should behave.
+
+#### Tagging Conditionally Available Endpoints
+
+When an endpoint restricts access beyond membership, for example with
+`authenticated_as_admin!`, tag it with `assignable_when` so the restriction is
+visible to the permissions tooling:
+
+```ruby
+route_setting :authorization, permissions: :read_audit_event, boundary_type: :instance, assignable_when: [:admin]
+get 'audit_events' do
+  # endpoint requires authenticated_as_admin!
+end
+```
+
+The tag describes the restriction; it does not enforce it. The endpoint must
+still perform the check at request time.
+
+The validation task keeps endpoint tags and the
+[`assignable_when` conditions](assignable_permissions.md#conditionally-assignable-permissions)
+of the corresponding assignable permission consistent: for each boundary, the
+YAML conditions must equal the conditions shared by every endpoint using the
+permission at that boundary. When you tag an endpoint, declare the matching
+condition in the assignable permission YAML file in the same merge request,
+and vice versa. Endpoints without tags and permissions without conditions are
+always consistent, so untagged existing code passes validation unchanged.
 
 #### Allowing Access on Publicly Visible Resources
 

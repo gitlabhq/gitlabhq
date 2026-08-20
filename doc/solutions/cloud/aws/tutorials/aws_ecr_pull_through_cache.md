@@ -6,7 +6,7 @@ description: Integrations Solutions Index for GitLab and AWS.
 title: 'Tutorial: Configuring AWS ECR Pull Through Cache Rules for Authenticated Access to GitLab.com Projects'
 ---
 
-1. Open the Amazon ECR console at <https://console.aws.amazon.com/ecr/>.
+1. Open the Amazon ECR console at <https://console.aws.amazon.com/ecr>.
 1. From the navigation bar, choose the Region to configure your private registry settings in.
 1. In the navigation pane, choose Private registry, Pull through cache.
 1. On the Pull through cache configuration page, choose Add rule.

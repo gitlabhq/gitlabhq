@@ -177,12 +177,11 @@ export default {
 </script>
 
 <template>
-  <div class="awards js-awards-block">
+  <div class="awards js-awards-block gl-items-center gl-gap-3">
     <gl-button
       v-for="awardList in groupedAwards"
       :key="awardList.name"
       v-gl-tooltip
-      class="gl-my-2 gl-mr-3"
       :class="awardList.classes"
       :title="awardList.title"
       :data-emoji-name="awardList.name"
@@ -198,7 +197,7 @@ export default {
       </template>
       <span class="js-counter">{{ awardList.list.length }}</span>
     </gl-button>
-    <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
+    <div v-if="canAwardEmoji" class="award-menu-holder">
       <emoji-picker
         :right="false"
         :custom-emoji-path="customEmojiPath"

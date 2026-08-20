@@ -332,6 +332,28 @@ class MergeRequest < ApplicationRecord
     # rubocop: enable Style/SymbolProc
   end
 
+  # The source and target a merge status is about to be computed from. Capture
+  # these before computing; the record can be refreshed while we wait on Gitaly, which
+  # would otherwise move what the computed status is judged against.
+  #
+  # The diff stands in for the source SHA, which no column records: `diff_head_sha`
+  # reads it from `merge_request_diff`, and that is whichever diff is loaded here,
+  # not necessarily the latest one.
+  def merge_status_inputs
+    [target_branch, merge_request_diff.id]
+  end
+
+  # Does the row still have the inputs a merge status was computed from? Callers hold
+  # a record they may have loaded much earlier, so a retarget in the meantime leaves
+  # them about to write a status for a branch this no longer targets.
+  #
+  # Locks the row, so this has to run inside the transaction that writes the status:
+  # anything retargeting the merge request updates this row and so waits for that
+  # transaction, which leaves no window between the answer and the write.
+  def merge_status_inputs_current?(inputs)
+    self.class.where(id: id).lock.pick(:target_branch, :latest_merge_request_diff_id) == inputs
+  end
+
   # NOTE: Batch transition merge_status to unchecked/cannot_be_merged_recheck.
   # This bypasses state machine callbacks for performance but mimics their behavior.
   #

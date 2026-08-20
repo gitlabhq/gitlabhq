@@ -31,6 +31,7 @@ import {
   MEMBER_MODAL_LABELS,
 } from '../constants';
 
+import { groupErrorsByMessage } from '../utils/member_utils';
 import { responseFromSuccess } from '../utils/response_message_parser';
 import UserLimitNotification from './user_limit_notification.vue';
 import ProjectSelect from './project_select.vue';
@@ -130,13 +131,14 @@ export default {
         s__(
           'InviteMembersModal|The following %{errorMembersLength} out of %{totalMembersCount} members could not be added',
         ),
-        { errorMembersLength: this.errorList.length, totalMembersCount: this.totalMembersCount },
+        {
+          errorMembersLength: Object.keys(this.invalidMembers).length,
+          totalMembersCount: this.totalMembersCount,
+        },
       );
     },
     errorList() {
-      return Object.entries(this.invalidMembers).map(([member, error]) => {
-        return { member, displayedMemberName: `@${member}`, message: error };
-      });
+      return groupErrorsByMessage(this.invalidMembers, (member) => `@${member}`);
     },
     errorsLimited() {
       return this.errorList.slice(0, this.$options.errorsLimit);
@@ -300,8 +302,8 @@ export default {
       >
         {{ $options.labels.memberErrorListText }}
         <ul class="gl-mb-0 gl-pl-5">
-          <li v-for="error in errorsLimited" :key="error.member" data-testid="errors-limited-item">
-            <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+          <li v-for="error in errorsLimited" :key="error.id" data-testid="errors-limited-item">
+            <strong>{{ error.displayedMemberNames }}:</strong> {{ error.message }}
           </li>
         </ul>
         <template v-if="shouldErrorsSectionExpand">
@@ -309,10 +311,10 @@ export default {
             <ul class="gl-mb-0 gl-pl-5">
               <li
                 v-for="error in errorsExpanded"
-                :key="error.member"
+                :key="error.id"
                 data-testid="errors-expanded-item"
               >
-                <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+                <strong>{{ error.displayedMemberNames }}:</strong> {{ error.message }}
               </li>
             </ul>
           </gl-collapse>

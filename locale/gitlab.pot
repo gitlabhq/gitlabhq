@@ -10770,6 +10770,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Chat (non-agentic)"
 msgstr ""
 
+msgid "AnalyticsDashboards|Choose a group or project above to see this dashboard."
+msgstr ""
+
 msgid "AnalyticsDashboards|Code Suggestions"
 msgstr ""
 
@@ -10861,6 +10864,9 @@ msgid "AnalyticsDashboards|Root Cause Analysis"
 msgstr ""
 
 msgid "AnalyticsDashboards|Save"
+msgstr ""
+
+msgid "AnalyticsDashboards|Select a group or project"
 msgstr ""
 
 msgid "AnalyticsDashboards|Settings"

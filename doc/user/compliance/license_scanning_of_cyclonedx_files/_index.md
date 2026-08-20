@@ -217,8 +217,19 @@ license names.
 
 ## License expressions
 
-The License Scanning of CycloneDX files does not support [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).
-Adding this capability is tracked in issue [336878](https://gitlab.com/gitlab-org/gitlab/-/issues/336878).
+{{< history >}}
+
+- Support for SPDX license expressions in CycloneDX SBOMs [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225) in GitLab 19.3.
+
+{{< /history >}}
+
+GitLab reads SPDX [license expressions](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/)
+from the `expression` field in CycloneDX SBOMs, including `LicenseRef-[NAME]` syntax for custom non-SPDX licenses.
+When a component's SBOM entry includes an `expression`, GitLab stores and evaluates the full expression.
+Previously, components with license expressions appeared with an `unknown` license.
+
+License expressions are supported in [license approval policies](../license_approval_policies.md).
+When a policy targets a license that appears as a term in a component's expression, the policy evaluates correctly against the full expression.
 
 ## Blocking merge requests based on detected licenses
 
@@ -243,16 +254,15 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 - Introduced in GitLab 17.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `license_scanning_with_sbom_licenses`. Disabled by default.
 - Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.6.
 - Generally available in GitLab 17.8. Feature flag `license_scanning_with_sbom_licenses` removed.
+- Support for SPDX license expressions [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225) in GitLab 19.3.
 
 {{< /history >}}
 
-The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used (current behavior).
-License information can be provided using a valid SPDX identifier or a license name. However, providing a license using an SPDX License Expression is not supported.
+The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database is used.
+License information can be provided using a valid SPDX identifier, a license name, or an SPDX license expression.
 More information about the license field format can be found on the [CycloneDX](https://cyclonedx.org/use-cases/#license-compliance) specification.
 
 Compatible CycloneDX SBOM generators that provide the licenses field can be found in the [CycloneDX Tool Center](https://cyclonedx.org/tool-center/).
-
-Only licenses providing an SPDX identifier are currently supported. Extending this feature beyond SDPX licenses is tracked in [issue 505677](https://gitlab.com/gitlab-org/gitlab/-/issues/505677).
 
 ### Configure license information source
 

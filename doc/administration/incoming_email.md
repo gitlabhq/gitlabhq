@@ -128,7 +128,7 @@ and use [an application password](https://support.google.com/mail/answer/185833)
 
 If you want to use Office 365, and two-factor authentication is enabled, make sure
 you're using an
-[app password](https://support.microsoft.com/en-us/account-billing/app-passwords-for-a-work-or-school-account-d6dc8c6d-4bf7-4851-ad95-6d07799387e9)
+[app password](https://support.microsoft.com/en-US/accounts-billing/work-school/create-app-passwords-for-your-work-or-school-account)
 instead of the regular password for the mailbox.
 
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the

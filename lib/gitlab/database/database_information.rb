@@ -36,12 +36,25 @@ module Gitlab
         ORDER BY is_current DESC, name ASC
       SQL
 
+      # Relation names per schema, matched against the database dictionary to tell GitLab's
+      # own objects apart from unrelated ones. relkind r/p/v/m covers the object kinds the
+      # dictionary catalogs: tables, partitioned tables, views and materialized views.
+      # Sequences (S) have no entry of their own, so each resolves through pg_depend
+      # (deptype 'a' for serial, 'i' for identity) to its owning table's name, or falls back
+      # to its own name when unowned and stays unrecognized. DISTINCT drops the duplicate
+      # row that a table and its own sequence produce.
       SCHEMA_TABLES_SQL = <<~SQL
-        SELECT n.nspname AS schema_name, c.relname AS table_name
+        SELECT DISTINCT n.nspname AS schema_name,
+          COALESCE(owner_table.relname, c.relname) AS table_name
         FROM pg_catalog.pg_namespace n
         JOIN pg_catalog.pg_class c ON c.relnamespace = n.oid
+        LEFT JOIN pg_catalog.pg_depend d
+          ON c.relkind = 'S' AND d.objid = c.oid
+          AND d.classid = 'pg_class'::regclass AND d.refclassid = 'pg_class'::regclass
+          AND d.deptype IN ('a', 'i')
+        LEFT JOIN pg_catalog.pg_class owner_table ON owner_table.oid = d.refobjid
         WHERE n.nspname NOT IN ('pg_catalog', 'pg_toast', 'information_schema')
-          AND c.relkind IN ('r', 'p', 'v', 'm')
+          AND c.relkind IN ('r', 'p', 'v', 'm', 'S')
       SQL
 
       # Live snapshot of in-progress (auto)vacuums for the current database.

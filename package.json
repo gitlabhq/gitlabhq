@@ -200,7 +200,7 @@
     "marked": "^16.0.0",
     "marked-bidi": "^1.0.3",
     "mathjax": "3",
-    "mermaid-v11": "npm:mermaid@11.13.0",
+    "mermaid-v11": "npm:mermaid@11.16.1",
     "micromatch": "^4.0.5",
     "minimatch": "^3.0.4",
     "modern-screenshot": "^4.4.39",

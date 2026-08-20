@@ -88,7 +88,7 @@ GitLab instance.
 Access in GitLab can be managed with the UI or by
 integrating with an existing identity provider.
 To meet FedRAMP requirements, ensure that the
-existing identity provider is FedRAMP authorized on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products). To
+existing identity provider is FedRAMP authorized on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products/). To
 meet requirements such as PIV, you should leverage an
 identity provider rather than using native authentication in
 GitLab Self-Managed.
@@ -199,7 +199,7 @@ requirements:
 [Instructions for enabling two-factor authentication](../user/profile/account/two_factor_authentication.md#enable-two-factor-authentication)
 are provided in the documentation. Customers pursuing FedRAMP must consider
 two-factor providers that are FedRAMP authorized and support FIPS
-requirements. FedRAMP authorized providers can be found on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products).
+requirements. FedRAMP authorized providers can be found on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products/).
 When selecting a second factor, NIST and
 FedRAMP are now indicating that phishing resistant authentication, such
 as WebAuthn, must be used (IA-2).

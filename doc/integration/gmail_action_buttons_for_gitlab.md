@@ -13,11 +13,11 @@ description: "Configure Gmail actions for GitLab notifications."
 
 {{< /details >}}
 
-GitLab supports [Google actions in email](https://developers.google.com/gmail/markup/actions/actions-overview).
+GitLab supports [Google actions in email](https://developers.google.com/workspace/gmail/markup/actions/actions-overview).
 When you configure this integration, emails that require an action are marked in Gmail.
 
 To get this functioning, you must be registered with Google. For instructions, see
-[Register with Google](https://developers.google.com/gmail/markup/registering-with-google).
+[Register with Google](https://developers.google.com/workspace/gmail/markup/registering-with-google).
 
 This process has many steps. Make sure that you fulfill all requirements set by
 Google to avoid your application being rejected by Google.

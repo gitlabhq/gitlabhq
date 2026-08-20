@@ -5,11 +5,17 @@ module MergeRequests
     include Gitlab::Utils::StrongMemoize
     include Gitlab::ExclusiveLeaseHelpers
 
+    # The computed merge status no longer applied by the time it was written, so it was
+    # dropped. Nothing is wrong with the merge request; a fresh check answers for the
+    # new inputs.
+    STALE_MERGE_STATUS_DISCARDED = :stale_merge_status_discarded
+
     delegate :project, to: :@merge_request
     delegate :repository, to: :project
 
     def initialize(merge_request)
       @merge_request = merge_request
+      @merge_status_discarded = false
     end
 
     def async_execute
@@ -62,7 +68,9 @@ module MergeRequests
       unless merge_request.can_be_merged?
         message = 'Merge request is not mergeable'
 
-        if ref_updated
+        if @merge_status_discarded
+          return ServiceResponse.error(message: message, reason: STALE_MERGE_STATUS_DISCARDED)
+        elsif ref_updated
           return ServiceResponse.error(message: message, reason: :merge_status_race, payload: payload)
         else
           return ServiceResponse.error(message: message)
@@ -117,8 +125,12 @@ module MergeRequests
     def update_merge_status
       return false unless merge_request.recheck_merge_status?
 
+      # Read before the checks below, so that refreshing the record while we wait on
+      # Gitaly cannot move the inputs the merge status is judged against.
+      inputs = merge_request.merge_status_inputs if discard_stale_merge_status_writes?
+
       if merge_request.broken?
-        merge_request.mark_as_unmergeable
+        write_merge_status(inputs) { merge_request.mark_as_unmergeable }
         return false
       end
 
@@ -127,14 +139,45 @@ module MergeRequests
       update_diff_discussion_positions! if merge_to_ref_success
 
       if merge_to_ref_success && can_git_merge?
-        merge_request.mark_as_mergeable
+        return false unless write_merge_status(inputs) { merge_request.mark_as_mergeable }
+
         reload_merge_head_diff
         true
       else
-        merge_request.mark_as_unmergeable
+        write_merge_status(inputs) { merge_request.mark_as_unmergeable }
         false
       end
     end
+
+    # Drops the merge status if the merge request moved on while we computed it, so a
+    # stale caller cannot overwrite a current one. The check holds a lock on the row
+    # until the write lands, so nothing can move the inputs in between.
+    #
+    # Returns whether the status was written.
+    def write_merge_status(inputs)
+      unless discard_stale_merge_status_writes?
+        yield
+
+        return true
+      end
+
+      merge_request.transaction do
+        unless merge_request.merge_status_inputs_current?(inputs)
+          @merge_status_discarded = true
+
+          next false
+        end
+
+        yield
+
+        true
+      end
+    end
+
+    def discard_stale_merge_status_writes?
+      Feature.enabled?(:discard_stale_mergeability_verdicts, project)
+    end
+    strong_memoize_attr :discard_stale_merge_status_writes?
 
     def reload_merge_head_diff
       MergeRequests::ReloadMergeHeadDiffService.new(merge_request).execute

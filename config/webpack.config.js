@@ -111,19 +111,6 @@ Object.assign(alias, {
   ),
   // ELK's lazily loaded chunk imports the bare `mermaid` package; map it to the aliased install.
   mermaid$: 'mermaid-v11',
-  '@chevrotain/cst-dts-gen': path.join(
-    ROOT_PATH,
-    'node_modules/@chevrotain/cst-dts-gen/lib/src/api.js',
-  ),
-  '@chevrotain/gast': path.join(ROOT_PATH, 'node_modules/@chevrotain/gast/lib/src/api.js'),
-  '@chevrotain/regexp-to-ast': path.join(
-    ROOT_PATH,
-    'node_modules/@chevrotain/regexp-to-ast/lib/src/api.js',
-  ),
-  '@chevrotain/utils': path.join(ROOT_PATH, 'node_modules/@chevrotain/utils/lib/src/api.js'),
-  chevrotain: path.join(ROOT_PATH, 'node_modules/chevrotain/lib/src/api.js'),
-  'chevrotain-allstar': path.join(ROOT_PATH, 'node_modules/chevrotain-allstar/lib/index.js'),
-  langium: path.join(ROOT_PATH, 'node_modules/langium/lib/index.js'),
   // @json-render/vue imports `@json-render/core/store-utils`, an "exports"-only
   // subpath of @json-render/core.
   '@json-render/core/store-utils': path.join(
@@ -333,9 +320,10 @@ module.exports = {
       },
       {
         // mermaid v11 and its transitive deps (@mermaid-js/parser, @iconify/utils,
-        // langium, etc.) use modern syntax (optional chaining, static blocks) that
+        // es-toolkit) use modern syntax (optional chaining, static blocks) that
         // webpack 4 can't parse. Transpile them along with both mermaid versions.
-        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|langium|vscode-\w+|chevrotain(-allstar)?|@chevrotain)\/.*\.m?js$/,
+        // vscode-uri (pulled by monaco-yaml) ships the same kind of syntax in its UMD build.
+        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|es-toolkit|vscode-\w+)\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },

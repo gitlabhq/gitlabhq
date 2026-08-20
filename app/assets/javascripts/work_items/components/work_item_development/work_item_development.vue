@@ -269,6 +269,7 @@ export default {
       :count="itemCount"
       :anchor-id="$options.DEVELOPMENT_ITEMS_ANCHOR"
       :is-loading="isLoading"
+      title-container-class="!gl-py-0"
       is-collapsible
       persist-collapsed-state
       data-testid="work-item-development"

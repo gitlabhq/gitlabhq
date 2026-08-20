@@ -72,6 +72,88 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
     end
   end
 
+  context 'when a permission has assignable_when conditions' do
+    let(:unconditional_permission) do
+      ::Authz::PermissionGroups::Assignable.new(
+        {
+          name: 'update_wiki',
+          description: 'Grants the ability to update wikis',
+          permissions: %w[update_wiki],
+          boundaries: %w[group project],
+          available_for: %w[granular_access_token]
+        },
+        Rails.root.join(::Authz::PermissionGroups::Assignable::BASE_PATH, 'category/wiki/update.yml').to_s
+      )
+    end
+
+    let(:conditional_permission) do
+      ::Authz::PermissionGroups::Assignable.new(
+        {
+          name: 'read_audit_event',
+          description: 'Grants the ability to read audit events',
+          permissions: %w[read_audit_event],
+          boundaries: %w[group project instance],
+          available_for: %w[granular_access_token],
+          assignable_when: [{ condition: 'admin', boundaries: %w[instance] }]
+        },
+        Rails.root.join(::Authz::PermissionGroups::Assignable::BASE_PATH, 'category/audit_event/read.yml').to_s
+      )
+    end
+
+    let(:fully_conditional_permission) do
+      ::Authz::PermissionGroups::Assignable.new(
+        {
+          name: 'create_experiment_assignment',
+          description: 'Grants the ability to create experiment assignments',
+          permissions: %w[create_experiment_assignment],
+          boundaries: %w[project],
+          available_for: %w[granular_access_token],
+          assignable_when: [{ condition: 'admin' }]
+        },
+        Rails.root.join(::Authz::PermissionGroups::Assignable::BASE_PATH, 'category/experiment/create.yml').to_s
+      )
+    end
+
+    before do
+      allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return(
+        unconditional_permission.name => unconditional_permission,
+        conditional_permission.name => conditional_permission,
+        fully_conditional_permission.name => fully_conditional_permission
+      )
+
+      stub_resource = ::Authz::PermissionGroups::Resource.new(
+        { name: 'Stub Resource', description: 'Stub description' }, 'source_file'
+      )
+      allow(::Authz::PermissionGroups::Resource).to receive(:get).and_return(stub_resource)
+      allow(::Authz::PermissionGroups::Category).to receive(:get).and_return(nil)
+    end
+
+    context 'when the user does not meet the conditions' do
+      it 'prunes boundaries with unmet conditions and hides fully conditional permissions' do
+        post_graphql(query, current_user: current_user)
+
+        permissions_by_name = permissions_data.index_by { |permission| permission['name'] }
+
+        expect(permissions_by_name.keys).to match_array(%w[update_wiki read_audit_event])
+        expect(permissions_by_name['read_audit_event']['boundaries']).to match_array(%w[GROUP PROJECT])
+      end
+    end
+
+    context 'when the user meets the conditions' do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'returns all boundaries and all permissions' do
+        post_graphql(query, current_user: admin)
+
+        permissions_by_name = permissions_data.index_by { |permission| permission['name'] }
+
+        expect(permissions_by_name.keys)
+          .to match_array(%w[update_wiki read_audit_event create_experiment_assignment])
+        expect(permissions_by_name['read_audit_event']['boundaries']).to match_array(%w[GROUP PROJECT INSTANCE])
+      end
+    end
+  end
+
   context 'when a permission is deprecated' do
     let(:deprecated_permission) do
       ::Authz::PermissionGroups::Assignable.new(

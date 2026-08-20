@@ -44,17 +44,19 @@ const MULTIPLE_RESTRICTED = {
   status: 'error',
 };
 
+const EMAIL_TAKEN_ERROR = "The member's email address has already been taken";
+
 const EXPANDED_RESTRICTED = {
   message: {
     'email@example.com': ALLOWED_DOMAIN_ERROR,
     'email4@example.com': DOMAIN_DENYLIST_ERROR,
-    'email5@example.com': DOMAIN_DENYLIST_ERROR,
+    'email5@example.com': EMAIL_TAKEN_ERROR,
     root: ALLOWED_DOMAIN_ERROR,
   },
   parsedMessage: {
     'email@example.com': DECODED_ALLOWED_DOMAIN_ERROR,
     'email4@example.com': DECODED_DOMAIN_DENYLIST_ERROR,
-    'email5@example.com': DECODED_DOMAIN_DENYLIST_ERROR,
+    'email5@example.com': EMAIL_TAKEN_ERROR,
     root: DECODED_ALLOWED_DOMAIN_ERROR,
   },
   status: 'error',
@@ -110,6 +112,16 @@ const NO_COLLAPSE_IMPORT_ERRORS = {
   total_members_count: '2',
   status: 'error',
 };
+const DISTINCT_IMPORT_ERRORS = {
+  message: {
+    bob_smith: "The member's email address is not allowed for this project.",
+    john_smith: 'Access level should be greater than or equal to Developer inherited membership.',
+    doug_logan: 'Project cannot be shared with the group it is in or one of its ancestors.',
+    root: "The member's email address has already been taken",
+  },
+  total_members_count: '4',
+  status: 'error',
+};
 const SEAT_OVERAGE_IMPORT_ERRORS = {
   message: 'There are not enough available seats to invite this many users.',
   reason: 'seat_limit_exceeded_error',
@@ -117,5 +129,6 @@ const SEAT_OVERAGE_IMPORT_ERRORS = {
 export const importProjectMembersApiResponse = {
   EXPANDED_IMPORT_ERRORS,
   NO_COLLAPSE_IMPORT_ERRORS,
+  DISTINCT_IMPORT_ERRORS,
   SEAT_OVERAGE_IMPORT_ERRORS,
 };

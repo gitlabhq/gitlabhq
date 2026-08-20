@@ -58,7 +58,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
     context 'when routes have valid permissions' do
       let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
@@ -73,7 +73,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
     context 'when routes have multiple valid permissions' do
       let(:route_settings) { { authorization: { permissions: [:read_project, :read_issue], boundary_type: :project } } }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
@@ -90,7 +90,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
     end
 
     context 'with additional_scopes' do
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+      let(:mock_assignable) do
+        instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], conditions_for: [])
+      end
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
@@ -203,7 +205,10 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
 
       context 'when a standalone entry has no boundary_param' do
-        let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project user]) }
+        let(:mock_assignable) do
+          instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project user], conditions_for: [])
+        end
+
         let(:route_settings) do
           {
             authorization: {
@@ -257,6 +262,123 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
       end
     end
 
+    context 'with assignable_when conditions' do
+      let(:mock_assignable) do
+        instance_double(Authz::PermissionGroups::Assignable,
+          name: 'read_project', boundaries: %w[project], conditions_for: yaml_conditions)
+      end
+
+      before do
+        allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
+        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      context 'when the route conditions match the assignable permission conditions' do
+        let(:yaml_conditions) { [:admin] }
+        let(:route_settings) do
+          { authorization: { permissions: :read_project, boundary_type: :project, assignable_when: [:admin] } }
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/REST permissions are valid/).to_stdout
+        end
+      end
+
+      context 'when the route declares a condition missing from the assignable permission' do
+        let(:yaml_conditions) { [] }
+        let(:route_settings) do
+          { authorization: { permissions: :read_project, boundary_type: :project, assignable_when: [:admin] } }
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following assignable permissions have assignable_when conditions inconsistent with their REST endpoints.
+            #  For each boundary, the YAML conditions must equal the conditions shared by every endpoint at that boundary.
+            #  Tag the endpoints with assignable_when, or update the assignable permission YAML file.
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#conditionally-assignable-permissions
+            #
+            #    - read_project (project boundary)
+            #        YAML conditions: []
+            #        Endpoint conditions: [admin]
+            #        GET /projects/:id/test (lib/api/test.rb:42)
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when the assignable permission declares a condition missing from the route' do
+        let(:yaml_conditions) { [:admin] }
+        let(:route_settings) do
+          { authorization: { permissions: :read_project, boundary_type: :project } }
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following assignable permissions have assignable_when conditions inconsistent with their REST endpoints.
+            #  For each boundary, the YAML conditions must equal the conditions shared by every endpoint at that boundary.
+            #  Tag the endpoints with assignable_when, or update the assignable permission YAML file.
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#conditionally-assignable-permissions
+            #
+            #    - read_project (project boundary)
+            #        YAML conditions: [admin]
+            #        Endpoint conditions: []
+            #        GET /projects/:id/test (lib/api/test.rb:42)
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when only some routes at the boundary declare the condition' do
+        let(:yaml_conditions) { [] }
+        let(:route_settings) do
+          { authorization: { permissions: :read_project, boundary_type: :project, assignable_when: [:admin] } }
+        end
+
+        let(:untagged_route) do
+          instance_double(
+            Grape::Router::Route,
+            settings: { authorization: { permissions: :read_project, boundary_type: :project } },
+            request_method: 'POST',
+            origin: '/api/:version/projects/:id/other'
+          )
+        end
+
+        let(:mock_routes) { [mock_route, untagged_route] }
+
+        it 'completes successfully with unconditional YAML' do
+          expect { run }.to output(/REST permissions are valid/).to_stdout
+        end
+      end
+
+      context 'when the route declares an unknown condition' do
+        let(:yaml_conditions) { [:unknown] }
+        let(:route_settings) do
+          { authorization: { permissions: :read_project, boundary_type: :project, assignable_when: [:unknown] } }
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following API routes use an unknown assignable_when condition.
+            #  Use one of: :admin, :gitlab_team_member, :saas, :self_managed
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#conditionally-assignable-permissions
+            #
+            #    - GET /projects/:id/test: unknown (lib/api/test.rb:42)
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+    end
+
     context 'when a route has an undefined permission' do
       let(:route_settings) { { authorization: { permissions: :undefined_permission, boundary_type: :project } } }
 
@@ -292,7 +414,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
         { authorization: { permissions: [:read_project, :undefined_permission], boundary_type: :project } }
       end
 
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
@@ -417,7 +539,8 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
     context 'when a route has a permission only in a deprecated assignable permission' do
       let(:route_settings) { { authorization: { permissions: :read_something, boundary_type: :project } } }
       let(:deprecated_assignable) do
-        instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], deprecated?: true)
+        instance_double(Authz::PermissionGroups::Assignable,
+          boundaries: %w[project], deprecated?: true, conditions_for: [])
       end
 
       before do
@@ -459,7 +582,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
     context 'when a route has a boundary_type not matching assignable permission boundaries' do
       let(:route_settings) { { authorization: { permissions: :read_something, boundary_type: :user } } }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project group]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project group], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
@@ -497,7 +620,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
         }
       end
 
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[group]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[group], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
@@ -535,7 +658,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
         }
       end
 
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[group user]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[group user], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
@@ -550,7 +673,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
     context 'when a route has a valid boundary_type matching assignable permission' do
       let(:route_settings) { { authorization: { permissions: :read_something, boundary_type: :project } } }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project group]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project group], conditions_for: []) }
 
       before do
         allow(Authz::Permission).to receive(:defined?).with(:read_something).and_return(true)
@@ -720,7 +843,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
     context 'when a route permission has insufficient test coverage' do
       let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], conditions_for: []) }
 
       let(:mock_scanner) do
         instance_double(
@@ -768,7 +891,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout
 
     context 'when a route permission has sufficient test coverage' do
       let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project], conditions_for: []) }
 
       let(:mock_scanner) do
         instance_double(

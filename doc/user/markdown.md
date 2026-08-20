@@ -1506,12 +1506,18 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 
 ### Mermaid
 
+{{< history >}}
+
+- Support for `treeView-beta` diagrams [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/612879) in GitLab 19.4.
+
+{{< /history >}}
+
 Visit the [official page](https://mermaidjs.github.io/) for more details. The
 [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) helps you
 learn Mermaid and debug issues in your Mermaid code. Use it to identify and resolve
 issues in your diagrams.
 
-GitLab.com supports Mermaid version 10.
+GitLab supports Mermaid version 11.
 
 To generate a diagram or flowchart, write your text inside the `mermaid` block:
 
@@ -1591,6 +1597,35 @@ graph TB
     Node2 --> SubGraph1[Jump to SubGraph1]
     SubGraph1 --> FinalThing[Final Thing]
   end
+```
+
+To render a file or directory tree, use a `treeView-beta` diagram.
+Indentation defines the hierarchy, and a trailing `/` marks a directory:
+
+````markdown
+```mermaid
+treeView-beta
+    accTitle: Mermaid file tree diagram
+    accDescr: A file tree with a project directory containing a src directory, index.js, package.json, and a README file.
+    my-project/
+        src/
+            index.js
+        package.json
+        README.md
+```
+````
+
+When rendered, the example looks similar to:
+
+```mermaid
+treeView-beta
+    accTitle: Mermaid file tree diagram
+    accDescr: A file tree with a project directory containing a src directory, index.js, package.json, and a README file.
+    my-project/
+        src/
+            index.js
+        package.json
+        README.md
 ```
 
 ### PlantUML

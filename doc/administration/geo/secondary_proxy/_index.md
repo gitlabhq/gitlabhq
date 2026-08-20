@@ -69,7 +69,7 @@ For this example, you need:
 - A working Geo primary site and secondary site, see the [Geo setup instructions](../setup/_index.md).
 - A DNS zone managing your domain. Although the following instructions use
   [AWS Route53](https://aws.amazon.com/route53/)
-  and [GCP cloud DNS](https://cloud.google.com/dns/), other services such as
+  and [GCP cloud DNS](https://cloud.google.com/dns), other services such as
   [Cloudflare](https://www.cloudflare.com/) can be used as well.
 
 #### AWS Route53

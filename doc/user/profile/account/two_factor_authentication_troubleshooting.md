@@ -246,7 +246,7 @@ GitLab Support cannot assist with recovery issues related to third-party authent
 For more information, see the documentation for your specific authenticator app.
 Documentation for common authenticators is available through the following locations:
 
-- [Microsoft Authenticator](https://support.microsoft.com/en-us/account-billing/restore-account-credentials-from-microsoft-authenticator-ce53096e-1e1c-4840-9e32-1618bc33cd43)
+- [Microsoft Authenticator](https://support.microsoft.com/en-US/authenticator/restore-account-credentials-from-microsoft-authenticator)
 - [Google Authenticator](https://support.google.com/accounts/answer/1066447)
 - [Authy](https://www.twilio.com/en-us/blog/how-the-authy-two-factor-backups-work)
 - [1Password](https://support.1password.com/recovery-codes/?mac#recover-your-account)

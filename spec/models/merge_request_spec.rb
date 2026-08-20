@@ -6382,6 +6382,63 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#merge_status_inputs' do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'returns the target branch and the diff the source SHA is read from' do
+      expect(merge_request.merge_status_inputs).to eq([merge_request.target_branch, merge_request.merge_request_diff.id])
+    end
+
+    context 'when the diff the caller holds is no longer the latest' do
+      before do
+        merge_request.merge_request_diff # the caller loads the diff it will compute from
+
+        described_class.find(merge_request.id).create_merge_request_diff
+      end
+
+      it 'returns the diff the caller holds, not the latest one' do
+        latest_diff_id = described_class.where(id: merge_request.id).pick(:latest_merge_request_diff_id)
+
+        expect(merge_request.merge_status_inputs.last).not_to eq(latest_diff_id)
+      end
+    end
+  end
+
+  describe '#merge_status_inputs_current?' do
+    let(:merge_request) { create(:merge_request, merge_status: 'unchecked') }
+    let!(:inputs) { merge_request.merge_status_inputs } # captured before the status is computed
+
+    subject { merge_request.merge_status_inputs_current?(inputs) }
+
+    it { is_expected.to be(true) }
+
+    context 'when the target branch has moved on' do
+      before do
+        described_class.where(id: merge_request.id).update_all(target_branch: 'a-different-branch')
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the record is refreshed after the inputs were captured' do
+      before do
+        described_class.where(id: merge_request.id).update_all(target_branch: 'a-different-branch')
+
+        merge_request.reset
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the latest diff has moved on' do
+      before do
+        described_class.find(merge_request.id).create_merge_request_diff
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '.batch_mark_as_unchecked' do
     let_it_be_with_reload(:mr_can_be_merged) { create(:merge_request, :unique_branches, merge_status: 'can_be_merged') }
     let_it_be_with_reload(:mr_checking) { create(:merge_request, :unique_branches, merge_status: 'checking') }

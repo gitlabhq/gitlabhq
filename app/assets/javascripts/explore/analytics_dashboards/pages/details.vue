@@ -1,6 +1,7 @@
 <script>
 import { computed } from 'vue';
-import { GlDashboardLayout, GlTabs, GlTab } from '@gitlab/ui';
+import { GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
@@ -11,6 +12,7 @@ export default {
   name: 'ExploreAnalyticsDashboardDetails',
   components: {
     GlDashboardLayout,
+    GlEmptyState,
     GlTabs,
     GlTab,
     AnalyticsDashboardPanel,
@@ -18,6 +20,12 @@ export default {
     DashboardLoader,
   },
   mixins: [glSlotsMixin],
+  i18n: {
+    noNamespaceTitle: s__('AnalyticsDashboards|Select a group or project'),
+    noNamespaceDescription: s__(
+      'AnalyticsDashboards|Choose a group or project above to see this dashboard.',
+    ),
+  },
   // Provided as computed refs — options-API inject captures the value once
   // at setup, so plain values/getters won't propagate filter changes to panels.
   provide() {
@@ -45,6 +53,11 @@ export default {
       activeViewIndex: 0,
     };
   },
+  computed: {
+    hasNamespace() {
+      return Boolean(this.selectedGroup || this.selectedProject);
+    },
+  },
   methods: {
     // Set the active tab from the `view` query param on load. Default to the
     // first view if the query param wasn't included, or has an invalid index.
@@ -60,6 +73,9 @@ export default {
     // When a dashboard defines views, feed the active view's panels to the layout
     // so the shared grid re-renders as the user switches views.
     layoutConfig(config) {
+      // Every panel is namespace-scoped, render none until a namespace is specified
+      if (!this.hasNamespace) return { ...config, panels: [] };
+
       if (!this.hasViews(config)) return config;
 
       return { ...config, panels: config.views[this.activeViewIndex]?.panels || [] };
@@ -149,6 +165,15 @@ export default {
             :query-overrides="panel.queryOverrides"
             :filters="filters"
             :data-testid="panelTestId(panel)"
+          />
+        </template>
+
+        <template v-if="!hasNamespace" #empty-state>
+          <gl-empty-state
+            :title="$options.i18n.noNamespaceTitle"
+            :description="$options.i18n.noNamespaceDescription"
+            illustration-name="empty-dashboard-md"
+            data-testid="no-namespace-empty-state"
           />
         </template>
       </gl-dashboard-layout>
