@@ -106,7 +106,7 @@ export default {
 <template>
   <li
     :id="`commit-${commit.shortId}`"
-    class="commit-list-item commit-card gl-border gl-overflow-hidden gl-rounded-lg @md/panel:gl-ml-7"
+    class="commit-list-item commit-card gl-border gl-overflow-hidden gl-rounded-lg gl-border-section gl-bg-section @md/panel:gl-ml-7"
   >
     <div
       class="gl-flex gl-w-full gl-items-center gl-px-4 gl-py-3 focus-visible:-gl-outline-offset-2"
@@ -137,7 +137,7 @@ export default {
         :size="32"
       />
       <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center @md/panel:gl-flex">
-        <h3 class="gl-m-0 gl-min-w-0 gl-grow gl-pt-1 gl-text-base @md/panel:gl-pt-0">
+        <h3 class="gl-m-0 gl-flex gl-min-w-0 gl-grow gl-flex-col gl-gap-2 gl-text-base">
           <div class="gl-flex">
             <!-- Prevent the description toggle -->
             <gl-link
@@ -151,7 +151,7 @@ export default {
             </gl-link>
           </div>
           <div
-            class="gl-text-wrap gl-pb-2 gl-pt-1 gl-text-sm gl-font-normal !gl-text-subtle @md/panel:gl-pb-0 @md/panel:gl-pt-0"
+            class="gl-text-wrap gl-pb-2 gl-text-sm gl-font-normal !gl-text-subtle @md/panel:gl-pb-0"
           >
             <span
               v-if="commit.author"
@@ -220,7 +220,7 @@ export default {
     </div>
 
     <gl-collapse :visible="isExpanded">
-      <div class="gl-border-t gl-bg-subtle gl-px-4 gl-py-3">
+      <div class="gl-border-t gl-border-t-section gl-bg-subtle gl-px-4 gl-py-3">
         <description
           v-if="hasExpanded"
           :id="anchorId"

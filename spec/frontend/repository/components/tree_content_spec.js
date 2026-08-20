@@ -4,8 +4,14 @@ import VueApollo from 'vue-apollo';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
-import { TREE_PAGE_LIMIT, i18n } from '~/repository/constants';
-import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
+import { TREE_PAGE_LIMIT, LOCK_UPDATED_EVENT, i18n } from '~/repository/constants';
+import {
+  loadCommits,
+  reloadCommits,
+  isRequested,
+  resetRequestedCommits,
+} from '~/repository/commits_service';
+import eventHub from '~/repository/event_hub';
 import createApolloProvider from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
@@ -16,6 +22,7 @@ import { graphQLErrors, paginatedTreeResponseFactory } from '../mock_data';
 
 jest.mock('~/repository/commits_service', () => ({
   loadCommits: jest.fn(() => Promise.resolve()),
+  reloadCommits: jest.fn(() => Promise.resolve([])),
   isRequested: jest.fn(),
   resetRequestedCommits: jest.fn(),
 }));
@@ -173,6 +180,47 @@ describe('Repository table component', () => {
         ['', path, '', 25, 'heads'],
         ['', path, '', 0, 'heads'],
       ]);
+    });
+
+    describe('when a lock is updated', () => {
+      const reloadedCommits = [{ fileName: 'file.js', lockLabel: 'Locked by User2' }];
+
+      beforeEach(() => {
+        reloadCommits.mockResolvedValue(reloadedCommits);
+      });
+
+      it('reloads commit data and passes it to the file table', async () => {
+        createComponent({ path });
+
+        eventHub.$emit(LOCK_UPDATED_EVENT, { path: 'some/directory', isLocked: true });
+        await waitForPromises();
+
+        expect(reloadCommits).toHaveBeenCalledWith(path, path, '', 'heads');
+        expect(findFileTable().props('commits')).toEqual(reloadedCommits);
+      });
+
+      it('does not reload commit data when commit columns are hidden', async () => {
+        window.gon.show_commit_columns = false;
+
+        createComponent({ path });
+        await waitForPromises();
+
+        eventHub.$emit(LOCK_UPDATED_EVENT, { path: 'some/directory', isLocked: true });
+        await waitForPromises();
+
+        expect(reloadCommits).not.toHaveBeenCalled();
+      });
+
+      it('stops listening for lock updates when destroyed', async () => {
+        createComponent({ path });
+        await waitForPromises();
+        wrapper.destroy();
+
+        eventHub.$emit(LOCK_UPDATED_EVENT, { path: 'some/directory', isLocked: true });
+        await waitForPromises();
+
+        expect(reloadCommits).not.toHaveBeenCalled();
+      });
     });
   });
 

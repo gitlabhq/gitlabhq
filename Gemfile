@@ -682,7 +682,7 @@ gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 gem 'gitaly', '~> 19.2', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'gitlab-kas-grpc', '~> 19.3.0-rc4', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 19.4.0-rc1', feature_category: :deployment_management
 
 # Knowledge Graph GRPC protocol definitions
 gem 'gitlab-orbit-proto', '~> 0.100.0', feature_category: :knowledge_graph

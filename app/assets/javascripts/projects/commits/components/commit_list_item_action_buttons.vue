@@ -49,13 +49,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden gl-items-center @md/panel:gl-flex">
-    <span class="gl-mr-2 gl-font-monospace">{{ commit.shortId }}</span>
+  <div class="gl-mr-2 gl-hidden gl-items-center gl-gap-2 @md/panel:gl-flex">
+    <span class="gl-font-monospace">{{ commit.shortId }}</span>
     <clipboard-button
-      :text="commit.sha"
-      :title="copyCommitShaTitle"
       category="tertiary"
       size="small"
+      :text="commit.sha"
+      :title="copyCommitShaTitle"
     />
     <gl-button
       v-gl-tooltip
@@ -65,17 +65,19 @@ export default {
       :href="browseFilesPath"
       :title="__('Browse commit files')"
       :aria-label="__('Browse commit files')"
-      class="gl-ml-5 gl-mr-2"
       data-testid="browse-files-button"
     />
-    <div :class="{ 'gl-invisible': !commit.description }">
-      <expand-collapse-button
-        :is-collapsed="isCollapsed"
-        :loading="isLoading"
-        :anchor-id="anchorId"
-        :accessible-label="commit.titleHtml"
-        @click="$emit('click')"
-      />
-    </div>
+    <span
+      class="gl-border-r gl-mx-2 gl-h-6 gl-border-r-section"
+      :class="{ 'gl-invisible': !commit.description }"
+    ></span>
+    <expand-collapse-button
+      :class="{ 'gl-invisible': !commit.description }"
+      :is-collapsed="isCollapsed"
+      :loading="isLoading"
+      :anchor-id="anchorId"
+      :accessible-label="commit.titleHtml"
+      @click="$emit('click')"
+    />
   </div>
 </template>

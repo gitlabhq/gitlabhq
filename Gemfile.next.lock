@@ -890,7 +890,7 @@ GEM
       grape (>= 2.4, < 3.3)
       grape-entity (~> 1.0)
       js_regex (~> 3.8)
-    gitlab-kas-grpc (19.3.0.pre.rc4)
+    gitlab-kas-grpc (19.4.0.pre.rc1)
       google-protobuf (>= 3.25, < 5.0)
       grpc (~> 1.81)
     gitlab-labkit (4.4.0)
@@ -2533,7 +2533,7 @@ DEPENDENCIES
   gitlab-housekeeper!
   gitlab-http!
   gitlab-iam-grpc!
-  gitlab-kas-grpc (~> 19.3.0.pre.rc4)
+  gitlab-kas-grpc (~> 19.4.0.pre.rc1)
   gitlab-labkit (~> 4.4.0)
   gitlab-license (~> 2.6)
   gitlab-lookbook (~> 2.3)
@@ -3053,7 +3053,7 @@ CHECKSUMS
   gitlab-housekeeper (0.1.0)
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
-  gitlab-kas-grpc (19.3.0.pre.rc4) sha256=f039c5a603f7e356183906ccabf09e7beec5c6e5c68af3e9df99b7d63a924feb
+  gitlab-kas-grpc (19.4.0.pre.rc1) sha256=ebe94f6a8611d43ab1f09967bb997185a1745716caa429a4f359387a79ec8a91
   gitlab-labkit (4.4.0) sha256=a717fa91723480a8bb1dfb916a1d27b98109103188643ce1ef295c6fc558063f
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-lookbook (2.3.14) sha256=146e78e7e72c3ce58b6e71400276af9ce2929c8eff4965bc2d2a70d527d2a0c7

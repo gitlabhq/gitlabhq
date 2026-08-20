@@ -6,13 +6,15 @@ import {
   TREE_PAGE_LIMIT,
   COMMIT_BATCH_SIZE,
   GITALY_UNAVAILABLE_CODE,
+  LOCK_UPDATED_EVENT,
   i18n,
 } from '../constants';
+import eventHub from '../event_hub';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import { readmeFile } from '../utils/readme';
-import { loadCommits, isRequested, resetRequestedCommits } from '../commits_service';
+import { loadCommits, reloadCommits, isRequested, resetRequestedCommits } from '../commits_service';
 import FilePreview from './preview/index.vue';
 import FileTable from './table/index.vue';
 
@@ -90,11 +92,16 @@ export default {
     },
   },
   mounted() {
+    eventHub.$on(LOCK_UPDATED_EVENT, this.refreshCommitData);
+
     // We need to wait for `ref` and `projectPath` to be set
     this.$nextTick(() => {
       resetRequestedCommits();
       this.fetchFiles();
     });
+  },
+  beforeDestroy() {
+    eventHub.$off(LOCK_UPDATED_EVENT, this.refreshCommitData);
   },
   methods: {
     fetchFiles() {
@@ -181,6 +188,13 @@ export default {
     },
     setCommitData(data) {
       this.commits = this.commits.concat(data);
+    },
+    async refreshCommitData() {
+      if (window.gon?.show_commit_columns === false) {
+        return;
+      }
+
+      this.commits = await reloadCommits(this.projectPath, this.path, this.ref, this.refType);
     },
     handleShowMore() {
       this.clickedShowMore = true;
