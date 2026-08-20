@@ -7,6 +7,8 @@ module WorkItems
     # Subscribers get no per-item authorization (see Subscriptions::WorkItems::NamespaceWorkItemChanges), so filtering
     # happens here - and only on the item itself; per-member restrictions are out of reach.
     class BroadcastService
+      include Gitlab::Utils::StrongMemoize
+
       RELEVANT_CHANGES = %w[
         assignees
         confidential
@@ -57,6 +59,7 @@ module WorkItems
         relevant_change? &&
           Feature.enabled?(:work_items_realtime_broadcast, root_ancestor) &&
           (!work_item.confidential? || confidential_flip?) &&
+          !rate_limit_exhausted? &&
           subject_level_readable?
       end
 
@@ -77,6 +80,14 @@ module WorkItems
       # its own chain, so sibling namespaces keep broadcasting. Shared ancestors still share their budget.
       def rate_limited?(namespace)
         Gitlab::ApplicationRateLimiter.throttled?(:namespace_work_item_changes_broadcast, scope: namespace)
+      end
+
+      # A storm is where the readability queries below hurt most, so bail before them once nothing can be delivered.
+      # .peek leaves the budget untouched, keeping it a budget of deliveries rather than of attempts.
+      def rate_limit_exhausted?
+        target_namespaces.all? do |namespace|
+          Gitlab::ApplicationRateLimiter.peek(:namespace_work_item_changes_broadcast, scope: namespace)
+        end
       end
 
       # Subject-level only: this runs once per event, so per-member conditions cannot be answered. PRIVATE issues need
@@ -100,30 +111,35 @@ module WorkItems
       # `global_actions` walks the superclass chain only, so container rules behind IssuablePolicy's `delegate` are
       # excluded. That is required: ProjectPolicy's `anonymous & ~public_project` would veto every private project.
       # Evaluating with no user leaves subject-only rules exact and user-dependent ones fail-closed.
+      #
+      # Cached because the surviving rules turn on the work item type, whose resolution costs more than the rest of
+      # this class: the verdict holds for every item of that type in the same container.
       def prevented_by_work_item_policy?
-        policy = Ability.policy_for(nil, work_item)
+        Gitlab::SafeRequestStore.fetch(
+          [:namespace_work_item_changes_policy, work_item.work_item_type_id, work_item.namespace_id]
+        ) do
+          policy = Ability.policy_for(nil, work_item)
 
-        policy.class.global_actions.any? do |rule_action, rule, exceptions|
-          rule_action == :prevent && exceptions.blank? && rule.pass?(policy)
+          policy.class.global_actions.any? do |rule_action, rule, exceptions|
+            rule_action == :prevent && exceptions.blank? && rule.pass?(policy)
+          end
         end
       end
 
+      # Starts from a relation rather than from `work_item.namespace`, so the hierarchy costs one query instead of a
+      # namespace load plus a query. Starting on Namespace also keeps Group ancestors, which the STI scope would drop.
+      # select: to_gid needs id + type, and parent_id identifies the root without reading traversal_ids off the item.
       def target_namespaces
-        # skope: the default STI scope would drop Group ancestors; select: to_gid needs id + type.
-        @target_namespaces ||=
-          Gitlab::SafeRequestStore.fetch([:namespace_work_item_changes_targets, work_item.namespace_id]) do
-            work_item.namespace.self_and_ancestors(skope: ::Namespace).select(:id, :type).to_a
-          end
+        Gitlab::SafeRequestStore.fetch([:namespace_work_item_changes_targets, work_item.namespace_id]) do
+          ::Namespace.id_in(work_item.namespace_id).self_and_ancestors.select(:id, :type, :parent_id).to_a
+        end
       end
+      strong_memoize_attr :target_namespaces
 
       def root_ancestor
-        @root_ancestor ||= target_namespaces.find { |namespace| namespace.id == root_ancestor_id } ||
-          work_item.namespace.root_ancestor
+        target_namespaces.find { |namespace| namespace.parent_id.nil? } || work_item.namespace.root_ancestor
       end
-
-      def root_ancestor_id
-        work_item.namespace.traversal_ids.first
-      end
+      strong_memoize_attr :root_ancestor
     end
   end
 end

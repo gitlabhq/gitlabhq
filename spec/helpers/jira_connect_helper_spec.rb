@@ -100,14 +100,14 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
       end
 
       it 'assignes public_key_storage_enabled to false' do
-        expect(subject[:public_key_storage_enabled]).to eq(false)
+        expect(subject[:public_key_storage_enabled]).to be(false)
       end
 
       context 'when public_key_storage is enabled' do
         let(:enable_public_keys_storage) { true }
 
         it 'assignes public_key_storage_enabled to true' do
-          expect(subject[:public_key_storage_enabled]).to eq(true)
+          expect(subject[:public_key_storage_enabled]).to be(true)
         end
       end
     end

@@ -39,13 +39,13 @@ RSpec.describe Admin::IdentitiesHelper do
   describe '#identity_cells_to_render?' do
     context 'without identities' do
       it 'returns false' do
-        expect(helper.identity_cells_to_render?([], user)).to eq false
+        expect(helper.identity_cells_to_render?([], user)).to be false
       end
     end
 
     context 'with identities' do
       it 'returns true' do
-        expect(helper.identity_cells_to_render?(identity, user)).to eq true
+        expect(helper.identity_cells_to_render?(identity, user)).to be true
       end
     end
   end

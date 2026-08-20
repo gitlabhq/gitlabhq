@@ -248,7 +248,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
   describe '#provider_has_icon?' do
     it 'returns true for defined providers' do
-      expect(helper.provider_has_icon?(described_class::PROVIDERS_WITH_ICONS.sample)).to eq true
+      expect(helper.provider_has_icon?(described_class::PROVIDERS_WITH_ICONS.sample)).to be true
     end
 
     it 'returns false for undefined providers' do

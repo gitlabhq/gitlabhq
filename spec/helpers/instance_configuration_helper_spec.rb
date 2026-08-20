@@ -31,8 +31,8 @@ RSpec.describe InstanceConfigurationHelper do
     end
 
     it 'boolean are valid values to display' do
-      expect(helper.instance_configuration_cell_html(true)).to eq(true)
-      expect(helper.instance_configuration_cell_html(false)).to eq(false)
+      expect(helper.instance_configuration_cell_html(true)).to be(true)
+      expect(helper.instance_configuration_cell_html(false)).to be(false)
     end
   end
 

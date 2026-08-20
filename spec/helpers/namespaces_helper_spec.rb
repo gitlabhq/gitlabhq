@@ -229,13 +229,13 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
   describe '#cascading_namespace_setting_locked?' do
     context 'when `group` argument is `nil`' do
       it 'returns `false`' do
-        expect(helper.cascading_namespace_setting_locked?(attribute, nil)).to eq(false)
+        expect(helper.cascading_namespace_setting_locked?(attribute, nil)).to be(false)
       end
     end
 
     context 'when `*_locked?` method does not exist' do
       it 'returns `false`' do
-        expect(helper.cascading_namespace_setting_locked?(:attribute_that_does_not_exist, admin_group)).to eq(false)
+        expect(helper.cascading_namespace_setting_locked?(:attribute_that_does_not_exist, admin_group)).to be(false)
       end
     end
 

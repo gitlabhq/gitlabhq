@@ -168,11 +168,11 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       it 'allows the admin to impersonate a user' do
-        expect(helper.impersonation_enabled?).to eq(true)
+        expect(helper.impersonation_enabled?).to be(true)
       end
 
       it 'allows impersonation tokens' do
-        expect(helper.impersonation_tokens_enabled?).to eq(true)
+        expect(helper.impersonation_tokens_enabled?).to be(true)
       end
     end
   end
@@ -350,13 +350,13 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     subject { helper.can_force_email_confirmation?(user) }
 
     context 'for a user that is already confirmed' do
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'for a user that is not confirmed' do
       let(:user) { create(:user, :unconfirmed) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

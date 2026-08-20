@@ -35,14 +35,14 @@ RSpec.describe Projects::TerraformHelper do
     end
 
     it 'indicates the user is a terraform admin' do
-      expect(subject[:terraform_admin]).to eq(true)
+      expect(subject[:terraform_admin]).to be(true)
     end
 
     context 'when current_user is not a terraform admin' do
       let(:current_user) { create(:user) }
 
       it 'indicates the user is not an admin' do
-        expect(subject[:terraform_admin]).to eq(false)
+        expect(subject[:terraform_admin]).to be(false)
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Projects::TerraformHelper do
       it 'returns false' do
         allow(helper).to receive(:show_period_in_terraform_state_name_alert_callout?).and_return(true)
 
-        expect(helper.show_period_in_terraform_state_name_alert?(project)).to eq(false)
+        expect(helper.show_period_in_terraform_state_name_alert?(project)).to be(false)
       end
     end
 
@@ -75,7 +75,7 @@ RSpec.describe Projects::TerraformHelper do
         it 'returns true' do
           allow(project.terraform_states).to receive(:exists?).and_return(true)
 
-          expect(helper.show_period_in_terraform_state_name_alert?(project)).to eq(true)
+          expect(helper.show_period_in_terraform_state_name_alert?(project)).to be(true)
         end
       end
 
@@ -83,7 +83,7 @@ RSpec.describe Projects::TerraformHelper do
         it 'returns false' do
           allow(project.terraform_states).to receive(:exists?).and_return(false)
 
-          expect(helper.show_period_in_terraform_state_name_alert?(project)).to eq(false)
+          expect(helper.show_period_in_terraform_state_name_alert?(project)).to be(false)
         end
       end
     end

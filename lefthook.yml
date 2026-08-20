@@ -192,12 +192,12 @@ pre-push:
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{haml,rb,erb,builder}'
       # Detects unused methods, scopes, constants, delegations, and attributes
-      # Set UNUSED_CODE_LINTER=keela to use Keela instead of the legacy script
+      # Set UNUSED_CODE_LINTER=legacy to use the legacy script instead of Keela
       run: |
-        if [ "$UNUSED_CODE_LINTER" = "keela" ]; then
-          bundle exec keela --quiet
-        else
+        if [ "$UNUSED_CODE_LINTER" = "legacy" ]; then
           scripts/lint/unused_methods.rb {files}
+        else
+          bundle exec keela --quiet
         fi
     validate-fast-spec-helper:
       tags: backend test

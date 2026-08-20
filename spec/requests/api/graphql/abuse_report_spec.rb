@@ -37,4 +37,16 @@ RSpec.describe 'Querying an Abuse Report', feature_category: :insider_threat do
       expect(abuse_report_data).to be_nil
     end
   end
+
+  context 'when the report belongs to another organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:abuse_report) do
+      create(:abuse_report, reporter: create(:user, organization: other_organization),
+        organization: other_organization)
+    end
+
+    it 'returns nil' do
+      expect(abuse_report_data).to be_nil
+    end
+  end
 end

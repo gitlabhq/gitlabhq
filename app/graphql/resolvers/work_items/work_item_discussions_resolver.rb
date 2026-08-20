@@ -25,6 +25,19 @@ module Resolvers
 
       type ::Types::Notes::DiscussionType.connection_type, null: true
 
+      def self.calculate_ext_conn_complexity
+        true
+      end
+
+      def self.complexity_multiplier(_args)
+        0.05
+      end
+
+      def self.nodes_limit(args, field, **kwargs)
+        page_size = field&.max_page_size || kwargs[:context]&.schema&.default_max_page_size
+        [args[:first], page_size].compact.min
+      end
+
       def resolve(**args)
         finder = Issuable::DiscussionsListService.new(current_user, work_item, params(args))
 
@@ -36,14 +49,6 @@ module Resolvers
           finder.paginator.cursor_for_next_page,
           *finder.execute
         )
-      end
-
-      def self.calculate_ext_conn_complexity
-        true
-      end
-
-      def self.complexity_multiplier(_args)
-        0.05
       end
 
       private
@@ -60,11 +65,6 @@ module Resolvers
           cursor: args[:after],
           per_page: self.class.nodes_limit(args, @field, context: context)
         }
-      end
-
-      def self.nodes_limit(args, field, **kwargs)
-        page_size = field&.max_page_size || kwargs[:context]&.schema&.default_max_page_size
-        [args[:first], page_size].compact.min
       end
     end
   end

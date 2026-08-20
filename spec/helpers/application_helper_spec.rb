@@ -90,7 +90,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns true' do
-        expect(helper.admin_section?).to eq(true)
+        expect(helper.admin_section?).to be(true)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns true' do
-        expect(helper.admin_section?).to eq(false)
+        expect(helper.admin_section?).to be(false)
       end
     end
   end
@@ -171,7 +171,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       timeago_element = element(short_format: 'short')
 
       expect(timeago_element.attr('class')).to eq 'js-short-timeago'
-      expect(timeago_element.next_element).to eq nil
+      expect(timeago_element.next_element).to be_nil
     end
 
     it 'returns blank if time is nil' do
@@ -192,7 +192,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     context 'when editable object was not edited' do
       let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
 
-      it { expect(helper.edited_time_ago_with_tooltip(merge_request)).to eq(nil) }
+      it { expect(helper.edited_time_ago_with_tooltip(merge_request)).to be_nil }
     end
 
     context 'when editable object was edited' do
@@ -207,7 +207,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
   describe '#active_when' do
     it { expect(helper.active_when(true)).to eq('active') }
-    it { expect(helper.active_when(false)).to eq(nil) }
+    it { expect(helper.active_when(false)).to be_nil }
   end
 
   describe '#linkedin_name' do
@@ -458,8 +458,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     context 'when browser or platform are unknown' do
       it 'returns map containing JS flags representing falllbacks' do
         flags_list = helper.client_js_flags
-        expect(flags_list[:isGeneric]).to eq(true)
-        expect(flags_list[:isOther]).to eq(true)
+        expect(flags_list[:isGeneric]).to be(true)
+        expect(flags_list[:isOther]).to be(true)
       end
     end
 
@@ -470,8 +470,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
       it 'returns map containing JS flags representing client browser and platform' do
         flags_list = helper.client_js_flags
-        expect(flags_list[:isChrome]).to eq(true)
-        expect(flags_list[:isLinux]).to eq(true)
+        expect(flags_list[:isChrome]).to be(true)
+        expect(flags_list[:isLinux]).to be(true)
       end
     end
   end
@@ -987,7 +987,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns true' do
-        expect(helper.collapsed_super_sidebar?).to eq(true)
+        expect(helper.collapsed_super_sidebar?).to be(true)
       end
     end
 
@@ -997,7 +997,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       it 'returns false' do
-        expect(helper.collapsed_super_sidebar?).to eq(false)
+        expect(helper.collapsed_super_sidebar?).to be(false)
       end
     end
   end

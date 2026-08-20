@@ -36,7 +36,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       # RADME.md is not a valid file.
       button = helper.edit_blob_button(project, 'refs/heads/master', 'RADME.md')
 
-      expect(button).to eq(nil)
+      expect(button).to be_nil
     end
 
     it 'uses the passed blob instead retrieve from repository' do

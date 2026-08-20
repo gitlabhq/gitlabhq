@@ -191,19 +191,19 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       it "returns true if user's selected light mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT)
 
-        expect(helper.user_application_light_mode?).to eq true
+        expect(helper.user_application_light_mode?).to be true
       end
 
       it "returns false if user's selected dark mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_DARK)
 
-        expect(helper.user_application_light_mode?).to eq false
+        expect(helper.user_application_light_mode?).to be false
       end
 
       it "returns false if user's selected auto mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_SYSTEM)
 
-        expect(helper.user_application_light_mode?).to eq false
+        expect(helper.user_application_light_mode?).to be false
       end
     end
 
@@ -211,7 +211,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       it 'returns false' do
         stub_user
 
-        expect(helper.user_application_light_mode?).to eq false
+        expect(helper.user_application_light_mode?).to be false
       end
     end
   end
@@ -221,19 +221,19 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       it "returns true if user's selected dark mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_DARK)
 
-        expect(helper.user_application_dark_mode?).to eq true
+        expect(helper.user_application_dark_mode?).to be true
       end
 
       it "returns false if user's selected light mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT)
 
-        expect(helper.user_application_dark_mode?).to eq false
+        expect(helper.user_application_dark_mode?).to be false
       end
 
       it "returns false if user's selected auto mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_SYSTEM)
 
-        expect(helper.user_application_dark_mode?).to eq false
+        expect(helper.user_application_dark_mode?).to be false
       end
     end
 
@@ -241,7 +241,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       it 'returns false' do
         stub_user
 
-        expect(helper.user_application_dark_mode?).to eq false
+        expect(helper.user_application_dark_mode?).to be false
       end
     end
   end
@@ -251,19 +251,19 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       it "returns true if user's selected auto mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_SYSTEM)
 
-        expect(helper.user_application_system_mode?).to eq true
+        expect(helper.user_application_system_mode?).to be true
       end
 
       it "returns false if user's selected light mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_LIGHT)
 
-        expect(helper.user_application_system_mode?).to eq false
+        expect(helper.user_application_system_mode?).to be false
       end
 
       it "returns false if user's selected dark mode" do
         stub_user(color_mode_id: Gitlab::ColorModes::APPLICATION_DARK)
 
-        expect(helper.user_application_system_mode?).to eq false
+        expect(helper.user_application_system_mode?).to be false
       end
     end
 
@@ -271,7 +271,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       it 'returns true' do
         stub_user
 
-        expect(helper.user_application_system_mode?).to eq true
+        expect(helper.user_application_system_mode?).to be true
       end
     end
   end

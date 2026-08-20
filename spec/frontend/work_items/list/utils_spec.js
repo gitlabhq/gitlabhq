@@ -443,6 +443,25 @@ describe('getSavedViewFilterTokens', () => {
     );
   });
 
+  describe('date filters', () => {
+    it.each([
+      ['closedBefore', 'closed', '<'],
+      ['createdAfter', 'created', '≥'],
+      ['dueBefore', 'due-date', '<'],
+      ['updatedAfter', 'updated', '≥'],
+    ])('strips the time component from %s', (apiParamKey, tokenType, operator) => {
+      expect(getSavedViewFilterTokens({ [apiParamKey]: '2025-06-15T23:30:00.000+09:00' })).toEqual([
+        { type: tokenType, value: { data: '2025-06-15', operator } },
+      ]);
+    });
+
+    it('leaves a plain YYYY-MM-DD value unchanged', () => {
+      expect(getSavedViewFilterTokens({ createdAfter: '2025-06-15' })).toEqual([
+        { type: 'created', value: { data: '2025-06-15', operator: '≥' } },
+      ]);
+    });
+  });
+
   describe('iteration cadence', () => {
     it('combines the iteration wildcard and cadence into a single token', () => {
       expect(getSavedViewFilterTokens(savedViewFiltersWithIterationCadence)).toEqual(

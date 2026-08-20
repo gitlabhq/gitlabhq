@@ -154,7 +154,14 @@ module SidebarsHelper
               context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
               Sidebars::Search::Panel.new(context)
             when 'admin'
-              Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+              Sidebars::Admin::Panel.new(
+                Sidebars::Context.new(
+                  current_user: user,
+                  container: nil,
+                  current_organization: Current.organization,
+                  **context_adds
+                )
+              )
             when 'organization_admin'
               Sidebars::Admin::Organizations::Panel.new(
                 Sidebars::Context.new(

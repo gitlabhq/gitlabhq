@@ -1,3 +1,5 @@
 query {
-  project @persist
+  blog(title: "A history of GraphQL") @persist {
+    title
+  }
 }

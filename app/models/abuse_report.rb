@@ -155,13 +155,13 @@ class AbuseReport < ApplicationRecord
   end
 
   def past_closed_reports_for_user
-    user.abuse_reports.closed.id_not_in(id)
+    same_organization_reports_for_user.closed.id_not_in(id)
   end
 
   def similar_open_reports_for_user
     return AbuseReport.none unless open?
 
-    user.abuse_reports.open.by_category(category).id_not_in(id).includes(:reporter)
+    same_organization_reports_for_user.open.by_category(category).id_not_in(id).includes(:reporter)
   end
 
   def uploads_sharding_key
@@ -169,6 +169,14 @@ class AbuseReport < ApplicationRecord
   end
 
   private
+
+  # The reported user is not confined to one organization -- a report's organization follows its
+  # reporter -- so this must stay scoped to this report's own organization. Unscoped, it would
+  # surface other organizations' reports on the admin details page, and
+  # ModerateUserService#close_similar_open_reports would close them.
+  def same_organization_reports_for_user
+    user.abuse_reports.in_organization(organization_id)
+  end
 
   def reported_project
     Project.find_by_full_path(route_hash.values_at(:namespace_id, :project_id).join('/'))

@@ -411,7 +411,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       create(:push_event_payload, event: event, ref_count: 2, ref: nil, ref_type: :tag, commit_count: 0,
         action: :pushed)
 
-      expect(helper.event_feed_url(event)).to eq(nil)
+      expect(helper.event_feed_url(event)).to be_nil
     end
 
     it 'returns wiki page url' do

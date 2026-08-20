@@ -28,7 +28,7 @@ RSpec.describe NavHelper, feature_category: :navigation do
 
       subject { helper.page_has_markdown? }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

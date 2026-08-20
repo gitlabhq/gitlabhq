@@ -145,8 +145,29 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: 
     end
   end
 
+  context 'when the project sits in a personal namespace' do
+    let_it_be(:personal_project) { create(:project) }
+    let_it_be(:work_item) { create(:work_item, project: personal_project) }
+
+    it 'broadcasts to the project namespace and the user namespace', :aggregate_failures do
+      execute
+
+      [personal_project.project_namespace, personal_project.namespace].each do |namespace|
+        expect(GitlabSchema.subscriptions).to have_received(:trigger).with(
+          'namespaceWorkItemChanges',
+          { namespace_id: namespace.to_gid },
+          { work_item_id: work_item.id, action: action }
+        )
+      end
+    end
+  end
+
   context 'when a namespace is rate limited' do
     before do
+      allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
+        .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
+        .with(:namespace_work_item_changes_broadcast, scope: group).and_return(true)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
@@ -171,11 +192,24 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: 
 
   context 'when every namespace is rate limited' do
     before do
-      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(true)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
     end
 
     it_behaves_like 'does not broadcast'
+
+    it 'skips the readability queries' do
+      expect(work_item).not_to receive(:hidden?)
+
+      execute
+    end
+
+    it 'leaves the budget untouched' do
+      execute
+
+      expect(Gitlab::ApplicationRateLimiter).not_to have_received(:throttled?)
+    end
   end
 
   describe 'work items a namespace member cannot read' do
@@ -218,6 +252,26 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: 
       end
 
       it_behaves_like 'a change that is never broadcast'
+    end
+  end
+
+  describe 'policy evaluation' do
+    let_it_be(:sibling_work_item) { create(:work_item, project: project) }
+
+    it 'evaluates the policy once per work item type and container in a request' do
+      expect(Ability).to receive(:policy_for).with(nil, anything).once.and_call_original
+
+      Gitlab::SafeRequestStore.ensure_request_store do
+        described_class.new(work_item, action: :created).execute
+        described_class.new(sibling_work_item, action: :created).execute
+      end
+    end
+
+    it 'evaluates the policy per work item outside a request' do
+      expect(Ability).to receive(:policy_for).with(nil, anything).twice.and_call_original
+
+      described_class.new(work_item, action: :created).execute
+      described_class.new(sibling_work_item, action: :created).execute
     end
   end
 

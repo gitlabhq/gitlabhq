@@ -46,7 +46,7 @@ RSpec.describe StatAnchorsHelper, feature_category: :groups_and_projects do
       let(:anchor) { anchor_klass.new(false, nil, nil, nil, nil, true) }
 
       it 'returns the itemprop attributes' do
-        expect(subject[:itemprop]).to eq true
+        expect(subject[:itemprop]).to be true
       end
     end
 

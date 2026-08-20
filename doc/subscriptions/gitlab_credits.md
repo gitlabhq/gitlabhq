@@ -345,6 +345,8 @@ because one or more LLM calls are made to answer the question.
 One conversation window can include multiple messages, and so multiple billable requests.
 The pricing depends on the selected model.
 
+The GitLab Secrets Manager also consumes Credits, but with [a different consumption model](../ci/secrets/secrets_manager/secrets_manager_billing.md).
+
 ## GitLab Credits dashboard
 
 {{< details >}}
@@ -423,7 +425,9 @@ The dashboard displays the following information:
 - **Usage by product**: Number of credits used and percentage of total credits for GitLab Duo Agent Platform and Secrets Manager
 
 > [!note]
-> While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta, GitLab does not collect usage events. Secrets Manager appears in the Credits dashboard but displays no usage data until the beta period ends.
+> While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta,
+> GitLab does not bill for usage. Secrets Manager appears in the Credits dashboard
+> but displays no usage data until the beta period ends.
 
 ### View the GitLab Credits dashboard
 

@@ -23,7 +23,10 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CLOSED,
+  TOKEN_TYPE_CREATED,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_DUE_DATE,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_ITERATION,
@@ -37,6 +40,7 @@ import {
   TOKEN_TYPE_STATE,
   TOKEN_TYPE_PARENT,
   TOKEN_TYPE_STATUS,
+  TOKEN_TYPE_UPDATED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -506,6 +510,13 @@ const convertToTokenValue = (token, baseValue) => {
       return camelCase(baseValue);
     case TOKEN_TYPE_STATUS:
       return baseValue.name;
+    case TOKEN_TYPE_CLOSED:
+    case TOKEN_TYPE_CREATED:
+    case TOKEN_TYPE_DUE_DATE:
+    case TOKEN_TYPE_UPDATED:
+      // Saved views round-trip dates through a GraphQL Time arg, so they come back as
+      // full ISO strings. Slice rather than parse: parsing would shift the calendar day.
+      return baseValue.slice(0, 10);
     default:
       if (isWildcardValue(token, capitalize(baseValue))) {
         return capitalize(baseValue);

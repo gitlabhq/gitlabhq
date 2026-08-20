@@ -438,8 +438,8 @@ RSpec.describe Gitlab::Graphql::Queries do
 
       it_behaves_like 'a valid GraphQL query for the blog schema'
 
-      it 'is tagged as a client query' do
-        expect(subject.validate(schema).first).to eq :client_query
+      it 'is not tagged as a client query' do
+        expect(subject.validate(schema).first).not_to eq :client_query
       end
     end
 

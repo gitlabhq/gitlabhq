@@ -458,7 +458,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let(:user) { nil }
 
       it 'returns nil' do
-        expect(helper.last_push_event).to eq(nil)
+        expect(helper.last_push_event).to be_nil
       end
     end
 
@@ -488,19 +488,19 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#any_projects?' do
     it 'returns true when projects will be returned' do
-      expect(helper.any_projects?(Project.all)).to eq(true)
+      expect(helper.any_projects?(Project.all)).to be(true)
     end
 
     it 'returns false when no projects will be returned' do
-      expect(helper.any_projects?(Project.none)).to eq(false)
+      expect(helper.any_projects?(Project.none)).to be(false)
     end
 
     it 'returns true when using a non-empty Array' do
-      expect(helper.any_projects?([project])).to eq(true)
+      expect(helper.any_projects?([project])).to be(true)
     end
 
     it 'returns false when using an empty Array' do
-      expect(helper.any_projects?([])).to eq(false)
+      expect(helper.any_projects?([])).to be(false)
     end
 
     it 'only executes a single query when a LIMIT is applied' do
@@ -564,13 +564,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns false if the visitor is not using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(false)
+        expect(helper.show_xcode_link?(project)).to be(false)
       end
 
       it 'returns true if the visitor is using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(true)
+        expect(helper.show_xcode_link?(project)).to be(true)
       end
     end
 
@@ -582,13 +582,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns false if the visitor is not using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(false)
+        expect(helper.show_xcode_link?(project)).to be(false)
       end
 
       it 'returns false if the visitor is using macos' do
         allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
 
-        expect(helper.show_xcode_link?(project)).to eq(false)
+        expect(helper.show_xcode_link?(project)).to be(false)
       end
     end
   end

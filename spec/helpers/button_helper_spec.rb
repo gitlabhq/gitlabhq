@@ -113,7 +113,7 @@ RSpec.describe ButtonHelper do
       it 'there is no warning on the dropdown description' do
         description = element.search('.dropdown-menu-inner-content').first
 
-        expect(description).to eq nil
+        expect(description).to be_nil
       end
     end
   end
@@ -140,9 +140,9 @@ RSpec.describe ButtonHelper do
 
     it 'only shows the title of any of the clone buttons when append_link is false' do
       expect(http_button_element.text).to eq('HTTP')
-      expect(http_button_element.search('.dropdown-menu-inner-content').first).to eq(nil)
+      expect(http_button_element.search('.dropdown-menu-inner-content').first).to be_nil
       expect(ssh_button_element.text).to eq('SSH')
-      expect(ssh_button_element.search('.dropdown-menu-inner-content').first).to eq(nil)
+      expect(ssh_button_element.search('.dropdown-menu-inner-content').first).to be_nil
     end
   end
 
@@ -174,8 +174,8 @@ RSpec.describe ButtonHelper do
           expect(element.attr('data-toggle')).to eq('tooltip')
           expect(element.attr('data-placement')).to eq('bottom')
           expect(element.attr('data-container')).to eq('body')
-          expect(element.attr('data-clipboard-text')).to eq(nil)
-          expect(element.attr('itemprop')).to eq(nil)
+          expect(element.attr('data-clipboard-text')).to be_nil
+          expect(element.attr('itemprop')).to be_nil
           expect(element.inner_text.strip).to eq('')
 
           expect(element.to_html).to match('svg#copy-to-clipboard')
@@ -207,9 +207,9 @@ RSpec.describe ButtonHelper do
 
     context 'with `hide_tooltip` attribute provided' do
       it 'shows copy to clipboard button without tooltip support' do
-        expect(element(hide_tooltip: true).attr('data-placement')).to eq(nil)
-        expect(element(hide_tooltip: true).attr('data-toggle')).to eq(nil)
-        expect(element(hide_tooltip: true).attr('data-container')).to eq(nil)
+        expect(element(hide_tooltip: true).attr('data-placement')).to be_nil
+        expect(element(hide_tooltip: true).attr('data-toggle')).to be_nil
+        expect(element(hide_tooltip: true).attr('data-container')).to be_nil
       end
     end
 

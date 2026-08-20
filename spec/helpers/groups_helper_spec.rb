@@ -629,7 +629,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     context 'with nil group' do
       let(:group) { nil }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with current_user who has no permissions' do
@@ -637,7 +637,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         allow(helper).to receive(:current_user).and_return(create(:user))
       end
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'with current_user who has permissions' do
@@ -655,13 +655,13 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     let_it_be(:group, freeze: false) { create(:group) }
 
     it 'returns true for a root group' do
-      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(group)).to eq(true)
+      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(group)).to be(true)
     end
 
     it 'returns false for a subgroup' do
       subgroup = create(:group, parent: group)
 
-      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(subgroup)).to eq(false)
+      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(subgroup)).to be(false)
     end
   end
 

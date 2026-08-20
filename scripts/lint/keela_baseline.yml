@@ -238,8 +238,6 @@ constants:
   - CAP_PATCH
   - CAP_DELETE
   - CAP_LIST
-  ee/lib/secrets_management/entitlement.rb:
-  - GRACE_DAYS
   ee/lib/secrets_management/secrets_manager_client.rb:
   - KV_VALUE_FIELD
   ee/lib/security/scan_result_policies/policy_violation_comment.rb:
@@ -361,6 +359,11 @@ constants:
   - SAVED_VIEW_VIEW
   lib/kramdown/parser/atlassian_document_format.rb:
   - CHILD_BLOCK_NODES
+  lib/observability/o11y_bff_session.rb:
+  - O11Y_ROLE_CLAIM
+  - O11Y_INSTANCE_CLAIM
+  - O11Y_ROLE_CLAIM
+  - O11Y_INSTANCE_CLAIM
   lib/tasks/gitlab/permissions/validate_task.rb:
   - JSON_SCHEMA_FILE
 delegations:
@@ -574,6 +577,7 @@ scopes:
   app/models/group_group_link.rb:
   - groups_having_access_to
   app/models/member.rb:
+  - for_self_and_descendants
   - excluding_users
   - security_managers
   app/models/merge_request.rb:
@@ -663,6 +667,8 @@ scopes:
   - compliance_framework_id_not_in
   ee/app/models/ee/project_group_link.rb:
   - not_in_group
+  ee/app/models/ee/project_setting.rb:
+  - with_duo_vulnerability_context_analysis_enabled
   ee/app/models/ee/vulnerability.rb:
   - with_findings_scanner_identifiers_and_notes
   - by_primary_identifier_ids
@@ -687,7 +693,6 @@ scopes:
   - by_workspace_ids
   ee/app/models/sbom/occurrence.rb:
   - filter_by_non_component_version_ids
-  - for_tracked_context
   ee/app/models/search/zoekt/index.rb:
   - pre_ready
   - preload_zoekt_enabled_namespace_and_namespace

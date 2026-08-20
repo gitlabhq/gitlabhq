@@ -95,8 +95,15 @@ module Gitlab
         end
 
         def print_field(field, indent: '')
+          # `@persist` is a cache-persistence hint, not a client-only marker: the persist
+          # link strips the directive and still sends the field to the server. Drop the
+          # directive but keep the field, so it is validated like any other.
+          if field.directives.any? { |d| d.name == 'persist' }
+            field = field.merge(directives: field.directives.reject { |d| d.name == 'persist' })
+          end
+
           if skips? &&
-              (field.directives.any? { |d| d.name == 'client' || d.name == 'persist' } || field.name == '__persist')
+              (field.directives.any? { |d| d.name == 'client' } || field.name == '__persist')
             skipped = self.class.new(false)
             skipped.print(field)
             @skipped_fragments |= skipped.used_fragments

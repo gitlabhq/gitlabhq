@@ -476,10 +476,10 @@ RSpec.describe EmailsHelper, feature_category: :shared do
           create :appearance, header_message: '', footer_message: '', email_header_and_footer_enabled: true
 
           aggregate_failures do
-            expect(html_header_message).to eq(nil)
-            expect(html_footer_message).to eq(nil)
-            expect(text_header_message).to eq(nil)
-            expect(text_footer_message).to eq(nil)
+            expect(html_header_message).to be_nil
+            expect(html_footer_message).to be_nil
+            expect(text_header_message).to be_nil
+            expect(text_footer_message).to be_nil
           end
         end
       end
@@ -489,10 +489,10 @@ RSpec.describe EmailsHelper, feature_category: :shared do
           create :appearance, header_message: nil, footer_message: nil, email_header_and_footer_enabled: true
 
           aggregate_failures do
-            expect(html_header_message).to eq(nil)
-            expect(html_footer_message).to eq(nil)
-            expect(text_header_message).to eq(nil)
-            expect(text_footer_message).to eq(nil)
+            expect(html_header_message).to be_nil
+            expect(html_footer_message).to be_nil
+            expect(text_header_message).to be_nil
+            expect(text_footer_message).to be_nil
           end
         end
       end
@@ -503,10 +503,10 @@ RSpec.describe EmailsHelper, feature_category: :shared do
         create :appearance, header_message: 'Foo', footer_message: 'Bar', email_header_and_footer_enabled: false
 
         aggregate_failures do
-          expect(html_header_message).to eq(nil)
-          expect(html_footer_message).to eq(nil)
-          expect(text_header_message).to eq(nil)
-          expect(text_footer_message).to eq(nil)
+          expect(html_header_message).to be_nil
+          expect(html_footer_message).to be_nil
+          expect(text_header_message).to be_nil
+          expect(text_footer_message).to be_nil
         end
       end
     end

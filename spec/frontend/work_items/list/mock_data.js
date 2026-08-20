@@ -383,56 +383,56 @@ export const savedViewFilterTokens = [
   {
     type: 'closed',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '<',
     },
   },
   {
     type: 'closed',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '≥',
     },
   },
   {
     type: 'due-date',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '<',
     },
   },
   {
     type: 'due-date',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '≥',
     },
   },
   {
     type: 'created',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '<',
     },
   },
   {
     type: 'created',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '≥',
     },
   },
   {
     type: 'updated',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '<',
     },
   },
   {
     type: 'updated',
     value: {
-      data: '2025-01-01T00:00:00.000+00:00',
+      data: '2025-01-01',
       operator: '≥',
     },
   },

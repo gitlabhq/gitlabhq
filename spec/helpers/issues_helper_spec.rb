@@ -250,14 +250,14 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         assign(:project, project)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
 
       context 'when block_issue_repositioning feature flag is enabled' do
         before do
           stub_feature_flags(block_issue_repositioning: group)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -266,14 +266,14 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         assign(:group, group)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
 
       context 'when block_issue_repositioning feature flag is enabled' do
         before do
           stub_feature_flags(block_issue_repositioning: group)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
   end
@@ -284,13 +284,13 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
       let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
 
       it 'returns `true`' do
-        expect(helper.issue_hidden?(hidden_issue)).to eq(true)
+        expect(helper.issue_hidden?(hidden_issue)).to be(true)
       end
     end
 
     context 'when issue is not hidden' do
       it 'returns `false`' do
-        expect(helper.issue_hidden?(issue)).to eq(false)
+        expect(helper.issue_hidden?(issue)).to be(false)
       end
     end
   end

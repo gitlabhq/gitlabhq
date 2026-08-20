@@ -8,6 +8,14 @@ RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :inst
     create(:abuse_report, user: abuse_report.user, category: abuse_report.category)
   end
 
+  # Same reported user and category, but a different organization. Closing the report under
+  # moderation must not reach across the organization boundary to close this one.
+  let_it_be(:other_organization) { create(:organization) }
+  let_it_be_with_reload(:other_org_similar_abuse_report) do
+    create(:abuse_report, user: abuse_report.user, category: abuse_report.category,
+      reporter: create(:user, organization: other_organization), organization: other_organization)
+  end
+
   let(:action) { 'ban_user' }
   let(:close) { true }
   let(:reason) { 'spam' }
@@ -34,6 +42,10 @@ RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :inst
       context 'when similar open reports for the user exist' do
         it 'closes the similar report' do
           expect { subject }.to change { similar_abuse_report.reload.closed? }.from(false).to(true)
+        end
+
+        it 'does not close a similar report belonging to another organization' do
+          expect { subject }.not_to change { other_org_similar_abuse_report.reload.closed? }
         end
       end
     end
