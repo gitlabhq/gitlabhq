@@ -44,7 +44,7 @@ RSpec.describe Gitlab::GithubGistsImport::Status, :clean_gitlab_redis_cache, fea
     end
 
     it 'checks if status is started' do
-      expect(import_status.started?).to eq(true)
+      expect(import_status.started?).to be(true)
     end
   end
 end

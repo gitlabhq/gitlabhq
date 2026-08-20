@@ -111,12 +111,12 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
       compare.same
     end
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to be(false) }
 
     context 'base ref is equal to head ref' do
       let(:compare) { described_class.new(repository, SeedRepo::BigCommit::ID, SeedRepo::BigCommit::ID) }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 

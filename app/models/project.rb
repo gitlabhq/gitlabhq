@@ -636,6 +636,7 @@ class Project < ApplicationRecord
     delegate :mr_default_target_self, :mr_default_target_self=
     delegate :previous_default_branch, :previous_default_branch=
     delegate :squash_option, :squash_option=
+    delegate :automatic_rebase_enabled, :automatic_rebase_enabled=
     delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
     delegate :protect_merge_request_pipelines, :protect_merge_request_pipelines=, :protect_merge_request_pipelines?
 

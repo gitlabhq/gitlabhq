@@ -21,9 +21,10 @@ module Organizations
     end
 
     def all_groups
-      return [membership_groups, Group.none].compact if default_organization?
+      return super unless default_organization?
+      return [owned_groups] if params[:owned]
 
-      super
+      [membership_groups, Group.none].compact
     end
 
     def membership_groups

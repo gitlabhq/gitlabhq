@@ -13,10 +13,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
     context 'when the personal access token was used 10 minutes ago', :freeze_time do
       let(:personal_access_token) { create(:personal_access_token, last_used_at: 10.minutes.ago) }
 
-      before do
-        stub_feature_flags(audit_event_pat_unseen_ip: false)
-      end
-
       it 'updates the last_used_at timestamp' do
         expect { service_execution }.to change { personal_access_token.last_used_at }
       end
@@ -319,22 +315,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
 
         before do
           stub_exclusive_lease_taken(lease_key, timeout: described_class::LEASE_TIMEOUT)
-        end
-
-        it 'does not fire an audit event' do
-          service_execution
-
-          expect(::Gitlab::Audit::Auditor).not_to have_received(:audit).with(
-            hash_including(name: 'personal_access_token_used_from_unseen_ip')
-          )
-        end
-      end
-
-      context 'when audit_event_pat_unseen_ip feature flag is disabled', :freeze_time do
-        let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }
-
-        before do
-          stub_feature_flags(audit_event_pat_unseen_ip: false)
         end
 
         it 'does not fire an audit event' do

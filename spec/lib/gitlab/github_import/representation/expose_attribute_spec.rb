@@ -28,13 +28,13 @@ RSpec.describe Gitlab::GithubImport::Representation::ExposeAttribute, feature_ca
 
     context 'when attribute does not exist' do
       it 'returns nil' do
-        expect(klass.new({})[:number]).to eq(nil)
+        expect(klass.new({})[:number]).to be_nil
       end
     end
 
     context 'when attribute is not exposed' do
       it 'returns nil' do
-        expect(klass.new({ not_exposed_attribute: 42 })[:not_exposed_attribute]).to eq(nil)
+        expect(klass.new({ not_exposed_attribute: 42 })[:not_exposed_attribute]).to be_nil
       end
     end
   end

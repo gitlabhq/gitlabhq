@@ -82,16 +82,6 @@ export default {
       required: false,
       default: false,
     },
-    infiniteScroll: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    infiniteScrollLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     clearSearchOnItemSelect: {
       type: Boolean,
       required: false,
@@ -123,14 +113,7 @@ export default {
       default: false,
     },
   },
-  emits: [
-    'bottomReached',
-    'dropdown-hidden',
-    'dropdown-shown',
-    'search-started',
-    'update-selected',
-    'update-value',
-  ],
+  emits: ['dropdown-hidden', 'dropdown-shown', 'search-started', 'update-selected', 'update-value'],
   data() {
     return {
       isEditing: false,
@@ -262,7 +245,6 @@ export default {
           start-opened
           block
           is-check-centered
-          :infinite-scroll="infiniteScroll"
           :searching="loading"
           :header-text="headerText"
           :toggle-text="toggleText"
@@ -271,13 +253,11 @@ export default {
           :items="listItems"
           :selected="localSelectedItem"
           :reset-button-label="resetButton"
-          :infinite-scroll-loading="infiniteScrollLoading"
           @reset="unassignValue"
           @search="debouncedSearchKeyUpdate"
           @select="handleItemClick"
           @shown="onListboxShown"
           @hidden="onListboxHide"
-          @bottom-reached="$emit('bottomReached')"
         >
           <template #list-item="{ item }">
             <slot name="list-item" :item="item">

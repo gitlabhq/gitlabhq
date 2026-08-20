@@ -33203,7 +33203,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2913c4f9f47a"
+              "$ref": "#/components/schemas/RequestBody_d7d326502b8a"
     delete:
       operationId: deleteApiV4ProjectsId
       summary: Delete a project
@@ -105849,7 +105849,7 @@ components:
           nullable: true
       required:
       - name
-    RequestBody_2913c4f9f47a:
+    RequestBody_d7d326502b8a:
       type: object
       properties:
         name:
@@ -106446,6 +106446,10 @@ components:
           type: boolean
           description: Display all manually-defined variables in the pipeline details
             page after running a pipeline manually
+          nullable: true
+        automatic_rebase_enabled:
+          type: boolean
+          description: Enable automatic rebase of the source branch before merge
           nullable: true
         allow_pipeline_trigger_approve_deployment:
           type: boolean

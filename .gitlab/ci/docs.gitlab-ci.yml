@@ -181,7 +181,7 @@ docs-lint links:
   before_script:
     - source scripts/utils.sh
   script:
-    - lychee --offline --no-progress --include-fragments doc
+    - lychee --offline --no-progress --include-fragments doc tooling/docs/api/tags
 
 docs-lint generated-content:
   variables:

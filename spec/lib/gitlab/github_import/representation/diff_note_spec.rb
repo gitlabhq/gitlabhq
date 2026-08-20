@@ -265,7 +265,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
       describe '#note and #contains_suggestion?' do
         it 'includes the note body' do
           expect(note.note).to eq('Hello world')
-          expect(note.contains_suggestion?).to eq(false)
+          expect(note.contains_suggestion?).to be(false)
         end
 
         context 'when the note have a suggestion' do
@@ -283,7 +283,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
             Hello World
             ```
             BODY
-            expect(note.contains_suggestion?).to eq(true)
+            expect(note.contains_suggestion?).to be(true)
           end
         end
 
@@ -304,7 +304,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
             Hello World
             ```
             BODY
-            expect(note.contains_suggestion?).to eq(true)
+            expect(note.contains_suggestion?).to be(true)
           end
         end
 

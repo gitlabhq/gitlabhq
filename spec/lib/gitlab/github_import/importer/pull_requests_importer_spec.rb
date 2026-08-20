@@ -196,7 +196,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
           .with('123')
           .and_return(false)
 
-        expect(importer.update_repository?(pr)).to eq(true)
+        expect(importer.update_repository?(pr)).to be(true)
       end
 
       it 'returns true when the base SHA is not present' do
@@ -210,7 +210,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
           .with('456')
           .and_return(false)
 
-        expect(importer.update_repository?(pr)).to eq(true)
+        expect(importer.update_repository?(pr)).to be(true)
       end
 
       it 'returns false if both the head and base SHAs are present' do
@@ -224,7 +224,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
           .with('456')
           .and_return(true)
 
-        expect(importer.update_repository?(pr)).to eq(false)
+        expect(importer.update_repository?(pr)).to be(false)
       end
     end
 
@@ -236,7 +236,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
           .to receive(:last_repository_updated_at)
           .and_return(Time.zone.now)
 
-        expect(importer.update_repository?(pr)).to eq(false)
+        expect(importer.update_repository?(pr)).to be(false)
       end
     end
   end
@@ -250,7 +250,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
         .with('123')
         .and_return(double(:commit))
 
-      expect(importer.commit_exists?('123')).to eq(true)
+      expect(importer.commit_exists?('123')).to be(true)
     end
 
     it 'returns false when a commit does not exist' do
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
         .with('123')
         .and_return(nil)
 
-      expect(importer.commit_exists?('123')).to eq(false)
+      expect(importer.commit_exists?('123')).to be(false)
     end
   end
 

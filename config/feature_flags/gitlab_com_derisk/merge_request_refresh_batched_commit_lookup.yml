@@ -1,0 +1,12 @@
+---
+name: merge_request_refresh_batched_commit_lookup
+description: Resolves which open merge requests a push overlaps in one batched query
+  per commit chunk, instead of one query per merge request, so MergeRequests::RefreshService
+  no longer scales with the number of open merge requests on the pushed branch
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/608151
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248701
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/608174
+milestone: '19.3'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

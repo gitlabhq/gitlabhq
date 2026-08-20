@@ -107,7 +107,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.noteable_type).to eq('MergeRequest')
           expect(note.project_id).to eq(project.id)
           expect(note.st_diff).to eq(note_representation.diff_hash)
-          expect(note.system).to eq(false)
+          expect(note.system).to be(false)
           expect(note.type).to eq('LegacyDiffNote')
           expect(note.updated_at).to eq(updated_at)
         end
@@ -160,7 +160,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(note.project_id).to eq(project.id)
             expect(note.namespace_id).to be_nil
             expect(note.author_id).to eq(source_user.mapped_user_id)
-            expect(note.system).to eq(false)
+            expect(note.system).to be(false)
             expect(note.discussion_id).to eq(discussion_id)
             expect(note.commit_id).to eq('original123abc')
             expect(note.line_code).to eq(note_representation.line_code)
@@ -373,7 +373,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.noteable_type).to eq('MergeRequest')
           expect(note.project_id).to eq(project.id)
           expect(note.st_diff).to eq(note_representation.diff_hash)
-          expect(note.system).to eq(false)
+          expect(note.system).to be(false)
           expect(note.type).to eq('LegacyDiffNote')
           expect(note.updated_at).to eq(updated_at)
         end
@@ -426,7 +426,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(note.project_id).to eq(project.id)
             expect(note.namespace_id).to be_nil
             expect(note.author_id).to eq(user.id)
-            expect(note.system).to eq(false)
+            expect(note.system).to be(false)
             expect(note.discussion_id).to eq(discussion_id)
             expect(note.commit_id).to eq('original123abc')
             expect(note.line_code).to eq(note_representation.line_code)

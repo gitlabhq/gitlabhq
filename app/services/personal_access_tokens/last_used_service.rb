@@ -118,7 +118,6 @@ module PersonalAccessTokens
     def log_audit_event_for_unseen_ip
       user = @personal_access_token.user
       return unless user
-      return unless Feature.enabled?(:audit_event_pat_unseen_ip, user)
 
       audit_context = {
         name: 'personal_access_token_used_from_unseen_ip',

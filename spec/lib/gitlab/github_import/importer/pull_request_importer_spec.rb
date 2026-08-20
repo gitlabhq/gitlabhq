@@ -233,7 +233,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         importer.execute
         mr = MergeRequest.last
 
-        expect(mr.merge_request_diffs.exists?).to eq(true)
+        expect(mr.merge_request_diffs.exists?).to be(true)
         expect(mr.reload.latest_merge_request_diff_id).to eq(mr.merge_request_diffs.first.id)
       end
 
@@ -243,7 +243,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
         diff = mr.merge_request_diffs.reload.first
 
-        expect(diff.merge_request_diff_commits.exists?).to eq(true)
+        expect(diff.merge_request_diff_commits.exists?).to be(true)
       end
 
       context 'when merge request is open' do
@@ -310,7 +310,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
           importer.execute
 
-          expect(mr.merge_request_diffs.exists?).to eq(true)
+          expect(mr.merge_request_diffs.exists?).to be(true)
         end
       end
     end

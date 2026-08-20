@@ -1880,6 +1880,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['allow_merge_on_skipped_pipeline']).to be_truthy
     end
 
+    it 'ignores the edit-only automatic_rebase_enabled parameter' do
+      project_params = attributes_for(:project, automatic_rebase_enabled: true)
+
+      post api(path, user), params: project_params
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(Project.find(json_response['id']).automatic_rebase_enabled).to be(false)
+    end
+
     it 'sets a project as allowing merge even if discussions are unresolved' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: false)
 
@@ -5382,6 +5391,18 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           .not_to change { project3.reload.squash_option }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'updates automatic_rebase_enabled' do
+        project_param = { automatic_rebase_enabled: true }
+
+        expect { put api("/projects/#{project3.id}", user), params: project_param }
+          .to change { project3.reload.automatic_rebase_enabled }
+          .from(false)
+          .to(true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to have_key('automatic_rebase_enabled')
       end
 
       it 'updates ci_delete_pipelines_in_seconds' do

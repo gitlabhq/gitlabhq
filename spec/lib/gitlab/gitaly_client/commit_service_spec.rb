@@ -966,7 +966,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
             end
           end
 
-          expect(commit).to eq(nil)
+          expect(commit).to be_nil
         end
 
         it 'returns a cached commit' do

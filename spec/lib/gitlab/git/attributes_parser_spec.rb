@@ -76,11 +76,11 @@ RSpec.describe Gitlab::Git::AttributesParser, feature_category: :source_code_man
 
       context 'when the "binary" option is set for a path' do
         it 'returns true for the "binary" option' do
-          expect(subject.attributes('test.binary')['binary']).to eq(true)
+          expect(subject.attributes('test.binary')['binary']).to be(true)
         end
 
         it 'returns false for the "diff" option' do
-          expect(subject.attributes('test.binary')['diff']).to eq(false)
+          expect(subject.attributes('test.binary')['diff']).to be(false)
         end
       end
     end

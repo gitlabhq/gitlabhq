@@ -27,8 +27,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     showFooter = false,
     slots = {},
     multiSelect = false,
-    infiniteScroll = false,
-    infiniteScrollLoading = false,
     clearSearchOnItemSelect = false,
     listItems = [],
     shortcut = undefined,
@@ -45,8 +43,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         headerText: 'Select iteration',
         showFooter,
         multiSelect,
-        infiniteScroll,
-        infiniteScrollLoading,
         clearSearchOnItemSelect,
         shortcut,
         noResetButton,
@@ -129,7 +125,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         isCheckCentered: true,
         searchable: true,
         searching: false,
-        infiniteScroll: false,
         noResultsText: 'No matching results',
         searchPlaceholder: 'Search',
         resetButtonLabel: 'Clear',
@@ -168,20 +163,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       await nextTick();
 
       expect(wrapper.emitted('search-started')).toEqual([[''], ['']]);
-    });
-
-    it('supports infinite scrolling', async () => {
-      createComponent({ isEditing: true, infiniteScroll: true });
-      await nextTick();
-
-      expect(findCollapsibleListbox().props('infiniteScroll')).toBe(true);
-    });
-
-    it('shows loader when bottom reached', async () => {
-      createComponent({ isEditing: true, infiniteScroll: true, infiniteScrollLoading: true });
-      await nextTick();
-
-      expect(findCollapsibleListbox().props('infiniteScrollLoading')).toBe(true);
     });
 
     it('displays default dropdown label when no value is selected', async () => {

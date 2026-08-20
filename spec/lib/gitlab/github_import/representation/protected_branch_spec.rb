@@ -14,19 +14,19 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch, feature_ca
       end
 
       it 'includes the protected branch allow_force_pushes attribute' do
-        expect(protected_branch.allow_force_pushes).to eq true
+        expect(protected_branch.allow_force_pushes).to be true
       end
 
       it 'includes the protected branch required_conversation_resolution attribute' do
-        expect(protected_branch.required_conversation_resolution).to eq true
+        expect(protected_branch.required_conversation_resolution).to be true
       end
 
       it 'includes the protected branch required_pull_request_reviews' do
-        expect(protected_branch.required_pull_request_reviews).to eq true
+        expect(protected_branch.required_pull_request_reviews).to be true
       end
 
       it 'includes the protected branch require_code_owner_reviews' do
-        expect(protected_branch.require_code_owner_reviews).to eq true
+        expect(protected_branch.require_code_owner_reviews).to be true
       end
 
       it 'includes the protected branch allowed_to_push_users' do

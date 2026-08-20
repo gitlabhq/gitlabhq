@@ -177,14 +177,22 @@ module MergeRequests
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filtered_merge_requests = filter_merge_requests(merge_requests_array)
 
-      recheck_merge_requests_batched(filtered_merge_requests)
+      if batched_commit_lookup_enabled?
+        new_recheck_merge_requests_batched(filtered_merge_requests)
+      else
+        old_recheck_merge_requests_batched(filtered_merge_requests)
+      end
 
       # Upcoming method calls need the refreshed version of
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
 
-    def recheck_merge_requests_batched(filtered_merge_requests)
+    def batched_commit_lookup_enabled?
+      Feature.enabled?(:merge_request_refresh_batched_commit_lookup, @project)
+    end
+
+    def old_recheck_merge_requests_batched(filtered_merge_requests)
       source_branch_or_force_pushed_mrs = []
       all_mr_ids = []
 
@@ -210,6 +218,33 @@ module MergeRequests
       enqueue_auto_merge_for_unchecked(filtered_merge_requests)
     end
 
+    def new_recheck_merge_requests_batched(filtered_merge_requests)
+      source_branch_or_force_pushed_mrs = []
+      all_mr_ids = []
+      diff_ids_to_reload = batched_diff_ids_to_reload(filtered_merge_requests)
+
+      filtered_merge_requests.each do |merge_request|
+        all_mr_ids << merge_request.id
+
+        if branch_and_project_match?(merge_request) || @push.force_push?
+          merge_request.reload_diff(current_user)
+          schedule_duo_code_review(merge_request)
+          source_branch_or_force_pushed_mrs << merge_request
+        elsif diff_ids_to_reload.include?(merge_request.merge_request_diff.id)
+          merge_request.reload_diff(current_user)
+        end
+      end
+
+      MergeRequest.batch_mark_as_unchecked(all_mr_ids, mrs_to_trigger: source_branch_or_force_pushed_mrs)
+
+      # Clear existing merge error if the push were directed at the
+      # source branch. Clearing the error when the target branch
+      # changes will hide the error from the user.
+      MergeRequest.batch_clear_merge_error(source_branch_or_force_pushed_mrs.map(&:id))
+
+      enqueue_auto_merge_for_unchecked(filtered_merge_requests)
+    end
+
     def enqueue_auto_merge_for_unchecked(merge_requests)
       auto_merge_mrs = merge_requests.select(&:auto_merge_enabled?)
       return if auto_merge_mrs.empty?
@@ -218,6 +253,21 @@ module MergeRequests
         delay = index * AUTO_MERGE_DELAY_INTERVAL
         AutoMergeProcessWorker.perform_in(delay.seconds, { 'merge_request_id' => mr.id })
       end
+    end
+
+    # A merge request the push only reaches through its target branch needs its diff
+    # rebuilt when the push carries commits that diff already contains - the stacked
+    # case. Resolving the whole set in one query, rather than asking each merge
+    # request in turn, keeps that cost independent of the merge request count.
+    def batched_diff_ids_to_reload(filtered_merge_requests)
+      # Force pushes reload every diff unconditionally, so nothing needs looking up.
+      return Set.new if @push.force_push?
+
+      diff_ids = filtered_merge_requests
+        .reject { |merge_request| branch_and_project_match?(merge_request) }
+        .filter_map { |merge_request| merge_request.merge_request_diff.id }
+
+      MergeRequestDiff.ids_including_any_commits(diff_ids, push_commit_ids, project: @project)
     end
 
     def push_commit_ids

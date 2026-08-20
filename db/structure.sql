@@ -17020,6 +17020,7 @@ CREATE TABLE cd_versions (
     digest text,
     reference text,
     organization_id bigint,
+    verified boolean DEFAULT true NOT NULL,
     CONSTRAINT check_152b375e60 CHECK ((char_length(reference) <= 1024)),
     CONSTRAINT check_92155129f3 CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_c338b24516 CHECK ((char_length(name) <= 255)),

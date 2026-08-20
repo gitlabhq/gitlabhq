@@ -6901,6 +6901,35 @@ Fields:
 | <a id="mutation-cdserviceupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-cdserviceupdate-service"></a>`service` | [`CdService`](#cdservice) | Service updated by the mutation. |
 
+### `Mutation.cdVersionCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.4.
+- Status: Experiment.
+
+{{< /details >}}
+
+Creates a continuous deployment version from a free-text name, for artifacts GitLab did not observe being pushed.
+
+Input type: `CdVersionCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-cdversioncreate-artifactsourceid"></a>`artifactSourceId` | [`CdArtifactSourceID!`](#cdartifactsourceid) | Global ID of the artifact source to create the version for. |
+| <a id="mutation-cdversioncreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-cdversioncreate-name"></a>`name` | [`String!`](#string) | Name of the version. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-cdversioncreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-cdversioncreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-cdversioncreate-version"></a>`version` | [`CdVersion`](#cdversion) | Version created by the mutation. |
+
 ### `Mutation.cdVersionSetCreate`
 
 {{< details >}}
@@ -13390,7 +13419,7 @@ Arguments:
 | <a id="mutation-mergerequestsetreviewers-iid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutation-mergerequestsetreviewers-operationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
 | <a id="mutation-mergerequestsetreviewers-projectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutation-mergerequestsetreviewers-reviewerusernames"></a>`reviewerUsernames` | [`[String!]!`](#string) | Usernames of reviewers to assign. Replaces existing reviewers by default. |
+| <a id="mutation-mergerequestsetreviewers-reviewerusernames"></a>`reviewerUsernames` | [`[String!]!`](#string) | Usernames of reviewers to assign. Replaces existing reviewers by default. Usernames that do not match a visible user are reported in `errors` and not assigned. |
 
 Fields:
 
@@ -36723,6 +36752,7 @@ Fields:
 | <a id="cdversion-name"></a>`name` | [`String!`](#string) | Name of the version. |
 | <a id="cdversion-reference"></a>`reference` | [`String`](#string) | Reference of the version. |
 | <a id="cdversion-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the version was last updated. |
+| <a id="cdversion-verified"></a>`verified` | [`Boolean!`](#boolean) | Indicates the version was observed being pushed to the artifact source, rather than entered as a free-text name. |
 
 ### `CdVersionSet`
 
@@ -44736,6 +44766,7 @@ Fields:
 | <a id="group-pendingmembers"></a>`pendingMembers` {{< icon name="warning-solid" >}} | [`PendingMemberInterfaceConnection`](#pendingmemberinterfaceconnection) | Introduced in GitLab 16.6. Status: Experiment. A pending membership of a user within this group. |
 | <a id="group-permanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.11. Status: Experiment. For groups pending deletion, returns the group's scheduled deletion date. For groups not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
 | <a id="group-plan"></a>`plan` {{< icon name="warning-solid" >}} | [`NamespacePlan`](#namespaceplan) | Introduced in GitLab 18.2. Status: Experiment. Subscription plan associated with the namespace. |
+| <a id="group-policystore"></a>`policyStore` {{< icon name="warning-solid" >}} | [`PolicyStore`](#policystore) | Introduced in GitLab 19.4. Status: Experiment. Policy store catalogs. Returns `null` when the policy store experiment is not active for the group. |
 | <a id="group-productanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 16.9. Status: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="group-projectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="group-projectstatistics"></a>`projectStatistics` {{< icon name="warning-solid" >}} | [`NamespaceProjectStatistics`](#namespaceprojectstatistics) | Introduced in GitLab 18.2. Status: Experiment. Statistics of the projects in the group. Only available from [Query.groups](#querygroups). |
@@ -52841,6 +52872,7 @@ Fields:
 | <a id="organization-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 16.4. Status: Experiment. Name of the organization. |
 | <a id="organization-organizationusers"></a>`organizationUsers` {{< icon name="warning-solid" >}} | [`OrganizationUserConnection!`](#organizationuserconnection) | Introduced in GitLab 16.4. Status: Experiment. Users with access to the organization. |
 | <a id="organization-path"></a>`path` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 16.4. Status: Experiment. Path of the organization. |
+| <a id="organization-policystore"></a>`policyStore` {{< icon name="warning-solid" >}} | [`PolicyStore`](#policystore) | Introduced in GitLab 19.4. Status: Experiment. Policy store catalogs. Returns `null` when the policy store experiment is not active for the organization. |
 | <a id="organization-rootpath"></a>`rootPath` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 18.5. Status: Experiment. Root path in the context of the organization. |
 | <a id="organization-softdeletedat"></a>`softDeletedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.1. Status: Experiment. Timestamp when the organization was soft-deleted.Visible to admins and organization owners only. |
 | <a id="organization-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState!`](#organizationstate) | Introduced in GitLab 19.0. Status: Experiment. State of the organization. |
@@ -54795,6 +54827,51 @@ Fields:
 | <a id="policyscope-includinggroups"></a>`includingGroups` | [`GroupConnection!`](#groupconnection) | Groups to which the policy should be applied. (see [Connections](#connections)) |
 | <a id="policyscope-includingprojects"></a>`includingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should be applied. (see [Connections](#connections)) |
 | <a id="policyscope-matchmode"></a>`matchMode` {{< icon name="warning-solid" >}} | [`PolicyScopeMatchMode!`](#policyscopematchmode) | Introduced in GitLab 18.10. Status: Experiment. Specifies how multiple policy scope conditions are combined. |
+
+### `PolicyStore`
+
+Catalogs available when creating a policy in the policy store.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystore-actions"></a>`actions` {{< icon name="warning-solid" >}} | [`[PolicyStoreAction!]!`](#policystoreaction) | Introduced in GitLab 19.4. Status: Experiment. Actions available when creating a policy in the policy store. |
+| <a id="policystore-rules"></a>`rules` {{< icon name="warning-solid" >}} | [`[PolicyStoreRule!]!`](#policystorerule) | Introduced in GitLab 19.4. Status: Experiment. Rule kinds available when creating a policy in the policy store. |
+| <a id="policystore-triggers"></a>`triggers` {{< icon name="warning-solid" >}} | [`[PolicyStoreTrigger!]!`](#policystoretrigger) | Introduced in GitLab 19.4. Status: Experiment. Triggers available when creating a policy in the policy store. |
+
+### `PolicyStoreAction`
+
+Action available when creating a policy in the policy store.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystoreaction-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Identifier of the action. |
+| <a id="policystoreaction-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the action. |
+
+### `PolicyStoreRule`
+
+Rule kind available when creating a policy in the policy store.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystorerule-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Identifier of the rule kind. |
+| <a id="policystorerule-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the rule kind. |
+
+### `PolicyStoreTrigger`
+
+Trigger available when creating a policy in the policy store.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policystoretrigger-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Identifier of the trigger. |
+| <a id="policystoretrigger-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the trigger. |
 
 ### `PolicyViolationDetails`
 

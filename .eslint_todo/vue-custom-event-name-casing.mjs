@@ -54,7 +54,6 @@ export default {
     'app/assets/javascripts/work_items/components/design_management/design_preview/image.vue',
     'app/assets/javascripts/work_items/components/notes/work_item_add_note.vue',
     'app/assets/javascripts/work_items/components/shared/work_item_namespace_listbox.vue',
-    'app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue',
     'app/assets/javascripts/work_items/components/work_item_actions.vue',
     'app/assets/javascripts/work_items/components/work_item_assignees.vue',
     'app/assets/javascripts/work_items/components/work_item_description_rendered.vue',

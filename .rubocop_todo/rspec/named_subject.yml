@@ -98,7 +98,6 @@ RSpec/NamedSubject:
     - 'ee/spec/graphql/resolvers/incident_management/oncall_shifts_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/incident_management/oncall_users_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/requirements_management/requirements_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/vulnerabilities/issue_links_resolver_spec.rb'
     - 'ee/spec/graphql/types/pipeline_security_report_finding_type_spec.rb'
     - 'ee/spec/graphql/types/project_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_evidence_source_type_spec.rb'

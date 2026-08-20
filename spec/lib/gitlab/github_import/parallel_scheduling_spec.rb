@@ -477,7 +477,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
         .and_return(object.id)
 
       expect(importer.already_imported?(object))
-        .to eq(false)
+        .to be(false)
     end
 
     it 'returns true when an object has already been imported' do
@@ -491,7 +491,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
       importer.mark_as_imported(object)
 
       expect(importer.already_imported?(object))
-        .to eq(true)
+        .to be(true)
     end
   end
 

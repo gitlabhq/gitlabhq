@@ -46,7 +46,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
           "github-importer/merge_request/diff_notes/already-imported/#{project.id}",
           merge_request.iid
         )
-      ).to eq(true)
+      ).to be(true)
     end
 
     it 'resumes from the last processed URL' do

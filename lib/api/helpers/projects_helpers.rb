@@ -130,6 +130,7 @@ module API
         optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
         optional :protect_merge_request_pipelines, type: Boolean, desc: "Make protected CI/CD variables and runners available in merge request pipelines"
         optional :ci_display_pipeline_variables, type: Boolean, desc: "Display all manually-defined variables in the pipeline details page after running a pipeline manually"
+        optional :automatic_rebase_enabled, type: Boolean, desc: 'Enable automatic rebase of the source branch before merge'
       end
 
       params :optional_update_params_ee do
@@ -162,6 +163,7 @@ module API
           :auto_devops_enabled,
           :auto_devops_deploy_strategy,
           :auto_cancel_pending_pipelines,
+          :automatic_rebase_enabled,
           :build_git_strategy,
           :build_timeout,
           :builds_access_level,

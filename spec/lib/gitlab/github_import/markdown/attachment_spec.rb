@@ -91,7 +91,7 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
       context "when type is not in whitelist" do
         let(:doc_extension) { 'exe' }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
 
       context 'when domain name is unknown' do
@@ -99,13 +99,13 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
           "https://bitbucket.com/nickname/public-test-repo/files/3/git-cheat-sheet.#{doc_extension}"
         end
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
 
       context 'when URL is blank' do
         let(:url) { nil }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
     end
 
@@ -129,25 +129,25 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
       context "when type is not in whitelist" do
         let(:image_extension) { 'mkv' }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
 
       context 'when domain name is unknown' do
         let(:url) { "https://user-images.github.com/1/uuid-1.#{image_extension}" }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
 
       context 'with allowed domain as subdomain' do
         let(:url) { "https://user-images.githubusercontent.com.attacker.controlled.domain/1/uuid-1.#{image_extension}" }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
 
       context 'when URL is blank' do
         let(:url) { nil }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
 
       context 'when image attachment is in the new format' do
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
       context 'when image src is not present' do
         let(:img) { "<img width=\"248\" alt=\"#{name}\">" }
 
-        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to eq nil }
+        it { expect(described_class.from_markdown(markdown_node, web_endpoint)).to be_nil }
       end
     end
 
@@ -222,13 +222,13 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
     context 'when url is a part of project blob' do
       let(:url) { "https://github.com/#{import_source}/blob/main/example.md" }
 
-      it { expect(attachment.part_of_project_blob?(import_source)).to eq true }
+      it { expect(attachment.part_of_project_blob?(import_source)).to be true }
     end
 
     context 'when url is not a part of project blob' do
       let(:url) { "https://github.com/#{import_source}/files/9020437/git-cheat-sheet.txt" }
 
-      it { expect(attachment.part_of_project_blob?(import_source)).to eq false }
+      it { expect(attachment.part_of_project_blob?(import_source)).to be false }
     end
   end
 
@@ -238,19 +238,19 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
     context 'when url relates to this project' do
       let(:url) { "https://github.com/#{import_source}/files/9020437/git-cheat-sheet.txt" }
 
-      it { expect(attachment.doc_belongs_to_project?(import_source)).to eq true }
+      it { expect(attachment.doc_belongs_to_project?(import_source)).to be true }
     end
 
     context 'when url is not related to this project' do
       let(:url) { 'https://github.com/nickname/other-repo/files/9020437/git-cheat-sheet.txt' }
 
-      it { expect(attachment.doc_belongs_to_project?(import_source)).to eq false }
+      it { expect(attachment.doc_belongs_to_project?(import_source)).to be false }
     end
 
     context 'when url is a part of project blob' do
       let(:url) { "https://github.com/#{import_source}/blob/main/example.md" }
 
-      it { expect(attachment.doc_belongs_to_project?(import_source)).to eq false }
+      it { expect(attachment.doc_belongs_to_project?(import_source)).to be false }
     end
   end
 
@@ -260,19 +260,19 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
     context 'when it is a media link' do
       let(:url) { 'https://user-images.githubusercontent.com/6833842/0cf366b61ef2.jpeg' }
 
-      it { expect(attachment.media?(import_source)).to eq true }
+      it { expect(attachment.media?(import_source)).to be true }
 
       context 'when it is a new media link' do
         let(:url) { "https://github.com/#{import_source}/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11" }
 
-        it { expect(attachment.media?(import_source)).to eq true }
+        it { expect(attachment.media?(import_source)).to be true }
       end
     end
 
     context 'when it is not a media link' do
       let(:url) { 'https://github.com/nickname/public-test-repo/files/9020437/git-cheat-sheet.txt' }
 
-      it { expect(attachment.media?(import_source)).to eq false }
+      it { expect(attachment.media?(import_source)).to be false }
     end
   end
 

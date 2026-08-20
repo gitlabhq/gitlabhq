@@ -225,6 +225,7 @@ Grants the ability to create and read continuous deployment artifact sources.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `CdArtifactSourceCreate` |
+| Create | Instance | Mutation | `CdVersionCreate` |
 | Read | Instance | Type | `CdArtifactSource` |
 | Read | Instance | Type | `CdVersion` |
 

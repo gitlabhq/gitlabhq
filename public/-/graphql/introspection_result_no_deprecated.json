@@ -125838,7 +125838,7 @@
             },
             {
               "name": "reviewerUsernames",
-              "description": "Usernames of reviewers to assign. Replaces existing reviewers by default.",
+              "description": "Usernames of reviewers to assign. Replaces existing reviewers by default. Usernames that do not match a visible user are reported in `errors` and not assigned.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

@@ -40,7 +40,7 @@ RSpec.describe Gitlab::GithubImport::ParallelImporter, feature_category: :import
     end
 
     it 'schedules the importing of the repository' do
-      expect(importer.execute).to eq(true)
+      expect(importer.execute).to be(true)
     end
 
     it 'sets the JID in Redis' do

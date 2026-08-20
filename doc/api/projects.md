@@ -2369,6 +2369,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `reviewer_assignment_strategy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1.
 - `merge_train_enforcement` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `merge_train_enforcement`. Disabled by default.
 - `merge_train_enforcement` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) in GitLab 19.3. Feature flag `merge_train_enforcement` removed.
+- `automatic_rebase_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250632) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -2396,6 +2397,7 @@ Supported general project attributes:
 | `auto_devops_enabled`                              | boolean           | No       | Enable Auto DevOps for this project. |
 | `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code). Ultimate only. |
 | `autoclose_referenced_issues`                      | boolean           | No       | Set whether auto-closing referenced issues on default branch. |
+| `automatic_rebase_enabled`                         | boolean           | No       | Enable automatic rebase of the source branch before merge. Applies when the merge method is fast-forward merge or merge commit with semi-linear history. |
 | `avatar`                                           | mixed             | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string            | No       | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                    | integer           | No       | The maximum amount of time, in seconds, that a job can run. |

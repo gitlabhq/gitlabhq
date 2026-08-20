@@ -2022,6 +2022,136 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '.ids_including_any_commits' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be_with_refind(:merge_request_diff) do
+      create(:merge_request, source_project: project, target_project: project).merge_request_diff
+    end
+
+    # A second diff on the same project, so the batched behaviour is observable:
+    # the number of queries must not grow with the number of diffs.
+    let_it_be_with_refind(:other_merge_request_diff) do
+      create(:merge_request, source_project: project, target_project: project,
+        source_branch: 'feature', target_branch: 'master').merge_request_diff
+    end
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(:merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        sha: 'abc123',
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(:diff_commit_without_metadata,
+        merge_request_diff: merge_request_diff,
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
+        sha: 'def456'
+      )
+    end
+
+    let(:all_diff_ids) { [merge_request_diff.id, other_merge_request_diff.id] }
+
+    subject(:matched) { described_class.ids_including_any_commits(all_diff_ids, shas, project: project) }
+
+    context 'when a sha exists in merge_request_commits_metadata' do
+      let(:shas) { ['abc123'] }
+
+      it 'returns only the diffs containing it' do
+        expect(matched).to contain_exactly(merge_request_diff.id)
+      end
+    end
+
+    context 'when a sha exists only in merge_request_diff_commits (unmigrated)' do
+      let(:shas) { ['def456'] }
+
+      it 'does not return it while the new table is the read source' do
+        expect(matched).to be_empty
+      end
+
+      context 'when mr_diff_commits_read_new_table is disabled' do
+        before do
+          stub_feature_flags(mr_diff_commits_read_new_table: false)
+        end
+
+        it 'falls back to the sha column and returns the diff' do
+          expect(matched).to contain_exactly(merge_request_diff.id)
+        end
+      end
+    end
+
+    context 'when nothing matches' do
+      let(:shas) { [Gitlab::Git::SHA1_BLANK_SHA] }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'with blank arguments' do
+      it 'returns an empty set without querying' do
+        diff_ids = all_diff_ids # resolve the records before recording
+
+        expect(ActiveRecord::QueryRecorder.new do
+          expect(described_class.ids_including_any_commits([], ['abc123'], project: project)).to be_empty
+          expect(described_class.ids_including_any_commits(diff_ids, [], project: project)).to be_empty
+        end.count).to eq(0)
+      end
+    end
+
+    context 'with more shas than one batch' do
+      let(:shas) { Array.new(6) { |i| "sha#{i}" } + ['abc123'] }
+
+      before do
+        stub_const('MergeRequestDiff::BATCH_SIZE', 5)
+      end
+
+      it 'still finds the match' do
+        expect(matched).to contain_exactly(merge_request_diff.id)
+      end
+
+      it 'does not reference columns missing from the new diff commits table' do
+        expect { matched }.not_to query_missing_diff_commit_columns
+      end
+    end
+
+    it 'includes a project_id filter on merge_request_diff_commits for partition pruning' do
+      expect { described_class.ids_including_any_commits(all_diff_ids, ['abc123'], project: project) }
+        .not_to query_diff_commits_without_project_id
+    end
+
+    it 'costs the same number of queries regardless of how many diffs are asked about' do
+      one_diff = ActiveRecord::QueryRecorder.new do
+        described_class.ids_including_any_commits([other_merge_request_diff.id], ['abc123'], project: project)
+      end
+      both_diffs = ActiveRecord::QueryRecorder.new do
+        described_class.ids_including_any_commits(all_diff_ids, ['abc123'], project: project)
+      end
+
+      # A sha that resolves to no metadata row returns before the query being
+      # measured, which would make the counts match for the wrong reason.
+      [one_diff, both_diffs].each do |recorder|
+        expect(recorder.log.grep(/FROM "merge_request_diff_commits"/).count).to eq(1)
+      end
+
+      expect(both_diffs.count).to eq(one_diff.count)
+    end
+
+    it 'stops looking up a diff once it has matched' do
+      diff_id = merge_request_diff.id
+      stub_const('MergeRequestDiff::BATCH_SIZE', 1)
+
+      # First chunk matches, so the second chunk must not be resolved at all.
+      recorder = ActiveRecord::QueryRecorder.new do
+        described_class.ids_including_any_commits([diff_id], %w[abc123 sha0], project: project)
+      end
+
+      # Anchored on FROM: `merge_request_commits_metadata_id` appears in the
+      # follow-up query on merge_request_diff_commits too.
+      expect(recorder.log.grep(/FROM "merge_request_commits_metadata"/).count).to eq(1)
+    end
+  end
+
   describe '#modified_paths' do
     subject do
       create(:merge_request_diff).tap do |diff|

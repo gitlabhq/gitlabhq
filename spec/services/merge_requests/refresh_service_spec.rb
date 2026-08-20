@@ -427,6 +427,53 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
     end
 
+    context 'batched commit lookup' do
+      let(:refresh_service) { service.new(project: @project, current_user: @user) }
+
+      let!(:mr_targeting_master) do
+        create(
+          :merge_request,
+          source_project: @project,
+          source_branch: 'feature',
+          target_branch: 'master',
+          target_project: @project
+        )
+      end
+
+      it 'resolves every merge request in one lookup instead of one per merge request' do
+        expect(MergeRequestDiff).to receive(:ids_including_any_commits).once.and_call_original
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+      end
+
+      it 'keeps the full push commit list' do
+        push_commit_count = @project.repository.count_commits_between(@oldrev, @newrev)
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+        expect(refresh_service.instance_variable_get(:@commits).size).to eq(push_commit_count)
+      end
+
+      it 'does not look anything up for a force push, which reloads every diff anyway' do
+        expect(MergeRequestDiff).not_to receive(:ids_including_any_commits)
+
+        # A divergent newrev, so Gitlab::Git::Push actually reports a force push.
+        refresh_service.execute(@oldrev, @project.commit('feature').id, 'refs/heads/master')
+      end
+
+      context 'when the merge_request_refresh_batched_commit_lookup feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_refresh_batched_commit_lookup: false)
+        end
+
+        it 'falls back to asking each merge request in turn' do
+          expect(MergeRequestDiff).not_to receive(:ids_including_any_commits)
+
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        end
+      end
+    end
+
     context 'push to origin repo target branch' do
       context 'when all MRs to the target branch had diffs' do
         before do
@@ -721,6 +768,19 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           service.new(project: @project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
+      end
+
+      context 'when the merge_request_refresh_batched_commit_lookup feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_refresh_batched_commit_lookup: false)
+        end
+
+        it 'reloads a new diff for a push to the target project that contains a commit in the MR' do
+          expect do
+            service.new(project: @project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
+            reload_mrs
+          end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
+        end
       end
 
       it 'does not increase the diff count for a new push to target branch' do

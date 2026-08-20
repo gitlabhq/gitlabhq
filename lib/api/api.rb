@@ -495,5 +495,5 @@ module API
   end
 end
 
-API::API.use API::TrackAPIRequestFromPersonalAccessToken
+API::API.use ::API::TrackAPIRequestFromPersonalAccessToken
 API::API.prepend_mod

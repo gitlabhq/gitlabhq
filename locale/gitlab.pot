@@ -50424,15 +50424,6 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-msgid "Modify commit message"
-msgstr ""
-
-msgid "Modify commit messages"
-msgstr ""
-
-msgid "Modify merge commit"
-msgstr ""
-
 msgid "Mon"
 msgstr ""
 
@@ -59547,6 +59538,9 @@ msgstr ""
 msgid "PolicyStore|Comma-separated environment names this rule applies to. At least one name or tier is required."
 msgstr ""
 
+msgid "PolicyStore|Compiled scope Rego"
+msgstr ""
+
 msgid "PolicyStore|Continue editing"
 msgstr ""
 
@@ -59713,6 +59707,9 @@ msgid "PolicyStore|Projects affected"
 msgstr ""
 
 msgid "PolicyStore|Projects to exempt from this policy"
+msgstr ""
+
+msgid "PolicyStore|Read-only Rego the store compiled from the scope. The policy engine evaluates this program to decide where the policy applies."
 msgstr ""
 
 msgid "PolicyStore|Recurring"
@@ -83747,6 +83744,9 @@ msgid "TrialWidget|Your trial of GitLab Ultimate has ended"
 msgstr ""
 
 msgid "Trial|Activate my trial"
+msgstr ""
+
+msgid "Trial|Add a few more details to activate your trial. You can change them later."
 msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."

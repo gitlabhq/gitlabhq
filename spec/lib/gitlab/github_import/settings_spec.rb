@@ -93,9 +93,9 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     it 'returns is enabled or not specific optional stage' do
       project.build_or_assign_import_data(data: { optional_stages: optional_stages })
 
-      expect(settings.enabled?(:single_endpoint_notes_import)).to eq false
-      expect(settings.enabled?(:attachments_import)).to eq false
-      expect(settings.enabled?(:collaborators_import)).to eq false
+      expect(settings.enabled?(:single_endpoint_notes_import)).to be false
+      expect(settings.enabled?(:attachments_import)).to be false
+      expect(settings.enabled?(:collaborators_import)).to be false
     end
   end
 
@@ -103,9 +103,9 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     it 'returns is disabled or not specific optional stage' do
       project.build_or_assign_import_data(data: { optional_stages: optional_stages })
 
-      expect(settings.disabled?(:single_endpoint_notes_import)).to eq true
-      expect(settings.disabled?(:attachments_import)).to eq true
-      expect(settings.disabled?(:collaborators_import)).to eq true
+      expect(settings.disabled?(:single_endpoint_notes_import)).to be true
+      expect(settings.disabled?(:attachments_import)).to be true
+      expect(settings.disabled?(:collaborators_import)).to be true
     end
   end
 

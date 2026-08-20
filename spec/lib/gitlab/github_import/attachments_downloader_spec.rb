@@ -20,7 +20,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'downloads file' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'chops filename' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file)).to eq('av.png')
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
       end
     end
 
@@ -205,7 +205,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
       end
 
       context 'when filename includes login redirect' do
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
           file = downloader.perform
 
-          expect(File.exist?(file.path)).to eq(true)
+          expect(File.exist?(file.path)).to be(true)
         end
       end
 
@@ -292,7 +292,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'sanitizes the filename' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to eq('C__.Coding.Style.Guide.pdf')
         expect(File.basename(file.path)).not_to include('+')
       end
@@ -304,7 +304,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'sanitizes spaces to underscores' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to match(/file_with_spaces\.txt/)
       end
     end
@@ -315,7 +315,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'sanitizes path separators' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to eq('file_with_slashes.txt')
       end
     end
@@ -326,7 +326,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'sanitizes all special characters' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to eq('file____name-2.pdf')
         expect(File.basename(file.path)).not_to include('@', '#', '$', '%')
       end
@@ -338,7 +338,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'removes leading dots' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to eq('hidden-file.txt')
       end
     end
@@ -349,7 +349,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'provides a fallback filename' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to eq('attachment')
       end
     end
@@ -360,7 +360,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
       it 'uses attachment as fallback filename' do
         file = downloader.perform
 
-        expect(File.exist?(file.path)).to eq(true)
+        expect(File.exist?(file.path)).to be(true)
         expect(File.basename(file.path)).to eq('attachment')
       end
     end
@@ -382,7 +382,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
     it 'removes file with parent folder' do
       downloader.delete
-      expect(Dir.exist?(tmp_dir_path)).to eq false
+      expect(Dir.exist?(tmp_dir_path)).to be false
     end
   end
 
