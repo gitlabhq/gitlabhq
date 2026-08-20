@@ -908,7 +908,7 @@ specific to GitLab Geo or Gitaly. For more information, see
 
 1. **Backup projects**
 
-   Before proceeding, ensure they back up the projects beforehand, using the [project export option](../../../../user/project/settings/import_export.md).
+   Before proceeding, ensure you back up the projects beforehand by using the [project export option](../../../../user/project/settings/import_export.md).
 
 1. **Identify problematic blob IDs**
 
@@ -2115,7 +2115,7 @@ to start again from scratch, there are a few steps that can help you:
    It's possible to make Sidekiq stop gracefully, but making it stop getting new jobs and
    wait until the current jobs to finish processing.
 
-   You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
+   You need to send a **SIGTSTP** kill signal for the first phase and then a **SIGTERM**
    when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
 
    ```shell

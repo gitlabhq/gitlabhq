@@ -21,7 +21,7 @@ You can provide GitLab users with a single remote URL that automatically uses
 the Geo site closest to them. This means users don't need to update their Git
 configuration to take advantage of closer Geo sites as they move.
 
-This is possible because, Git push requests can be automatically redirected
+This is possible because Git push requests can be automatically redirected
 (HTTP) or proxied (SSH) from secondary sites to the primary site.
 
 Though these instructions use [AWS Route53](https://aws.amazon.com/route53/),

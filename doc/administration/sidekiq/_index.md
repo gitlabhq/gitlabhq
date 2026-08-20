@@ -13,7 +13,7 @@ description: Configure an external Sidekiq instance.
 
 {{< /details >}}
 
-You can configure an external Sidekiq instance by using the Sidekiq that's bundled in the GitLab package. Sidekiq requires connection to the Redis,
+You can configure an external Sidekiq instance by using the Sidekiq that's bundled in the GitLab package. Sidekiq requires a connection to the Redis,
 PostgreSQL, and Gitaly instances.
 
 ## Configure TCP access for PostgreSQL, Gitaly, and Redis on the GitLab instance
@@ -103,13 +103,13 @@ node than Sidekiq, follow the steps below.
    sudo gitlab-ctl reconfigure
    ```
 
-1. In the instance where container registry is hosted, copy the `registry.key`
+1. In the instance where the container registry is hosted, copy the `registry.key`
    file to the Sidekiq node.
 
 ## Configure the Sidekiq metrics server
 
 If you want to collect Sidekiq metrics, enable the Sidekiq metrics server.
-To make metrics available from `localhost:8082/metrics`:
+Metrics become available from `localhost:8082/metrics`.
 
 To configure the metrics server:
 

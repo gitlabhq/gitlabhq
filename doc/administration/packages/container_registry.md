@@ -53,7 +53,7 @@ but it's not recommended and is beyond the scope of this document.
 
 ### Helm Charts installations
 
-For Helm Charts installations, see [Using the container registry](https://docs.gitlab.com/charts/charts/registry/).
+For Helm Charts installations, see [Using the container registry](https://docs.gitlab.com/charts/charts/registry/)
 in the Helm Charts documentation.
 
 ### Self-compiled installations
@@ -353,7 +353,7 @@ Registry application itself.
 ## Disable container registry for new projects site-wide
 
 If the container registry is enabled, then it should be available on all new
-projects. To disable this function and let the owners of a project to enable
+projects. To disable this function and let the owners of a project enable
 the container registry by themselves, follow the steps below.
 
 {{< tabs >}}
@@ -524,7 +524,7 @@ we can debug issues, but we cannot patch the registry unless an issue is reprodu
 ### Use file system
 
 If you want to store your images on the file system, you can change the storage
-path for the container registry, follow the steps below.
+path for the container registry. Follow the steps below.
 
 This path is accessible to:
 
@@ -1389,7 +1389,7 @@ Prerequisites:
 The container registry can use considerable amounts of storage space, and you might want to
 [reduce storage usage](../../user/packages/container_registry/reduce_container_registry_storage.md).
 Among the listed options, deleting tags is the most effective option. However, tag deletion
-alone does not delete image layers, it only leaves the underlying image manifests untagged.
+alone does not delete image layers. It only leaves the underlying image manifests untagged.
 
 To more effectively free up space, the container registry has a garbage collector that can
 delete unreferenced layers and (optionally) untagged manifests.
@@ -1423,7 +1423,7 @@ docker push <my.registry.com>/<my.group>/<my.project>:latest
 Now, you do overwrite `latest` with a new version:
 
 ```shell
-# This builds a image with content of sha256:<222222...>
+# This builds an image with content of sha256:<222222...>
 docker build -t <my.registry.com>/<my.group>/<my.project>:latest .
 docker push <my.registry.com>/<my.group>/<my.project>:latest
 ```
@@ -1542,7 +1542,7 @@ To enable the read-only mode:
 
 Ideally, you want to run the garbage collection of the registry regularly on a
 weekly basis at a time when the registry is not being in-use.
-The simplest way is to add a new crontab job that it runs periodically
+The simplest way is to add a new crontab job that runs periodically
 once a week.
 
 Create a file under `/etc/cron.d/registry-garbage-collect`:

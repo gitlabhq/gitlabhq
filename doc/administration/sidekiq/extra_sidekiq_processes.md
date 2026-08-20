@@ -158,7 +158,7 @@ Sidekiq development part of the GitLab development documentation.
 ### Monitor the `sidekiq-cluster` command
 
 The `sidekiq-cluster` command does not terminate once it has started the desired
-amount of Sidekiq processes. Instead, the process continues running and
+number of Sidekiq processes. Instead, the process continues running and
 forwards any signals to the child processes. This allows you to stop all
 Sidekiq processes as you send a signal to the `sidekiq-cluster` process,
 instead of having to send it to the individual processes.
@@ -170,8 +170,8 @@ end up with zombie Sidekiq processes.
 This allows you to monitor the processes by hooking up
 `sidekiq-cluster` to your supervisor of choice (for example, runit).
 
-If a child process died the `sidekiq-cluster` command signals all remaining
-process to terminate, then terminate itself. This removes the need for
+If a child process dies, the `sidekiq-cluster` command signals all remaining
+processes to terminate, then terminates itself. This removes the need for
 `sidekiq-cluster` to re-implement complex process monitoring/restarting code.
 Instead you should make sure your supervisor restarts the `sidekiq-cluster`
 process whenever necessary.

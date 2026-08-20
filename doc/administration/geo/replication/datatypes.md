@@ -105,7 +105,7 @@ Geo triggers garbage collection in Gitaly to deduplicate forked repositories on 
 The Gitaly gRPC API does the communication, with three possible ways of synchronization:
 
 - Using regular Git clone/fetch from one Geo site to another (with special authentication).
-- Using repository snapshots (for when the first method fails or repository is corrupt).
+- Using repository snapshots (for when the first method fails or the repository is corrupt).
 - Manual trigger from the **Admin** area (combines the other listed possible ways).
 
 Each project can have at most 3 different repositories:
@@ -151,7 +151,7 @@ GitLab relies on data stored in multiple databases, for different use-cases.
 PostgreSQL is the single point of truth for user-generated content in the Web interface, like issues content, comments
 as well as permissions and credentials.
 
-PostgreSQL can also hold some level of cached data like HTML-rendered Markdown and cached merge-requests diff.
+PostgreSQL can also hold some level of cached data like HTML-rendered Markdown and cached merge request diffs.
 This can also be configured to be offloaded to object storage.
 
 We use PostgreSQL's own replication functionality to replicate data from the primary to secondary sites.
@@ -183,7 +183,7 @@ Elasticsearch is not supported in Geo.
 
 #### Enable or disable replication (for some data types)
 
-Replication for some data types are released behind feature flags that are **enabled by default**.
+Replication for some data types is released behind feature flags that are **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../feature_flags/_index.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.
 
 To disable, such as for package file replication:

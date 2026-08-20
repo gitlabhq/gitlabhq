@@ -115,19 +115,32 @@ module Gitlab
           SupportedRateLimits.limiter_for(key)
         end
 
-        # Builds the labkit identifier hash from a scope by routing AR-typed
-        # values to the characteristic registered for their class (or its
-        # base, via is_a?; a User populates :user, a DeployKey populates
-        # :key via is_a? Key). Non-AR values (Strings, Symbols, Integers)
-        # fill the remaining characteristics in order, skipping any
-        # AR-typed slot the rule still has so primitive values never
-        # accidentally land in :user/:project/etc.
+        # Builds the labkit identifier hash from a scope.
         #
-        # A rule with characteristics %i[project group user] called with
-        # scope [project, user] yields {project: id, user: id}; labkit's
-        # missing-value sentinel '_unknown_' fills :group, so the Redis
-        # key shape is distinct from the Group case ({group: id, user: id}).
+        # The target contract is a characteristic-keyed hash
+        # ({ user: current_user, project: project, sha: 'abc' }): AR-backed
+        # values contribute their primary key, primitives (String/Symbol)
+        # their string form. Nil values are dropped so labkit's '_unknown_'
+        # sentinel fills the slot, making { group: nil } and an omitted
+        # :group produce the same Redis key.
+        #
+        # Positional scopes (array or bare value) are still accepted while
+        # call sites migrate to the hash contract; the positional path below
+        # is deleted once the migration lands. It routes AR-typed values to
+        # the characteristic registered for their class (or its base, via
+        # is_a?; a User populates :user, a DeployKey populates :key via
+        # is_a? Key), then fills the remaining non-AR characteristics in
+        # order with the primitive values.
+        #
+        # Both paths fill missing characteristics identically: a rule with
+        # characteristics %i[project group user] called with
+        # { project: project, user: user } (or legacy [project, user])
+        # yields {project: id, user: id}; labkit's missing-value sentinel
+        # '_unknown_' fills :group, so the Redis key shape is distinct from
+        # the Group case ({group: id, user: id}).
         def identifier_for(characteristics, scope)
+          return hash_identifier_for(scope) if scope.is_a?(Hash)
+
           values = Array(scope).flatten.compact
           identifier = {}
           remaining_values = []
@@ -152,6 +165,14 @@ module Gitlab
           end
 
           identifier
+        end
+
+        def hash_identifier_for(scope)
+          scope.each_with_object({}) do |(characteristic, value), identifier|
+            next if value.nil?
+
+            identifier[characteristic] = value.is_a?(::ActiveRecord::Base) ? value.id : value.to_s
+          end
         end
 
         # Maps AR-typed characteristic names to the class (or base class)

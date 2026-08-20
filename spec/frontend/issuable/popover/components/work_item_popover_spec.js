@@ -98,6 +98,30 @@ describe('IssuePopover component', () => {
       expect(wrapper.text()).toContain(workItem.fullReference);
     });
 
+    describe('when the work item is an epic', () => {
+      beforeEach(async () => {
+        mountComponent({
+          queryResponse: jest.fn().mockResolvedValue({
+            data: {
+              namespace: {
+                ...issueQueryResponse.data.namespace,
+                workItem: {
+                  ...workItem,
+                  workItemType: { ...workItem.workItemType, name: 'Epic' },
+                },
+              },
+            },
+          }),
+        });
+        findGlPopover().vm.$emit('show');
+        await waitForPromises();
+      });
+
+      it('shows the reference with an ampersand', () => {
+        expect(wrapper.text()).toContain(workItem.fullReference.replaceAll('#', '&'));
+      });
+    });
+
     it('shows confidential icon', () => {
       expect(wrapper.findComponent(GlIcon).props('name')).toBe('eye-slash');
     });

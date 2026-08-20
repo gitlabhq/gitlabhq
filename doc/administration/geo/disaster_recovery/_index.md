@@ -125,7 +125,7 @@ order to avoid unnecessary data loss.
 
 > [!warning]
 > If the primary site goes offline, there may be data saved on the primary site
-> that have not been replicated to the secondary site. This data should be treated
+> that has not been replicated to the secondary site. This data should be treated
 > as lost if you proceed.
 
 If an outage on the primary site happens, you should do everything possible to

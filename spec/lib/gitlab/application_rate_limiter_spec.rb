@@ -126,7 +126,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.throttled?(:test_action, scope: nil) }
           .to raise_error(
             Gitlab::ApplicationRateLimiter::InvalidScopeError,
-            "scope cannot be nil. Use :global for global rate limits."
+            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
+              '(or { scope: :global } for global rate limits).'
           )
       end
 
@@ -291,6 +292,85 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it_behaves_like 'throttles based on key and scope'
     end
 
+    context 'when using a characteristic-keyed hash as scope' do
+      let(:scope) { { user: user, project: project } }
+
+      it_behaves_like 'throttles based on key and scope'
+
+      it 'shares its counter with the equivalent positional scope' do
+        start_time = Time.current.beginning_of_hour
+
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: [user, project])).to eq(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: scope)).to eq(true)
+        end
+      end
+
+      it 'shares its counter with string characteristic keys' do
+        start_time = Time.current.beginning_of_hour
+
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: { 'user' => user, 'project' => project })).to eq(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: scope)).to eq(true)
+        end
+      end
+
+      context 'when a scope key is not a characteristic of the rule' do
+        it 'raises an InvalidScopeError in dev/test' do
+          expect { subject.throttled?(:test_action, scope: { users: user }) }
+            .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError, /users.*not characteristics/)
+        end
+
+        it 'raises an InvalidScopeError for an unknown string key' do
+          expect { subject.throttled?(:test_action, scope: { 'users' => user }) }
+            .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError, /users.*not characteristics/)
+        end
+
+        it 'tracks via ErrorTracking and continues when tracking does not raise' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+            an_instance_of(Gitlab::ApplicationRateLimiter::InvalidScopeError),
+            rate_limit_key: :test_action
+          )
+
+          expect(subject.throttled?(:test_action, scope: { users: user })).to eq(false)
+        end
+
+        it 'rejects duplicate keys that normalize to the same symbol' do
+          expect { subject.throttled?(:test_action, scope: { user: user, 'user' => user }) }
+            .to raise_error(Labkit::RateLimit::Identifier::DuplicateNormalizedKeyError)
+        end
+      end
+
+      context 'when using a user allow list' do
+        let(:start_time) { Time.current.beginning_of_hour }
+        let(:allowlist) { [user.username.titlecase] }
+
+        it 'reads the user from the :user characteristic' do
+          travel_to(start_time) { subject.throttled?(:test_action, scope: scope) }
+
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to eq(false)
+          end
+        end
+
+        it 'reads the user from a string user characteristic' do
+          string_key_scope = { 'user' => user, 'project' => project }
+
+          travel_to(start_time) { subject.throttled?(:test_action, scope: string_key_scope) }
+
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: string_key_scope, users_allowlist: allowlist)).to eq(false)
+          end
+        end
+      end
+    end
+
     context 'when threshold and interval are overridden by arguments' do
       let(:scope) { [user, project] }
 
@@ -404,7 +484,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }
           .to raise_error(
             Gitlab::ApplicationRateLimiter::InvalidScopeError,
-            "scope cannot be nil. Use :global for global rate limits."
+            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
+              '(or { scope: :global } for global rate limits).'
           )
       end
 

@@ -128,7 +128,8 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
         min: Gitlab::Database::Aggregation::ClickHouse::Min,
         max: Gitlab::Database::Aggregation::ClickHouse::Max,
         mean: Gitlab::Database::Aggregation::ClickHouse::Mean,
-        quantile: Gitlab::Database::Aggregation::ClickHouse::Quantile
+        quantile: Gitlab::Database::Aggregation::ClickHouse::Quantile,
+        sum: Gitlab::Database::Aggregation::ClickHouse::Sum
       }.merge(mapping_overrides).compact
 
       described_class.build do
@@ -146,17 +147,27 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
       end
     end
 
-    it 'expands into four dotted metrics' do
+    it 'expands into five dotted metrics' do
       engine = build_measurement_engine do
         measurement :duration, :integer, ->(_params) { Arel.sql('duration') }, description: 'Duration in seconds'
       end
 
       expect(engine.metrics.map(&:identifier)).to eq(
-        [:"duration.min", :"duration.max", :"duration.mean", :"duration.quantile"]
+        [:"duration.min", :"duration.max", :"duration.mean", :"duration.quantile", :"duration.sum"]
       )
     end
 
-    it 'assigns the base type to min/max and float to mean/quantile' do
+    it 'does not expand a non-summable type into a sum metric' do
+      engine = build_measurement_engine do
+        measurement :last_seen_at, :datetime, ->(_params) { Arel.sql('last_seen_at') }
+      end
+
+      expect(engine.metrics.map(&:identifier)).to eq(
+        [:"last_seen_at.min", :"last_seen_at.max", :"last_seen_at.mean", :"last_seen_at.quantile"]
+      )
+    end
+
+    it 'assigns the base type to min/max/sum and float to mean/quantile' do
       engine = build_measurement_engine do
         measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
       end
@@ -165,7 +176,8 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
         "duration.min": :integer,
         "duration.max": :integer,
         "duration.mean": :float,
-        "duration.quantile": :float
+        "duration.quantile": :float,
+        "duration.sum": :integer
       )
     end
 
@@ -186,9 +198,11 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
 
       min = engine.metrics.find { |m| m.identifier == :"duration.min" }
       quantile = engine.metrics.find { |m| m.identifier == :"duration.quantile" }
+      sum = engine.metrics.find { |m| m.identifier == :"duration.sum" }
 
       expect(min.description).to eq('Minimum duration in seconds')
       expect(quantile.description).to eq('Quantile of duration in seconds')
+      expect(sum.description).to eq('Sum of duration in seconds')
     end
 
     it 'stores the measurement in the registry' do
@@ -209,12 +223,51 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
       expect(expression.call({ some: :params })).to eq(Arel.sql('duration'))
     end
 
+    it 'registers the expression as a transient for reuse via transient(name)' do
+      engine = build_measurement_engine do
+        measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
+
+        metrics do
+          min :shortest, :integer, transient(:duration)
+        end
+      end
+
+      expect(engine.transient(:duration).call({})).to eq(Arel.sql('duration'))
+      expect(engine.metrics.find { |m| m.identifier == :min_shortest }.expression).to eq(engine.transient(:duration))
+    end
+
+    it 'does not overwrite an existing transient with the same name' do
+      engine = build_measurement_engine do
+        transient(:duration) { Arel.sql('shared_duration') }
+
+        measurement :duration, :integer, transient(:duration)
+      end
+
+      expect(engine.transient(:duration).call).to eq(Arel.sql('shared_duration'))
+    end
+
     it 'raises when the adapter does not support all standard aggregates' do
       expect do
         build_measurement_engine(min: nil, max: nil) do
           measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
         end
       end.to raise_error(ArgumentError, /missing \[:min, :max\] in `metrics_mapping`/)
+    end
+
+    it 'raises when the adapter does not support sum for a summable measurement' do
+      expect do
+        build_measurement_engine(sum: nil) do
+          measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
+        end
+      end.to raise_error(ArgumentError, /missing \[:sum\] in `metrics_mapping`/)
+    end
+
+    it 'does not require sum support for a non-summable measurement' do
+      engine = build_measurement_engine(sum: nil) do
+        measurement :last_seen_at, :datetime, ->(_params) { Arel.sql('last_seen_at') }
+      end
+
+      expect(engine.metrics.map(&:identifier)).not_to include(:"last_seen_at.sum")
     end
   end
 

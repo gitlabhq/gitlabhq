@@ -45,7 +45,7 @@ Whenever access is granted or denied this is logged in a log file called
 `external-policy-access-control.log`. Read more about the logs GitLab keeps in
 the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs/).
 
-When using TLS Authentication with a self signed certificate, the CA certificate
+When using TLS Authentication with a self-signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed
 using the Linux package, learn to install a custom CA in the
 [Linux package documentation](https://docs.gitlab.com/omnibus/settings/ssl/).
@@ -120,7 +120,7 @@ When denying access, a `reason` can be optionally specified in the JSON body:
 }
 ```
 
-Any other status code than 200, 401, or 403 also deny access to the user, but the
+Any other status code than 200, 401, or 403 also denies access to the user, but the
 response isn't cached.
 
 If the service times out (after 500 ms), a message "External Policy Server did

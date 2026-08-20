@@ -137,7 +137,7 @@ To change the rate limit:
 The rate limit:
 
 - Defaults to 60 requests every minute
-- Apply to each authenticated user. If requests are not authenticated, rate limits apply to the IP address.
+- Applies to each authenticated user. If requests are not authenticated, rate limits apply to the IP address.
 - Can be set to `0` to disable rate limits for both endpoints
 
 Requests over the rate limit are logged into the `auth.log` file.

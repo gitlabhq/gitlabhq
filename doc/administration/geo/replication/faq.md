@@ -39,7 +39,7 @@ To ensure that problems with pipelines (for example, syncs failing too many time
 the number of concurrent syncs falls below `repos_max_capacity` and there are no new projects waiting to be synced.
 
 Geo also has a checksum feature which runs a SHA256 sum across all the Git references to the SHA values.
-If the refs don't match between the primary site and the secondary site, then the secondary site marks that project as dirty and try to resync it.
+If the refs don't match between the primary site and the secondary site, then the secondary site marks that project as dirty and tries to resync it.
 So even if we have an outdated tracking database, the validation should activate and find discrepancies in the repository state and resync.
 
 ## Can you use Geo in a disaster recovery situation?
@@ -82,7 +82,7 @@ Yes, but secondary sites receive all authentication data (like user accounts and
 
 ## Do all Geo sites need to be the same as the primary?
 
-No, Geo sites can be based on different reference architectures. For example, you can have the primary site based on a 3K reference architecture, one secondary site based 3K reference architecture, and another one based on a 1K reference architecture.
+No, Geo sites can be based on different reference architectures. For example, you can have the primary site based on a 3K reference architecture, one secondary site based on a 3K reference architecture, and another one based on a 1K reference architecture.
 
 ## Does Geo replicate archived projects?
 
@@ -96,9 +96,9 @@ Yes, provided they are not excluded through [selective sync](selective_synchroni
 
 Yes, projects scheduled for deletion by [delayed deletion](../../settings/visibility_and_access_controls.md#deletion-protection), but are yet to be permanently deleted, are replicated to secondary sites.
 
-## What happens to my secondary sites with when my primary site goes down?
+## What happens to my secondary sites when my primary site goes down?
 
 When a primary site goes down,
 [your secondary will not be accessible through the UI](../secondary_proxy/_index.md#behavior-of-secondary-sites-when-the-primary-geo-site-is-down)
-unless your restore the services on your primary site or you perform a promotion
+unless you restore the services on your primary site or you perform a promotion
 on your secondary site.

@@ -122,7 +122,7 @@ export default {
       );
     },
     reference() {
-      return this.type === WORK_ITEM_TYPE_NAME_EPIC
+      return this.workItemTypeName === WORK_ITEM_TYPE_NAME_EPIC
         ? this.workItem.fullReference?.replaceAll('#', '&')
         : this.workItem.fullReference;
     },

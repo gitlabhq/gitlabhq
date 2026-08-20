@@ -287,6 +287,44 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     end
   end
 
+  describe 'commit tools' do
+    let_it_be(:commit) { project.commit }
+
+    describe '#get_commit' do
+      let(:tool_params) do
+        { name: 'get_commit', arguments: { project_id: project.full_path, commit_sha: commit.sha } }
+      end
+
+      it 'returns success response', :aggregate_failures do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['sha']).to eq(commit.sha)
+        expect(json_response['result']['content'].first['text']).to include(commit.sha)
+        expect(json_response['result']['isError']).to be_falsey
+      end
+
+      context 'with the diff facet and stats detail' do
+        let(:tool_params) do
+          {
+            name: 'get_commit',
+            arguments: {
+              project_id: project.full_path, commit_sha: commit.sha, include: ['diff'], diff_detail: 'stats'
+            }
+          }
+        end
+
+        it 'includes diff stats', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['structuredContent']['diffStatsSummary']).to include('additions', 'deletions')
+          expect(json_response['result']['isError']).to be_falsey
+        end
+      end
+    end
+  end
+
   describe 'issue tools' do
     let_it_be(:milestone) { create(:milestone, group: group) }
     let_it_be(:label) { create(:group_label, group: group) }

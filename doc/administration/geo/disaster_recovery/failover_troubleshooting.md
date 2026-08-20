@@ -74,7 +74,7 @@ secondary site than on the Geo primary site, you can use the Rake task
 to [cleanup orphan artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
 
 On a Geo secondary site, this command also cleans up all Geo
-registry record related to the orphan files on disk.
+registry records related to the orphan files on disk.
 
 ### Fixing sign in errors
 

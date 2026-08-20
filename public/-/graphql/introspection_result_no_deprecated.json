@@ -34095,6 +34095,38 @@
               "deprecationReason": null
             },
             {
+              "name": "diffStats",
+              "description": "Details about which files were changed in the commit. This field can only be resolved for 10 commits in any single request.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DiffStats",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "diffStatsSummary",
+              "description": "Summary of which files were changed in the commit. This field can only be resolved for 10 commits in any single request.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DiffStatsSummary",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "diffs",
               "description": "Diffs contained within the commit. This field can only be resolved for 10 diffs in any single request.",
               "args": [],

@@ -10,8 +10,12 @@ module Gitlab
           min: 'Minimum',
           max: 'Maximum',
           mean: 'Mean',
-          quantile: 'Quantile of'
+          quantile: 'Quantile of',
+          sum: 'Sum of'
         }.freeze
+
+        # `sum` is only meaningful for types that can be added up.
+        SUMMABLE_MEASUREMENT_TYPES = %i[integer float].freeze
 
         class << self
           def name
@@ -85,18 +89,24 @@ module Gitlab
 
           # Declares a measurement (a row-level value with a base type) and
           # expands it into the standard aggregates as dotted metrics
-          # (`<name>.min`, `<name>.max`, `<name>.mean`, `<name>.quantile`),
-          # exposed in GraphQL as one nested group.
+          # (`<name>.min`, `<name>.max`, `<name>.mean`, `<name>.quantile`,
+          # plus `<name>.sum` for summable types), exposed in GraphQL as one
+          # nested group. The expression is also registered as a transient,
+          # so other definitions can reuse it via `transient(name)`.
           def measurement(name, type, expression, description: nil)
-            guard_measurement_support!
+            aggregates = measurement_aggregates_for(type)
+            guard_measurement_support!(aggregates.keys)
 
             expression = wrap_measurement_expression(expression)
             measurements[name] = { type: type, expression: expression, description: description }
+            transients[name] ||= expression
 
             base_description = description || "`#{name}` measurement value"
-            descriptions = MEASUREMENT_AGGREGATES.transform_values do |label|
+            descriptions = aggregates.transform_values do |label|
               "#{label} #{base_description.downcase_first}"
             end
+
+            summable = aggregates.key?(:sum)
 
             metrics do
               min :"#{name}.min", type, expression, description: descriptions[:min]
@@ -104,6 +114,7 @@ module Gitlab
               mean :"#{name}.mean", :float, expression, description: descriptions[:mean]
               quantile :"#{name}.quantile", :float, expression, description: descriptions[:quantile],
                 parameters: { quantile: { type: :float, in: 0.0..1.0 } }
+              sum :"#{name}.sum", type, expression, description: descriptions[:sum] if summable
             end
           end
 
@@ -113,8 +124,14 @@ module Gitlab
 
           private
 
-          def guard_measurement_support!
-            missing = MEASUREMENT_AGGREGATES.keys - metrics_mapping.keys
+          def measurement_aggregates_for(type)
+            return MEASUREMENT_AGGREGATES if SUMMABLE_MEASUREMENT_TYPES.include?(type)
+
+            MEASUREMENT_AGGREGATES.except(:sum)
+          end
+
+          def guard_measurement_support!(required_aggregates)
+            missing = required_aggregates - metrics_mapping.keys
             return if missing.empty?
 
             raise ArgumentError,

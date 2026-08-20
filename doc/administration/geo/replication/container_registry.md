@@ -30,7 +30,7 @@ Geo supports the following types of container registries:
 
 ## Supported image formats
 
-The following container image formats are support by Geo:
+The following container image formats are supported by Geo:
 
 - [Docker V2, schema 1](https://distribution.github.io/distribution/spec/deprecated-schema-v1/)
 - [Docker V2, schema 2](https://distribution.github.io/distribution/spec/manifest-v2-2/)

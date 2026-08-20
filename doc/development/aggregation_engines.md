@@ -236,6 +236,73 @@ Key characteristics:
 - Dimensions become `GROUP BY` columns on **outer query**
 - Metrics use aggregate functions on **outer query**
 
+### Measurements
+
+A measurement is a row-level value with a base type. Declare it once with the
+class-level `measurement` macro, and the framework expands it into a group of
+related metrics.
+
+Prefer a measurement when you expose a row-level value. Define individual
+metrics for the same value only when a measurement does not fit, for example
+when you need `if:` conditions, formatters, or an aggregate the macro does not
+generate.
+
+```ruby
+measurement(name, type, expression, description: nil)
+```
+
+The macro expands into a group of metrics with dotted identifiers:
+
+- `<name>.min` and `<name>.max`, which inherit the measurement's base type
+- `<name>.mean`, which is always `:float`
+- `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
+  parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
+- `<name>.sum`, which inherits the measurement's base type. The sum is only
+  generated for summable base types (`:integer` and `:float`).
+
+The `expression` argument can be a [transient column](#transient-columns)
+reference or a lambda. Zero-arity lambdas are wrapped automatically.
+
+The macro also registers the expression as a transient under the measurement
+name, so definitions that come later can reuse it with `transient(:name)`.
+If a transient with the same name already exists, the macro keeps the existing
+transient.
+
+```ruby
+transient(:duration) do
+  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+end
+
+measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
+```
+
+In GraphQL, the aggregates surface as one nested group field named after the
+measurement, with `min`, `max`, `mean`, `quantile`, and `sum` sub-fields.
+
+```graphql
+duration {
+  min
+  max
+  mean
+  quantile(quantile: 0.95)
+  sum
+}
+```
+
+`orderBy` accepts the full dotted identifier, for example
+`{ identifier: "duration.max", direction: DESC }`.
+
+#### Requirements and limitations
+
+- The engine adapter must support the `min`, `max`, `mean`, and `quantile` metrics,
+  and also the `sum` metric for summable measurement types.
+  Calling `measurement` on an adapter that does not support them (the ActiveRecord
+  engine today) raises `ArgumentError`. In practice, this makes the macro
+  ClickHouse-only.
+- The macro does not accept `if:` or `formatter:` options.
+- The raw measurement value does not get a dimension.
+- `metric_range` and `metric_exact_match` filters cannot target dotted metric identifiers.
+
 ### Available Components
 
 #### `count` metric
@@ -535,59 +602,6 @@ metrics do
     description: 'Number of finished sessions'
 end
 ```
-
-## Measurements
-
-A measurement is a row-level value with a base type. Declare it once with the
-class-level `measurement` macro, and the framework expands it into a group of
-related metrics.
-
-```ruby
-measurement(name, type, expression, description: nil)
-```
-
-The macro expands into four metrics with dotted identifiers:
-
-- `<name>.min` and `<name>.max`, which inherit the measurement's base type
-- `<name>.mean`, which is always `:float`
-- `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
-  parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
-
-The `expression` argument can be a `transient(:name)` reference or a lambda.
-Zero-arity lambdas are wrapped automatically.
-
-```ruby
-transient(:duration) do
-  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
-end
-
-measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
-```
-
-In GraphQL, the four aggregates surface as one nested group field named after the
-measurement, with `min`, `max`, `mean`, and `quantile` sub-fields.
-
-```graphql
-duration {
-  min
-  max
-  mean
-  quantile(quantile: 0.95)
-}
-```
-
-`orderBy` accepts the full dotted identifier, for example
-`{ identifier: "duration.max", direction: DESC }`.
-
-### Requirements and limitations
-
-- The engine adapter must support the `min`, `max`, `mean`, and `quantile` metrics.
-  Calling `measurement` on an adapter that does not support them (the ActiveRecord
-  engine today) raises `ArgumentError`. In practice, this makes the macro
-  ClickHouse-only.
-- The macro does not accept `if:` or `formatter:` options.
-- The raw measurement value does not get a dimension.
-- `metric_range` and `metric_exact_match` filters cannot target dotted metric identifiers.
 
 ## Using the Framework
 

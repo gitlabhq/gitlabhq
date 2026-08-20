@@ -59511,9 +59511,6 @@ msgstr ""
 msgid "PolicyStore|Advanced"
 msgstr ""
 
-msgid "PolicyStore|Advisory mode. Violations are flagged but progress is not blocked."
-msgstr ""
-
 msgid "PolicyStore|Affected projects"
 msgstr ""
 
@@ -59631,6 +59628,9 @@ msgstr ""
 msgid "PolicyStore|Enforce"
 msgstr ""
 
+msgid "PolicyStore|Enforce the action when rules match"
+msgstr ""
+
 msgid "PolicyStore|Enforcement"
 msgstr ""
 
@@ -59664,10 +59664,10 @@ msgstr ""
 msgid "PolicyStore|Freeze Window"
 msgstr ""
 
-msgid "PolicyStore|Hard enforcement. Violations are blocked as defined."
+msgid "PolicyStore|Last updated"
 msgstr ""
 
-msgid "PolicyStore|Last updated"
+msgid "PolicyStore|Log the violation. No user impact"
 msgstr ""
 
 msgid "PolicyStore|Maintainer"
@@ -59677,9 +59677,6 @@ msgid "PolicyStore|Message shown when the action is blocked"
 msgstr ""
 
 msgid "PolicyStore|Mode"
-msgstr ""
-
-msgid "PolicyStore|Monitoring mode. No actions are taken. Violations are recorded in the audit log."
 msgstr ""
 
 msgid "PolicyStore|Most restrictive SLA wins when multiple policies match"
@@ -59695,6 +59692,9 @@ msgid "PolicyStore|No policies found"
 msgstr ""
 
 msgid "PolicyStore|None added"
+msgstr ""
+
+msgid "PolicyStore|Notify the user and log the violation"
 msgstr ""
 
 msgid "PolicyStore|OPA/Rego policy evaluated server-side when the event is received. Maximum 32 KB."

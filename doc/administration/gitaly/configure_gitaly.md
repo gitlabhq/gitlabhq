@@ -107,13 +107,13 @@ The following list depicts the network architecture of Gitaly:
   nodes.
 
 The following diagram illustrates communication between Gitaly servers and GitLab Rails showing
-the default ports for HTTP and HTTPs communication.
+the default ports for HTTP and HTTPS communication.
 
 ![Two Gitaly servers and a GitLab Rails exchanging information.](img/gitaly_network_v13_9.png)
 
 > [!warning]
 > Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
-> by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
+> by default. The use of a firewall is highly recommended to restrict access to the Gitaly server.
 > Another option is to [use TLS](tls_support.md).
 
 In the following sections, we describe how to configure two Gitaly servers with secret token
@@ -466,7 +466,7 @@ connections):
 
 ### Configure Gitaly clients
 
-As the final step, you must update Gitaly clients to switch from using local Gitaly service to use
+As the final step, you must update Gitaly clients to switch from using a local Gitaly service to use
 the Gitaly servers you just configured.
 
 > [!note]
@@ -620,7 +620,7 @@ gitaly['configuration'] = {
 ```
 
 `path` can be included only for storage shards on the local Gitaly server.
-If it's excluded, default Git storage directory is used for that storage shard.
+If it's excluded, the default Git storage directory is used for that storage shard.
 
 ### GitLab requires a default repository storage
 
@@ -643,7 +643,7 @@ only where required.
 
 Disabling Gitaly on the GitLab instance makes sense only when you run GitLab in a custom cluster configuration, where
 Gitaly runs on a separate machine from the GitLab instance. Disabling Gitaly on all machines in the cluster is not
-a valid configuration (some machines much act as Gitaly servers).
+a valid configuration (some machines must act as Gitaly servers).
 
 Disable Gitaly on a GitLab server in one of two ways:
 
@@ -992,7 +992,7 @@ uses a unique random string as part of the cache filenames it creates. This mean
 - They do not reuse another process's files.
 
 While the default directory puts the cache files in the same
-file system as your repository data, this is not requirement. You can
+file system as your repository data, this is not a requirement. You can
 put the cache files on a different file system if that works better for
 your infrastructure.
 
@@ -1388,7 +1388,7 @@ You can generate parts of the Gitaly configuration using an external command. Yo
 
 - To configure nodes without having to distribute the full configuration to each of them.
 - To configure using auto-discovery of the node's settings. For example, using DNS entries.
-- To configure secrets at startup of the node, so that don't need to be visible in plain text.
+- To configure secrets at startup of the node, so that they don't need to be visible in plain text.
 
 To generate configuration using an external command, you must provide a script that dumps the
 desired configuration of the Gitaly node in JSON format to its standard output.

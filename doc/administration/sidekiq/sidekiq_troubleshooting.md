@@ -232,7 +232,7 @@ function in Rugged. In the stack, we can see `rev_parse` is being called by the 
 
 `rbspy` requires additional [capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
 in [containerized environments](https://rbspy.github.io/using-rbspy/index.html#containers).
-It requires at least the `SYS_PTRACE` capability, otherwise it terminates with a `permission denied` error.
+It requires at least the `SYS_PTRACE` capability. Otherwise, it terminates with a `permission denied` error.
 
 {{< tabs >}}
 
@@ -383,7 +383,7 @@ exit
 
 ## Sidekiq kill signals
 
-TTIN was described previously as the signal to print backtraces for logging, however
+TTIN was described previously as the signal to print backtraces for logging. However,
 Sidekiq responds to other signals as well. For example, TSTP and TERM can be used
 to gracefully shut Sidekiq down, see
 [the Sidekiq Signals docs](https://github.com/mperham/sidekiq/wiki/Signals#ttin).
@@ -404,8 +404,8 @@ the query details.
 It is possible to use [Sidekiq API](https://github.com/sidekiq/sidekiq/wiki/API)
 to perform a number of troubleshooting steps on Sidekiq.
 
-These are the administrative commands and it should only be used if currently
-administration interface is not suitable due to scale of installation.
+These are administrative commands, and they should only be used if the current
+administration interface is not suitable due to the scale of the installation.
 
 All these commands should be run using `gitlab-rails console`.
 
@@ -530,7 +530,7 @@ end
 
 ## Canceling running jobs (destructive)
 
-This is highly risky operation and use it as last resort.
+This is a highly risky operation, so use it only as a last resort.
 Doing that might result in data corruption, as the job
 is interrupted mid-execution and it is not guaranteed
 that proper rollback of transactions is implemented.
@@ -539,11 +539,11 @@ that proper rollback of transactions is implemented.
 Gitlab::SidekiqDaemon::Monitor.cancel_job('job-id')
 ```
 
-This requires the Sidekiq to be run with `SIDEKIQ_MONITOR_WORKER=1`
+This requires Sidekiq to be run with the `SIDEKIQ_MONITOR_WORKER=1`
 environment variable.
 
-To perform of the interrupt we use `Thread.raise` which
-has number of drawbacks, as mentioned in [Why Ruby's Timeout is dangerous (and `Thread.raise` is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/#timeout-how-it-works-and-why-thread-raise-is-terrifying).
+To perform the interrupt, we use `Thread.raise`, which
+has a number of drawbacks, as mentioned in [Why Ruby's Timeout is dangerous (and `Thread.raise` is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/#timeout-how-it-works-and-why-thread-raise-is-terrifying).
 
 ## Manually trigger a cron job
 
@@ -630,7 +630,7 @@ but if you want to clear the idempotency key immediately, follow the following s
 
 ## CPU saturation in Redis caused by Sidekiq BRPOP calls
 
-Sidekiq `BROP` calls can cause CPU usage to increase on Redis.
+Sidekiq `BRPOP` calls can cause CPU usage to increase on Redis.
 Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
 
 ## Error: `OpenSSL::Cipher::CipherError`
@@ -641,7 +641,7 @@ If you receive error messages like:
 "OpenSSL::Cipher::CipherError","exception.message":"","exception.backtrace":["encryptor (3.0.0) lib/encryptor.rb:98:in `final'","encryptor (3.0.0) lib/encryptor.rb:98:in `crypt'","encryptor (3.0.0) lib/encryptor.rb:49:in `decrypt'"
 ```
 
-This error means that the processes are unable to decrypt encrypted data that is stored in the GitLab database. This indicates that there is some problem with your `/etc/gitlab/gitlab-secrets.json` file, ensure that you copied the file from your main GitLab node to your Sidekiq nodes.
+This error means that the processes are unable to decrypt encrypted data that is stored in the GitLab database. This indicates that there is a problem with your `/etc/gitlab/gitlab-secrets.json` file. Ensure that you copied the file from your main GitLab node to your Sidekiq nodes.
 
 ## Related topics
 

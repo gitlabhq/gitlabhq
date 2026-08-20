@@ -260,7 +260,7 @@ For the second log, you might have one of the following scenarios:
 
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
-  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the GitLab Self-Managed instance.
+  - `json.exception.class` and `json.exception.message` indicate whether an issue occurred while contacting the GitLab Self-Managed instance.
 
 ## Error: `The Jira user is not a site or organization administrator`
 

@@ -61,7 +61,7 @@ from [owasp.org](https://owasp.org/).
 
 - Secondary sites provide all the interfaces a primary site does
   (notably an HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
-  access), but is constrained to read-only activities. The principal use case is
+  access), but are constrained to read-only activities. The principal use case is
   envisioned to be cloning Git repositories from the secondary site in favor of the
   primary site, but end-users may use the GitLab web interface to view information like projects,
   issues, merge requests, and snippets.
@@ -109,7 +109,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What network performance requirements exist?
 
-- Maximum replication speeds between primary site and secondary site is limited by the
+- Maximum replication speeds between primary site and secondary site are limited by the
   available bandwidth between sites. No hard requirements exist - time to complete
   replication (and ability to keep up with changes on the primary site) is a function
   of the size of the data set, tolerance for latency, and available network
@@ -238,7 +238,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What data should be encrypted? What key management requirements are defined?
 
-- Neither primary sites or secondary sites encrypt Git repository or file system data at
+- Neither primary sites nor secondary sites encrypt Git repository or file system data at
   rest. A subset of database columns are encrypted at rest using the `db_otp_key`.
 - A static secret shared across all hosts in a GitLab deployment.
 - In transit, data should be encrypted, although the application does permit

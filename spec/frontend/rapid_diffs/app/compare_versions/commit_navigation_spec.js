@@ -30,8 +30,6 @@ describe('CommitNavigation', () => {
   const findNavButtons = () => wrapper.findByTestId('commit-nav-buttons');
   const findPrevButton = () => wrapper.findByTestId('prev-commit-button');
   const findNextButton = () => wrapper.findByTestId('next-commit-button');
-  const findPrevDisabledTooltip = () => wrapper.findByTestId('prev-commit-disabled-tooltip');
-  const findNextDisabledTooltip = () => wrapper.findByTestId('next-commit-disabled-tooltip');
 
   beforeEach(() => {
     keyboardShortcutsDisabled.mockReturnValue(false);
@@ -161,36 +159,6 @@ describe('CommitNavigation', () => {
       createComponent({ commit: lastCommit });
 
       expect(findNextButton().attributes('aria-label')).toBe("You're at the last commit");
-    });
-  });
-  describe('disabled-button tooltip overlay', () => {
-    it('renders a tooltip overlay on the disabled previous button at the first commit', () => {
-      createComponent({
-        commit: { ...baseCommit, prev_commit_id: null, next_commit_id: 'next456' },
-      });
-
-      expect(findPrevDisabledTooltip().exists()).toBe(true);
-      expect(findPrevDisabledTooltip().attributes('title')).toBe("You're at the first commit");
-      expect(findNextDisabledTooltip().exists()).toBe(false);
-    });
-
-    it('renders a tooltip overlay on the disabled next button at the last commit', () => {
-      createComponent({
-        commit: { ...baseCommit, prev_commit_id: 'prev123', next_commit_id: null },
-      });
-
-      expect(findNextDisabledTooltip().exists()).toBe(true);
-      expect(findNextDisabledTooltip().attributes('title')).toBe("You're at the last commit");
-      expect(findPrevDisabledTooltip().exists()).toBe(false);
-    });
-
-    it('renders no tooltip overlay when both buttons are enabled', () => {
-      createComponent({
-        commit: { ...baseCommit, prev_commit_id: 'prev123', next_commit_id: 'next456' },
-      });
-
-      expect(findPrevDisabledTooltip().exists()).toBe(false);
-      expect(findNextDisabledTooltip().exists()).toBe(false);
     });
   });
 

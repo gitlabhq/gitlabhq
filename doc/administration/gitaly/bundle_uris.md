@@ -35,13 +35,13 @@ Using Bundle URIs can:
 
 ## Prerequisites
 
-The prerequisites for using bundle URI depend on whether cloning in a CI/CD job or locally in a terminal.
+The prerequisites for using bundle URI depend on whether you are cloning in a CI/CD job or locally in a terminal.
 
 ### Cloning in CI/CD jobs
 
 To prepare to use bundle URI in CI/CD jobs:
 
-1. Select a [GitLab Runner helper image](https://gitlab.com/gitlab-org/gitlab-runner/container_registry/1472754) used
+1. Update the [GitLab Runner helper image](https://gitlab.com/gitlab-org/gitlab-runner/container_registry/1472754) used
    by GitLab Runner to a version that runs:
 
    - Git version 2.49.0 or later.
@@ -66,10 +66,10 @@ To prepare to use bundle URI in CI/CD jobs:
    `gitlab-runner-helper` image. Therefore, some of the latest available images might still not run Git 2.49.
 
    If you do not find an image that meets the requirements, use the `gitlab-runner-helper` as a base image for your own
-   custom-built image. You can host on your custom-build image by using
+   custom-built image. You can host your custom-built image by using
    [GitLab container registry](../../user/packages/container_registry/_index.md).
 
-1. Configure your GitLab Runner instances to use the select image by updating your `config.toml` file:
+1. Configure your GitLab Runner instances to use the selected image by updating your `config.toml` file:
 
    ```toml
    [[runners]]
@@ -84,7 +84,7 @@ To prepare to use bundle URI in CI/CD jobs:
 
 1. Restart the runners for the new configuration to take effect.
 1. Enable the `FF_USE_GIT_NATIVE_CLONE` [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/)
-   in your `.gitlab-ci.yml` file by setting it `true` :
+   in your `.gitlab-ci.yml` file by setting it to `true`:
 
    ```yaml
    variables:

@@ -378,7 +378,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  When performing a PostgreSQL major version (9 > 10), update this is expected. Follow
+  When performing a PostgreSQL major version upgrade (9 > 10), this is expected. Follow
   the [initiate-the-replication-process](../../setup/database.md#step-3-initiate-the-replication-process).
 
 - Rails does not appear to have the configuration necessary to connect to the Geo tracking database.
@@ -435,7 +435,7 @@ Machine clock is synchronized ... Exception: getaddrinfo: Servname not supported
 
 ##### Message: `cannot execute INSERT in a read-only transaction`
 
-When this error is encountered on a secondary site, it likely affects all usages of GitLab Rails such as `gitlab-rails` or `gitlab-rake` commands, as well the Puma, Sidekiq, and Geo Log Cursor services.
+When this error is encountered on a secondary site, it likely affects all usages of GitLab Rails such as `gitlab-rails` or `gitlab-rake` commands, as well as the Puma, Sidekiq, and Geo Log Cursor services.
 
 ```plaintext
 ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute INSERT in a read-only transaction

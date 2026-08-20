@@ -9775,6 +9775,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of session duration in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -88039,6 +88051,38 @@
               "deprecationReason": null
             },
             {
+              "name": "diffStats",
+              "description": "Details about which files were changed in the commit. This field can only be resolved for 10 commits in any single request.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DiffStats",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "diffStatsSummary",
+              "description": "Summary of which files were changed in the commit. This field can only be resolved for 10 commits in any single request.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DiffStatsSummary",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "diffs",
               "description": "Diffs contained within the commit. This field can only be resolved for 10 diffs in any single request.",
               "args": [],
@@ -130335,7 +130379,7 @@
           "fields": [
             {
               "name": "max",
-              "description": "Maximum deployment duration in milliseconds",
+              "description": "Maximum deployment duration in seconds",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -130347,7 +130391,7 @@
             },
             {
               "name": "mean",
-              "description": "Mean deployment duration in milliseconds",
+              "description": "Mean deployment duration in seconds",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -130359,7 +130403,7 @@
             },
             {
               "name": "min",
-              "description": "Minimum deployment duration in milliseconds",
+              "description": "Minimum deployment duration in seconds",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -130371,7 +130415,7 @@
             },
             {
               "name": "quantile",
-              "description": "Quantile of deployment duration in milliseconds",
+              "description": "Quantile of deployment duration in seconds",
               "args": [
                 {
                   "name": "quantile",
@@ -130389,6 +130433,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of deployment duration in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -246271,6 +246327,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of time to merge in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -305831,6 +305899,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of pipeline duration in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,

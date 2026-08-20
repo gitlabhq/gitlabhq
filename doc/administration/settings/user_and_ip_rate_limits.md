@@ -149,7 +149,7 @@ The following headers are included in all responses to help clients track their 
 |:----------------------|:-----------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `RateLimit-Limit`     | `60`                         | The request quota for the client each minute. If the rate limit period set in the **Admin** area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
 | `RateLimit-Name`      | `throttle_authenticated_api` | Name of the throttle applied to the request.                                                                                                                                                                     |
-| `RateLimit-Observed`  | `67`                         | Number of requests associated to the client in the time window.                                                                                                                                                  |
+| `RateLimit-Observed`  | `67`                         | Number of requests associated with the client in the time window.                                                                                                                                                  |
 | `RateLimit-Remaining` | `33`                         | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Observed`.                                                                                                                     |
 | `RateLimit-Reset`     | `1609844400`                 | [Unix time](https://en.wikipedia.org/wiki/Unix_time)-formatted time when the request quota is reset.                                                                                                             |
 
@@ -247,8 +247,8 @@ The possible names are:
 - `throttle_unauthenticated_git_http`
 - `throttle_authenticated_git_http`
 
-For example, to try out throttles for all authenticated requests to
-non-protected paths can be done by setting
+For example, you can try out throttles for all authenticated requests to
+non-protected paths by setting
 `GITLAB_THROTTLE_DRY_RUN='throttle_authenticated_web,throttle_authenticated_api'`.
 
 To enable dry run mode for all throttles, the variable can be set to `*`.
@@ -256,7 +256,7 @@ To enable dry run mode for all throttles, the variable can be set to `*`.
 Setting a throttle to dry run mode logs a message to the
 [`auth.log`](../logs/_index.md#authlog) when it would hit the limit, while letting the
 request continue. The log message contains an `env` field set to `track`. The `matched`
-field contains the name of throttle that was hit.
+field contains the name of the throttle that was hit.
 
 It is important to set the environment variable before enabling
 the rate limiting in the settings. The settings in the **Admin** area

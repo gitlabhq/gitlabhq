@@ -434,6 +434,35 @@ Example:
 Show me app/models/user.rb from the main branch of my-group/my-project
 ```
 
+## `get_commit`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605874) in GitLab 19.3.
+
+{{< /history >}}
+
+Retrieves a single commit's metadata, and optionally its diff or notes.
+
+| Parameter     | Type    | Required | Description |
+|---------------|---------|----------|-------------|
+| `url`         | string  | No       | URL of the GitLab commit. Required if `project_id` and `commit_sha` are not provided. |
+| `project_id`  | string  | No       | ID or URL-encoded path of the project. Required if `url` is not provided. |
+| `commit_sha`  | string  | No       | Commit to look up. Accepts a full or short SHA, branch name, or tag name. Required if `url` is not provided. |
+| `include`     | array   | No       | Associated facet to fetch inline, one per call (`diff` or `notes`). Base metadata is always returned. |
+| `diff_detail` | string  | No       | Level of detail in the commit diff. Applies only when `include` contains `diff`. Can be either `stats` or `full_patch`. Default is `stats`. |
+| `notes_after` | string  | No       | Token to fetch the next page of notes. Applies only when `include` contains `notes`. |
+| `notes_first` | integer | No       | Number of notes to return per page (maximum 100). Applies only when `include` contains `notes`. |
+
+With `diff_detail` set to `stats`, the diff facet returns per-file and summary line counts.
+With `full_patch`, it returns the patch text.
+
+Example:
+
+```plaintext
+Show me commit abc123 in gitlab-org/gitlab with its diff stats
+```
+
 ## `get_pipeline`
 
 {{< history >}}

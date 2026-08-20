@@ -30,7 +30,7 @@ For more information about changes to product usage data collection, read the bl
 
 Event data tracks interactions (or actions) within the GitLab platform.
 These interactions or actions could be user initiated such as initiating CI/CD pipelines, merging a merge request, triggering a webhook, or creating an issue.
-Actions can also result from background system processing like scheduled pipeline succeeding.
+Actions can also result from background system processing like a scheduled pipeline succeeding.
 The focus of event data collection is on the users' actions and the metadata associated with those actions.
 
 User IDs are pseudonymized to protect privacy, and GitLab does not undertake any processes to re-identify or associate the metrics with individual users.
@@ -242,4 +242,4 @@ The log file is located at:
 - `/var/log/gitlab/gitlab-rails/product_usage_data.log` on Linux package installations
 - `/home/git/gitlab/log/product_usage_data.log` on self-compiled installations
 
-While these logs provide thorough visibility into data transmission, they're designed specifically for inspection by security teams rather than feature usage analysis. For more detailed information about logging system, see the [Log system documentation](../logs/_index.md#product-usage-data-log).
+While these logs provide thorough visibility into data transmission, they're designed specifically for inspection by security teams rather than feature usage analysis. For more detailed information about the logging system, see the [Log system documentation](../logs/_index.md#product-usage-data-log).

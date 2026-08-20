@@ -58,7 +58,7 @@ metadata database version.
 ## Known limitations
 
 - Metadata import for existing registries requires a period of read-only time.
-- Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
+- Prior to 18.3, the registry's regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
 - During metadata imports for existing registries, the `createdAt` and `publishedAt` timestamp values for image tags are set to the import date. This is intentional to ensure consistency, because the legacy registry does not collect tag published dates for all images. While some images have build dates in their metadata, many do not. For more information, see [issue 1384](https://gitlab.com/gitlab-org/container-registry/-/issues/1384).
 
@@ -116,13 +116,13 @@ Prerequisites:
 ### Before you start
 
 - After you enable the database, you must continue to use it. The database is
-  now the source of the registry metadata, disabling it after this point
+  now the source of the registry metadata. Disabling it after this point
   causes the registry to lose visibility on all images written to it while
   the database was active.
 - [Offline garbage collection](container_registry.md#container-registry-garbage-collection) is no longer required.
   The garbage collection command included with GitLab will safely exit when the database is enabled, but third-party
   commands, such as the one provided by the upstream registry, will delete data associated with tagged images.
-- Verify you have not automated offline garbage collection: especially with a third-party command.
+- Verify you have not automated offline garbage collection, especially with a third-party command.
 - You can first [reduce the storage of your registry](../../user/packages/container_registry/reduce_container_registry_storage.md)
   to speed up the process.
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
@@ -457,7 +457,7 @@ To skip post-deployment migrations:
 
 ## Online garbage collection monitoring
 
-The initial runs of online garbage collection following the import process varies
+The initial runs of online garbage collection following the import process vary
 in duration based on the number of imported images. You should monitor the efficiency and
 health of your online garbage collection during this period.
 
@@ -652,7 +652,7 @@ for messages related to garbage collection. Filter for entries by
 
 ##### GC queue sizes
 
-The unfiltered size of the `gc_manifest_review_queue` and `gc_blob_review_queue`
+The unfiltered sizes of the `gc_manifest_review_queue` and `gc_blob_review_queue`
 are not good indicators of the health of the online garbage collector. These
 queues constantly have new entries added to them; therefore, these queues
 never fully clear for an active registry.
@@ -709,7 +709,7 @@ If most of your images are tagged, garbage collection won't significantly reduce
 because it only deletes untagged images.
 
 Implement cleanup policies to remove unneeded tags, which eventually causes images
-to be removed through garbage collection and storage space being recovered.
+to be removed through garbage collection and storage space to be recovered.
 
 ## Using an external database
 

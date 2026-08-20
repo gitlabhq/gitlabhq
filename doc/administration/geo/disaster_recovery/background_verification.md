@@ -14,7 +14,7 @@ title: Automatic background verification
 {{< /details >}}
 
 Automatic background verification ensures that the transferred data matches a
-calculated checksum. If the checksum of the data on the primary site matches checksum of the
+calculated checksum. If the checksum of the data on the primary site matches the checksum of the
 data on the secondary site, the data transferred successfully. Following a planned failover,
 any corrupted data may be **lost**, depending on the extent of the corruption.
 
@@ -23,9 +23,9 @@ You can restore it from backup or remove it from the primary site to resolve the
 
 If verification succeeds on the primary site but fails on the secondary site,
 this indicates that the object was corrupted during the replication process.
-Geo actively try to correct verification failures marking the repository to
+Geo actively tries to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset the verification for
-these failures, so you should follow [these instructions](#reset-verification-for-projects-where-verification-has-failed).
+these failures, you should follow [these instructions](#reset-verification-for-projects-where-verification-has-failed).
 
 If verification is lagging significantly behind replication, consider giving
 the site more time before scheduling a planned failover.

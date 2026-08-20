@@ -83,7 +83,7 @@ To enforce two-factor authentication for all users:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Enforce two-factor authentication** checkbox.
-1. Optional. In **Two-factor grace period**, enter a number of hours. users must register a 2FA
+1. Optional. In **Two-factor grace period**, enter a number of hours. Users must register a 2FA
    method at the end of this time. Set to `0` to enforce registration at the next sign in.
 1. Select **Save changes**.
 
@@ -97,7 +97,7 @@ To enforce two-factor authentication for administrators:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
 1. Select the **Enforce two-factor authentication for administrators** checkbox.
-1. Optional. In **Two-factor grace period**, enter a number of hours. users must register a 2FA
+1. Optional. In **Two-factor grace period**, enter a number of hours. Users must register a 2FA
    method at the end of this time. Set to `0` to enforce registration at the next sign in.
 1. Select **Save changes**.
 
@@ -126,12 +126,12 @@ When Admin Mode is enabled, it applies to all administrators on the instance.
 
 When Admin Mode is enabled for an instance, administrators:
 
-- Are allowed to access group and projects for which they are members.
+- Are allowed to access groups and projects for which they are members.
 - Cannot access the **Admin** area.
 
 ### Enable Admin Mode for your instance
 
-Administrators can enable Admin Mode though the API, the Rails console, or the UI.
+Administrators can enable Admin Mode through the API, the Rails console, or the UI.
 
 #### Use the API to enable Admin Mode
 

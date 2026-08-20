@@ -10,8 +10,6 @@ Style/NumberedParameters:
     - 'app/models/integrations/datadog.rb'
     - 'app/models/project.rb'
     - 'ee/app/models/ee/project.rb'
-    - 'ee/app/models/security/finding.rb'
-    - 'ee/app/models/vulnerabilities/feedback.rb'
     - 'ee/lib/ee/gitlab/quick_actions/users_extractor.rb'
     - 'ee/spec/models/vulnerabilities/statistic_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'

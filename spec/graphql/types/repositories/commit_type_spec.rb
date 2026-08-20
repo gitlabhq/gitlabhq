@@ -16,6 +16,7 @@ RSpec.describe GitlabSchema.types['Commit'], feature_category: :source_code_mana
       :id, :parent_sha, :sha, :short_id, :title, :full_title, :full_title_html,
       :description, :description_html, :message, :title_html, :authored_date,
       :author_name, :author_email, :author_gravatar, :author, :diffs, :web_url,
+      :diff_stats, :diff_stats_summary,
       :web_path, :pipelines, :latest_pipeline, :signature_html, :signature, :committer_name,
       :committer_email, :committed_date, :name, :tags, :has_agent_session,
       # Provided by Types::Notes::NoteableInterface (Commit is a noteable).
@@ -26,6 +27,40 @@ RSpec.describe GitlabSchema.types['Commit'], feature_category: :source_code_mana
   describe 'diffs' do
     it 'limits field call count' do
       expect(described_class.fields['diffs'].extensions).to include(a_kind_of(::Gitlab::Graphql::Limit::FieldCallCount))
+    end
+  end
+
+  describe 'diff stats' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { project.first_owner }
+
+    # Not `let_it_be`: `Commit#diff_stats` uses `strong_memoize_attr`, which writes
+    # to the instance and raises `FrozenError` on a `let_it_be`-frozen commit.
+    let(:commit) { project.commit }
+
+    it 'limits the call count of both Gitaly-backed fields', :aggregate_failures do
+      expect(described_class.fields['diffStats'].extensions)
+        .to include(a_kind_of(::Gitlab::Graphql::Limit::FieldCallCount))
+      expect(described_class.fields['diffStatsSummary'].extensions)
+        .to include(a_kind_of(::Gitlab::Graphql::Limit::FieldCallCount))
+    end
+
+    it 'returns per-file diff stats' do
+      result = resolve_field(:diff_stats, commit, current_user: user, object_type: described_class)
+
+      expect(result).to all(respond_to(:path, :additions, :deletions))
+      expect(result.map(&:path)).to match_array(commit.diff_stats.paths)
+    end
+
+    it 'aggregates the summary from the commit diff stats' do
+      result = resolve_field(:diff_stats_summary, commit, current_user: user, object_type: described_class)
+
+      stats = commit.diff_stats
+      expect(result).to eq(
+        additions: stats.sum(&:additions),
+        deletions: stats.sum(&:deletions),
+        file_count: stats.paths.size
+      )
     end
   end
 

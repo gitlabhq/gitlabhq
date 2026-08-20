@@ -17,7 +17,7 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 ## Custom logo
 
-The logo in the header of some emails can be customized, see the [logo customization section](../appearance.md#customize-your-homepage-button).
+The logo in the header of some emails can be customized. See the [logo customization section](../appearance.md#customize-your-homepage-button).
 
 ## Include author name in email notification email body
 

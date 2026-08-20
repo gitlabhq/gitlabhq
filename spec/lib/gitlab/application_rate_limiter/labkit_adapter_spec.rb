@@ -153,6 +153,49 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       end
     end
 
+    context 'with a characteristic-keyed hash scope' do
+      it 'increments the same labkit counter as the positional form' do
+        described_class.run!(:users_get_by_id, scope: user)
+        described_class.run!(:users_get_by_id, scope: { user: user })
+
+        count = Gitlab::Redis::RateLimiting.with do |r|
+          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+        end
+
+        expect(count.to_i).to eq(2)
+      end
+
+      it 'contributes primary keys for AR values and string forms for primitives' do
+        result = Labkit::RateLimit::Result.new
+        limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
+
+        allow(supported_rate_limits).to receive(:limiter_for).with(:pipelines_create).and_return(limiter)
+
+        described_class.run!(:pipelines_create, scope: { project: project, user: user, sha: 'deadbeef' })
+
+        expect(limiter).to have_received(:check).with(
+          { project: project.id, user: user.id, sha: 'deadbeef' },
+          cost: 1,
+          rule_context: {}
+        )
+      end
+
+      it 'drops nil values so labkit fills the _unknown_ sentinel' do
+        result = Labkit::RateLimit::Result.new
+        limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
+
+        allow(supported_rate_limits).to receive(:limiter_for).with(:notification_emails).and_return(limiter)
+
+        described_class.run!(:notification_emails, scope: { project: nil, group: nil, user: user })
+
+        expect(limiter).to have_received(:check).with(
+          { user: user.id },
+          cost: 1,
+          rule_context: {}
+        )
+      end
+    end
+
     it 'delegates to SupportedRateLimits.limiter_for on each check' do
       result = Labkit::RateLimit::Result.new
       limiter = instance_double(Labkit::RateLimit::Limiter, check: result)

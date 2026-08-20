@@ -634,7 +634,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`.
-      It's okay if one values ends in `/` and the other doesn't. Otherwise, the values must
+      It's okay if one value ends in `/` and the other doesn't. Otherwise, the values must
       match exactly.
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
    1. Optional. Select which groups or storage shards should be replicated by the

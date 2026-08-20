@@ -120,7 +120,7 @@ the primary site.
 
 To resolve this issue:
 
-- Try restarting **each Rails, Sidekiq, and Gitaly nodes on your secondary site** using `sudo gitlab-ctl restart`.
+- Try restarting **each Rails, Sidekiq, and Gitaly node on your secondary site** using `sudo gitlab-ctl restart`.
 - Check `/var/log/gitlab/gitlab-rails/geo.log` on Sidekiq nodes to see if the secondary site is
   using IPv6 to send its status to the primary site. If it is, add an entry to
   the primary site using IPv4 in the `/etc/hosts` file. Alternatively, you should

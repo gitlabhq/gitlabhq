@@ -171,7 +171,7 @@ Example response:
 
 On failure, the endpoint returns a `503` HTTP status code.
 
-This check is being exempt from Rack Attack.
+This check is exempt from Rack Attack.
 
 ## Liveness
 
@@ -206,7 +206,7 @@ On success, the endpoint returns a `200` HTTP status code, and a response like b
 
 On failure, the endpoint returns a `503` HTTP status code.
 
-This check is being exempt from Rack Attack.
+This check is exempt from Rack Attack.
 
 ## Sidekiq
 

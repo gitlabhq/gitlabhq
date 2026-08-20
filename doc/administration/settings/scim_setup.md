@@ -213,7 +213,7 @@ After you have configured the mappings and the settings, return to the app overv
 
 > [!warning]
 > Once synchronized, changing the field mapped to `id` and `externalId` might cause errors. These include
-> provisioning errors, duplicate users, and might prevent existing users from accessing the GitLab group.
+> provisioning errors and duplicate users, and might prevent existing users from accessing the GitLab group.
 
 ## Remove access
 

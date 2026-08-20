@@ -33376,6 +33376,7 @@ Fields:
 | <a id="agentplatformsessionsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum session duration in seconds. |
 | <a id="agentplatformsessionsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean session duration in seconds. |
 | <a id="agentplatformsessionsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum session duration in seconds. |
+| <a id="agentplatformsessionsaggregationresponsedurationmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of session duration in seconds. |
 
 #### Fields with arguments
 
@@ -38332,6 +38333,8 @@ Fields:
 | <a id="commit-committername"></a>`committerName` | [`String`](#string) | Name of the committer. |
 | <a id="commit-description"></a>`description` | [`String`](#string) | Description of the commit message. |
 | <a id="commit-descriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="commit-diffstats"></a>`diffStats` | [`[DiffStats!]`](#diffstats) | Details about which files were changed in the commit. This field can only be resolved for 10 commits in any single request. |
+| <a id="commit-diffstatssummary"></a>`diffStatsSummary` | [`DiffStatsSummary`](#diffstatssummary) | Summary of which files were changed in the commit. This field can only be resolved for 10 commits in any single request. |
 | <a id="commit-diffs"></a>`diffs` | [`[Diff!]`](#diff) | Diffs contained within the commit. This field can only be resolved for 10 diffs in any single request. |
 | <a id="commit-discussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
 | <a id="commit-fulltitle"></a>`fullTitle` | [`String`](#string) | Full title of the commit message. |
@@ -41149,15 +41152,16 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="deploymentsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum deployment duration in milliseconds. |
-| <a id="deploymentsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean deployment duration in milliseconds. |
-| <a id="deploymentsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum deployment duration in milliseconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum deployment duration in seconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean deployment duration in seconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum deployment duration in seconds. |
+| <a id="deploymentsaggregationresponsedurationmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of deployment duration in seconds. |
 
 #### Fields with arguments
 
 ##### `DeploymentsAggregationResponseDurationMetrics.quantile`
 
-Quantile of deployment duration in milliseconds.
+Quantile of deployment duration in seconds.
 
 Returns [`Float`](#float).
 
@@ -51421,6 +51425,7 @@ Fields:
 | <a id="mergerequestsaggregationresponsetimetomergemetrics-max"></a>`max` | [`Int`](#int) | Maximum time to merge in seconds. |
 | <a id="mergerequestsaggregationresponsetimetomergemetrics-mean"></a>`mean` | [`Float`](#float) | Mean time to merge in seconds. |
 | <a id="mergerequestsaggregationresponsetimetomergemetrics-min"></a>`min` | [`Int`](#int) | Minimum time to merge in seconds. |
+| <a id="mergerequestsaggregationresponsetimetomergemetrics-sum"></a>`sum` | [`Int`](#int) | Sum of time to merge in seconds. |
 
 #### Fields with arguments
 
@@ -54601,6 +54606,7 @@ Fields:
 | <a id="pipelinesaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum pipeline duration in seconds. |
 | <a id="pipelinesaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean pipeline duration in seconds. |
 | <a id="pipelinesaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum pipeline duration in seconds. |
+| <a id="pipelinesaggregationresponsedurationmetrics-sum"></a>`sum` | [`Int`](#int) | Sum of pipeline duration in seconds. |
 
 #### Fields with arguments
 

@@ -117,16 +117,8 @@ export default {
         :href="previousCommitUrl"
         :disabled="!commit.prev_commit_id"
         size="small"
-        class="gl-relative"
         data-testid="prev-commit-button"
       >
-        <span
-          v-if="!commit.prev_commit_id"
-          v-gl-tooltip
-          class="!gl-absolute gl-left-0 gl-top-0 gl-h-full gl-w-full"
-          :title="previousCommitTitle"
-          data-testid="prev-commit-disabled-tooltip"
-        ></span>
         <gl-icon name="chevron-left" />
         {{ $options.i18n.previous }}
       </gl-button>
@@ -137,16 +129,8 @@ export default {
         :href="nextCommitUrl"
         :disabled="!commit.next_commit_id"
         size="small"
-        class="gl-relative"
         data-testid="next-commit-button"
       >
-        <span
-          v-if="!commit.next_commit_id"
-          v-gl-tooltip
-          class="!gl-absolute gl-left-0 gl-top-0 gl-h-full gl-w-full"
-          :title="nextCommitTitle"
-          data-testid="next-commit-disabled-tooltip"
-        ></span>
         {{ $options.i18n.next }}
         <gl-icon name="chevron-right" />
       </gl-button>

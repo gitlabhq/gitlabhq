@@ -46,6 +46,7 @@ module Mcp
         'add_branch' => ::Mcp::Tools::Repositories::Branches::AddBranchService,
         'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
         'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
+        'get_commit' => ::Mcp::Tools::Commits::GetCommitService,
         'get_merge_request' => ::Mcp::Tools::MergeRequests::GetMergeRequestService,
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
         'get_repository_file' => ::Mcp::Tools::Repositories::GetRepositoryFileService,

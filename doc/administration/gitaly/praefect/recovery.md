@@ -18,7 +18,7 @@ To add a new Gitaly node:
 
 1. Install the new Gitaly node by following the [documentation](configure.md#gitaly).
 1. Add the new node to your [Praefect configuration](configure.md#praefect) under `praefect['virtual_storages']`.
-1. Reconfigure and restart Praefect by running following commands:
+1. Reconfigure and restart Praefect by running the following commands:
 
    ```shell
    gitlab-ctl reconfigure
@@ -117,7 +117,7 @@ Get the new node populated using one of the following approaches:
 If the [default replication factor](configure.md#configure-replication-factor) is set, Praefect automatically
 replicates all repositories to any newly added node to maintain the factor. No per-repository action is required.
 
-After you [verify](#check-for-data-loss) that repository is successfully replicated to the new node:
+After you [verify](#check-for-data-loss) that the repository is successfully replicated to the new node:
 
 1. Remove the `gitaly-1` node from the [Praefect configuration](configure.md#praefect) under `praefect['virtual_storages']`.
 1. Reconfigure and restart Praefect:
@@ -155,7 +155,7 @@ Gitaly Cluster (Praefect):
 
 - Elects a healthy secondary with a fully up to date copy of the repository as the new primary.
 - If no fully up to date secondary is available, elects the secondary with the least unreplicated writes from the primary as the new primary.
-- Repository becomes unavailable if there are no fully up to date copies of it on healthy secondaries. Use the [Praefect `dataloss` subcommand](#check-for-data-loss) to detect it.
+- The repository becomes unavailable if there are no fully up to date copies of it on healthy secondaries. Use the [Praefect `dataloss` subcommand](#check-for-data-loss) to detect it.
 
 ### Unavailable repositories
 
@@ -165,7 +165,7 @@ not accessible through Praefect to prevent serving stale data that may break aut
 ### Check for data loss
 
 The Praefect `dataloss` subcommand identifies unavailable repositories. This helps identify potential data loss
-and repositories that are no longer accessible because all of their up-to-date replicas copies are unavailable.
+and repositories that are no longer accessible because all of their up-to-date replica copies are unavailable.
 
 The following parameters are available:
 
@@ -202,7 +202,7 @@ information is printed for each repository:
   preceding it.
 - The Outdated Storages lists replicas which contain an outdated copy of the repository. Replicas which have no copy
   of the repository but should contain it are also listed here. The maximum number of changes the replica is missing
-  is listed next to replica. It's important to notice that the outdated replicas may be fully up to date or contain
+  is listed next to the replica. It's important to note that the outdated replicas may be fully up to date or contain
   later changes but Praefect can't guarantee it.
 
 Additional information includes:
@@ -273,7 +273,7 @@ Virtual storage: default
 
 ### Check repository checksums
 
-To check a project's repository checksums across on all Gitaly nodes, run the
+To check a project's repository checksums across all Gitaly nodes, run the
 [replicas Rake task](../../raketasks/praefect.md#replica-checksums) on the main GitLab node.
 
 ### Accept data loss
@@ -383,7 +383,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
   sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -relative-path <repository> -apply
   ```
 
-- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration']['virtual_storage]` and looks like the following:
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration']['virtual_storage]` and look like the following:
 
   ```ruby
   praefect['configuration'] = {
@@ -431,7 +431,7 @@ The `list-untracked-repositories` Praefect sub-command lists repositories of the
 Add the `-older-than` option to avoid showing repositories that:
 
 - Are in the process of being created.
-- For which a record doesn't yet exist in the Praefect tracking database.
+- Do not yet have a record in the Praefect tracking database.
 
 Replace `<duration>` with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
 
@@ -463,7 +463,7 @@ The `track-repository` Praefect sub-command adds repositories on disk to the Pra
 sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -relative-path <repository> -replica-path <disk_path> -replicate-immediately
 ```
 
-- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration'][:virtual_storage]` and looks like the following:
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration'][:virtual_storage]` and look like the following:
 
   ```ruby
   praefect['configuration'] = {
@@ -541,7 +541,7 @@ If any entry fails these checks, the command aborts prior to attempting to track
     {"relative_path":"@hashed/f8/9f/f89f8d0e735a91c5269ab08d72fa27670d000e7561698d6e664e7b603f5c4e40.git","replica_path":"@cluster/7b/28/2","authoritative_storage":"gitaly-2","virtual_storage":"default"}
     ```
 
-- `-replicate-immediately`, causes the command to replicate the repository to its secondaries immediately.
+- `-replicate-immediately` causes the command to replicate the repository to its secondaries immediately.
   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
 
 ### List virtual storage details

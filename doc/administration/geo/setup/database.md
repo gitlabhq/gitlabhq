@@ -47,7 +47,7 @@ For example, the `patroni['password']` value configured on the primary
 site must be identical to the `patroni['password']` value on all secondary sites.
 
 These passwords are used for database authentication and replication between primary and secondary sites.
-Using different passwords causes replication failures and prevent Geo from functioning correctly.
+Using different passwords causes replication failures and prevents Geo from functioning correctly.
 
 ## Single instance database replication
 

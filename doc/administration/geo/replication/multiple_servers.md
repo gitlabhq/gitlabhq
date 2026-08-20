@@ -282,7 +282,7 @@ then make the following modifications:
 > If you had set up PostgreSQL cluster using the Linux package and had set
 > `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
 > mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
-> contains the plaintext passwords. These configurations are used to let the Rails
+> contain the plaintext passwords. These configurations are used to let the Rails
 > nodes connect to the databases.
 
 Ensure that the current node's IP is listed in

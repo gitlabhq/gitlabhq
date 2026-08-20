@@ -178,7 +178,7 @@ The following metrics are available:
 | `gitlab_transaction_event_rails_exception_total`                               | Counter   |   9.4 |                                                                         | Counter for number of rails exceptions |
 | `gitlab_transaction_event_remove_branch_total`                                 | Counter   |   9.4 |                                                                         | Counter when a branch is removed for any repository |
 | `gitlab_transaction_event_remove_repository_total`                             | Counter   |   9.4 |                                                                         | Counter when a repository is removed |
-| `gitlab_transaction_event_remove_tag_total`                                    | Counter   |   9.4 |                                                                         | Counter when a tag is remove for any repository |
+| `gitlab_transaction_event_remove_tag_total`                                    | Counter   |   9.4 |                                                                         | Counter when a tag is removed for any repository |
 | `gitlab_transaction_event_sidekiq_exception_total`                             | Counter   |   9.4 |                                                                         | Counter of Sidekiq exceptions |
 | `gitlab_transaction_event_stuck_import_jobs_total`                             | Counter   |   9.4 | `projects_without_jid_count`, `projects_with_jid_count`                 | Count of stuck import jobs |
 | `gitlab_transaction_event_update_build_total`                                  | Counter   |   9.4 |                                                                         | Counter for update build for API `/jobs/request/:id` |
@@ -1019,7 +1019,7 @@ The `partner` label can have the following values:
 
 The GitLab Prometheus client requires a directory to store metrics data shared between multi-process services.
 Those files are shared among all instances running under Puma server.
-The directory must be accessible to all running Puma's processes, or
+The directory must be accessible to all running Puma processes, or
 metrics can't function correctly.
 
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.

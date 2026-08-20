@@ -40,7 +40,7 @@ module Gitlab
         bypass_header: nil)
         raise InvalidKeyError, key unless LabkitAdapter.handled?(key)
 
-        validate_scope!(key, scope)
+        scope = validate_scope!(key, scope)
 
         rule_context = {
           resource_id: resource&.id,
@@ -77,7 +77,7 @@ module Gitlab
       # are cost-mode/Sidekiq resource-usage checks, not HTTP requests, so there
       # is no bypass header to observe here.
       def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
-        validate_scope!(key, scope)
+        scope = validate_scope!(key, scope)
 
         _throttled?(
           key,
@@ -230,8 +230,10 @@ module Gitlab
       def scoped_user_in_allowlist?(scope, users_allowlist)
         return unless users_allowlist.present?
 
-        scoped_user = [scope].flatten.find { |s| s.is_a?(User) }
-        return unless scoped_user
+        # The positional branch is deleted once all call sites pass
+        # characteristic-keyed hashes.
+        scoped_user = scope.is_a?(Hash) ? scope[:user] : [scope].flatten.find { |s| s.is_a?(User) }
+        return unless scoped_user.is_a?(User)
 
         username = scoped_user.username.downcase
         users_allowlist.any? { |u| u.downcase == username }
@@ -263,14 +265,40 @@ module Gitlab
       strong_memoize_attr :initialize_filtered_params
 
       def validate_scope!(key, scope, logger = Gitlab::AuthLogger)
-        return if scope
+        unless scope
+          logger.warn(
+            message: 'Application_Rate_Limiter_Request_Without_Scope',
+            env: :"#{key}_request_limit"
+          )
 
-        logger.warn(
-          message: 'Application_Rate_Limiter_Request_Without_Scope',
-          env: :"#{key}_request_limit"
+          raise InvalidScopeError,
+            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
+              '(or { scope: :global } for global rate limits).'
+        end
+
+        return scope unless scope.is_a?(Hash)
+
+        scope = ::Labkit::RateLimit::Identifier.new(scope).attributes
+        validate_scope_keys!(key, scope)
+
+        scope
+      end
+
+      # A scope key that isn't a characteristic of the rule would silently
+      # fall to labkit's '_unknown_' sentinel, collapsing what the caller
+      # meant as a per-user (or per-project, ...) limit into one shared
+      # bucket. Raise in dev/test so typos are caught immediately; track and
+      # continue in production, where labkit ignoring the extra key is safe.
+      def validate_scope_keys!(key, scope)
+        return unless LabkitAdapter.handled?(key)
+
+        unknown_keys = scope.keys - LabkitAdapter::SupportedRateLimits.rule_for(key).characteristics
+        return if unknown_keys.empty?
+
+        ::Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          InvalidScopeError.new("scope keys #{unknown_keys.inspect} are not characteristics of the #{key} rule"),
+          rate_limit_key: key
         )
-
-        raise InvalidScopeError, 'scope cannot be nil. Use :global for global rate limits.'
       end
     end
   end

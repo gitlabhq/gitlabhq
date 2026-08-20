@@ -46,7 +46,7 @@ Benefits:
 - Business continuity in the event of a regional disaster.
 - Low Recovery Time Objective (RTO) and Recovery Point Objective (RPO).
 - Automated (but not automatic) failover with GitLab Environment Toolkit (GET).
-- Minimal operational effort - Unassisted continuous replication and verification ensures your secondary sites are up to date and replicated data is not corrupted during transit and at rest.
+- Minimal operational effort - Unassisted continuous replication and verification ensure your secondary sites are up to date and replicated data is not corrupted during transit and at rest.
 
 ### Remote team acceleration
 
@@ -157,7 +157,7 @@ In this diagram:
 - Writes to the database can only be performed on the primary site. A secondary site receives database
   updates by using [PostgreSQL streaming replication](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
 - If present, the [LDAP server](#ldap) should be configured to replicate for [Disaster Recovery](disaster_recovery/_index.md) scenarios.
-- A secondary site performs different type of synchronizations against the primary site, using a special
+- A secondary site performs different types of synchronizations against the primary site, using a special
   authorization protected by JWT:
   - Repositories are cloned/updated via Git over HTTPS.
   - Attachments, LFS objects, and other files are downloaded via HTTPS using a private API endpoint.
@@ -175,7 +175,7 @@ From the perspective of a user browsing the GitLab UI, or using the API:
 To simplify the diagram, some necessary components are omitted.
 
 - Git over SSH requires [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell).
-- Git over HTTPS required [`gitlab-workhorse`](https://gitlab.com/gitlab-org/gitlab-workhorse).
+- Git over HTTPS requires [`workhorse`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/workhorse).
 
 A secondary site needs two different PostgreSQL databases:
 
@@ -291,7 +291,7 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
   GitLab instances based on our [Reference Architectures](../reference_architectures/_index.md), including automation of common daily tasks.
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/work_items/1465) proposes to improve Geo installation even more.
-- Real-time updates of issues/merge requests (for example, via long polling) doesn't work on secondary sites where [http proxying is disabled](secondary_proxy/_index.md#disable-secondary-site-http-proxying).
+- Real-time updates of issues/merge requests (for example, via long polling) don't work on secondary sites where [http proxying is disabled](secondary_proxy/_index.md#disable-secondary-site-http-proxying).
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. For more information, see [issue 9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/_index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
@@ -305,7 +305,7 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
   - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../pages/_index.md#prerequisites).
 - With a [unified URL](secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites), Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain. To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate the certificate, then copy it to all other sites.
 - When a [secondary site uses a separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
-- Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
+- Git clone and fetch requests with option `--depth` over SSH against a secondary site do not work and hang indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
 - Do not use [relative URLs](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab)
   with GitLab Geo because they will break the proxy between sites. For more information, see
   [issue 456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427).
