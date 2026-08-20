@@ -19,14 +19,14 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
       it 'returns false' do
         allow(project).to receive(:empty_repo?).and_return(true)
 
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
     context 'when project repository is not empty' do
       context 'when user can download code' do
         it 'returns true' do
-          expect(subject.render?).to eq true
+          expect(subject.render?).to be true
         end
       end
 
@@ -34,7 +34,7 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
         let(:user) { nil }
 
         it 'returns false' do
-          expect(subject.render?).to eq false
+          expect(subject.render?).to be false
         end
       end
     end

@@ -21,13 +21,13 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
       it 'returns false' do
         allow(subject).to receive(:has_renderable_items?).and_return(false)
 
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
     context 'when menu has menu items to show' do
       it 'returns true' do
-        expect(subject.render?).to eq true
+        expect(subject.render?).to be true
       end
     end
   end
@@ -58,7 +58,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
         let(:registry_enabled) { false }
 
         it 'displays menu link' do
-          expect(subject.render?).to eq true
+          expect(subject.render?).to be true
         end
       end
     end

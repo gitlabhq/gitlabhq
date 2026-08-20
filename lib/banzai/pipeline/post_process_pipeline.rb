@@ -22,6 +22,7 @@ module Banzai
           # prevent unnecessary Gitaly calls from being made.
           Filter::UploadLinkFilter,
           Filter::RepositoryLinkFilter,
+          Filter::RepositoryBlobEmbedFilter,
           Filter::IssuableReferenceExpansionFilter,
           Filter::SuggestionFilter
         ]

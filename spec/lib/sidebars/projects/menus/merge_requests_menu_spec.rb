@@ -30,14 +30,14 @@ RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :
       let(:project) { build(:project) }
 
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
     context 'when repository is present' do
       context 'when user can read merge requests' do
         it 'returns true' do
-          expect(subject.render?).to eq true
+          expect(subject.render?).to be true
         end
       end
 
@@ -45,7 +45,7 @@ RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :
         let(:user) { nil }
 
         it 'returns false' do
-          expect(subject.render?).to eq false
+          expect(subject.render?).to be false
         end
       end
     end

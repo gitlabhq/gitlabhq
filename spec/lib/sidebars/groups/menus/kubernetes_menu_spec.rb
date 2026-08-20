@@ -28,7 +28,7 @@ RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store, feature_
   describe '#render?' do
     context 'when user can read clusters' do
       it 'returns true' do
-        expect(menu.render?).to eq true
+        expect(menu.render?).to be true
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Sidebars::Groups::Menus::KubernetesMenu, :request_store, feature_
       let(:user) { nil }
 
       it 'returns false' do
-        expect(menu.render?).to eq false
+        expect(menu.render?).to be false
       end
     end
   end

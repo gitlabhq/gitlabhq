@@ -3,8 +3,10 @@ import { __, s__ } from '~/locale';
 const SELECT_ENTITIES = s__('OfflineTransfer|Select entities');
 const CONFIGURE = s__('OfflineTransfer|Configure');
 const EXPORT = __('Export');
+const IMPORT = __('Import');
 
 export const OFFLINE_EXPORT_TAB_HEADINGS = [SELECT_ENTITIES, CONFIGURE, EXPORT];
+export const OFFLINE_IMPORT_TAB_HEADINGS = [CONFIGURE, IMPORT];
 
 export const FORM_STEPPER_TAB_STATE = {
   ACTIVE: 'active',

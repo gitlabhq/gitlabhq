@@ -1,0 +1,10 @@
+---
+name: blob_permalink_embed
+description: Embed snippets of permalinked project code in Markdown content
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/353791
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246838
+rollout_issue_url:
+milestone: '19.4'
+group: group::planner intelligence
+type: wip
+default_enabled: false

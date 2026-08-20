@@ -24,9 +24,9 @@ RSpec.describe SafeZip::Extract do
         it 'does extract archive' do
           subject
 
-          expect(File.exist?(File.join(target_path, 'public', 'index.html'))).to eq(true)
-          expect(File.exist?(File.join(target_path, 'public', 'assets', 'image.png'))).to eq(true)
-          expect(File.exist?(File.join(target_path, 'source'))).to eq(false)
+          expect(File.exist?(File.join(target_path, 'public', 'index.html'))).to be(true)
+          expect(File.exist?(File.join(target_path, 'public', 'assets', 'image.png'))).to be(true)
+          expect(File.exist?(File.join(target_path, 'source'))).to be(false)
         end
       end
 
@@ -36,8 +36,8 @@ RSpec.describe SafeZip::Extract do
         it 'does extract archive' do
           subject
 
-          expect(File.exist?(File.join(target_path, 'public', 'index.html'))).to eq(true)
-          expect(File.exist?(File.join(target_path, 'public', 'assets', 'image.png'))).to eq(false)
+          expect(File.exist?(File.join(target_path, 'public', 'index.html'))).to be(true)
+          expect(File.exist?(File.join(target_path, 'public', 'assets', 'image.png'))).to be(false)
         end
       end
     end

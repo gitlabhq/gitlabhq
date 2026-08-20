@@ -811,9 +811,13 @@ module API
         link = shared_group.shared_with_group_links.find_by(shared_with_group_id: params[:group_id])
         not_found!('Group Link') unless link
 
-        ::Groups::GroupLinks::DestroyService.new(shared_group, current_user).execute(link)
+        result = ::Groups::GroupLinks::DestroyService.new(shared_group, current_user).execute(link)
 
-        no_content!
+        if result.is_a?(Hash) && result[:status] == :error
+          render_api_error!(result[:message], result[:http_status])
+        else
+          no_content!
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

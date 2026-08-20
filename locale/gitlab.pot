@@ -54009,10 +54009,22 @@ msgstr ""
 msgid "OfflineTransferExport|Your object storage secret key."
 msgstr ""
 
-msgid "OfflineTransferImport|Import an offline transfer"
+msgid "OfflineTransferImport|Import for offline transfer"
 msgstr ""
 
-msgid "OfflineTransferImport|Import groups and projects from a previously exported offline transfer."
+msgid "OfflineTransferImport|Import has started."
+msgstr ""
+
+msgid "OfflineTransferImport|Import your exported groups from an AWS S3 storage service you control. Each group is imported with all of its subgroups and projects."
+msgstr ""
+
+msgid "OfflineTransferImport|Review and import"
+msgstr ""
+
+msgid "OfflineTransferImport|Select destination"
+msgstr ""
+
+msgid "OfflineTransferImport|Start import"
 msgstr ""
 
 msgid "OfflineTransferImport|The export was created on %{strong_open}%{hostname}%{strong_close}. This source is self-reported by the export and is not verified, so it may not be trustworthy."
@@ -69472,6 +69484,9 @@ msgstr ""
 msgid "SecretsManager|Learn more about GitLab Secrets Manager."
 msgstr ""
 
+msgid "SecretsManager|Learn more about the 30-day trial"
+msgstr ""
+
 msgid "SecretsManager|Maximum 200 characters."
 msgstr ""
 
@@ -80403,6 +80418,9 @@ msgid "The group export can be downloaded from:"
 msgstr ""
 
 msgid "The group has already been shared with this group"
+msgstr ""
+
+msgid "The group link could not be removed."
 msgstr ""
 
 msgid "The group_project_ids parameter is only allowed for a group"

@@ -94,7 +94,7 @@ RSpec.describe Board do
 
     shared_examples 'board disabled_for?' do
       context 'when current user cannot create non backlog issues' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'when user can create backlog issues' do
@@ -102,14 +102,14 @@ RSpec.describe Board do
           board.resource_parent.add_reporter(user)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
 
         context 'when block_issue_repositioning is enabled' do
           before do
             stub_feature_flags(block_issue_repositioning: group)
           end
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
       end
     end

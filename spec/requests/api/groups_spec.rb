@@ -4459,8 +4459,25 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect do
           delete api("/groups/#{group1.id}/share/#{group_a.id}", user4)
 
-          expect(response).to have_gitlab_http_status(:no_content)
+          expect(response).to have_gitlab_http_status(:not_found)
         end.not_to change { group1.shared_with_group_links }
+      end
+    end
+
+    context 'when the group has LDAP sync enabled' do
+      let(:group_a) { create(:group) }
+
+      before do
+        create(:group_group_link, shared_group: group1, shared_with_group: group_a)
+        allow_next_found_instance_of(Group) do |found_group|
+          allow(found_group).to receive(:ldap_synced?).and_return(true)
+        end
+      end
+
+      it_behaves_like 'deletes group share' do
+        let(:user) { user1 }
+        let(:shared_group) { group1 }
+        let(:shared_with_group) { group_a }
       end
     end
 

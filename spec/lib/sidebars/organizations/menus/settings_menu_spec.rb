@@ -21,7 +21,7 @@ RSpec.describe Sidebars::Organizations::Menus::SettingsMenu, feature_category: :
       let(:user) { nil }
 
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
@@ -29,13 +29,13 @@ RSpec.describe Sidebars::Organizations::Menus::SettingsMenu, feature_category: :
       let(:user) { build(:admin) }
 
       it 'returns true' do
-        expect(subject.render?).to eq true
+        expect(subject.render?).to be true
       end
     end
 
     context 'when `current_user` not an admin' do
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
   end

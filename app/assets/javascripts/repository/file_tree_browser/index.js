@@ -14,7 +14,6 @@ export default async function initFileTreeBrowser(router, options) {
     pinia,
     router,
     apolloProvider,
-    provide: { apolloProvider },
     computed: {
       visible() {
         const isProjectOverview = this.$route?.name === 'projectRoot';

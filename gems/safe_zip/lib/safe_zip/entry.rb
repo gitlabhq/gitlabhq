@@ -2,8 +2,7 @@
 
 module SafeZip
   class Entry
-    attr_reader :zip_archive, :zip_entry
-    attr_reader :path, :params
+    attr_reader :zip_archive, :zip_entry, :path, :params
 
     def initialize(zip_archive, zip_entry, params)
       @zip_archive = zip_archive
@@ -77,9 +76,9 @@ module SafeZip
       FileUtils.mkdir_p(path_dir)
 
       # disallow to make path dirs to point to another directories
-      unless path_dir == real_path_dir
-        raise SafeZip::Extract::PermissionDeniedError, "Directory of #{zip_entry.name} points to another directory"
-      end
+      return if path_dir == real_path_dir
+
+      raise SafeZip::Extract::PermissionDeniedError, "Directory of #{zip_entry.name} points to another directory"
     end
 
     def matching_target_directory

@@ -8,7 +8,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
       #
       # Inner subquery picks the latest version of each row via argMax over
       # _siphon_replicated_at; outer query filters out soft-deleted rows and
-      # runs the aggregation. (Similar to FinishedBuildsDeduplicatedFinder)
+      # runs the aggregation.
       #
       # Notable column mappings vs the MV path: (Remove this note after `pipeline_analytics_siphon` removal)
       #   * path -> traversal_path (siphon stores it with the leading

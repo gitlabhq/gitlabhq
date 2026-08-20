@@ -13,7 +13,7 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu, feature_category: :nav
   describe 'render?' do
     context 'when Confluence integration is not present' do
       it 'returns false' do
-        expect(subject.render?).to eq false
+        expect(subject.render?).to be false
       end
     end
 
@@ -24,7 +24,7 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu, feature_category: :nav
         let(:active) { false }
 
         it 'returns false' do
-          expect(subject.render?).to eq false
+          expect(subject.render?).to be false
         end
       end
 
@@ -32,7 +32,7 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu, feature_category: :nav
         let(:active) { true }
 
         it 'returns true' do
-          expect(subject.render?).to eq true
+          expect(subject.render?).to be true
         end
 
         it 'does not contain any sub menu' do

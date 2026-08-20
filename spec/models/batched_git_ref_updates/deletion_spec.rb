@@ -35,7 +35,7 @@ RSpec.describe BatchedGitRefUpdates::Deletion, feature_category: :gitaly do
       subject(:value) { described_class.partitioning_strategy.next_partition_if.call(active_partition) }
 
       context 'when the partition is empty' do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the partition has records' do
@@ -44,7 +44,7 @@ RSpec.describe BatchedGitRefUpdates::Deletion, feature_category: :gitaly do
           described_class.create!(project_id: 2, ref: 'refs/test/2', status: :pending)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the first record of the partition is older than PARTITION_DURATION' do
@@ -57,7 +57,7 @@ RSpec.describe BatchedGitRefUpdates::Deletion, feature_category: :gitaly do
           described_class.create!(project_id: 2, ref: 'refs/test/2')
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe BatchedGitRefUpdates::Deletion, feature_category: :gitaly do
           described_class.create!(project_id: 2, ref: 'refs/test/2', status: :processed)
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context 'when the partition contains only processed records' do
@@ -81,7 +81,7 @@ RSpec.describe BatchedGitRefUpdates::Deletion, feature_category: :gitaly do
           described_class.create!(project_id: 2, ref: 'refs/test/2', status: :processed)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 

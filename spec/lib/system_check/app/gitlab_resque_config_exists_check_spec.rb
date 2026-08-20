@@ -13,7 +13,7 @@ RSpec.describe SystemCheck::App::GitlabResqueConfigExistsCheck, feature_category
         allow(File).to receive(:exist?).and_return(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when config/resque.yml does not exist' do
@@ -21,7 +21,7 @@ RSpec.describe SystemCheck::App::GitlabResqueConfigExistsCheck, feature_category
         allow(File).to receive(:exist?).and_return(false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

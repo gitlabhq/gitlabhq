@@ -17,7 +17,7 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :na
   describe '#render?' do
     context 'when user can read merge requests' do
       it 'returns true' do
-        expect(menu.render?).to eq true
+        expect(menu.render?).to be true
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :na
       let(:user) { nil }
 
       it 'returns false' do
-        expect(menu.render?).to eq false
+        expect(menu.render?).to be false
       end
     end
   end

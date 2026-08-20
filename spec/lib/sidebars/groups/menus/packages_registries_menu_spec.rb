@@ -21,7 +21,7 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
   describe '#render?' do
     context 'when menu has menu items to show' do
       it 'returns true' do
-        expect(menu.render?).to eq true
+        expect(menu.render?).to be true
       end
     end
   end

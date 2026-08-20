@@ -61,7 +61,7 @@ module SafeZip
         extracted += extract_all_entries(zip_archive, params,
           zip_archive.lazy.reject(&:directory?).reject(&:file?))
 
-        raise NoMatchingError, 'No entries extracted' unless extracted > 0
+        raise NoMatchingError, 'No entries extracted' unless extracted.positive?
       end
     end
 

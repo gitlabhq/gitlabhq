@@ -4,7 +4,7 @@ module Groups
   module GroupLinks
     class DestroyService < ::Groups::GroupLinks::BaseService
       def execute(one_or_more_links, skip_authorization: false)
-        unless skip_authorization || (group && can?(current_user, :admin_group_member, group))
+        unless skip_authorization || (group && can?(current_user, :delete_group_link, group))
           return error('Not Found', 404)
         end
 

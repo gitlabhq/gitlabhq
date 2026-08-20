@@ -498,12 +498,14 @@ RSpec.describe Trigger, feature_category: :tooling do
           expect(subject.variables).to include({
             "FULL_RUBY_VERSION" => RUBY_VERSION,
             "SKIP_JOB_REGEX" => "/^(final-images-listing)$/",
-            "DEBIAN_IMAGE" => "debian:bookworm-slim",
-            "ALPINE_IMAGE" => "alpine:3.20",
             "CONTAINER_VERSION_SUFFIX" => "project-path",
             "CACHE_BUSTER" => "false",
             "ARCH_LIST" => 'amd64,arm64'
           })
+        end
+
+        it 'does not set DEBIAN_IMAGE or ALPINE_IMAGE so CNG variables.yml stays authoritative' do
+          expect(subject.variables).not_to include("DEBIAN_IMAGE", "ALPINE_IMAGE")
         end
       end
 

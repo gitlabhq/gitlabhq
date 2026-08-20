@@ -169,6 +169,30 @@ RSpec.describe Gitlab::BlobEmbed::Renderer, feature_category: :markdown do
       2.times { fresh_renderer.render }
     end
 
+    context 'when viewers have different locales' do
+      before do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      def range_text
+        Nokogiri::HTML5.fragment(fresh_renderer.render).at_css('.blob-embed-range').text
+      end
+
+      it 'does not serve one locale\'s render to another' do
+        translated = Gitlab::I18n.with_locale('fr') { range_text }
+
+        expect(range_text).to eq('Lines 3 to 6')
+        expect(translated).not_to eq('Lines 3 to 6')
+      end
+
+      it 'builds the embed once per locale' do
+        expect(project.repository).to receive(:blob_at).twice.and_call_original
+
+        fresh_renderer.render
+        Gitlab::I18n.with_locale('fr') { fresh_renderer.render }
+      end
+    end
+
     context 'when the blob cannot be embedded' do
       let(:path) { 'files/images/logo-black.png' }
 

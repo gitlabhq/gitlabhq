@@ -442,6 +442,7 @@ The following table describes the rate limits for GitLab.com:
 | Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
 | Authenticated Git HTTPS traffic for a user                       | 10,000 requests each minute     |
 | Unauthenticated Git HTTPS traffic from an IP address             | 15,000 requests each minute     |
+| Git SSH operations for a user, project, and Git command          | 600 operations each minute      |
 | All traffic from an IP address                                   | 2,000 requests each minute      |
 | Issue creation                                                   | 200 requests each minute        |
 | Note creation on issues and merge requests                       | 60 requests each minute         |

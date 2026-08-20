@@ -15,7 +15,8 @@ RSpec.describe SafeZip::Entry do
   let(:zip_archive) { double }
 
   let(:zip_entry) do
-    double(
+    instance_double(
+      Zip::Entry,
       name: entry_name,
       file?: false,
       directory?: false,
@@ -29,7 +30,7 @@ RSpec.describe SafeZip::Entry do
   describe '#path_dir' do
     subject { entry.path_dir }
 
-    it { is_expected.to eq(File.realpath(target_path) + '/public/folder') }
+    it { is_expected.to eq("#{File.realpath(target_path)}/public/folder") }
   end
 
   describe '#exist?' do
@@ -49,7 +50,7 @@ RSpec.describe SafeZip::Entry do
   end
 
   describe '#extract' do
-    subject { entry.extract }
+    subject(:extract) { entry.extract }
 
     context 'when entry does not match the filtered directories' do
       let(:directories) { %w[public folder/with/subfolder] }
@@ -69,7 +70,7 @@ RSpec.describe SafeZip::Entry do
 
       with_them do
         it 'does not extract file' do
-          is_expected.to be_falsey
+          expect(extract).to be_falsey
         end
       end
     end
@@ -92,7 +93,7 @@ RSpec.describe SafeZip::Entry do
 
       with_them do
         it 'does not extract file' do
-          is_expected.to be_falsey
+          expect(extract).to be_falsey
         end
       end
     end
@@ -103,13 +104,13 @@ RSpec.describe SafeZip::Entry do
       end
 
       it 'raises an exception' do
-        expect { subject }.to raise_error(SafeZip::Extract::AlreadyExistsError)
+        expect { extract }.to raise_error(SafeZip::Extract::AlreadyExistsError)
       end
     end
 
     context 'when entry type is unknown' do
       it 'raises an exception' do
-        expect { subject }.to raise_error(SafeZip::Extract::UnsupportedEntryError)
+        expect { extract }.to raise_error(SafeZip::Extract::UnsupportedEntryError)
       end
     end
 
@@ -122,14 +123,14 @@ RSpec.describe SafeZip::Entry do
           end
 
           it 'raises an exception' do
-            expect { subject }.to raise_error(SafeZip::Extract::PermissionDeniedError)
+            expect { extract }.to raise_error(SafeZip::Extract::PermissionDeniedError)
           end
         end
       end
 
       context 'and is file' do
         before do
-          allow(zip_entry).to receive(:file?) { true }
+          allow(zip_entry).to receive(:file?).and_return(true)
         end
 
         it 'does extract file' do
@@ -137,7 +138,7 @@ RSpec.describe SafeZip::Entry do
             .with(zip_entry, entry_path)
             .and_return(true)
 
-          is_expected.to be_truthy
+          expect(extract).to be_truthy
         end
 
         it_behaves_like 'secured symlinks'
@@ -147,13 +148,13 @@ RSpec.describe SafeZip::Entry do
         let(:entry_name) { 'public/folder/assets' }
 
         before do
-          allow(zip_entry).to receive(:directory?) { true }
+          allow(zip_entry).to receive(:directory?).and_return(true)
         end
 
         it 'does create directory' do
-          is_expected.to be_truthy
+          expect(extract).to be_truthy
 
-          expect(File.exist?(entry_path)).to eq(true)
+          expect(File.exist?(entry_path)).to be(true)
         end
 
         it_behaves_like 'secured symlinks'
@@ -163,24 +164,24 @@ RSpec.describe SafeZip::Entry do
         let(:entry_name) { 'public/folder/assets' }
 
         before do
-          allow(zip_entry).to receive(:symlink?) { true }
+          allow(zip_entry).to receive(:symlink?).and_return(true)
           allow(zip_archive).to receive(:read).with(zip_entry) { entry_symlink }
         end
 
         shared_examples 'a valid symlink' do
           it 'does create symlink' do
-            is_expected.to be_truthy
+            expect(extract).to be_truthy
 
-            expect(File.exist?(entry_path)).to eq(true)
+            expect(File.exist?(entry_path)).to be(true)
           end
         end
 
         context 'when source is within target' do
           let(:entry_symlink) { '../images' }
 
-          context 'but does not exist' do
+          context 'and does not exist' do
             it 'raises an exception' do
-              expect { subject }.to raise_error(SafeZip::Extract::SymlinkSourceDoesNotExistError)
+              expect { extract }.to raise_error(SafeZip::Extract::SymlinkSourceDoesNotExistError)
             end
           end
 
@@ -201,7 +202,7 @@ RSpec.describe SafeZip::Entry do
           end
 
           it 'raises an exception' do
-            expect { subject }.to raise_error(SafeZip::Extract::PermissionDeniedError)
+            expect { extract }.to raise_error(SafeZip::Extract::PermissionDeniedError)
           end
         end
 
@@ -209,7 +210,7 @@ RSpec.describe SafeZip::Entry do
           let(:entry_symlink) { '/etc/passwd' }
 
           it 'raises an exception' do
-            expect { subject }.to raise_error(SafeZip::Extract::PermissionDeniedError)
+            expect { extract }.to raise_error(SafeZip::Extract::PermissionDeniedError)
           end
         end
       end

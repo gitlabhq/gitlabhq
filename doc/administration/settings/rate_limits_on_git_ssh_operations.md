@@ -1,40 +1,13 @@
 ---
-stage: Create
-group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Configure rate limits on Git SSH operations on GitLab Self-Managed.
-title: Rate limits on Git SSH operations
+redirect_to: '../../rate_limits/git.md#git-ssh-operations'
+remove_date: '2026-11-17'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+This document was moved to [another location](../../rate_limits/git.md#git-ssh-operations).
 
-{{< /details >}}
-
-GitLab applies rate limits to Git operations that use SSH by user account and project. When a user
-exceeds the rate limit, GitLab rejects further connection requests from that user for the project.
-
-The rate limit applies at the Git command ([plumbing](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)) level.
-Each command has a rate limit of 600 per minute. For example:
-
-- `git push` has a rate limit of 600 per minute.
-- `git pull` has its own rate limit of 600 per minute.
-
-The `git-upload-pack`, `git pull`, and `git clone` commands share a rate limit because they share commands.
-
-## Configure GitLab Shell operation limit
-
-Prerequisites:
-
-- Administrator access.
-
-`Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Network**.
-1. Expand **Git SSH operations rate limit**.
-1. Enter a value for **Maximum number of Git operations per minute**.
-   - To disable the rate limit, set it to `0`.
-1. Select **Save changes**.
+<!-- This redirect file can be deleted after <2026-11-17>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

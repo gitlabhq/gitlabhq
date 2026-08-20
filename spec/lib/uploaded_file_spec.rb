@@ -296,6 +296,6 @@ RSpec.describe UploadedFile, feature_category: :package_registry do
   end
 
   describe '#empty_size?' do
-    it { expect(described_class.new(temp_file.path).empty_size?).to eq(true) }
+    it { expect(described_class.new(temp_file.path).empty_size?).to be(true) }
   end
 end

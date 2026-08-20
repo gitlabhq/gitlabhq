@@ -23,359 +23,1770 @@ info:
       itself. For terms governing use of the GitLab API, see the termsOfService field.
 tags:
 - name: AI Catalog
-  description: Operations related to AI Catalog.
+  description: |-
+    Use this API to seed the external agents that an instance offers in the
+    [AI Catalog](https://docs.gitlab.com/user/duo_agent_platform/ai_catalog/).
+
+    This endpoint requires administrator access to the instance.
+  x-displayName: AI Catalog
+  externalDocs:
+    url: https://docs.gitlab.com/user/duo_agent_platform/ai_catalog/
 - name: Access requests
-  description: Operations related to access requests.
+  description: Use this API to interact with access requests for groups and projects.
+  x-displayName: Access requests
+  externalDocs:
+    url: https://docs.gitlab.com/api/access_requests/
 - name: Access tokens
-  description: Operations related to access tokens.
+  description: |-
+    Use this API to interact with access tokens including:
+
+    - [Personal access tokens](https://docs.gitlab.com/user/profile/personal_access_tokens/).
+    - [Group access tokens](https://docs.gitlab.com/user/group/settings/group_access_tokens/).
+    - [Project access tokens](https://docs.gitlab.com/user/project/settings/project_access_tokens/).
+    - [Impersonation tokens](https://docs.gitlab.com/api/rest/authentication/#impersonation-tokens).
+  x-displayName: Access tokens
+  externalDocs:
+    url: https://docs.gitlab.com/api/personal_access_tokens/
 - name: Active context
-  description: Operations related to active context.
+  description: |-
+    Use this API to administer the ActiveContext indexing infrastructure, including its connections,
+    collection options, the namespaces enabled for code indexing, and the dead queue.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Active context
 - name: Add on purchases
-  description: Operations related to add on purchases.
+  description: |-
+    Use this API to retrieve, create, and update the
+    [subscription add-on](https://docs.gitlab.com/subscriptions/subscription-add-ons/) purchases of a namespace.
+  x-displayName: Add-on purchases
 - name: Advanced search rollout
-  description: Operations related to advanced search rollout.
+  description: |-
+    Use this API to control what percentage of namespaces are indexed for
+    [advanced search](https://docs.gitlab.com/integration/advanced_search/elasticsearch/), rolling
+    indexing forward or back.
+  x-displayName: Advanced search rollout
 - name: Agents
-  description: Operations related to agents.
+  description: Use this API to retrieve the [GitLab agents for Kubernetes](https://docs.gitlab.com/user/clusters/agent/)
+    that a CI/CD job is authorized to access.
+  x-displayName: Agents
+  externalDocs:
+    url: https://docs.gitlab.com/api/jobs/
 - name: Ai agent audit events
   description: Operations related to ai agent audit events.
 - name: Ai agent identities
-  description: Operations related to ai agent identities.
+  description: |-
+    Use this API to register an external agent identity for a project, so that agent
+    sessions can be attributed to a user and a machine. Registration returns the existing record if one
+    already exists, or is rejected if the identity has been revoked.
+
+    External agents are published through the
+    [AI Catalog](https://docs.gitlab.com/user/duo_agent_platform/ai_catalog/), and act with a
+    [composite identity](https://docs.gitlab.com/user/duo_agent_platform/composite_identity/) that
+    combines a service account with the human user who initiated the request.
+  x-displayName: AI agent identities
+  externalDocs:
+    url: https://docs.gitlab.com/user/duo_agent_platform/composite_identity/
 - name: Ai agent sessions
   description: Operations related to ai agent sessions.
 - name: Alert management
-  description: Operations related to alert management.
+  description: |-
+    Use this API to interact with metric images for [alerts](https://docs.gitlab.com/operations/incident_management/alerts/).
+
+    Additional endpoints are available with the [GraphQL API](https://docs.gitlab.com/api/graphql/reference/#alertmanagementalert).
+  x-displayName: Alert management
+  externalDocs:
+    url: https://docs.gitlab.com/api/alert_management_alerts/
 - name: Analytics
-  description: Operations related to analytics.
+  description: |-
+    Use this API to retrieve analytics about a group's activity, a project's deployment frequency, and
+    product analytics data. For more information about the group metrics, see
+    [group activity analytics](https://docs.gitlab.com/user/group/manage/#group-activity-analytics).
+  x-displayName: Analytics
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_activity_analytics/
 - name: Applications
-  description: Operations related to applications.
+  description: |-
+    Use this API to manage instance-wide OAuth applications that:
+
+    - [Use GitLab as an authentication provider](https://docs.gitlab.com/integration/oauth_provider/).
+    - [Allow access to GitLab resources on a user's behalf](https://docs.gitlab.com/api/oauth2/).
+
+    > [!note]
+    > You cannot use this API to manage group applications or individual user applications.
+  x-displayName: Applications
+  externalDocs:
+    url: https://docs.gitlab.com/api/applications/
 - name: Approval rules
-  description: Operations related to approval rules.
+  description: |-
+    Use this API to manage the [merge request approval rules](https://docs.gitlab.com/user/project/merge_requests/approvals/rules/)
+    defined for a project or a group, where the rules of a group apply to the projects it contains.
+
+    All endpoints require authentication. To manage the approval rules of an individual merge request,
+    use the [merge request approvals API](https://docs.gitlab.com/api/merge_request_approvals/).
+  x-displayName: Approval rules
+  externalDocs:
+    url: https://docs.gitlab.com/api/merge_request_approvals/
 - name: Attestations
-  description: Operations related to attestations.
+  description: |-
+    Use this API to retrieve and download [provenance attestations](https://docs.gitlab.com/ci/pipeline_security/slsa/level_3/provenance_v1/) for a project.
+
+    > [!note]
+    > The availability of these endpoints is controlled by a feature flag. They are available for
+    > testing, but not ready for production use.
+  x-displayName: Attestations
+  externalDocs:
+    url: https://docs.gitlab.com/api/attestations/
 - name: Audit events
-  description: Operations related to audit events.
+  description: |-
+    Use this API to list and retrieve the
+    [audit events](https://docs.gitlab.com/user/compliance/audit_events/) recorded for an instance or a group.
+  x-displayName: Audit events
+  externalDocs:
+    url: https://docs.gitlab.com/api/audit_events/
 - name: Avatars
-  description: Operations related to avatars.
+  description: Use this API to retrieve and upload avatars for [users](https://docs.gitlab.com/user/profile/),
+    [groups](https://docs.gitlab.com/user/group/), and [projects](https://docs.gitlab.com/user/project/).
+  x-displayName: Avatars
+  externalDocs:
+    url: https://docs.gitlab.com/api/avatar/
 - name: Award emoji
-  description: Operations related to award emoji.
+  description: |-
+    Use this API to manage [emoji reactions](https://docs.gitlab.com/user/emoji_reactions/).
+
+    GitLab objects that accept emoji reactions are called awardables.
+    You can react with emoji on the following resources:
+
+    - [Epics](https://docs.gitlab.com/user/group/epics/)
+    - [Issues](https://docs.gitlab.com/user/project/issues/)
+    - [Merge requests](https://docs.gitlab.com/user/project/merge_requests/)
+    - [Snippets](https://docs.gitlab.com/user/snippets/)
+    - [Comments](https://docs.gitlab.com/user/emoji_reactions/#emoji-reactions-for-comments)
+  x-displayName: Award emoji
+  externalDocs:
+    url: https://docs.gitlab.com/api/emoji_reactions/
 - name: Badges
-  description: Operations related to badges.
+  description: |-
+    Use this API to manage badges for [projects](https://docs.gitlab.com/user/project/badges/) and [groups](https://docs.gitlab.com/user/project/badges/#group-badges).
+
+    ## Placeholders
+
+    Badges support placeholders that are replaced in real time in both the link and image URL.
+    The following placeholders are available:
+
+    - `%{project_path}`: replaced by the project path.
+    - `%{project_title}`: replaced by the project title.
+    - `%{project_name}`: replaced by the project name.
+    - `%{project_id}`: replaced by the project ID.
+    - `%{project_namespace}`: replaced by the project's namespace full path.
+    - `%{group_name}`: replaced by the project's top-level group name.
+    - `%{gitlab_server}`: replaced by the project's server name.
+    - `%{gitlab_pages_domain}`: replaced by the domain name hosting GitLab Pages.
+    - `%{default_branch}`: replaced by the project default branch.
+    - `%{commit_sha}`: replaced by the project's last commit SHA.
+    - `%{latest_tag}`: replaced by the project's last tag.
+
+    Group badge endpoints operate outside a project's context, so placeholder values are taken from the
+    group's earliest-created project. If no projects exist in the group, the URL is returned unchanged.
+  x-displayName: Badges
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_badges/
 - name: Batched background migrations
-  description: Operations related to batched background migrations.
+  description: |-
+    Use this API to list, retrieve, pause, and resume the
+    [batched background migrations](https://docs.gitlab.com/update/background_migrations/) running on an instance.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Batched background migrations
 - name: Batched background operations
-  description: Operations related to batched background operations.
+  description: |-
+    Use this API to list, retrieve, restart, and stop the batched background operations running on an
+    instance.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Batched background operations
 - name: Boards
-  description: Operations related to boards.
+  description: |-
+    Use this API to manage [issue boards](https://docs.gitlab.com/user/project/issue_board/) and their lists, for both projects and [groups](https://docs.gitlab.com/user/project/issue_board/#group-issue-boards).
+
+    Every call to this API requires authentication. If the project or group is private and the
+    authenticated user is not a member, a `GET` request results in a `404` status code.
+  x-displayName: Boards
+  externalDocs:
+    url: https://docs.gitlab.com/api/boards/
 - name: Branches
-  description: Operations related to branches.
+  description: |-
+    Use this API to manage [Git branches](https://docs.gitlab.com/user/project/repository/branches/).
+
+    To change the branch protections configured for a project, use the [protected branches API](https://docs.gitlab.com/api/protected_branches/).
+  x-displayName: Branches
+  externalDocs:
+    url: https://docs.gitlab.com/api/branches/
 - name: Broadcast messages
-  description: Operations related to broadcast messages.
+  description: |-
+    Use this API to interact with banners and notifications displayed in the UI. For more information, see [broadcast messages](https://docs.gitlab.com/administration/broadcast_messages/).
+
+    GET requests do not require authentication. All other broadcast message API endpoints are accessible only to administrators. Non-GET requests by:
+
+    - Unauthenticated users result in `401 Unauthorized`.
+    - Authenticated non-administrators result in `403 Forbidden`.
+  x-displayName: Broadcast messages
+  externalDocs:
+    url: https://docs.gitlab.com/api/broadcast_messages/
 - name: CI catalog
-  description: Operations related to CI catalog.
+  description: |-
+    Use this API to publish a release of a component project to the
+    [CI/CD catalog](https://docs.gitlab.com/ci/components/).
+
+    This endpoint is intended for CLI tooling and must be authenticated with a
+    [job token](https://docs.gitlab.com/ci/jobs/ci_job_token/).
+  x-displayName: CI catalog
 - name: CI jobs
-  description: Operations related to CI jobs.
+  description: Use this API to interact with [CI/CD jobs](https://docs.gitlab.com/ci/jobs/).
+  x-displayName: CI jobs
+  externalDocs:
+    url: https://docs.gitlab.com/api/jobs/
 - name: CI lint
-  description: Operations related to CI lint.
+  description: |-
+    Use this API to [validate a GitLab CI/CD configuration](https://docs.gitlab.com/ci/yaml/lint/).
+
+    These endpoints take JSON-encoded YAML content. To preserve the formatting of your CI/CD
+    configuration, it can help to escape and encode the YAML with a third-party tool such as
+    [`jq`](https://jqlang.org/) before you make the request.
+  x-displayName: CI lint
+  externalDocs:
+    url: https://docs.gitlab.com/api/lint/
 - name: CI minutes
-  description: Operations related to CI minutes.
+  description: |-
+    > [!warning]
+    > These endpoints are [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/515371) and were used
+    > only by the GitLab subscription portal.
+
+    Use this API to record a purchase of
+    [compute minutes](https://docs.gitlab.com/ci/pipelines/compute_minutes/) for a namespace, and to
+    transfer purchased packs to another namespace.
+  x-displayName: CI minutes
 - name: CI resource groups
-  description: Operations related to CI resource groups.
+  description: Use this API to interact with [resource groups](https://docs.gitlab.com/ci/resource_groups/).
+  x-displayName: CI resource groups
+  externalDocs:
+    url: https://docs.gitlab.com/api/resource_groups/
 - name: CI runners
-  description: Operations related to CI runners.
+  description: |-
+    > [!warning]
+    > Registering a runner with a registration token is
+    > [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) and disabled by default in
+    > GitLab 17.0 and later.
+
+    Use this API to register a [runner](https://docs.gitlab.com/ci/runners/) with an instance, verify its
+    authentication, reset its authentication token, and unregister it. GitLab Runner uses these endpoints
+    itself.
+
+    To create a runner, or to manage runners that already exist, use the Runners endpoints.
+  x-displayName: CI runners
+  externalDocs:
+    url: https://docs.gitlab.com/api/runners/
 - name: CI triggers
-  description: Operations related to CI triggers.
+  description: Use this API to [trigger pipelines](https://docs.gitlab.com/ci/triggers/).
+  x-displayName: CI triggers
+  externalDocs:
+    url: https://docs.gitlab.com/api/pipeline_triggers/
 - name: CI variables
-  description: Operations related to CI variables.
+  description: |-
+    Use this API to manage CI/CD variables for a [project](https://docs.gitlab.com/ci/variables/#for-a-project),
+    a [group](https://docs.gitlab.com/ci/variables/#for-a-group), or an
+    [instance](https://docs.gitlab.com/ci/variables/#for-an-instance).
+
+    Managing project variables requires the Maintainer role for the project.
+    Managing group variables requires the Owner role for the group.
+    Managing instance variables requires administrator access.
+  x-displayName: CI variables
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_level_variables/
 - name: Cluster agents
-  description: Operations related to cluster agents.
+  description: Use this API to interact with the [GitLab agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/).
+  x-displayName: Cluster agents
+  externalDocs:
+    url: https://docs.gitlab.com/api/cluster_agents/
 - name: Clusters
-  description: Operations related to clusters.
+  description: |-
+    > [!warning]
+    > These certificate-based cluster endpoints are [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8).
+
+    Use this API to manage and discover the certificate-based Kubernetes clusters of an
+    [instance](https://docs.gitlab.com/user/instance/clusters/), a
+    [group](https://docs.gitlab.com/user/group/clusters/), or a
+    [project](https://docs.gitlab.com/user/project/clusters/). Connecting a cluster to a group or an
+    instance lets you use the same cluster across multiple projects.
+
+    Instance endpoints require administrator access. Group and project endpoints require the Maintainer
+    or Owner role.
+  x-displayName: Clusters
+  externalDocs:
+    url: https://docs.gitlab.com/api/instance_clusters/
 - name: Code Suggestions
   description: Operations related to Code Suggestions.
 - name: Code review analytics
-  description: Operations related to code review analytics.
+  description: |-
+    Use this API to retrieve
+    [code review analytics](https://docs.gitlab.com/user/analytics/code_review_analytics/) for a project.
+  x-displayName: Code review analytics
 - name: Code search
-  description: Operations related to code search.
+  description: |-
+    Use this API to administer the [Zoekt](https://docs.gitlab.com/integration/zoekt/) nodes that power
+    [exact code search](https://docs.gitlab.com/user/search/exact_code_search/), including which
+    namespaces each node indexes, replica overrides, and triggering indexing for a project.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Code search
 - name: Commit statuses
-  description: Operations related to commit statuses.
+  description: |-
+    Use this API to list the statuses recorded against a
+    [commit](https://docs.gitlab.com/user/project/repository/commits/), and to add or update the status
+    that an external [CI/CD job](https://docs.gitlab.com/ci/jobs/) reports for a commit.
+  x-displayName: Commit statuses
+  externalDocs:
+    url: https://docs.gitlab.com/api/commits/
 - name: Commits
-  description: Operations related to commits.
+  description: Use this API to manage [Git commits](https://docs.gitlab.com/user/project/repository/commits/).
+  x-displayName: Commits
+  externalDocs:
+    url: https://docs.gitlab.com/api/commits/
 - name: Compliance policy settings
-  description: Operations related to compliance policy settings.
+  description: |-
+    Use this API to manage the security policy settings for an instance, and to set the status of
+    compliance controls that are evaluated by an external service.
+
+    Managing security policy settings requires administrator access to the instance, and security policies
+    require the Ultimate tier.
+    Setting the status of a compliance control requires HMAC, Timestamp, and Nonce authentication.
+
+    External controls support periodic ping functionality. When ping is enabled, which is the default,
+    GitLab resets the control status to `pending` every 12 hours. When ping is disabled, the control
+    status changes only through API calls.
+  x-displayName: Compliance policy settings
+  externalDocs:
+    url: https://docs.gitlab.com/api/compliance_policy_settings/
 - name: Container registry
-  description: Operations related to container registry.
+  description: |-
+    Use this API to manage the [GitLab container registry](https://docs.gitlab.com/user/packages/container_registry/):
+    list the registry repositories in a project or a group, retrieve or delete individual repositories and
+    their tags, and receive registry events.
+
+    To authenticate with these endpoints from a CI/CD job, pass the [`$CI_JOB_TOKEN`](https://docs.gitlab.com/ci/jobs/ci_job_token/)
+    variable as the `JOB-TOKEN` header. The job token only has access to the container registry
+    of the project that created the pipeline.
+  x-displayName: Container registry
+  externalDocs:
+    url: https://docs.gitlab.com/api/container_registry/
 - name: Custom attributes
-  description: Operations related to custom attributes.
+  description: |-
+    Use this API to manage the custom attributes set on users, groups, and projects.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Custom attributes
+  externalDocs:
+    url: https://docs.gitlab.com/api/custom_attributes/
 - name: DORA metrics
-  description: Operations related to DORA metrics.
+  description: |-
+    Use this API to retrieve [DORA metrics](https://docs.gitlab.com/user/analytics/dora_metrics/) for
+    groups and projects. Additional metrics are available through the
+    [GraphQL API](https://docs.gitlab.com/api/graphql/reference/).
+
+    These endpoints require the Reporter, Developer, Maintainer, or Owner role.
+  x-displayName: DORA metrics
+  externalDocs:
+    url: https://docs.gitlab.com/api/dora/metrics/
 - name: Data management
-  description: Operations related to data management.
+  description: |-
+    > [!note]
+    > These endpoints are an [experiment](https://docs.gitlab.com/policy/development_stages_support/).
+
+    Use this API to inspect and checksum the records that an instance stores for a given model.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Data management
+  externalDocs:
+    url: https://docs.gitlab.com/api/admin/data_management/
 - name: Database dictionary
-  description: Operations related to database dictionary.
+  description: |-
+    Use this API to list the tables in a GitLab database and retrieve the
+    [database dictionary](https://docs.gitlab.com/development/database/database_dictionary/) entry for a
+    single table.
+
+    Retrieving the entry for a single table requires administrator access to the instance.
+  x-displayName: Database dictionary
 - name: Dependency management
-  description: Operations related to dependency management.
+  description: |-
+    Use this API to retrieve a project's dependencies and to export
+    [dependency lists](https://docs.gitlab.com/user/application_security/dependency_list/) for a project,
+    group, or pipeline.
+
+    Every call to these endpoints requires authentication. To retrieve a project's dependencies, the user
+    must be authorized to read the repository. To see vulnerabilities in a response, the user must also be
+    authorized to read the [project security dashboard](https://docs.gitlab.com/user/application_security/security_dashboard/).
+    To create or download a dependency list export, the user must have the `read_dependency` permission,
+    and exports can be downloaded only by the user who created them.
+  x-displayName: Dependency management
+  externalDocs:
+    url: https://docs.gitlab.com/api/dependency_list_export/
 - name: Dependency proxy
-  description: Operations related to dependency proxy.
+  description: |-
+    Use this API to purge the cache of a group's
+    [dependency proxy](https://docs.gitlab.com/user/packages/dependency_proxy/).
+  x-displayName: Dependency proxy
+  externalDocs:
+    url: https://docs.gitlab.com/api/dependency_proxy/
 - name: Deploy resources
-  description: Operations related to deploy resources.
+  description: |-
+    Use this API to manage [deploy keys](https://docs.gitlab.com/user/project/deploy_keys/),
+    [deploy tokens](https://docs.gitlab.com/user/project/deploy_tokens/), and
+    [code deployments](https://docs.gitlab.com/ci/environments/deployments/) to GitLab environments.
+  x-displayName: Deploy resources
+  externalDocs:
+    url: https://docs.gitlab.com/api/deploy_keys/
 - name: Discussions
-  description: Operations related to discussions.
+  description: |-
+    Use this API to manage [discussions](https://docs.gitlab.com/user/discussions/). This includes
+    [comments, threads](https://docs.gitlab.com/user/discussions/), and system notes about changes to an object
+    (for example, when a milestone changes).
+
+    To manage label notes, use the [resource label events API](https://docs.gitlab.com/api/resource_label_events/).
+  x-displayName: Discussions
+  externalDocs:
+    url: https://docs.gitlab.com/api/discussions/
 - name: Draft notes
-  description: Operations related to draft notes.
+  description: |-
+    Use this API to manage draft notes. These notes are pending, unpublished comments on merge requests.
+    Draft notes can start a discussion, or continue an existing discussion as a reply.
+
+    Before publishing, draft notes are visible only to the author.
+  x-displayName: Draft notes
+  externalDocs:
+    url: https://docs.gitlab.com/api/draft_notes/
 - name: Duo workflow flow callback hooks
   description: Operations related to duo workflow flow callback hooks.
 - name: Enterprise users
-  description: Operations related to enterprise users.
+  description: |-
+    Use this API to manage the [enterprise users](https://docs.gitlab.com/user/enterprise_user/) of a
+    top-level group, including disabling two-factor authentication for them.
+
+    These endpoints work only for top-level groups, and require the Owner role for that group. The users
+    themselves do not have to be members of the group.
+  x-displayName: Enterprise users
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_enterprise_users/
 - name: Environments
-  description: Operations related to environments.
+  description: Use this API to interact with [GitLab environments](https://docs.gitlab.com/ci/environments/).
+  x-displayName: Environments
+  externalDocs:
+    url: https://docs.gitlab.com/api/environments/
 - name: Epics
-  description: Operations related to epics.
+  description: |-
+    > [!warning]
+    > The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+    > and is planned for removal in v5 of the API. From GitLab 17.4 to 18.0, if
+    > [the new look for epics](https://docs.gitlab.com/user/group/epics/#epics-as-work-items) is enabled,
+    > or in GitLab 18.1 and later, use the Work Items API instead. For more information, see
+    > [migrate epic APIs to work items](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
+    > This change is a breaking change.
+
+    Use this API to manage [epics](https://docs.gitlab.com/user/group/epics/), the issues assigned to
+    them, their child and [related epics](https://docs.gitlab.com/user/group/epics/linked_epics/), and
+    [group epic boards](https://docs.gitlab.com/user/group/epics/epic_boards/).
+
+    Every call to this API must be authenticated. If a user is not a member of a private group, a `GET`
+    request on that group results in a `404` status code.
+
+    Epics are available only in GitLab [Premium and Ultimate](https://about.gitlab.com/pricing/). If the
+    Epics or Related Epics feature is not available, a `403` status code is returned.
+  x-displayName: Epics
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_epic_boards/
 - name: Error tracking
-  description: Operations related to error tracking.
+  description: |-
+    Use this API to manage [error tracking](https://docs.gitlab.com/operations/error_tracking/) settings
+    and client keys for a project.
+
+    These endpoints require the Maintainer or Owner role.
+  x-displayName: Error tracking
+  externalDocs:
+    url: https://docs.gitlab.com/api/error_tracking/
 - name: Events
-  description: Operations related to events.
+  description: |-
+    Use this API to review event activity for a user, a project, or an instance. Events cover a wide
+    range of actions, such as joining a project, commenting on an issue, pushing changes to a merge
+    request, or closing an epic.
+
+    Activity is subject to retention limits. For more information, see the
+    [user activity time period limit](https://docs.gitlab.com/user/profile/contributions_calendar/#event-time-period-limit)
+    and the [project activity time period limit](https://docs.gitlab.com/user/project/working_with_projects/#view-project-activity).
+
+    These endpoints have some limitations:
+
+    - Some epic features, such as child items, linked items, start dates, due dates, and health statuses, are not returned.
+    - Some merge request notes use the `DiscussionNote` type instead, which is [not supported](https://docs.gitlab.com/api/discussions/#understand-note-types-in-the-api).
+    - Bulk push events, created when a push exceeds the [push event activities limit](https://docs.gitlab.com/administration/settings/push_event_activities_limit/), are returned with limited details.
+  x-displayName: Events
+  externalDocs:
+    url: https://docs.gitlab.com/api/events/
 - name: Experiments
-  description: Operations related to experiments.
+  description: |-
+    Use this API to retrieve the A/B experiments running on an instance. This API is for internal use
+    only, requires you to be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members),
+    and cannot be used with anonymous or unauthenticated users. For experiments involving anonymous users,
+    use the [`glex_force` query parameter](https://docs.gitlab.com/development/experiment_guide/implementing_experiments/#client-side-glex_force-query-parameter)
+    instead.
+  x-displayName: Experiments
+  externalDocs:
+    url: https://docs.gitlab.com/api/experiments/
 - name: External status checks
-  description: Operations related to external status checks.
+  description: Use this API to manage [external status checks](https://docs.gitlab.com/user/project/merge_requests/status_checks/).
+  x-displayName: External status checks
+  externalDocs:
+    url: https://docs.gitlab.com/api/status_checks/
 - name: Feature flags
-  description: Operations related to feature flags.
+  description: |-
+    Use this API to manage a project's [feature flags](https://docs.gitlab.com/operations/feature_flags/)
+    and the [user lists](https://docs.gitlab.com/operations/feature_flags/#user-list) that scope them to
+    particular users.
+
+    These endpoints require the Developer, Maintainer, or Owner role.
+  x-displayName: Feature flags
+  externalDocs:
+    url: https://docs.gitlab.com/api/feature_flag_user_lists/
 - name: Features
-  description: Operations related to features.
+  description: |-
+    Use this API to manage the Flipper-based feature flags used in the development of GitLab itself.
+
+    These endpoints support only boolean and percentage-of-time gate values, and require administrator
+    authorization.
+  x-displayName: Features
+  externalDocs:
+    url: https://docs.gitlab.com/api/features/
 - name: Files
-  description: Operations related to files.
+  description: |-
+    Use this API to manage [repository files](https://docs.gitlab.com/user/project/repository/).
+    You can also [configure rate limits](https://docs.gitlab.com/administration/settings/files_api_rate_limits/)
+    for this API.
+  x-displayName: Files
+  externalDocs:
+    url: https://docs.gitlab.com/api/repository_files/
 - name: Freeze periods
-  description: Operations related to freeze periods.
+  description: Use this API to interact with deployment [freeze periods](https://docs.gitlab.com/user/project/releases/#prevent-unintentional-releases-by-setting-a-deploy-freeze).
+  x-displayName: Freeze periods
+  externalDocs:
+    url: https://docs.gitlab.com/api/freeze_periods/
 - name: GLQL
-  description: Operations related to GLQL.
+  description: |-
+    Use this API to execute [GitLab Query Language (GLQL)](https://docs.gitlab.com/user/glql/) queries
+    programmatically. GLQL provides a simplified query language to search and filter
+    [GitLab resources](https://docs.gitlab.com/user/glql/#supported-areas) such as issues, merge requests,
+    and epics across projects and groups.
+
+    The group or project must allow access to its data. For private groups and projects, you must
+    authenticate with a [personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/)
+    that has the appropriate permissions.
+  x-displayName: GLQL
+  externalDocs:
+    url: https://docs.gitlab.com/api/glql/
 - name: Geo
-  description: Operations related to Geo.
+  description: |-
+    Use this API to manage [Geo sites](https://docs.gitlab.com/administration/geo/). All of these
+    endpoints require administrator access.
+
+    > [!warning]
+    > The Geo Nodes endpoints are [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) and
+    > are planned for removal in v5 of the API. Use the
+    > [Geo Sites API](https://docs.gitlab.com/api/geo_sites/) instead. This change is a breaking change.
+  x-displayName: Geo
+  externalDocs:
+    url: https://docs.gitlab.com/api/geo_nodes/
 - name: GitLab Duo
-  description: Operations related to GitLab Duo.
+  description: |-
+    Use this API to generate responses for [GitLab Duo Chat](https://docs.gitlab.com/user/gitlab_duo_chat/)
+    and other GitLab Duo features.
+
+    On GitLab.com, these endpoints are for internal use only. On GitLab Self-Managed, you can enable them
+    [with a feature flag](https://docs.gitlab.com/administration/feature_flags/) named `access_rest_chat`.
+    You must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members) to use these endpoints.
+  x-displayName: GitLab Duo
+  externalDocs:
+    url: https://docs.gitlab.com/api/chat/
 - name: GitLab Duo workflows
-  description: Operations related to GitLab Duo workflows.
+  description: |-
+    Use this API to create and manage [flows](https://docs.gitlab.com/user/duo_agent_platform/flows/) in the
+    [GitLab Duo Agent Platform](https://docs.gitlab.com/user/duo_agent_platform/).
+    Flows are combinations of AI agents that work together to complete developer tasks,
+    such as fixing bugs, writing code, or resolving vulnerabilities.
+  x-displayName: GitLab Duo workflows
+  externalDocs:
+    url: https://docs.gitlab.com/api/duo_agent_platform_flows/
 - name: GitLab Pages
-  description: Operations related to GitLab Pages.
+  description: |-
+    Use this API to [administer](https://docs.gitlab.com/administration/pages/) and
+    [use](https://docs.gitlab.com/user/project/pages/) GitLab Pages, including managing
+    [custom domains](https://docs.gitlab.com/user/project/pages/custom_domains_ssl_tls_certification/).
+
+    GitLab Pages must be enabled to use these endpoints.
+  x-displayName: GitLab Pages
+  externalDocs:
+    url: https://docs.gitlab.com/api/pages_domains/
 - name: GitLab subscriptions
-  description: Operations related to GitLab subscriptions.
+  description: |-
+    Use this API to create and update the [subscription](https://docs.gitlab.com/subscriptions/) attached
+    to a namespace.
+  x-displayName: GitLab subscriptions
 - name: Group credentials inventory
-  description: Operations related to group credentials inventory.
+  description: |-
+    Use this API to manage the credentials that members of a top-level group hold, including their
+    personal access tokens, resource access tokens, and SSH keys. You can list these credentials, revoke
+    them, and rotate the tokens. For more information, see
+    [credentials inventory](https://docs.gitlab.com/administration/credentials_inventory/).
+  x-displayName: Group credentials inventory
+  externalDocs:
+    url: https://docs.gitlab.com/api/groups/
 - name: Group import and export
-  description: Operations related to group import and export.
+  description: |-
+    Use this API to [migrate a group structure](https://docs.gitlab.com/user/group/import/) by exporting
+    and importing a file. When you use it with the
+    [project import and export API](https://docs.gitlab.com/api/project_import_export/), you can
+    preserve relationships that span the group, such as connections between project issues and group
+    epics. Run the group export and import first, then import the project exports into the group
+    structure.
+
+    A group export includes group milestones, boards, labels, badges, members, events, wikis (Premium
+    and Ultimate only), and subgroups. Each subgroup includes all of the same data.
+
+    To preserve the member list and permissions of an imported group, make sure those users exist on the
+    destination instance before you import.
+
+    Because of [issue 405168](https://gitlab.com/gitlab-org/gitlab/-/issues/405168), imported groups have
+    a `private` visibility level unless you import them into a parent group. By default, groups imported
+    into a parent group inherit the visibility of the parent.
+
+    The destination instance uses the group relations export endpoints during
+    [group migration by direct transfer](https://docs.gitlab.com/user/group/import/). You don't
+    usually need to call them yourself. In this context, a relation is an exportable item such as an
+    epic, including any related items such as a label. These endpoints require your instance to meet certain
+    [prerequisites](https://docs.gitlab.com/user/group/import/direct_transfer_migrations/#prerequisites),
+    and can't be used with the file-based export and import endpoints.
+  x-displayName: Group import and export
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_import_export/
 - name: Groups
-  description: Operations related to groups.
+  description: |-
+    Use this API to view and manage [groups](https://docs.gitlab.com/user/group/) and the resources they contain, including:
+
+    - Group settings, members, and security settings.
+    - [Group issues](https://docs.gitlab.com/user/project/issues/) and issue statistics.
+    - [Markdown uploads](https://docs.gitlab.com/security/user_file_uploads/) referenced in epics or wiki pages.
+    - Bulk [reassignment of placeholder users](https://docs.gitlab.com/user/import/mapping/reassignment/#request-reassignment-by-using-a-csv-file) after an import.
+
+    Endpoint responses might vary based on the [permissions](https://docs.gitlab.com/user/permissions/)
+    of the authenticated user in the group. If a user isn't a member of a private group, requests to
+    that group return a `404 Not Found` status code.
+
+    For project members, use the [project members API](https://docs.gitlab.com/api/project_members/).
+  x-displayName: Groups
+  externalDocs:
+    url: https://docs.gitlab.com/api/groups/
 - name: Hooks
-  description: Operations related to hooks.
+  description: |-
+    Use this API to manage the hooks that GitLab uses to notify external services about events:
+
+    - [Project webhooks](https://docs.gitlab.com/user/project/integrations/webhooks/) are limited to a single project.
+    - [Group webhooks](https://docs.gitlab.com/user/project/integrations/webhooks/#group-webhooks) apply to all projects and subgroups in a group.
+    - [System hooks](https://docs.gitlab.com/administration/system_hooks/) apply to the entire instance.
+
+    You can also test a hook, inspect its event log, resend an event, and manage its custom headers and
+    URL variables.
+
+    Managing project webhooks requires administrator access or the Maintainer or Owner role for the
+    project. Managing group webhooks requires administrator access or the Owner role for the group.
+    Managing system hooks requires administrator access.
+  x-displayName: Hooks
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_webhooks/
 - name: Imports
-  description: Operations related to imports.
+  description: |-
+    Use this API to migrate groups and projects by using
+    [direct transfer](https://docs.gitlab.com/user/group/import/direct_transfer_migrations/), and to
+    [import repositories from external sources](https://docs.gitlab.com/user/import/).
+
+    Before migrating by direct transfer, see the
+    [prerequisites](https://docs.gitlab.com/user/group/import/direct_transfer_migrations/#prerequisites).
+
+    > [!note]
+    > User contribution mapping is not supported when you import projects to a
+    > [personal namespace](https://docs.gitlab.com/user/namespace/#types-of-namespaces). All
+    > contributions are assigned to the personal namespace owner and cannot be reassigned.
+  x-displayName: Imports
+  externalDocs:
+    url: https://docs.gitlab.com/api/bulk_imports/
 - name: Instance
-  description: Operations related to instance.
+  description: |-
+    Use this API to manage an instance's
+    [appearance](https://docs.gitlab.com/administration/appearance/) and
+    [application settings](https://docs.gitlab.com/api/settings/#available-settings), and to retrieve
+    statistics about the instance.
+
+    Changes to application settings are subject to caching and might not take effect immediately. By
+    default, GitLab caches application settings for 60 seconds. For more information, see
+    [application cache interval](https://docs.gitlab.com/administration/application_settings_cache/).
+
+    All of these endpoints require administrator access to the instance.
+  x-displayName: Instance
+  externalDocs:
+    url: https://docs.gitlab.com/api/appearance/
 - name: Integrations
-  description: Operations related to integrations.
+  description: |-
+    Use this API to manage [integrations](https://docs.gitlab.com/user/project/integrations/) for a
+    project, or for a group and its subgroups.
+
+    Managing integrations requires the Maintainer or Owner role for the project or group.
+  x-displayName: Integrations
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_integrations/
 - name: Internal operations
   description: Operations related to internal operations.
 - name: Invitations
-  description: Operations related to invitations.
+  description: Use this API to manage invitations and add users to a [group](https://docs.gitlab.com/user/group/#add-users-to-a-group)
+    or [project](https://docs.gitlab.com/user/project/members/).
+  x-displayName: Invitations
+  externalDocs:
+    url: https://docs.gitlab.com/api/invitations/
 - name: Issues
-  description: Operations related to issues.
+  description: |-
+    Use this API to manage [issues](https://docs.gitlab.com/user/project/issues/), their
+    [links to related issues](https://docs.gitlab.com/user/project/issues/related_issues/), and issue
+    statistics. You can:
+
+    - Create, update, and delete issues.
+    - Manage issue metadata, like assignees, labels, milestones, and time tracking.
+    - Cross-reference issues and merge requests.
+    - Track issue movement and promotion between projects and epics.
+    - Retrieve statistics about issues.
+
+    If a user is not a member of a private project, a `GET` request on that project results in a `404`
+    status code.
+
+    > [!note]
+    > The `references.relative` attribute is relative to the group or project of the issue being requested.
+    > When an issue is fetched from its project, the `relative` format is the same as the `short` format.
+    > When requested across groups or projects, it's expected to be the same as the `full` format.
+  x-displayName: Issues
+  externalDocs:
+    url: https://docs.gitlab.com/api/issues/
 - name: Iterations
-  description: Operations related to iterations.
+  description: |-
+    Use this API to retrieve [iterations](https://docs.gitlab.com/user/group/iterations/) for a group or
+    a project.
+
+    Projects no longer have their own iterations, but you can use the project endpoint to retrieve the
+    iterations of a project's ancestor groups.
+  x-displayName: Iterations
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_iterations/
 - name: Jira Connect subscriptions
-  description: Operations related to Jira Connect subscriptions.
+  description: |-
+    Use this API to subscribe a namespace to an installation of the
+    [GitLab for Jira Cloud app](https://docs.gitlab.com/integration/jira/connect-app/).
+  x-displayName: Jira Connect subscriptions
 - name: Jira forge installation
-  description: Operations related to jira forge installation.
+  description: |-
+    Use this API to configure a GitLab for Jira (Forge) installation, by setting the GitLab instance URL
+    it points to and registering the system token it uses to synchronize development information. For more
+    information, see the [Jira integrations](https://docs.gitlab.com/integration/jira/).
+  x-displayName: Jira Forge installation
 - name: Jira forge subscriptions
-  description: Operations related to jira forge subscriptions.
+  description: |-
+    Use this API to list, create, and delete the namespace subscriptions of a GitLab for Jira (Forge)
+    installation. For more information, see the [Jira integrations](https://docs.gitlab.com/integration/jira/).
+  x-displayName: Jira Forge subscriptions
 - name: Job artifacts
-  description: Operations related to job artifacts.
+  description: Use this API to download, keep, and delete [job artifacts](https://docs.gitlab.com/ci/jobs/job_artifacts/).
+  x-displayName: Job artifacts
+  externalDocs:
+    url: https://docs.gitlab.com/api/job_artifacts/
 - name: Jobs
-  description: Operations related to jobs.
+  description: |-
+    Use this API to run CI/CD jobs on a [runner](https://docs.gitlab.com/ci/runners/): request the next
+    job, update its state, append to its log, and transfer its artifacts.
+
+    GitLab Runner uses these endpoints itself.
+  x-displayName: Jobs
 - name: Keys
-  description: Operations related to keys.
+  description: |-
+    Use this API to retrieve information about [SSH keys](https://docs.gitlab.com/user/ssh/), manage a
+    user's SSH and [GPG keys](https://docs.gitlab.com/user/project/repository/signed_commits/gpg/),
+    and manage [SSH certificates for top-level groups](https://docs.gitlab.com/user/group/ssh_certificates/).
+
+    Queries about deploy key fingerprints also retrieve information about the projects using that key.
+    If you use a SHA256 fingerprint in an API call, URL-encode the fingerprint.
+
+    Managing group SSH certificates requires the Owner role for a top-level group.
+  x-displayName: Keys
+  externalDocs:
+    url: https://docs.gitlab.com/api/user_keys/
 - name: Knowledge graph
-  description: Operations related to knowledge graph.
+  description: |-
+    Use this API to list the namespaces enabled for the knowledge graph, and to enable or disable an
+    individual namespace.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Knowledge graph
 - name: LDAP
-  description: Operations related to LDAP.
+  description: |-
+    Use this API to search the LDAP groups available to an instance, and to
+    [manage group memberships with LDAP](https://docs.gitlab.com/user/group/access_and_permissions/#manage-group-memberships-with-ldap)
+    by managing a group's LDAP links and triggering an LDAP synchronization.
+  x-displayName: LDAP
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_ldap_links/
 - name: Labels
-  description: Operations related to labels.
+  description: |-
+    Use this API to manage [labels](https://docs.gitlab.com/user/project/labels/) for both projects and
+    groups. For the difference between the two, see
+    [types of labels](https://docs.gitlab.com/user/project/labels/#types-of-labels).
+  x-displayName: Labels
+  externalDocs:
+    url: https://docs.gitlab.com/api/labels/
 - name: Licenses
-  description: Operations related to licenses.
+  description: |-
+    Use this API to add, retrieve, and delete the license that
+    [activates GitLab Enterprise Edition](https://docs.gitlab.com/administration/license_file/).
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Licenses
+  externalDocs:
+    url: https://docs.gitlab.com/api/license/
 - name: MCP
-  description: Operations related to MCP.
+  description: Use this API to connect Model Context Protocol (MCP) clients to the
+    GitLab MCP server.
+  x-displayName: MCP
 - name: ML Model Registry
-  description: Operations related to ML Model Registry.
+  description: |-
+    Use this API to upload and download the files attached to a version of a machine learning model in
+    the [model registry](https://docs.gitlab.com/user/project/ml/model_registry/). To create models and model
+    versions, use an [MLflow client](https://docs.gitlab.com/user/project/ml/experiment_tracking/mlflow_client/).
+  x-displayName: ML Model Registry
+  externalDocs:
+    url: https://docs.gitlab.com/api/model_registry/
 - name: MLOps
-  description: Operations related to MLOps.
+  description: |-
+    Use this API to track machine learning experiments, runs, and metrics, and to manage the
+    [model registry](https://docs.gitlab.com/user/project/ml/model_registry/). These endpoints implement
+    the MLflow REST API, so you can point an
+    [MLflow client](https://docs.gitlab.com/user/project/ml/experiment_tracking/mlflow_client/) at GitLab.
+  x-displayName: MLOps
 - name: Markdown
-  description: Operations related to Markdown.
+  description: |-
+    Use this API to render [Markdown](https://docs.gitlab.com/user/markdown/) content as HTML.
+
+    All requests to this API must be [authenticated](https://docs.gitlab.com/api/rest/authentication/).
+
+    > [!note]
+    > The availability of this feature is controlled by a feature flag.
+    > This feature is available for testing, but not ready for production use.
+  x-displayName: Markdown
+  externalDocs:
+    url: https://docs.gitlab.com/api/markdown/
 - name: Member roles
-  description: Operations related to member roles.
+  description: Use this API to interact with member roles for your GitLab.com groups
+    or entire GitLab Self-Managed instance.
+  x-displayName: Member roles
+  externalDocs:
+    url: https://docs.gitlab.com/api/member_roles/
 - name: Members
-  description: Operations related to members.
+  description: |-
+    Use this API to manage the [members](https://docs.gitlab.com/user/project/members/) of a group or a
+    project, including inherited memberships, membership approvals, and the billable members of a group.
+  x-displayName: Members
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_members/
 - name: Merge request approvals
-  description: Operations related to merge request approvals.
+  description: |-
+    Use this API to manage [merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
+    and the group and project [approval settings](https://docs.gitlab.com/user/project/merge_requests/approvals/settings/)
+    that govern them. All endpoints require authentication.
+
+    Endpoints to approve, unapprove, reset approvals, and retrieve approval state are available on all
+    tiers, including Free. All other endpoints require Premium or Ultimate, and each one shows its tier.
+
+    > [!note]
+    > The `merge_request_iid` and `id` path parameters must each be a single value.
+    > Passing multiple space-separated values (for example, `451 454 458`) is not
+    > supported and returns `400 Bad Request`. To act on multiple merge requests,
+    > make one request per merge request IID.
+  x-displayName: Merge request approvals
+  externalDocs:
+    url: https://docs.gitlab.com/api/merge_request_approvals/
 - name: Merge requests
-  description: Operations related to merge requests.
+  description: |-
+    Use this API to manage [merge requests](https://docs.gitlab.com/user/project/merge_requests/) in a
+    project, and to list the merge requests across a group or an entire instance. You can:
+
+    - Automate any part of the code review process.
+    - Connect code changes to external tools.
+    - Send merge request information to non-GitLab systems in your preferred format.
+    - Update, approve, merge, or block merge requests based on data from external systems.
+    - Add [commits from previous merge requests](https://docs.gitlab.com/user/project/merge_requests/commits/#show-commits-from-previous-merge-requests) to a merge request for more context.
+
+    All API calls to non-public information require authentication.
+  x-displayName: Merge requests
+  externalDocs:
+    url: https://docs.gitlab.com/api/merge_requests/
 - name: Merge trains
-  description: Operations related to merge trains.
+  description: |-
+    Use this API to retrieve the [merge trains](https://docs.gitlab.com/ci/pipelines/merge_trains/) of a
+    project. These endpoints require the Developer, Maintainer, or Owner role, and support
+    [offset-based pagination](https://docs.gitlab.com/api/rest/#offset-based-pagination).
+
+    Each object in a response represents one merge request in a train, not an entire train. Requesting
+    merge trains without a target branch can return entries from more than one train in the project.
+
+    Responses do not include an explicit queue position, and return merge requests as a flat list rather
+    than grouped by train:
+
+    - For an exact queue position, sort by `id` in ascending order, or use the GraphQL API
+      [`MergeTrainCar.index`](https://docs.gitlab.com/api/graphql/reference/#mergetraincar-index) field.
+    - To group merge requests by train, use the `target_branch` attribute, or query the GraphQL API
+      [`Project.mergeTrains`](https://docs.gitlab.com/api/graphql/reference/#projectmergetrains) and
+      [`MergeTrain.cars`](https://docs.gitlab.com/api/graphql/reference/#mergetraincars) fields.
+  x-displayName: Merge trains
+  externalDocs:
+    url: https://docs.gitlab.com/api/merge_trains/
 - name: Metadata
-  description: Operations related to metadata.
+  description: |-
+    Use this API to retrieve metadata about a GitLab instance, including its version, its revision,
+    whether it is Enterprise Edition, and the configuration of the
+    [GitLab agent server for Kubernetes (KAS)](https://docs.gitlab.com/administration/clusters/kas/).
+  x-displayName: Metadata
+  externalDocs:
+    url: https://docs.gitlab.com/api/metadata/
 - name: Metric images
-  description: Operations related to metric images.
+  description: |-
+    Use this API to upload, list, update, and delete the metric images attached to an issue, such as the
+    charts attached to an [incident](https://docs.gitlab.com/operations/incident_management/incidents/).
+  x-displayName: Metric images
+  externalDocs:
+    url: https://docs.gitlab.com/api/issues/
 - name: Metrics
-  description: Operations related to metrics.
+  description: |-
+    Use this API to retrieve the definitions of the metrics that GitLab collects for
+    [Service Ping](https://docs.gitlab.com/development/internal_analytics/service_ping/).
+  x-displayName: Metrics
+  externalDocs:
+    url: https://docs.gitlab.com/api/usage_data/
 - name: Migrations
-  description: Operations related to migrations.
+  description: |-
+    Use this API to mark GitLab database migrations as successful, so that a deployment can proceed
+    without re-running them.
+
+    These endpoints are available for GitLab Self-Managed and require administrator access to the instance.
+  x-displayName: Migrations
+  externalDocs:
+    url: https://docs.gitlab.com/api/database_migrations/
 - name: Milestones
-  description: Operations related to milestones.
+  description: |-
+    Use this API to manage [milestones](https://docs.gitlab.com/user/project/milestones/) for both
+    projects and groups.
+  x-displayName: Milestones
+  externalDocs:
+    url: https://docs.gitlab.com/api/milestones/
 - name: Mobile push subscriptions
   description: Operations related to mobile push subscriptions.
 - name: Namespace projects
   description: Operations related to namespace projects.
 - name: Namespaces
-  description: Operations related to namespaces.
+  description: |-
+    Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [namespaces](https://docs.gitlab.com/user/namespace/).
+
+    This API uses [pagination](https://docs.gitlab.com/api/rest/#pagination) to filter results.
+  x-displayName: Namespaces
+  externalDocs:
+    url: https://docs.gitlab.com/api/namespaces/
 - name: Notes
-  description: Operations related to notes.
+  description: |-
+    Use this API to manage the comments and system records attached to GitLab content. You can:
+
+    - Create and modify comments on issues, merge requests, epics, snippets, commits, and wiki pages.
+    - Retrieve [system-generated notes](https://docs.gitlab.com/user/project/system_notes/) about object changes.
+    - Control visibility with confidential and internal flags.
+
+    Some system-generated notes are tracked as separate resource events instead, including
+    [label](https://docs.gitlab.com/api/resource_label_events/),
+    [state](https://docs.gitlab.com/api/resource_state_events/),
+    [milestone](https://docs.gitlab.com/api/resource_milestone_events/),
+    [weight](https://docs.gitlab.com/api/resource_weight_events/), and
+    [iteration](https://docs.gitlab.com/api/resource_iteration_events/) events.
+
+    By default, `GET` requests return 20 results at a time, because the results are
+    [paginated](https://docs.gitlab.com/api/rest/#pagination).
+  x-displayName: Notes
+  externalDocs:
+    url: https://docs.gitlab.com/api/notes/
 - name: Notification settings
-  description: Operations related to notification settings.
+  description: |-
+    Use this API to retrieve and update [notification settings](https://docs.gitlab.com/user/profile/notifications/)
+    globally for your account, or for an individual group or project, which overrides the global setting.
+  x-displayName: Notification settings
+  externalDocs:
+    url: https://docs.gitlab.com/api/notification_settings/
 - name: OAuth applications
-  description: Operations related to OAuth applications.
+  description: |-
+    Use this API to retrieve the server configuration that the workspaces agent requires.
+
+    This endpoint is internal and used by GitLab components.
+  x-displayName: OAuth applications
 - name: Offline transfers
-  description: Operations related to offline transfers.
+  description: |-
+    Use this API to start and track offline transfer exports and imports, which migrate data between
+    GitLab instances that cannot reach each other over a network.
+  x-displayName: Offline transfers
 - name: Orbit
-  description: Operations related to orbit.
+  description: |-
+    Use this API to serve repository and merge request content to
+    [GitLab Orbit](https://docs.gitlab.com/orbit/), which indexes a group's software development
+    lifecycle into a queryable knowledge graph. These endpoints expose project metadata, commits, changed
+    paths, blobs, repository archives, and merge request diffs, and redact sensitive values from the
+    content Orbit ingests.
+
+    These endpoints are internal and used by the GitLab Orbit service.
+
+    > [!note]
+    > The availability of these endpoints is controlled by a feature flag, and GitLab Orbit is in beta.
+  x-displayName: Orbit
+  externalDocs:
+    url: https://docs.gitlab.com/api/orbit/
 - name: Organizations
-  description: Operations related to organizations.
+  description: Use this API to interact with GitLab organizations. For more information,
+    see [organizations](https://docs.gitlab.com/user/organization/).
+  x-displayName: Organizations
+  externalDocs:
+    url: https://docs.gitlab.com/api/organizations/
 - name: Packages
-  description: Operations related to packages.
+  description: |-
+    Use this API to manage the [packages](https://docs.gitlab.com/user/packages/package_registry/) stored
+    in a project or a group.
+  x-displayName: Packages
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/
 - name: 'Packages: Cargo'
-  description: 'Operations related to packages: cargo.'
+  description: |-
+    Use this API to interact with the Cargo package registry, including its sparse index, registry
+    configuration, and crate downloads. Generally these endpoints are used by Cargo itself and are not
+    meant for manual consumption. For more information, see the
+    [package registry](https://docs.gitlab.com/user/packages/package_registry/).
+  x-displayName: 'Packages: Cargo'
 - name: 'Packages: Composer'
-  description: 'Operations related to packages: composer.'
+  description: |-
+    Use this API to interact with the [Composer package manager client](https://docs.gitlab.com/user/packages/composer_repository/).
+
+    > [!warning]
+    > This API is used by the [Composer package manager client](https://getcomposer.org/)
+    > and is generally not meant for manual consumption.
+
+    These endpoints do not adhere to the standard API authentication methods.
+    See the [Composer package registry documentation](https://docs.gitlab.com/user/packages/composer_repository/)
+    for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+  x-displayName: 'Packages: Composer'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/composer/
 - name: 'Packages: Conan'
-  description: 'Operations related to packages: conan.'
+  description: |-
+    > [!warning]
+    > The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled. These
+    > endpoints all return `404 Not Found`.
+
+    Use this API to interact with the Conan package manager for
+    [v1](https://docs.gitlab.com/user/packages/conan_1_repository/) and
+    [v2](https://docs.gitlab.com/user/packages/conan_2_repository/) repositories. The v1 endpoints work
+    for both projects and instances, and the availability of the v2 endpoints is controlled by a feature
+    flag. Generally these endpoints are used by the Conan package manager client and are not meant for
+    manual consumption.
+
+    > [!note]
+    > These endpoints do not adhere to the standard API authentication methods. See each route for
+    > details on how credentials are expected to be passed. Undocumented authentication methods might be
+    > removed in the future.
+  x-displayName: 'Packages: Conan'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/conan_v1/
 - name: 'Packages: Debian'
-  description: 'Operations related to packages: debian.'
+  description: |-
+    > [!warning]
+    > These endpoints are under development and are not ready for production use due to limited
+    > functionality. The package endpoints are used by Debian package clients such as
+    > [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html) and
+    > [apt-get](https://manpages.debian.org/stable/apt/apt-get.8.en.html), and are generally not meant
+    > for manual consumption.
+
+    Use this API to manage [Debian distributions](https://docs.gitlab.com/user/packages/debian_repository/)
+    for groups and projects, and to publish and retrieve Debian packages. The distribution endpoints are
+    behind a feature flag that is disabled by default. To use them, enable the
+    [group](https://docs.gitlab.com/api/packages/debian_group_distributions/#enable-the-debian-group-api) or
+    [project](https://docs.gitlab.com/api/packages/debian_project_distributions/#enable-the-debian-api)
+    Debian API.
+
+    > [!note]
+    > These endpoints do not adhere to the standard API authentication methods. For the supported headers
+    > and token types, see the [Debian registry documentation](https://docs.gitlab.com/user/packages/debian_repository/).
+    > Undocumented authentication methods might be removed in the future.
+  x-displayName: 'Packages: Debian'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/debian_group_distributions/
 - name: 'Packages: Helm'
-  description: 'Operations related to packages: helm.'
+  description: |-
+    Use this API to interact with [Helm package clients](https://docs.gitlab.com/user/packages/helm_repository/).
+
+    > [!warning]
+    > This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
+    > and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
+    > and is generally not meant for manual consumption.
+
+    These endpoints do not adhere to the standard API authentication methods.
+    See the [Helm registry documentation](https://docs.gitlab.com/user/packages/helm_repository/)
+    for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+  x-displayName: 'Packages: Helm'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/helm/
 - name: 'Packages: NPM'
-  description: 'Operations related to packages: NPM.'
+  description: |-
+    Use this API to interact with the [npm package manager client](https://docs.gitlab.com/user/packages/npm_registry/).
+
+    > [!warning]
+    > This API is used by the [npm package manager client](https://docs.npmjs.com/)
+    > and is not meant for manual consumption.
+
+    These endpoints do not adhere to the standard API authentication methods.
+    See the [npm package registry documentation](https://docs.gitlab.com/user/packages/npm_registry/)
+    for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+  x-displayName: 'Packages: NPM'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/npm/
 - name: 'Packages: NuGet'
-  description: 'Operations related to packages: nuget.'
+  description: |-
+    Use this API to interact with the [NuGet package manager client](https://docs.gitlab.com/user/packages/nuget_repository/).
+
+    > [!warning]
+    > This API is used by the [NuGet package manager client](https://www.nuget.org/)
+    > and is generally not meant for manual consumption.
+
+    These endpoints do not adhere to the standard API authentication methods.
+    See the [NuGet package registry documentation](https://docs.gitlab.com/user/packages/nuget_repository/)
+    for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+  x-displayName: 'Packages: NuGet'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/nuget/
 - name: 'Packages: PyPi'
-  description: 'Operations related to packages: PyPi.'
+  description: |-
+    Use this API to interact with the [PyPI package manager client](https://docs.gitlab.com/user/packages/pypi_repository/).
+
+    > [!warning]
+    > This API is used by the [PyPI package manager client](https://pypi.org/)
+    > and is generally not meant for manual consumption.
+
+    These endpoints do not adhere to the standard API authentication methods.
+    See the [PyPI package registry documentation](https://docs.gitlab.com/user/packages/pypi_repository/)
+    for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+    > [!note]
+    > [Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28) or greater
+    > is recommended when FIPS mode is enabled.
+  x-displayName: 'Packages: PyPi'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/pypi/
 - name: 'Packages: RPM'
-  description: 'Operations related to packages: RPM.'
+  description: |-
+    Use this API to upload RPM packages to the
+    [package registry](https://docs.gitlab.com/user/packages/package_registry/).
+  x-displayName: 'Packages: RPM'
 - name: 'Packages: RubyGem'
-  description: 'Operations related to packages: RubyGem.'
+  description: |-
+    Use this API to interact with the [Ruby gems and Bundler package manager clients](https://docs.gitlab.com/user/packages/rubygems_registry/).
+
+    > [!warning]
+    > This API is used by the Ruby gems and Bundler package manager clients and is generally not meant
+    > for manual consumption. This API is under development and is not ready for production use due to
+    > limited functionality.
+
+    These endpoints do not adhere to the standard API authentication methods.
+    See the [Ruby gems registry documentation](https://docs.gitlab.com/user/packages/rubygems_registry/)
+    for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+  x-displayName: 'Packages: RubyGem'
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/rubygems/
 - name: Pipeline schedules
-  description: Operations related to pipeline schedules.
+  description: Use this API to interact with [pipeline schedules](https://docs.gitlab.com/ci/pipelines/schedules/).
+  x-displayName: Pipeline schedules
+  externalDocs:
+    url: https://docs.gitlab.com/api/pipeline_schedules/
 - name: Pipelines
-  description: Operations related to pipelines.
+  description: |-
+    Use this API to manage [CI/CD pipelines](https://docs.gitlab.com/ci/pipelines/) and the
+    [jobs](https://docs.gitlab.com/ci/jobs/) they run.
+  x-displayName: Pipelines
+  externalDocs:
+    url: https://docs.gitlab.com/api/pipelines/
 - name: Plan limits
-  description: Operations related to plan limits.
+  description: |-
+    Use this API to retrieve and change the application limits of a subscription plan.
+
+    The available plans depend on the GitLab edition. In the Community Edition, only the `default` plan
+    exists. The Enterprise Edition has additional plans.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Plan limits
+  externalDocs:
+    url: https://docs.gitlab.com/api/plan_limits/
 - name: Policy store
   description: Operations related to policy store.
 - name: Project Google Cloud integration
-  description: Operations related to project Google Cloud integration.
+  description: Use this API to interact with the Google Cloud integration. For more
+    information, see [GitLab and Google Cloud integration](https://docs.gitlab.com/ci/gitlab_google_cloud_integration/).
+  x-displayName: Project Google Cloud integration
+  externalDocs:
+    url: https://docs.gitlab.com/api/google_cloud_integration/
 - name: Project alias
-  description: Operations related to project alias.
+  description: |-
+    Use this API to manage [project aliases](https://docs.gitlab.com/user/project/working_with_projects/#project-aliases).
+    After you create an alias for a project, users can clone the repository with that alias, which can be
+    helpful when migrating repositories.
+
+    All endpoints require administrator authorization.
+  x-displayName: Project alias
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_aliases/
 - name: Project approvals
-  description: Operations related to project approvals.
+  description: |-
+    Use this API to retrieve and change a project's
+    [merge request approval configuration](https://docs.gitlab.com/user/project/merge_requests/approvals/settings/),
+    such as the number of approvals a merge request requires.
+
+    All endpoints require authentication.
+  x-displayName: Project approvals
+  externalDocs:
+    url: https://docs.gitlab.com/api/merge_request_approvals/
 - name: Project import
-  description: Operations related to project import.
+  description: |-
+    Use this API to [import repositories from external sources](https://docs.gitlab.com/user/import/)
+    and to [migrate a project](https://docs.gitlab.com/user/project/settings/import_export/) between
+    GitLab instances.
+
+    If you first migrate the parent group structure with the
+    [group import and export API](https://docs.gitlab.com/api/group_import_export/), you can preserve
+    relationships that span the group, such as connections between project issues and group epics.
+    After an import, use the [project-level CI/CD variables API](https://docs.gitlab.com/api/project_level_variables/)
+    to restore CI/CD variables. You must still migrate your
+    [container registry](https://docs.gitlab.com/user/packages/container_registry/) over a series of
+    Docker pulls and pushes, and re-run any CI/CD pipelines to retrieve build artifacts.
+
+    The project relations export endpoints are used by the destination instance during
+    [group migration by direct transfer](https://docs.gitlab.com/user/group/import/) to migrate a
+    project structure, and you don't usually need to call them yourself. In this context, a relation is
+    an exportable item such as a merge request, including any related items such as a label.
+
+    > [!note]
+    > User contribution mapping is not supported when you import projects to a
+    > [personal namespace](https://docs.gitlab.com/user/namespace/#types-of-namespaces). All
+    > contributions are assigned to the personal namespace owner and cannot be reassigned.
+  x-displayName: Project import
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_import_export/
 - name: Project mirrors
-  description: Operations related to project mirrors.
+  description: Use this API to manage project [pull mirroring](https://docs.gitlab.com/user/project/repository/mirror/pull/).
+  x-displayName: Project mirrors
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_pull_mirroring/
 - name: Project snapshots
-  description: Operations related to project snapshots.
+  description: |-
+    Use this API to download a snapshot of a project's repository, for use in salvaging a corrupt
+    repository.
+
+    These endpoints require administrator access to the instance.
+  x-displayName: Project snapshots
+  externalDocs:
+    url: https://docs.gitlab.com/api/projects/
 - name: Project templates
-  description: Operations related to project templates.
+  description: |-
+    Use this API to retrieve project-specific templates, in addition to the templates common to the
+    entire instance:
+
+    - [Dockerfile templates](https://docs.gitlab.com/api/templates/dockerfiles/)
+    - [Gitignore templates](https://docs.gitlab.com/api/templates/gitignores/)
+    - [GitLab CI/CD configuration templates](https://docs.gitlab.com/api/templates/gitlab_ci_ymls/)
+    - [Open source license templates](https://docs.gitlab.com/api/templates/licenses/)
+    - [Issue and merge request templates](https://docs.gitlab.com/user/project/description_templates/)
+
+    These endpoints supersede the instance template endpoints, which are scheduled for removal
+    in API version 5. [File templates for groups](https://docs.gitlab.com/user/group/manage/#group-file-templates)
+    are also supported.
+  x-displayName: Project templates
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_templates/
 - name: Project topics
-  description: Operations related to project topics.
+  description: Use this API to interact with project topics. For more information,
+    see [project topics](https://docs.gitlab.com/user/project/project_topics/).
+  x-displayName: Project topics
+  externalDocs:
+    url: https://docs.gitlab.com/api/topics/
 - name: Projects
-  description: Operations related to projects.
+  description: |-
+    Use this API to manage [projects](https://docs.gitlab.com/user/project/) and the resources they contain, including:
+
+    - Project settings, visibility, access permissions, and security settings.
+    - Archiving, transferring, [forking](https://docs.gitlab.com/user/project/repository/forking_workflow/), and [starring](https://docs.gitlab.com/user/project/working_with_projects/) projects.
+    - Project [issues](https://docs.gitlab.com/user/project/issues/), issue statistics, and project statistics.
+    - [Markdown uploads](https://docs.gitlab.com/security/user_file_uploads/) referenced in issues, merge requests, snippets, or wiki pages.
+    - Protection rules for [container image tags](https://docs.gitlab.com/user/packages/container_registry/protected_container_tags/), container repositories, and [packages](https://docs.gitlab.com/user/packages/package_registry/package_protection_rules/).
+
+    If a user is not a member of a private project, a `GET` request on that project results in a
+    `404` status code.
+  x-displayName: Projects
+  externalDocs:
+    url: https://docs.gitlab.com/api/projects/
 - name: Projects job token scope
-  description: Operations related to projects job token scope.
+  description: |-
+    Use this API to interact with [CI/CD job token](https://docs.gitlab.com/ci/jobs/ci_job_token/) scopes.
+
+    > [!note]
+    > All requests to the CI/CD job token scope API endpoint must be [authenticated](https://docs.gitlab.com/api/rest/authentication/).
+    > The authenticated user must have the Maintainer or Owner role for the project.
+  x-displayName: Projects job token scope
+  externalDocs:
+    url: https://docs.gitlab.com/api/project_job_token_scopes/
 - name: Protected branches
-  description: Operations related to protected branches.
+  description: |-
+    Use this API to manage [protected branches](https://docs.gitlab.com/user/project/repository/branches/protected/)
+    for a project, and the [protected branch settings](https://docs.gitlab.com/user/project/repository/branches/protected/#in-a-group)
+    that all projects in a group inherit.
+
+    GitLab Premium and GitLab Ultimate support more granular protections for pushing to branches.
+    Administrators can grant permission to modify and push to protected branches only to deploy keys,
+    instead of specific users.
+
+    > [!warning]
+    > Group protected branch settings are restricted to top-level groups. They support only
+    > [valid access levels](https://docs.gitlab.com/api/group_protected_branches/#valid-access-levels),
+    > and cannot name individual users or groups.
+  x-displayName: Protected branches
+  externalDocs:
+    url: https://docs.gitlab.com/api/protected_branches/
 - name: Protected environments
-  description: Operations related to protected environments.
+  description: |-
+    Use this API to manage [protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+    for a project, and [protected environments for a group](https://docs.gitlab.com/ci/environments/protected_environments/#protected-environments-for-groups)
+    for a group.
+
+    > [!note]
+    > The project endpoints require CI/CD to be turned on for the project. If
+    > [CI/CD is turned off](https://docs.gitlab.com/user/project/settings/#turn-off-cicd-for-a-project),
+    > requests return `403 Forbidden`, even for users who otherwise have permission to manage protected
+    > environments.
+  x-displayName: Protected environments
+  externalDocs:
+    url: https://docs.gitlab.com/api/protected_environments/
 - name: Protected tags
-  description: Operations related to protected tags.
+  description: Use this API to manage [protected tags](https://docs.gitlab.com/user/project/protected_tags/).
+  x-displayName: Protected tags
+  externalDocs:
+    url: https://docs.gitlab.com/api/protected_tags/
 - name: Provider identities
-  description: Operations related to provider identities.
+  description: |-
+    Use this API to manage the SAML and SCIM identities linked to users in a group.
+
+    Prerequisites for the SCIM endpoints:
+
+    - You must enable [group SSO](https://docs.gitlab.com/user/group/saml_sso/).
+    - You must enable [SCIM for group SSO](https://docs.gitlab.com/user/group/saml_sso/scim_setup/).
+    - You must authenticate with a [personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/)
+      or [group access token](https://docs.gitlab.com/user/group/settings/group_access_tokens/) that has the correct scope.
+
+    These endpoints get, check, update, and delete SCIM identities in groups, and do not implement
+    the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). They differ from the
+    [internal group SCIM API](https://docs.gitlab.com/development/internal_api/#group-scim-api) and the
+    [internal instance SCIM API](https://docs.gitlab.com/development/internal_api/#instance-scim-api),
+    which implement RFC7644 for SCIM provider integration and require a SCIM token.
+  x-displayName: Provider identities
+  externalDocs:
+    url: https://docs.gitlab.com/api/saml/
 - name: Push rules
-  description: Operations related to push rules.
+  description: |-
+    Use this API to manage [push rules](https://docs.gitlab.com/user/project/repository/push_rules/) for
+    a project, and [group push rules](https://docs.gitlab.com/user/project/repository/push_rules/#group-push-rules)
+    that apply to newly created projects in a group.
+
+    Managing group push rules requires the Owner role for the group, or administrator access to the
+    instance.
+
+    > [!note]
+    > GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for all regular expressions in push rules.
+  x-displayName: Push rules
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_push_rules/
 - name: Releases
-  description: Operations related to releases.
+  description: |-
+    Use this API to manage [releases](https://docs.gitlab.com/user/project/releases/) for a project,
+    list the releases across a group, and manage the asset links attached to a release.
+
+    Asset links support the `http`, `https`, and `ftp` protocols.
+  x-displayName: Releases
+  externalDocs:
+    url: https://docs.gitlab.com/api/releases/
 - name: Remote mirrors
-  description: Operations related to remote mirrors.
+  description: |-
+    Use this API to manage [remote mirrors](https://docs.gitlab.com/user/project/repository/mirror/push/).
+    You can query and modify the state of these mirrors.
+
+    For security reasons, the `url` attribute in the API response is always scrubbed of username
+    and password information.
+
+    > [!note]
+    > [Pull mirrors](https://docs.gitlab.com/user/project/repository/mirror/pull/) use
+    > [a different API endpoint](https://docs.gitlab.com/api/project_pull_mirroring/#update-project-pull-mirroring-settings) to
+    > display and update them.
+  x-displayName: Remote mirrors
+  externalDocs:
+    url: https://docs.gitlab.com/api/remote_mirrors/
 - name: Repositories
-  description: Operations related to repositories.
+  description: Use this API to manage [Git repositories](https://docs.gitlab.com/user/project/repository/).
+  x-displayName: Repositories
+  externalDocs:
+    url: https://docs.gitlab.com/api/repositories/
 - name: Resource events
-  description: Operations related to resource events.
+  description: |-
+    Use this API to retrieve the events that track changes to issues, merge requests, and epics:
+
+    - [Label](https://docs.gitlab.com/user/project/labels/) events record who added or removed a label, and when.
+    - [Iteration](https://docs.gitlab.com/user/group/iterations/) events record iteration changes for issues.
+    - Milestone events record milestone changes for issues and merge requests.
+    - State events record state changes for issues, merge requests, and epics.
+    - Weight events record weight changes for issues.
+
+    State events do not track the initial state (`created` or `opened`) of a resource. For a resource
+    that was never closed or reopened, an empty list is returned.
+  x-displayName: Resource events
+  externalDocs:
+    url: https://docs.gitlab.com/api/resource_label_events/
 - name: Resource subscriptions
-  description: Operations related to resource subscriptions.
+  description: |-
+    Use this API to subscribe to and unsubscribe from [issues](https://docs.gitlab.com/user/project/issues/),
+    [merge requests](https://docs.gitlab.com/user/project/merge_requests/), and
+    [labels](https://docs.gitlab.com/user/project/labels/) in projects and groups.
+
+    All API calls to non-public information require authentication.
+  x-displayName: Resource subscriptions
 - name: Rollouts
   description: Operations related to rollouts.
 - name: Runner controller tokens
-  description: Operations related to runner controller tokens.
+  description: |-
+    Use this API to create, list, rotate, and revoke the authentication tokens that runner controllers
+    use to authenticate with a GitLab instance and manage runners.
+
+    These endpoints require administrator access to the instance.
+
+    > [!note]
+    > The availability of these endpoints is controlled by a feature flag. They are available for
+    > testing, but not ready for production use.
+  x-displayName: Runner controller tokens
+  externalDocs:
+    url: https://docs.gitlab.com/api/runner_controller_tokens/
 - name: Runner controllers
-  description: Operations related to runner controllers.
+  description: |-
+    Use this API to manage the runner controllers that handle CI/CD job admission control, and the scopes
+    assigned to them. Runner controllers connect to the job router and evaluate jobs against custom
+    policies, deciding whether to admit or reject them.
+
+    These endpoints require administrator access to the instance.
+
+    > [!note]
+    > The availability of these endpoints is controlled by a feature flag. They are available for
+    > testing, but not ready for production use.
+  x-displayName: Runner controllers
+  externalDocs:
+    url: https://docs.gitlab.com/api/runner_controllers/
 - name: Runners
-  description: Operations related to runners.
+  description: |-
+    Use this API to manage the [runners](https://docs.gitlab.com/ci/runners/) already registered to an
+    instance, group, or project.
+
+    To create a runner, use the
+    [`POST /user/runners`](https://docs.gitlab.com/api/users/#create-a-runner-linked-to-a-user) endpoint
+    instead.
+  x-displayName: Runners
+  externalDocs:
+    url: https://docs.gitlab.com/api/runners/
 - name: SAML group links
-  description: Operations related to SAML group links.
+  description: |-
+    Use this API to manage the [SAML group links](https://docs.gitlab.com/user/group/saml_sso/group_sync/)
+    that map a group in your identity provider to a GitLab group, and to the role its members receive.
+  x-displayName: SAML group links
+  externalDocs:
+    url: https://docs.gitlab.com/api/saml/
 - name: Search
-  description: Operations related to search.
+  description: |-
+    Use this API to [search across GitLab](https://docs.gitlab.com/user/search/) in an instance, a group,
+    or a project, and to retrieve information about
+    [advanced search migrations](https://docs.gitlab.com/integration/advanced_search/elasticsearch/#advanced-search-migrations).
+
+    Every call to this API requires authentication. Retrieving advanced search migrations requires
+    administrator access.
+
+    Some scopes are available for [basic search](https://docs.gitlab.com/user/search/#available-scopes).
+    When [advanced search](https://docs.gitlab.com/user/search/advanced_search/#available-scopes) or
+    [exact code search](https://docs.gitlab.com/user/search/exact_code_search/#available-scopes) is
+    enabled, additional scopes become available. To use basic search instead, see
+    [specify a search type](https://docs.gitlab.com/user/search/#specify-a-search-type).
+
+    These endpoints support [offset-based pagination](https://docs.gitlab.com/api/rest/#offset-based-pagination).
+  x-displayName: Search
+  externalDocs:
+    url: https://docs.gitlab.com/api/search/
 - name: Secure files
-  description: Operations related to secure files.
+  description: Use this API to manage [secure files](https://docs.gitlab.com/ci/secure_files/)
+    for a project.
+  x-displayName: Secure files
+  externalDocs:
+    url: https://docs.gitlab.com/api/secure_files/
 - name: Security scans
-  description: Operations related to security scans.
+  description: |-
+    Use this API to scan a single file for vulnerabilities and return the
+    [SAST](https://docs.gitlab.com/user/application_security/sast/) results in real time.
+  x-displayName: Security scans
+  externalDocs:
+    url: https://docs.gitlab.com/api/projects/
 - name: Service accounts
-  description: Operations related to service accounts.
+  description: |-
+    Use this API to interact with [service accounts](https://docs.gitlab.com/user/profile/service_accounts/).
+
+    The number of service accounts you can create depends on your subscription and offering:
+
+    - On GitLab Premium and Ultimate, you can create an unlimited number of service accounts for all offerings.
+    - On GitLab Free, limits vary by offering:
+      - For GitLab.com, you can create up to 100 service accounts for each top-level group.
+        This includes service accounts created in subgroups or projects.
+      - For GitLab Self-Managed, you can create up to 100 service accounts for the entire instance.
+        This includes service accounts created for the instance, a group, or a project.
+
+    You can also interact with service accounts through the [users API](https://docs.gitlab.com/api/users/).
+    To manage SSH keys for service accounts, use the [user SSH and GPG keys API](https://docs.gitlab.com/api/user_keys/).
+  x-displayName: Service accounts
+  externalDocs:
+    url: https://docs.gitlab.com/api/service_accounts/
 - name: Sidekiq
-  description: Operations related to Sidekiq.
+  description: |-
+    Use this API to retrieve information about the current state of Sidekiq, including its jobs, queues,
+    and processes, and to delete jobs from a queue.
+  x-displayName: Sidekiq
+  externalDocs:
+    url: https://docs.gitlab.com/api/sidekiq_metrics/
 - name: Snippets
-  description: Operations related to snippets.
+  description: |-
+    Use this API to manage personal and project [snippets](https://docs.gitlab.com/user/snippets/).
+
+    To move snippets between storages, use the
+    [snippet repository storage moves API](https://docs.gitlab.com/api/snippet_repository_storage_moves/).
+  x-displayName: Snippets
+  externalDocs:
+    url: https://docs.gitlab.com/api/snippets/
 - name: Software composition analysis
-  description: Operations related to software composition analysis.
+  description: |-
+    Use this API to upload the SBOM produced by a CI/CD job, download the resulting scan, and reuse a
+    scan that already exists for the same SBOM.
+  x-displayName: Software composition analysis
 - name: Storage moves
-  description: Operations related to storage moves.
+  description: |-
+    Use this API to schedule and track [repository storage moves](https://docs.gitlab.com/administration/operations/moving_repositories/)
+    for groups, projects, and snippets. Project moves cover wiki and design repositories, and group
+    moves cover [group wikis](https://docs.gitlab.com/user/project/wiki/group/). Moving repositories
+    can help you [migrate to Gitaly Cluster (Praefect)](https://docs.gitlab.com/administration/gitaly/praefect/#migrate-to-gitaly-cluster-praefect).
+
+    To ensure data integrity, GitLab places the group, project, or snippet in a temporary read-only
+    state for the duration of the move. During this time, users receive this message if they try to
+    push new commits:
+
+    ```plaintext
+    The repository is temporarily read-only. Please try again later.
+    ```
+
+    This API requires you to [authenticate yourself](https://docs.gitlab.com/api/rest/authentication/) as an administrator.
+
+    ## States
+
+    As GitLab processes a storage move, it transitions through different states. Values of `state` are:
+
+    - `initial`: The record has been created, but the background job has not yet been scheduled.
+    - `scheduled`: The background job has been scheduled.
+    - `started`: The repositories are being copied to the destination storage.
+    - `replicated`: The repositories have been moved.
+    - `failed`: The repositories failed to copy, or the checksums did not match.
+    - `finished`: The repositories have been moved, and the repositories on the source storage have been deleted.
+    - `cleanup failed`: The repositories have been moved, but the repositories on the source storage could not be deleted.
+  x-displayName: Storage moves
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_repository_storage_moves/
 - name: Submodules
-  description: Operations related to submodules.
+  description: Use this API to update [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+  x-displayName: Submodules
+  externalDocs:
+    url: https://docs.gitlab.com/api/repository_submodules/
 - name: Suggestions
-  description: Operations related to suggestions.
+  description: |-
+    Use this API to manage [code suggestions](https://docs.gitlab.com/user/project/merge_requests/reviews/suggestions/).
+
+    Suggestions provide a way to propose specific changes that can be directly applied to the code.
+    You can programmatically create and apply code suggestions in merge request discussions with
+    this API. Every API call to suggestions must be authenticated.
+  x-displayName: Suggestions
+  externalDocs:
+    url: https://docs.gitlab.com/api/suggestions/
 - name: Tags
-  description: Operations related to tags.
+  description: |-
+    Use this API to manage [Git tags](https://docs.gitlab.com/user/project/repository/tags/). This API also returns X.509
+    signature information from signed tags.
+  x-displayName: Tags
+  externalDocs:
+    url: https://docs.gitlab.com/api/tags/
 - name: Templates
-  description: Operations related to templates.
+  description: |-
+    Use this API to retrieve the file templates available to an entire instance:
+
+    - [Dockerfile templates](https://gitlab.com/gitlab-org/gitlab-foss/-/tree/master/vendor/Dockerfile)
+    - [`.gitignore` templates](https://git-scm.com/docs/gitignore)
+    - [CI/CD configuration templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)
+    - [Open source license templates](https://choosealicense.com/)
+
+    Custom CI/CD templates are not available from these endpoints. For templates specific to a project,
+    use the [project templates API](https://docs.gitlab.com/api/project_templates/).
+
+    Users with the Guest role can't access these templates. For more information, see
+    [project and group visibility](https://docs.gitlab.com/user/public_access/).
+  x-displayName: Templates
+  externalDocs:
+    url: https://docs.gitlab.com/api/templates/dockerfiles/
 - name: Terraform
-  description: Operations related to Terraform.
+  description: |-
+    Use this API to interact with the [Terraform CLI](https://docs.gitlab.com/user/packages/terraform_module_registry/).
+
+    > [!warning]
+    > This API is used by the [Terraform CLI](https://www.terraform.io/)
+    > and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
+  x-displayName: Terraform
+  externalDocs:
+    url: https://docs.gitlab.com/api/packages/terraform-modules/
 - name: To-dos
-  description: Operations related to to-dos.
+  description: |-
+    Use this API to list [to-do items](https://docs.gitlab.com/user/todos/), mark them as done, and
+    create a to-do item for an issue or a merge request.
+  x-displayName: To-dos
+  externalDocs:
+    url: https://docs.gitlab.com/api/todos/
 - name: Token exchange
-  description: Operations related to token exchange.
+  description: |-
+    Use this API to exchange a token for a short-lived JWT that is scoped to a single GitLab service
+    audience.
+  x-displayName: Token exchange
 - name: Unleash
-  description: Operations related to Unleash.
+  description: |-
+    Use this API to serve [feature flags](https://docs.gitlab.com/operations/feature_flags/) to an
+    Unleash-compatible client, and to register that client and receive its metrics. Generally these
+    endpoints are used by an Unleash client and are not meant for manual consumption.
+  x-displayName: Unleash
 - name: Usage data
-  description: Operations related to usage data.
+  description: |-
+    Use this API to track internal events and to retrieve the
+    [Service Ping](https://docs.gitlab.com/development/internal_analytics/service_ping/) payload that
+    GitLab collects, including its non-SQL metrics and the queries behind it.
+  x-displayName: Usage data
+  externalDocs:
+    url: https://docs.gitlab.com/api/usage_data/
 - name: Users
-  description: Operations related to users.
+  description: |-
+    Use this API to interact with user accounts on GitLab. These endpoints can help manage
+    [your account](https://docs.gitlab.com/user/profile/), manage
+    [accounts for other users](https://docs.gitlab.com/administration/administer_users/),
+    [moderate user accounts](https://docs.gitlab.com/administration/moderate_users/),
+    [perform follower actions](https://docs.gitlab.com/user/profile/#follow-users), and
+    [interact with email addresses for user accounts](https://docs.gitlab.com/user/profile/).
+  x-displayName: Users
+  externalDocs:
+    url: https://docs.gitlab.com/api/users/
 - name: VSCode
-  description: Operations related to VSCode.
+  description: |-
+    Use this API to synchronize Visual Studio Code settings, so that a user's editor preferences follow
+    them between VS Code and the [Web IDE](https://docs.gitlab.com/user/project/web_ide/).
+  x-displayName: VS Code
 - name: Virtual registries
-  description: Operations related to virtual registries.
+  description: |-
+    Use this API to manage the Maven and npm
+    [virtual registries](https://docs.gitlab.com/user/packages/virtual_registry/) of a group, along with
+    the [upstream registries](https://docs.gitlab.com/user/packages/virtual_registry/#manage-upstream-registries)
+    they proxy. You can test the connection to an upstream, inspect its
+    [cache](https://docs.gitlab.com/user/packages/virtual_registry/#caching-system) entries, and purge
+    the cache of a registry or an upstream.
+  x-displayName: Virtual registries
+  externalDocs:
+    url: https://docs.gitlab.com/api/maven_virtual_registries/
 - name: Vulnerabilities
-  description: Operations related to vulnerabilities.
+  description: |-
+    > [!warning]
+    > These endpoints are in the process of being deprecated and are considered unstable.
+    > The response payload may be subject to change or breakage across GitLab releases. Use the
+    > [GraphQL API](https://docs.gitlab.com/api/graphql/reference/#queryvulnerabilities) instead.
+    > For more information, see [replace vulnerability REST API with GraphQL](https://docs.gitlab.com/api/vulnerabilities/#replace-vulnerability-rest-api-with-graphql).
+
+    Use this API to manage [vulnerabilities](https://docs.gitlab.com/user/application_security/vulnerabilities/),
+    retrieve vulnerability findings, and export [vulnerability reports](https://docs.gitlab.com/user/application_security/vulnerability_report/)
+    for a project, group, or instance.
+
+    Every call to these endpoints must be [authenticated](https://docs.gitlab.com/api/rest/authentication/).
+    If a user isn't a member of a private project, requests return a `404 Not Found` status code. If a
+    user does not have permission to [view the vulnerability report](https://docs.gitlab.com/user/permissions/#project-application-security),
+    requests return a `403 Forbidden` status code.
+
+    > [!note]
+    > The former Vulnerabilities API was renamed to the Vulnerability Findings API, and the
+    > Vulnerabilities name now serves [vulnerability objects](https://gitlab.com/gitlab-org/gitlab/-/issues/13561).
+    > To fix a broken integration with the former API, change the `vulnerabilities` URL part to
+    > `vulnerability_findings`.
+  x-displayName: Vulnerabilities
+  externalDocs:
+    url: https://docs.gitlab.com/api/vulnerabilities/
 - name: Web commits
-  description: Operations related to web commits.
+  description: |-
+    Use this API to retrieve the public key that GitLab uses to sign the commits created with the
+    [web editor](https://docs.gitlab.com/user/project/repository/web_editor/).
+  x-displayName: Web commits
+  externalDocs:
+    url: https://docs.gitlab.com/api/web_commits/
 - name: Wikis
-  description: Operations related to wikis.
+  description: |-
+    Use this API to manage [group wikis](https://docs.gitlab.com/user/project/wiki/group/).
+    An API for [project wikis](https://docs.gitlab.com/api/wikis/) is also available.
+
+    Comments on a wiki page are called `notes`. To interact with them, use the [notes API](https://docs.gitlab.com/api/notes/#group-wikis).
+  x-displayName: Wikis
+  externalDocs:
+    url: https://docs.gitlab.com/api/group_wikis/
 - name: Work items
-  description: Operations related to work items.
+  description: |-
+    Use this API to manage [work items](https://docs.gitlab.com/user/work_items/) in a project, a group,
+    or a namespace. Work items are the core elements for planning and tracking work, and cover
+    [types](https://docs.gitlab.com/user/work_items/#work-item-types) such as issues, tasks, and epics.
+
+    Alongside the work items themselves, you can retrieve their children, linked items, linked resources,
+    notes, discussions, emoji reactions, email participants, and the current user's to-do items.
+  x-displayName: Work items
+  externalDocs:
+    url: https://docs.gitlab.com/user/work_items/
 - name: Workspaces
-  description: Operations related to workspaces.
+  description: |-
+    Use this API to retrieve agent information and authorize user access for the agent that runs
+    [workspaces](https://docs.gitlab.com/user/workspace/).
+
+    These endpoints are internal and used by GitLab components.
+  x-displayName: Workspaces
 servers:
 - url: https://{hostname}
   description: GitLab REST API
@@ -1829,7 +3240,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ae660d4bfe67"
+              "$ref": "#/components/schemas/RequestBody_8ae62f011dd0"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: List all workflow checkpoints
@@ -95458,7 +96869,7 @@ components:
           nullable: true
       required:
       - status_event
-    RequestBody_ae660d4bfe67:
+    RequestBody_8ae62f011dd0:
       type: object
       properties:
         thread_ts:
@@ -95501,6 +96912,12 @@ components:
           type: integer
           default: 0
           description: Thread grouping hint for blob reconstruction
+          nullable: true
+        channel_keys:
+          type: array
+          items:
+            type: string
+          description: Live channel membership of the checkpoint
           nullable: true
         channel_blobs:
           type: array

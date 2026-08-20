@@ -69,7 +69,7 @@ module Gitlab
       end
 
       def cache_key
-        ['blob_embed', VERSION, project.id, sha, path, from, to, cross_project]
+        ['blob_embed', VERSION, project.id, sha, path, from, to, cross_project, I18n.locale]
       end
 
       def build_html
