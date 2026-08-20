@@ -629,7 +629,7 @@ gem 'faraday-multipart', '~> 1.0', feature_category: :importers
 
 gem 'gitlab-mail_room', '~> 1.1.0', require: 'mail_room', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'email_reply_trimmer', '~> 0.1', feature_category: :team_planning
+gem 'email_reply_trimmer', '~> 0.4.0', feature_category: :team_planning
 gem 'html2text', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'stackprof', '~> 0.2.26', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
