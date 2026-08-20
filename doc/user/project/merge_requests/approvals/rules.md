@@ -70,7 +70,7 @@ to existing merge requests:
 - If approval rule overrides are not allowed, all changes to default rules
   are applied to existing merge requests. Any approval rules that were previously
   manually [overridden](#edit-or-override-merge-request-approval-rules) during the
-  period when approval rule overrides where allowed, are not modified.
+  period when approval rule overrides were allowed, are not modified.
 
 ## Edit an approval rule
 
@@ -236,7 +236,7 @@ To enable approval permissions for these users without granting them push access
 {{< /details >}}
 
 You can use [merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
-Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
+Details for each security policy are shown in the Security Approvals section of your Merge Request configuration.
 
 The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
 security approval rules prevents users from merging in code before the security scans run. After the pipeline is

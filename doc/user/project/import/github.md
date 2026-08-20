@@ -80,13 +80,13 @@ on the GitLab instance you import to.
 - For [GitLab-specific references](../../markdown.md#gitlab-specific-references), GitLab uses the `#` character for issues and a `!` character for merge requests.
   However, GitHub uses only the `#` character for both issues and pull requests. When importing:
 
-  - Comment notes, GitLab only creates links to issues because GitLab can't determine whether a references points to an
+  - Comment notes, GitLab only creates links to issues because GitLab can't determine whether a reference points to an
     issue or a merge request.
   - Issues or merge request descriptions, GitLab doesn't create links for any references because their imported
     counterparts might not have been created on the destination yet.
 
 - When importing from GitHub accounts with SAML single sign-on (SSO) enabled, Markdown attachments might fail to import. This issue is caused by a GitHub
-  API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To workaround the issue, add the GitLab user performing
+  API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To work around the issue, add the GitLab user performing
   the import as an
   [outside collaborator](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-outside-collaborators/adding-outside-collaborators-to-repositories-in-your-organization)
   to the GitHub repository. This permits access to private attachments during import.
@@ -208,7 +208,7 @@ If the import has already started, the imported files are kept.
 
 To open a repository in GitLab URL after it has been imported, select its GitLab path.
 
-Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
+Completed imports can be re-imported by selecting **Re-import** and specifying a new name. This creates a new copy of the source project.
 
 ![The GitHub importer page, which lists repositories to be imported into GitLab.](img/import_projects_from_github_importer_v16_0.png)
 
@@ -313,7 +313,7 @@ Sidekiq workers that process the following queues:
 - `github_importer`
 - `github_importer_advance_stage`
 
-For an optimal experience, it's recommended having at least 4 Sidekiq processes (each running a number of threads equal
+For an optimal experience, it's recommended to have at least 4 Sidekiq processes (each running a number of threads equal
 to the number of CPU cores) that only process these queues. It's also recommended that these processes run on separate
 servers. For 4 servers with 8 cores this means you can import up to 32 objects (for example, issues) in parallel.
 
@@ -418,11 +418,11 @@ GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-user-access-to-your-organizations-repositories/managing-repository-roles/about-custom-repository-roles).
 These roles aren't supported and cause partially completed imports.
 
-To import GitHub collaborators, you must have the Write or Maintain role on the GitHub project. Otherwise collaborators import is skipped.
+To import GitHub collaborators, you must have the Write or Maintain role on the GitHub project. Otherwise, the collaborators import is skipped.
 
 ## Import from GitHub Enterprise on an internal network
 
-If your GitHub Enterprise instance is on a internal network that is inaccessible to the internet, you can use a reverse proxy
+If your GitHub Enterprise instance is on an internal network that is inaccessible to the internet, you can use a reverse proxy
 to allow GitLab.com to access the instance.
 
 The proxy needs to:
@@ -484,7 +484,7 @@ git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" 
 
 ### Sample reverse proxy configuration
 
-The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
+The following configuration is an example of how to configure Apache HTTP Server as a reverse proxy.
 
 > [!warning]
 > For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that

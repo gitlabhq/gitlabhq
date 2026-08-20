@@ -21,7 +21,7 @@ Wiki pages:
 - Store documentation in Git repositories for version control and collaboration.
 - Support custom navigation and organization through sidebar customization.
 - Export content as PDF files for offline access and sharing.
-- Maintain your content separately from your codebase while keeping them in the same project.
+- Maintain your content separately from your codebase while keeping it in the same project.
 - Support emoji reactions on pages for feedback and engagement.
 
 Each wiki is a separate Git repository.
@@ -607,7 +607,7 @@ can enable or disable a project wiki by following the instructions in
 Administrators for GitLab Self-Managed can
 [configure additional wiki settings](../../../administration/wikis/_index.md).
 
-You can disable group wikis from the [group settings](group.md#configure-group-wiki-visibility)
+You can disable group wikis from the [group settings](group.md#configure-group-wiki-visibility).
 
 ## Link an external wiki
 

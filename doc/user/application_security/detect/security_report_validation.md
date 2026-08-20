@@ -24,7 +24,7 @@ according to the schema version declared in the report:
 - If the security report uses a deprecated version, GitLab attempts validation against that version
   and adds a deprecation warning to the validation result.
 - If the security report uses a supported MAJOR-MINOR version of the report schema but the PATCH
-  version doesn't match any vendored versions, GitLab attempts to validate it against latest
+  version doesn't match any vendored versions, GitLab attempts to validate it against the latest
   vendored PATCH version of the schema.
   - Example: security report uses version 14.1.1 but the latest vendored version is 14.1.0. GitLab
     would validate against schema version 14.1.0.

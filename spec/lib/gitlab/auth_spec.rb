@@ -380,9 +380,10 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       let(:username) { 'gitlab-ci-token' }
 
       context 'for running build' do
-        let!(:group) { create(:group) }
-        let!(:project) { create(:project, group: group) }
-        let!(:build) { create(:ci_build, :running, project: project) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be_with_reload(:build) { create(:ci_build, :running, project: project) }
+        let_it_be_with_reload(:project_bot_user) { create(:user, :project_bot) }
 
         it 'recognises user-less build' do
           expect(subject).to have_attributes(actor: nil, project: build.project, type: :ci, authentication_abilities: described_class.build_authentication_abilities)
@@ -395,15 +396,15 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         it 'recognises project level bot access token' do
-          build.update!(user: create(:user, :project_bot))
-          project.add_maintainer(build.user)
+          build.update!(user: project_bot_user)
+          project.add_maintainer(project_bot_user)
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
 
         it 'recognises group level bot access token' do
-          build.update!(user: create(:user, :project_bot))
-          group.add_maintainer(build.user)
+          build.update!(user: project_bot_user)
+          group.add_maintainer(project_bot_user)
 
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
@@ -456,7 +457,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     include_examples 'user login operation with unique ip limit' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       def operation
         expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request)).to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
@@ -464,13 +465,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     context 'while using LFS authenticate' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:key) { create(:deploy_key) }
       let(:path) { '/namespace/project.git/info/lfs/objects/batch' }
 
       context 'while using LFS token on non-LFS path' do
         let(:path) { '/namespace/project.git/other/path' }
 
         it 'does not authenticate with LFS token on non-LFS path' do
-          user = create(:user)
           token = Gitlab::LfsToken.new(user, project).token
 
           expect(gl_auth.find_for_git_client(user.username, token, project: nil, request: request)).to have_attributes(auth_failure)
@@ -478,21 +480,18 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       it 'recognizes user lfs tokens' do
-        user = create(:user)
         token = Gitlab::LfsToken.new(user, project).token
 
         expect(gl_auth.find_for_git_client(user.username, token, project: nil, request: request)).to have_attributes(actor: user, project: nil, type: :lfs_token, authentication_abilities: described_class.read_write_project_authentication_abilities)
       end
 
       it 'recognizes deploy key lfs tokens' do
-        key = create(:deploy_key)
         token = Gitlab::LfsToken.new(key, project).token
 
         expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, request: request)).to have_attributes(actor: key, project: nil, type: :lfs_deploy_token, authentication_abilities: described_class.read_only_authentication_abilities)
       end
 
       it 'does not try password auth before oauth' do
-        user = create(:user)
         token = Gitlab::LfsToken.new(user, project).token
 
         expect(gl_auth).not_to receive(:find_with_user_password)
@@ -501,7 +500,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       it 'grants deploy key write permissions' do
-        key = create(:deploy_key)
         create(:deploy_keys_project, :write_access, deploy_key: key, project: project)
         token = Gitlab::LfsToken.new(key, project).token
 
@@ -509,7 +507,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       it 'does not grant deploy key write permissions' do
-        key = create(:deploy_key)
         token = Gitlab::LfsToken.new(key, project).token
 
         expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: project, request: request)).to have_attributes(actor: key, project: nil, type: :lfs_deploy_token, authentication_abilities: described_class.read_only_authentication_abilities)
@@ -569,6 +566,9 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       context 'with specified scopes' do
         using RSpec::Parameterized::TableSyntax
+
+        let_it_be(:user) { create(:user, organizations: [organization]) }
+        let_it_be(:application) { create(:oauth_application, owner: user) }
 
         where(:scopes, :abilities) do
           'api'                 | described_class.full_authentication_abilities
@@ -671,6 +671,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           context 'with specified scopes' do
             using RSpec::Parameterized::TableSyntax
+
+            let_it_be(:user) { create(:user) }
 
             where(:scopes, :abilities) do
               'api'              | described_class.full_authentication_abilities
@@ -833,19 +835,19 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
       end
 
-      it 'succeeds if it is an impersonation token' do
-        impersonation_token = create(:personal_access_token, :impersonation, scopes: ['api'])
+      context 'with an impersonation token' do
+        let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, scopes: ['api']) }
 
-        expect_results_with_abilities(impersonation_token, described_class.full_authentication_abilities)
-      end
+        it 'succeeds' do
+          expect_results_with_abilities(impersonation_token, described_class.full_authentication_abilities)
+        end
 
-      it 'fails if it is an impersonation token but impersonation is blocked' do
-        stub_config_setting(impersonation_enabled: false)
+        it 'fails if impersonation is blocked' do
+          stub_config_setting(impersonation_enabled: false)
 
-        impersonation_token = create(:personal_access_token, :impersonation, scopes: ['api'])
-
-        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, request: request))
-          .to have_attributes(auth_failure)
+          expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, request: request))
+            .to have_attributes(auth_failure)
+        end
       end
 
       it 'limits abilities based on scope' do
@@ -921,7 +923,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
 
           context 'when the token belongs to the project' do
-            before do
+            before_all do
               project.add_maintainer(project_bot_user)
             end
 
@@ -940,7 +942,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
 
             context 'when token user belongs to the project' do
-              before do
+              before_all do
                 project.add_maintainer(project_bot_user)
               end
 
@@ -955,7 +957,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
 
             context 'when the token belongs to the group' do
-              before do
+              before_all do
                 group.add_maintainer(project_bot_user)
               end
 
@@ -967,7 +969,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             context 'when the token belongs to a group via project share' do
               let_it_be(:invited_group) { create(:group) }
 
-              before do
+              before_all do
                 invited_group.add_maintainer(project_bot_user)
                 create(:project_group_link, group: invited_group, project: project)
               end
@@ -1033,7 +1035,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when email-based OTP is enabled personally' do
-        let(:user) do
+        let_it_be(:user) do
           create(:user, email_otp_required_after: 1.second.ago)
         end
 
@@ -1259,9 +1261,11 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when deploy token and user have the same username' do
-        let(:username) { 'normal_user' }
-        let!(:user) { create(:user, username: username) }
-        let(:deploy_token) { create(:deploy_token, username: username, read_registry: false, projects: [project]) }
+        let_it_be(:username) { 'normal_user' }
+        let_it_be(:user) { create(:user, username: username) }
+        let_it_be_with_reload(:deploy_token) do
+          create(:deploy_token, username: username, read_registry: false, projects: [project])
+        end
 
         it 'succeeds for the token' do
           auth_success = { actor: deploy_token, project: project, type: :deploy_token, authentication_abilities: [:download_code] }
@@ -1288,8 +1292,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       context 'when deploy tokens have the same username' do
         context 'and belong to the same project' do
-          let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
-          let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [project]) }
+          let_it_be(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
+          let_it_be(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [project]) }
           let(:auth_success) { { actor: read_repository, project: project, type: :deploy_token, authentication_abilities: [:download_code] } }
 
           it 'succeeds for the right token' do
@@ -1306,8 +1310,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         context 'and belong to different projects' do
           let_it_be(:other_project) { create(:project) }
 
-          let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
-          let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [other_project]) }
+          let_it_be(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
+          let_it_be(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [other_project]) }
           let(:auth_success) { { actor: read_repository, project: other_project, type: :deploy_token, authentication_abilities: [:download_code] } }
 
           it 'succeeds for the right token' do
@@ -1323,7 +1327,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when the deploy token has read_repository as scope' do
-        let(:deploy_token) { create(:deploy_token, read_registry: false, projects: [project]) }
+        let_it_be_with_reload(:deploy_token) { create(:deploy_token, read_registry: false, projects: [project]) }
         let(:login) { deploy_token.username }
 
         it 'succeeds when login and token are valid' do
@@ -1378,9 +1382,9 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when the deploy token is of group type' do
-        let(:project_with_group) { create(:project, group: create(:group)) }
-        let(:deploy_token) { create(:deploy_token, :group, read_repository: true, groups: [project_with_group.group]) }
-        let(:login) { deploy_token.username }
+        let_it_be(:project_with_group) { create(:project, group: create(:group)) }
+        let_it_be(:deploy_token) { create(:deploy_token, :group, read_repository: true, groups: [project_with_group.group]) }
+        let_it_be(:login) { deploy_token.username }
 
         subject { gl_auth.find_for_git_client(login, deploy_token.token, project: project_with_group, request: request) }
 
@@ -1399,8 +1403,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when the deploy token has read_registry as a scope' do
-        let(:deploy_token) { create(:deploy_token, read_repository: false, projects: [project]) }
-        let(:login) { deploy_token.username }
+        let_it_be_with_reload(:deploy_token) { create(:deploy_token, read_repository: false, projects: [project]) }
+        let_it_be(:login) { deploy_token.username }
 
         context 'when registry enabled' do
           before do
@@ -1452,7 +1456,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     let_it_be(:user) { create(:user) }
 
     context 'for running build' do
-      let!(:build) { create(:ci_build, :running, user: user) }
+      let_it_be(:build) { create(:ci_build, :running, user: user) }
 
       it 'executes query using primary database' do
         expect(::Ci::JobToken::Jwt).to receive(:decode).with(build.token, verify_expiration: false).and_wrap_original do |m, *args, **kwargs|
@@ -1489,8 +1493,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
   end
 
   describe 'find_with_user_password' do
-    let!(:user) { create(:user, username: username) }
-    let(:username) { 'John' } # username isn't lowercase, test this
+    let_it_be(:username) { 'John' } # username isn't lowercase, test this
+    let_it_be_with_reload(:user) { create(:user, username: username) }
 
     before do
       allow(Gitlab::AuthLogger).to receive(:info).and_call_original
@@ -1641,10 +1645,10 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       context 'for LDAP users' do
         subject(:authentication) { gl_auth.find_with_user_password(login, password, activity: :web) }
 
-        let(:uid) { 'john-ldap' }
+        let_it_be(:uid) { 'john-ldap' }
         let(:gitlab_username) { 'john-gitlab' }
         let(:dn) { user_dn(uid) }
-        let(:user) { create(:omniauth_user, :ldap, username: gitlab_username, extern_uid: dn) }
+        let!(:user) { create(:omniauth_user, :ldap, username: gitlab_username, extern_uid: dn) }
         let(:password) { 'password' }
 
         let(:adapter) { instance_double(OmniAuth::LDAP::Adaptor) }
@@ -1719,7 +1723,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         context 'when LDAP UID matches GitLab username of another user' do
-          let!(:another_user) { create(:user, username: uid) }
+          let_it_be(:another_user) { create(:user, username: uid) }
 
           context 'with LDAP UID' do
             let(:login) { uid }
@@ -1862,7 +1866,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
   end
 
   describe 'user_with_password_for_git' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'when password is a recognized token' do
       it 'returns nil immediately without calling find_with_user_password' do

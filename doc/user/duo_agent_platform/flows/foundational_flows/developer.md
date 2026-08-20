@@ -42,7 +42,7 @@ You can use the Developer Flow to:
 
 To ensure the best results, before you use the Developer Flow for the first time,
 [set up your project](#set-up-your-project). Configure the `AGENTS.md` and `agent-config.yml`
-file to significantly improve the quality and reliability of the Developer Flow's results.
+files to significantly improve the quality and reliability of the Developer Flow's results.
 
 ## Set up your project
 

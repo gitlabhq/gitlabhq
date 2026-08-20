@@ -259,6 +259,29 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
       end
     end
 
+    # The ai_workflows scope is only accepted for GraphQL requests in EE, so the examples
+    # covering it live in ee/spec/requests/api/graphql/group_query_spec.rb.
+    context 'when authenticated with an OAuth token' do
+      let(:query) { graphql_query_for('group', { fullPath: private_group.full_path }, 'id') }
+
+      before_all do
+        private_group.add_developer(user2)
+      end
+
+      before do
+        post_graphql(query, token: { oauth_access_token: oauth_token })
+      end
+
+      context 'with a scope that is not allowed for GraphQL' do
+        let_it_be(:oauth_token) { create(:oauth_access_token, user: user2, scopes: [:read_user]) }
+
+        it 'does not authenticate the request' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect_graphql_errors_to_include('Invalid token')
+        end
+      end
+    end
+
     describe 'maxAccessLevel' do
       let(:current_user) { user1 }
 

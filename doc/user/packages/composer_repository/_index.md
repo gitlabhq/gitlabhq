@@ -334,7 +334,7 @@ You can install from source by pulling the Git repository directly. To do so, ei
 
 #### SSH access
 
-When you install from source, the `composer` configures an
+When you install from source, the `composer` configures
 access to the project's Git repository.
 Depending on the project visibility, the access type is different:
 

@@ -176,7 +176,7 @@ In the API:
 - If you specify a future `released_at` date, the release becomes an **Upcoming release**
   and the evidence is collected on the date of the release. You cannot collect
   release evidence before then.
-- If you specify a past `released_at` date, the release becomes an **Historical
+- If you specify a past `released_at` date, the release becomes a **Historical
   release** and no evidence is collected.
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.

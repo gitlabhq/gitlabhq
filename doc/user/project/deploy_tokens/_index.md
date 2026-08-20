@@ -192,7 +192,7 @@ You can use a deploy token to push images to a container registry.
 
 Prerequisites:
 
-- A deploy token with the `read_registry` and `write_registry` scope.
+- A deploy token with the `read_registry` and `write_registry` scopes.
 
 Example of using a deploy token to push an image to a container registry:
 

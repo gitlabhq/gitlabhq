@@ -124,7 +124,7 @@ showing the progress of completing a milestone.
 
 The sidebar on the milestone view shows the following:
 
-- Percentage complete, which is calculated as number of closed work items divided by total number of work items.
+- Percentage complete, which is calculated as the number of closed work items divided by the total number of work items.
 - The start date and due date.
 - The total time spent on all work items and merge requests assigned to the milestone.
 - The total issue weight of all work items assigned to the milestone.

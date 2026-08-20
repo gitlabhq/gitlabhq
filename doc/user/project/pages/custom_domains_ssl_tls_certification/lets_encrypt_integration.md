@@ -56,13 +56,13 @@ After you've met the requirements, enable Let's Encrypt integration:
 
 1. Select **Save changes**.
 
-Once enabled, GitLab obtains a LE certificate and add it to the
+Once enabled, GitLab obtains a LE certificate and adds it to the
 associated Pages domain. GitLab also renews it automatically.
 
 > [!note]
 > Issuing the certificate and updating Pages configuration
 > **can take up to an hour**.
-> If you already have an SSL certificate in domain settings it
+> If you already have an SSL certificate in domain settings, it
 > continues to work until replaced by the Let's Encrypt certificate.
 
 ## Troubleshooting

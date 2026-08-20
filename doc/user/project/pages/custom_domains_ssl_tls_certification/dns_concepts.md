@@ -76,7 +76,7 @@ Example:
 
 ## `CNAME` record
 
-`CNAME` records define an alias for canonical name for your server (one defined
+`CNAME` records define an alias for the canonical name for your server (one defined
 by an `A` record). It points a subdomain to another domain.
 
 Example:

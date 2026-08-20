@@ -464,9 +464,9 @@ the CORS headers satisfy the following rules:
 
 - **Pattern matching**: Accept origins matching the pattern `https://*.cdn.web-ide.gitlab-static.net`.
 - **Validation**: Ensure the subdomain contains only alphanumeric characters and is ≤52 characters.
-- **Security**: Never use wildcard (*) for Access-Control-Allow-Origin as this poses security risks.
+- **Security**: Never use wildcard (`*`) for Access-Control-Allow-Origin as this poses security risks.
 
-A GitLab instance default CORS configuration satisfies these requirements. You might find issues when the GitLab Self-Managed
+A GitLab instance's default CORS configuration satisfies these requirements. You might find issues when the GitLab Self-Managed
 instance is behind an HTTP reverse proxy server or it uses a custom CORS policy configuration.
 
 ### Offline environments

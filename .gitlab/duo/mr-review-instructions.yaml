@@ -739,7 +739,7 @@ instructions:
       - When moving content to a new location and editing it in the same MR, use separate commits (first commit moves only, subsequent commits edit).
       - DO NOT promise to deliver features in a future release; instead reference the proposing issue (e.g., "Support for improvements is proposed in [issue 12345](link)").
       - Assign the technical writer as a reviewer directly on the MR (not just pinged) before the code maintainer review; documentation reviews must not block merging.
-      - When a post-merge technical writer review is required, create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Doc%20Review) and link it to the merged MR.
+      - When a post-merge technical writer review is required, create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Doc%20Review) and link it to the merged MR.
       - Name documentation-only branches in `omnibus-gitlab`, `charts/gitlab`, or `gitlab-operator` starting with `docs/`, `docs-`, or ending with `-docs` to trigger shorter pipelines.
 
       ### Common Mistakes - Repetition

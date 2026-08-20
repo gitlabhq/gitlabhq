@@ -90,7 +90,7 @@ To clear the cache:
 ## Base domain
 
 Domains at the cluster level permit support for multiple domains
-per [multiple Kubernetes clusters](#multiple-kubernetes-clusters) When specifying a domain,
+per [multiple Kubernetes clusters](#multiple-kubernetes-clusters). When specifying a domain,
 this is automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
 the [Auto DevOps](../../../topics/autodevops/_index.md) stages.
 
@@ -114,7 +114,7 @@ work.
 While evaluating which environment matches the environment scope of a
 cluster, [cluster precedence](#cluster-precedence) takes
 effect. The cluster at the project level takes precedence, followed
-by the closest ancestor group, followed by that groups' parent and so
+by the closest ancestor group, followed by that group's parent and so
 on.
 
 For example, if your project has the following Kubernetes clusters:

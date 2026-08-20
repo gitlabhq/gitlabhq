@@ -505,7 +505,7 @@ You can sort the epics list by:
 - Blocking
 
 Each option contains a button that can toggle the order between **Ascending** and **Descending**.
-The sort option and order is saved and used wherever you browse epics, including the
+The sort option and order are saved and used wherever you browse epics, including the
 [roadmap](../roadmap/_index.md).
 
 ## Change activity sort order

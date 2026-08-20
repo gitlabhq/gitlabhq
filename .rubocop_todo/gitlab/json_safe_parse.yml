@@ -139,7 +139,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/lib/gitlab/ci/google_cloud/generate_build_environment_variables_service_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/security/container_scanning_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/security/dependency_scanning_spec.rb'
-    - 'ee/spec/lib/gitlab/cube_js/data_transformer_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/session_spec.rb'
     - 'ee/spec/lib/gitlab/geo/signed_data_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'

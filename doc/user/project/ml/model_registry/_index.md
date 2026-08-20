@@ -62,7 +62,7 @@ To create a new machine learning model by using the GitLab UI:
    - Select **Create model** if you have no models yet.
    - In the upper-right corner, select **Create/Import model** then select **Create new model** in the dropdown list.
 1. Complete the fields:
-   - Enter a unique name for your model name.
+   - Enter a unique name for your model.
    - Optional. Provide a description for the model.
 1. Select **Create**.
 
@@ -87,7 +87,7 @@ To delete a model and all its associated versions:
 
 1. In the left sidebar, select **Deploy** > **Model registry**.
 1. Find the model you want to delete.
-1. In the most right column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model**.
+1. In the rightmost column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model**.
 
 Alternatively you can delete models from the model details page:
 
@@ -105,8 +105,8 @@ To delete a model version:
 1. Find the model with a version you want to delete.
 1. Select the model name to view its details.
 1. Select the **Versions** tab.
-1. Find the model version you want to delete
-1. In the most right column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete version**.
+1. Find the model version you want to delete.
+1. In the rightmost column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete version**.
 
 Alternatively you can delete models from the model version details page:
 
@@ -164,7 +164,7 @@ Files can either be uploaded to a model version using:
 - The package registry, where a model version is associated to a package of name `<model_name>/<model_version>`.
 - The MLflow client compatibility. [View details](../experiment_tracking/mlflow_client.md#logging-artifacts-to-a-model-version).
 
-Users can log metrics and a parameters of a model version through the MLflow client compatibility, [see details](../experiment_tracking/mlflow_client.md#logging-metrics-and-parameters-to-a-model-version)
+Users can log metrics and parameters of a model version through the MLflow client compatibility. [See details](../experiment_tracking/mlflow_client.md#logging-metrics-and-parameters-to-a-model-version).
 
 ## Link a model version to a CI/CD job
 
@@ -175,8 +175,8 @@ This can be done through the MLflow client compatibility. [View details](../expe
 ## Model versions and semantic versioning
 
 The version of a model version in GitLab must follow [Semantic Version specification](https://semver.org/).
-Using semantic versioning facilitates model deployment, by communicating which
-if a new version can be deployed without changes to the application:
+Using semantic versioning facilitates model deployment, by communicating whether
+a new version can be deployed without changes to the application:
 
 - **Major (integer)**: A change in the major component signifies a breaking change in the model, and that the application
   that consumes the model must be updated to properly use this new version.

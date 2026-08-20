@@ -579,7 +579,7 @@ The following issue metadata is copied to the epic:
 Prerequisites:
 
 - The project to which the issue belongs must be in a group.
-- You must have the Planner, Reporter, Developer, Maintainer, or Owner role the project's immediate parent group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project's immediate parent group.
 - You must either:
   - Have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
   - Be the author of the issue.
@@ -708,7 +708,7 @@ To filter the list of issues:
 
 #### Filter by title or description
 
-To filter the list issues for text in a title or description:
+To filter the list of issues for text in a title or description:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Plan** > **Work items**, then filter by **Type** = **Issue**.

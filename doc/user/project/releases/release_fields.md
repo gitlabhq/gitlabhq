@@ -55,7 +55,7 @@ and [can be downloaded](../repository/_index.md#download-repository-source-code)
 ### Links
 
 A link is a URL which can point to whatever you like: documentation, built
-binaries, or other related materials. These can be both internal or external
+binaries, or other related materials. These can be both internal and external
 links from your GitLab instance.
 The URL must use one of the schemes `http`, `https`, or `ftp`.
 Each link as an asset has the following attributes:
@@ -153,7 +153,7 @@ This field has no effect on the URL and it's only used for visual purposes in th
 #### Use a generic package for attaching binaries
 
 You can use [generic packages](../../packages/generic_packages/_index.md)
-to store any artifacts from a release or tag pipeline,
+to store any artifacts from a release or tag pipeline
 that can also be used for attaching binary files to an individual release entry.
 You basically need to:
 

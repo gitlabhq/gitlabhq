@@ -262,7 +262,7 @@ To create an iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Plan** > **Iterations**.
-1. To the right of the cadence in which you want create an iteration, select the vertical ellipsis
+1. To the right of the cadence in which you want to create an iteration, select the vertical ellipsis
    ({{< icon name="ellipsis_v" >}}) and then select **Add iteration**.
 1. Complete the fields.
 1. Select **Create iteration**. The iteration details page opens.
@@ -283,7 +283,7 @@ To edit an iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Plan** > **Iterations** and select an iteration cadence.
-1. Select the iteration you want edit. The iteration details page opens.
+1. Select the iteration you want to edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the fields:
    - You can edit **Title**, **Start date**, and **Due date** only if [automatic scheduling is disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
@@ -306,7 +306,7 @@ To delete an iteration:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Plan** > **Iterations** and select an iteration cadence.
-1. Select the iteration you want edit. The iteration details page opens.
+1. Select the iteration you want to edit. The iteration details page opens.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete**.
 1. Select **Delete**.
 

@@ -27,12 +27,15 @@ module Types
       field_class GroupBaseField
 
       field :id, GraphQL::Types::ID, null: true,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'ID of the group.'
       field :full_name, GraphQL::Types::String, null: true,
         description: 'Full name of the group.'
       field :full_path, GraphQL::Types::ID, null: false,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'Full path of the group.'
       field :name, GraphQL::Types::String, null: true,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'Name of the group.'
       field :web_url,
         type: GraphQL::Types::String,

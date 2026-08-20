@@ -757,7 +757,7 @@ index creation can proceed at a lower level of risk.
 
 1. Create a merge request containing a post-deployment migration, which prepares
    the index for asynchronous creation.
-1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Synchronous%20Database%20Index)
+1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Synchronous%20Database%20Index)
    to add a migration that creates the index synchronously.
 1. In the merge request that prepares the asynchronous index, add a comment mentioning the follow-up issue.
 
@@ -914,7 +914,7 @@ index destruction can proceed at a lower level of risk.
 
 1. Create a merge request containing a post-deployment migration, which prepares
    the index for asynchronous destruction.
-1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Synchronous%20Database%20Index)
+1. [Create a follow-up issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Synchronous%20Database%20Index)
    to add a migration that destroys the index synchronously.
 1. In the merge request that prepares the asynchronous index removal, add a comment mentioning the follow-up issue.
 

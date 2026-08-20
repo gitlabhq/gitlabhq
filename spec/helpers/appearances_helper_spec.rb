@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe AppearancesHelper, feature_category: :navigation do
   let_it_be(:gitlab_logo) { ActionController::Base.helpers.image_path('logo.svg') }
+  let_it_be(:user) { create(:user) }
 
   before do
-    user = create(:user)
     allow(helper).to receive(:current_user).and_return(user)
   end
 
@@ -24,7 +24,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
     end
 
     context 'with custom icon' do
-      let!(:appearance) { create(:appearance, :with_pwa_icon) }
+      let_it_be(:appearance) { create(:appearance, :with_pwa_icon) }
       let!(:result) { "/relative_root/uploads/-/system/appearance/pwa_icon/#{appearance.id}/dk.png?width=#{width}" }
 
       it_behaves_like 'gets icon path', 192
@@ -66,7 +66,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
     end
 
     context 'with pwa icons defined' do
-      let!(:appearance) { create(:appearance, :with_pwa_icon) }
+      let_it_be(:appearance) { create(:appearance, :with_pwa_icon) }
 
       it 'returns the pwa icons' do
         expect(helper.appearance_apple_touch_icon).to match(
@@ -201,7 +201,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
     end
 
     context 'when there is a title' do
-      let!(:appearance) { create(:appearance, title: 'My title') }
+      let_it_be(:appearance) { create(:appearance, title: 'My title') }
 
       it 'returns the title' do
         expect(helper.brand_image).to match(%r{img alt="My title"})
@@ -217,7 +217,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#brand_image_path' do
     context 'with a custom logo' do
-      let!(:appearance) { create(:appearance, :with_logo) }
+      let_it_be(:appearance) { create(:appearance, :with_logo) }
 
       it 'returns path of custom logo' do
         expect(helper.brand_image_path).to match(%r{/uploads/-/system/appearance/.*/dk.png})
@@ -253,7 +253,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
     end
 
     context 'with header logo' do
-      let!(:appearance) { create(:appearance, :with_header_logo) }
+      let_it_be(:appearance) { create(:appearance, :with_header_logo) }
 
       it 'renders image tag' do
         expect(helper).to receive(:image_tag).with(appearance.header_logo_path, class: 'brand-header-logo', alt: '')

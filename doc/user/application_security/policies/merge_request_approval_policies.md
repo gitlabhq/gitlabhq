@@ -188,7 +188,7 @@ the following sections and tables provide an alternative.
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
-| `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
+| `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy.     |
 | `enforcement_type`  | `string`           | false    | `enforce`, `warn` | Defines how the policy is enforced. The default value (if not specified) is `enforce`, which blocks merge requests when violations are detected. The value `warn` allows merge requests to proceed but shows warnings and bot comments. |
 
 ## `scan_finding` rule type
@@ -467,7 +467,7 @@ actions:
 
 This action enables configuration of the bot message in merge requests when policy violations are detected.
 If the action is not specified, the bot message is enabled by default. If there are multiple policies defined,
-the bot message is sent as long as at least one of those policies has the `send_bot_message` action is enabled.
+the bot message is sent as long as at least one of those policies has the `send_bot_message` action enabled.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
@@ -607,7 +607,7 @@ policy violations:
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
+| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy, but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
 You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
 
@@ -1189,7 +1189,7 @@ Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sid
 
 #### GitLab Self-Managed
 
-Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
+Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID, you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
 Search in the following files:
 
 - `/gitlab/gitlab-rails/production_json.log`

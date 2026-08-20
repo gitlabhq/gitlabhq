@@ -62,6 +62,7 @@ module Types
     field :projects, Types::ProjectType.connection_type, null: false,
       description: 'Projects within this namespace. ' \
         'Returns projects from the parent group if namespace is project.',
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: ::Resolvers::NamespaceProjectsResolver
 
     field :package_settings,

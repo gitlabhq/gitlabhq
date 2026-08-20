@@ -19,8 +19,8 @@ to track who is working on an issue, who's already done, or who hasn't started y
 You can add multiple [assignees](managing_issues.md#assignees) to an issue, making it easier to
 track, and making clearer who is accountable for it.
 
-Multiple assignees for issues makes collaboration smoother,
-and allows shared responsibilities to be clearly displayed.
+Multiple assignees for issues make collaboration smoother,
+and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your team's workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
 

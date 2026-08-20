@@ -147,7 +147,7 @@ To request reassignment of contributions and memberships:
 1. In the **Reassign placeholder to** column, select a user from the dropdown list.
 1. Select **Reassign**.
 
-Contributions of only one placeholder user can be reassigned to an active non-bot user on destination instance.
+Contributions of only one placeholder user can be reassigned to an active non-bot user on the destination instance.
 
 Before a user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
 
@@ -256,8 +256,8 @@ To keep placeholder users one at a time:
 1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
-1. Find placeholder user you want to keep by reviewing **Placeholder user** and **Source** columns.
-1. In **Reassign placeholder to** column, select **Do not reassign**.
+1. Find the placeholder user you want to keep by reviewing the **Placeholder user** and **Source** columns.
+1. In the **Reassign placeholder to** column, select **Do not reassign**.
 1. Select **Confirm**.
 
 To keep placeholder users in bulk:
@@ -348,11 +348,11 @@ listed in the email are:
 
 - **Imported from** - The platform the imported content originates from. For example, another instance of GitLab,
   GitHub, or Bitbucket.
-- **Original user** - The name and username of the user on the source platform. This could be your name and user name on
+- **Original user** - The name and username of the user on the source platform. This could be your name and username on
   that platform.
 - **Imported to** - The name of the new platform, which can only be a GitLab instance.
 - **Reassigned to** - Your full name and username on the GitLab instance.
-- **Reassigned by** - The full name and username of your colleague or manager that performed the import.
+- **Reassigned by** - The full name and username of your colleague or manager who performed the import.
 
 ### Reject contribution reassignment
 

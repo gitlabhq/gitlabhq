@@ -49,7 +49,7 @@ To resolve a conflict, delete:
 
 You can resolve merge conflicts in the GitLab UI if the conflicting file:
 
-- Is a non binary text file.
+- Is a non-binary text file.
 - Is less than 200 KB in size with conflict markers added.
 - Uses UTF-8 compatible encoding.
 - Doesn't contain conflict markers.

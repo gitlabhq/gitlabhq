@@ -99,7 +99,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
          If the command returns the entire certificate chain, you must copy the Root CA
          certificate and any intermediate certificates at the bottom of the chain.
-         A chain file has following structure:
+         A chain file has the following structure:
 
          ```plaintext
             -----BEGIN MY CERTIFICATE-----

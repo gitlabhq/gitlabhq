@@ -1,0 +1,1 @@
+import 'fake-vue-widget';

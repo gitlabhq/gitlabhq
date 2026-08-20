@@ -409,7 +409,7 @@ To **disable** the custom email address:
 
 ### Change or remove custom email configuration
 
-To change the custom email configuration you must reset and remove it and configure custom email again.
+To change the custom email configuration, you must reset and remove it and configure custom email again.
 
 To reset the configuration at any step in the process, select **Reset custom email**.
 The credentials are then removed from the database.

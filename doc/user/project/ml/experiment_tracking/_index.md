@@ -36,7 +36,7 @@ by the same metrics.
 
 ## Model run
 
-A model run is a variation of the training of a machine learning model, that can be eventually promoted to a version
+A model run is a variation of the training of a machine learning model that can be eventually promoted to a version
 of the model.
 
 ![Experiment run list table with run ID, creation timestamps, creator name, and status.](img/runs_v17_9.png)

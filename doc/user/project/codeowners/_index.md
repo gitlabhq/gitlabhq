@@ -76,7 +76,7 @@ Your project contains sensitive and important information in a `config/` directo
 1. Enable **Required approval from code owners** on the protected branch.
 1. Optional. Edit the `CODEOWNERS` file to add a rule for multiple approvals.
 
-With this configuration, merge requests that change files in the `config/`directory and target the `main` branch
+With this configuration, merge requests that change files in the `config/` directory and target the `main` branch
 require approval from the designated Code Owners before merging.
 
 ### Allowed to push and merge to a protected branch

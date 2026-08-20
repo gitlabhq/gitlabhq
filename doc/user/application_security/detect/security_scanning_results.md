@@ -20,7 +20,7 @@ title: Security scanning results
 
 {{< /history >}}
 
-View and act on the results of pipeline security scanning in GitLab. Select security scanners run in
+View and act on the results of pipeline security scanning in GitLab. Security scanners run in
 a pipeline and output security reports. The contents of these reports are processed and presented in
 GitLab.
 

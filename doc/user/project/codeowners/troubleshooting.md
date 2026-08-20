@@ -46,7 +46,7 @@ How this works:
    merge requests in the project. If the user does not have that permission, show an error.
 1. For each valid group reference, check that the maximum role value is Developer or higher.
    For each group reference that has a value lower than Developer, show an error.
-1. For each valid group reference, check that they group contains at least one user with
+1. For each valid group reference, check that the group contains at least one user with
    permission to approve merge requests. For any group reference containing zero users with
    permission to approve merge requests, show an error.
 

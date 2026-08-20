@@ -17,8 +17,8 @@ If you have problems with [migrating projects by using file exports](import_expo
 
 ## Troubleshooting commands
 
-Finds information about the status of the import and further logs using the JID,
-using the [Rails console](../../../administration/operations/rails_console.md):
+Use the [Rails console](../../../administration/operations/rails_console.md) to find
+information about the status of the import and further logs by using the JID:
 
 ```ruby
 Project.find_by_full_path('group/project').import_state.slice(:jid, :status, :last_error)

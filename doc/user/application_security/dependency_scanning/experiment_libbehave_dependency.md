@@ -176,7 +176,7 @@ The following flags are available, but are untested and should be left at their 
 
 Because all variables have not been tested, you may find some that work and others that do not.
 If you need one that does not work,
-[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or contributing to the code to enable it to be used.
 
 ## Dependency detection and analysis

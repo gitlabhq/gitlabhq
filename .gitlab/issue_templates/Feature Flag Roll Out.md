@@ -52,7 +52,7 @@ Confirm the relevant gotchas before going to 100% — see [enabling a feature fo
 
 ## Cleanup
 
-Remove the flag once [deemed stable](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle) — see [cleaning up](https://docs.gitlab.com/development/feature_flags/controls/#cleaning-up). Track it here, or open a follow-up [Feature Flag Cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20Flag%20Cleanup). Remove the flag and its YAML definition from the codebase, then:
+Remove the flag once [deemed stable](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle) — see [cleaning up](https://docs.gitlab.com/development/feature_flags/controls/#cleaning-up). Track it here, or open a follow-up [Feature Flag Cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20Flag%20Cleanup). Remove the flag and its YAML definition from the codebase, then:
 
 ```
 /chatops gitlab run release check <merge-request-url> <milestone>

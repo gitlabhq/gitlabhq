@@ -65,7 +65,7 @@ Burndown charts show the number of issues over the course of a milestone.
 
 ![Burndown chart, showing declining trend of remaining issues over milestone duration.](img/burndown_chart_v15_3.png)
 
-At a glance, you see the current state for the completion a given milestone.
+At a glance, you see the current state for the completion of a given milestone.
 Without them, you would have to organize the data from the milestone and plot it
 yourself to have the same sense of progress.
 
@@ -91,7 +91,7 @@ To view a group's burndown chart:
 A burndown chart is available for every project or group milestone that has been attributed a **start date** and a **due date**.
 
 > [!note]
-> You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
+> You're able to [promote project milestones](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 
@@ -226,7 +226,7 @@ The charts for Milestone 2 would show Issue as having weight 4.
 
 A limitation of these charts is that [the days are in the UTC time zone](https://gitlab.com/gitlab-org/gitlab/-/issues/267967).
 
-This can cause the graphs to be inaccurate in other timezones. For example:
+This can cause the graphs to be inaccurate in other time zones. For example:
 
 - All the issues in a milestone are recorded as being closed on or before the last day.
 - One issue was closed on the last day at 6 PM PST (Pacific time), which is UTC-7.

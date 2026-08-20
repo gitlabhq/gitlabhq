@@ -175,7 +175,7 @@ The template for commit messages for applied suggestions supports these variable
 |------------------------|-------------|----------------|
 | `%{branch_name}`       | The name of the branch to which suggestions were applied. | `my-feature-branch` |
 | `%{files_count}`       | The number of files to which suggestions were applied.| `2` |
-| `%{file_paths}`        | The paths of the file to which suggestions were applied. Paths are separated by commas.| `docs/index.md, docs/about.md` |
+| `%{file_paths}`        | The paths of the files to which suggestions were applied. Paths are separated by commas.| `docs/index.md, docs/about.md` |
 | `%{project_path}`      | The project path. | `my-group/my-project` |
 | `%{project_name}`      | The human-readable name of the project. | `My Project` |
 | `%{suggestions_count}` | The number of suggestions applied.| `3` |

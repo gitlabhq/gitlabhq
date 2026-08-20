@@ -1933,16 +1933,6 @@ Grants the ability to read code review analytics.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/analytics/code_review` |
 
-#### Product Analytics
-
-Grants the ability to read product analytics.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Project | `POST` | `/projects/:project_id/product_analytics/request/dry-run` |
-| Read | Project | `POST` | `/projects/:project_id/product_analytics/request/load` |
-| Read | Project | `POST` | `/projects/:project_id/product_analytics/request/meta` |
-
 #### Release
 
 Grants the ability to create, delete, read, and update releases.

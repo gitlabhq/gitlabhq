@@ -48,7 +48,7 @@ Post-migration user contribution and membership mapping is available by default 
 - [Gitea](../gitea.md)
 
 When you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces), user contribution mapping
-and membership mapping is not supported and all contributions are assigned to the personal namespace owner. These
+and membership mapping are not supported and all contributions are assigned to the personal namespace owner. These
 contributions cannot be reassigned.
 
 ## Prerequisites
@@ -126,7 +126,7 @@ A placeholder user is not created in these scenarios:
 
 ### Placeholder user attributes
 
-Placeholder users are different to regular users and cannot:
+Placeholder users are different from regular users and cannot:
 
 - Sign in.
 - Perform any actions. For example, running pipelines.

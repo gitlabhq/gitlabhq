@@ -92,8 +92,8 @@ From this page, you can perform the following actions:
 
 - Create, rotate, and revoke project access tokens.
 - View all active and inactive project access tokens.
-- View token information, including, scopes, assigned roles, and expiration dates.
-- View usage information, including usage dates, and of the last five distinct connection IP addresses.
+- View token information including scopes, assigned roles, and expiration dates.
+- View usage information including usage dates and the last five distinct connection IP addresses.
   > [!note]
   > GitLab periodically updates token usage information when the token performs a Git operation or
   > authenticates an operation with the [REST](../../../api/rest/_index.md) or

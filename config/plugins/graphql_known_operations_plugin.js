@@ -5,14 +5,9 @@ const { evaluateModuleFromSource } = require('../helpers/evaluate_module_from_so
 
 const PLUGIN_NAME = 'GraphqlKnownOperationsPlugin';
 const SUPPORTED_OPS = ['query', 'mutation', 'subscription'];
-/* eslint-disable no-useless-escape */
-const GRAPHQL_PATH_REGEX = new RegExp(`(${SUPPORTED_OPS.join('|')})\.graphql$`);
 
-/**
- * Returns whether a given webpack module is a "graphql" module
- */
-const isGraphqlModule = (module) => {
-  return GRAPHQL_PATH_REGEX.test(module.resource);
+const isGraphqlFile = (module) => {
+  return typeof module.resource === 'string' && module.resource.endsWith('.graphql');
 };
 
 /**
@@ -37,7 +32,7 @@ const getOperationMetadata = (module) => {
   const originalSource = module.originalSource();
 
   if (!originalSource) {
-    return {};
+    return { metadata: {}, definitionsCount: null };
   }
 
   const sourceString = originalSource.source().toString();
@@ -48,22 +43,27 @@ const getOperationMetadata = (module) => {
     require: () => ({ definitions: [] }),
   });
 
+  const definitions = Array.isArray(moduleExports.definitions) ? moduleExports.definitions : [];
+
+  const operationDefinitions = definitions.filter((x) => SUPPORTED_OPS.includes(x.operation));
+
   const metadata = {};
 
-  moduleExports.definitions
-    .filter((x) => SUPPORTED_OPS.includes(x.operation))
-    .forEach((x) => {
-      const operationName = x.name?.value;
-      // why: It's possible for operations to not have a name. That violates our eslint rule, but either way, let's ignore those here.
-      if (operationName) {
-        metadata[operationName] = {
-          feature_category: extractDirective(sourceString, 'feature_category'),
-          urgency: extractDirective(sourceString, 'urgency') || 'default',
-        };
-      }
-    });
+  operationDefinitions.forEach((x) => {
+    const operationName = x.name?.value;
+    // why: It's possible for operations to not have a name. That violates our eslint rule, but either way, let's ignore those here.
+    if (operationName) {
+      metadata[operationName] = {
+        feature_category: extractDirective(sourceString, 'feature_category'),
+        urgency: extractDirective(sourceString, 'urgency') || 'default',
+      };
+    }
+  });
 
-  return metadata;
+  return {
+    metadata,
+    definitionsCount: definitions.length,
+  };
 };
 
 const createFileContents = (knownOperations) => {
@@ -92,12 +92,20 @@ const createWebpackRawSource = (source) => {
   };
 };
 
-const onSucceedModule = ({ module, knownOperations }) => {
-  if (!isGraphqlModule(module)) {
+const onSucceedModule = ({ module, knownOperations, compilation }) => {
+  if (!isGraphqlFile(module)) {
     return;
   }
 
-  const metadata = getOperationMetadata(module);
+  const { metadata, definitionsCount } = getOperationMetadata(module);
+
+  if (definitionsCount === 0) {
+    compilation.errors.push(
+      new Error(`[${PLUGIN_NAME}] "${module.resource}" contains no GraphQL definitions.`),
+    );
+    return;
+  }
+
   Object.entries(metadata).forEach(([name, data]) => {
     knownOperations.set(name, data);
   });
@@ -143,6 +151,7 @@ class GraphqlKnownOperationsPlugin {
         onSucceedModule({
           module,
           knownOperations,
+          compilation,
         });
       });
     });

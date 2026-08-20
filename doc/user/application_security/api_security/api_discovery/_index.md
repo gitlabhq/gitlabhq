@@ -59,7 +59,7 @@ Only applications that are built as Spring Boot [executable JARs](https://docs.s
 The easiest way to run API Discovery is through a pipeline job based on our CI template.
 When running in this method, you provide a container image that has the required dependencies installed (such as an appropriate Java runtime). See [Image Requirements](#image-requirements) for more information.
 
-1. A container image that meets the [image requirements](#image-requirements) is uploaded to a container registry. If the container registry requires authentication see [this help section](../../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry).
+1. A container image that meets the [image requirements](#image-requirements) is uploaded to a container registry. If the container registry requires authentication, see [this help section](../../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry).
 1. In a job in the `build` stage, build your application and configure the resulting Spring Boot executable JAR as a job artifact.
 1. Include the API Discovery template in your `.gitlab-ci.yml` file.
 
@@ -106,7 +106,7 @@ When running in this method, you provide a container image that has the required
 
 1. Optional. If the image provided is missing a dependency needed by API Discovery, it can be added
    using a `before_script`. In this example, the `eclipse-temurin:17-jre-alpine` container doesn't include
-   `curl` which is required by API Discovery. The dependency can be installed using the Debian
+   `curl`, which is required by API Discovery. The dependency can be installed using the Debian
    package manager `apt`:
 
    ```yaml
@@ -163,7 +163,7 @@ After the API Discovery job has successfully run, the OpenAPI document is availa
 | `API_DISCOVERY_DISABLED`                    | Disables the API Discovery job when using template job rules. |
 | `API_DISCOVERY_DISABLED_FOR_DEFAULT_BRANCH` | Disables the API Discovery job for default branch pipelines when using template job rules. |
 | `API_DISCOVERY_JAVA_CLASSPATH`              | Java class-path that includes target Spring Boot application. (`build/libs/sample-0.0.0.jar`) |
-| `API_DISCOVERY_JAVA_HOME`                   | If provided is used to set `JAVA_HOME`. |
+| `API_DISCOVERY_JAVA_HOME`                   | If provided, it is used to set `JAVA_HOME`. |
 | `API_DISCOVERY_PACKAGES`                    | GitLab Project Package API Prefix (defaults to `$CI_API_V4_URL/projects/42503323/packages`). |
 | `API_DISCOVERY_PACKAGE_TOKEN`               | GitLab token for calling the GitLab package API. Only needed when `API_DISCOVERY_PACKAGES` is set to a non-public project. |
 | `API_DISCOVERY_VERSION`                     | API Discovery version to use (defaults to `1`). Can be used to pin a version by providing the full version number `1.1.0`. |
@@ -173,9 +173,9 @@ After the API Discovery job has successfully run, the OpenAPI document is availa
 To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Discovery.
-Use `~"Category:API Security"` label when opening a new issue regarding API Discovery to ensure it is quickly reviewed by the right people.
+Use the `~"Category:API Security"` label when opening a new issue regarding API Discovery to ensure it is quickly reviewed by the right people.
 
-[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
+[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own. There's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
 
 When experiencing a behavior not working as expected, consider providing contextual information:
 

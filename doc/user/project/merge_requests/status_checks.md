@@ -130,7 +130,6 @@ For common form errors see the [troubleshooting](#troubleshooting) section below
 
 This name can be any alphanumerical value and **must** be set. The name **must** be unique for
 the project.
-The name **has** to be unique for the project.
 
 #### API to check
 
@@ -145,7 +144,7 @@ you can use this field to set this limit.
 
 ![Status checks branch selector](img/status_checks_branches_selector_v14_0.png)
 
-The branches list is populated from the projects [protected branches](../repository/branches/protected.md).
+The branches list is populated from the project's [protected branches](../repository/branches/protected.md).
 
 You can scroll through the list of branches or use the search box
 when there are a lot of branches and the branch you are looking
@@ -207,8 +206,8 @@ External API is already in use by another status check
 ```
 
 On a per project basis, status checks can only use a name or API URL once.
-These errors mean that either the status checks name or API URL have already
-been used in this projects status checks.
+These errors mean that either the status check's name or API URL has already
+been used in this project's status checks.
 
 You must either choose a different
 value on the current status check or update the value on the existing status check.
@@ -219,7 +218,7 @@ value on the current status check or update the value on the existing status che
 Please provide a valid URL
 ```
 
-The API to check field requires the URL provided to use either the HTTP or HTTPs protocols.
+The API to check field requires the URL provided to use either the HTTP or HTTPS protocols.
 You must update the value of the field to meet this requirement.
 
 ### Branch list error during retrieval or search

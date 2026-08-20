@@ -111,7 +111,7 @@ Affected owners see a message that GitLab Duo is locked by a parent group.
 Only one lock can exist in any chain of ancestor and descendant groups.
 When you lock a subgroup:
 
-- If an ancestor group already has an lock, the lock is not applied.
+- If an ancestor group already has a lock, the lock is not applied.
   You must [clear the lock](#clear-the-lock-for-a-subgroup) from the ancestor group first.
 - If one or more descendant subgroups already have admin locks, you are prompted to confirm.
   When you confirm, the locks on those descendant subgroups are cleared,

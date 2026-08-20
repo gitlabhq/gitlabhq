@@ -177,7 +177,7 @@ visible to signed-in users with the Reporter, Developer, Maintainer, or Owner ro
 Anyone in your project can use the Service Desk email address to create a ticket in this project, **regardless
 of their role** in the project.
 
-The unique internal email address is visible to project members at least
+The unique internal email address is visible to project members with at least
 the Planner role in your GitLab instance.
 An external user (ticket creator) cannot see the internal email address
 displayed in the information note.

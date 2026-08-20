@@ -92257,7 +92257,7 @@
             },
             {
               "name": "expression",
-              "description": "Expression of the compliance control.",
+              "description": "Expression of the compliance control. Derived from the name of the control when omitted for an internal control.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

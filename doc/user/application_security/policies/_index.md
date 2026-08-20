@@ -307,7 +307,7 @@ When specifying branch names in a policy, use a generic category of protected br
 **default branch** or **all protected branches**, not individual branch names.
 
 A policy is enforced on a project only if the specified branch exists in that project. For example,
-if your policy enforces rules on branch `main` but some projects in scope are using `production` as
+if your policy enforces rules on branch `main`, but some projects in scope are using `production` as
 their default branch, the policy is not applied for the latter.
 
 ### Push rules
@@ -538,7 +538,7 @@ If the scheduled pipelines are not running as configured:
 
 #### Policy jobs failing
 
-If the policy job are failing:
+If the policy jobs are failing:
 
 - Verify the bot has access to required CI/CD variables.
 - Check that referenced CI/CD configuration files exist and are accessible.

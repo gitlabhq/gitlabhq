@@ -28,7 +28,7 @@ The following outline re-uses the [maturity metric](https://handbook.gitlab.com/
 
 ## Proposing a new component
 
-The initial step for integrating a new component with GitLab starts with creating a [Feature proposal in the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal).
+The initial step for integrating a new component with GitLab starts with creating a [Feature proposal in the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal).
 
 Identify the [product category](https://handbook.gitlab.com/handbook/product/categories/) the component falls under and assign the Engineering Manager and Product Manager responsible for that category.
 

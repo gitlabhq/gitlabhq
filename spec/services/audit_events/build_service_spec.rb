@@ -146,14 +146,16 @@ RSpec.describe AuditEvents::BuildService, feature_category: :audit_events do
     end
 
     context 'when scope is valid' do
-      where(:scope_type) do
+      where(:scope_type, :event_class, :scope_column) do
         [
-          [:group],
-          [:project],
-          [:user]
+          [:group, ::AuditEvents::GroupAuditEvent, :group_id],
+          [:project, ::AuditEvents::ProjectAuditEvent, :project_id],
+          [:user, ::AuditEvents::UserAuditEvent, :user_id]
         ]
       end
+
       with_them do
+        let(:additional_details) { { action: :custom, event_name: 'test_event' } }
         let(:scope) do
           case scope_type
           when :group then create(:group)
@@ -162,8 +164,10 @@ RSpec.describe AuditEvents::BuildService, feature_category: :audit_events do
           end
         end
 
-        it 'does not raise error' do
-          expect { service.execute }.not_to raise_error
+        it 'builds the audit event model backing the scope', :aggregate_failures do
+          expect(event).to be_an_instance_of(event_class)
+          expect(event.public_send(scope_column)).to eq(scope.id)
+          expect(event.event_name).to eq('test_event')
         end
       end
     end

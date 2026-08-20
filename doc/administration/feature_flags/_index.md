@@ -41,7 +41,7 @@ When you disable a feature flag, the feature is hidden from users and all of the
 For example, data is not recorded and services do not run.
 
 If you used a certain feature and identified a bug, a misbehavior, or an
-error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
+error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
 as possible so we can improve or fix it while behind a flag. When you upgrade
 GitLab, the feature flag status may change.
 

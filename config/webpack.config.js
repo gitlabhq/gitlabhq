@@ -290,11 +290,6 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
-        test: /(@cubejs-client\/(vue|core)).*\.(js)?$/,
-        include: /node_modules/,
-        loader: 'babel-loader',
-      },
-      {
         test: /gridstack\/.*\.js$/,
         include: /node_modules/,
         loader: 'babel-loader',

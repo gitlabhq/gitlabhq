@@ -111,7 +111,7 @@ To discard any changes to the description you've made after selecting the templa
 
 > [!note]
 > You can create shortcut links to create an issue using a designated template.
-> For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/create_issues.md#using-a-url-with-prefilled-values).
+> For example: `https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/create_issues.md#using-a-url-with-prefilled-values).
 
 ### Supported variables in merge request templates
 

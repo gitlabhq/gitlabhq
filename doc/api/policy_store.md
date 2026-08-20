@@ -18,6 +18,7 @@ title: Policy store API
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database instead of per-process memory in GitLab 19.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) to add the `policy_rego` response attribute in GitLab 19.4.
 
 {{< /history >}}
 
@@ -247,6 +248,7 @@ The policy endpoints return the following attributes:
 | `name`            | string          | Name of the policy. |
 | `namespace_id`    | integer         | ID of the group that owns the policy. Always `null` today, because no endpoint accepts a `namespace_id` attribute, so every policy created through this API is owned by its organization. |
 | `organization_id` | integer         | ID of the organization the policy belongs to. |
+| `policy_rego`     | string          | The policy's rules, compiled to a single Rego module. `null` for a policy with no rules. |
 | `policy_scope`    | object          | Structured scope of the policy, or `null` when the Rego was authored directly. |
 | `rules`           | array           | Rules of the policy. |
 | `scope_rego`      | string          | Compiled scope of the policy, as Rego. |
@@ -292,6 +294,7 @@ Example response:
     "version": 1,
     "trigger_type": "deployment_requested",
     "rules": [{ "type": "custom", "value": "package governance" }],
+    "policy_rego": "package governance\n",
     "actions": [{ "type": "block" }],
     "policy_scope": null,
     "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
@@ -340,6 +343,7 @@ Example response:
   "version": 1,
   "trigger_type": "deployment_requested",
   "rules": [{ "type": "custom", "value": "package governance" }],
+  "policy_rego": "package governance\n",
   "actions": [{ "type": "block" }],
   "policy_scope": null,
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
@@ -405,6 +409,7 @@ Example response:
   "version": 1,
   "trigger_type": "deployment_requested",
   "rules": [{ "type": "custom", "value": "package governance" }],
+  "policy_rego": "package governance\n",
   "actions": [{ "type": "block" }],
   "policy_scope": { "compliance_frameworks": [{ "id": 5 }] },
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
@@ -473,6 +478,7 @@ Example response:
   "version": 2,
   "trigger_type": "deployment_requested",
   "rules": [{ "type": "custom", "value": "package governance" }],
+  "policy_rego": "package governance\n",
   "actions": [{ "type": "block" }],
   "policy_scope": null,
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",

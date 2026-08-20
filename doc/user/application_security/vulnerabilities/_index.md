@@ -147,7 +147,7 @@ To resolve the vulnerability:
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
 1. In the upper-right corner, select **Resolve with AI**. If that button is not shown, select
-   **AI actions**, then select **Resolve with AI**. If this project is a public project be aware
+   **AI actions**, then select **Resolve with AI**. If this project is a public project, be aware
    that creating an MR will publicly expose the vulnerability and offered resolution. To create the
    MR privately, [create a private fork](../../project/merge_requests/confidential.md), and repeat
    this process.
@@ -226,7 +226,7 @@ Vulnerability Resolution sometimes cannot generate a suggested fix. Common cause
 - False positive detected:
   - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
-  - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
+  - If you agree that the vulnerability is a false positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
 - Temporary or unexpected error:
   - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.
@@ -285,7 +285,7 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
 - False positive detected:
   - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
-  - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
+  - If you agree that the vulnerability is a false positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
 - Temporary or unexpected error:
   - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.
@@ -355,7 +355,7 @@ stateDiagram
 A vulnerability may be no longer detected because of changes made deliberately to remediate it or
 as a side effect of other changes. When a security scan runs and a vulnerability is no longer
 detected in the default branch, the scanner adds **No longer detected** to the record's activity log
-but the record's status does not change. Instead you should check and confirm the
+but the record's status does not change. Instead, you should check and confirm the
 vulnerability has been resolved and if so,
 [manually change its status to **Resolved**](#change-the-status-of-a-vulnerability). You can also
 use a [vulnerability management policy](../policies/vulnerability_management_policy.md) to
@@ -473,7 +473,7 @@ To link a vulnerability to existing Jira issues, add the following line to the J
 `<id>` is any [vulnerability ID](../../../api/vulnerabilities.md#retrieve-a-vulnerability).
 You can add several lines with different IDs to one description.
 
-Jira issues with appropriate description are added to the **Related Jira issues** section, and the linked issues counter is
+Jira issues with an appropriate description are added to the **Related Jira issues** section, and the linked issues counter is
 updated.
 
 Jira issues linked to a vulnerability are shown only on the vulnerability page.
@@ -485,7 +485,7 @@ Be aware of the following conditions between a vulnerability and a linked Jira i
 
 ## Resolve a vulnerability
 
-For some vulnerabilities a solution is already known but needs to be implemented manually. The
+For some vulnerabilities, a solution is already known but needs to be implemented manually. The
 **Remediation** section of the vulnerability page shows a solution provided by the security scanning
 tool that reported the security finding, or entered during the [manual creation of a vulnerability](../vulnerability_report/_index.md#manually-add-a-vulnerability).
 The GitLab tools utilize information from the [GitLab advisory database](../gitlab_advisory_database/_index.md).
@@ -548,14 +548,14 @@ To enable security training for vulnerabilities in your project:
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 
-Each integration submits the Vulnerability identifier, for example CWE or OWASP, and the language to the security training vendor. The resulting link to the vendor training is what appears in a GitLab Vulnerability.
+Each integration submits the Vulnerability identifier, for example, CWE or OWASP, and the language to the security training vendor. The resulting link to the vendor training is what appears in a GitLab Vulnerability.
 
 ## View security training for a vulnerability
 
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.
 Training content is requested based on the vulnerability identifiers.
-The identifier given to a vulnerability varies from one vulnerability to the next and the available training
+The identifier given to a vulnerability varies from one vulnerability to the next, and the available training
 content varies between vendors. Some vulnerabilities do not display training content.
 Vulnerabilities with a CWE are most likely to return a training result.
 

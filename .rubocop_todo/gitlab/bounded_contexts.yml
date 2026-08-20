@@ -3285,8 +3285,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/phone_verification/users/record_user_data_service.rb'
     - 'ee/app/services/phone_verification/users/send_verification_code_service.rb'
     - 'ee/app/services/phone_verification/users/verify_code_service.rb'
-    - 'ee/app/services/product_analytics/cube_data_query_service.rb'
-    - 'ee/app/services/product_analytics/initialize_stack_service.rb'
     - 'ee/app/services/protected_environments/base_service.rb'
     - 'ee/app/services/protected_environments/create_service.rb'
     - 'ee/app/services/protected_environments/destroy_service.rb'

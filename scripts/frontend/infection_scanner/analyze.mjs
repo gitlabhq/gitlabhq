@@ -21,19 +21,51 @@ const CONCURRENCY = 64;
  * @param {Object} options
  * @param {Object<string, string>} [options.aliasMap] - Webpack-style alias map.
  *   Keys ending with `$` are exact matches; others are prefix matches.
+ * @param {Object<string, string>} [options.plainAliasMap] - Same shape as `aliasMap`,
+ *   without the `contextAliasKeys` overrides. Defaults to `aliasMap`.
+ * @param {Set<string>} [options.contextAliasKeys] - Keys of `CONTEXT_ALIASES`. For
+ *   these specifiers, `resolveModuleAll` also resolves the plain (un-aliased) target
+ *   and includes it among the returned alternatives, so the graph walk visits it too.
  * @param {string} options.rootPath - Project root for node_modules lookup.
  * @param {Function} [options.fallbackResolve] - Optional fallback resolver function.
  *   Called with (specifier, fromDir) when standard resolution fails. Should return
  *   an absolute path or null.
  * @returns {{ resolveModule: (specifier: string, fromFile: string) => string|null, resolveModuleAll: (specifier: string, fromFile: string) => string[]|null, tryFile: (p: string) => boolean }}
  */
-export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
-  const sortedAliasKeys = Object.keys(aliasMap).sort((a, b) => {
-    const aExact = a.endsWith('$');
-    const bExact = b.endsWith('$');
-    if (aExact !== bExact) return aExact ? -1 : 1;
-    return b.length - a.length;
-  });
+export function createResolver({
+  aliasMap = {},
+  plainAliasMap = aliasMap,
+  contextAliasKeys = new Set(),
+  rootPath,
+  fallbackResolve,
+}) {
+  function makeApplyAlias(map) {
+    const sortedKeys = Object.keys(map).sort((a, b) => {
+      const aExact = a.endsWith('$');
+      const bExact = b.endsWith('$');
+      if (aExact !== bExact) return aExact ? -1 : 1;
+      return b.length - a.length;
+    });
+
+    return function applyAlias(specifier) {
+      for (const key of sortedKeys) {
+        const isExact = key.endsWith('$');
+        const aliasName = isExact ? key.slice(0, -1) : key;
+        const target = map[key];
+
+        if (isExact && specifier === aliasName) {
+          return target;
+        }
+        if (!isExact && (specifier === aliasName || specifier.startsWith(`${aliasName}/`))) {
+          return `${target}${specifier.slice(aliasName.length)}`;
+        }
+      }
+      return specifier;
+    };
+  }
+
+  const applyAlias = makeApplyAlias(aliasMap);
+  const applyPlainAlias = makeApplyAlias(plainAliasMap);
 
   const fileExistsCache = new Map();
   const resolveCache = new Map();
@@ -43,22 +75,6 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
     const exists = fs.existsSync(p) && fs.statSync(p).isFile();
     fileExistsCache.set(p, exists);
     return exists;
-  }
-
-  function applyAlias(specifier) {
-    for (const key of sortedAliasKeys) {
-      const isExact = key.endsWith('$');
-      const aliasName = isExact ? key.slice(0, -1) : key;
-      const target = aliasMap[key];
-
-      if (isExact && specifier === aliasName) {
-        return target;
-      }
-      if (!isExact && (specifier === aliasName || specifier.startsWith(`${aliasName}/`))) {
-        return `${target}${specifier.slice(aliasName.length)}`;
-      }
-    }
-    return specifier;
   }
 
   function resolveFile(absPath) {
@@ -79,6 +95,21 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
     ];
     for (const candidate of indexCandidates) {
       if (tryFile(candidate)) return candidate;
+    }
+
+    // absPath may be a package root rather than a plain directory -- consult its
+    // package.json main/module, same as resolveNodeModuleAll does.
+    const pkgJsonPath = path.join(absPath, 'package.json');
+    if (tryFile(pkgJsonPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+      if (pkg.module) {
+        const esmPath = resolveFile(path.resolve(absPath, pkg.module));
+        if (esmPath) return esmPath;
+      }
+      if (pkg.main) {
+        const mainPath = resolveFile(path.resolve(absPath, pkg.main));
+        if (mainPath) return mainPath;
+      }
     }
 
     return null;
@@ -213,24 +244,38 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
     return null;
   }
 
+  function resolveAliasedTarget(aliased, fromFile) {
+    if (path.isAbsolute(aliased)) {
+      const r = resolveFile(aliased);
+      return r ? [r] : null;
+    }
+    if (aliased.startsWith('.')) {
+      const dir = path.dirname(fromFile);
+      const r = resolveFile(path.resolve(dir, aliased));
+      return r ? [r] : null;
+    }
+    return resolveNodeModuleAll(aliased, path.dirname(fromFile));
+  }
+
   function resolveModuleAll(specifier, fromFile) {
     if (isBuiltin(specifier)) return null;
 
     const cacheKey = `${fromFile}\0${specifier}`;
     if (resolveCache.has(cacheKey)) return resolveCache.get(cacheKey);
 
-    const aliased = applyAlias(specifier.replace(/\?vue3$/, ''));
+    const stripped = specifier.replace(/\?vue3$/, '');
+    const aliased = applyAlias(stripped);
+    let results = resolveAliasedTarget(aliased, fromFile);
 
-    let results;
-    if (path.isAbsolute(aliased)) {
-      const r = resolveFile(aliased);
-      results = r ? [r] : null;
-    } else if (aliased.startsWith('.')) {
-      const dir = path.dirname(fromFile);
-      const r = resolveFile(path.resolve(dir, aliased));
-      results = r ? [r] : null;
-    } else {
-      results = resolveNodeModuleAll(aliased, path.dirname(fromFile));
+    // Context-aliased specifiers resolve differently depending on whether the
+    // importer is infected. Resolve the plain target too, so it gets a real graph
+    // node instead of being silently absent.
+    if (contextAliasKeys.has(stripped)) {
+      const plainAliased = applyPlainAlias(stripped);
+      if (plainAliased !== aliased) {
+        const plain = resolveAliasedTarget(plainAliased, fromFile);
+        if (plain) results = results ? [...new Set([...results, ...plain])] : plain;
+      }
     }
 
     resolveCache.set(cacheKey, results);
@@ -535,6 +580,8 @@ function findNearestInfectionReasons({
  * @param {string[]} options.infectionSpecifiers - Import specifiers that trigger infection
  *   (e.g. context alias keys). Both exact matches and prefix matches (`spec + '/'`) are checked.
  * @param {Object<string, string>} [options.aliasMap={}] - Webpack-style alias map for module resolution.
+ * @param {Object<string, string>} [options.plainAliasMap] - See `createResolver`'s
+ *   `plainAliasMap` doc. Defaults to `aliasMap`.
  * @param {Function} [options.fallbackResolve] - Optional fallback resolver (e.g. cjsRequire.resolve).
  * @param {Function} [options.onProgress] - Optional progress callback (parsed, total).
  * @returns {Promise<{entrypoints: Object, graph: Object}>} The annotated graph. Each graph entry
@@ -545,10 +592,17 @@ export async function analyze({
   entrypoints,
   infectionSpecifiers,
   aliasMap = {},
+  plainAliasMap,
   fallbackResolve,
   onProgress,
 }) {
-  const resolver = createResolver({ aliasMap, rootPath, fallbackResolve });
+  const resolver = createResolver({
+    aliasMap,
+    plainAliasMap,
+    contextAliasKeys: new Set(infectionSpecifiers),
+    rootPath,
+    fallbackResolve,
+  });
   const { graph, appRootSet } = await buildGraph(entrypoints, resolver, { onProgress });
   const { infectedSet, infectionTriggers } = computeInfected(
     graph,

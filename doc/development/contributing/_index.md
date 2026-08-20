@@ -52,7 +52,7 @@ on the [contributor platform](https://contributors.gitlab.com) to find and assig
 It is recommended to start with an issue with the label `quick win::first-time contributor`.
 
 If you know what you're going to work on, see if an issue already exists.
-If it doesn't, open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new).
+If it doesn't, open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new).
 Select the appropriate template and add all the necessary information about the work you plan to do.
 Tag a [merge request coach](merge_request_coaches.md)
 with `@gitlab-bot help` on the issue or through the contributors platform to help [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).

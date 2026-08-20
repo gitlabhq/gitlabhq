@@ -85,7 +85,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 - Ensure either that:
   - The source and destination namespaces belong to the same organization.
-  - When the source and designation namespaces belong to different organisations, that neither
+  - When the source and destination namespaces belong to different organizations, that neither
     organization is marked as isolated.
 
 ## User membership mapping

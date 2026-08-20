@@ -159,7 +159,7 @@ them a notification email.
 When reviewing a merge request, follow the review process instead of leaving individual
 comments. When you select **Start a review**, the **Reviewers** section of the right sidebar updates
 your status from **Awaiting review** ({{< icon name="dash-circle" >}}) to
-**Reviewer started review** ({{< icon name="comment-dots" >}})
+**Reviewer started review** ({{< icon name="comment-dots" >}}).
 
 To start your review of a merge request:
 

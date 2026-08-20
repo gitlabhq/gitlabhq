@@ -83,7 +83,7 @@ Prerequisites:
 
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
-- Your project must use the [merge commit](methods/_index.md#merge-commit) method.
+- Your project must use the [merge commit](methods/_index.md#merge-commit) method,
   which is set in the project's **Settings** > **Merge requests**.
 
   Fast-forwarded commits can be cherry-picked from the GitLab UI only when they are squashed or when the

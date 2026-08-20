@@ -609,7 +609,7 @@ dependency_scanning:
 
 Because all variables have not been tested, you may find that some work and others do not.
 If you need one that does not work,
-[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or contribute to the code to enable it to be used.
 
 ### Custom TLS certificate authority

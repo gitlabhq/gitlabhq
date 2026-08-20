@@ -3,34 +3,40 @@
 module Gitlab
   module Audit
     module Logging
-      ENTITY_TYPE_TO_CLASS = {
-        'User' => ::AuditEvents::UserAuditEvent,
-        'Project' => ::AuditEvents::ProjectAuditEvent,
-        'Group' => ::AuditEvents::GroupAuditEvent,
-        'Gitlab::Audit::InstanceScope' => ::AuditEvents::InstanceAuditEvent
-      }.freeze
-
-      def log_to_new_tables(events, audit_operation)
+      # Persists audit events that are already scoped model instances, as built by
+      # AuditEvents::BuildService.
+      #
+      # @return [Array] the persisted events, or [] when the write failed
+      def persist_events(events, audit_operation)
         return [] if events.blank?
 
-        events.group_by(&:entity_type).flat_map do |entity_type, entity_events|
-          log_events(entity_type, entity_events)
-        end
+        events.group_by(&:class).flat_map { |event_class, scoped_events| log_events(event_class, scoped_events) }
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: audit_operation)
         []
       end
 
+      # Copies legacy AuditEvent records into the scoped tables. Only the deprecated
+      # AuditEventService still builds those.
+      def log_to_new_tables(events, audit_operation)
+        return [] if events.blank?
+
+        scoped_events = events.map do |event|
+          model = ::AuditEvents::BuildService::ENTITY_TYPE_TO_MODEL.fetch(event.entity_type.to_s)
+
+          model.new(build_event_attributes(event))
+        end
+
+        persist_events(scoped_events, audit_operation)
+      end
+
       private
 
-      def log_events(entity_type, entity_events)
-        event_class = ENTITY_TYPE_TO_CLASS[entity_type.to_s]
-
-        if entity_events.one?
-          [event_class.create!(build_event_attributes(entity_events.first))]
+      def log_events(event_class, events)
+        if events.one?
+          [events.first.tap(&:save!)]
         else
-          new_events = entity_events.map { |event| event_class.new(build_event_attributes(event)) }
-          event_ids = event_class.bulk_insert!(new_events, returns: :ids)
+          event_ids = event_class.bulk_insert!(events, returns: :ids)
           event_class.id_in(event_ids)
         end
       end
@@ -47,26 +53,20 @@ module Gitlab
           entity_path: event.entity_path,
           target_details: event.target_details,
           target_type: event.target_type
-        }.merge(additional_attributes(event))
+        }.merge(scope_attributes(event))
 
-        # When legacy writes are skipped, events won't have an ID.
-        # Omit the id field so the new table uses its default sequence (shared_audit_event_id_seq).
+        # Reuse the legacy row's id so both tables reference the same event. A failed
+        # legacy write leaves no id, so the scoped table falls back to its own sequence.
         attributes[:id] = event.id if event.id.present?
 
         attributes
       end
 
-      def additional_attributes(event)
-        case event.entity_type
-        when 'User'
-          { user_id: event.entity_id }
-        when 'Project'
-          { project_id: event.entity_id }
-        when 'Group'
-          { group_id: event.entity_id }
-        else
-          {}
-        end
+      def scope_attributes(event)
+        column = ::AuditEvents::BuildService::ENTITY_TYPE_TO_SCOPE_COLUMN[event.entity_type.to_s]
+        return {} unless column
+
+        { column => event.entity_id }
       end
     end
   end

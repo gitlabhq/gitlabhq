@@ -1206,7 +1206,7 @@ And the more complex the solution, the more work is involved in setting up and
 maintaining it.
 
 Have a read through these other resources and feel free to
-[open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
+[open an issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new)
 to request additional material:
 
 - [Scaling GitLab](../../administration/reference_architectures/_index.md):

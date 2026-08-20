@@ -18,8 +18,8 @@ based on the users' group assignment in the SAML identity provider (IdP).
 With SAML group sync you can create a many-to-many mapping between SAML IdP groups and GitLab groups.
 
 For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP,
-you can use SAML group sync to assign `@amelia` to the `security-gitlab` group with Maintainer role,
-and to the `vulnerability` group with Reporter role.
+you can use SAML group sync to assign `@amelia` to the `security-gitlab` group with the Maintainer role,
+and to the `vulnerability` group with the Reporter role.
 
 SAML group sync does not create groups.
 You have to first [create a group](../_index.md#create-a-group), then create the mapping.

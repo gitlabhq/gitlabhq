@@ -155,10 +155,10 @@ To ensure each project uses different cookies, enable the Pages [unique domains]
 
 {{< /history >}}
 
-By default, every new project uses pages unique domains to avoid projects on the same group
-to share cookies.
+By default, every new project uses pages unique domains to avoid projects in the same group
+from sharing cookies.
 
-The project maintainer can disable this feature on:
+The project maintainer can disable this feature:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Deploy** > **Pages**.

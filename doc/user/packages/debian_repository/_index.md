@@ -91,7 +91,7 @@ Creating a Debian package is documented [on the Debian Wiki](https://wiki.debian
 
 ## Authenticate to the Debian endpoints
 
-Authentication methods differs between [distributions APIs](#authenticate-to-the-debian-distributions-apis)
+Authentication methods differ between [distributions APIs](#authenticate-to-the-debian-distributions-apis)
 and [package repositories](#authenticate-to-the-debian-package-repositories).
 
 ### Authenticate to the Debian distributions APIs

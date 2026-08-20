@@ -165,8 +165,8 @@ flow:
 The AgentComponent is the primary building block for AI-powered flows. It uses an
 LLM to:
 
-- Process inputs,
-- Make decisions based on a prompt
+- Process inputs.
+- Make decisions based on a prompt.
 - Call tools.
 - Maintain conversation history.
 - Generate outputs for downstream components.

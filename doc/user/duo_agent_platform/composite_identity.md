@@ -87,7 +87,7 @@ The composite identity is part of the workflow.
      - The service account has been added to.
 
      For example, if the service account has been added to other projects,
-     and the user has access to those projects
+     and the user has access to those projects,
      the flow can access those projects even if the user has not used the flow there before.
 
 ## Token permissions for AI Catalog flows

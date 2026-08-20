@@ -236,7 +236,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 You can create a release in the past using either the
 [Releases API](../../../api/releases/_index.md#historical-releases) or the UI. When you set
-a past `released_at` date, an **Historical release** badge is displayed next to
+a past `released_at` date, a **Historical release** badge is displayed next to
 the release tag. Due to being released in the past, [release evidence](release_evidence.md)
 is not available.
 
@@ -391,7 +391,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
   have read and download access to the project releases.
 - Users with the Guest role
   have read and download access to the project releases.
-  This includes associated Git-tag-names, release description, author information of the releases.
+  This includes associated Git-tag-names, release description, and author information of the releases.
   However, other repository-related information, such as [source code](release_fields.md#source-code) and
   [release evidence](release_evidence.md) are redacted.
 
@@ -449,14 +449,14 @@ The Guided Exploration project [Utterly Automated Software and Artifact Versioni
 - Linking the package to the release.
 - Using a tool called [GitVersion](https://gitversion.net/) to automatically determine and increment versions for complex repositories.
 
-You can copy the example project to your own group or instance for testing. More details on what other GitLab CI patterns are demonstrated are available at the project page.
+You can copy the example project to your own group or instance for testing. More details on what other GitLab CI patterns are demonstrated are available on the project page.
 
 ## Troubleshooting
 
 ### Errors when creating, updating, or deleting releases and their assets
 
 If the release is associated with a [protected tag](../protected_tags.md),
-the UI/API request might result in an authorization failures, such as:
+the UI/API request might result in authorization failures, such as:
 
 - `403 Forbidden`
 - `Something went wrong while creating a new release`
@@ -468,7 +468,7 @@ See [the release permissions](#release-permissions) for more information.
 
 ### Note about storage
 
-This feature is built on top of Git tags, so virtually no extra data is needed besides to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.
+This feature is built on top of Git tags, so virtually no extra data is needed besides what's required to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.
 
 ### GitLab CLI version requirement
 

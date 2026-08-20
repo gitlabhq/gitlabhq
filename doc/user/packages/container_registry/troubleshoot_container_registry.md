@@ -12,7 +12,7 @@ You can find [additional troubleshooting information](../../../administration/pa
 
 ## Migrating OCI container images to GitLab container registry
 
-Migrating container images to the GitLab registry is not supported, but [epic](https://gitlab.com/groups/gitlab-org/-/epics/5210) proposes to change this behavior.
+Migrating container images to the GitLab registry is not supported, but [epic 5210](https://gitlab.com/groups/gitlab-org/-/epics/5210) proposes to change this behavior.
 
 You can use third-party tools to migrate container images. For example, [skopeo](https://github.com/containers/skopeo), can [copy container images](https://github.com/containers/skopeo#copying-images) between various storage mechanisms. You can use skopeo to copy from container registries, container storage backends, local directories, and local OCI-layout directories to the GitLab container registry.
 
@@ -107,7 +107,7 @@ See this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18383) for detail
 
 ## `Failed to pull image` messages
 
-You might receive a [`Failed to pull image'](../../../ci/debugging.md#failed-to-pull-image-messages)
+You might receive a [`Failed to pull image`](../../../ci/debugging.md#failed-to-pull-image-messages)
 error message when a CI/CD job is unable to pull a container image from a project with a limited
 [CI/CD job token scope](../../../ci/jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects).
 

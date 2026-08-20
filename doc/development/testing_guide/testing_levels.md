@@ -520,6 +520,10 @@ Learn more in the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/
 
 EE-specific tests follow the same organization, but under the `ee/spec` folder.
 
+When a spec file has an EE mirror, use the CE/EE shared-examples convention to
+avoid duplicating core behavior tests. For details, see
+[CE/EE shared-examples convention](best_practices.md#ceee-shared-examples-convention).
+
 ## How to test at the correct level?
 
 As with many things in life, deciding what to test at each level of testing is a

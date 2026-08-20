@@ -183,7 +183,7 @@ To set up Keycloak as your identity provider:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
-1. Follow the instructions to [create a SAML client in Keycloack](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
+1. Follow the instructions to [create a SAML client in Keycloak](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
 
 The following GitLab settings correspond to the Keycloak fields.
 
@@ -395,7 +395,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 - If an account does not already exist with the same email address, create a new account automatically. GitLab tries to match both the primary and secondary email addresses.
 - If an account already exists with the same email address, redirect the user to the sign-in page to:
   - Create a new account with another email address.
-  - Sign-in to their existing account to link the SAML identity.
+  - Sign in to their existing account to link the SAML identity.
 
 ### Provisioning behavior with restricted access
 
@@ -710,7 +710,7 @@ SSO enforcement for web activity has the following effects when enabled:
 
 - For groups, users cannot share a project in the group outside the top-level
   group, even if the project is forked.
-- Git activity originating from CI/CD jobs do not have the SSO check enforced.
+- Git activity originating from CI/CD jobs does not have the SSO check enforced.
 - Credentials that are not tied to regular users (for example, project and group
   access tokens, service accounts, and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the

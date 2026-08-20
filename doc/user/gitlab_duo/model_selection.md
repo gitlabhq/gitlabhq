@@ -146,7 +146,7 @@ When selecting models other than the default, you might encounter the following 
 
 ### Model is not available
 
-If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model without notifying the user to maintain optimal performance and reliability.
+If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model to maintain optimal performance and reliability, without notifying you.
 
 If you have selected a specific model for a GitLab Duo AI-native feature, and that model is not available, there is no automatic fallback. The feature that uses this model is unavailable.
 

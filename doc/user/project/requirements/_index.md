@@ -56,7 +56,7 @@ To create a requirement:
 
 ![requirement create view](img/requirement_create_v13_5.png)
 
-You can see the newly created requirement on the top of the list, with the requirements
+You can see the newly created requirement at the top of the list, with the requirements
 list being sorted by creation date, in descending order.
 
 ## View a requirement
@@ -85,7 +85,7 @@ Prerequisites:
 To edit a requirement:
 
 1. From the requirements list, select the **Edit** icon ({{< icon name="pencil" >}}).
-1. Update the title and description in text input field. You can also mark a
+1. Update the title and description in the text input field. You can also mark a
    requirement as satisfied in the edit form by using the checkbox **Satisfied**.
 1. Select **Save changes**.
 

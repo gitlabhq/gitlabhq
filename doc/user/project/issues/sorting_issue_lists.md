@@ -117,7 +117,7 @@ title in this order:
 {{< /details >}}
 
 When you sort by **Health**, the issue list changes to sort by the
-[health status](managing_issues.md#health-status) of the issues
+[health status](managing_issues.md#health-status) of the issues.
 When in descending order, the issues are shown in the following order:
 
 1. **At risk** issues

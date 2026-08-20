@@ -118,7 +118,7 @@ Support is limited to the first container in the first pod of your environment.
 
 ## Troubleshooting
 
-Before the deployment jobs starts, GitLab creates the following specifically for
+Before the deployment job starts, GitLab creates the following specifically for
 the deployment job:
 
 - A namespace.

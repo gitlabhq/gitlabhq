@@ -26,7 +26,7 @@ To submit a bug:
 ### Feature proposals
 
 To create a feature proposal, open an issue in the issue tracker using the
-[**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed).
+[**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed).
 
 In order to help track feature proposals, we use the
 [`~"type::feature"`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=type::feature) label.

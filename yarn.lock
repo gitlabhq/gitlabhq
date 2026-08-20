@@ -1013,7 +1013,7 @@
   dependencies:
     core-js-pure "^3.48.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.10", "@babel/runtime@^7.21.0", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.13.10", "@babel/runtime@^7.21.0", "@babel/runtime@^7.8.4":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.7.tgz#12022450c45a4da6d8d8287b18a4ff2ddb23f768"
   integrity sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==
@@ -1097,19 +1097,6 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@csstools/utilities/-/utilities-1.0.0.tgz#42f3c213f2fb929324d465684ab9f46a0febd4bb"
   integrity sha512-tAgvZQe/t2mlvpNosA4+CkMiZ2azISW5WPAcdSalZlEjQvUfghHxfQcrCiK/7/CrfAWVxyM88kGFYO82heIGDg==
-
-"@cubejs-client/core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-1.0.0.tgz#4cdd5d84e58c691f58eb94d2a908e0179117ea69"
-  integrity sha512-QuOrQgfu23Aswp2aluaDEZTCsv8VGHW7dJAAGChCWbOA638DKFU1pRlOvEDXhYVsQxUnUcT38hBk/VH614dOQw==
-  dependencies:
-    "@babel/runtime" "^7.1.2"
-    core-js "^3.6.5"
-    cross-fetch "^3.0.2"
-    dayjs "^1.10.4"
-    ramda "^0.27.2"
-    url-search-params-polyfill "^7.0.0"
-    uuid "^8.3.2"
 
 "@discoveryjs/json-ext@0.5.7", "@discoveryjs/json-ext@^0.5.0":
   version "0.5.7"
@@ -1495,7 +1482,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/jest-metrics-exporter/-/jest-metrics-exporter-0.2.0.tgz#392b96d3925f3ced3b522d1e14ba2feb70dcbdd3"
   integrity sha512-gwbNvjUSoFFx4ox5C0wqY/3zzzJrNupU+z5jjLSL5KK4hJPpO9NMtXWYqDl3vmY8wkCUo76IbK1d5tB6KZDW/Q==
 
-"@gitlab/noop@^1.0.1":
+"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1", jsonify@^0.0.1, "jsonify@npm:@gitlab/noop@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -6915,7 +6902,7 @@ core-js-pure@^3.48.0:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.49.0.tgz#ff8436b7251a3832f5fdbbe3e10f7f2e58e51fb1"
   integrity sha512-XM4RFka59xATyJv/cS3O3Kml72hQXUeGRuuTmMYFxwzc9/7C8OYTaIR/Ji+Yt8DXzsFLNhat15cE/JP15HrCgw==
 
-core-js@^3.29.1, core-js@^3.45.1, core-js@^3.6.5:
+core-js@^3.29.1, core-js@^3.45.1:
   version "3.45.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.45.1.tgz#5810e04a1b4e9bc5ddaa4dd12e702ff67300634d"
   integrity sha512-L4NPsJlCfZsPeXukyzHFlg/i7IIVwHSItR0wg0FLNqYClJ4MQYTYLbC7EkjKYRLZF2iof2MUgN0EGy7MdQFChg==
@@ -7030,13 +7017,6 @@ cropperjs@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.6.1.tgz#fd132021d93b824b1b0f2c2c3b763419fb792d89"
   integrity sha512-F4wsi+XkDHCOMrHMYjrTEE4QBOrsHHN5/2VsVAaRq8P7E5z7xQpT75S+f/9WikmBEailas3+yo+6zPIomW+NOA==
-
-cross-fetch@^3.0.2:
-  version "3.1.8"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.8.tgz#0327eba65fd68a7d119f8fb2bf9334a1a7956f82"
-  integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
-  dependencies:
-    node-fetch "^2.6.12"
 
 cross-inspect@1.0.1:
   version "1.0.1"
@@ -7741,7 +7721,7 @@ dateformat@^5.0.1:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-5.0.1.tgz#60a27a2deb339f888ba4532f533e25ac73ca3d19"
   integrity sha512-DrcKxOW2am3mtqoJwBTK3OlWcF0QSk1p8diEWwpu3Mf//VdURD7XVaeOV738JvcaBiFfm9o2fisoMhiJH0aYxg==
 
-dayjs@^1.10.4, dayjs@^1.11.20:
+dayjs@^1.11.20:
   version "1.11.23"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.23.tgz#b0a363506dde5f36cf5075e42ebe8115165a8c79"
   integrity sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==
@@ -10725,11 +10705,6 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
-
 jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
@@ -11322,11 +11297,6 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
-
-jsonify@^0.0.1, "jsonify@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jstimezonedetect@1.0.7:
   version "1.0.7"
@@ -12355,7 +12325,7 @@ node-fetch-commonjs@^3.3.2:
     node-domexception "^1.0.0"
     web-streams-polyfill "^3.0.3"
 
-node-fetch@^2.6.12, node-fetch@^2.6.7:
+node-fetch@^2.6.7:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
@@ -13627,11 +13597,6 @@ ramda-adjunct@^5.0.0, ramda-adjunct@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-5.1.0.tgz#c1281100922b03e74b1535cb9c966628697c5cc1"
   integrity sha512-8qCpl2vZBXEJyNbi4zqcgdfHtcdsWjOGbiNSEnEBrM6Y0OKOT8UxJbIVGm1TIcjaSu2MxaWcgtsNlKlCk7o7qg==
-
-ramda@^0.27.2:
-  version "0.27.2"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.2.tgz#84463226f7f36dc33592f6f4ed6374c48306c3f1"
-  integrity sha512-SbiLPU40JuJniHexQSAgad32hfwd+DRUdwF2PlVuI5RZD0/vahUco7R8vD86J/tcEKKF9vZrUVwgtmGCqlCKyA==
 
 ramda@^0.30.1, ramda@~0.30.0:
   version "0.30.1"
@@ -15933,11 +15898,6 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
-
-url-search-params-polyfill@^7.0.0:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/url-search-params-polyfill/-/url-search-params-polyfill-7.0.1.tgz#b900cd9a0d9d2ff757d500135256f2344879cbff"
-  integrity sha512-bAw7L2E+jn9XHG5P9zrPnHdO0yJub4U+yXJOdpcpkr7OBd9T8oll4lUos0iSGRcDvfZoLUKfx9a6aNmIhJ4+mQ==
 
 url@^0.11.0:
   version "0.11.3"

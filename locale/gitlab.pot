@@ -8051,6 +8051,12 @@ msgstr ""
 msgid "AgentArtifacts|Goal"
 msgstr ""
 
+msgid "AgentArtifacts|Human author ID"
+msgstr ""
+
+msgid "AgentArtifacts|Human author name"
+msgstr ""
+
 msgid "AgentArtifacts|IP address"
 msgstr ""
 
@@ -23476,6 +23482,9 @@ msgstr ""
 msgid "ContinuousDeployment|GitLab Agent"
 msgstr ""
 
+msgid "ContinuousDeployment|Grid view"
+msgstr ""
+
 msgid "ContinuousDeployment|Health"
 msgstr ""
 
@@ -23507,6 +23516,9 @@ msgid "ContinuousDeployment|Last deployed %{time}"
 msgstr ""
 
 msgid "ContinuousDeployment|Links"
+msgstr ""
+
+msgid "ContinuousDeployment|List view"
 msgstr ""
 
 msgid "ContinuousDeployment|Name cannot exceed %{maxLength} characters."
@@ -29977,6 +29989,9 @@ msgstr ""
 msgid "DuoAgenticChat|Collaborate with AI agents to accomplish tasks and answer questions, or use a multi-agent flow to solve a complex problem."
 msgstr ""
 
+msgid "DuoAgenticChat|Connection lost"
+msgstr ""
+
 msgid "DuoAgenticChat|Current page"
 msgstr ""
 
@@ -30017,6 +30032,9 @@ msgid "DuoAgenticChat|GitLab Duo is disabled for this group. %{linkStart}Learn m
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo is disabled for this project. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo will resume once reconnected."
 msgstr ""
 
 msgid "DuoAgenticChat|Go to Duo settings"
@@ -30104,6 +30122,12 @@ msgid "DuoAgenticChat|Purchase more credits or turn off the Agentic toggle to st
 msgstr ""
 
 msgid "DuoAgenticChat|Ready when you are"
+msgstr ""
+
+msgid "DuoAgenticChat|Reconnect"
+msgstr ""
+
+msgid "DuoAgenticChat|Reconnect to continue this conversation."
 msgstr ""
 
 msgid "DuoAgenticChat|Repurchase Agent Platform"
@@ -48898,15 +48922,6 @@ msgstr ""
 msgid "MergeRequestsTab|Merged"
 msgstr ""
 
-msgid "MergeRequests|Assign all code owners as reviewers"
-msgstr ""
-
-msgid "MergeRequests|Assign every code owner defined in your CODEOWNERS file."
-msgstr ""
-
-msgid "MergeRequests|Assign reviewers with GitLab Duo Agent Platform"
-msgstr ""
-
 msgid "MergeRequests|Automatic reviewer assignment"
 msgstr ""
 
@@ -48934,9 +48949,6 @@ msgstr ""
 msgid "MergeRequests|Create issue to resolve thread"
 msgstr ""
 
-msgid "MergeRequests|Do not assign reviewers automatically"
-msgstr ""
-
 msgid "MergeRequests|Draft"
 msgstr ""
 
@@ -48955,9 +48967,6 @@ msgstr ""
 msgid "MergeRequests|Merge request revert failed"
 msgstr ""
 
-msgid "MergeRequests|Recommends the minimum number of reviewers required to satisfy each approval rule."
-msgstr ""
-
 msgid "MergeRequests|Reference copied"
 msgstr ""
 
@@ -48968,9 +48977,6 @@ msgid "MergeRequests|Requires that merge checks pass."
 msgstr ""
 
 msgid "MergeRequests|Resolve thread"
-msgstr ""
-
-msgid "MergeRequests|Reviewer assignment strategy"
 msgstr ""
 
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
@@ -85073,6 +85079,9 @@ msgstr ""
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
+msgid "UsageBilling|Credit caps"
+msgstr ""
+
 msgid "UsageBilling|Credits"
 msgstr ""
 
@@ -88918,12 +88927,6 @@ msgstr ""
 msgid "Vulnerability|High"
 msgstr ""
 
-msgid "Vulnerability|How the component determines what an authenticated user or service is allowed to access or do. This includes the roles, permissions, or privilege level required to reach the code."
-msgstr ""
-
-msgid "Vulnerability|How the component verifies the identity of a user or service before allowing access. This indicates whether the vulnerable code requires authentication and what authentication model is used."
-msgstr ""
-
 msgid "Vulnerability|Identifier"
 msgstr ""
 
@@ -88946,6 +88949,15 @@ msgid "Vulnerability|Image: %{linkStart}%{image}%{linkEnd}"
 msgstr ""
 
 msgid "Vulnerability|Inactive secret"
+msgstr ""
+
+msgid "Vulnerability|Indicates whether elevated privileges are required to exploit the vulnerable code."
+msgstr ""
+
+msgid "Vulnerability|Indicates whether the component handles data that could cause harm if exposed or misused, like personal information, credentials, secrets, tokens, payment data, or health data."
+msgstr ""
+
+msgid "Vulnerability|Indicates whether the component verifies the identity of a user or service before allowing access, and therefore whether the vulnerable code requires authentication."
 msgstr ""
 
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
@@ -89195,9 +89207,6 @@ msgid "Vulnerability|What is a validity check?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
-msgstr ""
-
-msgid "Vulnerability|Whether the component handles data that could cause harm if exposed or misused, such as personal information, credentials, secrets, tokens, payment data, or health data."
 msgstr ""
 
 msgid "Vulnerability|circular dependency"
@@ -95476,6 +95485,9 @@ msgstr ""
 msgid "is not a descendant of the Group owning the template"
 msgstr ""
 
+msgid "is not a predefined compliance control."
+msgstr ""
+
 msgid "is not a recognized deploy driver."
 msgstr ""
 
@@ -95510,9 +95522,6 @@ msgid "is not one of"
 msgstr ""
 
 msgid "is not valid YAML: %{message}"
-msgstr ""
-
-msgid "is not valid."
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."

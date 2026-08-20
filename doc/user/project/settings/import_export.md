@@ -101,7 +101,7 @@ other users. Supplementary comments mentioning original authors are:
 
 You can add or remove data from export files. For example, you can:
 
-- Manually add users public emails to the `project_members.ndjson` file.
+- Manually add users' public emails to the `project_members.ndjson` file.
 - Trim CI pipelines by removing lines from the `ci_pipelines.ndjson` file.
 
 To edit a project export file:
@@ -402,7 +402,7 @@ Professional Services team.
 
 The maximum import file size depends on whether you import to GitLab Self-Managed or GitLab.com:
 
-- If importing to a GitLab Self-Managed instance, you can import a import file of any size. Administrators can change
+- If importing to a GitLab Self-Managed instance, you can import an import file of any size. Administrators can change
   this behavior using either:
   - The `max_import_size` option in the [Application settings API](../../../api/settings.md#update-application-settings).
   - The [**Admin** area](../../../administration/settings/account_and_limit_settings.md).

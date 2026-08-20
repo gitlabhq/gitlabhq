@@ -5,7 +5,6 @@ API/DescriptionSuccessResponse:
     - 'ee/lib/api/admin/search/zoekt.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
     - 'ee/lib/api/ai/llm/git_command.rb'
-    - 'ee/lib/api/analytics/product_analytics.rb'
     - 'ee/lib/api/chat.rb'
     - 'ee/lib/api/compliance_external_controls.rb'
     - 'ee/lib/api/dependency_list_exports.rb'

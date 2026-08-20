@@ -19,9 +19,9 @@ it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
 > [!note]
-> Certificates are not required to add to your custom
-> (sub)domain on your GitLab Pages project, though they are
-> highly recommendable.
+> You don't have to add certificates to your custom
+> (sub)domain on your GitLab Pages project, though it is
+> highly recommended.
 
 ## Importance of HTTPS
 
@@ -71,7 +71,7 @@ for instance.
 
 Some certificate authorities offer free certificates, aiming to make the internet more secure
 to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
-which issues certificates trusted by most of browsers, it's open
+which issues certificates trusted by most browsers, is open
 source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_encrypt_integration.md) to enable HTTPS on your custom domain.
 
 Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/products/ssl/),

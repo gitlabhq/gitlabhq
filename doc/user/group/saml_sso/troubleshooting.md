@@ -45,10 +45,10 @@ To generate a SAML Response:
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
 1. For GitLab.com Groups:
    - Go to the GitLab single sign-on URL for the group.
-   - Select **Authorize** or attempt to sign
+   - Select **Authorize** or attempt to sign in.
 1. For GitLab Self-Managed instance:
-   - Go to the instance home page
-   - Select the `SAML Login` button to sign in
+   - Go to the instance home page.
+   - Select the `SAML Login` button to sign in.
 1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](_index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
@@ -297,7 +297,7 @@ you must set `attribute_statements` in the SAML configuration to
 
 You might get an error that states `SAML authentication failed: SAML NameID is missing from your SAML response. Please contact your administrator.`
 
-This issue occurs when you try sign into GitLab using Group SSO, but your SAML response did not include a `NameID`.
+This issue occurs when you try to sign into GitLab using Group SSO, but your SAML response did not include a `NameID`.
 
 To resolve this issue:
 
@@ -600,7 +600,7 @@ Ensure the SAML identity provider is configured to send a [supported mail attrib
 
 ```xml
 <Attribute Name="email">
-  <AttributeValue>user@example.com‹/AttributeValue>
+  <AttributeValue>user@example.com</AttributeValue>
 </Attribute>
 ```
 
@@ -608,7 +608,7 @@ Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/200
 
 ```xml
 <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress">
-  <AttributeValue>user@example.com‹/AttributeValue>
+  <AttributeValue>user@example.com</AttributeValue>
 </Attribute>
 ```
 

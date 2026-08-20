@@ -7,9 +7,7 @@ module Gitlab
     # Compiles one entry of a policy's authored `rules`, a plain jsonb hash, into a
     # Rego program in the `package governance` namespace exposing `violation`.
     class RuleTranspiler
-      PACKAGE_NAME = "governance"
-
-      RULE_PRELUDE = "package #{PACKAGE_NAME}".freeze
+      include RegoPackage
 
       # Nothing bounds the size of an authored rule, so a refusal names a value only
       # up to this much of it.
@@ -52,20 +50,12 @@ module Gitlab
 
         invalid!("custom rule requires Rego source in value") if unusable_string?(value)
 
-        declared_package = declared_package_in(value)
+        declared_package = declared_in(value)
         unless declared_package == PACKAGE_NAME
           invalid!("custom rule must declare `package #{PACKAGE_NAME}`, found #{reported_value(declared_package)}")
         end
 
         value
-      end
-
-      def declared_package_in(rego_source)
-        first_statement = rego_source.each_line.lazy
-          .map { |line| line.sub(/#.*/, "").strip }
-          .find { |line| !line.empty? }
-
-        first_statement.to_s[/\Apackage[ \t]+(\S+)\z/, 1]
       end
 
       def environment_statements

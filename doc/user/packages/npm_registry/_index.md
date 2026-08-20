@@ -310,7 +310,7 @@ If you plan to install a package from a project or group,
 then you do not have to adhere to the naming convention.
 
 If you plan to install a package from an instance, then you must name your package
-with a scope. Scoped packages begin with a `@` have the format of
+with a scope. Scoped packages begin with a `@` and have the format of
 `@owner/package-name`. You can set up the scope for your package in the `.npmrc` file and by using the `publishConfig`
 option in the `package.json`.
 

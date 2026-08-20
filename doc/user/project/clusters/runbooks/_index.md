@@ -25,7 +25,7 @@ Historically, runbooks took the form of a decision tree or a detailed
 step-by-step guide depending on the condition or system.
 
 Modern implementations have introduced the concept of an "executable
-runbooks", where, along with a well-defined process, operators can execute
+runbook", where, along with a well-defined process, operators can execute
 pre-written code blocks or database queries against a given environment.
 
 ## Executable Runbooks

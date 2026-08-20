@@ -107,11 +107,11 @@ module Gitlab
 
       def log_events_and_stream(events)
         log_authentication_event
-        new_audit_events = log_to_new_tables(events, @name)
+        persisted_events = persist_events(events, @name)
 
-        # Prefer the persisted scoped events so the file log carries the id column.
-        # Falls back to the in-memory events when the scoped write failed.
-        log_to_file_and_stream(new_audit_events.presence || events)
+        # Prefer the persisted events so the file log carries the id column.
+        # Falls back to the in-memory events when the write failed.
+        log_to_file_and_stream(persisted_events.presence || events)
       end
 
       def log_to_file_and_stream(events)

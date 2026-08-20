@@ -123,9 +123,9 @@ Consider these factors when selecting pilot projects:
 - Select projects with teams open to learning new security practices.
 - Avoid starting with mission-critical applications.
 
-### Security application security testing order
+### Application security testing order
 
-Introduce security application security testing in the following order. This balances value and ease
+Introduce application security testing in the following order. This balances value and ease
 of deployment.
 
 - Dependency scanning
@@ -274,7 +274,7 @@ For more details, see
 
 After a successful pilot, expand application security testing to all target projects.
 
-Before starting on the rollout phase consider the following:
+Before starting on the rollout phase, consider the following:
 
 - Evaluate the results of the pilot phase.
 - Document lessons learned and best practices.
@@ -317,7 +317,7 @@ Use policy features to efficiently scale your security implementation.
 Use policy inheritance to maximize effectiveness while also minimizing the number of policies to be
 managed.
 
-Consider the scenario in which you have a top-level group named Finance which contains subgroups A,
+Consider the scenario in which you have a top-level group named Finance, which contains subgroups A,
 B, and C. You want to run dependency scanning and secret detection on all projects in the Finance
 group. For each subgroup you want to run different sets of application security testing tools.
 
@@ -358,7 +358,7 @@ For more details, see [Security policies](../policies/_index.md).
 ### Scale gradually
 
 Scale the rollout gradually, first to the pilot projects and incrementally to all target projects.
-When applying policies to all groups and projects, create awareness to all project stakeholders as
+When applying policies to all groups and projects, create awareness among all project stakeholders as
 this can impact changes in pipelines and merge request workflows. For example, notify stakeholders
 
 Implement your security policies in phases:

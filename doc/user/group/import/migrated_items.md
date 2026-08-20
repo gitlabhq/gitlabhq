@@ -92,7 +92,7 @@ In addition, users and any [personal access tokens](../../profile/personal_acces
 If you choose to migrate projects when you [select groups to migrate](direct_transfer_migrations.md#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.
 
-The project items that are migrated depends on the version of GitLab you use on the destination. To determine if a
+The project items that are migrated depend on the version of GitLab you use on the destination. To determine if a
 specific project item is migrated:
 
 1. Check the [`projects/stage.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/bulk_imports/projects/stage.rb)

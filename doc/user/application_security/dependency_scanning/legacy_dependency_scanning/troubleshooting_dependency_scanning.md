@@ -332,7 +332,7 @@ If you experience this situation, ensure your repository contains a
 or a file indicating that a supported file is generated at runtime. Consider whether such files can
 be added to your repository to trigger the dependency scanning job.
 
-If you believe that your repository does contain such files and the job is still not triggered, [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) with the following information:
+If you believe that your repository does contain such files and the job is still not triggered, [open an issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new) with the following information:
 
 - The language and build tool you use.
 - What kind of lockfile you provide and where it gets generated.

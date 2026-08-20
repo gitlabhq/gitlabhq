@@ -18,17 +18,22 @@ function buildAliasMap() {
   const { CONTEXT_ALIASES } = cjsRequire(
     path.join(ROOT_PATH, 'config/helpers/context_aliases_shared'),
   );
-  const aliases = { ...webpackConfig.resolve.alias };
+  // The plain map has no CONTEXT_ALIASES overrides -- it's what an un-infected
+  // importer actually resolves against in the real build. Kept alongside the
+  // merged map so the resolver can compute both resolutions for specifiers that
+  // CONTEXT_ALIASES redirects (see `createResolver`'s `plainAliasMap` doc).
+  const plainAliasMap = { ...webpackConfig.resolve.alias };
+  const aliasMap = { ...plainAliasMap };
   // Context aliases represent "vue3 mode" resolution — the infection plugin
   // applies these at runtime.  Merge them as exact-match aliases ($ suffix)
   // so the scanner follows the same resolution paths.
   for (const [key, target] of Object.entries(CONTEXT_ALIASES)) {
-    aliases[`${key}$`] = target;
+    aliasMap[`${key}$`] = target;
   }
-  return aliases;
+  return { aliasMap, plainAliasMap };
 }
 
-const aliasMap = buildAliasMap();
+const { aliasMap, plainAliasMap } = buildAliasMap();
 
 // Single shared resolver instance, used both for entrypoint discovery and
 // (transparently, inside `analyze()`) for the graph walk.
@@ -405,6 +410,7 @@ async function runAnalysis() {
     entrypoints,
     infectionSpecifiers: INFECTION_SPECIFIERS,
     aliasMap,
+    plainAliasMap,
     fallbackResolve: (specifier, fromDir) => {
       try {
         return cjsRequire.resolve(specifier, { paths: [fromDir] });

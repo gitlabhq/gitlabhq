@@ -97,7 +97,7 @@ issue you are commenting on is confidential.
 
 There is also an indicator in the sidebar denoting confidentiality.
 
-Every change from regular to confidential and vice versa, is indicated by a
+Every change from regular to confidential and vice versa is indicated by a
 system note in the issue's comments, for example:
 
 - {{< icon name="eye-slash" >}} Jo Garcia made the issue confidential 5 minutes ago

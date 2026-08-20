@@ -13,7 +13,7 @@ description: Epic progress, timelines, milestones, and goals.
 
 {{< /details >}}
 
-Epics in a group containing a start date or due date can be visualized in a form
+Epics in a group containing a start date or due date can be visualized in the form
 of a timeline.
 
 The roadmap in GitLab provides a high-level overview of the planned work and progress of epics and
@@ -143,7 +143,7 @@ Roadmap provides these date range options, each with a predetermined timeline du
 
 ### Layout presets
 
-Depending on selected [date range preset](#date-range-presets), the roadmap supports
+Depending on the selected [date range preset](#date-range-presets), the roadmap supports
 these layout presets:
 
 - **Quarters**: Available only when the **Within 3 years** date range is selected.
@@ -155,7 +155,7 @@ these layout presets:
 ![Timeline header showing quarters and months for 6 quarters, highlighting the time scale.](img/roadmap_timeline_quarters_v11_10.png)
 
 In the **Quarters** preset, roadmap shows epics and milestones which have start or due dates
-**falling within** currently selected date range preset,
+**falling within** the currently selected date range preset,
 where **today**
 is shown by the vertical red line in the timeline. The sub-headers underneath the quarter name on
 the timeline header represent the month of the quarter.
@@ -165,7 +165,7 @@ the timeline header represent the month of the quarter.
 ![Timeline header showing months with weekly date markers beneath each month.](img/roadmap_timeline_months_v11_10.png)
 
 In the **Months** preset, roadmap shows epics and milestones which have start or
-due dates **falling within** or **going through** currently selected date range
+due dates **falling within** or **going through** the currently selected date range
 preset, where **today** is shown by the vertical red line in the timeline. The
 sub-headers underneath the month name on the timeline header represent the date
 on the start day (Sunday) of the week. This preset is selected by default.
@@ -175,7 +175,7 @@ on the start day (Sunday) of the week. This preset is selected by default.
 ![The Weeks date range preset on a roadmap.](img/roadmap_timeline_weeks_v11_11.png)
 
 In the **Weeks** preset, roadmap shows epics and milestones which have start or due dates **falling within**
-or **going through** currently selected date range preset, where **today**
+or **going through** the currently selected date range preset, where **today**
 is shown by the vertical red line in the timeline. The sub-headers underneath the week name on
 the timeline header represent the days of the week.
 

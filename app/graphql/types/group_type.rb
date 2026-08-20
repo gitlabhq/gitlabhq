@@ -19,6 +19,7 @@ module Types
     field :web_url,
       type: GraphQL::Types::String,
       null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Web URL of the group.'
 
     field :web_path,

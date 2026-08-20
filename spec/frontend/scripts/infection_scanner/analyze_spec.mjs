@@ -363,6 +363,66 @@ describe('infection scanner', () => {
       fallbackResolver.resolveModule('vue', from);
       expect(called).toBe(false);
     });
+
+    describe('dual resolution for context-aliased specifiers', () => {
+      const dualResolutionRoot = fixture('context_alias_dual_resolution');
+      const forkTarget = fixture('context_alias_dual_resolution', 'vue3_fork', 'widget_vue3.js');
+      const plainTarget = fixture(
+        'context_alias_dual_resolution',
+        'node_modules',
+        'fake-vue-widget',
+        'index.js',
+      );
+      const from = fixture('context_alias_dual_resolution', 'entry.js');
+
+      it('returns both the aliased and plain targets when contextAliasKeys includes the specifier', () => {
+        const dualResolver = createResolver({
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+          plainAliasMap: {},
+          contextAliasKeys: new Set(['fake-vue-widget']),
+          rootPath: dualResolutionRoot,
+        });
+
+        const all = dualResolver.resolveModuleAll('fake-vue-widget', from);
+        expect(all).toContain(forkTarget);
+        expect(all).toContain(plainTarget);
+      });
+
+      it('returns only the aliased target when contextAliasKeys is the default empty set', () => {
+        const aliasedOnlyResolver = createResolver({
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+          plainAliasMap: {},
+          rootPath: dualResolutionRoot,
+        });
+
+        expect(aliasedOnlyResolver.resolveModuleAll('fake-vue-widget', from)).toEqual([
+          forkTarget,
+        ]);
+      });
+
+      it('returns only the aliased target when plainAliasMap is omitted (defaults to aliasMap)', () => {
+        const noPlainMapResolver = createResolver({
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+          contextAliasKeys: new Set(['fake-vue-widget']),
+          rootPath: dualResolutionRoot,
+        });
+
+        expect(noPlainMapResolver.resolveModuleAll('fake-vue-widget', from)).toEqual([
+          forkTarget,
+        ]);
+      });
+
+      it('resolveModule (singular) still returns the aliased target, not the plain one', () => {
+        const dualResolver = createResolver({
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+          plainAliasMap: {},
+          contextAliasKeys: new Set(['fake-vue-widget']),
+          rootPath: dualResolutionRoot,
+        });
+
+        expect(dualResolver.resolveModule('fake-vue-widget', from)).toBe(forkTarget);
+      });
+    });
   });
 
   describe('analyze', () => {
@@ -469,6 +529,63 @@ describe('infection scanner', () => {
 
       it('does NOT infect shared clean libraries', () => {
         expect(result.graph[fixture('app_root_barrier', 'shared.js')].infected).toBe(false);
+      });
+    });
+
+    describe('context-aliased specifier dual resolution', () => {
+      // Mirrors the real vendor/vue-virtual-scroller incident: CONTEXT_ALIASES
+      // redirects this specifier unconditionally here, but the real build only
+      // redirects within an infected subtree. Without dual resolution, the plain
+      // package's files never get a graph entry, and createIsInfectable() throws
+      // for a genuinely un-infected importer at build time.
+      const rootPath = fixture('context_alias_dual_resolution');
+      const entry = fixture('context_alias_dual_resolution', 'entry.js');
+      const forkTarget = fixture('context_alias_dual_resolution', 'vue3_fork', 'widget_vue3.js');
+      const plainTarget = fixture(
+        'context_alias_dual_resolution',
+        'node_modules',
+        'fake-vue-widget',
+        'index.js',
+      );
+
+      it('gives the plain resolution a real graph node marked not infected', async () => {
+        const result = await analyze({
+          rootPath,
+          entrypoints: { main: entry },
+          infectionSpecifiers: ['fake-vue-widget', 'vue'],
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+          plainAliasMap: {},
+        });
+
+        expect(result.graph[forkTarget]).toBeDefined();
+        expect(result.graph[plainTarget]).toBeDefined();
+        expect(result.graph[plainTarget].infected).toBe(false);
+      });
+
+      it('keeps the aliased target as the propagation edge, unaffected by the plain alternative', async () => {
+        const result = await analyze({
+          rootPath,
+          entrypoints: { main: entry },
+          infectionSpecifiers: ['fake-vue-widget', 'vue'],
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+          plainAliasMap: {},
+        });
+
+        expect(result.graph[entry].infected).toBe(true);
+        const edge = result.graph[entry].imports.find((imp) => imp.source === 'fake-vue-widget');
+        expect(edge.resolved).toBe(forkTarget);
+      });
+
+      it('does not add the plain resolution when plainAliasMap is omitted', async () => {
+        const result = await analyze({
+          rootPath,
+          entrypoints: { main: entry },
+          infectionSpecifiers: ['fake-vue-widget', 'vue'],
+          aliasMap: { 'fake-vue-widget$': forkTarget },
+        });
+
+        expect(result.graph[forkTarget]).toBeDefined();
+        expect(result.graph[plainTarget]).toBeUndefined();
       });
     });
   });

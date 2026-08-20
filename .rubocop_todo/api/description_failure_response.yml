@@ -6,7 +6,6 @@ API/DescriptionFailureResponse:
     - 'ee/lib/api/ai/llm/git_command.rb'
     - 'ee/lib/api/analytics/code_review_analytics.rb'
     - 'ee/lib/api/analytics/group_activity_analytics.rb'
-    - 'ee/lib/api/analytics/product_analytics.rb'
     - 'ee/lib/api/analytics/project_deployment_frequency.rb'
     - 'ee/lib/api/audit_events.rb'
     - 'ee/lib/api/chat.rb'

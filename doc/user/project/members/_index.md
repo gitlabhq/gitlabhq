@@ -195,7 +195,7 @@ To view users pending promotion:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Manage** > **Members**.
-1. Select **Role promotions** tab.
+1. Select the **Role promotions** tab.
 
 If the **Role promotions** tab is not displayed, the project has no pending promotions.
 

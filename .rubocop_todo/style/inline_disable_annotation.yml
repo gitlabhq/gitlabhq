@@ -1360,7 +1360,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/compliance_management/violations/approved_by_committer.rb'
     - 'ee/lib/gitlab/contribution_analytics/data_formatter.rb'
     - 'ee/lib/gitlab/contribution_analytics/postgresql_data_collector.rb'
-    - 'ee/lib/gitlab/cube_js/data_transformer.rb'
     - 'ee/lib/gitlab/elastic/search_results.rb'
     - 'ee/lib/gitlab/geo/geo_node_status_check.rb'
     - 'ee/lib/gitlab/geo/log_cursor/daemon.rb'

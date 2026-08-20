@@ -110,29 +110,15 @@ module API
     end
 
     before_validation do
-      next if ::Current.organization_assigned
-
       endpoint_class = request.env[Grape::Env::API_ENDPOINT]&.options&.dig(:for)
       next if endpoint_class.respond_to?(:skip_global_organization_setup?) &&
         endpoint_class.skip_global_organization_setup?
 
-      begin
-        ::Current.organization = Gitlab::Current::Organization.new(
-          params: {},
-          user: -> { safe_find_organization_actor_from_sources },
-          rack_env: request.env
-        ).organization
-      rescue ::Current::OrganizationAlreadyAssignedError
-        # The earlier check is the canonical guard, but some tests stub
-        # Current.organization_assigned to return false while the underlying
-        # attribute is in fact set. Treat the resulting double-assignment as
-        # a no-op rather than letting it abort the request.
-      end
-
-      # Mirror what set_current_organization in lib/api/helpers.rb does after
-      # assigning, so requests to an organization in maintenance mode are
-      # rejected even when this hook short-circuits the per-endpoint helper.
-      check_organization_maintenance_mode!
+      # safe_find_organization_actor_from_sources is passed instead of the helper's
+      # current_user default because current_user raises on invalid tokens and
+      # has side effects (load-balancer sticking, auditing) that must not run
+      # for every request this early.
+      set_current_organization(user: -> { safe_find_organization_actor_from_sources })
     end
 
     before do

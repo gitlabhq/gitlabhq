@@ -520,7 +520,7 @@ The chart shows data for the last 500 workflow items.
 1. In the left sidebar, select **Analyze** > **Value stream analytics**.
 1. Above the **Filter results** box, select a stage:
    - To view a summary of the cycle time for all stages, select **Overview**.
-   - To view the cycle time for specific stage, select a stage.
+   - To view the cycle time for a specific stage, select a stage.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
    1. Select a parameter.
@@ -591,7 +591,7 @@ Access permissions for value stream analytics depend on the project type.
 
 Value stream analytics offers features for projects and groups, with availability varying by tier.
 
-- In the Free tier, value stream analytics does not aggregate data. It queries the database directly where the date range filter is applied to the creation date of issues and merge request. You can view value stream analytics with pre-defined default stages.
+- In the Free tier, value stream analytics does not aggregate data. It queries the database directly where the date range filter is applied to the creation date of issues and merge requests. You can view value stream analytics with pre-defined default stages.
 - In the Premium and Ultimate tier, value stream analytics aggregates data and applies the date range filter on the end event. You can also create, edit, and delete value streams.
 
 | Feature                                              | Group (Premium, Ultimate)                                                                        | Project (Premium, Ultimate)        | Project (Free) |

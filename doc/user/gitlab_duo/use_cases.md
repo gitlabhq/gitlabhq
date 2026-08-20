@@ -14,7 +14,7 @@ Learn how to:
 - Solve security vulnerabilities.
 
 > [!note]
-> If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+> If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work. However, the experience may be degraded.
 
 ## Use GitLab Duo to solve development challenges
 
@@ -43,8 +43,8 @@ The challenge is to create a CLI tool for querying the GitLab REST API.
   // Connect to a REST API and print the response
   ```
 
-- The generated source code might need an explanation: Use the code task `/explain`
-  to get an insight how the REST API calls work.
+- The generated source code might need an explanation. Use the code task `/explain`
+  to get insight into how the REST API calls work.
 
 After the source code is generated from a Code Suggestions comment,
 you need to configure CI/CD.
@@ -179,7 +179,7 @@ Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Refactor C++ fu
   ```markdown
   /refactor into class with public functions, and private path/db attributes. Inherit from the base class DB
 
-  /refactor into a base class with pure virtual functions called DB. Remote the SQLite specific parts.
+  /refactor into a base class with pure virtual functions called DB. Remove the SQLite specific parts.
   ```
 
 - GitLab Duo Chat also guides with constructor overloading, object initialization, and optimized memory management with shared pointers.
@@ -654,7 +654,7 @@ The `solution/` directory provides two possible solutions.
 
 GitLab Duo usage focuses on contributing to the GitLab codebase, and how customers can contribute more efficiently.
 
-The GitLab codebase is large, and requires to understand sometimes complex algorithms or application specific implementations.
+The GitLab codebase is large, and requires you to understand sometimes complex algorithms or application-specific implementations.
 
 ### Contribute to frontend: Profile Settings
 

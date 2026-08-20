@@ -27,7 +27,7 @@ You can flag a merge request as a draft in several ways:
   select **Merge request actions** ({{< icon name="ellipsis_v" >}}), then **Mark as draft**.
 - Creating or editing a merge request: You can do either of the following:
   - Add `[Draft]`, `Draft:` or `(Draft)` to the beginning of the merge request's title.
-  - Select **Mark as draft** below the **Title** field
+  - Select **Mark as draft** below the **Title** field.
 - Commenting in an existing merge request: Add the
   [`/draft` quick action](../quick_actions.md#draft)
   in a comment. To mark a merge request as ready, use the [`/ready`](../quick_actions.md#ready) quick action.

@@ -70,7 +70,7 @@ In this example:
 - `@database-team` owns all items in the `Database` section except
   `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
 - A merge request that modifies `model/db/CHANGELOG.txt` would require three approvals: one from each
-  of the `@general-approvers`,`@docs-team`, and `@database-team` groups.
+  of the `@general-approvers`, `@docs-team`, and `@database-team` groups.
 
 Compare this behavior to when you use only [default owners for sections](reference.md#set-default-code-owner-for-a-section),
 when specific entries in a section override the section default.
@@ -147,7 +147,7 @@ For example, to require two approvals for the `[Documentation]` section:
 *.rb @dev-team
 ```
 
-The `Documentation` Code Owners section in the Approvals area displays two approvals are required:
+The `Documentation` Code Owners section in the Approvals area displays that two approvals are required:
 
 ![MR widget - Multiple Approval Code Owners sections](img/multi_approvals_code_owners_sections_v15_9.png)
 
@@ -167,7 +167,7 @@ graph TD
 In this example:
 
 - Parent group X (`group-x`) owns Project A.
-- Parent group X also contains a subgroup, Subgroup Y. (`group-x/subgroup-y`)
+- Parent group X also contains a subgroup, Subgroup Y (`group-x/subgroup-y`).
 - Subgroup Y owns Project B.
 
 The eligible Code Owners are:

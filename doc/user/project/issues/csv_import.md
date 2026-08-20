@@ -45,7 +45,7 @@ You must have the Planner, Reporter, Security Manager, Developer, Maintainer, or
 
 - Consider importing a test file containing only a few issues. There is no way to undo a large import without using the GitLab API.
 - Ensure your CSV file meets the [file format](#csv-file-format) requirements.
-- If your CSV includes the milestone header, ensure all unique milestones titles in the file already exist in the project or its parent groups.
+- If your CSV includes the milestone header, ensure all unique milestone titles in the file already exist in the project or its parent groups.
 
 ## Import the file
 

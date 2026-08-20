@@ -123,7 +123,7 @@ Request a new review. If the error persists, contact your administrator.
 Code Review Flow might miss context when a merge request contains many large changed files.
 
 This can occur when the pre-scan results exceed the
-[file and context limits](_index.md#file-and-context-limits) and the data is truncated before the review
+[file and context limits](_index.md#file-and-context-limits) and the data is truncated before the review.
 
 To improve the review:
 

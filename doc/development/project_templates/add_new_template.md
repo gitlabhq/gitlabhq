@@ -127,7 +127,7 @@ To contribute a change:
 
 1. If your merge request gets accepted:
 
-   - Either [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
+   - Either [open an issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new)
      to ask for it to get updated.
    - Or update the vendored template and open a merge request:
 

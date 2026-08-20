@@ -1955,7 +1955,7 @@ Do not use words to describe the icon:
 
 When the button doesn't have any hover text, describe the icon.
 Follow up by creating a
-[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Bug)
+[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Bug)
 to add hover text to the button to improve accessibility.
 
 - Avoid: `Select {{</* icon name="ellipsis_v" */>}}.`

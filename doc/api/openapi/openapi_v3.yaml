@@ -5471,87 +5471,6 @@ paths:
           - daily
           nullable: true
         in: query
-  "/api/v4/projects/{project_id}/product_analytics/request/load":
-    post:
-      operationId: postApiV4ProjectsProjectIdProductAnalyticsRequestLoad
-      summary: Create a Cube query request
-      description: Creates a query request to the Cube API for product analytics and
-        generates an access token. Requires the `product_analytics_features` flag
-        to be enabled.
-      tags:
-      - Analytics
-      - Internal operations
-      responses:
-        '201':
-          description: Created
-        '404':
-          description: Not Found
-        '400':
-          description: Bad Request
-      parameters:
-      - name: project_id
-        required: true
-        description: ID of the project to query
-        schema:
-          type: integer
-        in: path
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/RequestBody_8afad96b15f2"
-  "/api/v4/projects/{project_id}/product_analytics/request/dry-run":
-    post:
-      operationId: postApiV4ProjectsProjectIdProductAnalyticsRequestDryRun
-      summary: Create a Cube query request
-      description: Creates a query request to the Cube API and generates an access
-        token.
-      tags:
-      - Analytics
-      - Internal operations
-      responses:
-        '201':
-          description: Created
-        '404':
-          description: Not Found
-        '400':
-          description: Bad Request
-      parameters:
-      - name: project_id
-        required: true
-        description: ID of the project to query
-        schema:
-          type: integer
-        in: path
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/RequestBody_8afad96b15f2"
-  "/api/v4/projects/{project_id}/product_analytics/request/meta":
-    post:
-      operationId: postApiV4ProjectsProjectIdProductAnalyticsRequestMeta
-      summary: Get metadata for analytics.
-      description: Retrieves metadata for analytics from the cube installation
-      tags:
-      - Analytics
-      - Internal operations
-      responses:
-        '201':
-          description: Created
-        '404':
-          description: Not Found
-        '400':
-          description: Bad Request
-      parameters:
-      - name: project_id
-        required: true
-        description: ID of the project to get meta data
-        schema:
-          type: integer
-        in: path
   "/api/v4/analytics/group_activity/issues_count":
     get:
       operationId: getApiV4AnalyticsGroupActivityIssuesCount
@@ -34614,7 +34533,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d7d326502b8a"
+              "$ref": "#/components/schemas/RequestBody_6d60e453a420"
     delete:
       operationId: deleteApiV4ProjectsId
       summary: Delete a project
@@ -97842,25 +97761,6 @@ components:
                 description: The number of approvals required for this rule
                 nullable: true
           nullable: true
-    RequestBody_8afad96b15f2:
-      type: object
-      properties:
-        query:
-          type: object
-          description: 'A valid Cube query. See reference documentation: https://cube.dev/docs/query-format'
-          nullable: true
-        queryType:
-          type: string
-          default: multi
-          description: The query type. Currently only "multi" is supported.
-          nullable: true
-        include_token:
-          type: boolean
-          description: Whether to include the access token in the response. (Only
-            required for funnel generation.)
-          nullable: true
-      required:
-      - query
     RequestBody_a188d7937e44:
       type: object
       properties:
@@ -107266,7 +107166,7 @@ components:
           nullable: true
       required:
       - name
-    RequestBody_d7d326502b8a:
+    RequestBody_6d60e453a420:
       type: object
       properties:
         name:
@@ -107952,9 +107852,8 @@ components:
           enum:
           - disabled
           - code_owners
-          - dap_powered
           description: Strategy used to automatically assign reviewers to merge requests.
-            One of `disabled`, `code_owners`, or `dap_powered`.
+            One of `disabled` or `code_owners`.
           nullable: true
     RequestBody_8ac230459ce6:
       type: object

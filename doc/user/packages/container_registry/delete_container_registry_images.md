@@ -126,7 +126,7 @@ delete_image:
 ```
 
 > [!note]
-> You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
+> You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releases), then update
 > the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
 
 ## Use a cleanup policy

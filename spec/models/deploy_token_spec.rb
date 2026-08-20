@@ -84,11 +84,15 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
   end
 
   describe '#bot?' do
+    let(:deploy_token) { build(:deploy_token) }
+
     it { expect(deploy_token.bot?).to be_truthy }
   end
 
   describe '#ensure_at_least_one_scope' do
     context 'with at least one scope' do
+      let(:deploy_token) { build(:deploy_token) }
+
       it { is_expected.to be_valid }
     end
 
@@ -278,7 +282,6 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     context 'when the token is of group type' do
-      let(:group) { create(:group) }
       let(:deploy_token) { create(:deploy_token, :group) }
 
       it 'returns the relevant holder token' do
@@ -461,7 +464,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
   end
 
   describe '.gitlab_deploy_token' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     subject { project.deploy_tokens.gitlab_deploy_token }
 
@@ -505,6 +508,8 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
   end
 
   describe '.impersonated?' do
+    let(:deploy_token) { build(:deploy_token) }
+
     it 'returns false' do
       expect(subject.impersonated?).to be(false)
     end
@@ -581,21 +586,21 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     let_it_be(:project) { create(:project) }
 
     context 'for seven_days interval' do
-      let!(:token_in_range) do
+      let_it_be(:token_in_range) do
         create(:deploy_token, :project, projects: [project], expires_at: 5.days.from_now.iso8601)
       end
 
-      let!(:token_out_of_range) do
+      let_it_be(:token_out_of_range) do
         create(:deploy_token, :project, projects: [project], expires_at: 10.days.from_now.iso8601)
       end
 
-      let!(:already_notified_token) do
+      let_it_be(:already_notified_token) do
         create(:deploy_token, :project, projects: [project],
           expires_at: 3.days.from_now.iso8601,
           seven_days_notification_sent_at: 1.day.ago)
       end
 
-      let!(:revoked_token) do
+      let_it_be(:revoked_token) do
         create(:deploy_token, :project, :revoked, projects: [project], expires_at: 4.days.from_now.iso8601)
       end
 
@@ -610,7 +615,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     context 'with custom date range' do
-      let!(:token) do
+      let_it_be(:token) do
         create(:deploy_token, :project, projects: [project], expires_at: 15.days.from_now.iso8601)
       end
 
@@ -627,14 +632,11 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
   end
 
   describe 'scopes' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group_deploy_token) { create(:deploy_token, :group) }
+    let_it_be(:project_deploy_token) { create(:deploy_token, :project, projects: [project]) }
+
     describe '.project_token' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:group_deploy_token) { create(:deploy_token, :group) }
-
-      let!(:project_deploy_token) do
-        create(:deploy_token, :project, projects: [project])
-      end
-
       it 'returns only project type tokens' do
         expect(described_class.project_token).to include(project_deploy_token)
         expect(described_class.project_token).not_to include(group_deploy_token)
@@ -642,13 +644,6 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     describe '.group_token' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:group_deploy_token) { create(:deploy_token, :group) }
-
-      let!(:project_deploy_token) do
-        create(:deploy_token, :project, projects: [project])
-      end
-
       it 'returns only group type tokens' do
         expect(described_class.group_token).to include(group_deploy_token)
         expect(described_class.group_token).not_to include(project_deploy_token)
@@ -656,8 +651,8 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     describe '.order_expires_at_asc' do
-      let!(:token_expires_later) { create(:deploy_token, expires_at: 10.days.from_now.iso8601) }
-      let!(:token_expires_sooner) { create(:deploy_token, expires_at: 5.days.from_now.iso8601) }
+      let_it_be(:token_expires_later) { create(:deploy_token, expires_at: 10.days.from_now.iso8601) }
+      let_it_be(:token_expires_sooner) { create(:deploy_token, expires_at: 5.days.from_now.iso8601) }
 
       it 'orders tokens by expires_at in ascending order' do
         result = described_class.order_expires_at_asc.to_a

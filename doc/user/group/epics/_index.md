@@ -45,7 +45,7 @@ The possible relationships between epics and other items are:
 
 - An epic is the parent of one or more issues.
 - An epic is the parent of one or more [child epics](../../work_items/child_items.md#work-with-multi-level-hierarchies). Ultimate only.
-- An epic is [linked](linked_epics.md) to one or more task, objective, or key result.
+- An epic is [linked](linked_epics.md) to one or more tasks, objectives, or key results.
 
 Example set of relationships:
 

@@ -115,7 +115,7 @@ comprehensive text searches and analysis.
 If you don't see the event you want in any of the epics, you can either:
 
 - Use the audit event proposal issue template to
-  [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Audit%20Event%20Proposal) to request it.
+  [create an issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Audit%20Event%20Proposal) to request it.
 - Contribute to GitLab and add the event.
 
 ## AI audit events

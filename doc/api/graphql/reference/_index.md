@@ -75539,7 +75539,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementscontrolinput-controltype"></a>`controlType` | [`String`](#string) | Type of the compliance control. |
-| <a id="compliancerequirementscontrolinput-expression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
+| <a id="compliancerequirementscontrolinput-expression"></a>`expression` | [`String`](#string) | Expression of the compliance control. Derived from the name of the control when omitted for an internal control. |
 | <a id="compliancerequirementscontrolinput-externalcontrolname"></a>`externalControlName` | [`String`](#string) | Name of the external control. |
 | <a id="compliancerequirementscontrolinput-externalurl"></a>`externalUrl` | [`String`](#string) | URL of the external control. |
 | <a id="compliancerequirementscontrolinput-name"></a>`name` | [`String!`](#string) | New name for the compliance requirement control. |

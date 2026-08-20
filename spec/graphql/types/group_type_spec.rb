@@ -42,6 +42,26 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
+  describe '.authorization_scopes' do
+    # Inherited from NamespaceType. Without it the type-level check rejects an
+    # ai_workflows token before any field resolves, making the field-level
+    # scopes below unreachable.
+    it 'allows ai_workflows scope token' do
+      expect(described_class.authorization_scopes).to include(:ai_workflows)
+    end
+  end
+
+  describe 'fields with :ai_workflows scope' do
+    # These fields are redefined by Types::Namespaces::GroupInterface or
+    # GroupType itself, so the scopes declared on NamespaceType do not apply.
+    %w[id name fullPath webUrl description projects].each do |field_name|
+      it "includes :ai_workflows scope for the #{field_name} field" do
+        field = described_class.fields[field_name]
+        expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+      end
+    end
+  end
+
   describe 'boards field' do
     subject { described_class.fields['boards'] }
 

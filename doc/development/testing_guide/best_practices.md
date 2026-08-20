@@ -2378,6 +2378,72 @@ Guidelines:
   in one place yields large aggregate savings across the suite. See
   [Optimize factory usage](#optimize-factory-usage).
 
+#### CE/EE shared-examples convention
+
+When a spec file has an EE mirror (a matching file under `ee/spec/`), reuse the
+shared examples that cover core behavior instead of duplicating them. Define
+those shared examples in `spec/support/shared_examples/`, then:
+
+- The CE spec uses `it_behaves_like` for the cases that exist in CE.
+- The EE mirror uses `it_behaves_like` for the EE-only cases, wrapping
+  license-gated ones in `stub_licensed_features`.
+
+`spec/support/shared_examples/` is the right home because `spec/spec_helper.rb`
+requires every file under `spec/support/`, and also requires
+`ee/spec/spec_helper.rb` when `Gitlab.ee?`. Both CE and EE runs therefore load
+the CE support tree, and EE runs additionally load `ee/spec/support/`.
+
+Do not define a shared example in one spec file and use it from another. RSpec
+loads only the spec files in the current run, and a spec file never requires
+another spec file, so the shared example is unresolved whenever the defining file
+isn't part of the run: `bundle exec rspec ee/spec/requests/api/notes_spec.rb` on
+its own fails with `Could not find shared examples`. A `shared_examples` call
+inside an example group is scoped to that group as well, so it isn't visible to a
+`describe` in another file even when both files are loaded.
+
+For example, `spec/support/shared_examples/requests/api/notes_shared_examples.rb`
+defines the core endpoint behavior:
+
+```ruby
+RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
+  # core endpoint behavior
+end
+```
+
+`spec/requests/api/notes_spec.rb` uses it for the noteables available in CE:
+
+```ruby
+it_behaves_like 'noteable API', 'projects', 'wiki_pages', 'id' do
+  let(:parent) { project }
+  let(:noteable) { wiki_page_meta }
+  let(:note) { wiki_page_meta_note }
+end
+```
+
+And `ee/spec/requests/api/notes_spec.rb` uses the same shared example for an
+EE-only noteable:
+
+```ruby
+context 'when noteable is a WikiPage::Meta for a group wiki' do
+  before do
+    stub_licensed_features(group_wikis: true)
+  end
+
+  it_behaves_like 'noteable API', 'groups', 'wiki_pages', 'id' do
+    let(:parent) { group }
+    let(:noteable) { wiki_page_meta }
+    let(:note) { wiki_page_meta_note }
+  end
+end
+```
+
+When you move an existing shared example into `spec/support/shared_examples/`,
+check that no other top-level `RSpec.shared_examples` already uses the name. RSpec
+doesn't fail on a duplicate: it prints a warning and the later definition silently
+overwrites the earlier one. This matters most for names that a CE spec and its EE
+mirror both define today, because those definitions are group-scoped and do not
+collide as written. Rename one side before promoting either to a support file.
+
 ### Helpers
 
 Helpers are usually modules that provide some methods to hide the complexity of
