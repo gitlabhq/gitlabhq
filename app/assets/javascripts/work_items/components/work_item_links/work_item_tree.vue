@@ -389,7 +389,15 @@ export default {
         return;
       }
 
-      const params = JSON.parse(atob(queryParam));
+      // `show` is shared with the contextual panels, which store a plain panel key rather than
+      // an encoded child reference. Ignore any value that is not ours to decode.
+      let params;
+      try {
+        params = JSON.parse(atob(queryParam));
+      } catch {
+        return;
+      }
+
       if (params.id) {
         const child = this.children.find((i) => getIdFromGraphQLId(i.id) === params.id);
         if (child) {

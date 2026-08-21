@@ -62,11 +62,11 @@ secret_detection:
 ```
 
 > [!note]
-> The analyzer reports only high confidence findings. Medium and low confidence findings
-> are intentionally filtered out to minimize noise in the Vulnerability Report. If an
+> The analyzer reports only high-confidence findings. Medium- and low-confidence findings
+> are intentionally filtered out to minimize noise in the vulnerability report. If an
 > expected secret doesn't appear in the results, it was likely flagged at medium or low confidence.
 > This behavior will remain until the analyzer supports configuring the confidence level for scans
-> and the Vulnerability Report UI supports filtering findings by confidence level. A downloadable artifact
+> and the vulnerability report UI supports filtering findings by confidence level. A downloadable artifact
 > for all findings is proposed in [issue 611174](https://gitlab.com/gitlab-org/gitlab/-/work_items/611174).
 
 ### Run the analyzer for the first time

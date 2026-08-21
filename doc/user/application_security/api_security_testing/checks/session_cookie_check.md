@@ -31,9 +31,9 @@ to view another user's account or perform a fraudulent transaction.
 - The Secure attribute for sensitive cookies in HTTPS sessions is not set, which
   could cause the user agent to send those cookies in plaintext over an HTTP
   session.
-- A session related cookie was identified being used on an insecure transport
+- A session-related cookie was identified being used on an insecure transport
   protocol. Insecure transport protocols are those that do not make use of
-  SSL/TLS to secure the connection. Examples of such protocols are 'http'.
+  SSL/TLS to secure the connection. An example of such a protocol is 'http'.
 - Insufficient Session Expiration occurs when a Web application permits an
   attacker to reuse old session credentials or session IDs for authorization.
   Insufficient Session Expiration increases a website's exposure to attacks that

@@ -3475,7 +3475,7 @@ msgstr ""
 msgid "AICatalog|This %{itemType} is already enabled."
 msgstr ""
 
-msgid "AICatalog|This %{itemType} is private and can only be enabled in the project it was created in or its top-level group. Duplicate the agent to use the same configuration in other projects."
+msgid "AICatalog|This %{itemType} is private and can only be enabled in its managing project: %{projectName}. Duplicate the %{itemType} to use the same configuration in other projects."
 msgstr ""
 
 msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
@@ -51849,9 +51849,6 @@ msgstr ""
 msgid "No prioritized labels yet!"
 msgstr ""
 
-msgid "No profile applied"
-msgstr ""
-
 msgid "No project found"
 msgstr ""
 
@@ -55824,11 +55821,6 @@ msgstr ""
 msgid "Organizations API rate limits"
 msgstr ""
 
-msgid "Organization|%d top-level group"
-msgid_plural "Organization|%d top-level groups"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Organization|%{linkStart}Organizations%{linkEnd} are a top-level container to hold your groups and projects."
 msgstr ""
 
@@ -55842,6 +55834,9 @@ msgid "Organization|%{organizationName} is your organization's home. Manage Arti
 msgstr ""
 
 msgid "Organization|%{organizationName} is your organization's home. Manage settings from the sidebar. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "Organization|* Name, URL, and admin roles can all be updated later from your Organization page."
 msgstr ""
 
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
@@ -55944,9 +55939,6 @@ msgid "Organization|Delete the organization"
 msgstr ""
 
 msgid "Organization|Drop groups here"
-msgstr ""
-
-msgid "Organization|Editable later from your Organization page"
 msgstr ""
 
 msgid "Organization|Get started with organizations"
@@ -90609,40 +90601,13 @@ msgstr ""
 msgid "WorkItemCustomField|Use on"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Approval requested"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Approved"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Auto-generated"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Awaiting %{name}"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Decided"
-msgstr ""
-
 msgid "WorkItemDecisionLog|Decision log"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Pending"
+msgid "WorkItemDecisionLog|Decisions show up here once an open question gets answered or a comment is marked as a decision. Each one keeps the background behind it and a link back to where it was made."
 msgstr ""
 
-msgid "WorkItemDecisionLog|Question resolved"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Rejected"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Requirement added"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Scope decision"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Selected"
+msgid "WorkItemDecisionLog|No decisions yet"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|An answer is required to submit"

@@ -249,6 +249,7 @@ export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 
 export const WORK_ITEM_DETAIL_PANEL = 'work-item-detail';
 export const AGENT_PLAN_PANEL = 'agent-plan';
+export const DECISION_LOG_PANEL = 'decision-log';
 export const ROUTES = {
   index: 'planningView',
   workItem: 'workItem',

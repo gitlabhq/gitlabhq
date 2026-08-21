@@ -587,6 +587,17 @@ describe('WorkItemTree', () => {
       expect(wrapper.emitted('select-child')).toBeUndefined();
     });
 
+    // A contextual panel puts its own key in `show`, which is not an encoded child reference.
+    it.each(['workplan', 'decision-log'])(
+      'does not emit `select-child` event when the URL requests the %s panel',
+      async (panel) => {
+        setWindowLocation(`?show=${panel}`);
+        await createComponent();
+
+        expect(wrapper.emitted('select-child')).toBeUndefined();
+      },
+    );
+
     it('emits `select-child` event with child work item id on window `popstate` event', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       await createComponent();

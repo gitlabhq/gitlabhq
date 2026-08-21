@@ -10,6 +10,7 @@ import Tracking from '~/tracking';
 
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
   NEW_WORK_ITEM_GID,
   STATE_CLOSED,
@@ -243,6 +244,13 @@ export const getDefaultHierarchyChildrenCount = () => {
   const { children_count } = queryToObject(window.location.search);
   return Number(children_count) || DEFAULT_PAGE_SIZE_CHILD_ITEMS;
 };
+
+/**
+ * Returns the panel the current URL asks for, or `undefined` when it asks for none.
+ * A panel key doubles as its `?show=` value, so callers compare the result to their own key.
+ */
+export const getRequestedPanel = () =>
+  queryToObject(window.location.search)?.[DETAIL_VIEW_QUERY_PARAM_NAME];
 
 export const formatAncestors = (workItem) =>
   findHierarchyWidgetAncestors(workItem).map((ancestor) => ({

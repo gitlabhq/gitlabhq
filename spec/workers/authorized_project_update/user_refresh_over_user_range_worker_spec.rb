@@ -12,11 +12,6 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_
 
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
-  it 'defers on database health signal for project_authorizations' do
-    expect(described_class.database_health_check_attrs).to include(
-      { gitlab_schema: :gitlab_main, tables: [:project_authorizations], delay_by: 5.minutes })
-  end
-
   describe '#perform' do
     context 'when checking if project authorization update is required' do
       it 'checks if a project_authorization refresh is needed for each of the users' do

@@ -5163,6 +5163,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
 
+    let(:fork) { fork_project(project) }
+    let(:branch_pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
+    let(:fork_pipeline) { create(:ci_empty_pipeline, status: 'created', project: fork, ref: 'master') }
+
     shared_examples 'a method that returns all merge requests for a given pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: pipeline_project, ref: 'master') }
       let(:merge_request) do
@@ -5267,84 +5271,49 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    context 'when ci_skip_fork_mr_lookup_for_non_forks is disabled' do
-      before do
-        stub_feature_flags(ci_skip_fork_mr_lookup_for_non_forks: false)
-      end
+    it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+      let(:pipeline_project) { project }
+    end
 
+    context 'for a fork' do
       it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-        let(:pipeline_project) { project }
-      end
-
-      context 'for a fork' do
-        let(:fork) { fork_project(project) }
-
-        it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-          let(:pipeline_project) { fork }
-        end
+        let(:pipeline_project) { fork }
       end
     end
 
-    context 'when ci_skip_fork_mr_lookup_for_non_forks is enabled' do
-      # The flag is enabled by default in the test environment.
-      let(:fork) { fork_project(project) }
-      let(:branch_pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
-      let(:fork_pipeline) { create(:ci_empty_pipeline, status: 'created', project: fork, ref: 'master') }
+    it 'does not issue a from_fork pluck query for a non-fork project' do
+      expect do
+        branch_pipeline.all_merge_requests.to_a
+      end.not_to make_queries_matching(/source_project_id <> target_project_id/)
+    end
 
-      it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-        let(:pipeline_project) { project }
+    it 'still issues the fork target lookup for a fork project' do
+      expect do
+        fork_pipeline.all_merge_requests.to_a
+      end.to make_queries_matching(/SELECT DISTINCT "merge_requests"\."target_project_id"/)
+    end
+
+    context 'for a project unlinked from its fork network' do
+      let(:unlinked_fork) { fork_project(project) }
+      let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
+
+      let(:historical_merge_request) do
+        create(:merge_request, source_project: unlinked_fork, target_project: project, source_branch: 'master')
       end
 
-      context 'for a fork' do
-        it_behaves_like 'a method that returns all merge requests for a given pipeline' do
-          let(:pipeline_project) { fork }
-        end
+      before do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: historical_merge_request.merge_request_diff,
+          sha: pipeline.sha
+        )
+
+        Projects::UnlinkForkService.new(unlinked_fork, project.first_owner).execute
+        unlinked_fork.reload
       end
 
-      it 'does not issue a from_fork pluck query for a non-fork project' do
-        expect do
-          branch_pipeline.all_merge_requests.to_a
-        end.not_to make_queries_matching(/source_project_id <> target_project_id/)
-      end
-
-      it 'still issues the fork target lookup for a fork project' do
-        expect do
-          fork_pipeline.all_merge_requests.to_a
-        end.to make_queries_matching(/SELECT DISTINCT "merge_requests"\."target_project_id"/)
-      end
-
-      context 'for a project unlinked from its fork network' do
-        let(:unlinked_fork) { fork_project(project) }
-        let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
-
-        let(:historical_merge_request) do
-          create(:merge_request, source_project: unlinked_fork, target_project: project, source_branch: 'master')
-        end
-
-        before do
-          create(
-            :merge_request_diff_commit,
-            merge_request_diff: historical_merge_request.merge_request_diff,
-            sha: pipeline.sha
-          )
-
-          Projects::UnlinkForkService.new(unlinked_fork, project.first_owner).execute
-          unlinked_fork.reload
-        end
-
-        it 'no longer returns the historical cross-project merge request' do
-          expect(pipeline.all_merge_requests).to be_empty
-        end
-
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(ci_skip_fork_mr_lookup_for_non_forks: false)
-          end
-
-          it 'returns the historical cross-project merge request' do
-            expect(pipeline.all_merge_requests).to eq([historical_merge_request])
-          end
-        end
+      it 'does not return the historical cross-project merge request' do
+        expect(pipeline.all_merge_requests).to be_empty
       end
     end
   end

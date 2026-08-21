@@ -1283,11 +1283,7 @@ module Ci
         else
           merge_requests_for_source_project = MergeRequest.where(source_project_id: project_id, source_branch: ref)
           target_project_ids =
-            if Feature.enabled?(:ci_skip_fork_mr_lookup_for_non_forks, project)
-              project.forked? ? merge_requests_for_source_project.from_fork.distinct.pluck(:target_project_id) : []
-            else
-              merge_requests_for_source_project.from_fork.pluck(:target_project_id)
-            end
+            project.forked? ? merge_requests_for_source_project.from_fork.distinct.pluck(:target_project_id) : []
 
           target_project_ids << project_id
 

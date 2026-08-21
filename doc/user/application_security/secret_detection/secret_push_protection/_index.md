@@ -39,7 +39,7 @@ the push is blocked.
 <!-- To edit the diagram, use either Draw.io or the VS Code extension "Draw.io Integration" -->
 ![A flowchart showing how secret protection can block a push](img/spp_workflow_v17_9.drawio.svg)
 
-When a push is blocked, GitLab prompts a message that includes:
+When a push is blocked, GitLab displays a message that includes:
 
 - Commit ID containing the secret.
 - Filename and line containing the secret.
@@ -120,7 +120,7 @@ You can also enable secret push protection for all projects in a group [with the
 
 Secret push protection does not block a secret when:
 
-- You used the skip secret push protection option when you pushed
+- You use the skip secret push protection option when you push
   the commits.
 - The secret is excluded from secret push protection.
 - The secret is in a path defined as an [exclusion](../exclusions.md).
@@ -129,7 +129,7 @@ Secret push protection does not check a file in a commit when:
 
 - The file is a binary file.
 - The file or diff patch is larger than 1 MiB.
-- The file was renamed, deleted, or moved without changes to the content.
+- The file is renamed, deleted, or moved without changes to the content.
 - The content of the file is identical to the content of another file in the source code.
 - The file is contained in the initial push that created the repository.
 - The push contains more than 350,000 changed lines in total.
@@ -215,7 +215,7 @@ False positives can significantly impact developer productivity and lead to secu
 To reduce false positives:
 
 - [Configure exclusions](../exclusions.md) strategically:
-  - Create path-based exclusions for test directories, documentation, and third party dependencies.
+  - Create path-based exclusions for test directories, documentation, and third-party dependencies.
   - Use pattern-based exclusions for known false positive patterns specific to your codebase.
   - Document your exclusion rules and review them regularly.
 - Create standards for placeholder values and test credentials,
@@ -291,7 +291,7 @@ secret push protection is skipped. Audit event details include:
 - Target branch. (Introduced in GitLab 17.4)
 - Commits that skipped secret push protection. (Introduced in GitLab 17.9)
 
-If pipeline secret detection is enabled, the content of all commits are
+If pipeline secret detection is enabled, the content of all commits is
 scanned after they are pushed to the repository.
 
 To skip secret push protection for all commits in a push, either:

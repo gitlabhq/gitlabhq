@@ -11,7 +11,7 @@ Checks to see if debug mode is enabled in various frameworks such as Flask and A
 
 ## Remediation
 
-The Flask or ASP .NET framework was identified with debug mode enabled. This allows an attacker the ability to download any file on the file system and other capabilities. This is a high severity issue that is easy for an attacker to exploit.
+The Flask or ASP.NET framework was identified with debug mode enabled. This allows an attacker the ability to download any file on the file system and other capabilities. This is a high severity issue that is easy for an attacker to exploit.
 
 ## Links
 

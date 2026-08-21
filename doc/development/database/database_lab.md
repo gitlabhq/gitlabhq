@@ -37,6 +37,8 @@ To access the DLE's services, you can:
 - Perform query testing in the Postgres.ai web console.
   Employees access both services with their GitLab Google account. Query testing
   provides `EXPLAIN` (analyze, buffers) plans for queries executed there.
+- Perform query testing from your terminal with the
+  [Postgres.ai CLI](#use-the-postgresai-cli). You do not need an access request.
 - Migration testing by triggering a job as a part of a merge request.
 - Direct `psql` access to DLE instead of a production replica. Available to authorized users only.
   To request `psql` access, file an [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/work_items/new?description_template=Database_Lab_Access_Request).
@@ -55,6 +57,65 @@ You can access Database Lab's query analysis features either:
 
 - In [the Postgres.ai web console](https://console.postgres.ai/gitlab/joe-instances).
   Shows only the commands you run.
+- From your terminal, with the [Postgres.ai CLI](#use-the-postgresai-cli).
+
+#### Use the Postgres.ai CLI
+
+With the [Postgres.ai CLI](https://postgres.ai/docs/reference-guides/postgresai-cli-reference),
+you can run Joe commands from your terminal without an access request or SSH configuration.
+Use the CLI when you generate many query plans at once,
+or when AI agents and scripts generate the plans for you.
+
+To set up the CLI:
+
+1. Install the [`postgresai` npm package](https://www.npmjs.com/package/postgresai):
+
+   ```shell
+   npm install -g postgresai
+   ```
+
+   To run the CLI without a global install, replace `postgresai` with `npx postgresai@latest`
+   in the following commands.
+
+1. Sign in to your Postgres.ai account:
+
+   ```shell
+   postgresai login
+   ```
+
+   This command opens a browser window.
+   Sign in with Google and select the GitLab organization.
+
+1. Optional. List the projects you can run Joe commands against, then set a default:
+
+   ```shell
+   postgresai projects
+   postgresai set-default-project gitlab-production-main
+   ```
+
+To run a Joe command, pass it to `postgresai joe` together with the project name:
+
+```shell
+postgresai joe explain "SELECT * FROM application_settings" --project gitlab-production-main
+```
+
+The CLI waits up to 25 seconds (the default budget) for the command to complete.
+If the command takes longer, the CLI prints a command ID instead.
+To fetch the result later, use the ID:
+
+```shell
+postgresai joe result <command-id>
+```
+
+If you set a default project, you can omit the `--project` option.
+
+The `explain`, `exec`, and `reset` commands described in the following sections
+work the same way in the CLI as in the web console.
+For `\d` meta-commands, use `postgresai joe describe <object_name>` instead.
+Add the `--json` flag to get machine-readable output for scripts and AI agents.
+
+The npm package also installs the shorter `pgai` command, which is unrelated to the
+[`pgai` Ruby gem](#simplified-access-through-pgai-ruby-gem).
 
 #### Generate query plans
 

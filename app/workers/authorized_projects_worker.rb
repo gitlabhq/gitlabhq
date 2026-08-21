@@ -15,8 +15,6 @@ class AuthorizedProjectsWorker
 
   deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
-  defer_on_database_health_signal :gitlab_main, [:project_authorizations], 1.minute
-
   idempotent!
 
   def perform(user_id)

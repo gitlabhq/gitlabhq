@@ -1,7 +1,7 @@
 <script>
-import { GlAttributeList, GlAlert } from '@gitlab/ui';
+import { GlAttributeList, GlAlert, GlTruncate } from '@gitlab/ui';
 import { intersectionWith } from 'lodash-es';
-import { s__, n__ } from '~/locale';
+import { s__ } from '~/locale';
 import { relativePathToAbsolute, getBaseURL, joinPaths } from '~/lib/utils/url_utility';
 import { organizationsPath } from '~/lib/utils/path_helpers/organizations';
 import BaseStep from './base_step.vue';
@@ -20,6 +20,7 @@ export default {
   components: {
     GlAttributeList,
     GlAlert,
+    GlTruncate,
     BaseStep,
   },
   inheritAttrs: false,
@@ -61,11 +62,7 @@ export default {
       const tlgs = {
         type: LIST_ITEM_TYPE_TLGS,
         label: s__('Organization|Top-level groups'),
-        text: n__(
-          'Organization|%d top-level group',
-          'Organization|%d top-level groups',
-          this.organization.groups.nodes.length,
-        ),
+        text: this.organization.groups.nodes.map((group) => group.fullName).join(', '),
       };
 
       const admins = {
@@ -100,16 +97,22 @@ export default {
         >
           <template #description="{ item }">
             <template
-              v-if="[$options.LIST_ITEM_TYPE_NAME, $options.LIST_ITEM_TYPE_URL].includes(item.type)"
+              v-if="
+                [$options.LIST_ITEM_TYPE_TLGS, $options.LIST_ITEM_TYPE_ADMINS].includes(item.type)
+              "
             >
-              {{ item.text }}
-              <div class="gl-mt-2 gl-text-secondary">
-                {{ s__('Organization|Editable later from your Organization page') }}
-              </div>
+              <gl-truncate :text="item.text" with-tooltip />
             </template>
           </template>
         </gl-attribute-list>
       </div>
+      <p class="gl-mb-5 gl-mt-5 gl-text-secondary">
+        {{
+          s__(
+            'Organization|* Name, URL, and admin roles can all be updated later from your Organization page.',
+          )
+        }}
+      </p>
       <gl-alert class="gl-mt-5" :dismissible="false">
         <span class="gl-font-bold">{{ s__('Organization|After confirmation, you cannot:') }}</span>
         <ul class="gl-m-0 gl-mt-5 gl-pl-5">

@@ -3,7 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
@@ -12,7 +11,6 @@ import CommitChangesModal from '~/repository/components/commit_changes_modal.vue
 import { logError } from '~/lib/logger';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
-jest.mock('~/alert');
 jest.mock('~/lib/logger');
 
 const NEW_PATH = '/new-upload';
@@ -257,6 +255,65 @@ describe('UploadBlobModal', () => {
     });
   });
 
+  describe('error from the API response', () => {
+    const setupErrorResponseMock = (data) => {
+      mock.onPost(NEW_PATH).replyOnce(422, data);
+    };
+
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('shows data.message', async () => {
+      setupErrorResponseMock({ message: 'File already exists' });
+      await submitForm();
+
+      expect(findCommitChangesModal().props('error')).toBe('File already exists');
+    });
+
+    it('shows data.error when data.message is absent', async () => {
+      setupErrorResponseMock({ error: 'Push rule violation' });
+      await submitForm();
+
+      expect(findCommitChangesModal().props('error')).toBe('Push rule violation');
+    });
+
+    it('clears the error when the modal is closed', async () => {
+      setupErrorResponseMock({ message: 'Some error' });
+      await submitForm();
+
+      findCommitChangesModal().vm.$emit('close-commit-changes-modal');
+      await nextTick();
+
+      expect(findCommitChangesModal().props('error')).toBeNull();
+    });
+
+    it('clears the error when a new submit starts', async () => {
+      setupErrorResponseMock({ message: 'Some error' });
+      await submitForm();
+
+      setupUploadMock();
+      findCommitChangesModal().vm.$emit('submit-form', new FormData());
+      await nextTick();
+
+      expect(findCommitChangesModal().props('error')).toBeNull();
+
+      await axios.waitForAll();
+    });
+
+    it('clears the error when a new file is selected', async () => {
+      setupErrorResponseMock({ message: 'Some error' });
+      await submitForm();
+
+      expect(findCommitChangesModal().props('error')).toBe('Some error');
+
+      findUploadDropzone().vm.$emit('change', new File(['content'], 'other.txt'));
+      await nextTick();
+
+      expect(findCommitChangesModal().props('error')).toBeNull();
+    });
+  });
+
   describe.each`
     props                            | setupMock           | setupMockAsError           | expectedVisitUrl   | expectedError
     ${{}}                            | ${setupUploadMock}  | ${setupUploadMockAsError}  | ${'/new_file'}     | ${ERROR_UPLOAD}
@@ -292,15 +349,15 @@ describe('UploadBlobModal', () => {
           expect(visitUrlSpy).toHaveBeenCalledWith(expectedVisitUrl);
         });
 
-        it('on error, creates an alert error', async () => {
+        it('on error, shows the fallback message and logs the error', async () => {
           setupMockAsError();
           await submitForm();
 
           const mockError = new Error('timeout of 0ms exceeded');
 
-          expect(createAlert).toHaveBeenCalledWith({
-            message: 'Error uploading file. Please try again.',
-          });
+          expect(findCommitChangesModal().props('error')).toBe(
+            'Error uploading file. Please try again.',
+          );
           expect(logError).toHaveBeenCalledWith(expectedError, mockError);
         });
 

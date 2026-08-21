@@ -106,7 +106,9 @@ import {
   combineWorkItemLists,
   isCurrentViewWorkItem,
   getSortValue,
+  getRequestedPanel,
 } from '~/work_items/utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
 import {
@@ -2048,5 +2050,23 @@ describe('findOpenChildItemsCountsByType', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findOpenChildItemsCountsByType({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('getRequestedPanel', () => {
+  describe('when the show param names a panel', () => {
+    it('returns the panel key', () => {
+      setWindowLocation('?show=decision-log');
+
+      expect(getRequestedPanel()).toBe('decision-log');
+    });
+  });
+
+  describe('when the show param is absent', () => {
+    it('returns undefined', () => {
+      setWindowLocation('/');
+
+      expect(getRequestedPanel()).toBeUndefined();
+    });
   });
 });

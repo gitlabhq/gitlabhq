@@ -93,7 +93,7 @@ In the following example extract of a `.gitlab-ci.yml` file:
 - The `Jobs/Secret-Detection` CI/CD template is [included](../../../../ci/yaml/_index.md#include).
 - In the `secret_detection` job, the CI/CD variable `SECRET_DETECTION_HISTORIC_SCAN` is set to
   `true`. Because the template is evaluated before the pipeline configuration, the last mention of
-  the variable takes precedence, so an historic scan is performed.
+  the variable takes precedence, so a historic scan is performed.
 
 ```yaml
 include:
@@ -316,7 +316,7 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 You can replace the default ruleset with configuration defined in a remote Git repository or a file stored somewhere online using the `git` and `url` passthroughs.
 
 A remote ruleset can be used across multiple projects. For example, you might want to apply the same
-ruleset to multiple projects in one of your namespaces, in such case, you can use either type of
+ruleset to multiple projects in one of your namespaces, in such a case, you can use either type of
 passthrough to load up that remote ruleset and have it used by multiple projects. It also enables
 centralized management of a ruleset, with only authorized people able to edit.
 
@@ -629,7 +629,7 @@ For example, this rule modifies the [`generic-api-key` rule](https://github.com/
 
 This regular expression matches:
 
-1. A case-insensitive identifier that starts with `pwd`, or `passwd` or `password`. You can adjust this with other variations like `secret` or `key`.
+1. A case-insensitive identifier that starts with `pwd`, `passwd`, or `password`. You can adjust this with other variations like `secret` or `key`.
 1. A suffix that follows the identifier. The suffix is a combination of digits, letters, and symbols, and is between zero and 23 characters long.
 1. Commonly used assignment operators, like `=`, `:=`, `:`, or `=>`.
 1. A secret prefix, often used as a boundary to help with detecting the secret.

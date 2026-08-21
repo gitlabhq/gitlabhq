@@ -1,4 +1,4 @@
-import { GlAlert, GlAttributeList } from '@gitlab/ui';
+import { GlAlert, GlAttributeList, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -33,6 +33,7 @@ describe('ReconciliationStep3', () => {
       stubs: {
         BaseStep,
         GlAttributeList,
+        GlTruncate,
       },
     });
   };
@@ -52,6 +53,7 @@ describe('ReconciliationStep3', () => {
     });
   const findAttributeListItemByLabel = (label) =>
     findAttributeListItems().find((item) => item.label === label);
+  const findTruncates = () => wrapper.findAllComponents(GlTruncate);
 
   describe('template', () => {
     beforeEach(() => {
@@ -78,36 +80,46 @@ describe('ReconciliationStep3', () => {
 
     it('renders the organization attributes', () => {
       expect(findAttributeListItems()).toEqual([
-        {
-          label: 'Organization name',
-          description: `${mockNewOrganization.name} Editable later from your Organization page`,
-        },
-        {
-          label: 'URL',
-          description: `${TEST_HOST}/o/${mockNewOrganization.path} Editable later from your Organization page`,
-        },
-        { label: 'Top-level groups', description: '1 top-level group' },
+        { label: 'Organization name', description: mockNewOrganization.name },
+        { label: 'URL', description: `${TEST_HOST}/o/${mockNewOrganization.path}` },
+        { label: 'Top-level groups', description: mockGroup.fullName },
         { label: 'Organization administrators', description: mockOwner.user.name },
       ]);
     });
+
+    it('truncates the top-level groups and administrators with a tooltip', () => {
+      expect(findTruncates().wrappers.map((truncate) => truncate.props())).toEqual([
+        expect.objectContaining({ text: mockGroup.fullName, withTooltip: true }),
+        expect.objectContaining({ text: mockOwner.user.name, withTooltip: true }),
+      ]);
+    });
+
+    it('renders the note about which attributes can be updated later', () => {
+      expect(
+        wrapper
+          .findByText(
+            '* Name, URL, and admin roles can all be updated later from your Organization page.',
+          )
+          .exists(),
+      ).toBe(true);
+    });
   });
 
-  describe('top-level groups count', () => {
-    it('renders the plural text when the organization has multiple groups', () => {
+  describe('top-level groups', () => {
+    it('lists every group full name, separated by commas', () => {
+      const otherGroup = { ...mockGroup, id: 'gid://gitlab/Group/2', fullName: 'Other Group' };
+
       createComponent({
         props: {
           organization: {
             ...mockNewOrganization,
-            groups: {
-              ...mockNewOrganization.groups,
-              nodes: [mockGroup, { ...mockGroup, id: 'gid://gitlab/Group/2' }],
-            },
+            groups: { ...mockNewOrganization.groups, nodes: [mockGroup, otherGroup] },
           },
         },
       });
 
       expect(findAttributeListItemByLabel('Top-level groups').description).toBe(
-        '2 top-level groups',
+        `${mockGroup.fullName}, ${otherGroup.fullName}`,
       );
     });
   });
