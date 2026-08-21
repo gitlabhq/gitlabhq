@@ -17,7 +17,11 @@ module Snippets::SendBlob
 
   private
 
+  def inline_param
+    params.permit(:inline)[:inline]
+  end
+
   def content_disposition
-    @disposition ||= params[:inline] == 'false' ? 'attachment' : 'inline'
+    @disposition ||= inline_param == 'false' ? 'attachment' : 'inline'
   end
 end

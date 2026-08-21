@@ -87,7 +87,11 @@ module SnippetsActions
                end
   end
 
+  def line_ending_param
+    params.permit(:line_ending)[:line_ending]
+  end
+
   def convert_line_endings(content)
-    params[:line_ending] == 'raw' ? content : content.gsub(/\r\n/, "\n")
+    line_ending_param == 'raw' ? content : content.gsub(/\r\n/, "\n")
   end
 end

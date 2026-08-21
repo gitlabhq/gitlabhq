@@ -1291,6 +1291,8 @@
   - 1
 - - security_sync_policy
   - 1
+- - security_sync_policy_configuration
+  - 1
 - - security_sync_policy_event
   - 1
 - - security_sync_policy_violation_comment

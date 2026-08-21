@@ -25,8 +25,12 @@ module RequiresAllowlistedMonitoringClient
     @ip_allowlist ||= compat_ip_allowlist
   end
 
+  def token_param
+    params.permit(:token)[:token]
+  end
+
   def valid_token?
-    token = params[:token].presence || request.headers['TOKEN']
+    token = token_param.presence || request.headers['TOKEN']
     token.present? &&
       ActiveSupport::SecurityUtils.secure_compare(
         token,

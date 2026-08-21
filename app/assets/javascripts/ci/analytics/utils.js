@@ -11,6 +11,9 @@ export const calculatePipelineCountPercentage = (a, b) => {
     const factor = 1000; // 2 digits for percentage + 1 to round correctly
     const an = BigInt(a);
     const bn = BigInt(b);
+    if (bn === 0n) {
+      return undefined;
+    }
     const ratio = Number((BigInt(factor) * an) / bn) / factor;
     if (Number.isFinite(ratio)) {
       return ratio * 100;

@@ -185,7 +185,6 @@ project:
   - update_freeze_period
   - update_pages
   - update_pipeline_variable_override_setting
-  - update_product_analytics_settings
   - update_protected_branch
   - update_protected_tags
   - update_runners_registration_token
@@ -271,7 +270,6 @@ group:
   - transfer_projects
   - update_ci_namespace_settings
   - update_cluster
-  - update_product_analytics_settings
   - update_protected_branch
   - update_secret_detection_validity_check
   - update_security_scan_profiles

@@ -177715,18 +177715,6 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
-              "name": "productAnalyticsStoredEventsLimit",
-              "description": "Number of product analytics events namespace is permitted to store per cycle. Introduced in GitLab 16.9: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 16.9."
-            },
-            {
               "name": "projectComplianceRequirementsStatus",
               "description": "Compliance statuses for the projects in a group and its subgroups. Introduced in GitLab 17.10: Status: Experiment.",
               "args": [
@@ -273205,18 +273193,6 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.2."
-            },
-            {
-              "name": "productAnalyticsStoredEventsLimit",
-              "description": "Number of product analytics events namespace is permitted to store per cycle. Introduced in GitLab 16.9: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 16.9."
             },
             {
               "name": "projects",

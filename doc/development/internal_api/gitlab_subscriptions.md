@@ -561,7 +561,7 @@ and Storage packs.
 
 #### Create multiple subscription add-on purchases (Internal)
 
-Use a POST command to create, update, and deprovision multiple subscription add-on purchases. Possible add-on types are `duo_pro`, `duo_enterprise`, and `product_analytics`.
+Use a POST command to create, update, and deprovision multiple subscription add-on purchases. Possible add-on types are `duo_pro` and `duo_enterprise`.
 
 ```plaintext
 POST /internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases
@@ -583,7 +583,7 @@ If successful, returns [`201`](../../api/rest/troubleshooting.md#status-codes) a
 |:----------------|:--------|:------------|
 | `namespace_id`  | integer | Unique identifier for the namespace associated with the purchase |
 | `namespace_name`| string  | Name of the namespace linked to the purchase |
-| `add_on`        | integer | Type of add-on related to the purchase. Possible add-on types are `Code Suggestions` alias GitLab Duo Pro, `Duo Enterprise` and `Product Analytics`  |
+| `add_on`        | integer | Type of add-on related to the purchase. Possible add-on types are `Code Suggestions` alias GitLab Duo Pro and `Duo Enterprise`  |
 | `quantity`      | integer | Number of units purchased for the subscription add-on |
 | `started_on`    | date    | Date the subscription add-on became active |
 | `expires_on`    | date    | Date the subscription add-on will expire |

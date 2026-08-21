@@ -522,6 +522,10 @@ Gitlab/Ai/OrderConstants:
   Include:
    - 'ee/lib/ai/context/dependencies/config_files/constants.rb'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/work_items/612557
+Gitlab/Ai/AvoidDirectCheckpointTableRead:
+  Enabled: true
+
 Gitlab/DocumentationLinks/HardcodedUrl:
   Enabled: true
   Exclude:

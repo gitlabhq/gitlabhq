@@ -29,7 +29,7 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
       include SendFileUpload
 
       def params
-        {}
+        ActionController::Parameters.new
       end
 
       def current_user; end
@@ -84,7 +84,8 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
       context 'with valid width parameter' do
         it 'renders OK with workhorse command header' do
           expect(controller).not_to receive(:send_file)
-          expect(controller).to receive(:params).at_least(:once).and_return(width: width.to_s)
+          expect(controller).to receive(:params).at_least(:once)
+            .and_return(ActionController::Parameters.new(width: width.to_s))
           expect(controller).to receive(:head).with(:ok)
 
           expect(Gitlab::Workhorse).to receive(:send_scaled_image)
@@ -107,7 +108,8 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
       context 'with invalid width parameter' do
         it 'does not write workhorse command header' do
-          expect(controller).to receive(:params).at_least(:once).and_return(width: 'not a number')
+          expect(controller).to receive(:params).at_least(:once)
+            .and_return(ActionController::Parameters.new(width: 'not a number'))
           expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
 
           subject
@@ -115,7 +117,8 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
         context 'when width has an invalid format' do
           it 'does not write workhorse command header' do
-            expect(controller).to receive(:params).at_least(:once).and_return(width: ['wrong'])
+            expect(controller).to receive(:params).at_least(:once)
+              .and_return(ActionController::Parameters.new(width: ['wrong']))
             expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
 
             subject
@@ -125,7 +128,8 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
       context 'with width that is not allowed' do
         it 'does not write workhorse command header' do
-          expect(controller).to receive(:params).at_least(:once).and_return(width: '63')
+          expect(controller).to receive(:params).at_least(:once)
+            .and_return(ActionController::Parameters.new(width: '63'))
           expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
 
           subject

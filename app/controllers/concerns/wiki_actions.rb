@@ -43,8 +43,8 @@ module WikiActions
     end
 
     before_action only: [:edit, :update], unless: :valid_encoding? do
-      if params[:id].present?
-        redirect_to wiki_page_path(wiki, page || params[:id])
+      if id_param.present?
+        redirect_to wiki_page_path(wiki, page || id_param)
       else
         redirect_to wiki_path(wiki)
       end
@@ -101,7 +101,7 @@ module WikiActions
       Kaminari.paginate_array(
         # only include pages not starting with 'templates/'
         wiki
-          .list_pages(direction: params[:direction])
+          .list_pages(direction: direction_param)
           .reject { |page| page.slug.start_with?('templates/', 'uploads/') }
       ).page(pagination_params[:page])
     end
@@ -112,7 +112,7 @@ module WikiActions
       Kaminari.paginate_array(
         # only include pages starting with 'templates/'
         wiki
-          .list_pages(direction: params[:direction])
+          .list_pages(direction: direction_param)
           .select { |page| page.slug.start_with?('templates/') }
       ).page(pagination_params[:page])
     end
@@ -140,7 +140,7 @@ module WikiActions
       set_encoding_error unless valid_encoding?
 
       # Assign vars expected by MarkupHelper
-      @ref = params[:version_id]
+      @ref = version_id_param
       @path = page.path
       @templates = templates_list
 
@@ -156,21 +156,22 @@ module WikiActions
   end
 
   def handle_redirection
-    redir = find_redirection(params[:id]) unless params[:redirect_limit_reached] || params[:no_redirect]
+    skip_redirection = redirection_params[:redirect_limit_reached] || redirection_params[:no_redirect]
+    redir = find_redirection(id_param) unless skip_redirection
     if redir.is_a?(Hash) && redir[:error]
       message = safe_format(
         s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} redirected too many times. ' \
           'You are now editing the page at %{code_start}%{redirected_from}%{code_end}.'),
         tag_pair(helpers.content_tag(:code), :code_start, :code_end),
-        redirected_from: params[:id]
+        redirected_from: id_param
       )
       redirect_to(
-        "#{wiki_page_path(wiki, params[:id])}?redirect_limit_reached=true",
+        "#{wiki_page_path(wiki, id_param)}?redirect_limit_reached=true",
         status: :found,
         notice: message
       )
     elsif redir
-      redirected_from = params[:redirected_from] || params[:id]
+      redirected_from = redirection_params[:redirected_from] || id_param
       message = safe_format(
         s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} ' \
           'has been moved to %{code_start}%{redirected_to}%{code_end}.'),
@@ -193,9 +194,9 @@ module WikiActions
   end
 
   def handle_create_form
-    title = params[:id]
-    if params[:redirected_from] # override the notice if redirected
-      redirected_link = helpers.link_to('', "#{wiki_page_path(wiki, params[:redirected_from])}?no_redirect=true")
+    redirected_from = redirection_params[:redirected_from]
+    if redirected_from # override the notice if redirected
+      redirected_link = helpers.link_to('', "#{wiki_page_path(wiki, redirected_from)}?no_redirect=true")
       flash[:notice] = safe_format(
         s_('Wiki|The page at %{code_start}%{redirected_from}%{code_end} tried to redirect to ' \
           '%{code_start}%{redirected_to}%{code_end}, but it does not exist. You are now ' \
@@ -204,17 +205,17 @@ module WikiActions
           ),
         tag_pair(helpers.content_tag(:code), :code_start, :code_end),
         tag_pair(redirected_link, :link_start, :link_end),
-        redirected_from: params[:redirected_from],
-        redirected_to: params[:id]
+        redirected_from: redirected_from,
+        redirected_to: id_param
       )
     end
 
-    @page = build_page(title: title)
+    @page = build_page(title: id_param)
     @templates = templates_list
 
     render 'shared/wikis/show'
 
-    flash[:notice] = nil if params[:redirected_from]
+    flash[:notice] = nil if redirected_from
   end
 
   def raw
@@ -316,6 +317,30 @@ module WikiActions
 
   private
 
+  def wiki_page_params
+    params.permit(:id, :version_id)
+  end
+
+  def id_param
+    wiki_page_params[:id]
+  end
+
+  def version_id_param
+    wiki_page_params[:version_id]
+  end
+
+  def redirection_params
+    params.permit(:redirect_limit_reached, :no_redirect, :redirected_from)
+  end
+
+  def direction_param
+    params.permit(:direction)[:direction]
+  end
+
+  def view_param
+    params.permit(:view)[:view]
+  end
+
   def handle_action_success(action, page)
     if page.title == Wiki::SIDEBAR
       flash[:toast] = s_('Wiki|Sidebar was successfully created.') if action == :created
@@ -339,7 +364,7 @@ module WikiActions
       page.nil? &&
       # Only show the form when the user has navigated from
       # the 'empty wiki' or '404' page
-      params[:view] == 'create'
+      view_param == 'create'
   end
 
   def wiki
@@ -363,7 +388,7 @@ module WikiActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def load_sidebar
-    @sidebar_page = wiki.find_sidebar(params[:version_id])
+    @sidebar_page = wiki.find_sidebar(version_id_param)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -379,9 +404,9 @@ module WikiActions
 
   def page_params
     keys = [:id]
-    keys << :version_id if %w[show diff].include?(params[:action])
+    keys << :version_id if %w[show diff].include?(action_name)
 
-    params.values_at(*keys)
+    wiki_page_params.values_at(*keys)
   end
 
   def valid_encoding?
@@ -403,7 +428,7 @@ module WikiActions
 
       next unless commit
 
-      wiki.repository.blob_at(commit.id, params[:id])
+      wiki.repository.blob_at(commit.id, id_param)
     end
   end
 
@@ -438,7 +463,7 @@ module WikiActions
   def load_content?
     skip_actions = %w[history destroy diff]
 
-    return false if skip_actions.include?(params[:action])
+    return false if skip_actions.include?(action_name)
 
     true
   end

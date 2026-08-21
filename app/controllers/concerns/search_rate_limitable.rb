@@ -19,9 +19,13 @@ module SearchRateLimitable
     end
   end
 
+  def scope_param
+    params.permit(:scope)[:scope]
+  end
+
   def safe_search_scope
     # Sometimes search scope can have abusive length or invalid keyword. We don't want
     # to send those to redis for rate limit checks, so we guard against that here.
-    params[:scope] unless Search::Params.new(params).abusive?
+    scope_param unless Search::Params.new(safe_params).abusive?
   end
 end

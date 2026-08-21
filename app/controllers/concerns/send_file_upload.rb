@@ -81,8 +81,12 @@ module SendFileUpload
     allowed_scalar_widths.include?(safe_width)
   end
 
+  def width_param
+    params.permit(:width)[:width]
+  end
+
   def safe_width
-    width = params[:width]
+    width = width_param
     return 0 unless width.is_a?(String) || width.is_a?(Integer)
 
     width.to_i

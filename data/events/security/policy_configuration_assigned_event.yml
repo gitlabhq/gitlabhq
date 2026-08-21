@@ -1,0 +1,6 @@
+---
+event: Security::PolicyConfigurationAssignedEvent
+description: Published when a security policy project is assigned to a project or
+  group configuration, triggering a bulk sync of all policies.
+feature_category: security_policy_management
+ee_only: true

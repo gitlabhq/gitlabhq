@@ -246,6 +246,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `Security::PolicyConfigurationAssignedEvent` | `security_policy_management` | EE | Published when a security policy project is assigned to a project or group configuration, triggering a bulk sync of all policies. |
 | `Security::PolicyCreatedEvent` | `security_policy_management` | EE | Published when a new security policy is persisted as part of syncing a security policy project's configuration. |
 | `Security::PolicyDeletedEvent` | `security_policy_management` | EE | Published when a security policy is removed during synchronization of a security policy project's configuration. |
 | `Security::PolicyDismissalPreservedEvent` | `security_policy_management` | EE | Published when a Security::PolicyDismissal is preserved (transitioned to the `preserved` status) because it still applies to outstanding violations. |
