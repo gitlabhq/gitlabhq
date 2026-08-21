@@ -107,6 +107,11 @@ FIPS versioned tags are available in GitLab 18.10 and later.
 For more information, see
 [FIPS-validated images](../../install/install_ai_gateway.md#fips-validated-images).
 
+Neither `skopeo copy` nor `docker save` transfers image signatures.
+To check the authenticity of the FIPS image, run
+[`cosign verify`](../../install/install_ai_gateway.md#verify-image-signatures)
+on the connected machine before you transfer the image.
+
 ### LLM model weights
 
 LLM model weights are large files that vLLM reads directly from the

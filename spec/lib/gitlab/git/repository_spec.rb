@@ -172,6 +172,60 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    describe 'contents that deviate from the defaults' do
+      def path_for(**kwargs)
+        repository.archive_metadata(
+          ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha, path: path, **kwargs
+        )['ArchivePath']
+      end
+
+      it 'keeps the default archive on its existing path' do
+        expect(path_for).to eq(expected_path)
+        expect(path_for(include_lfs_blobs: true, exclude_paths: [])).to eq(expected_path)
+      end
+
+      it 'moves an archive without LFS blobs off the default path' do
+        expect(path_for(include_lfs_blobs: false)).not_to eq(expected_path)
+      end
+
+      it 'moves an archive with exclusions off the default path' do
+        expect(path_for(exclude_paths: %w[spec])).not_to eq(expected_path)
+      end
+
+      it 'separates the two attributes from each other' do
+        expect(path_for(include_lfs_blobs: false)).not_to eq(path_for(exclude_paths: %w[spec]))
+      end
+
+      it 'keeps the filename so Workhorse still derives the format from it' do
+        expect(File.basename(path_for(include_lfs_blobs: false))).to eq(expected_filename)
+      end
+
+      it 'stays at the depth the Workhorse archive cleaner sweeps' do
+        variant_path = path_for(include_lfs_blobs: false, exclude_paths: %w[spec docs])
+        depth = Pathname.new(variant_path).relative_path_from(Pathname.new(storage_path)).each_filename.count
+
+        expect(depth).to eq(Pathname.new(expected_path).relative_path_from(Pathname.new(storage_path))
+          .each_filename.count)
+        expect(depth).to eq(4)
+      end
+
+      it 'treats exclusions as a set, so ordering does not fragment the cache' do
+        expect(path_for(exclude_paths: %w[spec docs])).to eq(path_for(exclude_paths: %w[docs spec]))
+      end
+
+      it 'gives different exclusions different paths' do
+        expect(path_for(exclude_paths: %w[spec])).not_to eq(path_for(exclude_paths: %w[docs]))
+      end
+
+      it 'ignores duplicate exclusions, which do not change the archive' do
+        expect(path_for(exclude_paths: %w[spec spec docs])).to eq(path_for(exclude_paths: %w[docs spec]))
+      end
+
+      it 'treats a nil exclusion list as no exclusions' do
+        expect(path_for(exclude_paths: nil)).to eq(expected_path)
+      end
+    end
+
     context 'append_sha varies archive path and filename' do
       where(:append_sha, :ref, :expected_prefix) do
         sha = TestEnv::BRANCH_SHA['master']

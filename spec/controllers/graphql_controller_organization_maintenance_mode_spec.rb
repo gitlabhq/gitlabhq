@@ -9,15 +9,15 @@ RSpec.describe GraphqlController, feature_category: :organization do
   let_it_be(:active_organization) { create(:organization) }
   let_it_be_with_reload(:maintenance_mode_organization) do
     create(:organization).tap do |organization|
-      organization.start_read_only(read_only_reason: 'migration')
-      organization.confirm_read_only
+      organization.start_maintenance(maintenance_reason: 'migration')
+      organization.confirm_maintenance
     end
   end
 
   let_it_be_with_reload(:indefinite_organization) do
     create(:organization).tap do |organization|
-      organization.start_read_only(read_only_reason: 'legal')
-      organization.confirm_read_only
+      organization.start_maintenance(maintenance_reason: 'legal')
+      organization.confirm_maintenance
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe GraphqlController, feature_category: :organization do
 
     context 'when the feature flag is enabled' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: true)
+        stub_feature_flags(organization_maintenance_enforcement: true)
       end
 
       context 'with an organization in maintenance mode' do
@@ -123,7 +123,7 @@ RSpec.describe GraphqlController, feature_category: :organization do
 
     context 'when the feature flag is disabled with an organization in maintenance mode' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: false)
+        stub_feature_flags(organization_maintenance_enforcement: false)
         stub_current_organization(maintenance_mode_organization)
       end
 

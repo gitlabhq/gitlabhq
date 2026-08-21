@@ -17,6 +17,7 @@ import Step2 from '~/groups/settings/create_organization/components/steps/step_2
 import Step3 from '~/groups/settings/create_organization/components/steps/step_3.vue';
 import {
   groupsQueryResponse,
+  groupsQueryResponseWithoutDefaultOrgGroups,
   mockDefaultOrganization,
   mockNewOrganization,
   mockOrganizations,
@@ -422,6 +423,43 @@ describe('OrganizationReconciliationModal', () => {
         expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual(
           expectedInitialDefaultOrgGroupIds,
         );
+      });
+    });
+  });
+
+  describe('when default organization has no other groups', () => {
+    beforeEach(async () => {
+      await createComponentAndLoad({
+        handler: jest.fn().mockResolvedValue(groupsQueryResponseWithoutDefaultOrgGroups),
+      });
+    });
+
+    it('renders step 1 with a total of two steps', () => {
+      expect(findStep1().exists()).toBe(true);
+      expect(findModal().text()).toContain('Step 1 / 2');
+    });
+
+    describe('when next button is clicked', () => {
+      beforeEach(async () => {
+        findNextButton().vm.$emit('click');
+        await nextTick();
+      });
+
+      it('skips step 2 and renders step 3', () => {
+        expect(findStep2().exists()).toBe(false);
+        expect(findStep3().exists()).toBe(true);
+        expect(findModal().text()).toContain('Step 2 / 2');
+      });
+
+      it('renders confirm text for next button', () => {
+        expect(findNextButton().text()).toBe('Confirm');
+      });
+
+      it('prev button returns to step 1', async () => {
+        findPrevButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findStep1().exists()).toBe(true);
       });
     });
   });

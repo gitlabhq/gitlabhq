@@ -24,13 +24,13 @@ RSpec.describe Gitlab::Database::Migrations::RunnerBackoff::ActiveRecordMixin, f
       it 'delegates to #migration' do
         expect(migration).to receive(:enable_runner_backoff?).and_return(true)
 
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
       end
 
       it 'returns false if migration does not implement it' do
         expect(migration).to receive(:respond_to?).with(:enable_runner_backoff?).and_return(false)
 
-        expect(subject).to eq(false)
+        expect(subject).to be(false)
       end
     end
   end

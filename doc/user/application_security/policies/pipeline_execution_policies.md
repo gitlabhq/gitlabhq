@@ -23,7 +23,7 @@ title: Pipeline execution policies
 Use pipeline execution policies to manage and enforce CI/CD jobs for multiple projects with a single configuration.
 
 > [!warning]
-> Do not enable pipeline execution policies until you have migrated existing [compliance pipelines](../../compliance/compliance_pipelines.md) in the same project. When both are configured, compliance pipelines replace the standard project pipeline but the pipeline execution policies apply based on the original project pipeline. This creates unpredictable behavior that varies depending on the pipeline execution policy strategy and CI/CD configurations, and can result in duplicated jobs, pipeline failures, or missing critical security and compliance checks. Compliance pipelines are [deprecated](../../../update/deprecations.md#compliance-pipelines). You should migrate existing compliance pipelines as soon as possible, and use pipeline execution policies for all new implementations.
+> Do not enable pipeline execution policies until you have migrated existing [compliance pipelines](../../compliance/compliance_pipelines.md) in the same project. When both are configured, compliance pipelines replace the standard project pipeline, but the pipeline execution policies apply based on the original project pipeline. This creates unpredictable behavior that varies depending on the pipeline execution policy strategy and CI/CD configurations, and can result in duplicated jobs, pipeline failures, or missing critical security and compliance checks. Compliance pipelines are [deprecated](../../../update/deprecations.md#compliance-pipelines). You should migrate existing compliance pipelines as soon as possible, and use pipeline execution policies for all new implementations.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
 
@@ -63,7 +63,7 @@ the following sections and tables provide an alternative.
 | `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify.                                                                                                                                                                                                                                        |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
 | `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped.                                                                                                                                             |
-| `no_pipeline` | `object` of [`no_pipeline`](#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be not created.                                                                                                                                 |
+| `no_pipeline` | `object` of [`no_pipeline`](#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be prevented from being created.                                                                                                                                 |
 | `variables_override` | `object` of [`variables_override`](#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them.                                                                                                               |
 
 Note the following:
@@ -177,7 +177,7 @@ The applied suffix has the following format:
 
 Example of the resulting job: `sast:policy-123456-0`.
 
-If multiple policies in on security policy project define the same job name, the numerical suffix corresponds to the index of the conflicting policy.
+If multiple policies in one security policy project define the same job name, the numerical suffix corresponds to the index of the conflicting policy.
 
 Example of the resulting jobs:
 
@@ -245,6 +245,7 @@ Prerequisites:
 
 - Users triggering pipelines run in those projects on which a policy containing the `content` type
   is enforced must have at minimum read-only access to the project containing the CI/CD
+  configuration.
 - In projects that enforce pipeline execution policies, users must have at least read-only access to the project that contains the CI/CD configuration to trigger the pipeline.
 
   In GitLab 17.4 and later, you can grant the required read-only access for the CI/CD configuration file
@@ -1088,7 +1089,7 @@ sast:
 
 ## Behavior with `[no_pipeline]`
 
-By default, to prevent a regular pipeline from creating, users can push a commit to a protected branch with `[no_pipeline]` in push options. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[no_pipeline]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
+By default, to prevent a regular pipeline from being created, users can push a commit to a protected branch with `[no_pipeline]` in push options. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[no_pipeline]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
 
 For more flexible control over `[no_pipeline]` behavior, see the [`no_pipeline` type](#no_pipeline-type) section.
 

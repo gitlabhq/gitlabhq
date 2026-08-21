@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         allow(lb).to receive(:primary_only?).and_return(true)
       end
 
-      expect(described_class.primary_only?).to eq(true)
+      expect(described_class.primary_only?).to be(true)
     end
 
     it 'returns false if at least one has replicas' do
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         allow(lb).to receive(:primary_only?).and_return(index != 0)
       end
 
-      expect(described_class.primary_only?).to eq(false)
+      expect(described_class.primary_only?).to be(false)
     end
   end
 
@@ -110,15 +110,15 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
     let(:null_config) { ActiveRecord::ConnectionAdapters::NullPool::NullConfig.new }
 
     it 'returns true if the db config does not exist' do
-      expect(described_class.empty_config?(nil)).to eq(true)
+      expect(described_class.empty_config?(nil)).to be(true)
     end
 
     it 'returns true if the db config is a NullConfig' do
-      expect(described_class.empty_config?(null_config)).to eq(true)
+      expect(described_class.empty_config?(null_config)).to be(true)
     end
 
     it 'returns false if the db config is valid' do
-      expect(described_class.empty_config?(config)).to eq(false)
+      expect(described_class.empty_config?(config)).to be(false)
     end
   end
 

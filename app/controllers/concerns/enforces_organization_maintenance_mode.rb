@@ -5,8 +5,8 @@
 # perform writes), so the initial iteration denies every request.
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/607966.
 #
-# Enforcement gates on the single `Organizations::Organization#read_only?`
-# predicate and is wrapped in the `organization_read_only_enforcement` feature
+# Enforcement gates on the single `Organizations::Organization#maintenance?`
+# predicate and is wrapped in the `organization_maintenance_enforcement` feature
 # flag, so it ships dark and is a complete no-op when the flag is disabled.
 #
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/603377.
@@ -25,7 +25,7 @@ module EnforcesOrganizationMaintenanceMode
     organization = ::Current.organization
     return false unless organization
 
-    organization.read_only_enforced?
+    organization.maintenance_enforced?
   end
 
   def handle_organization_maintenance_mode_error
@@ -47,14 +47,14 @@ module EnforcesOrganizationMaintenanceMode
     organization = ::Current.organization
 
     status =
-      if organization.read_only_time_bounded?
+      if organization.maintenance_time_bounded?
         response.headers['Retry-After'] = Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
         :service_unavailable
       else
         :forbidden
       end
 
-    render json: { message: organization.read_only_message }, status: status
+    render json: { message: organization.maintenance_message }, status: status
   end
 
   # Renders a full error page rather than flash + redirect_back: with GETs also
@@ -62,11 +62,11 @@ module EnforcesOrganizationMaintenanceMode
   def render_maintenance_mode_html_error
     organization = ::Current.organization
 
-    if organization.read_only_time_bounded?
+    if organization.maintenance_time_bounded?
       response.headers['Retry-After'] = Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
-      render_503(organization.read_only_message)
+      render_503(organization.maintenance_message)
     else
-      access_denied!(organization.read_only_message)
+      access_denied!(organization.maintenance_message)
     end
   end
 end

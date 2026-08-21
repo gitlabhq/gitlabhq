@@ -220,8 +220,8 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
       describe '#schema?' do
         it 'checks if the given schema matches the schema of the table' do
-          expect(database_dictionary.schema?('gitlab_main')).to eq(false)
-          expect(database_dictionary.schema?('gitlab_main_cell_setting')).to eq(true)
+          expect(database_dictionary.schema?('gitlab_main')).to be(false)
+          expect(database_dictionary.schema?('gitlab_main_cell_setting')).to be(true)
         end
       end
 

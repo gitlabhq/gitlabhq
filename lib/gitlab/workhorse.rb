@@ -137,7 +137,9 @@ module Gitlab
           format,
           append_sha: append_sha,
           path: path,
-          ref_type: ref_type
+          ref_type: ref_type,
+          include_lfs_blobs: include_lfs_blobs,
+          exclude_paths: exclude_paths
         )
 
         raise ArchiveNotFoundError, "Repository or ref not found" if metadata.empty?

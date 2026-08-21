@@ -6,13 +6,18 @@ module Gitlab
     # Used by both the API and web controller to ensure consistent
     # Content-Type and Content-Disposition headers for HEAD and GET requests.
     class ArchiveHeaderBuilder
-      def initialize(repository, ref:, format:, append_sha:, path: nil, ref_type: nil, storage_path: '')
+      def initialize( # rubocop:disable Metrics/ParameterLists -- all arguments needed
+        repository, ref:, format:, append_sha:, path: nil, ref_type: nil, storage_path: '',
+        include_lfs_blobs: true, exclude_paths: []
+      )
         @repository = repository
         @ref = ref
         @format = (format || 'tar.gz').downcase
         @append_sha = append_sha
         @path = path
         @ref_type = ref_type
+        @include_lfs_blobs = include_lfs_blobs
+        @exclude_paths = exclude_paths
         # Defaults to an empty storage path (header generation does not need it).
         # Pass the real downloads path when the metadata is also used to send the
         # archive, so the ETag and the archive body share one resolved commit.
@@ -26,7 +31,9 @@ module Gitlab
           format,
           append_sha: append_sha,
           path: path,
-          ref_type: ref_type
+          ref_type: ref_type,
+          include_lfs_blobs: include_lfs_blobs,
+          exclude_paths: exclude_paths
         )
       end
 
@@ -53,7 +60,8 @@ module Gitlab
 
       private
 
-      attr_reader :repository, :ref, :format, :append_sha, :path, :ref_type, :storage_path
+      attr_reader :repository, :ref, :format, :append_sha, :path, :ref_type, :storage_path,
+        :include_lfs_blobs, :exclude_paths
 
       def validate_metadata!
         raise Gitlab::Workhorse::ArchiveNotFoundError, "Repository or ref not found" if metadata.empty?

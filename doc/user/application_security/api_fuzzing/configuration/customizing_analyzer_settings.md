@@ -25,7 +25,7 @@ provide a script that performs an authentication flow or calculates the token.
 is an authentication method built into the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
 
-We recommended that you [create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
+We recommend that you [create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
 for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
 variables from the GitLab project's page at **Settings** > **CI/CD**, in the **Variables** section.
 Because of the [limitations on masked variables](../../../../ci/variables/_index.md#mask-a-cicd-variable),
@@ -96,7 +96,7 @@ Follow these steps to provide the bearer token with `FUZZAPI_OVERRIDES_ENV`:
    ```
 
 1. To validate that authentication is working, run an API fuzzing test and review the fuzzing logs
-   and the test APIs application logs. See the [overrides section](#overrides) for more information about override commands.
+   and the test API's application logs. See the [overrides section](#overrides) for more information about override commands.
 
 #### Token generated at test runtime
 
@@ -134,7 +134,7 @@ variables:
 ```
 
 To validate that authentication is working, run an API fuzzing test and review the fuzzing logs and
-the test APIs application logs.
+the test API's application logs.
 
 #### Token has short expiration
 
@@ -178,7 +178,7 @@ variables:
 ```
 
 To validate that authentication is working, run an API fuzzing test and review the fuzzing logs and
-the test APIs application logs.
+the test API's application logs.
 
 ## API fuzzing profiles
 
@@ -354,7 +354,7 @@ to generate the JSON document. The command can run at intervals to support value
 
 ### Using a file
 
-To provide the overrides JSON as a file, the `FUZZAPI_OVERRIDES_FILE` CI/CD variable is set. The path is relative to the job current working directory.
+To provide the overrides JSON as a file, the `FUZZAPI_OVERRIDES_FILE` CI/CD variable is set. The path is relative to the job's current working directory.
 
 Here's an example `.gitlab-ci.yml`:
 
@@ -459,13 +459,13 @@ variables:
 
 ### Debugging overrides
 
-By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `FUZZAPI_OVERRIDES_CMD_VERBOSE` to any value to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
+By default, the output of the overrides command is hidden. If the overrides command returns a non-zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `FUZZAPI_OVERRIDES_CMD_VERBOSE` to any value to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and follow a naming convention.
 
 Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during typical running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
-Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Notice two things in the script:
+Following our example, we provided `renew_token.py` in the environment variable `FUZZAPI_OVERRIDES_CMD`. Notice two things in the script:
 
 - Log file is saved in the location indicated by the environment variable `CI_PROJECT_DIR`.
 - Log filename should match `gl-*.log`.
@@ -756,7 +756,7 @@ The exclude parameters uses `body-json` when the request uses a content type `ap
 
 #### Excluding multiple JSON nodes using JSON Path
 
-To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].paswword" ]`.
+To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].password" ]`.
 
 The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Next, it uses `users` to refer to a property. The characters `[` and `]` enclose the array index you want to use. You can use `*` to specify any index instead of providing a specific number. After the index reference, the `.` character refers to any given selected index in the array, followed by a property name `password`.
 
@@ -862,7 +862,7 @@ variables:
 
 ### Using a file
 
-To provide the exclusion JSON document, set the variable `FUZZAPI_EXCLUDE_PARAMETER_FILE` with the JSON file path. The file path is relative to the job current working directory. In the following example `.gitlab-ci.yml` file, the `FUZZAPI_EXCLUDE_PARAMETER_FILE` variable is set to a JSON file path:
+To provide the exclusion JSON document, set the variable `FUZZAPI_EXCLUDE_PARAMETER_FILE` with the JSON file path. The file path is relative to the job's current working directory. In the following example `.gitlab-ci.yml` file, the `FUZZAPI_EXCLUDE_PARAMETER_FILE` variable is set to a JSON file path:
 
 ```yaml
 stages:
@@ -884,7 +884,7 @@ The `api-fuzzing-exclude-parameters.json` is a JSON document that follows the st
 
 As an alternative to excluding by paths, you can filter by any other component in the URL by using the `FUZZAPI_EXCLUDE_URLS` CI/CD variable. This variable can be set in your `.gitlab-ci.yml` file. The variable can store multiple values, separated by commas (`,`). Each value is a regular expression. Because each entry is a regular expression, an entry such as `.*` excludes all URLs because it is a regular expression that matches everything.
 
-In your job output you can check if any URLs matched any provided regular expression from `FUZZAPI_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example the following portion of a job output:
+In your job output, you can check if any URLs matched any provided regular expression from `FUZZAPI_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example, the following portion of a job output:
 
 ```plaintext
 2021-05-27 21:51:08 [INF] API Fuzzing: --[ Tested Operations ]-------------------------

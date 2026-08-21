@@ -648,17 +648,17 @@ module API
     def organization_maintenance_mode_enforced?(organization)
       return false unless organization
 
-      organization.read_only_enforced?
+      organization.maintenance_enforced?
     end
 
     # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons
     # are not (403).
     def render_organization_maintenance_mode_error!(organization)
-      if organization.read_only_time_bounded?
+      if organization.maintenance_time_bounded?
         header 'Retry-After', ::Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
-        service_unavailable!(organization.read_only_message)
+        service_unavailable!(organization.maintenance_message)
       else
-        forbidden!(organization.read_only_message)
+        forbidden!(organization.maintenance_message)
       end
     end
 

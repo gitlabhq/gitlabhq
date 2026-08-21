@@ -35,20 +35,20 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     project.add_maintainer(user)
   end
 
-  describe '#check_organization_read_only!' do
-    context 'with the organization read-only enforcement feature flag enabled' do
+  describe '#check_organization_maintenance!' do
+    context 'with the organization maintenance enforcement feature flag enabled' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: true)
+        stub_feature_flags(organization_maintenance_enforcement: true)
       end
 
-      context 'when the project organization is read-only' do
+      context 'when the project organization is in maintenance' do
         before do
-          organization.start_read_only(read_only_reason: 'migration')
-          organization.confirm_read_only
+          organization.start_maintenance(maintenance_reason: 'migration')
+          organization.confirm_maintenance
         end
 
         it 'blocks push access and allows pull access' do
-          expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:organization_read_only])
+          expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:organization_maintenance])
           expect { pull_access_check }.not_to raise_error
         end
       end
@@ -71,11 +71,11 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       end
     end
 
-    context 'with the organization read-only enforcement feature flag disabled' do
+    context 'with the organization maintenance enforcement feature flag disabled' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: false)
-        organization.start_read_only(read_only_reason: 'migration')
-        organization.confirm_read_only
+        stub_feature_flags(organization_maintenance_enforcement: false)
+        organization.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
       end
 
       it 'allows push access' do

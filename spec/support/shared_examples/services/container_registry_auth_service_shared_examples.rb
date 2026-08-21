@@ -1853,21 +1853,21 @@ RSpec.shared_examples 'a container registry auth service' do
     end
   end
 
-  context 'with organization read-only mode enforcement' do
+  context 'with organization maintenance mode enforcement' do
     let_it_be(:organization, freeze: false) { create(:organization) }
     let_it_be(:project, freeze: false) { create(:project, organization: organization) }
     let_it_be(:current_user, freeze: false) { create(:user, maintainer_of: project) }
 
     let(:current_params) { { scopes: ["repository:#{project.full_path}:push,pull"] } }
 
-    context 'when the organization_read_only_enforcement feature flag is disabled' do
+    context 'when the organization_maintenance_enforcement feature flag is disabled' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: false)
-        organization.reload.start_read_only(read_only_reason: 'migration')
-        organization.confirm_read_only
+        stub_feature_flags(organization_maintenance_enforcement: false)
+        organization.reload.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
       end
 
-      it 'allows write actions even when the organization is read-only' do
+      it 'allows write actions even when the organization is in maintenance' do
         is_expected.to include(:token)
         expect(payload['access']).to contain_exactly(
           include('actions' => contain_exactly('pull', 'push'))
@@ -1875,9 +1875,9 @@ RSpec.shared_examples 'a container registry auth service' do
       end
     end
 
-    context 'when the organization_read_only_enforcement feature flag is enabled' do
+    context 'when the organization_maintenance_enforcement feature flag is enabled' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: true)
+        stub_feature_flags(organization_maintenance_enforcement: true)
       end
 
       context 'when the organization is active' do
@@ -1889,10 +1889,10 @@ RSpec.shared_examples 'a container registry auth service' do
         end
       end
 
-      context 'when the organization is in read_only state' do
+      context 'when the organization is in maintenance state' do
         before do
-          organization.reload.start_read_only(read_only_reason: 'migration')
-          organization.confirm_read_only
+          organization.reload.start_maintenance(maintenance_reason: 'migration')
+          organization.confirm_maintenance
         end
 
         it 'allows pull but denies push' do
@@ -1934,9 +1934,9 @@ RSpec.shared_examples 'a container registry auth service' do
         end
       end
 
-      context 'when the organization is in read_only_initialization state' do
+      context 'when the organization is in maintenance_initialization state' do
         before do
-          organization.reload.start_read_only(read_only_reason: 'migration')
+          organization.reload.start_maintenance(maintenance_reason: 'migration')
         end
 
         it 'allows pull but denies push' do
@@ -1979,14 +1979,14 @@ RSpec.shared_examples 'a container registry auth service' do
       end
 
       context 'when the project belongs to the default organization' do
-        let_it_be(:default_org) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to test default organization is never read-only
+        let_it_be(:default_org) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to test default organization is never in maintenance
         let_it_be(:default_project, freeze: false) { create(:project, organization: default_org) }
         let_it_be(:default_user, freeze: false) { create(:user, maintainer_of: default_project) }
 
         let(:current_user) { default_user }
         let(:current_params) { { scopes: ["repository:#{default_project.full_path}:push,pull"] } }
 
-        it 'allows both pull and push (default org is never read-only)' do
+        it 'allows both pull and push (default org is never in maintenance)' do
           is_expected.to include(:token)
           expect(payload['access']).to contain_exactly(
             include('actions' => contain_exactly('pull', 'push'))
@@ -2043,7 +2043,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
     context 'when the project has no organization and the feature flag is disabled' do
       before do
-        stub_feature_flags(organization_read_only_enforcement: false)
+        stub_feature_flags(organization_maintenance_enforcement: false)
         allow_next_found_instance_of(Project) do |found_project|
           allow(found_project).to receive(:organization).and_return(nil)
         end

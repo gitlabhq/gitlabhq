@@ -227,7 +227,7 @@ You can use these headers along with the GitLab Public Keys endpoint to verify t
 
 #### Public keys endpoint
 
-GitLab maintains a publicly-accessible endpoint for retrieving public keys used to verify revocation
+GitLab maintains a publicly accessible endpoint for retrieving public keys used to verify revocation
 requests. The endpoint can be provided on request.
 
 This JSON schema document describes the response body of the public keys endpoint:

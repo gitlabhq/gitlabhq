@@ -135,6 +135,16 @@ describe('Role details drawer', () => {
       expect(findRoleSelector().exists()).toBe(false);
     });
 
+    describe('when member has inherited access (canUpdate is false)', () => {
+      it('does not show the save button even when a role change is simulated', async () => {
+        createWrapper({ member: memberData });
+        await nextTick();
+
+        expect(findRoleUpdater().exists()).toBe(false);
+        expect(findSaveButton().exists()).toBe(false);
+      });
+    });
+
     it('shows role selector when member can be edited', () => {
       createWrapper({ member: updateableMember });
 

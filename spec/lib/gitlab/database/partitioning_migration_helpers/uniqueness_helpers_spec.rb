@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::UniquenessHelpers
           ensure_unique_id
         end.not_to raise_error
 
-        expect(migration.trigger_exists?(table_name, trigger_name)).to eq(true)
+        expect(migration.trigger_exists?(table_name, trigger_name)).to be(true)
       end
     end
 

@@ -1214,7 +1214,7 @@ The following analyzers are executed, each of which have different behavior when
   Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
   analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
-The `gemnasium` analyzer scans supports JavaScript projects for vendored libraries
+The `gemnasium` analyzer scans JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).
 
 ### Go

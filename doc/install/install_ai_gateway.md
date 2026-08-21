@@ -117,6 +117,38 @@ To start the FIPS-validated container, replace the image reference in the
 registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway/self-hosted-fips:<ai-gateway-tag>
 ```
 
+#### Verify image signatures
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6439) in GitLab 19.3.
+
+{{< /history >}}
+
+Tagged `self-hosted-fips` images in the container registry are signed with
+[Cosign](https://docs.sigstore.dev/quickstart/quickstart-cosign/) by using
+[keyless signing](../ci/yaml/signing_examples.md).
+The signing identity is the CI/CD configuration that produced the image,
+so GitLab does not publish a signing key.
+
+To verify an image, run the following command:
+
+```shell
+cosign verify \
+  --certificate-oidc-issuer https://gitlab.com \
+  --certificate-identity "https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist//.gitlab-ci.yml@refs/tags/<ai-gateway-tag>" \
+  registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway/self-hosted-fips:<ai-gateway-tag>
+```
+
+The double slash before `.gitlab-ci.yml` is required.
+
+Signatures are stored next to the image as a `sha256-<digest>.sig` tag.
+A mirror that copies only the release tag does not copy the signature.
+To copy an image and its signature, use `cosign copy`.
+
+> [!note]
+> The DockerHub mirror and the standard images are not signed.
+
 ### Start a container from the image
 
 1. Run the following command to start the container:

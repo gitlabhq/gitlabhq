@@ -40,13 +40,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
     it 'return true when column is not present' do
       expect(migration).to receive(:column_exists?).with('test_table', 'id_convert_to_bigint').and_return(false)
 
-      expect(migration.temp_column_removed?(:test_table, :id)).to eq(true)
+      expect(migration.temp_column_removed?(:test_table, :id)).to be(true)
     end
 
     it 'return false when column present' do
       expect(migration).to receive(:column_exists?).with('test_table', 'id_convert_to_bigint').and_return(true)
 
-      expect(migration.temp_column_removed?(:test_table, :id)).to eq(false)
+      expect(migration.temp_column_removed?(:test_table, :id)).to be(false)
     end
   end
 
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
 
       expect(migration).to receive(:columns).with('test_table').and_return(columns)
 
-      expect(migration.columns_swapped?(:test_table, :id)).to eq(true)
+      expect(migration.columns_swapped?(:test_table, :id)).to be(true)
     end
 
     it 'returns false if columns are not yet swapped' do
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
 
       expect(migration).to receive(:columns).with('test_table').and_return(columns)
 
-      expect(migration.columns_swapped?(:test_table, :id)).to eq(false)
+      expect(migration.columns_swapped?(:test_table, :id)).to be(false)
     end
   end
 

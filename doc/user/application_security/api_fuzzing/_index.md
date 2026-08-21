@@ -19,7 +19,7 @@ QA processes might miss.
 
 You should use fuzz testing in addition to the other security scanners in [GitLab Secure](../_index.md)
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),
-you can run fuzz tests as part your CI/CD workflow.
+you can run fuzz tests as part of your CI/CD workflow.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Web API fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
@@ -75,7 +75,7 @@ To view the output of a security scan:
    - Scanner: Identifies which analyzer detected the vulnerability.
    - Method: Establishes the vulnerable server interaction type.
    - URL: Shows the location of the vulnerability.
-   - Evidence: Describes test case to prove the presence of a given vulnerability
+   - Evidence: Describes a test case to prove the presence of a given vulnerability
    - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers.
 
 You can also download the security scan results:
@@ -159,7 +159,7 @@ variables:
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` feature flag.
+with each other. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` feature flag.
 
 ```yaml
 variables:
@@ -226,7 +226,7 @@ When experiencing a behavior not working as expected, consider providing context
   configurations. A check can use multiple Assertions. For example, Log Analysis, Response Analysis,
   and Status Code are common Assertions used together by checks. Checks with multiple Assertions
   allow them to be turned on and off.
-- Check: Performs a specific type of test, or performed a check for a type of vulnerability. For
+- Check: Performs a specific type of test, or performs a check for a type of vulnerability. For
   example, the JSON Fuzzing Check performs fuzz testing of JSON payloads. The API fuzzer is
   comprised of several checks. Checks can be turned on and off in a profile.
 - Fault: During fuzzing, a failure identified by an Assert is called a fault. Faults are

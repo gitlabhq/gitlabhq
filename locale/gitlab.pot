@@ -55853,6 +55853,9 @@ msgstr ""
 msgid "Organization|Accessible without any authentication."
 msgstr ""
 
+msgid "Organization|Admin"
+msgstr ""
+
 msgid "Organization|After confirmation, you cannot:"
 msgstr ""
 
@@ -56112,6 +56115,9 @@ msgstr ""
 msgid "Organization|Search for an organization"
 msgstr ""
 
+msgid "Organization|Search for users to invite"
+msgstr ""
+
 msgid "Organization|Select an organization"
 msgstr ""
 
@@ -56143,6 +56149,9 @@ msgid "Organization|Unconfirmed"
 msgstr ""
 
 msgid "Organization|Update your organization name, description, and avatar. %{linkStart}Learn more about organizations%{linkEnd}."
+msgstr ""
+
+msgid "Organization|User"
 msgstr ""
 
 msgid "Organization|View all"
@@ -93489,6 +93498,9 @@ msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
 msgid "You may close the milestone now."
+msgstr ""
+
+msgid "You may only invite up to %{max} users at a time."
 msgstr ""
 
 msgid "You must %{docs_link} before using Security features."

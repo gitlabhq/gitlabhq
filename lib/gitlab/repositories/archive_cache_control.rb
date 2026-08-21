@@ -36,14 +36,13 @@ module Gitlab
         ::Users::Anonymous.can?(:download_code, project)
       end
 
-      # `include_lfs_blobs` and `exclude_paths` change the archive contents but
-      # are not encoded in ArchivePath, so they must vary the ETag. They are
-      # appended only when non-default (the web archive always uses the defaults),
-      # which keeps the web ETag unchanged.
+      # `include_lfs_blobs` and `exclude_paths` change the archive contents, so they
+      # must vary the ETag. They are appended only when non-default (the web archive
+      # always uses the defaults), which keeps the web ETag unchanged.
       def etag_components
         components = [commit_id, metadata['ArchivePath']]
         components << include_lfs_blobs unless include_lfs_blobs
-        components << exclude_paths if exclude_paths.present?
+        components << Array(exclude_paths).uniq.sort if exclude_paths.present?
         components
       end
 

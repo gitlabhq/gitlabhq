@@ -13,10 +13,12 @@ The following tools are available to custom agents.
 
 | Name | Tool | Description |
 |------|------|-------------|
+| Add Merge Request Reviewers | `add_merge_request_reviewers` | Add reviewers to a merge request without removing existing reviewers. |
 | Add New Task | `add_new_task` | Add a task. |
 | Build Review Merge Request Context | `build_review_merge_request_context` | Build comprehensive merge request context for code review. |
 | CI Linter | `ci_linter` | Validate CI/CD YAML configurations against CI/CD syntax rules. |
 | Confirm Vulnerability | `confirm_vulnerability` | Change the state of a vulnerability in a project to `CONFIRMED`. |
+| Create Branch | `create_branch` | Create a branch in a repository. |
 | Create Commit | `create_commit` | Create a commit with multiple file actions in a repository. |
 | Create Epic | `create_epic` | Create epics in a group. |
 | Create Issue | `create_issue` | Create issues in a project. |
@@ -34,8 +36,10 @@ The following tools are available to custom agents.
 | Get Commit Comments | `get_commit_comments` | Get the comments of a commit in a project. |
 | Get Commit Diff | `get_commit_diff` | Get the diff of a commit in a project. |
 | Get Current User | `get_current_user` | Get the following information about the current user: username, job title, and preferred languages. |
+| Get Downstream Pipelines | `get_downstream_pipelines` | Get the URLs for downstream pipelines. |
 | Get Epic | `get_epic` | Get an epic in a group. |
 | Get Epic Note | `get_epic_note` | Get a note from an epic. |
+| Get Failing Bridge Jobs | `get_failing_bridge_jobs` | Get the failed bridge jobs in a pipeline and the URL of each downstream pipeline. |
 | Get Issue | `get_issue` | Get an issue from a project. |
 | Get Issue Note | `get_issue_note` | Get a note from an issue. |
 | Get Job Logs | `get_job_logs` | Get the trace for a job. |
@@ -46,6 +50,7 @@ The following tools are available to custom agents.
 | Get Previous Session Context | `get_previous_session_context` | Get context from a previous session. |
 | Get Project | `get_project` | Get details about a project. |
 | Get Repository File | `get_repository_file` | Get the contents of a file from a remote repository. |
+| Get Repository Files | `get_repository_files` | Get the contents of multiple files from a repository in a single call. |
 | Get Security Finding Details | `get_security_finding_details` | Get the details of a potential vulnerability by its ID and the ID of the pipeline scan that identified it. |
 | Get Vulnerability Details | `get_vulnerability_details` | Get the following information about a vulnerability specified by ID: basic vulnerability information, location details, CVE enrichment data, detection pipeline information, and detailed vulnerability report data. |
 | Get Wiki Page | `get_wiki_page` | Get a wiki page from a project or group, including all its comments. |
@@ -75,18 +80,21 @@ The following tools are available to custom agents.
 | List Issue Notes | `list_issue_notes` | List all notes on an issue. |
 | List Issues | `list_issues` | List all issues in a project. |
 | List Merge Request Diffs | `list_merge_request_diffs` | List the diffs of changed files in a merge request. |
+| List MR Discussions | `list_mr_discussions` | List discussion threads on a merge request. |
 | List Project Audit Events | `list_project_audit_events` | List audit events for a project. You must have the Owner role to access project audit events. |
 | List Repository Tree | `list_repository_tree` | List files and directories in a repository. |
 | List Security Findings | `list_security_findings` | List ephemeral security findings from a specific pipeline security scan. |
 | List Vulnerabilities | `list_vulnerabilities` | List security vulnerabilities in a project. |
 | List Work Items | `list_work_items` | List work items in a project or group. |
-| Post GitLab Duo Code Review | `post_duo_code_review` | Post a GitLab Duo code review to a merge request. |
 | Post SAST FP Analysis To GitLab | `post_sast_fp_analysis_to_gitlab` | Post SAST false positive detection analysis results. |
 | Remove Task | `remove_task` | Remove a task from a list of tasks. |
+| Reply To Discussion | `reply_to_discussion` | Reply to a discussion thread on a merge request. |
 | Revert To Detected Vulnerability | `revert_to_detected_vulnerability` | Revert a vulnerability's state to `detected`. |
 | Run GLQL Query | `run_glql_query` | Execute GLQL queries for work items, epics, and merge requests. |
 | Run Tests | `run_tests` | Execute test commands for any language or framework. |
+| Set Discussion Resolved | `set_discussion_resolved` | Set the resolved status of a discussion thread on a merge request. |
 | Set Task Status | `set_task_status` | Set the status of a task. |
+| Submit MR Review | `submit_mr_review` | Submit a merge request review with inline diff comments, a verdict, and an optional summary note. |
 | Update Epic | `update_epic` | Update an epic in a group. |
 | Update Issue | `update_issue` | Update an issue in a project. |
 | Update Merge Request | `update_merge_request` | Update a merge request. You can change the target branch, edit the title, or even close the MR. |

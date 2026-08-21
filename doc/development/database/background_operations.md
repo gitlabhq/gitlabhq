@@ -135,13 +135,13 @@ Please see [how-to](#how-to) sections for more details on how to create these BO
 
 - Workers specific to the organization getting moved will be [stopped](https://gitlab.com/gitlab-org/gitlab/blob/b81c166a3113c618ab9eefafdc370371ce089e72/lib/gitlab/database/background_operation/common_worker.rb#L124)
 in the source cell, moved (since they have the corresponding sharding key) and then restarted from the target cell.
-- Also these workers will skip processing while the organization is in read-only mode. This will be implemented once
-  Organization [read-only mode](https://gitlab.com/groups/gitlab-org/-/work_items/20404) gets shipped.
+- Also these workers will skip processing while the organization is in maintenance mode. This will be implemented once
+  Organization [maintenance mode](https://gitlab.com/groups/gitlab-org/-/work_items/20404) gets shipped.
 - The data related to these workers will be migrated to the target cell. Execution of these workers will continue on the target once the organization is fully migrated.
 
 **Cell local:**
 
-When the organization enters the read-only mode, background operations scheduler will be paused (using the [FF](https://gitlab.com/gitlab-org/gitlab/blob/c90095a440e72fbf6801f44c1a5cdfbad991cb9a/app/workers/database/background_operation/base_scheduler_worker.rb#L14)) and the queue will be drained in the source cell.
+When the organization enters the maintenance mode, background operations scheduler will be paused (using the [FF](https://gitlab.com/gitlab-org/gitlab/blob/c90095a440e72fbf6801f44c1a5cdfbad991cb9a/app/workers/database/background_operation/base_scheduler_worker.rb#L14)) and the queue will be drained in the source cell.
 It will be resumed post migration in both source and the target cell.
 
 Since cell-local workers are created only from recurring cronjobs ([work_items/603423](https://gitlab.com/gitlab-org/gitlab/-/work_items/603423)), upcoming cronjobs will handle the unprocessed data in the target cell.

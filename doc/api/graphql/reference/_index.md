@@ -69216,8 +69216,8 @@ State of an organization.
 | <a id="organizationstate-active"></a>`ACTIVE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.0. Status: Experiment. Active organization. |
 | <a id="organizationstate-confirmed"></a>`CONFIRMED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.0. Status: Experiment. Confirmed organization. |
 | <a id="organizationstate-deletion_in_progress"></a>`DELETION_IN_PROGRESS` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.0. Status: Experiment. Deletion In Progress organization. |
-| <a id="organizationstate-read_only"></a>`READ_ONLY` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Read Only organization. |
-| <a id="organizationstate-read_only_initialization"></a>`READ_ONLY_INITIALIZATION` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Read Only Initialization organization. |
+| <a id="organizationstate-maintenance"></a>`MAINTENANCE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Maintenance organization. |
+| <a id="organizationstate-maintenance_initialization"></a>`MAINTENANCE_INITIALIZATION` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Maintenance Initialization organization. |
 | <a id="organizationstate-soft_deleted"></a>`SOFT_DELETED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.0. Status: Experiment. Soft Deleted organization. |
 | <a id="organizationstate-unconfirmed"></a>`UNCONFIRMED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.0. Status: Experiment. Unconfirmed organization. |
 

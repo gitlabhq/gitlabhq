@@ -31,7 +31,7 @@ module Gitlab
       read_only: 'The repository is temporarily read-only. Please try again later.',
       archived: "You can't push code to an archived project.",
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
-      organization_read_only: 'Git push is not allowed because this organization is currently in read-only mode.',
+      organization_maintenance: 'Git push is not allowed because this organization is currently in maintenance mode.',
       push_code: 'You are not allowed to push code to this project.'
     }.freeze
 
@@ -348,17 +348,17 @@ module Gitlab
         raise ForbiddenError, push_to_read_only_message
       end
 
-      check_organization_read_only!
+      check_organization_maintenance!
     end
 
-    def check_organization_read_only!
+    def check_organization_maintenance!
       return unless container.respond_to?(:organization)
 
       organization = container.organization
-      return unless organization&.read_only?
-      return unless Feature.enabled?(:organization_read_only_enforcement, organization)
+      return unless organization&.maintenance?
+      return unless Feature.enabled?(:organization_maintenance_enforcement, organization)
 
-      raise ForbiddenError, error_message(:organization_read_only)
+      raise ForbiddenError, error_message(:organization_maintenance)
     end
 
     def check_repository_existence!

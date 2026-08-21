@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
   describe '.has_config?' do
     context 'three tier database config' do
       it 'returns true for main' do
-        expect(described_class.has_config?(:main)).to eq(true)
+        expect(described_class.has_config?(:main)).to be(true)
       end
 
       context 'ci' do
@@ -110,20 +110,20 @@ RSpec.describe Gitlab::Database, feature_category: :database do
         let(:ci_db_config) { instance_double('ActiveRecord::DatabaseConfigurations::HashConfig') }
 
         it 'returns true for ci' do
-          expect(described_class.has_config?(:ci)).to eq(true)
+          expect(described_class.has_config?(:ci)).to be(true)
         end
 
         context 'ci database.yml not configured' do
           let(:ci_db_config) { nil }
 
           it 'returns false for ci' do
-            expect(described_class.has_config?(:ci)).to eq(false)
+            expect(described_class.has_config?(:ci)).to be(false)
           end
         end
       end
 
       it 'returns false for non-existent' do
-        expect(described_class.has_config?(:nonexistent)).to eq(false)
+        expect(described_class.has_config?(:nonexistent)).to be(false)
       end
     end
   end
@@ -131,18 +131,18 @@ RSpec.describe Gitlab::Database, feature_category: :database do
   describe '.has_database?' do
     context 'three tier database config' do
       it 'returns true for main' do
-        expect(described_class.has_database?(:main)).to eq(true)
+        expect(described_class.has_database?(:main)).to be(true)
       end
 
       it 'returns false for shared database' do
         skip_if_multiple_databases_not_setup(:ci)
         skip_if_database_exists(:ci)
 
-        expect(described_class.has_database?(:ci)).to eq(false)
+        expect(described_class.has_database?(:ci)).to be(false)
       end
 
       it 'returns false for non-existent' do
-        expect(described_class.has_database?(:nonexistent)).to eq(false)
+        expect(described_class.has_database?(:nonexistent)).to be(false)
       end
     end
   end
@@ -599,13 +599,13 @@ RSpec.describe Gitlab::Database, feature_category: :database do
 
   describe '.read_only?' do
     it 'returns false' do
-      expect(described_class.read_only?).to eq(false)
+      expect(described_class.read_only?).to be(false)
     end
   end
 
   describe '.read_write' do
     it 'returns true' do
-      expect(described_class.read_write?).to eq(true)
+      expect(described_class.read_write?).to be(true)
     end
   end
 

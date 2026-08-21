@@ -228,15 +228,15 @@ class GraphqlController < ApplicationController
   # (https://gitlab.com/gitlab-org/gitlab/-/issues/607966).
   def disallow_requests_for_organization_maintenance_mode
     organization = ::Current.organization
-    return unless organization&.read_only_enforced?
+    return unless organization&.maintenance_enforced?
 
-    if organization.read_only_time_bounded?
+    if organization.maintenance_time_bounded?
       raise ::Gitlab::Graphql::Errors::TimeBoundedOrganizationMaintenanceModeError.new(
-        organization.read_only_message,
+        organization.maintenance_message,
         headers: { 'Retry-After' => ::Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s })
     else
       raise ::Gitlab::Graphql::Errors::IndefiniteOrganizationMaintenanceModeError,
-        organization.read_only_message
+        organization.maintenance_message
     end
   end
 

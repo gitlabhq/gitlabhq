@@ -13,7 +13,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
     result = ClickHouse::Client.execute("SELECT 1 AS value", :main)
 
     # does not return data, just true if successful. Otherwise error.
-    expect(result).to eq(true)
+    expect(result).to be(true)
   end
 
   describe 'data manipulation' do
@@ -166,7 +166,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
       result = ClickHouse::Client.execute("SELECT 1 AS value", :main)
 
       # does not return data, just true if successful. Otherwise, error.
-      expect(result).to eq(true)
+      expect(result).to be(true)
     end
   end
 end

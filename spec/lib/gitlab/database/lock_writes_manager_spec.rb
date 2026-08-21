@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
 
   describe "#table_locked_for_writes?" do
     it 'returns false for a table that is not locked for writes' do
-      expect(subject.table_locked_for_writes?).to eq(false)
+      expect(subject.table_locked_for_writes?).to be(false)
     end
 
     it 'returns true for a table that is locked for writes' do

@@ -42,7 +42,7 @@ You can replace `registry.gitlab.com/security-products/gemnasium-python:5` with 
 
 ### Working around missing support for certain languages or package managers
 
-As noted in the [Supported languages](_index.md#supported-languages-and-package-managers) some
+As noted in the [Supported languages](_index.md#supported-languages-and-package-managers), some
 dependency definition files are not yet supported. However, dependency scanning can be achieved if
 the language, a package manager, or a third-party tool can convert the definition file into a
 supported format.
@@ -53,7 +53,7 @@ Generally, the approach is the following:
    Use a suitable Docker image, script, or both to facilitate the conversion.
 1. Let that job upload the converted, supported file as an artifact.
 1. Add [`dependencies: [<your-converter-job>]`](../../../../ci/yaml/_index.md#dependencies)
-   to your `dependency_scanning` job to make use of the converted definitions files.
+   to your `dependency_scanning` job to make use of the converted definition files.
 
 For example, Poetry projects that only have a `pyproject.toml`
 file can generate the `poetry.lock` file as follows.

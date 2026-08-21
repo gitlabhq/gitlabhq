@@ -287238,14 +287238,14 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
             },
             {
-              "name": "READ_ONLY_INITIALIZATION",
-              "description": "Read Only Initialization organization. Introduced in GitLab 19.2: Status: Experiment.",
+              "name": "MAINTENANCE_INITIALIZATION",
+              "description": "Maintenance Initialization organization. Introduced in GitLab 19.2: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
-              "name": "READ_ONLY",
-              "description": "Read Only organization. Introduced in GitLab 19.2: Status: Experiment.",
+              "name": "MAINTENANCE",
+              "description": "Maintenance organization. Introduced in GitLab 19.2: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             }

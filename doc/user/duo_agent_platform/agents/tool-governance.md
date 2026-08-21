@@ -60,7 +60,8 @@ enforcement depends on where the flow runs:
 
 | Classification | Mode |
 |------|------|
-| Read | Always Allow |
+| Read (GitLab resources) | Always Allow |
+| Read (local files) | Always Ask |
 | Write | Always Ask |
 | Delete | Always Ask |
 
@@ -95,7 +96,7 @@ Rules are resolved in the following order, from most specific to least specific:
 Project-level rules override group-level rules for the same tool, but can
 only be equal to or stricter than the group-level rule. Group-level rules
 override the defaults. If no rule is configured at any level, the tool
-defaults to Always Allow.
+uses the default governance matrix value.
 
 The fail-closed principle applies. If the governance service encounters
 a persistent error when resolving rules, the agent receives no tools rather

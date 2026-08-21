@@ -482,7 +482,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         skip_if_multiple_databases_are_setup(:ci)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when running in a multiple database mode' do
@@ -491,7 +491,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
       end
 
       context 'with main data in ci database' do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context 'with no main data in ci datatabase' do
@@ -502,7 +502,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           )
         end
 
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
 
         it 'supresses some QueryAnalyzers' do
           expect(

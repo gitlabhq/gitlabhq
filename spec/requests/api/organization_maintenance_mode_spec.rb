@@ -27,8 +27,8 @@ RSpec.describe API::Projects, :with_current_organization, :without_current_organ
 
   before_all do
     project.add_maintainer(user)
-    maintenance_mode_organization.start_read_only(read_only_reason: 'migration')
-    maintenance_mode_organization.confirm_read_only
+    maintenance_mode_organization.start_maintenance(maintenance_reason: 'migration')
+    maintenance_mode_organization.confirm_maintenance
   end
 
   shared_examples 'a maintenance mode organization blocked request' do
@@ -41,9 +41,9 @@ RSpec.describe API::Projects, :with_current_organization, :without_current_organ
     end
   end
 
-  context 'when organization read-only enforcement is enabled' do
+  context 'when organization maintenance enforcement is enabled' do
     before do
-      stub_feature_flags(organization_read_only_enforcement: true)
+      stub_feature_flags(organization_maintenance_enforcement: true)
     end
 
     describe 'POST /projects' do
@@ -123,8 +123,8 @@ RSpec.describe API::Projects, :with_current_organization, :without_current_organ
 
       before_all do
         indefinite_project.add_maintainer(indefinite_user)
-        indefinite_organization.start_read_only(read_only_reason: 'legal')
-        indefinite_organization.confirm_read_only
+        indefinite_organization.start_maintenance(maintenance_reason: 'legal')
+        indefinite_organization.confirm_maintenance
       end
 
       it 'blocks write requests with forbidden and no Retry-After header', :aggregate_failures do
@@ -157,9 +157,9 @@ RSpec.describe API::Projects, :with_current_organization, :without_current_organ
     end
   end
 
-  context 'when organization read-only enforcement is disabled' do
+  context 'when organization maintenance enforcement is disabled' do
     before do
-      stub_feature_flags(organization_read_only_enforcement: false)
+      stub_feature_flags(organization_maintenance_enforcement: false)
     end
 
     it 'allows write requests for maintenance mode organizations' do

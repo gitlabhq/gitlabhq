@@ -258,7 +258,8 @@ module API
         archive_builder = Gitlab::Repositories::ArchiveHeaderBuilder.new(
           user_project.repository, ref: params[:sha], format: params[:format], append_sha: true,
           path: params[:path], ref_type: params[:ref_type],
-          storage_path: Gitlab.config.gitlab.repository_downloads_path
+          storage_path: Gitlab.config.gitlab.repository_downloads_path,
+          include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
         )
 
         set_repository_archive_cache_headers!(

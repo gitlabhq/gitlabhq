@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Database::DatabaseConnectionInfo, feature_category: :cell
       it 'does return nil when it is not connection_class' do
         expect(Ci::ApplicationRecord).to receive(:connection_class).and_return(false)
 
-        expect(subject.connection_class).to eq(nil)
+        expect(subject.connection_class).to be_nil
       end
     end
   end

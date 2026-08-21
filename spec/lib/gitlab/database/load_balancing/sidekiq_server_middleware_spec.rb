@@ -402,7 +402,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   describe '#databases_in_sync?' do
     it 'treats load balancers without WAL entries as in sync' do
       expect(middleware.send(:databases_in_sync?, {}))
-        .to eq(true)
+        .to be(true)
     end
 
     it 'returns true when all load balancers are in sync for some replicas' do
@@ -418,7 +418,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       end
 
       expect(middleware.send(:databases_in_sync?, locations))
-        .to eq(true)
+        .to be(true)
     end
 
     it 'returns true when all load balancers are in sync for all replicas' do
@@ -434,7 +434,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       end
 
       expect(middleware.send(:databases_in_sync?, locations))
-        .to eq(true)
+        .to be(true)
     end
 
     it 'returns false when the load balancers are not in sync' do
@@ -450,7 +450,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       end
 
       expect(middleware.send(:databases_in_sync?, locations))
-        .to eq(false)
+        .to be(false)
     end
 
     context 'when locations have string keys' do
@@ -467,7 +467,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         end
 
         expect(middleware.send(:databases_in_sync?, locations))
-          .to eq(false)
+          .to be(false)
       end
     end
   end

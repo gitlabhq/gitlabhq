@@ -349,7 +349,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
       expect(results[migration1.id]).to eq(1000)
       expect(results[migration2.id]).to eq(500)
-      expect(results[migration_without_jobs.id]).to eq(nil)
+      expect(results[migration_without_jobs.id]).to be_nil
     end
   end
 
@@ -379,7 +379,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       let(:batched_migration) { build(:batched_background_migration) }
 
       it 'returns true' do
-        expect(batched_migration.interval_elapsed?).to eq(true)
+        expect(batched_migration.interval_elapsed?).to be(true)
       end
     end
 
@@ -394,7 +394,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
               batched_migration: batched_migration,
               created_at: Time.current - 1.minute)
 
-            expect(batched_migration.interval_elapsed?).to eq(false)
+            expect(batched_migration.interval_elapsed?).to be(false)
           end
         end
       end
@@ -406,7 +406,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
               batched_migration: batched_migration,
               created_at: Time.current - 2.minutes)
 
-            expect(batched_migration.interval_elapsed?).to eq(true)
+            expect(batched_migration.interval_elapsed?).to be(true)
           end
         end
       end
@@ -418,7 +418,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
               batched_migration: batched_migration,
               created_at: Time.current - 3.minutes)
 
-            expect(batched_migration.interval_elapsed?).to eq(true)
+            expect(batched_migration.interval_elapsed?).to be(true)
           end
         end
       end
@@ -433,7 +433,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
                 batched_migration: batched_migration,
                 created_at: Time.current - 1.minute - 57.seconds)
 
-              expect(batched_migration.interval_elapsed?(variance: variance)).to eq(false)
+              expect(batched_migration.interval_elapsed?(variance: variance)).to be(false)
             end
           end
         end
@@ -445,7 +445,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
                 batched_migration: batched_migration,
                 created_at: Time.current - 1.minute - 58.seconds)
 
-              expect(batched_migration.interval_elapsed?(variance: variance)).to eq(true)
+              expect(batched_migration.interval_elapsed?(variance: variance)).to be(true)
             end
           end
         end

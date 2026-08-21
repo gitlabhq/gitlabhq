@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost, feature_category: :
 
   describe '#online?' do
     it 'returns true' do
-      expect(host.online?).to eq(true)
+      expect(host.online?).to be(true)
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost, feature_category: :
 
   describe '#caught_up?' do
     it 'returns true' do
-      expect(host.caught_up?('foo')).to eq(true)
+      expect(host.caught_up?('foo')).to be(true)
     end
   end
 

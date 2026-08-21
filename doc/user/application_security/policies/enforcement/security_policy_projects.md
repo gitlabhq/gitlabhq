@@ -16,7 +16,7 @@ title: Security policy projects
 Security policy projects enforce policies across multiple projects. A security policy project is a
 special type of project used only to contain policies. To enforce the policies contained in a
 security policy project, link the security policy project to the projects, subgroups, or groups
-you want to enforce the policies on. A security policy project can contain multiple policies but they are
+you want to enforce the policies on. A security policy project can contain multiple policies, but they are
 enforced together. A security policy project enforced on a group or subgroup applies to everything
 below in the hierarchy, including all subgroups and their projects.
 

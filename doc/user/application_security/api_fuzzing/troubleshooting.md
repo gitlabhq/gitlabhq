@@ -61,7 +61,7 @@ Once you have confirmed the issue was produced because the port was already take
 **Solution**
 
 1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `FUZZAPI_API_PORT`.
-1. Update the value of `FUZZAPI_API_PORT` to any available port number greater than 1024. Check that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
+1. Update the value of `FUZZAPI_API_PORT` to any available port number greater than 1024. Check that the new value is not in use by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
 
 ## Error: `Errors were found during validation of the document using the published OpenAPI schema`
 
@@ -95,7 +95,7 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 **For manually created OpenAPI Specifications**
 
 1. Identify the validation errors.
-   1. The simplest solution is to use a visual tool to edit and validate the OpenAPI document. For example the [Swagger Editor](https://editor.swagger.io/) highlights schema errors and possible solutions.
+   1. The simplest solution is to use a visual tool to edit and validate the OpenAPI document. For example, the [Swagger Editor](https://editor.swagger.io/) highlights schema errors and possible solutions.
    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
 1. After the validation issues are resolved, re-run your pipeline.
 
@@ -114,7 +114,7 @@ The API fuzzing engine outputs an error message when it cannot establish a conne
 
 ## `Application cannot determine the base URL for the target API`
 
-The API fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml`file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
+The API fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
 There is an order of precedence in which the API fuzzing analyzer tries to get the target API when checking the different sources. First, it tries to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API fuzzing analyzer attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API fuzzing analyzer now uses the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
 
@@ -127,9 +127,9 @@ The best-suited solution depends on whether or not your target API changes for e
 
 This solution is for pipelines in which the target API URL doesn't change (is static).
 
-**Add environmental variable**
+**Add environment variable**
 
-For environments where the target API remains the same, You should specify the target URL by using the `FUZZAPI_TARGET_URL` environment variable. In your `.gitlab-ci.yml` file, add a variable `FUZZAPI_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
+For environments where the target API remains the same, you should specify the target URL by using the `FUZZAPI_TARGET_URL` environment variable. In your `.gitlab-ci.yml` file, add a variable `FUZZAPI_TARGET_URL`. The variable must be set to the base URL of the API testing target. For example:
 
 ```yaml
 stages:
@@ -294,11 +294,11 @@ ERROR: Job failed: failed to pull image "registry.example.com/my-target-app:late
 
 **Solution**
 
-Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If you're using a container registry provided by a third party, such as a cloud provider (Azure, Google Cloud (GCP), AWS, and so on), check the providers documentation for information on how to authenticate to their container registries.
+Authentication credentials are provided using the methods outlined in the [Access an image from a private container registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If you're using a container registry provided by a third party, such as a cloud provider (Azure, Google Cloud (GCP), AWS, and so on), check the provider's documentation for information on how to authenticate to their container registries.
 
 The following example uses the [statically defined credentials](../../../ci/docker/using_docker_images.md#use-statically-defined-credentials) authentication method. In this example the container registry is `registry.example.com` and image is `my-target-app:latest`.
 
-1. Read how to [Determine your `DOCKER_AUTH_CONFIG` data](../../../ci/docker/using_docker_images.md#determine-your-docker_auth_config-data) to understand how to compute the variable value for `DOCKER_AUTH_CONFIG`. The configuration variable `DOCKER_AUTH_CONFIG` contains the Docker JSON configuration to provide the appropriate authentication information. For example, to access private container registry: `registry.example.com` with the credentials `abcdefghijklmn`, the Docker JSON looks like:
+1. Read how to [Determine your `DOCKER_AUTH_CONFIG` data](../../../ci/docker/using_docker_images.md#determine-your-docker_auth_config-data) to understand how to compute the variable value for `DOCKER_AUTH_CONFIG`. The configuration variable `DOCKER_AUTH_CONFIG` contains the Docker JSON configuration to provide the appropriate authentication information. For example, to access a private container registry: `registry.example.com` with the credentials `abcdefghijklmn`, the Docker JSON looks like:
 
    ```json
    {
@@ -310,8 +310,8 @@ The following example uses the [statically defined credentials](../../../ci/dock
    }
    ```
 
-1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file you should create a project [CI/CD variable](../../../ci/variables/_index.md#for-a-project).
-1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If succeeded the job console shows an output like:
+1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file, you should create a project [CI/CD variable](../../../ci/variables/_index.md#for-a-project).
+1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If successful, the job console shows an output like:
 
    ```log
    Running with gitlab-runner 15.6.0~beta.186.ga889181a (a889181a)
@@ -333,7 +333,7 @@ The following example uses the [statically defined credentials](../../../ci/dock
 
 Starting with v5 of the analyzer, a non-root user is used by default. This requires the use of `sudo` when performing privileged operations.
 
-This error occurs with a specific container daemon setup that prevents running containers from obtaining new permissions. In most settings, this is not the default configuration, it's something specifically configured, often as part of a security hardening guide.
+This error occurs with a specific container daemon setup that prevents running containers from obtaining new permissions. In most settings, this is not the default configuration. It's something specifically configured, often as part of a security hardening guide.
 
 **Error message**
 
@@ -351,7 +351,7 @@ sudo: If sudo is running in a container, you may need to adjust the container co
 
 This issue can be worked around in the following ways:
 
-- Run the container as the `root` user. It's recommended to test this configuration as it may not work in all cases. This can be done by modifying the CICD configuration and checking the job output to make sure that `whoami` returns `root` and not `gitlab`. If `gitlab` is displayed, use another workaround. Once tested the `before_script` can be removed.
+- Run the container as the `root` user. It's recommended to test this configuration as it may not work in all cases. This can be done by modifying the CICD configuration and checking the job output to make sure that `whoami` returns `root` and not `gitlab`. If `gitlab` is displayed, use another workaround. Once tested, the `before_script` can be removed.
 
   ```yaml
   apifuzzer_fuzz:
@@ -377,7 +377,7 @@ This issue can be worked around in the following ways:
   17:17:14 [INF] API Security: version: 5.7.0
   ```
 
-- Wrap the container and add any dependencies at build time. This option has the benefit of running with lower privileges than root which may be a requirement for some customers.
+- Wrap the container and add any dependencies at build time. This option has the benefit of running with lower privileges than root, which may be a requirement for some customers.
 
   1. Create a new `Dockerfile` that wraps the existing image.
 

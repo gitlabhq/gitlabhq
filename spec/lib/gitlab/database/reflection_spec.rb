@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
       it 'returns true' do
         allow(database).to receive(:adapter_name).and_return('PostgreSQL')
 
-        expect(database.postgresql?).to eq(true)
+        expect(database.postgresql?).to be(true)
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
       it 'returns false' do
         allow(database).to receive(:adapter_name).and_return('MySQL')
 
-        expect(database.postgresql?).to eq(false)
+        expect(database.postgresql?).to be(false)
       end
     end
   end
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
         .with('SELECT pg_is_in_recovery()')
         .and_return("t")
 
-      expect(database.primary?).to eq(false)
+      expect(database.primary?).to be(false)
     end
 
     it 'detects a read-only database' do
@@ -130,7 +130,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
         .with('SELECT pg_is_in_recovery()')
         .and_return(true)
 
-      expect(database.primary?).to eq(false)
+      expect(database.primary?).to be(false)
     end
 
     it 'detects a read-write database' do
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
         .with('SELECT pg_is_in_recovery()')
         .and_return("f")
 
-      expect(database.primary?).to eq(true)
+      expect(database.primary?).to be(true)
     end
 
     it 'detects a read-write database' do
@@ -148,7 +148,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
         .with('SELECT pg_is_in_recovery()')
         .and_return(false)
 
-      expect(database.primary?).to eq(true)
+      expect(database.primary?).to be(true)
     end
   end
 
@@ -182,37 +182,37 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
     it 'returns false when using PostgreSQL 12' do
       allow(database).to receive(:version).and_return('12')
 
-      expect(database.postgresql_minimum_supported_version?).to eq(false)
+      expect(database.postgresql_minimum_supported_version?).to be(false)
     end
 
     it 'returns falses when using PostgreSQL 13' do
       allow(database).to receive(:version).and_return('13')
 
-      expect(database.postgresql_minimum_supported_version?).to eq(false)
+      expect(database.postgresql_minimum_supported_version?).to be(false)
     end
 
     it 'returns false when using PostgreSQL 14' do
       allow(database).to receive(:version).and_return('14')
 
-      expect(database.postgresql_minimum_supported_version?).to eq(false)
+      expect(database.postgresql_minimum_supported_version?).to be(false)
     end
 
     it 'returns false when using PostgreSQL 15' do
       allow(database).to receive(:version).and_return('15')
 
-      expect(database.postgresql_minimum_supported_version?).to eq(false)
+      expect(database.postgresql_minimum_supported_version?).to be(false)
     end
 
     it 'returns false when using PostgreSQL 16' do
       allow(database).to receive(:version).and_return('16')
 
-      expect(database.postgresql_minimum_supported_version?).to eq(false)
+      expect(database.postgresql_minimum_supported_version?).to be(false)
     end
 
     it 'returns true when using PostgreSQL 17' do
       allow(database).to receive(:version).and_return('17')
 
-      expect(database.postgresql_minimum_supported_version?).to eq(true)
+      expect(database.postgresql_minimum_supported_version?).to be(true)
     end
   end
 

@@ -33,7 +33,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-Dependency scanning can run in the development phase of your application's lifecycle. Using the new
+Dependency scanning can run in the development phase of your application's lifecycle. When you use the new
 dependency scanning analyzer in CI/CD pipelines, project dependencies are detected and reported in CycloneDX
 SBOM reports. Security findings are identified and compared between the source
 and target branches. Findings and their severity are listed in the merge request, enabling you to
@@ -106,7 +106,7 @@ without changing your CI/CD configuration.
 
 ### Maintenance policy
 
-GitLab follows the [release and maintenance policy](../../../../policy/maintenance.md),
+GitLab follows the [release and maintenance policy](../../../../policy/maintenance.md)
 to provide bug fixes for the current stable release and security fixes for the
 previous two monthly releases.
 
@@ -433,7 +433,7 @@ These variables can replace spec inputs and are also compatible with the beta `l
 | `ANALYZER_ARTIFACT_DIR`                        | Directory where CycloneDX reports (SBOMs) are saved. Default `${CI_PROJECT_DIR}/sca-artifacts`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `DEPENDENCY_SCANNING_DISABLED`                 | When set to `"true"` or `"1"`, disables all dependency scanning jobs. Default: not set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_EXCLUDED_ANALYZERS`                        | Specify the analyzers (by name) to exclude from dependency scanning.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `DS_EXCLUDED_PATHS`                            | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [exclude paths from scanning](#exclude-paths-from-scanning) for matching rules. This is a pre-filter which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
+| `DS_EXCLUDED_PATHS`                            | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). See [exclude paths from scanning](#exclude-paths-from-scanning) for matching rules. This is a pre-filter, which is applied before the scan is executed. Applies both for dependency detection and static reachability. Default: `"**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git"`. |
 | `DS_MAX_DEPTH`                                 | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`.                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `DS_INCLUDE_DEV_DEPENDENCIES`                  | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"`                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `DS_PIP_MANIFEST_FILE_NAME_PATTERN`            | Defines which pip manifest files to process for dependency resolution and manifest scanning, using glob pattern matching (for example, `custom-requirements.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details.                                                                                                                                                                                                         |
@@ -596,8 +596,8 @@ arbitrary code at startup, including:
 
 Anyone who can set these CI/CD variables or modify the project's build
 files can cause arbitrary code to execute in the resolution job. The resolution
-job runs with `CI_JOB_TOKEN`, access masked CI/CD variables in scope, and
-read or write to the project repository for the duration of the job.
+job runs with `CI_JOB_TOKEN`, accesses masked CI/CD variables in scope, and
+reads or writes to the project repository for the duration of the job.
 
 This property is inherent to ecosystem-native build tooling, and not
 specific to dependency scanning. Treat the resolution job as a sensitive
@@ -641,7 +641,6 @@ Therefore, the generated dependency graph may not reflect the exact set of depen
 project's actual build environment. Differences can arise from the fixed runtime version, unresolved environment markers,
 platform-specific dependencies, or conditional dependency groups that depend on build-time context unavailable in the resolution job.
 
-For the most accurate results, provide a lockfile or dependency graph export generated in your own build environment,
 For projects with highly customized builds that are not adequately covered by dependency resolution workflows,
 you should provide a lockfile or dependency graph export generated in your own build environment
 as described in [Create lockfile or dependency graph export manually](#create-lockfile-or-dependency-graph-export-manually).
@@ -1240,7 +1239,7 @@ include:
 
 The dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning.
 
-This separation of concerns and the modularity of this architecture allows to better support customers through expansion
+This separation of concerns and the modularity of this architecture allows us to better support customers through expansion
 of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard
 report types.
 
@@ -1248,7 +1247,7 @@ When [dependency resolution](#dependency-resolution) is enabled, resolution jobs
 the `.pre` stage before the `dependency-scanning` job. These jobs generate lockfiles
 or dependency graph exports as artifacts, which the `dependency-scanning` job then consumes.
 
-The overall flow of dependency scanning is illustrated below
+The overall flow of dependency scanning is illustrated below.
 
 ```mermaid
 flowchart TD
@@ -1281,29 +1280,29 @@ flowchart TD
     REPORT --> END
 ```
 
-In the dependency detection phase the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
+In the dependency detection phase, the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
 
-In the static reachability phase the analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
+In the static reachability phase, the analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
 This allows users to prioritize vulnerabilities based on whether the vulnerable component is reachable.
 For more information, see the [static reachability page](../static_reachability.md).
 
 The SBOM documents are temporarily uploaded to the GitLab instance via the dependency scanning SBOM API.
-The GitLab SBOM vulnerability scanner engine matches the SBOM components against advisories to generate a list of findings which is returned to the analyzer for inclusion in the dependency scanning report.
+The GitLab SBOM vulnerability scanner engine matches the SBOM components against advisories to generate a list of findings, which is returned to the analyzer for inclusion in the dependency scanning report.
 
-The API makes use of the default `CI_JOB_TOKEN` for authentication. Overriding the `CI_JOB_TOKEN` value with a different token might lead to 403 - forbidden responses from the API.
+The API makes use of the default `CI_JOB_TOKEN` for authentication. Overriding the `CI_JOB_TOKEN` value with a different token might lead to 403 Forbidden responses from the API.
 
 Users can configure the analyzer client that communicates with the dependency scanning SBOM API by using:
 
 - `vulnerability_scan_api_timeout` or `DS_API_TIMEOUT`
 - `vulnerability_scan_api_download_delay` or `DS_API_SCAN_DOWNLOAD_DELAY`
 
-For more information see [available spec inputs](#available-spec-inputs) and [available CI/CD variables](#available-cicd-variables).
+For more information, see [available spec inputs](#available-spec-inputs) and [available CI/CD variables](#available-cicd-variables).
 
 The generated reports are uploaded to the GitLab instance when the CI job completes and usually processed after pipeline completion.
 
-The SBOM reports are used to support other SBOM based features like the [dependency list](../../dependency_list/_index.md), [license scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md) or [continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md).
+The SBOM reports are used to support other SBOM based features like the [dependency list](../../dependency_list/_index.md), [license scanning](../../../compliance/license_scanning_of_cyclonedx_files/_index.md), or [continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md).
 
-The dependency scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md)
+The dependency scanning report follows the generic process for [security scanning results](../../detect/security_scanning_results.md):
 
 - If the dependency scanning report is declared by a CI/CD job on the default branch: vulnerabilities are created,
   and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
@@ -1457,7 +1456,7 @@ This approach ensures that:
 ## Other ways of enabling the new dependency scanning feature
 
 We strongly suggest you enable the dependency scanning feature using the `v2` template.
-In case this is not possible you can choose one of the following ways:
+In case this is not possible, you can choose one of the following ways.
 
 ### Using the `latest` template
 
@@ -1468,7 +1467,7 @@ Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.
 
 - The (deprecated) Gemnasium analyzer is used by default.
 - To enable the new dependency scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- A [supported lockfile, dependency graph export manually](#create-lockfile-or-dependency-graph-export-manually), or [trigger file](#trigger-files-for-the-latest-template) must exist in the repository to create the `dependency-scanning` job in pipelines.
+- A [supported lockfile or dependency graph export](#create-lockfile-or-dependency-graph-export-manually), or [trigger file](#trigger-files-for-the-latest-template) must exist in the repository to create the `dependency-scanning` job in pipelines.
 
   ```yaml
   include:
@@ -1478,9 +1477,9 @@ Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.
     DS_ENFORCE_NEW_ANALYZER: 'true'
   ```
 
-Alternatively you can enable the feature using the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+Alternatively, you can enable the feature using the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 
-If you wish to customize the analyzer behavior use the [available CI/CD variables](#available-cicd-variables)
+If you wish to customize the analyzer behavior, use the [available CI/CD variables](#available-cicd-variables).
 
 #### Trigger files for the `latest` template
 
@@ -1524,7 +1523,7 @@ When using the dependency scanning CI/CD component, the analyzer can be customiz
 > [!warning]
 > Third-party SBOM support is technically possible but highly subject to change as we complete official support with this [epic](https://www.gitlab.com/groups/gitlab-org/-/epics/14760).
 
-Use your own CycloneDX SBOM document generated with a 3rd party CycloneDX SBOM generator or a custom tool as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) in a custom CI job.
+Use your own CycloneDX SBOM document generated with a third-party CycloneDX SBOM generator or a custom tool as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) in a custom CI job.
 
 To activate dependency scanning using SBOM, the provided CycloneDX SBOM document must:
 

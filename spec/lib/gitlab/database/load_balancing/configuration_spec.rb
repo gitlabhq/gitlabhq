@@ -112,26 +112,26 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store, f
 
       allow(Gitlab::Database::LoadBalancing).to receive(:enabled).and_return(false)
 
-      expect(config.load_balancing_enabled?).to eq(false)
+      expect(config.load_balancing_enabled?).to be(false)
     end
 
     it 'returns true when hosts are configured' do
       config = described_class.new(ActiveRecord::Base, %w[foo bar])
 
-      expect(config.load_balancing_enabled?).to eq(true)
+      expect(config.load_balancing_enabled?).to be(true)
     end
 
     it 'returns true when a service discovery record is configured' do
       config = described_class.new(ActiveRecord::Base)
       config.service_discovery[:record] = 'foo'
 
-      expect(config.load_balancing_enabled?).to eq(true)
+      expect(config.load_balancing_enabled?).to be(true)
     end
 
     it 'returns false when no hosts are configured and service discovery is disabled' do
       config = described_class.new(ActiveRecord::Base)
 
-      expect(config.load_balancing_enabled?).to eq(false)
+      expect(config.load_balancing_enabled?).to be(false)
     end
   end
 
@@ -142,20 +142,20 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store, f
       config = described_class.new(ActiveRecord::Base)
       config.service_discovery[:record] = 'foo'
 
-      expect(config.service_discovery_enabled?).to eq(false)
+      expect(config.service_discovery_enabled?).to be(false)
     end
 
     it 'returns true when a record is configured' do
       config = described_class.new(ActiveRecord::Base)
       config.service_discovery[:record] = 'foo'
 
-      expect(config.service_discovery_enabled?).to eq(true)
+      expect(config.service_discovery_enabled?).to be(true)
     end
 
     it 'returns false when no record is configured' do
       config = described_class.new(ActiveRecord::Base)
 
-      expect(config.service_discovery_enabled?).to eq(false)
+      expect(config.service_discovery_enabled?).to be(false)
     end
   end
 

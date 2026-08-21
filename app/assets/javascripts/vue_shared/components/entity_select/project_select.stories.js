@@ -7,10 +7,6 @@ export default {
 
 const Template = (args, { argTypes }) => ({
   components: { ProjectSelect },
-  provide: {
-    groupId: 'groupId',
-    fullPath: 'gitlab-org',
-  },
   props: Object.keys(argTypes),
   template: '<ProjectSelect v-bind="$props" />',
 });

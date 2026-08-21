@@ -22,7 +22,6 @@ export default {
     GlSprintf,
     SkeletonLoader,
   },
-  stepComponents: [Step1, Step2, Step3],
   model: {
     prop: 'visible',
     event: 'change',
@@ -95,10 +94,10 @@ export default {
       return this.$apollo.queries.organizations.loading;
     },
     stepComponent() {
-      return this.$options.stepComponents[this.currentStep - 1];
+      return this.stepComponents[this.currentStep - 1];
     },
     totalSteps() {
-      return this.$options.stepComponents.length;
+      return this.stepComponents.length;
     },
     isFirstStep() {
       return this.currentStep === 1;
@@ -111,6 +110,13 @@ export default {
     },
     nextButtonText() {
       return this.isLastStep ? __('Confirm') : __('Continue');
+    },
+    stepComponents() {
+      if (!this.initialDefaultOrgGroupIds.length) {
+        return [Step1, Step3];
+      }
+
+      return [Step1, Step2, Step3];
     },
   },
   methods: {

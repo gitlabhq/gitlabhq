@@ -84,8 +84,8 @@ module Organizations
       :state_metadata=,
       :soft_deleted_at,
       :soft_deleted_at=,
-      :read_only_reason,
-      :read_only_reason=,
+      :maintenance_reason,
+      :maintenance_reason=,
       to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
@@ -134,8 +134,8 @@ module Organizations
       groups.none? && projects.none?
     end
 
-    def read_only_enforced?
-      read_only? && Feature.enabled?(:organization_read_only_enforcement, self)
+    def maintenance_enforced?
+      maintenance? && Feature.enabled?(:organization_maintenance_enforcement, self)
     end
 
     def to_param

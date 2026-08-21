@@ -4,7 +4,6 @@ module Users
   module CalloutsHelper
     GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
     SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
-    TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
     OPENSSL_CALLOUT = 'openssl_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'

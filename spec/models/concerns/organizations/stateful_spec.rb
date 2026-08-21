@@ -13,29 +13,29 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
       expect(described_class::DELETION_STATES).to eq(%i[soft_deleted deletion_in_progress])
     end
 
-    it 'defines READ_ONLY_STATES' do
-      expect(described_class::READ_ONLY_STATES).to eq(%i[read_only_initialization read_only])
+    it 'defines MAINTENANCE_STATES' do
+      expect(described_class::MAINTENANCE_STATES).to eq(%i[maintenance_initialization maintenance])
     end
 
-    it 'defines READ_ONLY_REASONS' do
-      expect(described_class::READ_ONLY_REASONS).to eq(%w[migration isolation incident billing legal])
+    it 'defines MAINTENANCE_REASONS' do
+      expect(described_class::MAINTENANCE_REASONS).to eq(%w[migration isolation incident billing legal])
     end
 
-    it 'keeps READ_ONLY_REASONS in sync with the state_metadata JSON schema' do
+    it 'keeps MAINTENANCE_REASONS in sync with the state_metadata JSON schema' do
       schema = 'app/validators/json_schemas/organization_detail_state_metadata.json'
-      schema_reasons = Gitlab::Json.safe_parse(File.read(schema)).dig('properties', 'read_only_reason', 'enum')
+      schema_reasons = Gitlab::Json.safe_parse(File.read(schema)).dig('properties', 'maintenance_reason', 'enum')
 
-      expect(schema_reasons).to match_array(described_class::READ_ONLY_REASONS)
+      expect(schema_reasons).to match_array(described_class::MAINTENANCE_REASONS)
     end
 
-    it 'defines READ_ONLY_BLOCKED_STATES' do
-      expect(described_class::READ_ONLY_BLOCKED_STATES)
+    it 'defines MAINTENANCE_BLOCKED_STATES' do
+      expect(described_class::MAINTENANCE_BLOCKED_STATES)
         .to contain_exactly(:soft_deleted, :deletion_in_progress, :unconfirmed, :confirmed)
     end
 
-    it 'defines TIME_BOUNDED_READ_ONLY_REASONS as a subset of READ_ONLY_REASONS' do
-      expect(described_class::TIME_BOUNDED_READ_ONLY_REASONS).to eq(%w[migration incident])
-      expect(described_class::READ_ONLY_REASONS).to include(*described_class::TIME_BOUNDED_READ_ONLY_REASONS)
+    it 'defines TIME_BOUNDED_MAINTENANCE_REASONS as a subset of MAINTENANCE_REASONS' do
+      expect(described_class::TIME_BOUNDED_MAINTENANCE_REASONS).to eq(%w[migration incident])
+      expect(described_class::MAINTENANCE_REASONS).to include(*described_class::TIME_BOUNDED_MAINTENANCE_REASONS)
     end
   end
 
@@ -50,31 +50,10 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
           deletion_in_progress: 2,
           confirmed: 3,
           active: 4,
-          read_only_initialization: 5,
-          read_only: 6
+          maintenance_initialization: 5,
+          maintenance: 6
         )
         .without_instance_methods
-    end
-  end
-
-  describe 'scopes' do
-    describe '.in_read_only_states' do
-      let_it_be(:read_only_initialization_org) do
-        create(:organization).tap { |o| o.update_column(:state, Organizations::Organization.states[:read_only_initialization]) }
-      end
-
-      let_it_be(:read_only_org) do
-        create(:organization).tap { |o| o.update_column(:state, Organizations::Organization.states[:read_only]) }
-      end
-
-      let_it_be(:active_org) do
-        create(:organization).tap { |o| o.update_column(:state, Organizations::Organization.states[:active]) }
-      end
-
-      it 'returns only organizations in read-only states' do
-        expect(Organizations::Organization.in_read_only_states)
-          .to contain_exactly(read_only_initialization_org, read_only_org)
-      end
     end
   end
 
@@ -84,7 +63,7 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
     it 'declares all expected states' do
       is_expected.to have_states(
         :active, :soft_deleted, :deletion_in_progress, :unconfirmed, :confirmed,
-        :read_only_initialization, :read_only
+        :maintenance_initialization, :maintenance
       )
     end
 
@@ -100,10 +79,10 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
       it { is_expected.to handle_events :hard_delete, when: :soft_deleted }
       it { is_expected.to handle_events :abort_hard_deletion, when: :deletion_in_progress }
       it { is_expected.to handle_events :restore, when: :soft_deleted }
-      it { is_expected.to handle_events :start_read_only, when: :active }
-      it { is_expected.to handle_events :confirm_read_only, when: :read_only_initialization }
-      it { is_expected.to handle_events :cancel_read_only, when: :read_only_initialization }
-      it { is_expected.to handle_events :exit_read_only, when: :read_only }
+      it { is_expected.to handle_events :start_maintenance, when: :active }
+      it { is_expected.to handle_events :confirm_maintenance, when: :maintenance_initialization }
+      it { is_expected.to handle_events :cancel_maintenance, when: :maintenance_initialization }
+      it { is_expected.to handle_events :exit_maintenance, when: :maintenance }
     end
 
     describe 'rejected transitions' do
@@ -113,57 +92,57 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
         :unconfirmed              | :hard_delete
         :unconfirmed              | :abort_hard_deletion
         :unconfirmed              | :restore
-        :unconfirmed              | :start_read_only
-        :unconfirmed              | :confirm_read_only
-        :unconfirmed              | :cancel_read_only
-        :unconfirmed              | :exit_read_only
+        :unconfirmed              | :start_maintenance
+        :unconfirmed              | :confirm_maintenance
+        :unconfirmed              | :cancel_maintenance
+        :unconfirmed              | :exit_maintenance
         :confirmed                | :confirm
         :confirmed                | :soft_delete
         :confirmed                | :hard_delete
         :confirmed                | :abort_hard_deletion
         :confirmed                | :restore
-        :confirmed                | :start_read_only
-        :confirmed                | :confirm_read_only
-        :confirmed                | :cancel_read_only
-        :confirmed                | :exit_read_only
+        :confirmed                | :start_maintenance
+        :confirmed                | :confirm_maintenance
+        :confirmed                | :cancel_maintenance
+        :confirmed                | :exit_maintenance
         :active                   | :confirm
         :active                   | :activate
         :active                   | :hard_delete
         :active                   | :abort_hard_deletion
         :active                   | :restore
-        :active                   | :confirm_read_only
-        :active                   | :cancel_read_only
-        :active                   | :exit_read_only
+        :active                   | :confirm_maintenance
+        :active                   | :cancel_maintenance
+        :active                   | :exit_maintenance
         :soft_deleted             | :soft_delete
         :soft_deleted             | :abort_hard_deletion
-        :soft_deleted             | :start_read_only
-        :soft_deleted             | :confirm_read_only
-        :soft_deleted             | :cancel_read_only
-        :soft_deleted             | :exit_read_only
+        :soft_deleted             | :start_maintenance
+        :soft_deleted             | :confirm_maintenance
+        :soft_deleted             | :cancel_maintenance
+        :soft_deleted             | :exit_maintenance
         :deletion_in_progress     | :soft_delete
         :deletion_in_progress     | :hard_delete
         :deletion_in_progress     | :restore
-        :deletion_in_progress     | :start_read_only
-        :deletion_in_progress     | :confirm_read_only
-        :deletion_in_progress     | :cancel_read_only
-        :deletion_in_progress     | :exit_read_only
-        :read_only_initialization | :confirm
-        :read_only_initialization | :activate
-        :read_only_initialization | :soft_delete
-        :read_only_initialization | :hard_delete
-        :read_only_initialization | :abort_hard_deletion
-        :read_only_initialization | :restore
-        :read_only_initialization | :start_read_only
-        :read_only_initialization | :exit_read_only
-        :read_only                | :confirm
-        :read_only                | :activate
-        :read_only                | :soft_delete
-        :read_only                | :hard_delete
-        :read_only                | :abort_hard_deletion
-        :read_only                | :restore
-        :read_only                | :start_read_only
-        :read_only                | :confirm_read_only
-        :read_only                | :cancel_read_only
+        :deletion_in_progress     | :start_maintenance
+        :deletion_in_progress     | :confirm_maintenance
+        :deletion_in_progress     | :cancel_maintenance
+        :deletion_in_progress     | :exit_maintenance
+        :maintenance_initialization | :confirm
+        :maintenance_initialization | :activate
+        :maintenance_initialization | :soft_delete
+        :maintenance_initialization | :hard_delete
+        :maintenance_initialization | :abort_hard_deletion
+        :maintenance_initialization | :restore
+        :maintenance_initialization | :start_maintenance
+        :maintenance_initialization | :exit_maintenance
+        :maintenance                | :confirm
+        :maintenance                | :activate
+        :maintenance                | :soft_delete
+        :maintenance                | :hard_delete
+        :maintenance                | :abort_hard_deletion
+        :maintenance                | :restore
+        :maintenance                | :start_maintenance
+        :maintenance                | :confirm_maintenance
+        :maintenance                | :cancel_maintenance
       end
 
       with_them do
@@ -376,114 +355,114 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
   end
 
   # ---------------------------------------------------------------------------
-  # Read-only state machine
+  # Maintenance state machine
   # ---------------------------------------------------------------------------
 
-  describe '#start_read_only' do
+  describe '#start_maintenance' do
     before do
       organization.update_column(:state, Organizations::Organization.states[:active])
     end
 
-    it 'transitions from active to read_only_initialization with a valid reason' do
-      expect { organization.start_read_only(read_only_reason: 'migration') }
+    it 'transitions from active to maintenance_initialization with a valid reason' do
+      expect { organization.start_maintenance(maintenance_reason: 'migration') }
         .to change { organization.state_name }
         .from(:active)
-        .to(:read_only_initialization)
+        .to(:maintenance_initialization)
     end
 
-    it 'persists the read_only_reason in state_metadata' do
-      organization.start_read_only(read_only_reason: 'billing')
+    it 'persists the maintenance_reason in state_metadata' do
+      organization.start_maintenance(maintenance_reason: 'billing')
       organization.reload
 
-      expect(organization.organization_detail.state_metadata['read_only_reason']).to eq('billing')
+      expect(organization.organization_detail.state_metadata['maintenance_reason']).to eq('billing')
     end
 
     it 'accepts all valid reasons', :aggregate_failures do
-      described_class::READ_ONLY_REASONS.each do |reason|
+      described_class::MAINTENANCE_REASONS.each do |reason|
         org = create(:organization)
-        expect(org.start_read_only(read_only_reason: reason)).to be_truthy
-        expect(org.state_name).to eq(:read_only_initialization)
+        expect(org.start_maintenance(maintenance_reason: reason)).to be_truthy
+        expect(org.state_name).to eq(:maintenance_initialization)
       end
     end
 
     it 'rejects an invalid reason', :aggregate_failures do
-      expect(organization.start_read_only(read_only_reason: 'unknown')).to be false
+      expect(organization.start_maintenance(maintenance_reason: 'unknown')).to be false
       expect(organization.errors[:state]).to include(
-        a_string_matching(/requires a valid read_only_reason/)
+        a_string_matching(/requires a valid maintenance_reason/)
       )
     end
 
     it 'rejects a nil reason', :aggregate_failures do
-      expect(organization.start_read_only).to be false
+      expect(organization.start_maintenance).to be false
       expect(organization.errors[:state]).to include(
-        a_string_matching(/requires a valid read_only_reason/)
+        a_string_matching(/requires a valid maintenance_reason/)
       )
     end
 
     it 'does not change state when reason is invalid' do
-      organization.start_read_only(read_only_reason: 'bad')
+      organization.start_maintenance(maintenance_reason: 'bad')
 
       expect(organization.state_name).to eq(:active)
     end
   end
 
-  describe '#confirm_read_only' do
+  describe '#confirm_maintenance' do
     before do
-      organization.update_column(:state, Organizations::Organization.states[:read_only_initialization])
+      organization.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
     end
 
-    it 'transitions from read_only_initialization to read_only' do
-      expect { organization.confirm_read_only }
+    it 'transitions from maintenance_initialization to maintenance' do
+      expect { organization.confirm_maintenance }
         .to change { organization.state_name }
-        .from(:read_only_initialization)
-        .to(:read_only)
+        .from(:maintenance_initialization)
+        .to(:maintenance)
     end
   end
 
-  describe '#cancel_read_only' do
+  describe '#cancel_maintenance' do
     before do
-      organization.update_column(:state, Organizations::Organization.states[:read_only_initialization])
-      organization.organization_detail.update!(state_metadata: { 'read_only_reason' => 'incident' })
+      organization.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
+      organization.organization_detail.update!(state_metadata: { 'maintenance_reason' => 'incident' })
     end
 
-    it 'transitions from read_only_initialization back to active' do
-      expect { organization.cancel_read_only }
+    it 'transitions from maintenance_initialization back to active' do
+      expect { organization.cancel_maintenance }
         .to change { organization.state_name }
-        .from(:read_only_initialization)
+        .from(:maintenance_initialization)
         .to(:active)
     end
 
-    it 'clears read_only_reason from state_metadata' do
-      organization.cancel_read_only
+    it 'clears maintenance_reason from state_metadata' do
+      organization.cancel_maintenance
       organization.reload
 
-      expect(organization.organization_detail.state_metadata).not_to have_key('read_only_reason')
+      expect(organization.organization_detail.state_metadata).not_to have_key('maintenance_reason')
     end
   end
 
-  describe '#exit_read_only' do
+  describe '#exit_maintenance' do
     before do
-      organization.update_column(:state, Organizations::Organization.states[:read_only])
-      organization.organization_detail.update!(state_metadata: { 'read_only_reason' => 'legal' })
+      organization.update_column(:state, Organizations::Organization.states[:maintenance])
+      organization.organization_detail.update!(state_metadata: { 'maintenance_reason' => 'legal' })
     end
 
-    it 'transitions from read_only back to active' do
-      expect { organization.exit_read_only }
+    it 'transitions from maintenance back to active' do
+      expect { organization.exit_maintenance }
         .to change { organization.state_name }
-        .from(:read_only)
+        .from(:maintenance)
         .to(:active)
     end
 
-    it 'clears read_only_reason from state_metadata' do
-      organization.exit_read_only
+    it 'clears maintenance_reason from state_metadata' do
+      organization.exit_maintenance
       organization.reload
 
-      expect(organization.organization_detail.state_metadata).not_to have_key('read_only_reason')
+      expect(organization.organization_detail.state_metadata).not_to have_key('maintenance_reason')
     end
   end
 
-  describe '#read_only?' do
-    subject(:read_only?) { organization.read_only? }
+  describe '#maintenance?' do
+    subject(:maintenance?) { organization.maintenance? }
 
     context 'when state is active' do
       before do
@@ -525,25 +504,25 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
       it { is_expected.to be false }
     end
 
-    context 'when state is read_only_initialization' do
+    context 'when state is maintenance_initialization' do
       before do
-        organization.update_column(:state, Organizations::Organization.states[:read_only_initialization])
+        organization.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
       end
 
       it { is_expected.to be true }
     end
 
-    context 'when state is read_only' do
+    context 'when state is maintenance' do
       before do
-        organization.update_column(:state, Organizations::Organization.states[:read_only])
+        organization.update_column(:state, Organizations::Organization.states[:maintenance])
       end
 
       it { is_expected.to be true }
     end
   end
 
-  describe '#read_only_time_bounded?' do
-    subject(:read_only_time_bounded?) { organization.read_only_time_bounded? }
+  describe '#maintenance_time_bounded?' do
+    subject(:maintenance_time_bounded?) { organization.maintenance_time_bounded? }
 
     where(:reason, :expected) do
       'migration' | true
@@ -556,40 +535,40 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
 
     with_them do
       before do
-        organization.read_only_reason = reason
+        organization.maintenance_reason = reason
       end
 
       it { is_expected.to eq(expected) }
     end
   end
 
-  describe '#read_only_message' do
-    subject(:read_only_message) { organization.read_only_message }
+  describe '#maintenance_message' do
+    subject(:maintenance_message) { organization.maintenance_message }
 
-    context 'when the read-only reason is time-bounded' do
+    context 'when the maintenance reason is time-bounded' do
       before do
-        organization.read_only_reason = 'migration'
+        organization.maintenance_reason = 'migration'
       end
 
       it { is_expected.to eq('This organization is temporarily unavailable due to maintenance.') }
     end
 
-    context 'when the read-only reason is indefinite' do
+    context 'when the maintenance reason is indefinite' do
       before do
-        organization.read_only_reason = 'legal'
+        organization.maintenance_reason = 'legal'
       end
 
       it { is_expected.to eq('This organization is unavailable.') }
     end
   end
 
-  describe 'guard: default organization cannot enter read-only' do
+  describe 'guard: default organization cannot enter maintenance' do
     # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required for testing default organization guard
     let_it_be_with_reload(:default_org) { create(:organization, :default) }
     # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
 
     where(:event) do
-      [:start_read_only]
+      [:start_maintenance]
     end
 
     with_them do
@@ -598,32 +577,32 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
       end
 
       it "rejects #{params[:event]} for the default organization", :aggregate_failures do
-        expect(default_org.public_send(event, read_only_reason: 'migration')).to be false
+        expect(default_org.public_send(event, maintenance_reason: 'migration')).to be false
         expect(default_org.errors[:state]).to include(
           a_string_matching(/not allowed for the default organization/)
         )
       end
 
       it 'does not change the state of the default organization' do
-        default_org.public_send(event, read_only_reason: 'migration')
+        default_org.public_send(event, maintenance_reason: 'migration')
 
         expect(default_org.state_name).to eq(:active)
       end
     end
 
-    it 'also rejects confirm_read_only for the default organization', :aggregate_failures do
-      default_org.update_column(:state, Organizations::Organization.states[:read_only_initialization])
+    it 'also rejects confirm_maintenance for the default organization', :aggregate_failures do
+      default_org.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
 
-      expect(default_org.confirm_read_only).to be false
+      expect(default_org.confirm_maintenance).to be false
       expect(default_org.errors[:state]).to include(
         a_string_matching(/not allowed for the default organization/)
       )
     end
   end
 
-  describe 'blocked states cannot enter read-only' do
+  describe 'blocked states cannot enter maintenance' do
     where(:from_state) do
-      described_class::READ_ONLY_BLOCKED_STATES.map { |s| [s] }
+      described_class::MAINTENANCE_BLOCKED_STATES.map { |s| [s] }
     end
 
     with_them do
@@ -631,20 +610,20 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
         organization.update_column(:state, Organizations::Organization.states[from_state])
       end
 
-      it "rejects start_read_only from #{params[:from_state]}", :aggregate_failures do
-        expect(organization.start_read_only(read_only_reason: 'migration')).to be false
+      it "rejects start_maintenance from #{params[:from_state]}", :aggregate_failures do
+        expect(organization.start_maintenance(maintenance_reason: 'migration')).to be false
         expect(organization.state_name).to eq(from_state)
       end
 
-      it "rejects confirm_read_only from #{params[:from_state]}", :aggregate_failures do
-        expect(organization.confirm_read_only).to be false
+      it "rejects confirm_maintenance from #{params[:from_state]}", :aggregate_failures do
+        expect(organization.confirm_maintenance).to be false
         expect(organization.state_name).to eq(from_state)
       end
     end
   end
 
   describe 'transition logging' do
-    it 'calls log_transition after a successful read-only transition' do
+    it 'calls log_transition after a successful maintenance transition' do
       organization.update_column(:state, Organizations::Organization.states[:active])
 
       expect(Gitlab::AppLogger).to receive(:info).with(
@@ -652,54 +631,54 @@ RSpec.describe Organizations::Stateful, feature_category: :organization do
           message: 'Organization state transition',
           organization_id: organization.id,
           from_state: :active,
-          to_state: :read_only_initialization,
-          event: :start_read_only
+          to_state: :maintenance_initialization,
+          event: :start_maintenance
         )
       )
 
-      organization.start_read_only(read_only_reason: 'isolation')
+      organization.start_maintenance(maintenance_reason: 'isolation')
     end
 
-    it 'calls log_transition after confirm_read_only' do
-      organization.update_column(:state, Organizations::Organization.states[:read_only_initialization])
+    it 'calls log_transition after confirm_maintenance' do
+      organization.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
 
       expect(Gitlab::AppLogger).to receive(:info).with(
         hash_including(
-          from_state: :read_only_initialization,
-          to_state: :read_only,
-          event: :confirm_read_only
+          from_state: :maintenance_initialization,
+          to_state: :maintenance,
+          event: :confirm_maintenance
         )
       )
 
-      organization.confirm_read_only
+      organization.confirm_maintenance
     end
 
-    it 'calls log_transition after cancel_read_only' do
-      organization.update_column(:state, Organizations::Organization.states[:read_only_initialization])
+    it 'calls log_transition after cancel_maintenance' do
+      organization.update_column(:state, Organizations::Organization.states[:maintenance_initialization])
 
       expect(Gitlab::AppLogger).to receive(:info).with(
         hash_including(
-          from_state: :read_only_initialization,
+          from_state: :maintenance_initialization,
           to_state: :active,
-          event: :cancel_read_only
+          event: :cancel_maintenance
         )
       )
 
-      organization.cancel_read_only
+      organization.cancel_maintenance
     end
 
-    it 'calls log_transition after exit_read_only' do
-      organization.update_column(:state, Organizations::Organization.states[:read_only])
+    it 'calls log_transition after exit_maintenance' do
+      organization.update_column(:state, Organizations::Organization.states[:maintenance])
 
       expect(Gitlab::AppLogger).to receive(:info).with(
         hash_including(
-          from_state: :read_only,
+          from_state: :maintenance,
           to_state: :active,
-          event: :exit_read_only
+          event: :exit_maintenance
         )
       )
 
-      organization.exit_read_only
+      organization.exit_maintenance
     end
   end
 end

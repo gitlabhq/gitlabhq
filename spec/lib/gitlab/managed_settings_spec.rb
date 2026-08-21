@@ -214,6 +214,31 @@ RSpec.describe Gitlab::ManagedSettings, feature_category: :settings do
       end
     end
 
+    context 'when a managed column does not exist yet' do
+      before do
+        allow(::ApplicationSetting.database).to receive(:cached_column_exists?)
+          .with(:sidekiq_timezone_override).and_return(false)
+      end
+
+      it 'does not raise or change the settings' do
+        expect { described_class.apply! }.not_to raise_error
+        expect(settings.reload.sidekiq_timezone_override).to eq('UTC')
+      end
+    end
+
+    context 'when post-deployment migrations are pending' do
+      before do
+        allow(::ApplicationSetting.connection_pool.migration_context)
+          .to receive(:needs_migration?).and_return(true)
+      end
+
+      it 'still applies the managed values' do
+        described_class.apply!
+
+        expect(settings.reload.sidekiq_timezone_override).to eq('Europe/London')
+      end
+    end
+
     context 'when a recognized column has an invalid value' do
       let(:fixture_file) { fixture('invalid_value.yml') }
 

@@ -397,7 +397,10 @@ class Repository
     Gitlab::Git::KeepAround.execute(self, shas, source: source, retry_failed_writes: retry_failed_writes)
   end
 
-  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)
+  def archive_metadata(
+    ref, storage_path, format = "tar.gz",
+    append_sha:, path: nil, ref_type: nil, include_lfs_blobs: true, exclude_paths: []
+  )
     raw_repository.archive_metadata(
       ref,
       storage_path,
@@ -405,7 +408,9 @@ class Repository
       format,
       append_sha: append_sha,
       path: path,
-      ref_type: ref_type
+      ref_type: ref_type,
+      include_lfs_blobs: include_lfs_blobs,
+      exclude_paths: exclude_paths
     )
   end
 

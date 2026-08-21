@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
 
       it 'attaches LFK trigger on the newly created partitions' do
-        expect(trigger_exists?(my_model.table_name, record_deletion_trigger_name(my_model.table_name))).to eq(true)
+        expect(trigger_exists?(my_model.table_name, record_deletion_trigger_name(my_model.table_name))).to be(true)
 
         expect { sync_partitions }.to change {
           find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         partitions = find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
         partitions.each do |partition|
           partition_name = partition.first
-          expect(trigger_exists?(partition_name, record_deletion_trigger_name(partition_name), Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to eq(true)
+          expect(trigger_exists?(partition_name, record_deletion_trigger_name(partition_name), Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be(true)
         end
       end
     end
@@ -217,7 +217,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           it "does not lock created partition" do
             sync_partitions
 
-            expect(partitions_locked_for_writes?).to eq(false)
+            expect(partitions_locked_for_writes?).to be(false)
           end
         end
       end

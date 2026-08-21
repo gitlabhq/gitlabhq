@@ -7,7 +7,7 @@ module Types
       description 'State of an organization.'
 
       ::Organizations::Organization.states.each_key do |state|
-        milestone = ::Organizations::Stateful::READ_ONLY_STATES.include?(state.to_sym) ? '19.2' : '19.0'
+        milestone = ::Organizations::Stateful::MAINTENANCE_STATES.include?(state.to_sym) ? '19.2' : '19.0'
 
         value state.upcase, value: state,
           description: "#{state.titleize} organization.",

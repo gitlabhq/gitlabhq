@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
       it 'returns true' do
         expect(load_balancer).not_to receive(:select_up_to_date_host)
 
-        expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+        expect(sticking.find_caught_up_replica(:user, 42)).to be(true)
       end
 
       context 'when use_primary_on_empty_location is true' do
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
           expect(load_balancer).not_to receive(:select_up_to_date_host)
           expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
 
-          expect(sticking.find_caught_up_replica(:user, 42, use_primary_on_empty_location: true)).to eq(false)
+          expect(sticking.find_caught_up_replica(:user, 42, use_primary_on_empty_location: true)).to be(false)
         end
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
           .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ALL_CAUGHT_UP)
         expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).not_to receive(:use_primary!)
 
-        expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+        expect(sticking.find_caught_up_replica(:user, 42)).to be(true)
 
         # Verify the sticking point was removed
         Gitlab::Redis::DbLoadBalancing.with do |redis|
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
             end
           expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).not_to receive(:use_primary!)
 
-          expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+          expect(sticking.find_caught_up_replica(:user, 42)).to be(true)
 
           # Verify the sticking point was NOT removed (it changed)
           Gitlab::Redis::DbLoadBalancing.with do |redis|
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
         expect(load_balancer).to receive(:select_up_to_date_host).with(last_write_location)
           .and_return(::Gitlab::Database::LoadBalancing::LoadBalancer::ANY_CAUGHT_UP)
 
-        expect(sticking.find_caught_up_replica(:user, 42)).to eq(true)
+        expect(sticking.find_caught_up_replica(:user, 42)).to be(true)
 
         # Verify the sticking point was NOT removed
         Gitlab::Redis::DbLoadBalancing.with do |redis|
@@ -122,14 +122,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, :clean_gitlab_
       it 'returns false and calls use_primary!' do
         expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).to receive(:use_primary!)
 
-        expect(sticking.find_caught_up_replica(:user, 42)).to eq(false)
+        expect(sticking.find_caught_up_replica(:user, 42)).to be(false)
       end
 
       context 'when use_primary_on_failure is false' do
         it 'does not call use_primary!' do
           expect(::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer)).not_to receive(:use_primary!)
 
-          expect(sticking.find_caught_up_replica(:user, 42, use_primary_on_failure: false)).to eq(false)
+          expect(sticking.find_caught_up_replica(:user, 42, use_primary_on_failure: false)).to be(false)
         end
       end
     end

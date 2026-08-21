@@ -100,7 +100,8 @@ module Gitlab
 
       # Persists the managed values onto the application settings record so the enforced values
       # are stored in the database. Validates first, so an invalid value prevents boot. No-op
-      # when disabled or when the database is not ready (migrations, asset compilation).
+      # when disabled or when the database is not ready (unreachable, table missing, or a
+      # managed column not yet migrated).
       #
       # @raise [InvalidConfigurationError] when a recognized column has an invalid value
       # @return [void]
@@ -169,9 +170,8 @@ module Gitlab
       end
 
       def database_ready?
-        ::ApplicationSetting.connection.active? &&
-          ::ApplicationSetting.database.cached_table_exists? &&
-          !::ApplicationSetting.connection_pool.migration_context.needs_migration?
+        ::ApplicationSetting.database.cached_table_exists? &&
+          keys.all? { |attr| ::ApplicationSetting.database.cached_column_exists?(attr) }
       rescue ActiveRecord::ActiveRecordError, PG::Error
         false
       end

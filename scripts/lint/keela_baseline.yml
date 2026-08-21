@@ -32,7 +32,6 @@ constants:
   app/controllers/projects/ml/models_controller.rb:
   - MAX_MODELS_PER_PAGE
   app/helpers/users/callouts_helper.rb:
-  - TABS_POSITION_HIGHLIGHT
   - PAGES_MOVED_CALLOUT
   app/models/ci/job_artifact.rb:
   - STORE_COLUMN
@@ -50,7 +49,7 @@ constants:
   app/models/concerns/namespaces/stateful.rb:
   - NON_PROPAGATED_STATES
   app/models/concerns/organizations/stateful.rb:
-  - READ_ONLY_BLOCKED_STATES
+  - MAINTENANCE_BLOCKED_STATES
   app/models/dependency_proxy/blob.rb:
   - STORE_COLUMN
   app/models/dependency_proxy/manifest.rb:
@@ -557,8 +556,6 @@ scopes:
   - service_accounts_without_composite_identity
   app/models/concerns/issuable.rb:
   - without_label
-  app/models/concerns/organizations/stateful.rb:
-  - in_read_only_states
   app/models/concerns/packages/debian/architecture.rb:
   - with_distribution
   app/models/concerns/packages/debian/component.rb:

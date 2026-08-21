@@ -33,17 +33,17 @@ RSpec.describe EnforcesOrganizationMaintenanceMode, feature_category: :organizat
     end
   end
 
-  context 'with the organization read-only enforcement feature flag enabled' do
+  context 'with the organization maintenance enforcement feature flag enabled' do
     before do
-      stub_feature_flags(organization_read_only_enforcement: true)
+      stub_feature_flags(organization_maintenance_enforcement: true)
     end
 
     context 'when the current organization is in maintenance mode for a time-bounded reason' do
       let(:organization) { create(:organization) }
 
       before do
-        organization.start_read_only(read_only_reason: 'migration')
-        organization.confirm_read_only
+        organization.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
         stub_current_organization(organization.reload)
       end
 
@@ -82,8 +82,8 @@ RSpec.describe EnforcesOrganizationMaintenanceMode, feature_category: :organizat
       let(:organization) { create(:organization) }
 
       before do
-        organization.start_read_only(read_only_reason: 'legal')
-        organization.confirm_read_only
+        organization.start_maintenance(maintenance_reason: 'legal')
+        organization.confirm_maintenance
         stub_current_organization(organization.reload)
       end
 
@@ -161,13 +161,13 @@ RSpec.describe EnforcesOrganizationMaintenanceMode, feature_category: :organizat
     end
   end
 
-  context 'with the organization read-only enforcement feature flag disabled' do
+  context 'with the organization maintenance enforcement feature flag disabled' do
     let(:organization) { create(:organization) }
 
     before do
-      stub_feature_flags(organization_read_only_enforcement: false)
-      organization.start_read_only(read_only_reason: 'migration')
-      organization.confirm_read_only
+      stub_feature_flags(organization_maintenance_enforcement: false)
+      organization.start_maintenance(maintenance_reason: 'migration')
+      organization.confirm_maintenance
       stub_current_organization(organization.reload)
     end
 

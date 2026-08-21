@@ -75,7 +75,7 @@ the body generation is limited to these body types:
 
 ## OpenAPI and media types
 
-A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. A OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. As for example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
+A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. An OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. For example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
 OpenAPI 2.x lets you specify the accepted media types globally or per operation, and OpenAPI 3.x lets you specify the accepted media types per operation. API fuzzing checks the listed media types and tries to produce sample data for each supported media type.
 
 - The default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
@@ -83,11 +83,11 @@ OpenAPI 2.x lets you specify the accepted media types globally or per operation,
 Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable.
 For example, if the target application executes the same code regardless of the request content type, it takes longer to finish the test session, and it may report duplicate vulnerabilities related to the request body depending on the target app.
 
-The environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environmental variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API fuzzing tries to generate requests for all supported media types instead of one in a given operation. This causes testing to take longer as testing is repeated for each provided media type.
+The environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API fuzzing tries to generate requests for all supported media types instead of one in a given operation. This causes testing to take longer as testing is repeated for each provided media type.
 
 Alternatively, the variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that each is tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
 
-Multiple media types in `FUZZAPI_OPENAPI_MEDIA_TYPES` must separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though unsupported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when filtering media types on request generation.
+Multiple media types in `FUZZAPI_OPENAPI_MEDIA_TYPES` must be separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though unsupported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when filtering media types on request generation.
 
 The environment variables `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` and `FUZZAPI_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, API fuzzing reports an error.
 
@@ -224,7 +224,7 @@ The GraphQL support in API fuzzing is able to query a GraphQL endpoint for the s
 > [!note]
 > The GraphQL endpoint must support introspection queries for this method to work correctly.
 
-To configure API fuzzing to use an GraphQL endpoint URL that provides information about the target API to test:
+To configure API fuzzing to use a GraphQL endpoint URL that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
@@ -258,9 +258,9 @@ This example is a minimal configuration for API fuzzing. From here you can:
 
 ### API fuzzing with a GraphQL schema file
 
-API fuzzing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: <https://transform.tools/graphql-to-introspection-json>.
+API fuzzing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to the introspection JSON format using an online third-party tool: <https://transform.tools/graphql-to-introspection-json>.
 
-To configure API fuzzing to use a GraphQl schema file that provides information about the target API to test:
+To configure API fuzzing to use a GraphQL schema file that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
@@ -273,7 +273,7 @@ To configure API fuzzing to use a GraphQl schema file that provides information 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
    dynamic environments. For more information, see [dynamic environment solutions](../troubleshooting.md#dynamic-environment-solutions).
 
-Complete example configuration of using an GraphQL schema file:
+Complete example configuration of using a GraphQL schema file:
 
 ```yaml
 stages:
@@ -289,7 +289,7 @@ apifuzzer_fuzz:
     FUZZAPI_TARGET_URL: http://test-deployment/
 ```
 
-Complete example configuration of using an GraphQL schema file URL:
+Complete example configuration of using a GraphQL schema file URL:
 
 ```yaml
 stages:
@@ -400,7 +400,7 @@ You can then use the variables in sections such as URL, headers, and others:
 
 Postman has grown from a basic client tool with a nice UX experience to a more complex ecosystem that allows testing APIs with scripts, creating complex collections that trigger secondary requests, and setting variables along the way. Not every feature in the Postman ecosystem is supported. For example, scripts are not supported. The main focus of the Postman support is to ingest Postman Collection definitions that are used by the Postman Client and their related variables defined in the workspace, environments, and the collections themselves.
 
-Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a global environment scope that is seen by every operation definition and workspace. You can also create a variable in a specific environment scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a local scope, but test scripts do.
+Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a global environment scope that is seen by every operation definition and workspace. You can also create a variable in a specific environment scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example, in the Postman ecosystem you can create requests in the Postman Client. These requests do not have a local scope, but test scripts do.
 
 Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. Read [variable scopes](https://learning.postman.com/docs/use/send-requests/variables/variables/#variable-scopes) from the Postman documentation before moving forward.
 
@@ -408,7 +408,7 @@ As mentioned previously, there are different variable scopes, and each of them h
 
 > [!note]
 > If a variable with the same name is declared in two different scopes, the value stored in the variable
-> with narrowest scope is used. For example, if there is a global variable named `username` and
+> with the narrowest scope is used. For example, if there is a global variable named `username` and
 > a local variable named `username`, the local value is used when the request runs.
 
 The following is a summary of the variable scopes supported by the Postman Client and API fuzzing:
@@ -420,7 +420,7 @@ The following is a summary of the variable scopes supported by the Postman Clien
   The Postman Client can export one or more collections into a JSON file, this JSON file contains selected collections, requests, and collection variables.
 - **API fuzzing scope** is a new scope added by API fuzzing to allow users to provide extra variables, or override variables defined in other supported scopes. This scope is not supported by Postman. The API fuzzing scope variables are provided using a [custom JSON file format](#api-fuzzing-scope-custom-json-file-format).
   - Override values defined in the environment or collection
-  - Defining variables from scripts
+  - Define variables from scripts
   - Define a single row of data from the unsupported _data scope_
 - **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
   API fuzzing does not support reading data from a CSV or JSON file.
@@ -432,7 +432,7 @@ Not all scopes are supported by API fuzzing and variables defined in scripts are
 | ------------------ |:---------:|:-----------:| :-------|
 | Global environment | Yes       | Yes         | Special pre-defined environment |
 | Environment        | Yes       | Yes         | Named environments |
-| Collection         | Yes       | Yes         | Defined in your postman collection |
+| Collection         | Yes       | Yes         | Defined in your Postman collection |
 | API fuzzing scope  | No        | Yes         | Custom scope added by API fuzzing |
 | Data               | Yes       | No          | External files in CSV or JSON format |
 | Local              | Yes       | No          | Variables defined in scripts |
@@ -496,11 +496,11 @@ The configuration variable `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
 #### Undefined Postman variables
 
-There is a chance that API fuzzing engine does not find all variables references that your Postman collection file is using. Some cases can be:
+There is a chance that the API fuzzing engine does not find all variable references that your Postman collection file is using. Some cases can be:
 
 - You are using data or local scoped variables, and as stated previously these scopes are not supported by API fuzzing. Thus, assuming the values for these variables have not been provided through [the API fuzzing scope](#api-fuzzing-scope-custom-json-file-format), then the values of the data and local scoped variables are undefined.
 - A variable name was typed incorrectly, and the name does not match the defined variable.
-- Postman Client supports a new dynamic variable that is not supported by API fuzzing.
+- The Postman Client supports a new dynamic variable that is not supported by API fuzzing.
 
 When possible, API fuzzing follows the same behavior as the Postman Client does when dealing with undefined variables. The text of the variable reference remains the same, and there is no text substitution. The same behavior also applies to any unsupported dynamic variables.
 
@@ -508,9 +508,9 @@ For example, if a request definition in the Postman Collection references the va
 
 #### Dynamic Postman variables
 
-In addition to variables that a user can define at various scope levels, Postman has a set of pre-defined variables called dynamic variables. The [dynamic variables](https://learning.postman.com/docs/tests-and-scripts/write-scripts/variables-list/) are already defined and their name is prefixed with a dollar sign (`$`), for instance, `$guid`. Dynamic variables can be used like any other variable, and in the Postman Client, they produce random values during the request/collection run.
+In addition to variables that a user can define at various scope levels, Postman has a set of pre-defined variables called dynamic variables. The [dynamic variables](https://learning.postman.com/docs/tests-and-scripts/write-scripts/variables-list/) are already defined and their names are prefixed with a dollar sign (`$`), for instance, `$guid`. Dynamic variables can be used like any other variable, and in the Postman Client, they produce random values during the request/collection run.
 
-An important difference between API fuzzing and Postman is that API fuzzing returns the same value for each usage of the same dynamic variables. This differs from the Postman Client behavior which returns a random value on each use of the same dynamic variable. In other words, API fuzzing uses static values for dynamic variables while Postman uses random values.
+An important difference between API fuzzing and Postman is that API fuzzing returns the same value for each usage of the same dynamic variables. This differs from the Postman Client behavior, which returns a random value on each use of the same dynamic variable. In other words, API fuzzing uses static values for dynamic variables while Postman uses random values.
 
 The supported dynamic variables during the scanning process are:
 
@@ -823,7 +823,7 @@ When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apif
 typical operation, the job always succeeds even if faults are identified during fuzz testing.
 
 Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
-repositories default branch, the fuzzing faults are also shown on the security and compliance's
+repository's default branch, the fuzzing faults are also shown on the security and compliance's
 vulnerability report.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of
@@ -855,7 +855,7 @@ Follow these steps to view details of a fuzzing fault:
 
    - In a project, go to the project's **Secure** > **Vulnerability report**
      page. This page shows all vulnerabilities from the default branch only.
-   - In a merge request, go the merge request's **Security** section and select the **Expand**
+   - In a merge request, go to the merge request's **Security** section and select the **Expand**
      button. API fuzzing faults are available in a section labeled
      **API fuzzing detected N potential vulnerabilities**. Select the title to display the fault
      details.
@@ -893,7 +893,7 @@ After a fault is found, you can interact with it. Read more on how to
 False positives can be handled in two ways:
 
 - Turn off the check producing the false positive. This prevents the check from generating any
-  faults. Example checks are the `JSONFuzzingCheck`, and `FormBodyFuzzingCheck`.
+  faults. Example checks are the `JSONFuzzingCheck` and `FormBodyFuzzingCheck`.
 - Fuzzing checks have several methods of detecting when a fault is identified, called "asserts".
   Asserts can also be turned off and configured. For example, the API fuzzer by default uses HTTP
   status codes to help identify when something is a real issue. If an API returns a 500 error during

@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Analyze dependency for behaviors
+title: Analyze dependencies for behaviors
 description: Libbehave scans new dependencies added in merge requests for risky behaviors and assigns each behavior a risk score. Results are shown in the job output, merge request comments, and job artifacts.
 ---
 
@@ -21,7 +21,7 @@ your dependencies exhibit.
 
 Each feature detected by Libbehave is assigned a "riskiness" score of either:
 
-- Informational: No risk, but may assist in cataloguing features of a dependency (for example, uses
+- Informational: No risk, but may assist in cataloging features of a dependency (for example, uses
   JSON).
 - Low: Small risk, can highlight a dependency is doing a security sensitive action such as using
   encryption.
@@ -38,7 +38,7 @@ Features that Libbehave detects include:
 - Opening network sockets
 - Reading/expanding archives (ZIP/tar/Gzip)
 - Interacting with external services by using HTTP clients, Redis, Elastic Cache, Relational
-  Management Database (RMDB) servers, SSH, Git
+  Management Database (RMDB) servers, SSH, and Git
 - Serializing data in various formats: XML, YAML, MessagePack, Protocol Buffers, JSON, and
   language-specific formats
 - Templating
@@ -76,7 +76,7 @@ The following languages and package managers are supported by Libbehave:
 - PHP ([Composer/Packagist](https://packagist.org/))
   - Reads `**/installed.json` files
   - Reads `**/composer.lock` files
-  - Reads `**/php/.registry/.channel.*/*.reg"` files
+  - Reads `**/php/.registry/.channel.*/*.reg` files
 - Ruby ([RubyGems](https://rubygems.org))
   - Reads `**/Gemfile.lock` files
   - Reads `**/specifications/**/*.gemspec` files
@@ -168,7 +168,7 @@ The following flags are available, but are untested and should be left at their 
 |------------------------|------------------|---------------|-----------------------------|
 | `BEHAVE_RULE_PATHS`    | `-rules`         | `"/dist"`     | The path to the rule files. |
 | `BEHAVE_TARGET_DIR`    | `-dir`           | `""`          | The target directory to run behave against. |
-| `BEHAVE_NO_GIT_IGNORE` | `-no-git-ignore` | `true`        | Whether to scan files in `.gitignore`. Providing the argument will not scan them, by default it will. |
+| `BEHAVE_NO_GIT_IGNORE` | `-no-git-ignore` | `true`        | Whether to scan files in `.gitignore`. Providing the argument will not scan them. By default, it will. |
 | `BEHAVE_OUTPUT_PATH`   | `-output`        | `"behaveout"` | The path to store scan results, extracted artifacts and report results. |
 | `BEHAVE_INCLUDE_LANG`  | `-include-lang`  | `""`          | Include a language, one of: `csharp`, `go`, `java`, `js`, `php`, `python`, or `ruby`, separated by ',' excludes all others not specified. |
 | `BEHAVE_EXCLUDE_LANG`  | `-exclude-lang`  | `""`          | Exclude a language, one of: `csharp`, `go`, `java`, `js`, `php`, `python`, or `ruby`, separated by ',', includes all others not specified. |
@@ -176,8 +176,8 @@ The following flags are available, but are untested and should be left at their 
 
 Because all variables have not been tested, you may find some that work and others that do not.
 If you need one that does not work,
-[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or contributing to the code to enable it to be used.
+[submit a feature request](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+or contribute to the code to enable it to be used.
 
 ## Dependency detection and analysis
 
@@ -205,7 +205,7 @@ Version ranges are not supported.
 
 #### C\#
 
-- Property or variable replacement in `.props` or `.csproj` files do not account for nested project files.
+- Property or variable replacement in `.props` or `.csproj` files does not account for nested project files.
   It replaces any variable that matches a global set of extracted variables and their values.
 - Decompiles downloaded dependencies, so source to line translation may not be 1:1.
 - Libbehave decompiles all .NET versions that exist in a NuGet package. This may be optimized in the future.
@@ -220,8 +220,8 @@ Version ranges are not supported.
 
 #### Python
 
-- Attempt to download source packages from PyPI for analysis. If there is no source package,
-  Libbehave downloads the first available `bdist_wheel` package which may not match the target OS.
+- Attempts to download source packages from PyPI for analysis. If there is no source package,
+  Libbehave downloads the first available `bdist_wheel` package, which may not match the target OS.
 
 ## Output
 
@@ -274,10 +274,10 @@ The https://mvnrepository.com/artifact/org.jmockit/jmockit package was found to 
 
 ### MR comment summary
 
-The **MR comment summary** output requires an access token with Guest level access be created for the
+The **MR comment summary** output requires an access token with Guest level access to be created for the
 project that the Libbehave component has been configured for. The access token should then be
 [configured for the project](../../../ci/variables/_index.md#for-a-project). Because feature branches
-are not protected by default, ensure the **Protect variable** setting is cleared. Otherwise the
+are not protected by default, ensure the **Protect variable** setting is cleared. Otherwise, the
 Libbehave job cannot read the access token's value.
 
 ![Example MR Comment Summary output](img/libbehave_mr_comment_v17_4.png)

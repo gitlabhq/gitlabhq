@@ -7,14 +7,14 @@ RSpec.describe Gitlab::Database::Grant, feature_category: :database do
     it 'returns true when the user can create and execute a trigger' do
       # We assume the DB/user is set up correctly so that triggers can be
       # created, which is necessary anyway for other tests to work.
-      expect(described_class.create_and_execute_trigger?('users')).to eq(true)
+      expect(described_class.create_and_execute_trigger?('users')).to be(true)
     end
 
     it 'returns false when the user can not create and/or execute a trigger' do
       # In case of MySQL the user may have SUPER permissions, making it
       # impossible to have `false` returned when running tests; hence we only
       # run these tests on PostgreSQL.
-      expect(described_class.create_and_execute_trigger?('foo')).to eq(false)
+      expect(described_class.create_and_execute_trigger?('foo')).to be(false)
     end
   end
 end

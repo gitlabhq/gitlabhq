@@ -34,8 +34,6 @@ app/models/concerns/has_user_type.rb:
   - service_accounts_without_composite_identity
 app/models/concerns/issuable.rb:
   - without_label
-app/models/concerns/organizations/stateful.rb:
-  - in_read_only_states
 app/models/concerns/packages/debian/architecture.rb:
   - with_distribution
 app/models/concerns/packages/debian/component.rb:

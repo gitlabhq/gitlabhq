@@ -1074,7 +1074,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       subject
 
-      expect(table_type(archived_table)).to eq(nil)
+      expect(table_type(archived_table)).to be_nil
     end
 
     it 'drops the trigger on the source table' do
