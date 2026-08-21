@@ -348,12 +348,12 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.permit(:stage, :retried)
   end
 
-  def charts_params
+  def chart_params
     params.permit(:chart)
   end
 
   def should_track_ci_cd_pipelines?
-    chart = charts_params[:chart]
+    chart = chart_params[:chart]
     chart.blank? || chart == 'pipelines'
   end
 

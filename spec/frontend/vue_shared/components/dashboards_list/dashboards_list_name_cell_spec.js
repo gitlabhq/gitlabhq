@@ -34,9 +34,8 @@ describe('DashboardsListNameCell', () => {
       expect(findDashboardLink().text()).toBe(mockDashboard.name);
     });
 
-    it('renders the star icon', () => {
-      expect(findStarIcon().props('icon')).toBe('star');
-      expect(findStarIcon().attributes('title')).toBe('Remove from favorites');
+    it('does not render the star icon', () => {
+      expect(findStarIcon().exists()).toBe(false);
     });
 
     it('does not render the description', () => {
@@ -54,12 +53,17 @@ describe('DashboardsListNameCell', () => {
     });
   });
 
-  describe('with isStarred=false dashboard', () => {
-    beforeEach(() => {
-      createWrapper({ isStarred: false });
+  describe('with withStars=true', () => {
+    it('renders the starred icon when the dashboard is starred', () => {
+      createWrapper({ withStars: true });
+
+      expect(findStarIcon().props('icon')).toBe('star');
+      expect(findStarIcon().attributes('title')).toBe('Remove from favorites');
     });
 
-    it('renders the star icon', () => {
+    it('renders the unstarred icon when the dashboard is not starred', () => {
+      createWrapper({ withStars: true, isStarred: false });
+
       expect(findStarIcon().props('icon')).toBe('star-o');
       expect(findStarIcon().attributes('title')).toBe('Add to favorites');
     });

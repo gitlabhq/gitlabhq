@@ -71,6 +71,11 @@ describe('NoteableNote', () => {
         GlSprintf: {
           template: '<span><slot name="timeago" /><slot name="author" /></span>',
         },
+        NoteSessionBar: {
+          name: 'NoteSessionBar',
+          props: ['agentName', 'sessionId', 'status', 'isReply'],
+          template: '<div />',
+        },
       },
     });
   };
@@ -98,6 +103,7 @@ describe('NoteableNote', () => {
   const findNoteActions = () => wrapper.findComponent(NoteActions);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
+  const findNoteSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
 
   it('shows note header with correct props', () => {
     createComponent();
@@ -168,52 +174,63 @@ describe('NoteableNote', () => {
   });
 
   describe('note deletion', () => {
-    it('confirms deletion and calls store.destroyNote on success', async () => {
-      const note = createNote();
-      createComponent({ note });
+    const triggerDelete = () => {
+      createComponent({ note: createNote() });
       findNoteActions().vm.$emit('delete');
+    };
 
+    it('shows confirmation modal', () => {
+      triggerDelete();
       expect(confirmAction).toHaveBeenCalledWith(
         'Are you sure you want to delete this comment?',
         expect.objectContaining({ primaryBtnText: 'Delete comment' }),
       );
-
-      await waitForPromises();
-
-      expect(store.destroyNote).toHaveBeenCalledWith(note);
     });
 
-    it('does not call destroyNote if confirmation is cancelled', async () => {
-      confirmAction.mockResolvedValueOnce(false);
+    describe('when confirmed', () => {
+      beforeEach(triggerDelete);
 
-      createComponent();
-      findNoteActions().vm.$emit('delete');
-
-      await waitForPromises();
-
-      expect(store.destroyNote).not.toHaveBeenCalled();
+      it('calls store.destroyNote', async () => {
+        await waitForPromises();
+        expect(store.destroyNote).toHaveBeenCalledWith(defaultProps.note);
+      });
     });
 
-    it('creates alert on deletion failure', async () => {
-      store.destroyNote.mockRejectedValue(new Error('fail'));
+    describe('when confirmation is cancelled', () => {
+      beforeEach(() => {
+        confirmAction.mockResolvedValueOnce(false);
+        triggerDelete();
+      });
 
-      createComponent();
-      findNoteActions().vm.$emit('delete');
+      it('does not call destroyNote', async () => {
+        await waitForPromises();
+        expect(store.destroyNote).not.toHaveBeenCalled();
+      });
+    });
 
-      await waitForPromises();
+    describe('when deletion fails', () => {
+      beforeEach(() => {
+        store.destroyNote.mockRejectedValue(new Error('fail'));
+        triggerDelete();
+      });
 
-      expect(createAlert).toHaveBeenCalled();
+      it('creates alert', async () => {
+        await waitForPromises();
+        expect(createAlert).toHaveBeenCalled();
+      });
     });
   });
 
   describe('note editing/saving via NoteBody', () => {
     const noteText = 'updated note content';
 
-    it('scrolls element into view when editing', async () => {
-      const spy = jest.spyOn(Element.prototype, 'scrollIntoView');
-      createComponent({ note: createNote({ isEditing: true }) });
-      await nextTick();
-      expect(spy).toHaveBeenCalledWith({ block: 'nearest' });
+    describe('when editing', () => {
+      it('scrolls element into view', async () => {
+        const spy = jest.spyOn(Element.prototype, 'scrollIntoView');
+        createComponent({ note: createNote({ isEditing: true }) });
+        await nextTick();
+        expect(spy).toHaveBeenCalledWith({ block: 'nearest' });
+      });
     });
 
     it('calls store.saveNote and emits cancel-editing on success', async () => {
@@ -241,40 +258,56 @@ describe('NoteableNote', () => {
   });
 
   describe('cancel editing via NoteBody', () => {
-    it('emits cancel-editing when confirmation is not needed', async () => {
+    const setupEditing = () => {
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().vm.$emit('cancel-editing', false);
+    };
 
-      await nextTick();
+    describe('when confirmation is not needed', () => {
+      beforeEach(async () => {
+        setupEditing();
+        findNoteBody().vm.$emit('cancel-editing', false);
+        await nextTick();
+      });
 
-      expect(wrapper.emitted('cancel-editing')).toStrictEqual([[]]);
+      it('emits cancel-editing', () => {
+        expect(wrapper.emitted('cancel-editing')).toStrictEqual([[]]);
+      });
     });
 
-    it('shows confirmation modal when needed and confirms, then emits cancel-editing', async () => {
-      confirmAction.mockResolvedValueOnce(true);
+    describe('when confirmation is needed', () => {
+      it('shows confirmation modal', () => {
+        setupEditing();
+        findNoteBody().vm.$emit('cancel-editing', true);
+        expect(confirmAction).toHaveBeenCalledWith(
+          'Are you sure you want to cancel editing this comment?',
+          expect.objectContaining({ primaryBtnText: 'Cancel editing' }),
+        );
+      });
 
-      createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().vm.$emit('cancel-editing', true);
+      describe('when confirmed', () => {
+        beforeEach(() => {
+          setupEditing();
+          findNoteBody().vm.$emit('cancel-editing', true);
+        });
 
-      expect(confirmAction).toHaveBeenCalledWith(
-        'Are you sure you want to cancel editing this comment?',
-        expect.objectContaining({ primaryBtnText: 'Cancel editing' }),
-      );
+        it('emits cancel-editing', async () => {
+          await waitForPromises();
+          expect(wrapper.emitted('cancel-editing')).toStrictEqual([[]]);
+        });
+      });
 
-      await waitForPromises();
+      describe('when denied', () => {
+        beforeEach(() => {
+          confirmAction.mockResolvedValueOnce(false);
+          setupEditing();
+          findNoteBody().vm.$emit('cancel-editing', true);
+        });
 
-      expect(wrapper.emitted('cancel-editing')).toStrictEqual([[]]);
-    });
-
-    it('does not emit cancel-editing if confirmation is denied', async () => {
-      confirmAction.mockResolvedValueOnce(false);
-
-      createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().vm.$emit('cancel-editing', true);
-
-      await waitForPromises();
-
-      expect(wrapper.emitted('cancel-editing')).toBeUndefined();
+        it('does not emit cancel-editing', async () => {
+          await waitForPromises();
+          expect(wrapper.emitted('cancel-editing')).toBeUndefined();
+        });
+      });
     });
   });
 
@@ -307,54 +340,154 @@ describe('NoteableNote', () => {
     const createResolvedNote = (overrides = {}) =>
       createNote({ resolved_at: resolvedAt, resolved_by: resolvedBy, ...overrides });
 
-    it('does not show resolved section when isResolved is false', () => {
-      createComponent({ note: createResolvedNote(), isResolved: false });
-      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    describe('when isResolved is false', () => {
+      beforeEach(() => {
+        createComponent({ note: createResolvedNote(), isResolved: false });
+      });
+
+      it('does not show resolved section', () => {
+        expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+      });
     });
 
-    it('shows resolved section when isResolved is true', () => {
-      createComponent({ note: createResolvedNote(), isResolved: true });
-      expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
+    describe('when isResolved is true', () => {
+      beforeEach(() => {
+        createComponent({ note: createResolvedNote(), isResolved: true });
+      });
+
+      it('shows resolved section', () => {
+        expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
+      });
+
+      it('passes resolved_at to TimeAgoTooltip', () => {
+        expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(resolvedAt);
+      });
+
+      it('links to the resolver via GlLink', () => {
+        const link = wrapper.findComponent(GlLink);
+        expect(link.attributes('href')).toBe(resolvedBy.path);
+        expect(link.text()).toBe(resolvedBy.name);
+      });
     });
 
-    it('uses "Resolved" text when not resolved by push', () => {
-      createComponent({ note: createResolvedNote({ resolved_by_push: false }), isResolved: true });
-      expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
-        'Resolved %{timeago} by %{author}',
-      );
+    describe('when not resolved by push', () => {
+      beforeEach(() => {
+        createComponent({
+          note: createResolvedNote({ resolved_by_push: false }),
+          isResolved: true,
+        });
+      });
+
+      it('uses "Resolved" text', () => {
+        expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
+          'Resolved %{timeago} by %{author}',
+        );
+      });
     });
 
-    it('uses "Automatically resolved" text when resolved by push', () => {
-      createComponent({ note: createResolvedNote({ resolved_by_push: true }), isResolved: true });
-      expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
-        'Automatically resolved %{timeago} by %{author}',
-      );
-    });
+    describe('when resolved by push', () => {
+      beforeEach(() => {
+        createComponent({ note: createResolvedNote({ resolved_by_push: true }), isResolved: true });
+      });
 
-    it('passes resolved_at to TimeAgoTooltip', () => {
-      createComponent({ note: createResolvedNote(), isResolved: true });
-      expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(resolvedAt);
-    });
-
-    it('links to the resolver via GlLink', () => {
-      createComponent({ note: createResolvedNote(), isResolved: true });
-      const link = wrapper.findComponent(GlLink);
-      expect(link.attributes('href')).toBe(resolvedBy.path);
-      expect(link.text()).toBe(resolvedBy.name);
+      it('uses "Automatically resolved" text', () => {
+        expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
+          'Automatically resolved %{timeago} by %{author}',
+        );
+      });
     });
   });
 
   describe('draft notes', () => {
-    const createDraftNote = (overrides = {}) => createNote({ isDraft: true, ...overrides });
+    beforeEach(() => {
+      createComponent({ note: createNote({ isDraft: true }) });
+    });
 
-    it('disables award emoji for draft notes', () => {
-      createComponent({ note: createDraftNote() });
+    it('disables award emoji', () => {
       expect(findNoteActions().props('canAwardEmoji')).toBe(false);
     });
 
-    it('disables report as abuse for draft notes', () => {
-      createComponent({ note: createDraftNote() });
+    it('disables report as abuse', () => {
       expect(findNoteActions().props('canReportAsAbuse')).toBe(false);
+    });
+  });
+
+  describe('NoteSessionBar', () => {
+    const SESSION_ID = 42;
+    const AGENT_NAME = 'Duo';
+
+    const sessionNote = createNote({
+      duo_session_id_triggered: SESSION_ID,
+      duo_session_agent_name: AGENT_NAME,
+      duo_session_status: 'running',
+    });
+
+    describe('when duo_session_id_triggered is absent', () => {
+      beforeEach(() => {
+        createComponent({ note: { ...sessionNote, duo_session_id_triggered: null } });
+      });
+
+      it('does not render', () => {
+        expect(findNoteSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when duo_session_agent_name is absent', () => {
+      beforeEach(() => {
+        createComponent({ note: { ...sessionNote, duo_session_agent_name: null } });
+      });
+
+      it('does not render', () => {
+        expect(findNoteSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when session fields are present', () => {
+      beforeEach(() => {
+        createComponent({ note: sessionNote });
+      });
+
+      it('renders', () => {
+        expect(findNoteSessionBar().exists()).toBe(true);
+      });
+
+      it('passes correct props', () => {
+        expect(findNoteSessionBar().props()).toMatchObject({
+          agentName: AGENT_NAME,
+          sessionId: SESSION_ID,
+          status: 'running',
+        });
+      });
+    });
+
+    describe('when status is finished', () => {
+      beforeEach(() => {
+        createComponent({ note: { ...sessionNote, duo_session_status: 'finished' } });
+      });
+
+      it('renders (NoteSessionBar handles its own visibility)', () => {
+        expect(findNoteSessionBar().exists()).toBe(true);
+      });
+    });
+
+    describe('when isFirstNote is true', () => {
+      beforeEach(() => {
+        createComponent({ note: sessionNote, isFirstNote: true });
+      });
+
+      it('passes isReply as false', () => {
+        expect(findNoteSessionBar().props('isReply')).toBe(false);
+      });
+    });
+
+    describe('when isFirstNote is false', () => {
+      beforeEach(() => {
+        createComponent({ note: sessionNote, isFirstNote: false });
+      });
+
+      it('passes isReply as true', () => {
+        expect(findNoteSessionBar().props('isReply')).toBe(true);
+      });
     });
   });
 });

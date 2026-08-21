@@ -1,5 +1,6 @@
 <script>
 import { GlAvatarLink, GlAvatar, GlSprintf, GlLink } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
@@ -23,6 +24,9 @@ export default {
     NoteHeader,
     NoteActions,
     NoteBody,
+    NoteSessionBar: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
     GlAvatarLink,
     GlAvatar,
     GlSprintf,
@@ -136,6 +140,9 @@ export default {
     },
     isAmazonQCodeReview() {
       return this.author.username === 'amazon-q';
+    },
+    hasSession() {
+      return Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name);
     },
   },
   watch: {
@@ -339,6 +346,13 @@ export default {
         </div>
         <slot name="footer"></slot>
       </div>
+      <note-session-bar
+        v-if="hasSession"
+        :agent-name="note.duo_session_agent_name"
+        :session-id="note.duo_session_id_triggered"
+        :status="note.duo_session_status"
+        :is-reply="!isFirstNote"
+      />
     </template>
   </timeline-entry-item>
 </template>

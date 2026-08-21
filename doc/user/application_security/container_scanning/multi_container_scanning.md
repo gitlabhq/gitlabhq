@@ -115,7 +115,7 @@ scanTargets:
 ### Configuration options
 
 > [!note]
-> You cannot specify runner tags for child jobs in multi-container scanning but
+> You cannot specify runner tags for child jobs in multi-container scanning, but
 > [issue 363687](https://gitlab.com/gitlab-org/gitlab/-/work_items/363687) proposes to change this
 > behavior.
 
@@ -324,7 +324,7 @@ Cause: Invalid credentials or missing authentication configuration.
 
 Solution:
 
-1. Verify that credentials are correct and configured correctly.
+1. Verify that credentials are correct and properly configured.
 
    ```yaml
       auths:
@@ -333,7 +333,7 @@ Solution:
           password: ${REGISTRY_PASSWORD}
    ```
 
-1. Define variables in **Settings** > **CI/CD > **Variables**.
+1. Define variables in **Settings** > **CI/CD** > **Variables**.
 
 ### Scan takes too long
 

@@ -15,7 +15,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def index
     @feature_flags = FeatureFlagsFinder
-      .new(project, current_user, scope: params.permit(:scope)[:scope])
+      .new(project, current_user, scope: index_params[:scope])
       .execute
       .page(pagination_params[:page])
       .per(30)
@@ -91,7 +91,15 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   protected
 
   def feature_flag
-    @feature_flag ||= @noteable = project.operations_feature_flags.find_by_iid!(params.permit(:iid)[:iid])
+    @feature_flag ||= @noteable = project.operations_feature_flags.find_by_iid!(find_feature_flag_params[:iid])
+  end
+
+  def index_params
+    params.permit(:scope)
+  end
+
+  def find_feature_flag_params
+    params.permit(:iid)
   end
 
   def create_params

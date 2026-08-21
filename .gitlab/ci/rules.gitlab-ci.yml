@@ -2916,12 +2916,13 @@
     - <<: *if-merge-request-labels-run-rspec-vue3
 
 # Gitaly MVCC backend jobs only run when the pipeline:run-gitaly-mvcc label is
-# set, since the backend is still under development. The -ee variants add the
-# if-not-ee guard so the rspec-ee jobs stay excluded in FOSS contexts.
+# set, or when ENABLE_RSPEC_GITALY_MVCC=true (used by the gitaly project's
+# rails-specs cross-project trigger). The -ee variants add the if-not-ee guard.
 .rails:rules:gitaly-mvcc:
   rules:
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_GITALY_MVCC == "true"'
     - <<: *if-merge-request-labels-run-gitaly-mvcc
 
 .rails:rules:gitaly-mvcc-ee:
@@ -2935,6 +2936,7 @@
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_GITALY_MVCC == "true"'
     - <<: *if-merge-request-labels-run-gitaly-mvcc
 
 .rails:rules:gitaly-mvcc-ee-system:

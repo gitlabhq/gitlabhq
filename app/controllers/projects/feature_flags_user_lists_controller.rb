@@ -18,6 +18,10 @@ class Projects::FeatureFlagsUserListsController < Projects::ApplicationControlle
   private
 
   def user_list
-    @user_list = project.operations_feature_flags_user_lists.find_by_iid!(params.permit(:iid)[:iid])
+    @user_list = project.operations_feature_flags_user_lists.find_by_iid!(user_list_params[:iid])
+  end
+
+  def user_list_params
+    params.permit(:iid)
   end
 end

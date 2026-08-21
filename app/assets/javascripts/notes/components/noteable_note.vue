@@ -1,5 +1,6 @@
 <script>
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { defineAsyncComponent } from 'vue';
 import { escape } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -32,6 +33,9 @@ export default {
     NoteHeader,
     NoteActions,
     NoteBody,
+    NoteSessionBar: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
     TimelineEntryItem,
     GlAvatarLink,
     GlAvatar,
@@ -253,6 +257,9 @@ export default {
     },
     isAmazonQCodeReview() {
       return this.author.username === 'amazon-q';
+    },
+    hasSession() {
+      return Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name);
     },
   },
   created() {
@@ -560,6 +567,13 @@ export default {
           <slot name="after-note-body"></slot>
         </div>
       </div>
+      <note-session-bar
+        v-if="hasSession"
+        :agent-name="note.duo_session_agent_name"
+        :session-id="note.duo_session_id_triggered"
+        :status="note.duo_session_status"
+        :is-reply="!discussionRoot"
+      />
     </div>
   </timeline-entry-item>
 </template>

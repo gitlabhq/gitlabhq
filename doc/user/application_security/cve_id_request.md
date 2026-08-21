@@ -14,7 +14,7 @@ description: Vulnerability tracking and security disclosure.
 {{< /details >}}
 
 A [Common Vulnerabilities and Exposures ID](https://cve.mitre.org/index.html) (CVE ID) is a unique
-identifier assigned to publicly-disclosed software vulnerabilities. GitLab is a
+identifier assigned to publicly disclosed software vulnerabilities. GitLab is a
 [CVE Numbering Authority](<https://cve.mitre.org/cve/cna.html>) (CNA), which means we can assign CVE
 identifiers to vulnerabilities in projects hosted on GitLab.com.
 

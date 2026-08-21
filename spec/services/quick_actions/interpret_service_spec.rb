@@ -3486,7 +3486,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         let(:service_result) { { status: :success } }
 
         it 'executes the pipeline creation asynchronously' do
-          expect(create_pipeline_service).to receive(:execute_async).with(merge_request)
+          expect(create_pipeline_service).to receive(:execute_async).with(merge_request, user_initiated: true)
 
           _, _, message = service.execute(content, merge_request)
 

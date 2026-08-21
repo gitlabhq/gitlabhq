@@ -38,7 +38,7 @@ GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) securi
 > [!warning]
 > The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
 > [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
-> The existing current major version for the Grype analyzer image will continue to be updated with the
+> The current major version for the Grype analyzer image will continue to be updated with the
 > latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
 > will stop working.
 
@@ -53,7 +53,7 @@ GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) securi
 | [UBI Image Support](#fips-enabled-images) | {{< yes >}} | {{< yes >}} |
 | Support for Trivy | {{< yes >}} | {{< yes >}} |
 | [End-of-life Operating System Detection](#end-of-life-operating-system-detection) | {{< yes >}} | {{< yes >}} |
-| Inclusion of GitLab advisory database | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
+| Inclusion of GitLab advisory database | Limited to the time-delayed content from GitLab [advisories-community](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
 | Presentation of Report data in Merge Request and Security tab of the CI pipeline job | {{< no >}} | {{< yes >}} |
 | [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | {{< no >}} | {{< yes >}} |
 | Support for the [vulnerability allow list](#vulnerability-allowlisting) | {{< no >}} | {{< yes >}} |
@@ -183,7 +183,7 @@ You can review vulnerabilities in a pipeline:
    - Project: Highlights the project where the vulnerability was identified.
    - Report type: Explains the output type.
    - Scanner: Identifies which analyzer detected the vulnerability.
-   - Image: Provides the image attributed to the vulnerability
+   - Image: Provides the image attributed to the vulnerability.
    - Namespace: Identifies the workspace attributed to the vulnerability.
    - Links: Evidence of the vulnerability being cataloged in various advisory databases.
    - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
@@ -547,7 +547,7 @@ container_scanning:
 ```
 
 `CS_DEFAULT_BRANCH_IMAGE` should remain the same for a given `CS_IMAGE`. If it changes, then a
-duplicate set of vulnerabilities are created, which must be manually dismissed.
+duplicate set of vulnerabilities is created, which must be manually dismissed.
 
 When using Auto DevOps, `CS_DEFAULT_BRANCH_IMAGE` is
 automatically set to `$CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_APPLICATION_TAG`.
@@ -641,11 +641,11 @@ This example excludes from `gl-container-scanning-report.json`:
 - `generalallowlist` block allows you to specify CVE IDs globally. All vulnerabilities with matching CVE IDs are excluded from the scan report.
 - `images` block allows you to specify CVE IDs for each container image independently. All vulnerabilities from the given image with matching CVE IDs are excluded from the scan report. The image name is retrieved from one of the environment variables used to specify the Docker image to be scanned, such as `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` or `CS_IMAGE`. The image provided in this block **must** match this value and **must not** include the tag value. For example, if you specify the image to be scanned using `CS_IMAGE=alpine:3.7`, then you would use `alpine` in the `images` block, but you cannot use `alpine:3.7`.
 
-  You can specify container image in multiple ways:
+  You can specify a container image in multiple ways:
 
-  - as image name only (such as `centos`).
-  - as full image name with registry hostname (such as `your.private.registry:5000/centos`).
-  - as full image name with registry hostname and sha256 label (such as `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256`).
+  - As image name only (such as `centos`).
+  - As full image name with registry hostname (such as `your.private.registry:5000/centos`).
+  - As full image name with registry hostname and sha256 label (such as `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256`).
 
 > [!note]
 > The string after CVE ID (`cups` and `libxml2` in the previous example) is an optional comment format. It has **no impact** on the handling of vulnerabilities. You can include comments to describe the vulnerability.
@@ -1105,7 +1105,7 @@ In addition to the sources provided by these scanners, GitLab maintains the foll
 
 In the GitLab Ultimate tier, the data from the GitLab advisory database is merged in to augment the
 data from the external sources. In the GitLab Premium and Free tiers, the data from the GitLab
-Advisory Database (Open Source Edition) is merged in to augment the data from the external sources.
+advisory database (Open Source Edition) is merged in to augment the data from the external sources.
 This augmentation only applies to the analyzer images for the Trivy scanner.
 
 Database update information for other analyzers is available in the

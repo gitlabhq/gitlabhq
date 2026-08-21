@@ -54,6 +54,7 @@ describe('issue_note', () => {
   const REPORT_ABUSE_PATH = '/abuse_reports/add_category';
 
   const findNoteBody = () => wrapper.findComponent(NoteBody);
+  const findNoteSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
 
   const findMultilineComment = () => wrapper.findByTestId('multiline-comment');
 
@@ -67,13 +68,18 @@ describe('issue_note', () => {
         note: noteCopy,
         ...props,
       },
-      stubs: [
-        'note-header',
-        'user-avatar-link',
-        'note-actions',
-        'note-body',
-        'multiline-comment-form',
-      ],
+      stubs: {
+        NoteHeader: true,
+        UserAvatarLink: true,
+        NoteActions: true,
+        NoteBody: true,
+        MultilineCommentForm: true,
+        NoteSessionBar: {
+          name: 'NoteSessionBar',
+          props: ['agentName', 'sessionId', 'status', 'isReply'],
+          template: '<div></div>',
+        },
+      },
       provide: {
         reportAbusePath: REPORT_ABUSE_PATH,
       },
@@ -565,6 +571,86 @@ describe('issue_note', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('update-success')).toHaveLength(1);
+    });
+  });
+
+  describe('NoteSessionBar', () => {
+    const SESSION_ID = 42;
+    const AGENT_NAME = 'Duo Developer';
+
+    const sessionNote = {
+      ...note,
+      duo_session_id_triggered: SESSION_ID,
+      duo_session_agent_name: AGENT_NAME,
+      duo_session_status: 'running',
+    };
+
+    describe('when duo_session_id_triggered is absent', () => {
+      beforeEach(() => {
+        createWrapper({ note: { ...sessionNote, duo_session_id_triggered: null } });
+      });
+
+      it('does not render', () => {
+        expect(findNoteSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when duo_session_agent_name is absent', () => {
+      beforeEach(() => {
+        createWrapper({ note: { ...sessionNote, duo_session_agent_name: null } });
+      });
+
+      it('does not render', () => {
+        expect(findNoteSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when session fields are present', () => {
+      beforeEach(() => {
+        createWrapper({ note: sessionNote });
+      });
+
+      it('renders', () => {
+        expect(findNoteSessionBar().exists()).toBe(true);
+      });
+
+      it('passes correct props', () => {
+        expect(findNoteSessionBar().props()).toMatchObject({
+          agentName: AGENT_NAME,
+          sessionId: SESSION_ID,
+          status: 'running',
+        });
+      });
+    });
+
+    describe('when status is finished', () => {
+      beforeEach(() => {
+        createWrapper({ note: { ...sessionNote, duo_session_status: 'finished' } });
+      });
+
+      it('renders (NoteSessionBar handles its own visibility)', () => {
+        expect(findNoteSessionBar().exists()).toBe(true);
+      });
+    });
+
+    describe('when discussionRoot is true', () => {
+      beforeEach(() => {
+        createWrapper({ note: sessionNote, discussionRoot: true });
+      });
+
+      it('passes isReply as false', () => {
+        expect(findNoteSessionBar().props('isReply')).toBe(false);
+      });
+    });
+
+    describe('when discussionRoot is false', () => {
+      beforeEach(() => {
+        createWrapper({ note: sessionNote, discussionRoot: false });
+      });
+
+      it('passes isReply as true', () => {
+        expect(findNoteSessionBar().props('isReply')).toBe(true);
+      });
     });
   });
 });

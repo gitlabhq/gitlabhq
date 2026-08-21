@@ -1,0 +1,15 @@
+# @feature_category: source_code_management
+query getBlobEdit($projectPath: ID!, $filePath: String!, $ref: String!, $refType: RefType) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      blobs(paths: [$filePath], ref: $ref, refType: $refType) {
+        nodes {
+          id
+          canModifyBlob
+          editBlobPath
+        }
+      }
+    }
+  }
+}

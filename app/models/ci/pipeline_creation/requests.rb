@@ -10,6 +10,9 @@
 #       "error" => "ERROR MESSAGE" <- this field is only present for failed creations
 #       "pipeline_id": "PIPELINE_ID" <- this field is only present for successful creations
 #       "status": "STATUS"
+#       "id": "CREATION_ID"
+#       "user_initiated": BOOLEAN <- only present for merge request pipeline creations; a missing
+#                                    flag must be treated as user-initiated
 #     }
 #   }
 # }
@@ -65,8 +68,12 @@ module Ci
           request
         end
 
-        def start_for_merge_request(merge_request)
-          request = { 'key' => merge_request_key(merge_request), 'id' => generate_id }
+        def start_for_merge_request(merge_request, user_initiated: false)
+          request = {
+            'key' => merge_request_key(merge_request),
+            'id' => generate_id,
+            'user_initiated' => user_initiated
+          }
 
           hset(request, IN_PROGRESS)
 
@@ -119,7 +126,13 @@ module Ci
             redis.multi do |transaction|
               transaction.hset(
                 request['key'], request['id'],
-                { 'status' => status, 'pipeline_id' => pipeline_id, 'error' => error }.compact.to_json
+                {
+                  'status' => status,
+                  'pipeline_id' => pipeline_id,
+                  'error' => error,
+                  'id' => request['id'],
+                  'user_initiated' => request['user_initiated']
+                }.compact.to_json
               )
 
               transaction.expire(request['key'], REDIS_EXPIRATION_TIME)

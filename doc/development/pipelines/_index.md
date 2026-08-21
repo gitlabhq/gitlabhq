@@ -327,6 +327,7 @@ If you want to force all the RSpec jobs to run regardless of your changes, you c
 The `gitaly-mvcc` RSpec jobs run the suite against a Gitaly server that uses the MVCC storage backend.
 They do not run automatically.
 To run them all, add the `pipeline:run-gitaly-mvcc` label to the merge request and start a new pipeline.
+In cross-project triggered pipelines (such as the `rails-specs` trigger from `gitlab-org/gitaly`), set `ENABLE_RSPEC_GITALY_MVCC=true` instead.
 
 ### End-to-end jobs
 

@@ -17,7 +17,7 @@ This glossary provides definitions for terms related to security features in Git
 
 ## Analyzer
 
-Software that analyzes a [scan target type](#scan-target-type) for security vulnerabilities. Internally, it is responsible for gathering required configuration parameters, performing necessary data transformations to convert the target into a standardized format for the [scanner](#scanner) to execute the scan operation. Finally, it produces a report in the format required by the caller.
+Software that analyzes a [scan target type](#scan-target-type) for security vulnerabilities. Internally, it is responsible for gathering required configuration parameters and performing necessary data transformations to convert the target into a standardized format for the [scanner](#scanner) to execute the scan operation. Finally, it produces a report in the format required by the caller.
 
 CI/CD-based analyzers integrate into GitLab using a CI/CD job. The report produced by the CI/CD-based analyzer is published as an artifact after the job completes. GitLab ingests this report, allowing users to visualize and manage found vulnerabilities. The generated reports adhere to the [secure report format](#secure-report-format).
 
@@ -158,7 +158,7 @@ incorporates file path and line number.
 
 A file that lists the direct and indirect dependencies of an application and their version numbers.
 Its purpose is reproducibility, to ensure anyone installing the application's dependencies gets the
-exact same versions. Some lock files, like `Gemfile.lock` also include
+exact same versions. Some lock files, like `Gemfile.lock`, also include
 dependency relationship information, but this is not a requirement.
 
 Related term: [dependency graph export](#dependency-graph-export).
@@ -271,7 +271,7 @@ A page that displays findings discovered in the associated CI pipeline.
 
 ## Possibly affected component
 
-A software component that is possibly affected by vulnerability. For example, when scanning a
+A software component that is possibly affected by a vulnerability. For example, when scanning a
 project for known vulnerabilities, components are first evaluated to see if they match the name
 and [package type](https://github.com/package-url/purl-spec/blob/main/PURL-TYPES.rst).
 During this stage, they're possibly affected by the vulnerability, and are only [known to be affected](#known-affected-component)
@@ -279,8 +279,8 @@ after it's confirmed that they fall in the affected version range.
 
 ## Post-filter
 
-Post-filters help reduce noise in the scanner results and automate manual tasks. You can specify criteria that updates
-or modifies vulnerability data based on scanner results. For example, you can flag findings as likely false positives
+Post-filters help reduce noise in the scanner results and automate manual tasks. You can specify criteria that update
+or modify vulnerability data based on scanner results. For example, you can flag findings as likely false positives
 and automatically resolve vulnerabilities that are no longer detected. These are not permanent actions and can be changed.
 
 Support for automatically resolving findings is tracked in [epic 7478](https://gitlab.com/groups/gitlab-org/-/epics/7478) and
@@ -337,7 +337,7 @@ This list is subject to change as scanners are added.
 
 ## Scan target type
 
-A discrete unit of content or artifact that serves as the scope boundary for running the scan. Each scan target type represents a self-contained entity with defined scanning constraints. A specific instance of a scan target type (such as a particular Git repository or container image) is referred to as a "scan target". Examples of scan target types include Git repositories, file systems, containers, etc.
+A discrete unit of content or artifact that serves as the scope boundary for running the scan. Each scan target type represents a self-contained entity with defined scanning constraints. A specific instance of a scan target type (such as a particular Git repository or container image) is referred to as a "scan target". Examples of scan target types include Git repositories, file systems, containers, and so on.
 
 ## Scanner
 
@@ -351,7 +351,7 @@ GitLab.
 Products include container scanning, dependency scanning, dynamic application security
 testing (DAST), secret detection, static application security testing (SAST), and fuzz testing.
 
-Each of these products typically include one or more analyzers.
+Each of these products typically includes one or more analyzers.
 
 ## Secure report format
 
@@ -372,7 +372,7 @@ target itself from previous runs.
 ## Vendor
 
 The party maintaining an analyzer. As such, a vendor is responsible for integrating a scanner into
-GitLab and keeping it compatible as they evolve. A vendor isn't necessarily the author or maintainer
+GitLab and keeping it compatible as it evolves. A vendor isn't necessarily the author or maintainer
 of the scanner, as in the case of using an open core or OSS project as a base solution of an
 offering. For scanners included as part of a GitLab distribution or GitLab subscription, the vendor
 is listed as GitLab.

@@ -28,7 +28,7 @@ bugs and potential security issues that other QA processes may miss.
 
 You should use fuzz testing in addition to the other security scanners in [GitLab Secure](../_index.md)
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),
-you can run your coverage-guided fuzz testing as part your CI/CD workflow.
+you can run your coverage-guided fuzz testing as part of your CI/CD workflow.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Coverage-guided Fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=bbIenVVcjW0).
@@ -171,7 +171,7 @@ name of the relevant corpus, view details of the corpus registry.
 
 Prerequisites:
 
-- [Enable coverage-guide fuzz testing](#enable-coverage-guided-fuzz-testing) in the project.
+- [Enable coverage-guided fuzz testing](#enable-coverage-guided-fuzz-testing) in the project.
 
 1. Set the following variables in the `.gitlab-ci.yml` file:
    - Set `COVFUZZ_USE_REGISTRY` to `true`.
@@ -264,7 +264,7 @@ Use the following variables to configure coverage-guided fuzz testing in your CI
 #### Seed corpus
 
 Files in the [seed corpus](../terminology/_index.md#seed-corpus) must be updated manually. They are
-not updated or overwritten by the coverage-guide fuzz testing job.
+not updated or overwritten by the coverage-guided fuzz testing job.
 
 ### Coverage-guided fuzz testing process
 
@@ -324,7 +324,7 @@ pipeline. This configuration uses the GitLab
 
 The suggested workflow in this scenario is to have long-running, asynchronous fuzzing jobs on the
 main or development branch, and short synchronous fuzzing jobs on all other branches and MRs. This
-balances the needs of completing the per-commit pipeline complete quickly, while also giving the
+balances the needs of completing the per-commit pipeline quickly, while also giving the
 fuzzer a large amount of time to fully explore and test the app. Long-running fuzzing jobs are
 usually necessary for the coverage-guided fuzzer to find deeper bugs in your codebase.
 

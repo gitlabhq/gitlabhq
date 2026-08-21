@@ -5,6 +5,8 @@ query getPipelineCreationRequests($fullPath: ID!, $mergeRequestIid: String!) {
     id
     mergeRequest(iid: $mergeRequestIid) {
       id
+      # `id` is intentionally not selected until this backend field is deployed (frontend follow-up: #612802)
+      # eslint-disable-next-line @graphql-eslint/require-selections
       pipelineCreationRequests {
         status
         error

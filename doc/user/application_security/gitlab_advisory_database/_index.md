@@ -55,7 +55,7 @@ impact.
 
 To view the database content, go to the [GitLab advisory database](https://advisories.gitlab.com) home page. On the home page you can:
 
-- Search the database, by identifier, package name, and description.
+- Search the database by identifier, package name, and description.
 - View advisories that were added recently.
 - View statistical information, including coverage and update frequency.
 
@@ -303,7 +303,7 @@ Will return something like:
 
 GitLab provides a free and open-source version of the database, the [GitLab advisory database (open source edition)](https://gitlab.com/gitlab-org/advisories-community).
 
-The open-source version is a time-delayed clone of the GitLab advisory database, MIT-licensed and contains all advisories from the GitLab advisory database that are older than 30 days or with the `community-sync` flag.
+The open-source version is a time-delayed clone of the GitLab advisory database, MIT-licensed, and contains all advisories from the GitLab advisory database that are older than 30 days or that have the `community-sync` flag.
 
 ## Integrations
 
@@ -349,7 +349,7 @@ Community contributions are accessible in [advisories-community](https://gitlab.
 
 ## Contributing to the vulnerability database
 
-If you know about a vulnerability that is not listed, you can contribute to the GitLab advisory database by either opening an issue or submit the vulnerability.
+If you know about a vulnerability that is not listed, you can contribute to the GitLab advisory database by either opening an issue or submitting the vulnerability.
 
 For more information, see [Contribution guidelines](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/CONTRIBUTING.md).
 

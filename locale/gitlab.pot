@@ -23233,6 +23233,9 @@ msgstr ""
 msgid "ContinuousDeployment|All"
 msgstr ""
 
+msgid "ContinuousDeployment|All environments"
+msgstr ""
+
 msgid "ContinuousDeployment|All systems healthy"
 msgstr ""
 
@@ -23389,13 +23392,13 @@ msgstr ""
 msgid "ContinuousDeployment|Enter a valid URL that starts with http:// or https://"
 msgstr ""
 
-msgid "ContinuousDeployment|Environment %{id}"
-msgstr ""
-
 msgid "ContinuousDeployment|Environment identity"
 msgstr ""
 
 msgid "ContinuousDeployment|Environment name"
+msgstr ""
+
+msgid "ContinuousDeployment|Environment not found"
 msgstr ""
 
 msgid "ContinuousDeployment|Environment: %{name}"
@@ -23638,6 +23641,9 @@ msgstr ""
 msgid "ContinuousDeployment|Running"
 msgstr ""
 
+msgid "ContinuousDeployment|Running Apps"
+msgstr ""
+
 msgid "ContinuousDeployment|Save changes"
 msgstr ""
 
@@ -23702,6 +23708,9 @@ msgid "ContinuousDeployment|The cluster that backs this environment. Deploy conn
 msgstr ""
 
 msgid "ContinuousDeployment|The deployable units. Each service has its own deployment strategy."
+msgstr ""
+
+msgid "ContinuousDeployment|The environment may have been removed or you may not have access to it."
 msgstr ""
 
 msgid "ContinuousDeployment|This deployment will honour all policies and approval gates configured for the target environments."
@@ -30262,6 +30271,27 @@ msgstr ""
 msgid "DuoAgenticChat|chat-rules.md was not found in this page"
 msgstr ""
 
+msgid "DuoAgentsPlatform|%{agentName} is investigating..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is paused"
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is pondering..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is thinking..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} is working..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} needs input"
+msgstr ""
+
+msgid "DuoAgentsPlatform|%{agentName} was unable to complete your request"
+msgstr ""
+
 msgid "DuoAgentsPlatform|%{event}: %{conditions}"
 msgstr ""
 
@@ -30785,6 +30815,9 @@ msgid "DuoAgentsPlatform|Verify my account"
 msgstr ""
 
 msgid "DuoAgentsPlatform|View session"
+msgstr ""
+
+msgid "DuoAgentsPlatform|View session #%{sessionId}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|We need to verify your account"
@@ -32108,6 +32141,9 @@ msgid "Edit environment"
 msgstr ""
 
 msgid "Edit file"
+msgstr ""
+
+msgid "Edit file %{fileName}"
 msgstr ""
 
 msgid "Edit fork in Web IDE"
@@ -64639,6 +64675,9 @@ msgstr ""
 msgid "ReleaseCreation|Release"
 msgstr ""
 
+msgid "ReleaseCreation|Search version"
+msgstr ""
+
 msgid "ReleaseCreation|Select version"
 msgstr ""
 
@@ -64661,6 +64700,9 @@ msgid "ReleaseCreation|e.g. eu-west-1-prod"
 msgstr ""
 
 msgid "ReleaseCreation|e.g. v1.2.3"
+msgstr ""
+
+msgid "ReleaseCreation|not deployed"
 msgstr ""
 
 msgid "Released"

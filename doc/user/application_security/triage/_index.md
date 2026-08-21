@@ -10,7 +10,7 @@ Triage is the second phase of the vulnerability management lifecycle: detect, tr
 remediate.
 
 Triage is an ongoing process of evaluating each vulnerability to decide which need attention now and
-which are not as critical. High-risk vulnerabilities are separated from medium or low risk threats.
+which are not as critical. High-risk vulnerabilities are separated from medium- or low-risk threats.
 It may not be possible or feasible to analyze and remediate every vulnerability. As part of a risk
 management framework, triage helps ensure resources are applied where they're most effective. It's
 best to triage vulnerabilities often, so that the number of vulnerabilities per triage cycle is
@@ -91,5 +91,5 @@ Bulk triage low-risk vulnerabilities to focus on the most important ones.
   status to **Dismissed**. You can also automate this by using a
   [vulnerability management policy](../policies/vulnerability_management_policy.md).
 - Dismiss vulnerabilities by identifier. If a vulnerability is mitigated by controls outside the
-  application layer, you might choose to dismiss them. Use the **Identifier** filter in the
+  application layer, you might choose to dismiss it. Use the **Identifier** filter in the
   vulnerability report to select them and change their status to **Dismissed**.

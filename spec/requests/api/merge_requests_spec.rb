@@ -2799,6 +2799,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
           expect(response).to have_gitlab_http_status(:accepted)
         end
+
+        it 'stores the pipeline creation request as user initiated', :clean_gitlab_redis_shared_state do
+          request
+
+          requests = Ci::PipelineCreation::Requests.for_merge_request(merge_request)
+          expect(requests).to contain_exactly(a_hash_including('user_initiated' => true))
+        end
       end
 
       it_behaves_like 'authorizing granular token permissions', :create_merge_request_pipeline do

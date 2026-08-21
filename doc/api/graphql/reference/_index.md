@@ -37676,9 +37676,11 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cipipelinecreationrequest-error"></a>`error` | [`String`](#string) | Error message if pipeline creation failed. |
+| <a id="cipipelinecreationrequest-id"></a>`id` | [`String`](#string) | Unique ID of the pipeline creation request. |
 | <a id="cipipelinecreationrequest-pipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline object created by the request. |
 | <a id="cipipelinecreationrequest-pipelineid"></a>`pipelineId` | [`CiPipelineID`](#cipipelineid) | ID of the created pipeline if creation was successful. |
 | <a id="cipipelinecreationrequest-status"></a>`status` | [`CiPipelineCreationStatus!`](#cipipelinecreationstatus) | Current status of the pipeline creation. |
+| <a id="cipipelinecreationrequest-userinitiated"></a>`userInitiated` | [`Boolean!`](#boolean) | Indicates whether the pipeline creation was explicitly requested by a user. |
 
 ### `CiProjectSubscription`
 

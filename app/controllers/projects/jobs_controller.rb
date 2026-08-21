@@ -73,7 +73,7 @@ class Projects::JobsController < Projects::ApplicationController
             build_trace = Ci::BuildTrace.new(
               build: @build,
               stream: stream,
-              state: permitted_params[:state])
+              state: project_job_params[:state])
 
             render json: BuildTraceSerializer
               .new(project: @project, current_user: @current_user)
@@ -159,7 +159,7 @@ class Projects::JobsController < Projects::ApplicationController
     if @build.trace.archived?
       workhorse_set_content_type!
       send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params,
-        proxy: permitted_params[:proxy])
+        proxy: project_job_params[:proxy])
     else
       @build.trace.read do |stream|
         if stream.file?
@@ -251,12 +251,12 @@ class Projects::JobsController < Projects::ApplicationController
     { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
   end
 
-  def permitted_params
+  def project_job_params
     params.permit(:id, :state, :proxy, :force, :service, :port, :path)
   end
 
   def force_param
-    permitted_params[:force] == "true"
+    project_job_params[:force] == "true"
   end
 
   def play_params
@@ -264,11 +264,11 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def find_job_as_build
-    @build = project.builds.find(permitted_params[:id])
+    @build = project.builds.find(project_job_params[:id])
   end
 
   def find_job_as_processable
-    @build = project.processables.find(permitted_params[:id])
+    @build = project.processables.find(project_job_params[:id])
   end
 
   def build_path(build)
@@ -286,9 +286,9 @@ class Projects::JobsController < Projects::ApplicationController
 
   def build_service_specification
     @build.service_specification(
-      service: permitted_params[:service],
-      port: permitted_params[:port],
-      path: permitted_params[:path],
+      service: project_job_params[:service],
+      port: project_job_params[:port],
+      path: project_job_params[:path],
       subprotocols: proxy_subprotocol
     )
   end

@@ -203,13 +203,13 @@ describe('Blob Editing', () => {
         SourceEditor.prototype.createInstance = jest.fn().mockReturnValue({
           ...mockInstance,
           markdownPreview: {
+            shown: isPreviewOpened,
             eventEmitter: {
               fire,
             },
           },
         });
         await initEditor({ isMarkdown });
-        blobInstance.markdownLivePreviewOpened = isPreviewOpened;
         const elToClick = document.querySelector(`a[href='${tabToClick}']`);
         elToClick.dispatchEvent(new Event('click'));
 

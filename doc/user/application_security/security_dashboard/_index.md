@@ -339,7 +339,7 @@ To view the security dashboards, the following is required:
 
 > [!note]
 > The security dashboards show results of scans from the most recent completed pipeline on the
-> [default branch](../../project/repository/branches/default.md). Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
+> [default branch](../../project/repository/branches/default.md). Dashboards are updated with the results of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
 ## Viewing the legacy security dashboard
 
@@ -393,7 +393,7 @@ supplies the following:
 | **B** | One or more `low` vulnerabilities               |
 | **A** | Zero vulnerabilities                            |
 
-To view group security dashboard:
+To view the group security dashboard:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Security** > **Security dashboard**.

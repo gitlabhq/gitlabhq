@@ -42,7 +42,7 @@ For information on this, see the [general Application Security troubleshooting s
 
 This error might occur when you scan an image from AWS ECR and the AWS region is not configured.
 The scanner cannot retrieve an authorization token.
-When you set `SECURE_LOG_LEVEL` to `debug` you will see a log message like the following:
+When you set `SECURE_LOG_LEVEL` to `debug`, you will see a log message like the following:
 
 ```shell
 [35mDEBUG[0m failed to get authorization token: MissingRegion: could not find region configuration
@@ -74,7 +74,7 @@ Making this visible in the UI is proposed in [issue 433325](https://gitlab.com/g
 ## Expected vulnerabilities not detected
 
 Trivy does not report [language-specific findings](_index.md#report-language-specific-findings)
-by default which may result in an empty report when the image does not have any
+by default, which may result in an empty report when the image does not have any
 vulnerable operating system dependencies. To enable language-specific findings,
 follow the steps in the linked documentation and re-run the scan.
 

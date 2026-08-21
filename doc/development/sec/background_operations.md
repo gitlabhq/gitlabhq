@@ -85,13 +85,6 @@ TTL: 72 hours
 | `service_error` | Service returned error response |
 | `unexpected_error` | Unexpected exception occurred |
 
-## Feature flag
-
-The `security_bulk_operations_notifications` feature flag controls background operations tracking.
-
-- **Disabled**: Uses legacy `BulkUpdateWorker` (no tracking or notifications)
-- **Enabled**: Uses `BackgroundOperationBulkUpdateWorker` (with tracking and notifications)
-
 ## Email notifications
 
 Emails are sent **only when failures occur** after the operation completes.

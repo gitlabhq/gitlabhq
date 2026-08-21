@@ -66,7 +66,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 | Component                   | The dependency's name and version. |
 | Packager                    | The package manager used to install the dependency. Displays as "unknown" for unsupported package managers. |
 | Location                    | For system dependencies, this field lists the image that was scanned. For application dependencies, this field shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the direct [dependents](#dependency-paths), if any. If there are transitive dependencies, selecting **View dependency paths** shows the full path of all dependents. Transitive dependencies are indirect dependents that have a direct dependent as an ancestor. |
-| License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
+| License (for projects only) | Links to the dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
 | Projects (for groups only)  | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. |
 
 ## Filter dependency list
@@ -133,7 +133,7 @@ vulnerability, its severity and description appears below it. To view more detai
 select the vulnerability's description. The [vulnerability's details](../vulnerabilities/_index.md) page is opened.
 The dependency list shows only vulnerabilities in the `detected` and `confirmed` states.
 When a vulnerability's state changes, the changes are not reflected on the dependency list
-until a new pipeline runs on the default branch containing an SBoM.
+until a new pipeline runs on the default branch containing an SBOM.
 
 ## Dependency paths
 

@@ -8,7 +8,7 @@ exports[`~/lib/logger/hello logHello when on dot_com console logs a friendly hel
 Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!
 
 🤝 Contribute to GitLab: https://about.gitlab.com/community/contribute/
-🔎 Create a new GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/issues/new
+🔎 Create a new GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/new
 🚀 We like your curiosity! Help us improve GitLab by joining the team: https://about.gitlab.com/jobs/",
     "padding-top: 0.5em; font-size: 2em;",
     "padding-bottom: 0.5em;",
@@ -24,7 +24,7 @@ exports[`~/lib/logger/hello logHello when on self managed console logs a friendl
 Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!
 
 🤝 Contribute to GitLab: https://about.gitlab.com/community/contribute/
-🔎 Create a new GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/issues/new
+🔎 Create a new GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/new
 ",
     "padding-top: 0.5em; font-size: 2em;",
     "padding-bottom: 0.5em;",

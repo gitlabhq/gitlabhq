@@ -778,7 +778,7 @@ module API
         )
 
         if params[:async]
-          service.execute_async(merge_request)
+          service.execute_async(merge_request, user_initiated: true)
 
           status :accepted
         else

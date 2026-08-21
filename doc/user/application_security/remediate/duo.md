@@ -147,7 +147,7 @@ To resolve a vulnerability from the vulnerability report:
 1. In the upper-right corner, select **Resolve with AI**. If that button is not shown, select
    **AI actions**, then select **Resolve with AI**.
    > [!warning]
-   > If this project is a public project be aware that creating an MR will publicly expose the
+   > If this project is a public project, be aware that creating an MR will publicly expose the
    > vulnerability and offered resolution. To create the MR privately,
    > [create a private fork](../../project/merge_requests/confidential.md), then repeat this
    > process.
@@ -201,7 +201,7 @@ Vulnerability Resolution sometimes cannot generate a suggested fix. Common cause
 - False positive detected:
   - Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
-  - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](../vulnerabilities/_index.md#vulnerability-status-values) and [select a matching reason](../vulnerabilities/_index.md#vulnerability-dismissal-reasons).
+  - If you agree that the vulnerability is a false positive or is not worth fixing, you should [dismiss the vulnerability](../vulnerabilities/_index.md#vulnerability-status-values) and [select a matching reason](../vulnerabilities/_index.md#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
 - Temporary or unexpected error:
   - The error message may state that `an unexpected error has occurred`, `the upstream AI provider request timed out`, `something went wrong`, or a similar cause.

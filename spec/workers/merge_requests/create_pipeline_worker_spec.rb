@@ -256,6 +256,21 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
           result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
           expect(result['status']).to eq(Ci::PipelineCreation::Requests::FAILED)
           expect(result['error']).to eq(error_message)
+          expect(result['user_initiated']).to be(false)
+        end
+
+        context 'when the request is user initiated' do
+          let(:pipeline_creation_request) do
+            Ci::PipelineCreation::Requests.start_for_merge_request(merge_request, user_initiated: true)
+          end
+
+          it 'preserves the user_initiated flag on the failed request' do
+            subject
+
+            result = Ci::PipelineCreation::Requests.hget(pipeline_creation_request)
+            expect(result['status']).to eq(Ci::PipelineCreation::Requests::FAILED)
+            expect(result['user_initiated']).to be(true)
+          end
         end
 
         it_behaves_like 'triggers GraphQL subscription'

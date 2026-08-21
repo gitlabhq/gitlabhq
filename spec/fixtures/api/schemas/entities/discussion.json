@@ -229,7 +229,19 @@
               "null"
             ]
           },
+          "duo_session_id_triggered": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "duo_session_status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duo_session_agent_name": {
             "type": [
               "string",
               "null"

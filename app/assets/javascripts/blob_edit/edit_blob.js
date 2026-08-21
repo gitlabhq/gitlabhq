@@ -23,7 +23,6 @@ export default class EditBlob {
     this.options = options;
     this.configureMonacoEditor();
     this.isMarkdown = this.options.isMarkdown;
-    this.markdownLivePreviewOpened = false;
 
     this.initModePanesAndLinks();
     this.initSoftWrap();
@@ -175,9 +174,9 @@ export default class EditBlob {
   }
 
   toggleMarkdownPreview(toOpen) {
-    if (toOpen !== this.markdownLivePreviewOpened) {
-      this.editor.markdownPreview?.eventEmitter.fire();
-      this.markdownLivePreviewOpened = !this.markdownLivePreviewOpened;
+    const preview = this.editor.markdownPreview;
+    if (preview && toOpen !== preview.shown) {
+      preview.eventEmitter.fire();
     }
   }
 
