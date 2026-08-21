@@ -12,6 +12,10 @@ module Oauth
       '/api/v4/orbit/mcp' => Gitlab::Auth::MCP_ORBIT_SCOPE
     }.freeze
 
+    # Described when the request carries no MCP path suffix. A metadata document
+    # names one resource, so the fallback cannot cover every path at once.
+    DEFAULT_MCP_RESOURCE_PATH = '/api/v4/mcp'
+
     def show
       expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
       render json: resource_metadata
@@ -24,16 +28,12 @@ module Oauth
         return resource_metadata_for(path, scope) if request.path.end_with?(path)
       end
 
-      {
-        resource: MCP_RESOURCE_PATHS.keys.map { |path| Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path) },
-        authorization_servers: [Gitlab.config.gitlab.url],
-        scopes_supported: MCP_RESOURCE_PATHS.values.map(&:to_s)
-      }
+      resource_metadata_for(DEFAULT_MCP_RESOURCE_PATH, MCP_RESOURCE_PATHS.fetch(DEFAULT_MCP_RESOURCE_PATH))
     end
 
     def resource_metadata_for(path, scope)
       {
-        resource: [Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path)],
+        resource: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path),
         authorization_servers: [Gitlab.config.gitlab.url],
         scopes_supported: [scope.to_s]
       }

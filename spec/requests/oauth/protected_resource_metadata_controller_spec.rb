@@ -7,16 +7,12 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
     let(:protected_resource_path) { Gitlab::Routing.url_helpers.oauth_protected_resource_metadata_path }
     let(:expected_response) do
       {
-        'resource' => [
-          "#{Gitlab.config.gitlab.url}/api/v4/mcp",
-          "#{Gitlab.config.gitlab.url}/api/v4/orbit/mcp"
-        ],
+        'resource' => "#{Gitlab.config.gitlab.url}/api/v4/mcp",
         'authorization_servers' => [
           Gitlab.config.gitlab.url
         ],
         'scopes_supported' => [
-          Gitlab::Auth::MCP_SCOPE.to_s,
-          Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
+          Gitlab::Auth::MCP_SCOPE.to_s
         ]
       }
     end
@@ -56,16 +52,12 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'returns metadata with custom base URL' do
         expected_custom_response = {
-          'resource' => [
-            "#{custom_host}/api/v4/mcp",
-            "#{custom_host}/api/v4/orbit/mcp"
-          ],
+          'resource' => "#{custom_host}/api/v4/mcp",
           'authorization_servers' => [
             custom_host
           ],
           'scopes_supported' => [
-            Gitlab::Auth::MCP_SCOPE.to_s,
-            Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
+            Gitlab::Auth::MCP_SCOPE.to_s
           ]
         }
 
@@ -104,14 +96,11 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       end
 
       it 'has correct resource format' do
-        resource_urls = response.parsed_body['resource']
-        expect(resource_urls.size).to eq(2)
+        resource = response.parsed_body['resource']
 
-        expect(resource_urls).to all be_a(String)
-        expect(resource_urls).to all match(%r{\Ahttps?://})
-
-        expect(resource_urls[0]).to end_with('/api/v4/mcp')
-        expect(resource_urls[1]).to end_with('/api/v4/orbit/mcp')
+        expect(resource).to be_a(String)
+        expect(resource).to match(%r{\Ahttps?://})
+        expect(resource).to end_with('/api/v4/mcp')
       end
 
       it 'has correct authorization_servers format' do
@@ -123,21 +112,19 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         expect(auth_servers.first).to match(%r{\Ahttps?://})
       end
 
-      it 'has correct scopes_supported format' do
+      it 'advertises only the scope that belongs to the resource it names' do
         scopes = response.parsed_body['scopes_supported']
 
         expect(scopes).to be_a(Array)
-        expect(scopes).to contain_exactly(Gitlab::Auth::MCP_SCOPE.to_s, Gitlab::Auth::MCP_ORBIT_SCOPE.to_s)
+        expect(scopes).to contain_exactly(Gitlab::Auth::MCP_SCOPE.to_s)
       end
 
-      it 'authorization_servers contains the same base URL as resources' do
+      it 'authorization_servers contains the same base URL as resource' do
         response_body = response.parsed_body
         auth_server = response_body['authorization_servers'].first
+        resource_base = response_body['resource'].gsub(%r{/api/v4/(mcp|orbit/mcp)}, '')
 
-        response_body['resource'].each do |resource_url|
-          resource_base = resource_url.gsub(%r{/api/v4/(mcp|orbit/mcp)}, '')
-          expect(auth_server).to eq(resource_base)
-        end
+        expect(auth_server).to eq(resource_base)
       end
     end
 
@@ -146,10 +133,11 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         get '/.well-known/oauth-protected-resource/api/v4/mcp'
       end
 
-      it 'returns only mcp resource and scope' do
+      it 'returns resource as a string and only mcp scope' do
         body = response.parsed_body
 
-        expect(body['resource']).to eq(["#{Gitlab.config.gitlab.url}/api/v4/mcp"])
+        expect(body['resource']).to be_a(String)
+        expect(body['resource']).to eq("#{Gitlab.config.gitlab.url}/api/v4/mcp")
         expect(body['scopes_supported']).to eq([Gitlab::Auth::MCP_SCOPE.to_s])
       end
     end
@@ -159,10 +147,11 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         get '/.well-known/oauth-protected-resource/api/v4/orbit/mcp'
       end
 
-      it 'returns only mcp_orbit resource and scope' do
+      it 'returns resource as a string and only mcp_orbit scope' do
         body = response.parsed_body
 
-        expect(body['resource']).to eq(["#{Gitlab.config.gitlab.url}/api/v4/orbit/mcp"])
+        expect(body['resource']).to be_a(String)
+        expect(body['resource']).to eq("#{Gitlab.config.gitlab.url}/api/v4/orbit/mcp")
         expect(body['scopes_supported']).to eq([Gitlab::Auth::MCP_ORBIT_SCOPE.to_s])
       end
     end
@@ -176,10 +165,10 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         get protected_resource_path
       end
 
-      it 'includes relative_url_root in resource URLs' do
-        resource_urls = response.parsed_body['resource']
-        expect(resource_urls).to include("#{base_url_with_root}/api/v4/mcp")
-        expect(resource_urls).to include("#{base_url_with_root}/api/v4/orbit/mcp")
+      it 'includes relative_url_root in resource URL' do
+        resource = response.parsed_body['resource']
+        expect(resource).to be_a(String)
+        expect(resource).to eq("#{base_url_with_root}/api/v4/mcp")
       end
 
       it 'includes relative_url_root in authorization_servers' do
@@ -190,11 +179,9 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       it 'maintains consistency between resource and authorization_servers' do
         response_body = response.parsed_body
         auth_server = response_body['authorization_servers'].first
+        resource_base = response_body['resource'].gsub(%r{/api/v4/(mcp|orbit/mcp)}, '')
 
-        response_body['resource'].each do |resource_url|
-          resource_base = resource_url.gsub(%r{/api/v4/(mcp|orbit/mcp)}, '')
-          expect(auth_server).to eq(resource_base)
-        end
+        expect(auth_server).to eq(resource_base)
       end
     end
   end
